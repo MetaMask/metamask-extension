@@ -443,7 +443,7 @@
     "message": "Warnhinweis"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Sie aktualisieren Ihr Konto auf ein Smart-Konto. Sie behalten die gleiche Kontoadresse und profitieren gleichzeitig von schnelleren Transaktionen und niedrigeren Netzwerkgebühren. $1."
+    "message": "Sie aktualisieren Ihr Konto auf ein Smart-Konto. Sie behalten die gleiche Kontoadresse und profitieren gleichzeitig von schnelleren Transaktionen und niedrigeren Netzwerkgebühren. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Kontotyp"

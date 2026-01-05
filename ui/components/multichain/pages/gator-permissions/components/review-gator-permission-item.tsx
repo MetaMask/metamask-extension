@@ -346,6 +346,40 @@ export const ReviewGatorPermissionItem = ({
   );
 
   /**
+   * Returns the token revocation permission details
+   *
+   * @returns The permission details for erc20-token-revocation
+   */
+  const getTokenRevocationPermissionDetails =
+    useCallback((): PermissionDetails => {
+      return {
+        amountLabel: {
+          translationKey: 'revokeTokenApprovals',
+          value: t('allTokens'),
+          testId: 'review-gator-permission-amount-label',
+        },
+        frequencyLabel: {
+          translationKey: '',
+          valueTranslationKey: '',
+          testId: 'review-gator-permission-frequency-label',
+        },
+        expandedDetails: {
+          expirationDate: {
+            translationKey: 'gatorPermissionsExpirationDate',
+            value: getExpirationDate(
+              (
+                permissionResponse.permission as unknown as {
+                  rules: GatorPermissionRule[];
+                }
+              ).rules,
+            ),
+            testId: 'review-gator-permission-expiration-date',
+          },
+        },
+      };
+    }, [t, getExpirationDate, permissionResponse.permission]);
+
+  /**
    * Returns the permission details
    *
    * @returns The permission details
@@ -362,6 +396,8 @@ export const ReviewGatorPermissionItem = ({
         return getTokenPeriodicPermissionDetails(
           permissionResponse.permission as Erc20TokenPeriodicPermission,
         );
+      case 'erc20-token-revocation':
+        return getTokenRevocationPermissionDetails();
       default:
         throw new Error(`Invalid permission type: ${permissionType}`);
     }
@@ -370,6 +406,7 @@ export const ReviewGatorPermissionItem = ({
     getTokenStreamPermissionDetails,
     permissionResponse.permission,
     getTokenPeriodicPermissionDetails,
+    getTokenRevocationPermissionDetails,
   ]);
 
   return (
@@ -426,11 +463,13 @@ export const ReviewGatorPermissionItem = ({
           testId={permissionDetails.amountLabel.testId}
           isLoading={loading}
         />
-        <PermissionDetailRow
-          label={t(permissionDetails.frequencyLabel.translationKey)}
-          value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
-          testId={permissionDetails.frequencyLabel.testId}
-        />
+        {permissionDetails.frequencyLabel.translationKey && (
+          <PermissionDetailRow
+            label={t(permissionDetails.frequencyLabel.translationKey)}
+            value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
+            testId={permissionDetails.frequencyLabel.testId}
+          />
+        )}
         {/* Account row - custom layout with avatar and copy icon */}
         <Box
           flexDirection={BoxFlexDirection.Row}

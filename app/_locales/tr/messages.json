@@ -443,7 +443,7 @@
     "message": "Uyarı"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Hesabınızı akıllı hesap olarak güncelliyorsunuz. Aynı hesap adresini korurken daha hızlı işlemlerin ve daha düşük ağ ücretlerinin kilidini açacaksınız. $1."
+    "message": "Hesabınızı akıllı hesap olarak güncelliyorsunuz. Aynı hesap adresini korurken daha hızlı işlemlerin ve daha düşük ağ ücretlerinin kilidini açacaksınız. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Hesap türü"

@@ -385,6 +385,181 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
 </div>
 `;
 
+exports[`Permission List Item render ERC20 token permissions renders erc20 token revocation permission correctly without frequency row 1`] = `
+<div>
+  <div
+    class="box box--margin-4 box--padding-4 box--gap-1 box--flex-direction-row box--background-color-background-default box--rounded-md box--border-style-solid box--border-color-border-muted box--border-width-1"
+    data-testid="review-gator-permission-item"
+  >
+    <div
+      class=""
+    >
+      <div
+        class="flex flex-row gap-2 justify-between"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left truncate"
+        >
+          localhost:8000
+        </p>
+        <button
+          class="inline-flex items-center justify-center rounded-xl px-4 font-medium min-w-20 overflow-hidden relative h-12 transition-all duration-100 ease-linear active:scale-[0.97] active:ease-[cubic-bezier(0.3,0.8,0.3,1)] bg-icon-default text-primary-inverse hover:bg-icon-default-hover active:bg-icon-default-pressed focus-visible:ring-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-default"
+          role="button"
+          style="background-color: transparent; padding: 0px;"
+        >
+          <p
+            class="text-error-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          >
+            Revoke
+          </p>
+        </button>
+      </div>
+    </div>
+    <div
+      class="bg-default"
+    >
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Revoke token approvals
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <div
+            class="mm-box mm-skeleton mm-box--background-color-icon-alternative mm-box--rounded-sm"
+            style="height: 16px; width: 100px;"
+          >
+            <p
+              class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-right"
+              data-testid="review-gator-permission-amount-label"
+            >
+              All tokens
+            </p>
+          </div>
+        </div>
+      </div>
+      
+      <div
+        class="flex flex-row gap-4 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <p
+          class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
+        >
+          Account
+        </p>
+        <div
+          class="flex flex-row gap-2 items-center justify-end"
+          style="flex: 1; align-self: center;"
+        >
+          <div
+            class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+          >
+            <div
+              class="flex [&>div]:!rounded-none"
+            >
+              <div
+                style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(251, 24, 39);"
+              >
+                <svg
+                  height="32"
+                  width="32"
+                  x="0"
+                  y="0"
+                >
+                  <rect
+                    fill="#1864F2"
+                    height="32"
+                    transform="translate(9.96703630109566 2.15221170843441) rotate(42.9 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#C81420"
+                    height="32"
+                    transform="translate(-5.34718879899408 14.69096052287909) rotate(270.0 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                  <rect
+                    fill="#F97D01"
+                    height="32"
+                    transform="translate(28.51282382181125 4.72720698958831) rotate(127.5 16.00000000000000 16.00000000000000)"
+                    width="32"
+                    x="0"
+                    y="0"
+                  />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <p
+            class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+            data-testid="review-gator-permission-account-name"
+          >
+            Test Gator Account
+          </p>
+          <button
+            aria-label="copy-button"
+            class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+            style="cursor: pointer; position: static;"
+          >
+            <span
+              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/copy.svg');"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class=""
+    >
+      <div
+        class="flex flex-row gap-2 justify-between mt-2"
+        style="flex: 1; align-self: center;"
+      >
+        <div
+          class="flex flex-row gap-2 justify-between"
+          style="flex: 1; align-self: center; cursor: pointer;"
+        >
+          <p
+            class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+          >
+            Show Details
+          </p>
+          <button
+            aria-label="expand"
+            class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+            color="text-icon-muted"
+          >
+            <svg
+              class="inline-block w-4 h-4 text-inherit"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m2 7.887 1.775-1.775L12 14.337l8.225-8.225L22 7.887l-10 10z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
 exports[`Permission List Item render ERC20 token permissions renders erc20 token stream permission correctly 1`] = `
 <div>
   <div
