@@ -59,7 +59,7 @@ export const OriginRow = () => {
 export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { isUpgradeOnly } = useIsUpgradeTransaction();
+  const { isUpgrade } = useIsUpgradeTransaction();
   const isDowngrade = useIsDowngradeTransaction();
   const { nestedTransactions, txParams, chainId, id } =
     currentConfirmation ?? {};
@@ -69,25 +69,20 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const isBatch =
     isBatchTransaction(nestedTransactions) &&
     to?.toLowerCase() === from.toLowerCase();
-  const showContractLogo = isDowngrade || isUpgradeOnly;
 
-  if (isBatch || !to || !isValidAddress(to)) {
+  if (isBatch || isDowngrade || isUpgrade || !to || !isValidAddress(to)) {
     return null;
   }
 
   return (
     <ConfirmInfoAlertRow
-      ownerId={showContractLogo ? '' : id}
+      ownerId={id}
       alertKey={RowAlertKey.InteractingWith}
       data-testid="transaction-details-recipient-row"
       label={t('interactingWith')}
       tooltip={t('interactingWithTransactionDescription')}
     >
-      {showContractLogo ? (
-        <SmartContractWithLogo />
-      ) : (
-        <ConfirmInfoRowAddress address={to} chainId={chainId} />
-      )}
+      <ConfirmInfoRowAddress address={to} chainId={chainId} />
     </ConfirmInfoAlertRow>
   );
 };
