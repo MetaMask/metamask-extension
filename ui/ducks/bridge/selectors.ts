@@ -14,6 +14,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
+  isCrossChain,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -362,37 +363,6 @@ const getBIP44DefaultToChainId = createSelector(
   },
 );
 
-// If the user has selected a toChainId, return it as the destination chain
-// Otherwise, use the source chain as the destination chain (default to swap params)
-export const getToChain = createSelector(
-  [
-    getFromChain,
-    getToChains,
-    (state: BridgeAppState) => state.bridge?.toChainId,
-    getBIP44DefaultToChainId,
-  ],
-  (fromChain, toChains, toChainId, defaultToChainId) => {
-    // If user has explicitly selected a destination, use it
-    if (toChainId) {
-      return toChains.find(
-        ({ chainId }) =>
-          chainId === toChainId || formatChainIdToCaip(chainId) === toChainId,
-      );
-    }
-
-    // Bitcoin can only bridge to EVM chains, not to Bitcoin
-    // So if source is Bitcoin, default to BIP44 default chain
-    if (fromChain && isBitcoinChainId(fromChain.chainId)) {
-      return toChains.find(({ chainId }) => {
-        return formatChainIdToCaip(chainId) === defaultToChainId;
-      });
-    }
-
-    // For all other chains, default to same chain (swap mode)
-    return fromChain;
-  },
-);
-
 export const getFromToken = createSelector(
   [
     (state: BridgeAppState) => state.bridge.fromToken,
@@ -417,22 +387,33 @@ export const getFromToken = createSelector(
 );
 
 export const getToToken = createSelector(
-  [getFromToken, getToChain, (state: BridgeAppState) => state.bridge.toToken],
-  (fromToken, toChain, toToken) => {
-    if (!toChain || !fromToken) {
+  [
+    getFromToken,
+    (state: BridgeAppState) => state.bridge.toToken,
+    getBIP44DefaultToChainId,
+  ],
+  (fromToken, toToken, defaultToChainId) => {
+    if (!fromToken) {
       return null;
     }
     // If the user has selected a token, return it
     if (toToken) {
       return toToken;
     }
-    // Otherwise, determine the default token to use based on fromToken and toChain
-    const defaultToken = getDefaultToToken(
-      formatChainIdToCaip(toChain.chainId),
-      fromToken,
-    );
-    return defaultToken ? toBridgeToken(defaultToken) : null;
+    // Bitcoin only has 1 asset, so we can use the default toChain from LD
+    const targetChainId =
+      isBitcoinChainId(fromToken.chainId) && defaultToChainId
+        ? defaultToChainId
+        : formatChainIdToCaip(fromToken.chainId);
+    // Otherwise, determine the default token to use based on fromToken
+    return toBridgeToken(getDefaultToToken(targetChainId, fromToken));
   },
+);
+
+export const getToChain = createSelector(
+  [(state: BridgeAppState) => getToToken(state)?.chainId, getToChains],
+  (toChainId, toChains) =>
+    toChains.find(({ chainId }) => !isCrossChain(chainId, toChainId)),
 );
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
@@ -471,14 +452,20 @@ export const getFromAccount = createSelector(
 );
 
 export const getToAccounts = createSelector(
-  [getToChain, getWalletsWithAccounts, (state: BridgeAppState) => state],
-  (toChain, accountsByWallet, state) => {
-    if (!toChain) {
+  [
+    getFromChain,
+    getToToken,
+    getWalletsWithAccounts,
+    (state: BridgeAppState) => state,
+  ],
+  (fromChain, toToken, accountsByWallet, state) => {
+    const chainIdToUse = toToken ? toToken.chainId : fromChain?.chainId;
+    if (!chainIdToUse) {
       return [];
     }
     const internalAccounts = getInternalAccountsByScope(
       state,
-      formatChainIdToCaip(toChain.chainId),
+      formatChainIdToCaip(chainIdToUse),
     );
 
     return internalAccounts.map((account) => ({
