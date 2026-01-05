@@ -26,7 +26,7 @@ import {
   smartTransactionsListSelector,
   getTransactions,
   getUnapprovedTransactions,
-  makeGetTransactionsByChainId,
+  getTransactionsByChainId,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   transactionSubSelectorAllChains,
@@ -1682,7 +1682,7 @@ describe('Transaction Selectors', () => {
     });
   });
 
-  describe('makeGetTransactionsByChainId', () => {
+  describe('getTransactionsByChainId', () => {
     it('returns transactions filtered by chainId', () => {
       const mainnetTx = {
         id: 1,
@@ -1704,7 +1704,6 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const getTransactionsByChainId = makeGetTransactionsByChainId();
       const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
 
       expect(result).toStrictEqual([mainnetTx]);
@@ -1725,7 +1724,6 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const getTransactionsByChainId = makeGetTransactionsByChainId();
       const result = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
 
       expect(result).toStrictEqual([]);
@@ -1746,7 +1744,6 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const getTransactionsByChainId = makeGetTransactionsByChainId();
       const result = getTransactionsByChainId(state, null);
 
       expect(result).toStrictEqual([]);
@@ -1760,13 +1757,12 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      const getTransactionsByChainId = makeGetTransactionsByChainId();
       const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
 
       expect(result).toStrictEqual([]);
     });
 
-    it('creates independent selector instances with separate caches', () => {
+    it('caches results for multiple chainIds via LRU cache', () => {
       const mainnetTx = {
         id: 1,
         chainId: CHAIN_IDS.MAINNET,
@@ -1787,20 +1783,16 @@ describe('Transaction Selectors', () => {
         },
       };
 
-      // Create two separate instances
-      const getMainnetTxs = makeGetTransactionsByChainId();
-      const getGoerliTxs = makeGetTransactionsByChainId();
-
-      // Each should filter independently
-      const mainnetResult = getMainnetTxs(state, CHAIN_IDS.MAINNET);
-      const goerliResult = getGoerliTxs(state, CHAIN_IDS.GOERLI);
+      // Call with different chainIds
+      const mainnetResult = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
 
       expect(mainnetResult).toStrictEqual([mainnetTx]);
       expect(goerliResult).toStrictEqual([goerliTx]);
 
       // Calling again should return cached results (same reference)
-      const mainnetResult2 = getMainnetTxs(state, CHAIN_IDS.MAINNET);
-      const goerliResult2 = getGoerliTxs(state, CHAIN_IDS.GOERLI);
+      const mainnetResult2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult2 = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
 
       expect(mainnetResult2).toBe(mainnetResult);
       expect(goerliResult2).toBe(goerliResult);
@@ -1820,8 +1812,6 @@ describe('Transaction Selectors', () => {
           transactions: [tx],
         },
       };
-
-      const getTransactionsByChainId = makeGetTransactionsByChainId();
 
       const result1 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
       const result2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);

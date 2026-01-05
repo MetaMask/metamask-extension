@@ -58,41 +58,33 @@ export const getUnapprovedTransactions =
 const createChainIdSelector = createParameterizedShallowEqualSelector(10);
 
 /**
- * Factory that creates a memoized selector for transactions by chainId.
- * Each call creates a new selector instance with its own LRU cache (size 10)
- * that can store results for multiple chainIds simultaneously.
+ * Returns transactions filtered by the given chainId.
+ * Uses an LRU cache (size 10) to memoize results for multiple chainIds.
  *
- * @returns {Function} Selector function (state, chainId) => transactions[]
+ * @param {object} state - Root state
+ * @param {string} chainId - The chain ID to filter transactions by
+ * @returns {object[]} Array of transaction objects for the specified chain
  * @example
- * // In a selector (module-level instance)
- * const getChainTxs = makeGetTransactionsByChainId();
- * export const getPendingTxs = (state, chainId) =>
- *   getChainTxs(state, chainId).filter(tx => tx.status === 'submitted');
- * @example
- * // In a React component (memoized instance)
- * const getChainTxs = useMemo(() => makeGetTransactionsByChainId(), []);
- * const txs = useSelector((state) => getChainTxs(state, chainId));
+ * const mainnetTxs = getTransactionsByChainId(state, '0x1');
+ * const polygonTxs = getTransactionsByChainId(state, '0x89');
  */
-export const makeGetTransactionsByChainId = () =>
-  createChainIdSelector(
-    getTransactions,
-    (_, chainId) => chainId,
-    (transactions, chainId) => {
-      if (!transactions.length || !chainId) {
-        return EMPTY_ARRAY;
-      }
-      return transactions.filter(
-        (transaction) => transaction.chainId === chainId,
-      );
-    },
-  );
+export const getTransactionsByChainId = createChainIdSelector(
+  getTransactions,
+  (_, chainId) => chainId,
+  (transactions, chainId) => {
+    if (!transactions.length || !chainId) {
+      return EMPTY_ARRAY;
+    }
+    return transactions.filter(
+      (transaction) => transaction.chainId === chainId,
+    );
+  },
+);
 
-// Single instance for getCurrentNetworkTransactions
-const getTransactionsByChainId = makeGetTransactionsByChainId();
 /**
  * Returns transactions for the current network.
  *
- * @deprecated Use `makeGetTransactionsByChainId()` instead with explicit chainId.
+ * @deprecated Use `getTransactionsByChainId(state, chainId)` instead with explicit chainId.
  * This selector relies on providerConfig which we're moving away from.
  * @param {object} state - Root state
  * @returns {object[]} Array of transaction objects
