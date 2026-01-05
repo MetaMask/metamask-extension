@@ -60,10 +60,13 @@ import {
 } from '../../selectors';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import { CaptureShieldSubscriptionRequestParams } from '../shield/metrics/types';
-import { EntryModalSourceEnum } from '../../../shared/constants/subscriptions';
+import {
+  ShieldMetricsSourceEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
+} from '../../../shared/constants/subscriptions';
 import { DefaultSubscriptionPaymentOptions } from '../../../shared/types';
 import {
-  getLatestSubscriptionStatus,
+  determineSubscriptionMetricsSourceFromMarketingUtmParams,
   getShieldMarketingUtmParamsForMetrics,
   getUserBalanceCategory,
   SHIELD_ERROR,
@@ -496,37 +499,45 @@ export const useHandleSubscription = ({
   const { search } = useLocation();
   const { execute: executeSubscriptionCryptoApprovalTransaction } =
     useSubscriptionCryptoApprovalTransaction(selectedToken);
-  const { subscriptions, lastSubscription } = useUserSubscriptions();
+  const { lastSubscription } = useUserSubscriptions();
   const {
     captureShieldSubscriptionRequestEvent,
     setShieldSubscriptionMetricsPropsToBackground,
   } = useSubscriptionMetrics();
   const modalType: ModalType = useSelector(getModalTypeForShieldEntryModal);
 
-  const latestSubscriptionStatus =
-    getLatestSubscriptionStatus(subscriptions, lastSubscription) || 'none';
+  const latestSubscriptionStatus = useMemo(() => {
+    return lastSubscription
+      ? ShieldSubscriptionRequestSubscriptionStateEnum.Renew
+      : ShieldSubscriptionRequestSubscriptionStateEnum.New;
+  }, [lastSubscription]);
 
   const determineSubscriptionRequestSource =
-    useCallback((): EntryModalSourceEnum => {
+    useCallback((): ShieldMetricsSourceEnum => {
       const marketingUtmParams = getShieldMarketingUtmParamsForMetrics(search);
-      if (Object.keys(marketingUtmParams).length > 0) {
-        return EntryModalSourceEnum.Marketing;
+      const source =
+        determineSubscriptionMetricsSourceFromMarketingUtmParams(
+          marketingUtmParams,
+        );
+      if (source) {
+        return source;
       }
+
       const sourceParam = new URLSearchParams(search).get('source');
       switch (sourceParam) {
         case 'homepage':
-          return EntryModalSourceEnum.Homepage;
+          return ShieldMetricsSourceEnum.Homepage;
         case 'post_transaction':
-          return EntryModalSourceEnum.PostTransaction;
+          return ShieldMetricsSourceEnum.PostTransaction;
         case 'notification':
-          return EntryModalSourceEnum.Notification;
+          return ShieldMetricsSourceEnum.Notification;
         case 'carousel':
-          return EntryModalSourceEnum.Carousel;
+          return ShieldMetricsSourceEnum.Carousel;
         case 'marketing':
-          return EntryModalSourceEnum.Marketing;
+          return ShieldMetricsSourceEnum.Marketing;
         case 'settings':
         default:
-          return EntryModalSourceEnum.Settings;
+          return ShieldMetricsSourceEnum.Settings;
       }
     }, [search]);
 
@@ -609,19 +620,21 @@ export const useHandleSubscription = ({
       }
     }, [
       dispatch,
-      defaultOptions,
-      isTrialed,
       selectedPaymentMethod,
+      selectedToken?.address,
+      selectedToken?.symbol,
       selectedPlan,
-      selectedToken,
-      executeSubscriptionCryptoApprovalTransaction,
       useTestClock,
-      captureShieldSubscriptionRequestEvent,
-      latestSubscriptionStatus,
-      modalType,
-      determineSubscriptionRequestSource,
       search,
+      defaultOptions,
+      setShieldSubscriptionMetricsPropsToBackground,
+      determineSubscriptionRequestSource,
       rewardPoints,
+      latestSubscriptionStatus,
+      isTrialed,
+      modalType,
+      captureShieldSubscriptionRequestEvent,
+      executeSubscriptionCryptoApprovalTransaction,
     ]);
 
   return {

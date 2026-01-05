@@ -41,10 +41,7 @@ class ActivityListPage {
     tag: 'button',
   };
 
-  private readonly cancelTransactionButton = {
-    text: 'Cancel',
-    tag: 'button',
-  };
+  private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
 
   private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
 
@@ -213,8 +210,9 @@ class ActivityListPage {
     confirmedTx?: number;
   }): Promise<void> {
     // We need to wait for the total number of confirmed tx's to be able to use getText() without race conditions.
-    await this.checkConfirmedTxNumberDisplayedInActivity(confirmedTx);
-
+    if (confirmedTx) {
+      await this.checkConfirmedTxNumberDisplayedInActivity(confirmedTx);
+    }
     const transactionActions = await this.driver.findElements(
       this.activityListAction,
     );

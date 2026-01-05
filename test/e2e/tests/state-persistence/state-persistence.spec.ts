@@ -166,6 +166,16 @@ const assertSplitStateStorage = (storage: SplitStateStorage) => {
       `storage key ${key} should be present in manifest`,
     );
   }
+
+  // sanity check
+  assert(
+    storage.manifest.includes('KeyringController'),
+    'KeyringController should be in the manifest',
+  );
+  assert(
+    typeof storage.KeyringController !== 'undefined',
+    'KeyringController should be in storage',
+  );
 };
 
 /**
@@ -357,7 +367,7 @@ describe('State Persistence', function () {
   this.timeout(120000);
 
   describe('data state', function () {
-    // skipped until "data" state is set as the default
+    // skipped until "split" state is set as the default
     // eslint-disable-next-line mocha/no-skipped-tests
     it.skip('should default to the data state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {

@@ -8,7 +8,7 @@ export const version = 0;
 /**
  * Explain the purpose of the migration here.
  *
- * @param versionedData - Versioned MetaMask extension state; what we persist to dist.
+ * @param versionedData - Versioned MetaMask extension state; what we persist to disk.
  * @param versionedData.meta - Metadata about the state being migrated.
  * @param versionedData.meta.version - The current state version.
  * @param versionedData.meta.storageKind - The kind of storage being used.

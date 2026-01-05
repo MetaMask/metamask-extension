@@ -30,6 +30,7 @@ globalThis.stateHooks.getPersistedState = async function () {
 const persistedStateMask = {
   data: SENTRY_BACKGROUND_STATE,
   meta: {
+    storageKind: true,
     version: true,
   },
 };

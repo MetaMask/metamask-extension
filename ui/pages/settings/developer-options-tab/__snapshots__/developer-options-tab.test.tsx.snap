@@ -562,23 +562,12 @@ exports[`Develop options tab should match snapshot 1`] = `
           <span>
             Max Accounts flag:
           </span>
-          <div
-            class="MuiFormControl-root MuiTextField-root"
-          >
-            <div
-              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
-            >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
-                dir="auto"
-                max="99999999"
-                min="0"
-                type="number"
-                value=""
-              />
-            </div>
-          </div>
+          <input
+            max="99999999"
+            min="0"
+            type="number"
+            value=""
+          />
         </label>
       </div>
       <div>
@@ -586,23 +575,12 @@ exports[`Develop options tab should match snapshot 1`] = `
           <span>
             Max Networks flag:
           </span>
-          <div
-            class="MuiFormControl-root MuiTextField-root"
-          >
-            <div
-              class="MuiInputBase-root MuiInput-root TextField-inputRoot-12 MuiInputBase-formControl MuiInput-formControl"
-            >
-              <input
-                aria-invalid="false"
-                class="MuiInputBase-input MuiInput-input"
-                dir="auto"
-                max="99999999"
-                min="0"
-                type="number"
-                value=""
-              />
-            </div>
-          </div>
+          <input
+            max="99999999"
+            min="0"
+            type="number"
+            value=""
+          />
         </label>
       </div>
     </div>
