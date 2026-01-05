@@ -20,7 +20,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChainId,
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
@@ -177,7 +176,6 @@ const PrepareBridgePage = ({
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
     activeQuote: unvalidatedQuote,
     toToken,
-    toChainId: toChain?.chainId,
     fromChainId: fromChain?.chainId,
     isQuoteExpired,
     insufficientBal: quoteRequest.insufficientBal,
@@ -471,9 +469,6 @@ const PrepareBridgePage = ({
             };
             dispatch(setFromToken(bridgeToken));
             dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             // @ts-expect-error other network fields are not used by the asset picker
@@ -665,7 +660,9 @@ const PrepareBridgePage = ({
                 ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
-                dispatch(setToChainId(networkConfig.chainId));
+                dispatch(
+                  setToToken(getNativeAssetForChainId(networkConfig.chainId)),
+                );
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>

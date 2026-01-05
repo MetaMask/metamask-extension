@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
   isNonEvmChainId,
@@ -16,10 +15,9 @@ import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-ale
 import { endTrace, TraceName } from '../../../shared/lib/trace';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
-import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
+import type { BridgeState, TokenPayload } from './types';
 
 const initialState: BridgeState = {
-  toChainId: null,
   fromToken: null,
   toToken: null,
   fromTokenInputValue: null,
@@ -87,10 +85,6 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    setToChainId: (state, { payload }: ChainIdPayload) => {
-      state.toChainId = payload ? formatChainIdToCaip(payload) : null;
-      state.toToken = null;
-    },
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
@@ -103,14 +97,13 @@ const bridgeSlice = createSlice({
       ) {
         state.toToken = null;
       }
-      // if new fromToken is BTC, and toToken is BTC, unset toChain and toToken
+      // if new fromToken is BTC, and toToken is BTC, unset toToken
       if (
         state.fromToken?.chainId &&
         isBitcoinChainId(state.fromToken.chainId) &&
-        state.toChainId &&
-        isBitcoinChainId(state.toChainId)
+        state.toToken?.chainId &&
+        isBitcoinChainId(state.toToken.chainId)
       ) {
-        state.toChainId = null;
         state.toToken = null;
       }
     },
@@ -124,16 +117,6 @@ const bridgeSlice = createSlice({
               getNativeAssetForChainId(toToken.chainId)?.address,
           }
         : toToken;
-      // Update toChainId if it's different from the toToken chainId
-      if (
-        toToken?.chainId &&
-        (state.toChainId
-          ? formatChainIdToCaip(toToken.chainId) !==
-            formatChainIdToCaip(state.toChainId)
-          : true)
-      ) {
-        state.toChainId = formatChainIdToCaip(toToken.chainId);
-      }
     },
     setFromTokenInputValue: (
       state,
@@ -150,7 +133,6 @@ const bridgeSlice = createSlice({
     ) => {
       state.fromToken = toBridgeToken(quote.srcAsset);
       state.toToken = toBridgeToken(quote.destAsset);
-      state.toChainId = formatChainIdToCaip(quote.destChainId);
     },
     setSortOrder: (state, action) => {
       state.sortOrder = action.payload;
