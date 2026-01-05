@@ -137,7 +137,8 @@ async function main() {
       (process.env.CI || process.env.GITHUB_ACTION) &&
       e2eTestPath.includes('state-persistence.spec.ts')
     ) {
-      extraArgs.push('--fgrep', focusTestTitle);
+      const quotedFocusTitle = JSON.stringify(focusTestTitle);
+      extraArgs.push(`--fgrep=${quotedFocusTitle}`);
       console.log(`CI focus mode enabled. Filtering to: ${focusTestTitle}`);
     }
 
