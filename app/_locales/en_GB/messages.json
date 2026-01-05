@@ -2043,6 +2043,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_theOnboardingPage": {
+    "message": "the onboarding page"
+  },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
   },
