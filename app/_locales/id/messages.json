@@ -443,7 +443,7 @@
     "message": "Peringatan"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Anda memperbarui akun ke akun cerdas. Anda akan tetap menggunakan alamat akun yang sama sambil membuka transaksi yang lebih cepat dan biaya jaringan yang lebih rendah. $1."
+    "message": "Anda memperbarui akun ke akun cerdas. Anda akan tetap menggunakan alamat akun yang sama sambil membuka transaksi yang lebih cepat dan biaya jaringan yang lebih rendah. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Jenis akun"
