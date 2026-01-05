@@ -1,18 +1,28 @@
-.multichain-edit-accounts-page {
-  // Calculate height accounting for snap header (64px min-height)
-  // Applied to inner Box which has height-full class
-  &.mm-box--height-full {
-    height: calc(100vh - 64px) !important;
-    max-height: calc(100vh - 64px) !important;
-    overflow: hidden !important;
-  }
+// Target the outer Page wrapper for snap flows
+.multichain-page:has(.multichain-edit-accounts-page--snap) {
+  flex: 1 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
 
+.multichain-edit-accounts-page {
   &.multichain-page__inner-container {
     position: relative;
-    height: 100% !important;
+    height: 100vh !important;
     overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
+  }
+
+  // For snap flows - use flex to fit within parent flex container
+  &.multichain-edit-accounts-page--snap.multichain-page__inner-container {
+    height: 100% !important;
+    flex: 1 !important;
+    overflow: hidden !important;
+    min-height: 0 !important;
+    max-height: 100% !important;
   }
 
   // Constrain header
@@ -28,10 +38,19 @@
     overflow-x: hidden !important;
   }
 
+  // For snap flows - ensure no double scrollbar
+  &.multichain-edit-accounts-page--snap .multichain-page-content {
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .multichain-page-footer {
     flex-shrink: 0;
+    flex-grow: 0;
     border-top: 1px solid var(--color-border-muted);
     background-color: var(--color-background-default);
+    position: relative;
+    z-index: 1;
   }
 }
 

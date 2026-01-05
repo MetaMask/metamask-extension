@@ -369,7 +369,7 @@ describe('Multichain API', function () {
     });
 
     describe('deselect all', function () {
-      it.only('should not be able to approve the create session request without at least one account selected', async function () {
+      it('should not be able to approve the create session request without at least one account selected', async function () {
         await withFixtures(
           {
             title: this.test?.fullTitle(),
@@ -403,11 +403,10 @@ describe('Multichain API', function () {
             await editConnectedAccountsModal.checkPageIsLoaded();
             await editConnectedAccountsModal.selectAccount(1);
             assert.strictEqual(
-              await connectAccountConfirmation.isConfirmButtonEnabled(),
+              await editConnectedAccountsModal.isConnectButtonEnabled(),
               false,
               'should not able to approve the create session request without at least one account should be selected',
             );
-            await editConnectedAccountsModal.isConnectButtonEnabled();
           },
         );
       });

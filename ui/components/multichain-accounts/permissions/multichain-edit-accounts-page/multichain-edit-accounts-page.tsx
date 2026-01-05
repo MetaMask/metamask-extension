@@ -127,7 +127,7 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className="main-container connect-page multichain-edit-accounts-page"
+      className={`main-container connect-page multichain-edit-accounts-page${isSnapsPermissionsRequest ? ' multichain-edit-accounts-page--snap' : ''}`}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {!isSnapsPermissionsRequest && (
