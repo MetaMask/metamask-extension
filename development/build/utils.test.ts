@@ -35,12 +35,23 @@ describe('getBuildTargetFromTask', () => {
     expect(getBuildTargetFromTask(TASKS.STYLES)).toBe('prod');
   });
 
+  it('maps standalone utility tasks to build targets', () => {
+    expect(getBuildTargetFromTask(TASKS.CLEAN)).toBe('prod');
+    expect(getBuildTargetFromTask(TASKS.RELOAD)).toBe('dev');
+    expect(getBuildTargetFromTask(TASKS.ZIP)).toBe('prod');
+  });
+
+  it('maps manifest tasks to build targets', () => {
+    expect(getBuildTargetFromTask(TASKS.MANIFEST_DEV)).toBe('dev');
+    expect(getBuildTargetFromTask(TASKS.MANIFEST_PROD)).toBe('prod');
+    expect(getBuildTargetFromTask(TASKS.MANIFEST_TEST)).toBe('test');
+    expect(getBuildTargetFromTask(TASKS.MANIFEST_TEST_DEV)).toBe('testDev');
+    expect(getBuildTargetFromTask(TASKS.MANIFEST_SCRIPT_DIST)).toBe('dist');
+  });
+
   it('throws error for unknown patterns', () => {
     expect(() => getBuildTargetFromTask('unknown:task')).toThrow(
       'Unable to extract build target from task name: "unknown:task"',
-    );
-    expect(() => getBuildTargetFromTask(TASKS.MANIFEST_DEV)).toThrow(
-      `Unable to extract build target from task name: "${TASKS.MANIFEST_DEV}"`,
     );
   });
 });

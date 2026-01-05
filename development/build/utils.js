@@ -37,6 +37,16 @@ const SPECIAL_TASK_MAPPINGS = {
   'scripts:dist': BUILD_TARGETS.DIST,
   // Exposed as standalone entry task (index.js line 315)
   styles: BUILD_TARGETS.PROD,
+  // Standalone utility tasks (etc.js)
+  clean: BUILD_TARGETS.PROD,
+  reload: BUILD_TARGETS.DEV,
+  zip: BUILD_TARGETS.PROD,
+  // Manifest tasks (manifest.js)
+  'manifest:dev': BUILD_TARGETS.DEV,
+  'manifest:prod': BUILD_TARGETS.PROD,
+  'manifest:test': BUILD_TARGETS.TEST,
+  'manifest:testDev': BUILD_TARGETS.TEST_DEV,
+  'manifest:scriptDist': BUILD_TARGETS.DIST,
 };
 
 /**
