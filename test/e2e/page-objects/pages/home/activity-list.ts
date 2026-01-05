@@ -150,6 +150,9 @@ class ActivityListPage {
    * Checks that all fee values displayed in the transaction details are numeric.
    * Uses driver.wait() to retry and avoid race conditions with getText().
    *
+   * Note: getText() is required here for regex pattern validation since we don't
+   * know the exact values in advance. This is a valid exception to the guideline.
+   *
    * @returns A promise that resolves if all fee values are numeric.
    */
   async checkFeeValuesAreNumeric(): Promise<void> {

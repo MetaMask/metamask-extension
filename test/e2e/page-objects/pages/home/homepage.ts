@@ -319,6 +319,9 @@ class HomePage {
   /**
    * Checks that balance is displayed in the correct format (X.XX ETH).
    * Uses driver.wait() to retry and avoid race conditions with getText().
+   *
+   * Note: getText() is required here for regex pattern validation since we don't
+   * know the exact balance value in advance. This is a valid exception to the guideline.
    */
   async checkBalanceIsDisplayed(): Promise<void> {
     console.log('Check balance element is displayed on homepage');
