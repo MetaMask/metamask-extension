@@ -176,7 +176,6 @@ export const createBridgeMockStore = ({
       topAssets: [],
     },
     bridge: {
-      toChainId: null,
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
@@ -354,7 +353,7 @@ export const createBridgeMockStore = ({
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
-                isActiveDest: false,
+                isActiveDest: true,
               },
               ...Object.fromEntries(
                 Object.entries(
