@@ -33,8 +33,6 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         const connectedAccount = await header.getAccount();
 
         assertConnected(connectedAccount, DEFAULT_TRON_ADDRESS_SHORT);
-
-        throw new Error('test');
       });
     });
 
