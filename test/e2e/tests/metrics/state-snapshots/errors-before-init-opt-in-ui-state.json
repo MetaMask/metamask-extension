@@ -53,7 +53,6 @@
       "shieldPausedToastLastClickedOrClosed": "object",
       "showAccountBanner": true,
       "showBetaHeader": false,
-      "showDatabaseCorruptionToast": false,
       "showDownloadMobileAppSlide": "boolean",
       "showNetworkBanner": true,
       "showPermissionsTour": true,

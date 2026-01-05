@@ -31,7 +31,6 @@
       "popupGasPollTokens": "object",
       "recoveryPhraseReminderHasBeenShown": true,
       "recoveryPhraseReminderLastShown": "number",
-      "showDatabaseCorruptionToast": false,
       "showShieldEntryModalOnce": "boolean",
       "showTestnetMessageInDropdown": true,
       "snapsInstallPrivacyWarningShown": true,
