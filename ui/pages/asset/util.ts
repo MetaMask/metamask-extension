@@ -21,6 +21,23 @@ export const getShortDateFormatterV2 = () =>
   });
 
 /**
+ * Returns a dynamically formatted date string.
+ * If the date is in the same year as the current date, it omits the year.
+ * Otherwise, it includes the year.
+ *
+ * @param date - The date to format, either as a Date object or timestamp.
+ * @returns A formatted date string.
+ */
+export const getDynamicShortDate = (date: Date | number) => {
+  const currentDate = new Date(date);
+  const now = new Date();
+  const isSameYear = currentDate.getFullYear() === now.getFullYear();
+  return isSameYear
+    ? getShortDateFormatter().format(date)
+    : getShortDateFormatterV2().format(date);
+};
+
+/**
  * Returns the number of decimals the fiat price should be formatted to.
  * This tells `currency-formatter` to render prices < 1 cent like $0.00001234
  *

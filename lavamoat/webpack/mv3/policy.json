@@ -1170,6 +1170,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -2745,6 +2748,11 @@
       "packages": {
         "stream-http": true,
         "browserify>url": true
+      }
+    },
+    "humanize-duration": {
+      "globals": {
+        "define": true
       }
     },
     "eth-ens-namehash>idna-uts46-hx": {
