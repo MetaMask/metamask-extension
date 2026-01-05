@@ -1,12 +1,12 @@
 import React from 'react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import MetaFoxLogo from '.';
 
 jest.mock(
   './horizontal-logo.js',
   () =>
     function mockRender() {
-      return <div></div>;
+      return <div />;
     },
 );
 

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AssetType } from '@metamask/bridge-controller';
 import { EthScope, SolScope } from '@metamask/keyring-api';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { Asset } from '../types/asset';
 import { useCurrentPrice } from './useCurrentPrice';
 

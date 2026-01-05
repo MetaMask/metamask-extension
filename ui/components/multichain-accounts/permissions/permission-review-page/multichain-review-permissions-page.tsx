@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { CaipChainId, NonEmptyArray, Hex } from '@metamask/utils';
 import {
   getAllScopesFromCaip25CaveatValue,
@@ -73,28 +73,11 @@ export enum MultichainReviewPermissionsPageMode {
   EditAccounts = 'edit-accounts',
 }
 
-type MultichainReviewPermissionsProps = {
-  params?: { origin: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const MultichainReviewPermissions = ({
-  params,
-  navigate: navigateProp,
-}: MultichainReviewPermissionsProps = {}) => {
+export const MultichainReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const navigateHook = useNavigate();
-  const urlParamsHook = useParams<{ origin: string }>();
-
-  // Use props if provided, otherwise fall back to hooks
-  const navigate = (navigateProp || navigateHook) as NonNullable<
-    typeof navigateProp
-  >;
-  const urlParams = params || urlParamsHook;
+  const navigate = useNavigate();
+  const urlParams = useParams<{ origin: string }>();
 
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);

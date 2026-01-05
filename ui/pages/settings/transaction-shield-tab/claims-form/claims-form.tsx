@@ -20,7 +20,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -29,8 +29,6 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
 } from '../../../../components/component-library';
@@ -65,7 +63,7 @@ import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claim
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
@@ -80,7 +78,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetchClaims, pendingClaims } = useClaims();
+  const { refetchClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -325,7 +323,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const onClickFindTransactionHash = useCallback(async () => {
     window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
       redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
@@ -409,17 +407,6 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       data-testid="submit-claim-page"
       gap={4}
     >
-      {!isView && pendingClaims.length > 0 && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Info}
-          title={t('shieldClaimsPendingAlertTitle')}
-          description={t('shieldClaimsPendingAlertDescription')}
-          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
-          actionButtonOnClick={() => {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-          }}
-        />
-      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {isView
           ? t('shieldClaimDetailsViewClaims', [

@@ -2,6 +2,7 @@ import { Token } from '@metamask/assets-controllers';
 import {
   findAssetByAddress,
   fromIso8601DurationToPriceApiTimePeriod,
+  getDynamicShortDate,
 } from './util';
 
 describe('utils', () => {
@@ -90,5 +91,68 @@ describe('utils', () => {
         'No Price API timePeriod matching the ISO 8601 duration: P1Y2M',
       );
     });
+  });
+
+  describe('getDynamicShortDate', () => {
+    const originalNavigatorLanguage = navigator.language;
+    // Use a fixed "current year" for testing - mock system time to ensure tests don't become flaky
+    const MOCKED_CURRENT_DATE = new Date(2025, 6, 1, 12, 0, 0); // July 1, 2025
+
+    beforeAll(() => {
+      jest.useFakeTimers();
+      jest.setSystemTime(MOCKED_CURRENT_DATE);
+      Object.defineProperty(navigator, 'language', {
+        value: 'en-US',
+        configurable: true,
+      });
+    });
+
+    afterAll(() => {
+      jest.useRealTimers();
+      Object.defineProperty(navigator, 'language', {
+        value: originalNavigatorLanguage,
+        configurable: true,
+      });
+    });
+
+    const testCases: {
+      description: string;
+      input: Date | number;
+      expected: string;
+    }[] = [
+      {
+        description: 'formats date in current year without year (Date object)',
+        input: new Date(2025, 5, 15, 10, 30), // June 15, 2025, 10:30 AM
+        expected: 'Jun 15, 10:30 AM',
+      },
+      {
+        description: 'formats date in previous year with year',
+        input: new Date(2024, 5, 15), // June 15, 2024
+        expected: 'Jun 15, 2024',
+      },
+      {
+        description: 'formats date in future year with year',
+        input: new Date(2099, 11, 31), // Dec 31, 2099
+        expected: 'Dec 31, 2099',
+      },
+      {
+        description: 'handles timestamp input for current year',
+        input: new Date(2025, 0, 1, 12, 0).getTime(), // Jan 1, 2025, 12:00 PM
+        expected: 'Jan 1, 12:00 PM',
+      },
+      {
+        description: 'handles timestamp input for different year',
+        input: new Date(2020, 2, 15, 9, 45).getTime(), // Mar 15, 2020, 9:45 AM
+        expected: 'Mar 15, 2020',
+      },
+    ];
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each(testCases)(
+      '$description',
+      ({ input, expected }: { input: Date | number; expected: string }) => {
+        expect(getDynamicShortDate(input)).toBe(expected);
+      },
+    );
   });
 });

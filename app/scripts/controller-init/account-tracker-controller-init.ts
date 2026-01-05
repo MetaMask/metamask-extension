@@ -19,7 +19,6 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
   // TODO: Fix AccountTrackerControllerMessenger type - add AccountTrackerControllerActions & AccountTrackerControllerEvents
   // TODO: Bump @metamask/network-controller, @metamask/accounts-controller to match assets-controllers
   const controller = new AccountTrackerController({
-    // @ts-expect-error - Messenger type mismatch due to missing controller actions/events and dependency version mismatch
     messenger: controllerMessenger,
     getStakedBalanceForChain: (
       addresses: string[],
@@ -49,6 +48,10 @@ export const AccountTrackerControllerInit: ControllerInitFunction<
         : [];
     },
     fetchingEnabled: () => onboardingController().state.completedOnboarding,
+    isOnboarded: () => {
+      const { completedOnboarding } = onboardingController().state;
+      return completedOnboarding;
+    },
   });
 
   return {

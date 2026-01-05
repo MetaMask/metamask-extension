@@ -126,6 +126,7 @@ export type AppStateControllerState = {
   onboardingDate: number | null;
   outdatedBrowserWarningLastShown: number | null;
   popupGasPollTokens: string[];
+  sidePanelGasPollTokens: string[];
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
@@ -192,6 +193,11 @@ export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
   handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
+export type AppStateControllerSetPendingShieldCohortAction = {
+  type: 'AppStateController:setPendingShieldCohort';
+  handler: AppStateController['setPendingShieldCohort'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -199,7 +205,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetPendingShieldCohortAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -246,7 +253,8 @@ export type AppStateControllerMessenger = Messenger<
 type PollingTokenType =
   | 'popupGasPollTokens'
   | 'notificationGasPollTokens'
-  | 'fullScreenGasPollTokens';
+  | 'fullScreenGasPollTokens'
+  | 'sidePanelGasPollTokens';
 
 type AppStateControllerInitState = Partial<
   Omit<
@@ -294,6 +302,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
   popupGasPollTokens: [],
+  sidePanelGasPollTokens: [],
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
@@ -523,6 +532,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   popupGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  sidePanelGasPollTokens: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -776,6 +791,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setCanTrackWalletFundsObtained',
       this.setCanTrackWalletFundsObtained.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingShieldCohort',
+      this.setPendingShieldCohort.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -1205,6 +1225,7 @@ export class AppStateController extends BaseController<
       'popupGasPollTokens',
       'notificationGasPollTokens',
       'fullScreenGasPollTokens',
+      'sidePanelGasPollTokens',
     ];
 
     return validTokenTypes.includes(pollingTokenType);
@@ -1218,6 +1239,7 @@ export class AppStateController extends BaseController<
       state.popupGasPollTokens = [];
       state.notificationGasPollTokens = [];
       state.fullScreenGasPollTokens = [];
+      state.sidePanelGasPollTokens = [];
     });
   }
 

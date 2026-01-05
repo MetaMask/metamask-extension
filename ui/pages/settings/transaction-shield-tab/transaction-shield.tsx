@@ -4,17 +4,26 @@ import {
   Product,
   PRODUCT_TYPES,
   RECURRING_INTERVALS,
+  Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
+import {
+  Button,
+  ButtonSize,
+  ButtonVariant,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+} from '@metamask/design-system-react';
+import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
   BoxProps,
-  Icon,
-  IconName,
-  IconSize,
   Tag,
   Text,
 } from '../../../components/component-library';
@@ -26,7 +35,6 @@ import {
   BorderStyle,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -36,6 +44,7 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   useCancelSubscription,
   useOpenGetSubscriptionBillingPortal,
+  useShieldRewards,
   useUnCancelSubscription,
   useUserLastSubscriptionByProduct,
   useUserSubscriptionByProduct,
@@ -54,6 +63,7 @@ import LoadingScreen from '../../../components/ui/loading-screen';
 import AddFundsModal from '../../../components/app/modals/add-funds-modal/add-funds-modal';
 import { useSubscriptionPricing } from '../../../hooks/subscription/useSubscriptionPricing';
 import { ConfirmInfoRowAddress } from '../../../components/app/confirm/info/row';
+import RewardsOnboardingModal from '../../../components/app/rewards/onboarding/OnboardingModal';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
@@ -63,15 +73,18 @@ import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
 import { useTheme } from '../../../hooks/useTheme';
 import ApiErrorHandler from '../../../components/app/api-error-handler';
 import { useHandlePayment } from '../../../hooks/subscription/useHandlePayment';
+import { MetaMaskReduxDispatch } from '../../../store/store';
+import { setOnboardingModalOpen } from '../../../ducks/rewards';
+import { getIntlLocale } from '../../../ducks/locale/locale';
+import { linkRewardToShieldSubscription } from '../../../store/actions';
 import CancelMembershipModal from './cancel-membership-modal';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import ShieldBannerAnimation from './shield-banner-animation';
@@ -79,6 +92,8 @@ import { PaymentMethodRow } from './payment-method-row';
 
 const TransactionShield = () => {
   const t = useI18nContext();
+  const locale = useSelector(getIntlLocale);
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const navigate = useNavigate();
   const { search } = useLocation();
   const { captureShieldCtaClickedEvent } = useSubscriptionMetrics();
@@ -113,8 +128,9 @@ const TransactionShield = () => {
     lastSubscription,
   );
   // show current active shield subscription or last subscription if no active subscription
-  const displayedShieldSubscription =
-    currentShieldSubscription ?? lastShieldSubscription;
+  const displayedShieldSubscription:
+    | (Subscription & { rewardAccountId?: string }) // TODO: fix this type once we have controller released.
+    | undefined = currentShieldSubscription ?? lastShieldSubscription;
 
   const [timeoutCancelled, setTimeoutCancelled] = useState(false);
   useEffect(() => {
@@ -192,20 +208,29 @@ const TransactionShield = () => {
     openGetSubscriptionBillingPortalResult,
   ] = useOpenGetSubscriptionBillingPortal(displayedShieldSubscription);
 
+  const {
+    pointsMonthly,
+    pointsYearly,
+    isRewardsSeason,
+    hasAccountOptedIn: hasOptedIntoRewards,
+    pending: pendingShieldRewards,
+  } = useShieldRewards();
+
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
 
   const showSkeletonLoader =
     isWaitingForSubscriptionCreation ||
     subscriptionsLoading ||
-    subscriptionPricingLoading;
+    subscriptionPricingLoading ||
+    pendingShieldRewards;
 
   // redirect to shield plan page if user doesn't have a subscription
   useEffect(() => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
+        search: `?source=${ShieldMetricsSourceEnum.Settings}`,
       });
     }
   }, [
@@ -219,14 +244,34 @@ const TransactionShield = () => {
 
   const [isAddFundsModalOpen, setIsAddFundsModalOpen] = useState(false);
 
+  const openRewardsOnboardingModal = useCallback(() => {
+    dispatch(setOnboardingModalOpen(true));
+  }, [dispatch]);
+
+  const claimedRewardsPoints = useMemo(() => {
+    const points =
+      displayedShieldSubscription?.interval === RECURRING_INTERVALS.year
+        ? pointsYearly
+        : pointsMonthly;
+    return points;
+  }, [pointsYearly, pointsMonthly, displayedShieldSubscription?.interval]);
+
+  const formattedRewardsPoints = useMemo(() => {
+    if (!claimedRewardsPoints || !isRewardsSeason) {
+      return '';
+    }
+
+    return new Intl.NumberFormat(locale).format(claimedRewardsPoints);
+  }, [claimedRewardsPoints, isRewardsSeason, locale]);
+
   const shieldDetails = [
     {
-      icon: IconName.ShieldLock,
+      icon: IconName.Cash,
       title: t('shieldTxDetails1Title'),
       description: t('shieldTxDetails1Description'),
     },
     {
-      icon: IconName.Flash,
+      icon: IconName.Sms,
       title: t('shieldTxDetails2Title'),
       description: t('shieldTxDetails2Description'),
     },
@@ -237,6 +282,20 @@ const TransactionShield = () => {
     backgroundColor: BackgroundColor.backgroundSection,
     padding: 4,
   };
+
+  const handleLinkRewardToShieldSubscription = useCallback(
+    async (subscriptionId: string, rewardPoints: number) => {
+      // link to shield only coz already opted in to rewards
+      try {
+        await dispatch(
+          linkRewardToShieldSubscription(subscriptionId, rewardPoints),
+        );
+      } catch (error) {
+        log.warn('Failed to link reward to shield subscription', error);
+      }
+    },
+    [dispatch],
+  );
 
   const buttonRow = (label: string, onClick: () => void, id?: string) => {
     return (
@@ -261,7 +320,7 @@ const TransactionShield = () => {
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Lg}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         )}
       </Box>
@@ -399,7 +458,7 @@ const TransactionShield = () => {
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.ViewFullBenefits,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
@@ -541,6 +600,7 @@ const TransactionShield = () => {
             <ShieldBannerAnimation
               containerClassName="transaction-shield-page-shield-banner__container"
               canvasClassName="transaction-shield-page-shield-banner__canvas"
+              isInactive={isMembershipInactive}
             />
           )}
         </Box>
@@ -569,7 +629,9 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <Box className="flex-shrink-0">
+                  <Icon name={detail.icon} size={IconSize.Xl} />
+                </Box>
               )}
               <Box
                 width={BlockSize.Full}
@@ -595,6 +657,74 @@ const TransactionShield = () => {
               </Box>
             </Box>
           ))}
+          {formattedRewardsPoints && !showSkeletonLoader && (
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              gap={2}
+              paddingTop={2}
+              paddingBottom={2}
+            >
+              <Box className="flex-shrink-0">
+                <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+              </Box>
+              <Box
+                width={BlockSize.Full}
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+              >
+                <Text variant={TextVariant.bodySmBold}>
+                  {t('shieldTxDetails3Title')}
+                </Text>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                >
+                  {t('shieldTxDetails3Description', [
+                    formattedRewardsPoints,
+                    displayedShieldSubscription?.interval ===
+                    RECURRING_INTERVALS.year
+                      ? t('year')
+                      : t('month'),
+                  ])}
+                </Text>
+              </Box>
+              {!hasOptedIntoRewards && (
+                <Box className="flex-shrink-0">
+                  <Button
+                    className="px-3"
+                    variant={ButtonVariant.Secondary}
+                    size={ButtonSize.Sm}
+                    onClick={() => {
+                      openRewardsOnboardingModal();
+                    }}
+                  >
+                    {t('shieldTxDetails3DescriptionSignUp')}
+                  </Button>
+                </Box>
+              )}
+              {hasOptedIntoRewards &&
+                displayedShieldSubscription?.id &&
+                claimedRewardsPoints &&
+                !displayedShieldSubscription?.rewardAccountId && (
+                  <Box className="flex-shrink-0">
+                    <Button
+                      className="px-3"
+                      variant={ButtonVariant.Secondary}
+                      size={ButtonSize.Sm}
+                      onClick={async () =>
+                        handleLinkRewardToShieldSubscription(
+                          displayedShieldSubscription?.id,
+                          claimedRewardsPoints,
+                        )
+                      }
+                    >
+                      {t('shieldTxDetails3DescriptionLinkReward')}
+                    </Button>
+                  </Box>
+                )}
+            </Box>
+          )}
         </Box>
         {buttonRow(
           t('shieldTxMembershipViewFullBenefits'),
@@ -605,7 +735,7 @@ const TransactionShield = () => {
           buttonRow(
             t('shieldTxMembershipSubmitCase'),
             () => {
-              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL);
+              navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
             },
             'shield-detail-submit-case-button',
           )}
@@ -665,7 +795,7 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),
@@ -757,6 +887,10 @@ const TransactionShield = () => {
             }
           />
         )}
+      <RewardsOnboardingModal
+        rewardPoints={claimedRewardsPoints ?? undefined}
+        shieldSubscriptionId={displayedShieldSubscription?.id}
+      />
     </Box>
   );
 };

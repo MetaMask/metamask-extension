@@ -10,23 +10,23 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 async function mockPriceFetch(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .withQuery({
-        tokenAddresses:
-          '0x06af07097c9eeb7fd685c692751d5c66db49c215,0x514910771af9ca656af840dff83e8264ecf986ca,0x7d4b8cce0591c9044a22ee543533b72e976e36c3',
+        assetIds:
+          'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215,eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca,eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3',
         vsCurrency: 'ETH',
       })
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
-            '0x06af07097c9eeb7fd685c692751d5c66db49c215': {
+            'eip155:1/erc20:0x06af07097c9eeb7fd685c692751d5c66db49c215': {
               eth: 0.0002,
             },
-            '0x514910771af9ca656af840dff83e8264ecf986ca': {
+            'eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca': {
               eth: 0.0003,
             },
-            '0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
+            'eip155:1/erc20:0x7d4b8cce0591c9044a22ee543533b72e976e36c3': {
               eth: 0.0001,
             },
           },
