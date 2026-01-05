@@ -167,7 +167,10 @@ export const MultichainEditAccountsPage: React.FC<
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
           size={ButtonSecondarySize.Lg}
-          disabled={selectedAccountGroups.length === 0}
+          disabled={
+            selectedAccountGroups.length === 0 &&
+            defaultSelectedAccountGroups.length === 0
+          }
           block
         >
           {confirmButtonText ?? t('connect')}
