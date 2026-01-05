@@ -1944,6 +1944,15 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
+  "databaseCorruptionAction": {
+    "message": "Save your Secret Recovery Phrase"
+  },
+  "databaseCorruptionDescription": {
+    "message": "Database can no longer be used. MetaMask needs to be reinstalled. Make sure you save your Secret Recovery Phrase before proceeding."
+  },
+  "databaseCorruptionTitle": {
+    "message": "Storage is corrupted"
+  },
   "dateCreated": {
     "message": "Date created"
   },
