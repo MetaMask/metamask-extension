@@ -35,12 +35,19 @@ function isTestBuild(buildTarget) {
 const SPECIAL_TASK_MAPPINGS = {
   // Used by lavamoat policy generation (generate-lavamoat-policies.js)
   'scripts:dist': BUILD_TARGETS.DIST,
-  // Exposed as standalone entry task (index.js line 315)
+  // Style tasks (styles.js)
   styles: BUILD_TARGETS.PROD,
+  'styles:dev': BUILD_TARGETS.DEV,
+  'styles:prod': BUILD_TARGETS.PROD,
+  // Static asset tasks (static.js)
+  'static:dev': BUILD_TARGETS.DEV,
+  'static:prod': BUILD_TARGETS.PROD,
   // Standalone utility tasks (etc.js)
   clean: BUILD_TARGETS.PROD,
   reload: BUILD_TARGETS.DEV,
   zip: BUILD_TARGETS.PROD,
+  // Lint task
+  'lint-scss': BUILD_TARGETS.PROD,
   // Manifest tasks (manifest.js)
   'manifest:dev': BUILD_TARGETS.DEV,
   'manifest:prod': BUILD_TARGETS.PROD,
@@ -179,22 +186,12 @@ Good luck on your endeavors.`,
 /**
  * Get the environment of the current build.
  *
- * This is a pure function that determines the build environment based on the
- * build target and optional git context. When git context is not provided,
- * it falls back to reading from process.env for backwards compatibility.
- *
  * @param {object} options - Build options.
  * @param {BUILD_TARGETS} options.buildTarget - The target of the current build.
- * @param {{ branch?: string, eventName?: string }} [options.git] - Optional git context for pure function usage.
  * @returns {ENVIRONMENT} The current build environment.
  */
-function getEnvironment({ buildTarget, git }) {
-  // Use provided git context or fall back to process.env for backwards compatibility
-  const branch =
-    git?.branch ??
-    (process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '');
-  const eventName = git?.eventName ?? (process.env.GITHUB_EVENT_NAME || '');
-
+function getEnvironment({ buildTarget }) {
+  const branch = process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME;
   // get environment slug
   if (buildTarget === BUILD_TARGETS.PROD) {
     return ENVIRONMENT.PRODUCTION;
@@ -206,7 +203,7 @@ function getEnvironment({ buildTarget, git }) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
   } else if (branch === 'main') {
     return ENVIRONMENT.STAGING;
-  } else if (eventName === 'pull_request') {
+  } else if (process.env.GITHUB_EVENT_NAME === 'pull_request') {
     return ENVIRONMENT.PULL_REQUEST;
   }
   return ENVIRONMENT.OTHER;

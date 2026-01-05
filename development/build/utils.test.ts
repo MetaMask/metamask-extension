@@ -35,10 +35,24 @@ describe('getBuildTargetFromTask', () => {
     expect(getBuildTargetFromTask(TASKS.STYLES)).toBe('prod');
   });
 
+  it('maps style tasks to build targets', () => {
+    expect(getBuildTargetFromTask(TASKS.STYLES_DEV)).toBe('dev');
+    expect(getBuildTargetFromTask(TASKS.STYLES_PROD)).toBe('prod');
+  });
+
+  it('maps static tasks to build targets', () => {
+    expect(getBuildTargetFromTask(TASKS.STATIC_DEV)).toBe('dev');
+    expect(getBuildTargetFromTask(TASKS.STATIC_PROD)).toBe('prod');
+  });
+
   it('maps standalone utility tasks to build targets', () => {
     expect(getBuildTargetFromTask(TASKS.CLEAN)).toBe('prod');
     expect(getBuildTargetFromTask(TASKS.RELOAD)).toBe('dev');
     expect(getBuildTargetFromTask(TASKS.ZIP)).toBe('prod');
+  });
+
+  it('maps lint task to build target', () => {
+    expect(getBuildTargetFromTask(TASKS.LINT_SCSS)).toBe('prod');
   });
 
   it('maps manifest tasks to build targets', () => {
@@ -71,107 +85,45 @@ describe('getEnvironment', () => {
     process.env = env;
   });
 
-  describe('with explicit git context (pure function usage)', () => {
-    it('returns correct environment for build targets', () => {
-      const git = { branch: '', eventName: '' };
-      expect(getEnvironment({ buildTarget: 'prod' as never, git })).toBe(
-        'production',
-      );
-      expect(getEnvironment({ buildTarget: 'dev' as never, git })).toBe(
-        'development',
-      );
-      expect(getEnvironment({ buildTarget: 'test' as never, git })).toBe(
-        'testing',
-      );
-      expect(getEnvironment({ buildTarget: 'testDev' as never, git })).toBe(
-        'development',
-      );
-      expect(getEnvironment({ buildTarget: 'dist' as never, git })).toBe(
-        'other',
-      );
-    });
-
-    it('returns RELEASE_CANDIDATE for dist on release branch', () => {
-      const git = { branch: 'release/13.12.0', eventName: '' };
-      expect(getEnvironment({ buildTarget: 'dist' as never, git })).toBe(
-        'release-candidate',
-      );
-    });
-
-    it('returns STAGING for dist on main branch', () => {
-      const git = { branch: 'main', eventName: '' };
-      expect(getEnvironment({ buildTarget: 'dist' as never, git })).toBe(
-        'staging',
-      );
-    });
-
-    it('returns PULL_REQUEST for dist on pull_request event', () => {
-      const git = { branch: '', eventName: 'pull_request' };
-      expect(getEnvironment({ buildTarget: 'dist' as never, git })).toBe(
-        'pull-request',
-      );
-    });
-
-    it('returns TESTING for test even with pull_request event', () => {
-      const git = { branch: '', eventName: 'pull_request' };
-      expect(getEnvironment({ buildTarget: 'test' as never, git })).toBe(
-        'testing',
-      );
-    });
-
-    it('prioritizes release branch over pull_request event', () => {
-      const git = { branch: 'release/14.0.0', eventName: 'pull_request' };
-      expect(getEnvironment({ buildTarget: 'dist' as never, git })).toBe(
-        'release-candidate',
-      );
-    });
+  it('returns correct environment for build targets', () => {
+    expect(getEnvironment({ buildTarget: 'prod' as never })).toBe('production');
+    expect(getEnvironment({ buildTarget: 'dev' as never })).toBe('development');
+    expect(getEnvironment({ buildTarget: 'test' as never })).toBe('testing');
+    expect(getEnvironment({ buildTarget: 'testDev' as never })).toBe(
+      'development',
+    );
+    expect(getEnvironment({ buildTarget: 'dist' as never })).toBe('other');
   });
 
-  describe('with process.env fallback (backwards compatibility)', () => {
-    it('returns correct environment for build targets', () => {
-      expect(getEnvironment({ buildTarget: 'prod' as never })).toBe(
-        'production',
-      );
-      expect(getEnvironment({ buildTarget: 'dev' as never })).toBe(
-        'development',
-      );
-      expect(getEnvironment({ buildTarget: 'test' as never })).toBe('testing');
-      expect(getEnvironment({ buildTarget: 'testDev' as never })).toBe(
-        'development',
-      );
-      expect(getEnvironment({ buildTarget: 'dist' as never })).toBe('other');
-    });
+  it('returns RELEASE_CANDIDATE for dist on release branch', () => {
+    process.env.GITHUB_REF_NAME = 'release/13.12.0';
+    expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
+      'release-candidate',
+    );
+  });
 
-    it('returns RELEASE_CANDIDATE for dist on release branch', () => {
-      process.env.GITHUB_REF_NAME = 'release/13.12.0';
-      expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
-        'release-candidate',
-      );
-    });
+  it('returns STAGING for dist on main branch', () => {
+    process.env.GITHUB_REF_NAME = 'main';
+    expect(getEnvironment({ buildTarget: 'dist' as never })).toBe('staging');
+  });
 
-    it('returns STAGING for dist on main branch', () => {
-      process.env.GITHUB_REF_NAME = 'main';
-      expect(getEnvironment({ buildTarget: 'dist' as never })).toBe('staging');
-    });
+  it('returns PULL_REQUEST for dist on pull_request event', () => {
+    process.env.GITHUB_EVENT_NAME = 'pull_request';
+    expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
+      'pull-request',
+    );
+  });
 
-    it('returns PULL_REQUEST for dist on pull_request event', () => {
-      process.env.GITHUB_EVENT_NAME = 'pull_request';
-      expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
-        'pull-request',
-      );
-    });
+  it('returns TESTING for test even with pull_request event', () => {
+    process.env.GITHUB_EVENT_NAME = 'pull_request';
+    expect(getEnvironment({ buildTarget: 'test' as never })).toBe('testing');
+  });
 
-    it('returns TESTING for test even with pull_request event', () => {
-      process.env.GITHUB_EVENT_NAME = 'pull_request';
-      expect(getEnvironment({ buildTarget: 'test' as never })).toBe('testing');
-    });
-
-    it('prefers GITHUB_HEAD_REF over GITHUB_REF_NAME', () => {
-      process.env.GITHUB_HEAD_REF = 'release/15.0.0';
-      process.env.GITHUB_REF_NAME = 'main';
-      expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
-        'release-candidate',
-      );
-    });
+  it('prefers GITHUB_HEAD_REF over GITHUB_REF_NAME', () => {
+    process.env.GITHUB_HEAD_REF = 'release/15.0.0';
+    process.env.GITHUB_REF_NAME = 'main';
+    expect(getEnvironment({ buildTarget: 'dist' as never })).toBe(
+      'release-candidate',
+    );
   });
 });
