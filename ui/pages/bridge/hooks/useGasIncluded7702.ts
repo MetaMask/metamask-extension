@@ -27,6 +27,7 @@ type UseGasIncluded7702Params = {
 
 /**
  * Custom hook to check if gasless 7702 is supported for Smart Accounts
+ * dummy comment to remove
  *
  * @param params - Configuration object
  * @param params.isSwap - Whether this is a swap transaction
