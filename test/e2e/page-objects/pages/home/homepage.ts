@@ -325,7 +325,7 @@ class HomePage {
     await this.driver.wait(async () => {
       const balanceElement = await this.driver.findElement(this.balance);
       const balanceText = await balanceElement.getText();
-      return /^[\d.]+\sETH$/u.test(balanceText);
+      return /^\d+\.?\d*\sETH$/u.test(balanceText);
     }, 10000);
     console.log('Balance is displayed in correct format');
   }
