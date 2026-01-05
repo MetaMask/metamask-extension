@@ -36,7 +36,10 @@ const convertHexBalanceToDecimal = (hex: string, decimals: number): string =>
     ? new BigNumber(hex, 16).div(new BigNumber(10).pow(decimals)).toString(10)
     : '0';
 
-const getNonEvmAccountIds = (state: BridgeAppState, id: AccountGroupId) =>
+const getNonEvmAccountIds = (
+  state: BridgeAppState,
+  id: AccountGroupId,
+): string[] =>
   ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS.map(
     (scope) => getInternalAccountByGroupAndCaip(state, id, scope)?.id,
   ).filter((matchedId) => matchedId !== undefined);
@@ -250,30 +253,32 @@ const getNonEvmBalances = createSelector(
 // Creates a map of asset IDs to token data for all non-EVM accounts with a balance
 const getNonEvmAssetsWithBalance = createSelector(
   [getNonEvmBalances, getAssetsMetadata],
-  (balancesByAssetId, assetsMetadataByAssetId): BridgeToken[] =>
-    Object.entries(balancesByAssetId)
-      .map(([assetId, balance]) => {
-        if (!isCaipAssetType(assetId)) {
-          return undefined;
-        }
-        const assetMetadata = assetsMetadataByAssetId[assetId];
-        if (!assetMetadata) {
-          return undefined;
-        }
+  (balancesByAssetId, assetsMetadataByAssetId): BridgeToken[] => {
+    const assetsWithBalance: BridgeToken[] = [];
 
-        const { units, symbol } = assetMetadata;
-        const { chainId } = parseCaipAssetType(assetId);
+    Object.entries(balancesByAssetId).forEach(([assetId, balance]) => {
+      if (!isCaipAssetType(assetId)) {
+        return;
+      }
+      const assetMetadata = assetsMetadataByAssetId[assetId];
+      if (!assetMetadata) {
+        return;
+      }
 
-        return {
-          chainId,
-          symbol: symbol ?? '',
-          assetId,
-          balance,
-          decimals: units[0]?.decimals,
-          name: assetMetadata.name ?? assetMetadata.symbol ?? '',
-        };
-      })
-      .filter((a) => a !== undefined),
+      const { units, symbol } = assetMetadata;
+      const { chainId } = parseCaipAssetType(assetId);
+
+      assetsWithBalance.push({
+        chainId,
+        symbol: symbol ?? '',
+        assetId,
+        balance,
+        decimals: units[0]?.decimals,
+        name: assetMetadata.name ?? assetMetadata.symbol ?? '',
+      });
+    });
+    return assetsWithBalance;
+  },
 );
 
 // Combines EVM and non-EVM assets and appends tokenFiatAmount to each asset
