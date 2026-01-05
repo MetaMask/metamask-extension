@@ -19,12 +19,6 @@ import { formatPeriodDuration } from './typed-sign-permission-util';
 import { DateAndTimeRow } from './date-and-time-row';
 import { NativeAmountRow } from './native-amount-row';
 
-type NativeTokenInfo = {
-  symbol: string;
-  decimals: number;
-  name: string;
-};
-
 /**
  * Component for displaying native token periodic permission details.
  * Shows period amount, duration, start date, and expiration date for native token periodic permissions.
@@ -50,17 +44,8 @@ export const NativeTokenPeriodicDetails: React.FC<{
 
   const { startTime, periodAmount, periodDuration } = permission.data;
 
-  const { symbol, decimals } = useSelector(
-    (state: {
-      metamask: MetaMaskReduxState['metamask'] & {
-        provider: Record<string, unknown>;
-      };
-    }) =>
-      getNativeTokenInfo(
-        state.metamask.networkConfigurationsByChainId,
-        state.metamask.provider,
-        chainId,
-      ) as NativeTokenInfo,
+  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];

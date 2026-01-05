@@ -70,6 +70,7 @@ export const MultichainAccountCell = ({
         position: 'relative',
       }}
       padding={4}
+      gap={4}
       onClick={handleClick}
       className={`multichain-account-cell${disableHoverEffect ? ' multichain-account-cell--no-hover' : ''}${selected ? ' is-selected' : ''}`}
       data-testid={`multichain-account-cell-${accountId}`}
