@@ -51,6 +51,7 @@
       "recoveryPhraseReminderLastShown": "number",
       "shieldEndingToastLastClickedOrClosed": "object",
       "shieldPausedToastLastClickedOrClosed": "object",
+      "showDatabaseCorruptionToast": false,
       "showAccountBanner": true,
       "showBetaHeader": false,
       "showDownloadMobileAppSlide": "boolean",

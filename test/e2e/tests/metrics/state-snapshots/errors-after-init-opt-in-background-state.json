@@ -66,6 +66,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
+    "showDatabaseCorruptionToast": false,
     "throttledOrigins": "object",
     "trezorModel": null,
     "updateModalLastDismissedAt": null,

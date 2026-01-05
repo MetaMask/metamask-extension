@@ -171,6 +171,7 @@
     "surveyLinkLastClickedOrClosed": "object",
     "shieldEndingToastLastClickedOrClosed": "object",
     "shieldPausedToastLastClickedOrClosed": "object",
+    "showDatabaseCorruptionToast": false,
     "trezorModel": null,
     "updateModalLastDismissedAt": null,
     "hasShownMultichainAccountsIntroModal": "boolean",

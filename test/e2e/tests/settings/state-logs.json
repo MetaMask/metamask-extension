@@ -875,6 +875,7 @@
     "selectedNetworkClientId": "string",
     "shieldEndingToastLastClickedOrClosed": "null",
     "shieldPausedToastLastClickedOrClosed": "null",
+    "showDatabaseCorruptionToast": "boolean",
     "showAccountBanner": "boolean",
     "showBetaHeader": "boolean",
     "showDownloadMobileAppSlide": "boolean",
