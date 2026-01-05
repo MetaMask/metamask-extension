@@ -2028,6 +2028,8 @@ if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
 
 if (inTest) {
   // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
   browser.runtime.onMessage.addListener(async (message, _sender) => {
     if (message.type === 'STOP_PERSISTENCE') {
       await evacuate();

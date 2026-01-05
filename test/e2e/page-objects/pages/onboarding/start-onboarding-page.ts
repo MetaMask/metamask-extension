@@ -80,10 +80,9 @@ class StartOnboardingPage {
 
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
-      const timeout = this.driver.timeout * 2;
-      await Promise.all([
-        this.driver.findClickableElement(this.createWalletButton, { timeout }),
-        this.driver.findClickableElement(this.importWalletButton, { timeout }),
+      await this.driver.waitForMultipleSelectors([
+        this.createWalletButton,
+        this.importWalletButton,
       ]);
     } catch (e) {
       console.log('Timeout while waiting for get started page to be loaded', e);

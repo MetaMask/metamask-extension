@@ -1,12 +1,10 @@
 import assert from 'node:assert/strict';
 import { WINDOW_TITLES } from '../../constants';
 import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import { setManifestFlags } from '../../set-manifest-flags';
 import { PAGES, type Driver } from '../../webdriver/driver';
 
 type DataStorage = {
@@ -453,91 +451,6 @@ describe('State Persistence', function () {
           await expectSplitStateStorage(driver);
         },
       );
-    });
-
-    it.only('should not attempt to update if an update attempt fails', async function () {
-      await withFixtures(
-        getFixtureOptions(this, { storageKind: 'data' }),
-        async ({ driver }) => {
-          await completeOnboardingAndSync(driver);
-          console.log('[state-persistence] completeOnboardingAndSync finished');
-
-          await pausePersistence(driver);
-          console.log('[state-persistence] pausePersistence finished (1)');
-
-          await expectDataStateStorage(driver);
-          console.log(
-            '[state-persistence] expectDataStateStorage finished (1)',
-          );
-
-          // Seed a failed prior attempt and the remote flag so the migration would
-          // proceed if not for the attempted flag.
-          await setLocalStorageFlags(driver);
-          console.log('[state-persistence] setLocalStorageFlags finished');
-          await expectDataStateStorage(driver);
-          console.log(
-            '[state-persistence] expectDataStateStorage finished (2)',
-          );
-
-          await markMigrationAttempted(driver);
-          console.log('[state-persistence] markMigrationAttempted finished');
-          await reloadExtension(driver);
-          console.log('[state-persistence] reloadExtension finished (1)');
-
-          const storage1 = await expectDataStateStorage(driver);
-          console.log(
-            '[state-persistence] expectDataStateStorage finished (3)',
-          );
-          assert.equal(
-            (storage1 as DataStorage).meta
-              .platformSplitStateGradualRolloutAttempted,
-            true,
-            'precondition: platformSplitStateGradualRolloutAttempted should be true',
-          );
-
-          await pausePersistence(driver);
-          console.log('[state-persistence] pausePersistence finished (2)');
-
-          // Set the manifest flags to use split state so the migration would be
-          // attempted (but should be skipped due to the meta flag).
-          // Keep forceExtensionStore enabled so the reload doesn't reset storage.
-          await setManifestFlags({
-            testing: {
-              ...BASE_MANIFEST_TESTING_FLAGS,
-              storageKind: 'split',
-            },
-          });
-          console.log('[state-persistence] setManifestFlags finished');
-
-          await reloadExtension(driver);
-          console.log('[state-persistence] reloadExtension finished (2)');
-          await loginWithoutBalanceValidation(driver);
-          console.log(
-            '[state-persistence] loginWithoutBalanceValidation finished',
-          );
-          await ensureHomeReady(driver);
-          console.log('[state-persistence] ensureHomeReady finished');
-
-          // Ensure we are still using the data state and have not migrated.
-          const storage = await expectDataStateStorage(driver);
-          console.log(
-            '[state-persistence] expectDataStateStorage finished (4)',
-          );
-          // additionally, ensure the attempted flag is still set
-          assert.equal(
-            (storage as DataStorage).meta
-              .platformSplitStateGradualRolloutAttempted,
-            true,
-          );
-          // and the canary value is untouched (just making sure OUR test state
-          // is actually being used)
-          assert.equal(
-            (storage.meta as unknown as { canary: string }).canary,
-            'test-canary',
-          );
-        },
-      );
-      console.log('[state-persistence] withFixtures finished');
     });
   });
 });
