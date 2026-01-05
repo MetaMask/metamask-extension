@@ -7,6 +7,7 @@ import {
   renderWithProvider,
 } from '../render-helpers-navigate';
 import { DEFAULT_ROUTE } from '../../../ui/helpers/constants/routes';
+import { GasFeeModalContextProvider } from '../../../ui/pages/confirmations/context/gas-fee-modal';
 
 export function renderWithConfirmContextProvider(
   component: ReactElement,
@@ -16,7 +17,9 @@ export function renderWithConfirmContextProvider(
 ) {
   return renderWithProvider(
     <ConfirmContextProvider confirmationId={confirmationId}>
-      <DappSwapContextProvider>{component}</DappSwapContextProvider>
+      <DappSwapContextProvider>
+        <GasFeeModalContextProvider>{component}</GasFeeModalContextProvider>
+      </DappSwapContextProvider>
     </ConfirmContextProvider>,
     store,
     pathname,
@@ -37,14 +40,18 @@ export function renderHookWithConfirmContextProvider(
     ? ({ children }: { children: ReactChildren }) => (
         <ConfirmContextProvider confirmationId={confirmationId}>
           <DappSwapContextProvider>
-            <Container>{children}</Container>
+            <GasFeeModalContextProvider>
+              <Container>{children}</Container>
+            </GasFeeModalContextProvider>
           </DappSwapContextProvider>
         </ConfirmContextProvider>
       )
     : ({ children }: { children: ReactElement }) => (
         <ConfirmContextProvider confirmationId={confirmationId}>
           <DappSwapContextProvider>
-            {children as ReactElement}
+            <GasFeeModalContextProvider>
+              {children as ReactElement}
+            </GasFeeModalContextProvider>
           </DappSwapContextProvider>
         </ConfirmContextProvider>
       );

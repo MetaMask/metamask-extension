@@ -154,6 +154,10 @@ describe('Phishing Detection', function (this: Suite) {
           await driver.openNewPage(DAPP_WITH_IFRAMED_PAGE_ON_BLOCKLIST);
           const phishingWarningPage = new PhishingWarningPage(driver);
           await phishingWarningPage.clickOpenWarningInNewTabLinkOnIframe();
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+          await new HomePage(driver).checkPageIsLoaded();
 
           await driver.switchToWindowWithTitle('MetaMask Phishing Detection');
           await phishingWarningPage.checkPageIsLoaded();
