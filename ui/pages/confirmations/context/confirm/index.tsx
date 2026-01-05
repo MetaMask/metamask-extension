@@ -38,6 +38,10 @@ export const ConfirmContextProvider: React.FC<{
   const previousConfirmation = usePrevious(currentConfirmation);
   const dispatch = useDispatch();
 
+  /**
+   * The hook below takes care of navigating to the home page when the confirmation not acted on by user
+   * but removed by us, this can happen in cases like when dapp changes network.
+   */
   useEffect(() => {
     if (previousConfirmation && !currentConfirmation) {
       dispatch(setDefaultHomeActiveTabName('activity'));
