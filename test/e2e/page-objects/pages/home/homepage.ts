@@ -318,7 +318,7 @@ class HomePage {
 
   /**
    * Checks that balance is displayed in the correct format (X.XX ETH).
-   * Uses waitUntil to avoid race conditions with getText().
+   * Uses driver.wait() to retry and avoid race conditions with getText().
    */
   async checkBalanceIsDisplayed(): Promise<void> {
     console.log('Check balance element is displayed on homepage');

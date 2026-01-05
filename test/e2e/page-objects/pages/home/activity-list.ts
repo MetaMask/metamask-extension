@@ -148,7 +148,7 @@ class ActivityListPage {
 
   /**
    * Checks that all fee values displayed in the transaction details are numeric.
-   * Uses waitUntil to avoid race conditions with getText().
+   * Uses driver.wait() to retry and avoid race conditions with getText().
    *
    * @returns A promise that resolves if all fee values are numeric.
    */
