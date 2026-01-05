@@ -262,4 +262,28 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should use fallback token name when swap token symbols are missing', () => {
+    const swapTransactionWithMissingSymbols = {
+      ...transactions[6],
+      initialTransaction: {
+        ...transactions[6].initialTransaction,
+        sourceTokenSymbol: undefined,
+        destinationTokenSymbol: undefined,
+      },
+      primaryTransaction: {
+        ...transactions[6].primaryTransaction,
+        sourceTokenSymbol: undefined,
+        destinationTokenSymbol: undefined,
+      },
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapTransactionWithMissingSymbols),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.title).toContain('Token');
+  });
 });
