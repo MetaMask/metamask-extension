@@ -31,6 +31,7 @@ import {
   getFromAccount,
   getIsGasIncluded,
 } from './selectors';
+import { toBridgeToken } from './utils';
 
 describe('Bridge selectors', () => {
   describe('getFromChain', () => {
@@ -43,7 +44,9 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
+        },
         metamaskStateOverrides: {
           ...mockNetworkState(FEATURED_RPCS[1]),
         },
@@ -112,7 +115,9 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0xe708') },
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0xe708')),
+        },
       });
 
       const result = getToChain(state as never);
@@ -134,7 +139,7 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns the fromChain if toChainId is not set', () => {
+    it('returns the fromChain if toToken is not set', () => {
       const state = createBridgeMockStore({
         featureFlagOverrides: {
           bridgeConfig: {
@@ -144,7 +149,7 @@ describe('Bridge selectors', () => {
             },
           },
         },
-        bridgeSliceOverrides: { toChainId: null },
+        bridgeSliceOverrides: { toToken: null },
       });
 
       const result = getToChain(state as never);
@@ -184,7 +189,9 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
         },
       });
       const result = getFromChains(state as never);
@@ -250,7 +257,15 @@ describe('Bridge selectors', () => {
     });
 
     it('returns empty list when bridgeFeatureFlags are not set', () => {
-      const state = createBridgeMockStore();
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
       const result = getToChains(state as never);
 
       expect(result).toHaveLength(0);
@@ -313,8 +328,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromToken: { address: '0x123', symbol: 'TEST' },
-          toChainId: formatChainIdToCaip(1),
-          toToken: { address: '0x567', symbol: 'DEST' },
+          toToken: { chainId: '0x1', address: '0x567', symbol: 'DEST' },
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -327,14 +341,18 @@ describe('Bridge selectors', () => {
       });
       const result = getToToken(state as never);
 
-      expect(result).toStrictEqual({ address: '0x567', symbol: 'DEST' });
+      expect(result).toStrictEqual({
+        address: '0x567',
+        symbol: 'DEST',
+        chainId: '0x1',
+      });
     });
 
     it('returns default token if toToken is not set', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
-          toChainId: formatChainIdToCaip(1),
+          fromToken: { chainId: '0x1', address: '0x123', symbol: 'TEST' },
+          toToken: null,
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -351,7 +369,7 @@ describe('Bridge selectors', () => {
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
         balance: '0',
-        chainId: 'eip155:1',
+        chainId: '0x1',
         decimals: 6,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png',
@@ -372,8 +390,7 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           fromToken: null,
-          toChainId: formatChainIdToCaip(1),
-          toToken: { address: '0x123', symbol: 'TEST' },
+          toToken: { chainId: '0x1', address: '0x123', symbol: 'TEST' },
         },
       });
       const result = getToToken(state as never);
@@ -385,7 +402,7 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromToken: { address: '0x123', symbol: 'TEST' },
-          toToken: { address: '0x456', symbol: 'DEST' },
+          toToken: { chainId: '0x1', address: '0x456', symbol: 'DEST' },
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -410,7 +427,7 @@ describe('Bridge selectors', () => {
             chainId: MultichainNetworks.BITCOIN,
             decimals: 8,
           },
-          toChainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -440,7 +457,7 @@ describe('Bridge selectors', () => {
         address: zeroAddress(),
         assetId: 'eip155:1/slip44:60',
         balance: '0',
-        chainId: 'eip155:1',
+        chainId: '0x1',
         decimals: 18,
         iconUrl: '',
         image: './images/eth_logo.svg',
@@ -483,10 +500,9 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x89'),
           fromTokenExchangeRate: 1,
           fromToken: { address: zeroAddress(), symbol: 'TEST' },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
         },
         bridgeStateOverrides: {
           quoteRequest: {
@@ -563,9 +579,8 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 1,
         },
         bridgeStateOverrides: {
@@ -659,9 +674,8 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x89'),
           fromToken: { address: zeroAddress(), symbol: 'ETH' },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0x89', address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 1,
         },
         bridgeStateOverrides: {
@@ -850,7 +864,7 @@ describe('Bridge selectors', () => {
     it('should return isNoQuotesAvailable=false when quote request is invalid', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '1000',
         },
         bridgeStateOverrides: {
@@ -874,7 +888,7 @@ describe('Bridge selectors', () => {
     it('should return isNoQuotesAvailable=true when swapping on EVM', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '.000000000000001000',
         },
         bridgeStateOverrides: {
@@ -898,7 +912,9 @@ describe('Bridge selectors', () => {
 
     it('should return isNoQuotesAvailable=false on initial load', () => {
       const state = createBridgeMockStore({
-        bridgeSliceOverrides: { toChainId: formatChainIdToCaip('0x1') },
+        bridgeSliceOverrides: {
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
+        },
         bridgeStateOverrides: {
           quotes: [],
         },
@@ -911,7 +927,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=true', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromToken: {
             decimals: 6,
             address: zeroAddress(),
@@ -933,7 +949,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=true when balance === minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromToken: {
             decimals: 9,
             address: zeroAddress(),
@@ -958,7 +974,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=true when balance < minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromToken: {
             decimals: 9,
             address: zeroAddress(),
@@ -1031,7 +1047,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false when balance > minimumBalanceForRentExemption + srcTokenAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromToken: { decimals: 9, address: zeroAddress() },
           fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
           srcTokenInputValue: '1000000000',
@@ -1074,7 +1090,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false when minimumBalanceForRentExemption is null', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromToken: {
             decimals: 9,
             address: zeroAddress(),
@@ -1120,7 +1136,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=false when there is no input amount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenBalance: '990',
         },
         bridgeStateOverrides: {
@@ -1135,7 +1151,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=false when there is no balance', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenBalance: null,
         },
         bridgeStateOverrides: {
@@ -1150,7 +1166,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientBalance=false when balance is 0', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '.001000',
           fromToken: {
             decimals: 6,
@@ -1172,7 +1188,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=true when balance is equal to srcAmount and fromToken is native', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '.010000000000000000',
           fromToken: {
             address: zeroAddress(),
@@ -1194,8 +1210,8 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=true when balance is 0 and fromToken is erc20', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x89'),
           toToken: {
+            chainId: '0x89',
             address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
             symbol: 'TEST',
           },
@@ -1234,7 +1250,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false if there is no fromAmount', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromNativeBalance: '0',
         },
         bridgeStateOverrides: {
@@ -1250,7 +1266,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasBalance=false when quotes have been loaded', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '0.001',
           fromNativeBalance: '0',
         },
@@ -1274,7 +1290,7 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '0.001',
           fromToken: {
             address: zeroAddress(),
@@ -1302,7 +1318,7 @@ describe('Bridge selectors', () => {
     it('should return isInsufficientGasForQuote=false when balance is greater than max network fees in quote', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x1'),
+          toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '0.001',
           fromToken: {
             address: zeroAddress(),
@@ -1342,13 +1358,13 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip('0x89'),
           fromToken: {
             address: zeroAddress(),
             symbol: 'ETH',
             chainId: CHAIN_IDS.MAINNET,
           },
           toToken: {
+            chainId: '0x89',
             address: zeroAddress(),
             symbol: 'TEST',
           },
@@ -1415,14 +1431,13 @@ describe('Bridge selectors', () => {
           },
         },
         bridgeSliceOverrides: {
-          toChainId: formatChainIdToCaip(10),
           fromToken: {
             address: zeroAddress(),
             symbol: 'ETH',
             chainId: 10,
             decimals: 18,
           },
-          toToken: { address: zeroAddress(), symbol: 'TEST' },
+          toToken: { chainId: '0xa', address: zeroAddress(), symbol: 'TEST' },
           fromTokenExchangeRate: 2524.25,
           fromTokenInputValue: '1',
         },
