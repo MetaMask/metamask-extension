@@ -20,7 +20,6 @@ import { useFourByte } from '../../hooks/useFourByte';
 import { ConfirmInfoRowCurrency } from '../../../../../../../components/app/confirm/info/row/currency';
 import { PRIMARY } from '../../../../../../../helpers/constants/common';
 import { useUserPreferencedCurrency } from '../../../../../../../hooks/useUserPreferencedCurrency';
-import { SmartContractWithLogo } from '../../../../smart-contract-with-logo';
 import {
   useIsDowngradeTransaction,
   useIsUpgradeTransaction,
