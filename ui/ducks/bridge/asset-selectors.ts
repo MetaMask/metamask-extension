@@ -36,10 +36,7 @@ const convertHexBalanceToDecimal = (hex: string, decimals: number): string =>
     ? new BigNumber(hex, 16).div(new BigNumber(10).pow(decimals)).toString(10)
     : '0';
 
-const getNonEvmAccountIds = (
-  state: BridgeAppState,
-  id: AccountGroupId,
-): string[] =>
+const getNonEvmAccountIds = (state: BridgeAppState, id: AccountGroupId) =>
   ALLOWED_MULTICHAIN_BRIDGE_CHAIN_IDS.map(
     (scope) => getInternalAccountByGroupAndCaip(state, id, scope)?.id,
   ).filter((matchedId) => matchedId !== undefined);
@@ -253,7 +250,7 @@ const getNonEvmBalances = createSelector(
 // Creates a map of asset IDs to token data for all non-EVM accounts with a balance
 const getNonEvmAssetsWithBalance = createSelector(
   [getNonEvmBalances, getAssetsMetadata],
-  (balancesByAssetId, assetsMetadataByAssetId) =>
+  (balancesByAssetId, assetsMetadataByAssetId): BridgeToken[] =>
     Object.entries(balancesByAssetId)
       .map(([assetId, balance]) => {
         if (!isCaipAssetType(assetId)) {
