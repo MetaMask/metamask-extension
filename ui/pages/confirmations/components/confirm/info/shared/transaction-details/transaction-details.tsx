@@ -69,9 +69,9 @@ export const RecipientRow = ({ recipient }: { recipient?: Hex } = {}) => {
   const isBatch =
     isBatchTransaction(nestedTransactions) &&
     to?.toLowerCase() === from.toLowerCase();
-  const showContractLogo = isBatch || isDowngrade || isUpgradeOnly;
+  const showContractLogo = isDowngrade || isUpgradeOnly;
 
-  if (!to || !isValidAddress(to)) {
+  if (isBatch || !to || !isValidAddress(to)) {
     return null;
   }
 
@@ -192,19 +192,13 @@ export const TransactionDetails = () => {
   if (isUpgradeOnly || isDowngrade) {
     return null;
   }
-  const { nestedTransactions, txParams } = currentConfirmation ?? {};
-  const { from, to } = txParams ?? {};
-
-  const isBatch =
-    isBatchTransaction(nestedTransactions) &&
-    to?.toLowerCase() === from.toLowerCase();
 
   return (
     <>
       <ConfirmInfoSection data-testid="transaction-details-section">
         <NetworkRow isShownWithAlertsOnly={!isBIP44} />
         <OriginRow />
-        {!isBatch && <RecipientRow />}
+        <RecipientRow />
         {showAdvancedDetails && <MethodDataRow />}
         <SigningInWithRow />
       </ConfirmInfoSection>
