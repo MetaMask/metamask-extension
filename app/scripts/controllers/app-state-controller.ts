@@ -166,6 +166,12 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * Whether to show the database corruption toast.
+   * This is set to true when browser.storage.local writes fail.
+   */
+  showDatabaseCorruptionToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -326,6 +332,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  showDatabaseCorruptionToast: false,
   ...getInitialStateOverrides(),
 });
 
@@ -711,6 +718,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showDatabaseCorruptionToast: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -935,6 +948,18 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets whether to show the database corruption toast.
+   * This is called when browser.storage.local writes fail due to database corruption.
+   *
+   * @param show - Whether to show the toast
+   */
+  setShowDatabaseCorruptionToast(show: boolean): void {
+    this.update((state) => {
+      state.showDatabaseCorruptionToast = show;
     });
   }
 

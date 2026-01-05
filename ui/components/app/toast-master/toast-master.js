@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -36,6 +37,10 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
+import {
+  getCompletedOnboarding,
+  getIsUnlocked,
+} from '../../../ducks/metamask/metamask';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
@@ -94,6 +99,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowDatabaseCorruptionToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -119,9 +125,13 @@ export function ToastMaster() {
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // Database corruption toast should show on ALL screens
+  const databaseCorruptionToast = <DatabaseCorruptionToast />;
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {databaseCorruptionToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -143,13 +153,15 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {databaseCorruptionToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
   }
 
-  return null;
+  // On other screens, only render container if database corruption toast should show
+  return databaseCorruptionToast;
 }
 
 function ConnectAccountToast() {
@@ -746,6 +758,62 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function DatabaseCorruptionToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  const showDatabaseCorruptionToast = useSelector(
+    selectShowDatabaseCorruptionToast,
+  );
+  const isUnlocked = useSelector(getIsUnlocked);
+  const completedOnboarding = useSelector(getCompletedOnboarding);
+
+  const handleRevealSrpClick = () => {
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
+  };
+
+  const handleClose = () => {
+    setIsDismissed(true);
+  };
+
+  // Don't show toast on the SRP reveal screen (user is already taking action)
+  const isOnSrpRevealScreen = location?.pathname === REVEAL_SEED_ROUTE;
+
+  // Only show toast when wallet is unlocked, onboarding is complete, not dismissed,
+  // and not already on the SRP reveal screen
+  const shouldShow =
+    showDatabaseCorruptionToast &&
+    isUnlocked &&
+    completedOnboarding &&
+    !isDismissed &&
+    !isOnSrpRevealScreen;
+
+  return (
+    shouldShow && (
+      <Toast
+        key="database-corruption-toast"
+        startAdornment={
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        text={t('databaseCorruptionTitle')}
+        description={t('databaseCorruptionDescription')}
+        actionText={t('databaseCorruptionAction')}
+        onActionClick={handleRevealSrpClick}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={handleClose}
       />
     )
   );

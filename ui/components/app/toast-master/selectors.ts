@@ -51,6 +51,7 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
+      | 'showDatabaseCorruptionToast'
     >
   >;
 };
@@ -237,6 +238,18 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Retrieves whether to show the database corruption toast
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowDatabaseCorruptionToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  return Boolean(state.metamask.showDatabaseCorruptionToast);
 }
 
 /**

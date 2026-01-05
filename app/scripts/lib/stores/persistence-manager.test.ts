@@ -21,6 +21,7 @@ jest.mock('./extension-store', () => {
 });
 jest.mock('loglevel', () => ({
   error: jest.fn(),
+  info: jest.fn(),
 }));
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),

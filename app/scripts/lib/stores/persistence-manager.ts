@@ -163,8 +163,50 @@ export class PersistenceManager {
 
   #open: boolean = false;
 
+  /**
+   * Callback to be invoked when storage write fails due to database corruption.
+   * This allows the background script to notify the UI about the corruption.
+   */
+  #onStorageWriteFailed?: () => void;
+
+  /**
+   * Tracks if a storage write failure occurred before the callback was registered.
+   * This handles the race condition where failures happen during controller initialization.
+   */
+  #storageWriteFailedBeforeCallbackRegistered = false;
+
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
+  }
+
+  /**
+   * Sets the callback to be invoked when storage write fails.
+   * This is called by the background script to wire up the notification to the UI.
+   * If a failure already occurred before this callback was registered, it will be
+   * called immediately.
+   *
+   * @param callback - The callback to invoke when storage write fails
+   */
+  setOnStorageWriteFailed(callback: () => void) {
+    this.#onStorageWriteFailed = callback;
+
+    // If a failure occurred before this callback was registered, call it now
+    if (this.#storageWriteFailedBeforeCallbackRegistered) {
+      callback();
+    }
+  }
+
+  /**
+   * Notifies the UI that a storage write has failed.
+   * If the callback is not yet registered, tracks the failure for later notification.
+   */
+  #notifyStorageWriteFailed() {
+    if (this.#onStorageWriteFailed) {
+      this.#onStorageWriteFailed();
+    } else {
+      // Callback not yet registered - track the failure for later
+      this.#storageWriteFailedBeforeCallbackRegistered = true;
+    }
   }
 
   async open() {
@@ -300,6 +342,8 @@ export class PersistenceManager {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             captureException(err);
+
+            this.#notifyStorageWriteFailed();
           }
           log.error('error setting state in local store:', err);
         } finally {
@@ -399,6 +443,8 @@ export class PersistenceManager {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             captureException(err);
+
+            this.#notifyStorageWriteFailed();
           }
           log.error('error setting state in local store:', err);
         } finally {
@@ -429,7 +475,28 @@ export class PersistenceManager {
       STATE_LOCK,
       { mode: 'shared' },
       async () => {
-        const result = await this.#localStore.get();
+        let result: MetaMaskStorageStructure | null;
+        try {
+          result = await this.#localStore.get();
+        } catch (localStoreError) {
+          // browser.storage.local.get() failed entirely (e.g., Firefox file corruption,
+          // file ID mismatch, or structural database damage)
+          log.error(
+            'Error retrieving the current state of the local store:',
+            localStoreError,
+          );
+
+          // Check if we have a backup - if so, trigger vault recovery flow
+          const backup = await this.getBackup();
+          if (backup && hasVault(backup)) {
+            log.info('Backup found with vault - triggering recovery flow');
+            throw new PersistenceError(MISSING_VAULT_ERROR, backup);
+          }
+
+          // No backup available - re-throw the original error
+          log.error('No backup available - cannot recover');
+          throw localStoreError;
+        }
 
         if (validateVault) {
           // if we don't have a vault
