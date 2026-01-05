@@ -367,7 +367,7 @@ describe('State Persistence', function () {
   this.timeout(120000);
 
   describe('data state', function () {
-    it.skip('should default to the data state storage', async function () {
+    it('should default to the data state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
         await expectDataStateStorage(driver);
@@ -378,7 +378,7 @@ describe('State Persistence', function () {
   describe('split state', function () {
     // skipped until "split" state is set as the default
     // eslint-disable-next-line mocha/no-skipped-tests
-    it('should default to the split state storage', async function () {
+    it.skip('should default to the split state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
         await expectSplitStateStorage(driver);
