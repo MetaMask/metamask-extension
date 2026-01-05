@@ -65,13 +65,15 @@ automatically categorized by environment based on build target and GitHub contex
 
 ### Sentry Projects
 
-| Project                | Purpose                                              | DSN Variable     |
-| ---------------------- | ---------------------------------------------------- | ---------------- |
-| **test-metamask**      | Non-production events (dev, staging, CI/CD, testing) | `SENTRY_DSN_DEV` |
-| **metamask-extension** | Production events only                               | `SENTRY_DSN`     |
+| Project                  | Purpose                                        | DSN Variable             |
+|--------------------------| ---------------------------------------------- | ------------------------ |
+| **test-metamask**        | Local dev and one-off QA testing               | `SENTRY_DSN_DEV`         |
+| **metamask-performance** | CI/CD and automated performance testing        | `SENTRY_DSN_PERFORMANCE` |
+| **metamask-extension**   | Production events only                         | `SENTRY_DSN`             |
 
 > ⚠️ **Important**: Never use `SENTRY_DSN` (production) for local development or CI/CD builds.
-> Always use `SENTRY_DSN_DEV` for non-production environments.
+> Use `SENTRY_DSN_DEV` for local development and manual QA testing.
+> Use `SENTRY_DSN_PERFORMANCE` for CI/CD pipelines to send performance metrics to Sentry.
 
 ### Environments
 
@@ -118,6 +120,9 @@ if (IN_TEST && !SENTRY_DSN_DEV)     → SENTRY_DSN_FAKE (no events sent)
 if (METAMASK_ENVIRONMENT !== 'production') → SENTRY_DSN_DEV (test-metamask)
 if (METAMASK_ENVIRONMENT === 'production') → SENTRY_DSN (production project)
 ```
+
+> **Note**: `SENTRY_DSN_PERFORMANCE` is used by CI/CD pipelines to send performance metrics
+> and benchmark data to Sentry. It is configured in GitHub Actions secrets.
 
 ### Querying Sentry
 
