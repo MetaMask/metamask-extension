@@ -62,17 +62,16 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
  * window.
  *
  * @param driver - WebDriver instance used to interact with the browser.
+ * @param accountName - The name of the account to approve. Defaults to 'Account 1'.
  */
-export async function approveAccount(driver: Driver) {
+export async function approveAccount(driver: Driver, accountName?: string) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  await driver.waitForSelector({
-    text: 'Connect with MetaMask',
-  });
-
-  await driver.clickElement({
-    text: 'Account 1',
-  });
+  if (accountName) {
+    await driver.clickElement({
+      text: accountName,
+    });
+  }
 
   await driver.clickElement({
     text: 'Connect',

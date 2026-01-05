@@ -97,6 +97,19 @@ class EditConnectedAccountsModal {
     const accountCheckbox = checkboxes[accountIndex - 1];
     return await accountCheckbox.isSelected();
   }
+
+  async isConnectButtonEnabled(): Promise<boolean> {
+    try {
+      await this.driver.findClickableElement(this.connectAccountsButton, {
+        timeout: 1000,
+      });
+    } catch (e) {
+      console.log('Connect button not enabled', e);
+      return false;
+    }
+    console.log('Connect button is enabled');
+    return true;
+  }
 }
 
 export default EditConnectedAccountsModal;
