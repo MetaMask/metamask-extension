@@ -73,9 +73,8 @@ import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -231,7 +230,7 @@ const TransactionShield = () => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
+        search: `?source=${ShieldMetricsSourceEnum.Settings}`,
       });
     }
   }, [
@@ -459,7 +458,7 @@ const TransactionShield = () => {
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.ViewFullBenefits,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
