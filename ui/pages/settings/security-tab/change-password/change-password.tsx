@@ -235,7 +235,7 @@ const ChangePassword = () => {
               as="h2"
             >
               {isSocialLoginFlow
-                ? t('createPasswordDetailsSocial')
+                ? t('changePasswordDetailsSocial')
                 : t('createPasswordDetails')}
             </Text>
             <PasswordForm

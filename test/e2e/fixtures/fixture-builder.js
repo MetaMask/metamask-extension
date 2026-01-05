@@ -1188,6 +1188,16 @@ class FixtureBuilder {
     return this;
   }
 
+  withTokenBalancesController(data) {
+    merge(
+      this.fixture.data.TokenBalancesController
+        ? this.fixture.data.TokenBalancesController
+        : (this.fixture.data.TokenBalancesController = {}),
+      data,
+    );
+    return this;
+  }
+
   // withTokenRatesController(data) {
   //   merge(this.fixture.data.TokenRatesController, data);
   //   return this;

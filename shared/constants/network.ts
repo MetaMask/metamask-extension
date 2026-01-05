@@ -1311,6 +1311,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
+  [MultichainNetworks.TRON]: 'https://app.metamask.io/explore/networks/tron',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

@@ -55,11 +55,7 @@ describe('<GasFeesDetails />', () => {
 
   it('renders fiat gas fee', async () => {
     const { getByText } = renderWithConfirmContextProvider(
-      <GasFeesDetails
-        setShowCustomizeGasPopover={() => {
-          // Intentionally empty
-        }}
-      />,
+      <GasFeesDetails />,
       getStore(),
     );
 
@@ -72,11 +68,7 @@ describe('<GasFeesDetails />', () => {
 
   it('renders max fee if advanced', async () => {
     const { getByTestId } = renderWithConfirmContextProvider(
-      <GasFeesDetails
-        setShowCustomizeGasPopover={() => {
-          // Intentionally empty
-        }}
-      />,
+      <GasFeesDetails />,
       getStore({ isAdvanced: true }),
     );
 
@@ -89,11 +81,7 @@ describe('<GasFeesDetails />', () => {
 
   it('does not render max fee if advanced and selected gas fee token', async () => {
     const { queryByTestId } = renderWithConfirmContextProvider(
-      <GasFeesDetails
-        setShowCustomizeGasPopover={() => {
-          // Intentionally empty
-        }}
-      />,
+      <GasFeesDetails />,
       getStore({ isAdvanced: true, selectedGasFeeToken: '0x123' }),
     );
 
@@ -106,11 +94,7 @@ describe('<GasFeesDetails />', () => {
 
   it('does not render gas timing if selected gas fee token', async () => {
     const { queryByText } = renderWithConfirmContextProvider(
-      <GasFeesDetails
-        setShowCustomizeGasPopover={() => {
-          // Intentionally empty
-        }}
-      />,
+      <GasFeesDetails />,
       getStore({ isAdvanced: true, selectedGasFeeToken: '0x123' }),
     );
 
