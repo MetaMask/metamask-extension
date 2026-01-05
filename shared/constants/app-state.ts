@@ -57,4 +57,3 @@ export type NetworkConnectionBanner =
       chainId: Hex;
       isInfuraEndpoint: boolean;
     };
-
