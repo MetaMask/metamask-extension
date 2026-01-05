@@ -740,6 +740,7 @@ async function initialize(backup) {
     preinstalledSnaps,
     cronjobControllerStorageManager,
   );
+
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
