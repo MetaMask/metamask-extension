@@ -105,36 +105,6 @@ const setLocalStorageFlags = async (driver: Driver) => {
   }
 };
 
-const markMigrationAttempted = async (driver: Driver) => {
-  const result = await driver.executeAsyncScript(`
-    const callback = arguments[arguments.length - 1];
-    const browser = globalThis.browser ?? globalThis.chrome;
-
-    const newMeta = {
-      platformSplitStateGradualRolloutAttempted: true,
-      canary: 'test-canary',
-    };
-
-    browser.storage.local
-      .get(['meta'])
-      .then(({ meta: existingMeta = {} }) =>
-        browser.storage.local.set({
-          meta: { ...existingMeta, ...newMeta },
-        }),
-      )
-      .then(() => callback({ ok: true }))
-      .catch((error) =>
-        callback({
-          error: error?.message ?? error?.toString?.() ?? error,
-        }),
-      );
-  `);
-
-  if (result?.error) {
-    throw new Error(result.error);
-  }
-};
-
 /**
  * Reads extension storage from the opened page.
  *
