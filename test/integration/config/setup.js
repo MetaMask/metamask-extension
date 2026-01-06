@@ -1,5 +1,4 @@
 require('@babel/register');
-require('ts-node').register({ transpileOnly: true });
 const v8 = require('v8');
 const fs = require('node:fs/promises');
 const path = require('path');
