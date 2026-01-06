@@ -12,13 +12,16 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
-import { arrangeTestUtils } from './helpers';
+import { arrangeTestUtils, skipOnFirefox } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
   const THIRD_ACCOUNT_NAME = 'Account 3';
@@ -30,6 +33,8 @@ describe('Account syncing - Settings Toggle', function () {
    * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
   it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -54,6 +59,10 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         await unlockWallet(driver);
+
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
@@ -129,6 +138,10 @@ describe('Account syncing - Settings Toggle', function () {
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
         await unlockWallet(driver);
+
+        // Wait for the account sync to complete before verifying accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

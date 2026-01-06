@@ -230,6 +230,16 @@ describe('Swap-Send ETH', function () {
                 },
               },
             })
+            .withTokenBalancesController({
+              tokenBalances: {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                  '0x1': {
+                    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2':
+                      '0x2B5E3AF16B1880000', // 50 WETH in hex
+                  },
+                },
+              },
+            })
             .build(),
           manifestFlags: {
             testing: { disableSmartTransactionsOverride: true },

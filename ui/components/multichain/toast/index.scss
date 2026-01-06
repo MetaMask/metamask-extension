@@ -1,7 +1,7 @@
 @use "design-system";
 
 .toasts-container {
-  position: sticky;
+  position: fixed;
   bottom: 16px;
   margin-inline-start: 16px;
   margin-inline-end: 16px;

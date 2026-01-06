@@ -4,7 +4,7 @@ import {
   NestedTransactionMetadata,
 } from '@metamask/transaction-controller';
 import { useConfirmContext } from '../../../../context/confirm';
-import { parseStandardTokenTransactionData } from '../../../../../../../shared/modules/transaction.utils';
+import { getTransactionDataRecipient } from '../../../../../../../shared/modules/transaction.utils';
 
 export function useTransferRecipient(): string | undefined {
   const { currentConfirmation: transactionMetadata } =
@@ -61,12 +61,4 @@ function getRecipientByType(
   }
 
   return dataRecipient || paramsRecipient;
-}
-
-function getTransactionDataRecipient(data: string): string | undefined {
-  const transactionData = parseStandardTokenTransactionData(data);
-
-  const transferTo = transactionData?.args?._to || transactionData?.args?.to;
-
-  return transferTo;
 }
