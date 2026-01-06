@@ -388,7 +388,7 @@ class ConsoleBaselineReporter {
     const isClean = !hasViolations && !hasImprovements && !hasNewFiles;
 
     if (isClean) {
-      console.log('\n✅ Console baseline matches exactly!\n');
+      console.log('\n✅ No console baseline violations.\n');
       return;
     }
 

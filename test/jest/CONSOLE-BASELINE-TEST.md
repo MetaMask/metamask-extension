@@ -80,7 +80,7 @@ yarn test:unit app/scripts/controllers/permissions/background-api.test.js
 ```
 PASS app/scripts/controllers/permissions/background-api.test.js
 
-✅ Console baseline matches exactly!
+✅ No console baseline violations.
 ```
 
 ✅ **System verified!** The warning is now in the baseline and the test passes.
@@ -167,7 +167,7 @@ yarn test:integration test/integration/confirmations/signatures/permit.test.tsx
 **Expected output:**
 
 ```
-✅ Console baseline matches exactly!
+✅ No console baseline violations.
 ```
 
 ✅ **System verified!**
