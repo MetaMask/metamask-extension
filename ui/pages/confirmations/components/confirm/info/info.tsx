@@ -8,6 +8,8 @@ import { useSmartTransactionFeatureFlags } from '../../../hooks/useSmartTransact
 import { useTransactionFocusEffect } from '../../../hooks/useTransactionFocusEffect';
 import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
+import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
+import { Skeleton } from '../../../../../components/component-library/skeleton';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
@@ -19,6 +21,15 @@ import TokenTransferInfo from './token-transfer/token-transfer';
 import TypedSignV1Info from './typed-sign-v1/typed-sign-v1';
 import TypedSignInfo from './typed-sign/typed-sign';
 import TypedSignPermissionInfo from './typed-sign/typed-sign-permission';
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const InfoSkeleton = () => (
+  <ConfirmInfoSection data-testid="confirmation__info_skeleton">
+    <Skeleton height="16px" width="30%" marginBottom={2} />
+    <Skeleton height="48px" width="100%" />
+  </ConfirmInfoSection>
+);
 
 const Info = () => {
   const { currentConfirmation } = useConfirmContext();
@@ -69,7 +80,7 @@ const Info = () => {
   );
 
   if (!currentConfirmation?.type) {
-    return null;
+    return <InfoSkeleton />;
   }
 
   const InfoComponent =

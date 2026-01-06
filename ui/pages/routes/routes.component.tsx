@@ -65,7 +65,6 @@ import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
   getNetworkIdentifier,
   getPreferences,
-  getTheme,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
   getUnapprovedConfirmations,
   ///: END:ONLY_INCLUDE_IF
@@ -76,6 +75,7 @@ import {
   getUnapprovedTransactions,
   getPendingApprovals,
 } from '../../selectors';
+import { useTheme } from '../../hooks/useTheme';
 
 import {
   hideImportNftsModal,
@@ -359,12 +359,9 @@ export default function Routes() {
   );
   const providerId = useAppSelector(getNetworkIdentifier);
   const { type: providerType } = useAppSelector(getProviderConfig);
-  const theme = useAppSelector(getTheme);
+  const theme = useTheme();
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
-  );
-  const forgottenPassword = useAppSelector(
-    (state) => state.metamask.forgottenPassword,
   );
   const isAccountMenuOpen = useAppSelector(
     (state) => state.appState.isAccountMenuOpen,
@@ -509,7 +506,6 @@ export default function Routes() {
         path: RESTORE_VAULT_ROUTE,
         component: RestoreVaultPage,
         layout: LegacyLayout,
-        initialized: !forgottenPassword,
       }),
       createRouteWithLayout({
         path: SMART_ACCOUNT_UPDATE,
@@ -556,13 +552,13 @@ export default function Routes() {
       createRouteWithLayout({
         path: SNAPS_ROUTE,
         component: SnapList,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
         path: `${SNAPS_VIEW_ROUTE}/*`,
         component: SnapView,
-        layout: LegacyLayout,
+        layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
@@ -764,7 +760,7 @@ export default function Routes() {
         authenticated: true,
       }),
     ],
-    [forgottenPassword],
+    [],
   );
 
   // Use useRoutes hook to render routes - called on every render to track location changes

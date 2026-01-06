@@ -43,6 +43,10 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  useEarliestNonceByChain,
+  isTransactionEarliestNonce,
+} from '../../../hooks/useEarliestNonceByChain';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
@@ -455,13 +459,11 @@ export default function TransactionList({
 
   const pendingTransactions = useMemo(
     () =>
-      groupEvmTransactionsByDate(
-        getFilteredTransactionGroups(
-          unfilteredPendingTransactions,
-          hideTokenTransactions,
-          tokenAddress,
-          chainId,
-        ),
+      getFilteredTransactionGroups(
+        unfilteredPendingTransactions,
+        hideTokenTransactions,
+        tokenAddress,
+        chainId,
       ),
     [
       unfilteredPendingTransactions,
@@ -469,6 +471,11 @@ export default function TransactionList({
       tokenAddress,
       chainId,
     ],
+  );
+
+  const groupedPendingTransactions = useMemo(
+    () => groupEvmTransactionsByDate(pendingTransactions),
+    [pendingTransactions],
   );
 
   const completedTransactions = useMemo(
@@ -565,6 +572,10 @@ export default function TransactionList({
   // Remove date groups with no transaction groups
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
+
+  // Calculate the earliest nonce for each chainId to properly determine which
+  // transaction can be sped up (only the transaction with the lowest nonce can unblock the queue)
+  const earliestNonceByChain = useEarliestNonceByChain(pendingTransactions);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountOverviewActivityTab });
@@ -715,7 +726,7 @@ export default function TransactionList({
     <>
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {pendingTransactions.length === 0 &&
+        {groupedPendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <TransactionActivityEmptyState
             className="mx-auto mt-5 mb-6"
@@ -723,11 +734,19 @@ export default function TransactionList({
           />
         ) : (
           <Box className="transaction-list__transactions">
-            {pendingTransactions.length > 0 && (
+            {groupedPendingTransactions.length > 0 && (
               <Box className="transaction-list__pending-transactions">
-                {pendingTransactions.map((dateGroup) => {
+                {groupedPendingTransactions.map((dateGroup) => {
                   return dateGroup.transactionGroups.map(
                     (transactionGroup, index) => {
+                      const { nonce, initialTransaction } = transactionGroup;
+                      const txChainId = initialTransaction?.chainId;
+                      const isEarliestNonce = isTransactionEarliestNonce(
+                        nonce,
+                        txChainId,
+                        earliestNonceByChain,
+                      );
+
                       if (
                         transactionGroup.initialTransaction?.isSmartTransaction
                       ) {
@@ -735,7 +754,7 @@ export default function TransactionList({
                           <Fragment key={`${transactionGroup.nonce}:${index}`}>
                             {renderDateStamp(index, dateGroup)}
                             <SmartTransactionListItem
-                              isEarliestNonce={index === 0}
+                              isEarliestNonce={isEarliestNonce}
                               smartTransaction={
                                 transactionGroup.initialTransaction
                               }
@@ -751,7 +770,7 @@ export default function TransactionList({
                         <Fragment key={`${transactionGroup.nonce}:${index}`}>
                           {renderDateStamp(index, dateGroup)}
                           <TransactionListItem
-                            isEarliestNonce={index === 0}
+                            isEarliestNonce={isEarliestNonce}
                             transactionGroup={transactionGroup}
                             chainId={
                               transactionGroup.initialTransaction.chainId
