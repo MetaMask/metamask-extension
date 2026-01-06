@@ -139,9 +139,8 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
-  getAllUnapprovedTransactions,
-  getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
 } from './transactions';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
@@ -2474,7 +2473,7 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const unapprovedTxs = getUnapprovedTransactions(state);
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
