@@ -6120,6 +6120,12 @@
   "shieldClaimDraftSaveFailedDescription": {
     "message": "Unable to save your claim draft. Please try again."
   },
+  "shieldClaimDraftDeleteFailed": {
+    "message": "Deleting draft failed"
+  },
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "Unable to delete your claim draft. Please try again."
+  },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
   },

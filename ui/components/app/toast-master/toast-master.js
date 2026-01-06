@@ -575,6 +575,8 @@ const ClaimSubmitToast = () => {
   const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
   const isDraftDeleted =
     showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
+  const isDraftDeleteFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
 
   const description = useMemo(() => {
     if (isSuccess) {
@@ -589,6 +591,9 @@ const ClaimSubmitToast = () => {
     if (isDraftDeleted) {
       return t('shieldClaimDeleteDraftDescription');
     }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailedDescription');
+    }
     if (isErrored) {
       return '';
     }
@@ -599,6 +604,7 @@ const ClaimSubmitToast = () => {
     isDraftSaveFailed,
     isErrored,
     isDraftDeleted,
+    isDraftDeleteFailed,
     showClaimSubmitToast,
     t,
   ]);
@@ -616,8 +622,18 @@ const ClaimSubmitToast = () => {
     if (isDraftDeleted) {
       return t('shieldClaimDeletedDraft');
     }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailed');
+    }
     return t('shieldClaimSubmitError');
-  }, [isSuccess, isDraftSaved, isDraftSaveFailed, isDraftDeleted, t]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    t,
+  ]);
 
   const dataTestId = useMemo(() => {
     if (isSuccess) {
@@ -632,8 +648,17 @@ const ClaimSubmitToast = () => {
     if (isDraftDeleted) {
       return 'claim-draft-deleted-toast';
     }
+    if (isDraftDeleteFailed) {
+      return 'claim-draft-delete-failed-toast';
+    }
     return 'claim-submit-toast-error';
-  }, [isSuccess, isDraftSaved, isDraftSaveFailed, isDraftDeleted]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+  ]);
 
   return (
     showClaimSubmitToast !== null && (

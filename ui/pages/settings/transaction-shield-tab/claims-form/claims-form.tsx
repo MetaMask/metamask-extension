@@ -389,9 +389,7 @@ const ClaimsForm = ({
           await deleteDraft(currentDraftId);
         } catch {
           // Draft deletion failed, but the claim was already submitted successfully.
-          console.error(
-            'Failed to delete draft after successful claim submission',
-          );
+          log.error('Failed to delete draft after successful claim submission');
         }
       }
 
@@ -502,7 +500,8 @@ const ClaimsForm = ({
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
       navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
     } catch (error) {
-      console.error('Failed to delete draft', error);
+      log.error('Error deleting draft', error);
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleteFailed));
     }
   }, [currentDraftId, deleteDraft, dispatch, navigate]);
 
