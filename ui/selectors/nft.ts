@@ -42,6 +42,11 @@ export function getNftsByChainByAccount(state: NftState) {
   return state.metamask.allNfts ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access Second Layer
+// Uses: getNftContractsByChainByAccount
+// References
+// ui/selectors/nft.ts (1)
+// ui/hooks/useDisplayName.ts (1)
 export const getNftContractsByAddressByChain = createSelector(
   getNftContractsByChainByAccount,
   (nftContractsByChainByAccount) => {
@@ -83,6 +88,11 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Second Layer
+// Uses: getNftsByChainByAccount
+// References
+// ui/selectors/nft.ts (1)
+// ui/helpers/utils/tags.ts (1)
 /**
  * Get a flattened list of all NFTs owned by the user.
  * Includes all NFTs from all chains and accounts.
