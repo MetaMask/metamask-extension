@@ -114,7 +114,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
-              includeDevnet: false, // Connect to Mainnet only
+              includeDevnet: true,
             });
 
             // Send a transaction

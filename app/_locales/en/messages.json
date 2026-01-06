@@ -452,7 +452,7 @@
     "message": "Alert"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
@@ -609,6 +609,9 @@
   },
   "allTimeLow": {
     "message": "All-time low"
+  },
+  "allTokens": {
+    "message": "All tokens"
   },
   "allowAddRpc": {
     "message": "Add RPC"
@@ -2030,6 +2033,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
+  },
+  "deepLink_theOnboardingPage": {
+    "message": "the onboarding page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -5623,6 +5629,9 @@
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
   },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
+  },
   "reward": {
     "message": "Reward"
   },
@@ -6332,7 +6341,7 @@
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1."
+    "message": "By continuing, I agree to Transaction Shield $1"
   },
   "shieldNotCovered": {
     "message": "Not covered"

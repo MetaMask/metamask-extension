@@ -1,14 +1,11 @@
-const { strict: assert } = require('assert');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-
-const {
-  createInternalTransaction,
-} = require('../../page-objects/flows/transaction');
-
-const { withFixtures } = require('../../helpers');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
+import { strict as assert } from 'assert';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
+import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -27,27 +24,24 @@ describe('Editing Confirm Transaction', function () {
           .withConversionRateDisabled()
           .build(),
         localNodeOptions: { hardfork: 'muirGlacier' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createInternalTransaction(driver);
 
+        const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+        const gasFeeModal = new GasFeeModal(driver);
+        const activityListPage = new ActivityListPage(driver);
+
         await driver.findElement({
           css: 'h2',
           text: '1 ETH',
         });
 
-        await driver.findElement({
-          css: '[data-testid="first-gas-field"]',
-          text: '0',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="native-currency"]',
-          text: '$0.07',
-        });
+        await sendTokenConfirmPage.checkFirstGasFee('0');
+        await sendTokenConfirmPage.checkNativeCurrency('$0.07');
 
         await driver.clickElement(
           '[data-testid="wallet-initiated-header-back-button"]',
@@ -62,32 +56,21 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
-        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-
-        const [gasLimitInput, gasPriceInput] = await driver.findElements(
-          'input[type="number"]',
-        );
-        await gasPriceInput.fill('8');
-        await gasLimitInput.fill('100000');
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+        // Open gas fee modal and set custom legacy gas values
+        await sendTokenConfirmPage.clickEditGasFeeIcon();
+        await gasFeeModal.setCustomLegacyGasFee({
+          gasPrice: '8',
+          gasLimit: '100000',
+        });
 
         // has correct updated value on the confirm screen the transaction
-        await driver.findElement({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0002',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="native-currency"]',
-          text: '$0.29',
-        });
+        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
+        await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        await activityListPage.openActivityTab();
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-status-label--confirmed',
@@ -111,27 +94,24 @@ describe('Editing Confirm Transaction', function () {
           .withConversionRateDisabled()
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createInternalTransaction(driver);
 
+        const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+        const gasFeeModal = new GasFeeModal(driver);
+        const activityListPage = new ActivityListPage(driver);
+
         await driver.findElement({
           css: 'h2',
           text: '1 ETH',
         });
 
-        await driver.findElement({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0004',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="native-currency"]',
-          text: '$0.75',
-        });
+        await sendTokenConfirmPage.checkFirstGasFee('0.0004');
+        await sendTokenConfirmPage.checkNativeCurrency('$0.75');
 
         await driver.clickElement(
           '[data-testid="wallet-initiated-header-back-button"]',
@@ -146,44 +126,22 @@ describe('Editing Confirm Transaction', function () {
 
         await driver.clickElement({ text: 'Continue', tag: 'button' });
 
-        // open gas fee popover
-        await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-
-        await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
-
-        // enter max fee
-        await driver.fill('[data-testid="base-fee-input"]', '8');
-
-        // enter priority fee
-        await driver.fill('[data-testid="priority-fee-input"]', '8');
-
-        // edit gas limit
-        await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-        await driver.fill('[data-testid="gas-limit-input"]', '100000');
-
-        // save default values
-        await driver.clickElement('input[type="checkbox"]');
-
-        // Submit gas fee changes
-        await driver.clickElement({ text: 'Save', tag: 'button' });
+        // Open gas fee modal and set custom EIP-1559 gas values
+        await sendTokenConfirmPage.clickEditGasFeeIcon();
+        await gasFeeModal.setCustomEIP1559GasFee({
+          maxBaseFee: '8',
+          priorityFee: '8',
+          gasLimit: '100000',
+        });
 
         // has correct updated value on the confirm screen the transaction
-        await driver.findElement({
-          css: '[data-testid="first-gas-field"]',
-          text: '0.0002',
-        });
-
-        await driver.findElement({
-          css: '[data-testid="native-currency"]',
-          text: '$0.29',
-        });
+        await sendTokenConfirmPage.checkFirstGasFee('0.0002');
+        await sendTokenConfirmPage.checkNativeCurrency('$0.29');
 
         // confirms the transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
 
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
+        await activityListPage.openActivityTab();
         await driver.wait(async () => {
           const confirmedTxes = await driver.findElements(
             '.transaction-status-label--confirmed',
