@@ -743,8 +743,8 @@
     "webpack-dev-server": "^5.2.2",
     "ws": "^8.17.1",
     "yaml": "^2.4.1",
-    "yargs": "^18.0.0",
-    "yargs-parser": "^22.0.0"
+    "yargs": "^17.7.2",
+    "yargs-parser": "^21.1.1"
   },
   "engines": {
     "node": ">=24.11.0",
