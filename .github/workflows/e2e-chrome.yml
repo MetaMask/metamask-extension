@@ -27,7 +27,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix) }}
+      matrix: ${{ fromJson(inputs.use-matrix)[0] }}
     with:
       test-suite-name: test-e2e-chrome-browserify
       build-artifact: build-test-browserify

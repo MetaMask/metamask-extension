@@ -25,7 +25,7 @@ jobs:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix: ${{ fromJson(inputs.use-matrix) }}
+      matrix: ${{ fromJson(inputs.use-matrix)[0] }}
     with:
       test-suite-name: test-e2e-firefox-browserify
       build-artifact: build-test-mv2-browserify
@@ -58,8 +58,7 @@ jobs:
     uses: ./.github/workflows/run-e2e.yml
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
-      matrix:
-        index: [0, 1, 2, 3, 4]
+      matrix: ${{ fromJson(inputs.use-matrix)[1] }}
     with:
       test-suite-name: test-e2e-firefox-flask
       build-artifact: build-test-flask-mv2-browserify
