@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { ApprovalType } from '@metamask/controller-utils';
 import { isEqual } from 'lodash';
@@ -14,7 +14,6 @@ import {
   CONFIRMATION_V_NEXT_ROUTE,
   CONNECT_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
-  DEFAULT_ROUTE,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
   SIGNATURE_REQUEST_PATH,
 } from '../../../helpers/constants/routes';
@@ -23,7 +22,6 @@ import {
   getApprovalFlows,
   selectPendingApprovalsForNavigation,
 } from '../../../selectors';
-import { setDefaultHomeActiveTabName } from '../../../store/actions';
 
 const CONNECT_APPROVAL_TYPES = [
   ApprovalType.WalletRequestPermissions,
@@ -38,7 +36,6 @@ export function useConfirmationNavigation() {
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
-  const dispatch = useDispatch();
   const getIndex = useCallback(
     (confirmationId?: string) => {
       if (!confirmationId) {
@@ -74,7 +71,7 @@ export function useConfirmationNavigation() {
     [confirmations, navigateToId],
   );
 
-  const navigateNextOrHome = useCallback(
+  const navigateNext = useCallback(
     (confirmationId: string) => {
       const pendingConfirmations = confirmations.filter(
         (confirmation) => confirmation.id !== confirmationId,
@@ -82,12 +79,9 @@ export function useConfirmationNavigation() {
       if (pendingConfirmations.length >= 1) {
         const index = getIndex(pendingConfirmations[0].id);
         navigateToIndex(index);
-      } else {
-        dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, { replace: true });
       }
     },
-    [confirmations, dispatch, getIndex, navigateToIndex, navigate],
+    [confirmations, getIndex, navigateToIndex],
   );
 
   return {
@@ -96,7 +90,7 @@ export function useConfirmationNavigation() {
     getIndex,
     navigateToId,
     navigateToIndex,
-    navigateNextOrHome,
+    navigateNext,
   };
 }
 

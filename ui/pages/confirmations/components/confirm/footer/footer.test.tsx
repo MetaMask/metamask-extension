@@ -58,7 +58,7 @@ jest.mock('react-redux', () => ({
 }));
 jest.mock('../../../hooks/useConfirmationNavigation', () => ({
   useConfirmationNavigation: jest.fn(() => ({
-    navigateNextOrHome: jest.fn(),
+    navigateNext: jest.fn(),
     navigateToId: jest.fn(),
   })),
 }));
@@ -555,7 +555,7 @@ describe('ConfirmFooter', () => {
         async (buttonText: string) => {
           const navigateNextOrHomeMock = jest.fn();
           useConfirmationNavigationMock.mockReturnValue({
-            navigateNextOrHome: navigateNextOrHomeMock,
+            navigateNext: navigateNextOrHomeMock,
             navigateToId: jest.fn(),
           } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
