@@ -473,6 +473,17 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
+// TODO Unified Assets Controller State Access
+// MultichainBalancesController: balances
+// References
+// ui/selectors/multichain.ts (2)
+// ui/selectors/selectors.js (1)
+// ui/selectors/assets.ts (6)
+// ui/hooks/useMultichainBalances.ts (1)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/components/multichain/account-list-item/account-list-item.js (1)
+// ui/pages/asset/hooks/useTronResources.ts (1)
+// ui/hooks/useMultichainAccountTotalFiatBalance.ts (1)
 export function getMultichainBalances(
   state: MultichainState,
 ): BalancesState['metamask']['balances'] {
@@ -509,6 +520,11 @@ export function getSelectedAccountMultichainTransactions(
   return undefined;
 }
 
+// TODO Unified Assets Controller State Access
+// RatesController: rates
+// References
+// ui/selectors/multichain.ts (1)
+// ui/ducks/bridge/selectors.ts (1)
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
 };

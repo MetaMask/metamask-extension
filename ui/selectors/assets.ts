@@ -97,6 +97,12 @@ export type BalanceCalculationState = {
     };
 };
 
+// TODO Unified Assets Controller State Access
+// MultichainAssetsController: accountsAssets
+// References
+// ui/selectors/assets.ts (5)
+// ui/hooks/useMultichainBalances.ts (1)
+// ui/components/ui/aggregated-balance/aggregated-balance.tsx (1)
 /**
  * Gets non-EVM accounts assets.
  *
@@ -107,6 +113,11 @@ export function getAccountAssets(state: AssetsState) {
   return state.metamask.accountsAssets;
 }
 
+// TODO Unified Assets Controller State Access
+// MultichainAssetsController: assetsMetadata
+// References
+// ui/selectors/assets.ts (4)
+// ui/hooks/useMultichainBalances.ts (1)
 /**
  * Gets non-EVM assets metadata.
  *
@@ -117,6 +128,10 @@ export function getAssetsMetadata(state: AssetsState) {
   return state.metamask.assetsMetadata;
 }
 
+// TODO Unified Assets Controller State Access
+// MultichainAssetsController: allIgnoredAssets
+// References
+// ui/selectors/assets.ts (2)
 /**
  * Gets non-EVM ignored assets.
  *
@@ -127,6 +142,14 @@ export function getAllIgnoredAssets(state: AssetsState) {
   return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access
+// MultichainAssetsRatesController: conversionRates
+// References
+// ui/selectors/assets.ts (6)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx (1)
+// ui/pages/asset/components/asset-market-details.tsx (1)
+// ui/pages/asset/hooks/useCurrentPrice.ts (1)
 /**
  * Gets non-EVM accounts assets rates.
  *
@@ -137,6 +160,11 @@ export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
 
+// TODO Unified Assets Controller State Access
+// DeFiPositionsController: allDeFiPositions
+// References
+// ui/pages/defi/components/defi-details-page.tsx (1)
+// ui/components/app/assets/defi-list/defi-list.tsx (1)
 /**
  * Gets DeFi positions
  *
@@ -149,6 +177,12 @@ export function getDefiPositions(
   return state?.metamask?.allDeFiPositions;
 }
 
+// TODO Unified Assets Controller State Access
+// MultichainAssetsRatesController: historicalPrices
+// References
+// ui/selectors/assets.ts (2)
+// ui/pages/asset/hooks/useHistoricalPrices.ts (1)
+// ui/pages/asset/hooks/useChartTimeRanges.ts (1)
 /**
  * Gets non-EVM assets historical prices.
  *
@@ -1263,6 +1297,17 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
+// TODO Unified Assets Controller State Access
+// TokensController: allTokens, allIgnoredTokens
+// TokenBalancesController: tokenBalances
+// TokenRatesController: marketData
+// CurrencyRateController: currencyRates, currentCurrency
+// AccountTrackerController: accountsByChainId
+// MultichainAssetsController: accountsAssets, assetsMetadata, allIgnoredAssets
+// MultichainBalancesController: balances
+// MultichainAssetsRatesController: conversionRates
+// References
+// ui/selectors/assets.ts (3)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {

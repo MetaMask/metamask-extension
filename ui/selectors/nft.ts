@@ -19,10 +19,19 @@ export type NftState = {
   };
 };
 
+// TODO Unified Assets Controller State Access
+// NftController: allNftContracts
+// References
+// ui/selectors/nft.ts (2)
 function getNftContractsByChainByAccount(state: NftState) {
   return state.metamask.allNftContracts ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access
+// NftController: allNfts
+// References
+// ui/selectors/nft.ts (2)
+// ui/pages/confirmations/hooks/send/useSendNfts.ts (1)
 /**
  * Get all NFTs owned by the user.
  *
