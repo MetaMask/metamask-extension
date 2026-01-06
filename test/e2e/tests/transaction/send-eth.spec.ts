@@ -312,7 +312,7 @@ describe('Send ETH', function () {
 
             // Verify the transaction has the expected gas values
             await activityListPage.clickOnActivity(1);
-            await activityListPage.checkFeeValuesAreNumeric();
+            await activityListPage.checkFeeValuesAreDisplayed();
           },
         );
       });

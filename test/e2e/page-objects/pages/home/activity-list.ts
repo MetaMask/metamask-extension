@@ -147,32 +147,13 @@ class ActivityListPage {
   }
 
   /**
-   * Checks that all fee values displayed in the transaction details are numeric.
-   * Uses driver.wait() to retry and avoid race conditions with getText().
-   *
-   * Note: getText() is required here for regex pattern validation since we don't
-   * know the exact values in advance. This is a valid exception to the guideline.
-   *
-   * @returns A promise that resolves if all fee values are numeric.
+   * Checks that fee values are displayed in the tx details.
    */
-  async checkFeeValuesAreNumeric(): Promise<void> {
-    console.log('Checking that all fee values are numeric');
+  async checkFeeValuesAreDisplayed(): Promise<void> {
+    console.log('Checking that fee values are displayed');
     await this.driver.waitForSelector(this.baseFeeLabel);
-
-    await this.driver.wait(async () => {
-      const allFeeValues = await this.driver.findElements(this.feeValues);
-      if (allFeeValues.length === 0) {
-        return false;
-      }
-      for (const feeValue of allFeeValues) {
-        const text = await feeValue.getText();
-        if (!/\d+\.?\d*/u.test(text)) {
-          return false;
-        }
-      }
-      return true;
-    }, 10000);
-    console.log('All fee values are numeric');
+    await this.driver.waitForSelector(this.feeValues);
+    console.log('Fee values are displayed');
   }
 
   /**

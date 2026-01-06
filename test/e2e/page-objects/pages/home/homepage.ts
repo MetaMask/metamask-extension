@@ -318,18 +318,13 @@ class HomePage {
 
   /**
    * Checks that balance is displayed in the correct format (X.XX ETH).
-   * Uses driver.wait() to retry and avoid race conditions with getText().
-   *
-   * Note: getText() is required here for regex pattern validation since we don't
-   * know the exact balance value in advance. This is a valid exception to the guideline.
    */
   async checkBalanceIsDisplayed(): Promise<void> {
     console.log('Check balance element is displayed on homepage');
-    await this.driver.wait(async () => {
-      const balanceElement = await this.driver.findElement(this.balance);
-      const balanceText = await balanceElement.getText();
-      return /^\d+\.?\d*\sETH$/u.test(balanceText);
-    }, 10000);
+    await this.driver.waitForSelector(this.balance, {
+      text: /^\d+\.?\d*\sETH$/u,
+      timeout: 10000,
+    });
     console.log('Balance is displayed in correct format');
   }
 
