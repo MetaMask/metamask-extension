@@ -14,11 +14,10 @@ import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  CAIP_FORMATTED_TEST_CHAINS,
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
-import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -328,10 +327,7 @@ export const getNonTestNetworks = createSelector(
     return Object.entries(networkConfigurationsByCaipChainId)
       .filter(([chainId]) => {
         const caipChainId = chainId as CaipChainId;
-        return (
-          !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId) &&
-          !SOLANA_TEST_CHAINS.includes(caipChainId)
-        );
+        return !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
       })
       .map(([chainId, network]) => ({
         ...network,
