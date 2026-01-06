@@ -29,8 +29,8 @@ import {
   InitialMockEncryptionKey,
   MockKeyShareData,
   MockJwtPrivateKey,
-  NewMockPwdEncryptionKeyAfterPasswordChange,
   MockAuthPubKey2,
+  NewMockPwdEncryptionKeyAfterPasswordChange,
 } from './data';
 
 function generateMockJwtToken(userId: string) {
@@ -108,13 +108,35 @@ async function generateBlindedOutput(
  * Generate a mock encrypted secret data for Metadata Service.
  *
  * @param secretDataArr - The array of secret data.
- * @returns The encrypted secret data.
+ * @returns Parallel arrays matching the real server response format.
  */
 async function generateEncryptedSecretData(
-  secretDataArr: { data: Uint8Array; timestamp?: number; type?: SecretType }[],
-) {
-  const encData = secretDataArr.map((secretData) => {
+  secretDataArr: {
+    data: Uint8Array;
+    timestamp?: number;
+    type?: SecretType;
+    itemId?: string;
+    dataType?: number | null;
+    createdAt?: string | null;
+    version?: string;
+  }[],
+): Promise<{
+  data: string[];
+  ids: string[];
+  versions: string[];
+  dataTypes: (number | null)[];
+  createdAt: (string | null)[];
+}> {
+  const data: string[] = [];
+  const ids: string[] = [];
+  const versions: string[] = [];
+  const dataTypes: (number | null)[] = [];
+  const createdAt: (string | null)[] = [];
+
+  for (const secretData of secretDataArr) {
     const b64SecretData = Buffer.from(secretData.data).toString('base64');
+
+    // Only data, timestamp, type go into the encrypted payload
     const secretMetadata = JSON.stringify({
       data: b64SecretData,
       timestamp: secretData.timestamp ?? 1752564090656,
@@ -124,37 +146,51 @@ async function generateEncryptedSecretData(
 
     const aes = managedNonce(gcm)(InitialMockEncryptionKey);
     const cipherText = aes.encrypt(secretBytes);
-    return bytesToBase64(cipherText);
-  });
-  return encData;
+
+    data.push(bytesToBase64(cipherText));
+    ids.push(secretData.itemId ?? crypto.randomUUID());
+    versions.push(secretData.version ?? 'v2');
+    dataTypes.push(secretData.dataType ?? 1); // PrimarySrp
+    createdAt.push(secretData.createdAt ?? null);
+  }
+
+  return { data, ids, versions, dataTypes, createdAt };
 }
 
 /**
- * Generate a mock encrypted password change item for Metadata Service.
- * This is to mock the password change operation for social login flow.
+ * Generate a mock encrypted password change item data for Metadata Service.
+ * This is used to mock the password change operation for social login flow.
  *
- * @returns The encrypted password change item.
+ * @returns Object with the encrypted data and metadata for the password change item.
  */
-async function generateEncryptedPasswordChangeItem() {
-  const pwdChangeItem = {
-    itemId: PasswordChangeItemId,
-    data: utf8ToBytes(
-      JSON.stringify({
-        pw: 'newPassword',
-        encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
-        authKeyPair: {
-          sk: '1',
-          pk: 'deadbeef',
-        },
-      }),
-    ),
-  };
+function generateEncryptedPasswordChangeItem(): {
+  data: string;
+  id: string;
+  version: string;
+  dataType: null;
+  createdAt: null;
+} {
+  const pwdChangeItemData = utf8ToBytes(
+    JSON.stringify({
+      pw: 'newPassword',
+      encKey: bytesToHex(NewMockPwdEncryptionKeyAfterPasswordChange),
+      authKeyPair: {
+        sk: '1',
+        pk: 'deadbeef',
+      },
+    }),
+  );
 
   const aes = managedNonce(gcm)(NewMockPwdEncryptionKeyAfterPasswordChange);
-  const cipherText = aes.encrypt(pwdChangeItem.data);
-  const encryptedPwdChangeItem = bytesToBase64(cipherText);
+  const cipherText = aes.encrypt(pwdChangeItemData);
 
-  return encryptedPwdChangeItem;
+  return {
+    data: bytesToBase64(cipherText),
+    id: PasswordChangeItemId,
+    version: 'v2',
+    dataType: null,
+    createdAt: null,
+  };
 }
 
 // Mock OAuth Service and Authentication Server
@@ -352,7 +388,7 @@ export class OAuthMockttpService {
     };
   }
 
-  async onPostMetadataGet() {
+  async onPostMetadataGet(includePasswordChangeItem: boolean = false) {
     const seedPhraseAsBuffer = Buffer.from(E2E_SRP, 'utf8');
     const indices = seedPhraseAsBuffer
       .toString()
@@ -360,24 +396,44 @@ export class OAuthMockttpService {
       .map((word: string) => wordlist.indexOf(word));
     const seedPhraseBytes = new Uint8Array(new Uint16Array(indices).buffer);
 
+    const now = Date.now();
+    const primarySrpItemId = crypto.randomUUID();
+    // Generate a mock TIMEUUID-like string for createdAt
+    const mockCreatedAtTimeuuid = crypto.randomUUID();
+
     const secretData = [
       {
         data: seedPhraseBytes,
-        timestamp: Date.now(),
+        timestamp: now,
         type: SecretType.Mnemonic,
+        itemId: primarySrpItemId,
+        dataType: 1, // PrimarySrp
+        createdAt: mockCreatedAtTimeuuid,
+        version: 'v2',
       },
     ];
 
-    const encryptedSecretData = await generateEncryptedSecretData(secretData);
-    const encryptedPwdChangeItem = await generateEncryptedPasswordChangeItem();
-    encryptedSecretData.push(encryptedPwdChangeItem);
+    const result = await generateEncryptedSecretData(secretData);
+
+    // Include password change item if user has changed password on another device
+    if (includePasswordChangeItem) {
+      const pwdChangeItem = generateEncryptedPasswordChangeItem();
+      result.data.push(pwdChangeItem.data);
+      result.ids.push(pwdChangeItem.id);
+      result.versions.push(pwdChangeItem.version);
+      result.dataTypes.push(pwdChangeItem.dataType);
+      result.createdAt.push(pwdChangeItem.createdAt);
+    }
 
     return {
       statusCode: 200,
       json: {
         success: true,
-        data: encryptedSecretData,
-        ids: ['', PasswordChangeItemId],
+        data: result.data,
+        ids: result.ids,
+        versions: result.versions,
+        dataTypes: result.dataTypes,
+        createdAt: result.createdAt,
       },
     };
   }
@@ -452,7 +508,7 @@ export class OAuthMockttpService {
       });
 
     // Intercept the Metadata requests and mock the responses
-    await this.#handleMetadataMockResponses(server);
+    await this.#handleMetadataMockResponses(server, options);
   }
 
   /**
@@ -538,7 +594,12 @@ export class OAuthMockttpService {
     return this.onPostToprfAuthenticate(nodeIndex, isNewUser);
   }
 
-  async #handleMetadataMockResponses(server: Mockttp) {
+  async #handleMetadataMockResponses(
+    server: Mockttp,
+    options?: {
+      passwordOutdated?: boolean;
+    },
+  ) {
     server.forPost(MetadataService.Set).always().thenJson(200, {
       success: true,
       message: 'Metadata set successfully',
@@ -548,7 +609,7 @@ export class OAuthMockttpService {
       .forPost(MetadataService.Get)
       .always()
       .thenCallback(async (_request) => {
-        return this.onPostMetadataGet();
+        return this.onPostMetadataGet(options?.passwordOutdated);
       });
 
     server
