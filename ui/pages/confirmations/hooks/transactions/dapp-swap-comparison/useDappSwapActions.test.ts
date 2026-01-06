@@ -91,9 +91,7 @@ describe('useDappSwapActions', () => {
       const { onDappSwapCompleted } = await runHook();
       onDappSwapCompleted();
 
-      expect(deleteDappSwapComparisonData).toHaveBeenCalledWith(
-        'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
-      );
+      expect(deleteDappSwapComparisonData).toHaveBeenCalledWith('1234567');
     });
   });
 });

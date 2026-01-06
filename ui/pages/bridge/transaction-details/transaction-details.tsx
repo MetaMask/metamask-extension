@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useSelector } from 'react-redux';
-import type { Location as RouterLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import {
   TransactionStatus,
   TransactionType,
@@ -46,7 +46,7 @@ import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNativeTokenInfo } from '../../../selectors';
-import { getAllNetworkTransactions } from '../../../selectors/transactions';
+import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -74,29 +74,16 @@ import TransactionDetailRow from './transaction-detail-row';
 import BridgeExplorerLinks from './bridge-explorer-links';
 import BridgeStepList from './bridge-step-list';
 
-type CrossChainSwapTxDetailsProps = {
-  location?: RouterLocation;
-  navigate?: (
-    path: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-  params?: { srcTxMetaId: string };
-};
-
-const CrossChainSwapTxDetails = ({
-  location,
-  navigate,
-  params,
-}: CrossChainSwapTxDetailsProps) => {
+const CrossChainSwapTxDetails = () => {
   const t = useI18nContext();
   const locale = useSelector(getIntlLocale);
   const trackEvent = useContext(MetaMetricsContext);
   const rootState = useSelector((state) => state);
 
-  const srcTxMetaId = params?.srcTxMetaId;
-  const allTransactions = useSelector(
-    getAllNetworkTransactions,
-  ) as TransactionMeta[];
+  const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const allTransactions = useSelector(getTransactions) as TransactionMeta[];
 
   const transactionGroup: TransactionGroup | null =
     location?.state?.transactionGroup || null;
@@ -191,10 +178,12 @@ const CrossChainSwapTxDetails = ({
     getIsDelayed(bridgeStatus, bridgeHistoryItem);
 
   // TODO set for gasless swaps
-  const gasCurrency = getNativeTokenInfo(
-    rootState as MetaMaskReduxState,
-    srcChainTxMeta?.chainId ?? '',
-  ) as { decimals: number; symbol: string };
+  const gasCurrency = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(
+      state.metamask.networkConfigurationsByChainId,
+      srcChainTxMeta?.chainId ?? '',
+    ),
+  );
 
   const srcNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
