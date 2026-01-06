@@ -98,4 +98,4 @@ html-report-multichain/
 test/integration/config/assets
 
 # webpack
-.webpack
+development/.webpack
