@@ -1,11 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
-import { debounce } from 'lodash';
+import React, { useCallback, useMemo, useState } from 'react';
 import { isValidHexAddress } from '@metamask/controller-utils';
 import {
   Box,
@@ -85,8 +78,6 @@ import {
   MAX_FILE_SIZE_MB,
 } from './constants';
 import { isValidTransactionHash } from './utils';
-
-const DEBOUNCE_TIME_MS = 2000;
 
 const ClaimsForm = ({
   mode = CLAIMS_FORM_MODES.NEW,
@@ -456,33 +447,10 @@ const ClaimsForm = ({
     caseDescription,
   ]);
 
-  const debouncedShowDraftSavedToast = useRef(
-    debounce(() => {
-      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
-    }, DEBOUNCE_TIME_MS),
-  ).current;
-
-  const debouncedLogDraftError = useRef(
-    debounce((error: unknown) => {
-      log.error('Error saving draft', error);
-    }, DEBOUNCE_TIME_MS),
-  ).current;
-
-  // Cleanup debounced functions on unmount to prevent calls on unmounted component
-  useEffect(() => {
-    return () => {
-      debouncedShowDraftSavedToast.cancel();
-      debouncedLogDraftError.cancel();
-    };
-  }, [debouncedShowDraftSavedToast, debouncedLogDraftError]);
-
   const handleSaveDraft = useCallback(
     async ({
-      shouldDebounce = false,
       overrides = {},
     }: {
-      // shouldDebounce flag is used for autosave to debounce toast/log instead of firing on every form change
-      shouldDebounce?: boolean;
       // overrides allow passing new values directly to avoid stale closure issues with async React state updates
       overrides?: {
         chainId?: string;
@@ -501,20 +469,12 @@ const ClaimsForm = ({
           description: caseDescription,
           draftId: currentDraftId,
         });
-        if (shouldDebounce) {
-          debouncedShowDraftSavedToast();
-        } else {
-          dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
-          if (!isEditDraft) {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-          }
+        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+        if (!isEditDraft) {
+          navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
         }
       } catch (error) {
-        if (shouldDebounce) {
-          debouncedLogDraftError(error);
-        } else {
-          log.error('Error saving draft', error);
-        }
+        log.error('Error saving draft', error);
       }
     },
     [
@@ -529,8 +489,6 @@ const ClaimsForm = ({
       isEditDraft,
       dispatch,
       navigate,
-      debouncedShowDraftSavedToast,
-      debouncedLogDraftError,
     ],
   );
 
@@ -661,7 +619,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateEmail();
           if (isEditDraft) {
-            await handleSaveDraft({ shouldDebounce: true });
+            await handleSaveDraft();
           }
         }}
         value={email}
@@ -695,7 +653,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateReimbursementWalletAddress();
           if (isEditDraft) {
-            await handleSaveDraft({ shouldDebounce: true });
+            await handleSaveDraft();
           }
         }}
         value={reimbursementWalletAddress}
@@ -722,7 +680,6 @@ const ClaimsForm = ({
           setImpactedWalletAddress(address);
           if (isEditDraft) {
             await handleSaveDraft({
-              shouldDebounce: true,
               overrides: { impactedWalletAddress: address },
             });
           }
@@ -751,7 +708,6 @@ const ClaimsForm = ({
           setChainId(selectedChainId);
           if (isEditDraft) {
             await handleSaveDraft({
-              shouldDebounce: true,
               overrides: { chainId: selectedChainId },
             });
           }
@@ -803,7 +759,7 @@ const ClaimsForm = ({
         onBlur={async () => {
           validateImpactedTxHash();
           if (isEditDraft) {
-            await handleSaveDraft({ shouldDebounce: true });
+            await handleSaveDraft();
           }
         }}
         value={impactedTransactionHash}
@@ -831,7 +787,7 @@ const ClaimsForm = ({
           onBlur={async () => {
             validateDescription();
             if (isEditDraft) {
-              await handleSaveDraft({ shouldDebounce: true });
+              await handleSaveDraft();
             }
           }}
           value={caseDescription}
