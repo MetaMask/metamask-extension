@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import ConfirmDeleteNetwork from '.';
 
@@ -42,7 +42,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[cancel]'));
+    fireEvent.click(queryByText('Cancel'));
 
     expect(props.removeNetwork).not.toHaveBeenCalled();
     expect(props.onConfirm).not.toHaveBeenCalled();
@@ -55,7 +55,7 @@ describe('Confirm Delete Network', () => {
       <ConfirmDeleteNetwork.WrappedComponent {...props} />,
     );
 
-    fireEvent.click(queryByText('[delete]'));
+    fireEvent.click(queryByText('Delete'));
 
     await waitFor(() => {
       expect(props.removeNetwork).toHaveBeenCalled();

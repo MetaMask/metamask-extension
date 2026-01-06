@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Ievadiet paroli, lai turpinātu"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum publiskā adrese"
-  },
   "etherscanView": {
     "message": "Skatīt kontu ar Etherscan"
   },

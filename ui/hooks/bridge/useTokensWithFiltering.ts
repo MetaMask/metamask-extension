@@ -302,7 +302,7 @@ export const useTokensWithFiltering = (
                 decimals: token.decimals,
                 address: token.address,
                 type: AssetType.token,
-                balance: token.balance ?? '',
+                balance: token.balance ?? '0',
                 string: token.string ?? undefined,
                 image:
                   (token.image ||

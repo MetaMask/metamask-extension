@@ -335,6 +335,13 @@ class TransactionConfirmation extends Confirmation {
   }
 
   /**
+   * Opens the gas fee modal by clicking the edit gas fee icon.
+   */
+  async openGasFeeModal(): Promise<void> {
+    await this.driver.clickElement(this.editGasFeeIcon);
+  }
+
+  /**
    * Edits the gas fee by setting custom gas limit and price values
    *
    * @param gasLimit - The gas limit value to set

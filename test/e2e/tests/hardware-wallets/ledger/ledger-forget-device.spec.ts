@@ -57,7 +57,7 @@ describe('Ledger Hardware', function (this: Suite) {
         await headerNavbar.openAccountMenu();
         await accountListPage.checkPageIsLoaded();
         await accountListPage.checkAccountIsNotDisplayedInAccountList(
-          'Ledger 1',
+          'Ledger Account 1',
         );
       },
     );

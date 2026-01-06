@@ -1,5 +1,11 @@
-import React, { useCallback, useMemo, useContext } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import React, {
+  useCallback,
+  useMemo,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -45,7 +51,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsPrimarySeedPhraseBackedUp,
+} from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
   setCompletedOnboarding,
@@ -71,6 +80,7 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const isOnboardingCompleted = useSelector(getCompletedOnboarding);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -79,6 +89,37 @@ export default function CreationSuccessful() {
   const isFromReminder = searchParams.get('isFromReminder');
   const isFromSettingsSecurity = searchParams.get('isFromSettingsSecurity');
   const isFromSettingsSRPBackup = isWalletReady && isFromReminder;
+
+  const [isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    const browserWithSidePanel = browser as BrowserWithSidePanel;
+    const handleSidePanelClosed = (_args: unknown) => {
+      setIsSidePanelOpen(false);
+    };
+
+    if (isSidePanelEnabled) {
+      // NOTE: `sidePanel.onClosed` event is only available on later versions of Chrome
+      // REFERENCE: {@link https://developer.chrome.com/docs/extensions/reference/api/sidePanel#event-onClosed}
+      if (browserWithSidePanel?.sidePanel?.onClosed?.addListener) {
+        browserWithSidePanel.sidePanel.onClosed.addListener(
+          handleSidePanelClosed,
+        );
+      } else {
+        console.warn('`sidePanel.onClosed` event is not available');
+        // If the event is not available, we set the state to false to prevent the button from being disabled
+        setIsSidePanelOpen(false);
+      }
+    }
+
+    return () => {
+      if (browserWithSidePanel?.sidePanel?.onClosed?.removeListener) {
+        browserWithSidePanel.sidePanel.onClosed.removeListener(
+          handleSidePanelClosed,
+        );
+      }
+    };
+  }, [isSidePanelEnabled]);
 
   const renderDetails1 = useMemo(() => {
     if (isFromReminder) {
@@ -113,7 +154,9 @@ export default function CreationSuccessful() {
           data-testid="manage-default-settings"
           borderRadius={BorderRadius.LG}
           width={BlockSize.Full}
-          onClick={() => navigate(ONBOARDING_PRIVACY_SETTINGS_ROUTE)}
+          onClick={() =>
+            navigate(`${ONBOARDING_PRIVACY_SETTINGS_ROUTE}?isFromReminder=true`)
+          }
         >
           <Box display={Display.Flex} alignItems={AlignItems.center}>
             <Icon
@@ -136,23 +179,29 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const onDone = useCallback(async () => {
-    if (isWalletReady) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.ExtensionPinned,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type:
-            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-        },
-      });
-    }
-
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
+    }
+
+    // Track onboarding completion event
+    if (!isOnboardingCompleted) {
+      const isNewWallet =
+        firstTimeFlowType === FirstTimeFlowType.create ||
+        firstTimeFlowType === FirstTimeFlowType.socialCreate;
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: firstTimeFlowType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: isNewWallet,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+        },
+      });
     }
 
     await dispatch(
@@ -176,6 +225,7 @@ export default function CreationSuccessful() {
             await dispatch(setUseSidePanelAsDefault(true));
             // Use the sidepanel-specific action - no navigation needed, sidepanel is already open
             await dispatch(setCompletedOnboardingWithSidepanel());
+            setIsSidePanelOpen(true);
             return;
           }
         }
@@ -189,7 +239,7 @@ export default function CreationSuccessful() {
 
     navigate(DEFAULT_ROUTE);
   }, [
-    isWalletReady,
+    isOnboardingCompleted,
     isFromReminder,
     dispatch,
     externalServicesOnboardingToggleState,
@@ -214,6 +264,7 @@ export default function CreationSuccessful() {
           size={ButtonSize.Lg}
           width={BlockSize.Full}
           onClick={onDone}
+          disabled={isSidePanelEnabled && isSidePanelOpen}
         >
           {isSidePanelEnabled ? t('openWallet') : t('done')}
         </Button>

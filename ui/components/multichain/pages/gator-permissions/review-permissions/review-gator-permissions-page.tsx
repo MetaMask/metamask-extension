@@ -5,7 +5,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -17,9 +17,8 @@ import {
   TextAlign,
   TextVariant,
   Box,
-  TextColor,
-  BoxJustifyContent,
   BoxFlexDirection,
+  BoxJustifyContent,
 } from '@metamask/design-system-react';
 import {
   PermissionTypesWithCustom,
@@ -29,6 +28,9 @@ import {
 import { Content, Header, Page } from '../../page';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../../shared/constants/preferences';
 import {
   extractNetworkName,
   getDisplayOrigin,
@@ -44,28 +46,16 @@ import {
 import { ReviewGatorPermissionItem } from '../components';
 import { PREVIOUS_ROUTE } from '../../../../../helpers/constants/routes';
 
-type ReviewGatorPermissionsPageProps = {
-  params?: { chainId: string; permissionGroupName: string; origin?: string };
-  navigate?: (
-    to: string | number,
-    options?: { replace?: boolean; state?: Record<string, unknown> },
-  ) => void;
-};
-
-export const ReviewGatorPermissionsPage = ({
-  params,
-  navigate: navigateProp,
-}: ReviewGatorPermissionsPageProps = {}) => {
+export const ReviewGatorPermissionsPage = () => {
   const t = useI18nContext();
-  const navigateHook = useNavigate();
-  const navigate = navigateProp || navigateHook;
-  const urlParamsHook = useParams<{
+  const theme = useTheme();
+  const navigate = useNavigate();
+  const { chainId, origin } = useParams<{
     chainId: string;
     permissionGroupName: string;
     origin?: string;
   }>();
 
-  const { chainId, origin } = params || urlParamsHook;
   const originDecoded = origin ? safeDecodeURIComponent(origin) : undefined;
 
   const [, evmNetworks] = useSelector(
@@ -227,19 +217,25 @@ export const ReviewGatorPermissionsPage = ({
             data-testid="no-connections"
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
-            gap={2}
+            className="h-full"
             padding={4}
           >
-            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
+            <TabEmptyState
+              icon={
+                <img
+                  src={
+                    theme === ThemeType.dark
+                      ? '/images/empty-state-permissions-dark.png'
+                      : '/images/empty-state-permissions-light.png'
+                  }
+                  alt={t('permissionsPageEmptyDescription')}
+                  width={72}
+                  height={72}
+                />
+              }
+              description={t('permissionsPageEmptyDescription')}
+              className="mx-auto"
+            />
           </Box>
         )}
       </Content>

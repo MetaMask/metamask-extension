@@ -1,6 +1,6 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   Color,
   BackgroundColor,
@@ -16,7 +16,7 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import ConnectedStatusIndicator from './connected-status-indicator';
 
 // Mock ConnectedSiteMenu to test props passed to it
-jest.mock('../../multichain', () => ({
+jest.mock('../../multichain/connected-site-menu', () => ({
   ConnectedSiteMenu: jest.fn(({ status, globalMenuColor, text, disabled }) => (
     <div
       data-testid="connection-menu"
