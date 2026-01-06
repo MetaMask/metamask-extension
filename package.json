@@ -598,7 +598,7 @@
     "babelify": "^10.0.0",
     "bify-module-groups": "^2.0.0",
     "browserify": "^17.0.0",
-    "browserslist": "^4.23.0",
+    "browserslist": "^4.28.1",
     "bs58": "^6.0.0",
     "buffer": "^6.0.3",
     "chalk": "^4.1.2",
