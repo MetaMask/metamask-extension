@@ -130,7 +130,7 @@ async function main() {
     }
 
     const configFile = path.join(__dirname, '.mocharc.js');
-    const extraArgs = [...(process.env.E2E_ARGS?.split(' ') || [])];
+    const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
     const dir = 'test/test-results/e2e';
     fs.mkdir(dir, { recursive: true });
