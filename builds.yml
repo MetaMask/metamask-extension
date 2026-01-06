@@ -468,6 +468,9 @@ env:
   - EXTENSION_UX_PNA25: true
   - IS_SIDEPANEL: true
 
+  # Authentication (Backup & Sync, Profile metrics...)
+  - FORCE_AUTH_MATCH_BUILD: false
+
   # Accounts framework
   # NOTE: This flag is used to progressively enable the multichain accounts progressively in
   # contexts that might still rely on the remote feature flag.
