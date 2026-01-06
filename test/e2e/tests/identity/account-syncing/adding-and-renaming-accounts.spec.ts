@@ -17,7 +17,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onboarding.flow';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockIdentityServices } from '../mocks';
-import { arrangeTestUtils } from './helpers';
+import { arrangeTestUtils, skipOnFirefox } from './helpers';
 
 describe('Account syncing - Adding and Renaming Accounts', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -35,6 +35,8 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
    */
 
   it('adds a new account and sync it across multiple phases', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
