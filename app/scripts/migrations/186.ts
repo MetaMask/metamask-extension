@@ -8,7 +8,7 @@ type VersionedData = {
   data: Record<string, unknown>;
 };
 
-export const version = 185;
+export const version = 186;
 
 const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
 

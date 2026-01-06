@@ -1,6 +1,6 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
-import { migrate, version } from './185';
+import { migrate, version } from './186';
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
