@@ -46,12 +46,12 @@ class LoginPage {
       '[data-testid="connections-removed-modal-button"]';
   }
 
-  async checkPageIsLoaded(timeout: number = 10000): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors(
-        [this.passwordInput, this.unlockButton],
-        { timeout },
-      );
+      await this.driver.waitForMultipleSelectors([
+        this.passwordInput,
+        this.unlockButton,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for login page to be loaded', e);
       throw e;

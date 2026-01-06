@@ -14,21 +14,20 @@
     background-color: var(--color-accent03-light);
   }
 
-  &--welcome-login {
-    background-color: var(--welcome-bg-light);
-
-    @media (prefers-color-scheme: dark) {
-      background-color: var(--color-accent02-dark);
-    }
-  }
-
   &__container {
-    padding-inline: 24px;
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding-inline: 16px;
+    padding-top: 16px;
+    padding-bottom: 16px;
     max-width: 446px;
     min-height: 627px;
     height: auto;
+    margin-bottom: 32px;
+
+    @include design-system.screen-sm-min {
+      padding-inline: 24px;
+      padding-top: 32px;
+      padding-bottom: 32px;
+    }
 
     &--full {
       padding-inline: 0;
@@ -39,7 +38,8 @@
       height: 100%;
     }
 
-    &--popup {
+    &--popup,
+    &--sidepanel {
       padding-inline: 16px;
       padding-top: 16px;
       padding-bottom: 24px;

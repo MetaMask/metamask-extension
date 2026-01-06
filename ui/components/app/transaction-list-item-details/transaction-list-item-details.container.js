@@ -18,6 +18,7 @@ const mapStateToProps = (state, ownProps) => {
   const addressBook = getAddressBook(state);
   const accounts = getInternalAccounts(state);
   const recipientName = getAccountName(accounts, recipientAddress);
+  const senderAccountName = getAccountName(accounts, senderAddress);
 
   const getNickName = (address) => {
     const entry = addressBook.find((contact) => {
@@ -33,7 +34,7 @@ const mapStateToProps = (state, ownProps) => {
   return {
     rpcPrefs,
     networkConfiguration,
-    senderNickname: getNickName(senderAddress),
+    senderNickname: senderAccountName || getNickName(senderAddress),
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
     recipientName,

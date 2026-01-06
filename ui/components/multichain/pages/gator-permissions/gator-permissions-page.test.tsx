@@ -37,6 +37,7 @@ mockState.metamask.gatorPermissionsMapSerialized = JSON.stringify({
   'native-token-stream': {},
   'erc20-token-stream': {},
   'erc20-token-periodic': {},
+  'erc20-token-revocation': {},
   other: {},
 });
 mockState.metamask.isGatorPermissionsEnabled = true;

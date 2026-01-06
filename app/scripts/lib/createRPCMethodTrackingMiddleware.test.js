@@ -15,6 +15,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { ResultType } from '../../../shared/lib/trust-signals';
 import {
   permitSignatureMsg,
   orderSignatureMsg,
@@ -260,6 +261,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_description: 'some_description',
+          address_alert_response: ResultType.Loading,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -323,6 +325,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_description: 'some_description',
+          address_alert_response: ResultType.Loading,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -360,6 +363,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
+          address_alert_response: ResultType.Loading,
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
@@ -908,6 +912,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             api_source: MetaMetricsRequestedThrough.EthereumProvider,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            address_alert_response: ResultType.Loading,
           },
           sensitiveProperties: {
             eip712_verifyingContract:
@@ -1179,6 +1184,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            address_alert_response: ResultType.Loading,
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1228,6 +1234,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            address_alert_response: ResultType.Loading,
           },
           referrer: { url: 'multichain.dapp' },
         });
