@@ -262,4 +262,45 @@ describe('useTransactionDisplayData', () => {
     );
     expect(result.current).toStrictEqual(expectedResults[0]);
   });
+
+  it('should handle swap transactions with missing token symbols', () => {
+    const swapTransactionWithMissingSymbols = {
+      initialTransaction: {
+        id: 1,
+        chainId: '0x1',
+        status: 'confirmed',
+        time: 1585088013000,
+        type: 'swap',
+        txParams: {
+          from: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+        // Missing sourceTokenSymbol and destinationTokenSymbol
+      },
+      transactions: [],
+      primaryTransaction: {
+        id: 1,
+        chainId: '0x1',
+        status: 'confirmed',
+        time: 1585088013000,
+        type: 'swap',
+        txParams: {
+          from: '0xee014609ef9e09776ac5fe00bdbfef57bcdefebb',
+          to: '0xabca64466f257793eaa52fcfff5066894b76a149',
+        },
+        // Missing sourceTokenSymbol and destinationTokenSymbol
+      },
+      hasRetried: false,
+      hasCancelled: false,
+    };
+
+    const { result } = renderHookWithProvider(
+      () => useTransactionDisplayData(swapTransactionWithMissingSymbols),
+      getMockState(),
+      DEFAULT_ROUTE,
+    );
+    
+    // Should not throw an error and should return a title with empty strings
+    expect(result.current.title).toStrictEqual('Swap  to ');
+  });
 });

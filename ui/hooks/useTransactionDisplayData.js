@@ -275,9 +275,11 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swap) {
     title = t('swapTokenToToken', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+        initialTransaction.sourceTokenSymbol ??
+        '',
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
+        initialTransaction.destinationTokenSymbol ??
+        '',
     ]);
     const symbolFromTx =
       bridgeTokenDisplayData.sourceTokenSymbol ??
@@ -306,8 +308,8 @@ export function useTransactionDisplayData(transactionGroup) {
     recipientAddress = initialTransaction.swapAndSendRecipient;
 
     title = t('sentTokenAsToken', [
-      initialTransaction.sourceTokenSymbol,
-      initialTransaction.destinationTokenSymbol,
+      initialTransaction.sourceTokenSymbol ?? '',
+      initialTransaction.destinationTokenSymbol ?? '',
     ]);
     primarySuffix =
       isViewingReceivedTokenFromSwap && isSenderTokenRecipient
@@ -326,7 +328,8 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.swapApproval) {
     title = t('swapApproval', [
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
+        primaryTransaction.sourceTokenSymbol ??
+        '',
     ]);
     primarySuffix =
       bridgeTokenDisplayData.sourceTokenSymbol ??
@@ -374,7 +377,7 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol ?? '']);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
