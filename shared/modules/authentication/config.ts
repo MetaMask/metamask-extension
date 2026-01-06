@@ -1,9 +1,9 @@
 import { Env } from '@metamask/profile-sync-controller/sdk';
 
 /**
- * Check if the force auth match build is enabled.
+ * Check if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`.
  *
- * @returns true if the force auth match build is enabled, false otherwise
+ * @returns true if the FORCE_AUTH_MATCH_BUILD environment variable is set to `true`, false otherwise
  */
 export function isForceAuthMatchBuild() {
   return process.env.FORCE_AUTH_MATCH_BUILD?.toString() === 'true';
@@ -15,7 +15,7 @@ export function loadAuthenticationConfig(): Env {
   }
 
   const buildType = process.env.METAMASK_BUILD_TYPE;
-  // `uat` build type for uat environment only build
+  // use `Env.UAT` if build type is either `beta` or `uat`
   if (buildType === 'beta' || buildType === 'uat') {
     return Env.UAT;
   }

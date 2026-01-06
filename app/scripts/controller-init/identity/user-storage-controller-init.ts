@@ -26,6 +26,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
   UserStorageControllerMessenger,
   UserStorageControllerInitMessenger
 > = (request) => {
+  // The environment must be the same used by AuthenticationController.
   const env = loadAuthenticationConfig();
   const { controllerMessenger, initMessenger, persistedState } = request;
   const controller = new UserStorageController({
