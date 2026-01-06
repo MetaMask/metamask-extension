@@ -1,0 +1,15 @@
+diff --git a/dist/PathTrie.cjs b/dist/PathTrie.cjs
+index 6bac8b1bbaaff70013e79128554919ffd57f4627..d087f570d515d226c3de419c880c81e3e40eb228 100644
+--- a/dist/PathTrie.cjs
++++ b/dist/PathTrie.cjs
+@@ -147,6 +147,10 @@ exports.convertListToTrie = convertListToTrie;
+  * @returns A deep copy of the PathNode.
+  */
+ const deepCopyPathNode = (original) => {
++    // Handle non-object values (null, undefined, primitives)
++    if (!original || typeof original !== 'object') {
++        return {};
++    }
+     const copy = {};
+     for (const [key, childNode] of Object.entries(original)) {
+         copy[key] = deepCopyPathNode(childNode);

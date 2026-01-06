@@ -7673,22 +7673,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^13.1.0":
-  version: 13.1.0
-  resolution: "@metamask/phishing-controller@npm:13.1.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^8.0.1"
-    "@metamask/controller-utils": "npm:^11.11.0"
-    "@noble/hashes": "npm:^1.4.0"
-    "@types/punycode": "npm:^2.1.0"
-    ethereum-cryptography: "npm:^2.1.2"
-    fastest-levenshtein: "npm:^1.0.16"
-    punycode: "npm:^2.1.1"
-  checksum: 10/c62f71291736dfd635cc69b2d422687d8d610591a5e1cd9a6b4806cdc19221a72fe7699c0cabe0a2a108b49c3cc4dcb88a5b283fba374fe13e54d5813fb77902
-  languageName: node
-  linkType: hard
-
-"@metamask/phishing-controller@npm:^15.0.0":
+"@metamask/phishing-controller@npm:15.0.0":
   version: 15.0.0
   resolution: "@metamask/phishing-controller@npm:15.0.0"
   dependencies:
@@ -7706,7 +7691,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/phishing-controller@npm:^16.1.0":
+"@metamask/phishing-controller@npm:16.1.0":
   version: 16.1.0
   resolution: "@metamask/phishing-controller@npm:16.1.0"
   dependencies:
@@ -7721,6 +7706,57 @@ __metadata:
   peerDependencies:
     "@metamask/transaction-controller": ^62.0.0
   checksum: 10/af956177cd1a3dd10150cefd8895cc479bb35bddd4ae751031985a89d929a9f63febf55462d09d9e6970612b00f5b90e27ff84dbb82f5ce503f8d429a4b0803b
+  languageName: node
+  linkType: hard
+
+"@metamask/phishing-controller@npm:^13.1.0":
+  version: 13.1.0
+  resolution: "@metamask/phishing-controller@npm:13.1.0"
+  dependencies:
+    "@metamask/base-controller": "npm:^8.0.1"
+    "@metamask/controller-utils": "npm:^11.11.0"
+    "@noble/hashes": "npm:^1.4.0"
+    "@types/punycode": "npm:^2.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
+    punycode: "npm:^2.1.1"
+  checksum: 10/c62f71291736dfd635cc69b2d422687d8d610591a5e1cd9a6b4806cdc19221a72fe7699c0cabe0a2a108b49c3cc4dcb88a5b283fba374fe13e54d5813fb77902
+  languageName: node
+  linkType: hard
+
+"@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-phishing-controller-npm-15.0.0-918c785c1f.patch":
+  version: 15.0.0
+  resolution: "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-phishing-controller-npm-15.0.0-918c785c1f.patch::version=15.0.0&hash=83fd9a"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.14.1"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    "@types/punycode": "npm:^2.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
+    punycode: "npm:^2.1.1"
+  peerDependencies:
+    "@metamask/transaction-controller": ^61.0.0
+  checksum: 10/1a336d950bdfee7b0df0848fff6f49f2d8f72e68b7662c0de8154d34b92fc2c752583113540d8b7bd0b705eaf6b22e7eae7ebdeb59f539bb148c52499f6a7a4d
+  languageName: node
+  linkType: hard
+
+"@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-16.1.0-d46647f7c9.patch":
+  version: 16.1.0
+  resolution: "@metamask/phishing-controller@patch:@metamask/phishing-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-16.1.0-d46647f7c9.patch::version=16.1.0&hash=83fd9a"
+  dependencies:
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@noble/hashes": "npm:^1.8.0"
+    "@types/punycode": "npm:^2.1.0"
+    ethereum-cryptography: "npm:^2.1.2"
+    fastest-levenshtein: "npm:^1.0.16"
+    punycode: "npm:^2.1.1"
+  peerDependencies:
+    "@metamask/transaction-controller": ^62.0.0
+  checksum: 10/18677f50ad58cfa364b78cdfb97e67a31bf0bf666af44dea140b43f2351b007033aa0e7b883fb76a352d57b999fe65e372d9fa078a7e46bb8501198e18dfafbe
   languageName: node
   linkType: hard
 

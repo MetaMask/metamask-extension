@@ -256,7 +256,9 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs@npm:6.13.0": "^6.14.1"
+    "qs@npm:6.13.0": "^6.14.1",
+    "@metamask/phishing-controller@npm:^15.0.0": "patch:@metamask/phishing-controller@npm%3A15.0.0#~/.yarn/patches/@metamask-phishing-controller-npm-15.0.0-918c785c1f.patch",
+    "@metamask/phishing-controller@npm:^16.1.0": "patch:@metamask/phishing-controller@npm%3A16.1.0#~/.yarn/patches/@metamask-phishing-controller-npm-16.1.0-d46647f7c9.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
