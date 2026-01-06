@@ -1618,6 +1618,20 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+/**
+ * Input selector for retrieving all installed non-preinstalled Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Object - Installed non-preinstalled Snaps.
+ */
+export const selectInstalledNonPreinstalledSnaps = createSelector(
+  [selectInstalledSnaps],
+  (installedSnaps) =>
+    Object.fromEntries(
+      Object.entries(installedSnaps).filter(([, snap]) => !snap.preinstalled),
+    ),
+);
+
 export const selectIsNetworkMenuOpen = (state) =>
   state.appState.isNetworkMenuOpen;
 
@@ -1662,7 +1676,7 @@ export const getSnapLatestVersion = createSelector(
  * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
  */
 export const getAllSnapAvailableUpdates = createSelector(
-  [selectInstalledSnaps, rawStateSelector],
+  [selectInstalledNonPreinstalledSnaps, rawStateSelector],
   (installedSnaps, state) => {
     const snapMap = new Map();
 
