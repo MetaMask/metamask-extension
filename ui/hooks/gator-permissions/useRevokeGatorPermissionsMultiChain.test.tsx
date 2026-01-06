@@ -25,7 +25,10 @@ import {
   getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
 import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
-import { checkDelegationDisabled } from '../../store/controller-actions/gator-permissions-controller';
+import {
+  checkDelegationDisabled,
+  submitDirectRevocation,
+} from '../../store/controller-actions/gator-permissions-controller';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
@@ -105,6 +108,8 @@ const mockCheckDelegationDisabled =
   checkDelegationDisabled as jest.MockedFunction<
     typeof checkDelegationDisabled
   >;
+const mockSubmitDirectRevocation =
+  submitDirectRevocation as jest.MockedFunction<typeof submitDirectRevocation>;
 
 const mockStore = configureStore();
 
@@ -381,6 +386,37 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       }
       expect(results[mockChainId1].skipped).toHaveLength(1);
       expect(results[mockChainId1].revoked).toHaveLength(0);
+    });
+
+    it('should call submitDirectRevocation without creating transaction when delegation is already disabled', async () => {
+      mockCheckDelegationDisabled.mockResolvedValue(true);
+
+      const { result } = renderHook(
+        () => useRevokeGatorPermissionsMultiChain(),
+        { wrapper },
+      );
+
+      const permissionsByChain = {
+        [mockChainId1]: [mockPermission1],
+      };
+
+      let results: RevokeGatorPermissionsMultiChainResults | undefined;
+      await act(async () => {
+        results =
+          await result.current.revokeGatorPermissionsBatchMultiChain(
+            permissionsByChain,
+          );
+      });
+
+      if (!results) {
+        throw new Error('Results should be defined');
+      }
+      expect(mockSubmitDirectRevocation).toHaveBeenCalledWith({
+        permissionContext: mockPermissionContext1,
+      });
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+      expect(results[mockChainId1].revoked).toHaveLength(0);
+      expect(results[mockChainId1].errors).toHaveLength(0);
     });
 
     it('should handle empty permissionsByChain object', async () => {
