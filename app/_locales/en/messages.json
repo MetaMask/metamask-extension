@@ -452,7 +452,7 @@
     "message": "Alert"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
@@ -609,6 +609,9 @@
   },
   "allTimeLow": {
     "message": "All-time low"
+  },
+  "allTokens": {
+    "message": "All tokens"
   },
   "allowAddRpc": {
     "message": "Add RPC"
@@ -1503,6 +1506,9 @@
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "This site wants permission to withdraw your tokens"
   },
+  "confirmTitleDescERC20Revocation": {
+    "message": "This site wants permissions to revoke your ERC-20 token approvals."
+  },
   "confirmTitleDescPermission": {
     "message": "This site wants permissions to spend your tokens."
   },
@@ -2027,6 +2033,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
+  },
+  "deepLink_theOnboardingPage": {
+    "message": "the onboarding page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -2608,9 +2617,6 @@
   "ethereumProviderAccess": {
     "message": "Grant Ethereum provider access to $1",
     "description": "The parameter is the name of the requesting origin"
-  },
-  "ethereumPublicAddress": {
-    "message": "Ethereum public address"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -4366,11 +4372,8 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask isn’t connected to this site"
-  },
   "noConnectionDescription": {
-    "message": "To connect to a site, find and select the \"connect\" button. Remember MetaMask can only connect to sites on web3"
+    "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
@@ -5142,11 +5145,8 @@
   "permissions": {
     "message": "Permissions"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Nothing to see here"
-  },
-  "permissionsPageEmptySubContent": {
-    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  "permissionsPageEmptyDescription": {
+    "message": "No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
@@ -5751,6 +5751,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
   },
   "reward": {
     "message": "Reward"
@@ -6461,7 +6464,7 @@
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1."
+    "message": "By continuing, I agree to Transaction Shield $1"
   },
   "shieldNotCovered": {
     "message": "Not covered"

@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import { sumHexes } from '../../../../shared/modules/conversion.utils';
 import {
   getMultichainNetworkConfigurationsByChainId,
-  getNativeTokenCachedBalanceByChainIdByAccountAddress,
+  getNativeTokenCachedBalanceByChainIdSelector,
   selectTransactionFeeById,
 } from '../../../selectors';
 import { useConfirmContext } from '../context/confirm';
@@ -30,10 +30,7 @@ export function useHasInsufficientBalance(): {
     ) ?? [];
 
   const chainBalances = useSelector((state) =>
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(
-      state,
-      fromAddress ?? '',
-    ),
+    getNativeTokenCachedBalanceByChainIdSelector(state, fromAddress ?? ''),
   ) as Record<Hex, Hex>;
 
   const balance = chainBalances?.[chainId as Hex] ?? ZERO_HEX_FALLBACK;

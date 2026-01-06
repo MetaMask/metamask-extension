@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -32,14 +32,10 @@ export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
-  supportsEIP1559,
-  setShowCustomizeGasPopover,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
-  supportsEIP1559: boolean;
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useI18nContext();
 
@@ -74,6 +70,9 @@ export const EditGasFeesRow = ({
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
 
+  const isGasFeeEditable =
+    !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
+
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       <ConfirmInfoAlertRow
@@ -103,14 +102,7 @@ export const EditGasFeesRow = ({
                 {t('paidByMetaMask')}
               </Text>
             )}
-            {!isQuotedSwapDisplayedInInfo &&
-              !gasFeeToken &&
-              !isGasFeeSponsored && (
-                <EditGasIconButton
-                  supportsEIP1559={supportsEIP1559}
-                  setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-                />
-              )}
+            {isGasFeeEditable && <EditGasIconButton />}
             {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
               <FiatValue
                 fullValue={fiatFeeWith18SignificantDigits}

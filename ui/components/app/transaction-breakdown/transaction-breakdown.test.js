@@ -182,5 +182,29 @@ describe('TransactionBreakdown', () => {
         ['Total', '0.00128108ETH'],
       ]);
     });
+
+    it('renders "Network Fee" as "Paid by MetaMask" when gas is sponsored', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              isGasFeeSponsored: true,
+            },
+          }}
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        ['Nonce', '114'],
+        ['Amount Sent', '33.425656732428330864 BAT'],
+        ['Amount Received', '0.00222334422997802 ETH'],
+        ['Network fee', 'Paid by MetaMask'],
+      ]);
+    });
   });
 });

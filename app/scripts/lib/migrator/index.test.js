@@ -88,7 +88,7 @@ describe('migrations', () => {
     it('migratedData version should be version 3', async () => {
       const migrator = new Migrator({ migrations: stubMigrations });
       const migratedData = await migrator.migrateData(versionedData);
-      expect(migratedData.meta.version).toStrictEqual(
+      expect(migratedData.state.meta.version).toStrictEqual(
         stubMigrations[2].version,
       );
     });
@@ -97,7 +97,8 @@ describe('migrations', () => {
       const migrator = new Migrator({ migrations: liveMigrations });
       const migratedData = await migrator.migrateData(firstTimeState);
       const last = liveMigrations.length - 1;
-      expect(migratedData.meta.version).toStrictEqual(
+
+      expect(migratedData.state.meta.version).toStrictEqual(
         liveMigrations[last].version,
       );
     });

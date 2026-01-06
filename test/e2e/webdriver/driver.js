@@ -1068,7 +1068,10 @@ class Driver {
    */
   async navigate(
     page = PAGES.HOME,
-    { waitForControllers = true, waitForControllersTimeout = 10000 } = {},
+    {
+      waitForControllers = true,
+      waitForControllersTimeout = this.timeout,
+    } = {},
   ) {
     const response = await this.driver.get(`${this.extensionUrl}/${page}.html`);
     // Wait for asynchronous JavaScript to load

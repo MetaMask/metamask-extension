@@ -6451,13 +6451,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function updateBalancesFoAccounts(
+export function updateBalancesFoAccounts(
   chainIds: string[],
   queryAllAccounts: boolean,
-): Promise<void> {
-  await submitRequestToBackground('updateBalances', [
-    { chainIds, queryAllAccounts },
-  ]);
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateBalances', [
+      { chainIds, queryAllAccounts },
+    ]);
+  };
 }
 
 /**
