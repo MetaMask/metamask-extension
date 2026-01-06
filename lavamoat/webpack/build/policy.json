@@ -473,7 +473,7 @@
         "mockttp>express>http-errors": true,
         "jsdom>whatwg-encoding>iconv-lite": true,
         "koa>on-finished": true,
-        "mockttp>body-parser>qs": true,
+        "mockttp>express>qs": true,
         "mockttp>body-parser>raw-body": true,
         "mockttp>express>type-is": true,
         "mockttp>body-parser>unpipe": true
@@ -2159,11 +2159,6 @@
       "packages": {
         "mockttp>express>proxy-addr>forwarded": true,
         "react-devtools>internal-ip>ipaddr.js": true
-      }
-    },
-    "mockttp>body-parser>qs": {
-      "packages": {
-        "string.prototype.matchall>side-channel": true
       }
     },
     "mockttp>express>qs": {
