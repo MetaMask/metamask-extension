@@ -4243,7 +4243,7 @@ export default class MetamaskController extends EventEmitter {
 
       // Set migration version for new users so migration never runs
       this.seedlessOnboardingController.setMigrationVersion(
-        SeedlessOnboardingMigrationVersion.DataType,
+        SeedlessOnboardingMigrationVersion.V1,
       );
 
       await this.syncKeyringEncryptionKey();
