@@ -33161,7 +33161,6 @@ __metadata:
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
-    history: "npm:^5.3.0"
     html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
