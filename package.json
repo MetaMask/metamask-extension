@@ -368,7 +368,7 @@
     "@metamask/scure-bip39": "^2.0.3",
     "@metamask/seedless-onboarding-controller": "^7.1.0",
     "@metamask/selected-network-controller": "^25.0.0",
-    "@metamask/shield-controller": "^4.0.0",
+    "@metamask/shield-controller": "npm:@metamask-previews/shield-controller@4.0.0-preview-bbf1f2af",
     "@metamask/signature-controller": "^38.0.0",
     "@metamask/smart-transactions-controller": "^21.0.0",
     "@metamask/snaps-controllers": "^17.2.0",

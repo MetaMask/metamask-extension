@@ -8132,18 +8132,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "@metamask/shield-controller@npm:4.0.0"
+"@metamask/shield-controller@npm:@metamask-previews/shield-controller@4.0.0-preview-bbf1f2af":
+  version: 4.0.0-preview-bbf1f2af
+  resolution: "@metamask-previews/shield-controller@npm:4.0.0-preview-bbf1f2af"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
+    "@metamask/controller-utils": "npm:^11.17.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/signature-controller": "npm:^38.0.0"
-    "@metamask/transaction-controller": "npm:^62.5.0"
-    "@metamask/utils": "npm:^11.8.1"
+    "@metamask/transaction-controller": "npm:^62.7.0"
+    "@metamask/utils": "npm:^11.9.0"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/1cbd2e9836112d29fa5bd2d60f3c9dc9df81932bc24d7756ff598d0a509961238eb70ae3f7d1cc55d04385266d9f1a2f8e61cca5e208edae64c1495116579307
+  checksum: 10/955ef0b2ff7a60879c5bcf7c6f196bcc3018c0d9dc617df0c45e7e83231f6ccbf0dcadce7ec211a5008d0c674eb1981e070fd6d0622503b09ed8c1a840cb887a
   languageName: node
   linkType: hard
 
@@ -32947,7 +32947,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^7.1.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:^4.0.0"
+    "@metamask/shield-controller": "npm:@metamask-previews/shield-controller@4.0.0-preview-bbf1f2af"
     "@metamask/signature-controller": "npm:^38.0.0"
     "@metamask/smart-transactions-controller": "npm:^21.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
