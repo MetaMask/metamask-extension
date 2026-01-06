@@ -12,7 +12,6 @@ export async function runTrackedTask<Return>(
 
   const attributes = {
     'task.name': taskName,
-    'app.version': process.env.METAMASK_VERSION,
   };
 
   return sentry.startSpan(
@@ -23,22 +22,17 @@ export async function runTrackedTask<Return>(
       attributes,
     },
     async (span) => {
-      const startedAt = performance.now();
-
       try {
         const result = await fn();
 
         span.setStatus({ code: 1 });
-        span.setAttribute('task.duration_ms', performance.now() - startedAt);
 
         return result;
       } catch (err) {
-        const durationMs = performance.now() - startedAt;
         span.setStatus({
           code: 2, // 2 === SPAN_STATUS_ERROR
           message: 'internal_error',
         });
-        span.setAttribute('task.duration_ms', durationMs);
         span.setAttribute(
           'task.error_message',
           err instanceof Error ? err.message : String(err),
@@ -47,11 +41,6 @@ export async function runTrackedTask<Return>(
         // Creates an *error event* (Issue), separate from the span:
         sentry.captureException(err, {
           tags: { 'task.name': taskName, 'task.status': 'failed' },
-          extra: {
-            'task.duration_ms': durationMs,
-            'app.version': process.env.METAMASK_VERSION,
-          },
-          contexts: { browser: { userAgent: navigator.userAgent } },
         });
 
         throw err;
