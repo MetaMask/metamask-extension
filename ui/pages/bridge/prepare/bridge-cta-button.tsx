@@ -29,10 +29,8 @@ import {
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
 import {
-  HardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
-  useHardwareWalletError,
 } from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
@@ -81,8 +79,6 @@ export const BridgeCTAButton = ({
   const { isHardwareWalletAccount, deviceId } = useHardwareWalletConfig();
   // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
-
-  const { showErrorModal } = useHardwareWalletError();
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -169,30 +165,19 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
-          try {
-            if (isHardwareWalletAccount && deviceId) {
-              console.log('[BridgeCTAButton] Calling ensureDeviceReady');
-              await ensureDeviceReady(deviceId);
-              console.log('[BridgeCTAButton] ensureDeviceReady succeeded');
+          // Verify hardware wallet device is ready before submitting
+          if (isHardwareWalletAccount && deviceId) {
+            console.log('[BridgeCTAButton] Verifying device is ready');
+            const isDeviceReady = await ensureDeviceReady(deviceId);
+            if (!isDeviceReady) {
+              console.log(
+                '[BridgeCTAButton] Device not ready, error modal will be shown by HardwareWalletErrorMonitor',
+              );
+              return; // Don't proceed with transaction
             }
-          } catch (error) {
-            console.log('[BridgeCTAButton] Error caught:', error);
-            console.log('[BridgeCTAButton] Error type:', typeof error);
-            console.log(
-              '[BridgeCTAButton] Error instanceof HardwareWalletError:',
-              error instanceof HardwareWalletError,
-            );
-            console.log(
-              '[BridgeCTAButton] Error code:',
-              (error as HardwareWalletError)?.code,
-            );
-            console.log(
-              '[BridgeCTAButton] Error userActionable:',
-              (error as HardwareWalletError)?.userActionable,
-            );
-            showErrorModal(error as HardwareWalletError);
-            return;
+            console.log('[BridgeCTAButton] Device is ready, proceeding');
           }
+
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page

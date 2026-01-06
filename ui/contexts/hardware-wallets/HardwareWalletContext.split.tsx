@@ -340,7 +340,15 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
           break;
 
         case DeviceEvent.AppNotOpen:
+          // When called during ensureDeviceReady, this is an error condition
+          // that should show a modal to the user
+          if (payload.error) {
+            updateConnectionState(
+              ConnectionState.error('app_not_open', payload.error),
+            );
+          } else {
           updateConnectionState(ConnectionState.awaitingApp('not_open'));
+          }
           break;
 
         case DeviceEvent.AppChanged:
@@ -913,14 +921,15 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       const abortSignal = abortControllerRef.current?.signal;
 
       if (abortSignal?.aborted) {
-        throw new Error('Operation aborted');
+        console.log(LOG_TAG, 'ensureDeviceReady aborted');
+        return false;
       }
 
       const adapter = adapterRef.current;
 
       // If not connected, try to connect first
       if (!adapter?.isConnected()) {
-        console.log('is connected', adapter?.isConnected());
+        console.log(LOG_TAG, 'Device not connected, attempting connection');
         const currentDetectedWalletType = detectedWalletTypeRef.current;
 
         if (!targetDeviceId || !currentDetectedWalletType) {
@@ -933,17 +942,35 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
           return false;
         }
 
+        try {
         await connect(currentDetectedWalletType, targetDeviceId);
+        } catch (error) {
+          // Error state already set by connect/adapter via device events
+          // HardwareWalletErrorMonitor will show modal automatically
+          console.error(
+            LOG_TAG,
+            'Connection failed in ensureDeviceReady:',
+            error,
+          );
+          return false;
+        }
       }
 
       if (!abortSignal?.aborted) {
         if (adapter?.verifyDeviceReady && targetDeviceId) {
+          try {
           const result = await adapter.verifyDeviceReady(targetDeviceId);
-          console.log('ensureDeviceReady result', result);
+            console.log(LOG_TAG, 'ensureDeviceReady result:', result);
           if (result) {
             updateConnectionState(ConnectionState.ready());
           }
           return result;
+          } catch (error) {
+            // Error state already set via onDeviceEvent in adapter
+            // HardwareWalletErrorMonitor will show modal automatically
+            console.error(LOG_TAG, 'verifyDeviceReady failed:', error);
+            return false;
+          }
         }
       }
 

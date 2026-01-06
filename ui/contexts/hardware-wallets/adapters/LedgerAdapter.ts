@@ -14,10 +14,7 @@ import {
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
-import {
-  extractHardwareWalletErrorCode,
-  reconstructHardwareWalletError,
-} from '../rpcErrorUtils';
+import { reconstructHardwareWalletError } from '../rpcErrorUtils';
 
 const LOG_TAG = '[LedgerAdapter]';
 
@@ -117,26 +114,49 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       this.connected = false;
       this.currentDeviceId = null;
 
-      // Extract the error code from the JsonRpcError
-      const errorCode = extractHardwareWalletErrorCode(error);
-
-      if (errorCode) {
-        // Call appropriate callbacks based on error code
-        if (
-          errorCode === ErrorCode.AUTH_LOCK_001 ||
-          errorCode === ErrorCode.AUTH_LOCK_002
-        ) {
-          this.options.onDeviceLocked();
-        } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
-          this.options.onAppNotOpen();
-        }
-      }
-
-      // Reconstruct and re-throw as a proper HardwareWalletError
       const hwError = reconstructHardwareWalletError(
         error,
         HardwareWalletType.Ledger,
       );
+
+      console.log(LOG_TAG, 'Connection failed with error:', {
+        code: hwError.code,
+        userActionable: hwError.userActionable,
+      });
+
+      const errorCode = hwError.code;
+
+      if (errorCode) {
+        if (
+          errorCode === ErrorCode.AUTH_LOCK_001 ||
+          errorCode === ErrorCode.AUTH_LOCK_002
+        ) {
+          console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event from connect');
+          this.options.onDeviceEvent({
+            event: DeviceEvent.DeviceLocked,
+            error: hwError,
+          });
+        } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
+          console.log(LOG_TAG, 'Emitting APP_NOT_OPEN event from connect');
+          this.options.onDeviceEvent({
+            event: DeviceEvent.AppNotOpen,
+            error: hwError,
+          });
+        } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
+          console.log(LOG_TAG, 'Emitting DISCONNECTED event from connect');
+          this.options.onDeviceEvent({
+            event: DeviceEvent.Disconnected,
+            error: hwError,
+          });
+        } else {
+          console.log(LOG_TAG, 'Emitting CONNECTION_FAILED event from connect');
+          this.options.onDeviceEvent({
+            event: DeviceEvent.ConnectionFailed,
+            error: hwError,
+          });
+        }
+      }
+
       throw hwError;
     }
   }
@@ -229,15 +249,22 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 
-      // Extract the error code from the JsonRpcError
-      // When errors cross the RPC boundary, HardwareWalletError properties
-      // are serialized into JsonRpcError.data
-      const errorCode = extractHardwareWalletErrorCode(error);
+      const hwError = reconstructHardwareWalletError(
+        error,
+        HardwareWalletType.Ledger,
+      );
 
-      console.log(LOG_TAG, 'Extracted error code:', errorCode);
+      console.log(LOG_TAG, 'Reconstructed error:', {
+        code: hwError.code,
+        userActionable: hwError.userActionable,
+      });
+
+      const errorCode = hwError.code;
+
+      console.log(LOG_TAG, 'Error code:', errorCode);
 
       if (errorCode) {
-        // Emit appropriate device events based on the error code for UI state updates
+        // Emit appropriate device events with the properly reconstructed error
         if (
           errorCode === ErrorCode.AUTH_LOCK_001 ||
           errorCode === ErrorCode.AUTH_LOCK_002
@@ -245,41 +272,29 @@ export class LedgerAdapter implements HardwareWalletAdapter {
           console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event');
           this.options.onDeviceEvent({
             event: DeviceEvent.DeviceLocked,
-            error: error as unknown as Error,
+            error: hwError,
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
           console.log(LOG_TAG, 'Emitting APP_NOT_OPEN event');
           this.options.onDeviceEvent({
             event: DeviceEvent.AppNotOpen,
-            error: error as unknown as Error,
+            error: hwError,
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
           console.log(LOG_TAG, 'Emitting DISCONNECTED event');
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
-            error: error as unknown as Error,
+            error: hwError,
           });
         } else {
           // Catch-all for other errors
           console.log(LOG_TAG, 'Emitting DISCONNECTED event (catch-all)');
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
-            error: error as unknown as Error,
+            error: hwError,
           });
         }
       }
-
-      // Reconstruct the HardwareWalletError before re-throwing
-      // This ensures consumers of this error get a proper HardwareWalletError instance
-      const hwError = reconstructHardwareWalletError(
-        error,
-        HardwareWalletType.Ledger,
-      );
-
-      console.log(LOG_TAG, 'Re-throwing reconstructed error:', {
-        code: hwError.code,
-        userActionable: hwError.userActionable,
-      });
 
       throw hwError;
     }
