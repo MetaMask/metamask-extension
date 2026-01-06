@@ -1,4 +1,5 @@
 import { ApprovalType } from '@metamask/controller-utils';
+import { Hex } from '@metamask/utils';
 import { QuoteResponse } from '@metamask/bridge-controller';
 
 import { createSelector } from 'reselect';
@@ -67,6 +68,19 @@ export function selectEnforcedSimulationsSlippage(
 export function selectDappSwapComparisonData(
   state: ConfirmMetamaskState,
   transactionId: string,
-): { quotes?: QuoteResponse[]; latency?: number } | undefined {
+):
+  | {
+      quotes?: QuoteResponse[];
+      latency?: number;
+      commands?: string;
+      error?: string;
+      swapInfo?: {
+        srcTokenAddress: Hex;
+        destTokenAddress: Hex;
+        srcTokenAmount: Hex;
+        destTokenAmountMin: Hex;
+      };
+    }
+  | undefined {
   return state.metamask.dappSwapComparisonData?.[transactionId] ?? undefined;
 }

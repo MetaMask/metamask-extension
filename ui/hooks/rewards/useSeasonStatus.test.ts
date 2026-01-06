@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import {
   SeasonDtoState,
   SeasonStatusState,
@@ -176,6 +176,70 @@ describe('useSeasonStatus', () => {
         const rewardsState = getRewardsSlice(store);
         expect(rewardsState.seasonStatusLoading).toBe(false);
         expect(rewardsState.seasonStatus).toEqual(mockSeasonStatus);
+        expect(rewardsState.seasonStatusError).toBeNull();
+      });
+    });
+
+    const INVALID_SUB_IDS = ['pending', 'retry', 'error'] as const;
+    type InvalidSubId = (typeof INVALID_SUB_IDS)[number];
+
+    INVALID_SUB_IDS.forEach((subId: InvalidSubId) => {
+      it(`clears state and does not call actions when subscriptionId is ${subId} via useEffect`, async () => {
+        const { store } = renderHookWithProvider(
+          () =>
+            useSeasonStatus({
+              subscriptionId: subId,
+              onAuthorizationError: mockOnAuthorizationError,
+            }),
+          {
+            metamask: {
+              isUnlocked: true,
+              useExternalServices: true,
+              remoteFeatureFlags: { rewardsEnabled: true },
+              rewardsActiveAccount: {
+                account: 'eip155:1:0x123',
+                subscriptionId: subId,
+              },
+              rewardsSubscriptions: {},
+            },
+          },
+        );
+
+        await waitFor(() => {
+          expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
+          expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
+          const rewardsState = getRewardsSlice(store);
+          expect(rewardsState.seasonStatus).toBeNull();
+          expect(rewardsState.seasonStatusLoading).toBe(false);
+          expect(rewardsState.seasonStatusError).toBeNull();
+        });
+      });
+    });
+
+    it('clears state and does not call actions when subscriptionId is null via useEffect', async () => {
+      const { store } = renderHookWithProvider(
+        () =>
+          useSeasonStatus({
+            subscriptionId: null,
+            onAuthorizationError: mockOnAuthorizationError,
+          }),
+        {
+          metamask: {
+            isUnlocked: true,
+            useExternalServices: true,
+            remoteFeatureFlags: { rewardsEnabled: true },
+            rewardsActiveAccount: null,
+            rewardsSubscriptions: {},
+          },
+        },
+      );
+
+      await waitFor(() => {
+        expect(getRewardsSeasonMetadata).not.toHaveBeenCalled();
+        expect(getRewardsSeasonStatus).not.toHaveBeenCalled();
+        const rewardsState = getRewardsSlice(store);
+        expect(rewardsState.seasonStatus).toBeNull();
+        expect(rewardsState.seasonStatusLoading).toBe(false);
         expect(rewardsState.seasonStatusError).toBeNull();
       });
     });

@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   ButtonIcon,
   ButtonIconSize,
@@ -39,7 +39,7 @@ export const AddWalletPage = () => {
   );
 
   return (
-    <Page className="max-w-[600px]">
+    <Page>
       <Header
         textProps={{
           variant: LegacyTextVariant.headingSm,

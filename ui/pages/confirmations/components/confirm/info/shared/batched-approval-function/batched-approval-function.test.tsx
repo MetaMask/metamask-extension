@@ -15,6 +15,7 @@ import { renderWithConfirmContextProvider } from '../../../../../../../../test/l
 import { DecodedTransactionDataMethod } from '../../../../../../../../shared/types/transaction-decode';
 import { getTokenStandardAndDetails } from '../../../../../../../store/actions';
 import { Confirmation } from '../../../../../types/confirm';
+import * as DappSwapContextModule from '../../../../../context/dapp-swap';
 import { BatchedApprovalFunction } from './batched-approval-function';
 
 const DATA_MOCK = '0x123456';
@@ -100,6 +101,36 @@ describe('BatchedApprovalFunction', () => {
       expect(getByText('Amount')).toBeInTheDocument();
       expect(getByText('10000000 ETH')).toBeInTheDocument();
     });
+  });
+
+  it('renders nothing if quoted swap is selected', async () => {
+    jest.spyOn(DappSwapContextModule, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+    } as unknown as ReturnType<
+      typeof DappSwapContextModule.useDappSwapContext
+    >);
+
+    (getTokenStandardAndDetails as jest.Mock).mockResolvedValue({
+      decimals: 6,
+      symbol: 'ETH',
+      standard: 'ERC20',
+      amountOrTokenId: '10000000',
+    });
+
+    const { queryByText } = await renderTransactionData({
+      currentData: '0x123',
+      dataOverride:
+        '0x095ea7b30000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000009184e72a000',
+      nestedTransactions: [
+        {
+          data: '0x095ea7b30000000000000000000000001231deb6f5749ef6ce6943a275a1d3e7486f4eae000000000000000000000000000000000000000000000000000009184e72a000',
+          to: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
+        },
+      ],
+      nestedTransactionIndex: 0,
+    });
+
+    expect(queryByText('approve')).not.toBeInTheDocument();
   });
 
   it('renders ERC20 permit-2 approvals correctly', async () => {

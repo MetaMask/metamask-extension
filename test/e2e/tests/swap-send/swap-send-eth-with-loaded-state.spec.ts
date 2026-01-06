@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
@@ -10,11 +10,11 @@ import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
 async function mockSwapQuotes(mockServer: MockttpServer) {
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: 1700, // Default ETH price for swap tests
             marketCap: 382623505141,
@@ -227,6 +227,16 @@ describe('Swap-Send ETH', function () {
                       aggregators: [],
                     },
                   ],
+                },
+              },
+            })
+            .withTokenBalancesController({
+              tokenBalances: {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                  '0x1': {
+                    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2':
+                      '0x2B5E3AF16B1880000', // 50 WETH in hex
+                  },
                 },
               },
             })

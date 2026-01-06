@@ -3,7 +3,7 @@ import { act } from '@testing-library/react-hooks';
 import log from 'loglevel';
 import { useSelector } from 'react-redux';
 import { selectBridgeQuotes } from '@metamask/bridge-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getRewardsHasAccountOptedIn,

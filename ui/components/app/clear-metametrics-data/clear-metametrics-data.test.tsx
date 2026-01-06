@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import { DELETE_METAMETRICS_DATA_MODAL_CLOSE } from '../../../store/actionConstants';
 import ClearMetaMetricsData from './clear-metametrics-data';
@@ -44,8 +44,8 @@ describe('ClearMetaMetricsData', () => {
   it('should call createMetaMetricsDataDeletionTask when Clear button is clicked', () => {
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
-    expect(getByText('Clear')).toBeEnabled();
-    fireEvent.click(getByText('Clear'));
+    expect(getByText('Delete')).toBeEnabled();
+    fireEvent.click(getByText('Delete'));
     expect(Actions.createMetaMetricsDataDeletionTask).toHaveBeenCalledTimes(1);
   });
 

@@ -12,7 +12,7 @@ import {
   getPreferences,
   getCurrencyRates,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getEnabledNetworksByNamespace,
 } from '../../../../selectors';
 import {
@@ -49,9 +49,9 @@ jest.mock('../../../../hooks/useIsOriginalTokenSymbol', () => {
 });
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -193,7 +193,7 @@ describe('Token Cell', () => {
     if (selector === getUseCurrencyRateCheck) {
       return true;
     }
-    if (selector === useSafeChainsListValidationSelector) {
+    if (selector === getUseSafeChainsListValidation) {
       return true;
     }
     if (selector === getEnabledNetworksByNamespace) {

@@ -267,21 +267,15 @@ function extractTemplateTypeFromBody(body: string): TemplateType {
 function extractRegressionStageFromBugReportIssueBody(
   body: string,
 ): RegressionStage | undefined {
-  const detectionStageRegex = /### Detection stage\s*\n\s*(.*)/i;
+  const detectionStageRegex = /### Where was this bug found\?\s*\n\s*(.*)/i;
   const match = body.match(detectionStageRegex);
   const extractedAnswer = match ? match[1].trim() : undefined;
 
   switch (extractedAnswer) {
-    case 'On a feature branch':
-      return RegressionStage.DevelopmentFeature;
-    case 'On main branch':
-      return RegressionStage.DevelopmentMain;
-    case 'During release testing':
-      return RegressionStage.Testing;
-    case 'In public beta':
-      return RegressionStage.Beta;
-    case 'In production (default)':
+    case 'Live version (from official store)':
       return RegressionStage.Production;
+    case 'Internal release testing':
+      return RegressionStage.Testing;
     default:
       return undefined;
   }
@@ -409,7 +403,19 @@ async function userBelongsToMetaMaskOrg(
 // This function checks if the PR description has a changelog entry
 function hasChangelogEntry(body: string): boolean {
   // Remove HTML comments (including multiline)
-  const uncommentedBody = body.replace(/<!--[\s\S]*?-->/g, "");
+  let uncommentedBody = body;
+  let prevBody;
+  let iterationCount = 0;
+  const MAX_ITERATIONS = 100;
+  do {
+    prevBody = uncommentedBody;
+    uncommentedBody = uncommentedBody.replace(/<!--[\s\S]*?-->/g, "");
+    iterationCount++;
+    if (iterationCount >= MAX_ITERATIONS) {
+      console.warn(`Reached maximum HTML comment removal iterations (${MAX_ITERATIONS}). Input may be malformed or malicious.`);
+      break;
+    }
+  } while (uncommentedBody !== prevBody);
 
   // Split body into lines
   const lines = uncommentedBody.split(/\r?\n/);

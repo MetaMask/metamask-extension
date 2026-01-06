@@ -2,11 +2,12 @@ import { CaipAssetType, Hex } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { useCallback } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 
 import {
   CONFIRM_TRANSACTION_ROUTE,
   DEFAULT_ROUTE,
+  PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
@@ -84,7 +85,7 @@ export const useSendActions = () => {
   ]);
 
   const handleBack = useCallback(() => {
-    navigate(-1);
+    navigate(PREVIOUS_ROUTE);
   }, [navigate]);
 
   const handleCancel = useCallback(() => {

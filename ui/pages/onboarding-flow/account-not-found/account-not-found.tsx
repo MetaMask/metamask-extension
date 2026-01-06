@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Button,
@@ -29,7 +29,6 @@ import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import {
   forceUpdateMetamaskState,
   resetOnboarding,
-  setFirstTimeFlowType,
 } from '../../../store/actions';
 import {
   MetaMetricsEventAccountType,
@@ -74,16 +73,11 @@ export default function AccountNotFound() {
       tags: { source: 'account_status_redirect' },
       parentContext: onboardingParentContext?.current,
     });
-    dispatch(setFirstTimeFlowType(FirstTimeFlowType.socialCreate));
     navigate(ONBOARDING_CREATE_PASSWORD_ROUTE, { replace: true });
   };
 
   useEffect(() => {
-    if (firstTimeFlowType !== FirstTimeFlowType.socialImport) {
-      // if the onboarding flow is not social import, redirect to the welcome page
-      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
-    }
-    if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+    if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.AccountNotFoundPageViewed,
@@ -93,9 +87,11 @@ export default function AccountNotFound() {
         op: TraceOperation.OnboardingUserJourney,
         parentContext: onboardingParentContext?.current,
       });
+    } else {
+      navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
     }
     return () => {
-      if (firstTimeFlowType === FirstTimeFlowType.socialImport) {
+      if (firstTimeFlowType === FirstTimeFlowType.socialCreate) {
         bufferedEndTrace?.({
           name: TraceName.OnboardingExistingSocialAccountNotFound,
         });

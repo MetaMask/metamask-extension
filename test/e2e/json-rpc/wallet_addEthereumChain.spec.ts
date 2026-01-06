@@ -3,7 +3,7 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';

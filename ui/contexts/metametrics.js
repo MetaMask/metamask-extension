@@ -12,12 +12,7 @@ import React, {
   useContext,
 } from 'react';
 import PropTypes from 'prop-types';
-// NOTE: Mixed v5/v5-compat imports during router migration
-// - useLocation from v5: Works with the v5 HashRouter to detect navigation changes
-// - matchPath from v5-compat: Provides v6 API (reversed args, pattern.path structure)
-// When v6 migration is complete, change both imports to: import { useLocation, matchPath } from 'react-router-dom';
-import { useLocation } from 'react-router-dom';
-import { matchPath } from 'react-router-dom-v5-compat';
+import { useLocation, matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 import { omit } from 'lodash';
@@ -235,6 +230,7 @@ export function MetaMetricsProvider({ children }) {
 
   // For backwards compatibility, attach the new methods as properties to trackEvent
   const trackEventWithMethods = trackEvent;
+  // eslint-disable-next-line react-compiler/react-compiler
   trackEventWithMethods.bufferedTrace = bufferedTrace;
   trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
   trackEventWithMethods.onboardingParentContext = onboardingParentContext;

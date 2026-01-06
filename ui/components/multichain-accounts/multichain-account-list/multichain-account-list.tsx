@@ -12,7 +12,7 @@ import {
   AccountWalletType,
 } from '@metamask/account-api';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { parseCaipAccountId } from '@metamask/utils';
 import {
   Box,
@@ -221,8 +221,10 @@ export const MultichainAccountList = ({
       navigate(DEFAULT_ROUTE);
     };
 
-    const handleAccountClickToUse =
-      handleAccountClick ?? defaultHandleAccountClick;
+    const handleAccountClickToUse = (accountGroupId: AccountGroupId) => {
+      const handlerToUse = handleAccountClick ?? defaultHandleAccountClick;
+      handlerToUse?.(accountGroupId);
+    };
 
     const renderAccountCell = (
       groupId: string,
@@ -282,7 +284,7 @@ export const MultichainAccountList = ({
             }
             startAccessory={
               showAccountCheckbox ? (
-                <Box marginRight={4}>
+                <Box>
                   <Checkbox
                     isChecked={selectedAccountGroupsSet.has(
                       groupId as AccountGroupId,
@@ -417,7 +419,7 @@ export const MultichainAccountList = ({
           justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
           paddingLeft={4}
-          paddingRight={4}
+          paddingRight={6}
           paddingTop={2}
           paddingBottom={2}
           width={BlockSize.Full}
@@ -434,8 +436,8 @@ export const MultichainAccountList = ({
             name={
               isHiddenAccountsExpanded ? IconName.ArrowUp : IconName.ArrowDown
             }
-            size={IconSize.Sm}
-            color={IconColor.iconDefault}
+            size={IconSize.Md}
+            color={IconColor.iconAlternative}
           />
         </Box>
       );
@@ -475,6 +477,10 @@ export const MultichainAccountList = ({
     t,
     isHiddenAccountsExpanded,
   ]);
+
+  useEffect(() => {
+    endTrace({ name: TraceName.ShowAccountList });
+  }, []);
 
   return (
     <>

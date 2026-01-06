@@ -1,15 +1,19 @@
 import { encode } from '@metamask/abi-utils';
 import { keccak, toBuffer } from 'ethereumjs-util';
-import type { Hex } from './utils';
+import type { Hex } from '@metamask/utils';
+import {
+  Caveat as CoreCaveatStruct,
+  CAVEAT_TYPEHASH,
+} from '@metamask/delegation-core';
 
-export type Caveat = {
-  enforcer: Hex;
-  terms: Hex;
-  args: Hex;
-};
-
-const CAVEAT_TYPEHASH =
-  '0x80ad7e1b04ee6d994a125f4714ca0720908bd80ed16063ec8aee4b88e9253e2d' as Hex;
+/**
+ * Represents a CaveatStruct as defined in the Delegation Framework.
+ * This uses Hex strings for all byte fields for consistency within MetaMask Extension.
+ *
+ * This type is based on CaveatStruct from @metamask/delegation-core but
+ * constrains all byte fields to Hex strings.
+ */
+export type Caveat = CoreCaveatStruct<Hex>;
 
 /**
  * Calculates the hash of a single Caveat.

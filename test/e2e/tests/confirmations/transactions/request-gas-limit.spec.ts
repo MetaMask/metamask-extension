@@ -7,7 +7,7 @@ import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { withFixtures, WINDOW_TITLES } = require('../../../helpers');
 
 describe('dApp Request Gas Limit', function () {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom-v5-compat';
+import { MemoryRouter } from 'react-router-dom';
 import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
-// Mock the react-router-dom-v5-compat hooks
+// Mock the react-router-dom hooks
 const mockUseNavigate = jest.fn();
 const mockUseLocation = {
   pathname: '/test',
@@ -13,8 +13,8 @@ const mockUseLocation = {
 };
 const mockUseParams = { id: 'test-id' };
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
   useLocation: () => mockUseLocation,
   useParams: () => mockUseParams,

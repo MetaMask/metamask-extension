@@ -20,7 +20,7 @@ interface WrapperProps {
 // Wrapper component to provide necessary providers
 const Wrapper: React.FC<WrapperProps> = ({ children }) => (
   <Provider store={store}>
-    <MemoryRouter initialEntries={['/']}>{children}</MemoryRouter>
+    {children}
   </Provider>
 );
 
@@ -36,6 +36,9 @@ const meta: Meta<typeof Home> = {
       </Wrapper>
     ),
   ],
+  parameters: {
+    initialEntries: ['/'],
+  },
   args: {
     connectedStatusPopoverHasBeenShown: true,
     showRecoveryPhraseReminder: false,
@@ -79,6 +82,7 @@ const meta: Meta<typeof Home> = {
     isSocialLoginFlow: false,
 
     // Function props (mocked)
+    navigate: () => {},
     setConnectedStatusPopoverHasBeenShown: () => {},
     hideWhatsNewPopup: () => {},
     onTabClick: () => {},
@@ -100,7 +104,6 @@ const meta: Meta<typeof Home> = {
     setBasicFunctionalityModalOpen: () => {},
     fetchBuyableChains: () => {},
     clearRedirectAfterDefaultPage: () => {},
-    setAccountDetailsAddress: () => {},
     lookupSelectedNetworks: () => {},
   },
 };

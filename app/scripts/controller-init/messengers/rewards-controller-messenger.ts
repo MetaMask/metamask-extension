@@ -48,7 +48,6 @@ import {
   RewardsControllerGetCandidateSubscriptionIdAction,
   RewardsControllerGetHasAccountOptedInAction,
   RewardsControllerGetActualSubscriptionIdAction,
-  RewardsControllerGetFirstSubscriptionIdAction,
   RewardsControllerGetSeasonMetadataAction,
   RewardsControllerGetSeasonStatusAction,
 } from '../../controllers/rewards/rewards-controller.types';
@@ -83,7 +82,6 @@ export type RewardsControllerActions =
   | RewardsControllerGetCandidateSubscriptionIdAction
   | RewardsControllerGetHasAccountOptedInAction
   | RewardsControllerGetActualSubscriptionIdAction
-  | RewardsControllerGetFirstSubscriptionIdAction
   | RewardsControllerGetSeasonMetadataAction
   | RewardsControllerGetSeasonStatusAction;
 

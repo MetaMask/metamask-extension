@@ -1,17 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 // Helpers
 import {
   TextAlign,
   TextVariant,
   AlignItems,
-  IconColor,
   Display,
   FlexDirection,
   BlockSize,
   JustifyContent,
+  TextColor,
 } from '../../../helpers/constants/design-system';
 import { ONBOARDING_REVEAL_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
@@ -20,9 +20,6 @@ import {
   ButtonLinkSize,
   ButtonPrimary,
   ButtonSize,
-  Icon,
-  IconName,
-  IconSize,
   Modal,
   ModalBody,
   ModalContent,
@@ -52,11 +49,6 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
             alignItems={AlignItems.center}
             gap={4}
           >
-            <Icon
-              name={IconName.Danger}
-              size={IconSize.Xl}
-              color={IconColor.warningDefault}
-            />
             <Text variant={TextVariant.headingSm} textAlign={TextAlign.Center}>
               {t('recoveryPhraseReminderTitle')}
             </Text>
@@ -68,7 +60,7 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
             display={Display.Flex}
             alignItems={AlignItems.center}
             justifyContent={JustifyContent.center}
-            marginBottom={2}
+            marginBottom={4}
           >
             <img
               src="images/forgot-password-lock.png"
@@ -77,7 +69,9 @@ export default function RecoveryPhraseReminder({ onConfirm }) {
               alt={t('recoveryPhraseReminderTitle')}
             />
           </Box>
-          <Text>{t('recoveryPhraseReminderSubText')}</Text>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
+            {t('recoveryPhraseReminderSubText')}
+          </Text>
         </ModalBody>
         <ModalFooter>
           <Box

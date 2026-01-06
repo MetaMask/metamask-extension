@@ -168,7 +168,7 @@ export class RewardsDataService {
     ) {
       return REWARDS_API_URL.PRD;
     }
-    return REWARDS_API_URL.PRD;
+    return REWARDS_API_URL.UAT;
   }
 
   /**

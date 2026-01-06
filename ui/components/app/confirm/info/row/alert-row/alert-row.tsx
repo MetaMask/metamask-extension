@@ -38,7 +38,7 @@ export function getAlertTextColors(
       return TextColor.warningDefault;
     case ConfirmInfoRowVariant.Default:
     default:
-      return defaultColor ?? TextColor.textDefault;
+      return defaultColor ?? TextColor.textAlternative;
   }
 }
 

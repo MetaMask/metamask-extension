@@ -1,6 +1,6 @@
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -12,16 +12,17 @@ describe('Add existing token using search', function () {
   ): Promise<MockedEndpoint[]> {
     return [
       await mockServer
-        .forGet('https://price.api.cx.metamask.io/v2/chains/56/spot-prices')
+        .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
         .withQuery({
-          tokenAddresses: '0x0d8775f648430679a709e98d2b0cb6250d2887ef',
+          assetIds:
+            'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef',
           vsCurrency: 'ETH',
         })
         .thenCallback(() => {
           return {
             statusCode: 200,
             json: {
-              '0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
+              'eip155:56/erc20:0x0d8775f648430679a709e98d2b0cb6250d2887ef': {
                 eth: 0.0001,
               },
             },

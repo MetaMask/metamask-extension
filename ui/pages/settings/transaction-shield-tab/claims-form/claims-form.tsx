@@ -20,7 +20,7 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -29,8 +29,6 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
 } from '../../../../components/component-library';
@@ -48,7 +46,10 @@ import { submitShieldClaim } from '../../../../store/actions';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { setShowClaimSubmitToast } from '../../../../components/app/toast-master/utils';
 import { ClaimSubmitToastType } from '../../../../../shared/constants/app-state';
-import { TRANSACTION_SHIELD_LINK } from '../../../../helpers/constants/common';
+import {
+  TRANSACTION_SHIELD_SUPPORT_LINK,
+  FIND_TRANSACTION_HASH_LINK,
+} from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
   SUBMIT_CLAIM_ERROR_CODES,
@@ -62,7 +63,7 @@ import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claim
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
@@ -77,7 +78,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetchClaims, pendingClaims } = useClaims();
+  const { refetchClaims } = useClaims();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -320,11 +321,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   );
 
   const onClickFindTransactionHash = useCallback(async () => {
-    window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
+    window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
-      redirectToUrl: TRANSACTION_SHIELD_LINK,
+      redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
   }, [captureShieldCtaClickedEvent]);
 
@@ -406,23 +407,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       data-testid="submit-claim-page"
       gap={4}
     >
-      {!isView && pendingClaims.length > 0 && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Info}
-          title={t('shieldClaimsPendingAlertTitle')}
-          description={t('shieldClaimsPendingAlertDescription')}
-          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
-          actionButtonOnClick={() => {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-          }}
-        />
-      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {isView
           ? t('shieldClaimDetailsViewClaims', [
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
@@ -434,11 +424,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
               validSubmissionWindowDays,
               <TextButton key="here-link" className="min-w-0" asChild>
                 <a
-                  href={TRANSACTION_SHIELD_LINK}
+                  href={TRANSACTION_SHIELD_SUPPORT_LINK}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t('here')}
+                  {t('shieldClaimViewGuidelines')}
                 </a>
               </TextButton>,
             ])}
@@ -556,7 +546,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         helpText={
           errors.impactedTxHash ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.Inherit}
+              data-testid="shield-claim-impacted-tx-hash-error"
+            >
               {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
                 size={TextButtonSize.BodySm}

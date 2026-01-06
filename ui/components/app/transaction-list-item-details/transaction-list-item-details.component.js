@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import copyToClipboard from 'copy-to-clipboard';
 import { getBlockExplorerLink } from '@metamask/etherscan-link';
 import { TransactionType } from '@metamask/transaction-controller';
+import { Button, ButtonSize } from '@metamask/design-system-react';
 import SenderToRecipient from '../../ui/sender-to-recipient';
 import { DEFAULT_VARIANT } from '../../ui/sender-to-recipient/sender-to-recipient.constants';
 import Disclosure from '../../ui/disclosure';
 import TransactionActivityLog from '../transaction-activity-log';
 import TransactionBreakdown from '../transaction-breakdown';
-import Button from '../../ui/button';
 import Tooltip from '../../ui/tooltip';
 import CancelButton from '../cancel-button';
 import Popover from '../../ui/popover';
@@ -51,7 +51,7 @@ export default class TransactionListItemDetails extends PureComponent {
     senderNickname: PropTypes.string.isRequired,
     transactionStatus: PropTypes.func,
     isCustomNetwork: PropTypes.bool,
-    history: PropTypes.object,
+    navigate: PropTypes.func.isRequired,
     blockExplorerLinkText: PropTypes.object,
     chainId: PropTypes.string,
     networkConfiguration: PropTypes.object,
@@ -66,7 +66,7 @@ export default class TransactionListItemDetails extends PureComponent {
       transactionGroup: { primaryTransaction },
       networkConfiguration,
       isCustomNetwork,
-      history,
+      navigate,
       onClose,
       chainId,
     } = this.props;
@@ -87,7 +87,7 @@ export default class TransactionListItemDetails extends PureComponent {
 
     if (!rpcPrefs.blockExplorerUrl && isCustomNetwork) {
       onClose();
-      history.push(`${NETWORKS_ROUTE}#blockExplorerUrl`);
+      navigate(`${NETWORKS_ROUTE}#blockExplorerUrl`);
     } else {
       this.context.trackEvent({
         category: MetaMetricsEventCategory.Transactions,
@@ -174,12 +174,11 @@ export default class TransactionListItemDetails extends PureComponent {
       <Popover title={title} onClose={onClose}>
         <div className="transaction-list-item-details">
           <div className="transaction-list-item-details__operations">
-            <div className="transaction-list-item-details__header-buttons">
+            <div className="flex gap-2">
               {showSpeedUp && (
                 <Button
-                  type="primary"
+                  size={ButtonSize.Sm}
                   onClick={this.handleRetry}
-                  className="transaction-list-item-details__header-button-rounded-button"
                   data-testid="speedup-button"
                 >
                   {t('speedUp')}
@@ -187,6 +186,7 @@ export default class TransactionListItemDetails extends PureComponent {
               )}
               {showCancel && (
                 <CancelButton
+                  size={ButtonSize.Sm}
                   transaction={transaction}
                   cancelTransaction={this.handleCancel}
                   detailsModal

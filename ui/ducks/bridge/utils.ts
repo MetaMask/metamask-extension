@@ -7,10 +7,6 @@ import {
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
-import {
   ChainId,
   type TxData,
   BridgeClientId,
@@ -29,6 +25,10 @@ import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
 import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../../shared/constants/multichain/assets';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -49,11 +49,8 @@ export const isTronEnergyOrBandwidthResource = (
   symbol: string | undefined,
 ): boolean => {
   return (
-    Boolean(chainId?.toString().includes('tron:')) &&
-    Boolean(
-      symbol?.toUpperCase().includes('ENERGY') ||
-        symbol?.toUpperCase().includes('BANDWIDTH'),
-    )
+    Boolean(chainId?.toString()?.includes('tron:')) &&
+    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
   );
 };
 
@@ -259,14 +256,9 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v:
-    | NetworkConfiguration
-    | AddNetworkFields
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
-    | undefined,
-): v is NetworkConfiguration =>
-  v !== undefined &&
-  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
+  availableNetworks: { chainId: Hex | CaipChainId }[],
+  chainId: Hex | CaipChainId,
+) => availableNetworks.some((network) => network.chainId === chainId);
 
 const getTokenImage = (payload: TokenPayload['payload']) => {
   if (!payload) {
@@ -305,7 +297,6 @@ export const toBridgeToken = (
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
     chainId: payload.chainId,
     image: getTokenImage(payload),
     assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),

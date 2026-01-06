@@ -11,8 +11,9 @@ import {
   formatChainIdToCaip,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
+import { TextButton } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { getTokenTrackerLink } from '@metamask/etherscan-link/dist/token-tracker-link';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
@@ -31,7 +32,6 @@ import {
   getTestNetworkBackgroundColor,
   getTokenExchangeRates,
   getPendingTokens,
-  getTokenNetworkFilter,
   getAllTokens,
   getEnabledNetworksByNamespace,
 } from '../../../selectors';
@@ -115,7 +115,6 @@ import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../select
 import { NetworkListItem } from '../network-list-item';
 import TokenListPlaceholder from '../../app/import-token/token-list/token-list-placeholder';
 import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
-import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import { useTokensWithFiltering } from '../../../hooks/bridge/useTokensWithFiltering';
 import { ImportTokensModalConfirm } from './import-tokens-modal-confirm';
 
@@ -164,14 +163,11 @@ export const ImportTokensModal = ({ onClose }) => {
   // Tracks which page the user is on
   const [actionMode, setActionMode] = useState(ACTION_MODES.IMPORT_TOKEN);
 
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
 
   const [networkFilter, setNetworkFilter] = useState(
-    isGlobalNetworkSelectorRemoved
-      ? enabledNetworksByNamespace
-      : tokenNetworkFilter,
+    enabledNetworksByNamespace,
   );
 
   // Initialize selected network with current multichain network, handling both EVM and non-EVM
@@ -1006,14 +1002,21 @@ export const ImportTokensModal = ({ onClose }) => {
                                 {t(
                                   'customTokenWarningInTokenDetectionNetwork',
                                   [
-                                    <ButtonLink
+                                    <TextButton
                                       key="import-token-fake-token-warning"
-                                      rel="noopener noreferrer"
-                                      target="_blank"
-                                      href={ZENDESK_URLS.TOKEN_SAFETY_PRACTICES}
+                                      asChild
+                                      className="inline"
                                     >
-                                      {t('learnScamRisk')}
-                                    </ButtonLink>,
+                                      <a
+                                        href={
+                                          ZENDESK_URLS.TOKEN_SAFETY_PRACTICES
+                                        }
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                      >
+                                        {t('learnScamRisk')}
+                                      </a>
+                                    </TextButton>,
                                   ],
                                 )}
                               </Text>

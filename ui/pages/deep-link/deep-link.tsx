@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import type { Location as RouterLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import log from 'loglevel';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -19,7 +19,6 @@ import {
   Display,
   FlexDirection,
   FontWeight,
-  JustifyContent,
   TextAlign,
   TextColor,
   TextVariant,
@@ -27,11 +26,7 @@ import {
 import { Text } from '../../components/component-library/text/text';
 import { Box } from '../../components/component-library/box/box';
 import { Container } from '../../components/component-library/container/container';
-import {
-  ButtonLink,
-  ContainerMaxWidth,
-  Label,
-} from '../../components/component-library';
+import { ButtonLink, Label } from '../../components/component-library';
 import { Checkbox } from '../../components/component-library/checkbox/checkbox';
 import { setSkipDeepLinkInterstitial } from '../../store/actions';
 import { getPreferences } from '../../selectors/selectors';
@@ -165,11 +160,8 @@ async function updateStateFromUrl(
   }
 }
 
-type DeepLinkProps = {
-  location: RouterLocation;
-};
-
-export const DeepLink = ({ location }: DeepLinkProps) => {
+export const DeepLink = () => {
+  const location = useLocation();
   const t = useI18nContext() as TranslateFunction;
   const dispatch = useDispatch();
   // it's technically not possible for a natural flow to reach this page
@@ -292,9 +284,8 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
     <Container
       display={Display.Flex}
       alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
       flexDirection={FlexDirection.Column}
-      maxWidth={ContainerMaxWidth.Md}
+      style={{ marginTop: '111px' }}
     >
       <Box
         display={Display.Flex}
@@ -304,14 +295,18 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
         backgroundColor={BackgroundColor.backgroundDefault}
         borderColor={BorderColor.borderMuted}
         borderRadius={BorderRadius.MD}
-        width={BlockSize.Full}
+        style={{ width: '446px', minHeight: '592px' }}
         paddingLeft={6}
         paddingRight={6}
         paddingTop={12}
         paddingBottom={8}
         borderWidth={1}
       >
-        <Box>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+        >
           {pageNotFoundError ? (
             <img
               className="error-404-image"
@@ -353,6 +348,7 @@ export const DeepLink = ({ location }: DeepLinkProps) => {
                 as="div"
                 data-testid="deep-link-description"
                 paddingBottom={12}
+                height={BlockSize.Full}
               >
                 <Text
                   key="description"
