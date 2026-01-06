@@ -51,6 +51,9 @@ export enum TrezorAction {
   dispose = 'trezor-dispose',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  getDeviceState = 'trezor-get-device-state',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   getPublicKey = 'trezor-get-public-key',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -102,4 +105,17 @@ export enum KnownOrigins {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   ledger = 'https://metamask.github.io',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  ledgerDev = 'https://montelaidev.github.io',
+}
+
+/**
+ * Returns the appropriate Ledger origin based on the environment.
+ * Uses localhost for development, production URL otherwise.
+ */
+export function getLedgerOrigin(): string {
+  return process.env.NODE_ENV === 'development'
+    ? KnownOrigins.ledgerDev
+    : KnownOrigins.ledger;
 }

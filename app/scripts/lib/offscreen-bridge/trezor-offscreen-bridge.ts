@@ -10,6 +10,7 @@ import type {
   EthereumSignedTx,
   PROTO,
   EthereumSignTypedHash,
+  DeviceState,
 } from '@trezor/connect-web';
 import {
   OffscreenCommunicationEvents,
@@ -70,6 +71,21 @@ export class TrezorOffscreenBridge implements TrezorBridge {
         },
         () => {
           resolve();
+        },
+      );
+    });
+  }
+
+  async getDeviceState(): Promise<DeviceState> {
+    return new Promise((resolve) => {
+      chrome.runtime.sendMessage(
+        {
+          target: OffscreenCommunicationTarget.trezorOffscreen,
+          action: TrezorAction.getDeviceState,
+          params: {},
+        },
+        (response) => {
+          resolve(response.payload);
         },
       );
     });

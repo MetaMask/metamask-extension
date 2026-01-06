@@ -2935,6 +2935,7 @@ export default class MetamaskController extends EventEmitter {
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
       getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
+      getTrezorDeviceStatus: this.getTrezorDeviceStatus.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -5712,6 +5713,17 @@ export default class MetamaskController extends EventEmitter {
     console.log('[getAppNameAndVersion] result', result);
 
     return result;
+  }
+
+  async getTrezorDeviceStatus() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.trezor },
+      async (keyring) => {
+        const result = await keyring.bridge.getDeviceState();
+        console.log('[Trezor keyring] result', result);
+        return result;
+      },
+    );
   }
 
   /**

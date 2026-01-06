@@ -30,6 +30,8 @@ export default function init() {
         return;
       }
 
+      console.log('[Trezor offscreen] Received trezor offscreen message', msg);
+
       switch (msg.action) {
         case TrezorAction.init:
           TrezorConnectSDK.on(DEVICE_EVENT, (event) => {
@@ -65,6 +67,29 @@ export default function init() {
           TrezorConnectSDK.dispose();
 
           sendResponse();
+
+          break;
+
+        case TrezorAction.getDeviceState:
+          TrezorConnectSDK.getDeviceState()
+            .then((result) => {
+              console.log('[Trezor offscreen] Device state result:', result);
+              sendResponse(result);
+            })
+            .catch((error) => {
+              console.error('[Trezor offscreen] getDeviceState error:', error);
+              const errorMessage = error.message || 'Unknown Trezor error';
+              console.error(
+                '[Trezor offscreen] Sending error response:',
+                errorMessage,
+              );
+              sendResponse({
+                success: false,
+                payload: {
+                  error: errorMessage,
+                },
+              });
+            });
 
           break;
 
