@@ -5602,8 +5602,7 @@ export default class MetamaskController extends EventEmitter {
 
     // Run seedless onboarding migrations asynchronously after unlock for social login users
     if (isSocialLoginFlow) {
-      // eslint-disable-next-line no-void
-      void this._runSeedlessOnboardingMigrations().catch((err) => {
+      this._runSeedlessOnboardingMigrations().catch((err) => {
         log.error('Error during seedless onboarding migrations', err);
       });
     }
