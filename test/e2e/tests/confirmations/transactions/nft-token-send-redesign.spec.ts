@@ -4,7 +4,7 @@ import { DAPP_URL } from '../../../constants';
 import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { Anvil } from '../../../seeder/anvil';
-import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';

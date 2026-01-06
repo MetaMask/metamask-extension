@@ -1132,42 +1132,6 @@ class TestDapp {
     );
   }
 
-  async signTypedDataV3Redesign() {
-    await this.clickSignTypedDatav3();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
-    );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
-  /**
-   * Sign a message with the signTypedDataV4 method.
-   *
-   */
-  async signTypedDataV4() {
-    console.log('Sign message with signTypedDataV4');
-    await this.clickSignTypedDatav4();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-    await this.driver.waitForSelector(
-      this.signTypedDataV3V4SignatureRequestMessageRedesign,
-    );
-    await this.driver.clickElementSafe(
-      this.confirmScrollToBottomButtonRedesign,
-      200,
-    );
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
-  }
-
   /**
    * Check if the test dapp is connected to the specified network.
    *

@@ -5,7 +5,7 @@ import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
-import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
