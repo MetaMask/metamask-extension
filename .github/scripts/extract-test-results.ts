@@ -93,17 +93,6 @@ export async function extractTestResults(
 }
 
 /**
- * Legacy function for backward compatibility.
- * @deprecated Use extractTestResults instead
- */
-export async function extractPassedTestPaths(
-  resultsDir: string,
-): Promise<string[]> {
-  const results = await extractTestResults(resultsDir);
-  return results.passed;
-}
-
-/**
  * CLI entry point for testing the script directly
  */
 if (require.main === module) {
