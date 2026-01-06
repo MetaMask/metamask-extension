@@ -165,8 +165,6 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 // TODO: Update all references
 export { getEnabledNetworks };
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 /** `appState` slice selectors */
 
 export const getConfirmationExchangeRates = (state) => {
@@ -1478,14 +1476,11 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
 
   const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? (enabledNetworks?.[namespace] ?? {})
-    : tokenNetworkFilter;
+  const networks = enabledNetworks?.[namespace] ?? {};
 
   if (
     Object.keys(networks).length === 1 &&
