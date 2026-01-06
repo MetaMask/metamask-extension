@@ -38,13 +38,11 @@ import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
-import Spinner from '../../../ui/spinner';
 
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
   error?: HardwareWalletError;
   walletType?: HardwareWalletType;
-  onRetry?: () => void;
   onCancel?: () => void;
   onClose?: () => void;
 };
@@ -69,6 +67,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     // If no error, don't render anything
     if (!error || !walletType) {
+      onClose?.();
       return null;
     }
 
@@ -253,7 +252,10 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                     onClick={handleRetry}
                   >
                     {isLoading ? (
-                      <Spinner />
+                      <Icon
+                        name={IconName.Loading}
+                        style={{ animation: 'spin 1.2s linear infinite' }}
+                      />
                     ) : (
                       t('hardwareWalletErrorContinueButton')
                     )}
