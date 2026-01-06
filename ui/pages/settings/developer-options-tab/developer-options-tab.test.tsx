@@ -15,6 +15,19 @@ const mockRemoteFeatureFlags = { feature1: 'value1' };
 /* @ts-expect-error: Avoids error from window property not existing */
 window.metamaskFeatureFlags = {};
 
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    getManifest: jest.fn().mockReturnValue({ version: '1.0.0' }),
+  },
+  storage: {
+    local: {
+      get: jest.fn().mockResolvedValue({}),
+      set: jest.fn().mockResolvedValue({}),
+    },
+    onChanged: { addListener: jest.fn(), removeListener: jest.fn() },
+  },
+}));
+
 jest.mock('../../../store/actions.ts', () => ({
   setServiceWorkerKeepAlivePreference: () =>
     mockSetServiceWorkerKeepAlivePreference,

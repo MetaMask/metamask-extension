@@ -11,6 +11,7 @@ import { Text, TextVariant } from '@metamask/design-system-react';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -138,6 +139,15 @@ const TypedSignPermissionInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={decodedPermission.origin} />
         </ConfirmInfoAlertRow>
+
+        {'address' in decodedPermission.signer.data && (
+          <ConfirmInfoRow label={t('recipient')}>
+            <ConfirmInfoRowAddress
+              address={decodedPermission.signer.data.address}
+              chainId={chainId}
+            />
+          </ConfirmInfoRow>
+        )}
 
         <NetworkRow />
       </ConfirmInfoSection>

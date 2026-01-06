@@ -63,7 +63,7 @@ import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claim
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
 import {
@@ -323,7 +323,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const onClickFindTransactionHash = useCallback(async () => {
     window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
       redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
