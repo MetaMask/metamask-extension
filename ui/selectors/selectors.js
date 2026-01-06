@@ -683,7 +683,7 @@ export const getSelectedEvmInternalAccount = createSelector(
  * @param accounts - The object containing the accounts.
  * @returns The array of internal accounts sorted by keyring.
  */
-export const getInternalAccountsSortedByKeyring = createDeepEqualSelector(
+export const getInternalAccountsSortedByKeyring = createSelector(
   getMetaMaskKeyrings,
   getMetaMaskAccounts,
   (keyrings, accounts) => {
@@ -1002,7 +1002,7 @@ export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
  *
  * @returns {InternalAccountWithBalance} An array of internal accounts with balance
  */
-export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
+export const getMetaMaskAccountsOrdered = createSelector(
   getInternalAccountsSortedByKeyring,
   getMetaMaskAccounts,
   (internalAccounts, accounts) => {
@@ -1069,7 +1069,7 @@ export function getAllDomains(state) {
   return state.metamask.domains;
 }
 
-export const getSelectedAccount = createDeepEqualSelector(
+export const getSelectedAccount = createSelector(
   getMetaMaskAccounts,
   getSelectedInternalAccount,
   (accounts, selectedAccount) => {
