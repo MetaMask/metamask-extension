@@ -114,6 +114,9 @@ class SendTokenConfirmPage {
   /**
    * Checks that the recipient address is displayed the expected number of times.
    * Uses driver.wait() to retry and avoid race conditions.
+   *
+   * @param address - The recipient address text to search for.
+   * @param expectedCount - The expected number of times the address should appear.
    */
   async checkRecipientAddressDisplayedCount(
     address: string,
