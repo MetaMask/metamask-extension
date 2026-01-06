@@ -4,6 +4,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+  POST_UNLOCK_DELAY,
+} from '../../../tests/identity/account-syncing/helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -113,14 +118,13 @@ class HomePage {
     this.headerNavbar = new HeaderNavbar(driver);
   }
 
-  async checkPageIsLoaded({
-    timeout = 10000,
-  }: { timeout?: number } = {}): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors(
-        [this.sendButton, this.activityTab, this.tokensTab],
-        { timeout },
-      );
+      await this.driver.waitForMultipleSelectors([
+        this.sendButton,
+        this.activityTab,
+        this.tokensTab,
+      ]);
     } catch (e) {
       console.log('Timeout while waiting for home page to be loaded', e);
       throw e;
@@ -405,8 +409,13 @@ class HomePage {
 
   /**
    * This function checks if account syncing has been successfully completed at least once.
+   * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log(
+      `Waiting ${POST_UNLOCK_DELAY}ms before checking account sync state (Firefox timing fix)`,
+    );
+    await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
     await this.driver.waitUntil(
       async () => {
@@ -417,8 +426,8 @@ class HomePage {
         );
       },
       {
-        interval: 1000,
-        timeout: 30000, // Syncing can take some time so adding a longer timeout to reduce flakes
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT, // Syncing can take some time so adding a longer timeout to reduce flakes
       },
     );
   }

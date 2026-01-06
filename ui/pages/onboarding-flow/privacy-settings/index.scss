@@ -21,7 +21,6 @@
     display: flex;
     flex-direction: column;
     max-width: 620px;
-    margin-bottom: 20px;
 
     a {
       color: var(--color-primary-default);
@@ -81,5 +80,10 @@
 
   &__customizable-network:hover {
     cursor: pointer;
+  }
+
+  &__empty-space {
+    width: 32px;
+    height: 32px;
   }
 }

@@ -118,7 +118,7 @@ describe('Import Wallet Events', () => {
       expect.arrayContaining([
         expect.objectContaining({
           category: MetaMetricsEventCategory.Onboarding,
-          event: MetaMetricsEventName.ExtensionPinned,
+          event: MetaMetricsEventName.OnboardingCompleted,
           properties: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -126,6 +126,9 @@ describe('Import Wallet Events', () => {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
             new_wallet: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            is_basic_functionality_enabled: true,
           },
         }),
       ]),

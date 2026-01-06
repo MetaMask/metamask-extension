@@ -70,3 +70,16 @@ export const FIXED_PRERENDER_BROWSER_VERSIONS = {
   chrome: '>=121',
   edge: '>=121',
 };
+
+/**
+ * Specifies the Chromium-based browser and their versions where
+ * MV3 updates are stable and don't break service workers.
+ *
+ * @see {@link https://chromium.googlesource.com/chromium/src/+/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5}
+ * @see {@link https://chromium.googlesource.com/chromium/src/+/a5d13d7b91139dfac4721708937f75094d3c24e3}
+ */
+export const FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS = {
+  // https://chromiumdash.appspot.com/commit/4ff63e1f75af997e93f53b57aca21fc9cfd1cdb5
+  chrome: '>=143.0.7465.0',
+  edge: '>=143',
+};
