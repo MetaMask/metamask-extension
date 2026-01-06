@@ -36,6 +36,7 @@ export function useConfirmationNavigation() {
   const navigate = useNavigate();
   const { search: queryString } = useLocation();
   const count = confirmations.length;
+
   const getIndex = useCallback(
     (confirmationId?: string) => {
       if (!confirmationId) {
