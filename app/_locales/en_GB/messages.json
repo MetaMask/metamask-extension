@@ -6108,11 +6108,11 @@
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
   },
-  "shieldClaimDraftSaved": {
-    "message": "Draft saved"
+  "shieldClaimDraftDeleteFailed": {
+    "message": "Deleting draft failed"
   },
-  "shieldClaimDraftSavedDescription": {
-    "message": "Your claim draft has been saved."
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "Unable to delete your claim draft. Please try again."
   },
   "shieldClaimDraftSaveFailed": {
     "message": "Saving draft failed"
@@ -6120,11 +6120,11 @@
   "shieldClaimDraftSaveFailedDescription": {
     "message": "Unable to save your claim draft. Please try again."
   },
-  "shieldClaimDraftDeleteFailed": {
-    "message": "Deleting draft failed"
+  "shieldClaimDraftSaved": {
+    "message": "Draft saved"
   },
-  "shieldClaimDraftDeleteFailedDescription": {
-    "message": "Unable to delete your claim draft. Please try again."
+  "shieldClaimDraftSavedDescription": {
+    "message": "Your claim draft has been saved."
   },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
