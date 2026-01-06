@@ -1012,6 +1012,19 @@ export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
+// TODO Unified Assets Controller State Access Third Layer
+// Uses: getMetaMaskAccounts
+// References
+// ui/selectors/selectors.js (6)
+// ui/components/multichain/account-list-menu/hidden-account-list.js (1)
+// ui/pages/nonevm-balance-check/index.tsx (1)
+// ui/components/multichain/create-account/create-account.tsx (1)
+// ui/components/multichain/account-details/account-details.tsx (1)
+// ui/selectors/multichain-accounts/account-tree.ts (2)
+// ui/components/multichain/account-list-menu/account-list-menu.tsx (1)
+// ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx (1)
+// ui/pages/remove-snap-account/snap-account-card.tsx (1)
+// ui/hooks/accounts/useAccountCreationOnNetworkChange.ts (1)
 /**
  * Get ordered (by keyrings) accounts with InternalAccount and balance
  *
@@ -1030,6 +1043,10 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/selectors/selectors.js (1)
 export const getMetaMaskAccountsConnected = createSelector(
   getMetaMaskAccountsOrdered,
   (connectedAccounts) =>
@@ -1322,6 +1339,11 @@ export function accountsWithSendEtherInfoSelector(state) {
   return accountsWithSendEtherInfo;
 }
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/selectors/selectors.js (1)
+// ui/pages/permissions-connect/permissions-connect.tsx (1)
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map((account) => {
     const {
@@ -3599,6 +3621,11 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/selectors/selectors.js (1)
+// ui/components/multichain/connect-accounts-modal/connect-accounts-modal.tsx (1)
 export function getUnconnectedAccounts(state, activeTab) {
   const accounts = getMetaMaskAccountsOrdered(state);
   const connectedAccounts = getOrderedConnectedAccountsForConnectedDapp(
@@ -3613,6 +3640,14 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered
+// References
+// ui/selectors/selectors.js (2)
+// ui/selectors/multichain-accounts/account-tree.ts (2)
+// ui/selectors/dapp.ts (1)
+// ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js (1)
+// ui/pages/connected-accounts/connected-accounts.container.js (1)
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   (state) => state.activeTab,
   (state) => state.metamask.permissionHistory,
@@ -3654,6 +3689,15 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/selectors.js (1)
+// ui/pages/permissions-connect/connect-page/connect-page.tsx (1)
+// ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx (1)
+// ui/hooks/subscription/useSubscription.ts (1)
+// ui/components/multichain/pages/send/components/your-accounts.tsx (1)
+// ui/components/multichain/account-list-menu/account-list-menu.tsx (1)
 export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
@@ -3725,6 +3769,13 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fifth Layer
+// Uses: getUpdatedAndSortedAccounts
+// References
+// ui/selectors/selectors.js (1)
+// ui/pages/permissions-connect/connect-page/connect-page.tsx (1)
+// ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx (1)
+// ui/hooks/subscription/useSubscription.ts (1)
 export const getUpdatedAndSortedAccountsWithCaipAccountId =
   createDeepEqualSelector(getUpdatedAndSortedAccounts, (accounts) => {
     return accounts.map((account) => {

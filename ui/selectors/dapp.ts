@@ -8,6 +8,12 @@ import {
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
+// TODO Unified Assets Controller State Access Fifth Layer
+// Uses: getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/dapp.ts (1)
+// ui/components/app/toast-master/toast-master.js (1)
+// ui/components/multichain/connected-site-menu/connected-site-menu.js (1)
 export const getDappActiveNetwork = createDeepEqualSelector(
   getOrderedConnectedAccountsForActiveTab,
   getOriginOfCurrentTab,

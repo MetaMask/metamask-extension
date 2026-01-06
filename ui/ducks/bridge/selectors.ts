@@ -470,6 +470,11 @@ export const getFromAccount = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fifth Layer
+// Uses: getWalletsWithAccounts
+// References
+// ui/ducks/bridge/selectors.ts (1)
+// ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx (1)
 export const getToAccounts = createSelector(
   [getToChain, getWalletsWithAccounts, (state: BridgeAppState) => state],
   (toChain, accountsByWallet, state) => {

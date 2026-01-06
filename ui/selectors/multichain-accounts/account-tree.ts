@@ -159,6 +159,15 @@ const createConsolidatedWallets = (
   );
 };
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/multichain-accounts/account-tree.ts (1)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx (1)
+// ui/pages/settings/transaction-shield-tab/account-selector/account-selector.tsx (1)
+// ui/pages/confirmations/hooks/send/useAccountRecipients.ts (1)
+// ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts (1)
 /**
  * Retrieve all wallets and their accounts with metadata in consolidated data structure.
  *
@@ -226,6 +235,11 @@ export const getNormalizedGroupsMetadata = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
+// References
+// ui/selectors/multichain-accounts/account-tree.ts (1)
+// ui/components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx (1)
 /**
  * This selector is a temporary solution to avoid a regression in the account order UI while Multichain Accounts V2 is not completed.
  * It takes the ordered accounts from the MetaMask state and combines them with the account tree data
@@ -273,6 +287,14 @@ export const getWalletsWithAccountsSimplified = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access Fifth Layer
+// Uses: getWalletsWithAccounts
+// References
+// ui/selectors/multichain-accounts/account-tree.ts (1)
+// ui/hooks/rewards/useOptIn.ts (1)
+// ui/hooks/useDisplayName.ts (1)
+// ui/pages/bridge/hooks/useDestinationAccount.ts (1)
+// ui/pages/confirmations/hooks/useConfirmationRecipientInfo.ts (1)
 /**
  * Retrieve the wallet ID and name for an account with a given address.
  *

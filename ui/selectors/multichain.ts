@@ -370,11 +370,24 @@ export function getMultichainNativeCurrencyImage(
   return getMultichainCurrencyImage(state, account);
 }
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMultichainShouldShowFiat
+// References
+// ui/selectors/multichain.ts (1)
 export const makeGetMultichainShouldShowFiatByChainId =
   (chainId: Hex | CaipChainId) =>
   (state: MultichainState, account?: InternalAccount) =>
     getMultichainShouldShowFiat(state, account, chainId);
 
+// TODO Unified Assets Controller State Access Third Layer
+// Uses: getShouldShowFiat
+// References
+// ui/selectors/multichain.ts (1)
+// ui/pages/asset/components/asset-page.tsx (1)
+// ui/components/multichain/account-list-item/account-list-item.js (1)
+// ui/components/app/wallet-overview/coin-overview.tsx (1)
+// ui/components/ui/aggregated-balance/aggregated-balance.tsx (1)
+// ui/hooks/useUserPreferencedCurrency.js (1)
 export function getMultichainShouldShowFiat(
   state: MultichainState,
   account?: InternalAccount,
@@ -574,6 +587,15 @@ export function getImageForChainId(chainId: string): string | undefined {
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
 // account implicitly!
+// TODO Unified Assets Controller State Access Third Layer
+// Uses: getSelectedAccountCachedBalance
+// References
+// ui/selectors/multichain.ts (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx (1)
+// ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx (1)
+// ui/components/app/wallet-overview/non-evm-overview.tsx (1)
+// ui/components/app/assets/hooks/useMultichainAssets.tsx (1)
+// ui/components/app/assets/hooks/usePrimaryCurrencyProperties.tsx (1)
 export function getMultichainSelectedAccountCachedBalance(
   state: MultichainState,
 ) {
@@ -582,6 +604,10 @@ export function getMultichainSelectedAccountCachedBalance(
     : getNonEvmCachedBalance(state);
 }
 
+// TODO Unified Assets Controller State Access Fourth Layer
+// Uses: getMultichainSelectedAccountCachedBalance
+// References
+// ui/selectors/multichain.ts (1)
 export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
   [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
   (isEvm, balance) => {
