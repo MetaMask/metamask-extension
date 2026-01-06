@@ -52,7 +52,7 @@ import {
 import { DisconnectPermissionsModal } from '../../../multichain/disconnect-permissions-modal/disconnect-permissions-modal';
 import { PermissionsHeader } from '../../../multichain/permissions-header/permissions-header';
 import { EvmAndMultichainNetworkConfigurationsWithCaipChainId } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { MultichainSiteCell } from '../../multichain-site-cell/multichain-site-cell';
 import { useAccountGroupsForPermissions } from '../../../../hooks/useAccountGroupsForPermissions';
@@ -160,7 +160,7 @@ export const MultichainReviewPermissions = () => {
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
