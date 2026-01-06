@@ -12,7 +12,7 @@ import { veryLargeDelayMs } from '../../helpers';
 
 describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
   describe(`Tron Connect - Sign/Send TRX`, function () {
-    it.skip('Should be able to Sign a TRX transaction', async function () {
+    it('Should be able to Sign a TRX transaction', async function () {
       await withTronAccountSnap(
         {
           ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
