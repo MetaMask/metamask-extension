@@ -305,7 +305,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -320,8 +320,6 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
@@ -358,7 +356,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -374,8 +372,6 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Bitcoin',
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
         );
@@ -433,7 +429,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -448,8 +444,6 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
         );
