@@ -152,7 +152,6 @@ export const lavamoatUnsafeLayerRule = {
 // Unsafe layer plugin that applies the layer and assigns the unsafeEntries to it
 export const lavamoatUnsafeLayerPlugin: WebpackPluginInstance = {
   apply: (compiler) => {
-    compiler.options.experiments.layers = true;
     compiler.options.module.rules.push(lavamoatUnsafeLayerRule);
     compiler.hooks.thisCompilation.tap('Layer', (compilation) => {
       compilation.hooks.addEntry.tap('Layer', (entry, options) => {
