@@ -2472,19 +2472,32 @@ export function getShowRecoveryPhraseReminder(state) {
  * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
-
-  const allUnapprovedMessages = {
-    ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
-    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
-  };
-  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
-}
+export const getNumberOfAllUnapprovedTransactionsAndMessages =
+  createDeepEqualSelector(
+    [
+      getUnapprovedTransactions,
+      (state) => state.metamask.unapprovedDecryptMsgs,
+      (state) => state.metamask.unapprovedPersonalMsgs,
+      (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs,
+      (state) => state.metamask.unapprovedTypedMessages,
+    ],
+    (
+      unapprovedTxs,
+      unapprovedDecryptMsgs,
+      unapprovedPersonalMsgs,
+      unapprovedEncryptionPublicKeyMsgs,
+      unapprovedTypedMessages,
+    ) => {
+      const allUnapprovedMessages = {
+        ...unapprovedTxs,
+        ...unapprovedDecryptMsgs,
+        ...unapprovedPersonalMsgs,
+        ...unapprovedEncryptionPublicKeyMsgs,
+        ...unapprovedTypedMessages,
+      };
+      return Object.keys(allUnapprovedMessages).length;
+    },
+  );
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
