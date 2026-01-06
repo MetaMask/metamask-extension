@@ -27,10 +27,14 @@
     "@lydell/node-pty": {
       "packages": {
         "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
+        "@lydell/node-pty>@lydell/node-pty-linux-x64": true,
         "@lydell/node-pty>@lydell": true
       }
     },
     "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
+      "native": true
+    },
+    "@lydell/node-pty>@lydell/node-pty-linux-x64": {
       "native": true
     },
     "webpack": {
