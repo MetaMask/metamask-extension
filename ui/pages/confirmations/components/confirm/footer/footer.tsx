@@ -23,7 +23,6 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { useConfirmContext } from '../../../context/confirm';
 import { useIsGaslessLoading } from '../../../hooks/gas/useIsGaslessLoading';
@@ -35,11 +34,17 @@ import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import { useConfirmationSubmit } from '../../../hooks/useConfirmationSubmit';
+import { setHardwareSigningState } from '../../../../../store/actions';
+import { isAddressLedger } from '../../../../../ducks/metamask/metamask';
+import {
+  ConnectionStatus,
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+} from '../../../../../contexts/hardware-wallets';
 import OriginThrottleModal from './origin-throttle-modal';
 import ShieldFooterAgreement from './shield-footer-agreement';
 import ShieldFooterCoverageIndicator from './shield-footer-coverage-indicator/shield-footer-coverage-indicator';
-import { setHardwareSigningState } from '../../../../../store/actions';
-import { isAddressLedger } from '../../../../../ducks/metamask/metamask';
 
 export type OnCancelHandler = ({
   location,
@@ -212,22 +217,43 @@ const Footer = () => {
     (state) => from && isAddressLedger(state, from),
   );
 
-  const hardwareWalletRequiresConnection = useSelector((state) => {
-    if (from) {
-      const inE2e =
-        process.env.IN_TEST && process.env.JEST_WORKER_ID === 'undefined';
-      return inE2e ? false : doesAddressRequireLedgerHidConnection(state, from);
-    }
-    return false;
-  });
+  const { connectionState } = useHardwareWalletState();
+  const { isHardwareWalletAccount, deviceId } = useHardwareWalletConfig();
+  const { ensureDeviceReady } = useHardwareWalletActions();
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isAddEthereumChain = isAddEthereumChainType(currentConfirmation);
 
   const isConfirmDisabled =
     (!isScrollToBottomCompleted && !isSignature) ||
-    hardwareWalletRequiresConnection ||
+    (isHardwareWalletAccount &&
+      ![ConnectionStatus.Connected, ConnectionStatus.Ready].includes(
+        connectionState.status,
+      )) ||
     isGaslessLoading;
+
+  const onSubmitPreflightCheck = useCallback(async (): Promise<boolean> => {
+    if (!isHardwareWalletAccount) {
+      return true;
+    }
+
+    if (!deviceId) {
+      console.log('[Footer] No device ID available');
+      return false;
+    }
+
+    console.log('[Footer] Verifying hardware wallet device is ready');
+    const isDeviceReady = await ensureDeviceReady(deviceId);
+    if (!isDeviceReady) {
+      console.log(
+        '[Footer] Device not ready - HardwareWalletErrorMonitor will show error modal automatically',
+      );
+      return false;
+    }
+
+    console.log('[Footer] Device is ready');
+    return true;
+  }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
 
   const onSubmit = useCallback(async () => {
     console.log(
@@ -236,6 +262,16 @@ const Footer = () => {
       'from:',
       from,
     );
+
+    // Run preflight check for hardware wallets
+    const isReady = await onSubmitPreflightCheck();
+    if (!isReady) {
+      console.log(
+        '[Footer onSubmit] Preflight check failed, aborting submission',
+      );
+      return;
+    }
+
     if (from && isLedgerAccount) {
       console.log('[Footer onSubmit] Setting hardware signing state...');
       await dispatch(
@@ -262,6 +298,7 @@ const Footer = () => {
     dispatch,
     currentConfirmation.id,
     resetTransactionState,
+    onSubmitPreflightCheck,
   ]);
 
   const handleFooterCancel = useCallback(async () => {

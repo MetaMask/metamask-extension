@@ -138,16 +138,22 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
-      // Don't show if we're already displaying the same error (unless forced)
+      // Don't show if we're already displaying the exact same error instance (unless forced)
       if (!skipFilters && displayedError === error) {
-        console.log(LOG_TAG, 'Already displaying this error');
+        console.log(LOG_TAG, 'Already displaying this exact error instance');
         return;
       }
 
-      // Don't show if modal is already open with a different error (unless forced)
-      if (!skipFilters && isModalOpenRef.current && displayedError) {
-        console.log(LOG_TAG, 'Modal already open with different error');
-        return;
+      // Always show the latest error - if a new error comes in, replace the current one
+      if (
+        isModalOpenRef.current &&
+        displayedError &&
+        displayedError !== error
+      ) {
+        console.log(LOG_TAG, 'Replacing current error with latest error:', {
+          current: displayedError.code,
+          new: error.code,
+        });
       }
 
       console.log(LOG_TAG, 'Showing error modal:', error.code);

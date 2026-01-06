@@ -59,13 +59,13 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const t = useI18nContext();
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
-    // Use props from either direct props or modal state
-    const { error, walletType, onRetry, onCancel, onClose } = {
+    const [recovered, setRecovered] = useState(false);
+    const { error, walletType, onCancel, onClose } = {
       ...props,
       ...modalProps,
     };
     const { deviceId } = useHardwareWalletConfig();
-    const { ensureDeviceReady } = useHardwareWalletActions();
+    const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
     // If no error, don't render anything
     if (!error || !walletType) {
@@ -73,21 +73,21 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     }
 
     const canRetry =
-      error.retryStrategy === RetryStrategy.RETRY &&
-      error.userActionable &&
-      onRetry;
+      error.retryStrategy === RetryStrategy.RETRY && error.userActionable;
 
-    const { icon, title, description, recoveryInstructions } =
-      buildErrorContent(
-        error,
-        walletType,
-        t as (key: string, ...args: unknown[]) => string,
-      );
+    const { icon, title, recoveryInstructions } = buildErrorContent(
+      error,
+      walletType,
+      t as (key: string, ...args: unknown[]) => string,
+    );
 
     const handleRetry = async () => {
       setIsLoading(true);
-      await ensureDeviceReady(deviceId ?? '');
-      onRetry?.();
+      const result = await ensureDeviceReady(deviceId ?? '');
+      if (result) {
+        setRecovered(true);
+        clearError();
+      }
       setIsLoading(false);
     };
 
@@ -102,6 +102,50 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     };
 
     useEffect(() => {}, [hideModal]);
+
+    if (recovered) {
+      return (
+        <Modal
+          isOpen={true}
+          onClose={handleClose}
+          isClosedOnOutsideClick={false}
+          isClosedOnEscapeKey
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={handleClose}>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+              >
+                <Icon
+                  name={IconName.Confirmation}
+                  color={IconColor.successDefault}
+                  size={IconSize.Xl}
+                />
+              </Box>
+            </ModalHeader>
+            <ModalBody>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                gap={4}
+              >
+                <Text
+                  variant={TextVariant.headingSm}
+                  textAlign={TextAlign.Center}
+                  color={TextColor.textAlternative}
+                >
+                  {t('hardwareWalletTypeConnected', [t(walletType)])}
+                </Text>
+              </Box>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      );
+    }
 
     return (
       <Modal

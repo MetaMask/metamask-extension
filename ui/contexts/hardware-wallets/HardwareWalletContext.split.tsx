@@ -192,7 +192,6 @@ function keyringTypeToHardwareWalletType(
   switch (keyringType) {
     case KeyringTypes.ledger:
       return HardwareWalletType.Ledger;
-      return HardwareWalletType.LEDGER;
     default:
       return null;
   }
@@ -347,7 +346,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
               ConnectionState.error('app_not_open', payload.error),
             );
           } else {
-          updateConnectionState(ConnectionState.awaitingApp('not_open'));
+            updateConnectionState(ConnectionState.awaitingApp('not_open'));
           }
           break;
 
@@ -943,7 +942,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         }
 
         try {
-        await connect(currentDetectedWalletType, targetDeviceId);
+          await connect(currentDetectedWalletType, targetDeviceId);
         } catch (error) {
           // Error state already set by connect/adapter via device events
           // HardwareWalletErrorMonitor will show modal automatically
@@ -959,12 +958,12 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       if (!abortSignal?.aborted) {
         if (adapter?.verifyDeviceReady && targetDeviceId) {
           try {
-          const result = await adapter.verifyDeviceReady(targetDeviceId);
+            const result = await adapter.verifyDeviceReady(targetDeviceId);
             console.log(LOG_TAG, 'ensureDeviceReady result:', result);
-          if (result) {
-            updateConnectionState(ConnectionState.ready());
-          }
-          return result;
+            if (result) {
+              updateConnectionState(ConnectionState.ready());
+            }
+            return result;
           } catch (error) {
             // Error state already set via onDeviceEvent in adapter
             // HardwareWalletErrorMonitor will show modal automatically

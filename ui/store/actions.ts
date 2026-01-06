@@ -84,6 +84,8 @@ import {
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
+import { HardwareWalletError } from '@metamask/keyring-utils';
+import { KeyringType } from '@metamask/keyring-api';
 import { ModalType } from '../selectors/subscription/subscription';
 import { captureException } from '../../shared/lib/sentry';
 import { switchDirection } from '../../shared/lib/switch-direction';
@@ -218,8 +220,6 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { HardwareWalletError } from '@metamask/keyring-utils';
-import { KeyringType } from '@metamask/keyring-api';
 
 type CustomGasSettings = {
   gas?: string;
@@ -5769,7 +5769,7 @@ export function resolvePendingApproval(
 
     // Get the updated state after force update
     const state = getState();
-    const pendingApprovals = state.metamask.pendingApprovals;
+    const { pendingApprovals } = state.metamask;
     const hardwareSigningState = getHardwareSigningState(state);
     const pendingApprovalsCount = Object.values(pendingApprovals).length;
 
@@ -8300,4 +8300,11 @@ export async function getHdPathForHardwareKeyring(
     [deviceName],
   );
   return hdPath;
+}
+
+export async function getTrezorDeviceStatus(): Promise<DeviceState> {
+  return await submitRequestToBackground<DeviceState>(
+    'getTrezorDeviceStatus',
+    [],
+  );
 }

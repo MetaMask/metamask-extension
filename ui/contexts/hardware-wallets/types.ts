@@ -4,6 +4,8 @@
 export enum HardwareWalletType {
   Ledger = 'ledger',
   Trezor = 'trezor',
+  OneKey = 'oneKey',
+  Lattice = 'lattice',
   Qr = 'qr',
 }
 
