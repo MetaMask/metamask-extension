@@ -7,6 +7,7 @@ import { useDispatch } from 'react-redux';
 import { useRoutes, useLocation, useNavigationType } from 'react-router-dom';
 import IdleTimer from 'react-idle-timer';
 import type { ApprovalType } from '@metamask/controller-utils';
+import { TransactionMeta } from '@metamask/transaction-controller';
 
 import { useAppSelector } from '../../store/store';
 import Loading from '../../components/ui/loading-screen';
@@ -346,7 +347,9 @@ export default function Routes() {
     oldestPendingConfirmationSelector,
   );
   const pendingApprovals = useAppSelector(getPendingApprovals);
-  const transactionsMetadata = useAppSelector(getUnapprovedTransactions);
+  const transactionsMetadata = useAppSelector(
+    getUnapprovedTransactions,
+  ) as Record<string, TransactionMeta>;
 
   const textDirection = useAppSelector((state) => state.metamask.textDirection);
   const isUnlocked = useAppSelector(getIsUnlocked);
