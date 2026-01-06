@@ -4,6 +4,8 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import Homepage from '../../page-objects/pages/home/homepage';
+import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import {
   mockExchangeRates,
@@ -11,11 +13,11 @@ import {
   mockPriceMultiTrxAndSol,
   mockHistoricalPrices1d,
   mockHistoricalPrices7d,
-  mockInfuraAccountRequest,
-  mockInfuraTransactionsRequest,
-  mockInfuraTransactionsTRC20Request,
+  mockAccountRequest,
+  mockTransactionsRequest,
+  mockTransactionsTRC20Request,
   mockExchangeRatesV1,
-  mockInfuraAccountResourcesRequest,
+  mockAccountResourcesRequest,
   mockTokens,
   mockGetBlock,
   mockScanTransaction,
@@ -55,9 +57,11 @@ export const TRANSACTION_HASH_MOCK = "36c4096d30a82641ee9d8c12297ed330ddb0f8ae27
 
 export const withTronAccountSnap = async ({
   title,
+  numberOfAccounts = 1,
   dappPaths,
 }: {
   title?: string;
+  numberOfAccounts?: number;
   dappPaths?: string[];
 }, test: (driver: Driver) => Promise<void>) => {
   await withFixtures(
@@ -89,10 +93,10 @@ export const withTronAccountSnap = async ({
         await mockPriceMultiTrxAndSol(mockServer),
         await mockHistoricalPrices1d(mockServer),
         await mockHistoricalPrices7d(mockServer),
-        await mockInfuraAccountRequest(mockServer),
-        await mockInfuraTransactionsRequest(mockServer),
-        await mockInfuraTransactionsTRC20Request(mockServer),
-        await mockInfuraAccountResourcesRequest(mockServer),
+        await mockAccountRequest(mockServer),
+        await mockTransactionsRequest(mockServer),
+        await mockTransactionsTRC20Request(mockServer),
+        await mockAccountResourcesRequest(mockServer),
         await mockTokens(mockServer),
         await mockGetBlock(mockServer),
         await mockScanTransaction(mockServer),
@@ -102,6 +106,18 @@ export const withTronAccountSnap = async ({
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
+
+      if (numberOfAccounts === 2) {
+        const homepage = new Homepage(driver);
+        await homepage.checkExpectedBalanceIsDisplayed();
+        // create 2nd account
+        await homepage.headerNavbar.openAccountMenu();
+        const accountListPage = new AccountListPage(driver);
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.selectAccount('Account 1');
+      }
+      
       await test(driver);
     },
   );
