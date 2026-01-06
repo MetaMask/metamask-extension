@@ -7,7 +7,7 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 import { useAsyncResult } from '../../hooks/useAsync';
 
 const RIVE_WASM_URL = new URL(
-  './images/riv_animations/rive.wasm',
+  '@rive-app/canvas/rive.wasm',
   // @ts-expect-error TS1470: 'import.meta' is not allowed in CommonJS
   import.meta.url,
 );
