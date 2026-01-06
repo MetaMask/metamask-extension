@@ -17,7 +17,6 @@ import {
   FontWeight,
   JustifyContent,
   TextAlign,
-  WordBreak,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Box, Text } from '../../../component-library';
@@ -112,7 +111,7 @@ export default class PermissionPageContainerContent extends PureComponent {
                 as="span"
                 key={`description_key_${displayOrigin}`}
                 fontWeight={FontWeight.Medium}
-                className="permission-page-container-content__origin-text"
+                className="break-all"
               >
                 {displayOrigin}
               </Text>,
