@@ -33,9 +33,7 @@ function SenderAddress({
   warnUserOnAccountMismatch,
 }) {
   return (
-    <div
-      className="sender-to-recipient__party sender-to-recipient__party--sender gap-1"
-    >
+    <div className="sender-to-recipient__party sender-to-recipient__party--sender gap-1">
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
         size={AvatarAccountSize.Sm}
