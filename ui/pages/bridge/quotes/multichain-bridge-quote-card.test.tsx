@@ -231,7 +231,7 @@ describe('MultichainBridgeQuoteCard', () => {
         assetExchangeRates: {
           [toAssetId(
             '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            formatChainIdToCaip(CHAIN_IDS.POLYGON),
+            CHAIN_IDS.POLYGON,
           ) ?? '']: {
             exchangeRate: '.99',
             usdExchangeRate: '.99',
