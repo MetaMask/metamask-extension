@@ -191,7 +191,11 @@ class ConsoleBaselineReporter {
    * @returns {string} Relative path from project root
    */
   _getRelativePath(absolutePath) {
-    return path.relative(this._globalConfig.rootDir, absolutePath);
+    // Normalize to forward slashes for cross-platform consistency
+    // (path.relative uses '\' on Windows, but baselines use '/')
+    return path
+      .relative(this._globalConfig.rootDir, absolutePath)
+      .replace(/\\/gu, '/');
   }
 
   /**
