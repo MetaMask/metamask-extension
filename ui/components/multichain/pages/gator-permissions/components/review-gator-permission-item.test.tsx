@@ -832,6 +832,64 @@ describe('Permission List Item', () => {
         expect(expirationDate).toBeInTheDocument();
         expect(expirationDate).toHaveTextContent('04/14/2025');
       });
+
+      it('renders "No expiration" when rules exist but no expiry rule is present', () => {
+        const mockPermissionWithNonExpiryRules: StoredGatorPermissionSanitized<
+          Signer,
+          NativeTokenPeriodicPermission
+        > = {
+          permissionResponse: {
+            chainId: '0x1',
+            address: mockAccountAddress,
+            permission: {
+              type: 'native-token-periodic',
+              isAdjustmentAllowed: false,
+              data: {
+                periodAmount: '0x6f05b59d3b20000',
+                periodDuration: 604800,
+                startTime: mockStartTime,
+                justification: 'Test permission with non-expiry rules',
+              },
+            },
+            context: '0x00000000',
+            signerMeta: {
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            },
+            rules: [
+              {
+                type: 'some-other-rule',
+                isAdjustmentAllowed: false,
+                data: {
+                  someField: 'someValue',
+                },
+              },
+            ],
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
+
+        const { container, getByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockPermissionWithNonExpiryRules}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        // Expand to see expiration date
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify expiration date shows "No expiration" even when rules array is non-empty
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+        expect(expirationDate).toHaveTextContent('No expiration');
+      });
     });
   });
 });

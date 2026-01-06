@@ -216,7 +216,8 @@ export const ReviewGatorPermissionItem = ({
       if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
-      return extractExpiryToReadableDate(rules);
+      const expiryDate = extractExpiryToReadableDate(rules);
+      return expiryDate || t('gatorPermissionNoExpiration');
     },
     [t],
   );
@@ -394,7 +395,6 @@ export const ReviewGatorPermissionItem = ({
     permissionType,
     getTokenStreamPermissionDetails,
     permissionResponse.permission,
-    permissionResponse.rules,
     getTokenPeriodicPermissionDetails,
     getTokenRevocationPermissionDetails,
   ]);
