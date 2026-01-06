@@ -3435,6 +3435,9 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   },
 );
 
+/**
+ * @deprecated
+ */
 export const getUpdatedAndSortedAccounts = createSelector(
   getMetaMaskAccountsOrdered,
   getPinnedAccountsList,
