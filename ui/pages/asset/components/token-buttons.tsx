@@ -255,7 +255,7 @@ const TokenButtons = ({
         }
         label={t('send')}
         data-testid="eth-overview-send"
-        disabled={token.isERC721}
+        disabled={token.isERC721 || (!isEvm && !isExternalServicesEnabled)}
       />
 
       <IconButton

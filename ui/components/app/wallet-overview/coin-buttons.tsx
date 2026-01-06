@@ -57,6 +57,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
@@ -138,11 +139,17 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
+  const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
+  const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
+      {
+        condition: !isEvmAsset && !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
     ],
     swapButton: [
       {
@@ -440,7 +447,9 @@ const CoinButtons = ({
             />
           )
         }
-        disabled={!isSigningEnabled}
+        disabled={
+          !isSigningEnabled || (!isEvmAsset && !isExternalServicesEnabled)
+        }
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}
