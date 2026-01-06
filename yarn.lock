@@ -6095,15 +6095,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:@metamask-previews/claims-controller@0.3.1-preview-cd6eae6b":
-  version: 0.3.1-preview-cd6eae6b
-  resolution: "@metamask-previews/claims-controller@npm:0.3.1-preview-cd6eae6b"
+"@metamask/claims-controller@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@metamask/claims-controller@npm:0.4.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.17.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/dc09b733b092d9429951cd8e12220eba1ca5d9b85557fc512eb7e3077acaf02c03bfcc316145a4c7136130dce0864a63157a37c0d4e96546d361a4df950f4a3f
+  checksum: 10/fec020d9911f86c8ef274ff46cacf5693143bfd8c1d042e3c9cfd4d0ce4575600a7c437ba1b6af7da9d7101933c42c4a0ffcb56e1cfefaad3098863a2589a53c
   languageName: node
   linkType: hard
 
@@ -8132,9 +8132,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/shield-controller@npm:@metamask-previews/shield-controller@4.0.0-preview-bbf1f2af":
-  version: 4.0.0-preview-bbf1f2af
-  resolution: "@metamask-previews/shield-controller@npm:4.0.0-preview-bbf1f2af"
+"@metamask/shield-controller@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@metamask/shield-controller@npm:4.1.0"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.17.0"
@@ -8143,7 +8143,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.7.0"
     "@metamask/utils": "npm:^11.9.0"
     cockatiel: "npm:^3.1.2"
-  checksum: 10/955ef0b2ff7a60879c5bcf7c6f196bcc3018c0d9dc617df0c45e7e83231f6ccbf0dcadce7ec211a5008d0c674eb1981e070fd6d0622503b09ed8c1a840cb887a
+  checksum: 10/0e901663626245fbf788f317bb2e3f53959a2c8c119f5b35eca9f17a7b0025479189e077bdf27c73b1f72757f9796ce4ef35e847c803fe72e3d018e6c448e405
   languageName: node
   linkType: hard
 
@@ -32860,7 +32860,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.3.0"
-    "@metamask/claims-controller": "npm:@metamask-previews/claims-controller@0.3.1-preview-cd6eae6b"
+    "@metamask/claims-controller": "npm:^0.4.0"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.16.0"
     "@metamask/core-backend": "npm:^4.1.0"
@@ -32947,7 +32947,7 @@ __metadata:
     "@metamask/scure-bip39": "npm:^2.0.3"
     "@metamask/seedless-onboarding-controller": "npm:^7.1.0"
     "@metamask/selected-network-controller": "npm:^25.0.0"
-    "@metamask/shield-controller": "npm:@metamask-previews/shield-controller@4.0.0-preview-bbf1f2af"
+    "@metamask/shield-controller": "npm:^4.1.0"
     "@metamask/signature-controller": "npm:^38.0.0"
     "@metamask/smart-transactions-controller": "npm:^21.0.0"
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
