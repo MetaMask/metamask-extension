@@ -256,7 +256,8 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs@npm:6.13.0": "^6.14.1"
+    "qs@npm:6.13.0": "^6.14.1",
+    "@metamask/multichain-account-service@^3.0.0": "npm:@metamask-previews/multichain-account-service@4.1.0-preview-1d3aa020"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
