@@ -341,10 +341,11 @@ class ConsoleBaselineReporter {
       }
 
       // Check for violations (increased counts or new categories)
+      // Skip violations for new files - they're already tracked in newFiles
       for (const [category, currentCount] of Object.entries(currentWarnings)) {
         const baselineCount = baselineForFile[category] || 0;
 
-        if (currentCount > baselineCount) {
+        if (currentCount > baselineCount && !isNewFile) {
           this.violations.push({
             filePath,
             category,
@@ -352,7 +353,6 @@ class ConsoleBaselineReporter {
             current: currentCount,
             increase: currentCount - baselineCount,
             isNew: baselineCount === 0,
-            isNewFile,
           });
         } else if (currentCount < baselineCount) {
           this.improvements.push({
