@@ -4433,10 +4433,9 @@ describe('MetaMaskController', () => {
 
         expect(addNewSecretDataSpy).toHaveBeenCalledWith(
           expect.any(Uint8Array),
-          'mnemonic',
+          2, // EncAccountDataType.ImportedSrp
           {
             keyringId: mockKeyringId,
-            dataType: 2, // EncAccountDataType.ImportedSrp
           },
         );
       });
@@ -4464,10 +4463,9 @@ describe('MetaMaskController', () => {
 
         expect(addNewSecretDataSpy).toHaveBeenCalledWith(
           expect.any(Uint8Array),
-          'privateKey',
+          3, // EncAccountDataType.ImportedPrivateKey
           {
             keyringId: mockKeyringId,
-            dataType: 3, // EncAccountDataType.ImportedPrivateKey
           },
         );
       });

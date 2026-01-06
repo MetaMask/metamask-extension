@@ -4588,10 +4588,9 @@ export default class MetamaskController extends EventEmitter {
         });
         await this.seedlessOnboardingController.addNewSecretData(
           seedPhraseAsUint8Array,
-          SecretType.Mnemonic,
+          EncAccountDataType.ImportedSrp,
           {
             keyringId,
-            dataType: EncAccountDataType.ImportedSrp,
           },
         );
         addNewSeedPhraseBackupSuccess = true;
@@ -6451,8 +6450,8 @@ export default class MetamaskController extends EventEmitter {
       try {
         await this.seedlessOnboardingController.addNewSecretData(
           bufferedPrivateKey,
-          SecretType.PrivateKey,
-          { keyringId, dataType: EncAccountDataType.ImportedPrivateKey },
+          EncAccountDataType.ImportedPrivateKey,
+          { keyringId },
         );
       } catch (error) {
         log.error('Error adding new private key backup', error);
