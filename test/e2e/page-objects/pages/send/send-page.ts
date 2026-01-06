@@ -17,7 +17,11 @@ class SendPage {
 
   private readonly hexDataInput = '[data-testid="send-hex-textarea"]';
 
-  private readonly inputRecipient = '[data-testid="ens-input"]';
+  // Note: Different send flows use different components:
+  // - Legacy flow: data-testid="ens-input"
+  // - New confirmations flow: placeholder="Enter or paste an address or name"
+  private readonly inputRecipient =
+    'input[placeholder="Enter or paste an address or name"], [data-testid="ens-input"]';
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
