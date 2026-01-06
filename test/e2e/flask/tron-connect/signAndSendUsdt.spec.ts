@@ -12,7 +12,7 @@ import { veryLargeDelayMs } from '../../helpers';
 
 describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
   describe(`Tron Connect - Sign/Send USDT`, function () {
-    it.skip('Should be able to Sign a USDT transaction', async function () {
+    it('Should be able to Sign a USDT transaction', async function () {
       await withTronAccountSnap(
         {
           ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
