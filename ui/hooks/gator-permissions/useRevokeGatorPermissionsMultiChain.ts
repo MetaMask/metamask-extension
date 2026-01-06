@@ -135,6 +135,7 @@ export function useRevokeGatorPermissionsMultiChain({
               await submitDirectRevocation({
                 permissionContext: permissionResponse.context,
               });
+              results[currentChainId as Hex].skipped.push(permission);
               // Continue to next permission - no transaction needed
               continue;
             }
