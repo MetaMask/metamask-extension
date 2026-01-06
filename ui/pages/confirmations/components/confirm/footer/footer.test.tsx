@@ -553,9 +553,9 @@ describe('ConfirmFooter', () => {
       it.each(['Confirm', 'Cancel'])(
         'on %s button click',
         async (buttonText: string) => {
-          const navigateNextOrHomeMock = jest.fn();
+          const navigateNextMock = jest.fn();
           useConfirmationNavigationMock.mockReturnValue({
-            navigateNext: navigateNextOrHomeMock,
+            navigateNext: navigateNextMock,
             navigateToId: jest.fn(),
           } as unknown as ReturnType<typeof useConfirmationNavigation>);
 
@@ -589,10 +589,10 @@ describe('ConfirmFooter', () => {
 
           // Wait for async operations to complete
           await waitFor(() => {
-            expect(navigateNextOrHomeMock).toHaveBeenCalledTimes(1);
+            expect(navigateNextMock).toHaveBeenCalledTimes(1);
           });
 
-          expect(navigateNextOrHomeMock).toHaveBeenCalledWith(
+          expect(navigateNextMock).toHaveBeenCalledWith(
             contractInteractionConfirmation.id,
           );
         },
