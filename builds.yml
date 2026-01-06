@@ -468,5 +468,5 @@ env:
   - EXTENSION_UX_PNA25: true
   - IS_SIDEPANEL: true
 
-# Authentication (Backup & Sync, Profile metrics...)
+  # Authentication (Backup & Sync, Profile metrics...)
   - FORCE_AUTH_MATCH_BUILD: false
