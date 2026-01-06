@@ -124,9 +124,13 @@ export const TRON_NILE_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 export const TRON_SHASTA_TOKEN_IMAGE_URL = './images/tron-logo-testnet.svg';
 
 export const BITCOIN_BLOCK_EXPLORER_URL = 'https://mempool.space';
+export const BITCOIN_BLOCK_EXPLORER_NAME = 'Mempool';
 export const BITCOIN_SIGNET_BLOCK_EXPLORER_URL = 'https://mutinynet.com';
+export const BITCOIN_SIGNET_BLOCK_EXPLORER_NAME = 'Mutinynet';
 export const SOLANA_BLOCK_EXPLORER_URL = 'https://solscan.io';
+export const SOLANA_BLOCK_EXPLORER_NAME = 'Solscan';
 export const TRON_BLOCK_EXPLORER_URL = 'https://tronscan.org';
+export const TRON_BLOCK_EXPLORER_NAME = 'Tronscan';
 export const TRON_NILE_BLOCK_EXPLORER_URL = 'https://nile.tronscan.org';
 export const TRON_SHASTA_BLOCK_EXPLORER_URL = 'https://shasta.tronscan.org';
 
@@ -135,47 +139,56 @@ export const MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP: Record<
   MultichainBlockExplorerFormatUrls
 > = {
   [MultichainNetworks.BITCOIN]: {
+    name: BITCOIN_BLOCK_EXPLORER_NAME,
     url: BITCOIN_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_BLOCK_EXPLORER_URL}/address/{address}`,
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_TESTNET]: {
+    name: BITCOIN_BLOCK_EXPLORER_NAME,
     url: BITCOIN_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/address/{address}`,
     transaction: `${BITCOIN_BLOCK_EXPLORER_URL}/testnet/tx/{txId}`,
   },
   [MultichainNetworks.BITCOIN_SIGNET]: {
+    name: BITCOIN_SIGNET_BLOCK_EXPLORER_NAME,
     url: BITCOIN_SIGNET_BLOCK_EXPLORER_URL,
     address: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/address/{address}`,
     transaction: `${BITCOIN_SIGNET_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
 
   [MultichainNetworks.SOLANA]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}`,
   },
   [MultichainNetworks.SOLANA_DEVNET]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=devnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=devnet`,
   },
   [MultichainNetworks.SOLANA_TESTNET]: {
+    name: SOLANA_BLOCK_EXPLORER_NAME,
     url: SOLANA_BLOCK_EXPLORER_URL,
     address: `${SOLANA_BLOCK_EXPLORER_URL}/account/{address}?cluster=testnet`,
     transaction: `${SOLANA_BLOCK_EXPLORER_URL}/tx/{txId}?cluster=testnet`,
   },
   [MultichainNetworks.TRON]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
     url: TRON_BLOCK_EXPLORER_URL,
     address: `${TRON_BLOCK_EXPLORER_URL}/#/address/{address}`,
     transaction: `${TRON_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
   },
   [MultichainNetworks.TRON_NILE]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
     url: TRON_NILE_BLOCK_EXPLORER_URL,
     address: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/address/{address}`,
     transaction: `${TRON_NILE_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
   },
   [MultichainNetworks.TRON_SHASTA]: {
+    name: TRON_BLOCK_EXPLORER_NAME,
     url: TRON_SHASTA_BLOCK_EXPLORER_URL,
     address: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/address/{address}`,
     transaction: `${TRON_SHASTA_BLOCK_EXPLORER_URL}/#/transaction/{txId}`,
