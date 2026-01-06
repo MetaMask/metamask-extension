@@ -18,7 +18,7 @@ export const useSendAssets = (): SendAssets => {
   const useExternalServices = useSelector(getUseExternalServices);
 
   return useMemo(() => {
-    // When BFT is OFF, filter out non-EVM tokens
+    // When BFT is OFF, filter out non-EVM tokens and NFTs
     if (!useExternalServices) {
       const filteredTokens = tokens.filter((token) => {
         // chainId is Hex for EVM chains or CaipChainId for non-EVM chains

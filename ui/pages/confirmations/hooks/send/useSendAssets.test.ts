@@ -41,8 +41,8 @@ describe('useSendAssets', () => {
     ];
 
     const mockNfts: Asset[] = [
-      { id: 'nft1', name: 'NFT 1' } as Asset,
-      { id: 'nft2', name: 'NFT 2' } as Asset,
+      { id: 'nft1', name: 'NFT 1', chainId: '0x1' } as Asset,
+      { id: 'nft2', name: 'NFT 2', chainId: '0x1' } as Asset,
     ];
 
     mockUseSendTokens.mockReturnValue(mockTokens);
@@ -87,7 +87,7 @@ describe('useSendAssets', () => {
     expect(mockUseSendNfts).toHaveBeenCalledTimes(1);
   });
 
-  it('filters out non-EVM tokens when BFT is OFF', () => {
+  it('filters out non-EVM tokens and NFTs when BFT is OFF', () => {
     const mockTokens: Asset[] = [
       { id: 'token1', name: 'EVM Token', chainId: '0x1' } as Asset,
       {
@@ -98,7 +98,15 @@ describe('useSendAssets', () => {
       { id: 'token3', name: 'Another EVM Token', chainId: '0x89' } as Asset,
     ];
 
-    const mockNfts: Asset[] = [{ id: 'nft1', name: 'NFT 1' } as Asset];
+    const mockNfts: Asset[] = [
+      { id: 'nft1', name: 'EVM NFT', chainId: '0x1' } as Asset,
+      {
+        id: 'nft2',
+        name: 'Solana NFT',
+        chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      } as Asset,
+      { id: 'nft3', name: 'Another EVM NFT', chainId: '0x89' } as Asset,
+    ];
 
     mockUseSendTokens.mockReturnValue(mockTokens);
     mockUseSendNfts.mockReturnValue(mockNfts);
@@ -112,6 +120,11 @@ describe('useSendAssets', () => {
     expect(result.current.tokens).toHaveLength(2);
     expect(result.current.tokens[0].chainId).toBe('0x1');
     expect(result.current.tokens[1].chainId).toBe('0x89');
-    expect(result.current.nfts).toEqual(mockNfts);
+
+    // Only EVM NFTs should be returned (non-EVM NFTs filtered out to prevent
+    // their chain IDs from appearing in the network filter dropdown)
+    expect(result.current.nfts).toHaveLength(2);
+    expect(result.current.nfts[0].chainId).toBe('0x1');
+    expect(result.current.nfts[1].chainId).toBe('0x89');
   });
 });
