@@ -316,9 +316,9 @@ class HomePage {
    */
   async checkBalanceIsDisplayed(): Promise<void> {
     console.log('Check balance element is displayed on homepage');
-    await this.driver.waitForSelector(this.balance, {
+    await this.driver.waitForSelector({
+      css: this.balance,
       text: /^\d+\.?\d*\sETH$/u,
-      timeout: 10000,
     });
     console.log('Balance is displayed in correct format');
   }
