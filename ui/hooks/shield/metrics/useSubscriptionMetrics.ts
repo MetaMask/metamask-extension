@@ -5,7 +5,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import {
+  getMetaMaskHdKeyrings,
+  getPendingShieldCohortTxType,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import {
   formatExistingSubscriptionEventProps,
@@ -53,6 +56,7 @@ export const useSubscriptionMetrics = () => {
     true, // hide zero balance tokens
     true, // use USD conversion rate instead of the current currency
   );
+  const pendingShieldCohortTxType = useSelector(getPendingShieldCohortTxType);
 
   /**
    * Set the Shield subscription metrics properties to the background.
@@ -119,6 +123,11 @@ export const useSubscriptionMetrics = () => {
         Number(totalFiatBalance),
       );
 
+      const postTransactionType =
+        params.source === ShieldMetricsSourceEnum.PostTransaction
+          ? pendingShieldCohortTxType
+          : undefined;
+
       trackEvent({
         event: MetaMetricsEventName.ShieldEntryModal,
         category: MetaMetricsEventCategory.Shield,
@@ -134,11 +143,17 @@ export const useSubscriptionMetrics = () => {
           modal_cta_action_clicked: params.modalCtaActionClicked,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          post_transaction_type: params.postTransactionType,
+          post_transaction_type: postTransactionType,
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+    [
+      trackEvent,
+      selectedAccount,
+      hdKeyingsMetadata,
+      totalFiatBalance,
+      pendingShieldCohortTxType,
+    ],
   );
 
   /**
