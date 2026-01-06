@@ -611,7 +611,7 @@
     },
     "@metamask/claims-controller": {
       "packages": {
-        "@metamask/controller-utils": true
+        "@metamask/claims-controller>@metamask/controller-utils": true
       }
     },
     "@metamask/controller-utils": {
