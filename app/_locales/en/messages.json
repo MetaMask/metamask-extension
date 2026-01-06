@@ -3069,9 +3069,6 @@
   "hardwareWalletErrorRecoveryWebHID2": {
     "message": "Alternatively, update your browser to the latest version"
   },
-  "hardwareWalletErrorRetryButton": {
-    "message": "Retry"
-  },
   "hardwareWalletErrorSomethingWentWrong": {
     "message": "Something went wrong"
   },
@@ -3108,6 +3105,23 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
+  },
+  "hardwareWalletTransactionPendingDescription": {
+    "message": "Please review and confirm the transaction on your $1 device",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletTransactionPendingTitle": {
+    "message": "Confirm on your device"
+  },
+  "hardwareWalletTransactionSuccessDescription": {
+    "message": "Your transaction has been successfully signed on your hardware wallet"
+  },
+  "hardwareWalletTransactionSuccessTitle": {
+    "message": "Transaction signed"
+  },
+  "hardwareWalletTypeConnected": {
+    "message": "$1 connected",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
@@ -3536,6 +3550,10 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lattice": {
+    "message": "Lattice",
+    "description": "Hardware device name"
+  },
   "lavaDomeCopyWarning": {
     "message": "For your safety, selecting this text is not available right now."
   },
@@ -3577,7 +3595,8 @@
     "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
   },
   "ledger": {
-    "message": "Ledger"
+    "message": "Ledger",
+    "description": "Hardware device name"
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
@@ -4744,6 +4763,10 @@
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
   },
+  "oneKey": {
+    "message": "OneKey",
+    "description": "Hardware device name"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -5443,6 +5466,10 @@
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Swap completed"
+  },
+  "qr": {
+    "message": "QR",
+    "description": "Hardware device name"
   },
   "queued": {
     "message": "Queued"
@@ -8272,6 +8299,10 @@
   },
   "transferRequest": {
     "message": "Transfer request"
+  },
+  "trezor": {
+    "message": "Trezor",
+    "description": "Hardware device name"
   },
   "tronBandwidth": {
     "message": "Bandwidth"
