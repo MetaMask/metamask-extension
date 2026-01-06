@@ -1971,6 +1971,16 @@
         "os.homedir": true
       }
     },
+    "yargs>cliui": {
+      "globals": {
+        "process": true
+      },
+      "packages": {
+        "yargs>string-width": true,
+        "eslint>strip-ansi": true,
+        "yargs>cliui>wrap-ansi": true
+      }
+    },
     "vinyl>clone-buffer": {
       "builtin": {
         "buffer.Buffer": true
@@ -2681,6 +2691,14 @@
         "resolve-url-loader>es6-iterator>es5-ext": true,
         "resolve-url-loader>es6-iterator": true,
         "resolve-url-loader>es6-iterator>es6-symbol": true
+      }
+    },
+    "yargs>escalade": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.resolve": true
       }
     },
     "eslint": {
@@ -4057,8 +4075,7 @@
       },
       "globals": {
         "Buffer.concat": true,
-        "Buffer.isBuffer": true,
-        "console.log": true
+        "Buffer.isBuffer": true
       },
       "packages": {
         "browserify>syntax-error>acorn-node": true,
@@ -6743,6 +6760,15 @@
         "path.join": true
       }
     },
+    "yargs>require-directory": {
+      "builtin": {
+        "fs.readdirSync": true,
+        "fs.statSync": true,
+        "path.dirname": true,
+        "path.join": true,
+        "path.resolve": true
+      }
+    },
     "eslint>@eslint/eslintrc>import-fresh>resolve-from": {
       "builtin": {
         "fs.realpathSync": true,
@@ -7471,18 +7497,18 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": true
       }
     },
-    "stylelint>string-width": {
-      "packages": {
-        "stylelint>string-width>emoji-regex": true,
-        "stylelint>string-width>is-fullwidth-code-point": true,
-        "eslint>strip-ansi": true
-      }
-    },
     "stylelint>table>string-width": {
       "packages": {
         "stylelint>table>string-width>emoji-regex": true,
         "stylelint>table>slice-ansi>is-fullwidth-code-point": true,
         "stylelint>table>string-width>strip-ansi": true
+      }
+    },
+    "yargs>string-width": {
+      "packages": {
+        "yargs>string-width>emoji-regex": true,
+        "yargs>string-width>is-fullwidth-code-point": true,
+        "eslint>strip-ansi": true
       }
     },
     "string.prototype.matchall": {
@@ -7769,7 +7795,7 @@
         "nyc>resolve-from": true,
         "del>slash": true,
         "stylelint>specificity": true,
-        "stylelint>string-width": true,
+        "yargs>string-width": true,
         "stylelint>style-search": true,
         "stylelint>sugarss": true,
         "stylelint>svg-tags": true,
@@ -8733,6 +8759,13 @@
         "yargs>string-width": true
       }
     },
+    "yargs>cliui>wrap-ansi": {
+      "packages": {
+        "chalk>ansi-styles": true,
+        "yargs>string-width": true,
+        "eslint>strip-ansi": true
+      }
+    },
     "stylelint>write-file-atomic": {
       "builtin": {
         "fs.chmod": true,
@@ -8832,7 +8865,28 @@
       },
       "globals": {
         "Error": true,
+        "__dirname": true,
         "console": true,
+        "process": true
+      },
+      "packages": {
+        "yargs>cliui": true,
+        "yargs>escalade": true,
+        "yargs>get-caller-file": true,
+        "yargs>require-directory": true,
+        "yargs>string-width": true,
+        "yargs>y18n": true,
+        "yargs-parser": true
+      }
+    },
+    "yargs-parser": {
+      "builtin": {
+        "fs.readFileSync": true,
+        "path.normalize": true,
+        "path.resolve": true,
+        "util.format": true
+      },
+      "globals": {
         "process": true
       }
     },
