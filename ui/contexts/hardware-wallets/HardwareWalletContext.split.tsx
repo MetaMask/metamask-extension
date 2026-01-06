@@ -30,18 +30,20 @@ import {
   ConnectionStatus,
   DeviceEvent,
   HardwareWalletType,
-  WebHIDPermissionState,
+  HardwareConnectionPermissionState,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
   type HardwareWalletConnectionState,
   type DeviceEventPayload,
 } from './types';
 import {
-  checkWebHIDPermission,
-  getDeviceId,
-  requestWebHIDPermission,
+  checkHardwareWalletPermission,
+  getHardwareWalletDeviceId,
+  requestHardwareWalletPermission,
   isWebHIDAvailable,
+  isWebUSBAvailable,
   subscribeToWebHIDEvents,
+  subscribeToWebUSBEvents,
 } from './webHIDUtils';
 
 const LOG_TAG = '[HardwareWalletContext.Split]';
@@ -60,8 +62,9 @@ export type HardwareWalletConfigContextType = {
   detectedWalletType: HardwareWalletType | null;
   walletType: HardwareWalletType | null;
   deviceId: string | null;
-  webHidPermissionState: WebHIDPermissionState;
+  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
+  isWebUsbAvailable: boolean;
   currentAppName: string | null;
 };
 
@@ -82,9 +85,13 @@ export type HardwareWalletActionsContextType = {
   disconnect: () => Promise<void>;
   clearError: () => void;
   retry: () => Promise<void>;
-  checkWebHidPermission: () => Promise<WebHIDPermissionState>;
-  requestWebHidPermission: () => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
+  checkHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<HardwareConnectionPermissionState>;
+  requestHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<boolean>;
+  ensureDeviceReady: (deviceId: string) => Promise<boolean>;
 };
 
 // ============================================================================
@@ -184,6 +191,7 @@ function keyringTypeToHardwareWalletType(
 
   switch (keyringType) {
     case KeyringTypes.ledger:
+      return HardwareWalletType.Ledger;
       return HardwareWalletType.LEDGER;
     default:
       return null;
@@ -217,11 +225,8 @@ function selectAccountHardwareInfo(state: any) {
 export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Account detection - use a custom selector that only extracts what we need
-  // and shallowEqual to prevent re-renders when values haven't changed
   const accountInfo = useSelector(selectAccountHardwareInfo, shallowEqual);
 
-  // Memoize derived values to prevent provider re-renders
   const detectedWalletType = useMemo(
     () => keyringTypeToHardwareWalletType(accountInfo.keyringType),
     [accountInfo.keyringType],
@@ -234,21 +239,22 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
   const accountAddress = accountInfo.address;
 
-  // Config state (rarely changes)
   const [walletType, setWalletType] = useState<HardwareWalletType | null>(null);
   const [deviceId, setDeviceId] = useState<string | null>(null);
-  const [webHidPermissionState, setWebHidPermissionState] =
-    useState<WebHIDPermissionState>(WebHIDPermissionState.UNKNOWN);
+  const [
+    hardwareConnectionPermissionState,
+    setHardwareConnectionPermissionState,
+  ] = useState<HardwareConnectionPermissionState>(
+    HardwareConnectionPermissionState.Unknown,
+  );
   const [currentAppName, setCurrentAppName] = useState<string | null>(null);
 
-  // State (frequently changes)
   const [connectionState, setConnectionState] =
     useState<HardwareWalletConnectionState>(ConnectionState.disconnected());
 
-  // Memoize isWebHidAvailable to prevent unnecessary rerenders
   const isWebHidAvailableState = useMemo(() => isWebHIDAvailable(), []);
+  const isWebUsbAvailableState = useMemo(() => isWebUSBAvailable(), []);
 
-  // Refs for internal state (NOT for avoiding dependencies - only for imperative code)
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const pendingOperationRef = useRef<(() => Promise<unknown>) | null>(null);
@@ -259,12 +265,10 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   const connectRef =
     useRef<(type: HardwareWalletType, id: string) => Promise<void>>();
 
-  // Refs for state values used in callbacks to keep callbacks stable
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const deviceIdRef = useRef<string | null>(null);
   const detectedWalletTypeRef = useRef<HardwareWalletType | null>(null);
 
-  // Keep refs in sync with state
   useEffect(() => {
     walletTypeRef.current = walletType;
   }, [walletType]);
@@ -285,8 +289,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         }
 
         if (
-          newState.status === ConnectionStatus.ERROR &&
-          prev.status === ConnectionStatus.ERROR
+          newState.status === ConnectionStatus.ErrorState &&
+          prev.status === ConnectionStatus.ErrorState
         ) {
           if (
             prev.reason !== newState.reason ||
@@ -297,8 +301,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         }
 
         if (
-          newState.status === ConnectionStatus.AWAITING_APP &&
-          prev.status === ConnectionStatus.AWAITING_APP
+          newState.status === ConnectionStatus.AwaitingApp &&
+          prev.status === ConnectionStatus.AwaitingApp
         ) {
           if (
             prev.reason !== newState.reason ||
@@ -314,7 +318,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [],
   );
 
-  // Event handlers
   const handleDeviceEvent = useCallback(
     (payload: DeviceEventPayload) => {
       if (abortControllerRef.current?.signal.aborted) {
@@ -324,23 +327,23 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       console.log(LOG_TAG, 'Device event:', payload.event);
 
       switch (payload.event) {
-        case DeviceEvent.DISCONNECTED:
+        case DeviceEvent.Disconnected:
           if (!isConnectingRef.current) {
             updateConnectionState(ConnectionState.disconnected());
           }
           break;
 
-        case DeviceEvent.DEVICE_LOCKED:
+        case DeviceEvent.DeviceLocked:
           updateConnectionState(
             ConnectionState.error('locked', payload.error as Error),
           );
           break;
 
-        case DeviceEvent.APP_NOT_OPEN:
+        case DeviceEvent.AppNotOpen:
           updateConnectionState(ConnectionState.awaitingApp('not_open'));
           break;
 
-        case DeviceEvent.APP_CHANGED:
+        case DeviceEvent.AppChanged:
           setCurrentAppName(payload.currentAppName || null);
           if (payload.currentAppName) {
             updateConnectionState(
@@ -349,7 +352,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
           }
           break;
 
-        case DeviceEvent.CONNECTION_FAILED:
+        case DeviceEvent.ConnectionFailed:
           if (payload.error) {
             updateConnectionState(
               ConnectionState.error('connection_failed', payload.error),
@@ -420,25 +423,73 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [isHardwareWalletAccount, updateConnectionState]);
 
+  // Reset wallet type when switching between different hardware wallet accounts
   useEffect(() => {
-    if (isHardwareWalletAccount && isWebHidAvailableState) {
-      checkWebHIDPermission().then((state) => {
+    if (isHardwareWalletAccount && detectedWalletType && walletType) {
+      if (detectedWalletType !== walletType && adapterRef.current) {
+        console.log(
+          LOG_TAG,
+          `Wallet type changed from ${walletType} to ${detectedWalletType}, disconnecting`,
+        );
+        // Disconnect from the current wallet type before switching
+        adapterRef.current.destroy();
+        adapterRef.current = null;
+        updateConnectionState(ConnectionState.disconnected());
+        setWalletType(null);
+        setDeviceId(null);
+        setCurrentAppName(null);
+        pendingOperationRef.current = null;
+        isConnectingRef.current = false;
+        currentConnectionIdRef.current = null;
+        hasAutoConnectedRef.current = false;
+        lastConnectedAccountRef.current = null;
+      }
+    }
+  }, [
+    isHardwareWalletAccount,
+    detectedWalletType,
+    walletType,
+    updateConnectionState,
+  ]);
+
+  useEffect(() => {
+    if (
+      isHardwareWalletAccount &&
+      detectedWalletType &&
+      (isWebHidAvailableState || isWebUsbAvailableState)
+    ) {
+      checkHardwareWalletPermission(detectedWalletType).then((state) => {
         if (!abortControllerRef.current?.signal.aborted) {
-          setWebHidPermissionState(state);
+          setHardwareConnectionPermissionState(state);
         }
       });
     }
-  }, [isHardwareWalletAccount, isWebHidAvailableState]);
+  }, [
+    isHardwareWalletAccount,
+    detectedWalletType,
+    isWebHidAvailableState,
+    isWebUsbAvailableState,
+  ]);
 
-  // Subscribe to WebHID events
+  // Subscribe to WebHID/WebUSB events based on wallet type
   useEffect(() => {
-    if (!isHardwareWalletAccount || !isWebHidAvailableState) {
+    if (!isHardwareWalletAccount || !detectedWalletType) {
+      return undefined;
+    }
+
+    const isLedger = detectedWalletType === HardwareWalletType.Ledger;
+    const isTrezor = detectedWalletType === HardwareWalletType.Trezor;
+
+    if (
+      (isLedger && !isWebHidAvailableState) ||
+      (isTrezor && !isWebUsbAvailableState)
+    ) {
       return undefined;
     }
 
     const abortSignal = abortControllerRef.current?.signal;
 
-    const handleNativeConnect = (device: HIDDevice) => {
+    const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
       console.log(
         LOG_TAG,
         'Native connect event for device:',
@@ -451,9 +502,15 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       const newDeviceId = device.productId.toString();
       setDeviceId((prevId) => (prevId === newDeviceId ? prevId : newDeviceId));
 
+      // Re-check permission state when device connects, as it may have changed
+      // (e.g., from PROMPT when device was disconnected to GRANTED when reconnected)
+      const currentPermissionState =
+        await checkHardwareWalletPermission(detectedWalletType);
+      setHardwareConnectionPermissionState(currentPermissionState);
+
       if (
         detectedWalletType &&
-        webHidPermissionState === WebHIDPermissionState.GRANTED &&
+        currentPermissionState === HardwareConnectionPermissionState.Granted &&
         !adapterRef.current?.isConnected() &&
         !isConnectingRef.current
       ) {
@@ -461,7 +518,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       }
     };
 
-    const handleNativeDisconnect = (device: HIDDevice) => {
+    const handleNativeDisconnect = async (device: HIDDevice | USBDevice) => {
       if (abortSignal?.aborted) {
         return;
       }
@@ -469,26 +526,30 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       const disconnectedDeviceId = device.productId.toString();
       if (deviceId === disconnectedDeviceId) {
         handleDisconnect();
+
+        // Re-check permission state when device disconnects, as it may have changed
+        // (e.g., from GRANTED when devices were paired to PROMPT when no devices remain)
+        const currentPermissionState =
+          await checkHardwareWalletPermission(detectedWalletType);
+        setHardwareConnectionPermissionState(currentPermissionState);
       }
     };
 
-    const unsubscribe = subscribeToWebHIDEvents(
-      handleNativeConnect,
-      handleNativeDisconnect,
-    );
+    const unsubscribe = isLedger
+      ? subscribeToWebHIDEvents(handleNativeConnect, handleNativeDisconnect)
+      : subscribeToWebUSBEvents(handleNativeConnect, handleNativeDisconnect);
 
     return unsubscribe;
   }, [
     isHardwareWalletAccount,
-    isWebHidAvailableState,
     detectedWalletType,
-    webHidPermissionState,
+    isWebHidAvailableState,
+    isWebUsbAvailableState,
+    hardwareConnectionPermissionState,
     deviceId,
     handleDisconnect,
   ]);
 
-  // Actions - stable callbacks with NO state dependencies
-  // This is the key: actions don't depend on state, so they never recreate
   const connect = useCallback(
     async (type: HardwareWalletType, id: string): Promise<void> => {
       const abortSignal = abortControllerRef.current?.signal;
@@ -567,7 +628,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
         let adapter: HardwareWalletAdapter;
         switch (type) {
-          case HardwareWalletType.LEDGER:
+          case HardwareWalletType.Ledger:
             adapter = new LedgerAdapter(adapterOptions);
             break;
           default:
@@ -656,7 +717,10 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       return;
     }
 
-    getDeviceId()
+    (detectedWalletType
+      ? getHardwareWalletDeviceId(detectedWalletType)
+      : Promise.resolve(null)
+    )
       .then(async (id) => {
         if (abortSignal?.aborted) {
           return;
@@ -670,7 +734,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
           !adapterRef.current?.isConnected() &&
           !isConnectingRef.current &&
           !hasAutoConnectedRef.current &&
-          webHidPermissionState === WebHIDPermissionState.GRANTED
+          hardwareConnectionPermissionState ===
+            HardwareConnectionPermissionState.Granted
         ) {
           hasAutoConnectedRef.current = true;
           lastConnectedAccountRef.current = accountAddress ?? null;
@@ -687,7 +752,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     isHardwareWalletAccount,
     accountAddress,
     detectedWalletType,
-    webHidPermissionState,
+    hardwareConnectionPermissionState,
   ]);
 
   const disconnect = useCallback(async (): Promise<void> => {
@@ -712,68 +777,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       pendingOperationRef.current = null;
     }
   }, [updateConnectionState]);
-
-  // const executeWithWallet = useCallback(
-  //   async <TResult,>(
-  //     operation: (adapter: HardwareWalletAdapter) => Promise<TResult>,
-  //   ): Promise<TResult> => {
-  //     const abortSignal = abortControllerRef.current?.signal;
-
-  //     const adapter = adapterRef.current;
-  //     if (!adapter) {
-  //       throw new Error('No hardware wallet connected');
-  //     }
-
-  //     pendingOperationRef.current = () => operation(adapter);
-
-  //     try {
-  //       if (!abortSignal?.aborted) {
-  //         updateConnectionState(ConnectionState.awaitingConfirmation());
-  //       }
-
-  //       adapter.setPendingOperation?.(true);
-  //       const result = await operation(adapter);
-  //       adapter.setPendingOperation?.(false);
-
-  //       if (!abortSignal?.aborted) {
-  //         updateConnectionState(ConnectionState.ready());
-  //       }
-  //       pendingOperationRef.current = null;
-
-  //       return result;
-  //     } catch (err) {
-  //       adapter.setPendingOperation?.(false);
-
-  //       // Destroy the adapter on error so it can be recreated on retry
-  //       adapterRef.current?.destroy();
-  //       adapterRef.current = null;
-  //       pendingOperationRef.current = null;
-
-  //       if (!abortSignal?.aborted) {
-  //         if (err && typeof err === 'object' && 'code' in err) {
-  //           updateConnectionState(
-  //             getConnectionStateFromError(
-  //               err as unknown as HardwareWalletError,
-  //             ),
-  //           );
-  //         } else if (isError(err)) {
-  //           updateConnectionState(
-  //             ConnectionState.error('connection_failed', err),
-  //           );
-  //         } else {
-  //           updateConnectionState(
-  //             ConnectionState.error(
-  //               'connection_failed',
-  //               new Error('Unknown error during operation'),
-  //             ),
-  //           );
-  //         }
-  //       }
-  //       throw err;
-  //     }
-  //   },
-  //   [updateConnectionState],
-  // );
 
   const clearError = useCallback(() => {
     if (abortControllerRef.current?.signal.aborted) {
@@ -857,73 +860,97 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     }
   }, [connect, updateConnectionState]);
 
-  const checkWebHidPermissionAction =
-    useCallback(async (): Promise<WebHIDPermissionState> => {
-      if (!isWebHidAvailableState) {
-        return WebHIDPermissionState.DENIED;
+  const checkHardwareWalletPermissionAction = useCallback(
+    async (
+      targetWalletType: HardwareWalletType,
+    ): Promise<HardwareConnectionPermissionState> => {
+      const isLedger = targetWalletType === HardwareWalletType.Ledger;
+      const isTrezor = targetWalletType === HardwareWalletType.Trezor;
+
+      if (
+        (isLedger && !isWebHidAvailableState) ||
+        (isTrezor && !isWebUsbAvailableState)
+      ) {
+        return HardwareConnectionPermissionState.Denied;
       }
 
-      const state = await checkWebHIDPermission();
-      setWebHidPermissionState(state);
+      const state = await checkHardwareWalletPermission(targetWalletType);
+      setHardwareConnectionPermissionState(state);
       return state;
-    }, [isWebHidAvailableState]);
+    },
+    [isWebHidAvailableState, isWebUsbAvailableState],
+  );
 
-  const requestWebHidPermissionAction =
-    useCallback(async (): Promise<boolean> => {
-      if (!isWebHidAvailableState) {
+  const requestHardwareWalletPermissionAction = useCallback(
+    async (targetWalletType: HardwareWalletType): Promise<boolean> => {
+      const isLedger = targetWalletType === HardwareWalletType.Ledger;
+      const isTrezor = targetWalletType === HardwareWalletType.Trezor;
+
+      if (
+        (isLedger && !isWebHidAvailableState) ||
+        (isTrezor && !isWebUsbAvailableState)
+      ) {
         return false;
       }
 
-      const granted = await requestWebHIDPermission();
+      const granted = await requestHardwareWalletPermission(targetWalletType);
       if (granted) {
-        setWebHidPermissionState(WebHIDPermissionState.GRANTED);
+        setHardwareConnectionPermissionState(
+          HardwareConnectionPermissionState.Granted,
+        );
       } else {
-        setWebHidPermissionState(WebHIDPermissionState.DENIED);
+        setHardwareConnectionPermissionState(
+          HardwareConnectionPermissionState.Denied,
+        );
       }
       return granted;
-    }, [isWebHidAvailableState]);
+    },
+    [isWebHidAvailableState, isWebUsbAvailableState],
+  );
 
-  const ensureDeviceReady = useCallback(async (): Promise<void> => {
-    const abortSignal = abortControllerRef.current?.signal;
+  const ensureDeviceReady = useCallback(
+    async (targetDeviceId: string): Promise<boolean> => {
+      const abortSignal = abortControllerRef.current?.signal;
 
-    if (abortSignal?.aborted) {
-      throw new Error('Operation aborted');
-    }
-
-    const adapter = adapterRef.current;
-
-    // If not connected, try to connect first
-    if (!adapter?.isConnected()) {
-      console.log('is connected', adapter?.isConnected());
-      // Use refs to access current state values without creating dependencies
-      const currentDeviceId = deviceIdRef.current;
-      const currentDetectedWalletType = detectedWalletTypeRef.current;
-
-      if (!currentDeviceId || !currentDetectedWalletType) {
-        updateConnectionState(
-          ConnectionState.error(
-            'connection_failed',
-            new Error('Hardware wallet device not found'),
-          ),
-        );
-        return;
+      if (abortSignal?.aborted) {
+        throw new Error('Operation aborted');
       }
 
-      await connect(currentDetectedWalletType, currentDeviceId);
-    }
+      const adapter = adapterRef.current;
 
-    // Common logic: verify device readiness and update connection state
-    if (!abortSignal?.aborted) {
-      const currentDeviceId = deviceIdRef.current;
-      if (adapter?.verifyDeviceReady && currentDeviceId) {
-        const result = await adapter.verifyDeviceReady(currentDeviceId);
-        console.log('ensureDeviceReady result', result);
-        if (result) {
-          updateConnectionState(ConnectionState.ready());
+      // If not connected, try to connect first
+      if (!adapter?.isConnected()) {
+        console.log('is connected', adapter?.isConnected());
+        const currentDetectedWalletType = detectedWalletTypeRef.current;
+
+        if (!targetDeviceId || !currentDetectedWalletType) {
+          updateConnectionState(
+            ConnectionState.error(
+              'connection_failed',
+              new Error('Hardware wallet device not found'),
+            ),
+          );
+          return false;
+        }
+
+        await connect(currentDetectedWalletType, targetDeviceId);
+      }
+
+      if (!abortSignal?.aborted) {
+        if (adapter?.verifyDeviceReady && targetDeviceId) {
+          const result = await adapter.verifyDeviceReady(targetDeviceId);
+          console.log('ensureDeviceReady result', result);
+          if (result) {
+            updateConnectionState(ConnectionState.ready());
+          }
+          return result;
         }
       }
-    }
-  }, [connect, updateConnectionState]);
+
+      return false;
+    },
+    [connect, updateConnectionState],
+  );
 
   // Memoized context values
   const configValue = useMemo<HardwareWalletConfigContextType>(
@@ -932,8 +959,9 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       detectedWalletType,
       walletType,
       deviceId,
-      webHidPermissionState,
+      hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
+      isWebUsbAvailable: isWebUsbAvailableState,
       currentAppName,
     }),
     [
@@ -941,8 +969,9 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       detectedWalletType,
       walletType,
       deviceId,
-      webHidPermissionState,
+      hardwareConnectionPermissionState,
       isWebHidAvailableState,
+      isWebUsbAvailableState,
       currentAppName,
     ],
   );
@@ -971,8 +1000,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       disconnect,
       clearError,
       retry,
-      checkWebHidPermission: checkWebHidPermissionAction,
-      requestWebHidPermission: requestWebHidPermissionAction,
+      checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
     }),
     [
@@ -980,8 +1009,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       disconnect,
       clearError,
       retry,
-      checkWebHidPermissionAction,
-      requestWebHidPermissionAction,
+      checkHardwareWalletPermissionAction,
+      requestHardwareWalletPermissionAction,
       ensureDeviceReady,
     ],
   );

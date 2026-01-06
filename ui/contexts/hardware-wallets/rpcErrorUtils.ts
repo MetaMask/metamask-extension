@@ -14,26 +14,33 @@ import { HardwareWalletType } from './types';
 
 const LOG_TAG = '[RpcErrorUtils]';
 
+type HardwareWalletErrorData = {
+  [key: string]: unknown;
+  code: ErrorCode;
+  severity?: string;
+  category?: string;
+  retryStrategy?: string;
+  userActionable?: boolean;
+  userMessage?: string;
+  metadata?: Record<string, unknown>;
+  documentationUrl?: string;
+};
+
 /**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
+ *
+ * @param error - The error to check
+ * @returns True if the error is a JsonRpcError with HardwareWalletError data
  */
-export function isJsonRpcHardwareWalletError(
+function isJsonRpcHardwareWalletError(
   error: unknown,
-): error is JsonRpcError & {
-  data: {
-    code: ErrorCode;
-    severity?: string;
-    category?: string;
-    retryStrategy?: string;
-    userActionable?: boolean;
-    userMessage?: string;
-    metadata?: Record<string, unknown>;
-    documentationUrl?: string;
-  };
+): error is JsonRpcError<HardwareWalletErrorData> & {
+  data: HardwareWalletErrorData;
 } {
   return (
     error instanceof JsonRpcError &&
     error.data !== null &&
+    error.data !== undefined &&
     typeof error.data === 'object' &&
     'code' in error.data &&
     typeof error.data.code === 'string'
@@ -92,7 +99,10 @@ export function reconstructHardwareWalletError(
 
   // JsonRpcError with hardware wallet data
   if (isJsonRpcHardwareWalletError(error)) {
-    console.log(LOG_TAG, 'Reconstructing HardwareWalletError from JsonRpcError');
+    console.log(
+      LOG_TAG,
+      'Reconstructing HardwareWalletError from JsonRpcError',
+    );
     console.log(LOG_TAG, 'Error code:', error.data.code);
     console.log(LOG_TAG, 'Error data:', error.data);
 
@@ -103,8 +113,8 @@ export function reconstructHardwareWalletError(
         severity: error.data.severity as Severity,
         category: error.data.category as Category,
         retryStrategy: error.data.retryStrategy as RetryStrategy,
-        userActionable: error.data.userActionable,
-        userMessage: error.data.userMessage,
+        userActionable: error.data.userActionable ?? false,
+        userMessage: error.data.userMessage ?? '',
         metadata: error.data.metadata,
         documentationUrl: error.data.documentationUrl,
       },
@@ -122,57 +132,3 @@ export function reconstructHardwareWalletError(
   console.log(LOG_TAG, 'Parsing unknown error type');
   return parseErrorByType(error, walletType);
 }
-
-/**
- * Wrapper for RPC calls that automatically reconstructs hardware wallet errors
- *
- * @param rpcCall - The RPC function to call
- * @param walletType - The hardware wallet type
- * @param onError - Optional callback to handle the reconstructed error before re-throwing
- * @returns The result of the RPC call
- * @throws The reconstructed HardwareWalletError if the call fails
- */
-export async function callHardwareWalletRPC<T>(
-  rpcCall: () => Promise<T>,
-  walletType: HardwareWalletType,
-  onError?: (error: HardwareWalletError) => void,
-): Promise<T> {
-  try {
-    return await rpcCall();
-  } catch (error) {
-    console.error(LOG_TAG, 'RPC call failed:', error);
-
-    // Reconstruct as a proper HardwareWalletError
-    const hwError = reconstructHardwareWalletError(error, walletType);
-
-    console.log(LOG_TAG, 'Reconstructed error:', {
-      code: hwError.code,
-      userActionable: hwError.userActionable,
-      retryStrategy: hwError.retryStrategy,
-    });
-
-    // Allow caller to handle the error before re-throwing
-    if (onError) {
-      onError(hwError);
-    }
-
-    // Re-throw the reconstructed error
-    throw hwError;
-  }
-}
-
-/**
- * Check if an error code matches any of the specified codes
- *
- * @param error - The error to check
- * @param codes - Array of error codes to match against
- * @returns True if the error code matches any of the specified codes
- */
-export function errorCodeMatches(
-  error: unknown,
-  codes: ErrorCode[],
-): boolean {
-  const errorCode = extractHardwareWalletErrorCode(error);
-  return errorCode !== null && codes.includes(errorCode);
-}
-

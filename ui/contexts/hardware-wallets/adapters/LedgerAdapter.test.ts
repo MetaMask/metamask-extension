@@ -246,7 +246,7 @@ describe('LedgerAdapter', () => {
       await adapter.disconnect();
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
-        event: DeviceEvent.DISCONNECTED,
+        event: DeviceEvent.Disconnected,
       });
       expect(adapter.isConnected()).toBe(false);
     });
@@ -421,7 +421,7 @@ describe('LedgerAdapter', () => {
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: DeviceEvent.DEVICE_LOCKED,
+          event: DeviceEvent.DeviceLocked,
           error: expect.any(Error),
         }),
       );
@@ -445,7 +445,7 @@ describe('LedgerAdapter', () => {
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: DeviceEvent.APP_NOT_OPEN,
+          event: DeviceEvent.AppNotOpen,
           error: expect.any(Error),
         }),
       );
@@ -469,7 +469,7 @@ describe('LedgerAdapter', () => {
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: DeviceEvent.DISCONNECTED,
+          event: DeviceEvent.Disconnected,
           error: expect.any(Error),
         }),
       );
@@ -614,7 +614,7 @@ describe('LedgerAdapter', () => {
 
       expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
         expect.objectContaining({
-          event: DeviceEvent.DEVICE_LOCKED,
+          event: DeviceEvent.DeviceLocked,
           error: expect.any(Error),
         }),
       );

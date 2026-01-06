@@ -2,55 +2,57 @@
  * Enum for hardware wallet types
  */
 export enum HardwareWalletType {
-  LEDGER = 'ledger',
+  Ledger = 'ledger',
+  Trezor = 'trezor',
+  Qr = 'qr',
 }
 
 /**
  * Enum for connection status
  */
 export enum ConnectionStatus {
-  DISCONNECTED = 'disconnected',
-  CONNECTING = 'connecting',
-  CONNECTED = 'connected',
-  READY = 'ready',
-  AWAITING_CONFIRMATION = 'awaiting_confirmation',
-  AWAITING_APP = 'awaiting_app',
-  ERROR = 'error',
+  Disconnected = 'disconnected',
+  Connecting = 'connecting',
+  Connected = 'connected',
+  Ready = 'ready',
+  AwaitingConfirmation = 'awaiting_confirmation',
+  AwaitingApp = 'awaiting_app',
+  ErrorState = 'error',
 }
 
 /**
- * Enum for WebHID permission state
+ * Enum for WebHID/WebUSB permission state
  */
-export enum WebHIDPermissionState {
-  UNKNOWN = 'unknown',
-  GRANTED = 'granted',
-  PROMPT = 'prompt',
-  DENIED = 'denied',
+export enum HardwareConnectionPermissionState {
+  Unknown = 'unknown',
+  Granted = 'granted',
+  Prompt = 'prompt',
+  Denied = 'denied',
 }
 
 /**
  * Enum for device events
  */
 export enum DeviceEvent {
-  DISCONNECTED = 'disconnected',
-  DEVICE_LOCKED = 'device_locked',
-  APP_NOT_OPEN = 'app_not_open',
-  APP_CHANGED = 'app_changed',
-  CONNECTION_FAILED = 'connection_failed',
-  OPERATION_TIMEOUT = 'operation_timeout',
+  Disconnected = 'disconnected',
+  DeviceLocked = 'device_locked',
+  AppNotOpen = 'app_not_open',
+  AppChanged = 'app_changed',
+  ConnectionFailed = 'connection_failed',
+  OperationTimeout = 'operation_timeout',
 }
 
 /**
  * Connection state type (discriminated union)
  */
 export type HardwareWalletConnectionState =
-  | { status: ConnectionStatus.DISCONNECTED }
-  | { status: ConnectionStatus.CONNECTING }
-  | { status: ConnectionStatus.CONNECTED }
-  | { status: ConnectionStatus.READY }
-  | { status: ConnectionStatus.AWAITING_CONFIRMATION }
-  | { status: ConnectionStatus.AWAITING_APP; reason: string; appName?: string }
-  | { status: ConnectionStatus.ERROR; reason: string; error: Error };
+  | { status: ConnectionStatus.Disconnected }
+  | { status: ConnectionStatus.Connecting }
+  | { status: ConnectionStatus.Connected }
+  | { status: ConnectionStatus.Ready }
+  | { status: ConnectionStatus.AwaitingConfirmation }
+  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
+  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
 
 /**
  * Device event payload
@@ -116,8 +118,9 @@ export type HardwareWalletContextType = {
   walletType: HardwareWalletType | null;
   connectionState: HardwareWalletConnectionState;
   deviceId: string | null;
-  webHidPermissionState: WebHIDPermissionState;
+  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
+  isWebUsbAvailable: boolean;
   currentAppName: string | null;
 
   // Actions
@@ -125,7 +128,11 @@ export type HardwareWalletContextType = {
   disconnect: () => Promise<void>;
   clearError: () => void;
   retry: () => Promise<void>;
-  checkWebHidPermission: () => Promise<WebHIDPermissionState>;
-  requestWebHidPermission: () => Promise<boolean>;
+  checkHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<HardwareConnectionPermissionState>;
+  requestHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<boolean>;
   ensureDeviceReady: () => Promise<boolean>;
 };

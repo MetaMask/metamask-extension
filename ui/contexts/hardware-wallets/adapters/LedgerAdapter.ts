@@ -89,7 +89,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       if (!this.isWebHIDAvailable()) {
         throw createHardwareWalletError(
           ErrorCode.CONN_TRANSPORT_001,
-          HardwareWalletType.LEDGER,
+          HardwareWalletType.Ledger,
           'WebHID is not available',
         );
       }
@@ -99,7 +99,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       if (!isDeviceConnected) {
         throw createHardwareWalletError(
           ErrorCode.DEVICE_STATE_003,
-          HardwareWalletType.LEDGER,
+          HardwareWalletType.Ledger,
           'Ledger device not found. Please connect your Ledger device.',
         );
       }
@@ -135,7 +135,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // Reconstruct and re-throw as a proper HardwareWalletError
       const hwError = reconstructHardwareWalletError(
         error,
-        HardwareWalletType.LEDGER,
+        HardwareWalletType.Ledger,
       );
       throw hwError;
     }
@@ -152,7 +152,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       this.currentDeviceId = null;
 
       this.options.onDeviceEvent({
-        event: DeviceEvent.DISCONNECTED,
+        event: DeviceEvent.Disconnected,
       });
     } catch (error) {
       console.error(LOG_TAG, 'Disconnect error:', error);
@@ -202,7 +202,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       } catch (error) {
         throw createHardwareWalletError(
           ErrorCode.DEVICE_STATE_003,
-          HardwareWalletType.LEDGER,
+          HardwareWalletType.Ledger,
           error instanceof Error ? error.message : 'Unknown error',
           {
             cause: error instanceof Error ? error : undefined,
@@ -220,7 +220,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       if (appName !== 'Ethereum') {
         throw createHardwareWalletError(
           ErrorCode.DEVICE_STATE_001,
-          HardwareWalletType.LEDGER,
+          HardwareWalletType.Ledger,
           `Ethereum app is not open, got ${appName}`,
         );
       }
@@ -244,26 +244,26 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         ) {
           console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event');
           this.options.onDeviceEvent({
-            event: DeviceEvent.DEVICE_LOCKED,
+            event: DeviceEvent.DeviceLocked,
             error: error as unknown as Error,
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
           console.log(LOG_TAG, 'Emitting APP_NOT_OPEN event');
           this.options.onDeviceEvent({
-            event: DeviceEvent.APP_NOT_OPEN,
+            event: DeviceEvent.AppNotOpen,
             error: error as unknown as Error,
           });
         } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
           console.log(LOG_TAG, 'Emitting DISCONNECTED event');
           this.options.onDeviceEvent({
-            event: DeviceEvent.DISCONNECTED,
+            event: DeviceEvent.Disconnected,
             error: error as unknown as Error,
           });
         } else {
           // Catch-all for other errors
           console.log(LOG_TAG, 'Emitting DISCONNECTED event (catch-all)');
           this.options.onDeviceEvent({
-            event: DeviceEvent.DISCONNECTED,
+            event: DeviceEvent.Disconnected,
             error: error as unknown as Error,
           });
         }
@@ -273,7 +273,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // This ensures consumers of this error get a proper HardwareWalletError instance
       const hwError = reconstructHardwareWalletError(
         error,
-        HardwareWalletType.LEDGER,
+        HardwareWalletType.Ledger,
       );
 
       console.log(LOG_TAG, 'Re-throwing reconstructed error:', {

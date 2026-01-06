@@ -209,7 +209,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     }
 
     // Check if we have a NEW error state
-    if (connectionState.status === ConnectionStatus.ERROR) {
+    if (connectionState.status === ConnectionStatus.ErrorState) {
       const error = connectionState.error as HardwareWalletError;
       lastConnectionErrorRef.current = error;
 

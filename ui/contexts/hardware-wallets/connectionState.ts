@@ -6,36 +6,36 @@ import { ConnectionStatus, type HardwareWalletConnectionState } from './types';
  */
 export const ConnectionState = {
   disconnected: (): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.DISCONNECTED,
+    status: ConnectionStatus.Disconnected,
   }),
 
   connecting: (): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.CONNECTING,
+    status: ConnectionStatus.Connecting,
   }),
 
   connected: (): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.CONNECTED,
+    status: ConnectionStatus.Connected,
   }),
 
   ready: (): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.READY,
+    status: ConnectionStatus.Ready,
   }),
 
   awaitingConfirmation: (): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.AWAITING_CONFIRMATION,
+    status: ConnectionStatus.AwaitingConfirmation,
   }),
 
   awaitingApp: (
     reason: string,
     appName?: string,
   ): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.AWAITING_APP,
+    status: ConnectionStatus.AwaitingApp,
     reason,
     appName,
   }),
 
   error: (reason: string, error: Error): HardwareWalletConnectionState => ({
-    status: ConnectionStatus.ERROR,
+    status: ConnectionStatus.ErrorState,
     reason,
     error,
   }),

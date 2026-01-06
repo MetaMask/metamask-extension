@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -57,6 +57,13 @@ export const BridgeCTAButton = ({
   );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const {
     isNoQuotesAvailable,
@@ -71,7 +78,7 @@ export const BridgeCTAButton = ({
   const isTxSubmittable = useIsTxSubmittable();
 
   // Optimized: Only subscribe to config (no rerenders on connection state changes)
-  const { isHardwareWalletAccount } = useHardwareWalletConfig();
+  const { isHardwareWalletAccount, deviceId } = useHardwareWalletConfig();
   // Optimized: Only subscribe to actions (stable, never rerenders)
   const { ensureDeviceReady } = useHardwareWalletActions();
 
@@ -146,19 +153,6 @@ export const BridgeCTAButton = ({
     return undefined;
   }, [wasTxDeclined, isQuoteExpired]);
 
-  // useEffect(() => {
-  //   showErrorModal(
-  //     new HardwareWalletError('test', {
-  //       code: ErrorCode.AUTH_LOCK_001,
-  //       severity: Severity.ERROR,
-  //       category: Category.AUTHENTICATION,
-  //       retryStrategy: RetryStrategy.RETRY,
-  //       userActionable: true,
-  //       userMessage: 'test',
-  //     }),
-  //   );
-  // }, []);
-
   return (activeQuote || needsDestinationAddress) && !secondaryButtonLabel ? (
     <Button
       width={BlockSize.Full}
@@ -176,9 +170,9 @@ export const BridgeCTAButton = ({
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
           try {
-            if (isHardwareWalletAccount) {
+            if (isHardwareWalletAccount && deviceId) {
               console.log('[BridgeCTAButton] Calling ensureDeviceReady');
-              await ensureDeviceReady();
+              await ensureDeviceReady(deviceId);
               console.log('[BridgeCTAButton] ensureDeviceReady succeeded');
             }
           } catch (error) {
@@ -205,7 +199,9 @@ export const BridgeCTAButton = ({
             setIsSubmitting(true);
             await submitBridgeTransaction(activeQuote);
           } finally {
-            setIsSubmitting(false);
+            if (mountedRef.current) {
+              setIsSubmitting(false);
+            }
           }
         }
       }}

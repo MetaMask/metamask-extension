@@ -1,11 +1,11 @@
-import React, { useMemo } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 import {
   Text,
   Box,
   Button,
   ButtonVariant,
   ButtonSize,
+  IconName,
   Icon,
   IconSize,
 } from '../../../component-library';
@@ -27,8 +27,7 @@ import {
   type HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { useHardwareWallet } from '../../../../contexts/hardware-wallets';
-import { buildErrorContent } from './error-content-builder';
+import { getRecoveryInstructions } from './recovery-instructions';
 
 type HardwareWalletErrorModalProps = {
   error: HardwareWalletError;
@@ -40,18 +39,13 @@ type HardwareWalletErrorModalProps = {
 /**
  * Modal component to display hardware wallet errors with recovery instructions
  *
- * @param props - Component props
- * @param props.error - The hardware wallet error
- * @param props.walletType - The hardware wallet type
- * @param props.onRetry - Optional retry callback
- * @param props.onCancel - Optional cancel/close callback
+ * @param props - The component props
  */
 export const HardwareWalletErrorModal: React.FC<
   HardwareWalletErrorModalProps
 > = (props) => {
   const t = useI18nContext();
   const { hideModal, props: modalProps } = useModalProps();
-  const { connectionState } = useHardwareWallet();
 
   // Use props from either direct props or modal state
   const { error, walletType, onRetry, onCancel } = {
@@ -64,16 +58,7 @@ export const HardwareWalletErrorModal: React.FC<
     error.userActionable &&
     onRetry;
 
-  // Build error content using simple switch
-  const errorContent = useMemo(
-    () =>
-      buildErrorContent(
-        error,
-        walletType,
-        (key: string, substitutions?: string[]) => t(key, substitutions),
-      ),
-    [error, walletType, t],
-  );
+  const recoveryInstructions = getRecoveryInstructions(error, t);
 
   const handleRetry = () => {
     hideModal();
@@ -96,7 +81,7 @@ export const HardwareWalletErrorModal: React.FC<
     >
       {/* Error Icon */}
       <Icon
-        name={errorContent.icon}
+        name={IconName.Danger}
         color={IconColor.errorDefault}
         size={IconSize.Xl}
       />
@@ -107,25 +92,40 @@ export const HardwareWalletErrorModal: React.FC<
         textAlign={TextAlign.Center}
         color={TextColor.textDefault}
       >
-        {errorContent.title}
+        {t('hardwareWalletErrorTitle')}
       </Text>
 
-      {errorContent.description && (
-        <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          justifyContent={JustifyContent.center}
-          gap={2}
+      {/* Wallet Type */}
+      <Text
+        variant={TextVariant.bodyMdMedium}
+        textAlign={TextAlign.Center}
+        color={TextColor.textAlternative}
+      >
+        {walletType === HardwareWalletType.Ledger
+          ? t('ledger')
+          : 'Hardware Wallet'}
+      </Text>
+
+      {/* Error Message */}
+      <Box
+        width={BlockSize.Full}
+        padding={3}
+        style={{
+          backgroundColor: 'var(--color-error-muted)',
+          borderRadius: '8px',
+        }}
+      >
+        <Text
+          variant={TextVariant.bodyMd}
+          textAlign={TextAlign.Center}
+          color={TextColor.errorDefault}
         >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-            {errorContent.description}
-          </Text>
-        </Box>
-      )}
+          {error.userMessage || error.message}
+        </Text>
+      </Box>
 
       {/* Recovery Instructions */}
-      {errorContent.recoveryInstructions.length > 0 && (
+      {recoveryInstructions.length > 0 && (
         <Box
           width={BlockSize.Full}
           display={Display.Flex}
@@ -136,9 +136,9 @@ export const HardwareWalletErrorModal: React.FC<
             variant={TextVariant.bodyMdMedium}
             color={TextColor.textDefault}
           >
-            {t('hardwareWalletConnectionRecoverySteps')}
+            {t('hardwareWalletErrorRecoveryTitle')}
           </Text>
-          {errorContent.recoveryInstructions.map((instruction, index) => (
+          {recoveryInstructions.map((instruction, index) => (
             <Box
               key={index}
               display={Display.Flex}
@@ -168,12 +168,20 @@ export const HardwareWalletErrorModal: React.FC<
         {canRetry ? (
           <>
             <Button
+              variant={ButtonVariant.Secondary}
+              size={ButtonSize.Lg}
+              block
+              onClick={handleCancel}
+            >
+              {t('cancel')}
+            </Button>
+            <Button
               variant={ButtonVariant.Primary}
               size={ButtonSize.Lg}
               block
               onClick={handleRetry}
             >
-              {t('hardwareWalletErrorContinueButton')}
+              {t('hardwareWalletErrorRetryButton')}
             </Button>
           </>
         ) : (
@@ -189,11 +197,4 @@ export const HardwareWalletErrorModal: React.FC<
       </Box>
     </Box>
   );
-};
-
-HardwareWalletErrorModal.propTypes = {
-  error: PropTypes.any.isRequired,
-  walletType: PropTypes.oneOf(Object.values(HardwareWalletType)).isRequired,
-  onRetry: PropTypes.func,
-  onCancel: PropTypes.func,
 };

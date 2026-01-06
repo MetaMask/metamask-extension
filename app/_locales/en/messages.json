@@ -2991,6 +2991,15 @@
     "message": "Unlock it and try again to continue",
     "description": "$1 is the hardware wallet type"
   },
+  "hardwareWalletErrorRecoveryApp1": {
+    "message": "Ensure your device is unlocked and the Ethereum app is open"
+  },
+  "hardwareWalletErrorRecoveryApp2": {
+    "message": "If the wrong app is open, close it and open the Ethereum app"
+  },
+  "hardwareWalletErrorRecoveryApp3": {
+    "message": "Try disconnecting and reconnecting your device"
+  },
   "hardwareWalletErrorRecoveryConnection1": {
     "message": "Ensure your hardware wallet is properly connected via USB"
   },
@@ -3053,6 +3062,9 @@
   },
   "hardwareWalletErrorRecoveryWebHID2": {
     "message": "Alternatively, update your browser to the latest version"
+  },
+  "hardwareWalletErrorRetryButton": {
+    "message": "Retry"
   },
   "hardwareWalletErrorSomethingWentWrong": {
     "message": "Something went wrong"
@@ -3557,6 +3569,9 @@
   },
   "leaveMetaMaskDesc": {
     "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
+  },
+  "ledger": {
+    "message": "Ledger"
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
