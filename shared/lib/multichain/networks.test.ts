@@ -20,6 +20,7 @@ describe('multichain - networks', () => {
   it('formats a URL for an address', () => {
     const address = 'bc1qwl8399fz829uqvqly9tcatgrgtwp3udnhxfq4k';
     const urls: MultichainBlockExplorerFormatUrls = {
+      name: 'FooBar Explorer',
       url: 'https://foo.bar',
       address: 'https://foo.bar/address/{address}?detail=true',
       transaction: 'https://foo.bar/tx/{txId}?detail=true',
