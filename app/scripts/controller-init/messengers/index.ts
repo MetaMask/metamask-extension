@@ -47,6 +47,7 @@ import {
 } from './identity';
 import {
   getAssetsContractControllerMessenger,
+  getAssetsControllerMessenger,
   getNetworkEnablementControllerMessenger,
   getNetworkOrderControllerMessenger,
   getNftControllerInitMessenger,
@@ -56,6 +57,8 @@ import {
   getTokenRatesControllerMessenger,
   getAssetsContractControllerInitMessenger,
   getNetworkEnablementControllerInitMessenger,
+  getDataSourceMessenger,
+  getDataSourceInitMessenger,
 } from './assets';
 import {
   getNotificationServicesControllerMessenger,
@@ -746,6 +749,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getAssetsContractControllerMessenger,
     getInitMessenger: getAssetsContractControllerInitMessenger,
   },
+  AssetsController: {
+    getMessenger: getAssetsControllerMessenger,
+    getInitMessenger: noop,
+  },
   AccountTreeController: {
     getMessenger: getAccountTreeControllerMessenger,
     getInitMessenger: getAccountTreeControllerInitMessenger,
@@ -761,6 +768,10 @@ export const CONTROLLER_MESSENGERS = {
   AccountActivityService: {
     getMessenger: getAccountActivityServiceMessenger,
     getInitMessenger: noop,
+  },
+  DataSource: {
+    getMessenger: getDataSourceMessenger,
+    getInitMessenger: getDataSourceInitMessenger,
   },
   SmartTransactionsController: {
     getMessenger: getSmartTransactionsControllerMessenger,

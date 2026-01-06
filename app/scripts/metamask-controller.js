@@ -326,6 +326,7 @@ import {
 } from './controller-init/multichain';
 import {
   AssetsContractControllerInit,
+  DataSourceInit,
   NetworkOrderControllerInit,
   NftControllerInit,
   NftDetectionControllerInit,
@@ -404,6 +405,7 @@ import { AppStateControllerInit } from './controller-init/app-state-controller-i
 import { PermissionControllerInit } from './controller-init/permission-controller-init';
 import { SubjectMetadataControllerInit } from './controller-init/subject-metadata-controller-init';
 import { NetworkEnablementControllerInit } from './controller-init/assets/network-enablement-controller-init';
+import { AssetsControllerInit } from './controller-init/assets/assets-controller-init';
 import { KeyringControllerInit } from './controller-init/keyring-controller-init';
 import { SnapKeyringBuilderInit } from './controller-init/accounts/snap-keyring-builder-init';
 import { PermissionLogControllerInit } from './controller-init/permission-log-controller-init';
@@ -665,6 +667,8 @@ export default class MetamaskController extends EventEmitter {
       EnsController: EnsControllerInit,
       NameController: NameControllerInit,
       NetworkEnablementController: NetworkEnablementControllerInit,
+      AssetsController: AssetsControllerInit,
+      DataSource: DataSourceInit,
       AnnouncementController: AnnouncementControllerInit,
       RewardsDataService: RewardsDataServiceInit,
       RewardsController: RewardsControllerInit,
@@ -736,6 +740,7 @@ export default class MetamaskController extends EventEmitter {
     this.nftController = controllersByName.NftController;
     this.nftDetectionController = controllersByName.NftDetectionController;
     this.assetsContractController = controllersByName.AssetsContractController;
+    this.assetsController = controllersByName.AssetsController;
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     this.multichainAssetsController =
       controllersByName.MultichainAssetsController;
