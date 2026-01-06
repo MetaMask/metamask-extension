@@ -153,6 +153,7 @@ import { MULTICHAIN_PROVIDER_CONFIGS } from '../../shared/constants/multichain/n
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
@@ -529,9 +530,18 @@ export const getMetaMaskCachedBalances = createSelector(
 );
 
 /**
+ * Create a parameterized selector with a LRU cache for multiple chainId arguments.
+ * This prevents cache thrashing when switching between different chains.
+ *
+ * @param {number} maxSize - The maximum size of the LRU cache.
+ * @returns {Function} A parameterized selector.
+ */
+const createChainIdSelector = createParameterizedShallowEqualSelector(10);
+
+/**
  * Get MetaMask accounts, including account name and balance.
  */
-export const getMetaMaskAccounts = createSelector(
+export const getMetaMaskAccounts = createChainIdSelector(
   getInternalAccounts,
   getMetaMaskAccountBalances,
   getMetaMaskCachedBalances,
