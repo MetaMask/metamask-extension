@@ -1486,6 +1486,7 @@
       "Reselect: Identity function warnings": 6,
       "Reselect: Input stability warnings": 1,
       "React: DOM nesting violations": 2,
+      "React: State updates on unmounted components": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
@@ -2553,6 +2554,9 @@
     },
     "ui/pages/confirmations/components/modals/gas-fee-modal/gas-fee-modal.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/context/gas-fee-modal/index.test.tsx": {
+      "Test errors: Uncaught Errors": 1
     },
     "ui/pages/confirmations/hooks/useHasInsufficientBalance.test.ts": {
       "Reselect: Input stability warnings": 3,
