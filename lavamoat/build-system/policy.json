@@ -1052,7 +1052,7 @@
     },
     "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals": {
       "packages": {
-        "webpack>eslint-scope": true
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": true
       }
     },
     "@noble/hashes": {
@@ -1159,13 +1159,11 @@
       },
       "packages": {
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
-        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
-        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true,
-        "eslint>eslint-utils": true
+        "eslint-plugin-jest>@typescript-eslint/experimental-utils>eslint-utils": true
       }
     },
     "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": {
@@ -1198,7 +1196,6 @@
         "@typescript-eslint/utils": true,
         "eslint": true,
         "webpack>eslint-scope": true,
-        "eslint>eslint-utils": true,
         "eslint-plugin-mocha>eslint-utils": true
       }
     },
@@ -1216,15 +1213,13 @@
         "eslint>@eslint-community": true,
         "@typescript-eslint/parser>@typescript-eslint/scope-manager": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/scope-manager": true,
-        "eslint-plugin-jest>@typescript-eslint/experimental-utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint/types": true,
         "eslint-plugin-jest>@typescript-eslint/utils>@typescript-eslint/types": true,
         "@typescript-eslint/parser>@typescript-eslint": true,
         "eslint": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": true,
         "eslint>eslint-scope": true,
         "webpack>eslint-scope": true,
-        "eslint-plugin-jest>@typescript-eslint/utils>webpack>eslint-scope": true,
-        "eslint>eslint-utils": true,
         "eslint-plugin-mocha>eslint-utils": true,
         "semver": true
       }
@@ -1620,7 +1615,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exit": true
+        "process": true
       }
     },
     "bify-module-groups": {
@@ -1768,6 +1763,8 @@
         "path.resolve": true
       },
       "globals": {
+        "console.info": true,
+        "console.trace": true,
         "console.warn": true,
         "process.env": true,
         "process.versions.node": true
@@ -1972,16 +1969,6 @@
     "del>p-map>aggregate-error>clean-stack": {
       "builtin": {
         "os.homedir": true
-      }
-    },
-    "yargs>cliui": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "yargs>string-width": true,
-        "eslint>strip-ansi": true,
-        "yargs>cliui>wrap-ansi": true
       }
     },
     "vinyl>clone-buffer": {
@@ -2696,14 +2683,6 @@
         "resolve-url-loader>es6-iterator>es6-symbol": true
       }
     },
-    "yargs>escalade": {
-      "builtin": {
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.resolve": true
-      }
-    },
     "eslint": {
       "builtin": {
         "assert": true,
@@ -2958,6 +2937,24 @@
     "eslint-plugin-react-hooks": {
       "globals": {
         "process.env.NODE_ENV": true
+      }
+    },
+    "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "eslint>eslint-scope>esrecurse": true,
+        "@babel/eslint-parser>@nicolo-ribaudo/eslint-scope-5-internals>eslint-scope>estraverse": true
+      }
+    },
+    "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope": {
+      "builtin": {
+        "assert": true
+      },
+      "packages": {
+        "eslint>eslint-scope>esrecurse": true,
+        "eslint-plugin-jest>@typescript-eslint/utils>eslint-scope>estraverse": true
       }
     },
     "eslint>eslint-scope": {
@@ -4060,7 +4057,8 @@
       },
       "globals": {
         "Buffer.concat": true,
-        "Buffer.isBuffer": true
+        "Buffer.isBuffer": true,
+        "console.log": true
       },
       "packages": {
         "browserify>syntax-error>acorn-node": true,
@@ -6745,15 +6743,6 @@
         "path.join": true
       }
     },
-    "yargs>require-directory": {
-      "builtin": {
-        "fs.readdirSync": true,
-        "fs.statSync": true,
-        "path.dirname": true,
-        "path.join": true,
-        "path.resolve": true
-      }
-    },
     "eslint>@eslint/eslintrc>import-fresh>resolve-from": {
       "builtin": {
         "fs.realpathSync": true,
@@ -7482,18 +7471,18 @@
         "@lavamoat/allow-scripts>@npmcli/run-script>node-gyp>npmlog>gauge>strip-ansi": true
       }
     },
+    "stylelint>string-width": {
+      "packages": {
+        "stylelint>string-width>emoji-regex": true,
+        "stylelint>string-width>is-fullwidth-code-point": true,
+        "eslint>strip-ansi": true
+      }
+    },
     "stylelint>table>string-width": {
       "packages": {
         "stylelint>table>string-width>emoji-regex": true,
         "stylelint>table>slice-ansi>is-fullwidth-code-point": true,
         "stylelint>table>string-width>strip-ansi": true
-      }
-    },
-    "yargs>string-width": {
-      "packages": {
-        "yargs>string-width>emoji-regex": true,
-        "yargs>string-width>is-fullwidth-code-point": true,
-        "eslint>strip-ansi": true
       }
     },
     "string.prototype.matchall": {
@@ -7780,7 +7769,7 @@
         "nyc>resolve-from": true,
         "del>slash": true,
         "stylelint>specificity": true,
-        "yargs>string-width": true,
+        "stylelint>string-width": true,
         "stylelint>style-search": true,
         "stylelint>sugarss": true,
         "stylelint>svg-tags": true,
@@ -8744,13 +8733,6 @@
         "yargs>string-width": true
       }
     },
-    "yargs>cliui>wrap-ansi": {
-      "packages": {
-        "chalk>ansi-styles": true,
-        "yargs>string-width": true,
-        "eslint>strip-ansi": true
-      }
-    },
     "stylelint>write-file-atomic": {
       "builtin": {
         "fs.chmod": true,
@@ -8850,28 +8832,7 @@
       },
       "globals": {
         "Error": true,
-        "__dirname": true,
         "console": true,
-        "process": true
-      },
-      "packages": {
-        "yargs>cliui": true,
-        "yargs>escalade": true,
-        "yargs>get-caller-file": true,
-        "yargs>require-directory": true,
-        "yargs>string-width": true,
-        "yargs>y18n": true,
-        "yargs-parser": true
-      }
-    },
-    "yargs-parser": {
-      "builtin": {
-        "fs.readFileSync": true,
-        "path.normalize": true,
-        "path.resolve": true,
-        "util.format": true
-      },
-      "globals": {
         "process": true
       }
     },
