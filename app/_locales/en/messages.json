@@ -610,6 +610,9 @@
   "allTimeLow": {
     "message": "All-time low"
   },
+  "allTokens": {
+    "message": "All tokens"
+  },
   "allowAddRpc": {
     "message": "Add RPC"
   },
@@ -2030,6 +2033,9 @@
   },
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
+  },
+  "deepLink_theOnboardingPage": {
+    "message": "the onboarding page"
   },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
@@ -5622,6 +5628,9 @@
   },
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
+  },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
   },
   "reward": {
     "message": "Reward"

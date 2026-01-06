@@ -18,7 +18,7 @@ import type { HardwareKeyringType } from '../constants/hardware-wallets';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import type { SnapAndHardwareMessenger } from '../../app/scripts/lib/snap-keyring/metrics';
-import { EntryModalSourceEnum } from '../constants/subscriptions';
+import { ShieldMetricsSourceEnum } from '../constants/subscriptions';
 import type { ScanAddressResponse } from '../lib/trust-signals';
 
 export type TransactionMetricsRequest = {
@@ -108,7 +108,7 @@ export type DefaultSubscriptionPaymentOptions = {
  */
 export type ShieldSubscriptionMetricsPropsFromUI = {
   userBalanceInUSD: number;
-  source: EntryModalSourceEnum;
+  source: ShieldMetricsSourceEnum;
   rewardPoints?: number;
   marketingUtmParams?: Record<string, string>;
 };
