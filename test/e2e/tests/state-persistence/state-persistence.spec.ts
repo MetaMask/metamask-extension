@@ -336,6 +336,7 @@ async function onboard(driver: Driver) {
 async function completeOnboardingAndSync(driver: Driver) {
   await onboard(driver);
   await ensureHomeReady(driver);
+  await driver.delay(5000); // ensure things have settled before proceeding
 }
 
 /**
@@ -362,6 +363,7 @@ describe('State Persistence', function () {
     it('should default to the data state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
+        await driver.delay(5000);
         await expectDataStateStorage(driver);
       });
     });
