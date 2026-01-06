@@ -136,6 +136,7 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { createShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
@@ -2473,7 +2474,7 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export const getNumberOfAllUnapprovedTransactionsAndMessages =
-  createDeepEqualSelector(
+  createShallowEqualSelector(
     [
       getUnapprovedTransactions,
       (state) => state.metamask.unapprovedDecryptMsgs,
