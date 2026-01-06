@@ -18,15 +18,6 @@ import {
 
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];
-const CI_FOCUS_TEST_PATH = normalizeTestPath(
-  path.join(
-    __dirname,
-    'tests',
-    'state-persistence',
-    'state-persistence.spec.ts',
-  ),
-);
-const isCiFocusRun = Boolean(process.env.CI || process.env.GITHUB_ACTION);
 
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
   const testFilenames = await fs.promises.readdir(testDir, {
@@ -294,11 +285,6 @@ async function main(): Promise<void> {
     }
   } else {
     myTestList = testPaths;
-  }
-  if (isCiFocusRun) {
-    myTestList = [CI_FOCUS_TEST_PATH];
-    changedOrNewTests = [CI_FOCUS_TEST_PATH];
-    console.log(`CI focus mode enabled. Running only: ${CI_FOCUS_TEST_PATH}`);
   }
   console.log('My test list:', myTestList);
 
