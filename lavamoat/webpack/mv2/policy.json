@@ -1097,7 +1097,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -4244,6 +4244,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
       "globals": {
         "DOMException": true,
@@ -4868,7 +4873,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5946,7 +5951,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

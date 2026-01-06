@@ -778,6 +778,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
  * Based on the current account address, query for all tokens across all chain networks on that account,
  * including the native tokens, without hardcoding any native token information.
  *
+ * @deprecated use getAssetsBySelectedAccountGroup instead
  * @param {object} state - Redux state
  * @returns {object} An object mapping chain IDs to arrays of tokens (including native tokens) with balances.
  */
@@ -819,7 +820,10 @@ export function getSelectedAccountTokensAcrossChains(state) {
 
     const nativeBalance = nativeTokenBalancesByChainId[chainId];
     if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
+      const nativeTokenInfo = getNativeTokenInfo(
+        state.metamask.networkConfigurationsByChainId,
+        chainId,
+      );
       tokensByChain[chainId].push({
         ...nativeTokenInfo,
         address: '',
@@ -836,114 +840,96 @@ export function getSelectedAccountTokensAcrossChains(state) {
 /**
  * Get the native token balance for a given account address and chainId
  *
+ * @deprecated use selectBalanceByWallet instead
  * @param {object} state - Redux state
  * @param {string} accountAddress - The address of the account
  * @param {string} chainId - The chainId of the account
  */
 export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
-  (state) => state,
+  (state) => state.metamask.accountsByChainId,
   (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(state, accountAddress),
+  (accountsByChainId, selectedAddress) => {
+    const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
+
+    const balancesByChainId = {};
+    for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
+      if (accounts[checksummedSelectedAddress]) {
+        balancesByChainId[chainId] =
+          accounts[checksummedSelectedAddress].balance;
+      }
+    }
+    return balancesByChainId;
+  },
 );
 
+// eslint-disable-next-line jsdoc/require-param
 /**
  * Get the tokens across chains for a given account address
  *
- * @param {object} state - Redux state
- * @param {string} accountAddress - The address of the account
+ * @deprecated use getAllAssets instead
  */
 export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
-  (state) => state,
-  (_state, accountAddress) => accountAddress,
-  (state, accountAddress) =>
-    getTokensAcrossChainsByAccountAddress(state, accountAddress),
+  [
+    (state) => state.metamask.allTokens,
+    (state) => state.metamask.networkConfigurationsByChainId,
+    (state, accountAddress) =>
+      getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
+    (_state, accountAddress) => accountAddress,
+  ],
+  (
+    allTokens,
+    networkConfigurationsByChainId,
+    nativeTokenBalancesByChainId,
+    selectedAddress,
+  ) => {
+    const tokensByChain = {};
+
+    const chainIds = new Set([
+      ...Object.keys(allTokens || {}),
+      ...Object.keys(nativeTokenBalancesByChainId || {}),
+    ]);
+
+    chainIds.forEach((chainId) => {
+      if (!tokensByChain[chainId]) {
+        tokensByChain[chainId] = [];
+      }
+
+      if (allTokens[chainId]?.[selectedAddress]) {
+        allTokens[chainId][selectedAddress].forEach((token) => {
+          const tokenWithChain = { ...token, chainId, isNative: false };
+          tokensByChain[chainId].push(tokenWithChain);
+        });
+      }
+
+      const nativeBalance = nativeTokenBalancesByChainId[chainId];
+      if (nativeBalance) {
+        const nativeTokenInfo = getNativeTokenInfo(
+          networkConfigurationsByChainId,
+          chainId,
+        );
+        tokensByChain[chainId].push({
+          ...nativeTokenInfo,
+          address: '',
+          balance: nativeBalance,
+          chainId,
+          isNative: true,
+          image: getNativeCurrencyForChain(chainId),
+        });
+      }
+    });
+    return tokensByChain;
+  },
 );
-
-/**
- * Get the native token balance for a given account address and chainId
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getNativeTokenCachedBalanceByChainIdByAccountAddress(
-  state,
-  selectedAddress,
-) {
-  const { accountsByChainId } = state.metamask;
-
-  const checksummedSelectedAddress = toChecksumHexAddress(selectedAddress);
-
-  const balancesByChainId = {};
-  for (const [chainId, accounts] of Object.entries(accountsByChainId || {})) {
-    if (accounts[checksummedSelectedAddress]) {
-      balancesByChainId[chainId] = accounts[checksummedSelectedAddress].balance;
-    }
-  }
-  return balancesByChainId;
-}
-
-/**
- * Get the tokens across chains for a given account address
- *
- * @param {object} state - Redux state
- * @param {string} selectedAddress - The address of the selected account
- */
-export function getTokensAcrossChainsByAccountAddress(state, selectedAddress) {
-  const { allTokens } = state.metamask;
-
-  const tokensByChain = {};
-
-  const nativeTokenBalancesByChainId =
-    getNativeTokenCachedBalanceByChainIdByAccountAddress(
-      state,
-      selectedAddress,
-    );
-
-  const chainIds = new Set([
-    ...Object.keys(allTokens || {}),
-    ...Object.keys(nativeTokenBalancesByChainId || {}),
-  ]);
-
-  chainIds.forEach((chainId) => {
-    if (!tokensByChain[chainId]) {
-      tokensByChain[chainId] = [];
-    }
-
-    if (allTokens[chainId]?.[selectedAddress]) {
-      allTokens[chainId][selectedAddress].forEach((token) => {
-        const tokenWithChain = { ...token, chainId, isNative: false };
-        tokensByChain[chainId].push(tokenWithChain);
-      });
-    }
-
-    const nativeBalance = nativeTokenBalancesByChainId[chainId];
-    if (nativeBalance) {
-      const nativeTokenInfo = getNativeTokenInfo(state, chainId);
-      tokensByChain[chainId].push({
-        ...nativeTokenInfo,
-        address: '',
-        balance: nativeBalance,
-        chainId,
-        isNative: true,
-        image: getNativeCurrencyForChain(chainId),
-      });
-    }
-  });
-  return tokensByChain;
-}
 
 /**
  * Retrieves native token information (symbol, decimals, name) for a given chainId from the state,
  * without hardcoding any values.
  *
- * @param {object} state - Redux state
+ * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
  * @param {string} chainId - Chain ID
- * @returns {object} Native token information
+ * @returns {{ symbol: string, decimals: number, name: string }} Native token information
  */
-export function getNativeTokenInfo(state, chainId) {
-  const { networkConfigurationsByChainId } = state.metamask;
-
+export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   // Fill native token info by network config (if a user has a network added)
@@ -951,20 +937,6 @@ export function getNativeTokenInfo(state, chainId) {
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
-
-    return {
-      symbol,
-      decimals,
-      name,
-    };
-  }
-
-  // Fill native token info by DApp provider
-  const { provider } = state.metamask;
-  if (provider?.chainId === chainId) {
-    const symbol = provider.ticker || AssetType.native;
-    const decimals = provider.nativeCurrency?.decimals || 18;
-    const name = provider.nickname || 'Native Token';
 
     return {
       symbol,

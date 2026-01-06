@@ -51,7 +51,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsPrimarySeedPhraseBackedUp,
+} from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
   setCompletedOnboarding,
@@ -77,6 +80,7 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const isOnboardingCompleted = useSelector(getCompletedOnboarding);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -175,23 +179,29 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const onDone = useCallback(async () => {
-    if (isWalletReady) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.ExtensionPinned,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type:
-            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-        },
-      });
-    }
-
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
+    }
+
+    // Track onboarding completion event
+    if (!isOnboardingCompleted) {
+      const isNewWallet =
+        firstTimeFlowType === FirstTimeFlowType.create ||
+        firstTimeFlowType === FirstTimeFlowType.socialCreate;
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: firstTimeFlowType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: isNewWallet,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+        },
+      });
     }
 
     await dispatch(
@@ -229,7 +239,7 @@ export default function CreationSuccessful() {
 
     navigate(DEFAULT_ROUTE);
   }, [
-    isWalletReady,
+    isOnboardingCompleted,
     isFromReminder,
     dispatch,
     externalServicesOnboardingToggleState,

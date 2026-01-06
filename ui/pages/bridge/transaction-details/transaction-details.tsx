@@ -180,10 +180,12 @@ const CrossChainSwapTxDetails = () => {
     getIsDelayed(bridgeStatus, bridgeHistoryItem);
 
   // TODO set for gasless swaps
-  const gasCurrency = getNativeTokenInfo(
-    rootState as MetaMaskReduxState,
-    srcChainTxMeta?.chainId ?? '',
-  ) as { decimals: number; symbol: string };
+  const gasCurrency = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(
+      state.metamask.networkConfigurationsByChainId,
+      srcChainTxMeta?.chainId ?? '',
+    ),
+  );
 
   const srcNetworkIconName = (
     <Box display={Display.Flex} gap={1} alignItems={AlignItems.center}>
