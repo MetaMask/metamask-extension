@@ -47,6 +47,7 @@ export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',
   DraftSaved = 'draft-saved',
+  DraftSaveFailed = 'draft-save-failed',
   DraftDeleted = 'draft-deleted',
 }
 

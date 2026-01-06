@@ -475,6 +475,7 @@ const ClaimsForm = ({
         }
       } catch (error) {
         log.error('Error saving draft', error);
+        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaveFailed));
       }
     },
     [
