@@ -75,7 +75,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {isContentfulContent ? slide.title : t(slide.title) || slide.title}
           </Text>
 
           {onTransitionToNextCard && (
@@ -84,7 +84,9 @@ export const StackCard: React.FC<StackCardProps> = ({
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
               ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
+                isContentfulContent
+                  ? slide.title
+                  : t(slide.title) || slide.title,
               ])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
@@ -99,7 +101,9 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {isContentfulContent
+              ? slide.description
+              : t(slide.description) || slide.description}
           </Text>
         </div>
       </div>

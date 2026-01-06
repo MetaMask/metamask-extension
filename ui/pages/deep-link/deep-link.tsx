@@ -112,7 +112,10 @@ async function updateStateFromUrl(
       const title = parsed.route.getTitle(url.searchParams);
 
       const signed = parsed.signature === VALID;
-      const continueMessage = t('deepLink_ContinueDescription', [t(title)]);
+      const titleTranslation = t(title) || title;
+      const continueMessage = t('deepLink_ContinueDescription', [
+        titleTranslation,
+      ]);
       const description = signed
         ? continueMessage
         : t('deepLink_ThirdPartyDescription', [continueMessage]);
@@ -122,7 +125,7 @@ async function updateStateFromUrl(
       setTitle(
         signed ? t('deepLink_RedirectingToMetaMask') : t('deepLink_Caution'),
       );
-      setCta(t('deepLink_Continue', [t(title)]));
+      setCta(t('deepLink_Continue', [titleTranslation]));
       setPageNotFoundError(false);
     } else {
       setRoute(null);
