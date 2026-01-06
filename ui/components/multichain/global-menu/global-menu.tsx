@@ -514,7 +514,7 @@ export const GlobalMenu = ({
         to={SNAPS_ROUTE}
         iconName={IconName.Snaps}
         onClick={closeMenu}
-        showInfoDot={true}
+        showInfoDot={snapsUpdatesAvailable}
       >
         {t('snaps')}
       </MenuItem>
