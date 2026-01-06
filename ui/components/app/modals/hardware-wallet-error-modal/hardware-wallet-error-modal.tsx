@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Text,
   Box,
@@ -8,6 +8,12 @@ import {
   IconName,
   Icon,
   IconSize,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
 } from '../../../component-library';
 import {
   AlignItems,
@@ -27,13 +33,20 @@ import {
   type HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { getRecoveryInstructions } from './recovery-instructions';
+import { buildErrorContent } from './error-content-builder';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../../contexts/hardware-wallets';
+import Spinner from '../../../ui/spinner';
 
 type HardwareWalletErrorModalProps = {
-  error: HardwareWalletError;
-  walletType: HardwareWalletType;
+  isOpen?: boolean;
+  error?: HardwareWalletError;
+  walletType?: HardwareWalletType;
   onRetry?: () => void;
   onCancel?: () => void;
+  onClose?: () => void;
 };
 
 /**
@@ -41,160 +54,180 @@ type HardwareWalletErrorModalProps = {
  *
  * @param props - The component props
  */
-export const HardwareWalletErrorModal: React.FC<
-  HardwareWalletErrorModalProps
-> = (props) => {
-  const t = useI18nContext();
-  const { hideModal, props: modalProps } = useModalProps();
+export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
+  React.memo((props) => {
+    const t = useI18nContext();
+    const { hideModal, props: modalProps } = useModalProps();
+    const [isLoading, setIsLoading] = useState(false);
+    // Use props from either direct props or modal state
+    const { error, walletType, onRetry, onCancel, onClose } = {
+      ...props,
+      ...modalProps,
+    };
+    const { deviceId } = useHardwareWalletConfig();
+    const { ensureDeviceReady } = useHardwareWalletActions();
 
-  // Use props from either direct props or modal state
-  const { error, walletType, onRetry, onCancel } = {
-    ...props,
-    ...modalProps,
-  };
+    // If no error, don't render anything
+    if (!error || !walletType) {
+      return null;
+    }
 
-  const canRetry =
-    error.retryStrategy === RetryStrategy.RETRY &&
-    error.userActionable &&
-    onRetry;
+    const canRetry =
+      error.retryStrategy === RetryStrategy.RETRY &&
+      error.userActionable &&
+      onRetry;
 
-  const recoveryInstructions = getRecoveryInstructions(error, t);
+    const { icon, title, description, recoveryInstructions } =
+      buildErrorContent(
+        error,
+        walletType,
+        t as (key: string, ...args: unknown[]) => string,
+      );
 
-  const handleRetry = () => {
-    hideModal();
-    onRetry?.();
-  };
+    const handleRetry = async () => {
+      setIsLoading(true);
+      await ensureDeviceReady(deviceId ?? '');
+      onRetry?.();
+      setIsLoading(false);
+    };
 
-  const handleCancel = () => {
-    hideModal();
-    onCancel?.();
-  };
+    const handleCancel = () => {
+      onCancel?.();
+      hideModal();
+    };
 
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
-      padding={4}
-      gap={4}
-    >
-      {/* Error Icon */}
-      <Icon
-        name={IconName.Danger}
-        color={IconColor.errorDefault}
-        size={IconSize.Xl}
-      />
+    const handleClose = () => {
+      onClose?.();
+      hideModal();
+    };
 
-      {/* Title */}
-      <Text
-        variant={TextVariant.headingMd}
-        textAlign={TextAlign.Center}
-        color={TextColor.textDefault}
+    useEffect(() => {}, [hideModal]);
+
+    return (
+      <Modal
+        isOpen={true}
+        onClose={handleClose}
+        isClosedOnOutsideClick={false}
+        isClosedOnEscapeKey
       >
-        {t('hardwareWalletErrorTitle')}
-      </Text>
-
-      {/* Wallet Type */}
-      <Text
-        variant={TextVariant.bodyMdMedium}
-        textAlign={TextAlign.Center}
-        color={TextColor.textAlternative}
-      >
-        {walletType === HardwareWalletType.Ledger
-          ? t('ledger')
-          : 'Hardware Wallet'}
-      </Text>
-
-      {/* Error Message */}
-      <Box
-        width={BlockSize.Full}
-        padding={3}
-        style={{
-          backgroundColor: 'var(--color-error-muted)',
-          borderRadius: '8px',
-        }}
-      >
-        <Text
-          variant={TextVariant.bodyMd}
-          textAlign={TextAlign.Center}
-          color={TextColor.errorDefault}
-        >
-          {error.userMessage || error.message}
-        </Text>
-      </Box>
-
-      {/* Recovery Instructions */}
-      {recoveryInstructions.length > 0 && (
-        <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          gap={2}
-        >
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {t('hardwareWalletErrorRecoveryTitle')}
-          </Text>
-          {recoveryInstructions.map((instruction, index) => (
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader onClose={handleClose}>
             <Box
-              key={index}
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+            >
+              <Icon
+                name={icon}
+                color={IconColor.errorDefault}
+                size={IconSize.Xl}
+              />
+            </Box>
+          </ModalHeader>
+
+          <ModalBody>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.center}
+              gap={4}
+            >
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+              >
+                {title}
+              </Text>
+
+              {/* Error Message */}
+              <Box width={BlockSize.Full} padding={3}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  textAlign={TextAlign.Center}
+                  color={TextColor.errorDefault}
+                >
+                  {error.userMessage || error.message}
+                </Text>
+              </Box>
+
+              {/* Recovery Instructions */}
+              {recoveryInstructions.length > 0 && (
+                <Box
+                  width={BlockSize.Full}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textDefault}
+                  >
+                    {t('hardwareWalletErrorRecoveryTitle')}
+                  </Text>
+                  {recoveryInstructions.map((instruction, index) => (
+                    <Box
+                      key={index}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      gap={2}
+                      alignItems={AlignItems.flexStart}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {`${index + 1}.`}
+                      </Text>
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {instruction}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            <Box
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
               gap={2}
-              alignItems={AlignItems.flexStart}
+              width={BlockSize.Full}
             >
-              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-                {`${index + 1}.`}
-              </Text>
-              <Text variant={TextVariant.bodyMd} color={TextColor.textDefault}>
-                {instruction}
-              </Text>
+              {canRetry ? (
+                <>
+                  <Button
+                    variant={ButtonVariant.Primary}
+                    size={ButtonSize.Lg}
+                    block
+                    onClick={handleRetry}
+                  >
+                    {isLoading ? (
+                      <Spinner />
+                    ) : (
+                      t('hardwareWalletErrorContinueButton')
+                    )}
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  block
+                  onClick={handleCancel}
+                >
+                  {t('close')}
+                </Button>
+              )}
             </Box>
-          ))}
-        </Box>
-      )}
-
-      {/* Action Buttons */}
-      <Box
-        width={BlockSize.Full}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        gap={2}
-        marginTop={2}
-      >
-        {canRetry ? (
-          <>
-            <Button
-              variant={ButtonVariant.Secondary}
-              size={ButtonSize.Lg}
-              block
-              onClick={handleCancel}
-            >
-              {t('cancel')}
-            </Button>
-            <Button
-              variant={ButtonVariant.Primary}
-              size={ButtonSize.Lg}
-              block
-              onClick={handleRetry}
-            >
-              {t('hardwareWalletErrorRetryButton')}
-            </Button>
-          </>
-        ) : (
-          <Button
-            variant={ButtonVariant.Primary}
-            size={ButtonSize.Lg}
-            block
-            onClick={handleCancel}
-          >
-            {t('close')}
-          </Button>
-        )}
-      </Box>
-    </Box>
-  );
-};
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+  });

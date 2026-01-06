@@ -6,15 +6,20 @@ import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types'
 /**
  * Error content structure
  */
-export interface ErrorContent {
+export type ErrorContent = {
   icon: IconName;
   title: string;
   description?: string;
   recoveryInstructions: string[];
-}
+};
 
 /**
  * Build error content based on error code
+ *
+ * @param error - The hardware wallet error object
+ * @param walletType - The type of hardware wallet
+ * @param t - The translation function
+ * @returns The formatted error content with icon, title, description, and recovery instructions
  */
 export function buildErrorContent(
   error: HardwareWalletError,
@@ -29,7 +34,11 @@ export function buildErrorContent(
         icon: IconName.Lock,
         title: t('hardwareWalletErrorTitleDeviceLocked', [walletType]),
         description: t('hardwareWalletErrorDescriptionDeviceLocked'),
-        recoveryInstructions: [],
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryUnlock1'),
+          t('hardwareWalletErrorRecoveryUnlock2'),
+          t('hardwareWalletErrorRecoveryUnlock3'),
+        ],
       };
 
     // Device state - Wrong app
@@ -37,7 +46,11 @@ export function buildErrorContent(
       return {
         icon: IconName.Apps,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
-        recoveryInstructions: [t('hardwareWalletErrorRecoveryOpenApp')],
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryApp1'),
+          t('hardwareWalletErrorRecoveryApp2'),
+          t('hardwareWalletErrorRecoveryApp3'),
+        ],
       };
 
     // Device state - Disconnected/Connection issues

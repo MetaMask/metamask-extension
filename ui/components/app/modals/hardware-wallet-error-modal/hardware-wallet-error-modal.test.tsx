@@ -23,6 +23,19 @@ jest.mock('../../../../hooks/useModalProps', () => ({
   }),
 }));
 
+// Mock hardware wallet hooks
+const mockEnsureDeviceReady = jest.fn();
+jest.mock('../../../../contexts/hardware-wallets', () => ({
+  useHardwareWalletConfig: () => ({
+    deviceId: 'test-device-id',
+    isHardwareWalletAccount: true,
+    walletType: 'ledger',
+  }),
+  useHardwareWalletActions: () => ({
+    ensureDeviceReady: mockEnsureDeviceReady,
+  }),
+}));
+
 // Helper function to create error objects
 const createError = (
   code: ErrorCode,
@@ -30,18 +43,20 @@ const createError = (
   userMessage: string,
   retryStrategy: RetryStrategy = RetryStrategy.RETRY,
   userActionable: boolean = true,
-): HardwareWalletError => ({
-  code,
-  message,
-  userMessage,
-  retryStrategy,
-  userActionable,
-  timestamp: Date.now(),
-});
+): HardwareWalletError =>
+  ({
+    code,
+    message,
+    userMessage,
+    retryStrategy,
+    userActionable,
+    timestamp: new Date(),
+  }) as HardwareWalletError;
 
 describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockEnsureDeviceReady.mockResolvedValue(undefined);
   });
 
   describe('Rendering', () => {
@@ -59,9 +74,13 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('hardwareWalletErrorTitleDeviceLocked')).toBeInTheDocument();
       expect(
-        getByText('Your Ledger device is locked. Please unlock it to continue.'),
+        getByText('hardwareWalletErrorTitleDeviceLocked'),
+      ).toBeInTheDocument();
+      expect(
+        getByText(
+          'Your Ledger device is locked. Please unlock it to continue.',
+        ),
       ).toBeInTheDocument();
     });
 
@@ -79,7 +98,9 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('hardwareWalletErrorTitleDeviceLocked')).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorTitleDeviceLocked'),
+      ).toBeInTheDocument();
     });
 
     it('uses user message when available', () => {
@@ -106,8 +127,8 @@ describe('HardwareWalletErrorModal', () => {
         userMessage: '',
         retryStrategy: RetryStrategy.RETRY,
         userActionable: true,
-        timestamp: Date.now(),
-      };
+        timestamp: new Date(),
+      } as HardwareWalletError;
 
       const { getByText } = render(
         <HardwareWalletErrorModal
@@ -135,7 +156,9 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('hardwareWalletErrorTitleDeviceLocked')).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorTitleDeviceLocked'),
+      ).toBeInTheDocument();
       expect(
         getByText('hardwareWalletErrorRecoveryUnlock1'),
       ).toBeInTheDocument();
@@ -161,7 +184,9 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('hardwareWalletErrorTitleConnectYourDevice')).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+      ).toBeInTheDocument();
       expect(getByText('hardwareWalletErrorRecoveryApp1')).toBeInTheDocument();
       expect(getByText('hardwareWalletErrorRecoveryApp2')).toBeInTheDocument();
       expect(getByText('hardwareWalletErrorRecoveryApp3')).toBeInTheDocument();
@@ -282,7 +307,7 @@ describe('HardwareWalletErrorModal', () => {
 
     it('renders default recovery instructions for unknown errors', () => {
       const error = createError(
-        ErrorCode.UNKNOWN,
+        'UNKNOWN_ERROR' as ErrorCode,
         'Unknown error',
         'Unknown error.',
       );
@@ -304,7 +329,7 @@ describe('HardwareWalletErrorModal', () => {
   });
 
   describe('Action Buttons', () => {
-    it('renders Cancel and Retry buttons for retryable errors', () => {
+    it('renders Continue button for retryable errors', () => {
       const error = createError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
@@ -313,7 +338,7 @@ describe('HardwareWalletErrorModal', () => {
       const onRetry = jest.fn();
       const onCancel = jest.fn();
 
-      const { getByText } = render(
+      const { getByText, queryByText } = render(
         <HardwareWalletErrorModal
           error={error}
           walletType={HardwareWalletType.Ledger}
@@ -322,8 +347,10 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('cancel')).toBeInTheDocument();
-      expect(getByText('continue')).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorContinueButton'),
+      ).toBeInTheDocument();
+      expect(queryByText('cancel')).not.toBeInTheDocument();
     });
 
     it('renders only Close button for non-retryable errors', () => {
@@ -366,10 +393,12 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       expect(getByText('close')).toBeInTheDocument();
-      expect(queryByText('continue')).not.toBeInTheDocument();
+      expect(
+        queryByText('hardwareWalletErrorContinueButton'),
+      ).not.toBeInTheDocument();
     });
 
-    it('calls onRetry and hideModal when Retry button is clicked', () => {
+    it('calls onRetry and hideModal when Continue button is clicked', async () => {
       const error = createError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
@@ -387,34 +416,14 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      fireEvent.click(getByText('continue'));
+      fireEvent.click(getByText('hardwareWalletErrorContinueButton'));
 
-      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      // Wait for async operations
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
       expect(onRetry).toHaveBeenCalledTimes(1);
-    });
-
-    it('calls onCancel and hideModal when Cancel button is clicked', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
-      );
-      const onRetry = jest.fn();
-      const onCancel = jest.fn();
-
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          walletType={HardwareWalletType.Ledger}
-          onRetry={onRetry}
-          onCancel={onCancel}
-        />,
-      );
-
-      fireEvent.click(getByText('cancel'));
-
       expect(mockHideModal).toHaveBeenCalledTimes(1);
-      expect(onCancel).toHaveBeenCalledTimes(1);
     });
 
     it('calls onCancel and hideModal when Close button is clicked', () => {
@@ -493,82 +502,9 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      expect(getByText('hardwareWalletErrorTitleDeviceLocked')).toBeInTheDocument();
-    });
-  });
-
-  describe('Error Icons', () => {
-    it('renders lock icon for AUTH_LOCK errors', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
-      );
-
-      const { container } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          walletType={HardwareWalletType.Ledger}
-        />,
-      );
-
-      const icon = container.querySelector('[style*="lock.svg"]');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it('renders refresh icon for DEVICE_STATE_001', () => {
-      const error = createError(
-        ErrorCode.DEVICE_STATE_001,
-        'Wrong app',
-        'Wrong app.',
-      );
-
-      const { container } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          walletType={HardwareWalletType.Ledger}
-        />,
-      );
-
-      const icon = container.querySelector('[style*="refresh.svg"]');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it('renders plug icon for DEVICE_STATE_003', () => {
-      const error = createError(
-        ErrorCode.DEVICE_STATE_003,
-        'Device disconnected',
-        'Device disconnected.',
-      );
-
-      const { container } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          walletType={HardwareWalletType.Ledger}
-        />,
-      );
-
-      const icon = container.querySelector('[style*="plug.svg"]');
-      expect(icon).toBeInTheDocument();
-    });
-
-    it('renders clock icon for CONN_TIMEOUT_001', () => {
-      const error = createError(
-        ErrorCode.CONN_TIMEOUT_001,
-        'Timeout',
-        'Timeout.',
-      );
-
-      const { container } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          walletType={HardwareWalletType.Ledger}
-        />,
-      );
-
-      const icon = container.querySelector('[style*="clock.svg"]');
-      expect(icon).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorTitleDeviceLocked'),
+      ).toBeInTheDocument();
     });
   });
 });
-

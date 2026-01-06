@@ -15,24 +15,14 @@ const meta: Meta<typeof HardwareWalletErrorModal> = {
   decorators: [
     (Story) => (
       <HardwareWalletProvider>
-        <div
-          style={{
-            maxWidth: '500px',
-            margin: '40px auto',
-            padding: '20px',
-            backgroundColor: 'var(--color-background-default)',
-            borderRadius: '8px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-          }}
-        >
-          <Story />
-        </div>
+        <Story />
       </HardwareWalletProvider>
     ),
   ],
   argTypes: {
     onRetry: { action: 'retry clicked' },
     onCancel: { action: 'cancel clicked' },
+    onClose: { action: 'close clicked' },
   },
 };
 
@@ -61,6 +51,7 @@ const createError = (
  */
 export const DeviceLocked: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.AUTH_LOCK_001,
       'Device is locked',
@@ -69,6 +60,7 @@ export const DeviceLocked: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -77,6 +69,7 @@ export const DeviceLocked: Story = {
  */
 export const WrongAppOpen: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.DEVICE_STATE_001,
       'Wrong app open',
@@ -85,6 +78,7 @@ export const WrongAppOpen: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -93,6 +87,7 @@ export const WrongAppOpen: Story = {
  */
 export const WebHIDPermissionError: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.CONN_TRANSPORT_001,
       'WebHID permission denied',
@@ -101,6 +96,7 @@ export const WebHIDPermissionError: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -109,6 +105,7 @@ export const WebHIDPermissionError: Story = {
  */
 export const DevicePermissionError: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.CONFIG_PERM_001,
       'Device permission denied',
@@ -117,6 +114,7 @@ export const DevicePermissionError: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -125,6 +123,7 @@ export const DevicePermissionError: Story = {
  */
 export const ConnectionLost: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.CONN_CLOSED_001,
       'Connection lost',
@@ -133,6 +132,7 @@ export const ConnectionLost: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -141,6 +141,7 @@ export const ConnectionLost: Story = {
  */
 export const ConnectionTimeout: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.CONN_TIMEOUT_001,
       'Connection timeout',
@@ -149,6 +150,7 @@ export const ConnectionTimeout: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -157,6 +159,7 @@ export const ConnectionTimeout: Story = {
  */
 export const UserCancelled: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.USER_CANCEL_001,
       'User cancelled',
@@ -167,6 +170,7 @@ export const UserCancelled: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -175,6 +179,7 @@ export const UserCancelled: Story = {
  */
 export const UnknownError: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.UNKNOWN_001,
       'Unknown error occurred',
@@ -183,6 +188,7 @@ export const UnknownError: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -191,6 +197,7 @@ export const UnknownError: Story = {
  */
 export const NonRetryableError: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.AUTH_LOCK_001,
       'Device is locked',
@@ -200,6 +207,7 @@ export const NonRetryableError: Story = {
     ),
     walletType: HardwareWalletType.Ledger,
     onCancel: () => console.log('Close clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -208,6 +216,7 @@ export const NonRetryableError: Story = {
  */
 export const DeviceDisconnected: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.DEVICE_STATE_003,
       'Device disconnected',
@@ -216,6 +225,7 @@ export const DeviceDisconnected: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
 
@@ -224,6 +234,7 @@ export const DeviceDisconnected: Story = {
  */
 export const LongErrorMessage: Story = {
   args: {
+    isOpen: true,
     error: createError(
       ErrorCode.UNKNOWN_001,
       'A very long error message that should wrap properly',
@@ -232,5 +243,6 @@ export const LongErrorMessage: Story = {
     walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
   },
 };
