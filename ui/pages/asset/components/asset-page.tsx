@@ -378,10 +378,15 @@ const AssetPage = ({
               isSwapsChain,
               isBridgeChain,
               chainId,
+              disableSendForNonEvm: true,
             }}
           />
         ) : (
-          <TokenButtons token={updatedAsset} account={selectedAccount} />
+          <TokenButtons
+            token={updatedAsset}
+            account={selectedAccount}
+            disableSendForNonEvm
+          />
         )}
       </Box>
       <Box

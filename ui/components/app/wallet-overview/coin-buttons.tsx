@@ -77,6 +77,8 @@ type CoinButtonsProps = {
   isBuyableChain: boolean;
   classPrefix?: string;
   iconButtonClassName?: string;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 };
 
 const CoinButtons = ({
@@ -87,6 +89,7 @@ const CoinButtons = ({
   isSigningEnabled,
   isBuyableChain,
   classPrefix = 'coin',
+  disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -147,7 +150,8 @@ const CoinButtons = ({
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
       {
-        condition: !isEvmAsset && !isExternalServicesEnabled,
+        condition:
+          disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled,
         message: 'currentlyUnavailable',
       },
     ],
@@ -448,7 +452,8 @@ const CoinButtons = ({
           )
         }
         disabled={
-          !isSigningEnabled || (!isEvmAsset && !isExternalServicesEnabled)
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
         }
         label={t('send')}
         onClick={handleSendOnClick}

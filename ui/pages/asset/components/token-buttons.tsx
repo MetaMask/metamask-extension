@@ -53,9 +53,12 @@ import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSe
 const TokenButtons = ({
   token,
   account,
+  disableSendForNonEvm = false,
 }: {
   token: Asset & { type: AssetType.token };
   account: InternalAccount;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -255,7 +258,10 @@ const TokenButtons = ({
         }
         label={t('send')}
         data-testid="eth-overview-send"
-        disabled={token.isERC721 || (!isEvm && !isExternalServicesEnabled)}
+        disabled={
+          token.isERC721 ||
+          (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+        }
       />
 
       <IconButton
