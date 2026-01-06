@@ -14,6 +14,7 @@ export const TEST_PAGE = 'https://doesntexist.test/';
  * manifest flags.
  *
  * @param title - The title of the test, used for debugging and logging.
+ * @param deepLinkPublicKey
  */
 export async function getConfig(
   title: string | null,

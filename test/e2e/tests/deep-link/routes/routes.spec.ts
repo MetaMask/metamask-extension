@@ -3,8 +3,12 @@ import { Driver } from '../../../webdriver/driver';
 import LoginPage from '../../../page-objects/pages/login-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { BaseUrl } from '../../../../../shared/constants/urls';
-import { bytesToB64, generateECDSAKeyPair, signDeepLink } from '../helpers';
-import { getConfig as _getConfig } from '../helpers';
+import {
+  bytesToB64,
+  generateECDSAKeyPair,
+  signDeepLink,
+  getConfig as _getConfig,
+} from '../helpers';
 import RewardsPage from '../../../page-objects/pages/rewards/rewards-page';
 
 describe('Deep Link', function () {
@@ -26,7 +30,7 @@ describe('Deep Link', function () {
     async function navigate(
       driver: Driver,
       rawUrl: string,
-      test: () => Promise<void>,
+      runTest: () => Promise<void>,
     ) {
       await driver.navigate();
       const loginPage = new LoginPage(driver);
@@ -40,7 +44,7 @@ describe('Deep Link', function () {
       // test signed flow
       await driver.openNewURL(signedUrl);
 
-      await test();
+      await runTest();
 
       await driver.navigate();
       await homePage.checkPageIsLoaded();
@@ -48,7 +52,7 @@ describe('Deep Link', function () {
       // test unsigned flow
       await driver.openNewURL(rawUrl);
 
-      await test();
+      await runTest();
     }
 
     describe('External Redirects', function () {
@@ -57,9 +61,9 @@ describe('Deep Link', function () {
           await getConfig(this.test?.fullTitle()),
           async ({ driver }: { driver: Driver }) => {
             const rawUrl = `https://link.metamask.io/buy`;
-            const test = () =>
+            const runTest = () =>
               driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
-            await navigate(driver, rawUrl, test);
+            await navigate(driver, rawUrl, runTest);
           },
         );
       });
@@ -69,9 +73,9 @@ describe('Deep Link', function () {
           await getConfig(this.test?.fullTitle()),
           async ({ driver }: { driver: Driver }) => {
             const rawUrl = `https://link.metamask.io/perps`;
-            const test = () =>
+            const runTest = () =>
               driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
-            await navigate(driver, rawUrl, test);
+            await navigate(driver, rawUrl, runTest);
           },
         );
       });
@@ -81,29 +85,29 @@ describe('Deep Link', function () {
           await getConfig(this.test?.fullTitle()),
           async ({ driver }: { driver: Driver }) => {
             const rawUrl = `https://link.metamask.io/predict`;
-            const test = () =>
+            const runTest = () =>
               driver.waitForUrl({
                 url: `${BaseUrl.MetaMask}/prediction-markets`,
               });
 
-            await navigate(driver, rawUrl, test);
+            await navigate(driver, rawUrl, runTest);
           },
         );
       });
     });
 
-    describe('Internal Routing', () => {
+    describe('Internal Routing', function () {
       it('handles /rewards route', async function () {
         await withFixtures(
           await getConfig(this.test?.fullTitle()),
           async ({ driver }: { driver: Driver }) => {
             const rawUrl = `https://link.metamask.io/rewards`;
-            const test = async () => {
+            const runTest = async () => {
               const page = new RewardsPage(driver);
               console.log('Checking if target page is loaded');
               await page.checkPageIsLoaded();
             };
-            await navigate(driver, rawUrl, test);
+            await navigate(driver, rawUrl, runTest);
           },
         );
       });
