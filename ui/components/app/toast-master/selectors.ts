@@ -52,6 +52,7 @@ type State = {
       | 'pna25Acknowledged'
       | 'completedOnboarding'
       | 'showDatabaseCorruptionToast'
+      | 'isUnlocked'
     >
   >;
 };
@@ -241,7 +242,10 @@ export function selectShowShieldEndingToast(
 }
 
 /**
- * Retrieves whether to show the database corruption toast
+ * Determines if the database corruption toast should be shown based on:
+ * - showDatabaseCorruptionToast flag is true
+ * - User has completed onboarding
+ * - Wallet is unlocked
  *
  * @param state - Redux state object.
  * @returns Boolean indicating whether to show the toast
@@ -249,7 +253,12 @@ export function selectShowShieldEndingToast(
 export function selectShowDatabaseCorruptionToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
-  return Boolean(state.metamask.showDatabaseCorruptionToast);
+  const { showDatabaseCorruptionToast, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  return Boolean(
+    showDatabaseCorruptionToast && completedOnboarding && isUnlocked,
+  );
 }
 
 /**

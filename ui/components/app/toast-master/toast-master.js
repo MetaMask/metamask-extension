@@ -37,10 +37,6 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
-import {
-  getCompletedOnboarding,
-  getIsUnlocked,
-} from '../../../ducks/metamask/metamask';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
@@ -120,6 +116,12 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
+  // Check if database corruption toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowDatabaseCorruptionToast = useSelector(
+    selectShowDatabaseCorruptionToast,
+  );
+
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
@@ -160,8 +162,13 @@ export function ToastMaster() {
     );
   }
 
-  // On other screens, only render container if database corruption toast should show
-  return databaseCorruptionToast;
+  // On other screens, only render ToastContainer if database corruption toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowDatabaseCorruptionToast) {
+    return <ToastContainer>{databaseCorruptionToast}</ToastContainer>;
+  }
+
+  return null;
 }
 
 function ConnectAccountToast() {
@@ -766,14 +773,12 @@ function ShieldEndingToast() {
 function DatabaseCorruptionToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
-  const location = useLocation();
   const [isDismissed, setIsDismissed] = useState(false);
 
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showDatabaseCorruptionToast = useSelector(
     selectShowDatabaseCorruptionToast,
   );
-  const isUnlocked = useSelector(getIsUnlocked);
-  const completedOnboarding = useSelector(getCompletedOnboarding);
 
   const handleRevealSrpClick = () => {
     setIsDismissed(true);
@@ -784,17 +789,8 @@ function DatabaseCorruptionToast() {
     setIsDismissed(true);
   };
 
-  // Don't show toast on the SRP reveal screen (user is already taking action)
-  const isOnSrpRevealScreen = location?.pathname === REVEAL_SEED_ROUTE;
-
-  // Only show toast when wallet is unlocked, onboarding is complete, not dismissed,
-  // and not already on the SRP reveal screen
-  const shouldShow =
-    showDatabaseCorruptionToast &&
-    isUnlocked &&
-    completedOnboarding &&
-    !isDismissed &&
-    !isOnSrpRevealScreen;
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showDatabaseCorruptionToast && !isDismissed;
 
   return (
     shouldShow && (
