@@ -8142,6 +8142,9 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    captureException(
+      new Error(`Failed to submit shield claim, ${getErrorMessage(error)}`),
+    );
     if (error instanceof SubmitClaimError) {
       throw error;
     }
