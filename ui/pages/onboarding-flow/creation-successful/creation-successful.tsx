@@ -44,6 +44,7 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -77,6 +78,8 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const preferences = useSelector(getPreferences);
+  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -200,6 +203,14 @@ export default function CreationSuccessful() {
 
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
+      // If useSidePanelAsDefault is already true, side panel is already set up
+      // Just complete onboarding and redirect to home page
+      if (isSidePanelSetAsDefault) {
+        await dispatch(setCompletedOnboarding());
+        navigate(DEFAULT_ROUTE);
+        return;
+      }
+
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -226,7 +237,6 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-
     navigate(DEFAULT_ROUTE);
   }, [
     isWalletReady,
@@ -238,6 +248,7 @@ export default function CreationSuccessful() {
     firstTimeFlowType,
     isFromSettingsSecurity,
     isSidePanelEnabled,
+    isSidePanelSetAsDefault,
   ]);
 
   const renderDoneButton = () => {
