@@ -18,8 +18,9 @@ import { useCarouselManagement } from '../../../hooks/useCarouselManagement';
 import { CreateSolanaAccountModal } from '../create-solana-account-modal';
 import { getLastSelectedSolanaAccount } from '../../../selectors/multichain';
 import DownloadMobileAppModal from '../../app/download-mobile-modal/download-mobile-modal';
-import { SHIELD_PLAN_ROUTE } from '../../../helpers/constants/routes';
+import { SETTINGS_ROUTE } from '../../../helpers/constants/routes';
 import { SHIELD_CAROUSEL_ID } from '../../../../shared/modules/shield';
+import { SHIELD_QUERY_PARAMS } from '../../../../shared/lib/deep-links/routes/shield';
 
 export const Carousel = () => {
   const dispatch = useDispatch();
@@ -70,8 +71,9 @@ export const Carousel = () => {
     }
 
     if (key === SHIELD_CAROUSEL_ID) {
+      // use fixed utm params here for now because of matching contentful carousel id
       navigate(
-        `${SHIELD_PLAN_ROUTE}?utm_source=carousel&utm_medium=in-product&utm_campaign=cmp-741242243-afbf08`,
+        `${SETTINGS_ROUTE}?${SHIELD_QUERY_PARAMS.showShieldEntryModal}=true&utm_source=carousel&utm_medium=in-product&utm_campaign=cmp-741242243-afbf08`,
       );
     }
 
