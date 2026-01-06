@@ -1,5 +1,6 @@
 import { Driver } from '../../../webdriver/driver';
 import { NETWORK_TO_NAME_MAP } from '../../../../../shared/constants/network';
+import { veryLargeDelayMs } from '../../../helpers';
 
 class AssetListPage {
   private readonly driver: Driver;
@@ -110,11 +111,16 @@ class AssetListPage {
   private readonly tokenImportedMessageCloseButton =
     '.actionable-message__message button[aria-label="Close"]';
 
+  private readonly tokenSearchResults = '.token-list__token_component';
+
   private readonly tokenListItem =
     '[data-testid="multichain-token-list-button"]';
 
   private readonly tokenOptionsButton =
     '[data-testid="asset-list-control-bar-action-button"]';
+
+  private readonly tokenSearchSelected =
+    '.token-list__tokens-container .mm-checkbox__input--checked';
 
   private readonly tokenSymbolTitle = {
     css: '.mm-label',
@@ -344,7 +350,10 @@ class AssetListPage {
     await this.driver.clickElement(this.importTokensButton);
     await this.driver.waitForSelector(this.importTokenModalTitle);
     await this.driver.fill(this.tokenSearchInput, tokenName);
+    // Wait until the token search matches 1 result to prevent flakiness with token result re-renders
+    await this.waitUntilTokenSearchMatch(1);
     await this.driver.clickElement({ text: tokenName, tag: 'p' });
+    await this.driver.waitForSelector(this.tokenSearchSelected);
     await this.driver.clickElement(this.importTokensNextButton);
     await this.driver.waitForSelector(this.confirmImportTokenMessage);
     await this.driver.clickElementAndWaitToDisappear(
@@ -762,9 +771,7 @@ class AssetListPage {
    */
   async checkTokenListIsDisplayed(): Promise<void> {
     try {
-      await this.driver.waitForSelector(this.tokenListItem, {
-        timeout: 300000,
-      });
+      await this.driver.waitForSelector(this.tokenListItem);
     } catch (e) {
       console.log('Token list is not displayed', e);
       throw e;
@@ -776,14 +783,18 @@ class AssetListPage {
    * This is done due to the snap delay.
    *
    * @param tokenName - The name of the token to wait for
+   * @param timeout
    */
-  async waitForTokenToBeDisplayed(tokenName: string): Promise<void> {
+  async waitForTokenToBeDisplayed(
+    tokenName: string,
+    timeout: number = 10000,
+  ): Promise<void> {
     await this.driver.waitForSelector(
       {
         css: this.tokenListItem,
         text: tokenName,
       },
-      { timeout: 30000 },
+      { timeout },
     );
   }
 
@@ -794,6 +805,20 @@ class AssetListPage {
    */
   async checkConversionRateDisplayed(): Promise<void> {
     await this.driver.assertElementNotPresent(this.noPriceAvailableMessage);
+  }
+
+  async waitUntilTokenSearchMatch(numberOfMatches: number) {
+    await this.driver.waitUntil(
+      async () => {
+        const matches = await this.driver.findElements(this.tokenSearchResults);
+        return matches.length === numberOfMatches;
+      },
+      {
+        timeout: this.driver.timeout,
+        interval: 200,
+        stableFor: veryLargeDelayMs,
+      },
+    );
   }
 }
 

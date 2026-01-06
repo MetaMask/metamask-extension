@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   Hex,
   isStrictHexString,
@@ -84,6 +84,7 @@ import {
   showImportNftsModal,
   showImportTokensModal,
   showModal,
+  updateBalancesFoAccounts,
 } from '../../../../../store/actions';
 import Tooltip from '../../../../ui/tooltip';
 import {
@@ -278,6 +279,9 @@ const AssetListControlBar = ({
   };
 
   const handleRefresh = () => {
+    dispatch(
+      updateBalancesFoAccounts(Object.keys(enabledNetworksByNamespace), false),
+    );
     dispatch(detectTokens(Object.keys(enabledNetworksByNamespace)));
     closePopover();
   };

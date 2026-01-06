@@ -1,6 +1,6 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import { openBlockExplorer } from '../../multichain/menu-items/view-explorer-menu-item';
 import { getBlockExplorerInfo } from '../../../helpers/utils/multichain/getBlockExplorerInfo';
@@ -258,9 +258,9 @@ describe('AddressQRCodeModal', () => {
 
     // Mock the getBlockExplorerInfo to return Bitcoin explorer info
     mockGetBlockExplorerInfo.mockReturnValue({
-      addressUrl: `https://blockstream.info/address/${address}`,
-      name: 'Blockstream',
-      buttonText: 'View on Blockstream',
+      addressUrl: `https://mempool.space/address/${address}`,
+      name: 'Mempool',
+      buttonText: 'View on Mempool',
     });
 
     renderWithProvider(
@@ -276,14 +276,14 @@ describe('AddressQRCodeModal', () => {
     );
 
     const explorerButton = screen.getByRole('button', {
-      name: 'View on Blockstream',
+      name: 'View on Mempool',
     });
 
     fireEvent.click(explorerButton);
 
     expect(mockOpenBlockExplorer).toHaveBeenCalledTimes(1);
     expect(mockOpenBlockExplorer.mock.calls[0][0]).toBe(
-      `https://blockstream.info/address/${address}`,
+      `https://mempool.space/address/${address}`,
     );
   });
 

@@ -8,7 +8,7 @@ import {
   RecurringInterval,
 } from '@metamask/subscription-controller';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom-v5-compat';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Checkbox, TextVariant } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
@@ -74,7 +74,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
 } from '../../../shared/constants/subscriptions';
@@ -200,6 +200,7 @@ const ShieldPlan = () => {
       defaultPaymentType: paymentType,
       defaultPaymentCurrency: paymentCurrency,
       defaultBillingInterval: RECURRING_INTERVALS.year,
+      defaultPaymentChain: availableTokenBalances[0]?.chainId,
     };
   }, [availableTokenBalances]);
 
@@ -382,7 +383,7 @@ const ShieldPlan = () => {
 
   const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
-    if (source === EntryModalSourceEnum.Settings) {
+    if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
       navigate(SETTINGS_ROUTE, { replace: true });
     } else {

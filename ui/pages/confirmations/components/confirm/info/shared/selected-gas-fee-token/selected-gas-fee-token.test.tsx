@@ -20,7 +20,6 @@ jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
 );
-
 function getStore({
   gasFeeTokens,
   noSelectedGasFeeToken,
@@ -57,6 +56,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
 
     useInsufficientBalanceAlertsMock.mockReturnValue([
@@ -110,6 +110,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(
@@ -124,6 +125,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(

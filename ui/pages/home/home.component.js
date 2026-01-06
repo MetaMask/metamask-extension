@@ -1,6 +1,6 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Navigate } from 'react-router-dom-v5-compat';
+import { Navigate } from 'react-router-dom';
 import { Text, TextVariant, TextColor } from '@metamask/design-system-react';
 import { COHORT_NAMES } from '@metamask/subscription-controller';
 import {
@@ -66,6 +66,7 @@ import { setEditedNetwork } from '../../store/actions';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
 import RewardsOnboardingModal from '../../components/app/rewards/onboarding/OnboardingModal';
+import { Pna25Modal } from '../../components/app/modals/pna25-modal';
 ///: BEGIN:ONLY_INCLUDE_IF(build-beta)
 import BetaHomeFooter from './beta/beta-home-footer.component';
 ///: END:ONLY_INCLUDE_IF
@@ -164,11 +165,14 @@ export default class Home extends PureComponent {
     isSignedIn: PropTypes.bool,
     rewardsEnabled: PropTypes.bool,
     rewardsOnboardingEnabled: PropTypes.bool,
+    rewardsOnboardingModalOpen: PropTypes.bool,
+    showPna25Modal: PropTypes.bool.isRequired,
   };
 
   state = {
     canShowBlockageNotification: true,
     notificationClosing: false,
+    shouldEvaluateCohortEligibility: true,
   };
 
   constructor(props) {
@@ -232,6 +236,8 @@ export default class Home extends PureComponent {
       isSignedIn,
     } = this.props;
 
+    const { shouldEvaluateCohortEligibility } = this.state;
+
     const {
       newNetworkAddedConfigurationId: prevNewNetworkAddedConfigurationId,
     } = _prevProps;
@@ -250,9 +256,15 @@ export default class Home extends PureComponent {
     }
 
     // Check for pending Shield cohort evaluation if user is signed in
-    if (pendingShieldCohort && evaluateCohortEligibility && isSignedIn) {
+    if (
+      shouldEvaluateCohortEligibility &&
+      pendingShieldCohort &&
+      evaluateCohortEligibility &&
+      isSignedIn
+    ) {
       setPendingShieldCohort(null);
       evaluateCohortEligibility(pendingShieldCohort);
+      this.setState({ shouldEvaluateCohortEligibility: false });
     }
 
     // Check for redirect after default page on updates
@@ -779,6 +791,8 @@ export default class Home extends PureComponent {
       isSocialLoginFlow,
       rewardsEnabled,
       rewardsOnboardingEnabled,
+      rewardsOnboardingModalOpen,
+      showPna25Modal,
     } = this.props;
 
     if (forgottenPassword) {
@@ -834,6 +848,18 @@ export default class Home extends PureComponent {
       !showShieldEntryModal &&
       !showRecoveryPhrase;
 
+    const showPna25ModalComponent =
+      showPna25Modal &&
+      canSeeModals &&
+      !showTermsOfUse &&
+      !showWhatsNew &&
+      !showMultiRpcEditModal &&
+      !displayUpdateModal &&
+      !isSeedlessPasswordOutdated &&
+      !showShieldEntryModal &&
+      !showRecoveryPhrase &&
+      !rewardsOnboardingModalOpen;
+
     const { location } = this.props;
 
     // Handle connected routes
@@ -875,6 +901,7 @@ export default class Home extends PureComponent {
           ) : null}
           {showShieldEntryModal && <ShieldEntryModal />}
           {showRewardsModal && <RewardsOnboardingModal />}
+          {showPna25ModalComponent && <Pna25Modal />}
           {isPopup && !connectedStatusPopoverHasBeenShown
             ? this.renderPopover()
             : null}

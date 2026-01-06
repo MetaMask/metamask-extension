@@ -55,7 +55,7 @@ export async function applyTransactionContainers({
 
     log('Estimated gas', gas);
 
-    newGas = gas;
+    newGas = gas as Hex;
   }
 
   return {

@@ -1,8 +1,6 @@
 import React, { useCallback } from 'react';
 import {
   Box,
-  BoxAlignItems,
-  BoxFlexDirection,
   Button,
   ButtonSize,
   ButtonVariant,
@@ -209,40 +207,32 @@ const OnboardingStep4: React.FC<OnboardingStep4Props> = ({
         'noopener,noreferrer',
       );
     };
-
     return (
       <Box
         className="w-full flex-row mt-2"
         data-testid="rewards-onboarding-step4-legal-disclaimer"
       >
-        <Box
-          flexDirection={BoxFlexDirection.Row}
-          alignItems={BoxAlignItems.Center}
-          className="justify-center flex-wrap gap-2"
+        <Text
+          variant={TextVariant.BodySm}
+          className="text-alternative text-center"
         >
-          <Text
-            variant={TextVariant.BodySm}
-            className="text-alternative text-center"
-          >
-            {t('rewardsOnboardingStep4LegalDisclaimer1')}{' '}
+          {t('rewardsOnboardingStep4LegalDisclaimer', [
             <TextButton
               size={TextButtonSize.BodySm}
               className="text-primary-default"
               onClick={openTermsOfUse}
             >
-              {t('rewardsOnboardingStep4LegalDisclaimer2')}
-            </TextButton>
-            {t('rewardsOnboardingStep4LegalDisclaimer3')}{' '}
+              {t('rewardsOnboardingStep4LegalDisclaimerTermsLink')}
+            </TextButton>,
             <TextButton
               size={TextButtonSize.BodySm}
               className="text-primary-default"
               onClick={openLearnMore}
             >
-              {t('rewardsOnboardingStep4LegalDisclaimer4')}
-            </TextButton>
-            .{' '}
-          </Text>
-        </Box>
+              {t('rewardsOnboardingStep4LegalDisclaimerLearnMoreLink')}
+            </TextButton>,
+          ])}
+        </Text>
       </Box>
     );
   };

@@ -2,7 +2,6 @@ import React from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import { useNavState } from '../../contexts/navigation-state';
 import { useShieldSubscriptionContext } from '../../contexts/shield/shield-subscription';
 import {
   activeTabHasPermissions,
@@ -67,7 +66,9 @@ import { fetchBuyableChains } from '../../ducks/ramps';
 import {
   selectRewardsEnabled,
   selectRewardsOnboardingEnabled,
+  selectOnboardingModalOpen,
 } from '../../ducks/rewards/selectors';
+import { selectShowPna25Modal } from '../../components/app/toast-master/selectors';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -88,7 +89,7 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
-
+import { AppHeader } from '../../components/multichain/app-header';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -188,6 +189,8 @@ const mapStateToProps = (state) => {
     isSignedIn: state.metamask.isSignedIn,
     rewardsEnabled: selectRewardsEnabled(state),
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
+    rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
+    showPna25Modal: selectShowPna25Modal(state),
   };
 };
 
@@ -248,20 +251,33 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
+const removeGns = Boolean(process.env.REMOVE_GNS);
+
 // Strip unused 'match' prop from withRouter
 // It causes cascading, unnecessary re-renders
-// Also inject navState from NavigationStateContext for v5-compat navigation
 // eslint-disable-next-line react/prop-types
 const HomeWithRouter = ({ match: _match, ...props }) => {
-  const navState = useNavState();
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
 
+  if (removeGns) {
+    return (
+      <>
+        {/* Note: Consider a sticky header instead of overflow */}
+        <AppHeader />
+
+        <div className="flex flex-col flex-1 min-h-0">
+          <Home
+            {...props}
+            evaluateCohortEligibility={evaluateCohortEligibility}
+          />
+        </div>
+      </>
+    );
+  }
+
+  // Note: Remove this once REMOVE_GNS flag is resolved
   return (
-    <Home
-      {...props}
-      navState={navState}
-      evaluateCohortEligibility={evaluateCohortEligibility}
-    />
+    <Home {...props} evaluateCohortEligibility={evaluateCohortEligibility} />
   );
 };
 

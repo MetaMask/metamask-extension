@@ -1,4 +1,4 @@
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { type Asset } from '../../types/send';
 import { useSendAssets } from './useSendAssets';

@@ -1,10 +1,7 @@
-const path = require('path');
-
 module.exports = {
-  extends: [
-    '@metamask/eslint-config',
-    path.resolve(__dirname, '.eslintrc.jsdoc.js'),
-  ],
+  extends: ['@metamask/eslint-config'],
+
+  plugins: ['@metamask/design-tokens'],
 
   globals: {
     document: 'readonly',
@@ -15,10 +12,13 @@ module.exports = {
     AggregateError: 'readonly',
   },
 
-  rules: {
-    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
-    'jsdoc/check-line-alignment': 'off',
+  settings: {
+    jsdoc: {
+      mode: 'typescript',
+    },
+  },
 
+  rules: {
     'default-param-last': 'off',
     'prefer-object-spread': 'error',
     'require-atomic-updates': 'off',
@@ -82,5 +82,57 @@ module.exports = {
 
     // This is necessary to run eslint on Windows and not get a thousand CRLF errors
     'prettier/prettier': ['error', { endOfLine: 'auto' }],
+
+    '@metamask/design-tokens/color-no-hex': 'error',
+    'import/no-restricted-paths': [
+      'error',
+      {
+        basePath: './',
+        zones: [
+          {
+            target: './app',
+            from: './ui',
+            message:
+              'Should not import from UI in background, use shared directory instead',
+          },
+          {
+            target: './ui',
+            from: './app',
+            message:
+              'Should not import from background in UI, use shared directory instead',
+          },
+          {
+            target: './shared',
+            from: './app',
+            message: 'Should not import from background in shared',
+          },
+          {
+            target: './shared',
+            from: './ui',
+            message: 'Should not import from UI in shared',
+          },
+        ],
+      },
+    ],
+
+    /* JSDoc plugin rules */
+
+    // TODO: re-enable once the proposed feature at https://github.com/gajus/eslint-plugin-jsdoc/pull/964#issuecomment-1936470252 is available
+    'jsdoc/check-line-alignment': 'off',
+
+    // Allow tag `jest-environment` to work around Jest bug
+    // See: https://github.com/facebook/jest/issues/7780
+    'jsdoc/check-tag-names': ['error', { definedTags: ['jest-environment'] }],
+
+    // TODO: Re-enable these
+    'jsdoc/match-description': 'off',
+    'jsdoc/require-description': 'off',
+    'jsdoc/require-jsdoc': 'off',
+    'jsdoc/require-param-description': 'off',
+    'jsdoc/require-param-type': 'off',
+    'jsdoc/require-returns-description': 'off',
+    'jsdoc/require-returns-type': 'off',
+    'jsdoc/require-returns': 'off',
+    'jsdoc/valid-types': 'off',
   },
 };

@@ -1,491 +1,120 @@
+import { jest } from '@jest/globals';
+import localforage from 'localforage';
 import { migrate, version } from './185';
 
-const VERSION = version;
-const oldVersion = 184;
+// Mock localforage after importing it
+jest.mock('localforage', () => ({
+  keys: jest.fn(),
+  removeItem: jest.fn(),
+}));
 
-describe(`migration #${VERSION}`, () => {
-  let mockedCaptureException: jest.Mock;
+const mockLocalforage = jest.mocked(localforage);
 
+describe(`migration #${version}`, () => {
   beforeEach(() => {
-    mockedCaptureException = jest.fn();
-    global.sentry = { captureException: mockedCaptureException };
-  });
+    // Reset mocks
+    jest.clearAllMocks();
 
-  afterEach(() => {
-    global.sentry = undefined;
+    // Mock localforage
+    mockLocalforage.keys.mockResolvedValue([]);
+    mockLocalforage.removeItem.mockResolvedValue(undefined);
   });
 
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.meta).toStrictEqual({ version: VERSION });
-  });
-
-  it('does nothing if CurrencyController is missing', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
+      meta: { version: 184 },
       data: {},
     };
 
-    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
-
     const newStorage = await migrate(oldStorage);
 
-    expect(mockWarn).toHaveBeenCalledWith(
-      `Migration ${VERSION}: CurrencyController not found.`,
-    );
+    expect(newStorage.meta).toStrictEqual({ version });
     expect(newStorage.data).toStrictEqual(oldStorage.data);
   });
 
-  it('captures exception if CurrencyController is not an object', async () => {
+  it('cleans up localforage entries matching price API pattern', async () => {
+    const priceApiKey =
+      'cachedFetch:https://price.api.cx.metamask.io/v1/chains/137/historical-prices';
+    const otherKey = 'cachedFetch:https://other.api.com/data';
+    const nonCacheKey = 'someOtherKey';
+
+    mockLocalforage.keys.mockResolvedValue([
+      priceApiKey,
+      otherKey,
+      nonCacheKey,
+    ]);
+
     const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: 'invalid',
-      },
+      meta: { version: 184 },
+      data: {},
     };
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(
-        `Migration ${VERSION}: CurrencyController is not an object: string`,
-      ),
+    // Should only remove the price API key
+    expect(mockLocalforage.removeItem).toHaveBeenCalledTimes(1);
+    expect(mockLocalforage.removeItem).toHaveBeenCalledWith(priceApiKey);
+  });
+
+  it('handles localforage errors gracefully', async () => {
+    mockLocalforage.keys.mockRejectedValue(
+      new Error('IndexedDB not available'),
     );
+
+    const oldStorage = {
+      meta: { version: 184 },
+      data: {},
+    };
+
+    // Should not throw an error
+    const result = await migrate(oldStorage);
+
+    expect(result.meta.version).toBe(version);
   });
 
-  it('does nothing if currencyRates is missing', async () => {
+  it('continues migration even if cache cleanup fails', async () => {
+    // Mock localforage to throw an error
+    mockLocalforage.keys.mockRejectedValue(new Error('localforage error'));
+
     const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {},
-      },
+      meta: { version: 184 },
+      data: { someController: { someData: 'test' } },
     };
 
-    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
+    // Should not throw an error and should preserve data
+    const result = await migrate(oldStorage);
 
-    const newStorage = await migrate(oldStorage);
-
-    expect(mockWarn).toHaveBeenCalledWith(
-      `Migration ${VERSION}: currencyRates not found in CurrencyController.`,
-    );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(result.meta.version).toBe(version);
+    expect(result.data).toEqual(oldStorage.data);
   });
 
-  it('captures exception if currencyRates is not an object', async () => {
+  it('handles multiple price API cache entries', async () => {
+    const priceApiKeys = [
+      'cachedFetch:https://price.api.cx.metamask.io/v1/chains/1/historical-prices/0x123',
+      'cachedFetch:https://price.api.cx.metamask.io/v1/chains/137/historical-prices/0x456',
+      'cachedFetch:https://price.api.cx.metamask.io/v1/chains/56/historical-prices/0x789',
+    ];
+    const otherKeys = [
+      'cachedFetch:https://other.api.com/data',
+      'someOtherKey',
+    ];
+
+    const allKeys = [...priceApiKeys, ...otherKeys];
+
+    // Mock localforage
+    mockLocalforage.keys.mockResolvedValue(allKeys);
+
     const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: 'invalid',
-        },
-      },
+      meta: { version: 184 },
+      data: {},
     };
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-    expect(mockedCaptureException).toHaveBeenCalledWith(
-      new Error(`Migration ${VERSION}: currencyRates is not an object: string`),
-    );
-  });
-
-  it('rounds conversionRate with more than 9 decimal places', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: parseFloat('12.9848883888222'), // 13 decimal places
-            },
-            BTC: {
-              conversionRate: parseFloat('50000.123456789012'), // 12 decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 12.984888389, // Rounded to 9 decimal places
-            },
-            BTC: {
-              conversionRate: 50000.123456789, // Rounded to 9 decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('does not modify conversionRate with 9 or fewer decimal places', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 12.123456789, // Exactly 9 decimal places
-            },
-            BTC: {
-              conversionRate: 50000.12345, // 5 decimal places
-            },
-            USDC: {
-              conversionRate: 1, // No decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    // Data should remain unchanged
-    expect(newStorage.data).toStrictEqual({
-      CurrencyController: {
-        currencyRates: {
-          ETH: {
-            conversionRate: 12.123456789,
-          },
-          BTC: {
-            conversionRate: 50000.12345,
-          },
-          USDC: {
-            conversionRate: 1,
-          },
-        },
-      },
+    // Should remove all 3 price API keys from localforage
+    expect(mockLocalforage.removeItem).toHaveBeenCalledTimes(3);
+    priceApiKeys.forEach((key) => {
+      expect(mockLocalforage.removeItem).toHaveBeenCalledWith(key);
     });
-  });
-
-  it('handles mixed currency rate data with some needing rounding', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
-            },
-            BTC: {
-              conversionRate: 45000.12345, // No rounding needed
-            },
-            INVALID: {
-              // Missing conversionRate property
-            },
-            USDC: {
-              conversionRate: '1.0', // String value, should be ignored
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 2500.123456789, // Rounded
-            },
-            BTC: {
-              conversionRate: 45000.12345, // Unchanged
-            },
-            INVALID: {
-              // Unchanged
-            },
-            USDC: {
-              conversionRate: '1.0', // Unchanged (string)
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('handles empty currencyRates object', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {},
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
-  });
-
-  it('handles edge case with very small numbers', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            SMALLCOIN: {
-              conversionRate: 0.0000000001234567890123, // Very small with many decimals
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            SMALLCOIN: {
-              conversionRate: 0, // Rounded to 9 decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('rounds usdConversionRate with more than 9 decimal places', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              usdConversionRate: parseFloat('2500.1234567890123'), // Needs rounding
-            },
-            BTC: {
-              usdConversionRate: parseFloat('45000.123456789012'), // Needs rounding
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              usdConversionRate: 2500.123456789, // Rounded to 9 decimal places
-            },
-            BTC: {
-              usdConversionRate: 45000.123456789, // Rounded to 9 decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('handles both conversionRate and usdConversionRate in same currency', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
-              usdConversionRate: parseFloat('2500.9876543210987'), // Needs rounding
-            },
-            BTC: {
-              conversionRate: 45000.12345, // No rounding needed
-              usdConversionRate: 45000.987654321, // Needs rounding
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 2500.123456789, // Rounded
-              usdConversionRate: 2500.987654321, // Rounded
-            },
-            BTC: {
-              conversionRate: 45000.12345, // Unchanged
-              usdConversionRate: 45000.987654321, // Rounded
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('does not modify usdConversionRate with 9 or fewer decimal places', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              usdConversionRate: 12.123456789, // Exactly 9 decimal places
-            },
-            BTC: {
-              usdConversionRate: 50000.12345, // 5 decimal places
-            },
-            USDC: {
-              usdConversionRate: 1, // No decimal places
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    // Data should remain unchanged
-    expect(newStorage.data).toStrictEqual({
-      CurrencyController: {
-        currencyRates: {
-          ETH: {
-            usdConversionRate: 12.123456789,
-          },
-          BTC: {
-            usdConversionRate: 50000.12345,
-          },
-          USDC: {
-            usdConversionRate: 1,
-          },
-        },
-      },
-    });
-  });
-
-  it('handles mixed rate data with usdConversionRate', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: parseFloat('2500.1234567890123'), // Needs rounding
-              usdConversionRate: parseFloat('2500.9876543210987'), // Needs rounding
-            },
-            BTC: {
-              usdConversionRate: 45000.12345, // No rounding needed
-            },
-            INVALID: {
-              // Missing both properties
-            },
-            USDC: {
-              conversionRate: '1.0', // String value, should be ignored
-              usdConversionRate: '1.0', // String value, should be ignored
-            },
-          },
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currencyRates: {
-            ETH: {
-              conversionRate: 2500.123456789, // Rounded
-              usdConversionRate: 2500.987654321, // Rounded
-            },
-            BTC: {
-              usdConversionRate: 45000.12345, // Unchanged
-            },
-            INVALID: {
-              // Unchanged
-            },
-            USDC: {
-              conversionRate: '1.0', // Unchanged (string)
-              usdConversionRate: '1.0', // Unchanged (string)
-            },
-          },
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
-  });
-
-  it('preserves other properties in CurrencyController', async () => {
-    const oldStorage = {
-      meta: { version: oldVersion },
-      data: {
-        CurrencyController: {
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: {
-              conversionRate: parseFloat('2500.1234567890123'),
-              usdConversionRate: parseFloat('2500.9876543210987'),
-              conversionDate: 1234567890,
-            },
-          },
-          otherProperty: 'should be preserved',
-        },
-      },
-    };
-
-    const expectedStorage = {
-      meta: { version: VERSION },
-      data: {
-        CurrencyController: {
-          currentCurrency: 'usd',
-          currencyRates: {
-            ETH: {
-              conversionRate: 2500.123456789, // Rounded
-              usdConversionRate: 2500.987654321, // Rounded
-              conversionDate: 1234567890, // Preserved
-            },
-          },
-          otherProperty: 'should be preserved', // Preserved
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage).toStrictEqual(expectedStorage);
   });
 });

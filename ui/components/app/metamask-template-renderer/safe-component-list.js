@@ -51,6 +51,7 @@ import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
+import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -113,6 +114,7 @@ export const safeComponentList = {
   SnapUISelector,
   SnapUITooltip,
   SnapUIAssetSelector,
+  SnapUIDateTimePicker,
   span: 'span',
   Spinner,
   Skeleton,

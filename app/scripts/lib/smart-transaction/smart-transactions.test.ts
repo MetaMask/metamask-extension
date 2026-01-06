@@ -136,7 +136,6 @@ function withRequest<ReturnValue>(
     messenger: smartTransactionsControllerMessenger,
     actions: [
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
     ],

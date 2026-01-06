@@ -127,7 +127,7 @@ const Container = ({
       className="delineator__wrapper"
       display={Display.Flex}
       flexDirection={FlexDirection.Column}
-      backgroundColor={BackgroundColor.backgroundDefault}
+      backgroundColor={BackgroundColor.backgroundSection}
       borderRadius={BorderRadius.LG}
       {...wrapperBoxProps}
     >
