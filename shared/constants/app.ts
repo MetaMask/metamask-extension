@@ -1,5 +1,6 @@
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
 import { RestrictedMethods } from './permissions';
+import browser from 'webextension-polyfill';
 
 /**
  * A string representing the type of environment the application is currently running in
@@ -91,7 +92,8 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 
-export const ORIGIN_METAMASK = 'metamask';
+// will return something like "chrome-extension://<extension-id>"
+export const ORIGIN_METAMASK = new URL(browser.runtime.getURL('')).origin;
 
 export const METAMASK_BETA_CHROME_ID = 'pbbkamfgmaedccnfkmjcofcecjhfgldn';
 export const METAMASK_PROD_CHROME_ID = 'nkbihfbeogaeaoehlefnkodbefgpgknn';
