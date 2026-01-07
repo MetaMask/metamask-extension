@@ -16,7 +16,7 @@ import yargs from 'yargs/yargs';
 import type { BenchmarkResults } from './types-generated';
 
 /** Gets current git commit hash, or 'unknown' if unavailable. */
-function getGitCommitHash(): string {
+export function getGitCommitHash(): string {
   try {
     return execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
   } catch {
@@ -25,7 +25,7 @@ function getGitCommitHash(): string {
 }
 
 /** Gets current git branch name, or 'local' if unavailable. */
-function getGitBranch(): string {
+export function getGitBranch(): string {
   try {
     return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
   } catch {
@@ -38,7 +38,9 @@ function getGitBranch(): string {
  *
  * @param value - The value to check.
  */
-function isStandardBenchmarkResult(value: unknown): value is BenchmarkResults {
+export function isStandardBenchmarkResult(
+  value: unknown,
+): value is BenchmarkResults {
   return (
     typeof value === 'object' &&
     value !== null &&
@@ -48,7 +50,7 @@ function isStandardBenchmarkResult(value: unknown): value is BenchmarkResults {
 }
 
 /** User action result with testTitle, persona and numeric timing metrics. */
-type UserActionResult = {
+export type UserActionResult = {
   testTitle: string;
   persona?: string;
   [key: string]: string | number | undefined;
@@ -59,7 +61,7 @@ type UserActionResult = {
  *
  * @param value - The value to check.
  */
-function isUserActionResult(value: unknown): value is UserActionResult {
+export function isUserActionResult(value: unknown): value is UserActionResult {
   if (typeof value !== 'object' || value === null) {
     return false;
   }
@@ -71,6 +73,22 @@ function isUserActionResult(value: unknown): value is UserActionResult {
   // Must have at least one numeric metric
   return Object.values(obj).some((v) => typeof v === 'number');
 }
+
+/**
+ * Helper to flatten an object with a prefix (e.g., 'benchmark.mean').
+ *
+ * @param obj - Object to flatten.
+ * @param prefix - Prefix for flattened keys.
+ * @returns Flattened object with prefixed keys.
+ */
+export const flatten = (
+  obj: Record<string, number> | undefined,
+  prefix: string,
+): Record<string, number> =>
+  Object.entries(obj || {}).reduce(
+    (acc, [key, val]) => ({ ...acc, [`${prefix}.${key}`]: val }),
+    {} as Record<string, number>,
+  );
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
@@ -116,13 +134,6 @@ async function main() {
     'ci.buildType': argv.buildType,
   };
 
-  // Helper to flatten an object with a prefix (e.g., 'benchmark.mean')
-  const flatten = (obj: Record<string, number> | undefined, prefix: string) =>
-    Object.entries(obj || {}).reduce(
-      (acc, [key, val]) => ({ ...acc, [`${prefix}.${key}`]: val }),
-      {} as Record<string, number>,
-    );
-
   for (const [name, value] of Object.entries(results)) {
     if (isStandardBenchmarkResult(value)) {
       // Flatten benchmark metrics with prefixes for queryability
@@ -155,10 +166,16 @@ async function main() {
     }
   }
 
-  await Sentry.flush(10000);
-  console.log(
-    `✅ Successfully sent benchmark results to Sentry (${Object.keys(results).length} benchmarks)`,
-  );
+  const flushed = await Sentry.flush(10000);
+  if (flushed) {
+    console.log(
+      `✅ Successfully sent benchmark results to Sentry (${Object.keys(results).length} benchmarks)`,
+    );
+  } else {
+    console.warn(
+      `⚠️ Sentry flush timed out - some benchmark results may not have been sent`,
+    );
+  }
 }
 
 main().catch((error) => {
