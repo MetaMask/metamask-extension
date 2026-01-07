@@ -32,31 +32,46 @@ function SenderAddress({
   onSenderClick,
   senderAddress,
   warnUserOnAccountMismatch,
+  disableCopy = false,
 }) {
   const t = useI18nContext();
   const [addressCopied, setAddressCopied] = useState(false);
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = addressOnly ? (
-      <p>{t('copyAddress')}</p>
-    ) : (
-      <p>
-        {shortenAddress(checksummedSenderAddress)}
-        <br />
-        {t('copyAddress')}
-      </p>
-    );
+
+  // Only show copy tooltip if copy is enabled
+  let tooltipHtml = null;
+  if (!disableCopy) {
+    if (addressCopied) {
+      tooltipHtml = <p>{t('copiedExclamation')}</p>;
+    } else {
+      tooltipHtml = addressOnly ? (
+        <p>{t('copyAddress')}</p>
+      ) : (
+        <p>
+          {shortenAddress(checksummedSenderAddress)}
+          <br />
+          {t('copyAddress')}
+        </p>
+      );
+    }
   }
-  return (
-    <div
-      className="sender-to-recipient__party sender-to-recipient__party--sender gap-1"
-      onClick={() => {
+
+  const handleClick = disableCopy
+    ? undefined
+    : () => {
         setAddressCopied(true);
         copyToClipboard(checksummedSenderAddress, COPY_OPTIONS);
         if (onSenderClick) {
           onSenderClick();
         }
-      }}
+      };
+
+  return (
+    <div
+      className={classnames(
+        'sender-to-recipient__party sender-to-recipient__party--sender gap-1',
+        { 'sender-to-recipient__party--disabled': disableCopy },
+      )}
+      onClick={handleClick}
     >
       <PreferredAvatar
         address={toChecksumHexAddress(senderAddress)}
@@ -65,6 +80,7 @@ function SenderAddress({
       <Tooltip
         position="bottom"
         html={tooltipHtml}
+        disabled={disableCopy}
         wrapperClassName="sender-to-recipient__tooltip-wrapper"
         containerClassName="sender-to-recipient__tooltip-container"
         onHidden={() => setAddressCopied(false)}
@@ -93,6 +109,7 @@ SenderAddress.propTypes = {
   senderAddress: PropTypes.string,
   onSenderClick: PropTypes.func,
   warnUserOnAccountMismatch: PropTypes.bool,
+  disableCopy: PropTypes.bool,
 };
 
 export function RecipientWithAddress({
@@ -103,22 +120,41 @@ export function RecipientWithAddress({
   recipientIsOwnedAccount,
   chainId,
   className = '',
+  disableCopy = false,
+  showFullName = false,
+  hideTooltip = false,
 }) {
   const t = useI18nContext();
   const [addressCopied, setAddressCopied] = useState(false);
 
-  let tooltipHtml = <p>{t('copiedExclamation')}</p>;
-  if (!addressCopied) {
-    tooltipHtml = addressOnly ? (
-      <p>{t('copyAddress')}</p>
-    ) : (
-      <p>
-        {shortenAddress(checksummedRecipientAddress)}
-        <br />
-        {t('copyAddress')}
-      </p>
-    );
+  // Only show copy tooltip if copy is enabled
+  let tooltipHtml = null;
+  if (!disableCopy) {
+    if (addressCopied) {
+      tooltipHtml = <p>{t('copiedExclamation')}</p>;
+    } else {
+      tooltipHtml = addressOnly ? (
+        <p>{t('copyAddress')}</p>
+      ) : (
+        <p>
+          {shortenAddress(checksummedRecipientAddress)}
+          <br />
+          {t('copyAddress')}
+        </p>
+      );
+    }
   }
+
+  const handleClick = disableCopy
+    ? undefined
+    : () => {
+        if (recipientIsOwnedAccount) {
+          setAddressCopied(true);
+          copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
+        } else if (onRecipientClick) {
+          onRecipientClick();
+        }
+      };
 
   return (
     <>
@@ -126,19 +162,13 @@ export function RecipientWithAddress({
         className={classnames(
           'sender-to-recipient__party sender-to-recipient__party--recipient sender-to-recipient__party--recipient-with-address',
           className,
+          { 'sender-to-recipient__party--disabled': disableCopy },
         )}
-        onClick={() => {
-          if (recipientIsOwnedAccount) {
-            setAddressCopied(true);
-            copyToClipboard(checksummedRecipientAddress, COPY_OPTIONS);
-          } else if (onRecipientClick) {
-            onRecipientClick();
-          }
-        }}
+        onClick={handleClick}
       >
         <Tooltip
           position="bottom"
-          disabled={!recipientName}
+          disabled={hideTooltip || disableCopy || !recipientName}
           html={tooltipHtml}
           wrapperClassName="sender-to-recipient__tooltip-wrapper"
           containerClassName="sender-to-recipient__tooltip-container"
@@ -149,6 +179,7 @@ export function RecipientWithAddress({
             type={NameType.ETHEREUM_ADDRESS}
             variation={chainId}
             variant={TextVariant.BodyXs}
+            showFullName={showFullName}
           />
         </Tooltip>
       </div>
@@ -164,6 +195,11 @@ RecipientWithAddress.propTypes = {
   recipientIsOwnedAccount: PropTypes.bool,
   chainId: PropTypes.string,
   className: PropTypes.string,
+  disableCopy: PropTypes.bool,
+  /** Shows full recipient name without truncation */
+  showFullName: PropTypes.bool,
+  /** Hides the copy address tooltip */
+  hideTooltip: PropTypes.bool,
 };
 
 function Arrow({ variant }) {
@@ -196,6 +232,10 @@ export default function SenderToRecipient({
   warnUserOnAccountMismatch,
   recipientIsOwnedAccount,
   chainId,
+  disableSenderCopy = false,
+  disableRecipientCopy = false,
+  showFullRecipientName = false,
+  hideRecipientTooltip = false,
 }) {
   const t = useI18nContext();
   const checksummedSenderAddress = toChecksumHexAddress(senderAddress);
@@ -213,6 +253,7 @@ export default function SenderToRecipient({
         onSenderClick={onSenderClick}
         senderAddress={senderAddress}
         warnUserOnAccountMismatch={warnUserOnAccountMismatch}
+        disableCopy={disableSenderCopy}
       />
       <Arrow variant={variant} />
       {recipientAddress ? (
@@ -224,6 +265,9 @@ export default function SenderToRecipient({
           recipientName={recipientName}
           recipientIsOwnedAccount={recipientIsOwnedAccount}
           chainId={chainId}
+          disableCopy={disableRecipientCopy}
+          showFullName={showFullRecipientName}
+          hideTooltip={hideRecipientTooltip}
         />
       ) : (
         <div className="sender-to-recipient__party sender-to-recipient__party--recipient">
@@ -238,6 +282,10 @@ export default function SenderToRecipient({
 SenderToRecipient.defaultProps = {
   variant: DEFAULT_VARIANT,
   warnUserOnAccountMismatch: true,
+  disableSenderCopy: false,
+  disableRecipientCopy: false,
+  showFullRecipientName: false,
+  hideRecipientTooltip: false,
 };
 
 SenderToRecipient.propTypes = {
@@ -252,4 +300,12 @@ SenderToRecipient.propTypes = {
   warnUserOnAccountMismatch: PropTypes.bool,
   recipientIsOwnedAccount: PropTypes.bool,
   chainId: PropTypes.string,
+  /** Disables copy functionality for the sender (From) address */
+  disableSenderCopy: PropTypes.bool,
+  /** Disables copy functionality for the recipient (To) address */
+  disableRecipientCopy: PropTypes.bool,
+  /** Shows full recipient name without truncation */
+  showFullRecipientName: PropTypes.bool,
+  /** Hides the copy address tooltip for recipient */
+  hideRecipientTooltip: PropTypes.bool,
 };
