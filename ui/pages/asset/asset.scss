@@ -60,28 +60,13 @@
   margin-bottom: 28px;
   padding-right: 1rem;
   padding-left: 1rem;
+  display: flex;
+  flex-direction: column;
 }
 
 .asset-chart__empty-state-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  line-height: 20px;
-  border-radius: 1rem;
-  // TODO: Replace gradient hex colors with design tokens @MetaMask/metamask-assets - decorative empty state background
-  /* stylelint-disable color-no-hex */
-  background: linear-gradient(101.63deg, #e7f2f8 39.39%, #e9f2f9 44.98%, #ebf2fa 50.57%, #edf2fb 56.16%, #eff2fc 61.75%, #f0f2fd 67.35%, #f1f2fd 72.94%, #f2f2fe 78.53%, #f2f2fe 84.12%, #f3f2fe 89.71%, #f3f2ff 95.3%, #f4f2ff 100.89%, #f4f2ff 106.49%, #f4f2ff 112.08%, #f4f2ff 117.67%, #f4f2ff 123.26%, #f4f2ff 128.85%), linear-gradient(0deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.2));
-  /* stylelint-enable color-no-hex */
-  height: 100%;
-}
-
-.asset-chart__empty-state-illustration {
-  max-width: 134px;
-  max-height: 106px;
-  width: 21%;
-  height: 47%;
+  margin-top: -16px;
+  align-self: flex-start;
 }
 
 .asset-chart__skeleton {

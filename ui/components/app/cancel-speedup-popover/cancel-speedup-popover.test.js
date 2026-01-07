@@ -9,7 +9,6 @@ import {
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockEstimates from '../../../../test/data/mock-estimates.json';
 import mockState from '../../../../test/data/mock-state.json';
-import { GasFeeContextProvider } from '../../../contexts/gasFee';
 import configureStore from '../../../store/store';
 import InfoTooltip from '../../ui/info-tooltip';
 import {
@@ -106,7 +105,7 @@ const render = (
   });
 
   return renderWithProvider(
-    <GasFeeContextProvider
+    <CancelSpeedupPopover
       transaction={{
         userFeeLevel: 'tenPercentIncreased',
         txParams: {
@@ -117,9 +116,7 @@ const render = (
       }}
       editGasMode={EditGasModes.cancel}
       {...props}
-    >
-      <CancelSpeedupPopover />
-    </GasFeeContextProvider>,
+    />,
     store,
   );
 };

@@ -273,7 +273,6 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
@@ -367,7 +366,6 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();

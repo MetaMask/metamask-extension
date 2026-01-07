@@ -3,10 +3,7 @@ import {
   CHAINID_DEFAULT_BLOCK_EXPLORER_HUMAN_READABLE_URL_MAP,
   CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP,
 } from '../../../../shared/constants/common';
-import {
-  MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP,
-  MultichainNetworks,
-} from '../../../../shared/constants/multichain/networks';
+import { MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP } from '../../../../shared/constants/multichain/networks';
 import { formatBlockExplorerAddressUrl } from '../../../../shared/lib/multichain/networks';
 
 export type BlockExplorerInfo = {
@@ -38,48 +35,20 @@ export const getBlockExplorerInfo = (
 
   // For multichain networks (Bitcoin, Solana), use CaipChainId for reliable detection
   if (chainId) {
-    // Bitcoin networks
-    if (
-      chainId === MultichainNetworks.BITCOIN ||
-      chainId === MultichainNetworks.BITCOIN_TESTNET ||
-      chainId === MultichainNetworks.BITCOIN_SIGNET
-    ) {
-      const blockExplorerFormatUrls =
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId];
-      if (blockExplorerFormatUrls) {
-        const explorerName = 'Blockstream';
-        const addressUrl = formatBlockExplorerAddressUrl(
-          blockExplorerFormatUrls,
-          address,
-        );
-        return {
-          addressUrl,
-          name: explorerName,
-          buttonText: t('viewAddressOnExplorer', [explorerName]),
-        };
-      }
-    }
-
-    // Solana networks
-    if (
-      chainId === MultichainNetworks.SOLANA ||
-      chainId === MultichainNetworks.SOLANA_DEVNET ||
-      chainId === MultichainNetworks.SOLANA_TESTNET
-    ) {
-      const blockExplorerFormatUrls =
-        MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId];
-      if (blockExplorerFormatUrls) {
-        const explorerName = 'Solscan';
-        const addressUrl = formatBlockExplorerAddressUrl(
-          blockExplorerFormatUrls,
-          address,
-        );
-        return {
-          addressUrl,
-          name: explorerName,
-          buttonText: t('viewAddressOnExplorer', [explorerName]),
-        };
-      }
+    // Non-EVM networks (Bitcoin, Solana, Tron)
+    const blockExplorerFormatUrls =
+      MULTICHAIN_NETWORK_BLOCK_EXPLORER_FORMAT_URLS_MAP[chainId];
+    if (blockExplorerFormatUrls) {
+      const { name: explorerName } = blockExplorerFormatUrls;
+      const addressUrl = formatBlockExplorerAddressUrl(
+        blockExplorerFormatUrls,
+        address,
+      );
+      return {
+        addressUrl,
+        name: explorerName,
+        buttonText: t('viewAddressOnExplorer', [explorerName]),
+      };
     }
   }
 

@@ -82,6 +82,10 @@ class SnapInteractiveDialog {
    * @returns The ISO string representation of the selected date and time.
    */
   async selectInDateTimePicker(day: number, hour: number, minute: number) {
+    const dateTimePicker = await this.driver.findElement(
+      selectors.exampleDateTimePicker,
+    );
+    await this.driver.scrollToElement(dateTimePicker);
     await this.driver.clickElement(selectors.exampleDateTimePicker);
 
     await this.#selectDateInPicker(day);
@@ -114,6 +118,10 @@ class SnapInteractiveDialog {
    * @returns The ISO string representation of the selected time.
    */
   async selectInTimePicker(hour: number, minute: number) {
+    const timePicker = await this.driver.findElement(
+      selectors.exampleTimePicker,
+    );
+    await this.driver.scrollToElement(timePicker);
     await this.driver.clickElement(selectors.exampleTimePicker);
 
     await this.#selectTimeInPicker(hour, minute);
@@ -137,6 +145,10 @@ class SnapInteractiveDialog {
    * @returns The ISO string representation of the selected date.
    */
   async selectInDatePicker(day: number) {
+    const datePicker = await this.driver.findElement(
+      selectors.exampleDatePicker,
+    );
+    await this.driver.scrollToElement(datePicker);
     await this.driver.clickElement(selectors.exampleDatePicker);
 
     await this.#selectDateInPicker(day);

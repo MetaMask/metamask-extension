@@ -14,6 +14,7 @@ import {
   type BridgeController,
   isCrossChain,
   isBitcoinChainId,
+  formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
 import { type CaipChainId, type Hex, isStrictHexString } from '@metamask/utils';
 import {
@@ -308,43 +309,51 @@ const PrepareBridgePage = ({
 
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
-    | undefined = useMemo(
-    () =>
-      selectedAccount?.address
-        ? {
-            srcTokenAddress: fromToken?.address,
-            destTokenAddress: toToken?.address,
-            srcTokenAmount: validatedFromValue,
-            srcChainId: fromChain?.chainId,
-            destChainId: toChain?.chainId,
-            // This override allows quotes to be returned when the rpcUrl is a forked network
-            // Otherwise quotes get filtered out by the bridge-api when the wallet's real
-            // balance is less than the tenderly balance
-            insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
-              ? true
-              : isInsufficientBalance,
-            slippage,
-            walletAddress: selectedAccount.address,
-            destWalletAddress: selectedDestinationAccount?.address,
-            gasIncluded: gasIncluded || gasIncluded7702,
-            gasIncluded7702,
-          }
+    | undefined = useMemo(() => {
+    const srcTokenAddress = fromToken?.address ?? fromToken?.assetId;
+    const destTokenAddress = toToken?.address ?? toToken?.assetId;
+
+    if (!selectedAccount?.address) {
+      return undefined;
+    }
+    return {
+      srcTokenAddress: srcTokenAddress
+        ? formatAddressToCaipReference(srcTokenAddress)
         : undefined,
-    [
-      fromToken?.address,
-      toToken?.address,
-      validatedFromValue,
-      fromChain?.chainId,
-      toChain?.chainId,
+      destTokenAddress: destTokenAddress
+        ? formatAddressToCaipReference(destTokenAddress)
+        : undefined,
+      srcTokenAmount: validatedFromValue,
+      srcChainId: fromChain?.chainId,
+      destChainId: toChain?.chainId,
+      // This override allows quotes to be returned when the rpcUrl is a forked network
+      // Otherwise quotes get filtered out by the bridge-api when the wallet's real
+      // balance is less than the tenderly balance
+      insufficientBal: providerConfig?.rpcUrl?.includes('localhost')
+        ? true
+        : isInsufficientBalance,
       slippage,
-      selectedAccount?.address,
-      selectedDestinationAccount?.address,
-      providerConfig?.rpcUrl,
-      gasIncluded,
+      walletAddress: selectedAccount.address,
+      destWalletAddress: selectedDestinationAccount?.address,
+      gasIncluded: gasIncluded || gasIncluded7702,
       gasIncluded7702,
-      isInsufficientBalance,
-    ],
-  );
+    };
+  }, [
+    fromToken?.address,
+    toToken?.address,
+    fromToken?.assetId,
+    toToken?.assetId,
+    validatedFromValue,
+    fromChain?.chainId,
+    toChain?.chainId,
+    slippage,
+    selectedAccount?.address,
+    selectedDestinationAccount?.address,
+    providerConfig?.rpcUrl,
+    gasIncluded,
+    gasIncluded7702,
+    isInsufficientBalance,
+  ]);
 
   // `useRef` is used here to manually memoize a function reference.
   // `useCallback` and React Compiler don't understand that `debounce` returns an inline function reference.
@@ -764,6 +773,9 @@ const PrepareBridgePage = ({
                 }}
                 needsDestinationAddress={
                   isToOrFromNonEvm && !selectedDestinationAccount
+                }
+                onOpenRecipientModal={() =>
+                  setIsDestinationAccountPickerOpen(true)
                 }
               />
             )}

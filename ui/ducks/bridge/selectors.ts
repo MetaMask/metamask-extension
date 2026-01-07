@@ -603,10 +603,7 @@ export const getFromTokenConversionRate = createSelector(
       const nativeAssetId = getNativeAssetForChainId(
         fromChain.chainId,
       )?.assetId;
-      const tokenAssetId = toAssetId(
-        fromToken.address,
-        formatChainIdToCaip(fromChain.chainId),
-      );
+      const tokenAssetId = toAssetId(fromToken.address, fromChain.chainId);
       const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
@@ -820,12 +817,12 @@ export const getValidationErrors = createDeepEqualSelector(
           !isGasless &&
           (isNativeAddress(fromToken.address)
             ? new BigNumber(nativeBalance)
-                .sub(activeQuote.totalMaxNetworkFee.amount)
+                .sub(activeQuote.totalNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)
                 .sub(minimumBalanceToUse)
                 .lte(0)
             : new BigNumber(nativeBalance).lte(
-                activeQuote.totalMaxNetworkFee.amount,
+                activeQuote.totalNetworkFee.amount,
               )),
       ),
       isInsufficientBalance:
