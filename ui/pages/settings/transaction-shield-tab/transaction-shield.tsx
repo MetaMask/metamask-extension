@@ -286,6 +286,7 @@ const TransactionShield = () => {
           variant={TextVariant.BodySm}
           color={TextColor.TextAlternative}
           className="flex items-center gap-1"
+          data-testid="shield-detail-payment-method"
         >
           {t('shieldTxDetails3DescriptionCryptoWithAccount', [
             displayedShieldSubscription.paymentMethod.crypto.tokenSymbol,
