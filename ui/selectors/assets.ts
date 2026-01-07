@@ -1313,10 +1313,13 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
 
 export const selectAccountSupportsNetworkFilter = createSelector(
   [getAssetsBySelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
-  (accountGroupAssets, enabledNetworks) =>
-    Object.keys(accountGroupAssets).some((chainId) =>
-      enabledNetworks.includes(chainId),
-    ),
+  (accountGroupAssets, enabledNetworks) => {
+    const accountChainIds = Object.keys(accountGroupAssets ?? {});
+    if (accountChainIds.length === 0) {
+      return true;
+    }
+    return accountChainIds.some((chainId) => enabledNetworks.includes(chainId));
+  },
 );
 
 export const getAssetsBySelectedAccountGroupWithTronResources =
