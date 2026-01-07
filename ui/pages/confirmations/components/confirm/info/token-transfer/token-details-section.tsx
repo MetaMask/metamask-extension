@@ -14,15 +14,8 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
-import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { OriginRow } from '../shared/transaction-details/transaction-details';
 import { NetworkRow } from '../shared/network-row/network-row';
-
-const nonNativeSendTransactionTypes = [
-  TransactionType.tokenMethodTransfer,
-  TransactionType.tokenMethodTransferFrom,
-  TransactionType.tokenMethodSafeTransferFrom,
-];
 
 export const TokenDetailsSection = () => {
   const t = useI18nContext();
@@ -35,22 +28,10 @@ export const TokenDetailsSection = () => {
   );
 
   const transactionType = transactionMeta.type as TransactionType;
-  const isSimulationError = Boolean(
-    transactionMeta.simulationData?.error?.code,
-  );
-  const balanceChangesResult = useBalanceChanges({
-    chainId,
-    simulationData: transactionMeta.simulationData,
-  });
-  const balanceChanges = balanceChangesResult.value;
-  const isSimulationEmpty = balanceChanges.length === 0;
 
   const shouldShowTokenRow =
     transactionType !== TransactionType.simpleSend &&
-    (showAdvancedDetails ||
-      isSimulationEmpty ||
-      nonNativeSendTransactionTypes.includes(transactionType) ||
-      isSimulationError);
+    (showAdvancedDetails || transactionMeta?.origin !== ORIGIN_METAMASK);
 
   const tokenRow = shouldShowTokenRow && (
     <ConfirmInfoRow

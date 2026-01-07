@@ -17,7 +17,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
-import { arrangeTestUtils } from './helpers';
+import { arrangeTestUtils, skipOnFirefox } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -33,6 +33,8 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
   it('adds accounts across multiple SRPs and sync them', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = async (server: Mockttp) => {

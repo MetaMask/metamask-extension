@@ -14,7 +14,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { mockAccountSync } from '../mocks';
 import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
-import { arrangeTestUtils } from './helpers';
+import { arrangeTestUtils, skipOnFirefox } from './helpers';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -25,6 +25,8 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
   it('gracefully handles adding accounts with balances and synced accounts', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = async (server: Mockttp) => {
