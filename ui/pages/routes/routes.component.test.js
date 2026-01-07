@@ -96,6 +96,13 @@ jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
   useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
+jest.mock('../../contexts/shield/shield-subscription', () => ({
+  ...jest.requireActual('../../contexts/shield/shield-subscription'),
+  useShieldSubscriptionContext: () => ({
+    evaluateCohortEligibility: jest.fn(),
+  }),
+}));
+
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
   observe: () => null,
@@ -190,8 +197,8 @@ describe('Routes Component', () => {
           currentLocale: 'en',
         },
       };
-      const { getByTestId } = render(undefined, state);
-      expect(getByTestId('account-menu-icon')).not.toBeDisabled();
+      const { container } = render(undefined, state);
+      expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
 });

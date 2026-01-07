@@ -58,9 +58,7 @@ const buildTokenData = (
       ? formatChainIdToCaip(chainId)
       : formatChainIdToHex(chainId),
     assetId:
-      'assetId' in token
-        ? token.assetId
-        : toAssetId(token.address, formatChainIdToCaip(chainId)),
+      'assetId' in token ? token.assetId : toAssetId(token.address, chainId),
   };
 
   if (isNativeAddress(token.address)) {

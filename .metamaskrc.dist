@@ -75,3 +75,6 @@ BLOCKAID_PUBLIC_KEY=
 
 ; Set this to `true` to enable Metamask Shield
 ; METAMASK_SHIELD_ENABLED='false'
+
+; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
+; FORCE_AUTH_MATCH_BUILD='false'
