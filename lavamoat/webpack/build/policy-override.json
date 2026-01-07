@@ -14,27 +14,74 @@
     },
     "@swc/core": {
       "packages": {
+        "@swc/core>@swc/core-darwin-x64": true,
+        "@swc/core>@swc/core-win32-x64-msvc": true,
+        "@swc/core>@swc/core-linux-x64-gnu": true,
+        "@swc/core>@swc/core-linux-x64-musl": true,
+        "@swc/core>@swc/core-win32-ia32-msvc": true,
+        "@swc/core>@swc/core-linux-arm-gnueabihf": true,
         "@swc/core>@swc/core-darwin-arm64": true,
-        "@swc/core>@swc/core-linux-x64-gnu": true
+        "@swc/core>@swc/core-linux-arm64-gnu": true,
+        "@swc/core>@swc/core-linux-arm64-musl": true,
+        "@swc/core>@swc/core-win32-arm64-msvc": true
       }
     },
+    "@swc/core>@swc/core-darwin-x64": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-x64-msvc": {
+      "native": true
+    },
     "@swc/core>@swc/core-linux-x64-gnu": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-x64-musl": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-ia32-msvc": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-arm-gnueabihf": {
       "native": true
     },
     "@swc/core>@swc/core-darwin-arm64": {
       "native": true
     },
+    "@swc/core>@swc/core-linux-arm64-gnu": {
+      "native": true
+    },
+    "@swc/core>@swc/core-linux-arm64-musl": {
+      "native": true
+    },
+    "@swc/core>@swc/core-win32-arm64-msvc": {
+      "native": true
+    },
     "@lydell/node-pty": {
       "packages": {
+        "@lydell/node-pty>@lydell/node-pty-darwin-x64": true,
         "@lydell/node-pty>@lydell/node-pty-darwin-arm64": true,
         "@lydell/node-pty>@lydell/node-pty-linux-x64": true,
-        "@lydell/node-pty>@lydell": true
+        "@lydell/node-pty>@lydell/node-pty-linux-arm64": true,
+        "@lydell/node-pty>@lydell/node-pty-win32-x64": true,
+        "@lydell/node-pty>@lydell/node-pty-win32-arm64": true
       }
+    },
+    "@lydell/node-pty>@lydell/node-pty-darwin-x64": {
+      "native": true
     },
     "@lydell/node-pty>@lydell/node-pty-darwin-arm64": {
       "native": true
     },
     "@lydell/node-pty>@lydell/node-pty-linux-x64": {
+      "native": true
+    },
+    "@lydell/node-pty>@lydell/node-pty-linux-arm64": {
+      "native": true
+    },
+    "@lydell/node-pty>@lydell/node-pty-win32-x64": {
+      "native": true
+    },
+    "@lydell/node-pty>@lydell/node-pty-win32-arm64": {
       "native": true
     },
     "webpack": {
