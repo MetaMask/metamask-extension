@@ -33,8 +33,18 @@ module.exports = function (api) {
         ),
         {
           pattern:
-            /^(@rive-app\/canvas\/rive\.wasm|@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?)$/u,
+            /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
+        },
+      ],
+      [
+        path.resolve(
+          __dirname,
+          'development/build/transforms/import-meta-url.js',
+        ),
+        {
+          pattern: /^@rive-app\/canvas\/rive\.wasm$/u,
+          rootPath: '/images/',
         },
       ],
     ],
