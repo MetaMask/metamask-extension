@@ -9,6 +9,7 @@
 
   &__divider {
     padding-inline: 16px;
+
     @include design-system.screen-sm-min {
       padding-inline: 0;
     }
