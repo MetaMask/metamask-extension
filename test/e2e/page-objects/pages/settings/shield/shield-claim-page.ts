@@ -51,6 +51,17 @@ export default class ShieldClaimPage {
   private readonly reimbursementWalletAddressInput =
     '[data-testid="shield-claim-reimbursement-wallet-address-input"]';
 
+  private readonly deleteDraftButton =
+    '[data-testid="shield-claim-delete-draft-button"]';
+
+  private readonly draftSavedToast = '[data-testid="claim-draft-saved-toast"]';
+
+  private readonly draftSavedToastCloseButton =
+    '[data-testid="claim-draft-saved-toast-banner-base"] button[aria-label="Close"]';
+
+  private readonly saveDraftButton =
+    '[data-testid="shield-claim-save-draft-button"]';
+
   private readonly submitButton = '[data-testid="shield-claim-submit-button"]';
 
   constructor(driver: Driver) {
@@ -96,6 +107,18 @@ export default class ShieldClaimPage {
     console.log(`Filling email: ${email}`);
     await this.driver.fill(this.emailInput, email);
   }
+
+  // async updateEmailAndFocusOut(email: string): Promise<void> {
+  //   console.log(`Updating email to: ${email}`);
+  //   await this.fillEmail(email);
+  //   await this.driver.clickElement(this.descriptionTextarea);
+  // }
+
+  // async updateDescriptionAndFocusOut(description: string): Promise<void> {
+  //   console.log(`Updating description to: ${description}`);
+  //   await this.fillDescription(description);
+  //   await this.driver.clickElement(this.emailInput);
+  // }
 
   /**
    * Fill in the impacted transaction hash field
@@ -320,5 +343,25 @@ export default class ShieldClaimPage {
   async clickBackButton(): Promise<void> {
     console.log('Clicking back button on claim detail page');
     await this.driver.clickElement(this.backButton);
+  }
+
+  async clickDeleteDraftButton(): Promise<void> {
+    console.log('Clicking delete draft button');
+    await this.driver.clickElement(this.deleteDraftButton);
+  }
+
+  async clickSaveDraftButton(): Promise<void> {
+    console.log('Clicking save draft button');
+    await this.driver.clickElement(this.saveDraftButton);
+  }
+
+  async checkDraftSavedToast(): Promise<void> {
+    console.log('Checking draft saved toast is displayed');
+    await this.driver.waitForSelector(this.draftSavedToast);
+  }
+
+  async closeDraftSavedToast(): Promise<void> {
+    console.log('Closing draft saved toast');
+    await this.driver.clickElementSafe(this.draftSavedToastCloseButton, 10000);
   }
 }

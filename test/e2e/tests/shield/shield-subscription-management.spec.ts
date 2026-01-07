@@ -172,6 +172,98 @@ describe('Shield Plan Stripe Integration', function () {
       );
     });
 
+    it.only('saves and manages draft claim successfully', async function () {
+      await withFixtures(
+        {
+          fixtures: createShieldFixture().build(),
+          title: this.test?.fullTitle(),
+          testSpecificMock: (mockServer: Mockttp) => {
+            const shieldMockttpService = new ShieldMockttpService();
+            return shieldMockttpService.setup(mockServer, {
+              isActiveUser: true,
+            });
+          },
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
+
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.waitForNetworkAndDOMReady();
+
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToTransactionShieldPage();
+
+          const shieldDetailPage = new ShieldDetailPage(driver);
+          await shieldDetailPage.checkPageIsLoaded();
+
+          await shieldDetailPage.clickSubmitCaseButton();
+
+          const shieldClaimsListPage = new ShieldClaimsListPage(driver);
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickSubmitClaimButton();
+
+          const shieldClaimPage = new ShieldClaimPage(driver);
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillForm({
+            email: MOCK_CLAIM_2.email,
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            chainId: '0x1',
+            impactedTxnHash: MOCK_CLAIM_2.impactedTxHash,
+            impactedWalletName: 'Account 1',
+            description: MOCK_CLAIM_2.description,
+            uploadTestFile: true,
+          });
+
+          await shieldClaimPage.clickSaveDraftButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkDraftSectionDisplayed();
+          await shieldClaimsListPage.checkDraftClaimExists();
+          await shieldClaimsListPage.clickDraftClaim();
+
+          await shieldClaimPage.checkPageIsLoaded();
+
+          await shieldClaimPage.fillEmail('updated@example.com');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.closeDraftSavedToast();
+
+          await shieldClaimPage.selectImpactedWalletName('Account 1');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.closeDraftSavedToast();
+
+          await shieldClaimPage.selectNetwork('0x1');
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.closeDraftSavedToast();
+
+          await shieldClaimPage.fillDescription('Updated description');
+          await shieldClaimPage.clickBackButton();
+
+          await shieldClaimPage.checkDraftSavedToast();
+          await shieldClaimPage.closeDraftSavedToast();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.clickDraftClaim();
+
+          await shieldClaimPage.checkPageIsLoaded();
+          await shieldClaimPage.verifyClaimData({
+            email: 'updated@example.com',
+            reimbursementWalletAddress: MOCK_CLAIM_2.reimbursementWalletAddress,
+            impactedTxHash: MOCK_CLAIM_2.impactedTxHash,
+            description: 'Updated description',
+          });
+
+          await shieldClaimPage.clickDeleteDraftButton();
+
+          await shieldClaimsListPage.checkPageIsLoaded();
+          await shieldClaimsListPage.checkDraftClaimDeleted();
+        },
+      );
+    });
+
     it('displays error when transaction is not eligible', async function () {
       await withFixtures(
         {
