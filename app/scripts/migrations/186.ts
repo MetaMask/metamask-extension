@@ -59,6 +59,7 @@ function isValidNetworkConfiguration(object: unknown): object is {
 function hasValidNetworkController(
   state: Record<string, unknown>,
 ): state is Record<string, unknown> & {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   NetworkController: {
     networkConfigurationsByChainId: Record<string, unknown>;
   };
@@ -102,6 +103,7 @@ export async function migrate(
 
 function transformState(
   state: Record<string, unknown> & {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     NetworkController: {
       networkConfigurationsByChainId: Record<string, unknown>;
     };
