@@ -25,8 +25,8 @@ import {
   getApprovedAndSignedTransactions,
   smartTransactionsListSelector,
   getTransactions,
-  getAllNetworkTransactions,
   getUnapprovedTransactions,
+  getTransactionsByChainId,
   incomingTxListSelectorAllChains,
   selectedAddressTxListSelectorAllChain,
   transactionSubSelectorAllChains,
@@ -813,148 +813,6 @@ describe('Transaction Selectors', () => {
       const results = getApprovedAndSignedTransactions(state);
 
       expect(results).toStrictEqual([]);
-    });
-  });
-
-  describe('getAllNetworkTransactions', () => {
-    it('returns an empty array if there are no transactions', () => {
-      const state = {
-        metamask: {
-          transactions: [],
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual([]);
-    });
-
-    it('returns all transactions when there are multiple transactions', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-        {
-          id: 2,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.approved,
-          txParams: {
-            from: '0xAddress2',
-            to: '0xRecipient2',
-          },
-        },
-      ];
-
-      const state = {
-        metamask: {
-          transactions,
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual(transactions);
-    });
-
-    it('returns all transactions, preserving order when they have different statuses', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-        {
-          id: 2,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.signed,
-          txParams: {
-            from: '0xAddress2',
-            to: '0xRecipient2',
-          },
-        },
-        {
-          id: 3,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.unapproved,
-          txParams: {
-            from: '0xAddress3',
-            to: '0xRecipient3',
-          },
-        },
-      ];
-
-      const state = {
-        metamask: {
-          transactions,
-        },
-      };
-
-      const result = getAllNetworkTransactions(state);
-
-      expect(result).toStrictEqual(transactions);
-    });
-
-    it('returns the same reference when called multiple times with the same state', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-      ];
-      const state = {
-        metamask: { transactions },
-      };
-
-      const firstResult = getAllNetworkTransactions(state);
-      const secondResult = getAllNetworkTransactions(state);
-
-      // Both calls should return the same reference since the input hasn't changed.
-      expect(firstResult).toBe(secondResult);
-    });
-
-    it('returns the same result reference even when a new but deeply equal state is provided', () => {
-      const transactions = [
-        {
-          id: 1,
-          chainId: CHAIN_IDS.MAINNET,
-          status: TransactionStatus.submitted,
-          txParams: {
-            from: '0xAddress1',
-            to: '0xRecipient1',
-          },
-        },
-      ];
-      const state1 = {
-        metamask: { transactions },
-      };
-
-      // Create a new transactions array that is deeply equal to the original.
-      const newTransactions = JSON.parse(JSON.stringify(transactions));
-      const state2 = {
-        metamask: { transactions: newTransactions },
-      };
-
-      const result1 = getAllNetworkTransactions(state1);
-      const result2 = getAllNetworkTransactions(state2);
-
-      // If using deep equality in the selector, the result should be memoized
-      // and both references should be equal.
-      expect(result1).toBe(result2);
     });
   });
 
@@ -1821,6 +1679,145 @@ describe('Transaction Selectors', () => {
         3: state.metamask.transactions[2],
         4: state.metamask.transactions[3],
       });
+    });
+  });
+
+  describe('getTransactionsByChainId', () => {
+    it('returns transactions filtered by chainId', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([mainnetTx]);
+    });
+
+    it('returns empty array when no transactions match chainId', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when chainId is not provided', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [
+            {
+              id: 1,
+              chainId: CHAIN_IDS.MAINNET,
+              time: 100,
+              status: TransactionStatus.confirmed,
+            },
+          ],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, null);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('returns empty array when there are no transactions', () => {
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [],
+        },
+      };
+
+      const result = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('caches results for multiple chainIds via LRU cache', () => {
+      const mainnetTx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+      const goerliTx = {
+        id: 2,
+        chainId: CHAIN_IDS.GOERLI,
+        time: 200,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [mainnetTx, goerliTx],
+        },
+      };
+
+      // Call with different chainIds
+      const mainnetResult = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult).toStrictEqual([mainnetTx]);
+      expect(goerliResult).toStrictEqual([goerliTx]);
+
+      // Calling again should return cached results (same reference)
+      const mainnetResult2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const goerliResult2 = getTransactionsByChainId(state, CHAIN_IDS.GOERLI);
+
+      expect(mainnetResult2).toBe(mainnetResult);
+      expect(goerliResult2).toBe(goerliResult);
+    });
+
+    it('memoizes results when called with same state and chainId', () => {
+      const tx = {
+        id: 1,
+        chainId: CHAIN_IDS.MAINNET,
+        time: 100,
+        status: TransactionStatus.confirmed,
+      };
+
+      const state = {
+        metamask: {
+          ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
+          transactions: [tx],
+        },
+      };
+
+      const result1 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+      const result2 = getTransactionsByChainId(state, CHAIN_IDS.MAINNET);
+
+      // Should return same reference (memoized)
+      expect(result1).toBe(result2);
     });
   });
 });
