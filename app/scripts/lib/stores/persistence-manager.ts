@@ -33,15 +33,24 @@ export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
 
 /**
  * This Error represents an error that occurs during persistence operations.
- * It includes a backup of the state at the time of the error.
+ * It includes a backup of the state at the time of the error and optionally
+ * a reference to the original error that caused the persistence failure.
  */
 export class PersistenceError extends Error {
   backup: object | null;
 
-  constructor(message: string, backup: object | null) {
+  /**
+   * The original error that caused the persistence failure, if any.
+   * This is useful for debugging as it preserves the original error message
+   * (e.g., Firefox's "Error: An unexpected error occurred").
+   */
+  override cause?: Error;
+
+  constructor(message: string, backup: object | null, cause?: Error) {
     super(message);
     this.name = 'PersistenceError';
     this.backup = backup;
+    this.cause = cause;
   }
 }
 
@@ -475,49 +484,66 @@ export class PersistenceManager {
       STATE_LOCK,
       { mode: 'shared' },
       async () => {
-        let result: MetaMaskStorageStructure | null;
-        try {
-          result = await this.#localStore.get();
-        } catch (localStoreError) {
-          // browser.storage.local.get() failed entirely (e.g., Firefox file corruption,
-          // file ID mismatch, or structural database damage)
+        // Capture both error and result to handle them in a unified way
+        // This allows us to respect the validateVault flag consistently
+        const [localStoreError, result] = await this.#localStore
+          .get()
+          .then((res): [undefined, MetaMaskStorageStructure | null] => [
+            undefined,
+            res,
+          ])
+          .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+        // Log the error if one occurred, but don't throw yet
+        if (localStoreError) {
           log.error(
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
-
-          // Check if we have a backup - if so, trigger vault recovery flow
-          const backup = await this.getBackup();
-          if (backup && hasVault(backup)) {
-            log.info('Backup found with vault - triggering recovery flow');
-            throw new PersistenceError(MISSING_VAULT_ERROR, backup);
-          }
-
-          // No backup available - re-throw the original error
-          log.error('No backup available - cannot recover');
-          throw localStoreError;
         }
 
         if (validateVault) {
-          // if we don't have a vault
-          if (!hasVault(result?.data)) {
-            // check if we have a backup in IndexedDB. we need to throw an error
-            // so that the user can be prompted to recover it. if we don't,
-            // carry on as if everything is fine (it might be, or maybe we lost
-            // BOTH the primary and backup vaults -- yikes!)
+          // Check if we need to trigger vault recovery:
+          // 1. If localStore.get() failed entirely (e.g., Firefox database corruption)
+          // 2. If we got a result but the vault is missing
+          const needsVaultRecovery =
+            localStoreError !== undefined || !hasVault(result?.data);
+
+          if (needsVaultRecovery) {
+            // Check if we have a backup in IndexedDB. We need to throw an error
+            // so that the user can be prompted to recover it.
             const backup = await this.getBackup();
-            // this check verifies if we have any keys saved in our backup.
-            // we use this as a sigil to determine if we've ever saved a vault
-            // before.
+
+            // This check verifies if we have any keys saved in our backup.
+            // We use this as a sigil to determine if we've ever saved a vault before.
             if (
               backup &&
               Object.values(backup).some((value) => value !== undefined)
             ) {
-              // we've got some data (we haven't checked for a vault, as the
-              // background+UI are responsible for determining what happens now)
-              throw new PersistenceError(MISSING_VAULT_ERROR, backup);
+              log.info('Backup vault found in IndexedDB, triggering recovery');
+              // We've got some data (we haven't checked for a vault, as the
+              // background+UI are responsible for determining what happens now).
+              // Include the original error as cause for debugging purposes.
+              throw new PersistenceError(
+                MISSING_VAULT_ERROR,
+                backup,
+                localStoreError,
+              );
+            } else if (localStoreError) {
+              log.error(
+                'No backup vault available in IndexedDB, cannot recover',
+              );
+            } else {
+              log.info('No backup vault available in IndexedDB');
             }
           }
+        }
+
+        // If there was a storage error and we didn't trigger vault recovery
+        // (either validateVault was false or no backup was available),
+        // re-throw the original error
+        if (localStoreError) {
+          throw localStoreError;
         }
 
         if (isEmpty(result)) {

@@ -110,14 +110,14 @@ describe('PersistenceManager', () => {
 
   describe('get', () => {
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
-      mockStoreGet.mockReturnValueOnce({});
+      mockStoreGet.mockResolvedValueOnce({});
       const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
     it('returns undefined if store returns null', async () => {
-      mockStoreGet.mockReturnValueOnce(null);
+      mockStoreGet.mockResolvedValueOnce(null);
       const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
