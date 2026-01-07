@@ -420,6 +420,19 @@ describe('gator-permissions-utils', () => {
       });
     });
 
+    it('should return correct metadata for erc20-token-revocation', () => {
+      const result = getGatorPermissionDisplayMetadata(
+        'erc20-token-revocation',
+        {},
+      );
+
+      expect(result).toStrictEqual({
+        displayNameKey: 'revokeTokenApprovals',
+        amount: '',
+        frequencyKey: '',
+      });
+    });
+
     it('should return default metadata for unknown permission type', () => {
       const result = getGatorPermissionDisplayMetadata('unknown-type', {});
 

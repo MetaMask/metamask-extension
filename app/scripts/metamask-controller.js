@@ -76,6 +76,8 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
+  parseCaipAssetType,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -435,7 +437,6 @@ import {
 } from './controller-init/claims';
 import { ProfileMetricsControllerInit } from './controller-init/profile-metrics-controller-init';
 import { ProfileMetricsServiceInit } from './controller-init/profile-metrics-service-init';
-import { getQuotesForConfirmation } from './lib/dapp-swap/dapp-swap-util';
 
 export const METAMASK_CONTROLLER_EVENTS = {
   // Fired after state changes that impact the extension badge (unapproved msg count)
@@ -1017,30 +1018,8 @@ export default class MetamaskController extends EventEmitter {
                 this.txController.isAtomicBatchSupported.bind(
                   this.txController,
                 ),
-              validateSecurity: (securityAlertId, request, chainId) => {
-                // Code below to get quote is placed here as securityAlertId is not available in the middleware
-                // this needs to be cleaned up
-                // https://github.com/MetaMask/MetaMask-planning/issues/6345
-                getQuotesForConfirmation({
-                  req,
-                  fetchQuotes: this.controllerMessenger.call.bind(
-                    this.controllerMessenger,
-                    `${BRIDGE_CONTROLLER_NAME}:${BridgeBackgroundAction.FETCH_QUOTES}`,
-                  ),
-                  setDappSwapComparisonData:
-                    this.appStateController.setDappSwapComparisonData.bind(
-                      this.appStateController,
-                    ),
-                  getNetworkConfigurationByNetworkClientId:
-                    this.networkController.getNetworkConfigurationByNetworkClientId.bind(
-                      this.networkController,
-                    ),
-                  dappSwapMetricsFlag:
-                    this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-                      ?.dappSwapMetrics,
-                  securityAlertId,
-                });
-                return validateRequestWithPPOM({
+              validateSecurity: (securityAlertId, request, chainId) =>
+                validateRequestWithPPOM({
                   chainId,
                   ppomController: this.ppomController,
                   request,
@@ -1049,8 +1028,7 @@ export default class MetamaskController extends EventEmitter {
                     this.updateSecurityAlertResponse.bind(this),
                   getSecurityAlertsConfig:
                     this.getSecurityAlertsConfig.bind(this),
-                });
-              },
+                }),
               isAuxiliaryFundsSupported: (chainId) =>
                 ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
             },
@@ -1716,6 +1694,25 @@ export default class MetamaskController extends EventEmitter {
         if (account.address && account.address !== lastSelectedAddress) {
           lastSelectedAddress = account.address;
           await this._onAccountChange(account.address);
+        }
+      },
+    );
+
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:destinationTransactionCompleted',
+      (assetId) => {
+        const { chain } = parseCaipAssetType(assetId);
+
+        if (chain.namespace === KnownCaipNamespace.Eip155) {
+          const chainId = toHex(chain?.reference);
+
+          if (chainId) {
+            this.tokenDetectionController
+              .detectTokens({ chainIds: [chainId] })
+              .catch((err) => {
+                log.error('Error detecting tokens', { err });
+              });
+          }
         }
       },
     );
@@ -2926,6 +2923,18 @@ export default class MetamaskController extends EventEmitter {
         this.claimsController,
       ),
       getClaims: this.claimsController.getClaims.bind(this.claimsController),
+      saveClaimDraft: this.claimsController.saveOrUpdateClaimDraft.bind(
+        this.claimsController,
+      ),
+      getClaimDrafts: this.claimsController.getClaimDrafts.bind(
+        this.claimsController,
+      ),
+      deleteClaimDraft: this.claimsController.deleteClaimDraft.bind(
+        this.claimsController,
+      ),
+      deleteAllClaimDrafts: this.claimsController.deleteAllClaimDrafts.bind(
+        this.claimsController,
+      ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),

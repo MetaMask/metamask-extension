@@ -6,13 +6,14 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
+<<<<<<< HEAD
   getSelectedAccountGroupName,
   waitForElementById,
+=======
+>>>>>>> main
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 jest.setTimeout(20_000);
 
@@ -20,6 +21,11 @@ jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
   callBackgroundMethod: jest.fn(),
+}));
+
+jest.mock('../../../ui/selectors/selectors', () => ({
+  ...jest.requireActual('../../../ui/selectors/selectors'),
+  isGlobalNetworkSelectorRemoved: true,
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -78,9 +84,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-    }
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');
@@ -120,12 +123,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
-
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 5');
@@ -138,9 +135,15 @@ describe('NFTs list', () => {
   it('disables the filter list for the test networks', async () => {
     const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
+    // Use EVM network to match enabledNetworkMap structure
+    const withEvmNetwork = {
+      ...mockMetaMaskState,
+      selectedMultichainNetworkChainId: 'eip155:1',
+    };
+
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockMetaMaskState,
+        preloadedState: withEvmNetwork,
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -149,14 +152,8 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (isGlobalNetworkSelectorRemoved) {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
-      });
-    } else {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
-      });
-    }
+    await waitFor(() => {
+      expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
+    });
   });
 });

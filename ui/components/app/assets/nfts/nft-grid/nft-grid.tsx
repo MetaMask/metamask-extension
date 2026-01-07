@@ -123,6 +123,7 @@ export default function NftGrid({
     getScrollElement: () => scrollContainerRef?.current || null,
     estimateSize: () => 200,
     overscan: 5,
+    initialOffset: scrollContainerRef?.current?.scrollTop,
   });
 
   // Disable virtualization when scroll container is not available (e.g., in tests)
