@@ -31,6 +31,8 @@ class Confirmation {
 
   private navigationTitle: RawLocator;
 
+  private transactionSection: RawLocator;
+
   private nextPageButton: RawLocator;
 
   private previousPageButton: RawLocator;
@@ -47,6 +49,7 @@ class Confirmation {
     this.driver = driver;
 
     this.confirmationHeadingTitle = { text: 'Confirmation Dialog' };
+    this.transactionSection = '[data-testid="confirmation__transaction-flow"]';
     this.footerCancelButton = '[data-testid="confirm-footer-cancel-button"]';
     this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
     this.headerAccountDetailsButton =
@@ -64,6 +67,7 @@ class Confirmation {
       await this.driver.waitForMultipleSelectors([
         this.footerCancelButton,
         this.footerConfirmButton,
+        this.transactionSection,
       ]);
     } catch (e) {
       console.log(
@@ -73,12 +77,6 @@ class Confirmation {
       throw e;
     }
     console.log('Confirmation page is loaded');
-  }
-
-  async waitForSkeletonLoaderToDisappear() {
-    await this.driver.wait(
-      (until as any).elementIsNotPresent(this.skeletonLoader),
-    );
   }
 
   async clickScrollToBottomButton() {

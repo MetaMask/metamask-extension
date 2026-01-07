@@ -84,7 +84,6 @@ describe('Send ERC20', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
-        await confirmation.waitForSkeletonLoaderToDisappear();
         await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButton();
         await activityListPage.checkTransactionActivityByText('Sent');
