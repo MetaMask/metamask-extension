@@ -301,5 +301,3 @@ export default class GasFeeModal {
     }
   }
 }
-*** End Patch``` }>>assistantобавитель to=functions.apply_patch చేశారు_ERRORS'];?>
-

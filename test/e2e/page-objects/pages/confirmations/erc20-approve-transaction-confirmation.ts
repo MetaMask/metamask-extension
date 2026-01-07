@@ -100,5 +100,3 @@ class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {
 }
 
 export default ERC20ApproveTransactionConfirmation;
-
-

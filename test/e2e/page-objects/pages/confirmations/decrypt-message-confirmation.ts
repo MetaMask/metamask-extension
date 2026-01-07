@@ -75,5 +75,3 @@ class DecryptMessageConfirmation {
 }
 
 export default DecryptMessageConfirmation;
-
-

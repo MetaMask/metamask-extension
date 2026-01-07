@@ -140,5 +140,3 @@ export default class PermitConfirmation extends Confirmation {
     assert.ok(element, 'NFT Deadline element is missing or incorrect');
   }
 }
-
-

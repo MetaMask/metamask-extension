@@ -27,5 +27,3 @@ class AlertModal {
 }
 
 export default AlertModal;
-
-

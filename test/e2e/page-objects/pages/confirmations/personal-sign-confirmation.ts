@@ -60,5 +60,3 @@ export default class PersonalSignConfirmation extends Confirmation {
     await this.driver.waitForSelector(this.signatureHeadingTitle);
   }
 }
-
-

@@ -47,5 +47,3 @@ class AddTokenConfirmation {
 }
 
 export default AddTokenConfirmation;
-
-

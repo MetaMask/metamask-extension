@@ -40,5 +40,3 @@ class AccountDetailsModal extends Confirmation {
 }
 
 export default AccountDetailsModal;
-
-

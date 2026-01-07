@@ -43,5 +43,3 @@ class SetApprovalForAllTransactionConfirmation extends TransactionConfirmation {
 }
 
 export default SetApprovalForAllTransactionConfirmation;
-
-

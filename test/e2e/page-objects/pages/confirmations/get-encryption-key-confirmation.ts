@@ -63,5 +63,3 @@ class GetEncryptionKeyConfirmation {
 }
 
 export default GetEncryptionKeyConfirmation;
-
-

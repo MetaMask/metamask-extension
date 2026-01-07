@@ -24,5 +24,3 @@ class WatchAssetConfirmation {
 }
 
 export default WatchAssetConfirmation;
-
-

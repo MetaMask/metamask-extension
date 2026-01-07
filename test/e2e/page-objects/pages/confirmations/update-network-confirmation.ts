@@ -79,5 +79,3 @@ class UpdateNetworkConfirmation {
 }
 
 export default UpdateNetworkConfirmation;
-
-

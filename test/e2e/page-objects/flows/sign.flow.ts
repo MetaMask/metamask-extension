@@ -218,6 +218,9 @@ export const signPermitWithSnapAccount = async (
 
 /**
  * Sign typed data (eth_signTypedData) flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
  */
 export const signTypedData = async (
   driver: Driver,
@@ -235,6 +238,9 @@ export const signTypedData = async (
 
 /**
  * Sign typed data V3 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
  */
 export const signTypedDataV3 = async (
   driver: Driver,
@@ -252,6 +258,9 @@ export const signTypedDataV3 = async (
 
 /**
  * Sign typed data V4 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
  */
 export const signTypedDataV4 = async (
   driver: Driver,

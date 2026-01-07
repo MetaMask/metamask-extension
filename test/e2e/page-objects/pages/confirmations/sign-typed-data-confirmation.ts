@@ -107,5 +107,3 @@ export default class SignTypedData extends Confirmation {
     });
   }
 }
-
-

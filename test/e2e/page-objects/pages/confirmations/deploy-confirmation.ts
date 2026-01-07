@@ -33,5 +33,3 @@ class ContractDeploymentConfirmation extends Confirmation {
 }
 
 export default ContractDeploymentConfirmation;
-
-

@@ -57,5 +57,3 @@ class SnapTransactionConfirmation {
   }
 }
 export default SnapTransactionConfirmation;
-
-

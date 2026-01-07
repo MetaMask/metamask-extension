@@ -103,5 +103,3 @@ class TokenTransferTransactionConfirmation extends TransactionConfirmation {
 }
 
 export default TokenTransferTransactionConfirmation;
-*** End Patch
-

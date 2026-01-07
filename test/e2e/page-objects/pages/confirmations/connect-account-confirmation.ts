@@ -141,5 +141,3 @@ class ConnectAccountConfirmation {
 }
 
 export default ConnectAccountConfirmation;
-
-

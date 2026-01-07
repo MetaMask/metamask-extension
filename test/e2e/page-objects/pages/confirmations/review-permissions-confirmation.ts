@@ -95,5 +95,3 @@ class ReviewPermissionsConfirmation {
 }
 
 export default ReviewPermissionsConfirmation;
-
-

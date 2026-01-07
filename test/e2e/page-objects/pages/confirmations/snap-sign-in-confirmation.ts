@@ -57,5 +57,3 @@ class SnapSignInConfirmation {
   }
 }
 export default SnapSignInConfirmation;
-
-

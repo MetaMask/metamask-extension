@@ -57,5 +57,3 @@ export default class Eip7702AndSendCalls extends TransactionConfirmation {
     );
   }
 }
-
-

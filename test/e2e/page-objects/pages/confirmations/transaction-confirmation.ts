@@ -144,7 +144,7 @@ class TransactionConfirmation extends Confirmation {
 
     console.log(
       `Checking balance change ${css.toString()} with text ${displayAmount} is displayed on transaction confirmation page.`,
-      );
+    );
     await this.driver.findElement({
       css,
       text: displayAmount,
@@ -550,5 +550,3 @@ class TransactionConfirmation extends Confirmation {
 }
 
 export default TransactionConfirmation;
-
-

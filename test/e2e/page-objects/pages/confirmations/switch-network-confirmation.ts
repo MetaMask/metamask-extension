@@ -51,5 +51,3 @@ class SwitchNetworkConfirmation {
 }
 
 export default SwitchNetworkConfirmation;
-
-

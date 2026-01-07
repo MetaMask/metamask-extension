@@ -81,5 +81,3 @@ class AddNetworkConfirmation {
 }
 
 export default AddNetworkConfirmation;
-
-
