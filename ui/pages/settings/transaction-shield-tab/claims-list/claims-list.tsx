@@ -16,7 +16,7 @@ import {
   Icon,
 } from '@metamask/design-system-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Claim } from '@metamask/claims-controller';
+import { Claim, ClaimDraft } from '@metamask/claims-controller';
 import LoadingScreen from '../../../../components/ui/loading-screen';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
@@ -26,8 +26,8 @@ import { getShortDateFormatterV2 } from '../../../asset/util';
 import { ThemeType } from '../../../../../shared/constants/preferences';
 import { useTheme } from '../../../../hooks/useTheme';
 import { CLAIMS_TAB_KEYS, ClaimsTabKey } from '../types';
-
-const MAX_PENDING_CLAIMS = 3;
+import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
+import { MAX_DRAFT_CLAIMS, MAX_PENDING_CLAIMS } from '../claims-form/constants';
 
 const ClaimsList = () => {
   const t = useI18nContext();
@@ -36,6 +36,7 @@ const ClaimsList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { pendingClaims, completedClaims, rejectedClaims, isLoading } =
     useClaims();
+  const { drafts } = useClaimDraft();
 
   const [defaultTab] = useState(() => {
     const tabParam = searchParams.get('tab');
@@ -57,23 +58,44 @@ const ClaimsList = () => {
   }, [searchParams, setSearchParams]);
 
   const claimItem = useCallback(
-    (claim: Claim, tabKey: ClaimsTabKey) => {
-      const formattedDate = getShortDateFormatterV2().format(
-        new Date(claim.createdAt),
-      );
+    (claimData: Claim | ClaimDraft, tabKey: ClaimsTabKey, isDraft = false) => {
+      let formattedDate = '';
+
+      if (isDraft) {
+        const updatedAt = (claimData as ClaimDraft).updatedAt ?? null;
+        if (updatedAt) {
+          formattedDate = t('shieldClaimsLastEdited', [
+            getShortDateFormatterV2().format(new Date(updatedAt)),
+          ]);
+        }
+      } else {
+        formattedDate = getShortDateFormatterV2().format(
+          new Date((claimData as Claim).createdAt),
+        );
+      }
+
+      const id = isDraft
+        ? (claimData as ClaimDraft).draftId
+        : (claimData as Claim).id;
       return (
         <Box
           asChild
-          key={claim.id}
-          data-testid={`claim-item-${claim.id}`}
+          key={id}
+          data-testid={`claim-item-${id}`}
           backgroundColor={BoxBackgroundColor.BackgroundSection}
           className="claim-item flex items-center justify-between w-full p-4 rounded-lg"
           onClick={() => {
-            const viewRoute =
-              tabKey === CLAIMS_TAB_KEYS.PENDING
-                ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
-                : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
-            navigate(`${viewRoute}/${claim.id}`);
+            if (isDraft) {
+              navigate(
+                `${TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL}/${id}`,
+              );
+            } else {
+              const viewRoute =
+                tabKey === CLAIMS_TAB_KEYS.PENDING
+                  ? TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL
+                  : TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL;
+              navigate(`${viewRoute}/${id}`);
+            }
           }}
         >
           <button>
@@ -83,7 +105,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [claim.shortId])}
+                {t('shieldClaimsNumber', [id])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -104,6 +126,37 @@ const ClaimsList = () => {
       );
     },
     [navigate, t],
+  );
+
+  const claimsGroup = useCallback(
+    (groupDetails: {
+      title: string;
+      claims: Claim[] | ClaimDraft[];
+      tabKey: ClaimsTabKey;
+      isDraft?: boolean;
+    }) => {
+      return (
+        <Box>
+          <Text
+            variant={TextVariant.HeadingSm}
+            fontWeight={FontWeight.Medium}
+            className="mb-3"
+          >
+            {groupDetails.title}
+          </Text>
+          <Box className="flex flex-col gap-2">
+            {groupDetails.claims.map((claim) =>
+              claimItem(
+                claim,
+                groupDetails.tabKey,
+                groupDetails.isDraft ?? false,
+              ),
+            )}
+          </Box>
+        </Box>
+      );
+    },
+    [claimItem],
   );
 
   const emptyClaimsView = useCallback(
@@ -181,30 +234,33 @@ const ClaimsList = () => {
         className="flex-1 px-4 py-2"
         tabKey="pending"
       >
-        {pendingClaims.length > 0 ? (
+        {pendingClaims.length > 0 || drafts.length > 0 ? (
           <Box className="h-full flex flex-col justify-between">
             <Box className="flex-1 overflow-y-auto">
               <Box padding={4} className="flex flex-col gap-4">
                 {/* Active claims */}
-                <Box>
-                  <Text
-                    variant={TextVariant.HeadingSm}
-                    fontWeight={FontWeight.Medium}
-                    className="mb-3"
-                  >
-                    {t('shieldClaimGroupActive')}
-                  </Text>
-                  <Box className="flex flex-col gap-2">
-                    {pendingClaims.map((claim) =>
-                      claimItem(claim, CLAIMS_TAB_KEYS.PENDING),
-                    )}
-                  </Box>
-                </Box>
+                {pendingClaims.length > 0 &&
+                  claimsGroup({
+                    title: t('shieldClaimGroupActive'),
+                    claims: pendingClaims,
+                    tabKey: CLAIMS_TAB_KEYS.PENDING,
+                  })}
+                {/* Draft claims */}
+                {drafts.length > 0 &&
+                  claimsGroup({
+                    title: t('shieldClaimGroupDrafts'),
+                    claims: drafts,
+                    tabKey: CLAIMS_TAB_KEYS.PENDING,
+                    isDraft: true,
+                  })}
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
                 >
-                  {t('shieldClaimGroupActiveNote', [MAX_PENDING_CLAIMS])}
+                  {t('shieldClaimGroupActiveNote', [
+                    MAX_DRAFT_CLAIMS,
+                    MAX_PENDING_CLAIMS,
+                  ])}
                 </Text>
               </Box>
             </Box>
@@ -235,39 +291,19 @@ const ClaimsList = () => {
         {completedClaims.length > 0 || rejectedClaims.length > 0 ? (
           <Box padding={4} className="flex flex-col gap-4">
             {/* Completed claims */}
-            {completedClaims.length > 0 && (
-              <Box>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                  className="mb-3"
-                >
-                  {t('shieldClaimGroupCompleted')}
-                </Text>
-                <Box className="flex flex-col gap-2">
-                  {completedClaims.map((claim) =>
-                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
-                  )}
-                </Box>
-              </Box>
-            )}
+            {completedClaims.length > 0 &&
+              claimsGroup({
+                title: t('shieldClaimGroupCompleted'),
+                claims: completedClaims,
+                tabKey: CLAIMS_TAB_KEYS.HISTORY,
+              })}
             {/* Rejected claims */}
-            {rejectedClaims.length > 0 && (
-              <Box>
-                <Text
-                  variant={TextVariant.HeadingSm}
-                  fontWeight={FontWeight.Medium}
-                  className="mb-3"
-                >
-                  {t('shieldClaimGroupRejected')}
-                </Text>
-                <Box className="flex flex-col gap-2">
-                  {rejectedClaims.map((claim) =>
-                    claimItem(claim, CLAIMS_TAB_KEYS.HISTORY),
-                  )}
-                </Box>
-              </Box>
-            )}
+            {rejectedClaims.length > 0 &&
+              claimsGroup({
+                title: t('shieldClaimGroupRejected'),
+                claims: rejectedClaims,
+                tabKey: CLAIMS_TAB_KEYS.HISTORY,
+              })}
           </Box>
         ) : (
           emptyClaimsView(CLAIMS_TAB_KEYS.HISTORY)
