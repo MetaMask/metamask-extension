@@ -1,3 +1,4 @@
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { maskObject } from '../../../shared/modules/object.utils';
 import ExtensionPlatform from '../platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from '../constants/sentry-state';
@@ -7,9 +8,12 @@ import { PersistenceManager } from './stores/persistence-manager';
 
 const platform = new ExtensionPlatform();
 
+const useFixtureStore =
+  process.env.IN_TEST &&
+  getManifestFlags().testing?.forceExtensionStore !== true;
 // This instance of `localStore` is used by Sentry to get the persisted state
 const sentryLocalStore = new PersistenceManager({
-  localStore: process.env.IN_TEST
+  localStore: useFixtureStore
     ? new FixtureExtensionStore()
     : new ExtensionStore(),
 });
@@ -26,6 +30,7 @@ globalThis.stateHooks.getPersistedState = async function () {
 const persistedStateMask = {
   data: SENTRY_BACKGROUND_STATE,
   meta: {
+    storageKind: true,
     version: true,
   },
 };

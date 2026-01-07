@@ -15,7 +15,7 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
-  getAllNetworkTransactions,
+  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from '../../../selectors/transactions';
@@ -43,6 +43,10 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  useEarliestNonceByChain,
+  isTransactionEarliestNonce,
+} from '../../../hooks/useEarliestNonceByChain';
 import {
   getAllEnabledNetworksForAllNamespaces,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -455,7 +459,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress &&
     groupEvmAddress !== selectedAccount?.address?.toLowerCase();
 
-  const allTransactions = useSelector(getAllNetworkTransactions);
+  const allTransactions = useSelector(getTransactions);
 
   const allSmartTransactionsState = useSelector(
     (state) => state.metamask.smartTransactionsState?.smartTransactions,
@@ -633,6 +637,24 @@ export default function UnifiedTransactionList({
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
 
+  // Extract pending EVM transaction groups for earliest nonce calculation
+  const pendingEvmTransactionGroups = useMemo(() => {
+    return unifiedActivityItems
+      .filter((item) => item.kind === TransactionKind.EVM)
+      .filter(
+        (item) =>
+          item.transactionGroup.primaryTransaction?.status in
+          PENDING_STATUS_HASH,
+      )
+      .map((item) => item.transactionGroup);
+  }, [unifiedActivityItems]);
+
+  // Calculate the earliest nonce for each chainId to properly determine which
+  // transaction can be sped up (only the transaction with the lowest nonce can unblock the queue)
+  const earliestNonceByChain = useEarliestNonceByChain(
+    pendingEvmTransactionGroups,
+  );
+
   useEffect(() => {
     stopIncomingTransactionPolling();
     startIncomingTransactionPolling();
@@ -702,11 +724,19 @@ export default function UnifiedTransactionList({
 
       // evm transaction
       const { transactionGroup } = item;
+      const { nonce, initialTransaction } = transactionGroup;
+      const chainId = initialTransaction?.chainId;
+      const isEarliestNonce = isTransactionEarliestNonce(
+        nonce,
+        chainId,
+        earliestNonceByChain,
+      );
+
       if (transactionGroup.initialTransaction?.isSmartTransaction) {
         return (
           <SmartTransactionListItem
             key={`${transactionGroup.nonce}:${index}`}
-            isEarliestNonce={index === 0}
+            isEarliestNonce={isEarliestNonce}
             smartTransaction={transactionGroup.initialTransaction}
             transactionGroup={transactionGroup}
             chainId={transactionGroup.initialTransaction.chainId}
@@ -716,13 +746,18 @@ export default function UnifiedTransactionList({
       return (
         <TransactionListItem
           key={`${transactionGroup.nonce}:${index}`}
-          isEarliestNonce={index === 0}
+          isEarliestNonce={isEarliestNonce}
           transactionGroup={transactionGroup}
           chainId={transactionGroup.initialTransaction.chainId}
         />
       );
     },
-    [bridgeHistoryItems, multichainNetworkConfig, toggleShowDetails],
+    [
+      bridgeHistoryItems,
+      multichainNetworkConfig,
+      toggleShowDetails,
+      earliestNonceByChain,
+    ],
   );
 
   // Remove transactions within each date group that are incoming transactions

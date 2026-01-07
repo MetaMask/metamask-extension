@@ -13,14 +13,12 @@ import {
 
 async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
 
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1,
           marketCap: 112500000,

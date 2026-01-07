@@ -20,6 +20,7 @@ jobs:
     name: Publish prerelease
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: pr-comment
     env:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}

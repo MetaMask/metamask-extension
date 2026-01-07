@@ -27,7 +27,6 @@
     "ui/ducks/**",
     "ui/selectors/**",
     "ui/store/**",
-    "ui/components/multichain/**",
     "ui/components/app/**",
     "shared/modules/selectors/**"
   ]

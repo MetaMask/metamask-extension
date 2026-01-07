@@ -6,12 +6,9 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
-  waitForElementById,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 jest.setTimeout(20_000);
 
@@ -83,9 +80,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-    }
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');
@@ -131,12 +125,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (!isGlobalNetworkSelectorRemoved) {
-      await waitForElementById('sort-by-networks');
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
-
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 5');
@@ -155,9 +143,15 @@ describe('NFTs list', () => {
 
     const accountName = account.metadata.name;
 
+    // Use EVM network to match enabledNetworkMap structure
+    const withEvmNetwork = {
+      ...mockMetaMaskState,
+      selectedMultichainNetworkChainId: 'eip155:1',
+    };
+
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockMetaMaskState,
+        preloadedState: withEvmNetwork,
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -166,14 +160,8 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    if (isGlobalNetworkSelectorRemoved) {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
-      });
-    } else {
-      await waitFor(() => {
-        expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
-      });
-    }
+    await waitFor(() => {
+      expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
+    });
   });
 });
