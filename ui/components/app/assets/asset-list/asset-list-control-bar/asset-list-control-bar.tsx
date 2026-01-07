@@ -209,7 +209,6 @@ const AssetListControlBar = ({
     allOpts,
     currentMultichainNetwork.network.chainId,
     dispatch,
-    enabledNetworksByNamespace,
     currentNamespaceNetworkCount,
   ]);
 
