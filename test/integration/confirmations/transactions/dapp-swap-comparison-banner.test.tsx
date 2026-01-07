@@ -40,9 +40,78 @@ const backgroundConnectionMocked = {
 };
 
 export const pendingTransactionId = 'dapp-swap-test-tx-id';
-export const pendingTransactionTime = new Date().getTime();
+export const pendingTransactionTime = 1700000000000;
 export const securityAlertId = 'dapp-swap-test-alert-id';
 export const requestId = 'dapp-swap-request-id';
+
+const getSelectedAccountAddress = () => {
+  const account =
+    mockMetaMaskState.internalAccounts.accounts[
+      mockMetaMaskState.internalAccounts
+        .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
+    ];
+  return account.address;
+};
+
+const createQuoteResponse = (overrides?: {
+  srcTokenAmount?: string;
+  destTokenAmount?: string;
+  minDestTokenAmount?: string;
+}) => ({
+  quote: {
+    requestId,
+    bridgeId: 'kyberswap',
+    srcChainId: 11155111,
+    destChainId: 11155111,
+    aggregator: 'kyberswap',
+    aggregatorType: 'AGG',
+    srcAsset: {
+      address: '0x0000000000000000000000000000000000000000',
+      chainId: 11155111,
+      symbol: 'ETH',
+      decimals: 18,
+      name: 'Ether',
+    },
+    srcTokenAmount: overrides?.srcTokenAmount ?? '299250000000000',
+    destAsset: {
+      address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+      chainId: 11155111,
+      symbol: 'USDC',
+      decimals: 6,
+      name: 'USDC',
+    },
+    destTokenAmount: overrides?.destTokenAmount ?? '896724',
+    minDestTokenAmount: overrides?.minDestTokenAmount ?? '878789',
+    walletAddress: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
+    destWalletAddress: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
+    feeData: {
+      metabridge: {
+        amount: '750000000000',
+        asset: {
+          address: '0x0000000000000000000000000000000000000000',
+          chainId: 11155111,
+          symbol: 'ETH',
+          decimals: 18,
+        },
+      },
+    },
+    slippage: 2,
+    priceData: {
+      totalFromAmountUsd: '0.886743',
+      totalToAmountUsd: '0.896724',
+    },
+  },
+  trade: {
+    chainId: 11155111,
+    to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
+    from: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
+    value: '0x110d9316ec000',
+    data: '0x5f575529',
+    gasLimit: 380004,
+    effectiveGas: 306661,
+  },
+  estimatedProcessingTimeInSeconds: 0,
+});
 
 const advancedDetailsMockedRequests = {
   getGasFeeTimeEstimate: {
@@ -140,115 +209,7 @@ const getMetaMaskStateWithDappSwap = ({
   dappSwapUiEnabled?: boolean;
   includeQuote?: boolean;
 }) => {
-  const quotes = includeQuote
-    ? [
-        {
-          quote: {
-            requestId:
-              '0x2c89709d46cfa5c1297d15f6138abbc6924cc3923b8e9242395211fd019ed54e',
-            bridgeId: 'kyberswap',
-            srcChainId: 11155111,
-            destChainId: 11155111,
-            aggregator: 'kyberswap',
-            aggregatorType: 'AGG',
-            srcAsset: {
-              address: '0x0000000000000000000000000000000000000000',
-              chainId: 11155111,
-              assetId: 'eip155:1/slip44:60',
-              symbol: 'ETH',
-              decimals: 18,
-              name: 'Ether',
-              coingeckoId: 'ethereum',
-              aggregators: [],
-              occurrences: 100,
-              iconUrl:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-              metadata: {},
-            },
-            srcTokenAmount: '299250000000000',
-            destAsset: {
-              address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              chainId: 11155111,
-              assetId:
-                'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-              symbol: 'USDC',
-              decimals: 6,
-              name: 'USDC',
-              coingeckoId: 'usd-coin',
-              aggregators: [
-                'metamask',
-                'oneInch',
-                'liFi',
-                'socket',
-                'rubic',
-                'squid',
-                'rango',
-                'sonarwatch',
-                'sushiSwap',
-                'pmm',
-                'bancor',
-              ],
-              occurrences: 13,
-              iconUrl:
-                'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48.png',
-              metadata: {
-                storage: {
-                  balance: 9,
-                  approval: 10,
-                },
-              },
-            },
-            destTokenAmount: '896724',
-            minDestTokenAmount: '878789',
-            walletAddress: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
-            destWalletAddress: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
-            feeData: {
-              metabridge: {
-                amount: '750000000000',
-                asset: {
-                  address: '0x0000000000000000000000000000000000000000',
-                  chainId: 11155111,
-                  assetId: 'eip155:1/slip44:60',
-                  symbol: 'ETH',
-                  decimals: 18,
-                  name: 'Ether',
-                  coingeckoId: 'ethereum',
-                  aggregators: [],
-                  occurrences: 100,
-                  iconUrl:
-                    'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-                  metadata: {},
-                },
-                quoteBpsFee: 25,
-                baseBpsFee: 87.5,
-              },
-            },
-            bridges: ['kyberswap'],
-            protocols: ['kyberswap'],
-            steps: [],
-            slippage: 2,
-            gasSponsored: false,
-            gasIncluded7702: false,
-            priceData: {
-              totalFromAmountUsd: '0.886743',
-              totalToAmountUsd: '0.896724',
-              priceImpact: '-0.013790273587080577',
-              totalFeeAmountUsd: '0.0022168575',
-            },
-          },
-          trade: {
-            chainId: 11155111,
-            to: '0x881D40237659C251811CEC9c364ef91dC08D300C',
-            from: '0xed4f01ebD67Bc3642e58B1bf7Dd98E8eDB9339a8',
-            value: '0x110d9316ec000',
-            data: '0x5f57552900000000000000000000000000000000000000000000000000000000000000800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000110d9316ec00000000000000000000000000000000000000000000000000000000000000000c000000000000000000000000000000000000000000000000000000000000000136b796265725377617046656544796e616d6963000000000000000000000000000000000000000000000000000000000000000000000000000000000000000d000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000001102a91f2f40000000000000000000000000000000000000000000000000000000000000d68c50000000000000000000000000000000000000000000000000000000000000120000000000000000000000000000000000000000000000000000000ae9f7bcc00000000000000000000000000f326e4de8f66a0bdc0970b79e0924e33c79f191500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000bc4e21fd0e9000000000000000000000000000000000000000000000000000000000000002000000000000000000000000063242a4ea82847b20e506b63b0e2e2eff0cc6cb0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000a000000000000000000000000000000000000000000000000000000000000007000000000000000000000000000000000000000000000000000000000000000900000000000000000000000000000000000000000000000000000000000000064000000000000000000001102a91f2f40000000000000000000001102a91f2f400000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000e00000000000000000000000000000000000000000000000000000000000000041bd350603366b625f157ed12d958e8e3a08e2fc8c18fcdc2d0ba916882555d9303a918e70def188aeca999a9b74b12657959106734bebaa60331d55c2b8e335a71b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000054000000000000000000000000074de5d4fcbf63e00296fd95d33236b97940166310000000000000000000000000000000000000000000000000000000000000140000000000000000000000000000000000000000000000000000000000000018000000000000000000001028ed7739b00000000000000000000011dc64c724d0000000000000000000001102a91f2f400000000000000000000000000000daed400000000000000000000000000000000000000000000010000000f42400000000000000000000000000000004f82e73edb06d29ff62c91ec8f5ff06571bdeb29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000029e8d608000000000000000000000000000000000000000000000000000000000000000520000000000000000000000000000000000000000000000000000000000000000161f598cd000000000000000020f91ab108962d7e3c7dbf97b9179592855ab3d70000000000000000000000000000000000000000000000000000000000000003000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000001a00000000000000000000000000000000000000000000000000000000000000300000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee80000000000000000000000011d6315000000000000000000001102a91f2f4000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000001102a91f2f4000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000008000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000c02aaa39b223fe8d0a0e5c4f27ead9083c756cc280000000000000000000000011d6315000000000000000000001102a91f2f4000000000000000000000000000000000000000000000000000000000000000060000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000001102a91f2f400d843eb3c0000000000010002121b20a953a964a774d7fcf046643ceb87d53cc7000000000000000000000000000000000000000000000000000000000000008000000000000000000000000063242a4ea82847b20e506b63b0e2e2eff0cc6cb00000000000000000000000000000000000000000000000000000000000000020000000000000000000000000476821016b300ed6ec0d30ef95d5a4409c50bb55000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb488000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000006000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee000000000000000000000000a0b86991c6218b36c1d19d4a2e9eb0ce3606eb480000000000000000000000000000000000000000000000000000000000000160000000000000000000000000000000000000000000000000000000000000018000000000000000000000000000000000000000000000000000000000000001a000000000000000000000000000000000000000000000000000000000000001c000000000000000000000000074de5d4fcbf63e00296fd95d33236b97940166310000000000000000000000000000000000000000000000000001102a91f2f40000000000000000000000000000000000000000000000000000000000000d68c5000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000001e000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000027b7b22536f75726365223a226d6574616d61736b222c22416d6f756e74496e555344223a22302e38383333343533353931313238313831222c22416d6f756e744f7574555344223a22302e38393436323234313536343437333635222c22526566657272616c223a22222c22466c616773223a302c22416d6f756e744f7574223a22383936373234222c2254696d657374616d70223a313736353833393839392c22526f7574654944223a2236353037393066302d393832302d346636662d383431632d3430626639346339363430323a66373938306538362d336265392d343639322d623161612d343138303434356530373039222c22496e74656772697479496e666f223a7b224b65794944223a2231222c225369676e6174757265223a2241554c4645374653424c454d746d624262624e62487934476b4d6775497a36696e4f396d2b4b6f2f3738686b4b3550556d6f4c542b5255483068375262673832387176314564776c62777772415a2b526b6b4b56516c467934454f425a772f4c7343534a4d3548786e5771536c44546f476c76465549596475463232704253764c4347443669736f6157784178363737796e7a6d432b2b75686668726b383673376b5a6476714f4f6f2f6441586e47774a7441516f47623048576166734e71473167435a6267707158304a696978424f5048446a4f6166526a414d61702f6c64484a796f326178486c7a4854556265437565476635464e6c64644b596b735751427736643458784b72677875664f7564674a7164575743447056524d48754d595a5649346a467a56747335732f7a622f53614264326b544e507a79456458456872566364346a6876777968414a724245436c547751773d3d227d7d00000000000000000000000000000000000000000000000000000000000000000051',
-            gasLimit: 380004,
-            effectiveGas: 306661,
-          },
-          estimatedProcessingTimeInSeconds: 0,
-        },
-      ]
-    : [];
+  const quotes = includeQuote ? [createQuoteResponse()] : [];
 
   return {
     ...mockMetaMaskState,
@@ -332,11 +293,11 @@ describe('DappSwapComparisonBanner', () => {
     jest.resetAllMocks();
     setupSubmitRequestToBackgroundMocks();
 
-    // Mock 4byte API for swap function signature
     const EXECUTE_SWAP_HEX_SIG = '0x3593564c';
+    const MINT_NFT_HEX_SIG = '0x3b4b1381';
     mock4byte(EXECUTE_SWAP_HEX_SIG);
+    mock4byte(MINT_NFT_HEX_SIG);
 
-    // Mock currency rate APIs
     mockCurrencyRateApis();
   });
 
@@ -351,14 +312,8 @@ describe('DappSwapComparisonBanner', () => {
   });
 
   it('displays the DappSwapComparisonBanner when dapp swap transaction is pending', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
     const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
-      accountAddress: account.address,
+      accountAddress: getSelectedAccountAddress(),
       includeQuote: true,
     });
 
@@ -374,8 +329,7 @@ describe('DappSwapComparisonBanner', () => {
     const metamaskSwapTab = await screen.findByTestId('metamask-swap-tab');
     expect(metamaskSwapTab).toBeInTheDocument();
 
-    const banner = document.querySelector('.dapp-swap_callout');
-    expect(banner).toBeInTheDocument();
+    expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
     expect(
       await screen.findByText(tEn('dappSwapAdvantageSaveOnly') as string),
     ).toBeInTheDocument();
@@ -408,14 +362,8 @@ describe('DappSwapComparisonBanner', () => {
   });
 
   it('does not display the banner when dappSwapMetrics feature flag is disabled', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
     const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
-      accountAddress: account.address,
+      accountAddress: getSelectedAccountAddress(),
       dappSwapMetricsEnabled: false,
       includeQuote: true,
     });
@@ -431,20 +379,12 @@ describe('DappSwapComparisonBanner', () => {
     expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
     expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
 
-    // Verify that the banner is not rendered
-    const banner = document.querySelector('.dapp-swap_callout');
-    expect(banner).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
   });
 
   it('hides the banner when close button is clicked', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
     const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
-      accountAddress: account.address,
+      accountAddress: getSelectedAccountAddress(),
       includeQuote: true,
     });
 
@@ -461,19 +401,14 @@ describe('DappSwapComparisonBanner', () => {
     });
     expect(banner).toBeInTheDocument();
 
-    // Verify banner callout is visible
-    expect(document.querySelector('.dapp-swap_callout')).toBeInTheDocument();
+    expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
 
-    // Click the close button
     await act(async () => {
       fireEvent.click(banner);
     });
 
-    // Verify banner is hidden
     await waitFor(() => {
-      expect(
-        document.querySelector('.dapp-swap_callout'),
-      ).not.toBeInTheDocument();
+      expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
     });
 
     // Verify tabs are still visible
@@ -482,14 +417,8 @@ describe('DappSwapComparisonBanner', () => {
   });
 
   it('switches between Market Rate and MetaMask Swap tabs', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
     const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
-      accountAddress: account.address,
+      accountAddress: getSelectedAccountAddress(),
       includeQuote: true,
     });
 
@@ -507,8 +436,7 @@ describe('DappSwapComparisonBanner', () => {
     expect(marketRateTab).toBeInTheDocument();
     expect(metamaskSwapTab).toBeInTheDocument();
 
-    // Verify banner is visible on Market Rate tab
-    expect(document.querySelector('.dapp-swap_callout')).toBeInTheDocument();
+    expect(screen.getByTestId('dapp-swap-banner')).toBeInTheDocument();
 
     await act(async () => {
       fireEvent.click(metamaskSwapTab);
@@ -534,15 +462,9 @@ describe('DappSwapComparisonBanner', () => {
   });
 
   it('does not display for contract interactions from other origins', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
     // Use a regular contract interaction from a non-allowlisted origin
     const nonSwapTransaction = getUnapprovedContractInteractionTransaction(
-      account.address,
+      getSelectedAccountAddress(),
       pendingTransactionId,
       pendingTransactionTime,
     );
@@ -552,7 +474,7 @@ describe('DappSwapComparisonBanner', () => {
       pendingApprovals: {
         [pendingTransactionId]: {
           id: pendingTransactionId,
-          origin: 'local:http://localhost:8086/', // Different origin
+          origin: 'https://example.com',
           time: pendingTransactionTime,
           type: ApprovalType.Transaction,
           requestData: {
@@ -565,7 +487,10 @@ describe('DappSwapComparisonBanner', () => {
       pendingApprovalCount: 1,
       transactions: [nonSwapTransaction],
       remoteFeatureFlags: {
-        dappSwapMetrics: { enabled: true },
+        dappSwapMetrics: {
+          enabled: true,
+          origins: ['https://metamask.github.io'],
+        },
         dappSwapUi: { enabled: true, threshold: 0.01 },
         dappSwapQa: { enabled: false },
       },
@@ -582,14 +507,52 @@ describe('DappSwapComparisonBanner', () => {
     expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
     expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
 
-    // Verify that the banner is not rendered
-    expect(
-      document.querySelector('.dapp-swap_callout'),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
 
     // Verify standard confirmation UI is displayed instead
     expect(
       await screen.findByText(tEn('confirmTitleTransaction') as string),
     ).toBeInTheDocument();
+  });
+
+  it('does not display the banner when dappSwapUi feature flag is disabled', async () => {
+    const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
+      accountAddress: getSelectedAccountAddress(),
+      dappSwapUiEnabled: false,
+      includeQuote: true,
+    });
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    // Verify that tabs are not rendered
+    expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
+
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
+  });
+
+  it('does not display the banner when no quotes are available', async () => {
+    const mockedMetaMaskState = getMetaMaskStateWithDappSwap({
+      accountAddress: getSelectedAccountAddress(),
+      includeQuote: false,
+    });
+
+    await act(async () => {
+      await integrationTestRender({
+        preloadedState: mockedMetaMaskState,
+        backgroundConnection: backgroundConnectionMocked,
+      });
+    });
+
+    // Verify that tabs are not rendered when no quotes available
+    expect(screen.queryByTestId('market-rate-tab')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('metamask-swap-tab')).not.toBeInTheDocument();
+
+    expect(screen.queryByTestId('dapp-swap-banner')).not.toBeInTheDocument();
   });
 });
