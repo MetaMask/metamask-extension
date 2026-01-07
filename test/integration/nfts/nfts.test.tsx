@@ -19,11 +19,6 @@ jest.mock('../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../ui/selectors/selectors', () => ({
-  ...jest.requireActual('../../../ui/selectors/selectors'),
-  isGlobalNetworkSelectorRemoved: true,
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 
 const backgroundConnectionMocked = {
