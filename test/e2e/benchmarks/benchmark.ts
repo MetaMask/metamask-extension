@@ -21,13 +21,13 @@ import {
   BenchmarkResults,
   Metrics,
   StatisticalResult,
-} from './types-generated';
+} from './utils/types';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
-} from './constants';
+} from './utils/constants';
 
 const ALL_PAGES = Object.values(PAGES);
 
