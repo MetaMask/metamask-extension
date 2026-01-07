@@ -6,11 +6,7 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
-<<<<<<< HEAD
   getSelectedAccountGroupName,
-  waitForElementById,
-=======
->>>>>>> main
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
