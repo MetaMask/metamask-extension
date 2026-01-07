@@ -14,12 +14,14 @@ jest.mock('../../../store/actions', () => ({
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
+const mockedActions = jest.mocked(actions);
+
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 
 const mockOnActionComplete = jest.fn();
 
-const renderImportAccount = (storeState = mockState) => {
+const renderImportAccount = (storeState: typeof mockState = mockState) => {
   const store = mockStore(storeState);
   return renderWithProvider(
     <ImportAccount onActionComplete={mockOnActionComplete} />,
@@ -78,7 +80,7 @@ describe('ImportAccount', () => {
         expect(getByTestId('file-input')).toBeInTheDocument();
       });
 
-      expect(actions.hideWarning).toHaveBeenCalled();
+      expect(mockedActions.hideWarning).toHaveBeenCalled();
     });
 
     it('hides warning when switching import types', () => {
@@ -87,16 +89,17 @@ describe('ImportAccount', () => {
       const dropdown = getByRole('combobox');
       fireEvent.change(dropdown, { target: { value: 'JSON File' } });
 
-      expect(actions.hideWarning).toHaveBeenCalled();
+      expect(mockedActions.hideWarning).toHaveBeenCalled();
     });
   });
 
   describe('private key import', () => {
     it('calls importNewAccount with private key strategy', async () => {
       const mockSelectedAddress = '0x1234567890abcdef';
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.resolve({ selectedAddress: mockSelectedAddress }),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.resolve({
+          selectedAddress: mockSelectedAddress,
+        })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -111,7 +114,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(actions.importNewAccount).toHaveBeenCalledWith(
+        expect(mockedActions.importNewAccount).toHaveBeenCalledWith(
           'privateKey',
           [testPrivateKey],
           '',
@@ -121,9 +124,10 @@ describe('ImportAccount', () => {
 
     it('calls onActionComplete on successful import', async () => {
       const mockSelectedAddress = '0x1234567890abcdef';
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.resolve({ selectedAddress: mockSelectedAddress }),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.resolve({
+          selectedAddress: mockSelectedAddress,
+        })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -143,9 +147,10 @@ describe('ImportAccount', () => {
     });
 
     it('displays warning when import fails without selected address', async () => {
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.resolve({ selectedAddress: null }),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.resolve({
+          selectedAddress: null,
+        })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -160,14 +165,15 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(actions.displayWarning).toHaveBeenCalled();
+        expect(mockedActions.displayWarning).toHaveBeenCalled();
       });
     });
 
     it('displays warning when import throws an error', async () => {
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(new Error('Invalid private key')),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(
+          new Error('Invalid private key'),
+        )) as unknown as ReturnType<typeof actions.importNewAccount>);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -182,7 +188,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(actions.displayWarning).toHaveBeenCalled();
+        expect(mockedActions.displayWarning).toHaveBeenCalled();
       });
     });
 
@@ -224,9 +230,10 @@ describe('ImportAccount', () => {
       const keyringError = new Error(
         'KeyringController - The account you are trying to import is a duplicate',
       );
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(keyringError),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(keyringError)) as unknown as ReturnType<
+        typeof actions.importNewAccount
+      >);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -241,7 +248,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(actions.displayWarning).toHaveBeenCalledWith(
+        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
           'The account you are trying to import is a duplicate',
         );
       });
@@ -249,9 +256,10 @@ describe('ImportAccount', () => {
 
     it('handles non-KeyringController errors normally', async () => {
       const regularError = new Error('Some other error');
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(regularError),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(regularError)) as unknown as ReturnType<
+        typeof actions.importNewAccount
+      >);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -266,7 +274,9 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(actions.displayWarning).toHaveBeenCalledWith('Some other error');
+        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
+          'Some other error',
+        );
       });
     });
 
@@ -274,9 +284,10 @@ describe('ImportAccount', () => {
       const keyringError = new Error(
         "KeyringController - t('importAccountErrorIsSRP')",
       );
-      actions.importNewAccount.mockReturnValue(() =>
-        Promise.reject(keyringError),
-      );
+      mockedActions.importNewAccount.mockReturnValue((() =>
+        Promise.reject(keyringError)) as unknown as ReturnType<
+        typeof actions.importNewAccount
+      >);
 
       const { getByLabelText, getByText } = renderImportAccount();
 
@@ -292,8 +303,9 @@ describe('ImportAccount', () => {
 
       await waitFor(() => {
         // The translateWarning function should process the i18n key
-        expect(actions.displayWarning).toHaveBeenCalled();
+        expect(mockedActions.displayWarning).toHaveBeenCalled();
       });
     });
   });
 });
+
