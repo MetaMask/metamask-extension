@@ -6,6 +6,10 @@ import {
   createScaffoldMiddleware,
   JsonRpcEngine,
 } from '@metamask/json-rpc-engine';
+import {
+  JsonRpcEngineV2,
+  asLegacyMiddleware,
+} from '@metamask/json-rpc-engine/v2';
 import { createEngineStream } from '@metamask/json-rpc-middleware-stream';
 import { ObservableStore } from '@metamask/obs-store';
 import { storeAsStream } from '@metamask/obs-store/dist/asStream';
@@ -2451,7 +2455,7 @@ export default class MetamaskController extends EventEmitter {
       scope,
       origin,
       tabId,
-      middleware: subscriptionManager.middleware,
+      middleware: asLegacyMiddleware(subscriptionManager.middleware),
     });
   }
 
@@ -7842,10 +7846,17 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(filterMiddleware);
-    engine.push(subscriptionManager.middleware);
-
-    engine.push(this.metamaskMiddleware);
+    engine.push(
+      asLegacyMiddleware(
+        JsonRpcEngineV2.create({
+          middleware: [
+            filterMiddleware,
+            subscriptionManager.middleware,
+            ...this.metamaskMiddleware,
+          ],
+        }),
+      ),
+    );
 
     engine.push(this.eip5792Middleware);
 
@@ -8012,7 +8023,7 @@ export default class MetamaskController extends EventEmitter {
       }),
     );
 
-    engine.push(this.metamaskMiddleware);
+    engine.push(asLegacyMiddleware(...this.metamaskMiddleware));
 
     engine.push(this.eip5792Middleware);
 
