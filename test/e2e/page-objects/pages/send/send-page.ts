@@ -17,11 +17,12 @@ class SendPage {
 
   private readonly hexDataInput = '[data-testid="send-hex-textarea"]';
 
-  // Note: Different send flows use different components:
-  // - Legacy flow: data-testid="ens-input"
-  // - New confirmations flow: placeholder="Enter or paste an address or name"
+  // Note: Different send flows use different placeholders:
+  // - Legacy flow: "Enter public address (0x) or domain name"
+  // - New confirmations flow: "Enter or paste an address or name"
+  // - Fallback: data-testid="ens-input"
   private readonly inputRecipient =
-    'input[placeholder="Enter or paste an address or name"], [data-testid="ens-input"]';
+    'input[placeholder="Enter public address (0x) or domain name"], input[placeholder="Enter or paste an address or name"], [data-testid="ens-input"]';
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
@@ -36,7 +37,11 @@ class SendPage {
     text: 'Invalid address',
   };
 
-  private readonly maxClearButton = '[data-testid="max-clear-button"]';
+  // Max button has data-testid in multichain flow, but only text in send redesign flow
+  private readonly maxClearButton = {
+    text: 'Max',
+    tag: 'button',
+  };
 
   private readonly qrScanButton = '[data-testid="ens-qr-scan-button"]';
 
@@ -103,7 +108,22 @@ class SendPage {
 
   async clickMaxClearButton(): Promise<void> {
     console.log('Clicking max/clear button');
-    await this.driver.clickElement(this.maxClearButton);
+    // Different flows have different max button implementations:
+    // - Multichain flow: data-testid="max-clear-button" (toggles Max/Clear)
+    // - Send redesign flow: text-based "Max" button
+    const dataTestIdSelector = '[data-testid="max-clear-button"]';
+
+    // Quick check (1s) to determine which flow we're in
+    const hasDataTestId = await this.driver.isElementPresentAndVisible(
+      dataTestIdSelector,
+      1000,
+    );
+
+    if (hasDataTestId) {
+      await this.driver.clickElement(dataTestIdSelector);
+    } else {
+      await this.driver.clickElement(this.maxClearButton);
+    }
   }
 
   async clickQrScanButton(): Promise<void> {
