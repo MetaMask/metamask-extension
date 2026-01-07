@@ -44,7 +44,8 @@
         "css-loader": true,
         "postcss-loader": true,
         "sass-loader": true,
-        "@lavamoat/webpack": true
+        "@lavamoat/webpack": true,
+        "react-compiler-webpack": true
       }
     },
     "webpack>loader-runner": {
@@ -54,7 +55,8 @@
         "css-loader": true,
         "postcss-loader": true,
         "sass-loader": true,
-        "@lavamoat/webpack": true
+        "@lavamoat/webpack": true,
+        "react-compiler-webpack": true
       }
     },
     "html-bundler-webpack-plugin": {
@@ -210,6 +212,77 @@
     "terser-webpack-plugin>jest-worker": {
       "packages": {
         "terser-webpack-plugin": true
+      }
+    },
+    "@babel/core": {
+      "builtin": {
+        "fs": true,
+        "path": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true,
+        "@babel/core>gensync": true,
+        "nock>debug": true,
+        "@babel/core>semver": true,
+        "@babel/core>@babel/helper-compilation-targets": true,
+        "@babel/core>@babel/template": true,
+        "@babel/core>@babel/parser": true,
+        "depcheck>@babel/traverse": true,
+        "@babel/core>@babel/generator": true
+      },
+      "globals": {
+        "process.versions": true,
+        "process.env": true
+      }
+    },
+    "react-compiler-webpack": {
+      "packages": {
+        "@babel/core": true,
+        "babel-plugin-react-compiler": true
+      }
+    },
+    "babel-plugin-react-compiler": {
+      "builtin": {
+        "path": true,
+        "tty": true,
+        "util": true,
+        "crypto": true
+      },
+      "packages": {
+        "@babel/core>@babel/types": true
+      },
+      "globals": {
+        "console": true,
+        "process": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets": {
+      "packages": {
+        "browserslist": true,
+        "@babel/preset-env>@babel/helper-validator-option": true,
+        "@babel/preset-env>@babel/compat-data": true,
+        "@babel/core>@babel/helper-compilation-targets>lru-cache": true,
+        "@babel/core>@babel/helper-compilation-targets>semver": true
+      },
+      "globals": {
+        "process.env": true,
+        "process.versions": true
+      }
+    },
+    "@babel/core>@babel/helper-compilation-targets>lru-cache": {
+      "packages": {
+        "@babel/core>@babel/helper-compilation-targets>lru-cache>yallist": true
+      }
+    },
+    "depcheck>@babel/traverse": {
+      "packages": {
+        "nock>debug": true,
+        "@babel/core>@babel/types": true,
+        "depcheck>@babel/traverse>@babel/helper-globals": true,
+        "@babel/core>@babel/generator": true,
+        "@babel/code-frame": true,
+        "@babel/core>@babel/parser": true,
+        "@babel/core>@babel/template": true
       }
     }
   }
