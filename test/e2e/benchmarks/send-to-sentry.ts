@@ -13,7 +13,7 @@ import { promises as fs } from 'fs';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
-import type { BenchmarkResults } from './types-generated';
+import type { BenchmarkResults, UserActionResult } from './types-generated';
 
 /** Gets current git commit hash, or 'unknown' if unavailable. */
 export function getGitCommitHash(): string {
@@ -31,47 +31,6 @@ export function getGitBranch(): string {
   } catch {
     return 'local';
   }
-}
-
-/**
- * Type guard for standard benchmark results (has mean/min/max/etc).
- *
- * @param value - The value to check.
- */
-export function isStandardBenchmarkResult(
-  value: unknown,
-): value is BenchmarkResults {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'mean' in value &&
-    typeof (value as BenchmarkResults).mean === 'object'
-  );
-}
-
-/** User action result with testTitle, persona and numeric timing metrics. */
-export type UserActionResult = {
-  testTitle: string;
-  persona?: string;
-  [key: string]: string | number | undefined;
-};
-
-/**
- * Type guard for user action results (has testTitle and at least one numeric metric).
- *
- * @param value - The value to check.
- */
-export function isUserActionResult(value: unknown): value is UserActionResult {
-  if (typeof value !== 'object' || value === null) {
-    return false;
-  }
-  const obj = value as Record<string, unknown>;
-  // Must have testTitle
-  if (typeof obj.testTitle !== 'string') {
-    return false;
-  }
-  // Must have at least one numeric metric
-  return Object.values(obj).some((v) => typeof v === 'number');
 }
 
 /**
@@ -117,7 +76,10 @@ async function main() {
   }
 
   const resultsJson = await fs.readFile(argv.results, 'utf-8');
-  const results: Record<string, unknown> = JSON.parse(resultsJson);
+  const results = JSON.parse(resultsJson) as Record<
+    string,
+    BenchmarkResults | UserActionResult
+  >;
 
   Sentry.init({
     dsn: SENTRY_DSN,
@@ -135,8 +97,8 @@ async function main() {
   };
 
   for (const [name, value] of Object.entries(results)) {
-    if (isStandardBenchmarkResult(value)) {
-      // Flatten benchmark metrics with prefixes for queryability
+    if ('mean' in value) {
+      // Standard benchmark result with statistical aggregations
       const benchmarkAttributes = {
         ...flatten(value.mean, 'benchmark.mean'),
         ...flatten(value.p75, 'benchmark.p75'),
@@ -149,8 +111,8 @@ async function main() {
         'ci.testTitle': value.testTitle,
         ...benchmarkAttributes,
       });
-    } else if (isUserActionResult(value)) {
-      // Extract numeric metrics only
+    } else {
+      // User action result with numeric timing metrics
       const metrics = Object.entries(value).reduce(
         (acc, [key, val]) =>
           typeof val === 'number' ? { ...acc, [key]: val } : acc,
