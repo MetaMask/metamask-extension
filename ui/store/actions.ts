@@ -525,10 +525,7 @@ export function getSubscriptions(): ThunkAction<
     } catch (error) {
       log.error('[getSubscriptions] error', error);
       captureException(
-        createSentryError(
-          'Failed to fetch subscriptions',
-          error,
-        ),
+        createSentryError('Failed to fetch subscriptions', error),
       );
       throw error;
     }
@@ -555,10 +552,7 @@ export function getSubscriptionPricing(): ThunkAction<
     } catch (error) {
       log.error('[getSubscriptionPricing] error', error);
       captureException(
-        createSentryError(
-          'Failed to fetch subscription pricing',
-          error,
-        ),
+        createSentryError('Failed to fetch subscription pricing', error),
       );
       throw error;
     }
@@ -8155,9 +8149,7 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
-    captureException(
-      createSentryError('Failed to submit shield claim', error),
-    );
+    captureException(createSentryError('Failed to submit shield claim', error));
     if (error instanceof SubmitClaimError) {
       throw error;
     }
