@@ -6,7 +6,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures } from '../../helpers';
+import { veryLargeDelayMs, withFixtures } from '../../helpers';
 import { mockSendRedesignFeatureFlag } from './common';
 
 describe('Send ERC20', function () {
@@ -47,9 +47,10 @@ describe('Send ERC20', function () {
         await sendPage.pressOnAmountInput('BACK_SPACE');
         await sendPage.pressContinueButton();
 
-        await confirmation.waitForSkeletonLoaderToDisappear();
         await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButton();
+
+        await driver.delay(veryLargeDelayMs);
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },
@@ -85,9 +86,10 @@ describe('Send ERC20', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
-        await confirmation.waitForSkeletonLoaderToDisappear();
         await confirmation.checkPageIsLoaded();
         await confirmation.clickFooterConfirmButton();
+
+        await driver.delay(veryLargeDelayMs);
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },

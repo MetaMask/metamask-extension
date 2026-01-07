@@ -75,13 +75,6 @@ class Confirmation {
     console.log('Confirmation page is loaded');
   }
 
-  async waitForSkeletonLoaderToDisappear() {
-    await this.driver.wait(async () => {
-      const skeletonLoader = await this.driver.findElement(this.skeletonLoader);
-      return skeletonLoader.isDisplayed();
-    });
-  }
-
   async clickScrollToBottomButton() {
     await this.driver.clickElementSafe(this.scrollToBottomButton);
   }
