@@ -20,8 +20,15 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
 import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import {
+  checkDelegationDisabled,
+  submitDirectRevocation,
+} from '../../store/controller-actions/gator-permissions-controller';
 import {
   useRevokeGatorPermissionsMultiChain,
   RevokeGatorPermissionsMultiChainResults,
@@ -40,6 +47,7 @@ jest.mock('@metamask/delegation-core', () => ({
 
 jest.mock('../../../shared/lib/delegation/delegation', () => ({
   encodeDisableDelegation: jest.fn(),
+  getDelegationHashOffchain: jest.fn(),
 }));
 
 jest.mock('../../../shared/lib/delegation', () => ({
@@ -53,6 +61,15 @@ jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
   getMemoizedInternalAccountByAddress: jest.fn(),
 }));
+
+jest.mock(
+  '../../store/controller-actions/gator-permissions-controller',
+  () => ({
+    addPendingRevocation: jest.fn(),
+    submitDirectRevocation: jest.fn(),
+    checkDelegationDisabled: jest.fn(),
+  }),
+);
 
 // Mock useConfirmationNavigation hook
 const mockNavigateToId = jest.fn();
@@ -79,10 +96,20 @@ const mockEncodeDisableDelegation =
   encodeDisableDelegation as jest.MockedFunction<
     typeof encodeDisableDelegation
   >;
+const mockGetDelegationHashOffchain =
+  getDelegationHashOffchain as jest.MockedFunction<
+    typeof getDelegationHashOffchain
+  >;
 const mockGetMemoizedInternalAccountByAddress =
   getMemoizedInternalAccountByAddress as jest.MockedFunction<
     typeof getMemoizedInternalAccountByAddress
   >;
+const mockCheckDelegationDisabled =
+  checkDelegationDisabled as jest.MockedFunction<
+    typeof checkDelegationDisabled
+  >;
+const mockSubmitDirectRevocation =
+  submitDirectRevocation as jest.MockedFunction<typeof submitDirectRevocation>;
 
 const mockStore = configureStore();
 
@@ -208,9 +235,12 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
 
     mockDecodeDelegations.mockReturnValue([mockDelegation]);
     mockEncodeDisableDelegation.mockReturnValue('0xencodedCallData' as Hex);
+    mockGetDelegationHashOffchain.mockReturnValue('0xdelegationhash' as Hex);
     mockFindNetworkClientIdByChainId.mockResolvedValue(
       mockNetworkClientId1 as never,
     );
+    // Default to false so transactions are created (delegation is not disabled)
+    mockCheckDelegationDisabled.mockResolvedValue(false);
   });
 
   const wrapper = ({ children }: { children: React.ReactNode }) => (
@@ -356,6 +386,37 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
       }
       expect(results[mockChainId1].skipped).toHaveLength(1);
       expect(results[mockChainId1].revoked).toHaveLength(0);
+    });
+
+    it('should call submitDirectRevocation without creating transaction when delegation is already disabled', async () => {
+      mockCheckDelegationDisabled.mockResolvedValue(true);
+
+      const { result } = renderHook(
+        () => useRevokeGatorPermissionsMultiChain(),
+        { wrapper },
+      );
+
+      const permissionsByChain = {
+        [mockChainId1]: [mockPermission1],
+      };
+
+      let results: RevokeGatorPermissionsMultiChainResults | undefined;
+      await act(async () => {
+        results =
+          await result.current.revokeGatorPermissionsBatchMultiChain(
+            permissionsByChain,
+          );
+      });
+
+      if (!results) {
+        throw new Error('Results should be defined');
+      }
+      expect(mockSubmitDirectRevocation).toHaveBeenCalledWith({
+        permissionContext: mockPermissionContext1,
+      });
+      expect(mockAddTransaction).not.toHaveBeenCalled();
+      expect(results[mockChainId1].revoked).toHaveLength(0);
+      expect(results[mockChainId1].errors).toHaveLength(0);
     });
 
     it('should handle empty permissionsByChain object', async () => {
