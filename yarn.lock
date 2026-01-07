@@ -6095,15 +6095,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/claims-controller@npm:^0.4.0":
-  version: 0.4.0
-  resolution: "@metamask/claims-controller@npm:0.4.0"
+"@metamask/claims-controller@npm:^0.4.1":
+  version: 0.4.1
+  resolution: "@metamask/claims-controller@npm:0.4.1"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.17.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.9.0"
-  checksum: 10/fec020d9911f86c8ef274ff46cacf5693143bfd8c1d042e3c9cfd4d0ce4575600a7c437ba1b6af7da9d7101933c42c4a0ffcb56e1cfefaad3098863a2589a53c
+  checksum: 10/3f6e49f4806dad0380ea5efeb4facc6882e579f3b2f0b9369e190bed19de994bca16092974c1c60852aa9c5d8b2b8a1b883dfb24423e7531550af16ff84c6837
   languageName: node
   linkType: hard
 
@@ -32820,7 +32820,7 @@ __metadata:
     "@metamask/browser-passworder": "npm:^6.0.0"
     "@metamask/build-utils": "npm:^3.0.0"
     "@metamask/chain-agnostic-permission": "npm:^1.3.0"
-    "@metamask/claims-controller": "npm:^0.4.0"
+    "@metamask/claims-controller": "npm:^0.4.1"
     "@metamask/contract-metadata": "npm:^2.5.0"
     "@metamask/controller-utils": "npm:^11.16.0"
     "@metamask/core-backend": "npm:^4.1.0"
