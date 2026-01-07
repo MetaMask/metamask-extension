@@ -243,7 +243,7 @@ const TransactionShield = () => {
   }, [displayedShieldSubscription, isTrialing]);
 
   const priceDetails = useMemo(() => {
-    if (!displayedShieldSubscription) {
+    if (!displayedShieldSubscription || !productInfo) {
       return '';
     }
     const isYearly =
