@@ -6230,41 +6230,18 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Η συνδρομή σας δεν είναι ενεργή όσο βρίσκεται σε παύση. Αν την ακυρώσετε, θα τερματιστεί άμεσα."
   },
-  "shieldTxDetails1Description": {
-    "message": "Εξασφαλίζει τα περιουσιακά στοιχεία σε προστατευμένες συναλλαγές"
-  },
   "shieldTxDetails1Title": {
     "message": "Προστασία συναλλαγών έως $10.000"
   },
   "shieldTxDetails2Description": {
-    "message": "Ταχύτερη και εξειδικευμένη υποστήριξη, οποιαδήποτε στιγμή"
+    "message": "Ταχύτερη και εξειδικευμένη υποστήριξη, οποιαδήποτε στιγμή",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "Υποστήριξη με προτεραιότητα"
   },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Σύνδεσμος"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Εγγραφή"
-  },
   "shieldTxMembershipActive": {
     "message": "Ενεργή συνδρομή"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Στοιχεία χρέωσης"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Λογαριασμός χρέωσης"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Χρεώσεις"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Επόμενη χρέωση"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Τρόπος πληρωμής"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Διαχείριση χρέωσης"
@@ -6279,9 +6256,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Η συνδρομή σας λήγει στις $1. Ανανεώστε άμεσα για να συνεχίσετε να απολαμβάνετε τα οφέλη σας.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Επανάληψη πληρωμής"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Η συνδρομή σας έχει τεθεί σε παύση λόγω αποτυχημένης πληρωμής με κάρτα."
@@ -6307,9 +6281,6 @@
   },
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Επικοινωνήστε με την υποστήριξη"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Ενημέρωση στοιχείων κάρτας"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "Δωρεάν δοκιμή"

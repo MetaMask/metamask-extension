@@ -6218,41 +6218,18 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "您的计划在暂停期间处于未激活状态。若选择取消，该计划将立即终止。"
   },
-  "shieldTxDetails1Description": {
-    "message": "为受保障交易中的资产提供安全保障"
-  },
   "shieldTxDetails1Title": {
     "message": "最高 $10,000 的交易保护"
   },
   "shieldTxDetails2Description": {
-    "message": "随时获取更快捷的专属支持"
+    "message": "随时获取更快捷的专属支持",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
     "message": "优先支持"
   },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "链接"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "注册"
-  },
   "shieldTxMembershipActive": {
     "message": "已激活的计划"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "账单详情"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "账单账户"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "费用"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "下次账单日期"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支付方式"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "管理计费"
@@ -6267,9 +6244,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "您的计划将于 $1 到期。请立即续订以延续权益。",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "重新尝试付款"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "您的计划因卡片支付失败已被暂停。"
@@ -6295,9 +6269,6 @@
   },
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "联系支持团队"
-  },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "更新卡片信息"
   },
   "shieldTxMembershipFreeTrial": {
     "message": "免费试用"
