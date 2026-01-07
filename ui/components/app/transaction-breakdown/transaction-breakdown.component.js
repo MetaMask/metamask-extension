@@ -131,7 +131,6 @@ export default class TransactionBreakdown extends PureComponent {
               <TransactionBreakdownRow title="Gas Paid By">
                 <RecipientWithAddress
                   checksummedRecipientAddress={gasPaidByAddress}
-                  addressOnly
                 />
               </TransactionBreakdownRow>
             )}
