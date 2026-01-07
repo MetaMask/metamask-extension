@@ -404,7 +404,15 @@ class AccountListPage {
     const createMultichainAccountButtons = await this.driver.findElements(
       this.addMultichainAccountButton,
     );
-    await createMultichainAccountButtons[options?.srpIndex ?? 0].click();
+    const buttonIndex = options?.srpIndex ?? 0;
+    await createMultichainAccountButtons[buttonIndex].click();
+
+    // Wait for the account creation to complete by waiting for loading state to finish
+    // The button shows "Adding account..." during loading and "Add account" when done
+    await this.driver.assertElementNotPresent({
+      css: this.addMultichainAccountButton,
+      text: 'Adding account...',
+    });
   }
 
   /**
@@ -1058,6 +1066,7 @@ class AccountListPage {
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');
     }
+
     const srps = await this.driver.findElements('.select-srp__container');
     const selectedSrp = srps[srpIndex - 1];
     const showAccountsButton = await this.driver.waitForSelector(
