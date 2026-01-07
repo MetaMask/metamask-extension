@@ -7545,13 +7545,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/notification-services-controller@npm:^20.0.0":
-  version: 20.0.0
-  resolution: "@metamask/notification-services-controller@npm:20.0.0"
+"@metamask/notification-services-controller@npm:^21.0.0":
+  version: 21.0.0
+  resolution: "@metamask/notification-services-controller@npm:21.0.0"
   dependencies:
     "@contentful/rich-text-html-renderer": "npm:^16.5.2"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.15.0"
+    "@metamask/controller-utils": "npm:^11.16.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/utils": "npm:^11.8.1"
     bignumber.js: "npm:^9.1.2"
@@ -7560,9 +7560,9 @@ __metadata:
     semver: "npm:^7.6.3"
     uuid: "npm:^8.3.2"
   peerDependencies:
-    "@metamask/keyring-controller": ^24.0.0
-    "@metamask/profile-sync-controller": ^26.0.0
-  checksum: 10/1ec52c32d302a0c6c7fdfa9e2e2bfeb6e8fad36c04206c960afbc98c13b3d4b11b8c6ac7cda5f5b0277f25ad895d6292e0ae2d08a77805a64ab40c623e4bc06b
+    "@metamask/keyring-controller": ^25.0.0
+    "@metamask/profile-sync-controller": ^27.0.0
+  checksum: 10/a36c10cb29bd6a9948f0cc0b8698ff9906aebb4ffc40a6ce1eca8bd9c17b4e181831a18996c0944b505eed1f0abadd58b5af73132dbc36ddb1efcf6cf3d2ab05
   languageName: node
   linkType: hard
 
@@ -8712,10 +8712,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/tron-wallet-snap@npm:^1.16.1":
-  version: 1.16.1
-  resolution: "@metamask/tron-wallet-snap@npm:1.16.1"
-  checksum: 10/f6e871c911edc22af6955676e190a7479446a1663ebecdbd69ee2cf31611a3721a162ed8d6a9d8857f44809a6c4973dd1b9c33c067a5168297c62a21f7cfa44c
+"@metamask/tron-wallet-snap@npm:^1.17.0":
+  version: 1.17.0
+  resolution: "@metamask/tron-wallet-snap@npm:1.17.0"
+  checksum: 10/b7ec689ed01d55342a12dc25cb9da7bd03e2d8df65a52e15c11a2e69842339d57cf7ea30d66ebff1e902d6dd43dff5cf7b559a4b6a5c3d1b910fb1f64192b549
   languageName: node
   linkType: hard
 
@@ -32925,7 +32925,7 @@ __metadata:
     "@metamask/name-controller": "npm:^9.0.0"
     "@metamask/network-controller": "npm:^27.0.0"
     "@metamask/network-enablement-controller": "npm:^3.1.0"
-    "@metamask/notification-services-controller": "npm:^20.0.0"
+    "@metamask/notification-services-controller": "npm:^21.0.0"
     "@metamask/object-multiplex": "npm:^2.0.0"
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
@@ -32938,7 +32938,7 @@ __metadata:
     "@metamask/preferences-controller": "npm:^21.0.0"
     "@metamask/preinstalled-example-snap": "npm:^0.7.2"
     "@metamask/profile-metrics-controller": "npm:^2.0.0"
-    "@metamask/profile-sync-controller": "npm:^26.0.0"
+    "@metamask/profile-sync-controller": "npm:^27.0.0"
     "@metamask/providers": "npm:^22.1.1"
     "@metamask/rate-limit-controller": "npm:^7.0.0"
     "@metamask/remote-feature-flag-controller": "npm:^3.0.0"
@@ -32969,7 +32969,7 @@ __metadata:
     "@metamask/test-snaps": "npm:^3.1.0"
     "@metamask/transaction-controller": "npm:^62.7.0"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
-    "@metamask/tron-wallet-snap": "npm:^1.16.1"
+    "@metamask/tron-wallet-snap": "npm:^1.17.0"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -37023,21 +37023,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qs@npm:6.13.0":
-  version: 6.13.0
-  resolution: "qs@npm:6.13.0"
-  dependencies:
-    side-channel: "npm:^1.0.6"
-  checksum: 10/f548b376e685553d12e461409f0d6e5c59ec7c7d76f308e2a888fd9db3e0c5e89902bedd0754db3a9038eda5f27da2331a6f019c8517dc5e0a16b3c9a6e9cef8
-  languageName: node
-  linkType: hard
-
-"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.4.0":
-  version: 6.14.0
-  resolution: "qs@npm:6.14.0"
+"qs@npm:^6.10.0, qs@npm:^6.12.3, qs@npm:^6.14.1, qs@npm:^6.4.0":
+  version: 6.14.1
+  resolution: "qs@npm:6.14.1"
   dependencies:
     side-channel: "npm:^1.1.0"
-  checksum: 10/a60e49bbd51c935a8a4759e7505677b122e23bf392d6535b8fc31c1e447acba2c901235ecb192764013cd2781723dc1f61978b5fdd93cc31d7043d31cdc01974
+  checksum: 10/34b5ab00a910df432d55180ef39c1d1375e550f098b5ec153b41787f1a6a6d7e5f9495593c3b112b77dbc6709d0ae18e55b82847a4c2bbbb0de1e8ccbb1794c5
   languageName: node
   linkType: hard
 
@@ -40140,7 +40131,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"side-channel@npm:^1.0.4, side-channel@npm:^1.0.6, side-channel@npm:^1.1.0":
+"side-channel@npm:^1.0.4, side-channel@npm:^1.1.0":
   version: 1.1.0
   resolution: "side-channel@npm:1.1.0"
   dependencies:

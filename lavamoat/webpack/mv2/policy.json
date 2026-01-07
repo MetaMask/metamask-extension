@@ -1927,7 +1927,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -4947,7 +4947,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -6025,7 +6025,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

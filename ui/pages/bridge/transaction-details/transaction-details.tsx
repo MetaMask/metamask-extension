@@ -46,7 +46,7 @@ import { formatDate } from '../../../helpers/utils/util';
 import { ConfirmInfoRowDivider as Divider } from '../../../components/app/confirm/info/row';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNativeTokenInfo } from '../../../selectors';
-import { getAllNetworkTransactions } from '../../../selectors/transactions';
+import { getTransactions } from '../../../selectors/transactions';
 import {
   MetaMetricsContextProp,
   MetaMetricsEventCategory,
@@ -83,9 +83,7 @@ const CrossChainSwapTxDetails = () => {
   const { srcTxMetaId } = useParams<{ srcTxMetaId: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const allTransactions = useSelector(
-    getAllNetworkTransactions,
-  ) as TransactionMeta[];
+  const allTransactions = useSelector(getTransactions) as TransactionMeta[];
 
   const transactionGroup: TransactionGroup | null =
     location?.state?.transactionGroup || null;
