@@ -925,8 +925,6 @@ export default class MetamaskController extends EventEmitter {
               entropy: { id },
             },
           } = account;
-          // here we should get the entropy source Id from the wallet and pass it below to
-          // discoverAndCreateAccounts (the accounts controller automagically sets the created account as the selected account)
 
           if (this.isMultichainAccountsFeatureState2Enabled()) {
             ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -4420,7 +4418,7 @@ export default class MetamaskController extends EventEmitter {
 
       await this.controllerMessenger.call(
         'MultichainAccountService:createMultichainAccountWallet',
-        { password },
+        { type: 'create', password },
       );
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
@@ -4547,29 +4545,10 @@ export default class MetamaskController extends EventEmitter {
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-      // START: put in an if block against multichain state 2
-      const alreadyImportedSrp = this.keyringController
-        .getKeyringsByType(KeyringTypes.hd)
-        .some((keyring) => {
-          return (
-            Buffer.from(
-              this._convertEnglishWordlistIndicesToCodepoints(keyring.mnemonic),
-            ).toString('utf8') === mnemonic
-          );
-        });
 
-      if (alreadyImportedSrp) {
-        throw new Error(
-          'This Secret Recovery Phrase has already been imported.',
-        );
-      }
-
-      const { id } = await this.keyringController.addNewKeyring(
-        KeyringTypes.hd,
-        {
-          mnemonic,
-          numberOfAccounts: 1,
-        },
+      const { entropySource: id } = await this.controllerMessenger.call(
+        'MultichainAccountService:createMultichainAccountWallet',
+        { type: 'import', mnemonic },
       );
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
@@ -4827,14 +4806,10 @@ export default class MetamaskController extends EventEmitter {
       const seedPhraseAsUint8Array =
         this._convertMnemonicToWordlistIndices(seedPhraseAsBuffer);
 
-      if (this.isMultichainAccountsFeatureState2Enabled()) {
-
-      } else {
-        await this.keyringController.createNewVaultAndRestore(
-          password,
-          seedPhraseAsUint8Array,
-        );
-      }
+      const { entropySource: id } = await this.controllerMessenger.call(
+        'MultichainAccountService:createMultichainAccountWallet',
+        { type: 'restore', password, mnemonic: seedPhraseAsUint8Array },
+      );
 
       // set is resetting wallet in progress to false, after new vault and keychain are created
       this.appStateController.setIsWalletResetInProgress(false);
@@ -4870,7 +4845,7 @@ export default class MetamaskController extends EventEmitter {
           await this.getSnapKeyring();
           ///: END:ONLY_INCLUDE_IF
           await this.accountTreeController.syncWithUserStorageAtLeastOnce();
-          await this.discoverAndCreateAccounts();
+          await this.discoverAndCreateAccounts(id);
         } else {
           await this._addAccountsWithBalance();
         }
