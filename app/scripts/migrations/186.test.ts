@@ -1,3 +1,4 @@
+import { cloneDeep } from 'lodash';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { migrate, version } from './186';
@@ -30,7 +31,7 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
@@ -46,7 +47,7 @@ describe(`migration #${VERSION}`, () => {
 
     const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
@@ -76,7 +77,7 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
@@ -103,7 +104,7 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
@@ -136,7 +137,7 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
@@ -209,7 +210,7 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const versionedData = structuredClone(oldStorage);
+    const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
