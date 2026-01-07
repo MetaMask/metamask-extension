@@ -136,7 +136,6 @@ import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../shared/constants/multic
 import { hasTransactionData } from '../../shared/modules/transaction.utils';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
-import { createShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
@@ -2473,32 +2472,27 @@ export function getShowRecoveryPhraseReminder(state) {
  * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export const getNumberOfAllUnapprovedTransactionsAndMessages =
-  createShallowEqualSelector(
-    [
-      getUnapprovedTransactions,
-      (state) => state.metamask.unapprovedDecryptMsgs,
-      (state) => state.metamask.unapprovedPersonalMsgs,
-      (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs,
-      (state) => state.metamask.unapprovedTypedMessages,
-    ],
-    (
-      unapprovedTxs,
-      unapprovedDecryptMsgs,
-      unapprovedPersonalMsgs,
-      unapprovedEncryptionPublicKeyMsgs,
-      unapprovedTypedMessages,
-    ) => {
-      const allUnapprovedMessages = {
-        ...unapprovedTxs,
-        ...unapprovedDecryptMsgs,
-        ...unapprovedPersonalMsgs,
-        ...unapprovedEncryptionPublicKeyMsgs,
-        ...unapprovedTypedMessages,
-      };
-      return Object.keys(allUnapprovedMessages).length;
-    },
-  );
+export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
+  [
+    getUnapprovedTransactions,
+    (state) => state.metamask.unapprovedDecryptMsgs,
+    (state) => state.metamask.unapprovedPersonalMsgs,
+    (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    (state) => state.metamask.unapprovedTypedMessages,
+  ],
+  (
+    unapprovedTxs,
+    unapprovedDecryptMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedEncryptionPublicKeyMsgs,
+    unapprovedTypedMessages,
+  ) =>
+    Object.keys(unapprovedTxs ?? {}).length +
+    Object.keys(unapprovedDecryptMsgs ?? {}).length +
+    Object.keys(unapprovedPersonalMsgs ?? {}).length +
+    Object.keys(unapprovedEncryptionPublicKeyMsgs ?? {}).length +
+    Object.keys(unapprovedTypedMessages ?? {}).length,
+);
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
