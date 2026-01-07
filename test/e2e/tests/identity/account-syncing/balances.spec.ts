@@ -12,8 +12,9 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';
-import { arrangeTestUtils, skipOnFirefox } from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
