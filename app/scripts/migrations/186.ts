@@ -40,6 +40,9 @@ function isValidRpcEndpoint(object: unknown): object is {
  * Checks if an RPC endpoint is an Infura endpoint.
  *
  * @param rpcEndpoint - The RPC endpoint to check.
+ * @param rpcEndpoint.url - The URL of the RPC endpoint.
+ * @param rpcEndpoint.type - The type of the RPC endpoint (optional).
+
  * @returns True if the endpoint is an Infura endpoint.
  */
 function isInfuraEndpoint(rpcEndpoint: {
