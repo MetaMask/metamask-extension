@@ -242,7 +242,7 @@ export function selectShowShieldEndingToast(
 }
 
 /**
- * Determines if the database corruption toast should be shown based on:
+ * Determines if the storage error toast should be shown based on:
  * - showStorageErrorToast flag is true
  * - User has completed onboarding
  * - Wallet is unlocked

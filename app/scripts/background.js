@@ -131,7 +131,7 @@ global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
- * purposes, to, in the case of database corruption, an possible way for an end
+ * purposes, to, in the case of storage errors, a possible way for an end
  * user to recover their vault. Hopefully this is never needed.
  */
 global.logEncryptedVault = () => {

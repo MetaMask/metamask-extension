@@ -1944,15 +1944,6 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
-  "storageErrorAction": {
-    "message": "Save your Secret Recovery Phrase"
-  },
-  "storageErrorDescription": {
-    "message": "There was a problem saving your data. Please save your Secret Recovery Phrase as a precaution. Reinstall MetaMask if this problem persists after you restart MetaMask."
-  },
-  "storageErrorTitle": {
-    "message": "Storage error"
-  },
   "dateCreated": {
     "message": "Date created"
   },
@@ -7419,6 +7410,15 @@
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
+  },
+  "storageErrorAction": {
+    "message": "Save your Secret Recovery Phrase"
+  },
+  "storageErrorDescription": {
+    "message": "There was a problem saving your data. Please save your Secret Recovery Phrase as a precaution. Reinstall MetaMask if this problem persists after you restart MetaMask."
+  },
+  "storageErrorTitle": {
+    "message": "Storage error"
   },
   "strong": {
     "message": "Strong"

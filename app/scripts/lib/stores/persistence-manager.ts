@@ -505,7 +505,7 @@ export class PersistenceManager {
 
         if (validateVault) {
           // Check if we need to trigger vault recovery:
-          // 1. If localStore.get() failed entirely (e.g., Firefox database corruption)
+          // 1. If localStore.get() failed entirely (e.g., Firefox's "Error: An unexpected error occurred")
           // 2. If we got a result but the vault is missing
           const needsVaultRecovery =
             localStoreError !== undefined || !hasVault(result?.data);

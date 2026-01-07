@@ -168,8 +168,8 @@ export type AppStateControllerState = {
   isWalletResetInProgress: boolean;
 
   /**
-   * Whether to show the database corruption toast.
-   * This is set to true when browser.storage.local writes fail.
+   * Whether to show the storage error toast.
+   * This is set to true when set operations fail (storage.local or IndexedDB).
    */
   showStorageErrorToast: boolean;
 };
@@ -952,8 +952,8 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets whether to show the database corruption toast.
-   * This is called when browser.storage.local writes fail due to database corruption.
+   * Sets whether to show the storage error toast.
+   * This is called when set operations fail (storage.local or IndexedDB).
    *
    * @param show - Whether to show the toast
    */

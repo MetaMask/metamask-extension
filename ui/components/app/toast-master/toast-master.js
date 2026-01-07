@@ -116,7 +116,7 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
-  // Check if database corruption toast should be shown (needed for conditional rendering on other screens)
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
   const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
 
@@ -125,7 +125,7 @@ export function ToastMaster() {
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
-  // Database corruption toast should show on ALL screens
+  // Storage error toast should show on ALL screens
   const storageErrorToast = <StorageErrorToast />;
 
   if (onHomeScreen) {
@@ -160,7 +160,7 @@ export function ToastMaster() {
     );
   }
 
-  // On other screens, only render ToastContainer if database corruption toast should show
+  // On other screens, only render ToastContainer if storage error toast should show
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
   if (shouldShowStorageErrorToast) {
     return <ToastContainer>{storageErrorToast}</ToastContainer>;
