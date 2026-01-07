@@ -238,32 +238,32 @@ export const BridgeInputGroup = ({
           isDestinationToken={isDestinationToken}
         >
           {(onClickHandler, networkImageSrc) => {
-          const handleClick = () => {
-            onAssetPickerOpen?.();
-            onClickHandler();
-          };
-          return isAmountReadOnly && !token ? (
-            <Button
-              data-testid={buttonProps.testId}
-              onClick={handleClick}
-              size={ButtonSize.Lg}
-              paddingLeft={6}
-              paddingRight={6}
-              fontWeight={FontWeight.Normal}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              {t('swapSwapTo')}
-            </Button>
-          ) : (
-            <BridgeAssetPickerButton
-              onClick={handleClick}
-              networkImageSrc={networkImageSrc}
-              asset={(token as never) ?? undefined}
-              networkProps={networkProps}
-              data-testid={buttonProps.testId}
-            />
-          );
-        }}
+            const handleClick = () => {
+              onAssetPickerOpen?.();
+              onClickHandler();
+            };
+            return isAmountReadOnly && !token ? (
+              <Button
+                data-testid={buttonProps.testId}
+                onClick={handleClick}
+                size={ButtonSize.Lg}
+                paddingLeft={6}
+                paddingRight={6}
+                fontWeight={FontWeight.Normal}
+                style={{ whiteSpace: 'nowrap' }}
+              >
+                {t('swapSwapTo')}
+              </Button>
+            ) : (
+              <BridgeAssetPickerButton
+                onClick={handleClick}
+                networkImageSrc={networkImageSrc}
+                asset={(token as never) ?? undefined}
+                networkProps={networkProps}
+                data-testid={buttonProps.testId}
+              />
+            );
+          }}
         </AssetPicker>
       </Row>
 
