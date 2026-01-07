@@ -47,17 +47,15 @@ export const isMultichainAccountsFeatureEnabled = (
   };
 
   // Some e2e/integration tests can force multichain accounts state 1 and 2 to be enabled.
-  if (process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG === 'true') {
+  // We also enable it by default for all e2e (IN_TEST).
+  if (
+    process.env.IN_TEST === 'true' ||
+    process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG === 'true'
+  ) {
     return true;
   }
 
   if (featureVersion === FEATURE_VERSION_2) {
-    if (process.env.IN_TEST) {
-      // Some E2E tests depend on multichain accounts v2 being disabled, so we run
-      // this logic only for those.
-      return isFeatureEnabled();
-    }
-
     // But now, state 2 is enabled by default in production and development environments.
     return true;
   }
