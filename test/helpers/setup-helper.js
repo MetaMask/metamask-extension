@@ -8,6 +8,12 @@ import { JSDOM } from 'jsdom';
 process.env.IN_TEST = true;
 process.env.METAMASK_BUILD_TYPE = 'main';
 
+// We force the multichain accounts feature flag to be enabled in all e2e tests. This
+// way we avoid mocking remote feature flag service calls in tests that need to mock
+// them.
+// TODO: Remove this env var once the feature flag has been fully removed!
+process.env.FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG = 'true';
+
 global.chrome = {
   runtime: {
     id: 'testid',
