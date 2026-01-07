@@ -213,7 +213,7 @@ export const CHAIN_IDS = {
   X_LAYER: '0xc4',
   BOB: '0xed88',
   ROOTSTOCK: '0x1e',
-  ROOTSTOCK_TESTNET: '0x1f'
+  ROOTSTOCK_TESTNET: '0x1f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -470,7 +470,7 @@ export const CURRENCY_SYMBOLS = {
   X_LAYER: 'OKB',
   BOB: 'ETH',
   ROOTSTOCK: 'rBTC',
-  ROOTSTOCK_TESTNET: 'trBTC'
+  ROOTSTOCK_TESTNET: 'trBTC',
 } as const;
 
 // Non-EVM currency symbols
