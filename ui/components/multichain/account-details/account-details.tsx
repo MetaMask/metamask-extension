@@ -218,7 +218,13 @@ export const AccountDetails = ({ address }: AccountDetailsProps) => {
       />
       {displayExportSrpQuiz && navigate && (
         <SRPQuiz
-          keyringId={String(keyringId)}
+          keyringId={
+            keyringId === undefined ||
+            keyringId === null ||
+            typeof keyringId === 'string'
+              ? keyringId
+              : JSON.stringify(keyringId)
+          }
           isOpen={srpQuizModalVisible}
           onClose={() => {
             setSrpQuizModalVisible(false);
