@@ -32,7 +32,7 @@ export function getProfileMetricsControllerMessenger(
   messenger.delegate({
     messenger: controllerMessenger,
     actions: [
-      'AccountsController:listAccounts',
+      'AccountsController:getState',
       'ProfileMetricsService:submitMetrics',
     ],
     events: [

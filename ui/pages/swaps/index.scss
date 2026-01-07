@@ -132,17 +132,3 @@
     margin-right: 14px;
   }
 }
-
-.mm-modal {
-  &__custom-scrollbar {
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    ::-webkit-scrollbar-thumb {
-      -webkit-border-radius: 10px;
-      border-radius: 10px;
-      background: var(--color-icon-muted);
-    }
-  }
-}

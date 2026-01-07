@@ -1,12 +1,14 @@
 import { Mockttp } from 'mockttp';
 import { toChecksumHexAddress } from '../../../../../shared/modules/hexstring-utils';
 
-const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
-  `https://price.api.cx.metamask.io/${version}/chains/${chainId}/${endpoint}`;
+const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 
-export const mockEmptyPrices = async (mockServer: Mockttp, chainId: string) => {
+const getPriceUrl = (version: string, chainId: string, endpoint: string) =>
+  `${PRICE_API_URL}/${version}/chains/${chainId}/${endpoint}`;
+
+export const mockEmptyPrices = async (mockServer: Mockttp) => {
   return mockServer
-    .forGet(getPriceUrl('v2', parseInt(chainId, 16).toString(), 'spot-prices'))
+    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
     .thenCallback(() => ({
       statusCode: 200,
       json: {},
@@ -28,16 +30,13 @@ export const mockEmptyHistoricalPrices = async (
 
 export const mockSpotPrices = async (
   mockServer: Mockttp,
-  chainIdToMock: string,
   prices: Record<
     string,
     { price: number; pricePercentChange1d?: number; marketCap: number }
   >,
 ) => {
   return mockServer
-    .forGet(
-      getPriceUrl('v2', parseInt(chainIdToMock, 16).toString(), 'spot-prices'),
-    )
+    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
     .thenCallback(() => ({
       statusCode: 200,
       json: prices,
@@ -46,14 +45,12 @@ export const mockSpotPrices = async (
 
 export async function mockPriceApi(mockServer: Mockttp) {
   const spotPricesMockEth = await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
 
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1,
           marketCap: 112500000,

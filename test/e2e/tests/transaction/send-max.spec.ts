@@ -1,18 +1,16 @@
-const { withFixtures } = require('../../helpers');
-const {
+import { MockttpServer } from 'mockttp';
+import { withFixtures } from '../../helpers';
+import {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
-} = require('../../page-objects/flows/transaction');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
-const { GAS_API_BASE_URL } = require('../../../../shared/constants/swaps');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
-const {
-  validateTransaction,
-} = require('../../page-objects/flows/send-transaction.flow');
-const { CHAIN_IDS } = require('../../../../shared/constants/network');
-const { mockSpotPrices } = require('../tokens/utils/mocks');
+} from '../../page-objects/flows/transaction';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
+import { mockSpotPrices } from '../tokens/utils/mocks';
+import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -33,10 +31,10 @@ describe('Sending with max amount', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -67,10 +65,10 @@ describe('Sending with max amount', function () {
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
           localNodeOptions: { hardfork: 'london' },
-          title: this.test.fullTitle(),
-          testSpecificMock: async (mockServer) => {
-            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-              '0x0000000000000000000000000000000000000000': {
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -83,37 +81,21 @@ describe('Sending with max amount', function () {
 
           await createInternalTransactionWithMaxAmount(driver);
           await reviewTransaction(driver);
-          // update estimates to high
-          await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-          await driver.waitForSelector({
-            text: 'sec',
-            tag: 'span',
+
+          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const gasFeeModal = new GasFeeModal(driver);
+
+          // open gas fee modal and set custom values
+          await sendTokenConfirmPage.clickEditGasFeeIcon();
+          await gasFeeModal.setCustomEIP1559GasFee({
+            maxBaseFee: '30',
+            priorityFee: '8.5',
+            gasLimit: '100000',
           });
-          await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
-
-          // enter max fee
-          await driver.fill('[data-testid="base-fee-input"]', '30');
-
-          // enter priority fee
-          await driver.fill('[data-testid="priority-fee-input"]', '8.5');
-
-          // edit gas limit
-          await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-          await driver.fill('[data-testid="gas-limit-input"]', '100000');
-
-          // Submit gas fee changes
-          await driver.clickElement({ text: 'Save', tag: 'button' });
 
           // has correct updated value on the confirm screen the transaction
-          await driver.waitForSelector({
-            css: '[data-testid="first-gas-field"]',
-            text: '0.0006',
-          });
-
-          await driver.waitForSelector({
-            css: '[data-testid="native-currency"]',
-            text: '$1.00',
-          });
+          await sendTokenConfirmPage.checkFirstGasFee('0.0006');
+          await sendTokenConfirmPage.checkNativeCurrency('$1.00');
 
           // verify max amount after gas fee changes
           await driver.waitForSelector({
@@ -139,10 +121,10 @@ describe('Sending with max amount', function () {
             .withPreferencesController(PREFERENCES_STATE_MOCK)
             .build(),
           localNodeOptions: { hardfork: 'london' },
-          title: this.test.fullTitle(),
-          testSpecificMock: async (mockServer) => {
-            await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-              '0x0000000000000000000000000000000000000000': {
+          title: this.test?.fullTitle(),
+          testSpecificMock: async (mockServer: MockttpServer) => {
+            await mockSpotPrices(mockServer, {
+              'eip155:1/slip44:60': {
                 price: 1700,
                 marketCap: 382623505141,
                 pricePercentChange1d: 0,
@@ -155,24 +137,18 @@ describe('Sending with max amount', function () {
 
           await createInternalTransactionWithMaxAmount(driver);
           await reviewTransaction(driver);
-          // update estimates to high
-          await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-          await driver.waitForSelector({
-            text: 'sec',
-            tag: 'span',
-          });
-          await driver.clickElement('[data-testid="edit-gas-fee-item-low"]');
+
+          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const gasFeeModal = new GasFeeModal(driver);
+
+          // update estimates to low
+          await sendTokenConfirmPage.clickEditGasFeeIcon();
+          await gasFeeModal.checkPageIsLoaded();
+          await gasFeeModal.selectLowGasFee();
 
           // has correct updated value on the confirm screen the transaction
-          await driver.waitForSelector({
-            css: '[data-testid="first-gas-field"]',
-            text: '0.0004',
-          });
-
-          await driver.waitForSelector({
-            css: '[data-testid="native-currency"]',
-            text: '$0.73',
-          });
+          await sendTokenConfirmPage.checkFirstGasFee('0.0004');
+          await sendTokenConfirmPage.checkNativeCurrency('$0.73');
 
           // verify max amount after gas fee changes
           await driver.waitForSelector({
@@ -200,10 +176,10 @@ describe('Sending with max amount', function () {
           .build(),
         localNodeOptions: { hardfork: 'london' },
         driverOptions: { timeOut: 15000 },
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -279,10 +255,10 @@ describe('Sending with max amount', function () {
           .withPreferencesController(PREFERENCES_STATE_MOCK)
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
-        testSpecificMock: async (mockServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+        title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

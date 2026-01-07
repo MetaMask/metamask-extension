@@ -10,6 +10,7 @@ import {
   IconName,
   Text,
   Modal,
+  ModalOverlay,
   ModalFooter,
   ModalBody,
   ModalContent,
@@ -33,6 +34,7 @@ export default function SnapPrivacyWarning({ onAccepted, onCanceled }) {
 
   return (
     <Modal onClose={() => null} isOpen className="snap-install-warning">
+      <ModalOverlay />
       <ModalContent>
         <ModalBody className="snap-privacy-warning">
           <Box>

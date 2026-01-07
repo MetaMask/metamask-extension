@@ -59,7 +59,6 @@ import type {
 } from '../../../../shared/types/metametrics';
 
 import { getSnapAndHardwareInfoForMetrics } from '../snap-keyring/metrics';
-import { shouldUseRedesignForTransactions } from '../../../../shared/lib/confirmation.utils';
 import { getMaximumGasTotalInHexWei } from '../../../../shared/modules/gas.utils';
 import { Numeric } from '../../../../shared/modules/Numeric';
 import { extractRpcDomain } from '../util';
@@ -944,7 +943,6 @@ async function buildEventFragmentProperties({
   }
 
   const uiCustomizations = [];
-  let isAdvancedDetailsOpen = null;
 
   /** securityProviderResponse is used by the OpenSea <> Blockaid provider */
   // eslint-disable-next-line no-lonely-if
@@ -968,17 +966,9 @@ async function buildEventFragmentProperties({
     uiCustomizations.push(MetaMetricsEventUiCustomization.GasEstimationFailed);
   }
 
-  const isRedesignedForTransaction = shouldUseRedesignForTransactions({
-    transactionMetadataType: transactionMeta.type as TransactionType,
-  });
-  if (isRedesignedForTransaction) {
-    uiCustomizations.push(
-      MetaMetricsEventUiCustomization.RedesignedConfirmation,
-    );
+  const isAdvancedDetailsOpen =
+    transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
 
-    isAdvancedDetailsOpen =
-      transactionMetricsRequest.getIsConfirmationAdvancedDetailsOpen();
-  }
   const smartTransactionMetricsProperties =
     getSmartTransactionMetricsProperties(
       transactionMetricsRequest,
