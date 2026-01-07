@@ -3,7 +3,6 @@ import React from 'react';
 import {
   QuoteResponse,
   RequestStatus,
-  formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
