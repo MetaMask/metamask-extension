@@ -128,7 +128,19 @@ class ConsoleBaselineReporter {
       }
 
       const content = fs.readFileSync(baselinePath, 'utf8');
-      return JSON.parse(content);
+      const parsed = JSON.parse(content);
+
+      // Validate baseline structure
+      if (
+        !parsed ||
+        typeof parsed !== 'object' ||
+        Array.isArray(parsed) ||
+        typeof parsed.files !== 'object'
+      ) {
+        throw new Error('Invalid baseline format: expected { files: {...} }');
+      }
+
+      return parsed;
     } catch (error) {
       console.error(`\n❌ Failed to load baseline: ${error.message}\n`);
       return { files: {} };
