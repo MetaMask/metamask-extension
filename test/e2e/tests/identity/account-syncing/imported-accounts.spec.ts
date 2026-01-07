@@ -15,7 +15,8 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
-import { arrangeTestUtils, skipOnFirefox } from './helpers';
+import { skipOnFirefox } from '../helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
