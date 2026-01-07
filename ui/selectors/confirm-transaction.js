@@ -256,13 +256,13 @@ export function selectTransactionFeeById(state, transactionId) {
   return transactionFeeSelector(state, transactionMetadata ?? {});
 }
 
-// Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
-// chainId is optional parameter here
 // TODO Unified Assets Controller State Access (3)
 // Uses: getMetaMaskAccounts
 // References
 // ui/selectors/confirm-transaction.js (1)
 // ui/pages/confirmations/components/confirm/info/hooks/useGasFeeToken.ts (1)
+// Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
+// chainId is optional parameter here
 export function selectTransactionAvailableBalance(
   state,
   transactionId,

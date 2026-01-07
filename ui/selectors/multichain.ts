@@ -21,7 +21,6 @@ import {
   KnownCaipNamespace,
 } from '@metamask/utils';
 import PropTypes from 'prop-types';
-import { createSelector } from 'reselect';
 import {
   MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET,
   MULTICHAIN_PROVIDER_CONFIGS,
@@ -29,7 +28,6 @@ import {
   MultichainNetworks,
   MultichainProviderConfig,
 } from '../../shared/constants/multichain/networks';
-import { Numeric } from '../../shared/modules/Numeric';
 import {
   getCompletedOnboarding,
   getConversionRate,
@@ -373,7 +371,7 @@ export function getMultichainNativeCurrencyImage(
 // TODO Unified Assets Controller State Access (4)
 // Uses: getMultichainShouldShowFiat
 // References
-// ui/selectors/multichain.ts (1)
+// ui/components/app/assets/hooks/useTokenDisplayInfo.tsx
 export const makeGetMultichainShouldShowFiatByChainId =
   (chainId: Hex | CaipChainId) =>
   (state: MultichainState, account?: InternalAccount) =>
@@ -489,7 +487,7 @@ export function getMultichainIsTestnet(
 // TODO Unified Assets Controller State Access (1)
 // MultichainBalancesController: balances
 // References
-// ui/selectors/multichain.ts (2)
+// ui/selectors/multichain.ts (1)
 // ui/selectors/selectors.js (1)
 // ui/selectors/assets.ts (6)
 // ui/hooks/useMultichainBalances.ts (1)
@@ -536,7 +534,6 @@ export function getSelectedAccountMultichainTransactions(
 // TODO Unified Assets Controller State Access (1)
 // RatesController: rates
 // References
-// ui/selectors/multichain.ts (1)
 // ui/ducks/bridge/selectors.ts (1)
 export const getMultichainCoinRates = (state: MultichainState) => {
   return state.metamask.rates;
@@ -585,17 +582,16 @@ export function getImageForChainId(chainId: string): string | undefined {
   }[chainId];
 }
 
-// This selector is not compatible with `useMultichainSelector` since it uses the selected
-// account implicitly!
 // TODO Unified Assets Controller State Access (3)
 // Uses: getSelectedAccountCachedBalance
 // References
-// ui/selectors/multichain.ts (1)
 // ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx (1)
 // ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx (1)
 // ui/components/app/wallet-overview/non-evm-overview.tsx (1)
 // ui/components/app/assets/hooks/useMultichainAssets.tsx (1)
 // ui/components/app/assets/hooks/usePrimaryCurrencyProperties.tsx (1)
+// This selector is not compatible with `useMultichainSelector` since it uses the selected
+// account implicitly!
 export function getMultichainSelectedAccountCachedBalance(
   state: MultichainState,
 ) {
@@ -603,19 +599,6 @@ export function getMultichainSelectedAccountCachedBalance(
     ? getSelectedAccountCachedBalance(state)
     : getNonEvmCachedBalance(state);
 }
-
-// TODO Unified Assets Controller State Access (4)
-// Uses: getMultichainSelectedAccountCachedBalance
-// References
-// ui/selectors/multichain.ts (1)
-export const getMultichainSelectedAccountCachedBalanceIsZero = createSelector(
-  [getMultichainIsEvm, getMultichainSelectedAccountCachedBalance],
-  (isEvm, balance) => {
-    const base = isEvm ? 16 : 10;
-    const numericBalance = new Numeric(balance, base);
-    return numericBalance.isZero();
-  },
-);
 
 export function getMultichainConversionRate(
   state: MultichainState,

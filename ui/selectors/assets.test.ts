@@ -4,13 +4,9 @@ import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichai
 import { cloneDeep } from 'lodash';
 import {
   calculateBalanceForAllWallets,
-  calculateBalanceChangeForAllWallets,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import type {
-  AccountGroupAssets,
-  BalanceChangeResult,
-} from '@metamask/assets-controllers';
+import type { AccountGroupAssets } from '@metamask/assets-controllers';
 import {
   AssetsRatesState,
   AssetsState,
@@ -26,7 +22,6 @@ import {
   selectBalanceByAccountGroup,
   selectBalanceByWallet,
   type BalanceCalculationState,
-  selectBalanceChangeForAllWallets,
   selectBalanceChangeBySelectedAccountGroup,
   selectAccountGroupBalanceForEmptyState,
   getAssetsBySelectedAccountGroup,
@@ -909,45 +904,6 @@ describe('Balance change selectors', () => {
   const baseState: BalanceCalculationState = {
     metamask: {} as BalanceCalculationState['metamask'],
   };
-
-  it('selectBalanceChangeForAllWallets adapts shapes and calls core with period', () => {
-    const mockReturn: BalanceChangeResult = {
-      period: '1d',
-      currentTotalInUserCurrency: 123,
-      previousTotalInUserCurrency: 100,
-      amountChangeInUserCurrency: 23,
-      percentChange: 23,
-      userCurrency: 'usd',
-    };
-    (calculateBalanceChangeForAllWallets as jest.Mock).mockReturnValueOnce(
-      mockReturn,
-    );
-
-    const selectChange1d = selectBalanceChangeForAllWallets('1d');
-    const out = selectChange1d(baseState);
-    expect(out).toEqual(mockReturn);
-
-    expect(calculateBalanceChangeForAllWallets).toHaveBeenCalledTimes(1);
-    const args = (calculateBalanceChangeForAllWallets as jest.Mock).mock
-      .calls[0];
-    expect(args[0]).toHaveProperty('accountTree');
-    expect(args[1]).toHaveProperty('internalAccounts');
-    expect(args[2]).toHaveProperty('tokenBalances');
-    expect(args[3]).toHaveProperty('marketData');
-    expect(args[4]).toHaveProperty('conversionRates');
-    expect(args[5]).toHaveProperty('balances');
-    expect(args[6]).toHaveProperty('accountsAssets');
-    expect(args[7]).toHaveProperty('allTokens');
-    expect(args[8]).toHaveProperty('currentCurrency');
-    expect(args[10]).toBe('1d');
-  });
-
-  it('memoizes balance change output for identical state', () => {
-    const selectChange7d = selectBalanceChangeForAllWallets('7d');
-    const a = selectChange7d(baseState);
-    const b = selectChange7d(baseState);
-    expect(a).toBe(b);
-  });
 
   it('selectBalanceChangeBySelectedAccountGroup returns null when none selected', () => {
     const selector = selectBalanceChangeBySelectedAccountGroup('7d');

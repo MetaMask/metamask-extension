@@ -49,7 +49,6 @@ import {
   getMultichainShouldShowFiat,
   getMultichainIsBitcoin,
   getMultichainIsTron,
-  getMultichainSelectedAccountCachedBalanceIsZero,
   getMultichainIsTestnet,
   getLastSelectedTronAccount,
 } from './multichain';
@@ -742,44 +741,6 @@ describe('Multichain Selectors', () => {
     it('returns true if account is BTC', () => {
       const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
       expect(getMultichainIsBitcoin(state)).toBe(true);
-    });
-  });
-
-  describe('getMultichainSelectedAccountCachedBalanceIsZero', () => {
-    it('returns true if the selected EVM account has a zero balance', () => {
-      const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '0x00';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
-    });
-
-    it('returns false if the selected EVM account has a non-zero balance', () => {
-      const state = getEvmState();
-      state.metamask.accountsByChainId['0x1'][
-        MOCK_ACCOUNT_EOA.address
-      ].balance = '3';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
-        false,
-      );
-    });
-
-    it('returns true if the selected non-EVM account has a zero balance', () => {
-      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '0.00000000';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(true);
-    });
-
-    it('returns false if the selected non-EVM account has a non-zero balance', () => {
-      const state = getNonEvmState(MOCK_ACCOUNT_BIP122_P2WPKH);
-      state.metamask.balances[MOCK_ACCOUNT_BIP122_P2WPKH.id][
-        MultichainNativeAssets.BITCOIN
-      ].amount = '1.00000000';
-      expect(getMultichainSelectedAccountCachedBalanceIsZero(state)).toBe(
-        false,
-      );
     });
   });
 

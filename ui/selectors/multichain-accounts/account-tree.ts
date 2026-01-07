@@ -288,8 +288,8 @@ export const getWalletsWithAccountsSimplified = createDeepEqualSelector(
 
 // TODO Unified Assets Controller State Access (5)
 // Uses: getWalletsWithAccounts
+// SHOULD NOT DEPEND ON ASSETS STATE
 // References
-// ui/selectors/multichain-accounts/account-tree.ts (1)
 // ui/hooks/rewards/useOptIn.ts (1)
 // ui/hooks/useDisplayName.ts (1)
 // ui/pages/bridge/hooks/useDestinationAccount.ts (1)

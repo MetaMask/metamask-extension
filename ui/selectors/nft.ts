@@ -91,7 +91,6 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
 // TODO Unified Assets Controller State Access (2)
 // Uses: getNftsByChainByAccount
 // References
-// ui/selectors/nft.ts (1)
 // ui/helpers/utils/tags.ts (1)
 /**
  * Get a flattened list of all NFTs owned by the user.

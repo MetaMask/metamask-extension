@@ -10,6 +10,7 @@ import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
 // TODO Unified Assets Controller State Access (5)
 // Uses: getOrderedConnectedAccountsForActiveTab
+// SHOULD NOT DEPEND ON ASSETS STATE
 // References
 // ui/selectors/dapp.ts (1)
 // ui/components/app/toast-master/toast-master.js (1)
