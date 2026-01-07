@@ -14,6 +14,8 @@ import {
   getNativeAssetForChainId,
   isNativeAddress,
   isBitcoinChainId,
+  isNonEvmChainId,
+  formatChainIdToHex,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
