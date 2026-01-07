@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "downlevelIteration": true,
     "esModuleInterop": true,
-    "noEmitOnError": true,
+    "incremental": true,
+    "isolatedModules": true,
     "outDir": "../.webpack",
     "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "incremental": true,
-    "noCheck": true
+    "skipLibCheck": true
   },
   "exclude": ["test"],
   // this should match our node version in .nvmrc
