@@ -8327,7 +8327,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-execution-environments@npm:^10.3.0":
+"@metamask/snaps-execution-environments@npm:10.3.0":
   version: 10.3.0
   resolution: "@metamask/snaps-execution-environments@npm:10.3.0"
   dependencies:
@@ -8342,6 +8342,24 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     readable-stream: "npm:^3.6.2"
   checksum: 10/25056a1051a451c276d8253168d4d8b590d30d37935b8bf8957b77ef0b7f8728c6bf1ac2f66aae2d3cb2c1a80f69c374e981654bcca65675d3d98c8d9bfca407
+  languageName: node
+  linkType: hard
+
+"@metamask/snaps-execution-environments@patch:@metamask/snaps-execution-environments@npm%3A10.3.0#~/.yarn/patches/@metamask-snaps-execution-environments-npm-10.3.0-75e3841f68.patch":
+  version: 10.3.0
+  resolution: "@metamask/snaps-execution-environments@patch:@metamask/snaps-execution-environments@npm%3A10.3.0#~/.yarn/patches/@metamask-snaps-execution-environments-npm-10.3.0-75e3841f68.patch::version=10.3.0&hash=516850"
+  dependencies:
+    "@metamask/json-rpc-engine": "npm:^10.1.0"
+    "@metamask/object-multiplex": "npm:^2.1.0"
+    "@metamask/post-message-stream": "npm:^10.0.0"
+    "@metamask/providers": "npm:^22.1.1"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-sdk": "npm:^10.2.0"
+    "@metamask/snaps-utils": "npm:^11.6.2"
+    "@metamask/superstruct": "npm:^3.2.1"
+    "@metamask/utils": "npm:^11.8.1"
+    readable-stream: "npm:^3.6.2"
+  checksum: 10/15359d81f93130ee457763ddea6d5f928f61e3cd2c3e549061907332ec6cc97d0a16b2990266652df3ba76fedf66bc8b543ad9e235bb8183f3faf6090cdbf698
   languageName: node
   linkType: hard
 
@@ -8369,6 +8387,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/snaps-rpc-methods@npm:14.1.1, @metamask/snaps-rpc-methods@npm:^14.1.1":
+  version: 14.1.1
+  resolution: "@metamask/snaps-rpc-methods@npm:14.1.1"
+  dependencies:
+    "@metamask/key-tree": "npm:^10.1.1"
+    "@metamask/permission-controller": "npm:^12.1.0"
+    "@metamask/rpc-errors": "npm:^7.0.3"
+    "@metamask/snaps-sdk": "npm:^10.1.0"
+    "@metamask/snaps-utils": "npm:^11.6.1"
+    "@metamask/superstruct": "npm:^3.2.1"
+    "@metamask/utils": "npm:^11.8.1"
+    "@noble/hashes": "npm:^1.7.1"
+    async-mutex: "npm:^0.5.0"
+  checksum: 10/871c50f20e6427bcb14d30648bca2867725cc8ef6df579ef8951481f9919ebed2a7713dd821c94666829e240df6ceeb6181a0203fe18413e20a7ff45b1b29895
+  languageName: node
+  linkType: hard
+
 "@metamask/snaps-rpc-methods@npm:^13.5.0":
   version: 13.5.3
   resolution: "@metamask/snaps-rpc-methods@npm:13.5.3"
@@ -8385,9 +8420,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-rpc-methods@npm:^14.1.1":
+"@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A14.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-14.1.1-ac6ae2a3ba.patch":
   version: 14.1.1
-  resolution: "@metamask/snaps-rpc-methods@npm:14.1.1"
+  resolution: "@metamask/snaps-rpc-methods@patch:@metamask/snaps-rpc-methods@npm%3A14.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-14.1.1-ac6ae2a3ba.patch::version=14.1.1&hash=c129f6"
   dependencies:
     "@metamask/key-tree": "npm:^10.1.1"
     "@metamask/permission-controller": "npm:^12.1.0"
@@ -8398,7 +8433,7 @@ __metadata:
     "@metamask/utils": "npm:^11.8.1"
     "@noble/hashes": "npm:^1.7.1"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/871c50f20e6427bcb14d30648bca2867725cc8ef6df579ef8951481f9919ebed2a7713dd821c94666829e240df6ceeb6181a0203fe18413e20a7ff45b1b29895
+  checksum: 10/58896123692fdc87a3c1bdef32159806eada96ff6a248f9161947fa30cd967b0f2d992b31fd78b4dbb16d74801462475a4496232679911d7e01a5e0d072ccb10
   languageName: node
   linkType: hard
 
@@ -32913,8 +32948,8 @@ __metadata:
     "@metamask/snap-account-abstraction-keyring-site": "npm:^1.0.0"
     "@metamask/snap-simple-keyring-site": "npm:^2.0.0"
     "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/snaps-execution-environments": "npm:^10.3.0"
-    "@metamask/snaps-rpc-methods": "npm:^14.1.1"
+    "@metamask/snaps-execution-environments": "patch:@metamask/snaps-execution-environments@npm%3A10.3.0#~/.yarn/patches/@metamask-snaps-execution-environments-npm-10.3.0-75e3841f68.patch"
+    "@metamask/snaps-rpc-methods": "patch:@metamask/snaps-rpc-methods@npm%3A14.1.1#~/.yarn/patches/@metamask-snaps-rpc-methods-npm-14.1.1-ac6ae2a3ba.patch"
     "@metamask/snaps-sdk": "npm:^10.3.0"
     "@metamask/snaps-utils": "npm:^11.7.0"
     "@metamask/solana-wallet-snap": "npm:^2.5.1"
