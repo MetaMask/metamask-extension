@@ -22,7 +22,7 @@ import {
   getTokenNetworkFilter,
   getUseNftDetection,
 } from '../../../../../selectors';
-import { selectAccountSupportsNetworkFilter } from '../../../../../selectors/assets';
+import { selectAccountSupportsEnabledNetworks } from '../../../../../selectors/assets';
 import {
   getAllEnabledNetworksForAllNamespaces,
   getEnabledNetworksByNamespace,
@@ -119,8 +119,8 @@ const AssetListControlBar = ({
   const isLineaMainnet = useSelector(getIsLineaMainnet);
   const allChainIds = useSelector(getAllChainsToPoll);
   const isEvm = useSelector(getMultichainIsEvm);
-  const accountSupportsNetworkFilter = useSelector(
-    selectAccountSupportsNetworkFilter,
+  const accountSupportsEnabledNetworks = useSelector(
+    selectAccountSupportsEnabledNetworks,
   );
 
   const { collections } = useNftsCollections();
@@ -218,10 +218,10 @@ const AssetListControlBar = ({
   ]);
 
   useEffect(() => {
-    if (!accountSupportsNetworkFilter && totalEnabledNetworkCount > 0) {
+    if (!accountSupportsEnabledNetworks && totalEnabledNetworkCount > 0) {
       dispatch(setEnabledAllPopularNetworks());
     }
-  }, [accountSupportsNetworkFilter, totalEnabledNetworkCount, dispatch]);
+  }, [accountSupportsEnabledNetworks, totalEnabledNetworkCount, dispatch]);
 
   const windowType = getEnvironmentType();
   const isFullScreen =
