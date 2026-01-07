@@ -29,7 +29,6 @@ import {
   getIsSocialLoginFlow,
   getShowShieldEntryModal,
   getPendingShieldCohort,
-  getHardwareSigningState,
 } from '../../selectors';
 import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
@@ -192,7 +191,6 @@ const mapStateToProps = (state) => {
     rewardsOnboardingEnabled: selectRewardsOnboardingEnabled(state),
     rewardsOnboardingModalOpen: selectOnboardingModalOpen(state),
     showPna25Modal: selectShowPna25Modal(state),
-    hardwareSigningState: getHardwareSigningState(state),
   };
 };
 

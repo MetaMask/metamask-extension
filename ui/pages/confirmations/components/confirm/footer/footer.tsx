@@ -34,7 +34,6 @@ import { isSignatureTransactionType } from '../../../utils';
 import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
 import { useConfirmationSubmit } from '../../../hooks/useConfirmationSubmit';
-import { setHardwareSigningState } from '../../../../../store/actions';
 import { isAddressLedger } from '../../../../../ducks/metamask/metamask';
 import {
   ConnectionStatus,
@@ -263,7 +262,6 @@ const Footer = () => {
       from,
     );
 
-    // Run preflight check for hardware wallets
     const isReady = await onSubmitPreflightCheck();
     if (!isReady) {
       console.log(
@@ -272,13 +270,6 @@ const Footer = () => {
       return;
     }
 
-    if (from && isLedgerAccount) {
-      console.log('[Footer onSubmit] Setting hardware signing state...');
-      await dispatch(
-        setHardwareSigningState(from, 'ledger', currentConfirmation.id),
-      );
-      console.log('[Footer onSubmit] Hardware signing state set');
-    }
     console.log('[Footer onSubmit] Calling submit()...');
     const { success, retryable } = await submit();
     console.log('[Footer onSubmit] Submit completed:', { success, retryable });
@@ -286,17 +277,10 @@ const Footer = () => {
     if (!isLedgerAccount && (success || !retryable)) {
       resetTransactionState();
     }
-
-    // Only clear hardware signing state on failure or if not retryable
-    if (isLedgerAccount && !success && !retryable) {
-      await dispatch(setHardwareSigningState(null));
-    }
   }, [
     from,
     isLedgerAccount,
     submit,
-    dispatch,
-    currentConfirmation.id,
     resetTransactionState,
     onSubmitPreflightCheck,
   ]);

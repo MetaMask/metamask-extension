@@ -7,7 +7,6 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { getCustomNonceValue } from '../../../../selectors';
-import { isAddressLedger } from '../../../../ducks/metamask/metamask';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
 import { updateAndApproveTx } from '../../../../store/actions';
@@ -22,12 +21,6 @@ export function useTransactionConfirm() {
   const selectedGasFeeToken = useSelectedGasFeeToken();
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
-
-  const isLedgerAccount = useSelector((state) => {
-    const from = transactionMeta?.txParams?.from;
-    // msgParams is not part of TransactionMeta type, only txParams
-    return from ? isAddressLedger(state, from) : false;
-  });
 
   const { isSupported: isGaslessSupportedSTX } =
     useGaslessSupportedSmartTransactions();
@@ -104,26 +97,12 @@ export function useTransactionConfirm() {
     // transaction confirmation screen is a full screen modal that appear over the app and will be dismissed after transaction approved
     // navigate to shield settings page first before approving transaction to wait for subscription creation there
     handleShieldSubscriptionApprovalTransactionAfterConfirm(newTransactionMeta);
-    const closeWindow = !isLedgerAccount;
-    console.log(
-      '[useTransactionConfirm] Approving transaction, isLedgerAccount:',
-      isLedgerAccount,
-      'closeWindow:',
-      closeWindow,
-    );
     try {
       // For Ledger accounts, prevent closing the popup after confirmation
       // to allow user to see the transaction status while signing on device
-      await dispatch(
-        updateAndApproveTx(
-          newTransactionMeta,
-          true,
-          '',
-          closeWindow, // closeWindow: false for Ledger accounts
-        ),
-      );
+      await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
     } catch (error) {
-      console.log('error', error);
+      console.log('[useTransactionConfirm] error', error);
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
@@ -143,7 +122,6 @@ export function useTransactionConfirm() {
     handleShieldSubscriptionApprovalTransactionAfterConfirmErr,
     onDappSwapCompleted,
     updateSwapWithQuoteDetailsIfRequired,
-    isLedgerAccount,
   ]);
 
   return {

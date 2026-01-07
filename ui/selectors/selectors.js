@@ -322,16 +322,6 @@ export function getShieldEntryModalTriggeringCohort(state) {
   return state.appState.shieldEntryModal?.triggeringCohort;
 }
 
-/**
- * Returns the hardware signing state when a hardware wallet signing request is in progress
- *
- * @param {object} state - Redux state
- * @returns {object|null} Hardware signing state with accountAddress, deviceType, and optional transactionId
- */
-export function getHardwareSigningState(state) {
-  return state.metamask.hardwareSigningState;
-}
-
 /** `metamask` slice selectors */
 
 export function getNetworkIdentifier(state) {
@@ -2743,7 +2733,6 @@ export function doesAddressRequireLedgerHidConnection(state, address) {
   const webHidIsNotConnected =
     getLedgerWebHidConnectedStatus(state) !== WebHIDConnectedStatuses.connected;
   const ledgerTransportStatus = getLedgerTransportStatus(state);
-  console.log('ledgerTransportStatus', ledgerTransportStatus);
   const transportIsNotSuccessfullyCreated =
     ledgerTransportStatus !== HardwareTransportStates.verified;
 

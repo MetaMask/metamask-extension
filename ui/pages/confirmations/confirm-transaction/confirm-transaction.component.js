@@ -27,7 +27,6 @@ import {
   unconfirmedTransactionsHashSelector,
   unconfirmedTransactionsListSelector,
   getUse4ByteResolution,
-  getHardwareSigningState,
 } from '../../../selectors';
 import {
   endBackgroundTrace,
@@ -62,7 +61,6 @@ const ConfirmTransaction = () => {
   const unconfirmedTxsSorted = useSelector(unconfirmedTransactionsListSelector);
   const unconfirmedTxs = useSelector(unconfirmedTransactionsHashSelector);
   const networkClientId = useSelector(getSelectedNetworkClientId);
-  const hardwareSigningState = useSelector(getHardwareSigningState);
 
   const totalUnapproved = unconfirmedTxsSorted.length || 0;
   const getTransaction = useCallback(() => {
@@ -161,12 +159,7 @@ const ConfirmTransaction = () => {
         if (origin !== ORIGIN_METAMASK) {
           dispatch(getContractMethodData(data, use4ByteResolution));
         }
-      } else if (
-        prevTransactionId &&
-        !transactionId &&
-        !totalUnapproved &&
-        !hardwareSigningState
-      ) {
+      } else if (prevTransactionId && !transactionId && !totalUnapproved) {
         await dispatch(setDefaultHomeActiveTabName('activity'));
         navigate(DEFAULT_ROUTE, { replace: true });
       } else if (
@@ -191,7 +184,6 @@ const ConfirmTransaction = () => {
     transaction,
     transactionId,
     use4ByteResolution,
-    hardwareSigningState,
   ]);
 
   // Code below is required as we need to support both new and old confirmation pages,

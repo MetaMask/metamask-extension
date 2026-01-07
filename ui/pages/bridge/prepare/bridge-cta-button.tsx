@@ -173,7 +173,7 @@ export const BridgeCTAButton = ({
               console.log(
                 '[BridgeCTAButton] Device not ready, error modal will be shown by HardwareWalletErrorMonitor',
               );
-              return; // Don't proceed with transaction
+              return;
             }
             console.log('[BridgeCTAButton] Device is ready, proceeding');
           }

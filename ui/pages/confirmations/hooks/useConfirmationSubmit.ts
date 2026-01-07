@@ -3,10 +3,17 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
+import { RetryStrategy } from '@metamask/keyring-utils';
 import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
-import { resolvePendingApproval } from '../../../store/actions';
+import {
+  resolvePendingApproval,
+  closeCurrentNotificationWindow,
+  setHardwareSigningState,
+} from '../../../store/actions';
 import { isAddressLedger } from '../../../ducks/metamask/metamask';
 import { useConfirmContext } from '../context/confirm';
+import { isCorrectDeveloperTransactionType } from '../../../../shared/lib/confirmation.utils';
+import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
 import { useTransactionConfirm } from './transactions/useTransactionConfirm';
 import {
@@ -14,9 +21,6 @@ import {
   isAddEthereumChainType,
 } from './useAddEthereumChain';
 import { useDappSwapActions } from './transactions/dapp-swap-comparison/useDappSwapActions';
-import { isCorrectDeveloperTransactionType } from '../../../../shared/lib/confirmation.utils';
-import { getConfirmationSender } from '../components/confirm/utils';
-import { HardwareWalletError, RetryStrategy } from '@metamask/keyring-utils';
 
 type SubmissionResult = {
   success: boolean;
@@ -87,13 +91,7 @@ export const useConfirmationSubmit = () => {
     }
 
     try {
-      const deleteAfterResult = Boolean(isLedgerAccount);
-      await dispatch(
-        resolvePendingApproval(currentConfirmation.id, undefined, {
-          waitForResult: true,
-          deleteAfterResult: deleteAfterResult,
-        }),
-      );
+      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
 
       return {
         success: true,
@@ -103,10 +101,35 @@ export const useConfirmationSubmit = () => {
       const typedError = error as any;
       console.log('mimo error data cause', typedError?.data?.cause);
       console.log('mimo error cause', typedError?.cause);
+
+      const isRetryable =
+        typedError?.data?.cause?.retryStrategy === RetryStrategy.RETRY;
+
+      if (isRetryable) {
+        try {
+          // Recreate the approval request using the cached confirmation
+          const deleteAfterResult = Boolean(isLedgerAccount);
+          await dispatch(
+            resolvePendingApproval(currentConfirmation.id, undefined),
+          );
+
+          return {
+            success: true,
+            retryable: false,
+          };
+        } catch (retryError) {
+          console.log('[useConfirmationSubmit] Retry failed:', retryError);
+          return {
+            success: false,
+            retryable: false,
+            error: retryError as Error,
+          };
+        }
+      }
+
       return {
         success: false,
-        retryable:
-          typedError?.data?.cause?.retryStrategy === RetryStrategy.RETRY,
+        retryable: false,
         error: error as Error,
       };
     }
@@ -140,10 +163,17 @@ export const useConfirmationSubmit = () => {
 
     console.log('mimo result', result);
 
-    // Only navigate if submission was successful and not retryable
-    // For Ledger accounts, don't navigate away to keep the confirmation visible
-    if (result.success && !result.retryable && !isLedgerAccount) {
-      if (strategy !== 'add-ethereum-chain') {
+    // Handle successful submission cleanup
+    if (result.success && !result.retryable) {
+      // Clear hardware signing state
+      await dispatch(setHardwareSigningState(null));
+
+      // Close notification window
+      dispatch(closeCurrentNotificationWindow());
+
+      // Only navigate if not a Ledger account
+      // For Ledger accounts, don't navigate away to keep the confirmation visible
+      if (!isLedgerAccount && strategy !== 'add-ethereum-chain') {
         navigateNext(currentConfirmation.id);
       }
     }
@@ -153,9 +183,11 @@ export const useConfirmationSubmit = () => {
     currentConfirmation,
     getStrategy,
     submitAddEthereumChain,
-    submitTransaction,
     submitApproval,
+    submitTransaction,
     onDappSwapCompleted,
+    dispatch,
+    isLedgerAccount,
     navigateNext,
   ]);
 
