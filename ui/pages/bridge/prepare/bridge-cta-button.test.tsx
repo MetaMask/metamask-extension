@@ -266,6 +266,7 @@ describe('BridgeCTAButton', () => {
         isInsufficientGasForQuote: false,
         isInsufficientBalance: false,
         isEstimatedReturnLow: false,
+        isTxAlertLoading: false,
         ...validationErrors,
       });
       const { findByRole } = renderWithProvider(

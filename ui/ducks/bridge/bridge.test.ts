@@ -4,6 +4,7 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -121,6 +122,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
         txAlert: null,
+        txAlertStatus: RequestStatus.FETCHED,
         fromTokenBalance: null,
         fromNativeBalance: null,
       });
@@ -222,6 +224,7 @@ describe('Ducks - Bridge', () => {
         sortOrder: 'cost_ascending',
         toToken: null,
         txAlert: null,
+        txAlertStatus: RequestStatus.FETCHED,
         wasTxDeclined: false,
         fromTokenBalance: null,
         fromNativeBalance: null,

@@ -110,6 +110,7 @@
     "sortOrder": "string",
     "toToken": "null",
     "txAlert": "null",
+    "txAlertStatus": "number",
     "wasTxDeclined": "boolean"
   },
   "browser": "string",
