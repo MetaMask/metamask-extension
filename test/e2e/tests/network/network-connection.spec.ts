@@ -28,13 +28,14 @@ const networkConfigs: NetworkConfig[] = [
     testTitle: 'Monad Network Connection Tests',
     chainId: CHAIN_IDS.MONAD_TESTNET,
   },
-  {
-    name: 'Mega Testnet',
-    tokenSymbol: 'ETH',
-    fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
-    testTitle: 'MegaETH Network Connection Tests',
-    chainId: CHAIN_IDS.MEGAETH_TESTNET,
-  },
+  // TODO: Uncomment this when the test MegaETH Testnet v2 is fixed
+  // {
+  //   name: 'MegaETH Testnet',
+  //   tokenSymbol: 'ETH',
+  //   fixtureMethod: (builder) => builder.withNetworkControllerOnMegaETH(),
+  //   testTitle: 'MegaETH Network Connection Tests',
+  //   chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
+  // },
   {
     name: 'Sei',
     tokenSymbol: 'SEI',
@@ -52,6 +53,7 @@ const performDappActionAndVerify = async (
 ) => {
   await action();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.delay(500);
   const confirmAlertModal = new ConfirmAlertModal(driver);
   await confirmAlertModal.verifyNetworkDisplay(networkName);
 };

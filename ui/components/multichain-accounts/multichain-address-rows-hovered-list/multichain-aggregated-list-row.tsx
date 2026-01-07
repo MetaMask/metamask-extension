@@ -168,7 +168,7 @@ export const MultichainAggregatedAddressListRow = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Between}
-      gap={3}
+      gap={2}
       paddingTop={1}
       paddingBottom={1}
       data-testid="multichain-address-row"
@@ -178,12 +178,12 @@ export const MultichainAggregatedAddressListRow = ({
       onMouseLeave={() => setIsHovered(false)}
     >
       <Box
-        gap={3}
+        gap={2}
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
       >
         <MultichainAccountNetworkGroup chainIds={chainIds} limit={4} />
-        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Bold}>
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {groupName}
         </Text>
         {btcAddressTag && <Tag label={btcAddressTag} />}
@@ -195,19 +195,19 @@ export const MultichainAggregatedAddressListRow = ({
         alignItems={BoxAlignItems.Center}
       >
         <Text
-          variant={TextVariant.BodyXs}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Right}
           color={getTextColor()}
           style={{
-            width: '100px',
+            minWidth: '100px',
           }}
         >
           {displayText}
         </Text>
         <Icon
           name={copyIcon}
-          size={IconSize.Xs}
+          size={IconSize.Sm}
           color={getIconColor()}
           aria-label={t('copyAddressShort')}
         />

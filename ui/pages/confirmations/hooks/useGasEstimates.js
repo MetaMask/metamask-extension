@@ -100,10 +100,14 @@ export function useGasEstimates({
   // The minimum amount this transaction will cost
   const minimumCostInHexWei = getMinimumGasTotalInHexWei(gasSettings);
 
-  const [estimatedMinimumNative] = useCurrencyDisplay(minimumCostInHexWei, {
-    numberOfDecimals: primaryNumberOfDecimals,
-    currency: primaryCurrency,
-  });
+  const [estimatedMinimumNative] = useCurrencyDisplay(
+    minimumCostInHexWei,
+    {
+      numberOfDecimals: primaryNumberOfDecimals,
+      currency: primaryCurrency,
+    },
+    transaction?.chainId,
+  );
 
   return {
     estimatedMinimumNative,

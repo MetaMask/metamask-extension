@@ -20,8 +20,9 @@ import {
   IconSize,
 } from '@metamask/design-system-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
+import log from 'loglevel';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useClaims } from '../../../../contexts/claims/claims';
 import {
@@ -29,8 +30,6 @@ import {
   TextareaResize,
 } from '../../../../components/component-library/textarea';
 import {
-  BannerAlert,
-  BannerAlertSeverity,
   FormTextField,
   FormTextFieldSize,
 } from '../../../../components/component-library';
@@ -40,6 +39,7 @@ import {
   TextColor as DsTextColor,
 } from '../../../../helpers/constants/design-system';
 import { useClaimState } from '../../../../hooks/shield/useClaimState';
+import { useClaimDraft } from '../../../../hooks/shield/useClaimDraft';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { isValidEmail } from '../../../../../app/scripts/lib/util';
@@ -54,6 +54,8 @@ import {
 } from '../../../../helpers/constants/common';
 import { FileUploader } from '../../../../components/component-library/file-uploader';
 import {
+  CLAIMS_FORM_MODES,
+  ClaimsFormMode,
   SUBMIT_CLAIM_ERROR_CODES,
   SUBMIT_CLAIM_FIELDS,
   SubmitClaimField,
@@ -65,9 +67,10 @@ import { getValidSubmissionWindowDays } from '../../../../selectors/shield/claim
 import { useSubscriptionMetrics } from '../../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
+  ShieldMetricsSourceEnum,
 } from '../../../../../shared/constants/subscriptions';
 import { getLatestShieldSubscription } from '../../../../selectors/subscription';
+import Tooltip from '../../../../components/ui/tooltip';
 import {
   ERROR_MESSAGE_MAP,
   FIELD_ERROR_MESSAGE_KEY_MAP,
@@ -76,11 +79,19 @@ import {
 } from './constants';
 import { isValidTransactionHash } from './utils';
 
-const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
+const ClaimsForm = ({
+  mode = CLAIMS_FORM_MODES.NEW,
+}: {
+  mode?: ClaimsFormMode;
+}) => {
+  const isView = mode === CLAIMS_FORM_MODES.VIEW;
+  const isNew = mode === CLAIMS_FORM_MODES.NEW;
+  const isEditDraft = mode === CLAIMS_FORM_MODES.EDIT_DRAFT;
   const t = useI18nContext();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { refetchClaims, pendingClaims } = useClaims();
+  const { refetchClaims } = useClaims();
+  const { hasMaxDrafts, saveDraft, deleteDraft } = useClaimDraft();
   const validSubmissionWindowDays = useSelector(getValidSubmissionWindowDays);
   const latestShieldSubscription = useSelector(getLatestShieldSubscription);
   const { captureShieldCtaClickedEvent, captureShieldClaimSubmissionEvent } =
@@ -104,7 +115,8 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     setFiles,
     uploadedFiles,
     claimSignature,
-  } = useClaimState(isView);
+    currentDraftId,
+  } = useClaimState(mode);
 
   const [errors, setErrors] = useState<
     Partial<
@@ -325,7 +337,7 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
   const onClickFindTransactionHash = useCallback(async () => {
     window.open(FIND_TRANSACTION_HASH_LINK, '_blank', 'noopener,noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.FindingTxHash,
       redirectToUrl: FIND_TRANSACTION_HASH_LINK,
     });
@@ -371,6 +383,16 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       // track the event when the claim submission is completed
       trackClaimSubmissionEvent('completed');
 
+      // Delete the draft if we were editing one.
+      if (currentDraftId) {
+        try {
+          await deleteDraft(currentDraftId);
+        } catch {
+          // Draft deletion failed, but the claim was already submitted successfully.
+          log.error('Failed to delete draft after successful claim submission');
+        }
+      }
+
       dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.Success));
       // update claims
       await refetchClaims();
@@ -401,6 +423,138 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
     handleSubmitClaimError,
     captureShieldClaimSubmissionEvent,
     latestShieldSubscription,
+    currentDraftId,
+    deleteDraft,
+  ]);
+
+  const hasAnyDraftData = useMemo(() => {
+    return Boolean(
+      chainId ||
+        email ||
+        impactedWalletAddress ||
+        impactedTransactionHash ||
+        reimbursementWalletAddress ||
+        caseDescription,
+    );
+  }, [
+    chainId,
+    email,
+    impactedWalletAddress,
+    impactedTransactionHash,
+    reimbursementWalletAddress,
+    caseDescription,
+  ]);
+
+  const handleSaveDraft = useCallback(
+    async ({
+      overrides = {},
+    }: {
+      // overrides allow passing new values directly to avoid stale closure issues with async React state updates
+      overrides?: {
+        chainId?: string;
+        impactedWalletAddress?: string;
+      };
+    } = {}) => {
+      try {
+        await saveDraft({
+          chainId: overrides.chainId ?? chainId,
+          email,
+          impactedWalletAddress: (overrides.impactedWalletAddress ??
+            impactedWalletAddress) as `0x${string}`,
+          impactedTxHash: impactedTransactionHash as `0x${string}`,
+          reimbursementWalletAddress:
+            reimbursementWalletAddress as `0x${string}`,
+          description: caseDescription,
+          draftId: currentDraftId,
+        });
+        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaved));
+        if (!isEditDraft) {
+          navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+        }
+      } catch (error) {
+        log.error('Error saving draft', error);
+        dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftSaveFailed));
+      }
+    },
+    [
+      saveDraft,
+      chainId,
+      email,
+      impactedWalletAddress,
+      impactedTransactionHash,
+      reimbursementWalletAddress,
+      caseDescription,
+      currentDraftId,
+      isEditDraft,
+      dispatch,
+      navigate,
+    ],
+  );
+
+  const handleDeleteDraft = useCallback(async () => {
+    if (!currentDraftId) {
+      return;
+    }
+    try {
+      await deleteDraft(currentDraftId);
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleted));
+      navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
+    } catch (error) {
+      log.error('Error deleting draft', error);
+      dispatch(setShowClaimSubmitToast(ClaimSubmitToastType.DraftDeleteFailed));
+    }
+  }, [currentDraftId, deleteDraft, dispatch, navigate]);
+
+  const saveDeleteDraftButton = useMemo(() => {
+    if (isEditDraft) {
+      return (
+        <Button
+          data-testid="shield-claim-delete-draft-button"
+          className="flex-1"
+          variant={ButtonVariant.Secondary}
+          size={ButtonSize.Lg}
+          disabled={isSubmittingClaim}
+          onClick={handleDeleteDraft}
+        >
+          {t('shieldClaimDeleteDraft')}
+        </Button>
+      );
+    }
+
+    const disableNewDrafts = hasMaxDrafts && isNew;
+    const draftButton = (
+      <Button
+        data-testid="shield-claim-save-draft-button"
+        className={disableNewDrafts ? 'w-full' : 'flex-1'}
+        variant={ButtonVariant.Secondary}
+        size={ButtonSize.Lg}
+        disabled={!hasAnyDraftData || isSubmittingClaim || disableNewDrafts}
+        onClick={() => handleSaveDraft()}
+      >
+        {t('shieldClaimSaveAsDraft')}
+      </Button>
+    );
+    if (disableNewDrafts) {
+      return (
+        <Tooltip
+          title={t('shieldClaimMaxDraftsReached')}
+          wrapperClassName="flex-1"
+          position="top"
+        >
+          {draftButton}
+        </Tooltip>
+      );
+    }
+    return draftButton;
+  }, [
+    isEditDraft,
+    hasMaxDrafts,
+    isNew,
+    hasAnyDraftData,
+    isSubmittingClaim,
+    handleSaveDraft,
+    t,
+    handleDeleteDraft,
   ]);
 
   return (
@@ -409,17 +563,6 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       data-testid="submit-claim-page"
       gap={4}
     >
-      {!isView && pendingClaims.length > 0 && (
-        <BannerAlert
-          severity={BannerAlertSeverity.Info}
-          title={t('shieldClaimsPendingAlertTitle')}
-          description={t('shieldClaimsPendingAlertDescription')}
-          actionButtonLabel={t('shieldClaimsPendingAlertActionButtonLabel')}
-          actionButtonOnClick={() => {
-            navigate(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE);
-          }}
-        />
-      )}
       <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
         {isView
           ? t('shieldClaimDetailsViewClaims', [
@@ -473,7 +616,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         name="email"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setEmail(e.target.value)}
-        onBlur={() => validateEmail()}
+        onBlur={async () => {
+          validateEmail();
+          if (isEditDraft) {
+            await handleSaveDraft();
+          }
+        }}
         value={email}
         error={Boolean(errors.email)}
         required
@@ -502,7 +650,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         name="reimbursement-wallet-address"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setReimbursementWalletAddress(e.target.value)}
-        onBlur={() => validateReimbursementWalletAddress()}
+        onBlur={async () => {
+          validateReimbursementWalletAddress();
+          if (isEditDraft) {
+            await handleSaveDraft();
+          }
+        }}
         value={reimbursementWalletAddress}
         error={Boolean(errors.reimbursementWalletAddress)}
         required
@@ -523,8 +676,13 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         label={`${t('shieldClaimImpactedWalletAddress')}*`}
         modalTitle={t('shieldClaimSelectAccount')}
         impactedWalletAddress={impactedWalletAddress}
-        onAccountSelect={(address) => {
+        onAccountSelect={async (address) => {
           setImpactedWalletAddress(address);
+          if (isEditDraft) {
+            await handleSaveDraft({
+              overrides: { impactedWalletAddress: address },
+            });
+          }
           const sameWalletAddressErrorKey =
             ERROR_MESSAGE_MAP[SUBMIT_CLAIM_ERROR_CODES.INVALID_WALLET_ADDRESSES]
               ?.messageKey ?? '';
@@ -546,8 +704,13 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         label={`${t('shieldClaimNetwork')}*`}
         modalTitle={t('shieldClaimSelectNetwork')}
         selectedChainId={chainId}
-        onNetworkSelect={(selectedChainId) => {
+        onNetworkSelect={async (selectedChainId) => {
           setChainId(selectedChainId);
+          if (isEditDraft) {
+            await handleSaveDraft({
+              overrides: { chainId: selectedChainId },
+            });
+          }
         }}
         disabled={isView}
       />
@@ -559,7 +722,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         }}
         helpText={
           errors.impactedTxHash ? (
-            <Text variant={TextVariant.BodySm} color={TextColor.Inherit}>
+            <Text
+              variant={TextVariant.BodySm}
+              color={TextColor.Inherit}
+              data-testid="shield-claim-impacted-tx-hash-error"
+            >
               {`${t(errors.impactedTxHash?.msg, errors.impactedTxHash?.params)} `}
               <TextButton
                 size={TextButtonSize.BodySm}
@@ -589,7 +756,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
         name="impacted-tx-hash"
         size={FormTextFieldSize.Lg}
         onChange={(e) => setImpactedTransactionHash(e.target.value)}
-        onBlur={() => validateImpactedTxHash()}
+        onBlur={async () => {
+          validateImpactedTxHash();
+          if (isEditDraft) {
+            await handleSaveDraft();
+          }
+        }}
         value={impactedTransactionHash}
         error={Boolean(errors.impactedTxHash)}
         required
@@ -612,7 +784,12 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
           data-testid="shield-claim-description-textarea"
           placeholder={t('shieldClaimDescriptionPlaceholder')}
           onChange={(e) => setCaseDescription(e.target.value)}
-          onBlur={() => validateDescription()}
+          onBlur={async () => {
+            validateDescription();
+            if (isEditDraft) {
+              await handleSaveDraft();
+            }
+          }}
           value={caseDescription}
           error={Boolean(errors.caseDescription)}
           width={BlockSize.Full}
@@ -690,9 +867,11 @@ const ClaimsForm = ({ isView = false }: { isView?: boolean }) => {
       )}
 
       {!isView && (
-        <Box className="settings-page__content-item-col">
+        <Box className="flex gap-2">
+          {saveDeleteDraftButton}
           <Button
             data-testid="shield-claim-submit-button"
+            className="flex-1"
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             disabled={isInvalidData || isSubmittingClaim}

@@ -58,9 +58,7 @@ const buildTokenData = (
       ? formatChainIdToCaip(chainId)
       : formatChainIdToHex(chainId),
     assetId:
-      'assetId' in token
-        ? token.assetId
-        : toAssetId(token.address, formatChainIdToCaip(chainId)),
+      'assetId' in token ? token.assetId : toAssetId(token.address, chainId),
   };
 
   if (isNativeAddress(token.address)) {
@@ -302,7 +300,7 @@ export const useTokensWithFiltering = (
                 decimals: token.decimals,
                 address: token.address,
                 type: AssetType.token,
-                balance: token.balance ?? '',
+                balance: token.balance ?? '0',
                 string: token.string ?? undefined,
                 image:
                   (token.image ||

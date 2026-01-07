@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../helpers';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -54,8 +54,8 @@ async function mockApis(
           json: [{ fakedata: true }],
         };
       }),
-    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-      '0x0000000000000000000000000000000000000000': {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
         price: 1700,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
@@ -79,7 +79,7 @@ async function mockApis(
           },
         };
       }),
-    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
+    await mockEmptyPrices(mockServer),
   ];
 }
 
@@ -184,10 +184,23 @@ describe('MetaMask onboarding', function () {
         await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.refreshErc20TokenList();
 
+        // Check if sidepanel is enabled
+        const hasSidepanel = await isSidePanelEnabled();
+
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
+
+          if (hasSidepanel) {
+            // Skip assertion for sidepanel builds - cannot accurately count requests
+            // when sidepanel loads home.html in parallel with the main test window
+            console.log(
+              `Skipping request count assertion for sidepanel build - ${mockedEndpoint}`,
+            );
+            continue;
+          }
+
           assert.equal(
             requests.length,
             1,

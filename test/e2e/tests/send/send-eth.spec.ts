@@ -18,6 +18,7 @@ describe('Send ETH', function () {
   it('it should be possible to send ETH', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -54,6 +55,7 @@ describe('Send ETH', function () {
   it('it should be possible to send Max ETH', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -84,6 +86,7 @@ describe('Send ETH', function () {
   it('it should be possible to send to address book entry', async function () {
     await withFixtures(
       {
+        forceBip44Version: false,
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
@@ -131,6 +134,7 @@ describe('Send ETH', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
+        forceBip44Version: false,
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),

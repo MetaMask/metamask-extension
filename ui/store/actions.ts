@@ -81,6 +81,7 @@ import {
 
 import {
   Claim,
+  ClaimDraft,
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
@@ -203,6 +204,8 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -266,10 +269,12 @@ export function startOAuthLogin(
     }
 
     try {
-      const oauth2LoginResult = await submitRequestToBackground(
-        'startOAuthLogin',
-        [authConnection],
-      );
+      const [oauth2LoginResult] = await Promise.all([
+        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+          authConnection,
+        ]),
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+      ]);
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -374,7 +379,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -616,24 +621,6 @@ export function updateSubscriptionCardPaymentMethod(params: {
   };
 }
 
-export function startSubscriptionWithCrypto(params: {
-  products: ProductType[];
-  isTrialRequested: boolean;
-  recurringInterval: RecurringInterval;
-  billingCycles: number;
-  chainId: Hex;
-  payerAddress: Hex;
-  tokenSymbol: string;
-  rawTransaction: Hex;
-}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCrypto',
-      [params],
-    );
-  };
-}
-
 export function updateSubscriptionCryptoPaymentMethod(
   params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -815,6 +802,30 @@ export function setShieldSubscriptionMetricsProps(
 }
 
 /**
+ * Links the reward to the existing shield subscription.
+ *
+ * @param subscriptionId - Shield subscription ID to link the reward to.
+ * @param rewardPoints - The number of reward points which user will receive after linking the reward to the subscription.
+ * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
+ */
+export function linkRewardToShieldSubscription(
+  subscriptionId: string,
+  rewardPoints: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('linkRewardToShieldSubscription', [
+        subscriptionId,
+        rewardPoints,
+      ]);
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
@@ -822,7 +833,7 @@ export function setShieldSubscriptionMetricsProps(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1114,7 +1125,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1139,7 +1150,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -4755,7 +4766,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4771,7 +4782,7 @@ export function closeNetworkMenu() {
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -5139,7 +5150,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);
@@ -6335,13 +6346,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function updateBalancesFoAccounts(
+export function updateBalancesFoAccounts(
   chainIds: string[],
   queryAllAccounts: boolean,
-): Promise<void> {
-  await submitRequestToBackground('updateBalances', [
-    { chainIds, queryAllAccounts },
-  ]);
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateBalances', [
+      { chainIds, queryAllAccounts },
+    ]);
+  };
 }
 
 /**
@@ -8145,4 +8158,26 @@ export async function generateClaimSignature(
     chainId,
     walletAddress,
   ]);
+}
+
+/**
+ * Saves a claim draft.
+ *
+ * @param draft - The draft to save.
+ * @returns The saved draft.
+ */
+export async function saveClaimDraft(
+  draft: Partial<ClaimDraft>,
+): Promise<ClaimDraft> {
+  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+}
+
+/**
+ * Deletes a claim draft.
+ *
+ * @param draftId - The ID of the draft to delete.
+ * @returns The deleted draft.
+ */
+export async function deleteClaimDraft(draftId: string): Promise<void> {
+  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }

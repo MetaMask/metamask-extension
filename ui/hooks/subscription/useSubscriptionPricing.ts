@@ -160,11 +160,12 @@ export const useAvailableTokenBalances = (params: {
       }
 
       const balance = new BigNumber(token.balance);
-      const tokenHasEnoughBalance =
-        amount &&
-        balance
-          .mul(new BigNumber(10).pow(token.decimals))
-          .gte(amount.approveAmount);
+      // price amount and token balance has different decimals, so we need to convert the price amount to the same decimals as the token balance
+      const minBillingCyclesForBalance = price.minBillingCyclesForBalance ?? 1; // required amount for subscription is only usually only 1 billing cycle (only approve amount need minBillingCycles)
+      const requiredAmount = new BigNumber(price.unitAmount)
+        .div(new BigNumber(10).pow(price.unitDecimals))
+        .mul(minBillingCyclesForBalance);
+      const tokenHasEnoughBalance = amount && balance.gte(requiredAmount);
       if (tokenHasEnoughBalance) {
         availableTokens.push({
           ...token,

@@ -22,6 +22,10 @@ import {
   KeyringControllerSignPersonalMessageAction,
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
+import {
+  RECURRING_INTERVALS,
+  RecurringInterval,
+} from '@metamask/subscription-controller';
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import {
   RewardsControllerActions,
@@ -1096,6 +1100,42 @@ describe('RewardsController', () => {
                   id: 'eip155:1/slip44:60',
                   amount: '5000000000000000',
                 },
+              },
+            },
+          };
+
+          const result = await controller.estimatePoints(request);
+
+          expect(result).toEqual(mockEstimatedPoints);
+        },
+      );
+    });
+
+    it('should estimate points for shield activity', async () => {
+      await withController(
+        { isDisabled: false },
+        async ({ controller, mockMessengerCall }) => {
+          const recurringInterval: RecurringInterval =
+            RECURRING_INTERVALS.month;
+          const mockEstimatedPoints: EstimatedPointsDto = {
+            pointsEstimate:
+              recurringInterval === RECURRING_INTERVALS.month ? 1000 : 10000,
+            bonusBips: 0,
+          };
+
+          mockMessengerCall.mockImplementation((actionType) => {
+            if (actionType === 'RewardsDataService:estimatePoints') {
+              return Promise.resolve(mockEstimatedPoints);
+            }
+            return undefined;
+          });
+
+          const request: EstimatePointsDto = {
+            activityType: 'SHIELD',
+            account: MOCK_CAIP_ACCOUNT,
+            activityContext: {
+              shieldContext: {
+                recurringInterval,
               },
             },
           };

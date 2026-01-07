@@ -6,23 +6,38 @@ exports[`TransactionList renders TransactionList component correctly 1`] = `
     class="mm-box transaction-list"
   >
     <div
-      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
+      class="mm-box asset-list-control-bar mm-box--margin-right-4 mm-box--margin-left-4"
     >
-      <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-        data-testid="sort-by-popover-toggle"
-        disabled=""
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <span
-          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-sm-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          data-testid="sort-by-networks"
+          disabled=""
         >
-          Goerli
-        </span>
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/arrow-down.svg');"
+          <span
+            class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+              >
+                Goerli
+              </p>
+            </div>
+          </span>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
+        <div
+          class="mm-box asset-list-control-bar__buttons mm-box--display-flex mm-box--justify-content-flex-end"
         />
-      </button>
+      </div>
     </div>
     <div
       class="mm-box transaction-list__transactions"
@@ -239,23 +254,38 @@ exports[`TransactionList renders TransactionList component with props hideTokenT
     class="mm-box transaction-list"
   >
     <div
-      class="mm-box mm-box--margin-right-2 mm-box--margin-left-2 mm-box--justify-content-flex-start"
+      class="mm-box asset-list-control-bar mm-box--margin-right-4 mm-box--margin-left-4"
     >
-      <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-md-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl"
-        data-testid="sort-by-popover-toggle"
-        disabled=""
+      <div
+        class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <span
-          class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+        <button
+          class="mm-box mm-text mm-button-base mm-button-base--size-sm mm-button-base--disabled mm-button-base--ellipsis asset-list-control-bar__button asset-list-control-bar__network_control mm-text--body-sm-medium mm-text--ellipsis mm-box--margin-right-2 mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+          data-testid="sort-by-networks"
+          disabled=""
         >
-          Goerli
-        </span>
-        <span
-          class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
-          style="mask-image: url('./images/icons/arrow-down.svg');"
+          <span
+            class="mm-box mm-text mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
+          >
+            <div
+              class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--align-items-center"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--color-text-default"
+              >
+                Goerli
+              </p>
+            </div>
+          </span>
+          <span
+            class="mm-box mm-icon mm-icon--size-sm mm-box--margin-inline-start-1 mm-box--display-inline-block mm-box--color-inherit"
+            style="mask-image: url('./images/icons/arrow-down.svg');"
+          />
+        </button>
+        <div
+          class="mm-box asset-list-control-bar__buttons mm-box--display-flex mm-box--justify-content-flex-end"
         />
-      </button>
+      </div>
     </div>
     <div
       class="flex flex-col gap-3 items-center justify-center bg-default max-w-48 mx-auto mt-5 mb-6"

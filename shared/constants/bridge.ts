@@ -41,7 +41,7 @@ export const ALLOWED_BRIDGE_CHAIN_IDS = [
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   MultichainNetworks.TRON,
   ///: END:ONLY_INCLUDE_IF
-];
+] as const;
 
 export const ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP =
   ALLOWED_EVM_BRIDGE_CHAIN_IDS.map(toEvmCaipChainId).concat(
@@ -204,7 +204,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: {
     // TRX -> USDT on Tron
-    address: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
+    address: 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
     symbol: 'USDT',
     decimals: 6,
     name: 'Tether USD',

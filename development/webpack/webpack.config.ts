@@ -28,11 +28,13 @@ import {
   __HMR_READY__,
   SNOW_MODULE_RE,
   TREZOR_MODULE_RE,
+  UI_DIR_RE,
 } from './utils/helpers';
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
 import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { getVariables } from './utils/config';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
 import { getLatestCommit } from './utils/git';
@@ -211,6 +213,13 @@ if (args.progress) {
   const { ProgressPlugin } = require('webpack');
   plugins.push(new ProgressPlugin());
 }
+if (args.reactCompilerVerbose) {
+  const {
+    ReactCompilerPlugin,
+  } = require('./utils/plugins/ReactCompilerPlugin');
+  plugins.push(new ReactCompilerPlugin());
+}
+
 // #endregion plugins
 
 const swcConfig = { args, browsersListQuery, isDevelopment };
@@ -218,6 +227,11 @@ const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
 const npmLoader = getSwcLoader('ecmascript', false, {}, swcConfig);
 const cjsLoader = getSwcLoader('ecmascript', false, {}, swcConfig, 'commonjs');
+const reactCompilerLoader = getReactCompilerLoader(
+  '17',
+  args.reactCompilerVerbose,
+  args.reactCompilerDebug,
+);
 
 const config = {
   entry,
@@ -319,6 +333,11 @@ const config = {
         test: /\.json(?:\.gz)?$/u,
         dependency: 'url',
         type: 'asset/resource',
+      },
+      {
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
+        include: UI_DIR_RE,
+        use: [reactCompilerLoader],
       },
       // own typescript, and own typescript with jsx
       {

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
@@ -11,7 +11,6 @@ import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
-  METAMETRICS_SETTINGS_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   BorderColor,
@@ -41,7 +40,6 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
-  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -96,7 +94,6 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
-  selectShowPna25Banner,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -111,12 +108,13 @@ import {
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
 
-export function ToastMaster({ location } = {}) {
+export function ToastMaster() {
+  const location = useLocation();
   const isMultichainAccountsFeatureState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
 
-  // Use passed location or fallback to DEFAULT_ROUTE
+  // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
@@ -132,7 +130,6 @@ export function ToastMaster({ location } = {}) {
         )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <Pna25Banner />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -571,40 +568,114 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
+  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
+  const isDraftSaveFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
+  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+  const isDraftDeleted =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
+  const isDraftDeleteFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
+
   const description = useMemo(() => {
-    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+    if (isSuccess) {
       return t('shieldClaimSubmitSuccessDescription');
     }
-    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSavedDescription');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailedDescription');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeleteDraftDescription');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailedDescription');
+    }
+    if (isErrored) {
       return '';
     }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isErrored,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    showClaimSubmitToast,
+    t,
+  ]);
+
+  const toastText = useMemo(() => {
+    if (isSuccess) {
+      return t('shieldClaimSubmitSuccess');
+    }
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSaved');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailed');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeletedDraft');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailed');
+    }
+    return t('shieldClaimSubmitError');
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    t,
+  ]);
+
+  const dataTestId = useMemo(() => {
+    if (isSuccess) {
+      return 'claim-submit-toast-success';
+    }
+    if (isDraftSaved) {
+      return 'claim-draft-saved-toast';
+    }
+    if (isDraftSaveFailed) {
+      return 'claim-draft-save-failed-toast';
+    }
+    if (isDraftDeleted) {
+      return 'claim-draft-deleted-toast';
+    }
+    if (isDraftDeleteFailed) {
+      return 'claim-draft-delete-failed-toast';
+    }
+    return 'claim-submit-toast-error';
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+  ]);
 
   return (
     showClaimSubmitToast !== null && (
       <Toast
-        dataTestId={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? 'claim-submit-toast-success'
-            : 'claim-submit-toast-error'
-        }
+        dataTestId={dataTestId}
         key="claim-submit-toast"
-        text={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccess')
-            : t('shieldClaimSubmitError')
-        }
+        text={toastText}
         description={description}
         startAdornment={
           <Icon
             name={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconName.CheckBold
                 : IconName.CircleX
             }
             color={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }
@@ -749,42 +820,6 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
-      />
-    )
-  );
-}
-
-function Pna25Banner() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const showPna25Banner = useSelector(selectShowPna25Banner);
-
-  const handleLearnMore = () => {
-    // Open MetaMetrics settings help page and acknowledge
-    global.platform.openTab({
-      url: METAMETRICS_SETTINGS_LINK,
-    });
-  };
-
-  const handleClose = () => {
-    // Just acknowledge without opening link
-    dispatch(setPna25Acknowledged(true));
-  };
-
-  return (
-    showPna25Banner && (
-      <Toast
-        key="pna25-banner"
-        dataTestId="pna25-banner"
-        startAdornment={
-          <Icon name={IconName.Info} color={IconColor.infoDefault} />
-        }
-        text={t('pna25BannerTitle')}
-        textVariant={TextVariant.bodySm}
-        actionText={t('learnMoreUpperCase')}
-        onActionClick={handleLearnMore}
-        onClose={handleClose}
       />
     )
   );

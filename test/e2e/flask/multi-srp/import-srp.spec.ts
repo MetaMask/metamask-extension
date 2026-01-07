@@ -54,15 +54,14 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       async (driver: Driver) => {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
-
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded();
-        await accountListPage.openAccountDetailsModal('Account 2');
-
+        await accountListPage.openMultichainAccountMenu({
+          accountLabel: 'Account 1',
+          srpIndex: 1,
+        });
+        await accountListPage.clickMultichainAccountMenuItem('Account details');
         const accountDetailsPage = new MultichainAccountDetailsPage(driver);
-        await accountDetailsPage.checkPageIsLoaded();
-        await accountDetailsPage.clickSecretRecoveryPhraseRow();
-
+        await accountDetailsPage.clickRevealRow();
         const privacySettings = new PrivacySettings(driver);
         await privacySettings.completeRevealSrpQuiz();
         await privacySettings.fillPasswordToRevealSrp(testPassword);
@@ -90,7 +89,8 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkPageIsLoaded();
 
-        await accountListPage.openImportSrpModal();
+        await accountListPage.addMultichainWallet();
+        await accountListPage.clickImportWallet();
 
         const firstSrpInputSelector =
           '[data-testid="srp-input-import__srp-note"]';

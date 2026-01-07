@@ -2,7 +2,7 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { getMockConfirmState } from '../../../../../../../test/data/confirmations/helper';
 import { tEn } from '../../../../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import { AccountDetails } from './account-details';
 
 jest.mock('../../../../../../components/app/confirm/info/row/address', () => ({

@@ -778,6 +778,7 @@ export enum MetaMetricsEventName {
   NavSwapButtonClicked = 'Swap Button Clicked',
   NavReceiveButtonClicked = 'Receive Button Clicked',
   NftAdded = 'NFT Added',
+  NoticeUpdateDisplayed = 'Notice Update Displayed',
   OnboardingWalletSecurityStarted = 'SRP Backup Selected',
   OnboardingWalletSecuritySkipInitiated = 'SRP Skip Backup Selected',
   OnboardingWalletSecuritySkipConfirmed = 'SRP Backup Skipped',
@@ -786,6 +787,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
+  OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -851,6 +853,7 @@ export enum MetaMetricsEventName {
   TokenHidden = 'Token Hidden',
   TokenImportCanceled = 'Token Import Canceled',
   TokenImportClicked = 'Token Import Clicked',
+  ToastDisplayed = 'Toast Displayed',
   WalletSetupStarted = 'Wallet Setup Started',
   WalletFundsObtained = 'Wallet Funds Obtained',
   WalletImportStarted = 'Wallet Import Started',
@@ -963,7 +966,6 @@ export enum MetaMetricsEventName {
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
-  ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
   // Hardware Wallets
@@ -1002,6 +1004,7 @@ export enum MetaMetricsEventName {
   ShieldEligibilityCohortAssigned = 'Shield Eligibility Cohort Assigned',
   ShieldEligibilityCohortTimeout = 'Shield Eligibility Cohort Timeout',
   ShieldSubscriptionUnexpectedErrorEvent = 'Shield Subscription Unexpected Error',
+  ShieldOptInRewards = 'Shield Opt In Rewards',
 }
 
 export enum MetaMetricsEventAccountType {
@@ -1137,7 +1140,6 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   Order = 'order',
-  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
   Permit = 'permit',

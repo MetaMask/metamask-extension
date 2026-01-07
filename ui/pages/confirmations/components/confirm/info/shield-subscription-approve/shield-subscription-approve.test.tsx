@@ -81,6 +81,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 12,
+          minBillingCyclesForBalance: 1,
         },
         {
           interval: RECURRING_INTERVALS.year,
@@ -89,6 +90,7 @@ const mockSubscriptionPricing: PricingResponse = {
           currency: 'usd',
           trialPeriodDays: 14,
           minBillingCycles: 1,
+          minBillingCyclesForBalance: 1,
         },
       ],
     },

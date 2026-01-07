@@ -5,7 +5,7 @@ import {
   type TransactionMeta,
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import { useSearchParams } from 'react-router-dom-v5-compat';
+import { useSearchParams } from 'react-router-dom';
 
 import {
   getCrossChainMetaMaskCachedBalances,

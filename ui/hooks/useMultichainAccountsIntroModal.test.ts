@@ -1,4 +1,4 @@
-import { renderHookWithProvider } from '../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../test/lib/render-helpers-navigate';
 import {
   useMultichainAccountsIntroModal,
   BIP44_ACCOUNTS_INTRODUCTION_VERSION,
