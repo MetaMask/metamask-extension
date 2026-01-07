@@ -36,7 +36,13 @@ class SendPage {
     text: 'Invalid address',
   };
 
-  private readonly maxClearButton = '[data-testid="max-clear-button"]';
+  // Note: Different send flows use different max button components:
+  // - Multichain flow: data-testid="max-clear-button"
+  // - Other flows: button with text "Max"
+  private readonly maxClearButton = {
+    text: 'Max',
+    tag: 'button',
+  };
 
   private readonly qrScanButton = '[data-testid="ens-qr-scan-button"]';
 
