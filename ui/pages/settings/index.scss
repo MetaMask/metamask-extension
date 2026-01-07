@@ -66,15 +66,10 @@
       }
 
       &__title {
-        @include design-system.screen-sm-min {
-          margin-right: 16px;
-        }
-
         @include design-system.screen-sm-max {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
-          max-width: 250px;
         }
       }
     }
