@@ -239,6 +239,7 @@ export const getUnapprovedDappSwapTransaction = (
     },
     securityAlertResponse: {
       securityAlertId: 'dapp-swap-test-alert-id',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       result_type: 'Benign',
       reason: '',
       description: '',
