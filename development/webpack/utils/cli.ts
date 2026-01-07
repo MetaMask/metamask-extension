@@ -17,7 +17,7 @@ import {
   toOrange,
 } from './helpers';
 
-const environmentOptions = Object.values(ENVIRONMENT) as [string, ...string[]];
+const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;

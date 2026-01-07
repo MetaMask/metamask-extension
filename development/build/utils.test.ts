@@ -10,9 +10,9 @@ describe('getBuildTargetFromTask', () => {
   });
 
   it('extracts build target from script task names', () => {
-    expect(
-      getBuildTargetFromTask('scripts:core:dev:standardEntryPoints'),
-    ).toBe('dev');
+    expect(getBuildTargetFromTask('scripts:core:dev:standardEntryPoints')).toBe(
+      'dev',
+    );
     expect(getBuildTargetFromTask('scripts:core:dev:contentscript')).toBe(
       'dev',
     );
@@ -23,12 +23,12 @@ describe('getBuildTargetFromTask', () => {
     expect(
       getBuildTargetFromTask('scripts:core:test-live:standardEntryPoints'),
     ).toBe('testDev');
-    expect(getBuildTargetFromTask('scripts:core:prod:standardEntryPoints')).toBe(
-      'prod',
-    );
-    expect(getBuildTargetFromTask('scripts:core:dist:standardEntryPoints')).toBe(
-      'dist',
-    );
+    expect(
+      getBuildTargetFromTask('scripts:core:prod:standardEntryPoints'),
+    ).toBe('prod');
+    expect(
+      getBuildTargetFromTask('scripts:core:dist:standardEntryPoints'),
+    ).toBe('dist');
   });
 
   it('returns original taskName for unknown patterns (backwards compatibility)', () => {
