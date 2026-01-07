@@ -603,10 +603,7 @@ export const getFromTokenConversionRate = createSelector(
       const nativeAssetId = getNativeAssetForChainId(
         fromChain.chainId,
       )?.assetId;
-      const tokenAssetId = toAssetId(
-        fromToken.address,
-        formatChainIdToCaip(fromChain.chainId),
-      );
+      const tokenAssetId = toAssetId(fromToken.address, fromChain.chainId);
       const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
         ? Number(
             rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??

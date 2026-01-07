@@ -81,6 +81,7 @@ import {
 
 import {
   Claim,
+  ClaimDraft,
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
@@ -8211,4 +8212,25 @@ export async function getTrezorDeviceStatus(): Promise<DeviceState> {
 
 export async function clearLedgerCallbacks() {
   return await submitRequestToBackground<void>('clearLedgerCallbacks', []);
+
+/**
+ * Saves a claim draft.
+ *
+ * @param draft - The draft to save.
+ * @returns The saved draft.
+ */
+export async function saveClaimDraft(
+  draft: Partial<ClaimDraft>,
+): Promise<ClaimDraft> {
+  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+}
+
+/**
+ * Deletes a claim draft.
+ *
+ * @param draftId - The ID of the draft to delete.
+ * @returns The deleted draft.
+ */
+export async function deleteClaimDraft(draftId: string): Promise<void> {
+  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }

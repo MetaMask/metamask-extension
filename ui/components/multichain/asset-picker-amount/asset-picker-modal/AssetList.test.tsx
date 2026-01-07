@@ -48,7 +48,7 @@ jest.mock('../../../../hooks/useCurrencyDisplay', () => ({
   useCurrencyDisplay: jest.fn(),
 }));
 
-jest.mock('../..', () => ({
+jest.mock('../../token-list-item', () => ({
   TokenListItem: jest.fn(() => <div>TokenListItem</div>),
 }));
 

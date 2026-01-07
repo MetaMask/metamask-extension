@@ -10,8 +10,11 @@ import {
   IconName,
   IconSize,
   Text,
+  Box,
 } from '../../component-library';
 import {
+  BackgroundColor,
+  BorderRadius,
   Display,
   IconColor,
   TextColor,
@@ -59,13 +62,12 @@ const MenuItem = React.forwardRef<
             anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             position={BadgeWrapperPosition.topRight}
-            positionObj={{ top: -6, right: 4 }}
+            positionObj={{ top: 0, right: 4 }}
             badge={
-              <Icon
-                name={IconName.FullCircle}
-                size={IconSize.Xs}
-                color={IconColor.primaryDefault}
-                style={{ '--size': '10px' } as React.CSSProperties}
+              <Box
+                style={{ width: '10px', height: '10px', content: '' }}
+                borderRadius={BorderRadius.full}
+                backgroundColor={BackgroundColor.primaryDefault}
               />
             }
           >
