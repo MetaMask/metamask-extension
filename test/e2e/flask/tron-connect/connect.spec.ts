@@ -7,8 +7,7 @@ import {
   assertConnected,
   assertDisconnected
 } from './testHelpers';
-import { regularDelayMs, largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { veryLargeDelayMs } from '../../helpers';
 
 describe('Tron Connect - Connect & disconnect - e2e tests', function () {
   describe(`Tron Connect - Connect & disconnect`, function () {
@@ -70,17 +69,7 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         assertDisconnected(connectionStatusAfterDisconnect);
 
         // // 3. Connect again
-        await header.connect();
-        const modal = await testDappTron.getWalletModal();
-        await driver.delay(largeDelayMs);
-        await driver.delay(veryLargeDelayMs);
-        await modal.connectToMetaMaskWallet();
-
-        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-        const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
-        await connectAccountConfirmation.checkPageIsLoaded();
-        await connectAccountConfirmation.confirmConnect();
+        await connectTronTestDapp(driver, testDappTron);
 
         await testDappTron.switchTo();
 
