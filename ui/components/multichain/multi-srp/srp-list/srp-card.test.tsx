@@ -22,7 +22,7 @@ const mocks = {
   useWalletInfoCallback: jest.fn().mockReturnValue({
     multichainAccounts: [
       {
-        accountId: 'mock-account-id-1' as AccountGroupId,
+        id: 'mock-account-id-1' as AccountGroupId,
         metadata: {
           name: 'Mock Account 1',
         },

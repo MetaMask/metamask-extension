@@ -28,7 +28,7 @@ import {
   TextVariant,
   IconColor,
 } from '../../../../helpers/constants/design-system';
-import { SrpListItem } from '../srp-list';
+import { SrpListItem } from './srp-list-item';
 
 /**
  * Props for the SrpCard component.
