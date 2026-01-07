@@ -357,12 +357,13 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           dispatch(showPermittedNetworkToast());
         }
 
-        dispatch(
-          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+        await setNetworkClientIdForDomain(
+          selectedTabOrigin,
+          finalNetworkClientId,
         );
       }
 
-      dispatch(setActiveNetwork(finalNetworkClientId));
+      await dispatch(setActiveNetwork(finalNetworkClientId));
       dispatch(updateCustomNonce(''));
       dispatch(setNextNonce(''));
       dispatch(detectNfts(allChainIds));
