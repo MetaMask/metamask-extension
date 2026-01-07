@@ -41744,7 +41744,7 @@ __metadata:
 
 "tailwindcss@patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch":
   version: 3.4.17
-  resolution: "tailwindcss@patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch::version=3.4.17&hash=269fb6"
+  resolution: "tailwindcss@patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch::version=3.4.17&hash=aeb7c1"
   dependencies:
     "@alloc/quick-lru": "npm:^5.2.0"
     arg: "npm:^5.0.2"
@@ -41771,7 +41771,7 @@ __metadata:
   bin:
     tailwind: lib/cli.js
     tailwindcss: lib/cli.js
-  checksum: 10/79cecd5eda054deb6fcfce8c14fe6ae642fe103f8fb4992cf6c23d876703504a12ba3e083b365b021561dc09a622de9061c71dec54de8512db7f6f2dbc779393
+  checksum: 10/d915c9ad35a90ace4ea8454eaa569103bb63472de8fd6f60cf3c74035d8dabac7f0f7e55f58dc0d85dd77edc86ca87d702b9503142b3acd3d1c069e4137af7ec
   languageName: node
   linkType: hard
 
