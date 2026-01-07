@@ -1,72 +1,39 @@
-import { getEnvironment, getBuildTargetFromTask } from './utils';
-import { TASKS } from './constants';
+import { getBuildTargetFromTask, getEnvironment } from './utils';
 
 describe('getBuildTargetFromTask', () => {
-  it('passes through valid build targets', () => {
+  it('passes through valid build targets unchanged', () => {
     expect(getBuildTargetFromTask('dev')).toBe('dev');
     expect(getBuildTargetFromTask('test')).toBe('test');
+    expect(getBuildTargetFromTask('testDev')).toBe('testDev');
     expect(getBuildTargetFromTask('prod')).toBe('prod');
     expect(getBuildTargetFromTask('dist')).toBe('dist');
-    expect(getBuildTargetFromTask('testDev')).toBe('testDev');
   });
 
-  it('extracts build target from task names', () => {
+  it('extracts build target from script task names', () => {
     expect(
-      getBuildTargetFromTask(TASKS.SCRIPTS_CORE_DEV_STANDARD_ENTRY_POINTS),
+      getBuildTargetFromTask('scripts:core:dev:standardEntryPoints'),
     ).toBe('dev');
-    expect(
-      getBuildTargetFromTask(TASKS.SCRIPTS_CORE_TEST_STANDARD_ENTRY_POINTS),
-    ).toBe('test');
-    expect(
-      getBuildTargetFromTask(TASKS.SCRIPTS_CORE_PROD_STANDARD_ENTRY_POINTS),
-    ).toBe('prod');
-    expect(
-      getBuildTargetFromTask(TASKS.SCRIPTS_CORE_DIST_STANDARD_ENTRY_POINTS),
-    ).toBe('dist');
-    expect(
-      getBuildTargetFromTask(
-        TASKS.SCRIPTS_CORE_TEST_LIVE_STANDARD_ENTRY_POINTS,
-      ),
-    ).toBe('testDev');
-  });
-
-  it('maps special entry tasks to build targets', () => {
-    expect(getBuildTargetFromTask(TASKS.SCRIPTS_DIST)).toBe('dist');
-    expect(getBuildTargetFromTask(TASKS.STYLES)).toBe('prod');
-  });
-
-  it('maps style tasks to build targets', () => {
-    expect(getBuildTargetFromTask(TASKS.STYLES_DEV)).toBe('dev');
-    expect(getBuildTargetFromTask(TASKS.STYLES_PROD)).toBe('prod');
-  });
-
-  it('maps static tasks to build targets', () => {
-    expect(getBuildTargetFromTask(TASKS.STATIC_DEV)).toBe('dev');
-    expect(getBuildTargetFromTask(TASKS.STATIC_PROD)).toBe('prod');
-  });
-
-  it('maps standalone utility tasks to build targets', () => {
-    expect(getBuildTargetFromTask(TASKS.CLEAN)).toBe('prod');
-    expect(getBuildTargetFromTask(TASKS.RELOAD)).toBe('dev');
-    expect(getBuildTargetFromTask(TASKS.ZIP)).toBe('prod');
-  });
-
-  it('maps lint task to build target', () => {
-    expect(getBuildTargetFromTask(TASKS.LINT_SCSS)).toBe('prod');
-  });
-
-  it('maps manifest tasks to build targets', () => {
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_DEV)).toBe('dev');
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_PROD)).toBe('prod');
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_TEST)).toBe('test');
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_TEST_DEV)).toBe('testDev');
-    expect(getBuildTargetFromTask(TASKS.MANIFEST_SCRIPT_DIST)).toBe('dist');
-  });
-
-  it('throws error for unknown patterns', () => {
-    expect(() => getBuildTargetFromTask('unknown:task')).toThrow(
-      'Unable to extract build target from task name: "unknown:task"',
+    expect(getBuildTargetFromTask('scripts:core:dev:contentscript')).toBe(
+      'dev',
     );
+    expect(
+      getBuildTargetFromTask('scripts:core:test:standardEntryPoints'),
+    ).toBe('test');
+    expect(getBuildTargetFromTask('scripts:core:test:sentry')).toBe('test');
+    expect(
+      getBuildTargetFromTask('scripts:core:test-live:standardEntryPoints'),
+    ).toBe('testDev');
+    expect(getBuildTargetFromTask('scripts:core:prod:standardEntryPoints')).toBe(
+      'prod',
+    );
+    expect(getBuildTargetFromTask('scripts:core:dist:standardEntryPoints')).toBe(
+      'dist',
+    );
+  });
+
+  it('returns original taskName for unknown patterns (backwards compatibility)', () => {
+    expect(getBuildTargetFromTask('unknown:task')).toBe('unknown:task');
+    expect(getBuildTargetFromTask('manifest:dev')).toBe('manifest:dev');
   });
 });
 

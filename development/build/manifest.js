@@ -16,11 +16,7 @@ const {
   MANIFEST_RELEASE_CANDIDATE_KEY,
 } = require('./constants');
 const { createTask, composeSeries } = require('./task');
-const {
-  getEnvironment,
-  getBuildName,
-  getBuildTargetFromTask,
-} = require('./utils');
+const { getEnvironment, getBuildName } = require('./utils');
 const { fromIniFile } = require('./config');
 
 module.exports = createManifestTasks;
@@ -59,8 +55,7 @@ function createManifestTasks({
   shouldIncludeOcapKernel = false,
   shouldIncludeSnow,
 }) {
-  const buildTarget = getBuildTargetFromTask(entryTask);
-  const environment = getEnvironment({ buildTarget });
+  const environment = getEnvironment({ buildTarget: entryTask });
 
   // merge base manifest with per-platform manifests
   const prepPlatforms = async () => {

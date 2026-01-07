@@ -3,7 +3,7 @@ const { readFileSync, writeFileSync } = require('fs');
 const semver = require('semver');
 const { capitalize } = require('lodash');
 const { loadBuildTypesConfig } = require('../lib/build-type');
-const { BUILD_TARGETS, ENVIRONMENT, TASK_PREFIXES } = require('./constants');
+const { BUILD_TARGETS, ENVIRONMENT } = require('./constants');
 
 /**
  * Returns whether the current build is a development build or not.
@@ -30,45 +30,29 @@ function isTestBuild(buildTarget) {
 }
 
 /**
- * Special task mappings for entry tasks that don't follow the prefix pattern.
+ * Task prefix to build target mapping.
+ * Used to extract the build target from task names like 'scripts:core:test:standardEntryPoints'.
+ * Sorted by prefix length (longest first) to ensure 'test-live' matches before 'test'.
  */
-const SPECIAL_TASK_MAPPINGS = {
-  // Used by lavamoat policy generation (generate-lavamoat-policies.js)
-  'scripts:dist': BUILD_TARGETS.DIST,
-  // Style tasks (styles.js)
-  styles: BUILD_TARGETS.PROD,
-  'styles:dev': BUILD_TARGETS.DEV,
-  'styles:prod': BUILD_TARGETS.PROD,
-  // Static asset tasks (static.js)
-  'static:dev': BUILD_TARGETS.DEV,
-  'static:prod': BUILD_TARGETS.PROD,
-  // Standalone utility tasks (etc.js)
-  clean: BUILD_TARGETS.PROD,
-  reload: BUILD_TARGETS.DEV,
-  zip: BUILD_TARGETS.PROD,
-  // Lint task
-  'lint-scss': BUILD_TARGETS.PROD,
-  // Manifest tasks (manifest.js)
-  'manifest:dev': BUILD_TARGETS.DEV,
-  'manifest:prod': BUILD_TARGETS.PROD,
-  'manifest:test': BUILD_TARGETS.TEST,
-  'manifest:testDev': BUILD_TARGETS.TEST_DEV,
-  'manifest:scriptDist': BUILD_TARGETS.DIST,
-};
+const TASK_PREFIX_TO_BUILD_TARGET = [
+  ['scripts:core:test-live', BUILD_TARGETS.TEST_DEV],
+  ['scripts:core:dist', BUILD_TARGETS.DIST],
+  ['scripts:core:prod', BUILD_TARGETS.PROD],
+  ['scripts:core:test', BUILD_TARGETS.TEST],
+  ['scripts:core:dev', BUILD_TARGETS.DEV],
+];
 
 /**
- * Extract the actual build target from a task name.
+ * Extract the build target from a task name.
  *
  * Task names follow patterns like:
- * - 'scripts:core:dev:standardEntryPoints' -> 'dev'
- * - 'scripts:core:test:contentscript' -> 'test'
+ * - 'dev' -> 'dev' (already a build target)
+ * - 'scripts:core:test:standardEntryPoints' -> 'test'
  * - 'scripts:core:test-live:sentry' -> 'testDev'
- * - 'scripts:dist' -> 'dist' (special task)
- * - 'test' -> 'test' (already a build target)
  *
  * @param {string} taskName - The task name or build target.
- * @returns {BUILD_TARGETS} The extracted build target.
- * @throws {Error} If the task name doesn't match any known build target or prefix.
+ * @returns {BUILD_TARGETS} The extracted build target, or the original
+ * taskName if it couldn't be mapped (for backwards compatibility).
  */
 function getBuildTargetFromTask(taskName) {
   // If it's already a valid build target, return it
@@ -77,28 +61,15 @@ function getBuildTargetFromTask(taskName) {
     return taskName;
   }
 
-  // Check for special task mappings (e.g., 'scripts:dist' -> 'dist')
-  if (SPECIAL_TASK_MAPPINGS[taskName]) {
-    return SPECIAL_TASK_MAPPINGS[taskName];
-  }
-
-  // Create reverse mapping from prefix to build target
-  // Sort by prefix length descending to ensure longer prefixes match first
-  // (e.g., 'scripts:core:test-live' before 'scripts:core:test')
-  const prefixEntries = Object.entries(TASK_PREFIXES).sort(
-    ([, prefixA], [, prefixB]) => prefixB.length - prefixA.length,
-  );
-
-  for (const [buildTarget, prefix] of prefixEntries) {
+  // Check task prefixes to extract the build target
+  for (const [prefix, buildTarget] of TASK_PREFIX_TO_BUILD_TARGET) {
     if (taskName.startsWith(prefix)) {
       return buildTarget;
     }
   }
 
-  throw new Error(
-    `Unable to extract build target from task name: "${taskName}". ` +
-      `This may indicate a new task prefix was added without updating TASK_PREFIXES in constants.js.`,
-  );
+  // Return original for backwards compatibility with unknown task names
+  return taskName;
 }
 
 /**

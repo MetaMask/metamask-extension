@@ -31,7 +31,7 @@ const bifyModuleGroups = require('bify-module-groups');
 const { streamFlatMap } = require('../stream-flat-map');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
-const { BUILD_TARGETS, TASK_PREFIXES } = require('./constants');
+const { BUILD_TARGETS } = require('./constants');
 const { getConfig, getActiveFeatures } = require('./config');
 const {
   isDevBuild,
@@ -155,27 +155,27 @@ function createScriptTasks({
     // dev tasks (live reload)
     dev: createTasksForScriptBundles({
       buildTarget: BUILD_TARGETS.DEV,
-      taskPrefix: TASK_PREFIXES[BUILD_TARGETS.DEV],
+      taskPrefix: 'scripts:core:dev',
     }),
     // production-like distributable build
     dist: createTasksForScriptBundles({
       buildTarget: BUILD_TARGETS.DIST,
-      taskPrefix: TASK_PREFIXES[BUILD_TARGETS.DIST],
+      taskPrefix: 'scripts:core:dist',
     }),
     // production
     prod: createTasksForScriptBundles({
       buildTarget: BUILD_TARGETS.PROD,
-      taskPrefix: TASK_PREFIXES[BUILD_TARGETS.PROD],
+      taskPrefix: 'scripts:core:prod',
     }),
     // built for CI tests
     test: createTasksForScriptBundles({
       buildTarget: BUILD_TARGETS.TEST,
-      taskPrefix: TASK_PREFIXES[BUILD_TARGETS.TEST],
+      taskPrefix: 'scripts:core:test',
     }),
     // built for CI test debugging
     testDev: createTasksForScriptBundles({
       buildTarget: BUILD_TARGETS.TEST_DEV,
-      taskPrefix: TASK_PREFIXES[BUILD_TARGETS.TEST_DEV],
+      taskPrefix: 'scripts:core:test-live',
     }),
   };
 
