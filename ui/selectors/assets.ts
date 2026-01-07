@@ -8,7 +8,7 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { CaipAssetId } from '@metamask/keyring-api';
+import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
   CaipAssetType,
@@ -1318,14 +1318,13 @@ export const selectAccountSupportsNetworkFilter = createSelector(
       return true;
     }
 
-    const accountScopes = selectedAccount.scopes || [];
-
-    if (accountScopes.length === 0) {
+    if (isEvmAccountType(selectedAccount.type)) {
       return enabledNetworks.some((chainId) =>
         isEvmChainId(chainId as Hex | CaipChainId),
       );
     }
 
+    const accountScopes = selectedAccount.scopes || [];
     return enabledNetworks.some((chainId) =>
       accountScopes.includes(chainId as CaipChainId),
     );
