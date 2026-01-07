@@ -1931,6 +1931,9 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
+            livenessByChainId: {
+              '0x1': true,
+            },
           },
           swapsState: {
             swapsFeatureFlags: {
@@ -1968,6 +1971,9 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
+            livenessByChainId: {
+              '0x1': true,
+            },
           },
           swapsState: {
             swapsFeatureFlags: {
