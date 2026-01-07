@@ -380,6 +380,7 @@
     "delegations": {},
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
+    "drafts": [],
     "enabledNetworkMap": {
       "eip155": {
         "0x539": "boolean",
