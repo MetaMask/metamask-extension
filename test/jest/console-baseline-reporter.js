@@ -322,12 +322,25 @@ class ConsoleBaselineReporter {
     // Print results
     this._printResults();
 
-    // Fail if violations found (getLastError() will return this error to Jest)
-    if (this._options.failOnViolation && this.violations.length > 0) {
-      this._error = new Error(
-        `Console baseline violated: ${this.violations.length} violation(s) detected. ` +
-          'Fix the warnings or update the baseline.',
-      );
+    // Fail if violations or new files with warnings found
+    // (getLastError() will return this error to Jest)
+    if (this._options.failOnViolation) {
+      const hasViolations = this.violations.length > 0;
+      const hasNewFilesWithWarnings = this.newFiles.length > 0;
+
+      if (hasViolations || hasNewFilesWithWarnings) {
+        const parts = [];
+        if (hasViolations) {
+          parts.push(`${this.violations.length} violation(s)`);
+        }
+        if (hasNewFilesWithWarnings) {
+          parts.push(`${this.newFiles.length} new file(s) with warnings`);
+        }
+        this._error = new Error(
+          `Console baseline violated: ${parts.join(', ')}. ` +
+            'Fix the warnings or update the baseline.',
+        );
+      }
     }
   }
 
