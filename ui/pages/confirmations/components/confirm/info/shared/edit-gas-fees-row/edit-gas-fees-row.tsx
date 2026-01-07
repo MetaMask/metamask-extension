@@ -67,11 +67,12 @@ export const EditGasFeesRow = ({
   const { isSupported: isGaslessSupported } = useIsGaslessSupported();
   const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
 
-  const tooltip = isGasFeeSponsored
-    ? t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])
-    : gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0'
-      ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
-      : t('estimatedFeeTooltip');
+  let tooltip = t('estimatedFeeTooltip');
+  if (isGasFeeSponsored) {
+    tooltip = t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol]);
+  } else if (gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0') {
+    tooltip = t('confirmGasFeeTokenTooltip', [metamaskFeeFiat]);
+  }
 
   const isGasFeeEditable =
     !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
