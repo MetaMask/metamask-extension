@@ -370,7 +370,7 @@ export function getMultichainNativeCurrencyImage(
   return getMultichainCurrencyImage(state, account);
 }
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMultichainShouldShowFiat
 // References
 // ui/selectors/multichain.ts (1)
@@ -379,7 +379,7 @@ export const makeGetMultichainShouldShowFiatByChainId =
   (state: MultichainState, account?: InternalAccount) =>
     getMultichainShouldShowFiat(state, account, chainId);
 
-// TODO Unified Assets Controller State Access Third Layer
+// TODO Unified Assets Controller State Access (3)
 // Uses: getShouldShowFiat
 // References
 // ui/selectors/multichain.ts (1)
@@ -486,7 +486,7 @@ export function getMultichainIsTestnet(
   ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainBalancesController: balances
 // References
 // ui/selectors/multichain.ts (2)
@@ -533,7 +533,7 @@ export function getSelectedAccountMultichainTransactions(
   return undefined;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // RatesController: rates
 // References
 // ui/selectors/multichain.ts (1)
@@ -587,7 +587,7 @@ export function getImageForChainId(chainId: string): string | undefined {
 
 // This selector is not compatible with `useMultichainSelector` since it uses the selected
 // account implicitly!
-// TODO Unified Assets Controller State Access Third Layer
+// TODO Unified Assets Controller State Access (3)
 // Uses: getSelectedAccountCachedBalance
 // References
 // ui/selectors/multichain.ts (1)
@@ -604,7 +604,7 @@ export function getMultichainSelectedAccountCachedBalance(
     : getNonEvmCachedBalance(state);
 }
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMultichainSelectedAccountCachedBalance
 // References
 // ui/selectors/multichain.ts (1)

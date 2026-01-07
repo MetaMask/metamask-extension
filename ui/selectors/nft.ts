@@ -19,7 +19,7 @@ export type NftState = {
   };
 };
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // NftController: allNftContracts
 // References
 // ui/selectors/nft.ts (2)
@@ -27,7 +27,7 @@ function getNftContractsByChainByAccount(state: NftState) {
   return state.metamask.allNftContracts ?? EMPTY_OBJECT;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // NftController: allNfts
 // References
 // ui/selectors/nft.ts (2)
@@ -42,7 +42,7 @@ export function getNftsByChainByAccount(state: NftState) {
   return state.metamask.allNfts ?? EMPTY_OBJECT;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getNftContractsByChainByAccount
 // References
 // ui/selectors/nft.ts (1)
@@ -88,7 +88,7 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getNftsByChainByAccount
 // References
 // ui/selectors/nft.ts (1)

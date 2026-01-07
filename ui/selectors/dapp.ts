@@ -8,7 +8,7 @@ import {
 } from './selectors';
 import { getMultichainNetworkConfigurationsByChainId } from './multichain';
 
-// TODO Unified Assets Controller State Access Fifth Layer
+// TODO Unified Assets Controller State Access (5)
 // Uses: getOrderedConnectedAccountsForActiveTab
 // References
 // ui/selectors/dapp.ts (1)

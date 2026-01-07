@@ -258,7 +258,7 @@ export function selectTransactionFeeById(state, transactionId) {
 
 // Cannot use createSelector due to circular dependency caused by getMetaMaskAccounts.
 // chainId is optional parameter here
-// TODO Unified Assets Controller State Access Third Layer
+// TODO Unified Assets Controller State Access (3)
 // Uses: getMetaMaskAccounts
 // References
 // ui/selectors/confirm-transaction.js (1)

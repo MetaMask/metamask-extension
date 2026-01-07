@@ -451,7 +451,7 @@ export function getAccountTypeForKeyring(keyring) {
   }
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetaMaskAccountBalances, getMetaMaskCachedBalances, getMultichainBalances
 // References
 // ui/selectors/selectors.js (3)
@@ -562,7 +562,7 @@ export function checkIfMethodIsEnabled(state, methodName) {
   return Boolean(internalAccount.methods.includes(methodName));
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetaMaskAccountBalances
 // References
 // ui/selectors/selectors.js (1)
@@ -697,7 +697,7 @@ export function getHDEntropyIndex(state) {
   return hdEntropyIndex === -1 ? undefined : hdEntropyIndex;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // AccountTrackerController: accountsByChainId
 // References
 // ui/selectors/selectors.js (5)
@@ -721,7 +721,7 @@ function getMetaMaskAccountBalances(state) {
   );
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // AccountTrackerController: accountsByChainId
 // References
 // ui/selectors/selectors.js (3)
@@ -761,7 +761,7 @@ export function getMetaMaskCachedBalances(state, networkChainId) {
   return {};
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // AccountTrackerController: accountsByChainId
 // References
 // ui/selectors/selectors.js (1)
@@ -782,7 +782,7 @@ export function getCrossChainMetaMaskCachedBalances(state) {
   }, {});
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // AccountTrackerController: accountsByChainId
 // References
 // ui/selectors/selectors.js (2)
@@ -810,7 +810,7 @@ export function getSelectedAccountNativeTokenCachedBalanceByChainId(state) {
   return balancesByChainId;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -879,7 +879,7 @@ export function getSelectedAccountTokensAcrossChains(state) {
   return tokensByChain;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // AccountTrackerController: accountsByChainId
 // References
 // ui/selectors/selectors.js (2)
@@ -909,7 +909,7 @@ export const getNativeTokenCachedBalanceByChainIdSelector = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -1012,7 +1012,7 @@ export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
  *  @typedef {import('./selectors.types').InternalAccountWithBalance} InternalAccountWithBalance
  */
 
-// TODO Unified Assets Controller State Access Third Layer
+// TODO Unified Assets Controller State Access (3)
 // Uses: getMetaMaskAccounts
 // References
 // ui/selectors/selectors.js (6)
@@ -1043,7 +1043,7 @@ export const getMetaMaskAccountsOrdered = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered
 // References
 // ui/selectors/selectors.js (1)
@@ -1053,7 +1053,7 @@ export const getMetaMaskAccountsConnected = createSelector(
     connectedAccounts.map(({ address }) => address.toLowerCase()),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetaMaskAccountBalances
 // References
 // ui/selectors/selectors.js (1)
@@ -1067,7 +1067,7 @@ export function isBalanceCached(state) {
   return Boolean(!selectedAccountBalance && cachedBalance);
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetaMaskCachedBalances
 // References
 // ui/selectors/selectors.js (1)
@@ -1085,7 +1085,7 @@ export function getSelectedAccountCachedBalance(state) {
   return cachedBalances?.[selectedAddress];
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allTokens
 // References
 // ui/selectors/selectors.js (3)
@@ -1100,7 +1100,7 @@ export function getAllTokens(state) {
   return state.metamask.allTokens;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAllTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -1148,7 +1148,7 @@ export const getSelectedAccount = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAllTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -1175,7 +1175,7 @@ export function getTargetAccount(state, targetAddress) {
   return accounts[targetAddress];
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenRatesController: marketData
 // References
 // ui/selectors/selectors.js (1)
@@ -1202,7 +1202,7 @@ export const getTokenExchangeRates = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenRatesController: marketData
 // References
 // ui/selectors/selectors.js (1)
@@ -1223,7 +1223,7 @@ export const getCrossChainTokenExchangeRates = (state) => {
   }, {});
 };
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenRatesController: marketData
 // References
 // ui/selectors/selectors.js (1)
@@ -1240,7 +1240,7 @@ export const getTokensMarketData = (state) => {
   return state.metamask.marketData?.[chainId];
 };
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenRatesController: marketData
 // References
 // ui/selectors/selectors.js (1)
@@ -1339,7 +1339,7 @@ export function accountsWithSendEtherInfoSelector(state) {
   return accountsWithSendEtherInfo;
 }
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered
 // References
 // ui/selectors/selectors.js (1)
@@ -1425,7 +1425,7 @@ export const getIsRpcFailoverEnabled = createSelector(
     remoteFeatureFlags.walletFrameworkRpcFailoverEnabled ?? false,
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // CurrencyRateController: currencyRates
 // References
 // ui/selectors/selectors.js (1)
@@ -1451,7 +1451,7 @@ export const selectConversionRateByChainId = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // NftController: allNfts
 // References
 // ui/selectors/selectors.js (1)
@@ -1684,7 +1684,7 @@ export function getTestNetworkBackgroundColor(state) {
   }
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getCurrencyRates
 // References
 // ui/selectors/selectors.js (1)
@@ -2042,7 +2042,7 @@ export function getUseExternalServices(state) {
   return state.metamask.useExternalServices;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // CurrencyRateController: currencyRates
 // References
 // ui/selectors/selectors.js (1)
@@ -2056,7 +2056,7 @@ export function getUSDConversionRate(state) {
     ?.usdConversionRate;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getCurrencyRates
 // References
 // ui/selectors/selectors.js (1)
@@ -2075,7 +2075,7 @@ export const getUSDConversionRateByChainId = (chainId) =>
     },
   );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // CurrencyRateController: currencyRates
 // References
 // ui/selectors/selectors.js (2)
@@ -2236,7 +2236,7 @@ export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
   (internalAccounts) => internalAccounts,
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenListController: tokensChainsCache
 // References
 // ui/selectors/selectors.js (1)
@@ -2254,7 +2254,7 @@ export const selectERC20TokensByChain = createDeepEqualSelector(
   (erc20TokensByChain) => erc20TokensByChain,
 );
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokenListController: tokensChainsCache
 // References
 // ui/selectors/selectors.js (2)
@@ -2264,7 +2264,7 @@ const selectERC20Tokens = createDeepEqualSelector(
   (chainId, erc20Tokens) => erc20Tokens?.[chainId]?.data || {},
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectERC20Tokens
 // References
 // ui/selectors/selectors.js (1)
@@ -3211,7 +3211,7 @@ export function getIsDynamicTokenListAvailable(state) {
   ].includes(chainId);
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allDetectedTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -3232,7 +3232,7 @@ export function getDetectedTokensInCurrentNetwork(state) {
   return state.metamask.allDetectedTokens?.[currentChainId]?.[selectedAddress];
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allDetectedTokens
 // References
 // ui/selectors/selectors.js (2)
@@ -3240,7 +3240,7 @@ export function getAllDetectedTokens(state) {
   return state.metamask.allDetectedTokens;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allDetectedTokens
 // References
 // ui/selectors/selectors.js (1)
@@ -3607,7 +3607,7 @@ export function getBlockExplorerLinkText(
   return blockExplorerLinkText;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetaMaskCachedBalances
 // References
 // ui/selectors/selectors.js (1)
@@ -3621,7 +3621,7 @@ export function getAllAccountsOnNetworkAreEmpty(state) {
   return hasNoNativeFundsOnAnyAccounts && hasNoTokens;
 }
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered
 // References
 // ui/selectors/selectors.js (1)
@@ -3640,7 +3640,7 @@ export function getUnconnectedAccounts(state, activeTab) {
   return unConnectedAccounts;
 }
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered
 // References
 // ui/selectors/selectors.js (2)
@@ -3689,7 +3689,7 @@ export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
 // References
 // ui/selectors/selectors.js (1)
@@ -3769,7 +3769,7 @@ export const getUpdatedAndSortedAccounts = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Fifth Layer
+// TODO Unified Assets Controller State Access (5)
 // Uses: getUpdatedAndSortedAccounts
 // References
 // ui/selectors/selectors.js (1)

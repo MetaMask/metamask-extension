@@ -97,7 +97,7 @@ export type BalanceCalculationState = {
     };
 };
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainAssetsController: accountsAssets
 // References
 // ui/selectors/assets.ts (5)
@@ -113,7 +113,7 @@ export function getAccountAssets(state: AssetsState) {
   return state.metamask.accountsAssets;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainAssetsController: assetsMetadata
 // References
 // ui/selectors/assets.ts (4)
@@ -128,7 +128,7 @@ export function getAssetsMetadata(state: AssetsState) {
   return state.metamask.assetsMetadata;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainAssetsController: allIgnoredAssets
 // References
 // ui/selectors/assets.ts (2)
@@ -142,7 +142,7 @@ export function getAllIgnoredAssets(state: AssetsState) {
   return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainAssetsRatesController: conversionRates
 // References
 // ui/selectors/assets.ts (6)
@@ -160,7 +160,7 @@ export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // DeFiPositionsController: allDeFiPositions
 // References
 // ui/pages/defi/components/defi-details-page.tsx (1)
@@ -177,7 +177,7 @@ export function getDefiPositions(
   return state?.metamask?.allDeFiPositions;
 }
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // MultichainAssetsRatesController: historicalPrices
 // References
 // ui/selectors/assets.ts (2)
@@ -193,7 +193,7 @@ export function getHistoricalPrices(state: AssetsRatesState) {
   return state.metamask.historicalPrices;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getTokensAcrossChainsByAccountAddressSelector, getNativeTokenCachedBalanceByChainIdSelector, getMarketData, getCurrencyRates
 // References
 // ui/selectors/assets.ts (1)
@@ -307,7 +307,7 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMultichainBalances, getAccountAssets, getAssetsMetadata, getAssetsRates
 // References
 // ui/selectors/assets.ts (1)
@@ -439,7 +439,7 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMultichainBalances, getAccountAssets, getAssetsRates
 // References
 // ui/selectors/assets.ts (1)
@@ -504,7 +504,7 @@ export type HistoricalBalances = {
   P1Y: HistoricalBalanceData;
 };
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMultichainBalances, getAccountAssets, getAssetsRates
 // References
 // ui/selectors/assets.ts (1)
@@ -597,7 +597,7 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAccountAssets
 // References
 // ui/selectors/assets.ts (2)
@@ -630,7 +630,7 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMultichainBalances
 // References
 // ui/selectors/assets.ts (1)
@@ -729,7 +729,7 @@ const selectTokenBalancesStateForBalances = createSelector(
   (tokenBalances) => ({ tokenBalances }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMarketData
 // References
 // ui/selectors/assets.ts (4)
@@ -743,7 +743,7 @@ const selectTokenRatesStateForBalances = createSelector(
   }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAssetsRates, getHistoricalPrices
 // References
 // ui/selectors/assets.ts (4)
@@ -758,7 +758,7 @@ const selectMultichainRatesStateForBalances = createSelector(
   }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMultichainBalances
 // References
 // ui/selectors/assets.ts (4)
@@ -770,7 +770,7 @@ const selectMultichainBalancesStateForBalances = createSelector(
   (balances) => ({ balances }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAccountAssets, getAssetsMetadata, getAllIgnoredAssets
 // References
 // ui/selectors/assets.ts (4)
@@ -786,7 +786,7 @@ const selectMultichainAssetsStateForBalances = createSelector(
   }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetamaskState (allTokens)
 // References
 // ui/selectors/assets.ts (4)
@@ -804,7 +804,7 @@ const selectTokensStateForBalances = createSelector(
   }),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getCurrencyRates
 // References
 // ui/selectors/assets.ts (4)
@@ -827,7 +827,7 @@ const selectEnabledNetworkMapForBalances = createSelector(
   (map) => map,
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getMetamaskState (accountsByChainId)
 // References
 // ui/selectors/assets.ts (2)
@@ -845,7 +845,7 @@ const selectAccountsByChainIdForBalances = createSelector(
   (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
 // References
 // ui/selectors/assets.ts (3)
@@ -900,7 +900,7 @@ export const selectBalanceForAllWallets = createSelector(
 );
 
 // Balance change selectors (period: '1d' | '7d' | '30d')
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
 // References
 // ui/selectors/assets.ts (1)
@@ -960,7 +960,7 @@ export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
 // Removed percent-only selector for all wallets to match mobile API surface
 
 // Per-account-group balance change selectors using core helper
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
 // References
 // ui/selectors/assets.ts (1)
@@ -1026,7 +1026,7 @@ export const selectBalancePercentChangeByAccountGroup = (
     (change) => change.percentChange,
   );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
 // References
 // ui/selectors/assets.ts (1)
@@ -1144,7 +1144,7 @@ function getBalanceOrDefault(
     : defaultValue;
 }
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectMultichainBalancesStateForBalances, selectAccountsByChainIdForBalances
 // References
 // ui/selectors/assets.ts (1)
@@ -1316,7 +1316,7 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectAccountTreeStateForBalances, selectBalanceForAllWallets
 // References
 // ui/selectors/assets.ts (1)
@@ -1349,7 +1349,7 @@ export const selectBalanceBySelectedAccountGroup = createSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectBalanceForAllWallets
 // References
 // ui/selectors/assets.ts (1)
@@ -1369,7 +1369,7 @@ export const selectBalanceByAccountGroup = (groupId: string) =>
     return wallet.groups[groupId];
   });
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: selectBalanceForAllWallets
 // References
 // ui/selectors/assets.ts (1)
@@ -1403,7 +1403,7 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
-// TODO Unified Assets Controller State Access
+// TODO Unified Assets Controller State Access (1)
 // TokensController: allTokens, allIgnoredTokens
 // TokenBalancesController: tokenBalances
 // TokenRatesController: marketData
@@ -1453,7 +1453,7 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getStateForAssetSelector
 // References
 // ui/selectors/assets.ts (2)
@@ -1469,7 +1469,7 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     selectAssetsBySelectedAccountGroup(assetListState),
 );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getStateForAssetSelector
 // References
 // ui/selectors/assets.ts (1)
@@ -1482,7 +1482,7 @@ export const getAssetsBySelectedAccountGroupWithTronResources =
       }),
   );
 
-// TODO Unified Assets Controller State Access Second Layer
+// TODO Unified Assets Controller State Access (2)
 // Uses: getAssetsBySelectedAccountGroup
 // References
 // ui/selectors/assets.ts (1)

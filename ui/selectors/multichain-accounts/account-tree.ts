@@ -159,7 +159,7 @@ const createConsolidatedWallets = (
   );
 };
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
 // References
 // ui/selectors/multichain-accounts/account-tree.ts (1)
@@ -235,10 +235,9 @@ export const getNormalizedGroupsMetadata = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Fourth Layer
+// TODO Unified Assets Controller State Access (4)
 // Uses: getMetaMaskAccountsOrdered, getOrderedConnectedAccountsForActiveTab
 // References
-// ui/selectors/multichain-accounts/account-tree.ts (1)
 // ui/components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx (1)
 /**
  * This selector is a temporary solution to avoid a regression in the account order UI while Multichain Accounts V2 is not completed.
@@ -287,7 +286,7 @@ export const getWalletsWithAccountsSimplified = createDeepEqualSelector(
   },
 );
 
-// TODO Unified Assets Controller State Access Fifth Layer
+// TODO Unified Assets Controller State Access (5)
 // Uses: getWalletsWithAccounts
 // References
 // ui/selectors/multichain-accounts/account-tree.ts (1)
