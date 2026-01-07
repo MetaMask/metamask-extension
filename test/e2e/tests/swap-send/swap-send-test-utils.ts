@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { WebElement } from 'selenium-webdriver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SWAPS_API_V2_BASE_URL } from '../../../../shared/constants/swaps';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
@@ -285,12 +285,12 @@ export const mockSwapsApi =
         };
       });
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
-            '0x0000000000000000000000000000000000000000': {
+            'eip155:1/slip44:60': {
               price: 3010,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

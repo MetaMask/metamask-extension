@@ -162,7 +162,7 @@ export const RecipientInput = ({
             ) : null
           }
           onChange={onToChange}
-          placeholder={t('recipientPlaceholder')}
+          placeholder={t('recipientPlaceholderText')}
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

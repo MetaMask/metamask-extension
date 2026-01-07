@@ -16,6 +16,9 @@ export const selectOnboardingActiveStep = (state: MetaMaskReduxState) =>
 export const selectOnboardingModalRendered = (state: MetaMaskReduxState) =>
   state.rewards.onboardingModalRendered;
 
+export const selectOnboardingReferralCode = (state: MetaMaskReduxState) =>
+  state.rewards.onboardingReferralCode;
+
 export const selectOptinAllowedForGeo = (state: MetaMaskReduxState) =>
   state.rewards.optinAllowedForGeo;
 

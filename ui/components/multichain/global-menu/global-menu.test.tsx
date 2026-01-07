@@ -34,8 +34,8 @@ const render = (metamaskStateChanges = {}) => {
 };
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
   Link: ({
     children,
@@ -51,10 +51,9 @@ jest.mock('react-router-dom-v5-compat', () => ({
 }));
 
 const mockLockMetaMask = jest.fn();
-const mockSetAccountDetailsAddress = jest.fn();
+
 jest.mock('../../../store/actions', () => ({
   lockMetamask: () => mockLockMetaMask,
-  setAccountDetailsAddress: () => mockSetAccountDetailsAddress,
 }));
 
 jest.mock('../../../../shared/modules/environment');

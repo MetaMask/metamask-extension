@@ -22,8 +22,9 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:31)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -85,7 +86,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0002
       </p>
     </div>
     <div
@@ -207,8 +208,9 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:31)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -275,18 +277,6 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         >
           Paid by MetaMask
         </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
       </div>
     </div>
     <div
@@ -408,8 +398,9 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         </p>
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          style="width: 32px;"
         >
-          (0:31)
+          0:30
         </p>
         <div
           class="mm-box"
@@ -471,7 +462,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote (no MM fe
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0002
       </p>
     </div>
     <div
@@ -592,9 +583,10 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
           Rate
         </p>
         <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-sm mm-box--color-error-default"
+          style="width: 32px;"
         >
-          (0:06)
+          0:00
         </p>
         <div
           class="mm-box"
@@ -656,7 +648,7 @@ exports[`MultichainBridgeQuoteCard should render the recommended quote while loa
         class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         data-testid="network-fees"
       >
-        $2.52
+        $0.0003
       </p>
     </div>
     <div

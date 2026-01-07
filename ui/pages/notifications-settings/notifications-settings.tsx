@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   NOTIFICATIONS_ROUTE,
@@ -23,8 +23,7 @@ import {
   TextVariant,
   TextColor,
 } from '../../helpers/constants/design-system';
-import { NotificationsPage } from '../../components/multichain';
-import { Content, Header } from '../../components/multichain/pages/page';
+import { Content, Header, Page } from '../../components/multichain/pages/page';
 import {
   selectIsMetamaskNotificationsEnabled,
   getIsUpdatingMetamaskNotifications,
@@ -89,7 +88,7 @@ export default function NotificationsSettings() {
   };
 
   return (
-    <NotificationsPage>
+    <Page>
       <Header
         startAccessory={
           <ButtonIcon
@@ -188,6 +187,6 @@ export default function NotificationsSettings() {
           </>
         )}
       </Content>
-    </NotificationsPage>
+    </Page>
   );
 }

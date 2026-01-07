@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountGroupId, AccountWalletType } from '@metamask/account-api';
 import classnames from 'classnames';
@@ -46,27 +46,20 @@ import { MultichainSrpBackup } from '../../../components/multichain-accounts/mul
 import { useWalletInfo } from '../../../hooks/multichain-accounts/useWalletInfo';
 import { MultichainAccountEditModal } from '../../../components/multichain-accounts/multichain-account-edit-modal';
 import { AccountRemoveModal } from '../../../components/multichain-accounts/account-remove-modal';
-import {
-  removeAccount,
-  setAccountDetailsAddress,
-} from '../../../store/actions';
+import { removeAccount } from '../../../store/actions';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
 
-export const MultichainAccountDetailsPage = ({
-  id: idProp,
-}: { id?: string } = {}) => {
+export const MultichainAccountDetailsPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const { id: idFromParams } = useParams();
-
-  // Use prop if provided (from createV5CompatRoute), otherwise fall back to hook
-  const id = idProp || idFromParams;
+  const { id } = useParams();
 
   const accountGroupId = decodeURIComponent(id ?? '') as AccountGroupId;
   const multichainAccount = useSelector((state) =>
@@ -104,6 +97,10 @@ export const MultichainAccountDetailsPage = ({
   const shouldShowBackupReminder = isSRPBackedUp === false;
 
   const handleAddressesClick = () => {
+    trace({
+      name: TraceName.ShowAccountAddressList,
+      op: TraceOperation.AccountUi,
+    });
     navigate(
       `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`,
     );
@@ -143,7 +140,6 @@ export const MultichainAccountDetailsPage = ({
         },
       });
 
-      dispatch(setAccountDetailsAddress(''));
       navigate(DEFAULT_ROUTE);
     }
   }, [dispatch, trackEvent, navigate, wallet?.type, accountsWithAddresses]);

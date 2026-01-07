@@ -1,7 +1,7 @@
 import { Mockttp } from 'mockttp';
 
-import { E2E_SRP } from '../../../default-fixture';
-import FixtureBuilder from '../../../fixture-builder';
+import { E2E_SRP } from '../../../fixtures/default-fixture';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
@@ -12,6 +12,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -31,6 +32,8 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
   it('gracefully handles adding accounts with balances and synced accounts', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {
@@ -55,9 +58,7 @@ describe('Account syncing - Accounts with Balances', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Should see default account
         await accountListPage.checkAccountDisplayedInAccountList('Account 1');

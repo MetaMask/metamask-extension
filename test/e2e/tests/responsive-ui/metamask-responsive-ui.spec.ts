@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
-import { E2E_SRP } from '../../default-fixture';
+import { E2E_SRP } from '../../fixtures/default-fixture';
 import { WALLET_PASSWORD } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -11,8 +11,6 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -53,7 +51,7 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         const resetPasswordPage = new ResetPasswordPage(driver);
         await resetPasswordPage.checkPageIsLoaded();
         await resetPasswordPage.resetPassword(E2E_SRP, WALLET_PASSWORD);
-        await resetPasswordPage.waitForSeedPhraseInputToNotBeVisible();
+        await resetPasswordPage.waitForPasswordInputToNotBeVisible();
 
         // Check balance renders correctly
         const homePage = new HomePage(driver);
@@ -67,6 +65,9 @@ describe('MetaMask Responsive UI', function (this: Suite) {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesController({
+            preferences: { showTestNetworks: true },
+          })
           .withEnabledNetworks({
             eip155: {
               [CHAIN_IDS.LOCALHOST]: true,
@@ -88,17 +89,12 @@ describe('MetaMask Responsive UI', function (this: Suite) {
         await new HomePage(driver).checkPageIsLoaded();
 
         // Network Selector
-        if (isGlobalNetworkSelectorRemoved) {
-          await driver.clickElement('[data-testid="sort-by-networks"]');
-          await driver.clickElement({
-            text: 'Custom',
-            tag: 'button',
-          });
-          await driver.clickElement('[data-testid="Localhost 8545"]');
-          await driver.clickElement(
-            '[data-testid="modal-header-close-button"]',
-          );
-        }
+        await driver.clickElement('[data-testid="sort-by-networks"]');
+        await driver.clickElement({
+          text: 'Custom',
+          tag: 'button',
+        });
+        await driver.clickElement('[data-testid="Localhost 8545"]');
 
         // check confirmed transaction is displayed in activity list
         const activityList = new ActivityListPage(driver);

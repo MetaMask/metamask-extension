@@ -1,6 +1,7 @@
 import buy from './buy';
 import home from './home';
 import notifications from './notifications';
+import onboarding from './onboarding';
 import swap from './swap';
 import nonevm from './nonevm';
 import perps from './perps';
@@ -33,9 +34,15 @@ export function addRoute(route: Route) {
   routes.set(route.pathname, route);
 }
 
+if (process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS || process.env.IN_TEST) {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+  addRoute(require('./test-route').default);
+}
+
 addRoute(buy);
 addRoute(home);
 addRoute(notifications);
+addRoute(onboarding);
 addRoute(swap);
 addRoute(nonevm);
 addRoute(perps);

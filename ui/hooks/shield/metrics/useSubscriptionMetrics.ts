@@ -5,36 +5,41 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import {
+  getMetaMaskHdKeyrings,
+  getPendingShieldCohortTxType,
+} from '../../../selectors';
 import { useAccountTotalFiatBalance } from '../../useAccountTotalFiatBalance';
 import {
+  formatExistingSubscriptionEventProps,
   getShieldCommonTrackingProps,
   getShieldMarketingTrackingProps,
 } from '../../../../shared/modules/shield';
 import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setShieldSubscriptionMetricsProps } from '../../../store/actions';
-import { EntryModalSourceEnum } from '../../../../shared/constants/subscriptions';
+import { ShieldMetricsSourceEnum } from '../../../../shared/constants/subscriptions';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 import {
+  CaptureShieldPaymentMethodChangeEventParams,
+  ExistingSubscriptionEventParams,
+} from '../../../../shared/types';
+import {
   CaptureShieldClaimSubmissionEventParams,
-  CaptureShieldCryptoConfirmationEventParams,
   CaptureShieldCtaClickedEventParams,
   CaptureShieldEligibilityCohortAssignedEventParams,
   CaptureShieldEligibilityCohortTimeoutEventParams,
   CaptureShieldEntryModalEventParams,
   CaptureShieldErrorStateClickedEventParams,
   CaptureShieldMembershipCancelledEventParams,
-  CaptureShieldPaymentMethodChangeEventParams,
   CaptureShieldSubscriptionRequestParams,
   CaptureShieldSubscriptionRestartRequestEventParams,
-  ExistingSubscriptionEventParams,
+  CaptureShieldUnexpectedErrorEventParams,
 } from './types';
 import {
   formatCaptureShieldCtaClickedEventProps,
   formatCaptureShieldEligibilityCohortEventsProps,
   formatCaptureShieldPaymentMethodChangeEventProps,
   formatDefaultShieldSubscriptionRequestEventProps,
-  formatExistingSubscriptionEventProps,
 } from './utils';
 
 export const useSubscriptionMetrics = () => {
@@ -51,6 +56,7 @@ export const useSubscriptionMetrics = () => {
     true, // hide zero balance tokens
     true, // use USD conversion rate instead of the current currency
   );
+  const pendingShieldCohortTxType = useSelector(getPendingShieldCohortTxType);
 
   /**
    * Set the Shield subscription metrics properties to the background.
@@ -63,13 +69,15 @@ export const useSubscriptionMetrics = () => {
   const setShieldSubscriptionMetricsPropsToBackground = useCallback(
     async (props: {
       marketingUtmParams?: Record<string, string>;
-      source: EntryModalSourceEnum;
+      source: ShieldMetricsSourceEnum;
+      rewardPoints?: number;
     }) => {
       await dispatch(
         setShieldSubscriptionMetricsProps({
           marketingUtmParams: props.marketingUtmParams,
           source: props.source,
           userBalanceInUSD: Number(totalFiatBalance),
+          rewardPoints: props.rewardPoints,
         }),
       );
     },
@@ -115,6 +123,11 @@ export const useSubscriptionMetrics = () => {
         Number(totalFiatBalance),
       );
 
+      const postTransactionType =
+        params.source === ShieldMetricsSourceEnum.PostTransaction
+          ? pendingShieldCohortTxType
+          : undefined;
+
       trackEvent({
         event: MetaMetricsEventName.ShieldEntryModal,
         category: MetaMetricsEventCategory.Shield,
@@ -130,11 +143,17 @@ export const useSubscriptionMetrics = () => {
           modal_cta_action_clicked: params.modalCtaActionClicked,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          post_transaction_type: params.postTransactionType,
+          post_transaction_type: postTransactionType,
         },
       });
     },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+    [
+      trackEvent,
+      selectedAccount,
+      hdKeyingsMetadata,
+      totalFiatBalance,
+      pendingShieldCohortTxType,
+    ],
   );
 
   /**
@@ -179,12 +198,8 @@ export const useSubscriptionMetrics = () => {
         properties: {
           ...commonTrackingProps,
           ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.requestStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -211,9 +226,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.cancellationStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           latest_subscription_duration: params.latestSubscriptionDuration,
@@ -244,9 +257,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           status: params.changeStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -273,32 +284,6 @@ export const useSubscriptionMetrics = () => {
         properties: {
           ...commonTrackingProps,
           ...formattedParams,
-        },
-      });
-    },
-    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
-  );
-
-  const captureShieldCryptoConfirmationEvent = useCallback(
-    (params: CaptureShieldCryptoConfirmationEventParams) => {
-      const commonTrackingProps = getShieldCommonTrackingProps(
-        selectedAccount,
-        hdKeyingsMetadata,
-        Number(totalFiatBalance),
-      );
-
-      const formattedParams =
-        formatDefaultShieldSubscriptionRequestEventProps(params);
-
-      trackEvent({
-        event: MetaMetricsEventName.ShieldSubscriptionCryptoConfirmation,
-        category: MetaMetricsEventCategory.Shield,
-        properties: {
-          ...commonTrackingProps,
-          ...formattedParams,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          has_insufficient_gas: params.hasInsufficientGas,
         },
       });
     },
@@ -346,9 +331,7 @@ export const useSubscriptionMetrics = () => {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           submission_status: params.submissionStatus,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          error_message: params.errorMessage,
+          error: params.errorMessage,
         },
       });
     },
@@ -382,6 +365,31 @@ export const useSubscriptionMetrics = () => {
     [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
   );
 
+  /**
+   * Capture the event when an unexpected error occurs.
+   */
+  const captureShieldUnexpectedErrorEvent = useCallback(
+    (params: CaptureShieldUnexpectedErrorEventParams) => {
+      const commonTrackingProps = getShieldCommonTrackingProps(
+        selectedAccount,
+        hdKeyingsMetadata,
+        Number(totalFiatBalance),
+      );
+      trackEvent({
+        event: MetaMetricsEventName.ShieldSubscriptionUnexpectedErrorEvent,
+        category: MetaMetricsEventCategory.Shield,
+        properties: {
+          ...commonTrackingProps,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_message: params.errorMessage,
+          location: params.location,
+        },
+      });
+    },
+    [trackEvent, selectedAccount, hdKeyingsMetadata, totalFiatBalance],
+  );
+
   return {
     setShieldSubscriptionMetricsPropsToBackground,
     captureShieldEntryModalEvent,
@@ -390,10 +398,10 @@ export const useSubscriptionMetrics = () => {
     captureShieldPaymentMethodChangeEvent,
     captureShieldCtaClickedEvent,
     captureShieldClaimSubmissionEvent,
-    captureShieldCryptoConfirmationEvent,
     captureShieldEligibilityCohortEvent,
     captureCommonExistingShieldSubscriptionEvents,
     captureShieldErrorStateClickedEvent,
     captureShieldSubscriptionRestartRequestEvent,
+    captureShieldUnexpectedErrorEvent,
   };
 };

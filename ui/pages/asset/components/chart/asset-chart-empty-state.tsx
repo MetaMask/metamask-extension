@@ -1,37 +1,33 @@
 import * as React from 'react';
-import { Box, Text } from '../../../../components/component-library';
-import {
-  BlockSize,
-  FontWeight,
-  TextAlign,
-  TextColor,
-  TextVariant,
-} from '../../../../helpers/constants/design-system';
+import { Box } from '../../../../components/component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../../components/ui/tab-empty-state';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 
 export const AssetChartEmptyState = () => {
   const t = useI18nContext();
+  const theme = useTheme();
+
+  const assetDetailsIcon =
+    theme === ThemeType.dark
+      ? '/images/empty-state-asset-details-dark.png'
+      : '/images/empty-state-asset-details-light.png';
+
   return (
     <Box className="asset-chart__empty-or-loading-state-container">
-      <Box className="asset-chart__empty-state-content">
-        <img
-          src="./images/asset-chart-empty-state-illustration.png"
-          className="asset-chart__empty-state-illustration"
-        />
-        <Text
-          textAlign={TextAlign.Center}
-          variant={TextVariant.bodySmMedium}
-          color={TextColor.textAlternative}
-          fontWeight={FontWeight.Medium}
-          paddingTop={4}
-          paddingRight={2}
-          paddingBottom={4}
-          paddingLeft={2}
-          width={BlockSize.Full}
-        >
-          {t('assetChartNoHistoricalPrices')}
-        </Text>
-      </Box>
+      <TabEmptyState
+        icon={
+          <img
+            src={assetDetailsIcon}
+            alt={t('assetChartNoHistoricalPrices')}
+            width={72}
+            height={72}
+          />
+        }
+        description={t('assetChartNoHistoricalPrices')}
+        className="asset-chart__empty-state-content mx-auto"
+      />
     </Box>
   );
 };

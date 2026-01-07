@@ -117,6 +117,7 @@ export type ControllerStatePropertiesEnumerated = {
   isRampCardClosed: AppStateControllerState['isRampCardClosed'];
   newPrivacyPolicyToastClickedOrClosed: AppStateControllerState['newPrivacyPolicyToastClickedOrClosed'];
   newPrivacyPolicyToastShownDate: AppStateControllerState['newPrivacyPolicyToastShownDate'];
+  pna25Acknowledged: AppStateControllerState['pna25Acknowledged'];
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: AppStateControllerState['hadAdvancedGasFeesSetPriorToMigration92_3'];
@@ -148,6 +149,7 @@ export type ControllerStatePropertiesEnumerated = {
   enforcedSimulationsSlippageForTransactions: AppStateControllerState['enforcedSimulationsSlippageForTransactions'];
   networkConnectionBanner: AppStateControllerState['networkConnectionBanner'];
   isWalletResetInProgress: AppStateControllerState['isWalletResetInProgress'];
+  sidePanelGasPollTokens: AppStateControllerState['sidePanelGasPollTokens'];
   quoteRequest: BridgeControllerState['quoteRequest'];
   quotes: BridgeControllerState['quotes'];
   quotesInitialLoadTime: BridgeControllerState['quotesInitialLoadTime'];
@@ -288,6 +290,7 @@ export type ControllerStatePropertiesEnumerated = {
   unapprovedTypedMessagesCount: SignatureControllerState['unapprovedTypedMessagesCount'];
   signatureRequests: SignatureControllerState['signatureRequests'];
   smartTransactionsState: SmartTransactionsControllerState['smartTransactionsState'];
+  isReady: SnapControllerState['isReady'];
   snaps: SnapControllerState['snaps'];
   snapStates: SnapControllerState['snapStates'];
   unencryptedSnapStates: SnapControllerState['unencryptedSnapStates'];
@@ -296,6 +299,7 @@ export type ControllerStatePropertiesEnumerated = {
   database: SnapsRegistryState['database'];
   lastUpdated: SnapsRegistryState['lastUpdated'];
   databaseUnavailable: SnapsRegistryState['databaseUnavailable'];
+  signature: SnapsRegistryState['signature'];
   subjectMetadata: SubjectMetadataControllerState['subjectMetadata'];
   swapsState: SwapsControllerState['swapsState'];
   tokenBalances: TokenBalancesControllerState['tokenBalances'];
@@ -324,6 +328,7 @@ export type ControllerStatePropertiesEnumerated = {
   rewardsSubscriptionTokens: RewardsControllerState['rewardsSubscriptionTokens'];
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
+  drafts: ClaimsControllerState['drafts'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &

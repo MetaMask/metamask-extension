@@ -2,6 +2,7 @@ import React, { Ref } from 'react';
 import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ButtonProps } from '@metamask/design-system-react';
+import { useSelector } from 'react-redux';
 
 import OnboardingStep4 from './OnboardingStep4';
 import {
@@ -10,7 +11,15 @@ import {
 } from './constants';
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: jest.fn(() => (key: string) => key),
+  useI18nContext: jest.fn(
+    () => (key: string, substitutions?: (string | React.ReactNode)[]) => {
+      if (substitutions && Array.isArray(substitutions)) {
+        // Return an array containing the key and all substitutions for interpolated translations
+        return [key, ...substitutions];
+      }
+      return key;
+    },
+  ),
 }));
 
 // Partially mock the design-system Button to expose props for assertions
@@ -65,6 +74,11 @@ jest.mock('../../../../hooks/rewards/useValidateReferralCode', () => ({
   useValidateReferralCode: jest.fn(),
 }));
 
+// Mock react-redux to provide useSelector for selectOnboardingReferralCode
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(),
+}));
+
 // Mock ProgressIndicator to verify props passed
 jest.mock(
   './ProgressIndicator',
@@ -96,6 +110,7 @@ const mockedUseOptIn = jest.requireMock('../../../../hooks/rewards/useOptIn')
 const mockedUseValidateReferralCode = jest.requireMock(
   '../../../../hooks/rewards/useValidateReferralCode',
 ).useValidateReferralCode as jest.Mock;
+const mockedUseSelector = useSelector as jest.Mock;
 
 function setup({
   referralCode = '',
@@ -130,6 +145,11 @@ describe('OnboardingStep4', () => {
     jest.clearAllMocks();
     // Prevent actual window.open
     jest.spyOn(window, 'open').mockImplementation(() => null);
+    // Default selector returns empty onboarding referral code
+    mockedUseSelector.mockImplementation(
+      (selector: (state: unknown) => unknown) =>
+        selector({ rewards: { onboardingReferralCode: '' } }),
+    );
   });
 
   it('renders layout sections and translation keys', () => {
@@ -174,6 +194,26 @@ describe('OnboardingStep4', () => {
     const progress = screen.getByTestId('rewards-onboarding-step4-progress');
     expect(progress).toHaveAttribute('data-current-step', '4');
     expect(progress).toHaveAttribute('data-total-steps', '4');
+  });
+
+  it('seeds validation with referral from store (trim + uppercase)', () => {
+    // Provide onboarding referral code from the mocked store
+    mockedUseSelector.mockImplementation(
+      (selector: (state: unknown) => unknown) =>
+        selector({ rewards: { onboardingReferralCode: ' abcd ' } }),
+    );
+
+    const impl = jest.fn((initialValue?: string) => ({
+      referralCode: initialValue ?? '',
+      setReferralCode: jest.fn(),
+      isValidating: false,
+      isValid: false,
+      isUnknownError: false,
+    }));
+    mockedUseValidateReferralCode.mockImplementation(impl);
+
+    render(<OnboardingStep4 />);
+    expect(impl).toHaveBeenCalledWith('ABCD');
   });
 
   it('updates referral code on input change', () => {
@@ -272,7 +312,7 @@ describe('OnboardingStep4', () => {
     render(<OnboardingStep4 />);
 
     const termsLink = screen.getByText(
-      'rewardsOnboardingStep4LegalDisclaimer2',
+      'rewardsOnboardingStep4LegalDisclaimerTermsLink',
     );
     fireEvent.click(termsLink);
     expect(window.open).toHaveBeenCalledWith(
@@ -282,7 +322,7 @@ describe('OnboardingStep4', () => {
     );
 
     const learnMoreLink = screen.getByText(
-      'rewardsOnboardingStep4LegalDisclaimer4',
+      'rewardsOnboardingStep4LegalDisclaimerLearnMoreLink',
     );
     fireEvent.click(learnMoreLink);
     expect(window.open).toHaveBeenCalledWith(

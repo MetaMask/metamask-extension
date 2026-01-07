@@ -5,6 +5,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getSocialLoginType } from '../../../selectors/seedless-onboarding/social-sync';
 import RewardsQRCode from './RewardsQRCode';
+import {
+  GOOGLE_ONBOARDING_URL,
+  SRP_ONBOARDING_URL,
+  APPLE_ONBOARDING_URL,
+} from './utils/constants';
 
 // Mock react-redux hooks
 jest.mock('react-redux', () => ({
@@ -78,7 +83,7 @@ describe('RewardsQRCode', () => {
     expect(mockUseSelector).toHaveBeenCalledWith(getSocialLoginType);
   });
 
-  it('encodes socialType in QR data when provided', () => {
+  it('encodes Google socialType in QR data when provided', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getSocialLoginType) {
         return 'google';
@@ -91,9 +96,25 @@ describe('RewardsQRCode', () => {
     const qrImageContainer = screen.getByTestId('qr-code-image');
     expect(qrImageContainer).toBeInTheDocument();
     // The inner HTML is produced by our qr generator mock and includes data-qr
-    expect(qrImageContainer.innerHTML).toContain(
-      'data-qr="https://link.metamask.io/onboarding?type=google&amp;existing=true"',
-    );
+    // InnerHTML encodes ampersands, so compare against encoded version
+    const encoded = GOOGLE_ONBOARDING_URL.replaceAll('&', '&amp;');
+    expect(qrImageContainer.innerHTML).toContain(`data-qr="${encoded}"`);
+  });
+
+  it('encodes Apple socialType in QR data when provided', () => {
+    mockUseSelector.mockImplementation((selector) => {
+      if (selector === getSocialLoginType) {
+        return 'apple';
+      }
+      return undefined;
+    });
+
+    render(<RewardsQRCode />);
+
+    const qrImageContainer = screen.getByTestId('qr-code-image');
+    expect(qrImageContainer).toBeInTheDocument();
+    const encoded = APPLE_ONBOARDING_URL.replaceAll('&', '&amp;');
+    expect(qrImageContainer.innerHTML).toContain(`data-qr="${encoded}"`);
   });
 
   it('defaults to SRP flow in QR data when socialType is absent', () => {
@@ -108,9 +129,8 @@ describe('RewardsQRCode', () => {
 
     const qrImageContainer = screen.getByTestId('qr-code-image');
     expect(qrImageContainer).toBeInTheDocument();
-    expect(qrImageContainer.innerHTML).toContain(
-      'data-qr="https://link.metamask.io/onboarding?type=srp"',
-    );
+    const encoded = SRP_ONBOARDING_URL.replaceAll('&', '&amp;');
+    expect(qrImageContainer.innerHTML).toContain(`data-qr="${encoded}"`);
   });
 
   it('dispatches close action when clicking Got it', () => {

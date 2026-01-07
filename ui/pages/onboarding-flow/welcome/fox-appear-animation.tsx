@@ -13,7 +13,7 @@ import {
 } from '../../../contexts/rive-wasm';
 
 type FoxAppearAnimationProps = {
-  isLoader: boolean;
+  isLoader?: boolean;
   skipTransition?: boolean;
 };
 

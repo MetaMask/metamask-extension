@@ -9,7 +9,11 @@ import {
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+} from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
 import {
   getMetamaskStateWithMaliciousPermit,
@@ -41,13 +45,9 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
-    const accountName = account.metadata.name;
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
       'Permit',
@@ -68,7 +68,7 @@ describe('Permit Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     fireEvent.click(
@@ -139,11 +139,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the expected title data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
@@ -168,15 +164,15 @@ describe('Permit Confirmation', () => {
   it('displays the simulation section', async () => {
     const scope = nock('https://price.api.cx.metamask.io')
       .persist()
-      .get('/v2/chains/1/spot-prices')
+      .get('/v3/spot-prices')
       .query({
-        tokenAddresses:
-          '0x0000000000000000000000000000000000000000,0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        assetIds:
+          'eip155:1/slip44:60,eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc',
         vsCurrency: 'ETH',
         includeMarketData: 'true',
       })
       .reply(200, {
-        '0xcccccccccccccccccccccccccccccccccccccccc': {
+        'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc': {
           allTimeHigh: 12,
           allTimeLow: 1,
           circulatingSupply: 50000,
@@ -198,21 +194,29 @@ describe('Permit Confirmation', () => {
         },
       });
 
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
       'Permit',
     );
 
+    // Get the pending permit ID to override chainId on the message
+    const pendingPermitId = Object.keys(
+      mockedMetaMaskState.unapprovedTypedMessages,
+    )[0] as keyof typeof mockedMetaMaskState.unapprovedTypedMessages;
+
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
+          // Override the chainId on the message to mainnet to match the nock mock
+          unapprovedTypedMessages: {
+            [pendingPermitId]: {
+              ...mockedMetaMaskState.unapprovedTypedMessages[pendingPermitId],
+              chainId: '0x1' as const,
+            },
+          },
           selectedNetworkClientId: 'testNetworkConfigurationId',
           providerConfig: {
             type: 'rpc',
@@ -250,11 +254,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the malicious banner', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
@@ -274,11 +274,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('tracks external link clicked property in signature rejected event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,

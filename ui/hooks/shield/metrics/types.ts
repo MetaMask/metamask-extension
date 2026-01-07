@@ -7,17 +7,21 @@ import {
 } from '@metamask/subscription-controller';
 import { TransactionType } from '@metamask/transaction-controller';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
+  ShieldSubscriptionRequestSubscriptionStateEnum,
+  ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
-import { DefaultSubscriptionPaymentOptions } from '../../../../shared/types';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ExistingSubscriptionEventParams,
+} from '../../../../shared/types';
 
 export type CaptureShieldEntryModalEventParams = {
-  source: EntryModalSourceEnum;
+  source: ShieldMetricsSourceEnum;
   type: ModalType;
 
   /**
@@ -42,7 +46,7 @@ export type CaptureShieldSubscriptionRequestParams =
       /**
        * Current subscription status before the new subscription request was started (cancelled, expired, etc.)
        */
-      subscriptionState: SubscriptionStatus | 'none';
+      subscriptionState: ShieldSubscriptionRequestSubscriptionStateEnum;
 
       /**
        * Actual options selected by the user for the new subscription request.
@@ -64,33 +68,6 @@ export type CaptureShieldSubscriptionRequestParams =
       requestStatus: 'started' | 'completed' | 'failed';
     };
 
-export type ExistingSubscriptionEventParams = {
-  /**
-   * Current subscription status before restarting the subscription. (e.g. cancelled, expired, etc.)
-   */
-  subscriptionStatus: SubscriptionStatus;
-
-  /**
-   * The payment type used for the previous subscription.
-   */
-  paymentType: PaymentType;
-
-  /**
-   * The billing interval used for the previous subscription.
-   */
-  billingInterval: RecurringInterval;
-
-  /**
-   * The crypto payment chain used for the previous subscription.
-   */
-  cryptoPaymentChain?: string;
-
-  /**
-   * The crypto payment currency used for the previous subscription.
-   */
-  cryptoPaymentCurrency?: string;
-};
-
 export type CaptureShieldMembershipCancelledEventParams =
   ExistingSubscriptionEventParams & {
     cancellationStatus: 'succeeded' | 'failed';
@@ -99,19 +76,6 @@ export type CaptureShieldMembershipCancelledEventParams =
      * The duration of the latest subscription in days.
      */
     latestSubscriptionDuration: number;
-  };
-
-/**
- * Capture the event when the payment method is changed whilst the membership is active.
- */
-export type CaptureShieldPaymentMethodChangeEventParams =
-  ExistingSubscriptionEventParams & {
-    newPaymentType: PaymentType;
-    newBillingInterval: RecurringInterval;
-    newPaymentCurrency: string;
-    newCryptoPaymentChain?: string;
-    changeStatus: 'succeeded' | 'failed';
-    errorMessage?: string;
   };
 
 export type CaptureShieldSubscriptionRestartRequestEventParams =
@@ -139,7 +103,7 @@ export type CaptureShieldCryptoConfirmationEventParams =
   };
 
 export type CaptureShieldCtaClickedEventParams = {
-  source: ShieldCtaSourceEnum;
+  source: ShieldMetricsSourceEnum;
 
   ctaActionClicked: ShieldCtaActionClickedEnum;
 
@@ -196,3 +160,8 @@ export type CaptureShieldErrorStateClickedEventParams =
     location: ShieldErrorStateLocationEnum;
     view: ShieldErrorStateViewEnum;
   };
+
+export type CaptureShieldUnexpectedErrorEventParams = {
+  errorMessage: string;
+  location: ShieldUnexpectedErrorEventLocationEnum;
+};

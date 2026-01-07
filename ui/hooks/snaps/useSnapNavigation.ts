@@ -1,11 +1,11 @@
 import { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { parseMetaMaskUrl } from '@metamask/snaps-utils';
 import { getSnapRoute } from '../../helpers/utils/util';
 
 const useSnapNavigation = () => {
   const navigate = useNavigate();
-  const useSnapNavigate = useCallback(
+  const handleSnapNavigate = useCallback(
     (url: string) => {
       let path;
       const linkData = parseMetaMaskUrl(url);
@@ -20,9 +20,9 @@ const useSnapNavigation = () => {
   );
   return useMemo(
     () => ({
-      useSnapNavigate,
+      handleSnapNavigate,
     }),
-    [useSnapNavigate],
+    [handleSnapNavigate],
   );
 };
 

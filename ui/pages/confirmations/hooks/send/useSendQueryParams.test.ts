@@ -1,6 +1,6 @@
 import { DefaultRootState, useSelector } from 'react-redux';
-import { useSearchParams } from 'react-router-dom-v5-compat';
-import { SetURLSearchParams } from 'react-router-dom-v5-compat/dist/react-router-dom';
+import { useSearchParams } from 'react-router-dom';
+import type { SetURLSearchParams } from 'react-router-dom';
 
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, MOCK_NFT1155 } from '../../../../../test/data/send/assets';
@@ -12,8 +12,8 @@ import * as SendContext from '../../context/send';
 import { useSendQueryParams } from './useSendQueryParams';
 import { useSendNfts } from './useSendNfts';
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useLocation: () => ({ pathname: '/send/asset' }),
   useSearchParams: jest.fn().mockReturnValue([{ get: () => null }]),
 }));

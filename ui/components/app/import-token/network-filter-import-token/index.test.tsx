@@ -3,7 +3,7 @@ import configureStore from 'redux-mock-store';
 import { screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { useSelector } from 'react-redux';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getIsTokenNetworkFilterEqualCurrentNetwork } from '../../../../selectors/selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';

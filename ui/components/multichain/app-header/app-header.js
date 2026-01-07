@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useRef } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { matchPath } from 'react-router-dom-v5-compat';
+import { matchPath } from 'react-router-dom';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -72,11 +72,11 @@ export const AppHeader = ({ location }) => {
         path: CONFIRM_TRANSACTION_ROUTE,
         end: false,
       },
-      location.pathname,
+      location?.pathname || '',
     ),
   );
   const isSwapsPage = Boolean(
-    matchPath({ path: SWAPS_ROUTE, end: false }, location.pathname),
+    matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);

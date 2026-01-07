@@ -1,7 +1,7 @@
 import { act } from '@testing-library/react-hooks';
 import { waitFor } from '@testing-library/react';
 import log from 'loglevel';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { useCandidateSubscriptionId } from './useCandidateSubscriptionId';
 
 // Mock store actions used by the hook

@@ -1,9 +1,5 @@
 import { useSelector } from 'react-redux';
-import {
-  getChainIdsToPoll,
-  getUseTokenDetection,
-  isGlobalNetworkSelectorRemoved,
-} from '../selectors';
+import { getUseTokenDetection } from '../selectors';
 import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   tokenDetectionStartPolling,
@@ -19,21 +15,16 @@ const useTokenDetectionPolling = () => {
   const useTokenDetection = useSelector(getUseTokenDetection);
   const completedOnboarding = useSelector(getCompletedOnboarding);
   const isUnlocked = useSelector(getIsUnlocked);
-  const chainIds = useSelector(getChainIdsToPoll);
   const enabledChainIds = useSelector(getEnabledChainIds);
 
   const enabled = completedOnboarding && isUnlocked && useTokenDetection;
-
-  const pollableChains = isGlobalNetworkSelectorRemoved
-    ? enabledChainIds
-    : chainIds;
 
   useMultiPolling({
     startPolling: tokenDetectionStartPolling,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     stopPollingByPollingToken: tokenDetectionStopPollingByPollingToken,
-    input: enabled ? [pollableChains] : [],
+    input: enabled ? [enabledChainIds] : [],
   });
 
   return {};

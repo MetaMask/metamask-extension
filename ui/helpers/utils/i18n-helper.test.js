@@ -1,7 +1,7 @@
 import React from 'react';
 import { captureException } from '../../../shared/lib/sentry';
 import { getMessage as getMessageShared } from '../../../shared/modules/i18n';
-import { renderWithProvider } from '../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { getMessage } from './i18n-helper';
 
 jest.mock('../../../shared/modules/i18n');
