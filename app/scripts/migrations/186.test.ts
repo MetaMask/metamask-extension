@@ -85,6 +85,8 @@ describe(`migration #${VERSION}`, () => {
   });
 
   it('does not add failover URL if QUICKNODE_MONAD_URL env variable is not set', async () => {
+    process.env.INFURA_PROJECT_ID = 'test-infura-project-id';
+
     const oldStorage = {
       meta: { version: oldVersion },
       data: {
@@ -93,8 +95,8 @@ describe(`migration #${VERSION}`, () => {
             [MONAD_CHAIN_ID]: {
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Custom,
-                  url: `https://monad-mainnet.infura.io/v3/`,
+                  type: RpcEndpointType.Infura,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
                 },
               ],
             },
@@ -114,6 +116,7 @@ describe(`migration #${VERSION}`, () => {
 
   it('does not add failover URL if there is already a failover URL', async () => {
     process.env.QUICKNODE_MONAD_URL = QUICKNODE_MONAD_URL;
+    process.env.INFURA_PROJECT_ID = 'test-infura-project-id';
 
     const existingFailoverUrl = 'https://existing-failover.com';
 
@@ -125,8 +128,8 @@ describe(`migration #${VERSION}`, () => {
             [MONAD_CHAIN_ID]: {
               rpcEndpoints: [
                 {
-                  type: RpcEndpointType.Custom,
-                  url: `https://monad-mainnet.infura.io/v3/`,
+                  type: RpcEndpointType.Infura,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
                   failoverUrls: [existingFailoverUrl],
                 },
               ],
@@ -144,8 +147,9 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
-  it('adds QuickNode failover URL to all Monad RPC endpoints when no failover URLs exist', async () => {
+  it('adds QuickNode failover URL to Monad Infura RPC endpoints when no failover URLs exist', async () => {
     process.env.QUICKNODE_MONAD_URL = QUICKNODE_MONAD_URL;
+    process.env.INFURA_PROJECT_ID = 'test-infura-project-id';
 
     const oldStorage = {
       meta: { version: oldVersion },
@@ -156,7 +160,7 @@ describe(`migration #${VERSION}`, () => {
               rpcEndpoints: [
                 {
                   type: RpcEndpointType.Infura,
-                  url: `https://monad-mainnet.infura.io/v3/`,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
                 },
                 {
                   type: RpcEndpointType.Custom,
@@ -168,7 +172,7 @@ describe(`migration #${VERSION}`, () => {
               rpcEndpoints: [
                 {
                   type: RpcEndpointType.Custom,
-                  url: `https://ethereum-mainnet.infura.io/v3/`,
+                  url: `https://ethereum-mainnet.infura.io/v3/test-infura-project-id`,
                 },
               ],
             },
@@ -186,13 +190,13 @@ describe(`migration #${VERSION}`, () => {
               rpcEndpoints: [
                 {
                   type: RpcEndpointType.Infura,
-                  url: `https://monad-mainnet.infura.io/v3/`,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
                   failoverUrls: [QUICKNODE_MONAD_URL],
                 },
                 {
                   type: RpcEndpointType.Custom,
                   url: `https://some-monad-rpc.com`,
-                  failoverUrls: [QUICKNODE_MONAD_URL],
+                  // Custom endpoint should NOT get failover URL
                 },
               ],
             },
@@ -200,7 +204,7 @@ describe(`migration #${VERSION}`, () => {
               rpcEndpoints: [
                 {
                   type: RpcEndpointType.Custom,
-                  url: `https://ethereum-mainnet.infura.io/v3/`,
+                  url: `https://ethereum-mainnet.infura.io/v3/test-infura-project-id`,
                 },
               ],
             },
@@ -213,6 +217,103 @@ describe(`migration #${VERSION}`, () => {
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
+    expect(versionedData).toStrictEqual(expectedStorage);
+    expect(changedControllers.has('NetworkController')).toBe(true);
+  });
+
+  it('adds QuickNode failover URL to Monad Infura-like endpoints (custom type with Infura URL pattern)', async () => {
+    process.env.QUICKNODE_MONAD_URL = QUICKNODE_MONAD_URL;
+    process.env.INFURA_PROJECT_ID = 'test-infura-project-id';
+
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MONAD_CHAIN_ID]: {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MONAD_CHAIN_ID]: {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://monad-mainnet.infura.io/v3/test-infura-project-id`,
+                  failoverUrls: [QUICKNODE_MONAD_URL],
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
+
+    expect(versionedData).toStrictEqual(expectedStorage);
+    expect(changedControllers.has('NetworkController')).toBe(true);
+  });
+
+  it('does not add QuickNode failover URL to non-Infura Monad endpoints', async () => {
+    process.env.QUICKNODE_MONAD_URL = QUICKNODE_MONAD_URL;
+
+    const oldStorage = {
+      meta: { version: oldVersion },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MONAD_CHAIN_ID]: {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://some-monad-rpc.com`,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MONAD_CHAIN_ID]: {
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom,
+                  url: `https://some-monad-rpc.com`,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
+
+    // Custom non-Infura endpoint should NOT get failover URL
     expect(versionedData).toStrictEqual(expectedStorage);
     expect(changedControllers.has('NetworkController')).toBe(true);
   });

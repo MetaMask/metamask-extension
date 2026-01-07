@@ -1,4 +1,6 @@
+import { RpcEndpointType } from '@metamask/network-controller';
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
+import { escapeRegExp } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
@@ -19,6 +21,7 @@ const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
  */
 function isValidRpcEndpoint(object: unknown): object is {
   url: string;
+  type?: RpcEndpointType;
   failoverUrls?: string[];
   [key: string]: unknown;
 } {
@@ -31,6 +34,44 @@ function isValidRpcEndpoint(object: unknown): object is {
         Array.isArray(object.failoverUrls) &&
         object.failoverUrls.every((url) => typeof url === 'string')))
   );
+}
+
+/**
+ * Checks if an RPC endpoint is an Infura endpoint.
+ *
+ * @param rpcEndpoint - The RPC endpoint to check.
+ * @returns True if the endpoint is an Infura endpoint.
+ */
+function isInfuraEndpoint(rpcEndpoint: {
+  url: string;
+  type?: RpcEndpointType;
+  [key: string]: unknown;
+}): boolean {
+  // Check if type is explicitly Infura
+  if (rpcEndpoint.type === RpcEndpointType.Infura) {
+    return true;
+  }
+
+  // Check if URL matches Infura pattern
+  // All featured networks that use Infura get added as custom RPC
+  // endpoints, not Infura RPC endpoints, so we need to check the URL pattern
+  const infuraUrlPattern = /^https:\/\/(.+?)\.infura\.io\/v3\//u;
+  const match = rpcEndpoint.url.match(infuraUrlPattern);
+
+  if (!match) {
+    return false;
+  }
+
+  // If INFURA_PROJECT_ID is set, verify it matches for more precise detection
+  if (process.env.INFURA_PROJECT_ID) {
+    const expectedUrl = `https://${match[1]}.infura.io/v3/${escapeRegExp(
+      process.env.INFURA_PROJECT_ID,
+    )}`;
+    return rpcEndpoint.url.startsWith(expectedUrl);
+  }
+
+  // If INFURA_PROJECT_ID is not set, just check if it matches the Infura pattern
+  return true;
 }
 
 /**
@@ -144,6 +185,11 @@ function transformState(
         Array.isArray(rpcEndpoint.failoverUrls) &&
         rpcEndpoint.failoverUrls.length > 0
       ) {
+        return rpcEndpoint;
+      }
+
+      // Only add failover URL to Infura endpoints
+      if (!isInfuraEndpoint(rpcEndpoint)) {
         return rpcEndpoint;
       }
 
