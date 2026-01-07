@@ -89,16 +89,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                   style="margin-right: 2px;"
                 >
                   <div
-                    class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-token mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-hover mm-box--rounded-full"
-                  >
-                    <img
-                      alt="ETH logo"
-                      class="mm-avatar-token__token-image"
-                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
-                    />
-                  </div>
-                  <div
-                    class="mm-box mm-badge-wrapper__badge-container mm-badge-wrapper__badge-container--rectangular-bottom-right"
+                    class="inline-flex"
                   >
                     <div
                       class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
@@ -106,7 +97,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                       <img
                         alt="ETH"
                         class="size-full object-contain"
-                        src="./images/eth_logo.svg"
+                        src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
                       />
                     </div>
                   </div>
