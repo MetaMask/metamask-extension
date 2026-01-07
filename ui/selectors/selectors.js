@@ -169,8 +169,6 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 // TODO: Update all references
 export { getEnabledNetworks };
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 /** `appState` slice selectors */
 
 export const getConfirmationExchangeRates = (state) => {
@@ -1473,14 +1471,11 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
 
   const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? (enabledNetworks?.[namespace] ?? {})
-    : tokenNetworkFilter;
+  const networks = enabledNetworks?.[namespace] ?? {};
 
   if (
     Object.keys(networks).length === 1 &&
@@ -1613,6 +1608,18 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+/**
+ * Input selector for retrieving all installed non-preinstalled Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Array - Installed non-preinstalled Snaps.
+ */
+export const selectInstalledNonPreinstalledSnaps = createSelector(
+  [selectInstalledSnaps],
+  (installedSnaps) =>
+    Object.values(installedSnaps).filter((snap) => !snap.preinstalled),
+);
+
 export const selectIsNetworkMenuOpen = (state) =>
   state.appState.isNetworkMenuOpen;
 
@@ -1657,18 +1664,16 @@ export const getSnapLatestVersion = createSelector(
  * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
  */
 export const getAllSnapAvailableUpdates = createSelector(
-  [selectInstalledSnaps, rawStateSelector],
+  [selectInstalledNonPreinstalledSnaps, rawStateSelector],
   (installedSnaps, state) => {
     const snapMap = new Map();
 
-    Object.keys(installedSnaps).forEach((snapId) => {
-      const latestVersion = getSnapLatestVersion(state, snapId);
+    installedSnaps.forEach((snap) => {
+      const latestVersion = getSnapLatestVersion(state, snap.id);
 
       snapMap.set(
-        snapId,
-        latestVersion
-          ? semver.gt(latestVersion, installedSnaps[snapId].version)
-          : false,
+        snap.id,
+        latestVersion ? semver.gt(latestVersion, snap.version) : false,
       );
     });
 
