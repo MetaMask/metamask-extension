@@ -1209,8 +1209,8 @@ export function setupController(
     cronjobControllerStorageManager,
   });
 
-  // Wire up the callback to notify the UI when storage writes fail
-  persistenceManager.setOnStorageWriteFailed(() => {
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed(() => {
     controller.appStateController.setShowDatabaseCorruptionToast(true);
   });
 

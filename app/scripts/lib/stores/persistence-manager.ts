@@ -173,48 +173,48 @@ export class PersistenceManager {
   #open: boolean = false;
 
   /**
-   * Callback to be invoked when storage write fails due to database corruption.
-   * This allows the background script to notify the UI about the corruption.
+   * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
+   * This allows the background script to notify the UI about the failure.
    */
-  #onStorageWriteFailed?: () => void;
+  #onSetFailed?: () => void;
 
   /**
-   * Tracks if a storage write failure occurred before the callback was registered.
+   * Tracks if a set failure occurred before the callback was registered.
    * This handles the race condition where failures happen during controller initialization.
    */
-  #storageWriteFailedBeforeCallbackRegistered = false;
+  #setFailedBeforeCallbackRegistered = false;
 
   constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
   }
 
   /**
-   * Sets the callback to be invoked when storage write fails.
+   * Sets the callback to be invoked when a set operation fails.
    * This is called by the background script to wire up the notification to the UI.
    * If a failure already occurred before this callback was registered, it will be
    * called immediately.
    *
-   * @param callback - The callback to invoke when storage write fails
+   * @param callback - The callback to invoke when a set operation fails
    */
-  setOnStorageWriteFailed(callback: () => void) {
-    this.#onStorageWriteFailed = callback;
+  setOnSetFailed(callback: () => void) {
+    this.#onSetFailed = callback;
 
     // If a failure occurred before this callback was registered, call it now
-    if (this.#storageWriteFailedBeforeCallbackRegistered) {
+    if (this.#setFailedBeforeCallbackRegistered) {
       callback();
     }
   }
 
   /**
-   * Notifies the UI that a storage write has failed.
+   * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
    * If the callback is not yet registered, tracks the failure for later notification.
    */
-  #notifyStorageWriteFailed() {
-    if (this.#onStorageWriteFailed) {
-      this.#onStorageWriteFailed();
+  #notifySetFailed() {
+    if (this.#onSetFailed) {
+      this.#onSetFailed();
     } else {
       // Callback not yet registered - track the failure for later
-      this.#storageWriteFailedBeforeCallbackRegistered = true;
+      this.#setFailedBeforeCallbackRegistered = true;
     }
   }
 
@@ -352,7 +352,7 @@ export class PersistenceManager {
             this.#dataPersistenceFailing = true;
             captureException(err);
 
-            this.#notifyStorageWriteFailed();
+            this.#notifySetFailed();
           }
           log.error('error setting state in local store:', err);
         } finally {
@@ -453,7 +453,7 @@ export class PersistenceManager {
             this.#dataPersistenceFailing = true;
             captureException(err);
 
-            this.#notifyStorageWriteFailed();
+            this.#notifySetFailed();
           }
           log.error('error setting state in local store:', err);
         } finally {
