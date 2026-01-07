@@ -81,11 +81,11 @@ automatically categorized by environment based on build target and GitHub contex
 | ------------------- | ---------------------------- | ----------------- | -------------------------------------------------------------- | -------------------- |
 | `production`        | Production releases          | `yarn build prod` | `yarn webpack --env production --targetEnvironment production` | `stable` branch      |
 | `staging`           | Main branch builds           | `yarn build dist` | `yarn webpack --env production`                                | `main` branch        |
-| `development`       | Local development            | `yarn start`      | `yarn webpack --env development --watch`                       | Local dev server     |
+| `development`       | Local development            | `yarn start`      | `yarn webpack --env development --watch`                       | Local                |
 | `testing`           | E2E test builds              | `yarn build:test` | `yarn webpack --env production --test`                         | Any                  |
 | `pull-request`      | PR builds                    | `yarn build dist` | `yarn webpack --env production`                                | `pull_request` event |
 | `release-candidate` | Release branches             | `yarn build dist` | `yarn webpack --env production`                                | `release/*` branches |
-| `other`             | Fallback (should not happen) | -                 | -                                                              | Uncategorized        |
+| `other`             | Local dist builds            | `yarn build dist` | `yarn webpack --env production`                                | Local builds         |
 
 For non-main build types (beta, flask, experimental), the environment includes the build type suffix:
 
@@ -109,7 +109,7 @@ Environments are determined by `development/build/utils.js:getEnvironment()`:
 3. **GitHub event** (fallback):
    - `pull_request` → `pull-request`
 
-4. **Default**: `other` (indicates misconfiguration)
+4. **Default**: `other` (local dist builds)
 
 ### DSN Selection Logic
 
@@ -128,14 +128,14 @@ if (METAMASK_ENVIRONMENT === 'production') → SENTRY_DSN (production project)
 
 Common Sentry search queries:
 
-| What you want   | Sentry Query                                          |
-| --------------- | ----------------------------------------------------- |
-| All PR errors   | `environment:development OR environment:pull-request` |
-| Staging errors  | `environment:staging OR environment:staging-*`        |
-| Test failures   | `environment:testing OR environment:testing-*`        |
-| Production only | `environment:production`                              |
-| Flask builds    | `environment:*-flask`                                 |
-| Beta builds     | `environment:*-beta`                                  |
+| What you want      | Sentry Query                                          |
+| ------------------ | ----------------------------------------------------- |
+| Development errors | `environment:development OR environment:pull-request` |
+| Staging errors     | `environment:staging OR environment:staging-*`        |
+| Test failures      | `environment:testing OR environment:testing-*`        |
+| Production only    | `environment:production`                              |
+| Flask builds       | `environment:*-flask`                                 |
+| Beta builds        | `environment:*-beta`                                  |
 
 ### Local Development Setup
 
