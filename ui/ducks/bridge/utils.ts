@@ -17,7 +17,7 @@ import {
   isNonEvmChainId,
   formatChainIdToHex,
 } from '@metamask/bridge-controller';
-import { handleFetch } from '@metamask/controller-utils';
+import { handleFetch, toChecksumHexAddress } from '@metamask/controller-utils';
 import { decGWEIToHexWEI } from '../../../shared/modules/conversion.utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
@@ -215,7 +215,8 @@ export const exchangeRateFromMarketData = (
   marketData?: Record<string, ContractMarketData>,
 ) =>
   isStrictHexString(tokenAddress) && isStrictHexString(chainId)
-    ? marketData?.[chainId]?.[tokenAddress]?.price
+    ? // @ts-expect-error - toChecksumHexAddress returns a Hex string
+      marketData?.[chainId]?.[toChecksumHexAddress(tokenAddress)]?.price
     : undefined;
 
 export const tokenAmountToCurrency = (
@@ -289,7 +290,7 @@ const createBridgeTokenPayload = (
     assetId?: string;
   },
   chainId: ChainId | Hex | CaipChainId,
-): TokenPayload['payload'] | null => {
+) => {
   const { assetId, ...rest } = tokenData;
   return toBridgeToken({
     ...rest,

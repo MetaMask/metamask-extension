@@ -9,6 +9,7 @@ import {
 } from '@metamask/bridge-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import { getAddress } from 'ethers/lib/utils';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -295,7 +296,7 @@ describe('Bridge selectors', () => {
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:1/slip44:60',
-        chainId: 'eip155:1',
+        chainId: '0x1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
@@ -314,7 +315,7 @@ describe('Bridge selectors', () => {
       expect(result).toStrictEqual({
         address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:1/slip44:60',
-        chainId: 'eip155:1',
+        chainId: '0x1',
         decimals: 18,
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
@@ -1731,7 +1732,9 @@ describe('Bridge selectors', () => {
         metamaskStateOverrides: {
           marketData: {
             '0x1': {
-              '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': { price: 1.2 },
+              [getAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')]: {
+                price: 1.2,
+              },
             },
           },
           currencyRates: {

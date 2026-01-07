@@ -78,7 +78,7 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -668,9 +668,16 @@ const PrepareBridgePage = ({
                 ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
-                dispatch(
-                  setToToken(getNativeAssetForChainId(networkConfig.chainId)),
-                );
+                fromToken &&
+                  dispatch(
+                    // Reset toToken to default, based on selected fromToken
+                    setToToken(
+                      getDefaultToToken(
+                        formatChainIdToCaip(networkConfig.chainId),
+                        fromToken,
+                      ),
+                    ),
+                  );
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>

@@ -241,6 +241,20 @@ describe('useDestinationAccount', () => {
 
   it('opens the modal when a HW wallet is selected by the user and the dest chain is solana', () => {
     const { result } = renderUseDestinationAccount({
+      featureFlagOverrides: {
+        bridgeConfig: {
+          chains: {
+            [ChainId.ETH]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+            [MultichainNetworks.SOLANA]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
+          },
+        },
+      },
       bridgeSliceOverrides: {
         toToken: toBridgeToken(
           getNativeAssetForChainId(MultichainNetworks.SOLANA),

@@ -377,13 +377,7 @@ export const getFromToken = createSelector(
       return fromToken;
     }
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
-    const newToToken = toBridgeToken(nativeAsset);
-    return newToToken
-      ? {
-          ...newToToken,
-          chainId: formatChainIdToCaip(fromChainId),
-        }
-      : newToToken;
+    return toBridgeToken(nativeAsset);
   },
 );
 
@@ -407,14 +401,19 @@ export const getToToken = createSelector(
         ? defaultToChainId
         : formatChainIdToCaip(fromToken.chainId);
     // Otherwise, determine the default token to use based on fromToken
-    return toBridgeToken(getDefaultToToken(targetChainId, fromToken));
+    return getDefaultToToken(targetChainId, fromToken);
   },
 );
 
 export const getToChain = createSelector(
-  [(state: BridgeAppState) => getToToken(state)?.chainId, getToChains],
-  (toChainId, toChains) =>
-    toChains.find(({ chainId }) => !isCrossChain(chainId, toChainId)),
+  [
+    (state: BridgeAppState) => getToToken(state)?.chainId,
+    getToChains,
+    getFromChain,
+  ],
+  (toChainId, toChains, fromChain) =>
+    toChains.find(({ chainId }) => !isCrossChain(chainId, toChainId)) ??
+    fromChain,
 );
 
 export const getFromAmount = (state: BridgeAppState): string | null =>
