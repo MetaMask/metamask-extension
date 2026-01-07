@@ -164,6 +164,7 @@ import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
+  createSentryError,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -521,12 +522,14 @@ export function getSubscriptions(): ThunkAction<
     try {
       const subscriptions = await submitRequestToBackground('getSubscriptions');
       return subscriptions;
-    } catch (err) {
-      log.error('[getSubscriptions] error', err);
-      const error = new Error(
-        `Failed to fetch subscriptions, ${getErrorMessage(err)}`,
+    } catch (error) {
+      log.error('[getSubscriptions] error', error);
+      captureException(
+        createSentryError(
+          'Failed to fetch subscriptions',
+          error,
+        ),
       );
-      captureException(error);
       throw error;
     }
   };
@@ -549,12 +552,14 @@ export function getSubscriptionPricing(): ThunkAction<
         'getSubscriptionPricing',
       );
       return pricing;
-    } catch (err) {
-      log.error('[getSubscriptionPricing] error', err);
-      const error = new Error(
-        `Failed to fetch subscription pricing, ${getErrorMessage(err)}`,
+    } catch (error) {
+      log.error('[getSubscriptionPricing] error', error);
+      captureException(
+        createSentryError(
+          'Failed to fetch subscription pricing',
+          error,
+        ),
       );
-      captureException(error);
       throw error;
     }
   };
@@ -577,12 +582,14 @@ export async function getSubscriptionCryptoApprovalAmount(
       [params],
     );
     return cryptoApprovalAmount;
-  } catch (err) {
-    log.error('[getSubscriptionCryptoApprovalAmount] error', err);
-    const error = new Error(
-      `Failed to get subscription crypto approval amount, ${getErrorMessage(err)}`,
+  } catch (error) {
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
+    captureException(
+      createSentryError(
+        'Failed to get subscription crypto approval amount',
+        err,
+      ),
     );
-    captureException(error);
     throw error;
   }
 }
@@ -657,10 +664,11 @@ export function cancelSubscription(params: {
     } catch (error) {
       log.error('[cancelSubscription] error', error);
       dispatch(displayWarning(error));
-      const cancelSubscriptionError = new Error(
-        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to cancel subscription', error),
       );
-      captureException(cancelSubscriptionError);
+
+      // rethrow the original error
       throw error;
     }
   };
@@ -697,11 +705,15 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       return billingPortalUrl;
     } catch (error) {
       log.error('[getSubscriptionBillingPortalUrl] error', error);
-      const getSubscriptionBillingPortalUrlError = new Error(
-        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError(
+          'Failed to get subscription billing portal url',
+          error,
+        ),
       );
-      captureException(getSubscriptionBillingPortalUrlError);
-      throw getSubscriptionBillingPortalUrlError;
+
+      // rethrow the original error
+      throw error;
     }
   };
 }
@@ -8144,7 +8156,7 @@ export async function submitShieldClaim(
     return ClaimSubmitToastType.Success;
   } catch (error) {
     captureException(
-      new Error(`Failed to submit shield claim, ${getErrorMessage(error)}`),
+      createSentryError('Failed to submit shield claim', error),
     );
     if (error instanceof SubmitClaimError) {
       throw error;

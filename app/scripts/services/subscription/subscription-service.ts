@@ -46,7 +46,7 @@ import {
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
 import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
-import { getErrorMessage } from '../../../../shared/modules/error';
+import { createSentryError } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -131,12 +131,13 @@ export class SubscriptionService {
       );
 
       return subscriptions;
-    } catch (err) {
-      const errorMessage = getErrorMessage(err);
-      const error = new Error(
-        `Failed to update subscription card payment method, ${errorMessage}`,
+    } catch (error) {
+      this.#captureException(
+        createSentryError(
+          'Failed to update subscription card payment method',
+          error as Error,
+        ),
       );
-      this.#captureException(error);
       throw error;
     }
   }
@@ -160,12 +161,13 @@ export class SubscriptionService {
       );
 
       return subscriptions;
-    } catch (err) {
-      const errorMessage = getErrorMessage(err);
-      const error = new Error(
-        `Failed to update subscription crypto payment method, ${errorMessage}`,
+    } catch (error) {
+      this.#captureException(
+        createSentryError(
+          'Failed to update subscription crypto payment method',
+          error as Error,
+        ),
       );
-      this.#captureException(error);
       throw error;
     }
   }
@@ -241,12 +243,13 @@ export class SubscriptionService {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
 
-      const subscriptionError = new Error(
-        `Failed to start subscription with card, ${errorMessage}`,
+      this.#captureException(
+        createSentryError(
+          'Failed to start subscription with card',
+          error as Error,
+        ),
       );
-
-      this.#captureException(subscriptionError);
-      throw subscriptionError;
+      throw error;
     }
   }
 
@@ -303,8 +306,9 @@ export class SubscriptionService {
       log.error('Failed to submit sponsorship intent', error);
 
       this.#captureException(
-        new Error(
-          `Failed to submit sponsorship intent, ${getErrorMessage(error)}`,
+        createSentryError(
+          'Failed to submit sponsorship intent',
+          error as Error,
         ),
       );
     }
@@ -341,10 +345,12 @@ export class SubscriptionService {
     } catch (err) {
       log.error('Failed to link reward to existing subscription', err);
 
-      const error = new Error(
-        `Failed to link reward to existing subscription, ${getErrorMessage(err)}`,
+      this.#captureException(
+        createSentryError(
+          'Failed to link reward to existing subscription',
+          err as Error,
+        ),
       );
-      this.#captureException(error);
     }
   }
 
@@ -505,8 +511,9 @@ export class SubscriptionService {
       }
 
       this.#captureException(
-        new Error(
-          `Error on Shield subscription approval transaction, ${getErrorMessage(error)}`,
+        createSentryError(
+          'Error on Shield subscription approval transaction',
+          error as Error,
         ),
       );
       throw error;
@@ -713,7 +720,7 @@ export class SubscriptionService {
       log.error('Failed to assign post tx cohort', error);
 
       this.#captureException(
-        new Error(`Failed to assign post tx cohort, ${getErrorMessage(error)}`),
+        createSentryError('Failed to assign post tx cohort', error as Error),
       );
     }
   }
