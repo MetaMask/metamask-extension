@@ -95,7 +95,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
-  selectShowDatabaseCorruptionToast,
+  selectShowStorageErrorToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -118,9 +118,7 @@ export function ToastMaster() {
 
   // Check if database corruption toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
-  const shouldShowDatabaseCorruptionToast = useSelector(
-    selectShowDatabaseCorruptionToast,
-  );
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
 
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
@@ -128,12 +126,12 @@ export function ToastMaster() {
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
   // Database corruption toast should show on ALL screens
-  const databaseCorruptionToast = <DatabaseCorruptionToast />;
+  const storageErrorToast = <StorageErrorToast />;
 
   if (onHomeScreen) {
     return (
       <ToastContainer>
-        {databaseCorruptionToast}
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -155,7 +153,7 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
-        {databaseCorruptionToast}
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
@@ -164,8 +162,8 @@ export function ToastMaster() {
 
   // On other screens, only render ToastContainer if database corruption toast should show
   // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
-  if (shouldShowDatabaseCorruptionToast) {
-    return <ToastContainer>{databaseCorruptionToast}</ToastContainer>;
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -770,15 +768,13 @@ function ShieldEndingToast() {
   );
 }
 
-function DatabaseCorruptionToast() {
+function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
   const [isDismissed, setIsDismissed] = useState(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
-  const showDatabaseCorruptionToast = useSelector(
-    selectShowDatabaseCorruptionToast,
-  );
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
 
   const handleRevealSrpClick = () => {
     setIsDismissed(true);
@@ -790,7 +786,7 @@ function DatabaseCorruptionToast() {
   };
 
   // Only show toast if selector returns true and user hasn't dismissed it
-  const shouldShow = showDatabaseCorruptionToast && !isDismissed;
+  const shouldShow = showStorageErrorToast && !isDismissed;
 
   return (
     shouldShow && (
@@ -803,9 +799,9 @@ function DatabaseCorruptionToast() {
             size={IconSize.Lg}
           />
         }
-        text={t('databaseCorruptionTitle')}
-        description={t('databaseCorruptionDescription')}
-        actionText={t('databaseCorruptionAction')}
+        text={t('storageErrorTitle')}
+        description={t('storageErrorDescription')}
+        actionText={t('storageErrorAction')}
         onActionClick={handleRevealSrpClick}
         borderRadius={BorderRadius.LG}
         textVariant={TextVariant.bodyMd}

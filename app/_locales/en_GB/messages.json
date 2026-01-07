@@ -1944,14 +1944,14 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
-  "databaseCorruptionAction": {
+  "storageErrorAction": {
     "message": "Save your Secret Recovery Phrase"
   },
-  "databaseCorruptionDescription": {
-    "message": "Database can no longer be used. MetaMask needs to be reinstalled. Make sure you save your Secret Recovery Phrase before proceeding."
+  "storageErrorDescription": {
+    "message": "There was a problem saving your data. Please save your Secret Recovery Phrase as a precaution. Reinstall MetaMask if this problem persists after you restart MetaMask."
   },
-  "databaseCorruptionTitle": {
-    "message": "Storage is corrupted"
+  "storageErrorTitle": {
+    "message": "Storage error"
   },
   "dateCreated": {
     "message": "Date created"

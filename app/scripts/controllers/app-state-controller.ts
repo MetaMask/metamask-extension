@@ -171,7 +171,7 @@ export type AppStateControllerState = {
    * Whether to show the database corruption toast.
    * This is set to true when browser.storage.local writes fail.
    */
-  showDatabaseCorruptionToast: boolean;
+  showStorageErrorToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -332,7 +332,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
-  showDatabaseCorruptionToast: false,
+  showStorageErrorToast: false,
   ...getInitialStateOverrides(),
 });
 
@@ -718,7 +718,7 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
-  showDatabaseCorruptionToast: {
+  showStorageErrorToast: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -957,9 +957,9 @@ export class AppStateController extends BaseController<
    *
    * @param show - Whether to show the toast
    */
-  setShowDatabaseCorruptionToast(show: boolean): void {
+  setShowStorageErrorToast(show: boolean): void {
     this.update((state) => {
-      state.showDatabaseCorruptionToast = show;
+      state.showStorageErrorToast = show;
     });
   }
 

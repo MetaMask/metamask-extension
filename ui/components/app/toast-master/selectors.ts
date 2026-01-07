@@ -51,7 +51,7 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
-      | 'showDatabaseCorruptionToast'
+      | 'showStorageErrorToast'
       | 'isUnlocked'
     >
   >;
@@ -243,22 +243,20 @@ export function selectShowShieldEndingToast(
 
 /**
  * Determines if the database corruption toast should be shown based on:
- * - showDatabaseCorruptionToast flag is true
+ * - showStorageErrorToast flag is true
  * - User has completed onboarding
  * - Wallet is unlocked
  *
  * @param state - Redux state object.
  * @returns Boolean indicating whether to show the toast
  */
-export function selectShowDatabaseCorruptionToast(
+export function selectShowStorageErrorToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
-  const { showDatabaseCorruptionToast, completedOnboarding, isUnlocked } =
+  const { showStorageErrorToast, completedOnboarding, isUnlocked } =
     state.metamask || {};
 
-  return Boolean(
-    showDatabaseCorruptionToast && completedOnboarding && isUnlocked,
-  );
+  return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
 }
 
 /**
