@@ -587,7 +587,7 @@ export async function getSubscriptionCryptoApprovalAmount(
     captureException(
       createSentryError(
         'Failed to get subscription crypto approval amount',
-        err,
+        error,
       ),
     );
     throw error;
