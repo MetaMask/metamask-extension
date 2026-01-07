@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Въведете парола, за да продължите"
   },
-  "ethereumPublicAddress": {
-    "message": "Публичен адрес за етереум"
-  },
   "etherscanView": {
     "message": "Преглед на акаунта в Etherscan"
   },

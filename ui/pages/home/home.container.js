@@ -89,6 +89,7 @@ import {
   getRedirectAfterDefaultPage,
   clearRedirectAfterDefaultPage,
 } from '../../ducks/history/history';
+import { AppHeader } from '../../components/multichain/app-header';
 import Home from './home.component';
 
 const mapStateToProps = (state) => {
@@ -257,7 +258,17 @@ const HomeWithRouter = ({ match: _match, ...props }) => {
   const { evaluateCohortEligibility } = useShieldSubscriptionContext();
 
   return (
-    <Home {...props} evaluateCohortEligibility={evaluateCohortEligibility} />
+    <>
+      {/* Note: Consider a sticky header instead of overflow */}
+      <AppHeader />
+
+      <div className="flex flex-col flex-1 min-h-0">
+        <Home
+          {...props}
+          evaluateCohortEligibility={evaluateCohortEligibility}
+        />
+      </div>
+    </>
   );
 };
 

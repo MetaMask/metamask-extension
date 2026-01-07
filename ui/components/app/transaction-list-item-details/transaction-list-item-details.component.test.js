@@ -141,8 +141,9 @@ describe('TransactionListItemDetails for swaps', () => {
     });
 
     expect(queryByText('View on block explorer')).toBeInTheDocument();
+    // Sender shows account name ("Test Account") since it matches an internal account
     expect(queryByTestId('sender-to-recipient')).toHaveTextContent(
-      '0x0DCD5...3E7bc0x00000...00000',
+      'Test Account0x00000...00000',
     );
     const expectedRows = [
       'Nonce1',

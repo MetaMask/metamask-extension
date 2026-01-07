@@ -1064,7 +1064,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1845,36 +1845,11 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
     "@metamask/profile-sync-controller": {
-      "globals": {
-        "Event": true,
-        "Headers": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "addEventListener": true,
-        "console.error": true,
-        "console.warn": true,
-        "dispatchEvent": true,
-        "fetch": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/keyring-controller": true,
-        "@noble/ciphers": true,
-        "@noble/hashes": true,
-        "browserify>buffer": true,
-        "@metamask/profile-sync-controller>siwe": true
-      }
-    },
-    "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": {
       "globals": {
         "Event": true,
         "Headers": true,
@@ -1993,7 +1968,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
-        "@metamask/shield-controller>@metamask/signature-controller": true,
+        "@metamask/signature-controller": true,
         "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
@@ -2001,24 +1976,6 @@
       }
     },
     "@metamask/signature-controller": {
-      "globals": {
-        "fetch": true
-      },
-      "packages": {
-        "@metamask/approval-controller": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/eth-sig-util": true,
-        "@metamask/keyring-controller": true,
-        "@metamask/logging-controller": true,
-        "@metamask/utils": true,
-        "browserify>buffer": true,
-        "webpack>events": true,
-        "@metamask/message-manager>jsonschema": true,
-        "uuid": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/signature-controller": {
       "globals": {
         "fetch": true
       },
@@ -2233,39 +2190,6 @@
         "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true,
         "@metamask/transaction-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "fast-json-patch": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
         "bn.js": true,
         "browserify>buffer": true,
         "eth-method-registry": true,
@@ -4010,6 +3934,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
       "globals": {
         "DOMException": true,
@@ -4636,7 +4565,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5559,7 +5488,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

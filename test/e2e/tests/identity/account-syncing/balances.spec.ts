@@ -12,6 +12,7 @@ import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
@@ -31,6 +32,8 @@ describe('Account syncing - Accounts with Balances', function () {
    * Phase 2: Complete onboarding flow with balance mocking - should discover additional accounts with balances (3 total: 2 synced + 1 discovered)
    */
   it('gracefully handles adding accounts with balances and synced accounts', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {

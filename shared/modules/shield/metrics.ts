@@ -15,7 +15,7 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringObject } from '@metamask/keyring-controller';
 import { Json } from '@metamask/utils';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldSubscriptionRequestSubscriptionStateEnum,
   ShieldUserAccountCategoryEnum,
   ShieldUserAccountTypeEnum,
@@ -136,6 +136,12 @@ export function getShieldCommonTrackingProps(
   };
 }
 
+/**
+ * Get the marketing tracking props for the Shield metrics.
+ *
+ * @param marketingUtmParams - The marketing UTM parameters.
+ * @returns The marketing tracking props.
+ */
 export function getShieldMarketingTrackingProps(
   marketingUtmParams?: Record<string, string>,
 ) {
@@ -145,6 +151,30 @@ export function getShieldMarketingTrackingProps(
   });
 
   return marketingProps;
+}
+
+/**
+ * Determine the subscription metrics source from the marketing UTM parameters.
+ *
+ * @param marketingUtmParams - The marketing UTM parameters.
+ * @returns The subscription metrics source.
+ */
+export function determineSubscriptionMetricsSourceFromMarketingUtmParams(
+  marketingUtmParams: Record<string, string>,
+): ShieldMetricsSourceEnum | undefined {
+  const marketingUtmSource = marketingUtmParams?.utm_source;
+
+  // If the deep link is from the carousel or notification, return the corresponding source.
+  if (marketingUtmSource === ShieldMetricsSourceEnum.Carousel) {
+    return ShieldMetricsSourceEnum.Carousel;
+  } else if (marketingUtmSource === ShieldMetricsSourceEnum.Notification) {
+    return ShieldMetricsSourceEnum.Notification;
+  }
+
+  // If current page is from deep link and found marketing UTM params, return the marketing source.
+  if (Object.keys(marketingUtmParams).length > 0) {
+    return ShieldMetricsSourceEnum.Marketing;
+  }
 }
 
 export function formatExistingSubscriptionEventProps(
@@ -226,7 +256,8 @@ export function getSubscriptionRequestTrackingProps(
       shieldSubscriptionMetricsProps?.marketingUtmParams,
     ),
     source:
-      shieldSubscriptionMetricsProps?.source || EntryModalSourceEnum.Settings,
+      shieldSubscriptionMetricsProps?.source ||
+      ShieldMetricsSourceEnum.Settings,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     multi_chain_balance_category: getUserBalanceCategory(

@@ -594,6 +594,84 @@ describe('Permission List Item', () => {
         const expandedSkeletons = container.querySelectorAll('.mm-skeleton');
         expect(expandedSkeletons.length).toBeGreaterThan(skeletons.length);
       });
+
+      it('renders erc20 token revocation permission correctly without frequency row', () => {
+        const mockErc20TokenRevocationPermission: StoredGatorPermissionSanitized<
+          Signer,
+          {
+            type: 'erc20-token-revocation';
+            isAdjustmentAllowed: boolean;
+            data: Record<string, unknown>;
+            rules?: {
+              type: string;
+              isAdjustmentAllowed: boolean;
+              data: { timestamp: number };
+            }[];
+          }
+        > = {
+          permissionResponse: {
+            chainId: '0x1',
+            address: mockAccountAddress,
+            permission: {
+              type: 'erc20-token-revocation',
+              isAdjustmentAllowed: false,
+              data: {
+                justification: 'Revoke all token approvals',
+              },
+              rules: [
+                {
+                  type: 'expiry',
+                  isAdjustmentAllowed: false,
+                  data: { timestamp: 1736358176 }, // January 8, 2025
+                },
+              ],
+            },
+            context: '0x00000000',
+            signerMeta: {
+              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            },
+          },
+          siteOrigin: 'http://localhost:8000',
+        };
+
+        const { container, getByTestId, queryByTestId } = renderWithProvider(
+          <ReviewGatorPermissionItem
+            networkName={mockNetworkName}
+            gatorPermission={mockErc20TokenRevocationPermission}
+            onRevokeClick={() => mockOnClick()}
+          />,
+          store,
+        );
+
+        expect(container).toMatchSnapshot();
+
+        expect(getByTestId('review-gator-permission-item')).toBeInTheDocument();
+
+        // Verify the amount label shows "All tokens" (the value for revocation)
+        const amountLabel = getByTestId('review-gator-permission-amount-label');
+        expect(amountLabel).toHaveTextContent('All tokens');
+
+        // Verify frequency row is NOT rendered for revocation permission
+        expect(
+          queryByTestId('review-gator-permission-frequency-label'),
+        ).not.toBeInTheDocument();
+
+        // Expand to see more details
+        const expandButton = container.querySelector('[aria-label="expand"]');
+        if (expandButton) {
+          fireEvent.click(expandButton);
+        }
+
+        // Verify expiration date is rendered
+        const expirationDate = getByTestId(
+          'review-gator-permission-expiration-date',
+        );
+        expect(expirationDate).toBeInTheDocument();
+
+        // Verify network name is rendered
+        const networkName = getByTestId('review-gator-permission-network-name');
+        expect(networkName).toHaveTextContent(mockNetworkName);
+      });
     });
   });
 });
