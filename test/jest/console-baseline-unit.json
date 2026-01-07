@@ -1065,9 +1065,9 @@
     "ui/pages/confirmations/components/confirm/info/set-approval-for-all-info/set-approval-for-all-info.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 7,
-      "MetaMask: Background connection not initialized": 67,
+      "MetaMask: Background connection not initialized": 69,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 19
+      "React: Act warnings (component updates not wrapped)": 21
     },
     "ui/pages/multichain-accounts/account-details/multichain-account-details.test.tsx": {
       "Reselect: Identity function warnings": 1,
