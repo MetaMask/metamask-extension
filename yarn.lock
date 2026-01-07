@@ -8501,6 +8501,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/storage-service@npm:^0.0.1":
+  version: 0.0.1
+  resolution: "@metamask/storage-service@npm:0.0.1"
+  dependencies:
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/utils": "npm:^11.8.1"
+  checksum: 10/ba2443e4bab7a4ef64bf3e0a10403ef94d50225e5ae5931a6fd32a21bfa8e276916ab6dc377d2db30c15c50acaeaee74a3c0b418a563311da9f98b9172fba300
+  languageName: node
+  linkType: hard
+
 "@metamask/streams@npm:^0.4.0":
   version: 0.4.0
   resolution: "@metamask/streams@npm:0.4.0"
@@ -32919,6 +32929,7 @@ __metadata:
     "@metamask/snaps-utils": "npm:^11.7.0"
     "@metamask/solana-wallet-snap": "npm:^2.5.1"
     "@metamask/solana-wallet-standard": "npm:^0.6.0"
+    "@metamask/storage-service": "npm:^0.0.1"
     "@metamask/streams": "npm:^0.4.0"
     "@metamask/subscription-controller": "npm:^5.3.1"
     "@metamask/superstruct": "npm:^3.2.1"
