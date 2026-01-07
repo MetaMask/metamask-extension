@@ -116,6 +116,7 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const activeTabOrigin = getOriginOfCurrentTab(state);
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
   // We only support connection with EVM or Solana accounts
@@ -127,7 +128,7 @@ export function selectShowConnectAccountToast(
   const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     isConnectableAccount &&
     connectedAccounts.length > 0 &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
@@ -162,7 +163,7 @@ export function selectShowConnectAccountGroupToast(
     allowShowAccountSetting &&
     accountGroup &&
     isAccountSupported &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     connectedAccounts.length > 0 &&
     !isConnected;
 
