@@ -52,6 +52,7 @@
     "onboardingDate": null,
     "outdatedBrowserWarningLastShown": "object",
     "popupGasPollTokens": "object",
+    "sidePanelGasPollTokens": [],
     "productTour": "accountIcon",
     "recoveryPhraseReminderHasBeenShown": true,
     "recoveryPhraseReminderLastShown": "number",
@@ -349,6 +350,7 @@
     }
   },
   "SnapController": {
+    "isReady": "boolean",
     "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object"
@@ -358,7 +360,8 @@
   "SnapsRegistry": {
     "database": "object",
     "lastUpdated": "number",
-    "databaseUnavailable": "boolean"
+    "databaseUnavailable": "boolean",
+    "signature": "string"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",

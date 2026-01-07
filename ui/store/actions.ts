@@ -81,6 +81,7 @@ import {
 
 import {
   Claim,
+  ClaimDraft,
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
@@ -6345,13 +6346,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function updateBalancesFoAccounts(
+export function updateBalancesFoAccounts(
   chainIds: string[],
   queryAllAccounts: boolean,
-): Promise<void> {
-  await submitRequestToBackground('updateBalances', [
-    { chainIds, queryAllAccounts },
-  ]);
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateBalances', [
+      { chainIds, queryAllAccounts },
+    ]);
+  };
 }
 
 /**
@@ -8155,4 +8158,26 @@ export async function generateClaimSignature(
     chainId,
     walletAddress,
   ]);
+}
+
+/**
+ * Saves a claim draft.
+ *
+ * @param draft - The draft to save.
+ * @returns The saved draft.
+ */
+export async function saveClaimDraft(
+  draft: Partial<ClaimDraft>,
+): Promise<ClaimDraft> {
+  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+}
+
+/**
+ * Deletes a claim draft.
+ *
+ * @param draftId - The ID of the draft to delete.
+ * @returns The deleted draft.
+ */
+export async function deleteClaimDraft(draftId: string): Promise<void> {
+  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }
