@@ -63,7 +63,10 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
 } from './selectors';
-import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getSelectedMultichainNetworkConfiguration,
+} from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
@@ -1306,6 +1309,14 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
+);
+
+export const selectAccountSupportsNetworkFilter = createSelector(
+  [getAssetsBySelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
+  (accountGroupAssets, enabledNetworks) =>
+    Object.keys(accountGroupAssets).some((chainId) =>
+      enabledNetworks.includes(chainId),
+    ),
 );
 
 export const getAssetsBySelectedAccountGroupWithTronResources =
