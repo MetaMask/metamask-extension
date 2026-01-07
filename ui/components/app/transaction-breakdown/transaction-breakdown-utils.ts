@@ -40,6 +40,7 @@ export const getTransactionBreakdownData = ({
     destinationTokenSymbol,
     status,
     type,
+    isGasFeeSponsored,
   } = transaction;
 
   const sourceTokenAmount =
@@ -121,6 +122,7 @@ export const getTransactionBreakdownData = ({
     priorityFee,
     baseFee: baseFeePerGas,
     isEIP1559Transaction: isEIP1559Transaction(transaction),
+    isGasFeeSponsored,
     l1HexGasTotal,
     sourceAmountFormatted,
     destinationAmountFormatted,

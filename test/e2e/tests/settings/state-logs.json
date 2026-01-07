@@ -379,6 +379,7 @@
     "delegations": {},
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
+    "drafts": [],
     "enabledNetworkMap": {
       "eip155": {
         "0x539": "boolean",
@@ -607,6 +608,7 @@
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
     "isRampCardClosed": "boolean",
+    "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": "boolean",
@@ -882,6 +884,7 @@
     "showShieldEntryModalOnce": "boolean",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
+    "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {

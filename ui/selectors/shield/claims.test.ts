@@ -3,6 +3,7 @@ import {
   ClaimsControllerState,
 } from '@metamask/claims-controller';
 import {
+  getClaimDrafts,
   getSupportedNetworksForClaim,
   getValidSubmissionWindowDays,
 } from './claims';
@@ -11,6 +12,7 @@ describe('shield claims selectors', () => {
   const DEFAULT_STATE: ClaimsControllerState = {
     claimsConfigurations: DEFAULT_CLAIMS_CONFIGURATIONS,
     claims: [],
+    drafts: [],
   };
 
   it('should return the supported networks for claim', () => {
@@ -29,5 +31,12 @@ describe('shield claims selectors', () => {
     expect(result).toEqual(
       DEFAULT_STATE.claimsConfigurations.validSubmissionWindowDays,
     );
+  });
+
+  it('should return the claim drafts', () => {
+    const result = getClaimDrafts({
+      metamask: DEFAULT_STATE,
+    });
+    expect(result).toEqual(DEFAULT_STATE.drafts);
   });
 });

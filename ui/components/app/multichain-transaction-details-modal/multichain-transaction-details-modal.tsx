@@ -43,12 +43,14 @@ import {
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ConfirmInfoRowDivider as Divider } from '../confirm/info/row';
 import { getURLHostName, shortenAddress } from '../../../helpers/utils/util';
+import { getAccountName } from '../../../selectors';
 import {
   KEYRING_TRANSACTION_STATUS_KEY,
   useMultichainTransactionDisplay,
 } from '../../../hooks/useMultichainTransactionDisplay';
 import { MultichainProviderConfig } from '../../../../shared/constants/multichain/networks';
 import {
+  getInternalAccounts,
   getInternalAccountsObject,
   isNonEvmAccount,
 } from '../../../selectors/accounts';
@@ -90,6 +92,7 @@ export function MultichainTransactionDetailsModal({
     id,
   } = useMultichainTransactionDisplay(transaction, networkConfig);
 
+  const internalAccounts = useSelector(getInternalAccounts);
   const internalAccountsById = useSelector(getInternalAccountsObject);
   const txInternalAccount = internalAccountsById?.[transaction.account];
   const nonEvmSenderAddress = isNonEvmAccount(txInternalAccount)
@@ -110,8 +113,14 @@ export function MultichainTransactionDetailsModal({
   };
   const statusKey = KEYRING_TRANSACTION_STATUS_KEY[status];
 
-  const accountComponent = (label: string, address?: string) =>
-    address ? (
+  const accountComponent = (label: string, address?: string) => {
+    if (!address) {
+      return null;
+    }
+    const accountName = getAccountName(internalAccounts, address);
+    const displayName = accountName || shortenAddress(address);
+
+    return (
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
           {label}
@@ -127,7 +136,7 @@ export function MultichainTransactionDetailsModal({
             externalLink
             href={getAddressUrl(address, chain)}
           >
-            {shortenAddress(address)}
+            {displayName}
             <Icon
               marginLeft={2}
               name={IconName.Export}
@@ -144,7 +153,8 @@ export function MultichainTransactionDetailsModal({
           </ButtonLink>
         </Box>
       </Box>
-    ) : null;
+    );
+  };
 
   const amountComponent = (
     asset:

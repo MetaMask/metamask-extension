@@ -74,7 +74,7 @@ import {
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { getLastUsedShieldSubscriptionPaymentDetails } from '../../selectors/subscription';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
   SUBSCRIPTION_DEFAULT_TRIAL_PERIOD_DAYS,
 } from '../../../shared/constants/subscriptions';
@@ -383,7 +383,7 @@ const ShieldPlan = () => {
 
   const handleBack = () => {
     const source = new URLSearchParams(search).get('source');
-    if (source === EntryModalSourceEnum.Settings) {
+    if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
       navigate(SETTINGS_ROUTE, { replace: true });
     } else {

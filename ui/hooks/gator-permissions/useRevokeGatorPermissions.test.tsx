@@ -31,7 +31,6 @@ import {
 } from '../../selectors';
 import {
   addPendingRevocation,
-  submitRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
@@ -51,7 +50,6 @@ jest.mock(
   '../../store/controller-actions/gator-permissions-controller',
   () => ({
     addPendingRevocation: jest.fn(),
-    submitRevocation: jest.fn(),
     checkDelegationDisabled: jest.fn(),
   }),
 );
@@ -109,9 +107,6 @@ const mockGetDelegationHashOffchain =
 
 const mockAddPendingRevocation = addPendingRevocation as jest.MockedFunction<
   typeof addPendingRevocation
->;
-const mockSubmitRevocation = submitRevocation as jest.MockedFunction<
-  typeof submitRevocation
 >;
 const mockCheckDelegationDisabled =
   checkDelegationDisabled as jest.MockedFunction<
@@ -273,7 +268,6 @@ describe('useRevokeGatorPermissions', () => {
       '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96' as `0x${string}`,
     );
     mockCheckDelegationDisabled.mockResolvedValue(false);
-    mockSubmitRevocation.mockResolvedValue(undefined);
     mockAddPendingRevocation.mockResolvedValue(undefined);
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 

@@ -76,6 +76,8 @@ import {
   add0x,
   hexToBytes,
   bytesToHex,
+  parseCaipAssetType,
+  KnownCaipNamespace,
 } from '@metamask/utils';
 import { normalize } from '@metamask/eth-sig-util';
 
@@ -1696,6 +1698,25 @@ export default class MetamaskController extends EventEmitter {
       },
     );
 
+    this.controllerMessenger.subscribe(
+      'BridgeStatusController:destinationTransactionCompleted',
+      (assetId) => {
+        const { chain } = parseCaipAssetType(assetId);
+
+        if (chain.namespace === KnownCaipNamespace.Eip155) {
+          const chainId = toHex(chain?.reference);
+
+          if (chainId) {
+            this.tokenDetectionController
+              .detectTokens({ chainIds: [chainId] })
+              .catch((err) => {
+                log.error('Error detecting tokens', { err });
+              });
+          }
+        }
+      },
+    );
+
     // This handles account changes every time relevant permission state
     // changes, for any reason.
     this.controllerMessenger.subscribe(
@@ -2902,6 +2923,18 @@ export default class MetamaskController extends EventEmitter {
         this.claimsController,
       ),
       getClaims: this.claimsController.getClaims.bind(this.claimsController),
+      saveClaimDraft: this.claimsController.saveOrUpdateClaimDraft.bind(
+        this.claimsController,
+      ),
+      getClaimDrafts: this.claimsController.getClaimDrafts.bind(
+        this.claimsController,
+      ),
+      deleteClaimDraft: this.claimsController.deleteClaimDraft.bind(
+        this.claimsController,
+      ),
+      deleteAllClaimDrafts: this.claimsController.deleteAllClaimDrafts.bind(
+        this.claimsController,
+      ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3287,9 +3320,10 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.addPendingRevocation.bind(
           gatorPermissionsController,
         ),
-      submitRevocation: gatorPermissionsController.submitRevocation.bind(
-        gatorPermissionsController,
-      ),
+      submitDirectRevocation:
+        gatorPermissionsController.submitDirectRevocation.bind(
+          gatorPermissionsController,
+        ),
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController

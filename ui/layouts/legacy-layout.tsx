@@ -1,5 +1,4 @@
 import React, { type ReactNode } from 'react';
-import { Header } from './header';
 
 /**
  * Temporary layout until we migrate each page that uses this.
@@ -9,11 +8,5 @@ import { Header } from './header';
  * @returns Component wrapped in legacy structure
  */
 export const LegacyLayout = ({ children }: { children: ReactNode }) => {
-  return (
-    <>
-      <Header />
-
-      <div className="mm-box main-container-wrapper">{children}</div>
-    </>
-  );
+  return <div className="mm-box main-container-wrapper">{children}</div>;
 };

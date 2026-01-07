@@ -398,6 +398,8 @@ export function rewriteReport(report) {
     });
 
     report.tags.installType = installType;
+    report.tags.storageKind =
+      globalThis.stateHooks?.getStorageKind?.() ?? 'unknown';
   } catch (err) {
     log('Error rewriting report', err);
   }
