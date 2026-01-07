@@ -1,4 +1,3 @@
-import { Browser } from 'selenium-webdriver';
 import { USER_STORAGE_GROUPS_FEATURE_KEY } from '@metamask/account-tree-controller';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -8,24 +7,11 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
 // Syncing can take some time (specially in Firefox) so adding a longer timeout to reduce flakes
-export const BASE_ACCOUNT_SYNC_TIMEOUT = 30000;
+export const BASE_ACCOUNT_SYNC_TIMEOUT = 45000;
 export const BASE_ACCOUNT_SYNC_INTERVAL = 1000;
 
 // Extra delay to wait after unlock before checking sync state (helps with Firefox timing issues)
 export const POST_UNLOCK_DELAY = 20000;
-
-/**
- * Skips the current test if running on Firefox.
- * Account syncing tests are flaky on Firefox due to timing issues.
- *
- * @param context - The Mocha test context (this)
- */
-export function skipOnFirefox(context: Mocha.Context): void {
-  if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
-    console.log('Skipping test on Firefox due to timing issues');
-    context.skip();
-  }
-}
 
 export const arrangeTestUtils = (
   driver: Driver,
