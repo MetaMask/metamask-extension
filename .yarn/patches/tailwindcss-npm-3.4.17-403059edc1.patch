@@ -9,10 +9,13 @@ index d3f71387a5fb7efffb16491e00ec1d1bdaca4a2c..38d938b1d4ef54dc37cf738a961228b2
 -        for (let file of newDeps){
 -            delete require.cache[file];
 -        }
-+        // LavaMoat will never allow this
-+        // for (let file of newDeps){
-+            // delete require.cache[file];
-+        // }
++        // This needs to be skipped in LavaMoat
++        const cacheDescr = Object.getOwnPropertyDescriptor(require, 'cache')
++        if (cacheDescr !== undefined && cacheDescr.writable) {
++            for (let file of newDeps){
++                delete require.cache[file];
++            }
++        }
          let newConfig = (0, _validateConfig.validateConfig)((0, _resolveconfig.default)((0, _loadconfig.loadConfig)(userConfigPath)));
          let newHash = (0, _hashConfig.default)(newConfig);
          configPathCache.set(userConfigPath, [
