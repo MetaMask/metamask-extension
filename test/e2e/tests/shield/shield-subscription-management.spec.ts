@@ -544,7 +544,8 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldSubscriptionApprovePage.clickFooterConfirmButton();
         await shieldDetailPage.checkPageIsLoaded();
 
-        await shieldDetailPage.checkPaymentMethod('Crypto (USDT), Account 1');
+        await shieldDetailPage.clickManagePlanButton();
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDT)');
       },
     );
   });
