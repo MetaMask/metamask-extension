@@ -41,7 +41,7 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
 
         const signedMessage = await signMessageTest.getSignedMessage();
 
-        assertSignedMessageIsValid({
+        await assertSignedMessageIsValid({
           signature: signedMessage[0],
           originalMessageString: messageToSign,
           addressBase58: DEFAULT_TRON_ADDRESS,

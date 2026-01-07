@@ -108,7 +108,7 @@ export const assertDisconnected = (connectionStatus: string): void => {
 };
 
 /**
- * Waits for the Confirm button in the footer of a Solana-specific modal to be clickable then clicks it.
+ * Waits for the Confirm button in the footer of a Tron-specific modal to be clickable then clicks it.
  * Note: This function does not work for general purpose modals like connect/disconnect.
  *
  * @param driver
