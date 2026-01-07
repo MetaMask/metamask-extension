@@ -30,12 +30,15 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newStorage.meta).toStrictEqual({ version: VERSION });
+    expect(versionedData.meta).toStrictEqual({ version: VERSION });
+    expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
-  it('logs a warning and returns the original state if NetworkController is missing', async () => {
+  it('logs a warning if NetworkController is missing', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
@@ -43,12 +46,15 @@ describe(`migration #${VERSION}`, () => {
 
     const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
     expect(mockWarn).toHaveBeenCalledWith(
       `Migration ${VERSION}: NetworkController not found.`,
     );
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.size).toBe(0);
   });
 
   it('does nothing if Monad network does not exist in the state', async () => {
@@ -70,9 +76,12 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
   it('does not add failover URL if QUICKNODE_MONAD_URL env variable is not set', async () => {
@@ -94,10 +103,13 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
     // When QUICKNODE_MONAD_URL is not set, no failover URL should be added
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
   it('does not add failover URL if there is already a failover URL', async () => {
@@ -124,9 +136,12 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newStorage.data).toStrictEqual(oldStorage.data);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
   it('adds QuickNode failover URL to all Monad RPC endpoints when no failover URLs exist', async () => {
@@ -194,8 +209,11 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const versionedData = structuredClone(oldStorage);
+    const changedControllers = new Set<string>();
+    await migrate(versionedData, changedControllers);
 
-    expect(newStorage).toStrictEqual(expectedStorage);
+    expect(versionedData).toStrictEqual(expectedStorage);
+    expect(changedControllers.has('NetworkController')).toBe(true);
   });
 });

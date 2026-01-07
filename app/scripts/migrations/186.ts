@@ -1,5 +1,4 @@
 import { getErrorMessage, hasProperty, Hex, isObject } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
 import { captureException } from '../../../shared/lib/sentry';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 
@@ -16,29 +15,30 @@ const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
  * This migration adds QuickNode failover URL to Monad network RPC endpoints
  * that use Infura and don't already have a failover URL configured.
  *
- * @param originalVersionedData - The original MetaMask extension state.
- * @returns Updated versioned MetaMask extension state.
+ * @param versionedData - The versioned MetaMask extension state to mutate in place.
+ * @param changedControllers - Set of controller keys that have been changed.
  */
 export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
-  const versionedData = cloneDeep(originalVersionedData);
+  versionedData: VersionedData,
+  changedControllers: Set<string>,
+): Promise<void> {
   versionedData.meta.version = version;
 
   try {
     transformState(versionedData.data);
+    // Track that NetworkController was changed
+    if (hasProperty(versionedData.data, 'NetworkController')) {
+      changedControllers.add('NetworkController');
+    }
   } catch (error) {
     console.error(error);
     const newError = new Error(
       `Migration #${version}: ${getErrorMessage(error)}`,
     );
     captureException(newError);
-    // Even though we encountered an error, we need the migration to pass for
-    // the migrator tests to work
-    versionedData.data = originalVersionedData.data;
+    // Re-throw to let the migrator handle the error
+    throw newError;
   }
-
-  return versionedData;
 }
 
 function transformState(state: Record<string, unknown>) {
