@@ -16,6 +16,7 @@ import {
   TextAlign,
 } from '@metamask/design-system-react';
 import { useSelector } from 'react-redux';
+import { AddressType, getAddressInfo } from 'bitcoin-address-validation';
 import { shortenAddress } from '../../../helpers/utils/util';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -25,7 +26,6 @@ import { MultichainAccountNetworkGroup } from '../multichain-account-network-gro
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../../app/scripts/lib/multichain/address';
 import { isBtcMainnetAddress } from '../../../../shared/lib/multichain/accounts';
-import { AddressType, getAddressInfo } from 'bitcoin-address-validation';
 import { Tag } from '../../component-library';
 
 type MultichainAggregatedAddressListRowProps = {

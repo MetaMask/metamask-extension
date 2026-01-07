@@ -65,7 +65,7 @@ jest.mock('../../../hooks/useCopyToClipboard', () => ({
 const TEST_STRINGS = {
   VIEW_ALL_TEXT: 'multichainAddressViewAll',
   EVM_NETWORKS: 'networkNameEthereum',
-  BITCOIN_NETWORK: 'networkNameBitcoinSegwit',
+  BITCOIN_NETWORK: 'Bitcoin',
   SOLANA_NETWORK: 'Solana',
   TRON_NETWORK: 'Tron',
 } as const;
