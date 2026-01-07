@@ -1312,13 +1312,23 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
 );
 
 export const selectAccountSupportsNetworkFilter = createSelector(
-  [getAssetsBySelectedAccountGroup, getAllEnabledNetworksForAllNamespaces],
-  (accountGroupAssets, enabledNetworks) => {
-    const accountChainIds = Object.keys(accountGroupAssets ?? {});
-    if (accountChainIds.length === 0) {
+  [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],
+  (selectedAccount, enabledNetworks) => {
+    if (!selectedAccount || enabledNetworks.length === 0) {
       return true;
     }
-    return accountChainIds.some((chainId) => enabledNetworks.includes(chainId));
+
+    const accountScopes = selectedAccount.scopes || [];
+
+    if (accountScopes.length === 0) {
+      return enabledNetworks.some((chainId) =>
+        isEvmChainId(chainId as Hex | CaipChainId),
+      );
+    }
+
+    return enabledNetworks.some((chainId) =>
+      accountScopes.includes(chainId as CaipChainId),
+    );
   },
 );
 
