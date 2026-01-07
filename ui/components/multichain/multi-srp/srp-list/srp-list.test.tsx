@@ -63,7 +63,8 @@ const mockSecondWallet = {
 
 const render = () => {
   // Set up useWalletInfo mock to return correct data for each wallet
-  mocks.useWalletInfoCallback.mockImplementation((walletId: AccountWalletId) => {
+  mocks.useWalletInfoCallback.mockImplementation(
+    (walletId: AccountWalletId) => {
       if (walletId === 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ') {
         return {
           multichainAccounts: [
