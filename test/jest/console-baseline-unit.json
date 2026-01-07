@@ -1011,8 +1011,8 @@
       "Reselect: Input stability warnings": 4,
       "Reselect: Identity function warnings": 7,
       "warn: ⚠️ React Router Future Flag": 2,
-      "MetaMask: Background connection not initialized": 220,
-      "React: Act warnings (component updates not wrapped)": 38,
+      "MetaMask: Background connection not initialized": 226,
+      "React: Act warnings (component updates not wrapped)": 40,
       "Test errors: Uncaught Errors": 1
     },
     "ui/pages/onboarding-flow/privacy-settings/privacy-settings.test.js": {
@@ -1661,7 +1661,7 @@
     "ui/pages/settings/developer-options-tab/developer-options-tab.test.tsx": {
       "React: componentWill* lifecycle deprecations": 1,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 1
+      "React: Act warnings (component updates not wrapped)": 5
     },
     "ui/hooks/rewards/useLinkAccountGroup.test.tsx": {
       "Reselect: Identity function warnings": 1,
@@ -1688,9 +1688,9 @@
     "ui/pages/confirmations/components/confirm/info/approve/approve-details/approve-details.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 6,
-      "MetaMask: Background connection not initialized": 9,
+      "MetaMask: Background connection not initialized": 15,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 9
+      "React: Act warnings (component updates not wrapped)": 15
     },
     "ui/components/app/assets/nfts/nfts-tab/nfts-tab.test.js": {
       "warn: ⚠️ React Router Future Flag": 2,
@@ -2469,6 +2469,9 @@
     },
     "app/scripts/migrations/176.test.ts": {
       "MetaMask: Migration skipped warnings": 3
+    },
+    "app/scripts/migrations/185.test.ts": {
+      "warn: Migration #185: Could not access": 2
     },
     "app/scripts/migrations/153.test.ts": {
       "MetaMask: Migration state warnings": 3
