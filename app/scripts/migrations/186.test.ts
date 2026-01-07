@@ -39,22 +39,21 @@ describe(`migration #${VERSION}`, () => {
     expect(changedControllers.has('NetworkController')).toBe(true);
   });
 
-  it('logs a warning if NetworkController is missing', async () => {
+  it('skips migration if NetworkController is missing', async () => {
     const oldStorage = {
       meta: { version: oldVersion },
       data: {},
     };
 
-    const mockWarn = jest.spyOn(console, 'warn').mockImplementation(jest.fn());
-
     const versionedData = cloneDeep(oldStorage);
     const changedControllers = new Set<string>();
     await migrate(versionedData, changedControllers);
 
-    expect(mockWarn).toHaveBeenCalledWith(
-      `Migration ${VERSION}: NetworkController not found.`,
-    );
+    // Version should still be updated
+    expect(versionedData.meta).toStrictEqual({ version: VERSION });
+    // Data should remain unchanged
     expect(versionedData.data).toStrictEqual(oldStorage.data);
+    // NetworkController should not be added to changedControllers
     expect(changedControllers.size).toBe(0);
   });
 

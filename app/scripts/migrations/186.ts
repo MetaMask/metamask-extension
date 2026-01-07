@@ -12,6 +12,66 @@ export const version = 186;
 const MONAD_CHAIN_ID: Hex = CHAIN_IDS.MONAD;
 
 /**
+ * Type guard to validate if an object has a valid RPC endpoint structure with url property.
+ *
+ * @param object - The object to validate.
+ * @returns True if the object has a valid RPC endpoint structure.
+ */
+function isValidRpcEndpoint(object: unknown): object is {
+  url: string;
+  failoverUrls?: string[];
+  [key: string]: unknown;
+} {
+  return (
+    isObject(object) &&
+    hasProperty(object, 'url') &&
+    typeof object.url === 'string' &&
+    (!hasProperty(object, 'failoverUrls') ||
+      (hasProperty(object, 'failoverUrls') &&
+        Array.isArray(object.failoverUrls) &&
+        object.failoverUrls.every((url) => typeof url === 'string')))
+  );
+}
+
+/**
+ * Type guard to validate if an object has a valid network configuration with rpcEndpoints.
+ *
+ * @param object - The object to validate.
+ * @returns True if the object has a valid network configuration structure.
+ */
+function isValidNetworkConfiguration(object: unknown): object is {
+  rpcEndpoints: unknown[];
+  [key: string]: unknown;
+} {
+  return (
+    isObject(object) &&
+    hasProperty(object, 'rpcEndpoints') &&
+    Array.isArray(object.rpcEndpoints)
+  );
+}
+
+/**
+ * Type guard to validate if the state has a valid NetworkController with networkConfigurationsByChainId.
+ *
+ * @param state - The state object to validate.
+ * @returns True if the state has a valid NetworkController structure.
+ */
+function hasValidNetworkController(
+  state: Record<string, unknown>,
+): state is Record<string, unknown> & {
+  NetworkController: {
+    networkConfigurationsByChainId: Record<string, unknown>;
+  };
+} {
+  return (
+    hasProperty(state, 'NetworkController') &&
+    isObject(state.NetworkController) &&
+    hasProperty(state.NetworkController, 'networkConfigurationsByChainId') &&
+    isObject(state.NetworkController.networkConfigurationsByChainId)
+  );
+}
+
+/**
  * This migration adds QuickNode failover URL to Monad network RPC endpoints
  * that use Infura and don't already have a failover URL configured.
  *
@@ -25,9 +85,8 @@ export async function migrate(
   versionedData.meta.version = version;
 
   try {
-    transformState(versionedData.data);
-    // Track that NetworkController was changed
-    if (hasProperty(versionedData.data, 'NetworkController')) {
+    if (hasValidNetworkController(versionedData.data)) {
+      transformState(versionedData.data);
       changedControllers.add('NetworkController');
     }
   } catch (error) {
@@ -41,41 +100,14 @@ export async function migrate(
   }
 }
 
-function transformState(state: Record<string, unknown>) {
-  if (!hasProperty(state, 'NetworkController')) {
-    console.warn(`Migration ${version}: NetworkController not found.`);
-    return state;
-  }
-
-  const networkState = state.NetworkController;
-  if (!isObject(networkState)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: NetworkController is not an object: ${typeof networkState}`,
-      ),
-    );
-    return state;
-  }
-
-  if (!hasProperty(networkState, 'networkConfigurationsByChainId')) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: NetworkController missing property networkConfigurationsByChainId.`,
-      ),
-    );
-    return state;
-  }
-
-  if (!isObject(networkState.networkConfigurationsByChainId)) {
-    global.sentry?.captureException?.(
-      new Error(
-        `Migration ${version}: NetworkController.networkConfigurationsByChainId is not an object: ${typeof networkState.networkConfigurationsByChainId}.`,
-      ),
-    );
-    return state;
-  }
-
-  const { networkConfigurationsByChainId } = networkState;
+function transformState(
+  state: Record<string, unknown> & {
+    NetworkController: {
+      networkConfigurationsByChainId: Record<string, unknown>;
+    };
+  },
+): void {
+  const { networkConfigurationsByChainId } = state.NetworkController;
 
   // Get Monad network configuration
   const monadNetworkConfiguration =
@@ -83,37 +115,30 @@ function transformState(state: Record<string, unknown>) {
 
   if (!monadNetworkConfiguration) {
     // Monad network doesn't exist, nothing to migrate
-    return state;
+    return;
   }
 
-  if (
-    !isObject(monadNetworkConfiguration) ||
-    !hasProperty(monadNetworkConfiguration, 'rpcEndpoints') ||
-    !Array.isArray(monadNetworkConfiguration.rpcEndpoints)
-  ) {
-    global.sentry?.captureException?.(
+  if (!isValidNetworkConfiguration(monadNetworkConfiguration)) {
+    // Invalid network configuration structure - log to Sentry as this is unexpected
+    captureException(
       new Error(
-        `Migration ${version}: Monad network configuration has invalid rpcEndpoints.`,
+        `Migration ${version}: Monad network configuration has invalid rpcEndpoints structure.`,
       ),
     );
-    return state;
+    return;
   }
 
   // Update RPC endpoints to add failover URL if needed
   monadNetworkConfiguration.rpcEndpoints =
     monadNetworkConfiguration.rpcEndpoints.map((rpcEndpoint) => {
-      // Skip if endpoint is not an object or doesn't have a url property
-      if (
-        !isObject(rpcEndpoint) ||
-        !hasProperty(rpcEndpoint, 'url') ||
-        typeof rpcEndpoint.url !== 'string'
-      ) {
+      if (!isValidRpcEndpoint(rpcEndpoint)) {
+        // Skip invalid endpoints - this is expected for some edge cases
         return rpcEndpoint;
       }
 
       // Skip if endpoint already has failover URLs
       if (
-        hasProperty(rpcEndpoint, 'failoverUrls') &&
+        rpcEndpoint.failoverUrls &&
         Array.isArray(rpcEndpoint.failoverUrls) &&
         rpcEndpoint.failoverUrls.length > 0
       ) {
@@ -131,6 +156,4 @@ function transformState(state: Record<string, unknown>) {
 
       return rpcEndpoint;
     });
-
-  return state;
 }
