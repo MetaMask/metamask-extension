@@ -1,4 +1,4 @@
-import { Key } from 'selenium-webdriver';
+import { By, Key } from 'selenium-webdriver';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
 
@@ -12,6 +12,8 @@ class Confirmation {
   private footerConfirmButton: RawLocator;
 
   private formComboFieldInputSelector = '.form-combo-field input';
+
+  private skeletonLoader = '[data-testid="confirmation__info_skeleton"]';
 
   private formComboFieldOptionPrimarySelector =
     '.form-combo-field__option-primary';
@@ -71,6 +73,13 @@ class Confirmation {
       throw e;
     }
     console.log('Confirmation page is loaded');
+  }
+
+  async waitForSkeletonLoaderToDisappear() {
+    await this.driver.wait(async () => {
+      const skeletonLoader = await this.driver.findElement(this.skeletonLoader);
+      return skeletonLoader.isDisplayed();
+    });
   }
 
   async clickScrollToBottomButton() {
