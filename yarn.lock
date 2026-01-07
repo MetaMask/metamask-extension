@@ -27872,9 +27872,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@npm:4.21.1":
-  version: 4.21.1
-  resolution: "html-bundler-webpack-plugin@npm:4.21.1"
+"html-bundler-webpack-plugin@npm:4.22.0":
+  version: 4.22.0
+  resolution: "html-bundler-webpack-plugin@npm:4.22.0"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
     ansis: "npm:4.1.0"
@@ -27917,13 +27917,13 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/8c32e3a74448b44d14052c74f6951d8531cf3893589bcc2eaeaae5d38eff2256833565baf3d700dbdcf7f6b5a0af8361b401df2212fa434066b0cf76b39ab52b
+  checksum: 10/ec81f1b724c146a667c2afa55a8d1dfff723e54f9abc615bda6bd5215057dde3c30a18fb2c67b92024e4413ec7af961c93fefd7b93b51d0f8a0d2f3f48ae4c6b
   languageName: node
   linkType: hard
 
-"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch":
-  version: 4.21.1
-  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch::version=4.21.1&hash=942bd4"
+"html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.22.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.22.0-5c9a1ad61e.patch":
+  version: 4.22.0
+  resolution: "html-bundler-webpack-plugin@patch:html-bundler-webpack-plugin@npm%3A4.22.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.22.0-5c9a1ad61e.patch::version=4.22.0&hash=f84b29"
   dependencies:
     "@types/html-minifier-terser": "npm:^7.0.2"
     ansis: "npm:4.1.0"
@@ -27966,7 +27966,7 @@ __metadata:
       optional: true
     twig:
       optional: true
-  checksum: 10/f2ebc757eb10255c6af197d308473e065702c8a7aff10eda4da04b2cfed8ccc7a027f0640ce3d172819e018366bd332a9867b7977edae5efbcba76bb8c94cc5b
+  checksum: 10/663ca67b5e464b1efc1a089de2da6398cf533cc1c271b7a501e73c47377bf91a81e13303517964b00908ba2441b80273046a12e1caf490a523ebea3c19c34c12
   languageName: node
   linkType: hard
 
@@ -33161,7 +33161,7 @@ __metadata:
     gulp-watch: "npm:^5.0.1"
     gulp-zip: "npm:^5.1.0"
     he: "npm:^1.2.0"
-    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.21.1#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.21.1-c5b80fbfd7.patch"
+    html-bundler-webpack-plugin: "patch:html-bundler-webpack-plugin@npm%3A4.22.0#~/.yarn/patches/html-bundler-webpack-plugin-npm-4.22.0-5c9a1ad61e.patch"
     http-server: "npm:^14.1.1"
     https-browserify: "npm:^1.0.0"
     human-standard-token-abi: "npm:^2.0.0"

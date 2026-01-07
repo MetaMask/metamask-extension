@@ -1,8 +1,8 @@
 diff --git a/src/Common/VMScript.js b/src/Common/VMScript.js
-index f83d758d92d67528ada004b0a3d4379fb3afcec4..f9856b9727a2bb7deecb2c68247e76d9cd5d98f9 100644
+index f83d758d92d67528ada004b0a3d4379fb3afcec4..84542a774e9e6c1ac7a100f474891901af1ed2a5 100644
 --- a/src/Common/VMScript.js
 +++ b/src/Common/VMScript.js
-@@ -35,6 +35,19 @@ class VMScript {
+@@ -35,6 +35,20 @@ class VMScript {
      }
  
      try {
@@ -19,26 +19,7 @@ index f83d758d92d67528ada004b0a3d4379fb3afcec4..f9856b9727a2bb7deecb2c68247e76d9
 +      if (code.includes(getUrlImport)){
 +        code = code.replace(getUrlImport, `var ___CSS_LOADER_GET_URL_IMPORT___ = require('../../node_modules/css-loader/dist/runtime/getUrl.js');`)
 +      }
++
        const script = new vm.Script(code, { filename });
        let result = script.runInContext(this.context);
  
-diff --git a/src/Plugin/PluginService.js b/src/Plugin/PluginService.js
-index b4c434959c9cb6b56b65f2a8fe578d2dcc0466b9..f389bb0136f1f18408acaff8aace69e8052cc7d9 100644
---- a/src/Plugin/PluginService.js
-+++ b/src/Plugin/PluginService.js
-@@ -48,10 +48,12 @@ class PluginService {
-       // add reference for the preprocessor option into the loader options
-       if (pluginOptions.preprocessor != null && loaderOptions.preprocessor == null) {
-         loaderOptions.preprocessor = pluginOptions.preprocessor;
-+      }
- 
--        if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
--          loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
--        }
-+      // this is a bug in the plugin, @itsyoboieltr opened a PR to fix this
-+      // https://github.com/webdiscus/html-bundler-webpack-plugin/pull/187
-+      if (pluginOptions.preprocessorOptions && !loaderOptions.preprocessorOptions) {
-+        loaderOptions.preprocessorOptions = pluginOptions.preprocessorOptions;
-       }
- 
-       context = {
