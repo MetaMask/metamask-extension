@@ -25,6 +25,10 @@ export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
     FULL: `${TRANSACTION_SHIELD_CLAIMS}/new-claim`,
     RELATIVE: '/new-claim',
   },
+  EDIT_DRAFT: {
+    FULL: `${TRANSACTION_SHIELD_CLAIMS}/edit-draft`,
+    RELATIVE: '/edit-draft',
+  },
   VIEW_PENDING: {
     FULL: `${TRANSACTION_SHIELD_CLAIMS}/view-pending-claim`,
     RELATIVE: '/view-pending-claim',
