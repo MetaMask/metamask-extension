@@ -175,7 +175,10 @@ export function useRevokeGatorPermissions({
 
       if (isDisabled) {
         // Return null since no actual transaction is needed when already disabled
-        await submitDirectRevocation({ permissionContext });
+        await submitDirectRevocation({
+          permissionContext,
+          revocationMetadata: {}, // We provide empty metadata since no transaction is needed when already disabled
+        });
         return null;
       }
 

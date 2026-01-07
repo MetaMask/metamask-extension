@@ -1,4 +1,7 @@
-import { GatorPermissionsMap } from '@metamask/gator-permissions-controller';
+import {
+  GatorPermissionsMap,
+  RevocationMetadata,
+} from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import { submitRequestToBackground } from '../background-connection';
 
@@ -46,15 +49,18 @@ export const addPendingRevocation = async ({
  *
  * @param params - The parameters for direct revocation.
  * @param params.permissionContext - The permission context to revoke.
+ * @param params.revocationMetadata - The metadata for the revocation.
  */
 export const submitDirectRevocation = async ({
   permissionContext,
 }: {
   permissionContext: Hex;
+  revocationMetadata: RevocationMetadata;
 }): Promise<void> => {
   await submitRequestToBackground('submitDirectRevocation', [
     {
       permissionContext,
+      revocationMetadata,
     },
   ]);
 };
