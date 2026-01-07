@@ -164,6 +164,7 @@ import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
+  createSentryError,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -523,9 +524,10 @@ export function getSubscriptions(): ThunkAction<
       return subscriptions;
     } catch (error) {
       log.error('[getSubscriptions] error', error);
-      throw new Error(
-        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to fetch subscriptions', error),
       );
+      throw error;
     }
   };
 }
@@ -549,9 +551,10 @@ export function getSubscriptionPricing(): ThunkAction<
       return pricing;
     } catch (error) {
       log.error('[getSubscriptionPricing] error', error);
-      throw new Error(
-        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to fetch subscription pricing', error),
       );
+      throw error;
     }
   };
 }
@@ -567,10 +570,22 @@ export function getSubscriptionPricing(): ThunkAction<
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
 ): Promise<GetCryptoApproveTransactionResponse> {
-  return await submitRequestToBackground<string>(
-    'getSubscriptionCryptoApprovalAmount',
-    [params],
-  );
+  try {
+    const cryptoApprovalAmount = await submitRequestToBackground<string>(
+      'getSubscriptionCryptoApprovalAmount',
+      [params],
+    );
+    return cryptoApprovalAmount;
+  } catch (error) {
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
+    captureException(
+      createSentryError(
+        'Failed to get subscription crypto approval amount',
+        error,
+      ),
+    );
+    throw error;
+  }
 }
 
 /**
@@ -598,8 +613,11 @@ export function startSubscriptionWithCard(params: {
       );
 
       return subscriptions;
-    } catch (error) {
-      console.error('[startSubscriptionWithCard] error', error);
+    } catch (err) {
+      log.error('[startSubscriptionWithCard] error', err);
+      const error = new Error(
+        `Failed to start subscription with card, ${getErrorMessage(err)}`,
+      );
       throw error;
     }
   };
@@ -640,9 +658,12 @@ export function cancelSubscription(params: {
     } catch (error) {
       log.error('[cancelSubscription] error', error);
       dispatch(displayWarning(error));
-      throw new Error(
-        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to cancel subscription', error),
       );
+
+      // rethrow the original error
+      throw error;
     }
   };
 }
@@ -655,9 +676,11 @@ export function unCancelSubscription(params: {
       await submitRequestToBackground('unCancelSubscription', [params]);
     } catch (error) {
       log.error('[unCancelSubscription] error', error);
-      throw new Error(
+      const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
+      captureException(unCancelSubscriptionError);
+      throw unCancelSubscriptionError;
     }
   };
 }
@@ -676,9 +699,15 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       return billingPortalUrl;
     } catch (error) {
       log.error('[getSubscriptionBillingPortalUrl] error', error);
-      throw new Error(
-        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError(
+          'Failed to get subscription billing portal url',
+          error,
+        ),
       );
+
+      // rethrow the original error
+      throw error;
     }
   };
 }
@@ -8120,6 +8149,7 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    captureException(createSentryError('Failed to submit shield claim', error));
     if (error instanceof SubmitClaimError) {
       throw error;
     }

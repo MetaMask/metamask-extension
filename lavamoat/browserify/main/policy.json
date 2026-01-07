@@ -2239,7 +2239,8 @@
     "@metamask/utils": {
       "globals": {
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
