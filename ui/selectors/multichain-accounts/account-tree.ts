@@ -927,6 +927,10 @@ export const getWalletIdsByType = createSelector(
     wallets: Record<AccountWalletId, AccountWalletObject>,
     walletType?: AccountWalletType,
   ): AccountWalletId[] => {
+    if (!wallets) {
+      return [];
+    }
+
     if (!walletType) {
       // return all wallet IDs if no type is specified
       return Object.keys(wallets) as AccountWalletId[];
