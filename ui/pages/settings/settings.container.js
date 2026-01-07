@@ -121,6 +121,9 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimViewCompletedPage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL),
   );
+  const isShieldClaimEditDraftPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL),
+  );
   const isShieldClaimBasePage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
   );
@@ -139,7 +142,11 @@ const mapStateToProps = (state, ownProps) => {
   }
 
   // If pathname is view claim route rename the tab title to "Claim details"
-  if (isShieldClaimViewActivePage || isShieldClaimViewCompletedPage) {
+  if (
+    isShieldClaimViewActivePage ||
+    isShieldClaimViewCompletedPage ||
+    isShieldClaimEditDraftPage
+  ) {
     pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
@@ -156,7 +163,7 @@ const mapStateToProps = (state, ownProps) => {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
-  } else if (isShieldClaimViewActivePage) {
+  } else if (isShieldClaimViewActivePage || isShieldClaimEditDraftPage) {
     backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`;
   } else if (isShieldClaimViewCompletedPage) {
     backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`;

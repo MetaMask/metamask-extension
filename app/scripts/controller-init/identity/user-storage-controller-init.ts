@@ -11,6 +11,7 @@ import {
 import { trace } from '../../../../shared/lib/trace';
 import { captureException } from '../../../../shared/lib/sentry';
 import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
+import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
 
 /**
  * Initialize the UserStorage controller.
@@ -25,6 +26,8 @@ export const UserStorageControllerInit: ControllerInitFunction<
   UserStorageControllerMessenger,
   UserStorageControllerInitMessenger
 > = (request) => {
+  // The environment must be the same used by AuthenticationController.
+  const env = loadAuthenticationConfig();
   const { controllerMessenger, initMessenger, persistedState } = request;
   const controller = new UserStorageController({
     messenger: controllerMessenger,
@@ -32,6 +35,7 @@ export const UserStorageControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     config: {
+      env,
       contactSyncing: {
         onContactUpdated: (profileId) => {
           initMessenger.call('MetaMetricsController:trackEvent', {
