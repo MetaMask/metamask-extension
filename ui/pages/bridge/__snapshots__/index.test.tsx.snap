@@ -93,7 +93,7 @@ exports[`Bridge renders the component with initial props 1`] = `
                     <img
                       alt="ETH logo"
                       class="mm-avatar-token__token-image"
-                      src="./images/eth_logo.svg"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
                     />
                   </div>
                   <div
