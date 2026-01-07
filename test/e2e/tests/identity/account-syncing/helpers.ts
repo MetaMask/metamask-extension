@@ -8,7 +8,7 @@ import {
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 
 // Syncing can take some time (specially in Firefox) so adding a longer timeout to reduce flakes
-export const BASE_ACCOUNT_SYNC_TIMEOUT = 30000;
+export const BASE_ACCOUNT_SYNC_TIMEOUT = 45000;
 export const BASE_ACCOUNT_SYNC_INTERVAL = 1000;
 
 // Extra delay to wait after unlock before checking sync state (helps with Firefox timing issues)

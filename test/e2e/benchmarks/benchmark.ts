@@ -2,6 +2,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { capitalize } from 'lodash';
 import get from 'lodash/get';
+import { Mockttp } from 'mockttp';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
@@ -16,6 +17,7 @@ import { unlockWallet, withFixtures } from '../helpers';
 import AccountListPage from '../page-objects/pages/account-list-page';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { PAGES } from '../webdriver/driver';
+import { mockNotificationServices } from '../tests/notifications/mocks';
 import {
   BenchmarkArguments,
   BenchmarkResults,
@@ -82,6 +84,9 @@ async function measurePagePowerUser(
       },
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
+      testSpecificMock: async (server: Mockttp) => {
+        await mockNotificationServices(server);
+      },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
       await unlockWallet(driver);
