@@ -32,7 +32,7 @@ const TEST_SRP_WORDS_FOR_UI_TEST = [
 ];
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
-  it.only('successfully imports a new srp', async function () {
+  it('successfully imports a new srp', async function () {
     await withMultiSrp(
       {
         title: this.test?.fullTitle(),
