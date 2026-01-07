@@ -1058,6 +1058,14 @@ class AccountListPage {
     if (srpIndex === 0) {
       throw new Error('SRP index must be > 0');
     }
+
+    // Wait for the expected number of SRP cards to be rendered
+    // This is needed because the accountTree is updated asynchronously after importing a new SRP
+    await this.driver.wait(async () => {
+      const srps = await this.driver.findElements('.select-srp__container');
+      return srps.length >= srpIndex;
+    }, 10000);
+
     const srps = await this.driver.findElements('.select-srp__container');
     const selectedSrp = srps[srpIndex - 1];
     const showAccountsButton = await this.driver.waitForSelector(
