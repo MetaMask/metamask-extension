@@ -535,7 +535,7 @@ class ConsoleBaselineReporter {
     const totalNewFiles = this.newFiles.length;
     const filesRun = Object.keys(this.warningsByFile).length;
 
-    console.log('  ─'.repeat(39));
+    console.log('═'.repeat(80));
     console.log('  SUMMARY');
     console.log(`    Files analyzed: ${filesRun}`);
     console.log(`    Violations: ${totalViolations}`);
