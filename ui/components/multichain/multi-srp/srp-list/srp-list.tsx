@@ -5,8 +5,8 @@ import { AccountWalletType } from '@metamask/account-api';
 
 import { getWalletIdsByType } from '../../../../selectors/multichain-accounts/account-tree';
 import { getIsPrimarySeedPhraseBackedUp } from '../../../../ducks/metamask/metamask';
-import { SrpCard } from './srp-card';
 import { Box } from '../../../component-library';
+import { SrpCard } from './srp-card';
 
 export const SrpList = ({
   onActionComplete,
