@@ -1,12 +1,5 @@
 # Console Baseline Reporter - Manual Testing Steps
 
-## Prerequisites
-
-- Node.js v24+
-- Run `yarn install`
-
----
-
 ## Test 1: Unit Test Warning Detection
 
 ### 1. Add a test warning to a unit test
