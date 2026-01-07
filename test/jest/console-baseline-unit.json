@@ -298,8 +298,8 @@
       "Reselect: Identity function warnings": 6,
       "Test errors: Uncaught Errors": 6,
       "warn: ⚠️ React Router Future Flag": 2,
-      "MetaMask: Background connection not initialized": 38,
-      "React: Act warnings (component updates not wrapped)": 38
+      "MetaMask: Background connection not initialized": 64,
+      "React: Act warnings (component updates not wrapped)": 64
     },
     "ui/hooks/useDisplayName.test.ts": {
       "error: Unexpected key \"DNS\" found in": 1,
@@ -1170,7 +1170,8 @@
     },
     "ui/components/app/multichain-transaction-details-modal/multichain-transaction-details-modal.test.tsx": {
       "error: Unexpected keys \"allTokens\", \"enableEnforcedSimulations\", \"e...": 1,
-      "Reselect: Identity function warnings": 1,
+      "Reselect: Identity function warnings": 2,
+      "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/wallet-overview/non-evm-overview.test.tsx": {
@@ -1843,6 +1844,13 @@
       "warn: ⚠️ React Router Future Flag": 2,
       "React: Act warnings (component updates not wrapped)": 6
     },
+    "ui/pages/confirmations/components/confirm/info/approve/revoke-static-simulation/revoke-static-simulation.test.tsx": {
+      "Reselect: Input stability warnings": 3,
+      "Reselect: Identity function warnings": 5,
+      "MetaMask: Background connection not initialized": 4,
+      "warn: ⚠️ React Router Future Flag": 2,
+      "React: Act warnings (component updates not wrapped)": 4
+    },
     "ui/components/app/confirm/info/row/currency.test.tsx": {
       "Reselect: Identity function warnings": 1,
       "Reselect: Input stability warnings": 1,
@@ -1981,7 +1989,8 @@
     },
     "ui/hooks/useTokenDetectionPolling.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2,
-      "Test errors: Uncaught TypeErrors": 4
+      "Test errors: Uncaught TypeErrors": 4,
+      "Test errors: Uncaught Errors": 4
     },
     "ui/pages/confirmations/components/confirm/info/approve/hooks/use-received-token.test.ts": {
       "Reselect: Input stability warnings": 3,
