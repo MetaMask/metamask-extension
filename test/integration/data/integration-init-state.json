@@ -874,6 +874,10 @@
   "smartTransactionsState": {
     "fees": {},
     "liveness": true,
+    "livenessByChainId": {
+      "0x1": true,
+      "0xaa36a7": true
+    },
     "smartTransactions": {
       "0x1": [],
       "0xaa36a7": []
