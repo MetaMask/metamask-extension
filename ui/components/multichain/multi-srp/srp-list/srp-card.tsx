@@ -72,7 +72,7 @@ export const SrpCard = ({
 
   return (
     <Card
-      key={`srp-${keyringId}`}
+      key={`srp-${index}-${keyringId}`}
       data-testid={`hd-keyring-${keyringId}`}
       onClick={() => {
         trackEvent({

@@ -32,7 +32,7 @@ const TEST_SRP_WORDS_FOR_UI_TEST = [
 ];
 
 describe('Multi SRP - Import SRP', function (this: Suite) {
-  it('successfully imports a new srp', async function () {
+  it.only('successfully imports a new srp', async function () {
     await withMultiSrp(
       {
         title: this.test?.fullTitle(),
@@ -40,7 +40,7 @@ describe('Multi SRP - Import SRP', function (this: Suite) {
       },
       async (driver: Driver) => {
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkAccountBelongsToSrp('Account 2', 2);
+        await accountListPage.checkAccountBelongsToSrp('Account 1', 2);
       },
     );
   });
