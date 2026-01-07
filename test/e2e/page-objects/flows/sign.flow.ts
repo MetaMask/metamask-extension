@@ -2,9 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
-import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
-import SignTypedDataConfirmation from '../pages/confirmations/sign-typed-data-confirmation';
-import PermitConfirmation from '../pages/confirmations/permit-confirmation';
+import PersonalSignConfirmation from '../pages/confirmations/sign-confirmation';
+import SignTypedDataConfirmation from '../pages/confirmations/d-data-confirmation';
+import PermitConfirmation from '../pages/confirmations/nfirmation';
 
 /**
  * This function initiates the steps for a personal sign with snap account on test dapp.

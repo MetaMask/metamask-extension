@@ -6,7 +6,7 @@ import { withFixtures, WINDOW_TITLES, DAPP_URL } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { Anvil } from '../../seeder/anvil';

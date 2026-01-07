@@ -10,8 +10,8 @@ import {
 } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import type { Driver } from '../../webdriver/driver';
 
 describe('Request Queueing chainId proxy sync', function () {

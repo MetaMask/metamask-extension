@@ -7,7 +7,7 @@ import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 
