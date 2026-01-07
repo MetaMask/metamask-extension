@@ -513,7 +513,14 @@ export class PersistenceManager {
           if (needsVaultRecovery) {
             // Check if we have a backup in IndexedDB. We need to throw an error
             // so that the user can be prompted to recover it.
-            const backup = await this.getBackup();
+            // Wrap in try-catch to prevent backup failures from masking the
+            // original storage error (we care more about the error that got us here).
+            let backup: Backup | null = null;
+            try {
+              backup = (await this.getBackup()) ?? null;
+            } catch {
+              // Ignore getBackup errors - we're already in an error state
+            }
 
             // This check verifies if we have any keys saved in our backup.
             // We use this as a sigil to determine if we've ever saved a vault before.
