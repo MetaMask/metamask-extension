@@ -4,13 +4,17 @@
  * Main entry point for running performance benchmarks.
  * Individual benchmarks are defined in separate files for maintainability.
  *
+ * NOTE: Performance benchmarks only run on Chrome + Browserify to reduce CI runtime.
+ *
  * Usage:
  *   yarn test:e2e:benchmark:performance
  *   yarn test:e2e:benchmark:performance --benchmarks onboardingImportWallet --iterations 20
  *   yarn test:e2e:benchmark:performance --out results.json
+ *   yarn test:e2e:benchmark:performance --buildType browserify
  */
 import { promises as fs } from 'fs';
 import path from 'path';
+import { Browser } from 'selenium-webdriver';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { exitWithError } from '../../../development/lib/exit-with-error';
@@ -19,17 +23,52 @@ import {
   isWritable,
 } from '../../helpers/file';
 
-import { runAssetDetailsBenchmark } from './performance/asset-details';
-import { runOnboardingImportWalletBenchmark } from './performance/onboarding-import-wallet';
-import { runOnboardingNewWalletBenchmark } from './performance/onboarding-new-wallet';
-import { runSolanaAssetDetailsBenchmark } from './performance/solana-asset-details';
+import {
+  runAssetDetailsBenchmark,
+  runOnboardingImportWalletBenchmark,
+  runOnboardingNewWalletBenchmark,
+  runSolanaAssetDetailsBenchmark,
+} from './flows/performance';
 
 import { runBenchmarkWithIterations } from './utils/runner';
 import type {
   BenchmarkFunction,
+  BenchmarkResults,
   BenchmarkSummary,
-  PerformanceBenchmarkResults,
+  StatisticalResult,
 } from './utils/types';
+
+/**
+ * Convert performance benchmark results to page load benchmark format
+ * for consistent output across all benchmark types.
+ */
+function convertToPageLoadFormat(
+  results: BenchmarkSummary[],
+): Record<string, BenchmarkResults> {
+  const output: Record<string, BenchmarkResults> = {};
+
+  for (const benchmark of results) {
+    const mean: StatisticalResult = {};
+    const min: StatisticalResult = {};
+    const max: StatisticalResult = {};
+    const stdDev: StatisticalResult = {};
+    const p75: StatisticalResult = {};
+    const p95: StatisticalResult = {};
+
+    for (const timer of benchmark.timers) {
+      mean[timer.id] = timer.mean;
+      min[timer.id] = timer.min;
+      max[timer.id] = timer.max;
+      stdDev[timer.id] = timer.stdDev;
+      p75[timer.id] = timer.p75;
+      p95[timer.id] = timer.p95;
+    }
+
+    output[benchmark.name] = { mean, min, max, stdDev, p75, p95 };
+  }
+
+  return output;
+}
 
 const BENCHMARKS: Record<string, BenchmarkFunction> = {
   onboardingImportWallet: runOnboardingImportWalletBenchmark,
@@ -38,7 +77,7 @@ const BENCHMARKS: Record<string, BenchmarkFunction> = {
   solanaAssetDetails: runSolanaAssetDetailsBenchmark,
 };
 
-async function main(): Promise<PerformanceBenchmarkResults> {
+async function main(): Promise<Record<string, BenchmarkResults>> {
   const argv = await yargs(hideBin(process.argv))
     .usage(
       '$0 [options]',
@@ -65,14 +104,32 @@ async function main(): Promise<PerformanceBenchmarkResults> {
       description: 'Number of retries per benchmark run',
       type: 'number',
     })
+    .option('buildType', {
+      default: 'browserify',
+      description: 'Build type (browserify or webpack). Performance benchmarks only run on browserify.',
+      type: 'string',
+      choices: ['browserify', 'webpack'],
+    })
     .parseAsync();
 
-  const { benchmarks, iterations, out, retries } = argv as {
+  const { benchmarks, iterations, out, retries, buildType } = argv as {
     benchmarks: string[];
     iterations: number;
     out?: string;
     retries: number;
+    buildType: string;
   };
+
+  // Performance benchmarks only run on Chrome + Browserify
+  const browser = process.env.SELENIUM_BROWSER;
+  if (browser === Browser.FIREFOX) {
+    console.log('⏭️  Skipping: Performance benchmarks only run on Chrome');
+    return {};
+  }
+  if (buildType === 'webpack') {
+    console.log('⏭️  Skipping: Performance benchmarks only run on browserify');
+    return {};
+  }
 
   // Validate INFURA_PROJECT_ID
   if (!process.env.INFURA_PROJECT_ID) {
@@ -98,10 +155,8 @@ async function main(): Promise<PerformanceBenchmarkResults> {
     results.push(summary);
   }
 
-  const output: PerformanceBenchmarkResults = {
-    timestamp: new Date().toISOString(),
-    benchmarks: results,
-  };
+  // Convert to page load benchmark format for consistency
+  const output = convertToPageLoadFormat(results);
 
   if (out) {
     const outputDirectory = path.dirname(out);

@@ -3,20 +3,21 @@
  * Measures time to load price chart for SOL token
  */
 
-import { generateWalletState } from '../../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../../app/scripts/fixtures/with-networks';
-import { withFixtures } from '../../helpers';
-import AssetListPage from '../../page-objects/pages/home/asset-list';
-import HomePage from '../../page-objects/pages/home/homepage';
-import LoginPage from '../../page-objects/pages/login-page';
-import { Driver } from '../../webdriver/driver';
-import { WITH_STATE_POWER_USER } from '../utils/constants';
-import type { BenchmarkRunResult, TimerResult } from '../utils/types';
+import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
+import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-networks';
+import Timers from '../../../../timers/Timers';
+import { withFixtures } from '../../../helpers';
+import AssetListPage from '../../../page-objects/pages/home/asset-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import LoginPage from '../../../page-objects/pages/login-page';
+import { Driver } from '../../../webdriver/driver';
+import { collectTimerResults, WITH_STATE_POWER_USER } from '../../utils';
+import type { BenchmarkRunResult } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
 export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
-  const timers: TimerResult[] = [];
+  Timers.resetTimers();
 
   try {
     await withFixtures(
@@ -51,23 +52,22 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         await assetListPage.checkConversionRateDisplayed();
 
         // Timer: Time since user clicks on the asset until the price chart is shown
+        const timer = Timers.createTimer('solana_asset_click_to_price_chart');
         await assetListPage.clickOnAsset('Solana');
-        const timerStart = Date.now();
+        timer.startTimer();
         await assetListPage.checkPriceChartIsShown();
         await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
-        timers.push({
-          id: 'solana_asset_click_to_price_chart',
-          duration: Date.now() - timerStart,
-        });
+        timer.stopTimer();
       },
     );
 
-    return { timers, success: true };
+    return { timers: collectTimerResults(), success: true };
   } catch (error) {
     return {
-      timers,
+      timers: collectTimerResults(),
       success: false,
       error: error instanceof Error ? error.message : String(error),
     };
   }
 }
+

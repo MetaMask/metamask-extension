@@ -32,9 +32,18 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Legacy benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        pageType: [standardHome, powerUserHome, userActions, performanceOnboarding, performanceAssets]
+        pageType: [standardHome, powerUserHome, userActions]
+        # New flow benchmarks only run on Chrome + Browserify to reduce CI runtime
+        include:
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceOnboarding
+          - browser: chrome
+            buildType: browserify
+            pageType: performanceAssets
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
