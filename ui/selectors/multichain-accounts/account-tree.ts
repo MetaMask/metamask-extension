@@ -912,7 +912,7 @@ export const getIconSeedAddressesByAccountGroups = (
 
 /**
  * Retrieve wallet IDs from account tree state by type.
- * IN case no type is provided it returns all wallet IDs.
+ * In case no type is provided it returns all wallet IDs.
  *
  * @param state - Redux state.
  * @param state.metamask - MetaMask state object.
