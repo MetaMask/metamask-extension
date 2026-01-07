@@ -1311,7 +1311,7 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
     selectAssetsBySelectedAccountGroup(assetListState),
 );
 
-export const selectAccountSupportsNetworkFilter = createSelector(
+export const selectAccountSupportsEnabledNetworks = createSelector(
   [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],
   (selectedAccount, enabledNetworks) => {
     if (!selectedAccount || enabledNetworks.length === 0) {
