@@ -1,4 +1,4 @@
-import { By, Key } from 'selenium-webdriver';
+import { Key, until } from 'selenium-webdriver';
 import { Driver } from '../../../../webdriver/driver';
 import { RawLocator } from '../../../common';
 
@@ -73,6 +73,12 @@ class Confirmation {
       throw e;
     }
     console.log('Confirmation page is loaded');
+  }
+
+  async waitForSkeletonLoaderToDisappear() {
+    await this.driver.wait(
+      (until as any).elementIsNotPresent(this.skeletonLoader),
+    );
   }
 
   async clickScrollToBottomButton() {
