@@ -1,4 +1,3 @@
-import { existsSync, readFileSync } from 'fs';
 import { Mockttp } from 'mockttp';
 
 export const FEATURE_FLAGS_URL =
@@ -31,7 +30,6 @@ const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
         ],
       };
     });
-};
 
 export const mockSendRedesignFeatureFlag = (mockServer: Mockttp) =>
   mockSendFeatureFlag(mockServer, true);
