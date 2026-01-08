@@ -51,6 +51,7 @@ export type SmartTransactionsMetaMaskState = {
     };
     smartTransactionsState: {
       liveness: boolean;
+      livenessByChainId: Record<string, boolean>;
     };
   };
 };
@@ -176,6 +177,7 @@ export const getSmartTransactionsEnabled = (
   state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
+  const effectiveChainId = chainId ?? getCurrentChainId(state);
   const supportedAccount = accountSupportsSmartTx(state);
   // @ts-expect-error Smart transaction selector types does not match controller state
   const featureFlagsByChainId = getFeatureFlagsByChainId(state, chainId);
@@ -183,7 +185,9 @@ export const getSmartTransactionsEnabled = (
   const smartTransactionsFeatureFlagEnabled =
     featureFlagsByChainId?.smartTransactions?.extensionActive;
   const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
+    state.metamask.smartTransactionsState?.livenessByChainId?.[
+      effectiveChainId
+    ];
   return Boolean(
     getChainSupportsSmartTransactions(state, chainId) &&
       getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&

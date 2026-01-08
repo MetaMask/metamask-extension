@@ -14,6 +14,7 @@ import {
   selectMinimumBalanceForRentExemptionInSOL,
   isValidQuoteRequest,
   type QuoteWarning,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import {
@@ -763,6 +764,7 @@ export const getValidationErrors = createDeepEqualSelector(
     getTxAlerts,
     _getFromNativeBalance,
     getFromTokenBalance,
+    ({ bridge: { txAlertStatus } }: BridgeAppState) => txAlertStatus,
   ],
   (
     { activeQuote, quotesLastFetchedMs, isLoading, quotesRefreshCount },
@@ -774,6 +776,7 @@ export const getValidationErrors = createDeepEqualSelector(
     txAlert,
     nativeBalance,
     fromTokenBalance,
+    txAlertStatus,
   ) => {
     const { gasIncluded, gasIncluded7702, gasSponsored } =
       activeQuote?.quote ?? {};
@@ -788,6 +791,7 @@ export const getValidationErrors = createDeepEqualSelector(
 
     return {
       isTxAlertPresent: Boolean(txAlert),
+      isTxAlertLoading: txAlertStatus === RequestStatus.LOADING,
       isNoQuotesAvailable: Boolean(
         !activeQuote &&
           isValidQuoteRequest(quoteRequest) &&
