@@ -225,10 +225,11 @@ export const toBridgeToken = (
 };
 
 export const getDefaultToToken = (
-  targetChainId: CaipChainId,
+  targetChainId: Hex | CaipChainId,
   fromToken: Pick<BridgeToken, 'address' | 'chainId'>,
 ) => {
-  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[targetChainId];
+  const commonPair =
+    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[formatChainIdToCaip(targetChainId)];
 
   if (commonPair) {
     // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token

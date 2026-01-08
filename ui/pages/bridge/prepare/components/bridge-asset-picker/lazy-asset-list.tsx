@@ -90,7 +90,7 @@ export const BridgeAssetList = ({
           onClick={() => {
             onAssetChange(token);
           }}
-          selected={selectedAssetId === token.assetId}
+          selected={selectedAssetId.toLowerCase() === token.assetId?.toLowerCase()}
         />
       ))}
       {filteredTokenList.length < 1 && !shouldShowLoadingIndicator ? (
