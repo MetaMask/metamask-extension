@@ -535,7 +535,7 @@ jobs:
   trigger-regression-validation:
     name: Trigger Regression Validation
     # Only run for release branches, not forks
-    if: ${{ startsWith(github.ref_name, 'release/') && !github.event.repository.fork }}
+    if: ${{ (startsWith(github.ref_name, 'release/') || github.ref_name == 'run-regression-test') && !github.event.repository.fork }}
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
@@ -543,7 +543,7 @@ jobs:
     steps:
       - name: Trigger regression validation in external repo
         env:
-          DISPATCH_TOKEN: ${{ secrets.PR_TOKEN }}
+          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
           VERSION="${GITHUB_REF_NAME#release/}"
