@@ -318,6 +318,7 @@ describe('Shield Plan Stripe Integration', function () {
           await shieldClaimsListPage.clickDraftClaim();
 
           await shieldClaimPage.checkPageIsLoaded();
+          await shieldClaimPage.waitForDraftSavedToastToDisappear();
 
           await shieldClaimPage.clickSubmitButton();
 

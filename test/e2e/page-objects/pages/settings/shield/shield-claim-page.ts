@@ -344,8 +344,8 @@ export default class ShieldClaimPage {
 
   async waitForDraftSavedToastToDisappear(): Promise<void> {
     console.log('Waiting for draft saved toast to disappear');
-    await this.driver.waitForSelector(this.draftSavedToast, {
-      state: 'detached',
+    await this.driver.assertElementNotPresent(this.draftSavedToast, {
+      waitAtLeastGuard: 1000,
       timeout: 10000,
     });
   }
