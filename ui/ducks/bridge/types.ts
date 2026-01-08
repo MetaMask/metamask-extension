@@ -5,6 +5,7 @@ import {
   SortOrder,
   type ChainId,
   type GenericQuoteRequest,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
@@ -50,6 +51,7 @@ export type BridgeState = {
   wasTxDeclined: boolean; // Whether the user declined the transaction. Relevant for hardware wallets.
   slippage?: number;
   txAlert: TxAlert | null;
+  txAlertStatus: RequestStatus;
 };
 
 export type ChainIdPayload = { payload: ChainId | Hex | CaipChainId | null };
