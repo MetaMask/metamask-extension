@@ -1234,25 +1234,28 @@ export function accountsWithSendEtherInfoSelector(state) {
   return accountsWithSendEtherInfo;
 }
 
-export function getAccountsWithLabels(state) {
-  return getMetaMaskAccountsOrdered(state).map((account) => {
-    const {
-      address,
-      metadata: { name },
-      balance,
-    } = account;
-    return {
-      ...account,
-      addressLabel: `${
-        name.length < TRUNCATED_NAME_CHAR_LIMIT
-          ? name
-          : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
-      } (${shortenAddress(address)})`,
-      label: name,
-      balance,
-    };
-  });
-}
+export const getAccountsWithLabels = createSelector(
+  getMetaMaskAccountsOrdered,
+  (accounts) => {
+    return accounts.map((account) => {
+      const {
+        address,
+        metadata: { name },
+        balance,
+      } = account;
+      return {
+        ...account,
+        addressLabel: `${
+          name.length < TRUNCATED_NAME_CHAR_LIMIT
+            ? name
+            : `${name.slice(0, TRUNCATED_NAME_CHAR_LIMIT - 1)}...`
+        } (${shortenAddress(address)})`,
+        label: name,
+        balance,
+      };
+    });
+  },
+);
 
 export function getCurrentAccountWithSendEtherInfo(state) {
   const { address: currentAddress } = getSelectedInternalAccount(state);
