@@ -59,6 +59,12 @@ describe('Selectors', () => {
         },
         smartTransactionsState: {
           liveness: true,
+          livenessByChainId: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.SEPOLIA]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          },
         },
         ...mockNetworkState({
           id: 'network-configuration-id-1',
@@ -195,10 +201,22 @@ describe('Selectors', () => {
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network',
+      'returns false if feature flag is enabled, not a HW, STX liveness is false for chain',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.smartTransactionsState.liveness = false;
+        state.metamask.smartTransactionsState.livenessByChainId[
+          CHAIN_IDS.MAINNET
+        ] = false;
+        expect(getSmartTransactionsEnabled(state)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false if feature flag is enabled, not a HW, STX liveness is not set for chain',
+      () => {
+        const state = createSwapsMockStore();
+        // @ts-expect-error Testing undefined liveness for chain
+        state.metamask.smartTransactionsState.livenessByChainId = {};
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );
