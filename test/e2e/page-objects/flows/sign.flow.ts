@@ -110,6 +110,7 @@ export const signTypedDataV3WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   if (isSyncFlow) {
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
@@ -152,6 +153,7 @@ export const signTypedDataV4WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   if (isSyncFlow) {
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
@@ -252,6 +254,7 @@ export const signTypedDataV3 = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   await testDapp.checkSuccessSignTypedDataV3(publicAddress);
 };
@@ -272,6 +275,7 @@ export const signTypedDataV4 = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   await testDapp.checkSuccessSignTypedDataV4(publicAddress);
 };
