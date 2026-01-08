@@ -16,17 +16,20 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../store/actions', () => {
   return {
     showModal: () => mockShowModal,
     addPermittedAccount: () => mockAddPermittedAccount,
-  };
-});
-
-jest.mock('../../../selectors', () => {
-  return {
-    ...jest.requireActual('../../../selectors'),
-    getIsMultichainAccountsState1Enabled: () => false,
   };
 });
 

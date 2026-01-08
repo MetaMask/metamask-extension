@@ -19,6 +19,16 @@ import { AccountListMenu } from '.';
 const mockGetEnvironmentType = jest.fn();
 const mockDetectNfts = jest.fn();
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
@@ -102,7 +112,6 @@ const render = (
   return renderWithProvider(<AccountListMenu {...props} />, store, location);
 };
 
-// Old account model components.
 describe('AccountListMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -110,10 +119,10 @@ describe('AccountListMenu', () => {
   });
 
   it('displays important controls', () => {
-    const { getByPlaceholderText } = render();
+    const { getByPlaceholderText, getByText } = render();
 
     expect(getByPlaceholderText('Search accounts')).toBeInTheDocument();
-    // expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
     expect(document.querySelector('[aria-label="Back"]')).toStrictEqual(null);
   });
 

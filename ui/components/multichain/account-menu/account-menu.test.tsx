@@ -24,6 +24,16 @@ const mockBitcoinClientCreateAccount = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
@@ -126,8 +136,7 @@ const render = (
   return renderWithProvider(<AccountMenu {...props} />, store, location);
 };
 
-// Old account model components.
-describe.skip('AccountMenu', () => {
+describe('AccountMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();

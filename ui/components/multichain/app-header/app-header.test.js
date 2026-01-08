@@ -10,6 +10,18 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AppHeader } from '.';
 
+const mockIsMultichainAccountsFeatureEnabled = jest.fn();
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () =>
+      mockIsMultichainAccountsFeatureEnabled(),
+  }),
+);
+
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
@@ -45,6 +57,9 @@ const render = ({
 };
 
 describe('App Header', () => {
+  beforeEach(() => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
+  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -66,7 +81,9 @@ describe('App Header', () => {
       expect(getByTestId('account-menu-icon')).toBeEnabled();
     });
 
-    it.skip('should show the copy button for multichain', () => {
+    it('should show the copy button for multichain', () => {
+      mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
+
       const { getByTestId } = render({
         stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
       });

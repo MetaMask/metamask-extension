@@ -104,11 +104,6 @@ describe('useMultichainAccountsIntroModal', () => {
       expect(result.current.showMultichainIntroModal).toBe(false);
     });
 
-    it.skip('does NOT show when multichain accounts disabled', () => {
-      const { result } = renderHook(true, false, Date.now(), '13.4.0', '/');
-      expect(result.current.showMultichainIntroModal).toBe(false);
-    });
-
     it('does NOT show when modal already shown', () => {
       const { result } = renderHook(true, true, Date.now(), '13.4.0', '/');
       expect(result.current.showMultichainIntroModal).toBe(false);

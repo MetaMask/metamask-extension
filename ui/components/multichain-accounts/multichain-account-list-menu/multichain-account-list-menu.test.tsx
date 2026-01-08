@@ -33,6 +33,16 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../store/actions', () => {
   return {
     ...jest.requireActual('../../../store/actions'),
@@ -135,7 +145,6 @@ const render = (
   );
 };
 
-// Old account model components.
 describe('MultichainAccountListMenu', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -143,9 +152,9 @@ describe('MultichainAccountListMenu', () => {
   });
 
   it('displays important elements', () => {
-    const { getByTestId } = render();
+    const { getByText, getByTestId } = render();
 
-    // expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
+    expect(getByText('Add account or hardware wallet')).toBeInTheDocument();
     expect(
       getByTestId('multichain-account-menu-search-bar'),
     ).toBeInTheDocument();

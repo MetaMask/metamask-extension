@@ -26,6 +26,16 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../store/actions', () => ({
   handleSnapRequest: jest.fn(),
   sendMultichainTransaction: jest.fn(),
@@ -181,7 +191,7 @@ function getStore(state?: Record<string, unknown>) {
 }
 
 // Old account model components.
-describe.skip('NonEvmOverview', () => {
+describe('NonEvmOverview', () => {
   beforeEach(() => {
     // Clear previous mock implementations
     (useMultiPolling as jest.Mock).mockClear();

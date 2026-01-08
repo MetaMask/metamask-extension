@@ -27,6 +27,16 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
     useIsOriginalNativeTokenSymbol: jest.fn(),
@@ -53,7 +63,7 @@ const mockGetIntlLocale = getIntlLocale;
 let openTabSpy;
 
 // Old account model components.
-describe.skip('EthOverview', () => {
+describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   mockGetIntlLocale.mockReturnValue('en-US');
 
