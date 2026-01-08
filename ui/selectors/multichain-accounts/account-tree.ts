@@ -944,12 +944,10 @@ export const getWalletIdsByType = createSelector(
 );
 
 /**
- * Get the seed addresses for multiple account groups at once.
- * This is more efficient than calling getIconSeedAddressByAccountGroupId multiple times.
+ * Get the wallet status for a given wallet ID.
  *
- * @param state - Redux state.
- * @param accountGroups - Array of account groups to get seed addresses for.
- * @returns Object mapping account group IDs to their seed addresses.
+ * @param walletId - The ID of the wallet to use.
+ * @returns Wallet status if available.
  */
 export const getWalletStatus = createDeepEqualSelector(
   getAccountTree,
