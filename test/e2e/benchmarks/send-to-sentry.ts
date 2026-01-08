@@ -8,46 +8,13 @@
  * Requires SENTRY_DSN_PERFORMANCE env var. Skips silently if not set.
  */
 
-import { execSync } from 'child_process';
 import { promises as fs } from 'fs';
+import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
+import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
 import type { BenchmarkResults, UserActionResult } from './types-generated';
-
-/** Gets current git commit hash, or 'unknown' if unavailable. */
-export function getGitCommitHash(): string {
-  try {
-    return execSync('git rev-parse HEAD', { encoding: 'utf-8' }).trim();
-  } catch {
-    return 'unknown';
-  }
-}
-
-/** Gets current git branch name, or 'local' if unavailable. */
-export function getGitBranch(): string {
-  try {
-    return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
-  } catch {
-    return 'local';
-  }
-}
-
-/**
- * Helper to flatten an object with a prefix (e.g., 'benchmark.mean').
- *
- * @param obj - Object to flatten.
- * @param prefix - Prefix for flattened keys.
- * @returns Flattened object with prefixed keys.
- */
-export const flatten = (
-  obj: Record<string, number> | undefined,
-  prefix: string,
-): Record<string, number> =>
-  Object.entries(obj || {}).reduce(
-    (acc, [key, val]) => ({ ...acc, [`${prefix}.${key}`]: val }),
-    {} as Record<string, number>,
-  );
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
@@ -99,16 +66,17 @@ async function main() {
   for (const [name, value] of Object.entries(results)) {
     if ('mean' in value) {
       // Standard benchmark result with statistical aggregations
+      const benchmark = value as BenchmarkResults;
       const benchmarkAttributes = {
-        ...flatten(value.mean, 'benchmark.mean'),
-        ...flatten(value.p75, 'benchmark.p75'),
-        ...flatten(value.p95, 'benchmark.p95'),
+        ...mapKeys(benchmark.mean, (_, key) => `benchmark.mean.${key}`),
+        ...mapKeys(benchmark.p75, (_, key) => `benchmark.p75.${key}`),
+        ...mapKeys(benchmark.p95, (_, key) => `benchmark.p95.${key}`),
       };
 
       Sentry.logger.info(`benchmark.${name}`, {
         ...baseCiAttributes,
-        'ci.persona': value.persona || 'standard',
-        'ci.testTitle': value.testTitle,
+        'ci.persona': benchmark.persona || 'standard',
+        'ci.testTitle': benchmark.testTitle,
         ...benchmarkAttributes,
       });
     } else {
