@@ -14,11 +14,6 @@ import { mockPriceApi } from '../tokens/utils/mocks';
 
 import { E2E_SRP } from '../../fixtures/default-fixture';
 import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/constants';
-import {
-  mockMultichainAccountsFeatureFlagDisabled,
-  mockMultichainAccountsFeatureFlag,
-  mockMultichainAccountsFeatureFlagStateTwo,
-} from './feature-flag-mocks';
 import { MockedDiscoveryBuilder } from './discovery';
 
 export enum AccountType {
@@ -139,9 +134,3 @@ export async function withImportedAccount(
     await test(driver);
   });
 }
-
-export {
-  mockMultichainAccountsFeatureFlagDisabled,
-  mockMultichainAccountsFeatureFlag,
-  mockMultichainAccountsFeatureFlagStateTwo,
-};

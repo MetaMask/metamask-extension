@@ -1,5 +1,3 @@
-import { BIP44_STAGE_TWO } from './tests/multichain-accounts/feature-flag-mocks';
-
 /** Main E2E SRP */
 export const E2E_SRP =
   'spread raise short crane omit tent fringe mandate neglect detail suspect cradle';
@@ -150,7 +148,15 @@ export const MOCK_META_METRICS_ID =
 
 /* Mock remote feature flags response */
 export const MOCK_REMOTE_FEATURE_FLAGS_RESPONSE = {
-  ...BIP44_STAGE_TWO,
+  feature1: true,
+  feature2: false,
+  feature3: {
+    name: 'groupC',
+    value: 'valueC',
+  },
+  sendRedesign: {
+    enabled: false,
+  },
 };
 
 /* Mock customized remote feature flags response*/

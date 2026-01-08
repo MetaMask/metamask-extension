@@ -7,8 +7,8 @@ import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import {
-  AccountGroupObject,
-  AccountWalletObject,
+  type AccountWalletObject,
+  type AccountGroupObject,
 } from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -910,6 +910,38 @@ export const getIconSeedAddressesByAccountGroups = (
 
   return seedAddresses;
 };
+
+/**
+ * Retrieve wallet IDs from account tree state by type.
+ * In case no type is provided it returns all wallet IDs.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.accountTree - Account tree state object.
+ * @param walletId - The ID of the wallet to retrieve.
+ * @returns Wallet object from account tree state.
+ */
+export const getWalletIdsByType = createSelector(
+  (state: MultichainAccountsState) => state.metamask?.accountTree?.wallets,
+  (_, walletType?: AccountWalletType) => walletType,
+  (
+    wallets: Record<AccountWalletId, AccountWalletObject>,
+    walletType?: AccountWalletType,
+  ): AccountWalletId[] => {
+    if (!wallets) {
+      return [];
+    }
+
+    if (!walletType) {
+      // return all wallet IDs if no type is specified
+      return Object.keys(wallets) as AccountWalletId[];
+    }
+
+    return Object.entries(wallets)
+      .filter(([, wallet]) => wallet.type === walletType)
+      .map(([walletId]) => walletId) as AccountWalletId[];
+  },
+);
 
 /**
  * Get the seed addresses for multiple account groups at once.

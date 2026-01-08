@@ -165,8 +165,6 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 // TODO: Update all references
 export { getEnabledNetworks };
 
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 /** `appState` slice selectors */
 
 export const getConfirmationExchangeRates = (state) => {
@@ -1478,14 +1476,11 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
 
   const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? (enabledNetworks?.[namespace] ?? {})
-    : tokenNetworkFilter;
+  const networks = enabledNetworks?.[namespace] ?? {};
 
   if (
     Object.keys(networks).length === 1 &&
@@ -2482,19 +2477,27 @@ export function getShowRecoveryPhraseReminder(state) {
  * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
-
-  const allUnapprovedMessages = {
-    ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
-    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
-  };
-  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
-}
+export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
+  [
+    getUnapprovedTransactions,
+    (state) => state.metamask.unapprovedDecryptMsgs,
+    (state) => state.metamask.unapprovedPersonalMsgs,
+    (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    (state) => state.metamask.unapprovedTypedMessages,
+  ],
+  (
+    unapprovedTxs,
+    unapprovedDecryptMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedEncryptionPublicKeyMsgs,
+    unapprovedTypedMessages,
+  ) =>
+    Object.keys(unapprovedTxs ?? {}).length +
+    Object.keys(unapprovedDecryptMsgs ?? {}).length +
+    Object.keys(unapprovedPersonalMsgs ?? {}).length +
+    Object.keys(unapprovedEncryptionPublicKeyMsgs ?? {}).length +
+    Object.keys(unapprovedTypedMessages ?? {}).length,
+);
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
