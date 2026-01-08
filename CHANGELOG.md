@@ -127,6 +127,13 @@ Completed` event
 - Updated Blockaid alerts to only display for `Malicious`, `Warning`, and `Errored` results (#38468)
 - fix: Remove auto scroll from network filter modal (#38556)
 
+## [13.13.2]
+
+### Changed
+
+- Bump @metamask/tron-wallet-snap to 1.17.0
+- Bump @metamask/keyring-api to 21.3.0
+
 ## [13.13.1]
 
 ### Fixed
@@ -1587,6 +1594,7 @@ authorized by the user.` error until the user fully revoked dapp
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...HEAD
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.14.0
+[13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
 [13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
 [13.13.0]: https://github.com/MetaMask/metamask-extension/compare/v13.12.2...v13.13.0
 [13.12.2]: https://github.com/MetaMask/metamask-extension/compare/v13.12.1...v13.12.2
