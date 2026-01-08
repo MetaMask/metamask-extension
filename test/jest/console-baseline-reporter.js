@@ -172,6 +172,17 @@ class ConsoleBaselineReporter {
       // Files that didn't run are preserved as-is
     }
 
+    // Full run: clean up entries for deleted/renamed test files
+    const isFullRun = !this.#globalConfig.testPathPattern;
+    if (isFullRun) {
+      for (const filePath of Object.keys(mergedFiles)) {
+        const absolutePath = path.resolve(this.#globalConfig.rootDir, filePath);
+        if (!fs.existsSync(absolutePath)) {
+          delete mergedFiles[filePath];
+        }
+      }
+    }
+
     const baseline = {
       files: mergedFiles,
       generated: new Date().toISOString(),
