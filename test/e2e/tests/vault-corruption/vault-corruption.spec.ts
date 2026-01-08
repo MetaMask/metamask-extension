@@ -12,11 +12,7 @@ import AccountAddressModal from '../../page-objects/pages/multichain/account-add
 import LoginPage from '../../page-objects/pages/login-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
-// Skipping these tests temporarily until BIP44 is turned on using FF
-// if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
-// BUG #38080 - Reactivate vault corruption test after BIP44 is turned on with FF
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Vault Corruption', function () {
+describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
