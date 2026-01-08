@@ -141,8 +141,3 @@ export class BrowserStorageAdapter implements StorageAdapter {
     }
   }
 }
-
-/**
- * Singleton instance of the browser storage adapter.
- */
-export const browserStorageAdapter = new BrowserStorageAdapter();

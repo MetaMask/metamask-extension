@@ -1,5 +1,5 @@
 import { StorageService } from '@metamask/storage-service';
-import { browserStorageAdapter } from '../lib/stores/browser-storage-adapter';
+import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
 import { ControllerInitFunction } from './types';
 import { StorageServiceMessenger } from './messengers';
 
@@ -19,7 +19,7 @@ export const StorageServiceInit: ControllerInitFunction<
 > = ({ controllerMessenger }) => {
   const controller = new StorageService({
     messenger: controllerMessenger,
-    storage: browserStorageAdapter,
+    storage: new BrowserStorageAdapter(),
   });
 
   return {

@@ -1,5 +1,6 @@
 import { StorageService } from '@metamask/storage-service';
 import { getRootMessenger } from '../lib/messenger';
+import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -9,6 +10,7 @@ import {
 import { StorageServiceInit } from './storage-service-init';
 
 jest.mock('@metamask/storage-service');
+jest.mock('../lib/stores/browser-storage-adapter');
 
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<StorageServiceMessenger>
@@ -40,7 +42,7 @@ describe('StorageServiceInit', () => {
     const serviceMock = jest.mocked(StorageService);
     expect(serviceMock).toHaveBeenCalledWith({
       messenger: expect.any(Object),
-      storage: expect.any(Object),
+      storage: expect.any(BrowserStorageAdapter),
     });
   });
 
