@@ -1,180 +1,72 @@
-import {
-  detectSeedPhrase,
-  isPotentialSeedPhrase,
-  isDefinitelySeedPhrase,
-} from './seed-phrase-detection';
+import { isSeedPhrase } from './seed-phrase-detection';
 
-describe('Seed Phrase Detection Module', () => {
-  // Valid 12-word seed phrases (using real BIP39 words)
-  const VALID_12_WORD_PHRASE =
-    'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
-  const VALID_24_WORD_PHRASE =
-    'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
+describe('Seed Phrase Detection', () => {
+  describe('isSeedPhrase', () => {
+    describe('valid 12-word seed phrases', () => {
+      it('returns true for valid 12-word seed phrase', () => {
+        const seedPhrase =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+        expect(isSeedPhrase(seedPhrase)).toBe(true);
+      });
 
-  // Invalid phrases
-  const INVALID_WORDS_PHRASE =
-    'hello world test invalid words that are not bip39 compatible words here twelve';
-  const TOO_FEW_WORDS = 'abandon abandon abandon';
-  const MIXED_VALID_INVALID =
-    'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon invalidword';
+      it('handles extra whitespace', () => {
+        const seedPhrase =
+          '  abandon  abandon  abandon  abandon  abandon  abandon  abandon  abandon  abandon  abandon  abandon  about  ';
+        expect(isSeedPhrase(seedPhrase)).toBe(true);
+      });
 
-  describe('detectSeedPhrase', () => {
-    it('should detect a valid 12-word seed phrase with high confidence', () => {
-      const result = detectSeedPhrase(VALID_12_WORD_PHRASE);
-
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(12);
-      expect(result.isValidLength).toBe(true);
-      expect(result.allWordsValid).toBe(true);
-      expect(result.confidence).toBe('high');
+      it('handles mixed case', () => {
+        const seedPhrase =
+          'Abandon ABANDON abandon Abandon abandon abandon abandon abandon abandon abandon abandon About';
+        expect(isSeedPhrase(seedPhrase)).toBe(true);
+      });
     });
 
-    it('should detect a valid 24-word seed phrase with high confidence', () => {
-      const result = detectSeedPhrase(VALID_24_WORD_PHRASE);
-
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(24);
-      expect(result.isValidLength).toBe(true);
-      expect(result.allWordsValid).toBe(true);
-      expect(result.confidence).toBe('high');
+    describe('valid 24-word seed phrases', () => {
+      it('returns true for valid 24-word seed phrase', () => {
+        const seedPhrase =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon art';
+        expect(isSeedPhrase(seedPhrase)).toBe(true);
+      });
     });
 
-    it('should detect a valid 15-word seed phrase with medium confidence', () => {
-      const phrase =
-        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
-      const result = detectSeedPhrase(phrase);
+    describe('invalid seed phrases', () => {
+      it('returns false for 11 words', () => {
+        const text =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon';
+        expect(isSeedPhrase(text)).toBe(false);
+      });
 
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(15);
-      expect(result.isValidLength).toBe(true);
-      expect(result.allWordsValid).toBe(true);
-      expect(result.confidence).toBe('medium');
-    });
+      it('returns false for 13 words', () => {
+        const text =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about extra';
+        expect(isSeedPhrase(text)).toBe(false);
+      });
 
-    it('should not detect a phrase with too few words', () => {
-      const result = detectSeedPhrase(TOO_FEW_WORDS);
+      it('returns false for 15 words (valid BIP39 length but not 12 or 24)', () => {
+        const text =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
+        expect(isSeedPhrase(text)).toBe(false);
+      });
 
-      expect(result.isSeedPhrase).toBe(false);
-      expect(result.wordCount).toBe(3);
-      expect(result.isValidLength).toBe(false);
-      expect(result.confidence).toBe('none');
-    });
+      it('returns false for 12 words with invalid BIP39 words', () => {
+        const text =
+          'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon invalid';
+        expect(isSeedPhrase(text)).toBe(false);
+      });
 
-    it('should not detect a phrase with invalid BIP39 words', () => {
-      const result = detectSeedPhrase(INVALID_WORDS_PHRASE);
+      it('returns false for random text', () => {
+        const text = 'hello world this is some random text';
+        expect(isSeedPhrase(text)).toBe(false);
+      });
 
-      expect(result.isSeedPhrase).toBe(false);
-      expect(result.wordCount).toBe(12);
-      expect(result.isValidLength).toBe(true);
-      expect(result.allWordsValid).toBe(false);
-      expect(result.confidence).toBe('none');
-    });
+      it('returns false for empty string', () => {
+        expect(isSeedPhrase('')).toBe(false);
+      });
 
-    it('should not detect a phrase with mixed valid and invalid words', () => {
-      const result = detectSeedPhrase(MIXED_VALID_INVALID);
-
-      expect(result.isSeedPhrase).toBe(false);
-      expect(result.wordCount).toBe(12);
-      expect(result.isValidLength).toBe(true);
-      expect(result.allWordsValid).toBe(false);
-      expect(result.confidence).toBe('none');
-    });
-
-    it('should handle empty string', () => {
-      const result = detectSeedPhrase('');
-
-      expect(result.isSeedPhrase).toBe(false);
-      expect(result.wordCount).toBe(0);
-      expect(result.isValidLength).toBe(false);
-      expect(result.confidence).toBe('none');
-    });
-
-    it('should handle whitespace-only string', () => {
-      const result = detectSeedPhrase('   \n\t  ');
-
-      expect(result.isSeedPhrase).toBe(false);
-      expect(result.wordCount).toBe(0);
-      expect(result.isValidLength).toBe(false);
-      expect(result.confidence).toBe('none');
-    });
-
-    it('should normalize text with extra whitespace', () => {
-      const phraseWithExtraSpaces =
-        '  abandon   abandon  abandon abandon abandon abandon abandon abandon abandon abandon abandon   about  ';
-      const result = detectSeedPhrase(phraseWithExtraSpaces);
-
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(12);
-      expect(result.confidence).toBe('high');
-    });
-
-    it('should normalize uppercase text', () => {
-      const uppercasePhrase =
-        'ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABANDON ABOUT';
-      const result = detectSeedPhrase(uppercasePhrase);
-
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(12);
-      expect(result.confidence).toBe('high');
-    });
-
-    it('should normalize mixed case text', () => {
-      const mixedCasePhrase =
-        'Abandon ABANDON abandon ABANDON Abandon ABANDON abandon ABANDON Abandon ABANDON abandon About';
-      const result = detectSeedPhrase(mixedCasePhrase);
-
-      expect(result.isSeedPhrase).toBe(true);
-      expect(result.wordCount).toBe(12);
-      expect(result.confidence).toBe('high');
-    });
-  });
-
-  describe('isPotentialSeedPhrase', () => {
-    it('should return true for valid 12-word phrase', () => {
-      expect(isPotentialSeedPhrase(VALID_12_WORD_PHRASE)).toBe(true);
-    });
-
-    it('should return true for valid 24-word phrase', () => {
-      expect(isPotentialSeedPhrase(VALID_24_WORD_PHRASE)).toBe(true);
-    });
-
-    it('should return false for invalid phrase', () => {
-      expect(isPotentialSeedPhrase(INVALID_WORDS_PHRASE)).toBe(false);
-    });
-
-    it('should return false for too few words', () => {
-      expect(isPotentialSeedPhrase(TOO_FEW_WORDS)).toBe(false);
-    });
-  });
-
-  describe('isDefinitelySeedPhrase', () => {
-    it('should return true for valid 12-word phrase', () => {
-      expect(isDefinitelySeedPhrase(VALID_12_WORD_PHRASE)).toBe(true);
-    });
-
-    it('should return true for valid 24-word phrase', () => {
-      expect(isDefinitelySeedPhrase(VALID_24_WORD_PHRASE)).toBe(true);
-    });
-
-    it('should return false for 15-word phrase (not common length)', () => {
-      const phrase =
-        'abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about';
-      expect(isDefinitelySeedPhrase(phrase)).toBe(false);
-    });
-
-    it('should return false for invalid phrase', () => {
-      expect(isDefinitelySeedPhrase(INVALID_WORDS_PHRASE)).toBe(false);
-    });
-
-    it('should return false for too few words', () => {
-      expect(isDefinitelySeedPhrase(TOO_FEW_WORDS)).toBe(false);
-    });
-
-    it('should return false for regular text that happens to be 12 words', () => {
-      const regularText =
-        'The quick brown fox jumps over the lazy dog near the river';
-      expect(isDefinitelySeedPhrase(regularText)).toBe(false);
+      it('returns false for single word', () => {
+        expect(isSeedPhrase('abandon')).toBe(false);
+      });
     });
   });
 });
-

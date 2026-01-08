@@ -10,7 +10,7 @@
  */
 
 import browser from 'webextension-polyfill';
-import { isDefinitelySeedPhrase } from '../../../shared/modules/seed-phrase-detection';
+import { isSeedPhrase } from '../../../shared/modules/seed-phrase-detection';
 import { showWarningModal } from './seed-phrase-protection-ui';
 
 /**
@@ -127,8 +127,8 @@ function handlePaste(event: ClipboardEvent): void {
     return;
   }
 
-  // Check if this is a seed phrase
-  if (isDefinitelySeedPhrase(pastedText)) {
+  // Check if this is a seed phrase (12 or 24 words, all valid BIP39)
+  if (isSeedPhrase(pastedText)) {
     // Prevent the paste
     event.preventDefault();
     event.stopPropagation();
