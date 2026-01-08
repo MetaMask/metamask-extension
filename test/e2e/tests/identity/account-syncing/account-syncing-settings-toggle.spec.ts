@@ -16,8 +16,9 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockIdentityServices } from '../mocks';
-import { arrangeTestUtils, skipOnFirefox } from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
