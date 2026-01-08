@@ -238,6 +238,9 @@ describe('Vault Corruption', function () {
       password: WALLET_PASSWORD,
     });
 
+    // wait for onboarding to complete
+    await driver.delay(5000);
+
     // now that we are re-onboarded, get the first account's address
     return await getFirstAddress(driver);
   }
