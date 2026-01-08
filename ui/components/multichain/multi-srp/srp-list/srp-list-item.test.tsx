@@ -11,7 +11,7 @@ const mockAccountId = 'mock-account-id' as AccountGroupId;
 const mockAccountName = 'Mock Account Name';
 const mockBalance = '$100.00';
 
-const render = (mockAccount: InternalAccountWithBalance) => {
+const render = () => {
   const store = configureMockStore([thunk])(mockState);
   return renderWithProvider(
     <SrpListItem

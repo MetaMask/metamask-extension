@@ -27,9 +27,6 @@ export const SrpListItem = ({
   const seedAddress = useSelector((state) =>
     getIconSeedAddressByAccountGroupId(state, accountId),
   );
-  const accountGroupName = useSelector((state) =>
-    getAccountGroupNameByInternalAccount(state, account),
-  );
 
   return (
     <Box
