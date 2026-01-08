@@ -352,9 +352,8 @@ export class PersistenceManager {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             captureException(err);
-
-            this.#notifySetFailed();
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
         } finally {
           this.#isExtensionInitialized = true;
@@ -453,9 +452,8 @@ export class PersistenceManager {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
             captureException(err);
-
-            this.#notifySetFailed();
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
         } finally {
           this.#isExtensionInitialized = true;
