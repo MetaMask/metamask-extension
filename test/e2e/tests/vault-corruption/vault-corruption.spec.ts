@@ -268,7 +268,7 @@ describe('Vault Corruption', function () {
 
     const addressListModal = new AddressListModal(driver);
     await addressListModal.clickQRbutton();
-    await driver.delay(3000);
+
     const accountAddressModal = new AccountAddressModal(driver);
     const accountAddress = await accountAddressModal.getAccountAddress();
     await accountAddressModal.goBack();

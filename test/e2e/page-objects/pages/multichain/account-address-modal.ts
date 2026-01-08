@@ -43,6 +43,7 @@ class AccountAddressModal {
     console.log('Getting the address from the modal');
     await this.driver.waitForSelector(this.accountAddress);
     const element = await this.driver.findElement(this.accountAddress);
+    await this.driver.waitForNonEmptyElement(element);
     return await element.getText();
   }
 
