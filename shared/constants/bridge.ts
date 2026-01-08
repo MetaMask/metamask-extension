@@ -3,6 +3,7 @@ import {
   BRIDGE_DEV_API_BASE_URL,
   BRIDGE_PROD_API_BASE_URL,
   ChainId,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { type CaipAssetType } from '@metamask/utils';

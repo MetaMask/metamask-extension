@@ -371,13 +371,6 @@ export const createBridgeMockStore = ({
               price: 1.2,
             },
         },
-        '0xa': {
-          [toChecksumHexAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]:
-            {
-              currency: 'ETH',
-              price: 2.3,
-            },
-        },
         ...marketDataOverrides,
       },
       slides: [],
