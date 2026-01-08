@@ -675,14 +675,11 @@ const PrepareBridgePage = ({
                 ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
+                // Reset toToken to default, based on selected fromToken
                 fromToken &&
                   dispatch(
-                    // Reset toToken to default, based on selected fromToken
                     setToToken(
-                      getDefaultToToken(
-                        formatChainIdToCaip(networkConfig.chainId),
-                        fromToken,
-                      ),
+                      getDefaultToToken(networkConfig.chainId, fromToken),
                     ),
                   );
               },
