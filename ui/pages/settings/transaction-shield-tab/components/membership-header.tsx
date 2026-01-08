@@ -5,6 +5,7 @@ import {
   BoxJustifyContent,
   FontWeight,
   Text,
+  TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import classnames from 'classnames';
@@ -15,8 +16,6 @@ import {
   BackgroundColor,
   BorderRadius,
   BorderStyle,
-  TextColor as DSTextColor,
-  TextVariant as DSTextVariant,
 } from '../../../../helpers/constants/design-system';
 import { Tag } from '../../../../components/component-library';
 import ShieldBannerAnimation from '../shield-banner-animation';
@@ -103,11 +102,15 @@ const MembershipHeader = ({
     if (isPaused) {
       return (
         <Tag
-          label={t('shieldTxMembershipPaused')}
-          labelProps={{
-            variant: DSTextVariant.bodySmMedium,
-            color: DSTextColor.textAlternative,
-          }}
+          label={
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.TextAlternative}
+            >
+              {t('shieldTxMembershipPaused')}
+            </Text>
+          }
           borderStyle={BorderStyle.none}
           borderRadius={BorderRadius.SM}
           backgroundColor={BackgroundColor.backgroundMuted}
@@ -118,11 +121,15 @@ const MembershipHeader = ({
     if (isTrialing) {
       return (
         <Tag
-          label={t('shieldTxMembershipFreeTrial')}
-          labelProps={{
-            variant: DSTextVariant.bodySmMedium,
-            color: DSTextColor.successDefault,
-          }}
+          label={
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
+              {t('shieldTxMembershipFreeTrial')}
+            </Text>
+          }
           borderStyle={BorderStyle.none}
           borderRadius={BorderRadius.SM}
           backgroundColor={BackgroundColor.successMuted}

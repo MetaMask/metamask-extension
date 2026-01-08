@@ -2,13 +2,16 @@ import React from 'react';
 import {
   AvatarAccountSize,
   Box,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
   Text,
   TextColor,
   TextVariant,
 } from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
-import { Icon, IconSize } from '../../../../components/component-library';
 import Identicon from '../../../../components/ui/identicon';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
@@ -31,12 +34,13 @@ const CryptoAccountDisplay = ({
   const renderIcon = () => {
     // If icon exists, use it (trust signal /unknown)
     if (icon) {
+      // need to cast to unknown since the useDisplayname uses old Icon types
       return (
         <Icon
-          name={icon.name}
+          name={icon.name as unknown as IconName}
           className="crypto-account-display__icon"
           size={IconSize.Sm}
-          color={icon.color}
+          color={icon.color as unknown as IconColor}
         />
       );
     }
