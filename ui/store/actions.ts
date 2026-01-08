@@ -850,6 +850,9 @@ export function linkRewardToShieldSubscription(
         subscriptionId,
         rewardPoints,
       ]);
+
+      // refetch the subscriptions
+      await dispatch(getSubscriptions());
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -6822,13 +6825,16 @@ export function cancelSmartTransaction(
 // TODO: Not a thunk but rather a wrapper around a background call
 export function fetchSmartTransactionsLiveness({
   networkClientId,
+  chainId,
 }: {
+  /** @deprecated Use `chainId` instead. */
   networkClientId?: string;
+  chainId?: string;
 } = {}) {
   return async () => {
     try {
       await submitRequestToBackground('fetchSmartTransactionsLiveness', [
-        { networkClientId },
+        { networkClientId, chainId },
       ]);
     } catch (err) {
       logErrorWithMessage(err);
