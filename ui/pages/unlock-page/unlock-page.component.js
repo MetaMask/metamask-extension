@@ -198,7 +198,8 @@ class UnlockPage extends Component {
     event.preventDefault();
     event.stopPropagation();
 
-    const { password, isSubmitting } = this.state;
+    let { password } = this.state;
+    const { isSubmitting } = this.state;
 
     if (password === '') {
       password = await loadPasswordWebAuthn();
@@ -627,7 +628,6 @@ class UnlockPage extends Component {
               block
               type="submit"
               data-testid="unlock-submit"
-              disabled={!password || isLocked}
               marginBottom={6}
             >
               {this.context.t('unlock')}
