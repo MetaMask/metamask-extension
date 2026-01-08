@@ -93,9 +93,8 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     if (isKeyringSnap) {
       (async () => {
         const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(internalAccounts).filter(
-          (internalAccount) =>
-            addresses.includes(internalAccount.address.toLowerCase()),
+        const snapIdentities = internalAccounts.filter((internalAccount) =>
+          addresses.includes(internalAccount.address.toLowerCase()),
         );
         setKeyringAccounts(snapIdentities);
       })();

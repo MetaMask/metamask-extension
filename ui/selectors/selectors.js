@@ -1158,8 +1158,8 @@ export function getAddressBookEntryOrAccountName(state, address) {
     return entry.name;
   }
 
-  const internalAccount = Object.values(getInternalAccounts(state)).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
+  const internalAccount = getInternalAccounts(state).find((account) =>
+    isEqualCaseInsensitive(account.address, address),
   );
 
   return internalAccount?.metadata.name || address;
