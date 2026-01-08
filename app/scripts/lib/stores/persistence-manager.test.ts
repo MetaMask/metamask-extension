@@ -68,7 +68,10 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(mockedCaptureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -305,7 +308,10 @@ describe('PersistenceManager', () => {
       // returns `undefined`
       expect(await brokenManager.getBackup()).toBeUndefined();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException, {
+        tags: { 'persistence.error': 'backup-db-open-failed' },
+        fingerprint: ['persistence-error', 'backup-db-open-failed'],
+      });
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );

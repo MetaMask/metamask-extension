@@ -22,12 +22,16 @@ export type Backup = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   AppMetadataController?: unknown;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MetaMetricsController?: unknown;
   meta?: MetaData;
 };
 
 export const backedUpStateKeys = [
   'KeyringController',
   'AppMetadataController',
+  'MetaMetricsController',
 ] as const;
 
 export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
@@ -237,7 +241,13 @@ export class PersistenceManager {
           error.message ===
             'A mutation operation was attempted on a database that did not allow mutations.'
         ) {
-          captureException(error);
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(error, {
+            tags: { 'persistence.error': 'backup-db-open-failed' },
+            fingerprint: ['persistence-error', 'backup-db-open-failed'],
+          });
           console.warn(
             'Could not open backup database; automatic vault recovery will not be available.',
           );
@@ -351,7 +361,13 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            captureException(err);
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': 'set-failed' },
+              fingerprint: ['persistence-error', 'set-failed'],
+            });
 
             this.#notifySetFailed();
           }
@@ -452,7 +468,13 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
-            captureException(err);
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': 'persist-failed' },
+              fingerprint: ['persistence-error', 'persist-failed'],
+            });
 
             this.#notifySetFailed();
           }
@@ -495,12 +517,19 @@ export class PersistenceManager {
           ])
           .catch((error: Error): [Error, undefined] => [error, undefined]);
 
-        // Log the error if one occurred, but don't throw yet
+        // Log and capture the error if one occurred, but don't throw yet
         if (localStoreError) {
           log.error(
             'Error retrieving the current state of the local store:',
             localStoreError,
           );
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(localStoreError, {
+            tags: { 'persistence.error': 'get-failed' },
+            fingerprint: ['persistence-error', 'get-failed'],
+          });
         }
 
         if (validateVault) {
@@ -603,12 +632,16 @@ export class PersistenceManager {
     if (!backupDb) {
       return undefined;
     }
-    const [KeyringController, AppMetadataController, meta] = await backupDb.get(
-      [...backedUpStateKeys, `meta`],
-    );
+    const [
+      KeyringController,
+      AppMetadataController,
+      MetaMetricsController,
+      meta,
+    ] = await backupDb.get([...backedUpStateKeys, `meta`]);
     return {
       KeyringController,
       AppMetadataController,
+      MetaMetricsController,
       meta: meta as MetaData | undefined,
     };
   }
