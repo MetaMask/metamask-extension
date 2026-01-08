@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fix Tron resources calculation and default value (#39136)
+- Bump @metamask/tron-wallet-snap to 1.17.0
+- Bump @metamask/keyring-api to 21.3.0
 
 ## [13.13.1]
 
