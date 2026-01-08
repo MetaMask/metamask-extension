@@ -24,11 +24,13 @@ export default class ShieldClaimPage {
     tag: 'p',
   };
 
-  private readonly descriptionError =
-    '[data-testid="shield-claim-description-error"]';
+  private readonly deleteDraftButton =
+    '[data-testid="shield-claim-delete-draft-button"]';
 
   private readonly descriptionTextarea =
     '[data-testid="shield-claim-description-textarea"]';
+
+  private readonly draftSavedToast = '[data-testid="claim-draft-saved-toast"]';
 
   private readonly emailInput = '[data-testid="shield-claim-email-input"]';
 
@@ -50,14 +52,6 @@ export default class ShieldClaimPage {
 
   private readonly reimbursementWalletAddressInput =
     '[data-testid="shield-claim-reimbursement-wallet-address-input"]';
-
-  private readonly deleteDraftButton =
-    '[data-testid="shield-claim-delete-draft-button"]';
-
-  private readonly draftSavedToast = '[data-testid="claim-draft-saved-toast"]';
-
-  private readonly draftSavedToastCloseButton =
-    '[data-testid="claim-draft-saved-toast-banner-base"] button[aria-label="Close"]';
 
   private readonly saveDraftButton =
     '[data-testid="shield-claim-save-draft-button"]';
@@ -107,18 +101,6 @@ export default class ShieldClaimPage {
     console.log(`Filling email: ${email}`);
     await this.driver.fill(this.emailInput, email);
   }
-
-  // async updateEmailAndFocusOut(email: string): Promise<void> {
-  //   console.log(`Updating email to: ${email}`);
-  //   await this.fillEmail(email);
-  //   await this.driver.clickElement(this.descriptionTextarea);
-  // }
-
-  // async updateDescriptionAndFocusOut(description: string): Promise<void> {
-  //   console.log(`Updating description to: ${description}`);
-  //   await this.fillDescription(description);
-  //   await this.driver.clickElement(this.emailInput);
-  // }
 
   /**
    * Fill in the impacted transaction hash field
