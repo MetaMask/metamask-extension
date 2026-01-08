@@ -143,6 +143,7 @@ import {
   getLedgerTransportStatus,
 } from '../ducks/app/app';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
+import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import {
   getValueFromWeiHex,
   hexToDecimal,
@@ -1231,17 +1232,22 @@ export function getAccountsWithLabels(state) {
   });
 }
 
-export function getCurrentAccountWithSendEtherInfo(state) {
-  const { address: currentAddress } = getSelectedInternalAccount(state);
-  const accounts = accountsWithSendEtherInfoSelector(state);
+export const getCurrentAccountWithSendEtherInfo = createSelector(
+  getSelectedInternalAccount,
+  accountsWithSendEtherInfoSelector,
+  ({ address: currentAddress }, accounts) => {
+    return getAccountByAddress(accounts, currentAddress);
+  },
+);
 
-  return getAccountByAddress(accounts, currentAddress);
-}
-
-export function getTargetAccountWithSendEtherInfo(state, targetAddress) {
-  const accounts = accountsWithSendEtherInfoSelector(state);
-  return getAccountByAddress(accounts, targetAddress);
-}
+export const getTargetAccountWithSendEtherInfo =
+  createParameterizedShallowEqualSelector(10)(
+    accountsWithSendEtherInfoSelector,
+    (_, targetAddress) => targetAddress,
+    (accounts, targetAddress) => {
+      return getAccountByAddress(accounts, targetAddress);
+    },
+  );
 
 export function getCurrentEthBalance(state) {
   return getCurrentAccountWithSendEtherInfo(state)?.balance;
