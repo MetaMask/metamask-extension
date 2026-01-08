@@ -38,8 +38,6 @@ describe('Account syncing - Multiple SRPs', function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = async (server: Mockttp) => {
-      mockMultichainAccountsFeatureFlagStateTwo(server);
-
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
