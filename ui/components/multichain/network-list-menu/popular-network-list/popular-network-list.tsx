@@ -1,17 +1,20 @@
 import React, { useState, useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { AddNetworkFields } from '@metamask/network-controller';
+import {
+  ButtonIcon,
+  ButtonIconSize,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
   Text,
   AvatarNetwork,
-  Button,
   AvatarNetworkSize,
-  ButtonVariant,
-  IconName,
-  Icon,
-  IconSize,
   ButtonLinkSize,
   ButtonLink,
   Popover,
@@ -32,7 +35,6 @@ import {
   Display,
   JustifyContent,
   TextColor,
-  IconColor,
   TextVariant,
   BorderColor,
 } from '../../../../helpers/constants/design-system';
@@ -84,13 +86,14 @@ const PopularNetworkList = ({
           </Text>
 
           <Box onMouseEnter={handleMouseEnter} marginTop={1}>
-            <Icon
-              className="add-network__warning-icon"
-              name={IconName.Info}
-              color={IconColor.iconMuted}
-              size={IconSize.Sm}
-              marginLeft={2}
-            />
+            <Box marginLeft={2}>
+              <Icon
+                className="add-network__warning-icon"
+                name={IconName.Info}
+                color={IconColor.IconMuted}
+                size={IconSize.Sm}
+              />
+            </Box>
             <Popover
               referenceElement={referenceElement}
               position={PopoverPosition.TopStart}
@@ -172,31 +175,23 @@ const PopularNetworkList = ({
                 </Text>
               </Box>
             </Box>
-            <Box
-              display={Display.Flex}
-              alignItems={AlignItems.center}
-              marginLeft={1}
-            >
-              <Button
-                type={ButtonVariant.Link}
-                className="add-network__add-button"
-                variant={ButtonVariant.Link}
-                data-testid="test-add-button"
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-                // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                onClick={async () => {
-                  dispatch(toggleNetworkMenu());
+            <ButtonIcon
+              iconName={IconName.Add}
+              size={ButtonIconSize.Md}
+              data-testid="test-add-button"
+              ariaLabel={t('add')}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onClick={async () => {
+                dispatch(toggleNetworkMenu());
 
-                  // First add the network to user's configuration
-                  await dispatch(addNetwork(network));
+                // First add the network to user's configuration
+                await dispatch(addNetwork(network));
 
-                  // Then enable it in the network list
-                  await dispatch(setEnabledNetworks(network.chainId));
-                }}
-              >
-                {t('add')}
-              </Button>
-            </Box>
+                // Then enable it in the network list
+                await dispatch(setEnabledNetworks(network.chainId));
+              }}
+            />
           </Box>
         ))}
       </Box>
