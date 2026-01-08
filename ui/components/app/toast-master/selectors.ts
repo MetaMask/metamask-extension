@@ -133,7 +133,7 @@ export function selectShowConnectAccountToast(
     connectedAccounts.length > 0 &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
@@ -167,7 +167,7 @@ export function selectShowConnectAccountGroupToast(
     connectedAccounts.length > 0 &&
     !isConnected;
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 /**
