@@ -297,12 +297,8 @@ export default class OAuthService {
       });
       providerLoginSuccess = true;
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
       // Track provider login failure
-      const isUserCancelled =
-        errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
+      const isUserCancelled = isUserCancelledLoginError(error as Error);
       this.#trackEventWithBuffering({
         event: MetaMetricsEventName.SocialLoginFailed,
         category: MetaMetricsEventCategory.Onboarding,
