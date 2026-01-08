@@ -214,7 +214,8 @@ class ConsoleBaselineReporter {
     // (path.relative uses '\' on Windows, but baselines use '/')
     return path
       .relative(this.#globalConfig.rootDir, absolutePath)
-      .replace(/\\/gu, '/');
+      .split(path.sep)
+      .join('/');
   }
 
   /**
