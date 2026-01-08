@@ -251,13 +251,13 @@ class ConsoleBaselineReporter {
   // ===========================================================================
 
   /**
-   * Called once per test FILE after it completes.
-   * testResult.console contains all console messages from that file!
+   * Called once per test file after it completes.
+   * testResult.console contains all console messages from that file.
    *
-   * @param {object} _testInfo - Test information (unused)
+   * @param {object} _test - Test information (unused)
    * @param {object} testResult - Test result containing console messages
    */
-  onTestResult(_testInfo, testResult) {
+  onTestFileResult(_test, testResult) {
     const filePath = this.#getRelativePath(testResult.testFilePath);
 
     // Initialize warnings for this file
