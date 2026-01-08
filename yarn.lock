@@ -6852,9 +6852,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^0.8.0":
-  version: 0.8.0
-  resolution: "@metamask/gator-permissions-snap@npm:0.8.0"
+"@metamask/gator-permissions-snap@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/gator-permissions-snap@npm:0.9.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
     "@metamask/delegation-core": "npm:0.3.0"
@@ -6862,7 +6862,7 @@ __metadata:
     "@metamask/snaps-sdk": "npm:10.2.0"
     "@metamask/utils": "npm:11.4.2"
     zod: "npm:3.25.76"
-  checksum: 10/c2882a5a6d309517e6e81e307d5ba44b9fff90648f663b4b6d07917cd6a1e1b1f1041f2760a58c1e953d43eb278263667a88a53da3e032f28747b466520e0fe0
+  checksum: 10/7294333e4fa70a1b8cbe17f03cc40828b68d69b398f491b1ddfa103c67b8b452ad9c655931e1e72e206f6c11113e32680fce5a1a273071c6cd0c43603ef70322
   languageName: node
   linkType: hard
 
@@ -32866,7 +32866,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.8.0"
-    "@metamask/gator-permissions-snap": "npm:^0.8.0"
+    "@metamask/gator-permissions-snap": "npm:^0.9.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
