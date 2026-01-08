@@ -1195,22 +1195,21 @@ export function getAccountName(accounts, accountAddress) {
   return account && account.metadata.name !== '' ? account.metadata.name : '';
 }
 
-export const accountsWithSendEtherInfoSelector = createSelector(
-  getMetaMaskAccounts,
-  getInternalAccounts,
-  (accounts, internalAccounts) => {
-    const accountsWithSendEtherInfo = internalAccounts.map(
-      (internalAccount) => {
-        return {
-          ...internalAccount,
-          ...accounts[internalAccount.address],
-        };
-      },
-    );
+export function accountsWithSendEtherInfoSelector(state) {
+  const accounts = getMetaMaskAccounts(state);
+  const internalAccounts = getInternalAccounts(state);
 
-    return accountsWithSendEtherInfo;
-  },
-);
+  const accountsWithSendEtherInfo = Object.values(internalAccounts).map(
+    (internalAccount) => {
+      return {
+        ...internalAccount,
+        ...accounts[internalAccount.address],
+      };
+    },
+  );
+
+  return accountsWithSendEtherInfo;
+}
 
 export function getAccountsWithLabels(state) {
   return getMetaMaskAccountsOrdered(state).map((account) => {
