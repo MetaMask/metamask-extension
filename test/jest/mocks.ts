@@ -303,13 +303,14 @@ export const getSelectedAccountGroupFromAccountTree = (
   accountTree: AccountTreeControllerState['accountTree'],
 ) => {
   const groupId = accountTree.selectedAccountGroup;
+  if (!groupId) {
+    throw new Error('No account group is selected');
+  }
+
   const {
     wallet: { id: walletId },
   } = parseAccountGroupId(groupId);
 
-  if (!groupId) {
-    throw new Error('No account group is selected');
-  }
   return accountTree.wallets[walletId].groups[groupId];
 };
 
