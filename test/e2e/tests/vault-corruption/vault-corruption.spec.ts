@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { until } from 'selenium-webdriver';
 import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
@@ -197,14 +198,14 @@ describe('Vault Corruption', function () {
     // click the Recovery/Reset button
     await driver.waitForSelector('#critical-error-button');
     await driver.clickElement('#critical-error-button');
-    await driver.delay(1000); // wait for prompt to appear
 
-    // Confirm we want to recover/reset.
-    const prompt = await driver.driver.switchTo().alert();
+    // Wait for the confirmation alert to appear and handle it immediately
+    await driver.driver.wait(until.alertIsPresent(), driver.timeout);
+    const alert = await driver.driver.switchTo().alert();
     if (confirm) {
-      await prompt.accept();
+      await alert.accept();
     } else {
-      await prompt.dismiss();
+      await alert.dismiss();
     }
 
     if (confirm) {
@@ -224,7 +225,8 @@ describe('Vault Corruption', function () {
       await driver.assertElementNotPresent('#critical-error-button');
     } else {
       // the button should be enabled if the user dismissed the prompt
-      await driver.findClickableElement('#critical-error-button');
+      // Wait for UI to settle after dismissing the alert
+      await driver.waitForSelector('#critical-error-button');
     }
   }
 
@@ -266,7 +268,7 @@ describe('Vault Corruption', function () {
 
     const addressListModal = new AddressListModal(driver);
     await addressListModal.clickQRbutton();
-
+    await driver.delay(3000);
     const accountAddressModal = new AccountAddressModal(driver);
     const accountAddress = await accountAddressModal.getAccountAddress();
     await accountAddressModal.goBack();
