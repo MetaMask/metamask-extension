@@ -184,6 +184,8 @@ For each changed section, check for violations across severity levels. **Referen
 - [ ] Proper TypeScript types
 - [ ] No non-serializable values in state (no Promises, functions, Maps/Sets)
 - [ ] **No inline selector functions** in useSelector (extract to memoized selectors)
+- [ ] **No identity functions** used as the result function of a memoized selector.
+- [ ] **No unmemoized input selectors** that return unstable object or array references. Use `createSelector` from the `reselect` library or an appropriate selector creator method from `shared/modules/selectors/selector-creators.ts` to memoize selector output.
 
 **Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc`, `.cursor/rules/front-end-performance-hooks-effects.mdc`, `.cursor/rules/front-end-performance-react-compiler.mdc`, and `.cursor/rules/coding-guidelines.mdc` for details:
 
@@ -201,7 +203,7 @@ For each changed section, check for violations across severity levels. **Referen
 **All Files** → See `.cursor/rules/coding-guidelines.mdc` for details:
 
 - [ ] TypeScript for new code
-- [ ] No `@ts-ignore` without explanation
+- [ ] No `@ts-ignore`. Always use `@ts-expect-error` with explanation.
 - [ ] Explicit types for function params and returns
 - [ ] No unused imports
 - [ ] No commented-out code
@@ -383,6 +385,7 @@ Summary: 0 critical, 0 high, 5 medium
 - **Rule reference MUST include:** Guideline file, section name, and line numbers in guideline
 - **Only report violations in newly added/modified lines** (marked with `+` in git diff)
 - Use actual line numbers (not "~150" or "around line 50")
+- Suggested fixes must be provided in git diff format that can be supplied directly to `git apply`
 - Show 3-5 lines of actual code for each violation (from the changes)
 - NO generic categories like "Issues #9-15: Various problems"
 - Each issue must be individually documented with full evidence
