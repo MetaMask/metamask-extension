@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Bump @metamask/tron-wallet-snap to 1.17.0
-- Bump @​metamask/​keyring-api to 21.3.0
+- Bump @metamask/keyring-api to 21.3.0
 
 ## [13.13.1]
 
