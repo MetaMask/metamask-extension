@@ -4891,9 +4891,7 @@ export default class MetamaskController extends EventEmitter {
             shouldCreateSocialBackup,
           );
         } catch (err) {
-          // handle seedless controller import error by reverting keyring controller mnemonic import
-          // KeyringController.removeAccount will remove keyring when it's emptied, currently there are no other method in keyring controller to remove keyring
-          await this.keyringController.removeAccount(newAccountAddress);
+          await this.controllerMessenger.call('MultichainAccountService:removeMultichainAccountWallet', id, newAccountAddress);
           throw err;
         }
       }
