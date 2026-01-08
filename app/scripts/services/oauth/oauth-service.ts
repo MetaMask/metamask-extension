@@ -1,6 +1,7 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
 import log from 'loglevel';
 import {
+  createSentryError,
   isUserCancelledLoginError,
   OAuthErrorMessages,
 } from '../../../../shared/modules/error';
@@ -157,7 +158,11 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler, authConnection);
+    const oAuthLoginResult = await this.#handleOAuthLogin(
+      loginHandler,
+      authConnection,
+    );
+    return oAuthLoginResult;
   }
 
   /**
@@ -295,15 +300,6 @@ export default class OAuthService {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthProviderLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthProviderLoginError,
-      });
-
       // Track provider login failure
       const isUserCancelled =
         errorMessage === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
@@ -322,6 +318,15 @@ export default class OAuthService {
           error_category: 'provider_login',
         },
       });
+
+      if (!isUserCancelled) {
+        this.#messenger.captureException?.(
+          createSentryError(
+            TraceName.OnboardingOAuthProviderLoginError,
+            error as Error,
+          ),
+        );
+      }
 
       throw error;
     } finally {
@@ -345,18 +350,6 @@ export default class OAuthService {
       getAuthTokensSuccess = true;
       return loginResult;
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
-      });
-
       // Track token exchange failure
       this.#trackEventWithBuffering({
         event: MetaMetricsEventName.SocialLoginFailed,
@@ -373,6 +366,13 @@ export default class OAuthService {
           error_category: 'get_auth_tokens',
         },
       });
+
+      this.#messenger.captureException?.(
+        createSentryError(
+          `OAuth2 token exchange failed for ${authConnection}`,
+          error as Error,
+        ),
+      );
 
       throw error;
     } finally {
@@ -474,35 +474,50 @@ export default class OAuthService {
   async setMarketingConsent(
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
-    const state = this.#messenger.call('SeedlessOnboardingController:getState');
-    const { accessToken } = state;
-    if (!accessToken) {
-      throw new Error('No access token found');
-    }
+    try {
+      const state = this.#messenger.call(
+        'SeedlessOnboardingController:getState',
+      );
+      const { accessToken } = state;
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
 
-    const requestData = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      opt_in_status: hasEmailMarketingConsent,
-    };
+      const requestData = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        opt_in_status: hasEmailMarketingConsent,
+      };
 
-    const res = await fetch(
-      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+      const res = await fetch(
+        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(requestData),
         },
-        body: JSON.stringify(requestData),
-      },
-    );
+      );
 
-    if (!res.ok) {
-      throw new Error('Failed to post marketing opt in status');
+      if (!res.ok) {
+        throw new Error('Failed to post marketing opt in status');
+      }
+
+      return res.ok;
+    } catch (error) {
+      log.error('Failed to post marketing opt in status', error);
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to post marketing opt in status',
+          error as Error,
+        ),
+      );
+
+      // rethrow the original error
+      throw error;
     }
-
-    return res.ok;
   }
 
   async getMarketingConsent(): Promise<boolean> {
@@ -535,6 +550,14 @@ export default class OAuthService {
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
       log.error('Failed to get marketing opt in status', error);
+
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to get marketing opt in status',
+          error as Error,
+        ),
+      );
+
       return false;
     }
   }
