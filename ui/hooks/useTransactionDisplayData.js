@@ -384,6 +384,8 @@ export function useTransactionDisplayData(transactionGroup) {
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
+  } else if (type === TransactionType.gasPayment) {
+    title = t('gasPayment');
   } else {
     dispatch(
       captureSingleException(
