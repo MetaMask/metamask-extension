@@ -47,7 +47,7 @@ describe('useTokenAlerts', () => {
       bridgeSliceOverrides: {
         fromToken: {
           address: '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
-          chainId: CHAIN_IDS.MAINNET,
+          chainId: 'eip155:1',
           assetId: toAssetId(
             '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
             'eip155:1',

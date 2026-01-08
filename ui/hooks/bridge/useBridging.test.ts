@@ -3,9 +3,10 @@ import {
   formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { MetaMetricsSwapsEventSource } from '../../../shared/constants/metametrics';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
+import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
@@ -23,12 +24,6 @@ const mockDispatch = jest.fn().mockReturnValue(() => jest.fn());
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
-}));
-
-const mockSetFromChain = jest.fn();
-jest.mock('../../ducks/bridge/actions', () => ({
-  ...jest.requireActual('../../ducks/bridge/actions'),
-  setFromToken: () => mockSetFromChain(),
 }));
 
 const MOCK_METAMETRICS_ID = '0xtestMetaMetricsId';
@@ -71,16 +66,13 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
-        {
-          ...getNativeAssetForChainId(CHAIN_IDS.MAINNET),
-          chainId: 1,
-        },
+        '/cross-chain/swaps/prepare-swap-page',
+        { ...getNativeAssetForChainId(CHAIN_IDS.OPTIMISM), chainId: 123 },
         MetaMetricsSwapsEventSource.TokenView,
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?',
+        '/cross-chain/swaps/prepare-swap-page',
         {
           ...getNativeAssetForChainId(CHAIN_IDS.SEI),
           chainId: 243,
@@ -108,48 +100,50 @@ describe('useBridging', () => {
       'should open %s with the currently selected token: %p',
       async (
         expectedUrl: string,
-        token: string,
+        token: Record<string, unknown>,
         location: string,
         isSwap: boolean,
       ) => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
-        jest
-          .spyOn(bridgeSelectors, 'getFromChains')
-          .mockReturnValueOnce([
-            { chainId: 'eip155:1' },
-            { chainId: 'eip155:10' },
-          ]);
-        const { result } = renderUseBridging({
-          metamask: {
-            useExternalServices: true,
-            ...mockNetworkState(
-              {
-                chainId: CHAIN_IDS.MAINNET,
+        const { result } = renderUseBridging(
+          createBridgeMockStore({
+            metamaskStateOverrides: {
+              useExternalServices: true,
+              metaMetricsId: MOCK_METAMETRICS_ID,
+              enabledNetworkMap: {
+                eip155: {
+                  '1': true,
+                  '10': true,
+                  '56': true,
+                },
+                bip122: {
+                  'bip122:000000000019d6689c085ae165831e93': true,
+                },
+                solana: {
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+                },
+                tron: {
+                  'tron:728126428': true,
+                },
               },
-              { chainId: CHAIN_IDS.OPTIMISM },
-            ),
-            metaMetricsId: MOCK_METAMETRICS_ID,
-            remoteFeatureFlags: {
+            },
+            featureFlagOverrides: {
               bridgeConfig: {
                 refreshRate: 5000,
                 minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
                 chainRanking: [
                   { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+                  { chainId: MultichainNetworks.SOLANA },
+                  { chainId: MultichainNetworks.TRON },
+                  { chainId: MultichainNetworks.BITCOIN },
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.BSC) },
                 ],
               },
             },
-            enabledNetworkMap: {
-              eip155: {
-                '1': true,
-              },
-            },
-            // internalAccounts: {
-            //   selectedAccount: '0xabc',
-            //   accounts: { '0xabc': { metadata: { keyring: {} } } },
-            // },
-          },
-        });
+          }),
+        );
 
         result.current.openBridgeExperience(location, token, isSwap);
 
@@ -192,6 +186,30 @@ describe('useBridging', () => {
         MetaMetricsSwapsEventSource.TokenView,
         true,
       ],
+      // Should use bip44 default asset for BTC
+      [
+        `/`,
+        '/cross-chain/swaps/prepare-swap-page?from=bip122:000000000019d6689c085ae165831e93/slip44:0',
+        getNativeAssetForChainId(MultichainNetworks.BITCOIN),
+        MetaMetricsSwapsEventSource.TokenView,
+        true,
+      ],
+      // Should use bip44 default asset for SOLANA
+      [
+        '/',
+        '/cross-chain/swaps/prepare-swap-page?from=solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501',
+        getNativeAssetForChainId(MultichainNetworks.SOLANA),
+        MetaMetricsSwapsEventSource.TokenView,
+        true,
+      ],
+      // test account has no TRON account
+      [
+        '/',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:1/slip44:60',
+        getNativeAssetForChainId(MultichainNetworks.TRON),
+        MetaMetricsSwapsEventSource.TokenView,
+        true,
+      ],
     ])(
       'should open swap with correct token pair when pathname is %s',
       async (
@@ -204,49 +222,50 @@ describe('useBridging', () => {
         const openTabSpy = jest.spyOn(global.platform, 'openTab');
         jest
           .spyOn(bridgeSelectors, 'getLastSelectedChainId')
-          .mockReturnValueOnce(CHAIN_IDS.MAINNET);
-        jest
-          .spyOn(bridgeSelectors, 'getFromChains')
-          .mockReturnValueOnce([
-            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
-            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
-          ]);
-        const { result } = renderUseBridging({
-          metamask: {
-            useExternalServices: true,
-            ...mockNetworkState({ chainId: CHAIN_IDS.BSC }),
-            metaMetricsId: MOCK_METAMETRICS_ID,
-            remoteFeatureFlags: {
-              bridgeConfig: {
-                bip44DefaultPairs: {
-                  eip155: {
-                    standard: {
-                      'eip155:1/slip44:60':
-                        'eip155:1/erc20:0x0b2c639c533813f4aa9d7837caf62653d097ff84',
-                    },
-                  },
+          .mockReturnValueOnce(formatChainIdToCaip(CHAIN_IDS.MAINNET));
+
+        const { result } = renderUseBridging(
+          createBridgeMockStore({
+            metamaskStateOverrides: {
+              useExternalServices: true,
+              ...mockNetworkState(
+                { chainId: CHAIN_IDS.BSC },
+                { chainId: CHAIN_IDS.OPTIMISM },
+              ),
+              metaMetricsId: MOCK_METAMETRICS_ID,
+              enabledNetworkMap: {
+                eip155: {
+                  '10': true,
+                  '56': true,
                 },
+                bip122: {
+                  'bip122:000000000019d6689c085ae165831e93': true,
+                },
+                solana: {
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
+                },
+                tron: {
+                  [MultichainNetworks.TRON]: true,
+                },
+              },
+              pathname,
+            },
+            featureFlagOverrides: {
+              bridgeConfig: {
                 refreshRate: 5000,
                 minimumVersion: '0.0.0',
                 maxRefreshCount: 5,
                 chainRanking: [
-                  { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
                   { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+                  { chainId: MultichainNetworks.SOLANA },
+                  { chainId: MultichainNetworks.TRON },
+                  { chainId: MultichainNetworks.BITCOIN },
+                  { chainId: formatChainIdToCaip(CHAIN_IDS.BSC) },
                 ],
               },
             },
-            enabledNetworkMap: {
-              eip155: {
-                '10': true,
-              },
-            },
-            // internalAccounts: {
-            //   selectedAccount: '0xabc',
-            //   accounts: { '0xabc': { metadata: { keyring: {} } } },
-            // },
-            pathname,
-          },
-        });
+          }),
+        );
 
         result.current.openBridgeExperience(location, token, isSwap);
 

@@ -78,6 +78,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: {
           symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: getNativeAssetForChainId(1).assetId,
         },
         toToken: toBridgeToken(
@@ -109,6 +110,7 @@ describe('BridgeCTAButton', () => {
         fromTokenInputValue: null,
         fromToken: {
           symbol: 'ETH',
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: getNativeAssetForChainId(1).assetId,
         },
         toToken: null,
@@ -136,7 +138,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -169,7 +171,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),
@@ -219,7 +221,7 @@ describe('BridgeCTAButton', () => {
         },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          fromToken: 'ETH',
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           toToken: toBridgeToken(
             getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
           ),
@@ -267,7 +269,7 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        fromToken: 'ETH',
+        fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
         toToken: toBridgeToken(
           getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
         ),

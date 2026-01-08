@@ -10,6 +10,7 @@ import {
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { SolAccountType, SolScope } from '@metamask/keyring-api';
+import { toAssetId } from '../../../shared/lib/asset-utils';
 import {
   createBridgeMockStore,
   MOCK_BITCOIN_ACCOUNT,
@@ -64,7 +65,6 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:42161',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        hexChainId: '0xa4b1',
         name: 'Arbitrum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
@@ -124,7 +124,6 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         chainId: formatChainIdToCaip(ChainId.LINEA),
-        name: 'Linea',
       });
     });
 
@@ -148,7 +147,6 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        hexChainId: '0x1',
         name: 'Ethereum',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
@@ -170,6 +168,7 @@ describe('Bridge selectors', () => {
             chainRanking: [
               { chainId: formatChainIdToCaip(ChainId.ETH) },
               { chainId: formatChainIdToCaip(ChainId.LINEA) },
+              { chainId: formatChainIdToCaip(ChainId.OPTIMISM) },
               { chainId: formatChainIdToCaip(ChainId.POLYGON) },
             ],
           },
@@ -191,15 +190,15 @@ describe('Bridge selectors', () => {
       ).toMatchInlineSnapshot(`
         [
           {
-            "chainId": "0x1",
+            "chainId": "eip155:1",
             "name": "Ethereum",
           },
           {
-            "chainId": "0xe708",
+            "chainId": "eip155:59144",
             "name": "Linea",
           },
           {
-            "chainId": "0xa",
+            "chainId": "eip155:10",
             "name": "OP",
           },
         ]
@@ -451,17 +450,9 @@ describe('Bridge selectors', () => {
       const result = getFromToken(state as never);
 
       expect(result).toStrictEqual({
-        accountType: undefined,
-        address: '0x0000000000000000000000000000000000000000',
-        assetId: 'eip155:1/slip44:60',
-        balance: '0',
+        address: '0x123',
+        symbol: 'TEST',
         chainId: 'eip155:1',
-        decimals: 18,
-        image:
-          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
-        name: 'Ether',
-        symbol: 'ETH',
-        tokenFiatAmount: undefined,
       });
     });
 
@@ -475,7 +466,6 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         accountType: undefined,
-        address: '0x0000000000000000000000000000000000000000',
         assetId: 'eip155:1/slip44:60',
         balance: '0',
         chainId: 'eip155:1',
@@ -493,21 +483,51 @@ describe('Bridge selectors', () => {
     it('returns selected toToken', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST', chainId: '0x1' },
-          toToken: { chainId: '0x1', address: '0x567', symbol: 'DEST' },
+          fromToken: toBridgeToken({
+            address: '0x123',
+            symbol: 'TEST',
+            chainId: '0x1',
+            assetId: 'eip155:1/erc20:0x123',
+            name: 'TEST',
+            decimals: 18,
+          }),
+          toToken: toBridgeToken({
+            chainId: 1,
+            address: '0x567',
+            symbol: 'DEST',
+            assetId: 'eip155:1/erc20:0x567',
+            name: 'DEST',
+            decimals: 18,
+          }),
         },
       });
       const result = getToToken(state as never);
 
-      expect(result).toStrictEqual({ address: '0x567', symbol: 'DEST' });
+      expect(result).toMatchInlineSnapshot(`
+        {
+          "accountType": undefined,
+          "assetId": "eip155:1/erc20:0x567",
+          "balance": "0",
+          "chainId": "eip155:1",
+          "decimals": 18,
+          "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
+          "name": "DEST",
+          "symbol": "DEST",
+          "tokenFiatAmount": undefined,
+        }
+      `);
     });
 
     it('returns default token if toToken is not set', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST', chainId: '0x1' },
-          toChainId: formatChainIdToCaip(1),
-
+          fromToken: toBridgeToken({
+            symbol: 'TEST',
+            chainId: 'eip155:1',
+            assetId: 'eip155:1/erc20:0x123',
+            name: 'TEST',
+            decimals: 18,
+          }),
           toToken: null,
         },
       });
@@ -515,7 +535,6 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         accountType: undefined,
-        address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
         assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         balance: '0',
         chainId: 'eip155:1',
@@ -528,53 +547,13 @@ describe('Bridge selectors', () => {
       });
     });
 
-    it('returns null if fromToken is null', () => {
-      const state = createBridgeMockStore({
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-        bridgeSliceOverrides: {
-          fromToken: null,
-          toToken: { chainId: '0x1', address: '0x123', symbol: 'TEST' },
-        },
-      });
-      const result = getToToken(state as never);
-
-      expect(result).toStrictEqual(null);
-    });
-
-    it('returns null if fromChain is not defined', () => {
-      const state = createBridgeMockStore({
-        bridgeSliceOverrides: {
-          fromToken: { address: '0x123', symbol: 'TEST' },
-          toToken: { chainId: '0x1', address: '0x456', symbol: 'DEST' },
-        },
-        featureFlagOverrides: {
-          bridgeConfig: {
-            support: true,
-            chains: {
-              '0x1': { isActiveSrc: false, isActiveDest: true },
-            },
-          },
-        },
-      });
-      const result = getToToken(state as never);
-
-      expect(result).toStrictEqual(null);
-    });
-
     it('returns ETH as default token when bridging from Bitcoin', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromToken: toBridgeToken(
             getNativeAssetForChainId(MultichainNetworks.BITCOIN),
           ),
-          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
+          toToken: null,
         },
         featureFlagOverrides: {
           bridgeConfig: {
@@ -589,6 +568,10 @@ describe('Bridge selectors', () => {
                 isActiveDest: true,
               },
             },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(MultichainNetworks.BITCOIN) },
+            ],
             bip44DefaultPairs: {
               bip122: {
                 standard: {
@@ -618,12 +601,10 @@ describe('Bridge selectors', () => {
       // Should return ETH (native token) instead of mUSD for Bitcoin bridges
       expect(result).toStrictEqual({
         accountType: undefined,
-        address: zeroAddress(),
         assetId: 'eip155:1/slip44:60',
         balance: '0',
         chainId: 'eip155:1',
         decimals: 18,
-        iconUrl: '',
         image:
           'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
@@ -1097,7 +1078,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             decimals: 6,
             address: zeroAddress(),
-            chainId: CHAIN_IDS.MAINNET,
+            chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
+            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
           },
           fromTokenInputValue: '1000',
           fromTokenBalance: '990',
@@ -1120,6 +1102,7 @@ describe('Bridge selectors', () => {
             decimals: 9,
             address: zeroAddress(),
             chainId: formatChainIdToCaip(ChainId.SOLANA),
+            assetId: getNativeAssetForChainId(ChainId.SOLANA).assetId,
           },
           fromTokenInputValue: '1000000000',
           fromNativeBalance: '2000000000',
@@ -1154,35 +1137,11 @@ describe('Bridge selectors', () => {
           },
         },
         metamaskStateOverrides: {
-          accountTree: {
-            selectedAccountGroup: 'entropy-test-account-group-id/0',
-            wallets: {
-              'entropy-test-account-group-id': {
-                id: 'entropy-test-account-group-id',
-                type: 'entropy',
-              },
-              groups: {
-                'entropy-test-account-group-id/0': {
-                  id: 'entropy-test-account-group-id/0',
-                  type: 'multichain-account',
-                  accounts: ['test-account-id'],
-                },
-              },
-            },
-          },
           internalAccounts: {
-            selectedAccount: 'test-account-id',
-            accounts: {
-              'test-account-id': {
-                id: 'test-account-id',
-                type: SolAccountType.DataAccount,
-                address: '8jKM7u4xsyvDpnqL5DQMVrh8AXxZKJPKJw5QsM7KEF8K',
-                scopes: [SolScope.Mainnet],
-              },
-            },
+            selectedAccount: MOCK_SOLANA_ACCOUNT.id,
           },
           balances: {
-            'test-account-id': {
+            [MOCK_SOLANA_ACCOUNT.id]: {
               [getNativeAssetForChainId(ChainId.SOLANA).assetId]: {
                 amount: '.99',
               },
@@ -1210,8 +1169,7 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
-          fromToken: { decimals: 9, address: zeroAddress(), chainId: '0x1' },
-          fromChain: { chainId: formatChainIdToCaip(ChainId.SOLANA) },
+          fromToken: toBridgeToken(getNativeAssetForChainId(ChainId.SOLANA)),
           srcTokenInputValue: '1000000000',
         },
         bridgeStateOverrides: {
@@ -1330,11 +1288,7 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '.001000',
-          fromToken: {
-            decimals: 6,
-            address: zeroAddress(),
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           fromTokenBalance: '0',
         },
         bridgeStateOverrides: {
@@ -1352,11 +1306,7 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           toToken: toBridgeToken(getNativeAssetForChainId('0x1')),
           fromTokenInputValue: '.010000000000000000',
-          fromToken: {
-            address: zeroAddress(),
-            decimals: 18,
-            chainId: CHAIN_IDS.MAINNET,
-          },
+          fromToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
           fromNativeBalance: '10000000000000000',
         },
         bridgeStateOverrides: {
@@ -1381,7 +1331,11 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
             decimals: 6,
-            chainId: CHAIN_IDS.MAINNET,
+            chainId: 'eip155:1',
+            assetId: toAssetId(
+              '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+              'eip155:1',
+            ),
           },
           fromTokenBalance: '1000000',
           fromNativeBalance: '0',
@@ -1450,7 +1404,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
-            chainId: CHAIN_IDS.MAINNET,
+            chainId: 'eip155:1',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
           },
           fromNativeBalance: '1000000000000000',
         },
@@ -1478,7 +1433,8 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             decimals: 18,
-            chainId: CHAIN_IDS.MAINNET,
+            chainId: 'eip155:1',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
           },
           fromNativeBalance: '1000000000000000000',
         },
@@ -1516,12 +1472,14 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             symbol: 'ETH',
-            chainId: CHAIN_IDS.MAINNET,
+            chainId: 'eip155:1',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.MAINNET).assetId,
           },
           toToken: {
-            chainId: '0x89',
+            chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
             address: zeroAddress(),
             symbol: 'TEST',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.POLYGON).assetId,
           },
           fromTokenInputValue: '1',
           fromTokenExchangeRate: 2524.25,
@@ -1589,10 +1547,16 @@ describe('Bridge selectors', () => {
           fromToken: {
             address: zeroAddress(),
             symbol: 'ETH',
-            chainId: 10,
+            chainId: 'eip155:10',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM).assetId,
             decimals: 18,
           },
-          toToken: { chainId: '0xa', address: zeroAddress(), symbol: 'TEST' },
+          toToken: {
+            chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+            address: zeroAddress(),
+            symbol: 'TEST',
+            assetId: getNativeAssetForChainId(CHAIN_IDS.POLYGON).assetId,
+          },
           fromTokenExchangeRate: 2524.25,
           fromTokenInputValue: '1',
         },

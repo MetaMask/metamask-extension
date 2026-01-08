@@ -89,6 +89,7 @@ const useBridging = () => {
         lastSelectedChainId && isChainIdEnabledForBridging(lastSelectedChainId)
           ? lastSelectedChainId
           : CHAIN_IDS.MAINNET;
+      // Change the fromToken and network before navigating to the bridge experience
       if (!srcAssetIdToUse && isCrossChain(targetChainId, fromChain.chainId)) {
         dispatch(setFromToken(getNativeAssetForChainId(targetChainId)));
       }

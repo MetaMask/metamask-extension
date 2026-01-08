@@ -3,7 +3,6 @@ import {
   formatChainIdToCaip,
   type FeatureFlagResponse,
 } from '@metamask/bridge-controller';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
 import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };

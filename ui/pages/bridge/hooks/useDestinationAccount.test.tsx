@@ -154,7 +154,7 @@ describe('useDestinationAccount', () => {
       },
     });
     expect(getFromChain(store?.getState())?.chainId).toBe('eip155:1');
-    expect(getToChain(store?.getState())?.chainId).toBe('eip155:10');
+    expect(getToChain(store?.getState())?.chainId).toBe('eip155:59144');
     expect(result.current.selectedDestinationAccount).toStrictEqual({
       ...getFromAccount(store?.getState()),
       isExternal: false,

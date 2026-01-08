@@ -23,13 +23,7 @@ import { createSelector } from 'reselect';
 import type { GasFeeState } from '@metamask/gas-fee-controller';
 import { BigNumber } from 'bignumber.js';
 import { calcTokenAmount } from '@metamask/notification-services-controller/push-services';
-import {
-  parseCaipAssetType,
-  parseCaipChainId,
-  type CaipAssetType,
-  type CaipChainId,
-  type Hex,
-} from '@metamask/utils';
+import { parseCaipChainId, type CaipChainId, type Hex } from '@metamask/utils';
 import type {
   AccountTrackerControllerState,
   CurrencyRateState,
@@ -279,7 +273,7 @@ export const getFromToken = createSelector(
     );
     // If selected network is not supported by swap/bridge, return ETH
     if (!fromChain) {
-      return toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET));
+      return toBridgeToken(getNativeAssetForChainId(fromChains[0].chainId));
     }
     const fromChainId = fromChain.chainId;
     if (fromToken && fromToken.chainId === fromChain.chainId) {
