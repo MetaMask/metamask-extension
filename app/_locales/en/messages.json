@@ -2847,9 +2847,6 @@
   "gasUsed": {
     "message": "Gas used"
   },
-  "gasPayment": {
-    "message": "Gas payment"
-  },
   "gatorPermissionAnnualFrequency": {
     "message": "Yearly",
     "description": "Time period for annual recurring permissions redemption"

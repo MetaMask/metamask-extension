@@ -219,6 +219,7 @@ export const selectedAddressTxListSelectorAllChain = createSelector(
         ({ txParams }) => txParams.from === selectedInternalAccount.address,
       )
       .filter(({ type }) => type !== TransactionType.incoming)
+      .filter(({ type }) => type !== TransactionType.gasPayment)
       .concat(smTransactions);
   },
 );
@@ -233,6 +234,7 @@ export const selectedAddressTxListSelector = createSelector(
         ({ txParams }) => txParams.from === selectedInternalAccount.address,
       )
       .filter(({ type }) => type !== TransactionType.incoming)
+      .filter(({ type }) => type !== TransactionType.gasPayment)
       .concat(smTransactions);
   },
 );

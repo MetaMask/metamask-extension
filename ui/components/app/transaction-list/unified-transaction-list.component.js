@@ -508,6 +508,7 @@ export default function UnifiedTransactionList({
       const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
         .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => tx.type !== TransactionType.gasPayment)
         .filter((tx) => tx.status in PENDING_STATUS_HASH);
 
       return groupAndSortTransactionsByNonce(evmTxs);
@@ -532,6 +533,7 @@ export default function UnifiedTransactionList({
       const evmTxs = [...allTransactions, ...smartTxs]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
         .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => tx.type !== TransactionType.gasPayment)
         .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
         .filter(
           (tx) =>
