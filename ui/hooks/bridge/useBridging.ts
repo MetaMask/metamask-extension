@@ -6,10 +6,12 @@ import {
   formatChainIdToCaip,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
+  isCrossChain,
   UnifiedSwapBridgeEventName,
 } from '@metamask/bridge-controller';
 import {
   resetInputFields,
+  setFromToken,
   trackUnifiedSwapBridgeEvent,
 } from '../../ducks/bridge/actions';
 import {
@@ -70,7 +72,7 @@ const useBridging = () => {
       },
     ) => {
       // If srcToken is a bridge token, use its assetId
-      let srcAssetIdToUse =
+      const srcAssetIdToUse =
         srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
           ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
           : undefined;
@@ -87,8 +89,8 @@ const useBridging = () => {
         lastSelectedChainId && isChainIdEnabledForBridging(lastSelectedChainId)
           ? lastSelectedChainId
           : CHAIN_IDS.MAINNET;
-      if (!srcAssetIdToUse && targetChainId !== fromChain?.chainId) {
-        srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
+      if (!srcAssetIdToUse && isCrossChain(targetChainId, fromChain.chainId)) {
+        dispatch(setFromToken(getNativeAssetForChainId(targetChainId)));
       }
 
       trace({

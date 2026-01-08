@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import {
+  formatChainIdToCaip,
   formatChainIdToHex,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
@@ -42,9 +43,14 @@ import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 import { Column, Row } from '../../layout';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../shared/constants/network';
-import { getToChain } from '../../../../ducks/bridge/selectors';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
+import {
+  type BridgeAppState,
+  getToChain,
+} from '../../../../ducks/bridge/selectors';
+import { getAccountGroupsByAddress } from '../../../../selectors/multichain-accounts/account-tree';
+import { getBridgeBalancesByChainId } from '../../../../ducks/bridge/asset-selectors';
 import { type DestinationAccount } from '../types';
-import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 
 const MAXIMUM_CURRENCY_DECIMALS = 3;
 
@@ -72,8 +78,12 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
   const isEvmNetwork = isEvmAccountType(account.type);
 
   const toChain = useSelector(getToChain);
-  const { balanceByChainId } = useMultichainBalances(account.address);
-
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [account.address]),
+  );
+  const balanceByChainId = useSelector((state: BridgeAppState) =>
+    getBridgeBalancesByChainId(state, accountGroup.id),
+  );
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,
     shouldHideZeroBalanceTokens,
@@ -96,11 +106,17 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
         ? toChain.chainId
         : formatChainIdToHex(toChain?.chainId));
     balanceToTranslate = chainIdInHexOrCaip
-      ? (balanceByChainId[chainIdInHexOrCaip]?.toString() ?? '0')
+      ? (balanceByChainId[
+          formatChainIdToCaip(chainIdInHexOrCaip)
+        ]?.toString() ?? '0')
       : '0';
   }
 
   const t = useI18nContext();
+
+  if (!toChain) {
+    return null;
+  }
 
   return (
     <Row
@@ -182,12 +198,12 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
           <AvatarNetwork
             src={
               CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                toChain?.chainId && !isNonEvmChainId(toChain?.chainId)
-                  ? formatChainIdToHex(toChain?.chainId)
-                  : (toChain?.chainId ?? '')
+                isNonEvmChainId(toChain.chainId)
+                  ? toChain.chainId
+                  : formatChainIdToHex(toChain.chainId)
               ]
             }
-            name={toChain?.name ?? ''}
+            name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[toChain.chainId]}
             size={AvatarNetworkSize.Xs}
           />
         </Column>

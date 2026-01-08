@@ -5,6 +5,7 @@ import {
   BridgeBackgroundAction,
   BridgeUserAction,
   RequestStatus,
+  formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { setBackgroundConnection } from '../../store/background-connection';
@@ -21,6 +22,7 @@ import {
   setWasTxDeclined,
   setSlippage,
 } from './actions';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const middleware = [thunk];
 
@@ -72,7 +74,7 @@ describe('Ducks - Bridge', () => {
       const actionPayload = {
         symbol: 'SYMBOL',
         address: '0x13341431',
-        chainId: '0xa',
+        chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
       };
 
       store.dispatch(setToToken(actionPayload as never) as never);

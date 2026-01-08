@@ -6,7 +6,7 @@ import {
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { type CaipAssetType } from '@metamask/utils';
+import type { CaipChainId, CaipAssetType } from '@metamask/utils';
 import { MultichainNetworks } from './multichain/networks';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -60,6 +60,11 @@ export const ALL_ALLOWED_BRIDGE_CHAIN_IDS = [
   ...ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
   ...Object.values(ChainId),
 ];
+
+/**
+ * Chains that are only allowed to be used for bridging.
+ */
+export const BRIDGE_ONLY_CHAINS: CaipChainId[] = [MultichainNetworks.BITCOIN];
 
 export type AllowedBridgeChainIds =
   | (typeof ALLOWED_BRIDGE_CHAIN_IDS)[number]

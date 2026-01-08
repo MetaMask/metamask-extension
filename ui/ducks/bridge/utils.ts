@@ -20,7 +20,7 @@ import {
 import { handleFetch } from '@metamask/controller-utils';
 import { Numeric } from '../../../shared/modules/Numeric';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
+import { getAssetImageUrl } from '../../../shared/lib/asset-utils';
 import {
   TRON_RESOURCE_SYMBOLS_SET,
   type TronResourceSymbol,
@@ -48,6 +48,15 @@ export const isTronEnergyOrBandwidthResource = (
     Boolean(chainId?.toString()?.includes('tron:')) &&
     TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
   );
+};
+
+/**
+ *
+ * @param chainId - The chain ID to convert to a hex string
+ * @returns The hex string representation of the chain ID. Undefined if the chain ID is not EVM.
+ */
+export const getMaybeHexChainId = (chainId: string) => {
+  return isNonEvmChainId(chainId) ? chainId : formatChainIdToHex(chainId);
 };
 
 /**
@@ -188,46 +197,31 @@ export const isNetworkAdded = (
   chainId: Hex | CaipChainId,
 ) => availableNetworks.some((network) => network.chainId === chainId);
 
-const toAssetIdOrThrow = (chainId: number | string, address = '') => {
-  const chainIdInCaip = formatChainIdToCaip(chainId);
-  const assetId = toAssetId(address, chainIdInCaip);
-  if (!assetId) {
-    throw new Error(`Failed to create asset ID for: ${address} on ${chainId}`);
-  }
-  return assetId;
-};
-
 export const toBridgeToken = (
   payload: TokenPayload['payload'],
 ): BridgeToken => {
-  const caipChainId = formatChainIdToCaip(payload.chainId);
-  const assetId =
-    payload.assetId ?? toAssetIdOrThrow(payload.chainId, payload.address);
-  return {
-    ...payload,
-    name: payload.name ?? payload.symbol,
-    balance: payload.balance ?? '0',
-    chainId: caipChainId,
-    image: (payload.image || getAssetImageUrl(assetId, caipChainId)) ?? '',
+  const {
     assetId,
-    tokenFiatAmount: payload.tokenFiatAmount,
-    accountType: payload.accountType,
-  };
-};
-const createBridgeTokenPayload = (
-  tokenData: {
-    address: string;
-    symbol: string;
-    decimals: number;
-    name: string;
-    assetId?: CaipAssetType;
-  },
-  chainId: ChainId | Hex | CaipChainId,
-): TokenPayload['payload'] | null => {
-  return toBridgeToken({
-    ...tokenData,
+    decimals,
+    symbol,
+    name,
+    balance,
+    image,
+    tokenFiatAmount,
+    accountType,
+  } = payload;
+  const { chainId } = parseCaipAssetType(assetId);
+  return {
+    decimals,
+    symbol,
+    name: name ?? symbol,
+    balance: balance ?? '0',
     chainId,
-  });
+    image: getAssetImageUrl(assetId, chainId) ?? image,
+    assetId,
+    tokenFiatAmount,
+    accountType,
+  };
 };
 
 export const getDefaultToToken = (
@@ -241,33 +235,43 @@ export const getDefaultToToken = (
     if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
       const nativeAsset = getNativeAssetForChainId(targetChainId);
       if (nativeAsset) {
-        return createBridgeTokenPayload(nativeAsset, targetChainId);
+        return toBridgeToken({
+          ...nativeAsset,
+          chainId: targetChainId,
+        });
       }
     }
 
     // If source is native token, default to common pair token on destination chain
     if (isNativeAddress(fromToken.address)) {
-      return createBridgeTokenPayload(commonPair, targetChainId);
+      return toBridgeToken({
+        ...commonPair,
+        chainId: targetChainId,
+      });
     }
 
     // If source is USDC (or other common pair token), default to native token
     if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
       const nativeAsset = getNativeAssetForChainId(targetChainId);
       if (nativeAsset) {
-        return createBridgeTokenPayload(nativeAsset, targetChainId);
+        return toBridgeToken({
+          ...nativeAsset,
+          chainId: targetChainId,
+        });
       }
     }
 
     // For any other token, default to USDC
-    return createBridgeTokenPayload(commonPair, targetChainId);
+    return toBridgeToken({
+      ...commonPair,
+      chainId: targetChainId,
+    });
   }
 
   // Last resort: native token
   const nativeAsset = getNativeAssetForChainId(targetChainId);
-  if (nativeAsset) {
-    // return nativeAsset
-    return createBridgeTokenPayload(nativeAsset, targetChainId);
-  }
-
-  return null;
+  return toBridgeToken({
+    ...nativeAsset,
+    chainId: targetChainId,
+  });
 };

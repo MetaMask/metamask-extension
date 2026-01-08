@@ -22,6 +22,7 @@ import { Column } from '../../../layout';
 export const NetworkPicker = ({
   chainIds,
   selectedChainId,
+  disabledChainId,
   onNetworkChange,
   buttonElement,
   isOpen,
@@ -29,6 +30,7 @@ export const NetworkPicker = ({
 }: {
   chainIds: CaipChainId[];
   selectedChainId: CaipChainId | null;
+  disabledChainId?: CaipChainId;
   onNetworkChange: (chainId: CaipChainId | null) => void;
   buttonElement: HTMLElement | null;
   isOpen: boolean;
@@ -90,6 +92,7 @@ export const NetworkPicker = ({
               onClick={() => {
                 onNetworkChange(chainId);
               }}
+              disabled={disabledChainId === chainId}
             />
           ))}
         </Column>

@@ -1,10 +1,8 @@
-import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-  type ChainId,
-  type GenericQuoteRequest,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
@@ -14,14 +12,6 @@ import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
 export type BridgeToken = BridgeAssetV2 & {
   balance: string;
   tokenFiatAmount?: number | null;
-  /**
-   * @deprecated Can be removed when all tokens come from the bridge-api
-   */
-  occurrences?: number;
-  /**
-   * @deprecated Can be removed when all tokens come from the bridge-api
-   */
-  aggregators?: string[];
   accountType?: KeyringAccountType;
   /**
    * @deprecated Should be removed when all tokens come from the bridge-api
@@ -33,9 +23,7 @@ export type BridgeToken = BridgeAssetV2 & {
  * This is the minimal network configuration used by the Swap UI
  */
 export type BridgeNetwork = {
-  name: string;
-  nativeCurrency: string;
-  chainId: Hex | CaipChainId;
+  chainId: CaipChainId;
 };
 
 export type BridgeState = {
@@ -54,10 +42,8 @@ export type BridgeState = {
 };
 
 export type TokenPayload = {
-  payload: Omit<BridgeToken, 'chainId' | 'balance' | 'assetId' | 'name'> & {
-    chainId: number | CaipChainId | Hex;
+  payload: Omit<BridgeToken, 'chainId' | 'balance'> & {
+    chainId?: number | CaipChainId | Hex;
     balance?: string;
-    assetId?: CaipAssetType;
-    name?: string;
   };
 };

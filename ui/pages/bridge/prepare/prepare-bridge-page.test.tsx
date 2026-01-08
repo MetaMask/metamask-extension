@@ -111,6 +111,10 @@ describe('PrepareBridgePage', () => {
               isActiveDest: true,
             },
           },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -118,7 +122,7 @@ describe('PrepareBridgePage', () => {
         fromToken: {
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
-          chainId: CHAIN_IDS.MAINNET,
+          chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET),
           assetId: toAssetId(
             '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             formatChainIdToCaip(CHAIN_IDS.MAINNET),
@@ -129,7 +133,7 @@ describe('PrepareBridgePage', () => {
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
-          chainId: CHAIN_IDS.LINEA_MAINNET,
+          chainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
           assetId: toAssetId(
             '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
             formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),

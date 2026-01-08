@@ -9,6 +9,7 @@ import {
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { zeroAddress } from 'ethereumjs-util';
+import { type CaipChainId } from '@metamask/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -174,7 +175,11 @@ export const createBridgeMockStore = ({
   metamaskStateOverrides = {},
   stateOverrides = {},
 }: {
-  featureFlagOverrides?: { bridgeConfig: Partial<FeatureFlagResponse> };
+  featureFlagOverrides?: {
+    bridgeConfig: Partial<FeatureFlagResponse> & {
+      chainRanking?: { chainId: CaipChainId }[];
+    };
+  };
   bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
@@ -305,7 +310,6 @@ export const createBridgeMockStore = ({
       },
       currencyRates: {
         ETH: { conversionRate: 2524.25 },
-        usd: { conversionRate: 1 },
       },
       marketData: {
         '0x1': {
@@ -628,6 +632,14 @@ export const createBridgeMockStore = ({
             refreshRate: 5000,
             maxRefreshCount: 5,
             ...featureFlagOverrides?.bridgeConfig,
+            chainRanking: [
+              { chainId: formatChainIdToCaip('0x1') },
+              ...Object.keys(
+                featureFlagOverrides?.bridgeConfig?.chains ?? [],
+              ).map((chainId) => ({
+                chainId: formatChainIdToCaip(chainId),
+              })),
+            ],
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,

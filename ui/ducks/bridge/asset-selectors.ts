@@ -27,7 +27,7 @@ import {
 import { getInternalAccountByGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
 import { type BridgeAppState, getFromChains } from './selectors';
 import { type BridgeToken } from './types';
-import { isTronEnergyOrBandwidthResource } from './utils';
+import { getMaybeHexChainId, isTronEnergyOrBandwidthResource } from './utils';
 
 const createSelector = untypedCreateSelector.withTypes<BridgeAppState>();
 
@@ -57,9 +57,7 @@ const getEvmAccountAddress = (state: BridgeAppState, id: AccountGroupId) =>
 
 const getAllowedHexChainIds = createSelector([getFromChains], (fromChains) =>
   fromChains
-    .map(({ chainId }) =>
-      isNonEvmChainId(chainId) ? undefined : formatChainIdToHex(chainId),
-    )
+    .map((chain) => getMaybeHexChainId(chain.chainId))
     .filter((chainId) => chainId !== undefined),
 );
 

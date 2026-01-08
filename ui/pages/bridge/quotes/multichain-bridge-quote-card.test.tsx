@@ -3,6 +3,7 @@ import React from 'react';
 import {
   QuoteResponse,
   RequestStatus,
+  formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
@@ -13,12 +14,13 @@ import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes-erc20-erc20.json';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
-import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
+import { toAssetId } from '../../../../shared/lib/asset-utils';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),
@@ -47,16 +49,21 @@ describe('MultichainBridgeQuoteCard', () => {
         bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
         },
       },
       bridgeSliceOverrides: {
+        toToken: {
+          address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+        },
         fromTokenInputValue: '1',
-        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+        // toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -124,16 +131,21 @@ describe('MultichainBridgeQuoteCard', () => {
         bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
         },
       },
       bridgeSliceOverrides: {
+        toToken: {
+          address: '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
+          chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
+        },
         fromTokenInputValue: '1',
-        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
+        // toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {

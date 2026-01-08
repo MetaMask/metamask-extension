@@ -9,7 +9,6 @@ import {
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
 import { uniqBy } from 'lodash';
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
@@ -34,8 +33,10 @@ import {
   FlexDirection,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { getFromToken } from '../../../../../ducks/bridge/selectors';
-import { toBridgeToken } from '../../../../../ducks/bridge/utils';
+import { getAccountGroupsByAddress } from '../../../../../selectors/multichain-accounts/account-tree';
+import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
+import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
+import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
 import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
@@ -48,6 +49,7 @@ export const BridgeAssetPicker = ({
   header,
   selectedAsset,
   accountAddress,
+  disabledChainId,
   ...assetListProps
 }: {
   isOpen: boolean;
@@ -55,14 +57,20 @@ export const BridgeAssetPicker = ({
   onClose: () => void;
   header: string;
   selectedAsset: BridgeToken;
-} & Pick<React.ComponentProps<typeof NetworkPicker>, 'chainIds'> &
+} & Pick<
+  React.ComponentProps<typeof NetworkPicker>,
+  'chainIds' | 'disabledChainId'
+> &
   Pick<
     React.ComponentProps<typeof BridgeAssetList>,
     'onAssetChange' | 'excludedAssetId'
   >) => {
-  // TODO remove this when actual balances are provided
-  const fromToken = useSelector(getFromToken);
-  const assetsWithBalance = fromToken ? [fromToken] : [];
+  const [accountGroup] = useSelector((state: BridgeAppState) =>
+    getAccountGroupsByAddress(state, [accountAddress]),
+  );
+  const assetsWithBalance = useSelector((state: BridgeAppState) =>
+    getBridgeSortedAssets(state, accountGroup.id),
+  );
 
   const t = useI18nContext();
 
@@ -85,9 +93,7 @@ export const BridgeAssetPicker = ({
     () =>
       uniqBy(
         assetsWithBalance.concat(selectedAsset).filter((token) => {
-          const matchesChainIdFilter = chainIdsSet.has(
-            formatChainIdToCaip(token.chainId),
-          );
+          const matchesChainIdFilter = chainIdsSet.has(token.chainId);
 
           return matchesChainIdFilter;
         }),
@@ -97,9 +103,12 @@ export const BridgeAssetPicker = ({
     [chainIdsSet, selectedAsset],
   );
 
-  // TODO call usePopularTokens hook here
-  const popularTokensList = assetsToInclude.map(toBridgeToken);
-  const isPopularTokensLoading = false;
+  const { popularTokensList, isLoading: isPopularTokensLoading } =
+    usePopularTokens({
+      assetsToInclude,
+      accountAddress,
+      chainIds: chainIdsSet,
+    });
 
   const selectedNetworkName = selectedChainId
     ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[selectedChainId]
@@ -185,6 +194,7 @@ export const BridgeAssetPicker = ({
               isOpen={isNetworkPickerOpen}
               chainIds={chainIds}
               selectedChainId={selectedChainId}
+              disabledChainId={disabledChainId}
               onNetworkChange={(chainId) => {
                 setSelectedChainId(chainId);
                 setIsNetworkPickerOpen(false);
@@ -224,11 +234,11 @@ export const BridgeAssetPicker = ({
               }
             />
 
-            {!isNetworkPickerOpen && selectedAsset.assetId && (
+            {!isNetworkPickerOpen && (
               <BridgeAssetList
                 assetsToInclude={assetsToInclude}
-                // chainIds={chainIdsSet}
-                // accountAddress={accountAddress}
+                chainIds={chainIdsSet}
+                accountAddress={accountAddress}
                 searchQuery={searchQuery}
                 selectedAssetId={selectedAsset.assetId}
                 popularTokensList={popularTokensList}

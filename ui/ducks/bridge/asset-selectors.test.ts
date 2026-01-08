@@ -1,3 +1,4 @@
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   createBridgeMockStore,
   MOCK_EVM_ACCOUNT,
@@ -50,6 +51,14 @@ describe('Bridge asset selectors', () => {
                 isActiveDest: true,
               },
             },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+              { chainId: MultichainNetworks.SOLANA },
+              { chainId: MultichainNetworks.BITCOIN },
+              { chainId: MultichainNetworks.TRON },
+            ],
           },
         },
       });

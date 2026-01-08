@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { type CaipAssetType } from '@metamask/utils';
 import { FontWeight, Text, TextColor } from '@metamask/design-system-react';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { useTokenSearchResults } from '../../../../../hooks/bridge/useTokenSearchResults';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { Column } from '../../../layout';
 import { AssetListItem } from './asset';
@@ -14,6 +15,7 @@ export const BridgeAssetList = ({
   selectedAssetId,
   excludedAssetId,
   searchQuery,
+  ...searchResultsProps
 }: {
   popularTokensList: BridgeToken[];
   isPopularTokensLoading: boolean;
@@ -21,14 +23,20 @@ export const BridgeAssetList = ({
   onAssetChange: (asset: BridgeToken) => void;
   selectedAssetId: CaipAssetType;
   excludedAssetId?: CaipAssetType;
-  searchQuery: string;
-} & React.ComponentProps<typeof Column>) => {
-  // TODO call useTokenSearchResults hook here
-  const searchResults = popularTokensList;
-  const isSearchResultsLoading = false;
-  const hasMoreResults = true;
-  // eslint-disable-next-line no-empty-function
-  const onFetchMoreResults = (_: string) => {};
+} & React.ComponentProps<typeof Column> &
+  Pick<
+    Parameters<typeof useTokenSearchResults>[0],
+    'searchQuery' | 'accountAddress' | 'chainIds'
+  >) => {
+  const {
+    searchResults,
+    isSearchResultsLoading,
+    onFetchMoreResults,
+    hasMoreResults,
+  } = useTokenSearchResults({
+    ...searchResultsProps,
+    searchQuery: searchQuery.trim(),
+  });
 
   const loadingRef = useRef<HTMLDivElement>(null);
   const handleObserver = useCallback(
@@ -68,7 +76,7 @@ export const BridgeAssetList = ({
     () =>
       (searchQuery.length > 0 ? searchResults : popularTokensList).filter(
         (token) =>
-          token.assetId?.toLowerCase() !== excludedAssetId?.toLowerCase(),
+          token.assetId.toLowerCase() !== excludedAssetId?.toLowerCase(),
       ),
     [searchQuery.length, searchResults, popularTokensList, excludedAssetId],
   );
