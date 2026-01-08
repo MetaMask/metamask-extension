@@ -476,8 +476,8 @@ export const CURRENCY_SYMBOLS = {
   HYPE: 'HYPE',
   X_LAYER: 'OKB',
   BOB: 'ETH',
-  ROOTSTOCK: 'rBTC',
-  ROOTSTOCK_TESTNET: 'trBTC',
+  ROOTSTOCK: 'RBTC',
+  ROOTSTOCK_TESTNET: 'tRBTC',
 } as const;
 
 // Non-EVM currency symbols
