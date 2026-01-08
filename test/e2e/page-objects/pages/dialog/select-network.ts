@@ -99,13 +99,9 @@ class SelectNetwork {
    */
   async clickAddButtonForPopularNetwork(chainId: string): Promise<void> {
     console.log('Click Add Button for Popular Network');
-    await this.driver.clickElementAndWaitToDisappear({
-      text: 'Add',
-      css: `[data-testid="test-add-button"]`,
-      parent: {
-        css: `[data-testid="popular-network-${chainId}"]`,
-      },
-    });
+    await this.driver.clickElementAndWaitToDisappear(
+      `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`,
+    );
   }
 
   async clickCloseButton(): Promise<void> {
