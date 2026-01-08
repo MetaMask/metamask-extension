@@ -6236,13 +6236,6 @@
   "shieldTxDetails1Title": {
     "message": "Защита транзакций до $10 000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Получайте более быструю и специализированную поддержку в любое время",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Приоритетная поддержка"
-  },
   "shieldTxMembershipActive": {
     "message": "Активный план"
   },

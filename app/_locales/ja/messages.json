@@ -6221,13 +6221,6 @@
   "shieldTxDetails1Title": {
     "message": "最大$10,000のトランザクション保護"
   },
-  "shieldTxDetails2Description": {
-    "message": "いつでもすぐに専任のサポートを受けられます",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
-  "shieldTxDetails2Title": {
-    "message": "優先サポート"
-  },
   "shieldTxMembershipActive": {
     "message": "有効なプラン"
   },

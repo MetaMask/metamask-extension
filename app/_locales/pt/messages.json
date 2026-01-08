@@ -6236,13 +6236,6 @@
   "shieldTxDetails1Title": {
     "message": "Proteção de transações de até US$10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Receba suporte mais rápido e dedicado a qualquer momento",
-    "description": "The $1 is interval and the $2 is the date of next billing"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Suporte prioritário"
-  },
   "shieldTxMembershipActive": {
     "message": "Plano ativo"
   },
