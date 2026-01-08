@@ -128,10 +128,6 @@ export class BrowserStorageAdapter implements StorageAdapter {
       if (fullKeys.length > 0) {
         await browser.storage.local.remove(fullKeys);
       }
-
-      console.log(
-        `StorageService: Cleared ${fullKeys.length} keys for ${namespace}`,
-      );
     } catch (error) {
       console.error(
         `StorageService: Failed to clear namespace ${namespace}`,
