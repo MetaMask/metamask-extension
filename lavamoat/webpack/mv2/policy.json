@@ -1811,7 +1811,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "uuid": true
       }
     },
@@ -1823,7 +1823,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "uuid": true
       }
     },
@@ -1835,14 +1835,14 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "uuid": true
       }
     },
     "@metamask/user-operation-controller>@metamask/polling-controller": {
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "uuid": true
       }
     },
@@ -1887,7 +1887,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/profile-metrics-controller>@metamask/profile-sync-controller": true,
+        "@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -2164,7 +2164,7 @@
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "@metamask/snaps-utils>fast-xml-parser": true,
         "luxon": true,
         "@metamask/snaps-utils>marked": true,
@@ -2279,7 +2279,8 @@
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
@@ -3083,7 +3084,7 @@
       },
       "packages": {
         "eslint>fast-deep-equal": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "uri-js": true
       }
@@ -4873,7 +4874,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -5951,7 +5952,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

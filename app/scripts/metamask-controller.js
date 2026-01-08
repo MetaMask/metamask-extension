@@ -2925,6 +2925,18 @@ export default class MetamaskController extends EventEmitter {
         this.claimsController,
       ),
       getClaims: this.claimsController.getClaims.bind(this.claimsController),
+      saveClaimDraft: this.claimsController.saveOrUpdateClaimDraft.bind(
+        this.claimsController,
+      ),
+      getClaimDrafts: this.claimsController.getClaimDrafts.bind(
+        this.claimsController,
+      ),
+      deleteClaimDraft: this.claimsController.deleteClaimDraft.bind(
+        this.claimsController,
+      ),
+      deleteAllClaimDrafts: this.claimsController.deleteAllClaimDrafts.bind(
+        this.claimsController,
+      ),
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
@@ -3310,9 +3322,10 @@ export default class MetamaskController extends EventEmitter {
         gatorPermissionsController.addPendingRevocation.bind(
           gatorPermissionsController,
         ),
-      submitRevocation: gatorPermissionsController.submitRevocation.bind(
-        gatorPermissionsController,
-      ),
+      submitDirectRevocation:
+        gatorPermissionsController.submitDirectRevocation.bind(
+          gatorPermissionsController,
+        ),
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
