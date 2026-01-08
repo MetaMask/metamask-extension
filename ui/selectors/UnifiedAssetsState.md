@@ -1,5 +1,7 @@
 # Components and Hooks Affected by Unified Assets Controller State Access
 
+This document lists all components and hooks that reference selectors marked with `TODO Unified Assets Controller State Access` comments. These files will be affected when the unified assets controller state is implemented.
+
 ## Hooks
 
 - [ui/hooks/useMultichainBalances.ts](../hooks/useMultichainBalances.ts)
@@ -25,27 +27,14 @@
 
 ## Components
 
+### Asset Overview & Token List
+
 - [ui/components/app/assets/token-list/token-list.tsx](../components/app/assets/token-list/token-list.tsx)
 - [ui/components/app/assets/defi-list/defi-list.tsx](../components/app/assets/defi-list/defi-list.tsx)
-- [ui/components/app/assets/account-group-balance/account-group-balance.tsx](../components/app/assets/account-group-balance/account-group-balance.tsx)
-- [ui/components/app/assets/account-group-balance-change/useAccountGroupBalanceDisplay.ts](../components/app/assets/account-group-balance-change/useAccountGroupBalanceDisplay.ts)
+- [ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx](../components/app/assets/token-cell/cells/token-cell-percent-change.tsx)
 - [ui/components/app/assets/hooks/useMultichainAssets.tsx](../components/app/assets/hooks/useMultichainAssets.tsx)
 - [ui/components/app/assets/hooks/useTokenDisplayInfo.tsx](../components/app/assets/hooks/useTokenDisplayInfo.tsx)
 - [ui/components/app/assets/hooks/usePrimaryCurrencyProperties.tsx](../components/app/assets/hooks/usePrimaryCurrencyProperties.tsx)
-- [ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx](../components/app/assets/token-cell/cells/token-cell-percent-change.tsx)
-- [ui/components/app/wallet-overview/aggregated-percentage-overview.tsx](../components/app/wallet-overview/aggregated-percentage-overview.tsx)
-- [ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx](../components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx)
-- [ui/components/app/wallet-overview/coin-overview.tsx](../components/app/wallet-overview/coin-overview.tsx)
-- [ui/components/app/wallet-overview/eth-overview.js](../components/app/wallet-overview/eth-overview.js)
-- [ui/components/app/wallet-overview/non-evm-overview.tsx](../components/app/wallet-overview/non-evm-overview.tsx)
-- [ui/components/app/currency-input/currency-input.js](../components/app/currency-input/currency-input.js)
-- [ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx](../components/app/currency-input/hooks/useTokenExchangeRate.tsx)
-- [ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx](../components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx)
-- [ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx](../components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx)
-- [ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js](../components/app/alerts/unconnected-account-alert/unconnected-account-alert.js)
-- [ui/components/app/toast-master/toast-master.js](../components/app/toast-master/toast-master.js)
-- [ui/components/ui/aggregated-balance/aggregated-balance.tsx](../components/ui/aggregated-balance/aggregated-balance.tsx)
-- [ui/components/ui/token-input/token-input.container.js](../components/ui/token-input/token-input.container.js)
 - [ui/pages/asset/components/asset-page.tsx](../pages/asset/components/asset-page.tsx)
 - [ui/pages/asset/components/asset-market-details.tsx](../pages/asset/components/asset-market-details.tsx)
 - [ui/pages/asset/hooks/useHistoricalPrices.ts](../pages/asset/hooks/useHistoricalPrices.ts)
@@ -53,8 +42,31 @@
 - [ui/pages/asset/hooks/useTronResources.ts](../pages/asset/hooks/useTronResources.ts)
 - [ui/pages/asset/hooks/useCurrentPrice.ts](../pages/asset/hooks/useCurrentPrice.ts)
 - [ui/pages/defi/components/defi-details-page.tsx](../pages/defi/components/defi-details-page.tsx)
-- [ui/pages/create-account/connect-hardware/index.js](../pages/create-account/connect-hardware/index.js)
-- [ui/pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js](../pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js)
+
+### Balance & Aggregated Percentage
+
+- [ui/components/app/assets/account-group-balance/account-group-balance.tsx](../components/app/assets/account-group-balance/account-group-balance.tsx)
+- [ui/components/app/assets/account-group-balance-change/useAccountGroupBalanceDisplay.ts](../components/app/assets/account-group-balance-change/useAccountGroupBalanceDisplay.ts)
+- [ui/components/app/wallet-overview/aggregated-percentage-overview.tsx](../components/app/wallet-overview/aggregated-percentage-overview.tsx)
+- [ui/components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx](../components/app/wallet-overview/aggregated-percentage-overview-cross-chains.tsx)
+- [ui/components/app/wallet-overview/coin-overview.tsx](../components/app/wallet-overview/coin-overview.tsx)
+- [ui/components/app/wallet-overview/eth-overview.js](../components/app/wallet-overview/eth-overview.js)
+- [ui/components/app/wallet-overview/non-evm-overview.tsx](../components/app/wallet-overview/non-evm-overview.tsx)
+- [ui/components/ui/aggregated-balance/aggregated-balance.tsx](../components/ui/aggregated-balance/aggregated-balance.tsx)
+
+### Currency Input & Token Input
+
+- [ui/components/app/currency-input/currency-input.js](../components/app/currency-input/currency-input.js)
+- [ui/components/app/currency-input/hooks/useTokenExchangeRate.tsx](../components/app/currency-input/hooks/useTokenExchangeRate.tsx)
+- [ui/components/ui/token-input/token-input.container.js](../components/ui/token-input/token-input.container.js)
+
+### Bridge & Destination Account
+
+- [ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx](../pages/bridge/prepare/components/destination-account-picker-modal.tsx)
+- [ui/pages/bridge/hooks/useDestinationAccount.ts](../pages/bridge/hooks/useDestinationAccount.ts)
+
+### Confirmations
+
 - [ui/pages/confirmations/hooks/useBalance.js](../pages/confirmations/hooks/useBalance.js)
 - [ui/pages/confirmations/hooks/useAssetDetails.js](../pages/confirmations/hooks/useAssetDetails.js)
 - [ui/pages/confirmations/hooks/useHasInsufficientBalance.ts](../pages/confirmations/hooks/useHasInsufficientBalance.ts)
@@ -68,18 +80,27 @@
 - [ui/pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.tsx](../pages/confirmations/components/confirm/info/shared/native-send-heading/native-send-heading.tsx)
 - [ui/pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx](../pages/confirmations/components/confirm/info/typed-sign/typed-sign-v4-simulation/native-value-display/native-value-display.tsx)
 - [ui/pages/confirmations/components/simulation-details/useBalanceChanges.ts](../pages/confirmations/components/simulation-details/useBalanceChanges.ts)
-- [ui/pages/bridge/prepare/components/destination-account-picker-modal.tsx](../pages/bridge/prepare/components/destination-account-picker-modal.tsx)
-- [ui/pages/bridge/hooks/useDestinationAccount.ts](../pages/bridge/hooks/useDestinationAccount.ts)
-- [ui/pages/settings/transaction-shield-tab/account-selector/account-selector.tsx](../pages/settings/transaction-shield-tab/account-selector/account-selector.tsx)
+- [ui/pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js](../pages/confirm-add-suggested-nft/confirm-add-suggested-nft.js)
+
+### Account Management & Permissions
+
+- [ui/pages/create-account/connect-hardware/index.js](../pages/create-account/connect-hardware/index.js)
 - [ui/pages/permissions-connect/permissions-connect.tsx](../pages/permissions-connect/permissions-connect.tsx)
 - [ui/pages/permissions-connect/connect-page/connect-page.tsx](../pages/permissions-connect/connect-page/connect-page.tsx)
 - [ui/pages/connected-accounts/connected-accounts.container.js](../pages/connected-accounts/connected-accounts.container.js)
 - [ui/pages/nonevm-balance-check/index.tsx](../pages/nonevm-balance-check/index.tsx)
 - [ui/pages/remove-snap-account/snap-account-card.tsx](../pages/remove-snap-account/snap-account-card.tsx)
+- [ui/pages/settings/transaction-shield-tab/account-selector/account-selector.tsx](../pages/settings/transaction-shield-tab/account-selector/account-selector.tsx)
+
+### Multichain Accounts
+
 - [ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx](../pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx)
 - [ui/pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx](../pages/multichain-accounts/wallet-details-page/wallet-details-page.tsx)
+- [ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx](../components/multichain-accounts/multichain-account-list/multichain-account-list.tsx)
+- [ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.tsx](../components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.tsx)
+- [ui/components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx](../components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx)
 
-## Multichain Components
+### Multichain UI Components
 
 - [ui/components/multichain/account-list-item/account-list-item.js](../components/multichain/account-list-item/account-list-item.js)
 - [ui/components/multichain/account-list-menu/account-list-menu.tsx](../components/multichain/account-list-menu/account-list-menu.tsx)
@@ -90,21 +111,30 @@
 - [ui/components/multichain/connected-site-menu/connected-site-menu.js](../components/multichain/connected-site-menu/connected-site-menu.js)
 - [ui/components/multichain/multi-srp/srp-list/srp-list.tsx](../components/multichain/multi-srp/srp-list/srp-list.tsx)
 - [ui/components/multichain/multi-srp/srp-list/srp-list-item.tsx](../components/multichain/multi-srp/srp-list/srp-list-item.tsx)
+- [ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx](../components/multichain/pages/review-permissions-page/review-permissions-page.tsx)
+- [ui/components/multichain/pages/send/components/your-accounts.tsx](../components/multichain/pages/send/components/your-accounts.tsx)
+
+### Token List & Asset Picker
+
 - [ui/components/multichain/token-list-item/token-list-item.tsx](../components/multichain/token-list-item/token-list-item.tsx)
 - [ui/components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx](../components/multichain/token-list-item/price/percentage-and-amount-change/percentage-and-amount-change.tsx)
 - [ui/components/multichain/asset-picker-amount/asset-balance/asset-balance-text.tsx](../components/multichain/asset-picker-amount/asset-balance/asset-balance-text.tsx)
 - [ui/components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx](../components/multichain/asset-picker-amount/asset-picker-modal/asset-picker-modal.tsx)
 - [ui/components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx](../components/multichain/asset-picker-amount/asset-picker-modal/AssetList.tsx)
 - [ui/components/multichain/import-tokens-modal/import-tokens-modal.js](../components/multichain/import-tokens-modal/import-tokens-modal.js)
-- [ui/components/multichain/pages/review-permissions-page/review-permissions-page.tsx](../components/multichain/pages/review-permissions-page/review-permissions-page.tsx)
-- [ui/components/multichain/pages/send/components/your-accounts.tsx](../components/multichain/pages/send/components/your-accounts.tsx)
-- [ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx](../components/multichain-accounts/multichain-account-list/multichain-account-list.tsx)
-- [ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.tsx](../components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.tsx)
-- [ui/components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx](../components/multichain-accounts/multichain-account-list-menu/multichain-account-list-menu.tsx)
+
+### Snaps
+
+- [ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx](../components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx)
+- [ui/components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx](../components/app/snaps/snap-ui-account-selector/snap-ui-account-selector.tsx)
+
+### Alerts & Notifications
+
+- [ui/components/app/alerts/unconnected-account-alert/unconnected-account-alert.js](../components/app/alerts/unconnected-account-alert/unconnected-account-alert.js)
+- [ui/components/app/toast-master/toast-master.js](../components/app/toast-master/toast-master.js)
 
 # Observations
 
-- There are selectors, hooks and components that currently depend on selectors that return accounts with balances. However, some of them do not need the balances themselves. Maybe balances should be added to accounts at very
-  late stages to avoid this.
+- There are selectors, hooks and components that currently depend on selectors that return accounts with balances. However, some of them do not need the balances themselves. Maybe balances should be added to accounts at very late stages to avoid this.
 
 - There are deprecated selectors still being used.
