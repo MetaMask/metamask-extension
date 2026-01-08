@@ -19,10 +19,19 @@ export type NftState = {
   };
 };
 
+// TODO Unified Assets Controller State Access (1)
+// NftController: allNftContracts
+// References
+// ui/selectors/nft.ts (2)
 function getNftContractsByChainByAccount(state: NftState) {
   return state.metamask.allNftContracts ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// NftController: allNfts
+// References
+// ui/selectors/nft.ts (2)
+// ui/pages/confirmations/hooks/send/useSendNfts.ts (1)
 /**
  * Get all NFTs owned by the user.
  *
@@ -33,6 +42,11 @@ export function getNftsByChainByAccount(state: NftState) {
   return state.metamask.allNfts ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getNftContractsByChainByAccount
+// References
+// ui/selectors/nft.ts (1)
+// ui/hooks/useDisplayName.ts (1)
 export const getNftContractsByAddressByChain = createSelector(
   getNftContractsByChainByAccount,
   (nftContractsByChainByAccount) => {
@@ -74,6 +88,10 @@ export const getNftContractsByAddressOnCurrentChain = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getNftsByChainByAccount
+// References
+// ui/helpers/utils/tags.ts (1)
 /**
  * Get a flattened list of all NFTs owned by the user.
  * Includes all NFTs from all chains and accounts.

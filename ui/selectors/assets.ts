@@ -3,7 +3,6 @@ import {
   DeFiPositionsControllerState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
-  calculateBalanceChangeForAllWallets,
   calculateBalanceForAllWallets,
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
@@ -97,6 +96,12 @@ export type BalanceCalculationState = {
     };
 };
 
+// TODO Unified Assets Controller State Access (1)
+// MultichainAssetsController: accountsAssets
+// References
+// ui/selectors/assets.ts (5)
+// ui/hooks/useMultichainBalances.ts (1)
+// ui/components/ui/aggregated-balance/aggregated-balance.tsx (1)
 /**
  * Gets non-EVM accounts assets.
  *
@@ -107,6 +112,11 @@ export function getAccountAssets(state: AssetsState) {
   return state.metamask.accountsAssets;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// MultichainAssetsController: assetsMetadata
+// References
+// ui/selectors/assets.ts (4)
+// ui/hooks/useMultichainBalances.ts (1)
 /**
  * Gets non-EVM assets metadata.
  *
@@ -117,6 +127,10 @@ export function getAssetsMetadata(state: AssetsState) {
   return state.metamask.assetsMetadata;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// MultichainAssetsController: allIgnoredAssets
+// References
+// ui/selectors/assets.ts (2)
 /**
  * Gets non-EVM ignored assets.
  *
@@ -127,6 +141,14 @@ export function getAllIgnoredAssets(state: AssetsState) {
   return state.metamask.allIgnoredAssets ?? EMPTY_OBJECT;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// MultichainAssetsRatesController: conversionRates
+// References
+// ui/selectors/assets.ts (6)
+// ui/ducks/bridge/selectors.ts (1)
+// ui/components/app/assets/token-cell/cells/token-cell-percent-change.tsx (1)
+// ui/pages/asset/components/asset-market-details.tsx (1)
+// ui/pages/asset/hooks/useCurrentPrice.ts (1)
 /**
  * Gets non-EVM accounts assets rates.
  *
@@ -137,6 +159,11 @@ export function getAssetsRates(state: AssetsRatesState) {
   return state.metamask.conversionRates;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// DeFiPositionsController: allDeFiPositions
+// References
+// ui/pages/defi/components/defi-details-page.tsx (1)
+// ui/components/app/assets/defi-list/defi-list.tsx (1)
 /**
  * Gets DeFi positions
  *
@@ -149,6 +176,12 @@ export function getDefiPositions(
   return state?.metamask?.allDeFiPositions;
 }
 
+// TODO Unified Assets Controller State Access (1)
+// MultichainAssetsRatesController: historicalPrices
+// References
+// ui/selectors/assets.ts (2)
+// ui/pages/asset/hooks/useHistoricalPrices.ts (1)
+// ui/pages/asset/hooks/useChartTimeRanges.ts (1)
 /**
  * Gets non-EVM assets historical prices.
  *
@@ -159,6 +192,12 @@ export function getHistoricalPrices(state: AssetsRatesState) {
   return state.metamask.historicalPrices;
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getTokensAcrossChainsByAccountAddressSelector, getNativeTokenCachedBalanceByChainIdSelector, getMarketData, getCurrencyRates
+// References
+// ui/components/app/assets/token-list/token-list.tsx (1)
+// ui/hooks/useMultichainBalances.ts (1)
+// ui/hooks/subscription/useSubscriptionPricing.ts (1)
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
@@ -266,6 +305,12 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMultichainBalances, getAccountAssets, getAssetsMetadata, getAssetsRates
+// References
+// ui/selectors/assets.ts (1)
+// ui/components/app/snaps/snap-ui-asset-selector/useSnapAssetDisplay.tsx (1)
+// ui/components/app/assets/hooks/useMultichainAssets.tsx (1)
 /**
  * @deprecated use getAllAssets instead
  */
@@ -392,6 +437,13 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMultichainBalances, getAccountAssets, getAssetsRates
+// References
+// ui/components/multichain/account-list-item/account-list-item.js (1)
+// ui/components/ui/aggregated-balance/aggregated-balance.tsx (1)
+// ui/components/multichain/multi-srp/srp-list/srp-list-item.tsx (1)
+// ui/selectors/multi-srp/multi-srp.ts (1)
 /**
  * @deprecated use selectBalanceByAccountGroup instead
  */
@@ -449,6 +501,10 @@ export type HistoricalBalances = {
   P1Y: HistoricalBalanceData;
 };
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMultichainBalances, getAccountAssets, getAssetsRates
+// References
+// ui/components/app/wallet-overview/aggregated-percentage-overview.tsx (1)
 export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount: { id: string }) => selectedAccount,
   getMultichainBalances,
@@ -537,6 +593,11 @@ export const getHistoricalMultichainAggregatedBalance = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getAccountAssets
+// References
+// ui/selectors/assets.ts (2)
+// ui/pages/asset/components/asset-page.tsx (1)
 /**
  * Gets the CAIP asset type of the native token of the current network.
  *
@@ -565,6 +626,11 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMultichainBalances
+// References
+// ui/components/app/assets/account-group-balance/account-group-balance.tsx (1)
+// ui/components/ui/aggregated-balance/aggregated-balance.tsx (1)
 /**
  * Gets the balance of the native token of the current network for the selected account.
  *
@@ -658,6 +724,10 @@ const selectTokenBalancesStateForBalances = createSelector(
   (tokenBalances) => ({ tokenBalances }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMarketData
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Exposes market data (rates) for core balance computations.
  */
@@ -668,6 +738,10 @@ const selectTokenRatesStateForBalances = createSelector(
   }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getAssetsRates, getHistoricalPrices
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Provides conversion rates and historical prices with stable fallbacks.
  */
@@ -679,6 +753,10 @@ const selectMultichainRatesStateForBalances = createSelector(
   }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMultichainBalances
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Wraps multichain balances for core balance computations.
  */
@@ -687,6 +765,10 @@ const selectMultichainBalancesStateForBalances = createSelector(
   (balances) => ({ balances }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getAccountAssets, getAssetsMetadata, getAllIgnoredAssets
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Wraps multichain assets for core balance computations.
  */
@@ -699,6 +781,10 @@ const selectMultichainAssetsStateForBalances = createSelector(
   }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMetamaskState (allTokens)
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Normalizes tokens state and supplies explicit empty maps for optional pieces.
  *
@@ -713,6 +799,10 @@ const selectTokensStateForBalances = createSelector(
   }),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getCurrencyRates
+// References
+// ui/selectors/assets.ts (4)
 /**
  * Exposes current user currency and currency rates with safe defaults.
  */
@@ -732,6 +822,10 @@ const selectEnabledNetworkMapForBalances = createSelector(
   (map) => map,
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getMetamaskState (accountsByChainId)
+// References
+// ui/selectors/assets.ts (2)
 /**
  * Provides accountsByChainId for checking EVM native balances.
  *
@@ -746,6 +840,13 @@ const selectAccountsByChainIdForBalances = createSelector(
   (accountsByChainId) => accountsByChainId ?? EMPTY_OBJECT,
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
+// References
+// ui/selectors/assets.ts (3)
+// ui/pages/multichain-accounts/multichain-accounts-connect-page/multichain-accounts-connect-page.tsx (1)
+// ui/components/multichain-accounts/multichain-account-list/multichain-account-list.tsx (1)
+// ui/components/multichain-accounts/multichain-address-rows-hovered-list/multichain-hovered-address-rows-hovered-list.tsx (1)
 /**
  * Aggregates balances for all wallets and groups using core pure function.
  * Only the minimal controller state is composed to keep this selector lean.
@@ -793,125 +894,10 @@ export const selectBalanceForAllWallets = createSelector(
     ),
 );
 
-// Balance change selectors (period: '1d' | '7d' | '30d')
-/**
- * Factory returning a selector that computes balance change across all wallets
- * for the provided period.
- *
- * @param period - Balance change period.
- */
-export const selectBalanceChangeForAllWallets = (period: BalanceChangePeriod) =>
-  createSelector(
-    [
-      selectAccountTreeStateForBalances,
-      selectAccountsStateForBalances,
-      selectTokenBalancesStateForBalances,
-      selectTokenRatesStateForBalances,
-      selectMultichainRatesStateForBalances,
-      selectMultichainBalancesStateForBalances,
-      selectMultichainAssetsStateForBalances,
-      selectTokensStateForBalances,
-      selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
-    ],
-    (
-      accountTreeState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      enabledNetworkMap,
-    ): BalanceChangeResult =>
-      calculateBalanceChangeForAllWallets(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
-        accountsState,
-        tokenBalancesState,
-        tokenRatesState,
-        multichainRatesState,
-        multichainBalancesState,
-        multichainAssetsState,
-        tokensState,
-        currencyRateState,
-        enabledNetworkMap,
-        period,
-      ),
-  );
-
-/**
- * Convenience factory returning only the percent change for the given period.
- *
- * @param period - Balance change period.
- */
-// Removed percent-only selector for all wallets to match mobile API surface
-
-// Per-account-group balance change selectors using core helper
-/**
- * Factory returning a selector that computes balance change for a specific
- * account group and period.
- *
- * @param groupId - Account group identifier.
- * @param period - Balance change period.
- */
-export const selectBalanceChangeByAccountGroup = (
-  groupId: string,
-  period: BalanceChangePeriod,
-) =>
-  createSelector(
-    [
-      selectAccountTreeStateForBalances,
-      selectAccountsStateForBalances,
-      selectTokenBalancesStateForBalances,
-      selectTokenRatesStateForBalances,
-      selectMultichainRatesStateForBalances,
-      selectMultichainBalancesStateForBalances,
-      selectMultichainAssetsStateForBalances,
-      selectTokensStateForBalances,
-      selectCurrencyRateStateForBalances,
-      selectEnabledNetworkMapForBalances,
-    ],
-    (
-      accountTreeState,
-      accountsState,
-      tokenBalancesState,
-      tokenRatesState,
-      multichainRatesState,
-      multichainBalancesState,
-      multichainAssetsState,
-      tokensState,
-      currencyRateState,
-      enabledNetworkMap,
-    ): BalanceChangeResult =>
-      calculateBalanceChangeForAccountGroup(
-        // TODO: fix this by ensuring @metamask/assets-controllers has proper types
-        accountTreeState as AccountTreeControllerState,
-        accountsState,
-        tokenBalancesState,
-        tokenRatesState,
-        multichainRatesState,
-        multichainBalancesState,
-        multichainAssetsState,
-        tokensState,
-        currencyRateState,
-        enabledNetworkMap,
-        groupId,
-        period,
-      ),
-  );
-
-export const selectBalancePercentChangeByAccountGroup = (
-  groupId: string,
-  period: BalanceChangePeriod,
-) =>
-  createSelector(
-    [selectBalanceChangeByAccountGroup(groupId, period)],
-    (change) => change.percentChange,
-  );
-
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectTokenRatesStateForBalances, selectMultichainRatesStateForBalances, selectMultichainBalancesStateForBalances, selectMultichainAssetsStateForBalances, selectTokensStateForBalances, selectCurrencyRateStateForBalances
+// References
+// ui/components/app/assets/account-group-balance-change/useAccountGroupBalanceDisplay.ts (1)
 /**
  * Computes balance change for the currently selected account group.
  * Returns null when no group is selected.
@@ -1025,6 +1011,11 @@ function getBalanceOrDefault(
     : defaultValue;
 }
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectAccountTreeStateForBalances, selectAccountsStateForBalances, selectTokenBalancesStateForBalances, selectMultichainBalancesStateForBalances, selectAccountsByChainIdForBalances
+// References
+// ui/components/app/assets/token-list/token-list.tsx (1)
+// ui/components/app/wallet-overview/coin-overview.tsx (1)
 /**
  * Determines whether the selected account group has any tokens (native or non-native).
  * This determines whether to show the balance UI or the "Fund Your Wallet" empty state.
@@ -1191,6 +1182,10 @@ export const selectAccountGroupBalanceForEmptyState = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectAccountTreeStateForBalances, selectBalanceForAllWallets
+// References
+// ui/components/app/assets/account-group-balance/account-group-balance.tsx (1)
 /**
  * Selects the selected account group's balance entry from the aggregated
  * balances output, returning a minimal fallback when not present.
@@ -1219,6 +1214,10 @@ export const selectBalanceBySelectedAccountGroup = createSelector(
   },
 );
 
+// TODO Unified Assets Controller State Access (2)
+// NOT BEING USED - ONLY USED INSIDE TEST
+// Uses: selectBalanceForAllWallets
+// References
 export const selectBalanceByAccountGroup = (groupId: string) =>
   createSelector([selectBalanceForAllWallets], (allBalances) => {
     const walletId = groupId.split('/')[0];
@@ -1235,6 +1234,11 @@ export const selectBalanceByAccountGroup = (groupId: string) =>
     return wallet.groups[groupId];
   });
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: selectBalanceForAllWallets
+// References
+// ui/selectors/selectors.js (1)
+// ui/hooks/multichain-accounts/useWalletBalance.ts (1)
 /**
  * Returns a summary for a wallet's balance and its groups, with zeroed fallback
  * when the wallet entry does not exist in the aggregated output.
@@ -1263,6 +1267,17 @@ export const selectBalanceByWallet = (walletId: string) =>
     };
   });
 
+// TODO Unified Assets Controller State Access (1)
+// TokensController: allTokens, allIgnoredTokens
+// TokenBalancesController: tokenBalances
+// TokenRatesController: marketData
+// CurrencyRateController: currencyRates, currentCurrency
+// AccountTrackerController: accountsByChainId
+// MultichainAssetsController: accountsAssets, assetsMetadata, allIgnoredAssets
+// MultichainBalancesController: balances
+// MultichainAssetsRatesController: conversionRates
+// References
+// ui/selectors/assets.ts (3)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
@@ -1302,12 +1317,26 @@ const getStateForAssetSelector = ({ metamask }: any) => {
   } as AssetListState;
 };
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getStateForAssetSelector
+// References
+// ui/selectors/assets.ts (2)
+// ui/selectors/selectors.js (1)
+// ui/components/app/assets/token-list/token-list.tsx (1)
+// ui/pages/confirmations/hooks/send/useSendTokens.ts (1)
+// ui/pages/confirmations/hooks/send/useSendQueryParams.ts (1)
+// ui/pages/asset/components/asset-page.tsx (1)
+// ui/pages/asset/hooks/useTronResources.ts (1)
 export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
 );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getStateForAssetSelector
+// References
+// ui/pages/asset/hooks/useTronResources.ts (1)
 export const getAssetsBySelectedAccountGroupWithTronResources =
   createDeepEqualSelector(
     getStateForAssetSelector,
@@ -1317,6 +1346,10 @@ export const getAssetsBySelectedAccountGroupWithTronResources =
       }),
   );
 
+// TODO Unified Assets Controller State Access (2)
+// Uses: getAssetsBySelectedAccountGroup
+// References
+// ui/pages/asset/components/asset-page.tsx (1)
 export const getAsset = createSelector(
   [
     getAssetsBySelectedAccountGroup,
