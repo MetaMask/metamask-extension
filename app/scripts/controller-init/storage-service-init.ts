@@ -29,4 +29,3 @@ export const StorageServiceInit: ControllerInitFunction<
     memStateKey: null,
   };
 };
-

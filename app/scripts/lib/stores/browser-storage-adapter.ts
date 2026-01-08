@@ -1,6 +1,9 @@
 import browser from 'webextension-polyfill';
 import type { Json } from '@metamask/utils';
-import type { StorageAdapter, StorageGetResult } from '@metamask/storage-service';
+import type {
+  StorageAdapter,
+  StorageGetResult,
+} from '@metamask/storage-service';
 import { STORAGE_KEY_PREFIX } from '@metamask/storage-service';
 
 /**
@@ -143,4 +146,3 @@ export class BrowserStorageAdapter implements StorageAdapter {
  * Singleton instance of the browser storage adapter.
  */
 export const browserStorageAdapter = new BrowserStorageAdapter();
-

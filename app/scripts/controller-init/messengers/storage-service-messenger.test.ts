@@ -18,4 +18,3 @@ describe('getStorageServiceMessenger', () => {
     expect(storageServiceMessenger).toBeDefined();
   });
 });
-

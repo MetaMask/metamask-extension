@@ -54,4 +54,3 @@ describe('StorageServiceInit', () => {
     expect(result.memStateKey).toBeNull();
   });
 });
-
