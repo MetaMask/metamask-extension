@@ -8212,6 +8212,7 @@ export async function getTrezorDeviceStatus(): Promise<DeviceState> {
 
 export async function clearLedgerCallbacks() {
   return await submitRequestToBackground<void>('clearLedgerCallbacks', []);
+}
 
 /**
  * Saves a claim draft.
