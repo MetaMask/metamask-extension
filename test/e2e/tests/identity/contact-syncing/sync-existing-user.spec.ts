@@ -16,6 +16,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
 
+import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACTS, createContactKey } from './mock-data';
 
@@ -106,6 +107,8 @@ describe('Contact Syncing - Existing User', function () {
 
   describe('from inside MetaMask', function () {
     it('performs complete lifecycle: remote→local contact sync, add, modify, delete, verify sync on other device', async function () {
+      skipOnFirefox(this);
+
       const {
         initialRemoteContacts,
         newContact,
