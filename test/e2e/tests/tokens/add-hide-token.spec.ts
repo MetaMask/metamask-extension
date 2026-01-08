@@ -36,6 +36,15 @@ describe('Add hide token', function () {
               },
             ],
           })
+          .withTokenBalancesController({
+            tokenBalances: {
+              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                [toHex(1337)]: {
+                  '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947': '0x186a0', // 100000 in hex (10 TST with 4 decimals)
+                },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         smartContract,

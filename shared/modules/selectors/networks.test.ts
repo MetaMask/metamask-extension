@@ -1,11 +1,10 @@
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { CaipChainId } from '@metamask/utils';
 import mockState from '../../../test/data/mock-state.json';
 import {
   ARBITRUM_DISPLAY_NAME,
   BNB_DISPLAY_NAME,
-  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  CAIP_FORMATTED_TEST_CHAINS,
   GOERLI_DISPLAY_NAME,
   POLYGON_DISPLAY_NAME,
 } from '../../constants/network';
@@ -171,19 +170,12 @@ describe('Network Selectors', () => {
         },
       ]);
 
-      const evmTestNetworkIds = result.filter(
+      const testNetworkIds = result.filter(
         (network) =>
           network.caipChainId &&
-          CAIP_FORMATTED_EVM_TEST_CHAINS.includes(network.caipChainId),
+          CAIP_FORMATTED_TEST_CHAINS.includes(network.caipChainId),
       );
-      expect(evmTestNetworkIds).toHaveLength(0);
-
-      const nonEvmTestNetworkIds = result.filter(
-        (network) =>
-          network.caipChainId &&
-          NON_EVM_TESTNET_IDS.includes(network.caipChainId),
-      );
-      expect(nonEvmTestNetworkIds).toHaveLength(0);
+      expect(testNetworkIds).toHaveLength(0);
     });
   });
 
@@ -218,7 +210,7 @@ describe('Network Selectors', () => {
       result.forEach((network) => {
         const evmChainId = `eip155:${network.chainId}`;
 
-        expect(CAIP_FORMATTED_EVM_TEST_CHAINS).not.toContain(evmChainId);
+        expect(CAIP_FORMATTED_TEST_CHAINS).not.toContain(evmChainId);
         expect(network.chainId).toMatch(/^0x[0-9a-f]+$/iu);
       });
     });

@@ -16,80 +16,90 @@ import {
   getProviderConfig,
   getCurrentChainId,
 } from '../../shared/modules/selectors/networks';
+import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import {
-  createDeepEqualSelector,
-  filterAndShapeUnapprovedTransactions,
-} from '../../shared/modules/selectors/util';
+  createShallowEqualInputAndResultSelector,
+  createParameterizedShallowEqualSelector,
+} from '../../shared/modules/selectors/selector-creators';
 import { getSelectedInternalAccount } from './accounts';
 import { hasPendingApprovals, getApprovalRequestsByType } from './approvals';
+import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 
-const INVALID_INITIAL_TRANSACTION_TYPES = [
-  TransactionType.cancel,
-  TransactionType.retry,
-];
-
-// The statuses listed below are allowed in the Activity list for Smart Swaps.
-// SUCCESS and REVERTED statuses are excluded because smart transactions with
-// those statuses are already in the regular transaction list.
-// TODO: When Swaps and non-Swaps transactions are treated the same,
-// we will only allow the PENDING smart transaction status in the Activity list.
-const allowedSwapsSmartTransactionStatusesForActivityList = [
-  SmartTransactionStatuses.PENDING,
-  SmartTransactionStatuses.UNKNOWN,
-  SmartTransactionStatuses.RESOLVED,
-  SmartTransactionStatuses.CANCELLED,
-];
-
-export const getTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask ?? {};
-
+/**
+ * Returns all transactions array sorted by time in ascending order.
+ *
+ * @param {object} state - Root state
+ * @returns {object[]} Sorted array of transaction objects
+ */
+export const getTransactions = createSelector(
+  (state) => state.metamask?.transactions,
+  (transactions) => {
     if (!transactions?.length) {
-      return [];
+      return EMPTY_ARRAY;
     }
-
     return [...transactions].sort((a, b) => a.time - b.time); // Ascending
   },
-  (transactions) => transactions,
 );
 
-export const getAllNetworkTransactions = createDeepEqualSelector(
-  // Input Selector: Retrieve all transactions from the state.
-  getTransactions,
-  // Output Selector: Filter transactions by popular networks.
-  (transactions) => {
-    if (!transactions.length) {
-      return [];
-    }
-    return transactions;
-  },
-);
+/**
+ * Returns unapproved transactions as a map indexed by transaction ID.
+ *
+ * @param {object} state - Root state
+ * @returns {Record<string, object>} Object with transaction IDs as keys
+ */
+export const getUnapprovedTransactions =
+  createShallowEqualInputAndResultSelector(
+    getTransactions,
+    createUnapprovedTransactionsMap,
+  );
 
-// Safe wrapper that prevents crashes when provider config is unavailable
-const getProviderConfigSafe = (state) => {
-  try {
-    return getProviderConfig(state);
-  } catch {
-    return null;
-  }
-};
+// Parameterized selector creator with LRU cache for multiple chainId arguments.
+// This prevents cache thrashing when switching between different chains.
+const createChainIdSelector = createParameterizedShallowEqualSelector(10);
 
-export const getCurrentNetworkTransactions = createDeepEqualSelector(
+/**
+ * Returns transactions filtered by the given chainId.
+ * Uses an LRU cache (size 10) to memoize results for multiple chainIds.
+ *
+ * @param {object} state - Root state
+ * @param {string} chainId - The chain ID to filter transactions by
+ * @returns {object[]} Array of transaction objects for the specified chain
+ * @example
+ * const mainnetTxs = getTransactionsByChainId(state, '0x1');
+ * const polygonTxs = getTransactionsByChainId(state, '0x89');
+ */
+export const getTransactionsByChainId = createChainIdSelector(
   getTransactions,
-  getProviderConfigSafe,
-  (transactions, providerConfig) => {
-    if (!transactions.length || !providerConfig) {
-      return [];
+  (_, chainId) => chainId,
+  (transactions, chainId) => {
+    if (!transactions.length || !chainId) {
+      return EMPTY_ARRAY;
     }
     return transactions.filter(
-      (transaction) => transaction.chainId === providerConfig.chainId,
+      (transaction) => transaction.chainId === chainId,
     );
   },
 );
 
+/**
+ * Returns transactions for the current network.
+ *
+ * @deprecated Use `getTransactionsByChainId(state, chainId)` instead with explicit chainId.
+ * This selector relies on providerConfig which we're moving away from.
+ * @param {object} state - Root state
+ * @returns {object[]} Array of transaction objects
+ */
+export const getCurrentNetworkTransactions = (state) => {
+  const providerConfig = getProviderConfigSafe(state);
+  if (!providerConfig?.chainId) {
+    return EMPTY_ARRAY;
+  }
+  return getTransactionsByChainId(state, providerConfig.chainId);
+};
+
 export const incomingTxListSelectorAllChains = createDeepEqualSelector(
   (state) => {
-    const allNetworkTransactions = getAllNetworkTransactions(state);
+    const allNetworkTransactions = getTransactions(state);
     const { address: selectedAddress } = getSelectedInternalAccount(state);
 
     return allNetworkTransactions.filter(
@@ -97,32 +107,6 @@ export const incomingTxListSelectorAllChains = createDeepEqualSelector(
         tx.type === TransactionType.incoming &&
         tx.txParams.to === selectedAddress,
     );
-  },
-  (transactions) => transactions,
-);
-
-export const getUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const transactions = getTransactions(state);
-    return filterAndShapeUnapprovedTransactions(transactions);
-  },
-  (transactions) => transactions,
-);
-
-// Unlike `getUnapprovedTransactions` and `getCurrentNetworkTransactions`
-// returns the total number of unapproved transactions on all networks
-export const getAllUnapprovedTransactions = createDeepEqualSelector(
-  (state) => {
-    const { transactions } = state.metamask || [];
-    if (!transactions?.length) {
-      return [];
-    }
-
-    const sortedTransactions = [...transactions].sort(
-      (a, b) => a.time - b.time,
-    );
-
-    return filterAndShapeUnapprovedTransactions(sortedTransactions);
   },
   (transactions) => transactions,
 );
@@ -165,45 +149,67 @@ export const unapprovedEncryptionPublicKeyMsgsSelector = (state) =>
 export const unapprovedTypedMessagesSelector = (state) =>
   state.metamask.unapprovedTypedMessages;
 
-export const smartTransactionsListSelector = (state) => {
-  const { address: selectedAddress } = getSelectedInternalAccount(state);
-  return state.metamask.smartTransactionsState?.smartTransactions?.[
-    getCurrentChainId(state)
-  ]
-    ?.filter((smartTransaction) => {
-      if (
-        smartTransaction.txParams?.from !== selectedAddress ||
-        smartTransaction.confirmed
-      ) {
-        return false;
-      }
-      // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
-      if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
-        return true;
-      }
-      // In the future we should have the same behavior for Swaps and non-Swaps transactions.
-      // For that we need to submit Smart Swaps via the TransactionController as we do for
-      // non-Swaps Smart Transactions.
-      return (
-        (smartTransaction.type === TransactionType.swap ||
-          smartTransaction.type === TransactionType.swapApproval) &&
-        allowedSwapsSmartTransactionStatusesForActivityList.includes(
-          smartTransaction.status,
-        )
-      );
-    })
-    .map((stx) => ({
-      ...stx,
-      isSmartTransaction: true,
-      status: stx.status?.startsWith('cancelled')
-        ? SmartTransactionStatus.cancelled
-        : stx.status,
-    }));
-};
+// Memoized to prevent new array creation on every render
+export const smartTransactionsListSelector = createSelector(
+  getSelectedInternalAccount,
+  (state) => state.metamask.smartTransactionsState?.smartTransactions,
+  getCurrentChainId,
+  (selectedInternalAccount, smartTransactions, chainId) => {
+    // The statuses listed below are allowed in the Activity list for Smart Swaps.
+    // SUCCESS and REVERTED statuses are excluded because smart transactions with
+    // those statuses are already in the regular transaction list.
+    // TODO: When Swaps and non-Swaps transactions are treated the same,
+    // we will only allow the PENDING smart transaction status in the Activity list.
+    const allowedSwapsSmartTransactionStatusesForActivityList = [
+      SmartTransactionStatuses.PENDING,
+      SmartTransactionStatuses.UNKNOWN,
+      SmartTransactionStatuses.RESOLVED,
+      SmartTransactionStatuses.CANCELLED,
+    ];
+
+    const selectedAddress = selectedInternalAccount?.address;
+    const chainSmartTransactions = smartTransactions?.[chainId];
+
+    if (!chainSmartTransactions?.length) {
+      return EMPTY_ARRAY;
+    }
+
+    return chainSmartTransactions
+      .filter((smartTransaction) => {
+        if (
+          smartTransaction.txParams?.from !== selectedAddress ||
+          smartTransaction.confirmed
+        ) {
+          return false;
+        }
+        // If a swap or non-swap smart transaction is pending, we want to show it in the Activity list.
+        if (smartTransaction.status === SmartTransactionStatuses.PENDING) {
+          return true;
+        }
+        // In the future we should have the same behavior for Swaps and non-Swaps transactions.
+        // For that we need to submit Smart Swaps via the TransactionController as we do for
+        // non-Swaps Smart Transactions.
+        return (
+          (smartTransaction.type === TransactionType.swap ||
+            smartTransaction.type === TransactionType.swapApproval) &&
+          allowedSwapsSmartTransactionStatusesForActivityList.includes(
+            smartTransaction.status,
+          )
+        );
+      })
+      .map((stx) => ({
+        ...stx,
+        isSmartTransaction: true,
+        status: stx.status?.startsWith('cancelled')
+          ? SmartTransactionStatus.cancelled
+          : stx.status,
+      }));
+  },
+);
 
 export const selectedAddressTxListSelectorAllChain = createSelector(
   getSelectedInternalAccount,
-  getAllNetworkTransactions,
+  getTransactions,
   smartTransactionsListSelector,
   (selectedInternalAccount, transactions = [], smTransactions = []) => {
     return transactions
@@ -404,6 +410,11 @@ export const groupAndSortTransactionsByNonce = (transactions) => {
   const incomingTransactionGroups = [];
   const orderedNonces = [];
   const nonceToTransactionsMap = {};
+
+  const INVALID_INITIAL_TRANSACTION_TYPES = [
+    TransactionType.cancel,
+    TransactionType.retry,
+  ];
 
   transactions.forEach((transaction) => {
     const {
@@ -718,3 +729,33 @@ export const selectTransactionSender = createSelector(
   (state, transactionId) => selectTransactionMetadata(state, transactionId),
   (transaction) => transaction?.txParams?.from,
 );
+
+/**
+ * Creates a map of unapproved transactions indexed by transaction ID.
+ *
+ * @param {object[]} transactions - Array of transaction objects
+ * @returns {Record<string, object>} Object with transaction IDs as keys
+ */
+function createUnapprovedTransactionsMap(transactions) {
+  if (!transactions?.length) {
+    return EMPTY_OBJECT;
+  }
+
+  const result = {};
+  for (const transaction of transactions) {
+    if (transaction.status === TransactionStatus.unapproved) {
+      result[transaction.id] = transaction;
+    }
+  }
+
+  return Object.keys(result).length > 0 ? result : EMPTY_OBJECT;
+}
+
+// Safe wrapper that prevents crashes when provider config is unavailable
+function getProviderConfigSafe(state) {
+  try {
+    return getProviderConfig(state);
+  } catch {
+    return null;
+  }
+}
