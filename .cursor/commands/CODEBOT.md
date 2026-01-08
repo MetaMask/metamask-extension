@@ -88,7 +88,7 @@ Parse the output to get:
 2. Actual line changes (additions/modifications marked with `+` in diff)
 3. Line numbers of changes (from diff hunks `@@ -X,Y +A,B @@`)
 
-Exclude: `node_modules/`, `dist/`, `build/`, `*.d.ts`
+Exclude: `.*/`, `node_modules/`, `dist/`, `builds/`, `lavamoat/`, `test-artifacts/`, `*.d.ts`
 
 **IMPORTANT:** Only analyze the lines that were **added or modified** in this branch (marked with `+` in the diff), not the entire file content.
 
