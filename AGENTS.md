@@ -8,7 +8,7 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 
 **Project Type:** Browser extension (Chrome/Firefox)
 **Languages:** TypeScript (required for new code), JavaScript (legacy)
-**UI Framework:** React 17 with functional components + hooks
+**UI Framework:** React with functional components + hooks
 **State Management:** Redux + BaseController architecture
 **Testing:** Jest (unit), Playwright (E2E)
 **Build System:** Browserify (production), Webpack (development)
