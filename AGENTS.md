@@ -48,8 +48,8 @@ Read these files for detailed coding standards:
 
 ### Prerequisites
 
-- **Node.js 24+** (use `nvm use` to auto-select from `.nvmrc`)
-- **Yarn 4.10.3+** (managed by Corepack, included with Node.js)
+- **Node.js+** (use `nvm use` to auto-select development version specified in `.nvmrc`)
+- **Yarn** (managed by Corepack, included with Node.js)
 - **Infura API Key** (free at https://infura.io)
 
 ### First-Time Setup
