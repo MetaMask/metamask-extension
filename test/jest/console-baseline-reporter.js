@@ -250,15 +250,6 @@ class ConsoleBaselineReporter {
   // ===========================================================================
 
   /**
-   * Called once per test FILE (not per test case!) when the file starts.
-   *
-   * @param {object} _testInfo - Test information (unused)
-   */
-  onTestStart(_testInfo) {
-    // No-op - we only need onTestResult for console capture
-  }
-
-  /**
    * Called once per test FILE after it completes.
    * testResult.console contains all console messages from that file!
    *
