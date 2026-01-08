@@ -1,10 +1,9 @@
-const {
-  withFixtures,
-  logInWithBalanceValidation,
-  openActionMenuAndStartSendFlow,
-} = require('../../helpers');
+const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 
 const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const hexAbbreviatedAddress = '0x2f318...5C970';
@@ -18,13 +17,12 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
-        localNodeOptions: 'anvil',
       },
-      async ({ driver, localNodes }) => {
-        await logInWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Send ETH
-        await openActionMenuAndStartSendFlow(driver);
+        await driver.clickElement('[data-testid="eth-overview-send"]');
         // Paste address without hex prefix
         await driver.pasteIntoField(
           'input[placeholder="Enter public address (0x) or domain name"]',
@@ -42,7 +40,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           '[data-testid="account-overview__activity-tab"]',
         );
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -63,13 +61,12 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
           .withPreferencesControllerPetnamesDisabled()
           .build(),
         title: this.test.fullTitle(),
-        localNodeOptions: 'anvil',
       },
-      async ({ driver, localNodes }) => {
-        await logInWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }) => {
+        await loginWithBalanceValidation(driver);
 
         // Send ETH
-        await openActionMenuAndStartSendFlow(driver);
+        await driver.clickElement('[data-testid="eth-overview-send"]');
         // Type address without hex prefix
         await driver.fill(
           'input[placeholder="Enter public address (0x) or domain name"]',
@@ -86,9 +83,7 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.clickElement(
-          '.transaction-list__completed-transactions .activity-list-item',
-        );
+        await driver.clickElement('.transaction-status-label--confirmed');
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
 
         // Verify address in activity log
@@ -107,17 +102,17 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
           .withTokensControllerERC20()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test.fullTitle(),
-        localNodeOptions: 'anvil',
       },
       async ({ driver, localNodes }) => {
-        await logInWithBalanceValidation(driver, localNodes[0]);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
@@ -149,11 +144,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });
@@ -170,17 +163,17 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
   it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesControllerPetnamesDisabled()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withTokensControllerERC20()
           .build(),
         smartContract,
         title: this.test.fullTitle(),
-        localNodeOptions: 'anvil',
       },
       async ({ driver, localNodes }) => {
-        await logInWithBalanceValidation(driver, localNodes[0]);
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         // Send TST
         await driver.clickElement(
@@ -212,11 +205,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
-        );
+        await driver.findElement('.transaction-status-label--confirmed');
         const sendTransactionListItem = await driver.findElement(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+          '.transaction-status-label--confirmed',
         );
         await sendTransactionListItem.click();
         await driver.clickElement({ text: 'Activity log', tag: 'summary' });

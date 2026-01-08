@@ -21,6 +21,8 @@ type DeFiProtocolCellProps = {
   position: DeFiProtocolPosition;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function DefiProtocolCell({
   onClick,
   position,
@@ -36,7 +38,11 @@ export default function DefiProtocolCell({
       event: MetaMetricsEventName.DeFiDetailsOpened,
       properties: {
         location: 'Home',
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: token.chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         protocol_id: token.protocolId,
       },
     });
@@ -46,7 +52,6 @@ export default function DefiProtocolCell({
     <GenericAssetCellLayout
       key={`${position.chainId}-${position.protocolId}`}
       onClick={handleTokenClick(position)}
-      disableHover={false}
       badge={
         <AssetCellBadge
           chainId={position.chainId}

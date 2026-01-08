@@ -3,10 +3,16 @@ import { Driver } from '../../../webdriver/driver';
 class ContactsSettings {
   private readonly driver: Driver;
 
-  private readonly addContactButton = '.address-book__link';
+  private readonly addContactLink = '.address-book__link';
+
+  private readonly addContactButton = '.address-book-add-button__button';
 
   private readonly confirmAddContactButton = {
     testId: 'page-container-footer-next',
+  };
+
+  private readonly networkSelector = {
+    testId: 'network-selector',
   };
 
   private readonly contactListItem = '[data-testid="address-list-item-label"]';
@@ -36,7 +42,27 @@ class ContactsSettings {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  /**
+   * Clicks the appropriate add contact element based on the current state
+   * (link for empty state, button for when contacts exist)
+   */
+  private async clickAddContact(): Promise<void> {
+    try {
+      // Try the button first (when contacts exist)
+      await this.driver.waitForSelector(this.addContactButton, {
+        timeout: 2000,
+      });
+      await this.driver.clickElement(this.addContactButton);
+    } catch (error) {
+      // If button doesn't exist, try the link (empty state)
+      await this.driver.waitForSelector(this.addContactLink, {
+        timeout: 2000,
+      });
+      await this.driver.clickElement(this.addContactLink);
+    }
+  }
+
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.contactsSettingsPageTitle);
     } catch (e) {
@@ -57,9 +83,37 @@ class ContactsSettings {
    */
   async addContact(userName: string, address: string): Promise<void> {
     console.log('Adding new contact on contacts settings page');
-    await this.driver.clickElement(this.addContactButton);
+
+    await this.clickAddContact();
     await this.driver.fill(this.userNameInput, userName);
     await this.driver.fill(this.createContactAddressInput, address);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.confirmAddContactButton,
+    );
+  }
+
+  /**
+   * Adds a new contact to the address book.
+   *
+   * @param userName - The name of the contact.
+   * @param address - The address of the contact.
+   * @param newNetwork - The new network for the contact.
+   */
+  async addContactNewChain(
+    userName: string,
+    address: string,
+    newNetwork: string,
+  ): Promise<void> {
+    console.log('Adding new contact on contacts settings page with network');
+
+    await this.clickAddContact();
+    await this.driver.fill(this.userNameInput, userName);
+    await this.driver.pasteIntoField('[data-testid="ens-input"]', address);
+    await this.driver.clickElement(this.networkSelector);
+    // Click on the network item by its text content
+    await this.driver.clickElement({
+      text: newNetwork,
+    });
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
@@ -72,7 +126,7 @@ class ContactsSettings {
    */
   async deleteContact(contactName: string): Promise<void> {
     console.log('Deleting contact on contacts settings page');
-    await this.driver.clickElement({
+    await this.driver.findScrollToAndClickElement({
       text: contactName,
       css: this.contactListItem,
     });
@@ -87,24 +141,36 @@ class ContactsSettings {
    * @param params.existingContactName - The name of the contact to edit.
    * @param params.newContactName - The new name of the contact.
    * @param params.newContactAddress - The new address of the contact.
+   * @param params.newNetwork - The new network for the contact (optional).
    */
   async editContact({
     existingContactName,
     newContactName,
     newContactAddress,
+    newNetwork,
   }: {
     existingContactName: string;
     newContactName: string;
     newContactAddress: string;
+    newNetwork?: string;
   }): Promise<void> {
     console.log('Editing contact on contacts settings page');
-    await this.driver.clickElement({
+    await this.driver.findScrollToAndClickElement({
       text: existingContactName,
       css: this.contactListItem,
     });
     await this.driver.clickElement(this.editContactButton);
     await this.driver.fill(this.userNameInput, newContactName);
     await this.driver.fill(this.editContactAddressInput, newContactAddress);
+
+    // Only change network if newNetwork is provided
+    if (newNetwork) {
+      await this.driver.clickElement(this.networkSelector);
+      await this.driver.clickElement({
+        text: newNetwork,
+      });
+    }
+
     await this.driver.clickElementAndWaitToDisappear(
       this.confirmAddContactButton,
     );
@@ -118,7 +184,7 @@ class ContactsSettings {
    * @param params.address - The address of the contact.
    * @param params.shouldDisplay - Whether the contact should be displayed. Defaults to true.
    */
-  async check_contactDisplayed({
+  async checkContactDisplayed({
     contactName,
     address,
     shouldDisplay = true,

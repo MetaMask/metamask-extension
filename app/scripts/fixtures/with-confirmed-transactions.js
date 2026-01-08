@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { CHAIN_IDS } from '../../../shared/constants/network';
+import { ALL_POPULAR_NETWORKS } from './with-networks';
 
 /**
  * Generates a specified number of confirmed transactions for each network.
@@ -9,7 +9,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
  * @returns {object} The generated transactions object.
  */
 export const withConfirmedTransactions = (from, numEntries) => {
-  const networks = [CHAIN_IDS.MAINNET, CHAIN_IDS.SEPOLIA];
+  const networks = Object.keys(ALL_POPULAR_NETWORKS.eip155);
   const transactions = {};
 
   networks.forEach((network) => {

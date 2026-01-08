@@ -43,15 +43,18 @@ class PhishingWarningPageServer {
   }
 
   async quit() {
-    await new Promise((resolve, reject) =>
+    await new Promise((resolve, reject) => {
       this._server.close((error) => {
         if (error) {
           reject(error);
         } else {
           resolve();
         }
-      }),
-    );
+      });
+      // We need to close all connections to stop the server quickly
+      // Otherwise it takes a few seconds for it to close
+      this._server.closeAllConnections();
+    });
   }
 }
 

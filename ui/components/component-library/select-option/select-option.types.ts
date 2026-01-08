@@ -26,9 +26,13 @@ export interface SelectOptionStyleUtilityProps extends StyleUtilityProps {
   value?: any;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectOptionProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SelectOptionStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SelectOptionComponent = <C extends React.ElementType = 'div'>(
   props: SelectOptionProps<C>,
 ) => React.ReactElement | null;

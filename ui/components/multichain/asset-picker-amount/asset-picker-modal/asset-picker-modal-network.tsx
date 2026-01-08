@@ -37,10 +37,13 @@ import { useMultichainBalances } from '../../../../hooks/useMultichainBalances';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../../../shared/constants/bridge';
 import { getImageForChainId } from '../../../../selectors/multichain';
 import { TEST_CHAINS } from '../../../../../shared/constants/network';
+import { getShowTestNetworks } from '../../../../selectors/selectors';
 
 // TODO use MultichainNetworkConfiguration type
 type NetworkOption =
-  | NetworkConfiguration
+  | (NetworkConfiguration & {
+      nickname?: string;
+    })
   | AddNetworkFields
   | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId });
 
@@ -91,6 +94,7 @@ export const AssetPickerModalNetwork = ({
   const { balanceByChainId } = useMultichainBalances();
 
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
+  const showTestnets = useSelector(getShowTestNetworks);
   const currency = useSelector(getCurrentCurrency);
   // Use the networks prop if it is provided, otherwise use all available networks
   // Sort the networks by balance in descending order
@@ -120,32 +124,35 @@ export const AssetPickerModalNetwork = ({
   // Initialized with the selectedChainIds if provided
   const [checkedChainIds, setCheckedChainIds] = useState<
     Record<string, boolean>
-  >(
-    networksList?.reduce(
-      (acc, { chainId }) => ({
-        ...acc,
-        [chainId]: selectedChainIds
-          ? selectedChainIds.includes(chainId)
-          : false,
-      }),
-      {},
-    ) ?? {},
-  );
+  >(() => {
+    if (!networksList) {
+      return {};
+    }
+
+    const initialState: Record<string, boolean> = {};
+
+    for (const { chainId } of networksList) {
+      initialState[chainId] = selectedChainIds
+        ? selectedChainIds.includes(chainId)
+        : false;
+    }
+
+    return initialState;
+  });
 
   // Reset checkedChainIds if selectedChainIds change in parent component
   useEffect(() => {
-    networksList &&
-      setCheckedChainIds(
-        networksList.reduce(
-          (acc, { chainId }) => ({
-            ...acc,
-            [chainId]: selectedChainIds
-              ? selectedChainIds.includes(chainId)
-              : false,
-          }),
-          {},
-        ),
-      );
+    if (networksList) {
+      const updatedState: Record<string, boolean> = {};
+
+      for (const { chainId } of networksList) {
+        updatedState[chainId] = selectedChainIds
+          ? selectedChainIds.includes(chainId)
+          : false;
+      }
+
+      setCheckedChainIds(updatedState);
+    }
   }, [networksList, selectedChainIds]);
 
   const handleToggleNetwork = useCallback((chainId: string) => {
@@ -157,15 +164,14 @@ export const AssetPickerModalNetwork = ({
 
   // Toggles all networks to be checked or unchecked
   const handleToggleAllNetworks = useCallback(() => {
-    setCheckedChainIds(
-      Object.keys(checkedChainIds)?.reduce(
-        (agg, chainId) => ({
-          ...agg,
-          [chainId]: !Object.values(checkedChainIds).every((v) => v),
-        }),
-        {},
-      ),
-    );
+    const toggledState: Record<string, boolean> = {};
+    const allChecked = Object.values(checkedChainIds).every((v) => v);
+
+    for (const chainId of Object.keys(checkedChainIds)) {
+      toggledState[chainId] = !allChecked;
+    }
+
+    setCheckedChainIds(toggledState);
   }, [checkedChainIds]);
 
   return (
@@ -283,6 +289,7 @@ export const AssetPickerModalNetwork = ({
                       />
                     ) : undefined
                   }
+                  chainId={chainId}
                   showEndAccessory={isMultiselectEnabled}
                   variant={TextVariant.bodyMdMedium}
                   endAccessory={
@@ -300,7 +307,7 @@ export const AssetPickerModalNetwork = ({
             })}
           </Box>
         </Box>
-        {process.env.REMOVE_GNS && testNetworks.length > 0 ? (
+        {showTestnets && testNetworks.length > 0 ? (
           <Box
             className="multichain-asset-picker__network-list"
             display={Display.Flex}

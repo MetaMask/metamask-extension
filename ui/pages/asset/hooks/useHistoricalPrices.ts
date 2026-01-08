@@ -1,19 +1,26 @@
 import { useEffect, useState } from 'react';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { HistoricalPriceValue } from '@metamask/snaps-sdk';
-import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
+import {
+  CaipAssetType,
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+} from '@metamask/utils';
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { MINUTE } from '../../../../shared/constants/time';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
-import { getMultichainIsEvm } from '../../../selectors/multichain';
 import {
   chainSupportsPricing,
   fromIso8601DurationToPriceApiTimePeriod,
 } from '../util';
 import { fetchHistoricalPricesForAsset } from '../../../store/actions';
+import { endTrace, trace, TraceName } from '../../../../shared/lib/trace';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../selectors/multichain-accounts/account-tree';
 
 export type HistoricalPrices = {
   /** The prices data points. Is an empty array if the prices could not be loaded. */
@@ -44,6 +51,21 @@ export const DEFAULT_USE_HISTORICAL_PRICES_METADATA: HistoricalPrices['metadata'
     yMin: Infinity,
     yMax: -Infinity,
   };
+
+/**
+ * Converts a chain ID to hex format. If the chain ID is already in hex format, returns it as-is.
+ * If it's a CAIP chain ID, converts it to hex. Returns null if conversion fails.
+ *
+ * @param chainId - The chain ID to convert (Hex or CaipChainId).
+ * @returns The hex chain ID, or null if conversion fails.
+ */
+const toHexChainId = (chainId: Hex | CaipChainId): Hex | null => {
+  try {
+    return isCaipChainId(chainId) ? convertCaipToHexChainId(chainId) : chainId;
+  } catch (e) {
+    return null;
+  }
+};
 
 type UseHistoricalPricesParams = {
   chainId: Hex | CaipChainId;
@@ -90,8 +112,11 @@ const useHistoricalPricesEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
-  const showFiat: boolean = useSelector(getShouldShowFiat);
+  const isEvm = isEvmChainId(chainId);
+  const hexChainId = toHexChainId(chainId);
+  const showFiat: boolean = useSelector((state) =>
+    getShouldShowFiat(state, hexChainId),
+  );
 
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
@@ -109,14 +134,42 @@ const useHistoricalPricesEvm = ({
     if (!chainSupported) {
       return;
     }
+
+    const startTime = performance.now();
+
+    const traceContext = trace({
+      name: TraceName.GetAssetHistoricalPrices,
+      startTime,
+    });
+
+    trace({
+      name: TraceName.GetAssetHistoricalPrices,
+      startTime,
+      parentContext: traceContext,
+    });
+
     setLoading(true);
     const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
-    fetchWithCache({
-      url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
-      cacheOptions: { cacheRefreshTime: 5 * MINUTE },
-      functionName: 'GetAssetHistoricalPrices',
-      fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
-    })
+    fetch(
+      `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
+      {
+        headers: {
+          'X-Client-Id': 'extension',
+          'Content-Type': 'application/json',
+        },
+        referrerPolicy: 'no-referrer-when-downgrade',
+        method: 'GET',
+        mode: 'cors',
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `GetAssetHistoricalPrices failed with status ${response.status}: ${response.statusText}`,
+          );
+        }
+        return response.json();
+      })
       .catch(() => ({}))
       .then((resp?: { prices?: number[][] }) => {
         const pricesToSet =
@@ -124,6 +177,10 @@ const useHistoricalPricesEvm = ({
         setPrices(pricesToSet);
       })
       .finally(() => {
+        endTrace({
+          name: TraceName.GetAssetHistoricalPrices,
+          timestamp: performance.timeOrigin + startTime,
+        });
         setLoading(false);
       });
   }, [isEvm, chainId, address, currency, timeRange, showFiat]);
@@ -156,7 +213,7 @@ const useHistoricalPricesNonEvm = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
   const [metadata, setMetadata] = useState<HistoricalPrices['metadata']>(
@@ -167,22 +224,32 @@ const useHistoricalPricesNonEvm = ({
 
   const dispatch = useDispatch();
 
+  const internalAccount = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(
+      state,
+      isCaipChainId(chainId) ? chainId : toEvmCaipChainId(chainId),
+    ),
+  );
+
   /**
    * Fetch the prices by dispatching an action and then updating the redux state.
    * So we follow up with an other effect that will respond on the redux state update and set the prices locally in this hook.
    */
   useEffect(() => {
     if (isEvm) {
-      return () => {
-        // No clean up needed
-      };
+      return;
     }
 
     // On non-EVM, we fetch the prices from the snap, then store them in the redux state, and grab them from the redux state
     const fetchPrices = async () => {
       setLoading(true);
       try {
-        await dispatch(fetchHistoricalPricesForAsset(address as CaipAssetType));
+        await dispatch(
+          fetchHistoricalPricesForAsset(
+            address as CaipAssetType,
+            internalAccount,
+          ),
+        );
       } catch (error) {
         console.error(
           'Error fetching historical prices for %s on %s',
@@ -200,7 +267,7 @@ const useHistoricalPricesNonEvm = ({
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     const intervalId = setInterval(fetchPrices, 60000); // Refresh every minute
     return () => clearInterval(intervalId); // Cleanup on unmount
-  }, [isEvm, chainId, address, dispatch]);
+  }, [isEvm, chainId, address, internalAccount, dispatch]);
 
   // Retrieve the prices from the state
   useEffect(() => {
@@ -248,7 +315,7 @@ export const useHistoricalPrices = ({
   currency,
   timeRange,
 }: UseHistoricalPricesParams) => {
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(chainId);
 
   const historicalPricesEvm = useHistoricalPricesEvm({
     chainId,

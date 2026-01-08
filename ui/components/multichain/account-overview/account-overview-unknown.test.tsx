@@ -1,7 +1,7 @@
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   AccountOverviewUnknown,
   AccountOverviewUnknownProps,

@@ -18,6 +18,8 @@ import {
 } from './text-field.types';
 
 export const TextField: TextFieldComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     {
       autoComplete,
@@ -91,6 +93,8 @@ export const TextField: TextFieldComponent = React.forwardRef(
       // Check if an external ref (inputRef) is provided and is a ref object
       if (inputRef && 'current' in inputRef) {
         // Assign the input element reference to the external ref
+        // TODO: Use `ref` prop instead. `forwardRef` is deprecated in React v19.
+        // eslint-disable-next-line react-compiler/react-compiler
         inputRef.current = inputElementRef;
       }
       // Check if an external ref (inputRef) is a callback function

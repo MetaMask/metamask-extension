@@ -14,6 +14,8 @@ import {
 } from './help-text.types';
 
 export const HelpText: HelpTextComponent = forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'p'>(
     {
       severity,
@@ -45,7 +47,7 @@ export const HelpText: HelpTextComponent = forwardRef(
         className={classnames('mm-help-text', className ?? '')}
         ref={ref}
         as={children && typeof children === 'object' ? 'div' : 'p'}
-        variant={TextVariant.bodyXs}
+        variant={TextVariant.bodySm}
         color={severity ? severityColor() : color}
         {...(props as TextProps<C>)}
       >

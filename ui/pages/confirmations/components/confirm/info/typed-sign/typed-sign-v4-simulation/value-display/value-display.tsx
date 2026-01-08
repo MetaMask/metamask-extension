@@ -1,7 +1,7 @@
 import { NameType } from '@metamask/name-controller';
 import { Hex } from '@metamask/utils';
-import { captureException } from '@sentry/browser';
 import React, { useMemo } from 'react';
+import { captureException } from '../../../../../../../../../shared/lib/sentry';
 import { MetaMetricsEventLocation } from '../../../../../../../../../shared/constants/metametrics';
 import { calcTokenAmount } from '../../../../../../../../../shared/lib/transactions-controller-utils';
 import useTokenExchangeRate from '../../../../../../../../components/app/currency-input/hooks/useTokenExchangeRate';
@@ -80,7 +80,7 @@ const PermitSimulationValueDisplay: React.FC<
 }) => {
   const t = useI18nContext();
 
-  const exchangeRate = useTokenExchangeRate(tokenContract);
+  const exchangeRate = useTokenExchangeRate(tokenContract, chainId);
 
   const tokenDetails = useGetTokenStandardAndDetails(tokenContract);
   useTrackERC20WithoutDecimalInformation(

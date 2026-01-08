@@ -59,6 +59,12 @@ describe('Selectors', () => {
         },
         smartTransactionsState: {
           liveness: true,
+          livenessByChainId: {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.BSC]: true,
+            [CHAIN_IDS.SEPOLIA]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+          },
         },
         ...mockNetworkState({
           id: 'network-configuration-id-1',
@@ -189,17 +195,28 @@ describe('Selectors', () => {
       'returns false if feature flag is disabled, not a HW and is Ethereum network',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive =
-          false;
+        state.metamask.swapsState.swapsFeatureFlags.smartTransactions.extensionActive = false;
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW, STX liveness is false and is Ethereum network',
+      'returns false if feature flag is enabled, not a HW, STX liveness is false for chain',
       () => {
         const state = createSwapsMockStore();
-        state.metamask.smartTransactionsState.liveness = false;
+        state.metamask.smartTransactionsState.livenessByChainId[
+          CHAIN_IDS.MAINNET
+        ] = false;
+        expect(getSmartTransactionsEnabled(state)).toBe(false);
+      },
+    );
+
+    jestIt(
+      'returns false if feature flag is enabled, not a HW, STX liveness is not set for chain',
+      () => {
+        const state = createSwapsMockStore();
+        // @ts-expect-error Testing undefined liveness for chain
+        state.metamask.smartTransactionsState.livenessByChainId = {};
         expect(getSmartTransactionsEnabled(state)).toBe(false);
       },
     );
@@ -310,14 +327,61 @@ describe('Selectors', () => {
     );
 
     jestIt(
-      'returns false if feature flag is enabled, not a HW and is Linea network',
+      'returns true if feature flag is enabled, not a HW and is Linea network with a default RPC URL',
       () => {
         const state = createSwapsMockStore();
         const newState = {
           ...state,
           metamask: {
             ...state.metamask,
-            ...mockNetworkState({ chainId: CHAIN_IDS.LINEA_MAINNET }),
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              rpcUrl: 'https://linea-mainnet.infura.io/v3/test-project-id',
+            }),
+            swapsState: {
+              ...state.metamask.swapsState,
+              swapsFeatureFlags: {
+                ...state.metamask.swapsState.swapsFeatureFlags,
+                linea: {
+                  extensionActive: true,
+                  mobileActive: false,
+                  smartTransactions: {
+                    extensionActive: true,
+                  },
+                },
+              },
+            },
+          },
+        };
+        expect(getSmartTransactionsEnabled(newState)).toBe(true);
+      },
+    );
+
+    jestIt(
+      'returns false if feature flag is enabled, not a HW and is Linea network with a non-default RPC URL',
+      () => {
+        const state = createSwapsMockStore();
+        const newState = {
+          ...state,
+          metamask: {
+            ...state.metamask,
+            ...mockNetworkState({
+              chainId: CHAIN_IDS.LINEA_MAINNET,
+              rpcUrl: 'https://rpc.linea.build/',
+            }),
+            swapsState: {
+              ...state.metamask.swapsState,
+              swapsFeatureFlags: {
+                ...state.metamask.swapsState.swapsFeatureFlags,
+                linea: {
+                  extensionActive: true,
+                  mobileActive: false,
+                  smartTransactions: {
+                    extensionActive: true,
+                  },
+                },
+              },
+            },
           },
         };
         expect(getSmartTransactionsEnabled(newState)).toBe(false);

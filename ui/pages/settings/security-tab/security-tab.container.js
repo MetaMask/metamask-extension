@@ -1,10 +1,9 @@
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
 import { compose } from 'redux';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   setIpfsGateway,
   setIsIpfsGatewayEnabled,
-  setParticipateInMetaMetrics,
   setDataCollectionForMarketing,
   setUseCurrencyRateCheck,
   setUseMultiAccountBalanceChecker,
@@ -20,23 +19,31 @@ import {
   setUseTransactionSimulations,
   setSecurityAlertsEnabled,
   updateDataDeletionTaskStatus,
+  setSkipDeepLinkInterstitial,
+  getMarketingConsent,
+  setMarketingConsent,
+  setParticipateInMetaMetrics,
 } from '../../../store/actions';
 import {
   getIsSecurityAlertsEnabled,
   getMetaMetricsDataDeletionId,
   getHDEntropyIndex,
-} from '../../../selectors/selectors';
+  getPreferences,
+  getIsSocialLoginFlow,
+  getSocialLoginType,
+  getParticipateInMetaMetrics,
+  getDataCollectionForMarketing,
+} from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import { openBasicFunctionalityModal } from '../../../ducks/app/app';
-import { getMetaMaskHdKeyrings } from '../../../selectors';
+import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import { getIsActiveShieldSubscription } from '../../../selectors/subscription';
 import SecurityTab from './security-tab.component';
 
 const mapStateToProps = (state) => {
   const { metamask } = state;
 
   const {
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
     usePhishDetect,
     useTokenDetection,
     ipfsGateway,
@@ -51,16 +58,17 @@ const mapStateToProps = (state) => {
     useExternalNameSources,
   } = metamask;
 
-  const networkConfigurations = getNetworkConfigurationsByChainId(state);
+  const { skipDeepLinkInterstitial } = getPreferences(state);
 
-  const hasMultipleHdKeyrings = getMetaMaskHdKeyrings(state).length > 1;
+  const networkConfigurations = getNetworkConfigurationsByChainId(state);
 
   return {
     networkConfigurations,
-    participateInMetaMetrics,
-    dataCollectionForMarketing,
+    participateInMetaMetrics: getParticipateInMetaMetrics(state),
+    dataCollectionForMarketing: getDataCollectionForMarketing(state),
     usePhishDetect,
     useTokenDetection,
+    hasActiveShieldSubscription: getIsActiveShieldSubscription(state),
     ipfsGateway,
     useMultiAccountBalanceChecker,
     useSafeChainsListValidation,
@@ -75,7 +83,10 @@ const mapStateToProps = (state) => {
     useTransactionSimulations: metamask.useTransactionSimulations,
     metaMetricsDataDeletionId: getMetaMetricsDataDeletionId(state),
     hdEntropyIndex: getHDEntropyIndex(state),
-    hasMultipleHdKeyrings,
+    skipDeepLinkInterstitial: Boolean(skipDeepLinkInterstitial),
+    isSeedPhraseBackedUp: getIsPrimarySeedPhraseBackedUp(state),
+    socialLoginEnabled: getIsSocialLoginFlow(state),
+    socialLoginType: getSocialLoginType(state),
   };
 };
 
@@ -98,6 +109,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setUseSafeChainsListValidation(val)),
     setBasicFunctionalityModalOpen: () =>
       dispatch(openBasicFunctionalityModal()),
+    setSkipDeepLinkInterstitial: (val) =>
+      dispatch(setSkipDeepLinkInterstitial(val)),
     setOpenSeaEnabled: (val) => dispatch(setOpenSeaEnabled(val)),
     setUseNftDetection: (val) => dispatch(setUseNftDetection(val)),
     setUse4ByteResolution: (value) => {
@@ -116,10 +129,12 @@ const mapDispatchToProps = (dispatch) => {
       return updateDataDeletionTaskStatus();
     },
     setSecurityAlertsEnabled: (value) => setSecurityAlertsEnabled(value),
+    getMarketingConsent: () => getMarketingConsent(),
+    setMarketingConsent: (value) => dispatch(setMarketingConsent(value)),
   };
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(SecurityTab);

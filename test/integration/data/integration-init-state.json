@@ -1,35 +1,82 @@
 {
-  "accounts": {
-    "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-      "balance": "0x346ba7725f412cbfdb",
-      "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-    },
-    "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-      "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-      "balance": "0x0"
-    },
-    "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-      "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-      "balance": "0x0"
-    },
-    "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-      "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
-      "balance": "0x0"
-    },
-    "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-      "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
-      "balance": "0x0"
-    },
-    "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
-      "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
-      "balance": "0x0"
+  "accountGroupsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+      "name": {
+        "value": "Account 1",
+        "lastUpdatedAt": 0
+      },
+      "pinned": {
+        "value": false,
+        "lastUpdatedAt": 0
+      },
+      "hidden": {
+        "value": false,
+        "lastUpdatedAt": 0
+      }
     }
   },
+  "accountTree": {
+    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+    "wallets": {
+      "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+        "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+        "type": "entropy",
+        "status": "ready",
+        "groups": {
+          "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+            "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+            "type": "multichain-account",
+            "accounts": [
+              "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+              "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+            ],
+            "metadata": {
+              "name": "Account 1",
+              "entropy": {
+                "groupIndex": 0
+              },
+              "hidden": false,
+              "pinned": false
+            }
+          }
+        },
+        "metadata": {
+          "name": "Wallet 1",
+          "entropy": {
+            "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          }
+        }
+      }
+    }
+  },
+  "accountWalletsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+      "name": {
+        "value": "Wallet 1",
+        "lastUpdatedAt": 0
+      }
+    }
+  },
+  "accountsAssets": {},
   "accountsByChainId": {
     "0xaa36a7": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
+      "0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc": {
         "balance": "0x15f6f0b9d4f8d000"
+      },
+      "0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B": {
+        "balance": "0x0"
+      },
+      "0xc42EDfCC21eD14dDA456AA0756C153F7985D8813": {
+        "balance": "0x0"
+      },
+      "0xeB9e64B93097bc15F01F13eae97015c57ab64823": {
+        "balance": "0x0"
+      },
+      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+        "balance": "0x0"
+      },
+      "0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D": {
+        "balance": "0x0"
       }
     }
   },
@@ -45,6 +92,7 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {
     "0xaa36a7": {
       "maxBaseFee": "75",
@@ -54,6 +102,7 @@
   "alertEnabledness": {
     "unconnectedAccount": true
   },
+  "allIgnoredAssets": {},
   "allNftContracts": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0x1": [
@@ -268,6 +317,7 @@
   },
   "announcements": [],
   "approvalFlows": [],
+  "assetsMetadata": {},
   "browserEnvironment": {
     "os": "mac",
     "browser": "chrome"
@@ -281,16 +331,13 @@
     "0x2260fac5e5542a773aa44fbcfedf7c193bc2c599": 0.0017123,
     "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48": 1.8e-9
   },
+  "coverageResults": {},
   "currencyRates": {
     "ETH": {
       "conversionRate": 556.12
     }
   },
   "currentAppVersion": "11.14.5",
-  "currentBlockGasLimit": "0x1c9c380",
-  "currentBlockGasLimitByChainId": {
-    "0x1": "0x1c9c380"
-  },
   "currentCurrency": "usd",
   "currentLocale": "en",
   "customNonceValue": "",
@@ -337,7 +384,13 @@
   "desktopEnabled": false,
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
-  "enabledNetworkMap": {},
+  "enabledNetworkMap": {
+    "eip155": {
+      "0x1": true,
+      "0x5": true,
+      "0xaa36a7": true
+    }
+  },
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "featureFlags": {},
@@ -410,6 +463,7 @@
     }
   },
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+  "hasAccountTreeSyncingSyncedAtLeastOnce": true,
   "hasDismissedOpenSeaToBlockaidBanner": false,
   "hiddenAccountList": [],
   "identities": {
@@ -445,7 +499,8 @@
           "name": "Test Account",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -465,7 +520,8 @@
           "name": "Test Account 2",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -485,7 +541,8 @@
           "name": "Ledger Hardware 2",
           "keyring": {
             "type": "Ledger Hardware"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -505,7 +562,8 @@
           "name": "Test Account 3",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -525,7 +583,8 @@
           "name": "Test Account 4",
           "keyring": {
             "type": "Custody test"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -546,9 +605,11 @@
           "keyring": {
             "type": "Snap Keyring"
           },
+          "importTime": 0,
           "snap": {
             "id": "snap-id",
-            "name": "snap-name"
+            "name": "snap-name",
+            "enabled": true
           }
         },
         "options": {},
@@ -567,6 +628,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isAccountTreeSyncingInProgress": false,
   "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
@@ -579,7 +641,10 @@
       "accounts": [
         "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
         "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-      ]
+      ],
+      "metadata": {
+        "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+      }
     },
     {
       "type": "Ledger Hardware",
@@ -696,6 +761,9 @@
       "nativeCurrency": "SepoliaETH"
     }
   },
+  "networkConnectionBanner": {
+    "status": "unknown"
+  },
   "networksMetadata": {
     "goerli-network-id": {
       "EIPS": {
@@ -806,6 +874,10 @@
   "smartTransactionsState": {
     "fees": {},
     "liveness": true,
+    "livenessByChainId": {
+      "0x1": true,
+      "0xaa36a7": true
+    },
     "smartTransactions": {
       "0x1": [],
       "0xaa36a7": []
@@ -1085,6 +1157,7 @@
       "subjectType": "snap"
     }
   },
+  "subscriptions": [],
   "swapsState": {
     "quotes": {},
     "quotesPollingLimitEnabled": false,
@@ -1226,7 +1299,6 @@
       }
     }
   },
-  "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1692109813199,
   "theme": "os",
   "tokenBalances": {
@@ -2039,6 +2111,7 @@
     }
   ],
   "trezorModel": null,
+  "txHistory": {},
   "unapprovedDecryptMsgCount": 0,
   "unapprovedDecryptMsgs": {},
   "unapprovedEncryptionPublicKeyMsgCount": 0,

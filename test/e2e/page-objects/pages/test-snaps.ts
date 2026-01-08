@@ -1,7 +1,8 @@
 import { isEqual } from 'lodash';
 import { GetPreferencesResult } from '@metamask/snaps-sdk';
 import { Driver } from '../../webdriver/driver';
-import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
+import { veryLargeDelayMs } from '../../helpers';
+import { DAPP_URL } from '../../constants';
 
 const inputLocator = {
   dataManageStateInput: '#dataManageState',
@@ -29,6 +30,8 @@ export const buttonLocator = {
   connectBip32Button: '#connectbip32',
   connectBip44Button: '#connectbip44',
   connectClientStatusButton: '#connectclient-status',
+  connectCronJobsButton: '#connectcronjobs',
+  connectCronjobDurationButton: '#connectcronjob-duration',
   connectDialogsButton: '#connectdialogs',
   connectErrorsButton: '#connecterrors',
   connectGetEntropyButton: '#connectGetEntropySnap',
@@ -36,6 +39,7 @@ export const buttonLocator = {
   connectHomePageButton: '#connecthomepage',
   connectjsxButton: '#connectjsx',
   displayJsxButton: '#displayJsx',
+  connectJsonRpcButton: '#connectjson-rpc',
   connectInteractiveButton: '#connectinteractive-ui',
   connectImagesButton: '#connectimages',
   connectLifeCycleButton: '#connectlifecycle-hooks',
@@ -78,6 +82,7 @@ export const buttonLocator = {
   sendNetworkAccessTestButton: '#sendNetworkAccessTest',
   sendManageStateButton: '#sendManageState',
   sendStateButton: '#sendState',
+  sendRpcButton: '#sendRpc',
   sendUnencryptedManageStateButton: '#sendUnencryptedManageState',
   sendWasmMessageButton: '#sendWasmMessage',
   signBip32messageSecp256k1Button: '#sendBip32-secp256k1',
@@ -87,6 +92,10 @@ export const buttonLocator = {
   signEntropyMessageButton: '#signEntropyMessage',
   signTypedDataButton: '#signTypedDataButton',
   submitClientStatusButton: '#sendClientStatusTest',
+  trackErrorButton: '#trackError',
+  trackEventButton: '#trackEvent',
+  startTraceButton: '#start-trace',
+  endTraceButton: '#end-trace',
   clearStateButton: '#clearState',
   sendUnencryptedStateButton: '#sendUnencryptedState',
   sendGetUnencryptedStateButton: '#sendGetUnencryptedState',
@@ -98,6 +107,9 @@ export const buttonLocator = {
   cancelBackgroundEventButton: '#cancelBackgroundEvent',
   getBackgroundEventResultButton: '#getBackgroundEvents',
   showPreinstalledDialogButton: '#showPreinstalledDialog',
+  startWebSocket: '#startWebSocket',
+  stopWebSocket: '#stopWebSocket',
+  getWebSocketState: '#getWebSocketState',
 } satisfies Record<string, string>;
 
 const spanLocator = {
@@ -124,6 +136,7 @@ const spanLocator = {
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
+  snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
   signTypedDataResultSpan: '#signTypedDataResult',
   retrieveManageStateResultSpan: '#retrieveManageStateResult',
@@ -150,17 +163,18 @@ export class TestSnaps {
 
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
+  private readonly networkUrlInput = '#fetchUrl';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async openPage() {
-    console.log('Opening Test Snap Dapp page');
-    await this.driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+  async openPage(url?: string) {
+    await this.driver.openNewPage(url ?? DAPP_URL);
     await this.driver.waitForSelector(this.installedSnapsHeader);
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.installedSnapsHeader,
@@ -176,12 +190,40 @@ export class TestSnaps {
     console.log('Test Snap Dapp page is loaded');
   }
 
-  async check_clientStatus(expectedStatus: string): Promise<void> {
-    console.log(`Checking that the client status should be ${expectedStatus}`);
-    await this.driver.waitForSelector({
-      css: spanLocator.clientStatusResultSpan,
-      text: expectedStatus,
-    });
+  async checkClientStatus({
+    clientVersion: expectedClientVersion,
+    ...expectedStatus
+  }: Record<string, unknown>): Promise<void> {
+    console.log(
+      `Checking that the client status should be ${JSON.stringify(expectedStatus, null, 2)}`,
+    );
+
+    await this.driver.waitUntil(
+      async () => {
+        const element = await this.driver.findElement(
+          spanLocator.clientStatusResultSpan,
+        );
+
+        const spanText = await element.getAttribute('textContent');
+        if (!spanText) {
+          return false;
+        }
+
+        const { clientVersion: actualClientVersion, ...actualStatus } =
+          JSON.parse(spanText);
+
+        return (
+          // Client version is different between main and Flask, so we just check
+          // that it starts with the expected version.
+          actualClientVersion.startsWith(expectedClientVersion) &&
+          isEqual(actualStatus, expectedStatus)
+        );
+      },
+      {
+        interval: 200,
+        timeout: veryLargeDelayMs,
+      },
+    );
   }
 
   async scrollAndClickButton(buttonElement: keyof typeof buttonLocator) {
@@ -207,7 +249,7 @@ export class TestSnaps {
     await this.driver.scrollToElement(buttonSelector);
   }
 
-  async check_installationComplete(
+  async checkInstallationComplete(
     selector: keyof typeof buttonLocator,
     expectedMessage: string,
   ) {
@@ -218,7 +260,7 @@ export class TestSnaps {
     });
   }
 
-  async check_installedSnapsResult(expectedMessage: string) {
+  async checkInstalledSnapsResult(expectedMessage: string) {
     console.log('Checking installed snaps, result section on the top left');
     await this.driver.waitForSelector({
       css: spanLocator.installedSnapResultSpan,
@@ -226,7 +268,7 @@ export class TestSnaps {
     });
   }
 
-  async check_messageResultSpan(
+  async checkMessageResultSpan(
     spanSelectorId: keyof typeof spanLocator,
     expectedMessage: string,
   ) {
@@ -239,7 +281,7 @@ export class TestSnaps {
     });
   }
 
-  async check_messageResultSpanIncludes(
+  async checkMessageResultSpanIncludes(
     spanSelectorId: keyof typeof spanLocator,
     partialMessage: string,
   ) {
@@ -250,7 +292,7 @@ export class TestSnaps {
     }
   }
 
-  async check_Count(expectedCount: string) {
+  async checkCount(expectedCount: string) {
     console.log(`Checking the count is ${expectedCount}`);
     await this.driver.waitForSelector({
       tag: 'p',
@@ -264,14 +306,12 @@ export class TestSnaps {
    * @param dropDownName - The name of the dropdown locator to select the entropy source from.
    * @param name - The name of the entropy source to select.
    */
-  async scrollAndSelectEntropySource(
+  async selectEntropySource(
     dropDownName: keyof typeof dropDownLocator,
     name: string,
   ) {
     const locator = dropDownLocator[dropDownName];
     console.log(`Select ${dropDownName} entropy source`);
-    const selector = await this.driver.findElement(locator);
-    await this.driver.scrollToElement(selector);
     await this.driver.clickElement(locator);
     await this.driver.clickElement({
       text: name,
@@ -294,7 +334,7 @@ export class TestSnaps {
    * @param expectedPreferences.displayNftMedia
    * @param expectedPreferences.useNftDetection
    */
-  async check_preferencesResult(expectedPreferences: GetPreferencesResult) {
+  async checkPreferencesResult(expectedPreferences: GetPreferencesResult) {
     console.log('Validating preferences result span JSON response');
 
     const element = await this.driver.findElement(
@@ -312,6 +352,11 @@ export class TestSnaps {
       );
     }
     console.log('Preferences result span JSON is valid');
+  }
+
+  async fillNetworkInput(name: string) {
+    console.log(`Filling network input with ${name}`);
+    await this.driver.fill(this.networkUrlInput, name);
   }
 
   /**
@@ -334,5 +379,47 @@ export class TestSnaps {
       text: name,
       css: `${locator} option`,
     });
+  }
+
+  async waitForWebSocketUpdate(state: {
+    open: boolean;
+    origin: string | null;
+    blockNumber: string | null;
+  }) {
+    const resultElement = await this.driver.findElement('#networkAccessResult');
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          await this.clickButton('getWebSocketState');
+
+          // Wait for response from Snap.
+          await this.driver.waitForSelector('#getWebSocketState', {
+            state: 'enabled',
+          });
+
+          const text = await resultElement.getText();
+
+          const { open, origin, blockNumber } = JSON.parse(text);
+
+          console.log('Retrieved WebSocket state:', {
+            open,
+            origin,
+            blockNumber,
+          });
+
+          const blockNumberMatch =
+            typeof state.blockNumber === 'string'
+              ? typeof blockNumber === state.blockNumber
+              : blockNumber === state.blockNumber;
+
+          return (
+            open === state.open && origin === state.origin && blockNumberMatch
+          );
+        } catch {
+          return false;
+        }
+      },
+      { timeout: veryLargeDelayMs * 2, interval: 200 },
+    );
   }
 }

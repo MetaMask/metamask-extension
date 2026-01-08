@@ -1,7 +1,7 @@
 import React from 'react';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../store/store';
 import { ConfirmInfoRowAddress } from './address';
 import { TEST_ADDRESS } from './constants';
@@ -28,6 +28,7 @@ const render = (
 describe('ConfirmInfoRowAddress', () => {
   it('renders appropriately with PetNames enabled', () => {
     const { container } = render({
+      ...mockState,
       metamask: {
         ...mockState.metamask,
         preferences: {

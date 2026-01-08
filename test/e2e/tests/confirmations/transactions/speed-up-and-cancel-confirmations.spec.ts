@@ -10,7 +10,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
 
 const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 
 const ethInHexWei = (eth: number): Hex => decimalToPrefixedHex(eth * 10 ** 18);
 
@@ -19,7 +19,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully speeds up a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -55,16 +55,17 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_transactionListItem();
-          await activityListPage.click_speedUpTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.checkSpeedUpInlineButtonIsPresent();
+          await activityListPage.clickTransactionListItem();
+          await activityListPage.clickSpeedUpTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
           await driver.delay(3000); // Delay needed to ensure the transaction is updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
 
-          await activityListPage.check_waitForTransactionStatus('confirmed');
+          await activityListPage.checkWaitForTransactionStatus('confirmed');
         },
       );
     });
@@ -74,7 +75,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
     it('Successfully cancels a pending transaction', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -107,14 +108,14 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           await homePage.goToActivityList();
 
           const activityListPage = new ActivityListPage(driver);
-          await activityListPage.check_completedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
 
-          await activityListPage.click_cancelTransaction();
-          await activityListPage.click_confirmTransactionReplacement();
+          await activityListPage.clickCancelTransaction();
+          await activityListPage.clickConfirmTransactionReplacement();
           await driver.delay(3000); // Delay needed to ensure the transaction updated before mining
           (await localNodes?.[0]?.mineBlock()) ??
             console.error('localNodes is undefined or empty');
-          await activityListPage.check_waitForTransactionStatus('cancelled');
+          await activityListPage.checkWaitForTransactionStatus('cancelled');
         },
       );
     });

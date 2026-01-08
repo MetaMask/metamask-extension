@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import {
   setCurrentCurrency,
-  setUseBlockie,
+  setAvatarType,
   updateCurrentLocale,
   setHideZeroBalanceTokens,
   setParticipateInMetaMetrics,
@@ -22,7 +22,7 @@ const mapStateToProps = (state) => {
   const { currentCurrency, useBlockie, currentLocale } = metamask;
   const { ticker: nativeCurrency } = getProviderConfig(state);
   const { address: selectedAddress } = getSelectedInternalAccount(state);
-  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance } =
+  const { hideZeroBalanceTokens, showNativeTokenAsMainBalance, avatarType } =
     getPreferences(state);
 
   const tokenList = getTokenList(state);
@@ -32,6 +32,7 @@ const mapStateToProps = (state) => {
     currentCurrency,
     nativeCurrency,
     useBlockie,
+    avatarType,
     showNativeTokenAsMainBalance,
     hideZeroBalanceTokens,
     selectedAddress,
@@ -43,7 +44,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     setCurrentCurrency: (currency) => dispatch(setCurrentCurrency(currency)),
-    setUseBlockie: (value) => dispatch(setUseBlockie(value)),
+    setAvatarType: (value) => dispatch(setAvatarType(value)),
     updateCurrentLocale: (key) => dispatch(updateCurrentLocale(key)),
     setShowNativeTokenAsMainBalancePreference: (value) => {
       return dispatch(setShowNativeTokenAsMainBalancePreference(value));

@@ -3,6 +3,9 @@ import React from 'react';
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { ButtonBaseStyleUtilityProps } from '../button-base/button-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonLinkSize {
   Auto = 'auto',
   Sm = 'sm',
@@ -34,10 +37,14 @@ export interface ButtonLinkStyleUtilityProps
   size?: ButtonLinkSize;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type ButtonLinkProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, ButtonLinkStyleUtilityProps>;
 
 export type ButtonLinkComponent = <
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   C extends React.ElementType = 'button' | 'a',
 >(
   props: ButtonLinkProps<C>,

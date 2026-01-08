@@ -1,6 +1,7 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import { merge } from 'lodash';
 
+import { DecodedPermission } from '@metamask/gator-permissions-controller';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import {
   Confirmation,
@@ -12,7 +13,10 @@ import { unapprovedPersonalSignMsg } from './personal_sign';
 import { genUnapprovedSetApprovalForAllConfirmation } from './set-approval-for-all';
 import { genUnapprovedApproveConfirmation } from './token-approve';
 import { genUnapprovedTokenTransferConfirmation } from './token-transfer';
-import { unapprovedTypedSignMsgV4 } from './typed_sign';
+import {
+  unapprovedTypedSignMsgV4,
+  unapprovedTypedSignMsgV4WithPermission,
+} from './typed_sign';
 
 type RootState = { metamask: Record<string, unknown> } & Record<
   string,
@@ -38,6 +42,35 @@ export const getMockTypedSignConfirmState = (
     },
     unapprovedTypedMessages: {
       [unapprovedTypedSignMsgV4.id]: unapprovedTypedSignMsgV4,
+    },
+  },
+});
+
+export const getMockTypedSignPermissionConfirmState = (
+  permission:
+    | DecodedPermission
+    | undefined = unapprovedTypedSignMsgV4WithPermission.decodedPermission,
+  args: RootState = { metamask: {} },
+) => ({
+  ...mockState,
+  ...args,
+  metamask: {
+    ...mockState.metamask,
+    ...args.metamask,
+    preferences: {
+      ...mockState.metamask.preferences,
+    },
+    pendingApprovals: {
+      [unapprovedTypedSignMsgV4.id]: {
+        id: unapprovedTypedSignMsgV4.id,
+        type: ApprovalType.EthSignTypedData,
+      },
+    },
+    unapprovedTypedMessages: {
+      [unapprovedTypedSignMsgV4.id]: {
+        ...unapprovedTypedSignMsgV4WithPermission,
+        decodedPermission: permission,
+      },
     },
   },
 });
@@ -183,3 +216,40 @@ export const getMockTokenTransferConfirmState = ({
     }),
   );
 };
+
+export const addEthereumChainApproval = {
+  id: 'j8GP9DVKMR8mz6I-DQM25',
+  origin: 'https://chainid.network',
+  type: 'wallet_addEthereumChain',
+  time: 1760960363027,
+  requestData: {
+    chainId: '0x3af',
+    rpcPrefs: {
+      blockExplorerUrl: 'https://scan.v4.testnet.pulsechain.com',
+    },
+    chainName: 'PulseChain Testnet v4',
+    rpcUrl: 'https://rpc.v4.testnet.pulsechain.com',
+    ticker: 'tPLS',
+  },
+  requestState: null,
+  expectsResult: false,
+};
+
+export const getMockAddEthereumChainConfirmState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    pendingApprovals: {
+      '1': {
+        id: '1',
+        type: ApprovalType.AddEthereumChain,
+        requestData: {
+          chainId: '0x5',
+          chainName: 'Test Network',
+          rpcUrl: 'https://rpc.example.com',
+        },
+        origin: 'https://example.com',
+      },
+    },
+  },
+});

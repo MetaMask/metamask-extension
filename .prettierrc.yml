@@ -3,3 +3,4 @@
 endOfLine: auto
 singleQuote: true
 trailingComma: all
+plugins: ['prettier-plugin-sort-json']

@@ -23,7 +23,7 @@ class VaultDecryptorPage {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.fileInput,
@@ -84,7 +84,7 @@ class VaultDecryptorPage {
    *
    * @param seedPhrase - The expected seed phrase.
    */
-  async check_vaultIsDecrypted(seedPhrase: string) {
+  async checkVaultIsDecrypted(seedPhrase: string) {
     console.log('check vault is decrypted on vault decryptor page');
     await this.driver.waitForSelector({
       text: seedPhrase,

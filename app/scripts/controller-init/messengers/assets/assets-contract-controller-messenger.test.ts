@@ -1,14 +1,26 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
-import { getAssetsContractControllerMessenger } from './assets-contract-controller-messenger';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
+import {
+  getAssetsContractControllerInitMessenger,
+  getAssetsContractControllerMessenger,
+} from './assets-contract-controller-messenger';
 
 describe('getAssetsContractControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const assetsContractControllerMessenger =
       getAssetsContractControllerMessenger(messenger);
 
-    expect(assetsContractControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(assetsContractControllerMessenger).toBeInstanceOf(Messenger);
+  });
+});
+
+describe('getAssetsContractControllerInitMessenger', () => {
+  it('returns a restricted messenger', () => {
+    const messenger = getRootMessenger<never, never>();
+    const assetsContractControllerInitMessenger =
+      getAssetsContractControllerInitMessenger(messenger);
+
+    expect(assetsContractControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

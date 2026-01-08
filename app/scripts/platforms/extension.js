@@ -15,6 +15,7 @@ export default class ExtensionPlatform {
   // Public
   //
   reload() {
+    // TODO: should this be a safe reload via the `WriteManager`?
     browser.runtime.reload();
   }
 
@@ -57,6 +58,14 @@ export default class ExtensionPlatform {
     return browser.runtime.getManifest().version;
   }
 
+  /**
+   * Returns the absolute URL of the extension's home.html page, optionally with
+   * a route and query string.
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @returns { string }
+   */
   getExtensionURL(route = null, queryString = null) {
     let extensionURL = browser.runtime.getURL('home.html');
 
@@ -71,6 +80,12 @@ export default class ExtensionPlatform {
     return extensionURL;
   }
 
+  /**
+   *
+   * @param {string | null} route
+   * @param {string | null} queryString
+   * @param {boolean} [keepWindowOpen] - defaults to false
+   */
   openExtensionInBrowser(
     route = null,
     queryString = null,
@@ -117,12 +132,35 @@ export default class ExtensionPlatform {
           )
         : await this._showConfirmedTransaction(txMeta, rpcPrefs);
     } else if (status === TransactionStatus.failed) {
-      await this._showFailedTransaction(txMeta);
+      if (txMeta.error?.message?.includes('EthAppNftNotSupported')) {
+        await this._showFailedTransaction(
+          txMeta,
+          t('ledgerEthAppNftNotSupportedNotification'),
+        );
+      } else {
+        await this._showFailedTransaction(txMeta);
+      }
     }
   }
 
   addOnRemovedListener(listener) {
     browser.windows.onRemoved.addListener(listener);
+  }
+
+  addTabRemovedListener(listener) {
+    browser.tabs.onRemoved.addListener(listener);
+  }
+
+  removeTabRemovedListener(listener) {
+    browser.tabs.onRemoved.removeListener(listener);
+  }
+
+  addTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.addListener(listener);
+  }
+
+  removeTabUpdatedListener(listener) {
+    browser.tabs.onUpdated.removeListener(listener);
   }
 
   async getAllWindows() {

@@ -10,7 +10,7 @@ describe('DisconnectAllModal', () => {
 
   const args = {
     type: DisconnectType.Account,
-    hostname: 'portfolio.metamask.io',
+    hostname: 'app.metamask.io',
     onClose: jest.fn(),
     onClick,
   };

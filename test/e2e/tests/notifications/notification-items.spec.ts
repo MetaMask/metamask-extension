@@ -2,15 +2,15 @@ import { Mockttp } from 'mockttp';
 import { TRIGGER_TYPES } from '@metamask/notification-services-controller/notification-services';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
-import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   enableNotificationsThroughGlobalMenu,
   clickNotificationItemAndDetailsPage,
   navigateToNotificationSettingsAndClickDisable,
 } from '../../page-objects/flows/notifications.flow';
 import NotificationsSettingsPage from '../../page-objects/pages/settings/notifications-settings-page';
+import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mock-notification-trigger-server';
 import {
   getMockFeatureAnnouncementItemId,
   getMockWalletNotificationItemId,
@@ -19,13 +19,18 @@ import {
 
 describe('Notification List - View Items and Details', function () {
   it('find each notification type we support, and navigates to their details page', async function () {
-    const userStorageMockttpController = new UserStorageMockttpController();
+    if (process.env.IS_FORK === 'true') {
+      this.skip();
+    }
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: async (server: Mockttp) => {
-          await mockNotificationServices(server, userStorageMockttpController);
+          await mockNotificationServices(
+            server,
+            new MockttpNotificationTriggerServer(),
+          );
         },
       },
       async ({ driver }) => {
@@ -38,7 +43,7 @@ describe('Notification List - View Items and Details', function () {
         await navigateToNotificationSettingsAndClickDisable(driver);
         await new NotificationsSettingsPage(
           driver,
-        ).check_notificationSectionIsHidden();
+        ).checkNotificationSectionIsHidden();
       },
     );
   });

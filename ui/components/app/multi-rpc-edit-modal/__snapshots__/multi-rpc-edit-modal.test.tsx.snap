@@ -116,8 +116,7 @@ exports[`MultiRpcEditModal renders correctly with required props 1`] = `
               class="mm-box mm-container mm-container--max-width-sm mm-box--margin-right-auto mm-box--margin-left-auto mm-box--display-flex mm-box--gap-4 mm-box--flex-wrap-wrap mm-box--align-items-center"
             >
               <button
-                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-modal-footer__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-                data-theme="light"
+                class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block mm-modal-footer__button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
               >
                 accept
               </button>

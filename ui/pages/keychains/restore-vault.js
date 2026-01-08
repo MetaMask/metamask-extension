@@ -1,18 +1,46 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { compose } from 'redux';
 import {
   createNewVaultAndRestore,
+  resetOAuthLoginState,
+  setFirstTimeFlowType,
   unMarkPasswordForgotten,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../shared/constants/metametrics';
+import {
+  Box,
+  Text,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  ButtonSize,
+  Button,
+} from '../../components/component-library';
+import {
+  TextVariant,
+  TextColor,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  BlockSize,
+  IconColor,
+  AlignItems,
+  TextAlign,
+  BorderColor,
+  BorderRadius,
+  BackgroundColor,
+} from '../../helpers/constants/design-system';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../shared/constants/metametrics';
+import { getIsSocialLoginFlow } from '../../selectors';
+import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import SrpInputForm from '../srp-input-form';
+import { CreatePasswordForm } from '../create-password-form';
+import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 class RestoreVaultPage extends Component {
   static contextTypes = {
@@ -23,112 +51,195 @@ class RestoreVaultPage extends Component {
   static propTypes = {
     createNewVaultAndRestore: PropTypes.func.isRequired,
     leaveImportSeedScreenState: PropTypes.func,
-    history: PropTypes.object,
-    isLoading: PropTypes.bool,
+    setFirstTimeFlowType: PropTypes.func,
+    resetOAuthLoginState: PropTypes.func,
+    navigate: PropTypes.func,
+    isSocialLoginFlow: PropTypes.bool,
   };
 
-  handleImport = async (password, seedPhrase) => {
+  state = {
+    srpError: '',
+    secretRecoveryPhrase: '',
+    toggleSrpDetailsModal: false,
+    showPasswordInput: false,
+    loading: false,
+  };
+
+  handleImport = async (password, termsChecked) => {
     const {
-      // eslint-disable-next-line no-shadow
-      createNewVaultAndRestore,
-      leaveImportSeedScreenState,
-      history,
+      createNewVaultAndRestore: propsCreateNewVaultAndRestore,
+      setFirstTimeFlowType: propsSetFirstTimeFlowType,
+      resetOAuthLoginState: propsResetOAuthLoginState,
+      navigate,
+      isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
-    leaveImportSeedScreenState();
-    await createNewVaultAndRestore(password, seedPhrase);
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Retention,
-      event: 'onboardingRestoredVault',
-      properties: {
-        action: 'userEntersSeedPhrase',
-        legacy_event: true,
-      },
-    });
-    history.push(DEFAULT_ROUTE);
+    if (!propsIsSocialLoginFlow && !termsChecked) {
+      return;
+    }
+
+    const { secretRecoveryPhrase } = this.state;
+
+    this.setState({ loading: true });
+
+    try {
+      if (propsIsSocialLoginFlow) {
+        await propsResetOAuthLoginState();
+      }
+
+      await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
+
+      await propsCreateNewVaultAndRestore(password, secretRecoveryPhrase);
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Retention,
+        event: MetaMetricsEventName.WalletRestored,
+      });
+
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } catch (error) {
+      this.setState({ loading: false, showPasswordInput: false });
+      console.error('[RestoreVault] Error during import:', error);
+    }
+  };
+
+  handleContinue = () => {
+    this.setState((prevState) => ({ ...prevState, showPasswordInput: true }));
+  };
+
+  handleBack = () => {
+    if (this.state.loading) {
+      return;
+    }
+    this.setState((prevState) => ({ ...prevState, showPasswordInput: false }));
   };
 
   render() {
     const { t } = this.context;
-    const { isLoading } = this.props;
+
+    const shouldShowPasswordForm =
+      this.state.showPasswordInput || this.state.loading;
 
     return (
-      <Box className="first-view-main-wrapper">
-        <Box className="first-view-main">
-          <Box className="import-account">
-            <a
-              className="import-account__back-button"
-              onClick={(e) => {
-                e.preventDefault();
-                this.props.leaveImportSeedScreenState();
-                this.props.history.push(DEFAULT_ROUTE);
-              }}
-              href="#"
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.spaceBetween}
+        height={BlockSize.Full}
+        gap={4}
+        className="import-srp-restore-vault"
+        data-testid="import-srp-restore-vault"
+        borderRadius={BorderRadius.LG}
+        borderColor={BorderColor.borderMuted}
+        backgroundColor={BackgroundColor.backgroundDefault}
+      >
+        {shouldShowPasswordForm ? (
+          <CreatePasswordForm
+            isSocialLoginFlow={false}
+            onSubmit={this.handleImport}
+            onBack={this.handleBack}
+            loading={this.state.loading}
+          />
+        ) : (
+          <>
+            <Box>
+              <Box marginBottom={4}>
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  color={IconColor.iconDefault}
+                  size={ButtonIconSize.Md}
+                  data-testid="import-srp-back-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.props.leaveImportSeedScreenState();
+                    this.props.navigate(DEFAULT_ROUTE, { replace: true });
+                  }}
+                  ariaLabel={t('back')}
+                />
+              </Box>
+              <Box textAlign={TextAlign.Left} marginBottom={2}>
+                <Text variant={TextVariant.headingLg}>
+                  {t('importAWallet')}
+                </Text>
+              </Box>
+              <Box textAlign={TextAlign.Left} marginBottom={4}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('restoreWalletDescription', [
+                    <Text
+                      key="secret-recovery-phrase"
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.primaryDefault}
+                      onClick={() =>
+                        this.setState({ toggleSrpDetailsModal: true })
+                      }
+                      as="button"
+                    >
+                      {t('secretRecoveryPhrase')}
+                    </Text>,
+                  ])}
+                </Text>
+              </Box>
+              <SrpInputForm
+                error={this.state.srpError}
+                setSecretRecoveryPhrase={(secretRecoveryPhrase) =>
+                  this.setState({ secretRecoveryPhrase })
+                }
+                onClearCallback={() => this.setState({ srpError: '' })}
+                showDescription={false}
+                toggleSrpDetailsModal={this.state.toggleSrpDetailsModal}
+                onSrpDetailsModalClose={() =>
+                  this.setState({ toggleSrpDetailsModal: false })
+                }
+              />
+            </Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+              textAlign={TextAlign.Left}
             >
-              {`< ${t('back')}`}
-            </a>
-            <Text variant={TextVariant.displayMd} color={TextColor.textDefault}>
-              {t('resetWallet')}
-            </Text>
-            <Text color={TextColor.textDefault}>
-              {t('resetWalletSubHeader')}
-            </Text>
-            <Text color={TextColor.textDefault} marginTop={4} marginBottom={4}>
-              {t('resetWalletUsingSRP', [
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
-                  key="import-account-secretphase"
-                  className="import-account__link"
-                >
-                  {t('reAddAccounts')}
-                </Button>,
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.IMPORT_ACCOUNTS}
-                  key="import-account-reimport-accounts"
-                  className="import-account__link"
-                >
-                  {t('reAdded')}
-                </Button>,
-                <Button
-                  type="link"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
-                  key="import-account-readd-tokens"
-                  className="import-account__link"
-                >
-                  {t('reAdded')}
-                </Button>,
-              ])}
-            </Text>
-            <Text color={TextColor.textDefault} margin={0} marginBottom={4}>
-              {t('resetWalletWarning')}
-            </Text>
-            <CreateNewVault
-              disabled={isLoading}
-              onSubmit={this.handleImport}
-              submitText={t('restore')}
-            />
-          </Box>
-        </Box>
+              <Button
+                width={BlockSize.Full}
+                size={ButtonSize.Lg}
+                data-testid="import-srp-confirm"
+                onClick={this.handleContinue}
+                disabled={
+                  !this.state.secretRecoveryPhrase.trim() ||
+                  Boolean(this.state.srpError)
+                }
+                className="import-srp__continue-button"
+              >
+                {t('continue')}
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     );
   }
 }
 
-export default connect(
-  ({ appState: { isLoading } }) => ({ isLoading }),
-  (dispatch) => ({
-    leaveImportSeedScreenState: () => {
-      dispatch(unMarkPasswordForgotten());
+export default compose(
+  withRouterHooks,
+  connect(
+    (state) => {
+      return {
+        isSocialLoginFlow: getIsSocialLoginFlow(state),
+      };
     },
-    createNewVaultAndRestore: (pw, seed) =>
-      dispatch(createNewVaultAndRestore(pw, seed)),
-  }),
+    (dispatch) => ({
+      leaveImportSeedScreenState: () => {
+        dispatch(unMarkPasswordForgotten());
+      },
+      createNewVaultAndRestore: (pw, seed) =>
+        dispatch(createNewVaultAndRestore(pw, seed)),
+      setFirstTimeFlowType: (type) => dispatch(setFirstTimeFlowType(type)),
+      resetOAuthLoginState: () => dispatch(resetOAuthLoginState()),
+    }),
+  ),
 )(RestoreVaultPage);

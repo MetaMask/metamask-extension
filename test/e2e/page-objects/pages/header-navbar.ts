@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { Browser } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
 
 class HeaderNavbar {
@@ -6,10 +7,12 @@ class HeaderNavbar {
 
   private readonly accountMenuButton = '[data-testid="account-menu-icon"]';
 
+  private readonly accountListPage = '.account-list-page';
+
   private readonly allPermissionsButton =
     '[data-testid="global-menu-connected-sites"]';
 
-  private readonly copyAddressButton = '[data-testid="app-header-copy-button"]';
+  private readonly copyAddressButton = '[aria-label="Copy address"]';
 
   private readonly threeDotMenuButton =
     '[data-testid="account-options-menu-button"]';
@@ -25,8 +28,6 @@ class HeaderNavbar {
 
   private readonly settingsButton = '[data-testid="global-menu-settings"]';
 
-  private readonly switchNetworkDropDown = '[data-testid="network-display"]';
-
   private readonly networkPicker = '.mm-picker-network';
 
   private readonly notificationsButton =
@@ -38,11 +39,24 @@ class HeaderNavbar {
   private readonly firstTimeTurnOnNotificationsButton =
     '[data-testid="turn-on-notifications-button"]';
 
+  private readonly globalNetworksMenu = '[data-testid="global-menu-networks"]';
+
+  private readonly connectionMenu = '[data-testid="connection-menu"]';
+
+  private readonly connectedSitePopoverNetworkButton =
+    '[data-testid="connected-site-popover-network-button"]';
+
+  private readonly networkAddressesLink =
+    '[data-testid="networks-subtitle-test-id"]';
+
+  private readonly networkOption = (networkId: string) =>
+    `[data-testid="${networkId}"]`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.accountMenuButton,
@@ -56,17 +70,19 @@ class HeaderNavbar {
   }
 
   async clickAddressCopyButton(): Promise<void> {
+    await this.driver.clickElement(this.networkAddressesLink);
     await this.driver.clickElement(this.copyAddressButton);
   }
 
   async lockMetaMask(): Promise<void> {
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.lockMetaMaskButton);
+    await this.driver.waitForSelector('[data-testid="unlock-password"]');
   }
 
   async openAccountMenu(): Promise<void> {
     await this.driver.clickElement(this.accountMenuButton);
-    await this.driver.waitForSelector('.multichain-account-menu-popover__list');
+    await this.driver.waitForSelector(this.accountListPage);
   }
 
   async openAccountDetailsModalDetailsTab(): Promise<void> {
@@ -82,15 +98,58 @@ class HeaderNavbar {
     await this.driver.clickElement(this.openAccountDetailsButton);
   }
 
-  async openThreeDotMenu(): Promise<void> {
-    console.log('Open account options menu');
+  async openGlobalNetworksMenu(): Promise<void> {
+    console.log('Open global menu');
     await this.driver.clickElement(this.threeDotMenuButton);
+    await this.driver.clickElement(this.globalNetworksMenu);
   }
 
-  async openPermissionsPage(): Promise<void> {
+  async openThreeDotMenu(): Promise<void> {
+    console.log('Open account options menu');
+    await this.driver.waitForSelector(this.threeDotMenuButton, {
+      state: 'enabled',
+    });
+    if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+      await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+    } else {
+      await this.driver.clickElement(this.threeDotMenuButton);
+    }
+  }
+
+  async mouseClickOnThreeDotMenu(): Promise<void> {
+    console.log('Clicking three dot menu using mouse move');
+    await this.driver.clickElementUsingMouseMove(this.threeDotMenuButton);
+  }
+
+  /**
+   * Opens the permissions page.
+   * Handles both flows:
+   * - Regular flow: Click "All Permissions" → Goes directly to Permissions Page
+   * - Gator flow (Flask): Click "All Permissions" → Gator Permissions Page → Click "Sites" → Permissions Page
+   *
+   * @param options - Optional configuration
+   * @param options.skipSitesNavigation - If true, stops at Gator Permissions Page without clicking "Sites" (only relevant for Gator flow)
+   */
+  async openPermissionsPage(options?: {
+    skipSitesNavigation?: boolean;
+  }): Promise<void> {
     console.log('Open permissions page in header navbar');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.allPermissionsButton);
+
+    // Check if we landed on Gator Permissions Page (intermediate page for Flask builds)
+    // If so, we need to click "Sites" to get to the actual Permissions Page
+    const isGatorPermissionsPage = await this.driver
+      .findElement('[data-testid="gator-permissions-page"]')
+      .then(() => true)
+      .catch(() => false);
+
+    if (isGatorPermissionsPage && !options?.skipSitesNavigation) {
+      console.log(
+        'Detected Gator Permissions Page, clicking "Sites" to navigate to Permissions Page',
+      );
+      await this.driver.clickElement({ text: 'Sites', tag: 'p' });
+    }
   }
 
   async openSnapListPage(): Promise<void> {
@@ -103,11 +162,6 @@ class HeaderNavbar {
     console.log('Open settings page');
     await this.openThreeDotMenu();
     await this.driver.clickElement(this.settingsButton);
-  }
-
-  async clickSwitchNetworkDropDown(): Promise<void> {
-    console.log(`Click switch network menu`);
-    await this.driver.clickElement(this.switchNetworkDropDown);
   }
 
   async enableNotifications(): Promise<void> {
@@ -124,26 +178,19 @@ class HeaderNavbar {
 
   async clickNotificationsOptions(): Promise<void> {
     console.log('Click notifications options');
-    await this.openThreeDotMenu();
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.clickElement(this.notificationsButton);
   }
 
-  async check_notificationCountInMenuOption(count: number): Promise<void> {
-    await this.openThreeDotMenu();
+  async checkNotificationCountInMenuOption(count: number): Promise<void> {
+    await this.mouseClickOnThreeDotMenu();
     await this.driver.findElement({
       css: this.notificationCountOption,
       text: count.toString(),
     });
   }
 
-  async check_currentSelectedNetwork(networkName: string): Promise<void> {
-    console.log(`Validate the Switch network to ${networkName}`);
-    await this.driver.waitForSelector(
-      `button[data-testid="network-display"][aria-label="Network Menu ${networkName}"]`,
-    );
-  }
-
-  async check_ifNetworkPickerClickable(clickable: boolean): Promise<void> {
+  async checkIfNetworkPickerClickable(clickable: boolean): Promise<void> {
     console.log('Check whether the network picker is clickable or not');
     assert.equal(
       await (await this.driver.findElement(this.networkPicker)).isEnabled(),
@@ -156,7 +203,7 @@ class HeaderNavbar {
    *
    * @param expectedAddress - The expected address of the account.
    */
-  async check_accountAddress(expectedAddress: string): Promise<void> {
+  async checkAccountAddress(expectedAddress: string): Promise<void> {
     console.log(
       `Verify the displayed account address in header is: ${expectedAddress}`,
     );
@@ -171,7 +218,7 @@ class HeaderNavbar {
    *
    * @param expectedLabel - The expected label of the account.
    */
-  async check_accountLabel(expectedLabel: string): Promise<void> {
+  async checkAccountLabel(expectedLabel: string): Promise<void> {
     console.log(
       `Verify the displayed account label in header is: ${expectedLabel}`,
     );
@@ -179,6 +226,40 @@ class HeaderNavbar {
       css: this.accountMenuButton,
       text: expectedLabel,
     });
+  }
+
+  /**
+   * Open the connection menu
+   */
+  async openConnectionMenu(): Promise<void> {
+    console.log('Opening connection menu');
+    await this.driver.clickElement(this.connectionMenu);
+  }
+
+  /**
+   * Click the connected site popover network button
+   */
+  async clickConnectedSitePopoverNetworkButton(): Promise<void> {
+    console.log('Clicking connected site popover network button');
+    await this.driver.clickElement(this.connectedSitePopoverNetworkButton);
+  }
+
+  /**
+   * Click the network addresses link
+   */
+  async clickNetworkAddresses(): Promise<void> {
+    console.log('Click the network addresses link');
+    await this.driver.clickElement(this.networkAddressesLink);
+  }
+
+  /**
+   * Select a network from the network options
+   *
+   * @param networkId - The id of the network to select.
+   */
+  async selectNetwork(networkId: string): Promise<void> {
+    console.log(`Selecting network ${networkId}`);
+    await this.driver.clickElement(this.networkOption(networkId));
   }
 }
 

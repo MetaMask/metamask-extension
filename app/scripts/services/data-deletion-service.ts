@@ -18,11 +18,11 @@ const fallbackDataDeletionEndpoint = 'https://metametrics.metamask.test';
 
 const DEFAULT_ANALYTICS_DATA_DELETION_SOURCE_ID = inTest
   ? fallbackSourceId
-  : process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId;
+  : (process.env.ANALYTICS_DATA_DELETION_SOURCE_ID ?? fallbackSourceId);
 const DEFAULT_ANALYTICS_DATA_DELETION_ENDPOINT = inTest
   ? fallbackDataDeletionEndpoint
-  : process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
-    fallbackDataDeletionEndpoint;
+  : (process.env.ANALYTICS_DATA_DELETION_ENDPOINT ??
+    fallbackDataDeletionEndpoint);
 
 /**
  * The number of times we retry a specific failed request to the data deletion API.

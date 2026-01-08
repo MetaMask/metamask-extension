@@ -2,7 +2,7 @@ import { AuthorizationList } from '@metamask/transaction-controller';
 import { Hex, createProjectLogger } from '@metamask/utils';
 import { jsonRpcRequest } from '../../../../shared/modules/rpc.utils';
 import getFetchWithTimeout from '../../../../shared/modules/fetch-with-timeout';
-import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
+import { buildUrl, getSentinelNetworkFlags } from './sentinel-api';
 
 const log = createProjectLogger('transaction-relay');
 
@@ -32,18 +32,6 @@ export enum RelayStatus {
   Pending = 'PENDING',
   Success = 'VALIDATED',
 }
-
-type RelayNetwork = {
-  network: string;
-  relayTransactions: boolean;
-};
-
-type RelayNetworkResponse = {
-  [chainIdDecimal: string]: RelayNetwork;
-};
-
-const BASE_URL = 'https://tx-sentinel-{0}.api.cx.metamask.io/';
-const ENDPOINT_NETWORKS = 'networks';
 
 export const RELAY_RPC_METHOD = 'eth_sendRelayTransaction';
 
@@ -129,24 +117,12 @@ async function pollResult(url: string): Promise<RelayWaitResponse> {
 }
 
 async function getRelayUrl(chainId: Hex): Promise<string | undefined> {
-  const networkData = await getNetworkData();
-  const chainIdDecimal = hexToDecimal(chainId);
-  const network = networkData[chainIdDecimal];
+  const networkData = await getSentinelNetworkFlags(chainId);
 
-  if (!network?.relayTransactions) {
+  if (!networkData?.relayTransactions) {
     log('Chain is not supported', chainId);
     return undefined;
   }
 
-  return buildUrl(network.network);
-}
-
-async function getNetworkData(): Promise<RelayNetworkResponse> {
-  const url = `${buildUrl('ethereum-mainnet')}${ENDPOINT_NETWORKS}`;
-  const response = await getFetchWithTimeout()(url);
-  return response.json();
-}
-
-function buildUrl(subdomain: string): string {
-  return BASE_URL.replace('{0}', subdomain);
+  return buildUrl(networkData.network);
 }

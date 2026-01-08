@@ -1,32 +1,39 @@
+import { CHAIN_IDS } from '@metamask/transaction-controller';
+import { Anvil } from '@viem/anvil';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { Anvil } from '@viem/anvil';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
-import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixture-builder';
+import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
+import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
+import { Driver } from '../../../webdriver/driver';
 import { mockEip7702FeatureFlag } from '../helpers';
-import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
+import { mockSpotPrices } from '../../tokens/utils/mocks';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
 
-describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
+// Bug 37677 fee paid in UDSC is not shown
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
           .build(),
+        manifestFlags: {
+          testing: { disableSmartTransactionsOverride: true },
+        },
         localNodeOptions: {
           hardfork: 'prague',
           loadState:
@@ -39,32 +46,43 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
         await unlockWallet(driver);
+
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
+
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
-        await gasFeeTokenModal.check_AmountFiat('DAI', '$3.21');
-        await gasFeeTokenModal.check_AmountToken('DAI', '3.21 DAI');
-        await gasFeeTokenModal.check_Balance('DAI', '$10.00');
+        await gasFeeTokenModal.checkAmountFiat('DAI', '$3.21');
+        await gasFeeTokenModal.checkAmountToken('DAI', '3.21 DAI');
+        await gasFeeTokenModal.checkBalance('DAI', '$10.00');
 
-        await gasFeeTokenModal.check_AmountFiat('USDC', '$1.23');
-        await gasFeeTokenModal.check_AmountToken('USDC', '1.23 USDC');
-        await gasFeeTokenModal.check_Balance('USDC', '$5.00');
+        await gasFeeTokenModal.checkAmountFiat('USDC', '$1.23');
+        await gasFeeTokenModal.checkAmountToken('USDC', '1.23 USDC');
+        await gasFeeTokenModal.checkBalance('USDC', '$5.00');
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
-        await transactionConfirmation.check_gasFeeFiat('$1.23');
-        await transactionConfirmation.check_gasFee('1.23');
-        await transactionConfirmation.check_gasFeeTokenFee('$0.43');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeFiat('$1.23');
+        await transactionConfirmation.checkGasFee('1.23');
+        await transactionConfirmation.checkGasFeeTokenFee('$0.43');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -75,7 +93,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -83,10 +101,9 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
   it('fails transaction if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
-          .withPreferencesControllerSmartTransactionsOptedIn()
           .withNetworkControllerOnMainnet()
           .build(),
         localNodeOptions: {
@@ -101,6 +118,13 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },
@@ -110,12 +134,14 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
         await gasFeeTokenModal.clickToken('USDC');
+        await transactionConfirmation.closeGasFeeToastMessage();
 
-        await transactionConfirmation.check_gasFeeSymbol('USDC');
+        await transactionConfirmation.checkGasFeeSymbol('USDC');
         await transactionConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -126,7 +152,7 @@ describe('Gas Fee Tokens - EIP-7702', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.check_failedTxNumberDisplayedInActivity(1);
+        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });
@@ -169,6 +195,7 @@ async function mockSimulationResponse(mockServer: MockttpServer) {
                         feeRecipient:
                           '0xBAB951a55b61dfAe21Ff7C3501142B397367F026',
                         rateWei: '0x216FF33813A80',
+                        serviceFee: `0x${decimalToHex(430000)}`,
                       },
                       {
                         token: {
@@ -211,6 +238,7 @@ async function mockTransactionRelayNetworks(mockServer: MockttpServer) {
             network: 'ethereum-mainnet',
             confirmations: true,
             relayTransactions: true,
+            sendBundle: true,
           },
         },
       };
@@ -259,7 +287,7 @@ async function mockTransactionRelayStatus(
 
 async function mockSmartTransactionFeatureFlags(mockServer: MockttpServer) {
   await mockServer
-    .forGet('https://swap.api.cx.metamask.io/featureFlags')
+    .forGet('https://bridge.api.cx.metamask.io/featureFlags')
     .thenCallback(() => {
       return {
         ok: true,

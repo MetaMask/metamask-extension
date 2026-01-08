@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
@@ -12,11 +12,13 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
 
-describe('Upgrade Account', function (this: Suite) {
+// Skipping these tests becasue on BIP44 EIP-7702 not supported on chain: 0x539
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Upgrade Account', function (this: Suite) {
   it('an EOA account can be upgraded when triggering a batch tx from a dapp in an odd chain id', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -59,16 +61,16 @@ describe('Upgrade Account', function (this: Suite) {
         // acknowledge splash page
         await upgradeAndBatchTxConfirmation.clickUseSmartAccountButton();
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
 
         // Open Settings and very tx details
         await upgradeAndBatchTxConfirmation.clickAdvancedDetailsButton();
-        await upgradeAndBatchTxConfirmation.check_batchTxListIsPresent();
+        await upgradeAndBatchTxConfirmation.checkBatchTxListIsPresent();
 
         // Confirm upgrade and batch tx
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
@@ -83,8 +85,8 @@ describe('Upgrade Account', function (this: Suite) {
         await homePage.goToActivityList();
 
         const activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
-        await homePage.check_expectedBalanceIsDisplayed('24.9998', 'ETH');
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await homePage.checkExpectedBalanceIsDisplayed('24.9998', 'ETH');
 
         // We check that we have an upgraded account
         accountBytecode = await localNodes[0].getCode(DEFAULT_FIXTURE_ACCOUNT);
@@ -99,7 +101,7 @@ describe('Upgrade Account', function (this: Suite) {
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -152,10 +154,10 @@ describe('Upgrade Account', function (this: Suite) {
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           'Smart account',
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
       },

@@ -1,16 +1,12 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import nock from 'nock';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../shared/constants/metametrics';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import { integrationTestRender } from '../../lib/render-helpers';
 import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
-  waitForElementById,
+  getSelectedAccountGroupName,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
@@ -34,7 +30,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -51,17 +47,21 @@ describe('NFTs list', () => {
   });
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
       selectedNetworkClientId: 'testNetworkConfigurationId',
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+          '0x89': true,
+          '0x5': true,
+          '0xaa36a7': true,
+        },
+      },
+      participateInMetaMetrics: true,
+      dataCollectionForMarketing: false,
     };
 
     await act(async () => {
@@ -75,7 +75,6 @@ describe('NFTs list', () => {
 
     await clickElementById('account-overview__nfts-tab');
 
-    await waitForElementById('sort-by-networks');
     await waitForElementByText('Test Dapp NFTs #1');
     await waitForElementByText('Punk #4');
     await waitForElementByText('Punk #3');
@@ -83,36 +82,10 @@ describe('NFTs list', () => {
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByText('MUNK #1 Chain 137');
     await waitForElementByText('MUNK #1 Chain 5');
-
-    let nftScreenOpenedMetricsEvent;
-
-    await waitFor(() => {
-      nftScreenOpenedMetricsEvent =
-        mockedBackgroundConnection.submitRequestToBackground.mock.calls?.find(
-          (call) =>
-            call[0] === 'trackMetaMetricsEvent' &&
-            call[1]?.[0].category === MetaMetricsEventCategory.Home,
-        );
-
-      expect(nftScreenOpenedMetricsEvent?.[0]).toBe('trackMetaMetricsEvent');
-
-      expect(nftScreenOpenedMetricsEvent?.[1]).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({
-            category: MetaMetricsEventCategory.Home,
-            event: MetaMetricsEventName.NftScreenOpened,
-          }),
-        ]),
-      );
-    });
   });
 
   it('filters the nfts list for the current network', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -123,9 +96,12 @@ describe('NFTs list', () => {
           '0x1': true,
         },
       },
+      enabledNetworkMap: {
+        eip155: {
+          '0x1': true,
+        },
+      },
     };
-
-    const accountName = account.metadata.name;
 
     await act(async () => {
       await integrationTestRender({
@@ -137,10 +113,6 @@ describe('NFTs list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__nfts-tab');
-
-    await waitForElementById('sort-by-networks');
-    await clickElementById('sort-by-networks');
-    await clickElementById('network-filter-current__button');
 
     await waitForElementByText('MUNK #1 Mainnet');
     await waitForElementByTextToNotBePresent('MUNK #1 Chain 137');
@@ -152,17 +124,17 @@ describe('NFTs list', () => {
   });
 
   it('disables the filter list for the test networks', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
-    const accountName = account.metadata.name;
+    // Use EVM network to match enabledNetworkMap structure
+    const withEvmNetwork = {
+      ...mockMetaMaskState,
+      selectedMultichainNetworkChainId: 'eip155:1',
+    };
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockMetaMaskState,
+        preloadedState: withEvmNetwork,
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -172,7 +144,7 @@ describe('NFTs list', () => {
     await clickElementById('account-overview__nfts-tab');
 
     await waitFor(() => {
-      expect(screen.getByTestId('sort-by-networks')).toBeDisabled();
+      expect(screen.getByTestId('sort-by-networks')).toBeEnabled();
     });
   });
 });

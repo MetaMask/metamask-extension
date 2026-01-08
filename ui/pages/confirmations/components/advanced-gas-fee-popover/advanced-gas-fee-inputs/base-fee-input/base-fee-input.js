@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send/send.constants';
+import { HIGH_FEE_WARNING_MULTIPLIER } from '../../../../send-legacy/send.constants';
 import {
   EditGasModes,
   PriorityLevels,
@@ -96,6 +96,7 @@ const BaseFeeInput = () => {
   const [baseFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(baseFee * gasLimit),
     { currency, numberOfDecimals },
+    chainId,
   );
 
   const updateBaseFee = useCallback(

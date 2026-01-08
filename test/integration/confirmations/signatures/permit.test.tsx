@@ -6,11 +6,14 @@ import {
   MetaMetricsEventLocation,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+} from '../../helpers';
 import { tEn } from '../../../lib/i18n-helpers';
 import {
   getMetamaskStateWithMaliciousPermit,
@@ -22,20 +25,10 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   submitRequestToBackground: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
 };
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 describe('Permit Confirmation', () => {
   beforeEach(() => {
@@ -45,11 +38,6 @@ describe('Permit Confirmation', () => {
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
       }),
     );
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {
@@ -57,13 +45,9 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
-    const accountName = account.metadata.name;
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
       'Permit',
@@ -71,7 +55,11 @@ describe('Permit Confirmation', () => {
 
     await act(async () => {
       await integrationTestRender({
-        preloadedState: mockedMetaMaskState,
+        preloadedState: {
+          ...mockedMetaMaskState,
+          participateInMetaMetrics: true,
+          dataCollectionForMarketing: false,
+        },
         backgroundConnection: backgroundConnectionMocked,
       });
     });
@@ -80,7 +68,7 @@ describe('Permit Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     fireEvent.click(
@@ -124,7 +112,11 @@ describe('Permit Confirmation', () => {
           properties: {
             action: 'Confirm Screen',
             location: MetaMetricsEventLocation.SignatureConfirmation,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hd_entropy_index: 0,
           },
         }),
@@ -147,11 +139,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the expected title data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
@@ -176,15 +164,15 @@ describe('Permit Confirmation', () => {
   it('displays the simulation section', async () => {
     const scope = nock('https://price.api.cx.metamask.io')
       .persist()
-      .get('/v2/chains/1/spot-prices')
+      .get('/v3/spot-prices')
       .query({
-        tokenAddresses:
-          '0x0000000000000000000000000000000000000000,0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC',
+        assetIds:
+          'eip155:1/slip44:60,eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc',
         vsCurrency: 'ETH',
         includeMarketData: 'true',
       })
       .reply(200, {
-        '0xcccccccccccccccccccccccccccccccccccccccc': {
+        'eip155:1/erc20:0xcccccccccccccccccccccccccccccccccccccccc': {
           allTimeHigh: 12,
           allTimeLow: 1,
           circulatingSupply: 50000,
@@ -206,21 +194,29 @@ describe('Permit Confirmation', () => {
         },
       });
 
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetaMaskStateWithUnapprovedPermitSign(
       account.address,
       'Permit',
     );
 
+    // Get the pending permit ID to override chainId on the message
+    const pendingPermitId = Object.keys(
+      mockedMetaMaskState.unapprovedTypedMessages,
+    )[0] as keyof typeof mockedMetaMaskState.unapprovedTypedMessages;
+
     await act(async () => {
       await integrationTestRender({
         preloadedState: {
           ...mockedMetaMaskState,
+          // Override the chainId on the message to mainnet to match the nock mock
+          unapprovedTypedMessages: {
+            [pendingPermitId]: {
+              ...mockedMetaMaskState.unapprovedTypedMessages[pendingPermitId],
+              chainId: '0x1' as const,
+            },
+          },
           selectedNetworkClientId: 'testNetworkConfigurationId',
           providerConfig: {
             type: 'rpc',
@@ -258,11 +254,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('displays the malicious banner', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
@@ -282,11 +274,7 @@ describe('Permit Confirmation', () => {
   });
 
   it('tracks external link clicked property in signature rejected event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
 
     const mockedMetaMaskState = getMetamaskStateWithMaliciousPermit(
       account.address,
@@ -315,6 +303,8 @@ describe('Permit Confirmation', () => {
       expect.arrayContaining([
         expect.objectContaining({
           properties: expect.objectContaining({
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             external_link_clicked: 'security_alert_support_link',
           }),
         }),

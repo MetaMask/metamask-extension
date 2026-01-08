@@ -1,0 +1,231 @@
+/* eslint-disable no-unused-vars -- ESLint is confused here */
+/* global jest */
+import React, { useMemo, useState } from 'react';
+import { Provider } from 'react-redux';
+import { render } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
+import { userEvent } from '@testing-library/user-event';
+import { MemoryRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
+import { noop } from 'lodash';
+import configureStore from '../../ui/store/store';
+import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
+import {
+  MetaMetricsContext,
+  LegacyMetaMetricsProvider,
+} from '../../ui/contexts/metametrics';
+import { getMessage } from '../../ui/helpers/utils/i18n-helper';
+import * as enLocaleMessages from '../../app/_locales/en/messages.json';
+
+// Re-export en messages for tests that need direct access
+export const en = enLocaleMessages;
+
+// Mock MetaMetrics context for tests
+const createMockTrackEvent = (
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+) => {
+  const mockTrackEvent = getMockTrackEvent();
+  Object.assign(mockTrackEvent, {
+    bufferedTrace: jest.fn().mockResolvedValue(undefined),
+    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+    onboardingParentContext: { current: null },
+  });
+  return mockTrackEvent;
+};
+
+export const I18nProvider = (props) => {
+  const { currentLocale, current, en: eng } = props;
+
+  const t = useMemo(() => {
+    return (key, ...args) =>
+      getMessage(currentLocale, current, key, ...args) ||
+      getMessage(currentLocale, eng, key, ...args);
+  }, [currentLocale, current, eng]);
+
+  return (
+    <I18nContext.Provider value={t}>{props.children}</I18nContext.Provider>
+  );
+};
+
+I18nProvider.propTypes = {
+  currentLocale: PropTypes.string,
+  current: PropTypes.object,
+  en: PropTypes.object,
+  children: PropTypes.node,
+};
+
+I18nProvider.defaultProps = {
+  children: undefined,
+};
+
+function createProviderWrapper(
+  store,
+  pathname = '/',
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+) {
+  const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
+
+  const Wrapper = ({ children }) => {
+    const container = (
+      <MemoryRouter initialEntries={[pathname]}>
+        <I18nProvider currentLocale="en" current={en} en={en}>
+          <LegacyI18nProvider>
+            <MetaMetricsContext.Provider value={mockTrackEvent}>
+              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
+            </MetaMetricsContext.Provider>
+          </LegacyI18nProvider>
+        </I18nProvider>
+      </MemoryRouter>
+    );
+
+    return store ? <Provider store={store}>{container}</Provider> : container;
+  };
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+  return Wrapper;
+}
+
+export function renderWithProvider(
+  component,
+  store,
+  pathname = '/',
+  renderer = render,
+) {
+  const wrapper = createProviderWrapper(store, pathname);
+
+  return renderer(component, { wrapper });
+}
+
+export function renderHookWithProvider(
+  hook,
+  state,
+  pathname = '/',
+  Container,
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+) {
+  const store = state ? configureStore(state) : undefined;
+
+  const ProviderWrapper = createProviderWrapper(
+    store,
+    pathname,
+    getMockTrackEvent,
+  );
+
+  const wrapper = Container
+    ? ({ children }) => (
+        <ProviderWrapper>
+          <Container>{children}</Container>
+        </ProviderWrapper>
+      )
+    : ProviderWrapper;
+
+  const hookResult = renderHook(hook, { wrapper });
+
+  return {
+    ...hookResult,
+    store,
+  };
+}
+
+/**
+ * Renders a hook with a provider and optional container.
+ *
+ * @template {(...args: any) => any} Hook
+ * @template {Parameters<Hook>} HookParams
+ * @template {ReturnType<Hook>} HookReturn
+ * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
+ * @param {Hook} hook - The hook to be rendered.
+ * @param [state] - The initial state for the store.
+ * @param [pathname] - The initial pathname for the history.
+ * @param [Container] - An optional container component.
+ * @param {() => () => Promise<void>} [getMockTrackEvent] - A placeholder function for tracking a MetaMetrics event.
+ * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
+ */
+export const renderHookWithProviderTyped = (
+  hook,
+  state,
+  pathname = '/',
+  Container,
+  getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
+) =>
+  renderHookWithProvider(hook, state, pathname, Container, getMockTrackEvent);
+
+export function renderWithLocalization(component) {
+  const Wrapper = ({ children }) => (
+    <I18nProvider currentLocale="en" current={en} en={en}>
+      <LegacyI18nProvider>{children}</LegacyI18nProvider>
+    </I18nProvider>
+  );
+
+  Wrapper.propTypes = {
+    children: PropTypes.node,
+  };
+
+  return render(component, { wrapper: Wrapper });
+}
+
+export function renderControlledInput(InputComponent, props) {
+  const ControlledWrapper = () => {
+    const [value, setValue] = useState('');
+    return (
+      <InputComponent
+        value={value}
+        onChange={(e) => setValue(e.target.value)}
+        {...props}
+      />
+    );
+  };
+  return { user: userEvent.setup(), ...render(<ControlledWrapper />) };
+}
+
+// userEvent setup function as per testing-library docs
+// https://testing-library.com/docs/user-event/intr
+export function renderWithUserEvent(jsx) {
+  return {
+    user: userEvent.setup(),
+    ...render(jsx),
+  };
+}
+
+/**
+ * Helper function to render the UI application for integration tests.
+ * It uses the Root component and sets up the store with the provided preloaded state.
+ *
+ * Note: This function dynamically imports Root and setupInitialStore to avoid
+ * triggering the full UI import chain during test setup, which can interfere
+ * with Jest mocks.
+ *
+ * @param {*} extendedRenderOptions
+ * @param {*} extendedRenderOptions.preloadedState - The initial state used to initialize the redux store. For integration tests we rely on a real store instance following the redux recommendations - https://redux.js.org/usage/writing-tests#guiding-principles
+ * @param {*} extendedRenderOptions.backgroundConnection - The background connection rpc method. When writing integration tests, we can pass a mock background connection to simulate the background connection methods.
+ * @param {*} extendedRenderOptions.activeTab - The active tab object.
+ * @returns The rendered result from testing library.
+ */
+export async function integrationTestRender(extendedRenderOptions) {
+  const {
+    preloadedState = {},
+    backgroundConnection,
+    activeTab = {
+      id: 113,
+      title: 'E2E Test Dapp',
+      origin: 'https://metamask.github.io',
+      protocol: 'https:',
+      url: 'https://metamask.github.io/test-dapp/',
+    },
+    ...renderOptions
+  } = extendedRenderOptions;
+
+  // Dynamically import to avoid triggering full UI import chain during test setup
+  const { setupInitialStore, connectToBackground } = await import('../../ui');
+  const { default: Root } = await import('../../ui/pages');
+
+  connectToBackground(backgroundConnection, noop);
+
+  const store = await setupInitialStore(preloadedState, activeTab);
+
+  return {
+    ...render(<Root store={store} />, { ...renderOptions }),
+  };
+}

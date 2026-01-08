@@ -61,13 +61,31 @@ class SettingsPage {
     css: '.tab-bar__tab__content__title',
   };
 
+  private readonly transactionShieldButton = {
+    text: 'Transaction Shield',
+    css: '.tab-bar__tab__content__title',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     console.log('Check settings page is loaded');
     await this.driver.waitForSelector(this.settingsPageTitle);
+  }
+
+  async waitForTransactionShieldButtonReady(): Promise<void> {
+    console.log('Waiting for Transaction Shield button to be ready');
+    await this.driver.findClickableElement(this.transactionShieldButton);
+    await this.driver.waitForElementToStopMoving(this.transactionShieldButton);
+    console.log('Transaction Shield button is ready');
+  }
+
+  async goToTransactionShieldPage(): Promise<void> {
+    console.log('Navigating to Transaction Shield page');
+    await this.waitForTransactionShieldButtonReady();
+    await this.driver.clickElement(this.transactionShieldButton);
   }
 
   async clickAdvancedTab(): Promise<void> {
@@ -157,7 +175,7 @@ class SettingsPage {
     });
   }
 
-  async check_noMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
+  async checkNoMatchingResultsFoundMessageIsDisplayed(): Promise<void> {
     console.log(
       'Checking no matching results found message is displayed on settings page',
     );

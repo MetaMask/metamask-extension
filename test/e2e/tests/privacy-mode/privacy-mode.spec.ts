@@ -1,9 +1,10 @@
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { mockPriceApi } from '../tokens/utils/mocks';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
@@ -15,20 +16,21 @@ describe('Privacy Mode', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.togglePrivacyBalance();
-        await homePage.check_expectedBalanceIsDisplayed('••••••', '••••••');
+        await homePage.checkExpectedBalanceIsDisplayed('••••••', '••••••');
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
-        await accountList.check_balanceIsPrivateEverywhere();
+        await accountList.checkPageIsLoaded();
+        await accountList.checkAccountBalanceIsPrivate();
       },
     );
   });
@@ -37,28 +39,32 @@ describe('Privacy Mode', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .withPreferencesController({
             preferences: {
               privacyMode: true,
             },
           })
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: mockPriceApi,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
         await homePage.togglePrivacyBalance();
-        await homePage.check_expectedBalanceIsDisplayed('25 ETH');
+        await homePage.checkExpectedBalanceIsDisplayed('$85,025');
 
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
 
         const accountList = new AccountListPage(driver);
-        await accountList.check_pageIsLoaded();
-        await accountList.check_accountBalanceDisplayed('$42,500');
+        await accountList.checkPageIsLoaded();
+
+        await accountList.checkMultichainAccountBalanceDisplayed('$85,025');
       },
     );
   });

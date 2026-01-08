@@ -16,6 +16,10 @@ export type MetaData = {
    * migration
    */
   version: number;
+  /**
+   * The kind of storage being used.
+   */
+  storageKind?: 'data' | 'split';
 };
 
 /**
@@ -54,7 +58,11 @@ export type MetaMaskStorageStructure = {
  * error handling to ensure the state is persisted correctly.
  */
 export type BaseStore = {
+  setKeyValues: (pairs: Map<string, unknown>) => Promise<void>;
+
   set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
 
   get: () => Promise<MetaMaskStorageStructure | null>;
+
+  reset: () => Promise<void>;
 };

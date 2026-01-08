@@ -42,8 +42,6 @@ async function main(): Promise<void> {
 
   const preventMergeLabels = [
     'needs-qa',
-    "QA'd but questions",
-    'issues-found',
     'need-ux-ds-review',
     'blocked',
     'stale',

@@ -14,7 +14,6 @@ import { ConfirmInfoSection } from '../../../../../../components/app/confirm/inf
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../selectors/preferences';
-import { useBalanceChanges } from '../../../simulation-details/useBalanceChanges';
 import { OriginRow } from '../shared/transaction-details/transaction-details';
 import { NetworkRow } from '../shared/network-row/network-row';
 
@@ -28,19 +27,11 @@ export const TokenDetailsSection = () => {
     selectConfirmationAdvancedDetailsOpen,
   );
 
-  const isSimulationError = Boolean(
-    transactionMeta.simulationData?.error?.code,
-  );
-  const balanceChangesResult = useBalanceChanges({
-    chainId,
-    simulationData: transactionMeta.simulationData,
-  });
-  const balanceChanges = balanceChangesResult.value;
-  const isSimulationEmpty = balanceChanges.length === 0;
+  const transactionType = transactionMeta.type as TransactionType;
 
   const shouldShowTokenRow =
-    transactionMeta.type !== TransactionType.simpleSend &&
-    (showAdvancedDetails || isSimulationEmpty || isSimulationError);
+    transactionType !== TransactionType.simpleSend &&
+    (showAdvancedDetails || transactionMeta?.origin !== ORIGIN_METAMASK);
 
   const tokenRow = shouldShowTokenRow && (
     <ConfirmInfoRow

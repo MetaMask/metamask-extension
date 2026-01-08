@@ -1,15 +1,17 @@
+const { DAPP_PATH, DAPP_URL } = require('../constants');
 const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockLocalizationSnap,
 } = require('../mock-response-data/snaps/snap-binary-mocks');
-
-const { TEST_SNAPS_WEBSITE_URL } = require('./enums');
 
 describe('Test Snap Get Locale', function () {
   it('test snap_getLocale functionality', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockLocalizationSnap,
         title: this.test.fullTitle(),
@@ -18,7 +20,7 @@ describe('Test Snap Get Locale', function () {
         await unlockWallet(driver);
 
         // navigate to test snaps page and connect to get-locale snap
-        await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
+        await driver.openNewPage(DAPP_URL);
 
         // wait for page to load
         await driver.waitForSelector({
@@ -129,7 +131,9 @@ describe('Test Snap Get Locale', function () {
         // the delay can be removed once the issue is fixed in the app level
         await driver.delay(1000);
         await driver.assertElementNotPresent('.loading-overlay');
-
+        await driver.clickElement(
+          '.settings-page__header__title-container__close-button',
+        );
         // click on the global action menu
         await driver.clickElement(
           '[data-testid="account-options-menu-button"]',

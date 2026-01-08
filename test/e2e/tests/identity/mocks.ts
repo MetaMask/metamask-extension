@@ -1,10 +1,11 @@
 import { Mockttp, RequestRuleBuilder } from 'mockttp';
+import {
+  USER_STORAGE_GROUPS_FEATURE_KEY,
+  USER_STORAGE_WALLETS_FEATURE_KEY,
+} from '@metamask/account-tree-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import {
-  UserStorageMockttpController,
-  UserStorageResponseData,
-} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import { UserStorageMockttpController } from '../../helpers/identity/user-storage/userStorageMockttpController';
 
 const AuthMocks = AuthenticationController.Mocks;
 
@@ -42,15 +43,58 @@ export async function mockIdentityServices(
   }
   if (
     !userStorageMockttpControllerInstance?.paths.get(
-      USER_STORAGE_FEATURE_NAMES.networks,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
     )
   ) {
     userStorageMockttpControllerInstance.setupPath(
-      USER_STORAGE_FEATURE_NAMES.networks,
+      USER_STORAGE_FEATURE_NAMES.addressBook,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_WALLETS_FEATURE_KEY,
+      server,
+    );
+  }
+  if (
+    !userStorageMockttpControllerInstance?.paths.get(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
+    )
+  ) {
+    userStorageMockttpControllerInstance.setupPath(
+      USER_STORAGE_GROUPS_FEATURE_KEY,
       server,
     );
   }
 }
+
+export const MOCK_SRP_E2E_IDENTIFIER_BASE_KEY = 'MOCK_SRP_IDENTIFIER';
+
+const MOCK_SRP_E2E_IDENTIFIERS = {
+  baseKey: MOCK_SRP_E2E_IDENTIFIER_BASE_KEY,
+  list: new Map<string, string>(),
+};
+
+const getE2ESrpIdentifierForPublicKey = (publicKey: string) => {
+  const { baseKey, list } = MOCK_SRP_E2E_IDENTIFIERS;
+
+  // Check if the identifier already exists
+  if (list.has(publicKey)) {
+    return list.get(publicKey);
+  }
+
+  const nextIteration = list.size + 1;
+  const nextIdentifier = `${baseKey}_${nextIteration}`;
+
+  list.set(publicKey, nextIdentifier);
+
+  return nextIdentifier;
+};
 
 function mockAPICall(server: Mockttp, response: MockResponse) {
   let requestRuleBuilder: RequestRuleBuilder | undefined;
@@ -71,15 +115,34 @@ function mockAPICall(server: Mockttp, response: MockResponse) {
     requestRuleBuilder = server.forDelete(response.url);
   }
 
-  requestRuleBuilder?.thenCallback(() => ({
-    statusCode: 200,
-    json: response.response,
-  }));
+  requestRuleBuilder?.thenCallback(async (request) => {
+    const { path, body } = request;
+
+    const [requestBodyJson, requestBodyText] = await Promise.all([
+      body.getJson(),
+      body.getText(),
+    ]);
+    const requestBody = requestBodyJson ?? requestBodyText;
+
+    const json = (
+      response.response as (
+        requestBody: object | string | undefined,
+        path: string,
+        getE2ESrpIdentifierForPublicKey: (
+          publicKey: string,
+        ) => string | undefined,
+      ) => void
+    )(requestBody, path, getE2ESrpIdentifierForPublicKey);
+
+    return {
+      statusCode: 200,
+      json,
+    };
+  });
 }
 
 type MockInfuraAndAccountSyncOptions = {
   accountsToMockBalances?: string[];
-  accountsSyncResponse?: UserStorageResponseData[];
 };
 
 const MOCK_ETH_BALANCE = '0xde0b6b3a7640000';
@@ -102,16 +165,13 @@ export async function mockInfuraAndAccountSync(
 
   // Set up User Storage / Account Sync mock
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_WALLETS_FEATURE_KEY,
     mockServer,
   );
 
   userStorageMockttpController.setupPath(
-    USER_STORAGE_FEATURE_NAMES.accounts,
+    USER_STORAGE_GROUPS_FEATURE_KEY,
     mockServer,
-    {
-      getResponse: options.accountsSyncResponse ?? undefined,
-    },
   );
 
   // Account Balances
@@ -119,8 +179,9 @@ export async function mockInfuraAndAccountSync(
     accounts.forEach((account) => {
       mockServer
         .forPost(INFURA_URL)
+        .always()
         .withJsonBodyIncluding({
-          method: 'eth_getBalance',
+          method: 'eth_getTransactionCount',
           params: [account.toLowerCase()],
         })
         .thenCallback(() => ({

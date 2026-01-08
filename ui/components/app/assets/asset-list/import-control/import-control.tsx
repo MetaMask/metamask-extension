@@ -4,6 +4,7 @@ import {
   ButtonBase,
   ButtonBaseSize,
   IconName,
+  IconSize,
 } from '../../../../component-library';
 import {
   BackgroundColor,
@@ -32,7 +33,7 @@ const AssetListControlBar = ({
       disabled={!shouldShowTokensLinks}
       size={ButtonBaseSize.Sm}
       startIconName={IconName.MoreVertical}
-      startIconProps={{ marginInlineEnd: 0 }}
+      startIconProps={{ marginInlineEnd: 0, size: IconSize.Md }}
       backgroundColor={BackgroundColor.backgroundDefault}
       color={TextColor.textDefault}
       onClick={onClick}

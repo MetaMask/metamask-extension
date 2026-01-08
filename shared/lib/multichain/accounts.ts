@@ -1,13 +1,7 @@
-import {
-  CaipNamespace,
-  isCaipChainId,
-  KnownCaipNamespace,
-  parseCaipChainId,
-} from '@metamask/utils';
+import { CaipNamespace, KnownCaipNamespace } from '@metamask/utils';
 import { validate, Network } from 'bitcoin-address-validation';
 import { isAddress } from '@solana/addresses';
-import { isEvmAccountType } from '@metamask/keyring-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { isTronAddress as isValidTronAddress } from './addresses/tron';
 
 /**
  * Returns whether an address is on the Bitcoin mainnet.
@@ -49,6 +43,16 @@ export function isSolanaAddress(address: string): boolean {
 }
 
 /**
+ * Returns whether an address is a valid Tron address.
+ *
+ * @param address - The address to check.
+ * @returns `true` if the address is a valid Tron address, `false` otherwise.
+ */
+export const isTronAddress = (address: string): boolean => {
+  return isValidTronAddress(address);
+};
+
+/**
  * Returns the associated chain's type for the given address.
  *
  * @param address - The address to check.
@@ -63,24 +67,10 @@ export function getCaipNamespaceFromAddress(address: string): CaipNamespace {
     return KnownCaipNamespace.Solana;
   }
 
+  if (isTronAddress(address)) {
+    return KnownCaipNamespace.Tron;
+  }
+
   // Defaults to "Ethereum" for all other cases for now.
   return KnownCaipNamespace.Eip155;
-}
-
-export function isCurrentChainCompatibleWithAccount(
-  chainId: string,
-  account: InternalAccount,
-): boolean {
-  if (!chainId) {
-    return false;
-  }
-
-  if (isCaipChainId(chainId)) {
-    const { namespace } = parseCaipChainId(chainId);
-    return namespace === getCaipNamespaceFromAddress(account.address);
-  }
-
-  // For EVM accounts, we do not check the chain ID format, but we just expect it
-  // to be defined.
-  return isEvmAccountType(account.type);
 }

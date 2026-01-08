@@ -28,6 +28,8 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import NetworkListItem from './network-list-item/network-list-item';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function MultiRpcEditModal() {
   const t = useI18nContext();
   const dispatch = useDispatch();

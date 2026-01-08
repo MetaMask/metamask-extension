@@ -67,11 +67,6 @@ Note that the attachment on every test, `trace` provide you with a wealth of use
 
 ![Playwright trace detail](resources/trace.png)
 
-### CircleCI logs
-
-When tests finish on the pipeline, you can find the same logs that you use locally. The logs are generated split by thread and can be found within the Artifact tab on the Job run page on CircleCI. You will see a link `public/playwright/playwright-reports/html/index.html` (it is the first artifact of each thread). Click there and you will be redirected to the Playwright report.
-![CircleCI Job Actifact detail](resources/circleci-artifact-screnshot.png)
-
 ## Contact Swap team
 
 If you encounter any problems while working on these e2e tests, you can write into the Consensys Slack channel `#metaswap-core`.

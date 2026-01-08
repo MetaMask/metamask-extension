@@ -2,7 +2,17 @@ import {
   PPOMController,
   PPOMControllerMessenger,
 } from '@metamask/ppom-validator';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+  ActionConstraint,
+} from '@metamask/messenger';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetSelectedNetworkClientAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { PreferencesController } from '../../controllers/preferences-controller';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
@@ -39,10 +49,49 @@ function buildControllerMock(
 }
 
 function buildInitRequestMock(): jest.Mocked<
-  // @ts-expect-error TODO: Resolve mismatch between base-controller versions.
   ControllerInitRequest<PPOMControllerMessenger, PPOMControllerInitMessenger>
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = new Messenger<
+    MockAnyNamespace,
+    | NetworkControllerGetNetworkClientByIdAction
+    | NetworkControllerGetSelectedNetworkClientAction
+    | NetworkControllerGetStateAction
+    | ActionConstraint,
+    never
+  >({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getNetworkClientById',
+    // @ts-expect-error: Partial mock.
+    (id: string) => {
+      if (id === 'mainnet') {
+        return {
+          configuration: { chainId: CHAIN_ID_MOCK },
+        };
+      }
+
+      throw new Error('Unknown network client ID');
+    },
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getSelectedNetworkClient',
+    () => ({
+      // @ts-expect-error: Partial mock.
+      provider: {},
+    }),
+  );
+
+  baseControllerMessenger.registerActionHandler(
+    'NetworkController:getState',
+    () => ({
+      selectedNetworkClientId: 'mainnet',
+      networkConfigurationsByChainId: {},
+      networksMetadata: {},
+    }),
+  );
 
   const requestMock = {
     ...buildControllerInitRequestMock(),
@@ -65,6 +114,8 @@ describe('PPOM Controller Init', () => {
    * @param dependencyProperties - Any properties required on the controller dependencies.
    * @returns The extracted option.
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   function testConstructorOption<T extends keyof PPOMControllerOptions>(
     option: T,
     dependencyProperties?: Record<string, unknown>,

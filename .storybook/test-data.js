@@ -45,6 +45,13 @@ const state = {
       },
     },
     orderedNetworkList: [],
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
+        '0xe708': true,
+        '0x539': true,
+      },
+    },
     pinnedAccountList: [],
     hiddenAccountList: [],
     tokensChainsCache: {
@@ -326,6 +333,39 @@ const state = {
     isInitialized: true,
     isUnlocked: true,
     rpcUrl: 'https://rawtestrpc.metamask.io/',
+    accountTree: {
+      selectedAccountGroup: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+      wallets: {
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+          id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ',
+          type: 'entropy',
+          groups: {
+            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+              id: 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0',
+              type: 'multichain-account',
+              accounts: [
+                'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
+                '07c2cfec-36c9-46c4-8115-3836d3ac9047',
+              ],
+              metadata: {
+                name: 'Account 1',
+                entropy: {
+                  groupIndex: 0,
+                },
+                hidden: false,
+                pinned: false,
+              },
+            },
+          },
+          metadata: {
+            name: 'Wallet 1',
+            entropy: {
+              id: '01JKAF3DSGM3AB87EM9N0K41AJ',
+            },
+          },
+        },
+      },
+    },
     internalAccounts: {
       accounts: {
         'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
@@ -415,56 +455,6 @@ const state = {
         address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
       },
     },
-    transactions: [
-      {
-        id: 3111025347726181,
-        time: 1620710815484,
-        status: 'unapproved',
-        msgParams: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        chainId: '0x5',
-        loadingDefaults: false,
-        txParams: {
-          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-          value: '0x0',
-          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-          gas: '0xcb28',
-          gasPrice: '0x77359400',
-        },
-        type: 'standard',
-        origin: 'metamask',
-        transactionCategory: 'transfer',
-        history: [
-          {
-            id: 7786962153682822,
-            time: 1620710815484,
-            status: 'unapproved',
-            chainId: '0x5',
-            loadingDefaults: true,
-            txParams: {
-              from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-              to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-              value: '0x0',
-              data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
-              gas: '0xcb28',
-              gasPrice: '0x77359400',
-            },
-            type: 'standard',
-            origin: 'metamask',
-            transactionCategory: 'transfer',
-          },
-          [
-            {
-              op: 'replace',
-              path: '/loadingDefaults',
-              value: false,
-              note: 'Added new unapproved transaction.',
-              timestamp: 1620710815497,
-            },
-          ],
-        ],
-      },
-    ],
     transactionBatches: {},
     addressBook: {
       undefined: {
@@ -528,6 +518,7 @@ const state = {
         ],
       },
     },
+    allIgnoredTokens: {},
     tokenBalances: {
       '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
         '0x1': {
@@ -697,6 +688,12 @@ const state = {
         ],
       },
     ],
+    accountsAssets: {},
+    assetsMetadata: {},
+    allIgnoredAssets: {},
+    balances: {},
+    conversionRates: {},
+    networkConfigurationsByChainId: {},
     send: {
       gasLimit: '0xcb28',
       gasPrice: null,
@@ -746,46 +743,25 @@ const state = {
     swapsWelcomeMessageHasBeenShown: true,
     defaultHomeActiveTabName: 'Tokens',
     network: '5',
-    accounts: {
-      '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-        address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
-        balance: '0x176e5b6f173ebe66',
-      },
-      '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-        address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-        balance: '0x2d3142f5000',
-      },
-      '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-        address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
-        balance: '0x15f6f0b9d4f8d000',
-      },
-    },
     accountsByChainId: {
       '0x1': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': { balance: '0x0' },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': { balance: '0x0' },
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0xcaf5317161f400',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': { balance: '0x0' },
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': { balance: '0x0' },
       },
       '0x5': {
-        '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4': {
-          address: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+        '0x64A845a5b02460ACf8a3D84503b0D68d028B4bb4': {
           balance: '0x176e5b6f173ebe66',
         },
-        '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e': {
-          address: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
+        '0xb19Ac54EfA18CC3A14A5B821bFeC73d284Bf0c5e': {
           balance: '0x2d3142f5000',
         },
-        '0x9d0ba4ddac06032527b140912ec808ab9451b788': {
-          address: '0x9d0ba4ddac06032527b140912ec808ab9451b788',
+        '0x9D0ba4DDAC06032527B140912EC808ab9451b788': {
           balance: '0x15f6f0b9d4f8d000',
         },
       },
-    },
-    currentBlockGasLimit: '0x793af4',
-    currentBlockGasLimitByChainId: {
-      '0x5': '0x793af4',
     },
     transactions: [
       {
@@ -1249,6 +1225,14 @@ const state = {
         status: 'unapproved',
         type: 'eth_getEncryptionPublicKey',
         origin: 'https://metamask.github.io',
+        txParams: {
+          from: '0x64a845a5b02460acf8a3d84503b0d68d028b4bb4',
+          to: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
+          value: '0x0',
+          data: '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
+          gas: '0xcb28',
+          gasPrice: '0x77359400',
+        },
       },
     },
     unapprovedEncryptionPublicKeyMsgCount: 0,
@@ -1656,6 +1640,10 @@ const state = {
       },
     },
     openSeaEnabled: true,
+    networkConnectionBanner: {
+      status: 'unknown',
+    },
+    coverageResults: {},
   },
   appState: {
     isAccountMenuOpen: false,

@@ -1,3 +1,5 @@
+import { Interface } from '@ethersproject/abi';
+import { abiERC20 } from '@metamask/metamask-eth-abis';
 import {
   AuthorizationList,
   GasFeeToken,
@@ -6,22 +8,34 @@ import {
   PublishHook,
   PublishHookResult,
   TransactionMeta,
-  TransactionParams,
 } from '@metamask/transaction-controller';
-import { Hex, add0x, createProjectLogger, remove0x } from '@metamask/utils';
-import { abiERC20 } from '@metamask/metamask-eth-abis';
-import { Interface } from '@ethersproject/abi';
+import { Hex, add0x, createProjectLogger } from '@metamask/utils';
+import { toHex } from '@metamask/controller-utils';
+import { NetworkClientId } from '@metamask/network-controller';
+import {
+  BATCH_DEFAULT_MODE,
+  Caveat,
+  DeleGatorEnvironment,
+  ExecutionMode,
+  ExecutionStruct,
+  SINGLE_DEFAULT_MODE,
+  UnsignedDelegation,
+  createCaveatBuilder,
+  createDelegation,
+  getDeleGatorEnvironment,
+} from '../../../../../shared/lib/delegation';
+import {
+  findAtomicBatchSupportForChain,
+  checkEip7702Support,
+} from '../../../../../shared/lib/eip7702-support-utils';
+import { exactExecution } from '../../../../../shared/lib/delegation/caveatBuilder/exactExecutionBuilder';
+import { limitedCalls } from '../../../../../shared/lib/delegation/caveatBuilder/limitedCallsBuilder';
+import { specificActionERC20TransferBatch } from '../../../../../shared/lib/delegation/caveatBuilder/specificActionERC20TransferBatchBuilder';
+import type { Delegation } from '../../../../../shared/lib/delegation/delegation';
 import {
   ANY_BENEFICIARY,
-  Caveat,
-  Delegation,
-  Execution,
-  ExecutionMode,
-  ROOT_AUTHORITY,
-  UnsignedDelegation,
   encodeRedeemDelegations,
-  signDelegation,
-} from '../delegation';
+} from '../../../../../shared/lib/delegation/delegation';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import {
   RelayStatus,
@@ -29,6 +43,7 @@ import {
   submitRelayTransaction,
   waitForRelayResult,
 } from '../transaction-relay';
+import { stripSingleLeadingZero } from '../util';
 
 const EMPTY_HEX = '0x';
 const POLLING_INTERVAL_MS = 1000; // 1 Second
@@ -46,17 +61,28 @@ export class Delegation7702PublishHook {
 
   #messenger: TransactionControllerInitMessenger;
 
+  #getNextNonce: (
+    address: string,
+    networkClientId: NetworkClientId,
+  ) => Promise<Hex>;
+
   constructor({
     isAtomicBatchSupported,
     messenger,
+    getNextNonce,
   }: {
     isAtomicBatchSupported: (
       request: IsAtomicBatchSupportedRequest,
     ) => Promise<IsAtomicBatchSupportedResult>;
     messenger: TransactionControllerInitMessenger;
+    getNextNonce: (
+      address: string,
+      networkClientId: NetworkClientId,
+    ) => Promise<Hex>;
   }) {
     this.#isAtomicBatchSupported = isAtomicBatchSupported;
     this.#messenger = messenger;
+    this.#getNextNonce = getNextNonce;
   }
 
   getHook(): PublishHook {
@@ -89,60 +115,88 @@ export class Delegation7702PublishHook {
       chainIds: [chainId],
     });
 
-    const atomicBatchChainSupport = atomicBatchSupport.find(
-      (result) => result.chainId.toLowerCase() === chainId.toLowerCase(),
+    const atomicBatchChainSupport = findAtomicBatchSupportForChain(
+      atomicBatchSupport,
+      chainId,
     );
 
-    const isChainSupported =
-      atomicBatchChainSupport &&
-      (!atomicBatchChainSupport.delegationAddress ||
-        atomicBatchChainSupport.isSupported);
+    const { isSupported, delegationAddress, upgradeContractAddress } =
+      checkEip7702Support(atomicBatchChainSupport);
 
-    if (!isChainSupported) {
+    if (!isSupported) {
       log('Skipping as EIP-7702 is not supported', { from, chainId });
       return EMPTY_RESULT;
     }
 
-    const { delegationAddress, upgradeContractAddress } =
-      atomicBatchChainSupport;
+    const isGaslessSwap = transactionMeta.isGasFeeIncluded;
 
-    if (!selectedGasFeeToken || !gasFeeTokens?.length) {
+    const isSponsored = Boolean(transactionMeta.isGasFeeSponsored);
+
+    if (
+      (!selectedGasFeeToken || !gasFeeTokens?.length) &&
+      !isGaslessSwap &&
+      !isSponsored
+    ) {
       log('Skipping as no selected gas fee token');
       return EMPTY_RESULT;
     }
 
-    const gasFeeToken = gasFeeTokens.find(
-      (token) =>
-        token.tokenAddress.toLowerCase() === selectedGasFeeToken.toLowerCase(),
-    );
+    const gasFeeToken =
+      isGaslessSwap || isSponsored
+        ? undefined
+        : gasFeeTokens?.find(
+            (token) =>
+              token.tokenAddress.toLowerCase() ===
+              selectedGasFeeToken?.toLowerCase(),
+          );
 
-    if (!gasFeeToken) {
+    if (!gasFeeToken && !isGaslessSwap && !isSponsored) {
       throw new Error('Selected gas fee token not found');
     }
 
-    const delegation = await this.#buildDelegation(
+    const delegationEnvironment = getDeleGatorEnvironment(
+      parseInt(transactionMeta.chainId, 16),
+    );
+    const delegationManagerAddress = delegationEnvironment.DelegationManager;
+    const includeTransfer =
+      !isGaslessSwap && !transactionMeta.isGasFeeSponsored;
+
+    if (includeTransfer && (!gasFeeToken || gasFeeToken === undefined)) {
+      throw new Error('Gas fee token not found');
+    }
+
+    const delegations = await this.#buildDelegation(
+      delegationEnvironment,
       transactionMeta,
       gasFeeToken,
+      includeTransfer,
     );
 
-    const executions = this.#buildExecutions(transactionMeta, gasFeeToken);
-
-    const transactionData = encodeRedeemDelegations(
-      [[delegation]],
-      [ExecutionMode.BATCH_DEFAULT_MODE],
-      [executions],
+    const modes: ExecutionMode[] = [
+      includeTransfer ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
+    ];
+    const executions = this.#buildExecutions(
+      transactionMeta,
+      gasFeeToken,
+      includeTransfer,
     );
+
+    const transactionData = encodeRedeemDelegations({
+      delegations,
+      modes,
+      executions,
+    });
 
     const relayRequest: RelaySubmitRequest = {
       chainId,
       data: transactionData,
-      to: process.env.DELEGATION_MANAGER_ADDRESS as Hex,
+      to: delegationManagerAddress,
     };
 
     if (!delegationAddress) {
       relayRequest.authorizationList = await this.#buildAuthorizationList(
         transactionMeta,
-        upgradeContractAddress,
+        upgradeContractAddress ?? undefined,
       );
     }
 
@@ -165,105 +219,154 @@ export class Delegation7702PublishHook {
     };
   }
 
+  async #buildDelegation(
+    delegationEnvironment: DeleGatorEnvironment,
+    transactionMeta: TransactionMeta,
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
+  ): Promise<Delegation[][]> {
+    const unsignedDelegation = this.#buildUnsignedDelegation(
+      delegationEnvironment,
+      transactionMeta,
+      gasFeeToken,
+      includeTransfer,
+    );
+
+    log('Signing delegation');
+
+    const delegationSignature = (await this.#messenger.call(
+      'DelegationController:signDelegation',
+      {
+        chainId: transactionMeta.chainId,
+        delegation: unsignedDelegation,
+      },
+    )) as Hex;
+
+    log('Delegation signature', delegationSignature);
+
+    const delegations: Delegation[][] = [
+      [
+        {
+          ...unsignedDelegation,
+          signature: delegationSignature,
+        },
+      ],
+    ];
+
+    return delegations;
+  }
+
   #buildExecutions(
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
-  ): Execution[] {
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
+  ): ExecutionStruct[][] {
     const { txParams } = transactionMeta;
     const { data, to, value } = txParams;
-
-    const userExecution: Execution = {
+    const normalizedData = this.#normalizeCallData(data);
+    const userExecution: ExecutionStruct = {
       target: to as Hex,
-      value: (value as Hex) ?? '0x0',
-      callData: (data as Hex) ?? EMPTY_HEX,
+      value: BigInt((value as Hex) ?? '0x0'),
+      callData: normalizedData,
     };
 
-    const transferExecution: Execution = {
+    if (!includeTransfer) {
+      return [[userExecution]];
+    }
+
+    if (!gasFeeToken) {
+      throw new Error('Selected gas fee token not found');
+    }
+
+    const transferExecution: ExecutionStruct = {
       target: gasFeeToken.tokenAddress,
-      value: '0x0',
+      value: BigInt('0x0'),
       callData: this.#buildTokenTransferData(
         gasFeeToken.recipient,
         gasFeeToken.amount,
       ),
     };
-
-    return [userExecution, transferExecution];
+    return [[userExecution, transferExecution]];
   }
 
-  async #buildDelegation(
+  #buildUnsignedDelegation(
+    environment: DeleGatorEnvironment,
     transactionMeta: TransactionMeta,
-    gasFeeToken: GasFeeToken,
-  ): Promise<Delegation> {
-    const { chainId, txParams } = transactionMeta;
-    const { from } = txParams;
-
-    const caveats = this.#buildCaveats(txParams, gasFeeToken);
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
+  ): UnsignedDelegation {
+    const caveats = this.#buildCaveats(
+      environment,
+      transactionMeta,
+      gasFeeToken,
+      includeTransfer,
+    );
 
     log('Caveats', caveats);
 
-    const delegation: UnsignedDelegation = {
-      authority: ROOT_AUTHORITY,
+    const delegation = createDelegation({
+      from: transactionMeta.txParams.from as Hex,
+      to: ANY_BENEFICIARY,
       caveats,
-      delegate: ANY_BENEFICIARY,
-      delegator: from as Hex,
-      salt: new Date().getTime(),
-    };
-
-    log('Unsigned delegation', delegation);
-
-    const signature = await signDelegation({
-      chainId,
-      delegation,
-      from: from as Hex,
-      messenger: this.#messenger,
     });
 
-    log('Delegation signature', signature);
+    log('Delegation', delegation);
 
-    return {
-      ...delegation,
-      signature,
-    };
+    return delegation;
   }
 
   #buildCaveats(
-    txParams: TransactionParams,
-    gasFeeToken: GasFeeToken,
+    environment: DeleGatorEnvironment,
+    transactionMeta: TransactionMeta,
+    gasFeeToken: GasFeeToken | undefined,
+    includeTransfer: boolean,
   ): Caveat[] {
-    const { amount, recipient, tokenAddress } = gasFeeToken;
-    const { data, to } = txParams;
-    const tokenAmountPadded = add0x(remove0x(amount).padStart(64, '0'));
-    const enforcer = process.env.GASLESS_7702_ENFORCER_ADDRESS as Hex;
+    const caveatBuilder = createCaveatBuilder(environment);
 
-    const enforcerTerms = add0x(
-      (
-        [
+    const { txParams } = transactionMeta;
+    const { to, value, data } = txParams;
+    const normalizedData = this.#normalizeCallData(data);
+
+    if (includeTransfer && gasFeeToken !== undefined) {
+      const { tokenAddress, recipient, amount } = gasFeeToken;
+
+      // contract deployments can't be delegated
+      if (to !== undefined) {
+        caveatBuilder.addCaveat(
+          specificActionERC20TransferBatch,
           tokenAddress,
           recipient,
-          tokenAmountPadded,
+          amount,
           to,
-          data ?? EMPTY_HEX,
-        ] as Hex[]
-      )
-        .map(remove0x)
-        .join(''),
-    );
+          (value as Hex) ?? '0x0',
+          normalizedData,
+        );
+      }
+    } else if (to !== undefined) {
+      // contract deployments can't be delegated
+      caveatBuilder.addCaveat(
+        exactExecution,
+        to,
+        value ?? '0x0',
+        normalizedData,
+      );
+    }
 
-    return [
-      {
-        enforcer,
-        terms: enforcerTerms,
-        args: EMPTY_HEX,
-      },
-    ];
+    // the relay may only execute this delegation once for security reasons
+    caveatBuilder.addCaveat(limitedCalls, 1);
+
+    return caveatBuilder.build();
   }
 
   async #buildAuthorizationList(
     transactionMeta: TransactionMeta,
     upgradeContractAddress?: Hex,
   ): Promise<AuthorizationList> {
-    const { chainId, txParams } = transactionMeta;
-    const { from, nonce } = txParams;
+    const { chainId, txParams, networkClientId } = transactionMeta;
+    const { from, nonce: txNonce } = txParams;
+    const nextNonce = await this.#getNextNonce(from, networkClientId);
+
+    const nonce = txNonce ?? nextNonce;
 
     log('Including authorization as not upgraded');
 
@@ -307,15 +410,41 @@ export class Delegation7702PublishHook {
   }
 
   #decodeAuthorizationSignature(signature: Hex) {
-    const r = signature.slice(0, 66) as Hex;
-    const s = `0x${signature.slice(66, 130)}` as Hex;
+    const r = stripSingleLeadingZero(signature.slice(0, 66)) as Hex;
+    const s = stripSingleLeadingZero(add0x(signature.slice(66, 130))) as Hex;
     const v = parseInt(signature.slice(130, 132), 16);
-    const yParity = v - 27 === 0 ? ('0x' as const) : ('0x1' as const);
+    const yParity = toHex(v - 27 === 0 ? 0 : 1);
 
     return {
       r,
       s,
       yParity,
     };
+  }
+
+  #normalizeCallData(data: unknown): Hex {
+    if (typeof data !== 'string' || data.length === 0) {
+      return EMPTY_HEX;
+    }
+
+    const hasHexPrefix = data.slice(0, 2).toLowerCase() === '0x';
+    const normalizedData = data.toLowerCase();
+    const prefixed = hasHexPrefix
+      ? `0x${normalizedData.slice(2)}`
+      : `0x${normalizedData}`;
+    const hexBody = prefixed.slice(2);
+
+    if (hexBody.length === 0) {
+      return EMPTY_HEX;
+    }
+
+    if (hexBody.length % 2 !== 0) {
+      // The EVM works with byte arrays, and each byte is represented by exactly
+      // two hexadecimal characters. Ensure the hex string is byte-aligned by
+      // prefixing a leading zero.
+      return this.#normalizeCallData(`0x0${hexBody}`);
+    }
+
+    return prefixed as Hex;
   }
 }

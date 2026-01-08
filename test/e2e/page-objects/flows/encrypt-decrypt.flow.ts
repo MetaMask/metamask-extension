@@ -22,13 +22,13 @@ export async function getEncryptionKeyInDapp(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   const getEncryptionKeyConfirmation = new GetEncryptionKeyConfirmation(driver);
-  await getEncryptionKeyConfirmation.check_pageIsLoaded();
+  await getEncryptionKeyConfirmation.checkPageIsLoaded();
   // Check account balance is converted properly
-  await getEncryptionKeyConfirmation.check_accountBalance(balanceValue);
+  await getEncryptionKeyConfirmation.checkAccountBalance(balanceValue);
 
   await getEncryptionKeyConfirmation.clickToConfirmProvideEncryptionKey();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
-  await testDapp.check_getEncryptionKeyResult(encryptionKey);
+  await testDapp.checkGetEncryptionKeyResult(encryptionKey);
 }
 
 /**
@@ -48,13 +48,13 @@ export async function decryptMessageAndVerifyResult(
   await testDapp.clickDecryptButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const decryptMessageConfirmation = new DecryptMessageConfirmation(driver);
-  await decryptMessageConfirmation.check_pageIsLoaded();
+  await decryptMessageConfirmation.checkPageIsLoaded();
 
   // Check account balance is converted properly
-  await decryptMessageConfirmation.check_accountBalance(balanceValue);
+  await decryptMessageConfirmation.checkAccountBalance(balanceValue);
 
   // Click decrypt message button and verify the result
   await decryptMessageConfirmation.clickDecryptMessageButton();
-  await decryptMessageConfirmation.check_decryptedMessage(message);
+  await decryptMessageConfirmation.checkDecryptedMessage(message);
   await decryptMessageConfirmation.clickToConfirmDecryptMessage();
 }

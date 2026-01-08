@@ -1,5 +1,5 @@
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS, DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -11,7 +11,7 @@ describe('Revoke Permissions', function () {
   it('should disconnect when click on Disconnect button in connections page', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -24,19 +24,19 @@ describe('Revoke Permissions', function () {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openPermissionsPage();
         const permissionListPage = new PermissionListPage(driver);
-        await permissionListPage.check_pageIsLoaded();
+        await permissionListPage.checkPageIsLoaded();
         await permissionListPage.openPermissionPageForSite(DAPP_HOST_ADDRESS);
 
         // click connect button to revoke permission
         const sitePermissionPage = new SitePermissionPage(driver);
-        await sitePermissionPage.check_pageIsLoaded(DAPP_HOST_ADDRESS);
+        await sitePermissionPage.checkPageIsLoaded(DAPP_HOST_ADDRESS);
         await sitePermissionPage.disconnectAll();
 
         // Switch to Dapp and check the dapp is disconnected
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
-        await testDapp.check_connectedAccounts(DEFAULT_FIXTURE_ACCOUNT, false);
+        await testDapp.checkPageIsLoaded();
+        await testDapp.checkConnectedAccounts(DEFAULT_FIXTURE_ACCOUNT, false);
       },
     );
   });

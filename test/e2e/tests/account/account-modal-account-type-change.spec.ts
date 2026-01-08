@@ -4,7 +4,7 @@ import { Anvil } from '@viem/anvil';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
 import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
@@ -12,25 +12,13 @@ import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
-// Function is needed to increase the gas limit for upgrade account confirmation
-// There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
-const increaseGasLimit = async (driver: Driver) => {
-  await driver.clickElement('[data-testid="edit-gas-fee-icon"]');
-  await driver.clickElement('[data-testid="edit-gas-fee-item-custom"]');
-
-  await driver.clickElement('[data-testid="advanced-gas-fee-edit"]');
-  await driver.fill('[data-testid="gas-limit-input"]', '50000');
-
-  // Submit gas fee changes
-  await driver.clickElement({ text: 'Save', tag: 'button' });
-  await driver.clickElement({ text: 'Advanced' });
-};
-
-describe('Switch Modal - Switch Account', function (this: Suite) {
+// Switch Account is not available in BIP44 stage 2
+// eslint-disable-next-line
+describe.skip('Switch Modal - Switch Account', function (this: Suite) {
   it('Account modal should have options to upgrade / downgrade the account', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         localNodeOptions: [
           {
@@ -52,17 +40,19 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountDetailsModal();
         const accountDetailsModal = new AccountDetailsModal(driver);
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
         await accountDetailsModal.triggerAccountSwitch();
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
-          "You're switching to a smart account",
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
+          "You're switching to a smart account.",
         );
-        await upgradeAndBatchTxConfirmation.check_expectedInteractingWithIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',
         );
-        await increaseGasLimit(driver);
+
+        // There is apparently an issue with Anvil network that prevents correct estimation of gas limit for upgrade.
+        await upgradeAndBatchTxConfirmation.editGasLimitLondon('50000');
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
 
         await driver.switchToWindowWithTitle(
@@ -71,14 +61,14 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
         const homePage = new HomePage(driver);
         await homePage.goToActivityList();
         let activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
         // Downgrade Account
         await headerNavbar.openAccountDetailsModal();
-        await accountDetailsModal.check_pageIsLoaded();
+        await accountDetailsModal.checkPageIsLoaded();
         await accountDetailsModal.triggerAccountSwitch();
 
-        await upgradeAndBatchTxConfirmation.check_expectedTxTypeIsDisplayed(
+        await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
           "You're switching back to a standard account (EOA).",
         );
         await upgradeAndBatchTxConfirmation.clickFooterConfirmButton();
@@ -89,7 +79,7 @@ describe('Switch Modal - Switch Account', function (this: Suite) {
 
         await homePage.goToActivityList();
         activityList = new ActivityListPage(driver);
-        await activityList.check_confirmedTxNumberDisplayedInActivity(2);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(2);
       },
     );
   });

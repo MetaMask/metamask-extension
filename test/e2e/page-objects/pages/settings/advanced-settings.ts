@@ -34,6 +34,10 @@ class AdvancedSettings {
     tag: 'button',
   };
 
+  private readonly hexDataToggle = {
+    testId: 'advanced-setting-hex-data',
+  };
+
   private readonly showConversionOnTestnetsToggle =
     '.show-fiat-on-testnets-toggle';
 
@@ -44,7 +48,7 @@ class AdvancedSettings {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.downloadStateLogsButton,
@@ -111,6 +115,11 @@ class AdvancedSettings {
     }
   }
 
+  async toggleOnHexData(): Promise<void> {
+    console.log('Toggling on hex data in advanced settings');
+    await this.driver.clickElement(this.hexDataToggle);
+  }
+
   async toggleShowConversionOnTestnets(): Promise<void> {
     console.log('Toggling show conversion on testnets in advanced settings');
     await this.driver.clickElement(this.showConversionOnTestnetsToggle);
@@ -122,6 +131,20 @@ class AdvancedSettings {
       this.smartTransactionsToggle,
     );
     stxToggle.sendKeys(Key.ENTER);
+  }
+
+  async toggleSmartTransactionsOff(): Promise<void> {
+    try {
+      const stxToggle = await this.driver.findElement(
+        this.smartTransactionsToggle,
+      );
+      await this.driver.findNestedElement(stxToggle, { text: 'On' });
+
+      await this.toggleSmartTransactions();
+      console.log('Smart transactions have been disabled');
+    } catch (e) {
+      console.log('Smart transactions are already disabled');
+    }
   }
 }
 

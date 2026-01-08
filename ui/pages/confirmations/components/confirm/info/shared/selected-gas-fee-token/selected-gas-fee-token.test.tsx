@@ -1,6 +1,8 @@
 import React from 'react';
 import { GasFeeToken } from '@metamask/transaction-controller';
 import { act } from 'react-dom/test-utils';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import { getMockConfirmStateForTransaction } from '../../../../../../../../test/data/confirmations/helper';
 import configureStore from '../../../../../../../store/store';
 
@@ -8,9 +10,9 @@ import { genUnapprovedContractInteractionConfirmation } from '../../../../../../
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../../../../test/data/confirmations/gas';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
-import { NATIVE_TOKEN_ADDRESS } from '../../hooks/useGasFeeToken';
 import { useInsufficientBalanceAlerts } from '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import * as DappSwapContext from '../../../../../context/dapp-swap';
 import { SelectedGasFeeToken } from './selected-gas-fee-token';
 
 jest.mock('../../../../../../../../shared/modules/selectors');
@@ -18,7 +20,6 @@ jest.mock('../../../../../hooks/gas/useIsGaslessSupported');
 jest.mock(
   '../../../../../hooks/alerts/transactions/useInsufficientBalanceAlerts',
 );
-
 function getStore({
   gasFeeTokens,
   noSelectedGasFeeToken,
@@ -55,6 +56,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: true,
       isSupported: true,
+      pending: false,
     });
 
     useInsufficientBalanceAlertsMock.mockReturnValue([
@@ -108,6 +110,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: false,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(
@@ -122,6 +125,7 @@ describe('SelectedGasFeeToken', () => {
     useIsGaslessSupportedMock.mockReturnValue({
       isSmartTransaction: false,
       isSupported: true,
+      pending: false,
     });
 
     const result = renderWithConfirmContextProvider(
@@ -146,6 +150,22 @@ describe('SelectedGasFeeToken', () => {
           { ...GAS_FEE_TOKEN_MOCK, tokenAddress: NATIVE_TOKEN_ADDRESS },
         ],
       }),
+    );
+
+    expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();
+  });
+
+  it('does not render arrow icon if quoted swap displayed in info', () => {
+    jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      selectedQuote: undefined,
+      setSelectedQuote: jest.fn(),
+      setQuotedSwapDisplayedInInfo: jest.fn(),
+    } as unknown as ReturnType<typeof DappSwapContext.useDappSwapContext>);
+
+    const result = renderWithConfirmContextProvider(
+      <SelectedGasFeeToken />,
+      getStore(),
     );
 
     expect(result.queryByTestId('selected-gas-fee-token-arrow')).toBeNull();

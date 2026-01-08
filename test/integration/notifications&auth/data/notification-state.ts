@@ -20,8 +20,8 @@ export const ethSentNotification = processNotification(
 ) as Extract<INotification, { type: TRIGGER_TYPES.ETH_SENT }>;
 
 if (ethSentNotification.type === TRIGGER_TYPES.ETH_SENT) {
-  ethSentNotification.address = notificationsAccountAddress;
-  ethSentNotification.data.from = notificationsAccountAddress;
+  ethSentNotification.payload.address = notificationsAccountAddress;
+  ethSentNotification.payload.data.from = notificationsAccountAddress;
   ethSentNotification.isRead = true;
 }
 
@@ -38,12 +38,12 @@ export const getMockedNotificationsState = () => {
     ...mockMetaMaskState,
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
-    isAccountSyncingInProgress: false,
+    isContactSyncingEnabled: true,
+    isContactSyncingInProgress: false,
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
+    hasShownMultichainAccountsIntroModal: true,
     notifications: {},
     metamaskNotificationsReadList: [featureNotification.id],
     metamaskNotificationsList: [featureNotification, ethSentNotification],

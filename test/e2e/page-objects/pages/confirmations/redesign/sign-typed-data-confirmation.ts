@@ -96,4 +96,14 @@ export default class SignTypedData extends Confirmation {
     console.log('Verify confirmation heading title is Signature request');
     await this.driver.waitForSelector(this.signatureHeadingTitle);
   }
+
+  async checkNetworkIsDisplayed(network: string): Promise<void> {
+    console.log(
+      `Check network ${network} is displayed on sign typed data confirmation page`,
+    );
+    await this.driver.waitForSelector({
+      text: network,
+      tag: 'p',
+    });
+  }
 }

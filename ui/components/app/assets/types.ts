@@ -1,8 +1,8 @@
+import { KeyringAccountType } from '@metamask/keyring-api';
 import { CaipAssetType, CaipChainId, Hex } from '@metamask/utils';
 
 // Common mixin for primary and secondary display values
 export type TokenDisplayValues = {
-  primary: string;
   secondary: number | null;
   string?: string;
 };
@@ -57,6 +57,8 @@ export type TokenWithFiatAmount = Token &
   TokenBalanceValues & {
     isStakeable?: boolean;
     title: string;
+    // TODO BIP44: This will not need to be optional once BIP44 is enabled
+    accountType?: KeyringAccountType;
   };
 
 export type TokenFiatDisplayInfo = TokenWithFiatAmount & TokenDisplayInfo;

@@ -61,16 +61,32 @@ const STATE_MOCK = getMockConfirmStateForTransaction(
 );
 
 const EXPECTED_PROPERTIES_BASE = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_action_clicked: [],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_key_clicked: [],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved: [],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_resolved_count: 0,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered: [
     ALERT_NAME_METRICS_MOCK,
     ALERTS_NAME_METRICS[AlertsName.Blockaid],
   ],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_triggered_count: 2,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized: [],
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   alert_visualized_count: 0,
 };
 
@@ -113,7 +129,11 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackAlertRender',
       expectedProperties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERT_NAME_METRICS_MOCK],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },
@@ -123,6 +143,8 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackInlineAlertClicked',
       expectedProperties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_key_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -132,6 +154,8 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: AlertsName.GasFeeLow,
       action: 'trackAlertActionClicked',
       expectedProperties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_action_clicked: [ALERT_NAME_METRICS_MOCK],
       },
     },
@@ -141,7 +165,11 @@ describe('useConfirmationAlertMetrics', () => {
       alertKey: UUID_ALERT_KEY_MOCK,
       action: 'trackAlertRender',
       expectedProperties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized: [ALERTS_NAME_METRICS[AlertsName.Blockaid]],
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         alert_visualized_count: 1,
       },
     },

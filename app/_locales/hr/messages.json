@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
-  "ethereumPublicAddress": {
-    "message": "Javna adresa Ethereum"
-  },
   "etherscanView": {
     "message": "Prikaži račun na Etherscanu"
-  },
-  "expandView": {
-    "message": "Proširi prikaz"
   },
   "failed": {
     "message": "Neuspješno"
@@ -257,20 +251,8 @@
   "gasLimit": {
     "message": "Ograničenje goriva"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ograničenje za gorivo predstavlja najveći broj jedinica goriva koje ste spremi potrošiti."
-  },
   "gasLimitTooLow": {
     "message": "Ograničenje za gorivo mora biti najmanje 21000"
-  },
-  "gasPrice": {
-    "message": "Cijena goriva (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Iznimno niska cijena goriva"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cijena goriva odnosi se na vrijednost Ether koju ste spremni platiti za svaku jedinicu goriva."
   },
   "gasUsed": {
     "message": "Upotrijebljeno gorivo"
@@ -629,9 +611,6 @@
   "supportCenter": {
     "message": "Posjetite naš centar za podršku."
   },
-  "switchNetworks": {
-    "message": "Promijeni mreže"
-  },
   "symbol": {
     "message": "Simbol"
   },
@@ -640,9 +619,6 @@
   },
   "terms": {
     "message": "Odredbe uporabe"
-  },
-  "tips": {
-    "message": "Napojnice"
   },
   "to": {
     "message": "Primatelj"
@@ -719,9 +695,6 @@
   "unlock": {
     "message": "Otključaj"
   },
-  "unlockMessage": {
-    "message": "Decentralizirani internet čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-jevima se zahtijeva prikladan prefiks HTTP/HTTPS."
   },
@@ -745,8 +718,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna početna rečenica"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cijena goriva kod ubrzavanja"
   }
 }

@@ -25,11 +25,21 @@ export type SkeletonStyleUtilityProps = Omit<
    * The children of the Skeleton
    */
   children?: React.ReactNode;
+  /**
+   * Whether to show the skeleton loading state or the actual content.
+   * When true, shows skeleton.
+   * When false, shows just the children content.
+   */
+  isLoading?: boolean;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SkeletonProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, SkeletonStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type SkeletonComponent = <C extends React.ElementType = 'span'>(
   props: SkeletonProps<C>,
 ) => React.ReactElement | null;

@@ -3,11 +3,9 @@ import { act, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import nock from 'nock';
 import { TokenStandard } from '../../../../shared/constants/transaction';
-import { useAssetDetails } from '../../../../ui/pages/confirmations/hooks/useAssetDetails';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedSetApprovalForAllTransaction } from './transactionDataHelpers';
@@ -18,17 +16,7 @@ jest.mock('../../../../ui/store/background-connection', () => ({
   callBackgroundMethod: jest.fn(),
 }));
 
-jest.mock('../../../../ui/pages/confirmations/hooks/useAssetDetails', () => ({
-  ...jest.requireActual(
-    '../../../../ui/pages/confirmations/hooks/useAssetDetails',
-  ),
-  useAssetDetails: jest.fn().mockResolvedValue({
-    decimals: '4',
-  }),
-}));
-
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
-const mockedAssetDetails = jest.mocked(useAssetDetails);
 
 const backgroundConnectionMocked = {
   onNotification: jest.fn(),
@@ -120,7 +108,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 
@@ -133,14 +121,12 @@ const setupSubmitRequestToBackgroundMocks = (
 
 describe('ERC721 setApprovalForAll Confirmation', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
@@ -157,11 +143,6 @@ describe('ERC721 setApprovalForAll Confirmation', () => {
       INCREASE_SET_APPROVAL_FOR_ALL_HEX_SIG,
       INCREASE_SET_APPROVAL_FOR_ALL_TEXT_SIG,
     );
-    mockedAssetDetails.mockImplementation(() => ({
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      decimals: '4' as any,
-    }));
   });
 
   afterEach(() => {

@@ -14,7 +14,12 @@ import {
   ButtonPrimaryComponent,
 } from './button-primary.types';
 
+/**
+ * @deprecated Please update your code to use `Button` from `@metamask/design-system-react` with variant `ButtonVariant.Primary`
+ */
 export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       className = '',
@@ -28,19 +33,18 @@ export const ButtonPrimary: ButtonPrimaryComponent = React.forwardRef(
     return (
       <ButtonBase
         backgroundColor={
-          danger ? BackgroundColor.errorDefault : BackgroundColor.primaryDefault
+          danger ? BackgroundColor.errorDefault : BackgroundColor.iconDefault
         }
-        color={danger ? TextColor.errorInverse : TextColor.primaryInverse}
+        color={danger ? TextColor.errorInverse : TextColor.iconInverse}
         className={classnames(className, 'mm-button-primary', {
           'mm-button-primary--type-danger': danger,
           'mm-button-primary--disabled': disabled,
         })}
         iconLoadingProps={{
-          color: danger ? IconColor.errorInverse : IconColor.primaryInverse,
+          color: danger ? IconColor.errorInverse : IconColor.iconInverse,
         }}
         size={size}
         ref={ref}
-        data-theme="light"
         {...{ disabled, ...(props as ButtonBaseProps<C>) }}
       />
     );

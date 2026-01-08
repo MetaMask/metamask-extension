@@ -23,12 +23,12 @@ class DeFiDetailsPage extends TokenList {
     this.driver = driver;
   }
 
-  async click_backButton() {
+  async clickBackButton() {
     console.log('Click back button');
     await this.driver.clickElement(this.backButton);
   }
 
-  async check_deFiProtocolNameIsDisplayed(description: string) {
+  async checkDeFiProtocolNameIsDisplayed(description: string) {
     console.log('Check if defi protocol name is displayed', description);
     await this.driver.waitForSelector({
       css: this.defiProtocolName,
@@ -36,7 +36,7 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  async check_suppliedHeadingIsDisplayed(): Promise<void> {
+  async checkSuppliedHeadingIsDisplayed(): Promise<void> {
     console.log('Check that supplied heading is displayed');
     await this.driver.waitForSelector({
       text: 'Supplied',
@@ -44,7 +44,7 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  async check_defiDetailsNameIsDisplayed(name: string) {
+  async checkDefiDetailsNameIsDisplayed(name: string) {
     console.log('Check if DeFi name is displayed on details page', name);
     await this.driver.waitForSelector({
       css: this.defiProtocolName,
@@ -52,7 +52,7 @@ class DeFiDetailsPage extends TokenList {
     });
   }
 
-  async check_defiDetailsTotalValueIsDisplayed(defiProtocolTotalVlaue: string) {
+  async checkDefiDetailsTotalValueIsDisplayed(defiProtocolTotalVlaue: string) {
     console.log('Check if DeFi total value is displayed on DeFi details page');
     await this.driver.waitForSelector({
       css: this.defiProtocolTotalVlaue,

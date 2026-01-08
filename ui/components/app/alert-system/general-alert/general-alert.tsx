@@ -31,6 +31,8 @@ export type GeneralAlertProps = {
   children?: React.ReactNode;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ReportLink({
   reportUrl,
   provider,
@@ -59,6 +61,8 @@ function ReportLink({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function AlertDetails({
   details,
   reportUrl,
@@ -78,7 +82,7 @@ function AlertDetails({
   return (
     <Box marginTop={1}>
       <Disclosure title={t('seeDetails')} variant={DisclosureVariant.Arrow}>
-        {details instanceof Array ? (
+        {Array.isArray(details) ? (
           <Box as="ul" className="alert-modal__alert-details" paddingLeft={6}>
             {details.map((detail, index) => (
               <Box as="li" key={`disclosure-detail-${index}`}>
@@ -92,7 +96,7 @@ function AlertDetails({
             ))}
           </Box>
         ) : (
-          details
+          <>{details}</>
         )}
         <ReportLink
           reportUrl={reportUrl}
@@ -104,6 +108,8 @@ function AlertDetails({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function GeneralAlert({
   description,
   details,

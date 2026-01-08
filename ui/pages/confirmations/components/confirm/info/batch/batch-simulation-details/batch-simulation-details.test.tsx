@@ -61,6 +61,7 @@ const BALANCE_CHANGE_ERC20_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
@@ -76,6 +77,7 @@ const BALANCE_CHANGE_ERC721_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
@@ -91,6 +93,7 @@ const BALANCE_CHANGE_ERC1155_MOCK: ApprovalBalanceChange = {
   isAllApproval: false,
   isUnlimitedApproval: false,
   nestedTransactionIndex: 0,
+  usdAmount: null,
 };
 
 function render(transaction?: Confirmation) {
@@ -291,5 +294,16 @@ describe('BatchSimulationDetails', () => {
   it('return null for upgrade transaction if there are no nested transactions', () => {
     const { container } = render(upgradeAccountConfirmationOnly);
     expect(container.firstChild).toBeNull();
+  });
+
+  it('does not render SimulationDetails and EditSpendingCapModal while approvePending is true', () => {
+    useBatchApproveBalanceChangesMock.mockReturnValue({
+      pending: true,
+      value: [BALANCE_CHANGE_ERC20_MOCK],
+    });
+    const { queryByText, queryByTestId } = render();
+    expect(queryByText('Edit spending cap')).toBeNull();
+    expect(queryByTestId('balance-change-edit')).toBeNull();
+    expect(queryByText('You approve')).toBeNull();
   });
 });

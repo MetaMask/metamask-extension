@@ -1,7 +1,8 @@
-import { MockttpServer } from 'mockttp';
+import { MockedEndpoint, MockttpServer } from 'mockttp';
 import { tinyDelayMs, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import LoginPage from '../../page-objects/pages/login-page';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -30,6 +31,7 @@ describe('Settings', function () {
     // on the ".eth" hostname. The proxy does too much interference with 8000.
     await withFixtures(
       {
+        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockEns,
         driverOptions: {
@@ -38,6 +40,8 @@ describe('Settings', function () {
       },
       async ({ driver }) => {
         await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
 
         // The setting defaults to "on" so we can simply enter an ENS address
         // into the address bar and listen for address change
@@ -55,15 +59,26 @@ describe('Settings', function () {
   });
 
   it('Does not fetch ENS data for ENS Domain when ENS and IPFS switched off', async function () {
-    let server: MockttpServer;
+    async function ensDomainPassthrough(
+      mockServer: MockttpServer,
+    ): Promise<MockedEndpoint[]> {
+      // We want the browser to handle the request error
+      const ensNamePassThrough = await mockServer
+        .forGet(ENS_NAME_URL)
+        .thenPassThrough();
+      // This should never be hit, but in case it is, then we'll catch it
+      const ensDomainsPassThrough = await mockServer
+        .forGet(ENS_DESTINATION_URL)
+        .thenPassThrough();
+
+      return [ensNamePassThrough, ensDomainsPassThrough];
+    }
 
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (mockServer: MockttpServer) => {
-          server = mockServer;
-        },
+        testSpecificMock: ensDomainPassthrough,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
@@ -71,18 +86,14 @@ describe('Settings', function () {
         // navigate to security & privacy settings screen
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // turns off IPFS setting and ENS domain resolution
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.toggleIpfsGateway();
         await privacySettings.toggleEnsDomainResolution();
-
-        // Now that we no longer need the MetaMask UI, and want the browser
-        // to handle the request error, we need to stop the server
-        await server.stop();
 
         try {
           await driver.openNewPage(ENS_NAME_URL);

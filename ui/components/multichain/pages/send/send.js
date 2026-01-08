@@ -5,8 +5,9 @@ import React, {
   useRef,
   useState,
 } from 'react';
+import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Tooltip } from 'react-tippy';
 import { I18nContext } from '../../../../contexts/i18n';
 import {
@@ -38,10 +39,6 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 
-import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
-import { getRemoteSendAllowance } from '../../../../selectors/remote-mode';
-import { SendAllowanceBanner } from '../../../../pages/remote-mode/components';
-
 import {
   TokenStandard,
   AssetType,
@@ -51,7 +48,7 @@ import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   INSUFFICIENT_FUNDS_ERROR,
   INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send/send.constants';
+} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -65,10 +62,7 @@ import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import {
-  getSelectedInternalAccount,
-  smartTransactionsListSelector,
-} from '../../../../selectors';
+import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -79,7 +73,10 @@ import {
   SendPageRecipientInput,
 } from './components';
 
-export const SendPage = () => {
+export const SendPage = ({
+  navigate: navigateProp,
+  location: locationProp,
+} = {}) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
@@ -99,8 +96,12 @@ export const SendPage = () => {
   const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
-  const history = useHistory();
-  const location = useLocation();
+  // Use React Router v6 hooks
+  const navigateHook = useNavigate();
+  const locationHook = useLocation();
+  const navigate = navigateProp || navigateHook;
+  const location = locationProp || locationHook;
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -161,7 +162,7 @@ export const SendPage = () => {
 
       trackEvent(
         {
-          event: MetaMetricsEventName.sendAssetSelected,
+          event: MetaMetricsEventName.SendAssetSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
             is_destination_asset_picker_modal: Boolean(isReceived),
@@ -175,9 +176,9 @@ export const SendPage = () => {
         },
         { excludeMetaMetricsId: false },
       );
-      history.push(SEND_ROUTE);
+      navigate(SEND_ROUTE);
     },
-    [dispatch, history, sendAnalytics, trackEvent],
+    [dispatch, navigate, sendAnalytics, trackEvent],
   );
 
   const handleAssetPickerClick = useCallback(
@@ -263,7 +264,7 @@ export const SendPage = () => {
 
     const nextRoute =
       sendStage === SEND_STAGES.EDIT ? DEFAULT_ROUTE : mostRecentOverviewPage;
-    history.push(nextRoute);
+    navigate(nextRoute);
   };
 
   useEffect(() => {
@@ -283,7 +284,6 @@ export const SendPage = () => {
       );
     }
     // sendAnalytics should not result in the event refiring
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [trackEvent, swapQuotesError]);
 
   const onSubmit = async (event) => {
@@ -298,7 +298,7 @@ export const SendPage = () => {
           name: TraceName.SendCompleted,
         },
         async () => {
-          await dispatch(signTransaction(history));
+          await dispatch(signTransaction(navigate));
         },
       );
       trackEvent({
@@ -338,18 +338,20 @@ export const SendPage = () => {
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,
   );
+  const isGasTooLow = sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR;
 
-  const isGasTooLow =
-    sendErrors.gasFee === INSUFFICIENT_FUNDS_ERROR &&
-    sendErrors.amount !== INSUFFICIENT_FUNDS_ERROR;
+  const isInsufficientFundsError =
+    sendErrors.amount === INSUFFICIENT_FUNDS_ERROR;
 
   const isHexDataInvalid = sendErrors.hexData === INVALID_HEX_DATA_ERROR;
 
-  const submitDisabled =
-    (isInvalidSendForm && !isGasTooLow) ||
-    requireContractAddressAcknowledgement ||
-    (isSwapAndSend && isSmartTransactionPending) ||
-    isHexDataInvalid;
+  const submitDisabled = Boolean(
+    isInsufficientFundsError ||
+      (isInvalidSendForm && !isGasTooLow) ||
+      requireContractAddressAcknowledgement ||
+      (isSwapAndSend && isSmartTransactionPending) ||
+      isHexDataInvalid,
+  );
 
   const isSendFormShown =
     draftTransactionExists &&
@@ -369,19 +371,6 @@ export const SendPage = () => {
     },
     [dispatch],
   );
-
-  // Remote Mode
-  const selectedAccount = useSelector(getSelectedInternalAccount);
-  const currentChainId = useSelector(getCurrentChainId);
-  const remoteSendAllowance = useSelector((state) =>
-    getRemoteSendAllowance(state, {
-      from: selectedAccount.address,
-      chainId: currentChainId,
-      asset: transactionAsset,
-    }),
-  );
-  const isRemoteSendPossible = Boolean(remoteSendAllowance);
-  const showRemoteSendBanner = isRemoteSendPossible && isSendFormShown;
 
   let tooltipTitle = '';
 
@@ -409,10 +398,7 @@ export const SendPage = () => {
         {t('send')}
       </Header>
       <Content>
-        {showRemoteSendBanner && (
-          <SendAllowanceBanner allowance={remoteSendAllowance} />
-        )}
-        <SendPageAccountPicker isRemoteModeEnabled={isRemoteSendPossible} />
+        <SendPageAccountPicker />
         {isSendFormShown && (
           <AssetPickerAmount
             error={error}
@@ -420,7 +406,6 @@ export const SendPage = () => {
             header={t('sendSelectSendAsset')}
             asset={transactionAsset}
             amount={amount}
-            disableMaxButton={isRemoteSendPossible}
             onAssetChange={handleSelectSendToken}
             onAmountChange={onAmountChange}
             onClick={() => handleAssetPickerClick(false)}
@@ -477,4 +462,9 @@ export const SendPage = () => {
       </Footer>
     </Page>
   );
+};
+
+SendPage.propTypes = {
+  navigate: PropTypes.func,
+  location: PropTypes.object,
 };

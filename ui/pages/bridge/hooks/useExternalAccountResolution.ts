@@ -1,138 +1,124 @@
 import { useMemo, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { InternalAccount } from '@metamask/keyring-internal-api';
 // eslint-disable-next-line import/no-restricted-paths
 import { isEthAddress } from '../../../../app/scripts/lib/multichain/address';
-import type { ExternalAccount } from '../prepare/types';
+import type { ExternalDestinationAccount } from '../prepare/types';
 import {
   getDomainResolutions,
-  lookupDomainName,
-  resetDomainResolution,
   initializeDomainSlice,
+  lookupDomainName,
 } from '../../../ducks/domains';
-import { isSolanaAddress } from '../../../../shared/lib/multichain/accounts';
+import {
+  isSolanaAddress,
+  isBtcMainnetAddress,
+  isBtcTestnetAddress,
+  isTronAddress,
+} from '../../../../shared/lib/multichain/accounts';
+import { getInternalAccountByAddress } from '../../../selectors/selectors';
+import { shortenString } from '../../../helpers/utils/util';
 
 type UseExternalAccountResolutionProps = {
   searchQuery: string;
   isDestinationSolana: boolean;
-  accounts: InternalAccount[];
-};
-
-type UseExternalAccountResolutionResult = {
-  isValidAddress: boolean;
-  isValidEnsName: boolean;
-  externalAccount: ExternalAccount | null;
+  isDestinationBitcoin?: boolean;
+  isDestinationTron?: boolean;
 };
 
 export const useExternalAccountResolution = ({
   searchQuery,
   isDestinationSolana,
-  accounts,
-}: UseExternalAccountResolutionProps): UseExternalAccountResolutionResult => {
+  isDestinationBitcoin = false,
+  isDestinationTron = false,
+}: UseExternalAccountResolutionProps): ExternalDestinationAccount | null => {
   const dispatch = useDispatch();
+
   const domainResolutionsFromStore = useSelector(getDomainResolutions);
 
-  // Initialize domain slice on mount
-  useEffect(() => {
-    dispatch(initializeDomainSlice());
-  }, [dispatch]);
-
-  // Check if search query is a valid address
-  const isValidAddress = useMemo(() => {
-    const trimmedQuery = searchQuery.trim();
+  const trimmedQuery = searchQuery.trim();
+  const validAddress = useMemo(() => {
     if (!trimmedQuery) {
-      return false;
+      return null;
     }
-
-    return isDestinationSolana
-      ? isSolanaAddress(trimmedQuery)
-      : isEthAddress(trimmedQuery);
-  }, [searchQuery, isDestinationSolana]);
-
-  // Check if search query is a valid ENS name
-  const isValidEnsName = useMemo(() => {
-    if (isDestinationSolana) {
-      return false;
-    }
-    const trimmedQuery = searchQuery.trim();
-    if (!trimmedQuery) {
-      return false;
-    }
-    return trimmedQuery.endsWith('.eth');
-  }, [searchQuery, isDestinationSolana]);
-
-  // Lookup ENS name when we detect a valid ENS name
-  useEffect(() => {
-    if (isValidEnsName) {
-      dispatch(lookupDomainName(searchQuery.trim()));
-    } else {
-      dispatch(resetDomainResolution());
-    }
-  }, [dispatch, isValidEnsName, searchQuery]);
-
-  // Create an external account object if valid address is not in internal accounts
-  const externalAccount = useMemo(() => {
-    const domainResolutions = domainResolutionsFromStore || [];
-
-    if (!isValidAddress && !isValidEnsName) {
+    // Check for Bitcoin addresses
+    if (isDestinationBitcoin) {
+      if (
+        isBtcMainnetAddress(trimmedQuery) ||
+        isBtcTestnetAddress(trimmedQuery)
+      ) {
+        return trimmedQuery;
+      }
       return null;
     }
 
-    // If it's a valid ENS name and we have resolutions, use the resolved address
-    if (isValidEnsName && domainResolutions.length > 0) {
-      const { resolvedAddress } = domainResolutions[0];
-      const ensName = searchQuery.trim();
-
-      const addressExists = accounts.some(
-        (account) =>
-          account.address.toLowerCase() === resolvedAddress.toLowerCase(),
-      );
-
-      if (addressExists) {
-        return null;
+    // Check for Solana addresses
+    if (isDestinationSolana) {
+      if (isSolanaAddress(trimmedQuery)) {
+        return trimmedQuery;
       }
-
-      return {
-        address: resolvedAddress,
-        metadata: {
-          name: ensName,
-        },
-        isExternal: true,
-      };
+      return null;
     }
 
-    // For regular addresses
-    if (isValidAddress) {
-      const address = searchQuery.trim();
-      const addressExists = accounts.some(
-        (account) => account.address.toLowerCase() === address.toLowerCase(),
-      );
-
-      if (addressExists) {
-        return null;
+    // Check for Tron addresses
+    if (isDestinationTron) {
+      if (isTronAddress(trimmedQuery)) {
+        return trimmedQuery;
       }
+      return null;
+    }
 
-      return {
-        address,
-        metadata: {
-          name: address,
-        },
-        isExternal: true,
-      };
+    // Default to checking for Ethereum addresses
+    if (isEthAddress(trimmedQuery)) {
+      return trimmedQuery;
     }
 
     return null;
   }, [
-    accounts,
-    isValidAddress,
-    isValidEnsName,
-    searchQuery,
-    domainResolutionsFromStore,
+    trimmedQuery,
+    isDestinationSolana,
+    isDestinationBitcoin,
+    isDestinationTron,
   ]);
 
-  return {
-    isValidAddress,
-    isValidEnsName,
-    externalAccount,
-  };
+  const validEnsName =
+    !isDestinationSolana &&
+    !isDestinationBitcoin &&
+    !isDestinationTron &&
+    trimmedQuery.endsWith('.eth')
+      ? trimmedQuery
+      : null;
+
+  // Lookup ENS name when we detect a valid ENS name
+  useEffect(() => {
+    if (validEnsName) {
+      dispatch(initializeDomainSlice());
+      dispatch(lookupDomainName(validEnsName));
+    }
+  }, [validEnsName]);
+
+  const resolvedAddress =
+    validAddress ?? domainResolutionsFromStore?.[0]?.resolvedAddress;
+
+  const internalAccount = useSelector((state) =>
+    getInternalAccountByAddress(state, resolvedAddress),
+  );
+
+  // Build an external account object if resolved address is not an internal account
+  return useMemo(() => {
+    if (!resolvedAddress || internalAccount) {
+      return null;
+    }
+    return {
+      address: resolvedAddress,
+      isExternal: true,
+      type: 'any:account' as const,
+      displayName:
+        validEnsName ??
+        shortenString(resolvedAddress, {
+          truncatedCharLimit: 15,
+          truncatedStartChars: 7,
+          truncatedEndChars: 5,
+          skipCharacterInEnd: false,
+        }),
+    };
+  }, [validEnsName, resolvedAddress, internalAccount]);
 };

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
@@ -19,7 +19,7 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
@@ -39,6 +39,7 @@ import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
 import { BackupAndSyncDevSettings } from './backup-and-sync';
+import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -52,7 +53,7 @@ import { BackupAndSyncDevSettings } from './backup-and-sync';
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -80,7 +81,7 @@ const DeveloperOptionsTab = () => {
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
 
-    const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+    const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     if (isPopup) {
@@ -89,9 +90,9 @@ const DeveloperOptionsTab = () => {
         platform?.openExtensionInBrowser(backUpSRPRoute, null, true);
       }
     } else {
-      history.push(backUpSRPRoute);
+      navigate(backUpSRPRoute);
     }
-  }, [dispatch, history]);
+  }, [dispatch, navigate]);
 
   const handleToggleServiceWorkerAlive = async (
     value: boolean,
@@ -277,6 +278,8 @@ const DeveloperOptionsTab = () => {
 
       <BackupAndSyncDevSettings />
       <SentryTest />
+      <hr />
+      <MigrateToSplitStateTest />
     </div>
   );
 };

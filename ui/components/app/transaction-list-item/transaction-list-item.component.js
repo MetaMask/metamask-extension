@@ -2,7 +2,7 @@
 import React, { useMemo, useState, useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -10,6 +10,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { Button, ButtonSize } from '@metamask/design-system-react';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
@@ -25,16 +26,18 @@ import {
   FontWeight,
   TextAlign,
   TextVariant,
+  FlexDirection,
+  AlignItems,
 } from '../../../helpers/constants/design-system';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
   BadgeWrapper,
-  BadgeWrapperAnchorElementShape,
   Box,
   Text,
 } from '../../component-library';
 
+import { getStatusKey } from '../../../helpers/utils/transactions.util';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -42,25 +45,19 @@ import {
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import {
-  GasFeeContextProvider,
-  useGasFeeContext,
-} from '../../../contexts/gasFee';
-import {
   TransactionModalContextProvider,
   useTransactionModalContext,
 } from '../../../contexts/transaction-modal';
 import { checkNetworkAndAccountSupports1559 } from '../../../selectors';
 import { isLegacyTransaction } from '../../../helpers/utils/transactions.util';
 import { formatDateWithYearContext } from '../../../helpers/utils/util';
-import Button from '../../ui/button';
 import AdvancedGasFeePopover from '../../../pages/confirmations/components/advanced-gas-fee-popover';
 import CancelButton from '../cancel-button';
 import EditGasFeePopover from '../../../pages/confirmations/components/edit-gas-fee-popover';
 import EditGasPopover from '../../../pages/confirmations/components/edit-gas-popover';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import { abortTransactionSigning } from '../../../store/actions';
-// import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import {
   useBridgeTxHistoryData,
   FINAL_NON_CONFIRMED_STATUSES,
@@ -70,23 +67,23 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { mapTransactionTypeToCategory } from './helpers';
 
 function TransactionListItemInner({
   transactionGroup,
   setEditGasMode,
   isEarliestNonce = false,
   chainId,
+  supportsEIP1559,
 }) {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { hasCancelled } = transactionGroup;
   const [showDetails, setShowDetails] = useState(false);
   const [showCancelEditGasPopover, setShowCancelEditGasPopover] =
     useState(false);
   const [showRetryEditGasPopover, setShowRetryEditGasPopover] = useState(false);
-  const { supportsEIP1559 } = useGasFeeContext();
   const { openModal } = useTransactionModalContext();
-  // const isSmartTransaction = useSelector(getIsSmartTransaction);
   const dispatch = useDispatch();
 
   // Bridge transactions
@@ -101,6 +98,10 @@ function TransactionListItemInner({
     transactionGroup,
     isEarliestNonce,
   });
+  const isUnifiedSwapTx =
+    (isBridgeTx ||
+      transactionGroup.initialTransaction.type === TransactionType.swap) &&
+    bridgeTxHistoryItem;
 
   const getTestNetworkBackgroundColor = (networkId) => {
     switch (true) {
@@ -114,9 +115,11 @@ function TransactionListItemInner({
   };
 
   const {
-    initialTransaction: { id },
+    initialTransaction: { id, txParams },
     primaryTransaction: { error, status },
   } = transactionGroup;
+
+  const senderAddress = txParams?.from;
 
   const trackEvent = useContext(MetaMetricsContext);
 
@@ -177,19 +180,21 @@ function TransactionListItemInner({
     isEarliestNonce,
   );
 
+  const category = mapTransactionTypeToCategory(
+    transactionGroup.initialTransaction.type,
+  );
+
   const {
     title,
-    category,
     primaryCurrency,
     recipientAddress,
     secondaryCurrency,
-    displayedStatusKey: displayedStatusKeyFromSrcTransaction,
     isPending,
-    senderAddress,
   } = useTransactionDisplayData(transactionGroup);
-  const displayedStatusKey = isBridgeFailed
-    ? TransactionStatus.failed
-    : displayedStatusKeyFromSrcTransaction;
+  const displayedStatusKey =
+    isBridgeTx && isBridgeFailed
+      ? TransactionStatus.failed
+      : getStatusKey(transactionGroup.primaryTransaction);
   const date = formatDateWithYearContext(
     transactionGroup.primaryTransaction.time,
     'MMM d, y',
@@ -226,7 +231,7 @@ function TransactionListItemInner({
 
   const toggleShowDetails = useCallback(() => {
     if (isUnapproved) {
-      history.push(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
+      navigate(`${CONFIRM_TRANSACTION_ROUTE}/${id}`);
       return;
     }
     setShowDetails((prev) => {
@@ -241,9 +246,9 @@ function TransactionListItemInner({
       });
       return !prev;
     });
-  }, [isUnapproved, history, id, trackEvent, category]);
+  }, [isUnapproved, navigate, id, trackEvent, category]);
 
-  const speedUpButton = useMemo(() => {
+  const isSpeedUpButtonVisible = useMemo(() => {
     if (
       !shouldShowSpeedUp ||
       !isPending ||
@@ -251,26 +256,29 @@ function TransactionListItemInner({
       isSigning ||
       isSubmitting
     ) {
+      return false;
+    }
+
+    return true;
+  }, [shouldShowSpeedUp, isUnapproved, isPending, isSigning, isSubmitting]);
+
+  const speedUpButton = useMemo(() => {
+    if (!isSpeedUpButtonVisible) {
       return null;
     }
 
     return (
       <Button
         data-testid="speed-up-button"
-        type="primary"
+        size={ButtonSize.Sm}
         onClick={hasCancelled ? cancelTransaction : retryTransaction}
-        style={hasCancelled ? { width: 'auto' } : null}
       >
         {hasCancelled ? t('speedUpCancellation') : t('speedUp')}
       </Button>
     );
   }, [
-    shouldShowSpeedUp,
-    isUnapproved,
+    isSpeedUpButtonVisible,
     t,
-    isPending,
-    isSigning,
-    isSubmitting,
     hasCancelled,
     retryTransaction,
     cancelTransaction,
@@ -283,7 +291,7 @@ function TransactionListItemInner({
       <ActivityListItem
         data-testid="activity-list-item"
         onClick={
-          isBridgeTx && showBridgeTxDetails
+          isUnifiedSwapTx && showBridgeTxDetails
             ? showBridgeTxDetails
             : toggleShowDetails
         }
@@ -291,7 +299,6 @@ function TransactionListItemInner({
         title={title}
         icon={
           <BadgeWrapper
-            anchorElementShape={BadgeWrapperAnchorElementShape.circular}
             display={Display.Block}
             badge={
               <AvatarNetwork
@@ -301,9 +308,11 @@ function TransactionListItemInner({
                 name={NETWORK_TO_NAME_MAP[chainId]}
                 src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
                 borderColor={BackgroundColor.backgroundDefault}
+                borderWidth={2}
                 backgroundColor={getTestNetworkBackgroundColor(chainId)}
               />
             }
+            style={{ alignSelf: 'center' }}
           >
             <TransactionIcon category={category} status={displayedStatusKey} />
           </BadgeWrapper>
@@ -332,20 +341,26 @@ function TransactionListItemInner({
           !isSignatureReq &&
           !isApproval && (
             <>
-              <Text
-                variant={TextVariant.bodyLgMedium}
-                fontWeight={FontWeight.Medium}
-                color={Color.textDefault}
-                title={primaryCurrency}
-                textAlign={TextAlign.Right}
-                data-testid="transaction-list-item-primary-currency"
-                className="activity-list-item__primary-currency"
-                ellipsis
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Row}
+                alignItems={AlignItems.center}
               >
-                {primaryCurrency}
-              </Text>
+                <Text
+                  variant={TextVariant.bodyMdMedium}
+                  fontWeight={FontWeight.Medium}
+                  color={Color.textDefault}
+                  title={primaryCurrency}
+                  textAlign={TextAlign.Right}
+                  data-testid="transaction-list-item-primary-currency"
+                  className="activity-list-item__primary-currency"
+                  ellipsis
+                >
+                  {primaryCurrency}
+                </Text>
+              </Box>
               <Text
-                variant={TextVariant.bodyMd}
+                variant={TextVariant.bodySmMedium}
                 color={Color.textAlternative}
                 textAlign={TextAlign.Right}
                 data-testid="transaction-list-item-secondary-currency"
@@ -357,13 +372,11 @@ function TransactionListItemInner({
         }
       >
         {Boolean(showCancelButton || speedUpButton) && (
-          <Box
-            paddingTop={4}
-            className="transaction-list-item__pending-actions"
-          >
+          <Box paddingTop={2} className="flex gap-2">
             {showCancelButton && (
               <CancelButton
                 data-testid="cancel-button"
+                size={ButtonSize.Sm}
                 transaction={transactionGroup.primaryTransaction}
                 cancelTransaction={cancelTransaction}
               />
@@ -382,7 +395,7 @@ function TransactionListItemInner({
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
           // showRetry={showRetry}
-          showSpeedUp={shouldShowSpeedUp}
+          showSpeedUp={isSpeedUpButtonVisible}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           transactionStatus={() => (
@@ -421,6 +434,7 @@ TransactionListItemInner.propTypes = {
   isEarliestNonce: PropTypes.bool,
   setEditGasMode: PropTypes.func,
   chainId: PropTypes.string,
+  supportsEIP1559: PropTypes.bool,
 };
 
 const TransactionListItem = (props) => {
@@ -433,21 +447,29 @@ const TransactionListItem = (props) => {
     !isLegacyTransaction(transaction?.txParams);
 
   return (
-    <GasFeeContextProvider
-      transaction={transactionGroup.primaryTransaction}
-      editGasMode={editGasMode}
-    >
-      <TransactionModalContextProvider>
-        <TransactionListItemInner {...props} setEditGasMode={setEditGasMode} />
-        {supportsEIP1559 && (
-          <>
-            <CancelSpeedupPopover />
-            <EditGasFeePopover />
-            <AdvancedGasFeePopover />
-          </>
-        )}
-      </TransactionModalContextProvider>
-    </GasFeeContextProvider>
+    <TransactionModalContextProvider>
+      <TransactionListItemInner
+        {...props}
+        setEditGasMode={setEditGasMode}
+        supportsEIP1559={supportsEIP1559}
+      />
+      {supportsEIP1559 && (
+        <>
+          <CancelSpeedupPopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <EditGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+          <AdvancedGasFeePopover
+            transaction={transaction}
+            editGasMode={editGasMode}
+          />
+        </>
+      )}
+    </TransactionModalContextProvider>
   );
 };
 

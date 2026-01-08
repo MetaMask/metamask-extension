@@ -220,14 +220,8 @@
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum ሕዝባዊ አድራሻ"
-  },
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
-  },
-  "expandView": {
-    "message": "እይታን ዘርጋ"
   },
   "failed": {
     "message": "አልተሳካም"
@@ -248,20 +242,8 @@
   "gasLimit": {
     "message": "የነዳጅ ገደብ"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "የነዳጅ ገደብ እርስዎ ወጪ ለማድረግ ዝግጁ የሆኑት ከፍተኛው የነዳጅ መጠን ማለት ነው።"
-  },
   "gasLimitTooLow": {
     "message": "የነዳጅ ገደብ ቢያንስ 21000 መሆን አለበት"
-  },
-  "gasPrice": {
-    "message": "የነዳጅ ዋጋ (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "የነዳጅ ዋጋ እጅግ በጣም ዝቅ ያለ ነው"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "የነዳጅ ዋጋ እርስዎ ለእያንዳንዱ የነዳጅ መጠን መክፈል የሚፈልጉትን የ Ether መጠን ይገልጻል።"
   },
   "gasUsed": {
     "message": "ጥቅም ላይ የዋለ ነዳጅ"
@@ -617,9 +599,6 @@
   "supportCenter": {
     "message": "የድጋፍ መስጫ ማዕከላችንን ይጎብኙ"
   },
-  "switchNetworks": {
-    "message": "አውታረ መረቦችን ቀያይር"
-  },
   "symbol": {
     "message": "ምልክት"
   },
@@ -628,9 +607,6 @@
   },
   "terms": {
     "message": "የአጠቃቀም ደንቦች"
-  },
-  "tips": {
-    "message": "መረጃዎች"
   },
   "to": {
     "message": "ለ"
@@ -710,9 +686,6 @@
   "unlock": {
     "message": "ክፈት"
   },
-  "unlockMessage": {
-    "message": "ያልተማከለ ድር ይጠባበቃል"
-  },
   "urlErrorMsg": {
     "message": "URIs አግባብነት ያለው የ HTTP/HTTPS ቅድመ ቅጥያ ይፈልጋል።"
   },
@@ -736,8 +709,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "የግል ዘር ሐረግዎ"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "በስፒድ አፕ ላይ ዜሮ የነዳጅ ዋጋ"
   }
 }

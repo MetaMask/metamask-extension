@@ -8,6 +8,7 @@ import type { Options as YargsOptions } from 'yargs';
 import yargs from 'yargs/yargs';
 import parser from 'yargs-parser';
 import type { BuildTypesConfig } from '../../lib/build-type';
+import { ENVIRONMENT } from '../../build/constants';
 import {
   Browsers,
   type Manifest,
@@ -16,6 +17,7 @@ import {
   toOrange,
 } from './helpers';
 
+const environmentOptions = Object.values(ENVIRONMENT);
 const ENV_PREFIX = 'BUNDLE';
 const addFeat = 'addFeature' as const;
 const omitFeat = 'omitFeature' as const;
@@ -131,6 +133,8 @@ export function parseArgv(
  * @param options
  * @param name
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function getCli<T extends YargsOptionsMap = Options>(options: T, name: string) {
   const cli = yargs()
     // Ensure unrecognized commands/options are reported as errors.
@@ -235,6 +239,23 @@ function getOptions(
       group: toOrange('Developer assistance:'),
       type: 'boolean',
     },
+    reactCompilerVerbose: {
+      array: false,
+      default: false,
+      description:
+        'Enables/disables React Compiler verbose mode and statistics',
+      group: toOrange('Developer assistance:'),
+      type: 'boolean',
+    },
+    reactCompilerDebug: {
+      array: false,
+      choices: ['all', 'critical', 'none'] as const,
+      default: 'none',
+      description:
+        'Sets React Compiler panic threshold that fails the build for all errors or critical errors only. If `none`, the build will not fail.',
+      group: toOrange('Developer assistance:'),
+      type: 'string',
+    },
 
     ...prerequisites,
     zip: {
@@ -269,11 +290,13 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: {
       alias: 'v',
       array: false,
       choices: [2, 3] as Manifest['manifest_version'][],
-      default: 2 as Manifest['manifest_version'],
+      default: 3 as Manifest['manifest_version'],
       description: "Changes manifest.json format to the given version's schema",
       group: toOrange('Build options:'),
       type: 'number',
@@ -292,7 +315,7 @@ function getOptions(
       array: false,
       choices: ['none', ...buildTypes],
       default: 'main' as const,
-      description: 'Configure features for the build (main, beta, etc)',
+      description: 'Select the build type (main, beta, etc)',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -302,7 +325,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Add features not be included in the selected build `type`',
+      description: 'Add features to be included in the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -312,7 +335,7 @@ function getOptions(
       choices: allFeatures,
       coerce: uniqueSort,
       default: [] as typeof allFeatures,
-      description: 'Omit features included in the selected build `type`',
+      description: 'Omit features from the selected build `type`',
       group: toOrange('Build options:'),
       type: 'string',
     },
@@ -326,12 +349,20 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-    lockdown: {
-      alias: 'k',
+    lavamoatDebug: {
+      alias: 'u',
       array: false,
-      default: isProduction,
-      defaultDescription: prodDefaultDesc,
-      description: 'Enable/disable runtime hardening (also see --snow)',
+      default: false,
+      description:
+        'Enables/disables LavaMoat debug mode (ignored if `lavamoat` is not enabled)',
+      group: toOrange('Security:'),
+      type: 'boolean',
+    },
+    generatePolicy: {
+      alias: 'g',
+      array: false,
+      default: false,
+      description: 'Generate the LavaMoat policy',
       group: toOrange('Security:'),
       type: 'boolean',
     },
@@ -345,10 +376,23 @@ function getOptions(
       type: 'boolean',
     },
 
+    targetEnvironment: {
+      array: false,
+      choices: environmentOptions,
+      defaultDescription:
+        'Auto-detected from git context (branch name, CI environment)',
+      description:
+        'The build environment (production, staging, release-candidate, pull-request, other). ' +
+        'Controls Sentry project targeting and feature flag detection. ' +
+        'If not specified, auto-detected from git context.',
+      group: toOrange('Build options:'),
+      type: 'string',
+    },
+
     dryRun: {
       array: false,
       default: false,
-      description: 'Outputs the config without building',
+      description: 'Output the config without building',
       group: toOrange('Options:'),
       type: 'boolean',
     },
@@ -365,22 +409,31 @@ function getOptions(
 /**
  * Returns a string representation of the given arguments and features.
  *
- * @param args
- * @param features
+ * @param args - The parsed CLI arguments
+ * @param features - The active and available features
+ * @param resolvedEnvironment - The resolved MetaMask environment
  */
-export function getDryRunMessage(args: Args, features: Features) {
+export function getDryRunMessage(
+  args: Args,
+  features: Features,
+  resolvedEnvironment: string,
+) {
   return `🦊 Build Config 🦊
 
-Environment: ${args.env}
+Environment (--env): ${args.env}
+Target Environment: ${resolvedEnvironment}${resolvedEnvironment === args.targetEnvironment ? '' : ' (auto-detected)'}
 Minify: ${args.minify}
 Watch: ${args.watch}
 Cache: ${args.cache}
 Progress: ${args.progress}
 Zip: ${args.zip}
-Snow: ${args.snow}
 LavaMoat: ${args.lavamoat}
-Lockdown: ${args.lockdown}
+LavaMoat debug: ${args.lavamoatDebug}
+Generate policy: ${args.generatePolicy}
+Snow: ${args.snow}
 Sentry: ${args.sentry}
+React Compiler verbose: ${args.reactCompilerVerbose}
+React Compiler debug: ${args.reactCompilerDebug}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

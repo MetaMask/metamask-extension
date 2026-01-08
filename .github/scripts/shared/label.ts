@@ -3,8 +3,6 @@ import { GitHub } from '@actions/github/lib/utils';
 import { retrieveRepo } from './repo';
 
 export enum RegressionStage {
-  DevelopmentFeature,
-  DevelopmentMain,
   Testing,
   Beta,
   Production,
@@ -29,8 +27,14 @@ export const externalContributorLabel: Label = {
 
 export const needsTriageLabel: Label = {
   name: 'needs-triage',
-  color: '#68AEE6',
+  color: '68AEE6',
   description: 'Issue needs to be triaged',
+};
+
+export const areaSentryLabel: Label = {
+  name: 'area-sentry',
+  color: '5319E7',
+  description: 'Issue from Sentry',
 };
 
 export const flakyTestsLabel: Label = {
@@ -57,20 +61,6 @@ export function craftRegressionLabel(
   releaseVersion: string | undefined,
 ): Label {
   switch (regressionStage) {
-    case RegressionStage.DevelopmentFeature:
-      return {
-        name: `feature-branch-bug`,
-        color: '5319E7', // violet
-        description: `bug that was found on a feature branch, but not yet merged in main branch`,
-      };
-
-    case RegressionStage.DevelopmentMain:
-      return {
-        name: `regression-main`,
-        color: '5319E7', // violet
-        description: `Regression bug that was found on main branch, but not yet present in production`,
-      };
-
     case RegressionStage.Testing:
       return {
         name: `regression-RC-${releaseVersion || '*'}`,
@@ -113,14 +103,14 @@ export function craftTeamLabel(teamName: string): Label {
     case 'extension-platform':
       return {
         name: `team-${teamName}`,
-        color: '#BFD4F2', // light blue
+        color: 'BFD4F2', // light blue
         description: `Extension Platform team`,
       };
 
     case 'mobile-platform':
       return {
         name: `team-${teamName}`,
-        color: '#76E9D0', // light green
+        color: '76E9D0', // light green
         description: `Mobile Platform team`,
       };
 

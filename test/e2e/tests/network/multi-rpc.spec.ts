@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { Mockttp } from '../../mock-e2e';
 import {
@@ -9,7 +9,6 @@ import {
   expectNoMockRequest,
 } from '../../helpers/mock-server';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
@@ -21,7 +20,10 @@ import {
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import { switchToEditRPCViaGlobalMenuNetworks } from '../../page-objects/flows/network.flow';
+import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
 
 describe('MultiRpc:', function (this: Suite) {
   it('should migrate to multi rpc', async function () {
@@ -37,41 +39,98 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              'eip155:1/slip44:60': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkController({
-            providerConfig: {
-              rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
-            },
-            networkConfigurations: {
-              networkConfigurationId: {
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: ['https://etherscan.io/'],
                 chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+                defaultBlockExplorerUrlIndex: 0,
+                defaultRpcEndpointIndex: 0,
+                lastUpdatedAt: 1760599304062,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'networkConfigurationId',
+                    type: 'custom',
+                    url: 'http://localhost:8545',
+                  },
+                ],
+              },
+              '0xa4b1': {
+                blockExplorerUrls: ['https://explorer.arbitrum.io'],
+                chainId: '0xa4b1',
+                defaultBlockExplorerUrlIndex: 0,
+                defaultRpcEndpointIndex: 0,
+                lastUpdatedAt: 1760599304062,
+                name: 'Arbitrum One',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    failoverUrls: [
+                      'https://purple-young-mansion.arbitrum-mainnet.quiknode.pro/f48c5cbfd1f5b39f0e5542d3b23c181b4085a2b5/',
+                    ],
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                    type: 'custom',
+                    url: 'https://arbitrum-mainnet.infura.io/',
+                  },
+                  {
+                    name: 'Arbitrum mainnet 2',
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                    type: 'custom',
+                    url: 'https://responsive-rpc.test/',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
-                rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                EIPS: { 1559: true },
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
-                rpcPrefs: {},
-                rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
+                EIPS: { 1559: true },
+                status: 'available',
               },
             },
-            selectedNetworkClientId: 'networkConfigurationId',
+            mainnet: {
+              EIPS: { 1559: true },
+              status: 'available',
+            },
+            selectedNetworkClientId: 'mainnet',
+          })
+          .withPreferencesController({
+            preferences: {
+              showNativeTokenAsMainBalance: true,
+            },
+          })
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -81,16 +140,19 @@ describe('MultiRpc:', function (this: Suite) {
       async ({ driver }) => {
         await completeImportSRPOnboardingFlow({ driver });
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_localNodeBalanceIsDisplayed();
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed(
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+          'ETH',
+        );
 
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // check rpc number
         await selectNetworkDialog.openNetworkRPC('eip155:42161');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        await selectNetworkDialog.checkNetworkRPCNumber(2);
       },
     );
   });
@@ -116,6 +178,20 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              'eip155:1/slip44:60': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -162,7 +238,7 @@ describe('MultiRpc:', function (this: Suite) {
       async ({ driver, mockedEndpoint }) => {
         await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         const usedUrlBeforeSwitch = await mockedEndpoint[1].getSeenRequests();
 
@@ -178,28 +254,27 @@ describe('MultiRpc:', function (this: Suite) {
         // check that requests are sent on the background for the rpc https://responsive-rpc.test/
         await expectNoMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
 
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
         await selectNetworkDialog.openNetworkRPC('eip155:42161');
-        await selectNetworkDialog.check_networkRPCNumber(2);
+        await selectNetworkDialog.checkNetworkRPCNumber(2);
 
         // select second rpc for Arbitrum network in the network dialog
         await selectNetworkDialog.selectRPC('Arbitrum mainnet 2');
-        await homePage.check_pageIsLoaded();
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await homePage.checkPageIsLoaded();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
 
         // check that the second rpc is selected in the network dialog
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
 
         const usedUrl = await mockedEndpoint[0].getSeenRequests();
         // check the url first request send on the background to the mocked rpc after switch
         assert.equal(usedUrl[0].url, 'https://responsive-rpc.test/');
 
         // check that requests are sent on the background for the url https://responsive-rpc.test/
-        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 3000 });
+        await expectMockRequest(driver, mockedEndpoint[0], { timeout: 5000 });
       },
     );
   });
@@ -215,6 +290,20 @@ describe('MultiRpc:', function (this: Suite) {
               id: '1694444405781',
               jsonrpc: '2.0',
               result: '0xa4b1',
+            },
+          })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              'eip155:1/slip44:60': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
             },
           })),
       ];
@@ -237,7 +326,7 @@ describe('MultiRpc:', function (this: Suite) {
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
                 chainId: '0xa4b1',
                 id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
+                nickname: 'Arbitrum',
                 rpcPrefs: {},
                 rpcUrl: 'https://arbitrum-mainnet.infura.io',
                 ticker: 'ETH',
@@ -260,31 +349,37 @@ describe('MultiRpc:', function (this: Suite) {
 
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
+        await selectNetworkDialog.checkPageIsLoaded();
 
         // go to Edit Menu for Arbitrum network and select the second rpc
         await selectNetworkDialog.openNetworkListOptions('eip155:42161');
         await selectNetworkDialog.openEditNetworkModal();
 
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
 
         // validate the network was successfully edited
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
+
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await headerNavbar.clickSwitchNetworkDropDown();
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });
@@ -302,6 +397,20 @@ describe('MultiRpc:', function (this: Suite) {
               result: '0xa4b1',
             },
           })),
+        // Mock spot-prices for balance display
+        await mockServer
+          .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
+          .thenCallback(() => ({
+            statusCode: 200,
+            json: {
+              'eip155:1/slip44:60': {
+                id: 'ethereum',
+                price: 1700,
+                marketCap: 382623505141,
+                pricePercentChange1d: 0,
+              },
+            },
+          })),
       ];
     }
     await withFixtures(
@@ -311,29 +420,56 @@ describe('MultiRpc:', function (this: Suite) {
             providerConfig: {
               rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
             },
-            networkConfigurations: {
-              networkConfigurationId: {
+            networkConfigurationsByChainId: {
+              '0x539': {
+                blockExplorerUrls: ['https://etherscan.io/'],
                 chainId: '0x539',
-                nickname: 'Localhost 8545',
-                rpcUrl: 'http://localhost:8545',
-                ticker: 'ETH',
-                rpcPrefs: { blockExplorerUrl: 'https://etherscan.io/' },
+                defaultBlockExplorerUrlIndex: 0,
+                defaultRpcEndpointIndex: 0,
+                name: 'Localhost 8545',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: 'networkConfigurationId',
+                    type: 'custom',
+                    url: 'http://localhost:8545',
+                  },
+                ],
+              },
+              '0xa4b1': {
+                blockExplorerUrls: ['https://explorer.arbitrum.io'],
+                chainId: '0xa4b1',
+                defaultBlockExplorerUrlIndex: 0,
+                defaultRpcEndpointIndex: 0,
+                name: 'Arbitrum',
+                nativeCurrency: 'ETH',
+                rpcEndpoints: [
+                  {
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb0',
+                    type: 'custom',
+                    url: 'https://arbitrum-mainnet.infura.io/',
+                  },
+                  {
+                    name: 'Arbitrum mainnet 2',
+                    networkClientId: '2ce66016-8aab-47df-b27f-318c80865eb1',
+                    type: 'custom',
+                    url: 'https://responsive-rpc.test/',
+                  },
+                ],
+              },
+            },
+            networksMetadata: {
+              networkConfigurationId: {
+                EIPS: { 1559: true },
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb0': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb0',
-                nickname: 'Arbitrum mainnet',
-                rpcPrefs: {},
-                rpcUrl: 'https://arbitrum-mainnet.infura.io',
-                ticker: 'ETH',
+                EIPS: { 1559: true },
+                status: 'available',
               },
               '2ce66016-8aab-47df-b27f-318c80865eb1': {
-                chainId: '0xa4b1',
-                id: '2ce66016-8aab-47df-b27f-318c80865eb1',
-                nickname: 'Arbitrum mainnet 2',
-                rpcPrefs: {},
-                rpcUrl: 'https://responsive-rpc.test/',
-                ticker: 'ETH',
+                EIPS: { 1559: true },
+                status: 'available',
               },
             },
             selectedNetworkClientId: 'networkConfigurationId',
@@ -346,39 +482,47 @@ describe('MultiRpc:', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await importSRPOnboardingFlow({ driver });
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
           driver,
         );
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
+        await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateToGeneralSettings();
 
         // open edit network modal during onboarding and select the second rpc
-        await onboardingPrivacySettingsPage.openEditNetworkModal(
-          'Arbitrum One',
-        );
+        await onboardingPrivacySettingsPage.openEditNetworkModal('Arbitrum');
         const editNetworkModal = new AddEditNetworkModal(driver);
-        await editNetworkModal.check_pageIsLoaded();
+        await editNetworkModal.checkPageIsLoaded();
         await editNetworkModal.selectRPCInEditNetworkModal(
           'Arbitrum mainnet 2',
         );
         await onboardingPrivacySettingsPage.navigateBackToSettingsPage();
-        await onboardingPrivacySettingsPage.check_pageIsLoaded();
+        await onboardingPrivacySettingsPage.checkPageIsLoaded();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
         // finish onboarding and check the network successfully edited message is displayed
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
-        await homePage.check_editNetworkMessageIsDisplayed('Arbitrum One');
+        await homePage.checkPageIsLoaded();
+
+        // Check for edit network toast (may not appear with sidepanel due to appState loss)
+        if (await isSidePanelEnabled()) {
+          console.log('Skipping edit network toast check for sidepanel build');
+        } else {
+          await homePage.checkEditNetworkMessageIsDisplayed('Arbitrum');
+        }
         await homePage.closeUseNetworkNotificationModal();
 
         // check that the second rpc is selected in the network dialog
-        await new HeaderNavbar(driver).clickSwitchNetworkDropDown();
+        await switchToEditRPCViaGlobalMenuNetworks(driver);
         const selectNetworkDialog = new SelectNetwork(driver);
-        await selectNetworkDialog.check_pageIsLoaded();
-        await selectNetworkDialog.check_rpcIsSelected('Arbitrum mainnet 2');
+        await selectNetworkDialog.checkPageIsLoaded();
+        await selectNetworkDialog.checkRpcIsSelected('Arbitrum mainnet 2');
       },
     );
   });

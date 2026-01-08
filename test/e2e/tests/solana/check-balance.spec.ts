@@ -13,7 +13,7 @@ describe('Check balance', function (this: Suite) {
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('0', 'SOL');
+        await homePage.checkPageIsLoaded({ amount: '0 SOL' });
       },
     );
   });
@@ -21,12 +21,12 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
-        showNativeTokenAsMainBalance: false,
         mockZeroBalance: true,
+        showNativeTokenAsMainBalance: false,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('$0.00', 'USD');
+        await homePage.checkPageIsLoaded({ amount: '$0' });
       },
     );
   });
@@ -34,12 +34,12 @@ describe('Check balance', function (this: Suite) {
     await withSolanaAccountSnap(
       {
         title: this.test?.fullTitle(),
+        mockZeroBalance: false,
         showNativeTokenAsMainBalance: false,
-        mockCalls: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('$5,643.50', 'USD');
+        await homePage.checkPageIsLoaded({ amount: '$5,643.50' });
       },
     );
   });
@@ -48,11 +48,10 @@ describe('Check balance', function (this: Suite) {
       {
         title: this.test?.fullTitle(),
         showNativeTokenAsMainBalance: true,
-        mockCalls: true,
       },
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
-        await homePage.check_getBalance('50', 'SOL');
+        await homePage.checkPageIsLoaded({ amount: '50 SOL' });
       },
     );
   });

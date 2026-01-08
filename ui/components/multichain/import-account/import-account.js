@@ -22,6 +22,7 @@ import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import * as actions from '../../../store/actions';
 import { getHDEntropyIndex } from '../../../selectors/selectors';
+import { getIsSocialLoginFlow } from '../../../selectors';
 
 // Subviews
 import JsonImportView from './json';
@@ -32,6 +33,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
+  const isSocialLoginFlow = useSelector(getIsSocialLoginFlow);
 
   const menuItems = [t('privateKey'), t('jsonFile')];
 
@@ -41,6 +43,15 @@ export const ImportAccount = ({ onActionComplete }) => {
     const loadingMessage = getLoadingMessage(strategy);
 
     try {
+      if (isSocialLoginFlow) {
+        const isPasswordOutdated = await dispatch(
+          actions.checkIsSeedlessPasswordOutdated(true),
+        );
+        if (isPasswordOutdated) {
+          return false;
+        }
+      }
+
       const { selectedAddress } = await dispatch(
         actions.importNewAccount(strategy, importArgs, loadingMessage),
       );
@@ -55,6 +66,11 @@ export const ImportAccount = ({ onActionComplete }) => {
     } catch (error) {
       const message = getErrorMessage(error);
       trackImportEvent(strategy, message);
+
+      if (handleKeyringControllerError(error)) {
+        return false;
+      }
+
       translateWarning(message);
       return false;
     }
@@ -121,19 +137,56 @@ export const ImportAccount = ({ onActionComplete }) => {
     }
   }
 
+  function handleKeyringControllerError(error) {
+    // This is not the best way to handle error messages coming from the KeyringController.
+    // We should have a mapping that allows us to map error codes to i18n messages.
+    // However, for now, we will just check if the error message starts with
+    // 'KeyringController -' and if so, we will trim that part and translate
+    // the rest of the message.
+    const errorPrefix = 'KeyringController -';
+    if (error.message.startsWith(errorPrefix)) {
+      const trimmedMessage = error.message.slice(errorPrefix.length).trim();
+      translateWarning(trimmedMessage);
+      return true;
+    }
+
+    return false;
+  }
+
   return (
     <>
-      <Text variant={TextVariant.bodySm} marginTop={2}>
-        {t('importAccountMsg')}{' '}
-        <ButtonLink
-          size={Size.inherit}
-          href={ZENDESK_URLS.IMPORTED_ACCOUNTS}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {t('here')}
-        </ButtonLink>
-      </Text>
+      {isSocialLoginFlow ? (
+        <>
+          <Text variant={TextVariant.bodySm}>
+            {t('importAccountWithSocialMsg')}
+          </Text>
+          <Text variant={TextVariant.bodySm}>
+            {t('importAccountWithSocialMsgLearnMore', [
+              <ButtonLink
+                size={Size.inherit}
+                href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+                target="_blank"
+                rel="noopener noreferrer"
+                key="importAccountWithSocialMsgLearnMore"
+              >
+                {t('learnMoreUpperCase')}
+              </ButtonLink>,
+            ])}
+          </Text>
+        </>
+      ) : (
+        <Text variant={TextVariant.bodySm} marginTop={2}>
+          {t('importAccountMsg')}{' '}
+          <ButtonLink
+            size={Size.inherit}
+            href={ZENDESK_URLS.IMPORTED_ACCOUNTS_PRIVATE_KEY}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {t('here')}
+          </ButtonLink>
+        </Text>
+      )}
       <Box paddingTop={4} paddingBottom={8}>
         <Label
           width={BlockSize.Full}

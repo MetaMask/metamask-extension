@@ -25,6 +25,7 @@ jobs:
     if: ${{ github.event.workflow_run.conclusion == 'success' && contains(fromJSON('["push", "pull_request"]'), github.event.workflow_run.event) && !github.event.workflow_run.repository.fork }}
     name: SonarCloud
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -71,8 +72,8 @@ jobs:
           fi
 
       - name: SonarCloud Scan
-        # This is SonarSource/sonarcloud-github-action@v2.0.0
-        uses: SonarSource/sonarcloud-github-action@4b4d7634dab97dcee0b75763a54a6dc92a9e6bc1
+        # This is SonarSource/sonarqube-scan-action@v5.3.1
+        uses: SonarSource/sonarqube-scan-action@1a6d90ebcb0e6a6b1d87e37ba693fe453195ae25
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

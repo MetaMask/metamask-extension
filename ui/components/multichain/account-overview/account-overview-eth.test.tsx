@@ -1,7 +1,7 @@
 import React from 'react';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
@@ -9,14 +9,17 @@ import {
   AccountOverviewEthProps,
 } from './account-overview-eth';
 
-jest.mock('../../../store/actions', () => ({
-  tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
-  tokenBalancesStopPollingByPollingToken: jest.fn(),
-  setTokenNetworkFilter: jest.fn(),
-  updateSlides: jest.fn(),
-  removeSlide: jest.fn(),
-  addImportedTokens: jest.fn(),
-}));
+jest.mock('../../../store/actions', () => {
+  return {
+    ...jest.requireActual('../../../store/actions'),
+    tokenBalancesStartPolling: jest.fn().mockResolvedValue('pollingToken'),
+    tokenBalancesStopPollingByPollingToken: jest.fn(),
+    setTokenNetworkFilter: jest.fn(),
+    updateSlides: jest.fn(),
+    removeSlide: jest.fn(),
+    addImportedTokens: jest.fn(),
+  };
+});
 
 // Mock the dispatch function
 const mockDispatch = jest.fn();

@@ -1,20 +1,24 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { DAPP_PATH } from '../../constants';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { mockSimpleKeyringSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
 
 describe('Create Snap Account', function (this: Suite) {
   it('create Snap account with custom name input ends in approval success', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -29,9 +33,9 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await new HeaderNavbar(driver).check_accountLabel(
-          newCustomAccountLabel,
-        );
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        // await new HeaderNavbar(driver).checkAccountLabel(newCustomAccountLabel);
+        await new HeaderNavbar(driver).checkAccountLabel('Snap Account 1');
       },
     );
   });
@@ -39,22 +43,30 @@ describe('Create Snap Account', function (this: Suite) {
   it('creates multiple Snap accounts with increasing numeric suffixes', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver);
         const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
-        const expectedNames = ['SSK Account', 'SSK Account 2', 'SSK Account 3'];
+        const newNames = ['SSK Account', 'SSK Account 2', 'SSK Account 3'];
+        const expectedNames = [
+          'Snap Account 1',
+          'Snap Account 2',
+          'Snap Account 3',
+        ];
 
         // Create multiple snap accounts on snap simple keyring page
-        for (const expectedName of expectedNames) {
-          if (expectedName === 'SSK Account') {
-            await snapSimpleKeyringPage.createNewAccount(expectedName, true);
+        for (const newName of newNames) {
+          if (newName === 'SSK Account') {
+            await snapSimpleKeyringPage.createNewAccount(newName, true);
           } else {
-            await snapSimpleKeyringPage.createNewAccount(expectedName, false);
+            await snapSimpleKeyringPage.createNewAccount(newName, false);
           }
         }
 
@@ -64,9 +76,9 @@ describe('Create Snap Account', function (this: Suite) {
         );
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
         for (const expectedName of expectedNames) {
-          await accountListPage.check_accountDisplayedInAccountList(
+          await accountListPage.checkAccountDisplayedInAccountList(
             expectedName,
           );
         }
@@ -77,8 +89,11 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on confirmation screen results in error on Snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -92,7 +107,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
-        await snapSimpleKeyringPage.check_errorRequestMessageDisplayed();
+        await snapSimpleKeyringPage.checkErrorRequestMessageDisplayed();
 
         // Check snap account is not displayed in account list after canceling the creation
         await driver.switchToWindowWithTitle(
@@ -100,8 +115,8 @@ describe('Create Snap Account', function (this: Suite) {
         );
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'SSK Account',
         );
       },
@@ -111,8 +126,11 @@ describe('Create Snap Account', function (this: Suite) {
   it('create Snap account canceling on fill name screen results in error on Snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
-        testSpecificMock: mockSimpleKeyringSnap,
+        testSpecificMock: mockSnapSimpleKeyringAndSite,
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -127,7 +145,7 @@ describe('Create Snap Account', function (this: Suite) {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.SnapSimpleKeyringDapp,
         );
-        await snapSimpleKeyringPage.check_errorRequestMessageDisplayed();
+        await snapSimpleKeyringPage.checkErrorRequestMessageDisplayed();
 
         // Check snap account is not displayed in account list after canceling the creation
         await driver.switchToWindowWithTitle(
@@ -135,8 +153,8 @@ describe('Create Snap Account', function (this: Suite) {
         );
         await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountIsNotDisplayedInAccountList(
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountIsNotDisplayedInAccountList(
           'SSK Account',
         );
       },

@@ -15,6 +15,12 @@ class WatchAssetConfirmation {
   async clickFooterConfirmButton() {
     await this.driver.clickElement(this.footerConfirmButton);
   }
+
+  async clickFooterConfirmButtonAndAndWaitForWindowToClose() {
+    await this.driver.clickElementAndWaitForWindowToClose(
+      this.footerConfirmButton,
+    );
+  }
 }
 
 export default WatchAssetConfirmation;

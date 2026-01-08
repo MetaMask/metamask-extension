@@ -5,10 +5,14 @@ ignores:
   #
 
   - '@lavamoat/snow'
+  - '@lavamoat/webpack'
   - '@lavamoat/allow-scripts'
   - '@babel/runtime'
+  - 'react-compiler-runtime'
   - '@fortawesome/fontawesome-free'
   - 'punycode'
+  # injected via build system
+  - '@metamask/kernel-shims'
 
   #
   # dev deps
@@ -25,6 +29,9 @@ ignores:
   - '@metamask/test-dapp'
   - '@metamask/test-dapp-multichain'
   - '@metamask/test-dapp-solana'
+  - '@metamask/snap-simple-keyring-site'
+  - '@metamask/snap-account-abstraction-keyring-site'
+  - '@metamask/test-snaps'
   - '@metamask/design-tokens' # Only imported in index.css
   - '@tsconfig/node22' # required dynamically by TS, used in tsconfig.json
   - '@sentry/cli' # invoked as `sentry-cli`
@@ -42,22 +49,16 @@ ignores:
   - 'wait-on'
   - 'tsx' # used in .devcontainer
   - 'prettier-eslint' # used by the Prettier ESLint VSCode extension
-  - 'tar' # used by foundryup.ts
-  - 'minipass' # used by foundryup.ts
   - 'tweetnacl' # used by solana-wallet-standard
   - 'bs58' # used by solana-wallet-standard
   # storybook
   - '@storybook/cli'
   - '@storybook/core'
-  - '@storybook/addon-designs'
   - '@storybook/addon-essentials'
   - '@storybook/addon-a11y'
-  - '@storybook/addon-mdx-gfm'
   - '@storybook/builder-webpack5'
   - '@storybook/manager-webpack5'
   - '@storybook/react-webpack5'
-  - 'storybook-dark-mode'
-  - '@whitespace/storybook-addon-html'
   - 'react-syntax-highlighter'
   - 'style-loader'
   - 'css-loader'
@@ -81,8 +82,12 @@ ignores:
   - 'path-browserify' # polyfill
   - 'nyc' # coverage
   - 'core-js-pure' # polyfills
+  - 'react-compiler-webpack' # build tool
   # babel
   - '@babel/plugin-transform-logical-assignment-operators'
+  - 'babel-plugin-react-compiler'
+  # used in image optimization script
+  - 'sharp'
   # trezor
   - 'ts-mixer'
   - '@testing-library/dom'
@@ -95,7 +100,10 @@ ignores:
   - '@metamask/account-watcher'
   - '@metamask/bitcoin-wallet-snap'
   - '@metamask/solana-wallet-snap'
+  - '@metamask/tron-wallet-snap'
   - '@metamask/institutional-wallet-snap'
+  - '@metamask/gator-permissions-snap'
+  - '@metamask/permissions-kernel-snap'
 
 # files depcheck should not parse
 ignorePatterns:

@@ -3,7 +3,7 @@ import type {
   LedgerBridge,
   LedgerBridgeOptions,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { KeyringClass, Json } from '@metamask/utils';
+import { KeyringClass } from '@metamask/keyring-utils';
 import { FakeKeyringBridge } from '../../../test/stub/keyring-bridge';
 
 /**
@@ -25,7 +25,7 @@ export type HardwareTransportBridgeClass =
  * @returns A builder function for the given Keyring.
  */
 export function hardwareKeyringBuilderFactory(
-  Keyring: KeyringClass<Json>,
+  Keyring: KeyringClass,
   Bridge: HardwareTransportBridgeClass,
 ) {
   const builder = () => new Keyring({ bridge: new Bridge() });

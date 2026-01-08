@@ -104,9 +104,13 @@ export interface PopoverStyleUtilityProps extends StyleUtilityProps {
   onClickOutside?: () => void;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PopoverProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, PopoverStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type PopoverComponent = <C extends React.ElementType = 'div'>(
   props: PopoverProps<C>,
 ) => React.ReactElement | null;

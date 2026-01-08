@@ -1,3 +1,5 @@
+'use no memo';
+
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import React from 'react';
@@ -8,7 +10,7 @@ import {
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-import { ellipsify } from '../../../send/send.utils';
+import { ellipsify } from '../../../send-legacy/send.utils';
 
 export const NonContractAddressAlertMessage = (
   networkConfigurations: Record<Hex, { name: string }>,

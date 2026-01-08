@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent, waitFor } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockState from '../../../../test/data/mock-state.json';
 import CreateNewVault from './create-new-vault';
@@ -37,7 +37,7 @@ describe('CreateNewVault', () => {
     );
     expect(
       screen.getByText(
-        'You can paste your entire secret recovery phrase into any field',
+        'You can paste your entire Secret Recovery Phrase into any field.',
       ),
     ).toBeInTheDocument();
   });
@@ -80,7 +80,7 @@ describe('CreateNewVault', () => {
 
     fireEvent.change(passwordInput, passwordEvent);
 
-    const passwordError = queryByText('Password not long enough');
+    const passwordError = queryByText('Must be at least 8 characters');
 
     expect(passwordError).toBeInTheDocument();
 

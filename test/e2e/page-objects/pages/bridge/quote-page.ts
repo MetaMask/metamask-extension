@@ -1,11 +1,12 @@
+import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
 
 export type BridgeQuote = {
   amount: string;
-  tokenFrom: string;
-  tokenTo: string;
-  fromChain: string;
-  toChain: string;
+  tokenFrom?: string;
+  tokenTo?: string;
+  fromChain?: string;
+  toChain?: string;
   unapproved?: boolean;
 };
 
@@ -16,6 +17,9 @@ class BridgeQuotePage {
 
   private destinationAssetPickerButton =
     '[data-testid="bridge-destination-button"]';
+
+  private mutlichainAssetPicker =
+    '[data-testid="multichain-asset-picker__network"]';
 
   public assetPrickerSearchInput =
     '[data-testid="asset-picker-modal-search-input"]';
@@ -28,7 +32,7 @@ class BridgeQuotePage {
 
   public tokenButton = '[data-testid="multichain-token-list-button"]';
 
-  private submitButton = { text: 'Submit', tag: 'button' };
+  private submitButton = { text: 'Swap', tag: 'button' };
 
   private insufficientFundsButton = {
     text: 'Insufficient funds',
@@ -43,6 +47,9 @@ class BridgeQuotePage {
 
   private applyButton = { text: 'Apply', tag: 'button' };
 
+  private confirmButton =
+    '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
+
   private selectAllButton = { text: 'Select all', tag: 'button' };
 
   private noOptionAvailable = {
@@ -55,53 +62,79 @@ class BridgeQuotePage {
     css: '.mm-text--body-md',
   };
 
+  private switchTokensButton = '[data-testid="switch-tokens"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
   enterBridgeQuote = async (quote: BridgeQuote) => {
     // Source
-    await this.driver.clickElement(this.sourceAssetPickerButton);
-    await this.driver.clickElement(this.networkSelector);
-    await this.driver.clickElement(this.selectAllButton);
-    await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-    await this.driver.clickElementAndWaitToDisappear(this.applyButton);
-
-    await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
-    await this.driver.clickElement({
-      text: quote.tokenFrom,
-      css: this.tokenButton,
-    });
-
+    if (quote.tokenFrom || quote.fromChain) {
+      await this.driver.clickElement(this.sourceAssetPickerButton);
+      if (quote.fromChain) {
+        await this.driver.clickElement(this.networkSelector);
+        await this.driver.clickElement(this.selectAllButton);
+        await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
+        await this.driver.clickElementAndWaitToDisappear(this.applyButton);
+      }
+      if (quote.tokenFrom) {
+        await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);
+        await this.driver.clickElement({
+          text: quote.tokenFrom,
+          css: this.tokenButton,
+        });
+      }
+    }
     // QTY
     await this.driver.fill(this.sourceAmount, quote.amount);
 
     // Destination
-    await this.driver.waitForSelector(this.destinationAssetPickerButton);
-    await this.driver.clickElement(this.destinationAssetPickerButton);
-    await this.driver.clickElementAndWaitToDisappear(
-      `[data-testid="${quote.toChain}"]`,
-    );
-    await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
-    await this.driver.clickElementAndWaitToDisappear({
-      text: quote.tokenTo,
-      css: this.tokenButton,
-    });
+    if (quote.tokenTo || quote.toChain) {
+      await this.driver.waitForSelector(this.destinationAssetPickerButton);
+      await this.driver.clickElement(this.destinationAssetPickerButton);
+
+      // After clicking destination, we might see either:
+      // 1. Network selection modal (if destination is pre-populated and different from desired network)
+      // 2. Token picker with network badge (if destination is empty or on the correct network)
+
+      if (quote.toChain) {
+        // We're in token picker, need to click network badge first
+        await this.driver.waitForSelector(this.mutlichainAssetPicker);
+        await this.driver.clickElement(this.mutlichainAssetPicker);
+
+        // Now select the destination network
+        await this.driver.clickElementAndWaitToDisappear(
+          `[data-testid="${quote.toChain}"]`,
+        );
+      }
+      if (quote.tokenTo) {
+        await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.tokenTo,
+          css: this.tokenButton,
+        });
+      }
+    }
     await this.driver.assertElementNotPresent(
       {
         tag: 'p',
         text: 'Fetching quotes...',
       },
-      { waitAtLeastGuard: 5000 },
+      { waitAtLeastGuard: 500 },
     );
   };
 
   waitForQuote = async () => {
-    await this.driver.waitForSelector(this.submitButton, { timeout: 60000 });
+    await this.driver.waitForSelector(this.submitButton, { timeout: 30000 });
   };
 
   submitQuote = async () => {
     await this.driver.clickElement(this.submitButton);
+  };
+
+  confirmBridgeTransaction = async () => {
+    await this.driver.clickElement(this.confirmButton);
   };
 
   goBack = async () => {
@@ -109,7 +142,24 @@ class BridgeQuotePage {
     await this.driver.clickElement(this.backButton);
   };
 
-  async check_noTradeRouteMessageIsDisplayed(): Promise<void> {
+  async searchAssetAndVerifyCount(
+    searchInput: string,
+    count: number,
+  ): Promise<void> {
+    console.log(`Fill search input with ${searchInput}`);
+    await this.driver.pasteIntoField(this.assetPrickerSearchInput, searchInput);
+    await this.driver.elementCountBecomesN(this.tokenButton, count);
+  }
+
+  async checkTokenIsDisabled() {
+    const [tkn] = await this.driver.findElements(this.tokenButton);
+
+    await tkn.click();
+    const isSelected = await tkn.isSelected();
+    assert.equal(isSelected, false);
+  }
+
+  async checkNoTradeRouteMessageIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.noOptionAvailable);
     } catch (e) {
@@ -121,7 +171,7 @@ class BridgeQuotePage {
     console.log('The message "no trade route is available" is displayed');
   }
 
-  async check_insufficientFundsButtonIsDisplayed(): Promise<void> {
+  async checkInsufficientFundsButtonIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.insufficientFundsButton);
     } catch (e) {
@@ -131,7 +181,7 @@ class BridgeQuotePage {
     console.log('The button "Insufficient funds" is displayed');
   }
 
-  async check_moreETHneededIsDisplayed(): Promise<void> {
+  async checkMoreETHneededIsDisplayed(): Promise<void> {
     try {
       await this.driver.waitForSelector(this.moreETHneededForGas);
     } catch (e) {
@@ -143,7 +193,7 @@ class BridgeQuotePage {
     console.log('The message "More ETH needed for gas" is displayed');
   }
 
-  async check_expectedNetworkFeeIsDisplayed(): Promise<void> {
+  async checkExpectedNetworkFeeIsDisplayed(): Promise<void> {
     try {
       const balance = await this.driver.waitForSelector(this.networkFees);
       const currentBalanceText = await balance.getText();
@@ -161,6 +211,15 @@ class BridgeQuotePage {
       throw e;
     }
     console.log('Price matches expected format');
+  }
+
+  checkDestAmount = async (amount: string) => {
+    const destAmount = await this.driver.findElement(this.destinationAmount);
+    assert.equal(await destAmount.getAttribute('value'), amount);
+  };
+
+  async switchTokens(): Promise<void> {
+    await this.driver.clickElement(this.switchTokensButton);
   }
 }
 

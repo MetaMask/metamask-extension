@@ -1,11 +1,12 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { unlockWallet, veryLargeDelayMs, withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
+import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import NetworkManager from '../../page-objects/pages/network-manager';
 import {
-  switchToNetworkFlow,
-  searchAndSwitchToNetworkFlow,
-} from '../../page-objects/flows/network.flow';
-import { DEFAULT_BRIDGE_FEATURE_FLAGS } from './constants';
+  BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+} from './constants';
 import { bridgeTransaction, getBridgeFixtures } from './bridge-test-utils';
 
 describe('Bridge tests', function (this: Suite) {
@@ -19,12 +20,12 @@ describe('Bridge tests', function (this: Suite) {
       ),
       async ({ driver }) => {
         await unlockWallet(driver);
-        const homePage = new HomePage(driver);
-        await homePage.check_expectedBalanceIsDisplayed('24');
 
-        await bridgeTransaction(
+        const homePage = new HomePage(driver);
+
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '25',
             tokenFrom: 'DAI',
             tokenTo: 'ETH',
@@ -32,47 +33,42 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          2,
-          '24.9',
-        );
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '0.0157',
+        });
 
-        // Switch to Linea Mainnet to set it as the selected network
-        // in the network-controller
-        await switchToNetworkFlow(driver, 'Linea Mainnet');
-
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'USDC',
             fromChain: 'Ethereum',
-            toChain: 'Arbitrum One',
+            toChain: 'Arbitrum',
           },
-          3,
-          '23.9',
-        );
-
-        await bridgeTransaction(
+          expectedTransactionsCount: 3,
+          expectedDestAmount: '1,642',
+        });
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '1',
             tokenFrom: 'ETH',
             tokenTo: 'ETH',
             fromChain: 'Ethereum',
             toChain: 'Linea',
           },
-          4,
-          '22.9',
-        );
+          expectedTransactionsCount: 4,
+          expectedDestAmount: '0.991',
+        });
 
-        // Switch to Arbitrum One to set it as the selected network
-        // in the network-controller
-        await searchAndSwitchToNetworkFlow(driver, 'Arbitrum One');
+        await homePage.checkPageIsLoaded();
+        await homePage.goToTokensTab();
+        await homePage.goToActivityList();
 
-        await bridgeTransaction(
+        await bridgeTransaction({
           driver,
-          {
+          quote: {
             amount: '10',
             tokenFrom: 'USDC',
             tokenTo: 'DAI',
@@ -80,9 +76,75 @@ describe('Bridge tests', function (this: Suite) {
             toChain: 'Linea',
             unapproved: true,
           },
-          6,
-          '22.9',
-        );
+          expectedTransactionsCount: 6,
+          expectedDestAmount: '9.9',
+        });
+      },
+    );
+  });
+
+  it('Execute bridge transactions on non enabled networks', async function () {
+    await withFixtures(
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        DEFAULT_BRIDGE_FEATURE_FLAGS,
+        false,
+      ),
+      async ({ driver }) => {
+        await unlockWallet(driver);
+        const networkManager = new NetworkManager(driver);
+
+        // Navigate to Bridge page
+        const homePage = new HomePage(driver);
+        await homePage.startSwapFlow();
+
+        const bridgePage = new BridgeQuotePage(driver);
+        await bridgePage.enterBridgeQuote({
+          amount: '25',
+          tokenFrom: 'ETH',
+          tokenTo: 'DAI',
+          fromChain: 'Linea',
+          toChain: 'Ethereum',
+        });
+
+        await bridgePage.goBack();
+
+        // check if the Linea network is selected
+        await networkManager.openNetworkManager();
+        await driver.delay(veryLargeDelayMs);
+
+        await networkManager.checkAllPopularNetworksIsSelected();
+      },
+    );
+  });
+  it('updates recommended bridge quote incrementally when SSE events are received', async function () {
+    await withFixtures(
+      getBridgeFixtures(
+        this.test?.fullTitle(),
+        BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED,
+        false,
+      ),
+      async ({ driver }) => {
+        await unlockWallet(driver);
+
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.goToTokensTab();
+        await homePage.goToActivityList();
+
+        await bridgeTransaction({
+          driver,
+          quote: {
+            amount: '10',
+            tokenFrom: 'USDC',
+            tokenTo: 'DAI',
+            fromChain: 'Ethereum',
+            toChain: 'Linea',
+            unapproved: true,
+          },
+          expectedTransactionsCount: 2,
+          expectedDestAmount: '9.9',
+        });
       },
     );
   });

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import {
   TextAlign,
   TextColor,
@@ -9,6 +10,10 @@ import {
   SensitiveTextLength,
 } from '../../../../component-library';
 import { TokenFiatDisplayInfo } from '../../types';
+import { Skeleton } from '../../../../component-library/skeleton';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../../selectors';
+import { isZeroAmount } from '../../../../../helpers/utils/number-utils';
+import { useFormatters } from '../../../../../hooks/useFormatters';
 
 type TokenCellPrimaryDisplayProps = {
   token: TokenFiatDisplayInfo;
@@ -17,20 +22,31 @@ type TokenCellPrimaryDisplayProps = {
 
 export const TokenCellPrimaryDisplay = React.memo(
   ({ token, privacyMode }: TokenCellPrimaryDisplayProps) => {
+    const { formatTokenQuantity } = useFormatters();
+    const anyEnabledNetworksAreAvailable = useSelector(
+      selectAnyEnabledNetworksAreAvailable,
+    );
+
     return (
-      <SensitiveText
-        data-testid="multichain-token-list-item-value"
-        color={TextColor.textAlternative}
-        variant={TextVariant.bodySmMedium}
-        textAlign={TextAlign.End}
-        isHidden={privacyMode}
-        length={SensitiveTextLength.Short}
+      <Skeleton
+        isLoading={
+          !anyEnabledNetworksAreAvailable && isZeroAmount(token.balance)
+        }
       >
-        {token.primary} {token.symbol}
-      </SensitiveText>
+        <SensitiveText
+          data-testid="multichain-token-list-item-value"
+          color={TextColor.textAlternative}
+          variant={TextVariant.bodySmMedium}
+          textAlign={TextAlign.End}
+          isHidden={privacyMode}
+          length={SensitiveTextLength.Short}
+        >
+          {formatTokenQuantity(Number(token.balance ?? 0), token.symbol)}
+        </SensitiveText>
+      </Skeleton>
     );
   },
   (prevProps, nextProps) =>
-    prevProps.token.primary === nextProps.token.primary &&
+    prevProps.token.balance === nextProps.token.balance &&
     prevProps.privacyMode === nextProps.privacyMode,
 );

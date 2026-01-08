@@ -1,6 +1,11 @@
 import React, { PureComponent } from 'react';
 import PropTypes from 'prop-types';
-import { Switch, Route, matchPath, Redirect } from 'react-router-dom';
+import {
+  Routes as RouterRoutes,
+  Route,
+  matchPath,
+  Navigate,
+} from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -24,8 +29,10 @@ import {
   SNAP_SETTINGS_ROUTE,
   REVEAL_SRP_LIST_ROUTE,
   BACKUPANDSYNC_ROUTE,
+  SECURITY_PASSWORD_CHANGE_ROUTE,
+  TRANSACTION_SHIELD_ROUTE,
+  TRANSACTION_SHIELD_CLAIM_ROUTES,
 } from '../../helpers/constants/routes';
-
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
   ButtonIcon,
@@ -47,9 +54,15 @@ import MetafoxLogo from '../../components/ui/metafox-logo';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../shared/constants/app';
 import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
+import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
+import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import { toRelativeRoutePath } from '../routes/utils';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -61,23 +74,43 @@ import SettingsSearch from './settings-search';
 import SettingsSearchList from './settings-search-list';
 import { RevealSrpList } from './security-tab/reveal-srp-list';
 import BackupAndSyncTab from './backup-and-sync-tab';
+import ChangePassword from './security-tab/change-password';
+import ClaimsArea from './transaction-shield-tab/claims-area';
+import TransactionShield from './transaction-shield-tab';
+
+// Helper component for network routes that need side effects
+const NetworkRouteHandler = ({ onMount }) => {
+  React.useEffect(() => {
+    onMount();
+  }, [onMount]);
+
+  return <Navigate to={{ pathname: DEFAULT_ROUTE }} />;
+};
+
+NetworkRouteHandler.propTypes = {
+  onMount: PropTypes.func.isRequired,
+};
 
 class SettingsPage extends PureComponent {
   static propTypes = {
     addNewNetwork: PropTypes.bool,
     addressName: PropTypes.string,
     backRoute: PropTypes.string,
-    breadCrumbTextKey: PropTypes.string,
     conversionDate: PropTypes.number,
     currentPath: PropTypes.string,
-    history: PropTypes.object,
-    initialBreadCrumbKey: PropTypes.string,
-    initialBreadCrumbRoute: PropTypes.string,
+    hasSubscribedToShield: PropTypes.bool,
     isAddressEntryPage: PropTypes.bool,
+    isMetaMaskShieldFeatureEnabled: PropTypes.bool,
+    isPasswordChangePage: PropTypes.bool,
     isPopup: PropTypes.bool,
+    isRevealSrpListPage: PropTypes.bool,
+    isSeedlessPasswordOutdated: PropTypes.bool,
+    isTransactionShieldPage: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    navigate: PropTypes.func.isRequired,
     pathnameI18nKey: PropTypes.string,
     settingsPageSnaps: PropTypes.array,
+    shouldShowShieldEntryModal: PropTypes.bool,
     snapSettingsTitle: PropTypes.string,
     toggleNetworkMenu: PropTypes.func.isRequired,
     useExternalServices: PropTypes.bool,
@@ -92,10 +125,25 @@ class SettingsPage extends PureComponent {
     lastFetchedConversionDate: null,
     searchResults: [],
     searchText: '',
+    showShieldEntryModal: false,
   };
 
   componentDidMount() {
     this.handleConversionDate();
+
+    if (this.props.shouldShowShieldEntryModal) {
+      // if user has subscribed to shield, navigate to shield page
+      // otherwise, show shield entry modal
+      if (this.props.hasSubscribedToShield) {
+        // componentDidMount is rendered after useEffect() so we need setTimeout to ensure the navigation work
+        // TODO: use navigate normally when refactor ot use functional component
+        setTimeout(() => {
+          this.props.navigate(TRANSACTION_SHIELD_ROUTE);
+        });
+      } else {
+        this.setState({ showShieldEntryModal: true });
+      }
+    }
   }
 
   componentDidUpdate() {
@@ -110,8 +158,8 @@ class SettingsPage extends PureComponent {
   }
 
   handleClickSetting(setting) {
-    const { history } = this.props;
-    history.push(setting.route);
+    const { navigate } = this.props;
+    navigate(setting.route);
     this.setState({
       isSearchList: '',
       searchResults: '',
@@ -120,16 +168,25 @@ class SettingsPage extends PureComponent {
 
   render() {
     const {
-      history,
+      navigate,
       backRoute,
       currentPath,
       mostRecentOverviewPage,
       addNewNetwork,
+      isPasswordChangePage,
+      isRevealSrpListPage,
+      isSeedlessPasswordOutdated,
+      isTransactionShieldPage,
     } = this.props;
 
-    const { searchResults, isSearchList, searchText } = this.state;
     const { t } = this.context;
-    const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+    const environmentType = getEnvironmentType();
+    const isPopup =
+      environmentType === ENVIRONMENT_TYPE_POPUP ||
+      environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
+    const isSearchHidden =
+      isRevealSrpListPage || isPasswordChangePage || isTransactionShieldPage;
 
     return (
       <div
@@ -137,22 +194,31 @@ class SettingsPage extends PureComponent {
           'main-container main-container--has-shadow settings-page',
           {
             'settings-page--selected': currentPath !== SETTINGS_ROUTE,
+            'settings-page--sidepanel': isSidepanel,
           },
         )}
       >
-        <Box
-          className="settings-page__header"
-          padding={4}
-          paddingBottom={[2, 4]}
-        >
-          <div className="settings-page__header__title-container">
+        {this.state.showShieldEntryModal && (
+          <ShieldEntryModal
+            skipEventSubmission
+            onClose={() => this.setState({ showShieldEntryModal: false })}
+          />
+        )}
+        {isSeedlessPasswordOutdated && <PasswordOutdatedModal />}
+        <Box className="settings-page__header" padding={4} paddingBottom={2}>
+          <div
+            className={classnames('settings-page__header__title-container', {
+              'settings-page__header__title-container--hide-search':
+                isSearchHidden,
+            })}
+          >
             {isPopup && (
               <>
                 {currentPath === SETTINGS_ROUTE ? (
                   <MetafoxLogo
                     className="settings-page__header__title-container__metamask-logo"
                     unsetIconHeight
-                    onClick={async () => history.push(DEFAULT_ROUTE)}
+                    onClick={() => navigate(DEFAULT_ROUTE)}
                     display={[Display.Flex, Display.None]}
                   />
                 ) : (
@@ -161,47 +227,27 @@ class SettingsPage extends PureComponent {
                     iconName={IconName.ArrowLeft}
                     className="settings-page__header__title-container__back-button"
                     color={Color.iconDefault}
-                    onClick={() => history.push(backRoute)}
+                    onClick={() => navigate(backRoute)}
                     display={[Display.Flex, Display.None]}
-                    size={ButtonIconSize.Sm}
+                    size={ButtonIconSize.Md}
                   />
                 )}
               </>
             )}
             {this.renderTitle()}
-            <Box
-              className="settings-page__header__title-container__search"
-              display={[Display.Block]}
-            >
-              <SettingsSearch
-                onSearch={({ searchQuery = '', results = [] }) => {
-                  this.setState({
-                    isSearchList: searchQuery !== '',
-                    searchResults: results,
-                    searchText: searchQuery,
-                  });
-                }}
-                settingsRoutesList={getSettingsRoutes()}
-              />
-              {isSearchList && searchText.length >= 3 && (
-                <SettingsSearchList
-                  results={searchResults}
-                  onClickSetting={(setting) => this.handleClickSetting(setting)}
-                />
-              )}
-            </Box>
+            {this.renderSearch()}
             <ButtonIcon
               className="settings-page__header__title-container__close-button"
               iconName={IconName.Close}
               ariaLabel={t('close')}
               onClick={() => {
                 if (addNewNetwork) {
-                  history.push(NETWORKS_ROUTE);
+                  navigate(NETWORKS_ROUTE);
                 } else {
-                  history.push(mostRecentOverviewPage);
+                  navigate(mostRecentOverviewPage);
                 }
               }}
-              size={ButtonIconSize.Sm}
+              size={ButtonIconSize.Md}
               marginLeft="auto"
             />
           </div>
@@ -244,6 +290,47 @@ class SettingsPage extends PureComponent {
     );
   }
 
+  renderSearch() {
+    const { isSearchList, searchText, searchResults } = this.state;
+    const {
+      isRevealSrpListPage,
+      isPasswordChangePage,
+      isTransactionShieldPage,
+    } = this.props;
+
+    if (
+      isRevealSrpListPage ||
+      isPasswordChangePage ||
+      isTransactionShieldPage
+    ) {
+      return null;
+    }
+
+    return (
+      <Box
+        className="settings-page__header__title-container__search"
+        display={[Display.Block]}
+      >
+        <SettingsSearch
+          onSearch={({ searchQuery = '', results = [] }) => {
+            this.setState({
+              isSearchList: searchQuery !== '',
+              searchResults: results,
+              searchText: searchQuery,
+            });
+          }}
+          settingsRoutesList={getSettingsRoutes()}
+        />
+        {isSearchList && searchText.length >= 3 && (
+          <SettingsSearchList
+            results={searchResults}
+            onClickSetting={(setting) => this.handleClickSetting(setting)}
+          />
+        )}
+      </Box>
+    );
+  }
+
   renderSubHeader() {
     const { t } = this.context;
     const {
@@ -252,23 +339,21 @@ class SettingsPage extends PureComponent {
       isAddressEntryPage,
       pathnameI18nKey,
       addressName,
-      initialBreadCrumbRoute,
-      breadCrumbTextKey,
-      history,
-      initialBreadCrumbKey,
+      backRoute,
+      navigate,
     } = this.props;
-
     let subheaderText;
 
     if (isPopup && isAddressEntryPage) {
       subheaderText = t('settings');
     } else if (isAddressEntryPage) {
       subheaderText = t('contacts');
-    } else if (initialBreadCrumbKey) {
-      subheaderText = t(initialBreadCrumbKey);
     } else {
       subheaderText = t(pathnameI18nKey || 'general');
     }
+
+    // Show back button only on inner pages of the settings page
+    const showBackButton = backRoute !== SETTINGS_ROUTE;
 
     return (
       !currentPath.startsWith(NETWORKS_ROUTE) && (
@@ -281,23 +366,16 @@ class SettingsPage extends PureComponent {
           flexDirection={FlexDirection.Row}
           alignItems={AlignItems.center}
         >
-          <Text
-            className={classnames({
-              'settings-page__subheader--link': initialBreadCrumbRoute,
-            })}
-            variant={TextVariant.headingSm}
-            onClick={() =>
-              initialBreadCrumbRoute && history.push(initialBreadCrumbRoute)
-            }
-          >
-            {subheaderText}
-          </Text>
-          {breadCrumbTextKey && (
-            <div className="settings-page__subheader--break">
-              <span>{' > '}</span>
-              {t(breadCrumbTextKey)}
-            </div>
+          {showBackButton && (
+            <ButtonIcon
+              iconName={IconName.ArrowLeft}
+              onClick={() => navigate(backRoute)}
+              marginRight={2}
+              size={ButtonIconSize.Md}
+              data-testid="settings-back-button"
+            />
           )}
+          <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
           {isAddressEntryPage && (
             <div className="settings-page__subheader--break">
               <span>{' > '}</span>
@@ -310,8 +388,14 @@ class SettingsPage extends PureComponent {
   }
 
   renderTabs() {
-    const { history, currentPath, useExternalServices, settingsPageSnaps } =
-      this.props;
+    const {
+      navigate,
+      currentPath,
+      useExternalServices,
+      settingsPageSnaps,
+      isMetaMaskShieldFeatureEnabled,
+      hasSubscribedToShield,
+    } = this.props;
     const { t } = this.context;
 
     const snapsSettings = settingsPageSnaps.map(({ id, name }) => {
@@ -352,7 +436,7 @@ class SettingsPage extends PureComponent {
       },
       {
         content: t('securityAndPrivacy'),
-        icon: <i className="fa fa-lock" />,
+        icon: <Icon name={IconName.Lock} />,
         key: SECURITY_ROUTE,
       },
       {
@@ -372,6 +456,14 @@ class SettingsPage extends PureComponent {
         content: t('notifications'),
         icon: <Icon name={IconName.Notification} />,
         key: NOTIFICATIONS_SETTINGS_ROUTE,
+      });
+    }
+
+    if (isMetaMaskShieldFeatureEnabled && useExternalServices) {
+      tabs.splice(-4, 0, {
+        content: t('shieldTx'),
+        icon: <Icon name={IconName.ShieldLock} />,
+        key: TRANSACTION_SHIELD_ROUTE,
       });
     }
 
@@ -396,94 +488,133 @@ class SettingsPage extends PureComponent {
           ) {
             return true;
           }
-          return matchPath(currentPath, { exact: true, path: key });
+          return matchPath(key, currentPath);
         }}
-        onSelect={(key) =>
-          history.push({
-            pathname: key,
-            state: { fromPage: currentPath },
-          })
-        }
+        onSelect={(key) => {
+          if (key === TRANSACTION_SHIELD_ROUTE && !hasSubscribedToShield) {
+            this.setState({ showShieldEntryModal: true });
+            return;
+          }
+          navigate(key);
+        }}
       />
     );
   }
 
   renderContent() {
+    // Use toRelativeRoutePath to convert absolute paths to relative paths
+    // for nested <Routes> in React Router v6
     return (
-      <Switch>
+      <RouterRoutes>
         <Route
-          exact
-          path={GENERAL_ROUTE}
-          render={(routeProps) => (
+          path={toRelativeRoutePath(GENERAL_ROUTE, SETTINGS_ROUTE)}
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
-        />
-        <Route exact path={ABOUT_US_ROUTE} render={() => <InfoTab />} />
-        <Route
-          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
-          component={SnapSettingsRenderer}
-        />
-        <Route exact path={ADVANCED_ROUTE} component={AdvancedTab} />
-        <Route exact path={BACKUPANDSYNC_ROUTE} component={BackupAndSyncTab} />
-        <Route
-          exact
-          path={ADD_NETWORK_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu({ isAddingNewNetwork: true });
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          }
         />
         <Route
-          exact
-          path={NETWORKS_ROUTE}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          path={toRelativeRoutePath(ABOUT_US_ROUTE, SETTINGS_ROUTE)}
+          element={<InfoTab />}
         />
         <Route
-          exact
-          path={ADD_POPULAR_CUSTOM_NETWORK}
-          render={() => {
-            this.props.toggleNetworkMenu();
-            return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
-          }}
+          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
+          element={<SnapSettingsRenderer />}
         />
-        <Route exact path={SECURITY_ROUTE} component={SecurityTab} />
-        <Route exact path={EXPERIMENTAL_ROUTE} component={ExperimentalTab} />
+        <Route
+          path={toRelativeRoutePath(ADVANCED_ROUTE, SETTINGS_ROUTE)}
+          element={<AdvancedTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_ROUTE)}
+          element={<BackupAndSyncTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(ADD_NETWORK_ROUTE, SETTINGS_ROUTE)}
+          element={
+            <NetworkRouteHandler
+              onMount={() =>
+                this.props.toggleNetworkMenu({ isAddingNewNetwork: true })
+              }
+            />
+          }
+        />
+        <Route
+          path={toRelativeRoutePath(NETWORKS_ROUTE, SETTINGS_ROUTE)}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
+        />
+        <Route
+          path={toRelativeRoutePath(ADD_POPULAR_CUSTOM_NETWORK, SETTINGS_ROUTE)}
+          element={
+            <NetworkRouteHandler
+              onMount={() => this.props.toggleNetworkMenu()}
+            />
+          }
+        />
+        <Route
+          path={toRelativeRoutePath(SECURITY_ROUTE, SETTINGS_ROUTE)}
+          element={<SecurityTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(TRANSACTION_SHIELD_ROUTE, SETTINGS_ROUTE)}
+          element={<TransactionShield />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE, SETTINGS_ROUTE)}/*`}
+          element={<ClaimsArea />}
+        />
+        <Route
+          path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}
+          element={<ExperimentalTab />}
+        />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            exact
-            path={DEVELOPER_OPTIONS_ROUTE}
-            component={DeveloperOptionsTab}
+            path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
+            element={<DeveloperOptionsTab />}
           />
         )}
-        <Route exact path={CONTACT_LIST_ROUTE} component={ContactListTab} />
-        <Route exact path={CONTACT_ADD_ROUTE} component={ContactListTab} />
         <Route
-          exact
-          path={`${CONTACT_EDIT_ROUTE}/:id`}
-          component={ContactListTab}
+          path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
+          element={<ContactListTab />}
         />
         <Route
-          exact
-          path={`${CONTACT_VIEW_ROUTE}/:id`}
-          component={ContactListTab}
+          path={toRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_ROUTE)}
+          element={<ContactListTab />}
         />
-        <Route exact path={REVEAL_SRP_LIST_ROUTE} component={RevealSrpList} />
         <Route
-          render={(routeProps) => (
+          path={`${toRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_ROUTE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}
+          element={<RevealSrpList />}
+        />
+        <Route
+          path={toRelativeRoutePath(
+            SECURITY_PASSWORD_CHANGE_ROUTE,
+            SETTINGS_ROUTE,
+          )}
+          element={<ChangePassword />}
+        />
+        <Route
+          path="*"
+          element={
             <SettingsTab
-              {...routeProps}
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
-          )}
+          }
         />
-      </Switch>
+      </RouterRoutes>
     );
   }
 }

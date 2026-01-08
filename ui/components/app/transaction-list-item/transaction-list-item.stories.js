@@ -7,6 +7,8 @@ import { Provider } from 'react-redux';
 import { MOCK_TRANSACTION_BY_TYPE } from '../../../../.storybook/initial-states/transactions';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
+import { I18nProvider } from '../../../../.storybook/i18n';
+import * as allLocales from '../../../../.storybook/locales';
 import TransactionListItem from '.';
 
 /**
@@ -19,10 +21,20 @@ import TransactionListItem from '.';
  */
 const getMockTransactionGroup = (args) => {
   const status = args['transactionGroup.primaryTransaction.status'];
+  const submittedTime =
+    args['transactionGroup.primaryTransaction.submittedTime'];
+  const specificDataForTxParams =
+    args['transactionGroup.primaryTransaction.txParams.data'];
+  const basePrimaryTransaction = args['transactionGroup.primaryTransaction'];
+
   const tx = {
-    ...args['transactionGroup.primaryTransaction'],
+    ...basePrimaryTransaction, // Spread type, txParamsOriginal, and base txParams (like .from, .to, .value)
     status,
-    submittedTime: args['transactionGroup.primaryTransaction.submittedTime'],
+    submittedTime,
+    txParams: {
+      ...(basePrimaryTransaction.txParams || {}), // Start with txParams from basePrimaryTransaction
+      data: specificDataForTxParams, // Override/set the data field
+    },
   };
 
   return {
@@ -59,6 +71,8 @@ export default {
     },
     'transactionGroup.primaryTransaction.submittedTime': { control: 'number' },
     'transactionGroup.primaryTransaction': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams': { control: 'object' },
+    'transactionGroup.primaryTransaction.txParams.data': { control: 'text' },
   },
   args: {
     isEarliestNonce: true,
@@ -66,6 +80,8 @@ export default {
     'transactionGroup.hasRetried': false,
     'transactionGroup.primaryTransaction.status': TransactionStatus.pending,
     'transactionGroup.primaryTransaction.submittedTime': 19999999999999,
+    'transactionGroup.primaryTransaction.txParams.data':
+      '0xa9059cbb000000000000000000000000b19ac54efa18cc3a14a5b821bfec73d284bf0c5e0000000000000000000000000000000000000000000000003782dace9d900000',
   },
 };
 
@@ -141,6 +157,13 @@ PersonalSign.args = {
   },
 };
 
+Sign.storyName = 'sign';
+Sign.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.sign],
+  },
+};
+
 SignTypeData.storyName = 'eth_signTypedData';
 SignTypeData.args = {
   'transactionGroup.primaryTransaction': {
@@ -152,6 +175,13 @@ SimpleSend.storyName = 'simpleSend';
 SimpleSend.args = {
   'transactionGroup.primaryTransaction': {
     ...MOCK_TRANSACTION_BY_TYPE[TransactionType.simpleSend],
+  },
+};
+
+Smart.storyName = 'smart';
+Smart.args = {
+  'transactionGroup.primaryTransaction': {
+    ...MOCK_TRANSACTION_BY_TYPE[TransactionType.smart],
   },
 };
 
@@ -204,7 +234,13 @@ BridgeSuccess.storyName = 'bridgeSuccess';
 BridgeSuccess.decorators = [
   (Story) => (
     <Provider store={configureBridgeStore('COMPLETE')}>
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];
@@ -249,7 +285,13 @@ BridgePending.decorators = [
         }),
       )}
     >
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];
@@ -263,7 +305,13 @@ BridgeFailed.storyName = 'bridgeFailed';
 BridgeFailed.decorators = [
   (Story) => (
     <Provider store={configureBridgeStore('FAILED')}>
-      <Story />
+      <I18nProvider
+        currentLocale="en"
+        current={allLocales.en}
+        en={allLocales.en}
+      >
+        <Story />
+      </I18nProvider>
     </Provider>
   ),
 ];

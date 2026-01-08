@@ -1,5 +1,8 @@
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
-import { renderHookWithProvider } from '../../../test/lib/render-helpers';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { SolScope } from '@metamask/keyring-api';
+import { MultichainNetwork } from '@metamask/multichain-transactions-controller';
+import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../../shared/constants/tokens';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -21,7 +24,13 @@ const mockFetchBridgeTokens = jest.fn().mockResolvedValue({
 });
 jest.mock('@metamask/bridge-controller', () => ({
   ...jest.requireActual('@metamask/bridge-controller'),
-  fetchBridgeTokens: (c: string) => mockFetchBridgeTokens(c),
+  fetchBridgeTokens: (
+    c: string,
+    _clientId: string,
+    _fetchFn: unknown,
+    _bridgeApiBaseUrl: string,
+    _clientVersion?: string,
+  ) => mockFetchBridgeTokens(c),
 }));
 
 const mockFetchTopAssetsList = jest.fn().mockResolvedValue([
@@ -41,6 +50,9 @@ describe('useTokensWithFiltering', () => {
   it('should return all tokens when chainId !== activeChainId and chainId has been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: 'account-1',
+        },
         completedOnboarding: true,
         allDetectedTokens: {
           '0x1': {
@@ -61,6 +73,10 @@ describe('useTokensWithFiltering', () => {
             },
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     });
 
@@ -81,12 +97,12 @@ describe('useTokensWithFiltering', () => {
     expect(first10Tokens).toMatchSnapshot();
   });
 
-  it('should fetch bridge tokens if cached tokens have old timestamp', async () => {
+  it('should fetch bridge tokens if cached tokens are not defined', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
         completedOnboarding: true,
         allDetectedTokens: {
-          '0x1': {
+          '0xa': {
             '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': [
               {
                 address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
@@ -96,7 +112,7 @@ describe('useTokensWithFiltering', () => {
           },
         },
         tokensChainsCache: {
-          [CHAIN_IDS.MAINNET]: {
+          [CHAIN_IDS.OPTIMISM]: {
             timestamp: Date.now() - 11 * MINUTE,
             data: {
               [NATIVE_TOKEN.address]: NATIVE_TOKEN,
@@ -104,6 +120,10 @@ describe('useTokensWithFiltering', () => {
             },
           },
         },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     });
 
@@ -125,6 +145,56 @@ describe('useTokensWithFiltering', () => {
     expect(first10Tokens).toMatchSnapshot();
   });
 
+  it('should fetch bridge tokens if chain is solana', async () => {
+    const mockStore = createBridgeMockStore({
+      metamaskStateOverrides: {
+        completedOnboarding: true,
+        allDetectedTokens: {},
+        tokensChainsCache: {
+          [CHAIN_IDS.MAINNET]: {
+            timestamp: Date.now() - 11 * MINUTE,
+            data: {
+              [NATIVE_TOKEN.address]: NATIVE_TOKEN,
+              ...Object.fromEntries(
+                Object.entries(STATIC_MAINNET_TOKEN_LIST).map(
+                  ([address, token]) => [
+                    address.toLowerCase(),
+                    { ...token, address: address.toLowerCase() },
+                  ],
+                ),
+              ),
+            },
+          },
+        },
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: SolScope.Mainnet,
+        isEvmSelected: false,
+      },
+    });
+
+    const { result, waitForNextUpdate } = renderHookWithProvider(() => {
+      const { filteredTokenListGenerator } = useTokensWithFiltering(
+        MultichainNetwork.Solana,
+      );
+      return filteredTokenListGenerator;
+    }, mockStore);
+
+    await waitForNextUpdate();
+
+    expect(mockFetchTopAssetsList).toHaveBeenCalledTimes(1);
+    expect(mockFetchTopAssetsList).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
+    expect(mockFetchBridgeTokens).toHaveBeenCalledTimes(1);
+    expect(mockFetchBridgeTokens).toHaveBeenCalledWith(
+      'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    );
+    // The first 10 tokens returned
+    const first10Tokens = [...result.current(() => true)].slice(0, 10);
+    expect(first10Tokens).toMatchSnapshot();
+  });
+
   it('should return all tokens when chainId !== activeChainId and chainId has not been imported, sorted by balance', async () => {
     const mockStore = createBridgeMockStore({
       metamaskStateOverrides: {
@@ -140,6 +210,10 @@ describe('useTokensWithFiltering', () => {
           },
         },
         tokensChainsCache: {},
+        multichainNetworkConfigurationsByChainId:
+          AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+        selectedMultichainNetworkChainId: 'eip155:1',
+        isEvmSelected: true,
       },
     });
 

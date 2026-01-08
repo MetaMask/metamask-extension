@@ -14,13 +14,18 @@ describe('./utils/cli.ts', () => {
     devtool: 'source-map',
     sentry: false,
     test: false,
+    reactCompilerVerbose: false,
+    reactCompilerDebug: 'none',
     zip: false,
     minify: false,
     browser: ['chrome'],
-    manifest_version: 2,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    manifest_version: 3,
     type: 'main',
     lavamoat: false,
-    lockdown: false,
+    lavamoatDebug: false,
+    generatePolicy: false,
     snow: false,
     dryRun: false,
     stats: false,
@@ -43,7 +48,7 @@ describe('./utils/cli.ts', () => {
 
   it('getDryRunMessage', () => {
     const { args, features } = parseArgv([], loadBuildTypesConfig());
-    const message = getDryRunMessage(args, features);
+    const message = getDryRunMessage(args, features, 'development');
     // testing the exact message could be nice, but verbose and maybe a bit
     // brittle, so we just check that it returns a string
     assert.strictEqual(

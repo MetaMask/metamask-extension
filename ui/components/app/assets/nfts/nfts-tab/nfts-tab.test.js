@@ -1,19 +1,15 @@
 import React from 'react';
 import { fireEvent, screen } from '@testing-library/react';
-import reactRouterDom from 'react-router-dom';
 import { EthAccountType } from '@metamask/keyring-api';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import configureStore from '../../../../../store/store';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { setBackgroundConnection } from '../../../../../store/background-connection';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../../../../test/stub/networks';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import NftsTab from '.';
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: jest.fn(() => []),
-}));
 
 const ETH_BALANCE = '0x16345785d8a0000'; // 0.1 ETH
 
@@ -174,6 +170,11 @@ const render = ({
         [CHAIN_IDS.MAINNET]: {},
         [CHAIN_IDS.GOERLI]: {},
       },
+      enabledNetworkMap: {
+        eip155: {
+          [chainId]: true,
+        },
+      },
       ...mockNetworkState({ chainId }),
       currencyRates: {},
       accounts: {
@@ -188,7 +189,7 @@ const render = ({
       },
       internalAccounts: {
         accounts: {
-          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
+          'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': createMockInternalAccount({
             address: selectedAddress,
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
@@ -200,10 +201,14 @@ const render = ({
             options: {},
             methods: ETH_EOA_METHODS,
             type: EthAccountType.Eoa,
-          },
+          }),
         },
         selectedAccount: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
       },
+      multichainNetworkConfigurationsByChainId:
+        AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+      selectedMultichainNetworkChainId: 'eip155:1',
+      isEvmSelected: true,
       currentCurrency: 'usd',
       tokenList: {},
       useNftDetection,
@@ -227,19 +232,6 @@ describe('NFT Items', () => {
     setUseNftDetection: setUseNftDetectionStub,
     setOpenSeaEnabled: setDisplayNftMediaStub,
     setPreference: setPreferenceStub,
-  });
-  const historyPushMock = jest.fn();
-
-  beforeEach(() => {
-    jest
-      .spyOn(reactRouterDom, 'useHistory')
-      .mockImplementation()
-      .mockReturnValue({ push: historyPushMock });
-  });
-
-  afterEach(() => {
-    jest.resetAllMocks();
-    jest.clearAllMocks();
   });
 
   describe('NFTs Detection Notice', () => {

@@ -4,6 +4,9 @@ import { AllProperties } from '../../../shared/modules/object.utils';
 // sent to Sentry These properties have some potential to be useful for
 // debugging, and they do not contain any identifiable information.
 export const SENTRY_BACKGROUND_STATE = {
+  AccountTreeController: {
+    accountTree: false,
+  },
   AccountsController: {
     internalAccounts: {
       accounts: false,
@@ -11,10 +14,7 @@ export const SENTRY_BACKGROUND_STATE = {
     },
   },
   AccountTracker: {
-    accounts: false,
     accountsByChainId: false,
-    currentBlockGasLimit: true,
-    currentBlockGasLimitByChainId: true,
   },
   AddressBookController: {
     addressBook: false,
@@ -29,13 +29,12 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   AuthenticationController: {
     isSignedIn: false,
-    sessionData: {
-      token: false,
-      profile: true,
-    },
+    srpSessionData: false,
   },
   NetworkOrderController: {
     orderedNetworkList: [],
+  },
+  NetworkEnablementController: {
     enabledNetworkMap: {},
   },
   AccountOrderController: {
@@ -60,30 +59,42 @@ export const SENTRY_BACKGROUND_STATE = {
     onboardingDate: false,
     currentExtensionPopupId: false,
     defaultHomeActiveTabName: true,
+    enableEnforcedSimulations: true,
+    enableEnforcedSimulationsForTransactions: false,
     fullScreenGasPollTokens: true,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     hadAdvancedGasFeesSetPriorToMigration92_3: true,
+    canTrackWalletFundsObtained: true,
     isRampCardClosed: true,
     nftsDetectionNoticeDismissed: true,
     nftsDropdownState: true,
     notificationGasPollTokens: true,
     outdatedBrowserWarningLastShown: true,
     popupGasPollTokens: true,
-    qrHardware: true,
+    activeQrCodeScanRequest: true,
     recoveryPhraseReminderHasBeenShown: true,
     recoveryPhraseReminderLastShown: true,
     showBetaHeader: true,
+    productTour: true,
     showPermissionsTour: true,
     showNetworkBanner: true,
     showAccountBanner: true,
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     showTestnetMessageInDropdown: true,
+    sidePanelGasPollTokens: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
     throttledOrigins: false,
     timeoutMinutes: true,
     trezorModel: true,
+    isUpdateAvailable: true,
+    updateModalLastDismissedAt: true,
+    lastUpdatedAt: true,
+    shieldEndingToastLastClickedOrClosed: true,
+    shieldPausedToastLastClickedOrClosed: true,
+    isWalletResetInProgress: false,
+    pna25Acknowledged: false,
   },
   MultichainBalancesController: {
     balances: false,
@@ -91,12 +102,14 @@ export const SENTRY_BACKGROUND_STATE = {
   MultichainAssetsController: {
     accountsAssets: false,
     assetsMetadata: false,
+    allIgnoredAssets: false,
   },
   MultichainAssetsRatesController: {
     assetsRates: false,
   },
   BridgeController: {
     assetExchangeRates: false,
+    minimumBalanceForRentExemptionInLamports: false,
     quoteRequest: {
       walletAddress: false,
       srcTokenAddress: true,
@@ -117,7 +130,7 @@ export const SENTRY_BACKGROUND_STATE = {
     txHistory: false,
   },
   CronjobController: {
-    jobs: false,
+    events: false,
   },
   CurrencyController: {
     currentCurrency: true,
@@ -163,6 +176,7 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   MetaMetricsController: {
     eventsBeforeMetricsOptIn: false,
+    tracesBeforeMetricsOptIn: false,
     fragments: false,
     metaMetricsId: true,
     participateInMetaMetrics: true,
@@ -235,12 +249,14 @@ export const SENTRY_BACKGROUND_STATE = {
       showNativeTokenAsMainBalance: true,
       showConfirmationAdvancedDetails: true,
       privacyMode: false,
+      avatarType: true,
     },
     useExternalServices: false,
     selectedAddress: false,
     snapRegistryList: false,
     theme: true,
     signatureSecurityAlertResponses: false,
+    addressSecurityAlertResponses: false,
     use4ByteResolution: true,
     useAddressBarEnsResolution: true,
     useBlockie: true,
@@ -255,6 +271,14 @@ export const SENTRY_BACKGROUND_STATE = {
   RemoteFeatureFlagController: {
     remoteFeatureFlags: true,
     cacheTimestamp: false,
+  },
+  RewardsController: {
+    rewardsActiveAccount: false,
+    rewardsAccounts: false,
+    rewardsSubscriptions: false,
+    rewardsSeasons: false,
+    rewardsSeasonStatuses: false,
+    rewardsSubscriptionTokens: false,
   },
   NotificationServicesPushController: {
     fcmToken: false,
@@ -361,6 +385,9 @@ export const SENTRY_BACKGROUND_STATE = {
     lastFetchedBlockNumbers: false,
     methodData: false,
   },
+  TransactionPayController: {
+    transactionData: false,
+  },
   TxController: {
     transactions: false,
   },
@@ -371,19 +398,15 @@ export const SENTRY_BACKGROUND_STATE = {
     isBackupAndSyncEnabled: true,
     isBackupAndSyncUpdateLoading: false,
     isAccountSyncingEnabled: true,
-    hasAccountSyncingSyncedAtLeastOnce: false,
-    isAccountSyncingReadyToBeDispatched: false,
+    isContactSyncingEnabled: true,
   },
 };
 
-const flattenedBackgroundStateMask = Object.values(
-  SENTRY_BACKGROUND_STATE,
-).reduce((partialBackgroundState, controllerState: object) => {
-  return {
-    ...partialBackgroundState,
-    ...controllerState,
-  };
-}, {});
+const flattenedBackgroundStateMask: Record<string, unknown> = {};
+
+for (const controllerState of Object.values(SENTRY_BACKGROUND_STATE)) {
+  Object.assign(flattenedBackgroundStateMask, controllerState);
+}
 
 // This describes the subset of Redux state attached to errors sent to Sentry
 // These properties have some potential to be useful for debugging, and they do
@@ -411,8 +434,6 @@ export const SENTRY_UI_STATE = {
     addSnapAccountEnabled: false,
     snapsAddSnapAccountModalDismissed: false,
     ///: END:ONLY_INCLUDE_IF
-    switchedNetworkDetails: false,
-    switchedNetworkNeverShowMessage: false,
     newPrivacyPolicyToastClickedOrClosed: false,
     newPrivacyPolicyToastShownDate: false,
   },

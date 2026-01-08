@@ -10,6 +10,7 @@ import { I18nContext } from '../../../../contexts/i18n';
 import {
   getGasEstimateType,
   getGasFeeEstimates,
+  getGasFeeEstimatesByChainId,
   getIsGasEstimatesLoading,
 } from '../../../../ducks/metamask/metamask';
 import {
@@ -19,10 +20,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
-import {
-  GAS_FORM_ERRORS,
-  PRIORITY_LEVEL_ICON_MAP,
-} from '../../../../helpers/constants/gas';
+import { GAS_FORM_ERRORS } from '../../../../helpers/constants/gas';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getGasFeeTimeEstimate } from '../../../../store/actions';
 import { useDraftTransactionWithTxParams } from '../../hooks/useDraftTransactionWithTxParams';
@@ -38,14 +36,19 @@ const toHumanReadableTime = (milliseconds = 1, t) => {
   return t('gasTimingMinutesShort', [Math.ceil(seconds / 60)]);
 };
 export default function GasTiming({
+  chainId,
   maxFeePerGas = '0',
   maxPriorityFeePerGas = '0',
   gasWarnings,
 }) {
   const gasEstimateType = useSelector(getGasEstimateType);
-  const gasFeeEstimates = useSelector(getGasFeeEstimates);
+  const chainGasFeeEstimates = useSelector((state) =>
+    getGasFeeEstimatesByChainId(state, chainId),
+  );
+  const gasFeeEstimatesFromRoot = useSelector(getGasFeeEstimates);
   const isGasEstimatesLoading = useSelector(getIsGasEstimatesLoading);
 
+  const gasFeeEstimates = chainGasFeeEstimates || gasFeeEstimatesFromRoot;
   const [customEstimatedTime, setCustomEstimatedTime] = useState(null);
   const t = useContext(I18nContext);
   const { estimateUsed } = useGasFeeContext();
@@ -130,10 +133,9 @@ export default function GasTiming({
 
   const estimateToUse =
     estimateUsed || transactionData.userFeeLevel || 'medium';
-  const estimateEmoji = PRIORITY_LEVEL_ICON_MAP[estimateToUse];
 
   const textTKey = estimateToUse === 'low' ? 'gasTimingLow' : estimateToUse;
-  let text = estimateEmoji ? `${estimateEmoji} ${t(textTKey)}` : t(textTKey);
+  let text = t(textTKey);
   let time = '';
 
   // Anything medium or faster is positive
@@ -173,12 +175,12 @@ export default function GasTiming({
   }
 
   return (
-    <Box display={Display.Flex} flexWrap={FlexWrap.Wrap}>
+    <Box display={Display.Flex} marginBottom={1} flexWrap={FlexWrap.Wrap}>
       {text && (
         <Text
           color={TextColor.textAlternative}
           variant={TextVariant.bodyMd}
-          paddingInlineEnd={1}
+          paddingInlineEnd={2}
         >
           {text}
         </Text>
@@ -194,6 +196,7 @@ export default function GasTiming({
 }
 
 GasTiming.propTypes = {
+  chainId: PropTypes.string,
   maxPriorityFeePerGas: PropTypes.string,
   maxFeePerGas: PropTypes.string,
   gasWarnings: PropTypes.object,

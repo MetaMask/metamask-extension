@@ -11,7 +11,8 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+  # This cancels in-progress workflows for all branches except main as it is, we can remove the rest of the conditions as the first one acts as break circuit with the OR
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 jobs:
   run-security-scan:

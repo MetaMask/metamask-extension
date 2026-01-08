@@ -1,21 +1,26 @@
-# This workflow is meant to better structure the main.yaml one for redability reasons.
+# This workflow is meant to better structure the main.yaml one for readability reasons.
 # It is not meant to be a reusable workflow.
 
 name: E2E Chrome
 
 on:
   workflow_call:
+    inputs:
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
     secrets:
       PR_COMMENT_TOKEN:
         required: true
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   test-e2e-chrome-browserify:
     uses: ./.github/workflows/run-e2e.yml
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
@@ -26,15 +31,15 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-webpack:
     uses: ./.github/workflows/run-e2e.yml
     if: ${{ github.event_name != 'merge_group' }}
+    secrets:
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
     strategy:
       fail-fast: ${{ github.event_name == 'merge_group' }}
       matrix:
@@ -44,12 +49,10 @@ jobs:
       test-suite-name: test-e2e-chrome-webpack
       build-artifact: build-test-webpack
       build-command: yarn build:test:webpack
-      test-command: yarn test:e2e:chrome:webpack
+      test-command: yarn test:e2e:chrome
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
   test-e2e-chrome-multiple-providers:
     uses: ./.github/workflows/run-e2e.yml
@@ -58,9 +61,7 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:multi-provider
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-rpc:
     uses: ./.github/workflows/run-e2e.yml
@@ -69,9 +70,7 @@ jobs:
       build-artifact: build-test-browserify
       build-command: yarn build:test
       test-command: yarn test:e2e:chrome:rpc
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-flask:
     uses: ./.github/workflows/run-e2e.yml
@@ -84,21 +83,19 @@ jobs:
       build-artifact: build-test-flask-browserify
       build-command: yarn build:test:flask
       test-command: yarn test:e2e:chrome:flask
+      builds-from-run: ${{ inputs.builds-from-run }}
       matrix-index: ${{ matrix.index }}
       matrix-total: ${{ strategy.job-total }}
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-  test-e2e-chrome-vault-decryption:
+  test-e2e-chrome-dist:
+    # This if statement is equivalent to IS_FORK
+    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     uses: ./.github/workflows/run-e2e.yml
     with:
-      test-suite-name: test-e2e-chrome-vault-decryption
+      test-suite-name: test-e2e-chrome-dist
       build-artifact: build-dist-browserify
-      test-command: yarn test:e2e:single test/e2e/vault-decryption-chrome.spec.ts --browser chrome
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      test-command: yarn test:e2e:chrome:dist
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-api-specs:
     uses: ./.github/workflows/run-e2e.yml
@@ -108,15 +105,14 @@ jobs:
       build-command: yarn build:test
       test-command: yarn test:api-specs
       test-artifacts-path: html-report
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-api-specs-alert-on-failure:
     needs:
       - test-e2e-chrome-api-specs
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    environment: pr-comment
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -133,7 +129,7 @@ jobs:
           path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -152,15 +148,14 @@ jobs:
       build-command: yarn build:test:flask
       test-command: yarn test:api-specs-multichain
       test-artifacts-path: html-report-multichain
-    secrets:
-      DOCKER_HUB_USERNAME: ${{ secrets.DOCKER_HUB_USERNAME }}
-      DOCKER_HUB_TOKEN: ${{ secrets.DOCKER_HUB_TOKEN }}
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-chrome-api-specs-multichain-alert-on-failure:
     needs:
       - test-e2e-chrome-api-specs-multichain
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && vars.AWS_CLOUDFRONT_URL && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET && failure() }}
+    environment: pr-comment
     env:
       GITHUB_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       OWNER: ${{ github.repository_owner }}
@@ -177,7 +172,7 @@ jobs:
           path: ${{ env.HTML_REPORT_PATH }}
 
       - name: Upload html report to S3
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -195,7 +190,7 @@ jobs:
       - test-e2e-chrome-multiple-providers
       - test-e2e-chrome-rpc
       - test-e2e-chrome-flask
-      - test-e2e-chrome-vault-decryption
+      - test-e2e-chrome-dist
       - test-e2e-chrome-api-specs
       - test-e2e-chrome-api-specs-multichain
     runs-on: ubuntu-latest
@@ -214,6 +209,7 @@ jobs:
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          use-yarn-hydrate: true
 
       - name: Download test results
         uses: actions/download-artifact@v4

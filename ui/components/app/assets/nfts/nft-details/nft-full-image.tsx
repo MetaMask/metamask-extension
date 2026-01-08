@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useNavigationType, useParams } from 'react-router-dom';
 import { Nft } from '@metamask/assets-controllers';
 import { toHex } from '@metamask/controller-utils';
 import { getNftImage, getNftImageAlt } from '../../../../../helpers/utils/nfts';
@@ -23,7 +23,6 @@ import {
   JustifyContent,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../../../helpers/constants/routes';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDetailsFromTokenURI';
 // TODO: Remove restricted import
@@ -31,7 +30,13 @@ import useFetchNftDetailsFromTokenURI from '../../../../../hooks/useFetchNftDeta
 import { isWebUrl } from '../../../../../../app/scripts/lib/util';
 import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import { getImageForChainId } from '../../../../../selectors/multichain';
+import {
+  ASSET_ROUTE,
+  PREVIOUS_ROUTE,
+} from '../../../../../helpers/constants/routes';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function NftFullImage() {
   const t = useI18nContext();
   const { asset, id } = useParams<{ asset: string; id: string }>();
@@ -57,8 +62,9 @@ export default function NftFullImage() {
 
   const ipfsGateway = useSelector(getIpfsGateway);
   const nftNetworkConfigs = useSelector(getNetworkConfigurationsByChainId);
-  const nftChainNetwork = nftNetworkConfigs[toHex(chainId?.toString() ?? '')];
-  const nftChainImage = getImageForChainId(toHex(chainId?.toString() ?? ''));
+  const hexChainId = toHex(chainId?.toString() ?? '');
+  const nftChainNetwork = nftNetworkConfigs[hexChainId];
+  const nftChainImage = getImageForChainId(hexChainId);
   const nftImageURL = useGetAssetImageUrl(imageOriginal ?? image, ipfsGateway);
 
   const nftImageAlt = getNftImageAlt({
@@ -74,13 +80,26 @@ export default function NftFullImage() {
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     (image && isWebUrl(image)) ||
     (imageFromTokenURI && isWebUrl(imageFromTokenURI));
-  const history = useHistory();
+  const navigationType = useNavigationType();
+  const navigate = useNavigate();
 
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setVisible(true);
   }, []);
+
+  const onClose = useCallback(() => {
+    if (navigationType === 'PUSH') {
+      // Previous navigation was a PUSH, so safe to go back
+      navigate(PREVIOUS_ROUTE);
+    } else {
+      // Fallback: go to the asset details route explicitly
+      navigate(`${ASSET_ROUTE}/${hexChainId}/${asset}/${id}`, {
+        replace: true,
+      });
+    }
+  }, [asset, hexChainId, id, navigate, navigationType]);
 
   return (
     <Box className="main-container asset__container">
@@ -92,7 +111,7 @@ export default function NftFullImage() {
               size={ButtonIconSize.Sm}
               ariaLabel={t('back')}
               iconName={IconName.Close}
-              onClick={() => history.push(`${ASSET_ROUTE}/${asset}/${id}`)}
+              onClick={onClose}
               data-testid="nft-details__close"
               paddingLeft={0}
             />

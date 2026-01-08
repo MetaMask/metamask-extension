@@ -1,16 +1,13 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
-import {
-  openDAppWithContract,
-  TestSuiteArguments,
-  toggleAdvancedDetails,
-} from './shared';
+import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
-const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
@@ -20,7 +17,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -31,8 +28,18 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createMintTransaction(driver);
           await confirmMintTransaction(driver);
@@ -48,7 +55,7 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
     it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -56,8 +63,17 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createMintTransaction(driver);
           await confirmMintTransaction(driver);
@@ -74,6 +90,8 @@ describe('Confirmation Redesign ERC721 Approve Component', function () {
 async function mocked4Bytes(mockServer: MockttpServer) {
   return await mockServer
     .forGet('https://www.4byte.directory/api/v1/signatures/')
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x095ea7b3' })
     .thenCallback(() => ({
       statusCode: 200,
@@ -84,9 +102,17 @@ async function mocked4Bytes(mockServer: MockttpServer) {
         results: [
           {
             id: 149,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             created_at: '2016-07-09T03:58:29.617584Z',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             text_signature: 'approve(address,uint256)',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             hex_signature: '0x095ea7b3',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             bytes_signature: '\t^§³',
           },
         ],
@@ -183,6 +209,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+    '.transaction-status-label--confirmed:nth-of-type(1)',
   );
 }

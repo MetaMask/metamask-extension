@@ -1,3 +1,4 @@
+import { EthScope } from '@metamask/keyring-api';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 
 export const mockTokenData = {
@@ -43,27 +44,27 @@ export const mockTokenData = {
         address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
         balance: '0xa',
         type: 'eip155:eoa',
+        metadata: {
+          lastSelected: 1755717637857,
+        },
+        scopes: [EthScope.Eoa],
       },
     },
   },
   accountsByChainId: {
     [CHAIN_IDS.MAINNET]: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': {
         balance: '0xa',
       },
-      '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B': {
         balance: '0xe',
       },
     },
     [CHAIN_IDS.LINEA_MAINNET]: {
-      '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
-        address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': {
         balance: '0xe',
       },
-      '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b': {
-        address: '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+      '0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B': {
         balance: '0xe',
       },
     },

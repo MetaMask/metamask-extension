@@ -10,13 +10,14 @@ permissions:
 
 jobs:
   automated-rca:
-    uses: MetaMask/github-tools/.github/workflows/post-gh-rca.yml@af33de88e00adce0e41583beb7954d691ad3e304
-    with:
-      google-form-base-url: 'https://docs.google.com/forms/d/e/1FAIpQLSfnfEWH7JCFFtvjCHixgyqJdTU3LW3BmTwdF1dDezTNf7m4ig/viewform'
-      repo-owner: ${{ github.repository_owner }}
-      repo-name: ${{ github.event.repository.name }}
-      issue-number: ${{ github.event.issue.number }}
-      issue-labels: '["Sev0-urgent", "Sev1-high"]'
-      entry-issue: 'entry.340898780'
-      entry-team: 'entry.765806202'
-      entry-regression: 'entry.1756851972'
+    name: Automated RCA
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automated RCA
+        uses: MetaMask/github-tools/.github/actions/post-gh-rca@v1
+        with:
+          repo-owner: ${{ github.repository_owner }}
+          repo-name: ${{ github.event.repository.name }}
+          issue-number: ${{ github.event.issue.number }}
+          issue-labels: '["Sev0-urgent", "Sev1-high"]'
+          github-token: ${{ secrets.GITHUB_TOKEN }}

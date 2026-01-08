@@ -1,7 +1,6 @@
 import { withFixtures } from '../../../helpers';
-import { ACCOUNT_TYPE } from '../../../constants';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import Homepage from '../../../page-objects/pages/home/homepage';
@@ -14,7 +13,7 @@ describe('Import NFT', function () {
   it('should be able to import an NFT that user owns', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -30,8 +29,8 @@ describe('Import NFT', function () {
         await homepage.goToNftTab();
         const nftList = new NftListPage(driver);
         await nftList.importNft(contractAddress, '1');
-        await nftList.check_successImportNftMessageIsDisplayed();
-        await nftList.check_nftImageIsDisplayed();
+        await nftList.checkSuccessImportNftMessageIsDisplayed();
+        await nftList.checkNftImageIsDisplayed();
       },
     );
   });
@@ -39,7 +38,7 @@ describe('Import NFT', function () {
   it('should continue to display an imported NFT after importing, adding a new account, and switching back', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -56,28 +55,28 @@ describe('Import NFT', function () {
         await homepage.goToNftTab();
         const nftList = new NftListPage(driver);
         await nftList.importNft(contractAddress, '1');
-        await nftList.check_successImportNftMessageIsDisplayed();
-        await nftList.check_nftImageIsDisplayed();
+        await nftList.checkSuccessImportNftMessageIsDisplayed();
+        await nftList.checkNftImageIsDisplayed();
 
         // Create new account with default name Account 2
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.addAccount({
-          accountType: ACCOUNT_TYPE.Ethereum,
-        });
-        await headerNavbar.check_accountLabel('Account 2');
-        await homepage.check_expectedBalanceIsDisplayed();
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.addMultichainAccount();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 2');
+        await accountListPage.closeMultichainAccountsPage();
+        await homepage.checkExpectedBalanceIsDisplayed('24.997');
 
         // Switch back to Account 1 and check that the NFT is still displayed
         await headerNavbar.openAccountMenu();
-        await accountListPage.check_pageIsLoaded();
-        await accountListPage.check_accountDisplayedInAccountList('Account 1');
+        await accountListPage.checkPageIsLoaded();
+        await accountListPage.checkAccountDisplayedInAccountList('Account 1');
         await accountListPage.switchToAccount('Account 1');
-        await headerNavbar.check_accountLabel('Account 1');
-        await homepage.check_localNodeBalanceIsDisplayed(localNodes[0]);
-        await nftList.check_nftImageIsDisplayed();
+        await headerNavbar.checkAccountLabel('Account 1');
+        await homepage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
+        await nftList.checkNftImageIsDisplayed();
       },
     );
   });
@@ -85,7 +84,7 @@ describe('Import NFT', function () {
   it('should not be able to import an NFT that does not belong to user', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

@@ -31,17 +31,16 @@ export const AssetPickerModalTabs = ({
     return (
       <Tabs
         defaultActiveTabKey={defaultActiveTabKey}
-        tabsClassName="modal-tab__tabs"
         onTabClick={() => null}
+        tabListProps={{ className: 'px-4' }}
       >
         {visibleTabs.map((tabName) => {
           return (
             <Tab
               key={tabName}
-              activeClassName="modal-tab__tab--active"
-              className="modal-tab__tab"
               name={t(tabName)}
               tabKey={tabName}
+              className="flex-1"
             >
               {children.find(({ key }) => key === tabName)}
             </Tab>

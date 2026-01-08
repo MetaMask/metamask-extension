@@ -33,17 +33,21 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  label: string;
   children?: React.ReactNode | string;
-  tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
-  style?: React.CSSProperties;
-  labelChildren?: React.ReactNode;
+  collapsed?: boolean;
   color?: TextColor;
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsed?: boolean;
+  label: string;
+  labelChildren?: React.ReactNode;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  tooltip?: string;
+  tooltipIcon?: IconName;
+  tooltipIconColor?: IconColor;
+  variant?: ConfirmInfoRowVariant;
+  labelChildrenStyleOverride?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
@@ -65,7 +69,7 @@ const TOOLTIP_ICONS = {
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Default]: Color.iconAlternative,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
@@ -86,6 +90,10 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   copyText,
   'data-testid': dataTestId,
   collapsed,
+  tooltipIcon,
+  tooltipIconColor,
+  onClick,
+  labelChildrenStyleOverride,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
@@ -122,12 +130,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           <CopyIcon
             copyText={copyText ?? ''}
             style={{ right: isCollapsible ? 32 : 4 }}
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
           />
         )}
         {isCollapsible && (
           <ButtonIcon
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
             iconName={expanded ? IconName.Collapse : IconName.Expand}
             size={ButtonIconSize.Sm}
             style={{
@@ -145,10 +153,16 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           flexDirection={FlexDirection.Row}
           justifyContent={JustifyContent.center}
           alignItems={AlignItems.flexStart}
-          color={color}
+          color={color ?? TextColor.textAlternative}
           paddingRight={contentPaddingRight || null}
+          onClick={onClick}
+          className={onClick && 'hoverable'}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={labelChildrenStyleOverride}
+          >
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}
             </Text>
@@ -160,9 +174,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
                 style={{ display: 'flex' }}
               >
                 <Icon
-                  name={TOOLTIP_ICONS[variant]}
+                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
                   marginLeft={1}
-                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  color={
+                    tooltipIconColor ??
+                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
+                  }
                   size={IconSize.Sm}
                   {...(dataTestId
                     ? { 'data-testid': `${dataTestId}-tooltip` }

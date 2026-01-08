@@ -1,6 +1,6 @@
 import { errorCodes } from '@metamask/rpc-errors';
 import { detectSIWE } from '@metamask/controller-utils';
-import { Messenger } from '@metamask/base-controller';
+import { MOCK_ANY_NAMESPACE, Messenger } from '@metamask/messenger';
 
 import MetaMetricsController from '../controllers/metametrics-controller';
 import { MESSAGE_TYPE } from '../../../shared/constants/app';
@@ -15,6 +15,7 @@ import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../shared/constants/security-provider';
+import { ResultType } from '../../../shared/lib/trust-signals';
 import {
   permitSignatureMsg,
   orderSignatureMsg,
@@ -22,6 +23,14 @@ import {
 import { getDefaultPreferencesControllerState } from '../controllers/preferences-controller';
 import { createSegmentMock } from './segment';
 import createRPCMethodTrackingMiddleware from './createRPCMethodTrackingMiddleware';
+import * as snapKeyringMetrics from './snap-keyring/metrics';
+
+jest.mock('./snap-keyring/metrics', () => {
+  return {
+    getSnapAndHardwareInfoForMetrics: jest.fn().mockResolvedValue({}),
+  };
+});
+const MockSnapKeyringMetrics = jest.mocked(snapKeyringMetrics);
 
 const MOCK_ID = '123';
 const expectedUniqueIdentifier = `signature-${MOCK_ID}`;
@@ -50,7 +59,7 @@ const appStateController = {
   },
 };
 
-const messenger = new Messenger();
+const messenger = new Messenger({ namespace: MOCK_ANY_NAMESPACE });
 
 messenger.registerActionHandler('PreferencesController:getState', () => ({
   ...getDefaultPreferencesControllerState(),
@@ -73,6 +82,24 @@ messenger.registerActionHandler(
   }),
 );
 
+const controllerMessenger = new Messenger({
+  namespace: 'MetaMetricsController',
+  parent: messenger,
+});
+
+messenger.delegate({
+  messenger: controllerMessenger,
+  actions: [
+    'PreferencesController:getState',
+    'NetworkController:getState',
+    'NetworkController:getNetworkClientById',
+  ],
+  events: [
+    'PreferencesController:stateChange',
+    'NetworkController:networkDidChange',
+  ],
+});
+
 const metaMetricsController = new MetaMetricsController({
   state: {
     participateInMetaMetrics: null,
@@ -80,18 +107,7 @@ const metaMetricsController = new MetaMetricsController({
     fragments: {},
     events: {},
   },
-  messenger: messenger.getRestricted({
-    name: 'MetaMetricsController',
-    allowedActions: [
-      'PreferencesController:getState',
-      'NetworkController:getState',
-      'NetworkController:getNetworkClientById',
-    ],
-    allowedEvents: [
-      'PreferencesController:stateChange',
-      'NetworkController:networkDidChange',
-    ],
-  }),
+  messenger: controllerMessenger,
   segment: createSegmentMock(2),
   version: '0.0.1',
   environment: 'test',
@@ -245,9 +261,35 @@ describe('createRPCMethodTrackingMiddleware', () => {
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_description: 'some_description',
+          address_alert_response: ResultType.Loading,
         },
         referrer: { url: 'some.dapp' },
       });
+    });
+
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureRequested} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+        securityAlertResponse: {
+          result_type: BlockaidResultType.Malicious,
+          reason: BlockaidReason.maliciousDomain,
+          securityAlertId: 1,
+          description: 'some_description',
+        },
+      };
+
+      const res = {
+        error: null,
+      };
+      const { next } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(1);
     });
 
     it(`should track a ${MetaMetricsEventName.SignatureRequested} event for personal sign`, async () => {
@@ -283,6 +325,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
           security_alert_description: 'some_description',
+          address_alert_response: ResultType.Loading,
         },
         referrer: { url: 'some.dapp' },
       });
@@ -320,12 +363,10 @@ describe('createRPCMethodTrackingMiddleware', () => {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           security_alert_response: BlockaidResultType.Malicious,
           security_alert_reason: BlockaidReason.maliciousDomain,
+          address_alert_response: ResultType.Loading,
           ppom_eth_call_count: 5,
           ppom_eth_getCode_count: 3,
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
         },
         referrer: { url: 'some.dapp' },
         uniqueIdentifier: expectedUniqueIdentifier,
@@ -453,6 +494,49 @@ describe('createRPCMethodTrackingMiddleware', () => {
         },
         referrer: { url: 'some.dapp' },
       });
+    });
+
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureRejected} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {
+        error: {
+          code: errorCodes.provider.userRejectedRequest,
+          data: { location: 'some_location' },
+        },
+      };
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      // Called once for the initial request and once for the rejected request
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(2);
+    });
+
+    it(`should attempt to resolve snaps and hardware info for the ${MetaMetricsEventName.SignatureApproved} event`, async () => {
+      const req = {
+        id: MOCK_ID,
+        method: MESSAGE_TYPE.PERSONAL_SIGN,
+        origin: 'some.dapp',
+      };
+
+      const res = {};
+      const { next, executeMiddlewareStack } = getNext();
+      const handler = createHandler();
+      await handler(req, res, next);
+      await executeMiddlewareStack();
+
+      // Called once for the initial request and once for the approved request
+      expect(
+        MockSnapKeyringMetrics.getSnapAndHardwareInfoForMetrics,
+      ).toHaveBeenCalledTimes(2);
     });
 
     it(`should never track blocked methods such as ${MESSAGE_TYPE.GET_PROVIDER_STATE}`, () => {
@@ -650,10 +734,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.PERSONAL_SIGN,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Siwe,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Siwe],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -714,10 +795,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         event: MetaMetricsEventName.SignatureApproved,
         properties: {
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Permit,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Permit],
           eip712_primary_type: 'Permit',
         },
         referrer: { url: 'some.dapp' },
@@ -773,10 +851,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
         properties: {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-            MetaMetricsEventUiCustomization.Order,
-          ],
+          ui_customizations: [MetaMetricsEventUiCustomization.Order],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -809,9 +884,6 @@ describe('createRPCMethodTrackingMiddleware', () => {
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
           signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
           eip712_primary_type: 'Unknown',
-          ui_customizations: [
-            MetaMetricsEventUiCustomization.RedesignedConfirmation,
-          ],
         },
         referrer: { url: 'some.dapp' },
       });
@@ -840,6 +912,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
           properties: {
             api_source: MetaMetricsRequestedThrough.EthereumProvider,
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
+            address_alert_response: ResultType.Loading,
           },
           sensitiveProperties: {
             eip712_verifyingContract:
@@ -1111,6 +1184,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:10',
+            address_alert_response: ResultType.Loading,
           },
           referrer: { url: 'multichain.dapp' },
         });
@@ -1160,6 +1234,7 @@ describe('createRPCMethodTrackingMiddleware', () => {
             signature_type: MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
             api_source: MetaMetricsRequestedThrough.MultichainApi,
             chain_id_caip: 'eip155:137',
+            address_alert_response: ResultType.Loading,
           },
           referrer: { url: 'multichain.dapp' },
         });

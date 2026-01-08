@@ -17,11 +17,11 @@ export async function confirmPermissionSwitchToTestSnap(
   const snapInstall = new SnapInstall(driver);
   const snapInstallWarning = new SnapInstallWarning(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await snapInstall.check_pageIsLoaded();
+  await snapInstall.checkPageIsLoaded();
   await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
   if (withWarning) {
-    await snapInstallWarning.check_pageIsLoaded();
+    await snapInstallWarning.checkPageIsLoaded();
     await snapInstallWarning.clickCheckboxPermission();
     await snapInstallWarning.clickConfirmButton();
   }
@@ -68,10 +68,16 @@ export async function approveAccount(driver: Driver) {
 
   await driver.waitForSelector({
     text: 'Connect with MetaMask',
-    tag: 'h3',
   });
 
-  await driver.clickElement({ text: 'Next' });
+  await driver.clickElement({
+    text: 'Account 1',
+  });
+
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
 
   await driver.waitForSelector({
     text: 'Review permissions',

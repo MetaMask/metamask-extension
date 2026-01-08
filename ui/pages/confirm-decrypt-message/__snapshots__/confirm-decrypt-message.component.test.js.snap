@@ -67,7 +67,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -75,7 +75,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -83,7 +83,7 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -173,15 +173,14 @@ exports[`ConfirmDecryptMessage Component matches snapshot 1`] = `
     >
       <footer>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
-          data-theme="light"
         >
           Decrypt
         </button>
@@ -260,7 +259,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -268,7 +267,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -276,7 +275,7 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -366,15 +365,14 @@ exports[`ConfirmDecryptMessage Component shows error on decrypt inline error 1`]
     >
       <footer>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
-          data-theme="light"
         >
           Decrypt
         </button>
@@ -451,7 +449,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#18CDF2"
                           height="18"
-                          transform="translate(-0.5897213458840913 -1.8586597890715306) rotate(328.9 9 9)"
+                          transform="translate(-0.58972134588409 -1.85865978907153) rotate(328.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -459,7 +457,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#035E56"
                           height="18"
-                          transform="translate(-10.292884711218024 5.9582598028585885) rotate(176.2 9 9)"
+                          transform="translate(-10.29288471121802 5.95825980285859) rotate(176.2 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -467,7 +465,7 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
                         <rect
                           fill="#F26602"
                           height="18"
-                          transform="translate(9.375661135250958 -7.990391094185859) rotate(468.9 9 9)"
+                          transform="translate(9.37566113525096 -7.99039109418586) rotate(468.9 9.00000000000000 9.00000000000000)"
                           width="18"
                           x="0"
                           y="0"
@@ -583,15 +581,14 @@ exports[`ConfirmDecryptMessage Component shows the correct message data 1`] = `
     >
       <footer>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent mm-box--rounded-xl mm-box--border-color-primary-default box--border-style-solid box--border-width-1"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button page-container__footer-button__cancel mm-button-secondary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-muted mm-box--rounded-xl"
           data-testid="page-container-footer-cancel"
         >
           Cancel
         </button>
         <button
-          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
+          class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-base--block page-container__footer-button mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
           data-testid="page-container-footer-next"
-          data-theme="light"
         >
           Decrypt
         </button>

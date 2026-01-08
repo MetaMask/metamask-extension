@@ -4,21 +4,6 @@
   display: block;
   position: relative;
 
-  &__tabs {
-    border: none;
-    padding: 0 0;
-  }
-
-  &__tab {
-    @include design-system.H6;
-
-    flex-grow: 1;
-  }
-
-  &__tab button {
-    padding: 8px;
-  }
-
   &__list {
     position: relative;
   }

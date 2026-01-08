@@ -1,16 +1,10 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { PRIMARY, SECONDARY } from '../../../helpers/constants/common';
 import CurrencyDisplay from '../../ui/currency-display';
 import { useUserPreferencedCurrency } from '../../../hooks/useUserPreferencedCurrency';
-import { AvatarNetwork, AvatarNetworkSize } from '../../component-library';
-import {
-  getMultichainNativeCurrency,
-  getMultichainCurrentNetwork,
-} from '../../../selectors/multichain';
-import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getSelectedEvmInternalAccount } from '../../../selectors';
 
 /* eslint-disable jsdoc/require-param-name */
@@ -20,15 +14,13 @@ export default function UserPreferencedCurrencyDisplay({
   'data-testid': dataTestId,
   account: multichainAccount,
   ethNumberOfDecimals,
-  fiatNumberOfDecimals,
   numberOfDecimals: propsNumberOfDecimals,
-  showEthLogo,
   type,
   showFiat,
   showNative,
   shouldCheckShowNativeToken,
-  showCurrencySuffix,
   privacyMode = false,
+  chainId,
   ...restProps
 }) {
   // NOTE: When displaying currencies, we need the actual account to detect whether we're in a
@@ -40,41 +32,18 @@ export default function UserPreferencedCurrencyDisplay({
   const evmAccount = useSelector(getSelectedEvmInternalAccount);
   const account = multichainAccount ?? evmAccount;
 
-  const currentNetwork = useMultichainSelector(
-    getMultichainCurrentNetwork,
-    account,
+  const { currency, numberOfDecimals } = useUserPreferencedCurrency(
+    type,
+    {
+      account,
+      ethNumberOfDecimals,
+      numberOfDecimals: propsNumberOfDecimals,
+      showFiatOverride: showFiat,
+      showNativeOverride: showNative,
+      shouldCheckShowNativeToken,
+    },
+    chainId,
   );
-  const nativeCurrency = useMultichainSelector(
-    getMultichainNativeCurrency,
-    account,
-  );
-  const { currency, numberOfDecimals } = useUserPreferencedCurrency(type, {
-    account,
-    ethNumberOfDecimals,
-    fiatNumberOfDecimals,
-    numberOfDecimals: propsNumberOfDecimals,
-    showFiatOverride: showFiat,
-    showNativeOverride: showNative,
-    shouldCheckShowNativeToken,
-  });
-  const prefixComponent = useMemo(() => {
-    return (
-      showEthLogo &&
-      currency === nativeCurrency && (
-        <AvatarNetwork
-          size={AvatarNetworkSize.Xs}
-          name={currentNetwork?.nickname}
-          src={currentNetwork?.rpcPrefs?.imageUrl}
-        />
-      )
-    );
-  }, [
-    currency,
-    showEthLogo,
-    nativeCurrency,
-    currentNetwork?.nickname,
-    currentNetwork?.rpcPrefs?.imageUrl,
-  ]);
   return (
     <CurrencyDisplay
       {...restProps}
@@ -82,9 +51,9 @@ export default function UserPreferencedCurrencyDisplay({
       currency={currency}
       data-testid={dataTestId}
       numberOfDecimals={numberOfDecimals}
-      prefixComponent={prefixComponent}
-      suffix={showCurrencySuffix && !showEthLogo && currency}
+      suffix={false}
       privacyMode={privacyMode}
+      chainId={chainId}
     />
   );
 }
@@ -99,19 +68,14 @@ const UserPreferencedCurrencyDisplayPropTypes = {
   hideLabel: PropTypes.bool,
   hideTitle: PropTypes.bool,
   style: PropTypes.object,
-  showEthLogo: PropTypes.bool,
   type: PropTypes.oneOf([PRIMARY, SECONDARY]),
   ethNumberOfDecimals: PropTypes.oneOfType([
     PropTypes.string,
     PropTypes.number,
   ]),
-  fiatNumberOfDecimals: PropTypes.oneOfType([
-    PropTypes.string,
-    PropTypes.number,
-  ]),
   showFiat: PropTypes.bool,
   showNative: PropTypes.bool,
-  showCurrencySuffix: PropTypes.bool,
+  chainId: PropTypes.string,
   /**
    * Following are the props from CurrencyDisplay component.
    * UserPreferencedCurrencyDisplay component should also accept all the props from Currency component
@@ -122,9 +86,7 @@ const UserPreferencedCurrencyDisplayPropTypes = {
     EtherDenomination.ETH,
   ]),
   displayValue: PropTypes.string,
-  prefixComponent: PropTypes.node,
   suffix: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
-  prefixComponentWrapperProps: PropTypes.object,
   textProps: PropTypes.object,
   suffixProps: PropTypes.object,
   shouldCheckShowNativeToken: PropTypes.bool,

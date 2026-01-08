@@ -1,19 +1,22 @@
 import { Controller as NotificationServicesController } from '@metamask/notification-services-controller/notification-services';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
   getNotificationServicesControllerMessenger,
   type NotificationServicesControllerMessenger,
 } from '../messengers/notifications';
+import { getRootMessenger } from '../../lib/messenger';
 import { NotificationServicesControllerInit } from './notification-services-controller-init';
 
 jest.mock('@metamask/notification-services-controller/notification-services');
+jest.mock('../../../../package.json', () => ({
+  version: '1.2.3',
+}));
 
 function buildInitRequestMock(): jest.Mocked<
   ControllerInitRequest<NotificationServicesControllerMessenger>
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),
@@ -60,7 +63,9 @@ describe('NotificationServicesControllerInit', () => {
           platform: 'extension',
           spaceId: 'MOCK_SPACE_ID',
           accessToken: 'MOCK_ACCESS_TOKEN',
+          platformVersion: expect.any(String),
         },
+        locale: expect.any(Function),
       },
     });
   });

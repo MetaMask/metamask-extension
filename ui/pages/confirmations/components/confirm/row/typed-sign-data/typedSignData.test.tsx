@@ -4,7 +4,7 @@ import {
   unapprovedTypedSignMsgV4,
 } from '../../../../../../../test/data/confirmations/typed_sign';
 import mockState from '../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../../../store/store';
 import { ConfirmInfoRowTypedSignData } from './typedSignData';
 
@@ -41,6 +41,8 @@ describe('ConfirmInfoRowTypedSignData', () => {
 
     mockRawMessageV4.message.do_not_display = 'one';
     mockRawMessageV4.message.do_not_display_2 = {
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       do_not_display: 'two',
     };
 

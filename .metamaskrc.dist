@@ -4,6 +4,20 @@
 ; This variable is required
 INFURA_PROJECT_ID=00000000000
 
+; Set this to `true` to enable Seedless onboarding (Social login flow)
+SEEDLESS_ONBOARDING_ENABLED='false'
+
+; Set this to `true` to enable Metamask Shield
+METAMASK_SHIELD_ENABLED='false'
+
+; Backend WebSocket URL
+; Uses production API endpoint by default (same as builds.yml)
+;MM_BACKEND_WEBSOCKET_URL='wss://gateway.api.cx.metamask.io/v1'
+
+; These variables are required for OAuth Service
+GOOGLE_CLIENT_ID=
+APPLE_CLIENT_ID=
+
 ; This variable is not required but it's necessary for the storybook
 ; to render stories that use onchain data.
 INFURA_STORYBOOK_PROJECT_ID=
@@ -39,9 +53,11 @@ BLOCKAID_PUBLIC_KEY=
 ; Enables the Settings Page - Developer Options
 ; ENABLE_SETTINGS_PAGE_DEV_OPTIONS=true
 
-; The endpoint used to submit errors and tracing data to Sentry.
-; The below is the `test-metamask` project.
+; SENTRY CONFIGURATION
+; SENTRY_DSN             - For production builds only (do NOT use in development)
+; SENTRY_DSN_DEV         - For local dev and one-off QA testing (sends to 'test-metamask' project)
 ; SENTRY_DSN_DEV=https://f59f3dd640d2429d9d0e2445a87ea8e1@sentry.io/273496
+; SENTRY_DSN_PERFORMANCE - For CI/CD and automated performance testing (keeps CI traffic separate)
 
 ; Enable/disable why did you render debug tool: https://github.com/welldone-software/why-did-you-render
 ; This should NEVER be enabled in production since it slows down react
@@ -56,3 +72,9 @@ BLOCKAID_PUBLIC_KEY=
 ; }
 ; Note: Properties are shallow merged into the manifest.json file at build time.
 ;MANIFEST_OVERRIDES=.manifest-overrides.json
+
+; Set this to `true` to enable Metamask Shield
+; METAMASK_SHIELD_ENABLED='false'
+
+; Set this to `true` to enable `AuthenticationController` environment config to match the extension's build type. If set to `true`, `beta` and `uat` builds will result in using `Env.UAT`. Leaving it to `false` or unset will use `Env.PRD`.
+; FORCE_AUTH_MATCH_BUILD='false'

@@ -1,11 +1,11 @@
 import React from 'react';
 import configureStore from '../../../../../store/store';
 import mockState from '../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import {
   CONFUSING_ENS_ERROR,
   ENS_UNKNOWN_ERROR,
-} from '../../../../../pages/confirmations/send/send.constants';
+} from '../../../../../pages/confirmations/send-legacy/send.constants';
 import { SendPageRecipient } from '.';
 
 const render = (stateChanges = {}) => {
@@ -15,6 +15,8 @@ const render = (stateChanges = {}) => {
       ...mockState.metamask,
       permissionHistory: {
         'https://test.dapp': {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,

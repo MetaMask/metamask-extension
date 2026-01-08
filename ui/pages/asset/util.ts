@@ -21,23 +21,20 @@ export const getShortDateFormatterV2 = () =>
   });
 
 /**
- * Formats a potentially large number to the nearest unit.
- * e.g. 1T for trillions, 2.3B for billions, 4.56M for millions, 7,890 for thousands, etc.
+ * Returns a dynamically formatted date string.
+ * If the date is in the same year as the current date, it omits the year.
+ * Otherwise, it includes the year.
  *
- * @param t - An I18nContext translator.
- * @param number - The number to format.
- * @returns A localized string of the formatted number + unit.
+ * @param date - The date to format, either as a Date object or timestamp.
+ * @returns A formatted date string.
  */
-// eslint-disable-next-line
-export const localizeLargeNumber = (t: any, number: number) => {
-  if (number >= 1000000000000) {
-    return `${(number / 1000000000000).toFixed(2)}${t('trillionAbbreviation')}`;
-  } else if (number >= 1000000000) {
-    return `${(number / 1000000000).toFixed(2)}${t('billionAbbreviation')}`;
-  } else if (number >= 1000000) {
-    return `${(number / 1000000).toFixed(2)}${t('millionAbbreviation')}`;
-  }
-  return number.toFixed(2);
+export const getDynamicShortDate = (date: Date | number) => {
+  const currentDate = new Date(date);
+  const now = new Date();
+  const isSameYear = currentDate.getFullYear() === now.getFullYear();
+  return isSameYear
+    ? getShortDateFormatter().format(date)
+    : getShortDateFormatterV2().format(date);
 };
 
 /**

@@ -1,21 +1,21 @@
 import { withFixtures } from '../../../helpers';
 
-import FixtureBuilder from '../../../fixture-builder';
-import Homepage from '../../../page-objects/pages/home/homepage';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import HomePage from '../../../page-objects/pages/home/homepage';
 
 import DeFiTab from '../../../page-objects/pages/defi-tab';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
 import { mockNoDeFiPositionFeatureFlag } from '../../confirmations/helpers';
 
-import HeaderNavbar from '../../../page-objects/pages/header-navbar';
-import { switchToNetworkFlow } from '../../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../../page-objects/flows/network.flow';
 
 describe('Check DeFi empty state when no defi positions', function () {
   it('user should be able to view empty', async function () {
     await withFixtures(
       {
-        dapp: true,
+        forceBip44Version: false,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockNoDeFiPositionFeatureFlag,
@@ -23,25 +23,18 @@ describe('Check DeFi empty state when no defi positions', function () {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await new Homepage(driver).goToDeFiTab();
-
-        // Validate the default network is Localhost 8545
-        await new HeaderNavbar(driver).check_currentSelectedNetwork(
-          'Localhost 8545',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.goToDeFiTab();
 
         const defiTab = new DeFiTab(driver);
 
         // Empty state
-        await defiTab.check_noPositionsMessageIsDisplayed();
-        await defiTab.waitForStakeLink();
+        await defiTab.checkNoPositionsMessageIsDisplayed();
 
         // switch network
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
 
-        // check emtry state still present
-        await defiTab.openNetworksFilterAndClickPopularNetworks();
-        await defiTab.check_noPositionsMessageIsDisplayed();
+        await defiTab.checkNoPositionsMessageIsDisplayed();
       },
     );
   });

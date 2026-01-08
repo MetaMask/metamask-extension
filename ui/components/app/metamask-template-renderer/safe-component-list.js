@@ -6,7 +6,7 @@ import {
   FormTextField,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../../multichain';
+import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
@@ -28,7 +28,6 @@ import {
   ConfirmInfoRowValueDouble,
 } from '../confirm/info/row';
 import MetaMaskTranslation from '../metamask-translation';
-import NetworkDisplay from '../network-display';
 import { Copyable } from '../snaps/copyable';
 import { SnapDelineator } from '../snaps/snap-delineator';
 import { SnapUIAddress } from '../snaps/snap-ui-address';
@@ -52,6 +51,7 @@ import { SnapUISelector } from '../snaps/snap-ui-selector';
 import { SnapUITooltip } from '../snaps/snap-ui-tooltip';
 import { SnapUIAssetSelector } from '../snaps/snap-ui-asset-selector';
 import { SnapUIAccountSelector } from '../snaps/snap-ui-account-selector';
+import { SnapUIDateTimePicker } from '../snaps/snap-ui-date-time-picker';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { SnapAccountErrorMessage } from '../../../pages/confirmations/components/snap-account-error-message';
 import { SnapAccountSuccessMessage } from '../../../pages/confirmations/components/snap-account-success-message';
@@ -65,6 +65,7 @@ import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-accou
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
+import { HyperliquidReferralConsent } from '../../../pages/core/hyperliquid-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
@@ -84,9 +85,9 @@ export const safeComponentList = {
   DefinitionList,
   div: 'div',
   FormTextField,
+  HyperliquidReferralConsent,
   i: 'i',
   MetaMaskTranslation,
-  NetworkDisplay,
   OriginPill,
   p: 'p',
   Popover,
@@ -113,6 +114,7 @@ export const safeComponentList = {
   SnapUISelector,
   SnapUITooltip,
   SnapUIAssetSelector,
+  SnapUIDateTimePicker,
   span: 'span',
   Spinner,
   Skeleton,

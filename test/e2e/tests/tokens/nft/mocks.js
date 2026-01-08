@@ -370,7 +370,6 @@ function setupAutoDetectMocking(
     .withQuery({
       limit: 50,
       includeTopBid: true,
-      chainIds: ['1', '59144'],
       continuation: '',
     })
     .thenCallback(() => {
@@ -410,51 +409,6 @@ function setupAutoDetectMocking(
       return {
         statusCode: 200,
         json: ensTokenResponse,
-      };
-    });
-
-  // eth_blockNumber
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_blockNumber')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: '0x1',
-        },
-      };
-    });
-
-  // eth_getBlockByNumber
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_getBlockByNumber')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: {},
-        },
-      };
-    });
-
-  // eth_call
-  server
-    .forPost('/v3/00000000000000000000000000000000')
-    .withBodyIncluding('eth_call')
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          jsonrpc: '2.0',
-          id: 1111111111111111,
-          result: '0x1',
-        },
       };
     });
 }

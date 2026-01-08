@@ -10,17 +10,20 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/master')) }}
+  cancel-in-progress: ${{ !(contains(github.ref, 'refs/heads/main') || contains(github.ref, 'refs/heads/stable')) }}
 
 jobs:
   identify-codeowners:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment: pr-comment
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          use-yarn-hydrate: true
 
       - name: Identify codeowners
         if: ${{ env.PR_COMMENT_TOKEN }}

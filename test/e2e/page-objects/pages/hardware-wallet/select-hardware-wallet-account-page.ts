@@ -16,13 +16,18 @@ class SelectHardwareWalletAccountPage {
 
   protected readonly accountCheckbox = '.hw-account-list__item__checkbox';
 
+  protected readonly forgetDeviceButton = {
+    text: 'Forget this device',
+    tag: 'a',
+  };
+
   protected readonly unlockButton = { text: 'Unlock', tag: 'button' };
 
   constructor(driver: Driver) {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.selectAccountPageTitle,
@@ -41,6 +46,11 @@ class SelectHardwareWalletAccountPage {
   async clickUnlockButton(): Promise<void> {
     console.log(`Click unlock button on select account page`);
     await this.driver.clickElement(this.unlockButton);
+  }
+
+  async clickForgetDeviceButton(): Promise<void> {
+    console.log(`Click forget device button on select account page`);
+    await this.driver.clickElement(this.forgetDeviceButton);
   }
 
   async selectAccount(accountIndex: number): Promise<void> {
@@ -62,7 +72,7 @@ class SelectHardwareWalletAccountPage {
    *
    * @param address - The address to check for.
    */
-  async check_addressIsDisplayed(address: string): Promise<void> {
+  async checkAddressIsDisplayed(address: string): Promise<void> {
     console.log(
       `Check that account address ${address} is displayed on select account page`,
     );
@@ -75,7 +85,7 @@ class SelectHardwareWalletAccountPage {
    * @param expectedNumber - The number of account items expected to be displayed. Defaults to 5.
    * @returns A promise that resolves if the expected number of account items is displayed.
    */
-  async check_accountNumber(expectedNumber: number = 5): Promise<void> {
+  async checkAccountNumber(expectedNumber: number = 5): Promise<void> {
     console.log(`Waiting for ${expectedNumber} account items to be displayed`);
     await this.driver.wait(async () => {
       const accountItems = await this.driver.findElements(this.accountCheckbox);

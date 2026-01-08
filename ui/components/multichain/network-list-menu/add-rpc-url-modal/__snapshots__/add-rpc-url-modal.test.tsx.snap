@@ -12,7 +12,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
         class="mm-box mm-form-text-field mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
-          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
           for="rpcUrl"
         >
           rpcUrl
@@ -36,7 +36,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
         class="mm-box mm-form-text-field mm-box--padding-top-4 mm-box--display-flex mm-box--flex-direction-column"
       >
         <label
-          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
+          class="mm-box mm-text mm-label mm-label--html-for mm-form-text-field__label mm-text--body-md-medium mm-text--font-weight-medium mm-box--margin-bottom-1 mm-box--display-inline-flex mm-box--align-items-center mm-box--color-text-default"
           for="rpcName"
         >
           rpcNameOptional
@@ -61,8 +61,7 @@ exports[`AddRpcUrlModal should render correctly 1`] = `
       class="mm-box add-rpc-modal__footer mm-box--padding-4 mm-box--width-full mm-box--background-color-background-default"
     >
       <button
-        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-primary-inverse mm-box--background-color-primary-default mm-box--rounded-xl"
-        data-theme="light"
+        class="mm-box mm-text mm-button-base mm-button-base--size-lg mm-button-primary mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--width-full mm-box--color-icon-inverse mm-box--background-color-icon-default mm-box--rounded-xl"
       >
         addUrl
       </button>

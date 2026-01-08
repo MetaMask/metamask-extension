@@ -9,11 +9,12 @@ import {
 import type { Provider } from '@metamask/network-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
 import { MultichainAssetsRatesControllerState } from '@metamask/assets-controllers';
-import { AssetConversion } from '@metamask/snaps-sdk';
+import { AssetConversion, FungibleAssetMarketData } from '@metamask/snaps-sdk';
 import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -37,6 +38,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
 });
@@ -96,6 +99,8 @@ function hexToBn(inputHex: string) {
  * @param denominator - The denominator of the fraction multiplier
  * @returns The product of the multiplication
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function BnMultiplyByFraction(
   targetBN: BN,
   numerator: number,
@@ -175,43 +180,6 @@ export const isValidDate = (d: Date | number) => {
 };
 
 /**
- * A deferred Promise.
- *
- * A deferred Promise is one that can be resolved or rejected independently of
- * the Promise construction.
- *
- * @typedef {object} DeferredPromise
- * @property {Promise} promise - The Promise that has been deferred.
- * @property {() => void} resolve - A function that resolves the Promise.
- * @property {() => void} reject - A function that rejects the Promise.
- */
-
-type DeferredPromise = {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  promise: Promise<any>;
-  resolve?: () => void;
-  reject?: () => void;
-};
-
-/**
- * Create a defered Promise.
- *
- * @returns A deferred Promise.
- */
-export function deferredPromise(): DeferredPromise {
-  let resolve: DeferredPromise['resolve'];
-  let reject: DeferredPromise['reject'];
-  const promise = new Promise<void>(
-    (innerResolve: () => void, innerReject: () => void) => {
-      resolve = innerResolve;
-      reject = innerReject;
-    },
-  );
-  return { promise, resolve, reject };
-}
-
-/**
  * Returns a function with arity 1 that caches the argument that the function
  * is called with and invokes the comparator with both the cached, previous,
  * value and the current value. If specified, the initialValue will be passed
@@ -223,6 +191,8 @@ export function deferredPromise(): DeferredPromise {
  * @param [initialValue] - The initial value to supply to prevValue
  * on first call of the method.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function previousValueComparator<A>(
   comparator: (previous: A, next: A) => boolean,
   initialValue: A,
@@ -274,6 +244,10 @@ export function getValidUrl(urlString: string): URL | null {
   }
 }
 
+export function isValidEmail(email: string): boolean {
+  return email.match(/^([\w.%+-]+)@([\w-]+\.)+([\w]{2,})$/iu) !== null;
+}
+
 export function isWebUrl(urlString: string): boolean {
   const url = getValidUrl(urlString);
 
@@ -290,7 +264,9 @@ export function isWebUrl(urlString: string): boolean {
  * @param metaMetricsId - The metametricsId to use for the event.
  * @returns Whether to emit the event or not.
  */
-export function shouldEmitDappViewedEvent(metaMetricsId: string): boolean {
+export function shouldEmitDappViewedEvent(
+  metaMetricsId: string | null,
+): boolean {
   const isFireFox = getPlatform() === PLATFORM_FIREFOX;
 
   if (metaMetricsId === null || isFireFox) {
@@ -462,7 +438,7 @@ export function getConversionRatesForNativeAsset({
 }: {
   conversionRates: AssetsRatesState['metamask']['conversionRates'];
   chainId: string;
-}): AssetConversion | null {
+}): (AssetConversion & { marketData?: FungibleAssetMarketData }) | null {
   // Return early if conversionRates is falsy
   if (!conversionRates) {
     return null;

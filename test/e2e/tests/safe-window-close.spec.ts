@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver, PAGES } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import TestDapp from '../page-objects/pages/test-dapp';
@@ -9,7 +9,7 @@ describe('Notification window closing', function () {
   it('closes the window when running in a popup', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.title,
       },
@@ -22,6 +22,8 @@ describe('Notification window closing', function () {
         const requestPermissionsRequest = JSON.stringify({
           jsonrpc: '2.0',
           method: 'wallet_requestPermissions',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: [{ eth_accounts: {} }],
         });
         await driver.executeScript(

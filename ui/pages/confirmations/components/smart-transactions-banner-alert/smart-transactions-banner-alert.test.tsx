@@ -2,9 +2,9 @@ import React from 'react';
 import type { Store } from '@reduxjs/toolkit';
 import { screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
-import { ConfirmContext } from '../../context/confirm';
+import { ConfirmContext, ConfirmContextType } from '../../context/confirm';
 import type { Confirmation, SignatureRequestType } from '../../types/confirm';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../../../store/actions';
@@ -20,6 +20,8 @@ type TestConfirmContextValue = {
 
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => (key: string) => key,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: () => (key: string) => key,
 }));
@@ -41,7 +43,9 @@ const renderWithConfirmContext = (
   },
 ) => {
   return renderWithProvider(
-    <ConfirmContext.Provider value={confirmationValue}>
+    <ConfirmContext.Provider
+      value={confirmationValue as unknown as ConfirmContextType}
+    >
       {component}
     </ConfirmContext.Provider>,
     store,

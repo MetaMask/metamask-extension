@@ -28,10 +28,9 @@ export default class ContactListTab extends Component {
   };
 
   static propTypes = {
-    addressBook: PropTypes.array,
     completeAddressBook: PropTypes.array,
     internalAccounts: PropTypes.array,
-    history: PropTypes.object,
+    navigate: PropTypes.func.isRequired,
     selectedAddress: PropTypes.string,
     viewingContact: PropTypes.bool,
     editingContact: PropTypes.bool,
@@ -59,17 +58,12 @@ export default class ContactListTab extends Component {
   }
 
   renderAddresses() {
-    const {
-      completeAddressBook,
-      addressBook,
-      internalAccounts,
-      history,
-      selectedAddress,
-    } = this.props;
+    const { completeAddressBook, internalAccounts, navigate, selectedAddress } =
+      this.props;
 
-    const updatedAddressBook = process.env.REMOVE_GNS
-      ? completeAddressBook.flatMap((add) => Object.values(add))
-      : addressBook;
+    const updatedAddressBook = Object.entries(completeAddressBook).map(
+      ([_, value]) => value,
+    );
 
     const contacts = updatedAddressBook.filter(({ name }) => Boolean(name));
     const nonContacts = updatedAddressBook.filter(({ name }) => !name);
@@ -85,7 +79,7 @@ export default class ContactListTab extends Component {
             searchForContacts={() => contacts}
             searchForRecents={() => nonContacts}
             selectRecipient={(address) => {
-              history.push(`${CONTACT_VIEW_ROUTE}/${address}`);
+              navigate(`${CONTACT_VIEW_ROUTE}/${address}`);
             }}
             selectedAddress={selectedAddress}
           />
@@ -109,7 +103,7 @@ export default class ContactListTab extends Component {
           <button
             className="address-book__link"
             onClick={() => {
-              history.push(CONTACT_ADD_ROUTE);
+              navigate(CONTACT_ADD_ROUTE);
             }}
           >
             + {t('addContact')}
@@ -120,7 +114,7 @@ export default class ContactListTab extends Component {
   }
 
   renderAddButton() {
-    const { history, viewingContact, editingContact } = this.props;
+    const { navigate, viewingContact, editingContact } = this.props;
 
     return (
       <ButtonPrimary
@@ -129,7 +123,7 @@ export default class ContactListTab extends Component {
             viewingContact || editingContact,
         })}
         onClick={() => {
-          history.push(CONTACT_ADD_ROUTE);
+          navigate(CONTACT_ADD_ROUTE);
         }}
         margin={4}
         size={Size.LG}
@@ -174,13 +168,9 @@ export default class ContactListTab extends Component {
   }
 
   render() {
-    const { addingContact, currentPath, completeAddressBook, addressBook } =
-      this.props;
+    const { addingContact, currentPath, completeAddressBook } = this.props;
 
-    const addressData = process.env.REMOVE_GNS
-      ? completeAddressBook
-      : addressBook;
-
+    const addressData = completeAddressBook;
     return (
       <div className="address-book-wrapper">
         {this.renderAddressBookContent()}

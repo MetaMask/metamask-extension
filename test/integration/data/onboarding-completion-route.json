@@ -1,5 +1,35 @@
 {
-  "accounts": { "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189": {} },
+  "accountTree": {
+    "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+    "wallets": {
+      "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+        "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+        "type": "entropy",
+        "groups": {
+          "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+            "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+            "type": "multichain-account",
+            "accounts": ["51737ecb-beb4-4a2b-bcab-c99d0f587a33"],
+            "metadata": {
+              "name": "Account 1",
+              "entropy": {
+                "groupIndex": 0
+              },
+              "hidden": false,
+              "pinned": false
+            }
+          }
+        },
+        "metadata": {
+          "name": "Wallet 1",
+          "entropy": {
+            "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          }
+        }
+      }
+    }
+  },
+  "accountsAssets": {},
   "accountsByChainId": {},
   "addSnapAccountEnabled": false,
   "addressBook": {
@@ -13,9 +43,11 @@
       }
     }
   },
+  "addressSecurityAlertResponses": {},
   "advancedGasFee": {},
   "alertEnabledness": { "unconnectedAccount": true, "web3ShimUsage": true },
   "allDetectedTokens": {},
+  "allIgnoredAssets": {},
   "allIgnoredTokens": {},
   "allNftContracts": {},
   "allNfts": {},
@@ -57,6 +89,7 @@
     "33": { "id": 33, "date": "2024-04-09", "isShown": false }
   },
   "approvalFlows": [],
+  "assetsMetadata": {},
   "browserEnvironment": { "os": "mac", "browser": "firefox" },
   "completedOnboarding": false,
   "confirmationExchangeRates": {},
@@ -71,8 +104,6 @@
     }
   },
   "currentAppVersion": "11.14.4-flask.0",
-  "currentBlockGasLimit": "",
-  "currentBlockGasLimitByChainId": {},
   "currentCurrency": "usd",
   "currentExtensionPopupId": 1715943310719,
   "currentLocale": "en",
@@ -85,10 +116,16 @@
   "detectedTokens": [],
   "dismissSeedBackUpReminder": false,
   "domains": {},
+  "enableEnforcedSimulations": "boolean",
+  "enableEnforcedSimulationsForTransactions": "object",
   "enableMV3TimestampSave": true,
-  "enabledNetworkMap": {},
-  "encryptionKey": "{\"key\":{\"alg\":\"A256GCM\",\"ext\":true,\"k\":\"IWP6tqC2WeYfTxhHhTFU2m1hhO9GD5YhgYe2iRzu5GU\",\"key_ops\":[\"encrypt\",\"decrypt\"],\"kty\":\"oct\"},\"derivationOptions\":{\"algorithm\":\"PBKDF2\",\"params\":{\"iterations\":600000}}}",
-  "encryptionSalt": "6AA1VP9N1aU5bglaSiAhmE9PdLH3YCqiKJagv+wQCR8=",
+  "enabledNetworkMap": {
+    "eip155": {
+      "0xaa36a7": true
+    }
+  },
+  "enforcedSimulationsSlippage": "number",
+  "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
   "ensResolutionsByAddress": {},
   "estimatedGasFeeTimeBounds": {},
@@ -149,7 +186,10 @@
   "keyrings": [
     {
       "type": "HD Key Tree",
-      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"]
+      "accounts": ["0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189"],
+      "metadata": {
+        "id": "test-keyring-id"
+      }
     }
   ],
   "knownMethodData": {},
@@ -205,6 +245,9 @@
       "nativeCurrency": "SepoliaETH"
     }
   },
+  "networkConnectionBanner": {
+    "status": "unknown"
+  },
   "networksMetadata": { "sepolia": { "status": "unknown", "EIPS": {} } },
   "networksWithTransactionActivity": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
@@ -259,7 +302,6 @@
     "chainId": "0xaa36a7",
     "ticker": "SepoliaETH"
   },
-  "qrHardware": {},
   "recoveryPhraseReminderHasBeenShown": false,
   "recoveryPhraseReminderLastShown": 1715943225448,
   "securityAlertsEnabled": true,
@@ -282,6 +324,8 @@
   "selectedAddress": "0x03cf1158b58ccdfc04dd518f11f85c3ee7fa0189",
   "selectedMultichainNetworkChainId": "bip122:000000000019d6689c085ae165831e93",
   "selectedNetworkClientId": "sepolia",
+  "shieldEndingToastLastClickedOrClosed": null,
+  "shieldPausedToastLastClickedOrClosed": null,
   "showAccountBanner": true,
   "showBetaHeader": false,
   "showNetworkBanner": true,
@@ -433,8 +477,6 @@
     "swapsStxGetTransactionsRefreshTime": 10000,
     "swapsStxMaxFeeMultiplier": 2
   },
-  "switchedNetworkDetails": null,
-  "switchedNetworkNeverShowMessage": false,
   "termsOfUseLastAgreed": 1715944006161,
   "theme": "os",
   "tokenBalances": {
@@ -448,6 +490,7 @@
   "tokenList": {},
   "tokens": [],
   "tokensChainsCache": {},
+  "tracesBeforeMetricsOptIn": [],
   "traits": {},
   "transactions": [],
   "trezorModel": null,

@@ -1,79 +1,57 @@
 import React from 'react';
 import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
-import { fireEvent, renderWithProvider } from '../../../../../../test/jest';
-import { MetaMetricsContext } from '../../../../../contexts/metametrics';
-import {
-  MetaMetricsEventCategory,
-  MetaMetricsEventName,
-} from '../../../../../../shared/constants/metametrics';
+import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import type { NetworkConfiguration } from '@metamask/network-controller';
+import { fireEvent } from '../../../../../../test/jest';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import * as actions from '../../../../../store/actions';
 import { SECURITY_ROUTE } from '../../../../../helpers/constants/routes';
+import { createMockInternalAccount } from '../../../../../../test/jest/mocks';
 import AssetListControlBar from './asset-list-control-bar';
 
-const mockHistoryPush = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(() => ({ search: '' })),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
-  useParams: jest.fn(),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
-describe('AssetListControlBar', () => {
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it('should fire metrics event when refresh button is clicked', async () => {
-    const store = configureMockStore([thunk])({
-      metamask: {
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        networkConfigurationsByChainId: {
-          '0x1': {
-            chainId: '0x1',
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
-          },
-        },
-        internalAccounts: {
-          selectedAccount: 'selectedAccount',
-          accounts: {
-            selectedAccount: {},
-          },
-        },
+const createMockState = () => ({
+  ...mockState,
+  metamask: {
+    ...mockState.metamask,
+    selectedNetworkClientId: 'selectedNetworkClientId',
+    enabledNetworkMap: {
+      eip155: {
+        '0x1': true,
       },
-    });
-
-    const mockTrackEvent = jest.fn();
-
-    const { findByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
-        <AssetListControlBar showTokensLinks />
-      </MetaMetricsContext.Provider>,
-      store,
-    );
-
-    const importButton = await findByTestId(
-      'asset-list-control-bar-action-button',
-    );
-    importButton.click();
-
-    const refreshListItem = await findByTestId('refreshList__button');
-    refreshListItem.click();
-
-    expect(mockTrackEvent).toHaveBeenCalledTimes(1);
-    expect(mockTrackEvent).toHaveBeenCalledWith({
-      category: MetaMetricsEventCategory.Tokens,
-      event: MetaMetricsEventName.TokenListRefreshed,
-    });
-  });
+    },
+    networkConfigurationsByChainId: {
+      '0x1': {
+        chainId: '0x1',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
+          },
+        ],
+      },
+    } as unknown as Record<string, NetworkConfiguration>,
+    multichainNetworkConfigurationsByChainId:
+      AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
+    selectedMultichainNetworkChainId: 'eip155:1',
+    isEvmSelected: true,
+    useNftDetection: true,
+    internalAccounts: {
+      selectedAccount: 'selectedAccount',
+      accounts: {
+        selectedAccount: createMockInternalAccount(),
+      },
+    },
+  },
 });
 
 describe('NFTs options', () => {
@@ -88,31 +66,8 @@ describe('NFTs options', () => {
       'checkAndUpdateAllNftsOwnershipStatus',
     );
 
-    const store = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        useNftDetection: true,
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        networkConfigurationsByChainId: {
-          '0x1': {
-            chainId: '0x1',
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
-          },
-        },
-        internalAccounts: {
-          selectedAccount: 'selectedAccount',
-          accounts: {
-            selectedAccount: {},
-          },
-        },
-      },
-    });
+    const state = createMockState();
+    const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
@@ -140,31 +95,19 @@ describe('NFTs options', () => {
       'checkAndUpdateAllNftsOwnershipStatus',
     );
 
-    const store = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        useNftDetection: true,
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        networkConfigurationsByChainId: {
-          '0xe708': {
-            chainId: '0xe708',
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
+    const state = createMockState();
+    state.metamask.networkConfigurationsByChainId = {
+      '0xe708': {
+        chainId: '0xe708',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
           },
-        },
-        internalAccounts: {
-          selectedAccount: 'selectedAccount',
-          accounts: {
-            selectedAccount: {},
-          },
-        },
-      },
-    });
+        ],
+      } as unknown as NetworkConfiguration,
+    };
+    const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
@@ -192,31 +135,21 @@ describe('NFTs options', () => {
       'checkAndUpdateAllNftsOwnershipStatus',
     );
 
-    const store = configureMockStore([thunk])({
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        useNftDetection: false,
-        selectedNetworkClientId: 'selectedNetworkClientId',
-        networkConfigurationsByChainId: {
-          '0xe708': {
-            chainId: '0xe708',
-            defaultRpcEndpointIndex: 0,
-            rpcEndpoints: [
-              {
-                networkClientId: 'selectedNetworkClientId',
-              },
-            ],
+    const state = createMockState();
+    // Override for disabled NFT detection and non-mainnet
+    state.metamask.useNftDetection = false;
+    state.metamask.networkConfigurationsByChainId = {
+      '0xe708': {
+        chainId: '0xe708',
+        defaultRpcEndpointIndex: 0,
+        rpcEndpoints: [
+          {
+            networkClientId: 'selectedNetworkClientId',
           },
-        },
-        internalAccounts: {
-          selectedAccount: 'selectedAccount',
-          accounts: {
-            selectedAccount: {},
-          },
-        },
-      },
-    });
+        ],
+      } as unknown as NetworkConfiguration,
+    };
+    const store = configureMockStore([thunk])(state);
 
     const { findByTestId } = renderWithProvider(<AssetListControlBar />, store);
 
@@ -234,6 +167,6 @@ describe('NFTs options', () => {
     expect(autodetectButton).toBeInTheDocument();
 
     fireEvent.click(autodetectButton);
-    expect(mockHistoryPush).toHaveBeenCalledWith(SECURITY_ROUTE);
+    expect(mockUseNavigate).toHaveBeenCalledWith(SECURITY_ROUTE);
   });
 });

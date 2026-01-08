@@ -63,15 +63,33 @@ export const NotificationDetailCopyButton: FC<
   const onClick = () => {
     typeof handleCopy === 'function' && handleCopy(text);
     if (notification) {
+      const otherNotificationProperties = () => {
+        if (
+          'notification_type' in notification &&
+          notification.notification_type === 'on-chain' &&
+          notification.payload?.chain_id
+        ) {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          return { chain_id: notification.payload.chain_id };
+        }
+
+        return undefined;
+      };
+
       trackEvent({
         category: MetaMetricsEventCategory.NotificationInteraction,
         event: MetaMetricsEventName.NotificationDetailClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_id: notification.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           notification_type: notification.type,
-          ...('chain_id' in notification && {
-            chain_id: notification.chain_id,
-          }),
+          ...otherNotificationProperties(),
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clicked_item: 'tx_id',
         },
       });

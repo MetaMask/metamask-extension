@@ -2,6 +2,8 @@ const path = require('path');
 
 module.exports = function (api) {
   api.cache(false);
+  const slash = `\\${path.sep}`;
+  const uiPath = path.join(__dirname, 'ui').replace(/\\/gu, '\\\\');
   return {
     parserOpts: {
       strictMode: true,
@@ -9,6 +11,15 @@ module.exports = function (api) {
     targets: {
       browsers: ['chrome >= 89', 'firefox >= 89'],
     },
+    overrides: [
+      {
+        test: new RegExp(
+          `^${uiPath}${slash}(?:components|contexts|hooks|layouts|pages)${slash}(?!.*\\.(?:test|stories|container)\\.)(?:.*)\\.(?:m?[jt]s|[jt]sx)$`,
+          'u',
+        ),
+        plugins: [['babel-plugin-react-compiler', { target: '17' }]],
+      },
+    ],
     plugins: [
       // `browserify` is old and busted, and doesn't support `??=` (and other
       // logical assignment operators). This plugin lets us target es2020-level

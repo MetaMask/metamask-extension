@@ -8,11 +8,18 @@ import { NetworkType } from '@metamask/controller-utils';
 import { isEvmAccountType, Transaction } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
+import { isBtcTestnetAddress } from '@metamask/keyring-utils';
+
 import {
   NetworkConfiguration,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { CaipChainId, Hex, KnownCaipNamespace } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  isCaipChainId,
+  KnownCaipNamespace,
+} from '@metamask/utils';
 import PropTypes from 'prop-types';
 import { createSelector } from 'reselect';
 import {
@@ -51,6 +58,7 @@ import {
   getInternalAccounts,
   getSelectedInternalAccount,
   isSolanaAccount,
+  isTronAccount,
 } from './accounts';
 import {
   getIsMainnet,
@@ -212,9 +220,31 @@ export function getMultichainNetwork(
   // on having a non-EVM account being selected!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const nonEvmNetworks = getMultichainNetworkProviders(state);
-  const nonEvmNetwork = nonEvmNetworks.find((provider) => {
-    return provider.isAddressCompatible(selectedAccount.address);
-  });
+
+  const selectedChainId = state.metamask.selectedMultichainNetworkChainId;
+
+  let nonEvmNetwork: MultichainProviderConfig | undefined;
+
+  // FIRST: Try to find network by account scopes (most specific)
+  if (selectedAccount.scopes.length > 0) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return selectedAccount.scopes.includes(provider.chainId);
+    });
+  }
+
+  // SECOND: If no network found by scopes, try selectedChainId
+  if (!nonEvmNetwork && selectedChainId) {
+    nonEvmNetwork = nonEvmNetworks.find(
+      (provider) => provider.chainId === selectedChainId,
+    );
+  }
+
+  // THIRD: Final fallback - address compatibility check
+  if (!nonEvmNetwork) {
+    nonEvmNetwork = nonEvmNetworks.find((provider) => {
+      return provider.isAddressCompatible(selectedAccount.address);
+    });
+  }
 
   if (!nonEvmNetwork) {
     throw new Error(
@@ -268,6 +298,16 @@ export function getMultichainIsSolana(
   const { symbol } = getMultichainDefaultToken(state, account);
 
   return !isEvm && symbol === 'SOL';
+}
+
+export function getMultichainIsTron(
+  state: MultichainState,
+  account?: InternalAccount,
+) {
+  const isEvm = getMultichainIsEvm(state, account);
+  const { symbol } = getMultichainDefaultToken(state, account);
+
+  return !isEvm && symbol === 'TRX';
 }
 
 /**
@@ -357,7 +397,7 @@ export function getMultichainDefaultToken(
 ) {
   const symbol = getMultichainIsEvm(state, account)
     ? // We fallback to 'ETH' to keep original behavior of `getSwapsDefaultToken`
-      getProviderConfig(state)?.ticker ?? 'ETH'
+      (getProviderConfig(state)?.ticker ?? 'ETH')
     : getMultichainProviderConfig(state, account).ticker;
 
   return { symbol };
@@ -386,7 +426,17 @@ export function getMultichainIsMainnet(
   const mainnet = (
     MULTICHAIN_ACCOUNT_TYPE_TO_MAINNET as Record<string, string>
   )[selectedAccount.type];
-  return providerConfig.chainId === mainnet ?? false;
+
+  if (!mainnet) {
+    return false;
+  }
+
+  // If it's Bitcoin case, check if it's a testnet address
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return false;
+  }
+
+  return providerConfig.chainId === mainnet;
 }
 
 export function getMultichainIsTestnet(
@@ -397,21 +447,30 @@ export function getMultichainIsTestnet(
   // the same pattern here too!
   const selectedAccount = account ?? getSelectedInternalAccount(state);
   const providerConfig = getMultichainProviderConfig(state, selectedAccount);
-  return getMultichainIsEvm(state, account)
-    ? // FIXME: There are multiple ways of checking for an EVM test network, but
-      // current implementation differ between each other. So we do not use
-      // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
-      // more up-to-date
-      (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId)
-    : // TODO: For now we only check for bitcoin and Solana, but we will need to
-      // update this for other non-EVM networks later!
-      (
-        [
-          MultichainNetworks.BITCOIN_TESTNET,
-          MultichainNetworks.SOLANA_DEVNET,
-          MultichainNetworks.SOLANA_TESTNET,
-        ] as string[]
-      ).includes(providerConfig.chainId);
+
+  if (getMultichainIsEvm(state, account)) {
+    // FIXME: There are multiple ways of checking for an EVM test network, but
+    // current implementation differ between each other. So we do not use
+    // `getIsTestnet` here and uses the actual `TEST_NETWORK_IDS` which seems
+    // more up-to-date
+    return (TEST_NETWORK_IDS as string[]).includes(providerConfig.chainId);
+  }
+
+  // For Bitcoin case, check address format as well
+  if (isBtcTestnetAddress(selectedAccount.address)) {
+    return true;
+  }
+
+  // TODO: For now we only check for Bitcoin, Solana, and Tron, but we will need to
+  // update this for other non-EVM networks later!
+  return [
+    MultichainNetworks.BITCOIN_TESTNET,
+    MultichainNetworks.BITCOIN_SIGNET,
+    MultichainNetworks.SOLANA_DEVNET,
+    MultichainNetworks.SOLANA_TESTNET,
+    MultichainNetworks.TRON_NILE,
+    MultichainNetworks.TRON_SHASTA,
+  ].includes(providerConfig.chainId as MultichainNetworks);
 }
 
 export function getMultichainBalances(
@@ -437,7 +496,17 @@ export function getSelectedAccountMultichainTransactions(
     return undefined;
   }
 
-  return state.metamask.nonEvmTransactions[selectedAccount.id];
+  const transactions = state.metamask.nonEvmTransactions[selectedAccount.id];
+
+  // We need to get the provider config for the selected account to get the correct chainId
+  const providerConfig = getMultichainProviderConfig(state, selectedAccount);
+  const currentChainId = providerConfig.chainId;
+
+  if (isCaipChainId(currentChainId)) {
+    return transactions?.[currentChainId];
+  }
+
+  return undefined;
 }
 
 export const getMultichainCoinRates = (state: MultichainState) => {
@@ -450,17 +519,21 @@ function getNonEvmCachedBalance(
 ) {
   const balances = getMultichainBalances(state);
   const selectedAccount = account ?? getSelectedInternalAccount(state);
-  const network = getSelectedMultichainNetworkConfiguration(state);
+  const selectedNetworkConfig =
+    getSelectedMultichainNetworkConfiguration(state);
+
+  // Prefer the fully resolved selected network configuration, but fall back to the
+  // selected multichain chain ID (works even if feature flags filter out config)
+  const chainId = (selectedNetworkConfig?.chainId ??
+    state.metamask.selectedMultichainNetworkChainId) as CaipChainId;
 
   // We assume that there's at least one asset type in and that is the native
   // token for that network.
   const asset =
-    MULTICHAIN_NETWORK_TO_ASSET_TYPES[
-      network.chainId as MultichainNetworks
-    ]?.[0];
+    MULTICHAIN_NETWORK_TO_ASSET_TYPES[chainId as MultichainNetworks]?.[0];
 
   if (!asset) {
-    console.warn('Could not find asset type for network:', network);
+    console.warn('Could not find asset type for chainId:', chainId);
   }
 
   const balancesForAccount = balances?.[selectedAccount.id];
@@ -508,7 +581,6 @@ export function getMultichainConversionRate(
 ) {
   const { conversionRates } = state.metamask;
   const { chainId } = getMultichainNetwork(state, account);
-
   const conversionRate = getConversionRatesForNativeAsset({
     conversionRates,
     chainId,
@@ -537,6 +609,81 @@ export const getMultichainNetworkConfigurationsByChainId = (
       defaultRpcEndpointIndex: 0,
       chainId: MultichainNetworks.SOLANA as unknown as Hex,
     },
+    [MultichainNetworks.BITCOIN]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN].nickname ?? '',
+      nativeCurrency: 'BTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN as unknown as Hex,
+    },
+    [MultichainNetworks.BITCOIN_TESTNET]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_TESTNET]
+          .nickname ?? '',
+      nativeCurrency: 'tBTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN_TESTNET as unknown as Hex,
+    },
+    [MultichainNetworks.BITCOIN_SIGNET]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.BITCOIN_SIGNET]
+          .nickname ?? '',
+      nativeCurrency: 'sBTC',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.BITCOIN_SIGNET as unknown as Hex,
+    },
+    [MultichainNetworks.TRON]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON],
+      blockExplorerUrls: [],
+      name: MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON].nickname ?? '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON as unknown as Hex,
+    },
+    [MultichainNetworks.TRON_NILE]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_NILE].nickname ??
+        '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON_NILE as unknown as Hex,
+    },
+    [MultichainNetworks.TRON_SHASTA]: {
+      ...MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA],
+      blockExplorerUrls: [],
+      name:
+        MULTICHAIN_PROVIDER_CONFIGS[MultichainNetworks.TRON_SHASTA].nickname ??
+        '',
+      nativeCurrency: 'TRX',
+      rpcEndpoints: [
+        { url: '', type: RpcEndpointType.Custom, networkClientId: '' },
+      ],
+      defaultRpcEndpointIndex: 0,
+      chainId: MultichainNetworks.TRON_SHASTA as unknown as Hex,
+    },
   };
 };
 
@@ -560,6 +707,16 @@ export function getLastSelectedSolanaAccount(state: MultichainState) {
   const nonEvmAccounts = getInternalAccounts(state);
   const sortedNonEvmAccounts = nonEvmAccounts
     .filter((account) => isSolanaAccount(account))
+    .sort(
+      (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
+    );
+  return sortedNonEvmAccounts.length > 0 ? sortedNonEvmAccounts[0] : undefined;
+}
+
+export function getLastSelectedTronAccount(state: MultichainState) {
+  const nonEvmAccounts = getInternalAccounts(state);
+  const sortedNonEvmAccounts = nonEvmAccounts
+    .filter((account) => isTronAccount(account))
     .sort(
       (a, b) => (b.metadata.lastSelected ?? 0) - (a.metadata.lastSelected ?? 0),
     );

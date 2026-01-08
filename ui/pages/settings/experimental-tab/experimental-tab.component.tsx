@@ -183,7 +183,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
     });
   }
 
-  ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+  ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   renderWatchAccountToggle() {
     const { t, trackEvent } = this.context;
     const { watchAccountEnabled, setWatchAccountEnabled } = this.props;
@@ -230,7 +230,7 @@ export default class ExperimentalTab extends PureComponent<ExperimentalTabProps>
           ///: END:ONLY_INCLUDE_IF
         }
         {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-flask)
+          ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
           this.renderWatchAccountToggle()
           ///: END:ONLY_INCLUDE_IF
         }

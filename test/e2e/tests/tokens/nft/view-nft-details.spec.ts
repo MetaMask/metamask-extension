@@ -1,6 +1,6 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -14,7 +14,7 @@ describe('View NFT details', function () {
   it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
@@ -35,13 +35,13 @@ describe('View NFT details', function () {
 
         // Check the NFT details are correctly displayed on NFT details page
         const nftDetailsPage = new NFTDetailsPage(driver);
-        await nftDetailsPage.check_pageIsLoaded();
-        await nftDetailsPage.check_nftNameIsDisplayed('Test Dapp NFTs #1');
-        await nftDetailsPage.check_nftDescriptionIsDisplayed(
+        await nftDetailsPage.checkPageIsLoaded();
+        await nftDetailsPage.checkNftNameIsDisplayed('Test Dapp NFTs #1');
+        await nftDetailsPage.checkNftDescriptionIsDisplayed(
           'Test Dapp NFTs for testing.',
         );
-        await nftDetailsPage.check_nftImageContainerIsDisplayed();
-        await nftDetailsPage.check_nftDetailsAddressIsDisplayed(
+        await nftDetailsPage.checkNftImageContainerIsDisplayed();
+        await nftDetailsPage.checkNftDetailsAddressIsDisplayed(
           '0x581c3...45947',
         );
       },

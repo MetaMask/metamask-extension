@@ -1,21 +1,21 @@
 import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { toChecksumAddress } from 'ethereumjs-util';
-import { isStrictHexString } from '@metamask/utils';
+import { useNavigate } from 'react-router-dom';
 import {
+  type BridgeAsset,
   formatChainIdToCaip,
+  type GenericQuoteRequest,
+  getNativeAssetForChainId,
   UnifiedSwapBridgeEventName,
-  type SwapsTokenObject,
 } from '@metamask/bridge-controller';
-import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
+import {
+  resetInputFields,
+  trackUnifiedSwapBridgeEvent,
+} from '../../ducks/bridge/actions';
 import {
   getDataCollectionForMarketing,
-  getIsBridgeChain,
-  getIsBridgeEnabled,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  type SwapsEthToken,
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import {
@@ -28,125 +28,121 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
-import { getPortfolioUrl } from '../../helpers/utils/portfolio';
-import { getProviderConfig } from '../../../shared/modules/selectors/networks';
+import { BridgeQueryParams } from '../../../shared/lib/deep-links/routes/swap';
 import { trace, TraceName } from '../../../shared/lib/trace';
-import { useCrossChainSwapsEventTracker } from './useCrossChainSwapsEventTracker';
+import { toAssetId } from '../../../shared/lib/asset-utils';
+import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  getFromChain,
+  getFromChains,
+  getLastSelectedChainId,
+} from '../../ducks/bridge/selectors';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 const useBridging = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const trackCrossChainSwapsEvent = useCrossChainSwapsEventTracker();
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
-  const providerConfig = useSelector(getProviderConfig);
 
-  const isBridgeSupported = useSelector(getIsBridgeEnabled);
-  const isBridgeChain = useSelector(getIsBridgeChain);
+  const lastSelectedChainId = useSelector(getLastSelectedChainId);
+  const fromChain = useSelector(getFromChain);
+  const fromChains = useSelector(getFromChains);
+
+  const isChainIdEnabledForBridging = useCallback(
+    (chainId: string | number) =>
+      ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId) &&
+      fromChains.some(
+        (chain) =>
+          formatChainIdToCaip(chain.chainId) === formatChainIdToCaip(chainId),
+      ),
+    [fromChains],
+  );
 
   const openBridgeExperience = useCallback(
     (
-      location: string,
-      token: SwapsTokenObject | SwapsEthToken,
-      portfolioUrlSuffix?: string,
-      isSwap = false,
+      location: MetaMetricsSwapsEventSource | 'Carousel',
+      srcToken?: Pick<BridgeAsset, 'symbol' | 'address'> & {
+        chainId: GenericQuoteRequest['srcChainId'];
+      },
     ) => {
-      if (!isBridgeChain || !providerConfig) {
-        return;
+      // If srcToken is a bridge token, use its assetId
+      let srcAssetIdToUse =
+        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
+          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+          : undefined;
+
+      /* If srcToken is not in a supported bridge chain, or is not specified
+       * and the selected network filter is not active, set the srcAssetId to
+       * a supported bridge native asset
+       *
+       * If an unsupported network is selected in the network filter, fall back to MAINNET
+       *
+       * default fromChain: srctoken.chainId > lastSelectedId > MAINNET
+       */
+      const targetChainId =
+        lastSelectedChainId && isChainIdEnabledForBridging(lastSelectedChainId)
+          ? lastSelectedChainId
+          : CHAIN_IDS.MAINNET;
+      if (!srcAssetIdToUse && targetChainId !== fromChain?.chainId) {
+        srcAssetIdToUse = getNativeAssetForChainId(targetChainId)?.assetId;
       }
 
-      if (isBridgeSupported) {
-        trace({
-          name: isSwap ? TraceName.SwapViewLoaded : TraceName.BridgeViewLoaded,
-          startTime: Date.now(),
-        });
-        trackCrossChainSwapsEvent({
-          event: MetaMetricsEventName.ActionButtonClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            location:
-              location === 'Home'
-                ? MetaMetricsSwapsEventSource.MainView
-                : MetaMetricsSwapsEventSource.TokenView,
-            chain_id_source: formatChainIdToCaip(providerConfig.chainId),
-            token_symbol_source: token.symbol,
-            token_address_source: token.address,
-          },
-        });
-        trackEvent({
-          event: isSwap
-            ? MetaMetricsEventName.SwapLinkClicked
-            : MetaMetricsEventName.BridgeLinkClicked,
-          category: MetaMetricsEventCategory.Navigation,
-          properties: {
-            token_symbol: token.symbol,
-            location,
-            text: isSwap ? 'Swap' : 'Bridge',
-            chain_id: providerConfig.chainId,
-          },
-        });
-        dispatch(
-          trackUnifiedSwapBridgeEvent(
-            UnifiedSwapBridgeEventName.ButtonClicked,
-            {
-              location:
-                location === 'Home'
-                  ? MetaMetricsSwapsEventSource.MainView
-                  : MetaMetricsSwapsEventSource.TokenView,
-              token_symbol_source: token.symbol,
-              token_symbol_destination: null,
-            },
-          ),
-        );
-        let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
-        url += `?token=${
-          isStrictHexString(token.address)
-            ? toChecksumAddress(token.address)
-            : token.address
-        }`;
-        if (isSwap) {
-          url += '&swaps=true';
-        }
-        history.push(url);
-      } else {
-        const portfolioUrl = getPortfolioUrl(
-          'bridge',
-          'ext_bridge_button',
-          metaMetricsId,
-          isMetaMetricsEnabled,
-          isMarketingEnabled,
-        );
-        global.platform.openTab({
-          url: `${portfolioUrl}${
-            portfolioUrlSuffix ?? `&token=${token.address}`
-          }`,
-        });
-        trackEvent({
-          category: MetaMetricsEventCategory.Navigation,
-          event: MetaMetricsEventName.BridgeLinkClicked,
-          properties: {
-            location,
-            text: 'Bridge',
-            url: portfolioUrl,
-            chain_id: providerConfig.chainId,
-            token_symbol: token.symbol,
-          },
-        });
+      trace({
+        name: TraceName.SwapViewLoaded,
+        startTime: Date.now(),
+      });
+      trackEvent({
+        event: MetaMetricsEventName.SwapLinkClicked,
+        category: MetaMetricsEventCategory.Navigation,
+        properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol: srcToken?.symbol ?? '',
+          location,
+          text: 'Swap',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          chain_id: srcToken?.chainId ?? lastSelectedChainId,
+        },
+      });
+      dispatch(
+        trackUnifiedSwapBridgeEvent(UnifiedSwapBridgeEventName.ButtonClicked, {
+          location: location as never,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_source: srcToken?.symbol ?? 'ETH',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_symbol_destination: '',
+        }),
+      );
+      dispatch(resetInputFields());
+      let url = `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`;
+
+      url += '?';
+      if (srcAssetIdToUse) {
+        url += `${BridgeQueryParams.FROM}=${srcAssetIdToUse}`;
       }
+
+      if (location === MetaMetricsSwapsEventSource.TransactionShield) {
+        url += `${srcAssetIdToUse ? '&' : ''}isFromTransactionShield=true`;
+      }
+
+      navigate(url);
     },
     [
-      isBridgeSupported,
-      isBridgeChain,
-      history,
+      navigate,
       metaMetricsId,
       trackEvent,
-      trackCrossChainSwapsEvent,
       isMetaMetricsEnabled,
       isMarketingEnabled,
-      providerConfig,
+      lastSelectedChainId,
+      fromChain?.chainId,
+      isChainIdEnabledForBridging,
     ],
   );
 

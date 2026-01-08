@@ -111,9 +111,6 @@
   "etherscanView": {
     "message": "ดูบัญชีบน Etherscan"
   },
-  "expandView": {
-    "message": "ขยายมุมมอง"
-  },
   "failed": {
     "message": "ล้มเหลว"
   },
@@ -132,9 +129,6 @@
   },
   "gasLimitTooLow": {
     "message": "วงเงินแก็สต้องอย่างน้อย 21000"
-  },
-  "gasPrice": {
-    "message": "ราคาแก๊ส (GWEI)"
   },
   "general": {
     "message": "ทั่วไป"
@@ -315,9 +309,6 @@
   },
   "supportCenter": {
     "message": "ไปที่ศูนย์สนับสนุนของเรา"
-  },
-  "switchNetworks": {
-    "message": "เปลี่ยนเครือข่าย"
   },
   "symbol": {
     "message": "เครื่องหมาย"

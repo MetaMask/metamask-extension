@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { NameType } from '@metamask/name-controller';
+import { fireEvent } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -10,6 +11,9 @@ import {
 import { useDisplayName } from '../../../hooks/useDisplayName';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
+import { TrustSignalDisplayState } from '../../../hooks/useTrustSignals';
+import { IconName } from '../../component-library';
+import { IconColor } from '../../../helpers/constants/design-system';
 import Name from './name';
 
 jest.mock('../../../hooks/useDisplayName');
@@ -18,6 +22,10 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => jest.fn(),
 }));
+
+jest.mock('./name-details/name-details', () => {
+  return <div data-testid="name-details">NameDetails</div>;
+});
 
 const ADDRESS_NO_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54977';
 const ADDRESS_SAVED_NAME_MOCK = '0xc0ffee254729296a45a3885639ac7e10f9d54979';
@@ -42,6 +50,12 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: {
+        name: IconName.Question,
+        color: undefined,
+      },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -60,6 +74,12 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: null,
       hasPetname: false,
+      displayState: TrustSignalDisplayState.Unknown,
+      icon: {
+        name: IconName.Question,
+        color: undefined,
+      },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -78,6 +98,12 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: SAVED_NAME_MOCK,
       hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -96,6 +122,12 @@ describe('Name', () => {
     useDisplayNameMock.mockReturnValue({
       name: "Very long and length saved name that doesn't seem to end, really.",
       hasPetname: true,
+      displayState: TrustSignalDisplayState.Petname,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -115,6 +147,12 @@ describe('Name', () => {
       name: SAVED_NAME_MOCK,
       hasPetname: true,
       image: 'test-image',
+      displayState: TrustSignalDisplayState.Petname,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
+      isAccount: false,
     });
 
     const { container } = renderWithProvider(
@@ -127,6 +165,34 @@ describe('Name', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('prevents opening name details modal for account', () => {
+    useDisplayNameMock.mockReturnValue({
+      name: SAVED_NAME_MOCK,
+      hasPetname: true,
+      image: 'test-image',
+      displayState: TrustSignalDisplayState.Petname,
+      icon: {
+        name: IconName.VerifiedFilled,
+        color: IconColor.infoDefault,
+      },
+      isAccount: true,
+    });
+
+    const { getByTestId, queryByTestId } = renderWithProvider(
+      <Name
+        type={NameType.ETHEREUM_ADDRESS}
+        value={ADDRESS_SAVED_NAME_MOCK}
+        variation={VARIATION_MOCK}
+        data-testid="name-component"
+      />,
+      store,
+    );
+
+    const nameComponent = getByTestId('name-component');
+    fireEvent.click(nameComponent);
+    expect(queryByTestId('name-details')).toBeNull();
   });
 
   describe('metrics', () => {
@@ -142,6 +208,14 @@ describe('Name', () => {
         useDisplayNameMock.mockReturnValue({
           name: hasPetname ? SAVED_NAME_MOCK : null,
           hasPetname,
+          displayState: hasPetname
+            ? TrustSignalDisplayState.Petname
+            : TrustSignalDisplayState.Unknown,
+          icon: {
+            name: IconName.VerifiedFilled,
+            color: IconColor.infoDefault,
+          },
+          isAccount: false,
         });
 
         renderWithProvider(
@@ -159,7 +233,11 @@ describe('Name', () => {
           event: MetaMetricsEventName.PetnameDisplayed,
           category: MetaMetricsEventCategory.Petnames,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             petname_category: NameType.ETHEREUM_ADDRESS,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             has_petname: hasPetname,
           },
         });

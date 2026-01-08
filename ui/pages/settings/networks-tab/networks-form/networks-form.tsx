@@ -5,7 +5,8 @@ import {
   type UpdateNetworkFields,
   RpcEndpointType,
 } from '@metamask/network-controller';
-import { Hex, isStrictHexString } from '@metamask/utils';
+import { Hex, isStrictHexString, hexToNumber } from '@metamask/utils';
+import { NETWORKS_BYPASSING_VALIDATION } from '@metamask/controller-utils';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -26,12 +27,14 @@ import {
   isSafeChainId,
 } from '../../../../../shared/modules/network.utils';
 import { jsonRpcRequest } from '../../../../../shared/modules/rpc.utils';
+import { isPublicEndpointUrl } from '../../../../../shared/lib/network-utils';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { getNetworkConfigurationsByChainId } from '../../../../../shared/modules/selectors/networks';
 import {
   addNetwork,
   setEditedNetwork,
+  setEnabledNetworks,
   setTokenNetworkFilter,
   showDeprecatedNetworkModal,
   toggleNetworkMenu,
@@ -79,13 +82,21 @@ import { useNetworkFormState } from './networks-form-state';
 export const NetworksForm = ({
   networkFormState,
   existingNetwork,
+  trackRpcUpdateFromBanner,
   onRpcAdd,
   onBlockExplorerAdd,
+  toggleNetworkMenuAfterSubmit = true,
+  onComplete,
+  onEdit,
 }: {
   networkFormState: ReturnType<typeof useNetworkFormState>;
   existingNetwork?: UpdateNetworkFields;
+  trackRpcUpdateFromBanner?: boolean;
   onRpcAdd: () => void;
   onBlockExplorerAdd: () => void;
+  toggleNetworkMenuAfterSubmit?: boolean;
+  onComplete?: () => void;
+  onEdit?: () => void;
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
@@ -137,8 +148,11 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedName = chainIdHex
-      ? NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
-        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name
+      ? (NETWORK_TO_NAME_MAP[chainIdHex as keyof typeof NETWORK_TO_NAME_MAP] ??
+        NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.name ??
+        safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)?.name)
       : undefined;
 
     const mismatch = expectedName && expectedName !== name;
@@ -158,14 +172,22 @@ export const NetworksForm = ({
   useEffect(() => {
     const chainIdHex = chainId ? toHex(chainId) : undefined;
     const expectedSymbol = chainIdHex
-      ? CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
+      ? (CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[
           chainIdHex as keyof typeof CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
         ] ??
         safeChains?.find((chain) => toHex(chain.chainId) === chainIdHex)
-          ?.nativeCurrency?.symbol
+          ?.nativeCurrency?.symbol)
       : undefined;
 
-    const mismatch = expectedSymbol && expectedSymbol !== ticker;
+    const isWhitelistedSymbol = chainIdHex
+      ? NETWORKS_BYPASSING_VALIDATION[
+          chainIdHex as keyof typeof NETWORKS_BYPASSING_VALIDATION
+        ]?.symbol?.toLowerCase() === ticker?.toLowerCase()
+      : false;
+
+    const mismatch =
+      expectedSymbol && expectedSymbol !== ticker && !isWhitelistedSymbol;
+
     setSuggestedTicker(mismatch ? expectedSymbol : undefined);
     setWarnings((state) => ({
       ...state,
@@ -288,23 +310,69 @@ export const NetworksForm = ({
                 [existingNetwork.chainId]: true,
               }),
             );
+            await dispatch(setEnabledNetworks(existingNetwork.chainId));
+          }
+
+          // Track RPC update from network connection banner
+          if (trackRpcUpdateFromBanner) {
+            const newRpcEndpoint =
+              networkPayload.rpcEndpoints[
+                networkPayload.defaultRpcEndpointIndex
+              ];
+            const oldRpcEndpoint =
+              existingNetwork.rpcEndpoints?.[
+                existingNetwork.defaultRpcEndpointIndex ?? 0
+              ];
+
+            const chainIdAsDecimal = hexToNumber(chainIdHex);
+
+            const sanitizeRpcUrl = (url: string) =>
+              isPublicEndpointUrl(url, infuraProjectId ?? '')
+                ? onlyKeepHost(url)
+                : 'custom';
+
+            trackEvent({
+              category: MetaMetricsEventCategory.Network,
+              event: MetaMetricsEventName.NetworkConnectionBannerRpcUpdated,
+              // The names of Segment properties have a particular case.
+              /* eslint-disable @typescript-eslint/naming-convention */
+              properties: {
+                chain_id_caip: `eip155:${chainIdAsDecimal}`,
+                from_rpc_domain: oldRpcEndpoint?.url
+                  ? sanitizeRpcUrl(oldRpcEndpoint.url)
+                  : 'unknown',
+                to_rpc_domain: sanitizeRpcUrl(newRpcEndpoint.url),
+              },
+              /* eslint-enable @typescript-eslint/naming-convention */
+            });
           }
         } else {
           await dispatch(addNetwork(networkPayload));
+          await dispatch(setEnabledNetworks(networkPayload.chainId));
         }
 
         trackEvent({
           event: MetaMetricsEventName.CustomNetworkAdded,
           category: MetaMetricsEventCategory.Network,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             block_explorer_url:
               blockExplorers?.blockExplorerUrls?.[
                 blockExplorers?.defaultBlockExplorerUrlIndex ?? -1
               ],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainIdHex,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             network_name: name,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             source_connection_method:
               MetaMetricsNetworkEventSource.CustomNetworkForm,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: ticker,
           },
           sensitiveProperties: {
@@ -327,7 +395,8 @@ export const NetworksForm = ({
     } catch (e) {
       console.error(e);
     } finally {
-      dispatch(toggleNetworkMenu());
+      toggleNetworkMenuAfterSubmit && dispatch(toggleNetworkMenu());
+      onComplete?.();
     }
   };
 
@@ -555,6 +624,7 @@ export const NetworksForm = ({
                         chainId: chainIdHex,
                       }),
                     );
+                    onEdit?.();
                   }
                 }}
               >

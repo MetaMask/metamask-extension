@@ -29,7 +29,6 @@ When there's a need to change policy (because of new or updated packages that re
 
     > [!TIP]
     > Learn how to review policy diffs: https://lavamoat.github.io/guides/policy-diff/
-
     - You can use these questions to guide your analysis:
       1.  What new powers (globals and builtins) do you see? Why should the package be allowed to use these new powers? Explain if possible
       2.  What new packages do you see? Did you intend to introduce them? If you didn’t, which package did? (can you see them in `packages` field in policy of any other package that you updated or introduced?)

@@ -13,6 +13,9 @@ class GeneralSettings {
     tag: 'h4',
   };
 
+  private readonly hideTokensWithoutBalanceToggle =
+    '[id="toggle-zero-balance"] .toggle-button';
+
   private readonly jazziconsAccountIdenticon = {
     tag: 'h6',
     text: 'Jazzicons',
@@ -22,9 +25,11 @@ class GeneralSettings {
 
   private readonly selectLanguageField = '[data-testid="locale-select"]';
 
-  private readonly blockiesIcon = '[data-testid="blockie_icon"]';
-
-  private readonly jazziconIcon = '[data-testid="jazz_icon"]';
+  private readonly identicons = {
+    maskicon: '[data-testid="maskicon_icon"]',
+    blockies: '[data-testid="blockie_icon"]',
+    jazzicon: '[data-testid="jazz_icon"]',
+  };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -33,9 +38,9 @@ class GeneralSettings {
   /**
    * Check if the General Settings page is loaded
    */
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.check_noLoadingOverlaySpinner();
+      await this.checkNoLoadingOverlaySpinner();
       await this.driver.waitForMultipleSelectors([
         this.generalSettingsPageTitle,
         this.selectLanguageField,
@@ -61,19 +66,17 @@ class GeneralSettings {
       languageToSelect,
       'on general settings page',
     );
-    await this.check_noLoadingOverlaySpinner();
-    await this.driver.clickElement(this.selectLanguageField);
-    await this.driver.clickElement({
-      text: languageToSelect,
-      tag: 'option',
-    });
-    await this.check_noLoadingOverlaySpinner();
+    await this.checkNoLoadingOverlaySpinner();
+    // We use send keys, because clicking the dropdown causes flakiness, if it's not auto closed after selecting the language
+    const dropdown = await this.driver.findElement(this.selectLanguageField);
+    await dropdown.sendKeys(languageToSelect);
+    await this.checkNoLoadingOverlaySpinner();
   }
 
   /**
    * Verify that both Jazzicon and Blockies options are visible
    */
-  async check_identiconOptionsAreDisplayed(): Promise<void> {
+  async checkIdenticonOptionsAreDisplayed(): Promise<void> {
     console.log(
       'Checking if identicon options are displayed on general settings page',
     );
@@ -84,22 +87,25 @@ class GeneralSettings {
   /**
    * Check if the specified identicon type is active
    *
-   * @param identicon - The type of identicon to check ('jazzicon' or 'blockies')
+   * @param identicon - The type of identicon to check ('maskicon' or 'jazzicon' or 'blockies')
    */
-  async check_identiconIsActive(
-    identicon: 'jazzicon' | 'blockies',
+  async checkIdenticonIsActive(
+    identicon: 'maskicon' | 'jazzicon' | 'blockies',
   ): Promise<void> {
     console.log(
       `Checking if ${identicon} identicon is active on general settings page`,
     );
-    const iconSelector =
-      identicon === 'jazzicon' ? this.jazziconIcon : this.blockiesIcon;
-    const activeSelector = `${iconSelector} .settings-page__content-item__identicon__item__icon--active`;
+
+    const activeSelector = this.identicons[identicon];
     await this.driver.waitForSelector(activeSelector);
   }
 
-  async check_noLoadingOverlaySpinner(): Promise<void> {
+  async checkNoLoadingOverlaySpinner(): Promise<void> {
     await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
+  }
+
+  async toggleHideTokensWithoutBalance(): Promise<void> {
+    await this.driver.clickElement(this.hideTokensWithoutBalanceToggle);
   }
 }
 

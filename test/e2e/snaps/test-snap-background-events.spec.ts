@@ -4,12 +4,16 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Background Events', function () {
   it('can trigger a background event with a date to open a dialog', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
@@ -24,7 +28,7 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -48,7 +52,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -73,6 +77,9 @@ describe('Test Snap Background Events', function () {
   it('can trigger a background event with a duration to open a dialog', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
@@ -88,7 +95,7 @@ describe('Test Snap Background Events', function () {
           'connectBackgroundEventsButton',
         );
 
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -117,7 +124,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -142,6 +149,9 @@ describe('Test Snap Background Events', function () {
   it('can cancel a background event', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockBackgroundEventsSnap,
@@ -155,7 +165,7 @@ describe('Test Snap Background Events', function () {
           driver,
           'connectBackgroundEventsButton',
         );
-        await testSnaps.check_installationComplete(
+        await testSnaps.checkInstallationComplete(
           'connectBackgroundEventsButton',
           'Reconnect to Background Events Snap',
         );
@@ -178,7 +188,7 @@ describe('Test Snap Background Events', function () {
         );
         await driver.waitForNonEmptyElement(eventsResult);
 
-        await testSnaps.check_messageResultSpanIncludes(
+        await testSnaps.checkMessageResultSpanIncludes(
           'getBackgroundEventResultSpan',
           'fireDialog',
         );
@@ -193,7 +203,7 @@ describe('Test Snap Background Events', function () {
 
         await testSnaps.clickButton('getBackgroundEventResultButton');
 
-        await testSnaps.check_messageResultSpan(
+        await testSnaps.checkMessageResultSpan(
           'getBackgroundEventResultSpan',
           '[]',
         );

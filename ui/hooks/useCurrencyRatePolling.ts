@@ -1,12 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import {
-  getChainIdsToPoll,
   getUseCurrencyRateCheck,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
 } from '../selectors';
-import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
-import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
+import { getEnabledChainIds } from '../selectors/multichain/networks';
 import {
   currencyRateStartPolling,
   currencyRateStopPollingByPollingToken,
@@ -15,6 +13,8 @@ import {
   getCompletedOnboarding,
   getIsUnlocked,
 } from '../ducks/metamask/metamask';
+import { getNetworkConfigurationsByChainId } from '../../shared/modules/selectors/networks';
+import { getOriginalNativeTokenSymbol } from '../helpers/utils/isOriginalNativeTokenSymbol';
 import usePolling from './usePolling';
 
 const usePollingEnabled = () => {
@@ -28,10 +28,10 @@ const usePollingEnabled = () => {
 const useNativeCurrencies = (isPollingEnabled: boolean) => {
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const [nativeCurrencies, setNativeCurrencies] = useState<string[]>([]);
-  const chainIds = useSelector(getChainIdsToPoll);
+  const enabledChainIds = useSelector(getEnabledChainIds);
 
   useEffect(() => {
     // Use validated currency tickers
@@ -43,7 +43,7 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
             useAPICall: useSafeChainsListValidation && isPollingEnabled,
           });
 
-          if (!chainIds.includes(n.chainId)) {
+          if (!enabledChainIds.includes(n.chainId)) {
             return null;
           }
 
@@ -61,9 +61,9 @@ const useNativeCurrencies = (isPollingEnabled: boolean) => {
     };
     fetchNativeCurrencies();
   }, [
-    chainIds,
     isPollingEnabled,
     networkConfigurations,
+    enabledChainIds,
     useSafeChainsListValidation,
   ]);
 

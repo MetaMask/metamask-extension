@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import GeneralSettings from '../../page-objects/pages/settings/general-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -21,11 +21,11 @@ describe('Settings', function () {
         // Unlock wallet and navigate to settings
         await loginWithBalanceValidation(driver);
         await headerNavbar.openSettingsPage();
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
 
         // Verify identicon options
-        await generalSettings.check_identiconOptionsAreDisplayed();
-        await generalSettings.check_identiconIsActive('jazzicon');
+        await generalSettings.checkIdenticonOptionsAreDisplayed();
+        await generalSettings.checkIdenticonIsActive('maskicon');
       },
     );
   });

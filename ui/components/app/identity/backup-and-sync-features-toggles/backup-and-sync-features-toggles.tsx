@@ -1,9 +1,10 @@
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback, useContext, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { BACKUPANDSYNC_FEATURES } from '@metamask/profile-sync-controller/user-storage';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   selectIsAccountSyncingEnabled,
+  selectIsContactSyncingEnabled,
   selectIsBackupAndSyncEnabled,
   selectIsBackupAndSyncUpdateLoading,
 } from '../../../../selectors/identity/backup-and-sync';
@@ -28,6 +29,8 @@ export const backupAndSyncFeaturesTogglesTestIds = {
   container: 'backup-and-sync-features-toggles-container',
   accountSyncingToggleContainer: 'account-syncing-toggle-container',
   accountSyncingToggleButton: 'account-syncing-toggle-button',
+  contactSyncingToggleContainer: 'contact-syncing-toggle-container',
+  contactSyncingToggleButton: 'contact-syncing-toggle-button',
 };
 
 export const backupAndSyncFeaturesTogglesSections = [
@@ -41,6 +44,17 @@ export const backupAndSyncFeaturesTogglesSections = [
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleContainer,
     toggleButtonTestId:
       backupAndSyncFeaturesTogglesTestIds.accountSyncingToggleButton,
+  },
+  {
+    id: 'contactSyncing',
+    titleI18NKey: 'backupAndSyncFeatureContacts',
+    iconName: IconName.Book,
+    backupAndSyncfeatureKey: BACKUPANDSYNC_FEATURES.contactSyncing,
+    featureReduxSelector: selectIsContactSyncingEnabled,
+    toggleContainerTestId:
+      backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleContainer,
+    toggleButtonTestId:
+      backupAndSyncFeaturesTogglesTestIds.contactSyncingToggleButton,
   },
 ];
 
@@ -65,9 +79,17 @@ const FeatureToggle = ({
         category: MetaMetricsEventCategory.Settings,
         event: MetaMetricsEventName.SettingsUpdated,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_group: 'backup_and_sync',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           settings_type: section.id,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           old_value: isFeatureEnabled,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_value: newValue,
         },
       });
@@ -127,6 +149,40 @@ export const BackupAndSyncFeaturesToggles = () => {
   const isBackupAndSyncUpdateLoading = useSelector(
     selectIsBackupAndSyncUpdateLoading,
   );
+  const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
+  const isContactSyncingEnabled = useSelector(selectIsContactSyncingEnabled);
+
+  const { setIsBackupAndSyncFeatureEnabled } = useBackupAndSync();
+
+  // Reverse cascading: if all sub-features are manually turned off, turn off main toggle
+  // Guard against race conditions by not running while updates are in progress
+  useEffect(() => {
+    const allSubFeaturesDisabled =
+      !isAccountSyncingEnabled && !isContactSyncingEnabled;
+
+    if (
+      isBackupAndSyncEnabled &&
+      allSubFeaturesDisabled &&
+      !isBackupAndSyncUpdateLoading
+    ) {
+      (async () => {
+        try {
+          await setIsBackupAndSyncFeatureEnabled(
+            BACKUPANDSYNC_FEATURES.main,
+            false,
+          );
+        } catch (err) {
+          console.error('Failed to disable main backup and sync toggle:', err);
+        }
+      })();
+    }
+  }, [
+    isBackupAndSyncEnabled,
+    isAccountSyncingEnabled,
+    isContactSyncingEnabled,
+    isBackupAndSyncUpdateLoading,
+    setIsBackupAndSyncFeatureEnabled,
+  ]);
 
   return (
     <Box
@@ -147,13 +203,14 @@ export const BackupAndSyncFeaturesToggles = () => {
         {t('backupAndSyncManageWhatYouSyncDescription')}
       </Text>
 
-      {backupAndSyncFeaturesTogglesSections.map((section) =>
-        FeatureToggle({
-          section,
-          isBackupAndSyncUpdateLoading,
-          isBackupAndSyncEnabled,
-        }),
-      )}
+      {backupAndSyncFeaturesTogglesSections.map((section) => (
+        <FeatureToggle
+          key={section.id}
+          section={section}
+          isBackupAndSyncUpdateLoading={isBackupAndSyncUpdateLoading}
+          isBackupAndSyncEnabled={isBackupAndSyncEnabled}
+        />
+      ))}
     </Box>
   );
 };

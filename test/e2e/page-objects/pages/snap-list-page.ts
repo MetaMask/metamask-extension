@@ -30,6 +30,22 @@ class SnapListPage {
     text: 'Remove Snap',
   };
 
+  private readonly updateSnapButton = {
+    css: '.mm-button-link',
+    text: 'Update',
+    tag: 'button',
+  };
+
+  private readonly webpackPluginSnap = {
+    text: 'Webpack Plugin Example Snap',
+    tag: 'p',
+  };
+
+  private readonly descriptionWebpack = {
+    text: 'Description from Webpack Plugin Example Snap',
+    tag: 'p',
+  };
+
   // this selector needs to be combined with snap name to be unique.
   private readonly snapListItem = '.snap-list-item';
 
@@ -42,6 +58,8 @@ class SnapListPage {
     text: 'Welcome to my Snap home page!',
     tag: 'p',
   };
+
+  private readonly backButton = 'button[aria-label="Back"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -81,7 +99,7 @@ class SnapListPage {
     await this.driver.clickElementAndWaitToDisappear(this.closeModalButton);
   }
 
-  async check_noSnapInstalledMessageIsDisplayed(): Promise<void> {
+  async checkNoSnapInstalledMessageIsDisplayed(): Promise<void> {
     console.log('Verifying no snaps is installed for current account');
     await this.driver.waitForSelector(this.noSnapInstalledMessage);
   }
@@ -92,9 +110,31 @@ class SnapListPage {
     await this.driver.clickElement(this.homePageSnap);
   }
 
-  async check_homePageTitle(): Promise<void> {
+  async checkHomePageTitle(): Promise<void> {
     console.log('Checking title of snap list page');
     await this.driver.waitForSelector(this.homePageTitle);
+  }
+
+  async clickWebpackPluginSnap(): Promise<void> {
+    console.log('Clicking webpack plugin snap');
+    await this.driver.clickElement(this.webpackPluginSnap);
+  }
+
+  async clickUpdateSnapButton(): Promise<void> {
+    console.log('Clicking update snap button');
+    await this.driver.clickElement(this.updateSnapButton);
+  }
+
+  async checkUpdateLinkIsNotDisplayed(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.updateSnapButton, {
+      // make sure the Snap page has loaded
+      findElementGuard: this.descriptionWebpack,
+    });
+  }
+
+  async clickBackButton(): Promise<void> {
+    console.log('Clicking back button');
+    await this.driver.clickElement(this.backButton);
   }
 }
 

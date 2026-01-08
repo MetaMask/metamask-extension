@@ -19,6 +19,10 @@ on:
         required: true
         type: string
         description: The test command to run
+      builds-from-run:
+        required: true
+        type: string
+        description: The run ID to get builds from
       test-timeout-minutes:
         type: number
         default: 30
@@ -38,64 +42,60 @@ on:
           ./test/test-results/e2e
         description: The path to the test artifacts
     secrets:
-      DOCKER_HUB_USERNAME:
-        required: true
-      DOCKER_HUB_TOKEN:
-        required: true
+      INFURA_PROJECT_ID:
+        required: false
 
 jobs:
   run-e2e:
     name: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
-      image: cimg/node:22.15-browsers
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
       credentials:
-        username: ${{ secrets.DOCKER_HUB_USERNAME }}
-        password: ${{ secrets.DOCKER_HUB_TOKEN }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # This is to support tests that set manifestFlags.testing.infuraProjectId, such as power-user.spec.ts
+      INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
+      SENTRY_DSN_PERFORMANCE: ${{ vars.SENTRY_DSN_PERFORMANCE }}
       # For a `pull_request` event, the branch is `github.head_ref``.
       # For a `push` event, the branch is `github.ref_name`.
       BRANCH: ${{ github.head_ref || github.ref_name }}
+      # For a `pull_request` event, the fork is `github.event.pull_request.head.repo.fork`.
+      # For a `push` event, the fork is `github.event.repository.fork`.
+      IS_FORK: ${{ github.event.pull_request.head.repo.fork || github.event.repository.fork }}
+      # For a `pull_request` event, the head commit hash is `github.event.pull_request.head.sha`.
+      # For a `push` event, the head commit hash is `github.sha`.
+      HEAD_COMMIT_HASH: ${{ github.event.pull_request.head.sha || github.sha }}
       MATRIX_INDEX: ${{ inputs.matrix-index }}
       MATRIX_TOTAL: ${{ inputs.matrix-total }}
       JOB_NAME: ${{ inputs.test-suite-name }}${{ inputs.matrix-total > 1 && format(' ({0})', inputs.matrix-index) || '' }}
       RUN_ID: ${{ github.run_id }}
       PR_NUMBER: ${{ github.event.pull_request.number || '' }}
       TEST_SUITE_NAME: ${{ inputs.test-suite-name }}
+      IS_SIDEPANEL: true
+      RUN_ATTEMPT: ${{ github.run_attempt }}
     steps:
-      - name: Install dependencies (with retries)
-        run: |
-          # Retry apt-get commands up to 5 times with 5s delay
-          for i in {1..5}; do
-            if sudo apt-get update; then
-              break
-            else
-              echo "Retry $i/5 failed, waiting..."
-              sleep 5
-            fi
-          done
-
-          for i in {1..5}; do
-            if sudo apt-get install -y zstd; then
-              break
-            else
-              echo "Retry $i/5 failed, waiting..."
-              sleep 5
-            fi
-          done
-
-          sudo corepack enable
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
+          use-yarn-hydrate: true
 
-      # not installed by checkout-and-setup when cache is restored
-      - name: Install anvil
-        run: yarn foundryup
+      - name: Restore .metamask folder
+        id: restore-metamask
+        uses: actions/cache/restore@v4
+        with:
+          path: .metamask
+          key: .metamask-${{ hashFiles('yarn.lock') }}
+          fail-on-cache-miss: false
+
+      - name: Install anvil if cache missed
+        if: ${{ steps.restore-metamask.outputs.cache-hit != 'true'}}
+        run: yarn mm-foundryup
 
       - name: Download build artifact
         if: ${{ inputs.build-artifact != '' }}
@@ -104,6 +104,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.build-artifact }}
+          github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
+          run-id: ${{ inputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       # if there is a build-command and there is no build artifact, or the specified artifact does not exist, we run the build command
       - run: ${{ inputs.build-command }}
@@ -132,12 +134,31 @@ jobs:
           name: test-runs-for-splitting
           path: test/test-results/
 
+      # On re-run (run_attempt > 1), download previous test results to identify failed tests
+      - name: Download previous test results (on re-run)
+        if: ${{ github.run_attempt > 1 }}
+        id: download-previous-results
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ env.JOB_NAME }}
+          path: ./previous-test-results/
+
       - name: Run E2E tests
         timeout-minutes: ${{ inputs.test-timeout-minutes }}
         run: ${{ inputs.test-command }} --retries 1
         env:
           # The properties are picked up by mocha-junit-reporter and added to the XML test results
           PROPERTIES: 'JOB_NAME:${{ env.JOB_NAME }},RUN_ID:${{ env.RUN_ID }},PR_NUMBER:${{ env.PR_NUMBER }}'
+          # On re-run, pass the path to previous results to run only failed tests
+          PREVIOUS_RESULTS_PATH: ${{ steps.download-previous-results.outcome == 'success' && './previous-test-results/test/test-results/e2e' || '' }}
+
+      # Merge previous test results with current results to preserve pass/fail history across re-runs.
+      # Without this, tests that passed in attempt N but were skipped in attempt N+1 would have no
+      # results in the artifact, causing them to be re-run in attempt N+2.
+      - name: Merge previous test results (on re-run)
+        if: ${{ !cancelled() && github.run_attempt > 1 && steps.download-previous-results.outcome == 'success' }}
+        run: yarn tsx .github/scripts/merge-test-results.ts ./previous-test-results/test/test-results/e2e ./test/test-results/e2e
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}

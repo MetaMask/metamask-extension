@@ -1,5 +1,5 @@
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import DeFiTab from '../../../page-objects/pages/defi-tab';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -10,7 +10,8 @@ describe('View DeFi error state', function () {
   it('user should be able to view error message', async function () {
     await withFixtures(
       {
-        dapp: true,
+        forceBip44Version: false,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockDefiPositionsFailure,
@@ -23,7 +24,7 @@ describe('View DeFi error state', function () {
         const defiTab = new DeFiTab(driver);
 
         // Error message should be displayed
-        await defiTab.check_errorMessageIsDisplayed();
+        await defiTab.checkErrorMessageIsDisplayed();
       },
     );
   });

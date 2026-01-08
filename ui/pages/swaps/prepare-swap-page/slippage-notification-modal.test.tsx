@@ -1,13 +1,8 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-
-import {
-  renderWithProvider,
-  fireEvent,
-  createSwapsMockStore,
-  screen,
-} from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { fireEvent, createSwapsMockStore, screen } from '../../../../test/jest';
 import {
   SLIPPAGE_HIGH_ERROR,
   SLIPPAGE_LOW_ERROR,

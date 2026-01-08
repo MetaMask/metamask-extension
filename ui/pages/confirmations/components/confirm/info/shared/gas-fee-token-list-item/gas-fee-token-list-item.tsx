@@ -3,6 +3,9 @@ import { GasFeeToken } from '@metamask/transaction-controller';
 import classnames from 'classnames';
 import { Hex } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { BigNumber } from 'bignumber.js';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -24,12 +27,11 @@ import {
   TextVariant,
 } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useGasFeeToken,
-} from '../../hooks/useGasFeeToken';
+import { useGasFeeToken } from '../../hooks/useGasFeeToken';
 import { getCurrentCurrency } from '../../../../../../../ducks/metamask/metamask';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
+import { formatAmount } from '../../../../simulation-details/formatAmount';
+import { getIntlLocale } from '../../../../../../../ducks/locale/locale';
 
 export type GasFeeTokenListItemProps = {
   isSelected?: boolean;
@@ -38,6 +40,8 @@ export type GasFeeTokenListItemProps = {
   warning?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function GasFeeTokenListItem({
   isSelected,
   onClick,
@@ -47,12 +51,31 @@ export function GasFeeTokenListItem({
   const t = useI18nContext();
   const gasFeeToken = useGasFeeToken({ tokenAddress });
   const currentCurrency = useSelector(getCurrentCurrency);
+  const locale = useSelector(getIntlLocale);
 
   if (!gasFeeToken) {
     return null;
   }
 
-  const { amountFiat, amountFormatted, balanceFiat, symbol } = gasFeeToken;
+  const {
+    amountFiat,
+    amountFormatted,
+    balanceFiat,
+    symbol,
+    balance,
+    decimals,
+  } = gasFeeToken;
+
+  // Format balance as token amount when fiat is not available
+  const balanceFormatted = formatAmount(
+    locale,
+    new BigNumber(balance ?? '0x0').shift(-decimals),
+  );
+
+  // Show fiat balance if available, otherwise show token balance
+  const balanceText = balanceFiat
+    ? `${t('confirmGasFeeTokenBalance')} ${balanceFiat} ${currentCurrency.toUpperCase()}`
+    : `${t('confirmGasFeeTokenBalance')} ${balanceFormatted} ${symbol}`;
 
   return (
     <ListItem
@@ -64,10 +87,8 @@ export function GasFeeTokenListItem({
       }
       isSelected={isSelected}
       leftPrimary={symbol}
-      leftSecondary={`${t(
-        'confirmGasFeeTokenBalance',
-      )} ${balanceFiat} ${currentCurrency.toUpperCase()}`}
-      rightPrimary={amountFiat}
+      leftSecondary={balanceText}
+      rightPrimary={amountFiat || ''}
       rightSecondary={`${amountFormatted} ${symbol}`}
       warning={warning && <WarningIndicator text={warning} />}
       onClick={() => onClick?.(gasFeeToken)}
@@ -75,6 +96,8 @@ export function GasFeeTokenListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function ListItem({
   image,
   leftPrimary,
@@ -161,6 +184,8 @@ function ListItem({
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function WarningIndicator({ text }: { text: string }) {
   return (
     <Box
@@ -184,6 +209,8 @@ function WarningIndicator({ text }: { text: string }) {
   );
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function SelectedIndicator() {
   return (
     <Box

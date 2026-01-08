@@ -1,0 +1,21 @@
+diff --git a/src/env-options.js b/src/env-options.js
+index 97bc7bea5..e254a1856 100644
+--- a/src/env-options.js
++++ b/src/env-options.js
+@@ -8,10 +8,6 @@
+ // Prelude of cheap good - enough imitations of things we'd use or
+ // do differently if we could depend on ses
+
+-// eslint-disable-next-line no-restricted-globals
+-const localThis = globalThis;
+-
+-const { Object, Reflect, Array, String, JSON, Error } = localThis;
+ const { freeze } = Object;
+ const { apply } = Reflect;
+
+@@ -146,4 +142,4 @@ export const {
+   getEnvironmentOption,
+   getEnvironmentOptionsList,
+   environmentOptionsListHas,
+-} = makeEnvironmentCaptor(localThis, true);
++} = makeEnvironmentCaptor(globalThis, true);
