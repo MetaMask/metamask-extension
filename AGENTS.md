@@ -24,7 +24,6 @@ Instructions for AI coding agents working on MetaMask Browser Extension.
 6. **NEVER modify git config** or run destructive git operations
 7. **NEVER commit** unless explicitly requested by user
 8. **NEVER stage changes** unless explicitly requested by user
-9. **NEVER use array index as key** in dynamic lists (use unique IDs)
 
 ### Comprehensive Guidelines Location
 
