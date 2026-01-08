@@ -360,8 +360,11 @@ export default class ShieldClaimPage {
     await this.driver.waitForSelector(this.draftSavedToast);
   }
 
-  async closeDraftSavedToast(): Promise<void> {
-    console.log('Closing draft saved toast');
-    await this.driver.clickElementSafe(this.draftSavedToastCloseButton, 10000);
+  async waitForDraftSavedToastToDisappear(): Promise<void> {
+    console.log('Waiting for draft saved toast to disappear');
+    await this.driver.waitForSelector(this.draftSavedToast, {
+      state: 'detached',
+      timeout: 10000,
+    });
   }
 }

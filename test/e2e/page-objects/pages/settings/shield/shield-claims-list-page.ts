@@ -33,6 +33,9 @@ export default class ShieldClaimsListPage {
 
   private readonly draftClaimItem = '[data-testid^="claim-item-draft"]';
 
+  private readonly draftDeletedToast =
+    '[data-testid="claim-draft-deleted-toast"]';
+
   private readonly emptyNewClaimButton =
     '[data-testid="claims-list-empty-new-claim-button"]';
 
@@ -153,8 +156,14 @@ export default class ShieldClaimsListPage {
     await this.driver.clickElement(this.draftClaimItem);
   }
 
+  async checkDraftDeletedToast(): Promise<void> {
+    console.log('Checking draft deleted toast is displayed');
+    await this.driver.waitForSelector(this.draftDeletedToast);
+  }
+
   async checkDraftClaimDeleted(): Promise<void> {
     console.log('Checking if draft claim is deleted');
+    await this.checkDraftDeletedToast();
     await this.driver.assertElementNotPresent(this.draftClaimsList);
   }
 }
