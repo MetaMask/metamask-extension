@@ -13,8 +13,6 @@ class Confirmation {
 
   private formComboFieldInputSelector = '.form-combo-field input';
 
-  private skeletonLoader = '[data-testid="confirmation__info_skeleton"]';
-
   private formComboFieldOptionPrimarySelector =
     '.form-combo-field__option-primary';
 
