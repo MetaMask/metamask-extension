@@ -81,11 +81,6 @@ class ConsoleBaselineReporter {
     // Track warnings per file: { 'path/to/file.test.ts': { 'category': count } }
     this.warningsByFile = {};
 
-    // Track violations and improvements (enforce mode)
-    this.violations = [];
-    this.improvements = [];
-    this.newFiles = [];
-
     // Store error to return from getLastError()
     this.#error = null;
   }
@@ -316,24 +311,25 @@ class ConsoleBaselineReporter {
    */
   #enforceBaseline() {
     // Compare against baseline (per file)
-    this.#compareWithBaseline();
+    const results = this.#compareWithBaseline();
+    const { violations, newFiles } = results;
 
     // Print results
-    this.#printResults();
+    this.#printResults(results);
 
     // Fail if violations or new files with warnings found
     // (getLastError() will return this error to Jest)
     if (this.#options.failOnViolation) {
-      const hasViolations = this.violations.length > 0;
-      const hasNewFilesWithWarnings = this.newFiles.length > 0;
+      const hasViolations = violations.length > 0;
+      const hasNewFilesWithWarnings = newFiles.length > 0;
 
       if (hasViolations || hasNewFilesWithWarnings) {
         const parts = [];
         if (hasViolations) {
-          parts.push(`${this.violations.length} violation(s)`);
+          parts.push(`${violations.length} violation(s)`);
         }
         if (hasNewFilesWithWarnings) {
-          parts.push(`${this.newFiles.length} new file(s) with warnings`);
+          parts.push(`${newFiles.length} new file(s) with warnings`);
         }
         this.#error = new Error(
           `Console baseline violated: ${parts.join(', ')}. ` +
@@ -345,8 +341,13 @@ class ConsoleBaselineReporter {
 
   /**
    * Compare current warnings with baseline (per file).
+   *
+   * @returns {{violations: Array, improvements: Array, newFiles: Array}} Comparison results
    */
   #compareWithBaseline() {
+    const violations = [];
+    const improvements = [];
+    const newFiles = [];
     const baselineFiles = this.baseline.files || {};
 
     // Check each file that was run
@@ -358,7 +359,7 @@ class ConsoleBaselineReporter {
 
       // Track if this is a new file (not in baseline)
       if (isNewFile && Object.keys(currentWarnings).length > 0) {
-        this.newFiles.push({
+        newFiles.push({
           filePath,
           warnings: currentWarnings,
         });
@@ -370,7 +371,7 @@ class ConsoleBaselineReporter {
         const baselineCount = baselineForFile[category] || 0;
 
         if (currentCount > baselineCount && !isNewFile) {
-          this.violations.push({
+          violations.push({
             filePath,
             category,
             baseline: baselineCount,
@@ -379,7 +380,7 @@ class ConsoleBaselineReporter {
             isNew: baselineCount === 0,
           });
         } else if (currentCount < baselineCount) {
-          this.improvements.push({
+          improvements.push({
             filePath,
             category,
             baseline: baselineCount,
@@ -392,7 +393,7 @@ class ConsoleBaselineReporter {
       // Check for categories that disappeared from this file
       for (const [category, baselineCount] of Object.entries(baselineForFile)) {
         if (!currentWarnings[category]) {
-          this.improvements.push({
+          improvements.push({
             filePath,
             category,
             baseline: baselineCount,
@@ -403,16 +404,23 @@ class ConsoleBaselineReporter {
         }
       }
     }
+
+    return { violations, improvements, newFiles };
   }
 
   /**
    * Print comparison results.
+   *
+   * @param {object} results - Comparison results
+   * @param {Array} results.violations - Baseline violations
+   * @param {Array} results.improvements - Console improvements
+   * @param {Array} results.newFiles - New files not in baseline
    */
-  #printResults() {
-    const hasViolations = this.violations.length > 0;
-    const hasNewFiles = this.newFiles.length > 0;
+  #printResults({ violations, improvements, newFiles }) {
+    const hasViolations = violations.length > 0;
+    const hasNewFiles = newFiles.length > 0;
     const hasImprovements =
-      this.#options.showImprovements && this.improvements.length > 0;
+      this.#options.showImprovements && improvements.length > 0;
     const isClean = !hasViolations && !hasImprovements && !hasNewFiles;
 
     if (isClean) {
@@ -426,18 +434,18 @@ class ConsoleBaselineReporter {
     console.log('═'.repeat(80));
 
     if (hasViolations) {
-      this.#printViolations();
+      this.#printViolations(violations);
     }
 
     if (hasNewFiles) {
-      this.#printNewFiles();
+      this.#printNewFiles(newFiles);
     }
 
     if (hasImprovements) {
-      this.#printImprovements();
+      this.#printImprovements(improvements);
     }
 
-    this.#printSummary();
+    this.#printSummary({ violations, improvements, newFiles });
 
     console.log('═'.repeat(80));
     console.log('\n');
@@ -445,11 +453,13 @@ class ConsoleBaselineReporter {
 
   /**
    * Print violations section.
+   *
+   * @param {Array} violations - Baseline violations
    */
-  #printViolations() {
+  #printViolations(violations) {
     console.log('\n❌ BASELINE VIOLATIONS DETECTED\n');
 
-    const violationsByFile = this.#groupByFile(this.violations);
+    const violationsByFile = this.#groupByFile(violations);
 
     for (const [filePath, fileViolations] of Object.entries(violationsByFile)) {
       console.log(`  📁 ${filePath}`);
@@ -477,12 +487,14 @@ class ConsoleBaselineReporter {
 
   /**
    * Print new files section.
+   *
+   * @param {Array} newFiles - New files not in baseline
    */
-  #printNewFiles() {
+  #printNewFiles(newFiles) {
     console.log('\n📋 NEW FILES (not in baseline)\n');
     console.log('  The following test files are not in the baseline yet:\n');
 
-    for (const { filePath, warnings } of this.newFiles) {
+    for (const { filePath, warnings } of newFiles) {
       const totalWarnings = Object.values(warnings).reduce(
         (sum, count) => sum + count,
         0,
@@ -501,12 +513,14 @@ class ConsoleBaselineReporter {
 
   /**
    * Print improvements section.
+   *
+   * @param {Array} improvements - Console improvements
    */
-  #printImprovements() {
+  #printImprovements(improvements) {
     console.log('\n✨ CONSOLE IMPROVEMENTS DETECTED\n');
     console.log('  Great job! The following warnings were reduced:\n');
 
-    const improvementsByFile = this.#groupByFile(this.improvements);
+    const improvementsByFile = this.#groupByFile(improvements);
 
     for (const [filePath, fileImprovements] of Object.entries(
       improvementsByFile,
@@ -552,11 +566,16 @@ class ConsoleBaselineReporter {
 
   /**
    * Print summary statistics.
+   *
+   * @param {object} results - Comparison results
+   * @param {Array} results.violations - Baseline violations
+   * @param {Array} results.improvements - Console improvements
+   * @param {Array} results.newFiles - New files not in baseline
    */
-  #printSummary() {
-    const totalViolations = this.violations.length;
-    const totalImprovements = this.improvements.length;
-    const totalNewFiles = this.newFiles.length;
+  #printSummary({ violations, improvements, newFiles }) {
+    const totalViolations = violations.length;
+    const totalImprovements = improvements.length;
+    const totalNewFiles = newFiles.length;
     const filesRun = Object.keys(this.warningsByFile).length;
 
     console.log('═'.repeat(80));
