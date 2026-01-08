@@ -1,7 +1,27 @@
 import nock from 'nock';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { parseAccountGroupId } from '@metamask/account-api';
-import { InternalAccount } from '@metamask/keyring-internal-api';
+import { AccountsControllerState } from '@metamask/accounts-controller';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
+
+// Used to "relax" (widen) types that are too strict. This can be useful when using mocked data from JSON
+// files. As some of the literal strings are being interpreted as general strings, this can cause some
+// type mismatches. (This could be moved to `@metamask/utils`)
+type WidenDeep<Type> = Type extends string
+  ? string
+  : Type extends number
+    ? number
+    : Type extends boolean
+      ? boolean
+      : Type extends bigint
+        ? bigint
+        : Type extends symbol
+          ? symbol
+          : Type extends readonly (infer U)[]
+            ? readonly WidenDeep<U>[]
+            : Type extends object
+              ? { [Key in keyof Type]: WidenDeep<Type[Key]> }
+              : Type;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,43 +65,8 @@ export function mock4byte(hexSignature: string, textSignature?: string) {
   return mockEndpoint;
 }
 
-type AccountTreeControllerState = {
-  accountTree: {
-    wallets: {
-      [walletId: string]: {
-        groups: {
-          [groupId: string]: {
-            accounts: string[];
-            metadata: {
-              name: string;
-            };
-          };
-        };
-      };
-    };
-    selectedAccountGroup: string | '';
-  };
-};
-
-type AccountsControllerState = {
-  internalAccounts: {
-    accounts: {
-      [accountId: string]: {
-        type: string; // Relaxed type for simplicity.
-        id: InternalAccount['id'];
-        address: InternalAccount['address'];
-        options: InternalAccount['options'];
-        scopes: string[]; // Relaxed type for simplicity.
-        methods: InternalAccount['methods'];
-        // Not including `metadata` on purpose as we want to rely on
-        // account group metadata instead.
-      };
-    };
-  };
-};
-
 export const getSelectedAccountGroup = <
-  State extends AccountTreeControllerState,
+  State extends WidenDeep<AccountTreeControllerState>,
 >(
   state: State,
 ) => {
@@ -97,7 +82,7 @@ export const getSelectedAccountGroup = <
 };
 
 export const getSelectedAccountGroupName = <
-  State extends AccountTreeControllerState,
+  State extends WidenDeep<AccountTreeControllerState>,
 >(
   state: State,
 ) => {
@@ -105,7 +90,8 @@ export const getSelectedAccountGroupName = <
 };
 
 export const getSelectedAccountGroupAccounts = <
-  State extends AccountTreeControllerState & AccountsControllerState,
+  State extends WidenDeep<AccountTreeControllerState> &
+    WidenDeep<AccountsControllerState>,
 >(
   state: State,
 ) => {

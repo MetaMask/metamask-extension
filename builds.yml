@@ -111,6 +111,7 @@ buildTypes:
       - APPLE_EXPERIMENTAL_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_EXPERIMENTAL_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_EXPERIMENTAL_CLIENT_ID
+      - ENABLE_SETTINGS_PAGE_DEV_OPTIONS: true
     isPrerelease: true
     manifestOverrides: app/build-types/experimental/manifest
     buildNameOverride: MetaMask Experimental
@@ -146,7 +147,7 @@ buildTypes:
       - APPLE_FLASK_CLIENT_ID
       - GOOGLE_CLIENT_ID_REF: GOOGLE_FLASK_CLIENT_ID
       - APPLE_CLIENT_ID_REF: APPLE_FLASK_CLIENT_ID
-      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic'
+      - GATOR_ENABLED_PERMISSION_TYPES: 'native-token-stream,native-token-periodic,erc20-token-stream,erc20-token-periodic,erc20-token-revocation'
       - GATOR_PERMISSIONS_REVOCATION_ENABLED: true
 
     isPrerelease: true
@@ -242,8 +243,6 @@ env:
   - BLOCKAID_FILE_CDN: static.cx.metamask.io/api/v1/confirmations/ppom
   # Blockaid public key for verifying signatures of data files downloaded from CDN
   - BLOCKAID_PUBLIC_KEY: 066ad3e8af5583385e312c156d238055215d5f25247c1e91055afa756cb98a88
-  - REMOVE_GNS: true
-
   - ENABLE_MV3: true
   # These are exclusively used for MV3
   - USE_SNOW
@@ -466,3 +465,12 @@ env:
   # PNA25 (Privacy Notice)
   - EXTENSION_UX_PNA25: true
   - IS_SIDEPANEL: true
+
+  # Authentication (Backup & Sync, Profile metrics...)
+  - FORCE_AUTH_MATCH_BUILD: false
+
+  # Accounts framework
+  # NOTE: This flag is used to progressively enable the multichain accounts progressively in
+  # contexts that might still rely on the remote feature flag.
+  # TODO: Remove this env var once the feature flag has been fully removed!
+  - FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: false

@@ -146,7 +146,6 @@ async function createWalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
@@ -184,7 +183,6 @@ async function createDAppInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();

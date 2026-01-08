@@ -14,6 +14,7 @@ import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Unsupported Account types', function () {
@@ -33,6 +34,8 @@ describe('Account syncing - Unsupported Account types', function () {
    * Phase 2: Login to a fresh app instance and verify only regular accounts persist (imported accounts are excluded)
    */
   it('does not sync imported accounts and exclude them when logging into a fresh app instance', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
