@@ -7,6 +7,7 @@ import { getCleanAppState, regularDelayMs } from '../../../helpers';
 import {
   BASE_ACCOUNT_SYNC_INTERVAL,
   BASE_ACCOUNT_SYNC_TIMEOUT,
+  POST_UNLOCK_DELAY,
 } from '../../../tests/identity/account-syncing/helpers';
 
 class HomePage {
@@ -206,11 +207,6 @@ class HomePage {
     );
   }
 
-  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
-    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
-    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
-  }
-
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
@@ -408,8 +404,13 @@ class HomePage {
 
   /**
    * This function checks if account syncing has been successfully completed at least once.
+   * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log(
+      `Waiting ${POST_UNLOCK_DELAY}ms before checking account sync state (Firefox timing fix)`,
+    );
+    await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
     await this.driver.waitUntil(
       async () => {

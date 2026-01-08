@@ -24,12 +24,7 @@ import {
   toEvmCaipChainId,
   type MultichainNetworkConfiguration,
 } from '@metamask/multichain-network-controller';
-import {
-  type CaipChainId,
-  type Hex,
-  parseCaipChainId,
-  KnownCaipNamespace,
-} from '@metamask/utils';
+import { type CaipChainId, type Hex } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useAccountCreationOnNetworkChange } from '../../../hooks/accounts/useAccountCreationOnNetworkChange';
@@ -55,6 +50,7 @@ import {
   TEST_CHAINS,
   CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP,
   BUILT_IN_NETWORKS,
+  CAIP_FORMATTED_TEST_CHAINS,
 } from '../../../../shared/constants/network';
 import {
   MULTICHAIN_NETWORK_TO_ACCOUNT_TYPE_NAME,
@@ -207,13 +203,8 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     endTrace({ name: TraceName.NetworkList });
   }, []);
 
-  const currentlyOnTestnet = useMemo(() => {
-    const { namespace } = parseCaipChainId(currentChainId);
-    if (namespace === KnownCaipNamespace.Eip155) {
-      return TEST_CHAINS.includes(convertCaipToHexChainId(currentChainId));
-    }
-    return NON_EVM_TESTNET_IDS.includes(currentChainId);
-  }, [currentChainId]);
+  const currentlyOnTestnet =
+    CAIP_FORMATTED_TEST_CHAINS.includes(currentChainId);
 
   const [nonTestNetworks, testNetworks] = useMemo(
     () =>

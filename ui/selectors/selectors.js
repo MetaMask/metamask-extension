@@ -139,9 +139,8 @@ import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
-  getAllUnapprovedTransactions,
-  getCurrentNetworkTransactions,
   getUnapprovedTransactions,
+  getCurrentNetworkTransactions,
 } from './transactions';
 // eslint-disable-next-line import/order
 import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
@@ -165,8 +164,6 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
 export { getEnabledNetworks };
-
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
 
 /** `appState` slice selectors */
 
@@ -822,7 +819,6 @@ export function getSelectedAccountTokensAcrossChains(state) {
     if (nativeBalance) {
       const nativeTokenInfo = getNativeTokenInfo(
         state.metamask.networkConfigurationsByChainId,
-        state.metamask.provider,
         chainId,
       );
       tokensByChain[chainId].push({
@@ -873,7 +869,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   [
     (state) => state.metamask.allTokens,
     (state) => state.metamask.networkConfigurationsByChainId,
-    (state) => state.metamask.provider,
     (state, accountAddress) =>
       getNativeTokenCachedBalanceByChainIdSelector(state, accountAddress),
     (_state, accountAddress) => accountAddress,
@@ -881,7 +876,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
   (
     allTokens,
     networkConfigurationsByChainId,
-    provider,
     nativeTokenBalancesByChainId,
     selectedAddress,
   ) => {
@@ -908,7 +902,6 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
       if (nativeBalance) {
         const nativeTokenInfo = getNativeTokenInfo(
           networkConfigurationsByChainId,
-          provider,
           chainId,
         );
         tokensByChain[chainId].push({
@@ -930,15 +923,10 @@ export const getTokensAcrossChainsByAccountAddressSelector = createSelector(
  * without hardcoding any values.
  *
  * @param {object} networkConfigurationsByChainId - Network configurations by chain ID
- * @param {object} provider - Provider
  * @param {string} chainId - Chain ID
- * @returns {object} Native token information
+ * @returns {{ symbol: string, decimals: number, name: string }} Native token information
  */
-export function getNativeTokenInfo(
-  networkConfigurationsByChainId,
-  provider,
-  chainId,
-) {
+export function getNativeTokenInfo(networkConfigurationsByChainId, chainId) {
   const networkConfig = networkConfigurationsByChainId?.[chainId];
 
   // Fill native token info by network config (if a user has a network added)
@@ -946,19 +934,6 @@ export function getNativeTokenInfo(
     const symbol = networkConfig.nativeCurrency || AssetType.native;
     const decimals = 18;
     const name = networkConfig.name || 'Native Token';
-
-    return {
-      symbol,
-      decimals,
-      name,
-    };
-  }
-
-  // Fill native token info by DApp provider
-  if (provider?.chainId === chainId) {
-    const symbol = provider.ticker || AssetType.native;
-    const decimals = provider.nativeCurrency?.decimals || 18;
-    const name = provider.nickname || 'Native Token';
 
     return {
       symbol,
@@ -1501,14 +1476,11 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
 
   const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? (enabledNetworks?.[namespace] ?? {})
-    : tokenNetworkFilter;
+  const networks = enabledNetworks?.[namespace] ?? {};
 
   if (
     Object.keys(networks).length === 1 &&
@@ -1641,6 +1613,18 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+/**
+ * Input selector for retrieving all installed non-preinstalled Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Array - Installed non-preinstalled Snaps.
+ */
+export const selectInstalledNonPreinstalledSnaps = createSelector(
+  [selectInstalledSnaps],
+  (installedSnaps) =>
+    Object.values(installedSnaps).filter((snap) => !snap.preinstalled),
+);
+
 export const selectIsNetworkMenuOpen = (state) =>
   state.appState.isNetworkMenuOpen;
 
@@ -1685,18 +1669,16 @@ export const getSnapLatestVersion = createSelector(
  * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
  */
 export const getAllSnapAvailableUpdates = createSelector(
-  [selectInstalledSnaps, rawStateSelector],
+  [selectInstalledNonPreinstalledSnaps, rawStateSelector],
   (installedSnaps, state) => {
     const snapMap = new Map();
 
-    Object.keys(installedSnaps).forEach((snapId) => {
-      const latestVersion = getSnapLatestVersion(state, snapId);
+    installedSnaps.forEach((snap) => {
+      const latestVersion = getSnapLatestVersion(state, snap.id);
 
       snapMap.set(
-        snapId,
-        latestVersion
-          ? semver.gt(latestVersion, installedSnaps[snapId].version)
-          : false,
+        snap.id,
+        latestVersion ? semver.gt(latestVersion, snap.version) : false,
       );
     });
 
@@ -2496,7 +2478,7 @@ export function getShowRecoveryPhraseReminder(state) {
  * @returns Number of unapproved transactions
  */
 export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getAllUnapprovedTransactions(state);
+  const unapprovedTxs = getUnapprovedTransactions(state);
 
   const allUnapprovedMessages = {
     ...unapprovedTxs,
