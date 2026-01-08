@@ -2,7 +2,10 @@ import * as bridgeControllerUtils from '@metamask/bridge-controller';
 import { BigNumber } from 'ethers';
 import { useLocation } from 'react-router-dom';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
-import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
+import {
+  createBridgeMockStore,
+  MOCK_SOLANA_ACCOUNT,
+} from '../../../test/data/bridge/mock-bridge-store';
 import * as assetUtils from '../../../shared/lib/asset-utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
@@ -59,9 +62,26 @@ describe('useBridgeQueryParams', () => {
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
+            [CHAIN_IDS.MAINNET]: {
+              isActiveSrc: true,
+              isActiveDest: true,
+            },
             [ChainId.SOLANA]: {
               isActiveSrc: true,
               isActiveDest: true,
+            },
+          },
+        },
+      },
+      metamaskStateOverrides: {
+        internalAccounts: {
+          selectedAccount: MOCK_SOLANA_ACCOUNT.id,
+        },
+        balances: {
+          'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+            [bridgeControllerUtils.getNativeAssetForChainId(ChainId.SOLANA)
+              .assetId]: {
+              amount: '2',
             },
           },
         },

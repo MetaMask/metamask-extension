@@ -2,7 +2,8 @@ import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { SolMethod } from '@metamask/keyring-api';
 import { base58 } from 'ethers/lib/utils';
 import { assert } from '@metamask/superstruct';
-import { AllowedBridgeChainIds } from '../../constants/bridge';
+import { type CaipChainId } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ScanTokenRequest,
   TokenFeature,
@@ -135,21 +136,18 @@ export function getTokenFeatureTitleDescriptionIds(
   return { ...tokenFeature, titleId, descriptionId };
 }
 
-export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
-  AllowedBridgeChainIds,
-  string | null
-> = {
-  [CHAIN_IDS.MAINNET]: 'ethereum',
-  [CHAIN_IDS.LINEA_MAINNET]: 'linea',
-  [CHAIN_IDS.POLYGON]: 'polygon',
-  [CHAIN_IDS.AVALANCHE]: 'avalanche',
-  [CHAIN_IDS.BSC]: 'bsc',
-  [CHAIN_IDS.ARBITRUM]: 'arbitrum',
-  [CHAIN_IDS.OPTIMISM]: 'optimism',
-  [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
-  [CHAIN_IDS.BASE]: 'base',
-  [CHAIN_IDS.SEI]: 'sei',
-  [CHAIN_IDS.MONAD]: 'monad',
+const CHAIN_ID_TO_SECURITY_API_NAME: Record<CaipChainId, string | null> = {
+  [toEvmCaipChainId(CHAIN_IDS.MAINNET)]: 'ethereum',
+  [toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET)]: 'linea',
+  [toEvmCaipChainId(CHAIN_IDS.POLYGON)]: 'polygon',
+  [toEvmCaipChainId(CHAIN_IDS.AVALANCHE)]: 'avalanche',
+  [toEvmCaipChainId(CHAIN_IDS.BSC)]: 'bsc',
+  [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]: 'arbitrum',
+  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: 'optimism',
+  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'zksync',
+  [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'base',
+  [toEvmCaipChainId(CHAIN_IDS.SEI)]: 'sei',
+  [toEvmCaipChainId(CHAIN_IDS.MONAD)]: 'monad',
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
@@ -159,15 +157,16 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
 };
 
 export function convertChainIdToBlockAidChainName(
-  chainId: AllowedBridgeChainIds,
+  chainId: CaipChainId,
 ): string | null {
-  return CHAIN_ID_TO_SECURITY_API_NAME[chainId] ?? null;
+  const name = CHAIN_ID_TO_SECURITY_API_NAME[chainId];
+  return name ?? null;
 }
 
 export async function fetchTxAlerts(
   params: {
     signal: AbortSignal;
-    chainId: AllowedBridgeChainIds;
+    chainId: CaipChainId;
     trade: string;
     accountAddress: string;
   } | null,
