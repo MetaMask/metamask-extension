@@ -184,7 +184,6 @@ For each changed section, check for violations across severity levels. **Referen
 - [ ] Proper TypeScript types
 - [ ] No non-serializable values in state (no Promises, functions, Maps/Sets)
 - [ ] **No inline selector functions** in useSelector (extract to memoized selectors)
-- [ ] **No multiple useSelector calls** for same state slice (combine into one)
 
 **Component Files** → See `.cursor/rules/front-end-performance-rendering.mdc`, `.cursor/rules/front-end-performance-hooks-effects.mdc`, `.cursor/rules/front-end-performance-react-compiler.mdc`, and `.cursor/rules/coding-guidelines.mdc` for details:
 
