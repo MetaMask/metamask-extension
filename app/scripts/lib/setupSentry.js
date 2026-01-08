@@ -209,7 +209,6 @@ function getMetaMetricsEnabledFromBackupState(backupState) {
   return Boolean(backupState?.MetaMetricsController?.participateInMetaMetrics);
 }
 
-
 function getSentryEnvironment() {
   if (METAMASK_BUILD_TYPE === 'main') {
     return METAMASK_ENVIRONMENT;
