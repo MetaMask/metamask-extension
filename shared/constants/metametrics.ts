@@ -839,6 +839,9 @@ export enum MetaMetricsEventName {
   SrpCopiedToClipboard = 'Copies SRP to clipboard',
   SrpToConfirmBackup = 'SRP Backup Confirm Displayed',
   SrpDefinitionClicked = 'SRP Definition Clicked',
+  SrpPasteProtectionModalDisplayed = 'SRP Paste Protection Modal Displayed',
+  SrpPasteProtectionExitSite = 'SRP Paste Protection Exit Site Clicked',
+  SrpPasteProtectionProceedAnyway = 'SRP Paste Protection Proceed Anyway Clicked',
   StakingEntryPointClicked = 'Stake Button Clicked',
   SurveyToast = 'Survey Toast',
   SupportLinkClicked = 'Support Link Clicked',
@@ -1054,6 +1057,8 @@ export enum MetaMetricsEventCategory {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   Permissions = 'Permissions',
   Phishing = 'Phishing',
+  // eslint-disable-next-line @typescript-eslint/no-shadow
+  Security = 'Security',
   Referrals = 'Referrals',
   BackupAndSync = 'Backup And Sync',
   PushNotifications = 'Notifications',

@@ -9,8 +9,64 @@
  * (e.g., wallet import flows within MetaMask itself).
  */
 
+import browser from 'webextension-polyfill';
 import { isDefinitelySeedPhrase } from '../../../shared/modules/seed-phrase-detection';
 import { showWarningModal } from './seed-phrase-protection-ui';
+
+/**
+ * Event types for seed phrase protection metrics.
+ * These are sent to the background script for tracking.
+ */
+export enum SeedPhraseProtectionEventType {
+  ModalDisplayed = 'srpModalDisplayed',
+  ExitSiteClicked = 'srpExitSiteClicked',
+  ProceedAnyway = 'srpProceedAnyway',
+}
+
+/**
+ * Message structure for seed phrase protection metrics.
+ */
+type SeedPhraseProtectionMessage = {
+  type: 'SEED_PHRASE_PROTECTION_METRIC';
+  event: SeedPhraseProtectionEventType;
+  properties: {
+    url: string;
+    hostname: string;
+    wordCount?: number;
+  };
+};
+
+/**
+ * Sends a metric event to the background script.
+ * The background script will handle the actual tracking via MetaMetricsController.
+ *
+ * @param event - The event type
+ * @param additionalProperties - Additional properties to include
+ */
+function sendMetricToBackground(
+  event: SeedPhraseProtectionEventType,
+  additionalProperties: Record<string, unknown> = {},
+): void {
+  try {
+    const message: SeedPhraseProtectionMessage = {
+      type: 'SEED_PHRASE_PROTECTION_METRIC',
+      event,
+      properties: {
+        url: window.location.href,
+        hostname: window.location.hostname,
+        ...additionalProperties,
+      },
+    };
+
+    // Fire and forget - we don't need to wait for a response
+    browser.runtime.sendMessage(message).catch(() => {
+      // Silently ignore errors (e.g., if background is not ready)
+      // Metrics are best-effort, not critical functionality
+    });
+  } catch {
+    // Silently ignore - metrics should never break core functionality
+  }
+}
 
 /**
  * Checks if the current page is an extension page.
@@ -77,9 +133,18 @@ function handlePaste(event: ClipboardEvent): void {
     event.preventDefault();
     event.stopPropagation();
 
+    // Track that the modal is being displayed (single event for paste detection + modal)
+    const wordCount = pastedText.trim().split(/\s+/u).length;
+    sendMetricToBackground(SeedPhraseProtectionEventType.ModalDisplayed, {
+      wordCount,
+    });
+
     // Show the warning modal
     showWarningModal().then((result) => {
       if (result === 'ignore') {
+        // Track that user clicked "Proceed anyway"
+        sendMetricToBackground(SeedPhraseProtectionEventType.ProceedAnyway);
+
         // User chose to ignore, allow the next paste
         allowNextPaste = true;
 
@@ -87,6 +152,9 @@ function handlePaste(event: ClipboardEvent): void {
         console.log(
           'MetaMask: Seed phrase protection bypassed. You may paste again.',
         );
+      } else {
+        // Track that user chose to exit site
+        sendMetricToBackground(SeedPhraseProtectionEventType.ExitSiteClicked);
       }
     });
   }
@@ -114,4 +182,4 @@ export function initSeedPhraseProtection(): void {
 }
 
 // Export for testing
-export { isExtensionPage };
+export { isExtensionPage, sendMetricToBackground };

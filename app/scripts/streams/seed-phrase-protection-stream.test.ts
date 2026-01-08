@@ -1,4 +1,16 @@
-import { isExtensionPage } from './seed-phrase-protection-stream';
+import browser from 'webextension-polyfill';
+import {
+  isExtensionPage,
+  sendMetricToBackground,
+  SeedPhraseProtectionEventType,
+} from './seed-phrase-protection-stream';
+
+// Mock webextension-polyfill
+jest.mock('webextension-polyfill', () => ({
+  runtime: {
+    sendMessage: jest.fn().mockResolvedValue(undefined),
+  },
+}));
 
 describe('Seed Phrase Protection Stream', () => {
   const originalLocation = window.location;
@@ -9,6 +21,7 @@ describe('Seed Phrase Protection Stream', () => {
       value: originalLocation,
       writable: true,
     });
+    jest.clearAllMocks();
   });
 
   describe('isExtensionPage', () => {
@@ -82,6 +95,68 @@ describe('Seed Phrase Protection Stream', () => {
       });
 
       expect(isExtensionPage()).toBe(false);
+    });
+  });
+
+  describe('sendMetricToBackground', () => {
+    beforeEach(() => {
+      Object.defineProperty(window, 'location', {
+        value: {
+          href: 'https://example.com/page',
+          hostname: 'example.com',
+        },
+        writable: true,
+      });
+    });
+
+    it('should send metric message with correct structure', () => {
+      sendMetricToBackground(SeedPhraseProtectionEventType.ModalDisplayed, {
+        wordCount: 12,
+      });
+
+      expect(browser.runtime.sendMessage).toHaveBeenCalledWith({
+        type: 'SEED_PHRASE_PROTECTION_METRIC',
+        event: SeedPhraseProtectionEventType.ModalDisplayed,
+        properties: {
+          url: 'https://example.com/page',
+          hostname: 'example.com',
+          wordCount: 12,
+        },
+      });
+    });
+
+    it('should send different event types', () => {
+      sendMetricToBackground(SeedPhraseProtectionEventType.ModalDisplayed);
+      expect(browser.runtime.sendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: SeedPhraseProtectionEventType.ModalDisplayed,
+        }),
+      );
+
+      sendMetricToBackground(SeedPhraseProtectionEventType.ExitSiteClicked);
+      expect(browser.runtime.sendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: SeedPhraseProtectionEventType.ExitSiteClicked,
+        }),
+      );
+
+      sendMetricToBackground(SeedPhraseProtectionEventType.ProceedAnyway);
+      expect(browser.runtime.sendMessage).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: SeedPhraseProtectionEventType.ProceedAnyway,
+        }),
+      );
+    });
+
+    it('should not throw when sendMessage fails', () => {
+      (browser.runtime.sendMessage as jest.Mock).mockRejectedValueOnce(
+        new Error('Connection failed'),
+      );
+
+      // Should not throw
+      expect(() => {
+        sendMetricToBackground(SeedPhraseProtectionEventType.ModalDisplayed);
+      }).not.toThrow();
     });
   });
 });

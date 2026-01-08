@@ -308,7 +308,7 @@ const MODAL_HTML = `
           Leave this site
         </button>
         <button class="btn btn-secondary" id="ignore-btn">
-          I understand the risks
+          Proceed anyway
         </button>
         <div class="protected-by">
           <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
