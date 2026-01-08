@@ -73,6 +73,16 @@ const mockInternalAccount = {
   },
 };
 
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
+
 jest.mock('../../../../shared/lib/snaps/snaps', () => ({
   ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
   isSnapPreinstalled: jest.fn(),
@@ -421,7 +431,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
-    it.skip('handles account creation with confirmations and with a user defined name', async () => {
+    it('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
       mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
         success: true,
@@ -518,7 +528,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
-    it.skip('handles account creation with skipping confirmation and with user defined name', async () => {
+    it('handles account creation with skipping confirmation and with user defined name', async () => {
       const mockNameSuggestion = 'suggested name';
       mockAddRequest.mockReturnValueOnce({
         success: true,
