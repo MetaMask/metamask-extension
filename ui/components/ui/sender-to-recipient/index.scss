@@ -31,16 +31,8 @@
         text-overflow: ellipsis;
         border-bottom: 1px solid var(--color-border-muted);
 
-        &--sender {
-          cursor: pointer;
-        }
-
         &--recipient {
           border-left: 1px solid var(--color-border-muted);
-
-          &-with-address {
-            cursor: pointer;
-          }
         }
       }
 

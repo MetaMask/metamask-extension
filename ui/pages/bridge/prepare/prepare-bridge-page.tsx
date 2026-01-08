@@ -479,10 +479,6 @@ const PrepareBridgePage = ({
               address: token.address ?? zeroAddress(),
             };
             dispatch(setFromToken(bridgeToken));
-            dispatch(setFromTokenInputValue(null));
-            if (token.address === toToken?.address) {
-              dispatch(setToToken(null));
-            }
           }}
           networkProps={{
             // @ts-expect-error other network fields are not used by the asset picker
