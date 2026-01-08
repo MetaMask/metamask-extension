@@ -17,4 +17,3 @@ export function getGitBranch(): string {
     return 'local';
   }
 }
-
