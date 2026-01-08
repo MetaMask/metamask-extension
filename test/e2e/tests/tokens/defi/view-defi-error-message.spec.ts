@@ -10,7 +10,6 @@ describe('View DeFi error state', function () {
   it('user should be able to view error message', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
