@@ -195,7 +195,9 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
+    await driver.waitForSelector('#critical-error-button');
     await driver.clickElement('#critical-error-button');
+    await driver.delay(1000); // wait for prompt to appear
 
     // Confirm we want to recover/reset.
     const prompt = await driver.driver.switchTo().alert();
@@ -237,9 +239,6 @@ describe('Vault Corruption', function () {
       driver,
       password: WALLET_PASSWORD,
     });
-
-    // wait for onboarding to complete
-    await driver.delay(5000);
 
     // now that we are re-onboarded, get the first account's address
     return await getFirstAddress(driver);

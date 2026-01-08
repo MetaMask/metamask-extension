@@ -41,6 +41,7 @@ class AccountAddressModal {
    */
   async getAccountAddress(): Promise<string> {
     console.log('Getting the address from the modal');
+    await this.driver.waitForSelector(this.accountAddress);
     const element = await this.driver.findElement(this.accountAddress);
     return await element.getText();
   }
