@@ -388,6 +388,7 @@ Summary: 0 critical, 0 high, 5 medium
 - Each issue must be individually documented with full evidence
 - Developer must be able to verify the rule by opening the guideline file at specified lines
 - **Do NOT report pre-existing issues** in unchanged code
+  - Attempt context compaction so that the report can be used for reasoning preservation in a new conversation, but prioritize satisfying the requirements listed above.
 
 Output the analysis in this **concise format**:
 
