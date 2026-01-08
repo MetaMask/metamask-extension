@@ -2,18 +2,14 @@ import {
   BridgeBackgroundAction,
   type BridgeController,
   BridgeUserAction,
+  formatChainIdToCaip,
   isNativeAddress,
   getNativeAssetForChainId,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   formatChainIdToHex,
-  formatAddressToCaipReference,
 } from '@metamask/bridge-controller';
-import {
-  parseCaipAssetType,
-  type CaipChainId,
-  type Hex,
-} from '@metamask/utils';
+import type { CaipChainId, Hex } from '@metamask/utils';
 import { trace, TraceName } from '../../../shared/lib/trace';
 import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/selectors/networks';
 import {
@@ -29,7 +25,7 @@ import {
   setEVMSrcTokenBalance as setEVMSrcTokenBalance_,
   setEVMSrcNativeBalance,
 } from './bridge';
-import type { BridgeToken, TokenPayload } from './types';
+import { type TokenPayload } from './types';
 import { type BridgeAppState } from './selectors';
 import { isNonEvmChain } from './utils';
 
@@ -116,25 +112,24 @@ export const updateQuoteRequestParams = (
 };
 
 export const setEVMSrcTokenBalance = (
-  token: BridgeToken,
+  token: TokenPayload['payload'],
   selectedAddress?: string,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
     if (token) {
-      const { chainId, assetReference } = parseCaipAssetType(token.assetId);
       trace({
         name: TraceName.BridgeBalancesUpdated,
         data: {
-          srcChainId: chainId,
-          isNative: isNativeAddress(assetReference),
+          srcChainId: formatChainIdToCaip(token.chainId),
+          isNative: isNativeAddress(token.address),
         },
         startTime: Date.now(),
       });
       await dispatch(
         setEVMSrcTokenBalance_({
           selectedAddress,
-          tokenAddress: formatAddressToCaipReference(assetReference),
-          chainId,
+          tokenAddress: token.address,
+          chainId: token.chainId,
         }),
       );
     }

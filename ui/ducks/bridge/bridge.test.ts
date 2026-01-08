@@ -82,12 +82,9 @@ describe('Ducks - Bridge', () => {
       expect(newState.toToken).toStrictEqual(
         expect.objectContaining({
           ...actionPayload,
-          accountType: undefined,
-          name: 'SYMBOL',
-          tokenFiatAmount: undefined,
           balance: '0',
           assetId: 'eip155:10/erc20:0x13341431',
-          chainId: 'eip155:10',
+          chainId: '0xa',
           image:
             'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x13341431.png',
         }),

@@ -319,8 +319,8 @@ const PrepareBridgePage = ({
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    const srcTokenAddress = fromToken?.assetId ?? fromToken?.address;
-    const destTokenAddress = toToken?.assetId ?? toToken?.address;
+    const srcTokenAddress = fromToken?.address ?? fromToken?.assetId;
+    const destTokenAddress = toToken?.address ?? toToken?.assetId;
 
     if (!selectedAccount?.address) {
       return undefined;

@@ -110,7 +110,6 @@ type FilterPredicate = (
  * - popularity
  * - all other tokens
  *
- * @deprecated Use usePopularTokens or other token list hooks instead
  * @param chainId - the selected src/dest chainId
  * @param tokenToExclude - a token to exclude from the token list, usually the token being swapped from
  * @param tokenToExclude.symbol
@@ -293,10 +292,6 @@ export const useTokensWithFiltering = (
                 accountType: token.accountType,
               };
             } else {
-              const assetId = toAssetId(
-                token.address,
-                formatChainIdToCaip(token.chainId),
-              );
               yield {
                 ...token,
                 symbol: token.symbol,
@@ -311,9 +306,10 @@ export const useTokensWithFiltering = (
                   (token.image ||
                     (token.address &&
                       tokenList?.[token.address.toLowerCase()]?.iconUrl)) ??
-                  (assetId
-                    ? getAssetImageUrl(assetId, token.chainId)
-                    : undefined) ??
+                  getAssetImageUrl(
+                    token.address,
+                    formatChainIdToCaip(token.chainId),
+                  ) ??
                   '',
               };
             }

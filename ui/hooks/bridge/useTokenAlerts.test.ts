@@ -1,8 +1,8 @@
+import { ChainId, formatChainIdToCaip } from '@metamask/bridge-controller';
 import { renderHookWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { toAssetId } from '../../../shared/lib/asset-utils';
 import { useTokenAlerts } from './useTokenAlerts';
 
 const renderUseSolanaAlerts = (mockStoreState: object) =>
@@ -41,11 +41,7 @@ describe('useTokenAlerts', () => {
       featureFlagOverrides: {
         bridgeConfig: {
           chains: {
-            [CHAIN_IDS.MAINNET]: {
-              isActiveSrc: true,
-              isActiveDest: true,
-            },
-            [MultichainNetworks.SOLANA]: {
+            [formatChainIdToCaip(ChainId.SOLANA)]: {
               isActiveSrc: true,
               isActiveDest: true,
             },
@@ -55,19 +51,13 @@ describe('useTokenAlerts', () => {
       bridgeSliceOverrides: {
         fromToken: {
           address: '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
+        },
+        fromChain: {
           chainId: CHAIN_IDS.MAINNET,
-          assetId: toAssetId(
-            '0x3fa807b6f8d4c407e6e605368f4372d14658b38c',
-            'eip155:1',
-          ),
         },
         toToken: {
           address: '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
           chainId: MultichainNetworks.SOLANA,
-          assetId: toAssetId(
-            '6p6xgHyF7AeE6TZkSmFsko444wqoP15icUSqi2jfGiPN',
-            MultichainNetworks.SOLANA,
-          ),
         },
       },
     });

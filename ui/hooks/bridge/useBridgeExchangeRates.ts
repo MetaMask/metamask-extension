@@ -5,8 +5,12 @@ import { getMarketData } from '../../selectors';
 import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 import { setSrcTokenExchangeRates } from '../../ducks/bridge/bridge';
 import { exchangeRateFromMarketData } from '../../ducks/bridge/utils';
+import { useMultichainSelector } from '../useMultichainSelector';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 export const useBridgeExchangeRates = () => {
+  const fromChainId = useMultichainSelector(getMultichainCurrentChainId);
+
   const dispatch = useDispatch();
   const currency = useSelector(getCurrentCurrency);
 
@@ -19,7 +23,11 @@ export const useBridgeExchangeRates = () => {
   );
 
   const cachedFromTokenExchangeRate = fromToken
-    ? exchangeRateFromMarketData(fromToken.assetId, marketData)
+    ? exchangeRateFromMarketData(
+        fromToken.chainId,
+        fromToken.address,
+        marketData,
+      )
     : undefined;
 
   // Cleanup abort controller on unmount
@@ -37,11 +45,12 @@ export const useBridgeExchangeRates = () => {
     if (fromToken && !cachedFromTokenExchangeRate) {
       dispatch(
         setSrcTokenExchangeRates({
-          assetId: fromToken.assetId,
+          chainId: fromToken.chainId,
+          tokenAddress: fromToken.address,
           currency,
           signal: fromAbortController.current.signal,
         }),
       );
     }
-  }, [currency, dispatch, fromToken, cachedFromTokenExchangeRate]);
+  }, [currency, dispatch, fromToken, fromChainId, cachedFromTokenExchangeRate]);
 };

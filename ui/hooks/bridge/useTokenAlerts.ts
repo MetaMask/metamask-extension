@@ -14,6 +14,7 @@ import {
   fetchTokenAlert,
 } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import type { TokenAlertWithLabelIds } from '../../../shared/types/security-alerts-api';
+import { AllowedBridgeChainIds } from '../../../shared/constants/bridge';
 import { useAsyncResult } from '../useAsync';
 
 export const useTokenAlerts = () => {
@@ -29,18 +30,20 @@ export const useTokenAlerts = () => {
         fromChain &&
         toToken &&
         toChain &&
-        !isNativeAddress(toToken.assetId)
+        !isNativeAddress(toToken.address)
       ) {
-        const chainName = convertChainIdToBlockAidChainName(toToken.chainId);
+        const chainName = convertChainIdToBlockAidChainName(
+          toChain?.chainId as AllowedBridgeChainIds,
+        );
         if (chainName) {
           return await fetchTokenAlert(
             chainName,
-            formatAddressToCaipReference(toToken.assetId),
+            formatAddressToCaipReference(toToken.address),
           );
         }
       }
       return null;
-    }, [toToken?.assetId, toToken?.chainId]);
+    }, [toToken?.address, toChain?.chainId]);
 
   return { tokenAlert };
 };

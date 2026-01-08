@@ -37,16 +37,13 @@ import {
   type Hex,
 } from '@metamask/utils';
 import type {
-  AccountTrackerControllerState,
   CurrencyRateState,
   MultichainAssetsControllerState,
   MultichainAssetsRatesControllerState,
   MultichainBalancesControllerState,
   RatesControllerState,
-  TokenBalancesControllerState,
   TokenListState,
   TokenRatesControllerState,
-  TokensControllerState,
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
@@ -69,6 +66,8 @@ import {
   HardwareKeyringNames,
   HardwareKeyringType,
 } from '../../../shared/constants/hardware-wallets';
+import { toAssetId } from '../../../shared/lib/asset-utils';
+import { MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19 } from '../../../shared/constants/multichain/assets';
 import { Numeric } from '../../../shared/modules/Numeric';
 import {
   getIsSmartTransaction,
@@ -87,9 +86,10 @@ import {
   getWalletsWithAccounts,
 } from '../../selectors/multichain-accounts/account-tree';
 import { getAllEnabledNetworksForAllNamespaces } from '../../selectors/multichain/networks';
-import { type MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+
 import {
   exchangeRateFromMarketData,
+  exchangeRatesFromNativeAndCurrencyRates,
   tokenPriceInNativeAsset,
   getDefaultToToken,
   toBridgeToken,
@@ -98,6 +98,37 @@ import {
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
 
+/**
+ * Helper function to determine the CAIP asset type for non-EVM native assets
+ *
+ * @param chainId - The chain ID
+ * @param address - The asset address
+ * @param assetId - The asset ID
+ * @returns The appropriate CAIP asset type string
+ */
+const getNonEvmNativeAssetType = (
+  chainId: Hex | string | number | CaipChainId,
+  address: string,
+  assetId?: string,
+): CaipAssetType | string => {
+  if (isSolanaChainId(chainId)) {
+    return isNativeAddress(address)
+      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.SOL
+      : (assetId ?? address);
+  }
+  if (isBitcoinChainId(chainId)) {
+    // Bitcoin bridge only supports mainnet
+    return MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.BTC;
+  }
+  if (isTronChainId(chainId)) {
+    // Tron bridge only supports mainnet
+    return isNativeAddress(address)
+      ? MULTICHAIN_NATIVE_CURRENCY_TO_CAIP19.TRX
+      : (assetId ?? address);
+  }
+  return assetId ?? address;
+};
+
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
     SmartTransactionsMetaMaskState['metamask'] &
@@ -105,10 +136,6 @@ export type BridgeAppState = {
     NetworkState &
     AccountsControllerState &
     AccountTreeControllerState &
-    AccountTrackerControllerState &
-    TokenBalancesControllerState &
-    TokensControllerState &
-    MultichainAccountsState['metamask'] &
     MultichainAssetsRatesControllerState &
     TokenRatesControllerState &
     RatesControllerState &
@@ -471,11 +498,12 @@ const _getFromNativeBalance = createSelector(
     }
 
     const { chainId } = fromChain;
-    const { decimals, assetId } = getNativeAssetForChainId(chainId);
+    const { decimals, address, assetId } = getNativeAssetForChainId(chainId);
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {
-      return nonEvmBalancesByAccountId?.[id]?.[assetId]?.amount ?? null;
+      const caipAssetType = getNonEvmNativeAssetType(chainId, address, assetId);
+      return nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ?? null;
     }
 
     return fromNativeBalance
@@ -503,12 +531,13 @@ export const getFromTokenBalance = createSelector(
       return null;
     }
     const { id } = fromAccount;
-    const { chainId, decimals, assetId } = fromToken;
+    const { chainId, decimals, address, assetId } = fromToken;
 
     // Use the balance provided by the multichain balances controller for non-EVM chains
     if (isNonEvmChain(chainId)) {
+      const caipAssetType = getNonEvmNativeAssetType(chainId, address, assetId);
       return (
-        nonEvmBalancesByAccountId?.[id]?.[assetId]?.amount ??
+        nonEvmBalancesByAccountId?.[id]?.[caipAssetType]?.amount ??
         fromToken.balance ??
         null
       );
@@ -540,134 +569,85 @@ export const getBridgeSortOrder = (state: BridgeAppState) =>
 
 export const getFromTokenConversionRate = createSelector(
   [
-    getFromToken,
-    (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
-    getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
-    getMultichainCoinRates,
+    getFromChain,
     (state: BridgeAppState) => state.metamask.marketData, // rates for non-native evm tokens
+    getAssetsRates, // non-evm conversion rates multichain equivalent of getMarketData
+    getFromToken,
+    getMultichainCoinRates, // RatesController rates for native assets
     (state: BridgeAppState) => state.metamask.currencyRates, // EVM only
+    (state: BridgeAppState) => state.bridge.fromTokenExchangeRate,
   ],
   (
-    fromToken,
-    fromTokenExchangeRate,
-    conversionRates,
-    rates,
+    fromChain,
     marketData,
+    conversionRates,
+    fromToken,
+    rates,
     currencyRates,
+    fromTokenExchangeRate,
   ) => {
-    // if (fromChain?.chainId && fromToken) {
-    //   const nativeAssetId = getNativeAssetForChainId(
-    //     fromChain.chainId,
-    //   )?.assetId;
-    //   const tokenAssetId = toAssetId(fromToken.address, fromChain.chainId);
-    //   const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
-    //     ? Number(
-    //         rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
-    //           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-    //           null,
-    //       )
-    //     : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
-    //   const nativeToUsdRate = isNonEvmChain(fromChain.chainId)
-    //     ? Number(
-    //         rates?.[fromChain.nativeCurrency?.toLowerCase()]
-    //           ?.usdConversionRate ??
-    //           conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
-    //           null,
-    //       )
-    //     : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
+    if (fromChain?.chainId && fromToken) {
+      const nativeAssetId = getNativeAssetForChainId(
+        fromChain.chainId,
+      )?.assetId;
+      const tokenAssetId = toAssetId(fromToken.address, fromChain.chainId);
+      const nativeToCurrencyRate = isNonEvmChain(fromChain.chainId)
+        ? Number(
+            rates?.[fromChain.nativeCurrency?.toLowerCase()]?.conversionRate ??
+              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
+              null,
+          )
+        : (currencyRates[fromChain.nativeCurrency]?.conversionRate ?? null);
+      const nativeToUsdRate = isNonEvmChain(fromChain.chainId)
+        ? Number(
+            rates?.[fromChain.nativeCurrency?.toLowerCase()]
+              ?.usdConversionRate ??
+              conversionRates?.[nativeAssetId as CaipAssetType]?.rate ??
+              null,
+          )
+        : (currencyRates[fromChain.nativeCurrency]?.usdConversionRate ?? null);
 
-    //   if (isNativeAddress(fromToken.address)) {
-    //     return {
-    //       valueInCurrency: nativeToCurrencyRate,
-    //       usd: nativeToUsdRate,
-    //     };
-    //   }
-    //   // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
-    //   if (isNonEvmChain(fromChain.chainId) && nativeAssetId && tokenAssetId) {
-    //     const nativeAssetRate = Number(
-    //       conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
-    //     );
-    //     const tokenToNativeAssetRate = tokenPriceInNativeAsset(
-    //       Number(
-    //         conversionRates?.[tokenAssetId]?.rate ??
-    //           fromTokenExchangeRate ??
-    //           null,
-    //       ),
-    //       nativeAssetRate,
-    //     );
-    //     return exchangeRatesFromNativeAndCurrencyRates(
-    //       tokenToNativeAssetRate,
-    //       Number(nativeToCurrencyRate),
-    //       Number(nativeToUsdRate),
-    //     );
-    //   }
-    //   // For EVM tokens, we use the market data to get the exchange rate
-    //   const tokenToNativeAssetRate =
-    //     exchangeRateFromMarketData(
-    //       fromChain.chainId,
-    //       fromToken.address,
-    //       marketData,
-    //     ) ??
-    //     tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
+      if (isNativeAddress(fromToken.address)) {
+        return {
+          valueInCurrency: nativeToCurrencyRate,
+          usd: nativeToUsdRate,
+        };
+      }
+      // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
+      if (isNonEvmChain(fromChain.chainId) && nativeAssetId && tokenAssetId) {
+        const nativeAssetRate = Number(
+          conversionRates?.[nativeAssetId as CaipAssetType]?.rate ?? null,
+        );
+        const tokenToNativeAssetRate = tokenPriceInNativeAsset(
+          Number(
+            conversionRates?.[tokenAssetId]?.rate ??
+              fromTokenExchangeRate ??
+              null,
+          ),
+          nativeAssetRate,
+        );
+        return exchangeRatesFromNativeAndCurrencyRates(
+          tokenToNativeAssetRate,
+          Number(nativeToCurrencyRate),
+          Number(nativeToUsdRate),
+        );
+      }
+      // For EVM tokens, we use the market data to get the exchange rate
+      const tokenToNativeAssetRate =
+        exchangeRateFromMarketData(
+          fromChain.chainId,
+          fromToken.address,
+          marketData,
+        ) ??
+        tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
 
-    //   return exchangeRatesFromNativeAndCurrencyRates(
-    //     tokenToNativeAssetRate,
-    //     nativeToCurrencyRate,
-    //     nativeToUsdRate,
-    //   );
-    const nullResult = {
-      valueInCurrency: null,
-      usd: null,
-    };
-    if (!fromToken) {
-      return nullResult;
+      return exchangeRatesFromNativeAndCurrencyRates(
+        tokenToNativeAssetRate,
+        nativeToCurrencyRate,
+        nativeToUsdRate,
+      );
     }
-    const { chainId, assetId } = fromToken;
-    const nativeAsset = getNativeAssetForChainId(chainId);
-    if (!nativeAsset) {
-      return nullResult;
-    }
-    // For non-EVM tokens (Solana, Bitcoin, Tron), we use the conversion rates provided by the multichain rates controller
-    if (isNonEvmChain(chainId)) {
-      // Derive asset's value in USD from the native asset's value in USD
-      const {
-        conversionRate: nativeToCurrencyRate,
-        usdConversionRate: nativeToUsdRate,
-      } = rates[nativeAsset.symbol.toLowerCase()] ?? {};
-      const assetToCurrencyRateToUse =
-        fromTokenExchangeRate ?? Number(conversionRates?.[assetId]?.rate);
-
-      return {
-        valueInCurrency: assetToCurrencyRateToUse,
-        usd:
-          nativeToUsdRate && nativeToCurrencyRate && assetToCurrencyRateToUse
-            ? (assetToCurrencyRateToUse * nativeToUsdRate) /
-              nativeToCurrencyRate
-            : null,
-      };
-    }
-
-    // For EVM tokens
-    const {
-      conversionRate: nativeToCurrencyRate,
-      usdConversionRate: nativeToUsdRate,
-    } = currencyRates[nativeAsset.symbol] ?? {};
-
-    // For EVM tokens, we use the market data to get the exchange rate
-    const tokenToNativeAssetRate =
-      exchangeRateFromMarketData(assetId, marketData) ??
-      tokenPriceInNativeAsset(fromTokenExchangeRate, nativeToCurrencyRate);
-
-    return {
-      valueInCurrency:
-        tokenToNativeAssetRate && nativeToCurrencyRate
-          ? tokenToNativeAssetRate * nativeToCurrencyRate
-          : null,
-      usd:
-        tokenToNativeAssetRate && nativeToUsdRate
-          ? tokenToNativeAssetRate * nativeToUsdRate
-          : null,
-    };
+    return exchangeRatesFromNativeAndCurrencyRates();
   },
 );
 
