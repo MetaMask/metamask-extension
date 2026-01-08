@@ -44,6 +44,13 @@ const {
 } = require('./console-categorizer');
 
 class ConsoleBaselineReporter {
+  // Private fields
+  #globalConfig;
+
+  #options;
+
+  #error;
+
   /**
    * Create a new ConsoleBaselineReporter.
    *
@@ -54,14 +61,14 @@ class ConsoleBaselineReporter {
    * @param {boolean} [options.showImprovements] - Show when warnings are reduced (default: true)
    */
   constructor(globalConfig, options = {}) {
-    this._globalConfig = globalConfig;
+    this.#globalConfig = globalConfig;
 
     // Mode is determined by UPDATE_BASELINE environment variable
     // - UPDATE_BASELINE=true → 'capture' (write baseline)
     // - Otherwise → 'enforce' (compare against baseline)
     const mode = process.env.UPDATE_BASELINE === 'true' ? 'capture' : 'enforce';
 
-    this._options = {
+    this.#options = {
       testType: options.testType || 'unit',
       mode,
       failOnViolation: options.failOnViolation !== false,
@@ -69,7 +76,7 @@ class ConsoleBaselineReporter {
     };
 
     // Load baseline (needed for both modes - enforce reads it, capture may update it)
-    this.baseline = this._loadBaseline();
+    this.baseline = this.#loadBaseline();
 
     // Track warnings per file: { 'path/to/file.test.ts': { 'category': count } }
     this.warningsByFile = {};
@@ -80,7 +87,7 @@ class ConsoleBaselineReporter {
     this.newFiles = [];
 
     // Store error to return from getLastError()
-    this._error = null;
+    this.#error = null;
   }
 
   // ===========================================================================
@@ -92,19 +99,19 @@ class ConsoleBaselineReporter {
    *
    * @returns {string} Resolved absolute path to baseline file
    */
-  _resolveBaselinePath() {
+  #resolveBaselinePath() {
     let filename;
-    if (this._options.testType === 'unit') {
+    if (this.#options.testType === 'unit') {
       filename = 'console-baseline-unit.json';
-    } else if (this._options.testType === 'integration') {
+    } else if (this.#options.testType === 'integration') {
       filename = 'console-baseline-integration.json';
     } else {
       throw new Error(
-        `Invalid testType (${this._options.testType}): must be 'unit' or 'integration'`,
+        `Invalid testType (${this.#options.testType}): must be 'unit' or 'integration'`,
       );
     }
 
-    return path.resolve(this._globalConfig.rootDir, 'test/jest', filename);
+    return path.resolve(this.#globalConfig.rootDir, 'test/jest', filename);
   }
 
   /**
@@ -112,13 +119,13 @@ class ConsoleBaselineReporter {
    *
    * @returns {object} Baseline object with files property
    */
-  _loadBaseline() {
-    const baselinePath = this._resolveBaselinePath();
+  #loadBaseline() {
+    const baselinePath = this.#resolveBaselinePath();
 
     try {
       if (!fs.existsSync(baselinePath)) {
-        if (this._options.mode === 'enforce') {
-          const updateCmd = `yarn test:${this._options.testType}:update-baseline`;
+        if (this.#options.mode === 'enforce') {
+          const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
           console.warn(
             `\n⚠️  Baseline file not found: ${baselinePath}\n` +
               `   Run "${updateCmd}" to create it.\n`,
@@ -151,8 +158,8 @@ class ConsoleBaselineReporter {
    * Write the baseline JSON file (capture mode).
    * Merges new results with existing baseline - only updates files that ran.
    */
-  _writeBaseline() {
-    const baselinePath = this._resolveBaselinePath();
+  #writeBaseline() {
+    const baselinePath = this.#resolveBaselinePath();
 
     // Start with existing baseline files (to preserve files that didn't run)
     const existingFiles = this.baseline.files || {};
@@ -202,11 +209,11 @@ class ConsoleBaselineReporter {
    * @param {string} absolutePath - Absolute file path
    * @returns {string} Relative path from project root
    */
-  _getRelativePath(absolutePath) {
+  #getRelativePath(absolutePath) {
     // Normalize to forward slashes for cross-platform consistency
     // (path.relative uses '\' on Windows, but baselines use '/')
     return path
-      .relative(this._globalConfig.rootDir, absolutePath)
+      .relative(this.#globalConfig.rootDir, absolutePath)
       .replace(/\\/gu, '/');
   }
 
@@ -217,15 +224,15 @@ class ConsoleBaselineReporter {
    * @param {string} text - Console message text
    * @returns {string} Category name for this message
    */
-  _categorizeMessage(type, text) {
+  #categorizeMessage(type, text) {
     let categorizer;
-    if (this._options.testType === 'unit') {
+    if (this.#options.testType === 'unit') {
       categorizer = categorizeUnitTestMessage;
-    } else if (this._options.testType === 'integration') {
+    } else if (this.#options.testType === 'integration') {
       categorizer = categorizeIntegrationTestMessage;
     } else {
       throw new Error(
-        `Invalid testType (${this._options.testType}): must be 'unit' or 'integration'`,
+        `Invalid testType (${this.#options.testType}): must be 'unit' or 'integration'`,
       );
     }
 
@@ -259,7 +266,7 @@ class ConsoleBaselineReporter {
    * @param {object} testResult - Test result containing console messages
    */
   onTestResult(_testInfo, testResult) {
-    const filePath = this._getRelativePath(testResult.testFilePath);
+    const filePath = this.#getRelativePath(testResult.testFilePath);
 
     // Initialize warnings for this file
     if (!this.warningsByFile[filePath]) {
@@ -271,7 +278,7 @@ class ConsoleBaselineReporter {
     if (testResult.console) {
       for (const msg of testResult.console) {
         if (msg.type === 'warn' || msg.type === 'error') {
-          const category = this._categorizeMessage(msg.type, msg.message);
+          const category = this.#categorizeMessage(msg.type, msg.message);
 
           if (!this.warningsByFile[filePath][category]) {
             this.warningsByFile[filePath][category] = 0;
@@ -287,13 +294,13 @@ class ConsoleBaselineReporter {
    * Handles both capture and enforce modes.
    */
   onRunComplete() {
-    if (this._options.mode === 'capture') {
-      this._writeBaseline();
-    } else if (this._options.mode === 'enforce') {
-      this._enforceBaseline();
+    if (this.#options.mode === 'capture') {
+      this.#writeBaseline();
+    } else if (this.#options.mode === 'enforce') {
+      this.#enforceBaseline();
     } else {
       throw new Error(
-        `Invalid mode (${this._options.mode}): must be 'capture' or 'enforce'`,
+        `Invalid mode (${this.#options.mode}): must be 'capture' or 'enforce'`,
       );
     }
   }
@@ -305,7 +312,7 @@ class ConsoleBaselineReporter {
    * @returns {Error|null} Error if violations detected, null otherwise
    */
   getLastError() {
-    return this._error;
+    return this.#error;
   }
 
   // ===========================================================================
@@ -315,16 +322,16 @@ class ConsoleBaselineReporter {
   /**
    * Enforce baseline - compare current warnings and report violations.
    */
-  _enforceBaseline() {
+  #enforceBaseline() {
     // Compare against baseline (per file)
-    this._compareWithBaseline();
+    this.#compareWithBaseline();
 
     // Print results
-    this._printResults();
+    this.#printResults();
 
     // Fail if violations or new files with warnings found
     // (getLastError() will return this error to Jest)
-    if (this._options.failOnViolation) {
+    if (this.#options.failOnViolation) {
       const hasViolations = this.violations.length > 0;
       const hasNewFilesWithWarnings = this.newFiles.length > 0;
 
@@ -336,7 +343,7 @@ class ConsoleBaselineReporter {
         if (hasNewFilesWithWarnings) {
           parts.push(`${this.newFiles.length} new file(s) with warnings`);
         }
-        this._error = new Error(
+        this.#error = new Error(
           `Console baseline violated: ${parts.join(', ')}. ` +
             'Fix the warnings or update the baseline.',
         );
@@ -347,7 +354,7 @@ class ConsoleBaselineReporter {
   /**
    * Compare current warnings with baseline (per file).
    */
-  _compareWithBaseline() {
+  #compareWithBaseline() {
     const baselineFiles = this.baseline.files || {};
 
     // Check each file that was run
@@ -409,11 +416,11 @@ class ConsoleBaselineReporter {
   /**
    * Print comparison results.
    */
-  _printResults() {
+  #printResults() {
     const hasViolations = this.violations.length > 0;
     const hasNewFiles = this.newFiles.length > 0;
     const hasImprovements =
-      this._options.showImprovements && this.improvements.length > 0;
+      this.#options.showImprovements && this.improvements.length > 0;
     const isClean = !hasViolations && !hasImprovements && !hasNewFiles;
 
     if (isClean) {
@@ -427,18 +434,18 @@ class ConsoleBaselineReporter {
     console.log('═'.repeat(80));
 
     if (hasViolations) {
-      this._printViolations();
+      this.#printViolations();
     }
 
     if (hasNewFiles) {
-      this._printNewFiles();
+      this.#printNewFiles();
     }
 
     if (hasImprovements) {
-      this._printImprovements();
+      this.#printImprovements();
     }
 
-    this._printSummary();
+    this.#printSummary();
 
     console.log('═'.repeat(80));
     console.log('\n');
@@ -447,10 +454,10 @@ class ConsoleBaselineReporter {
   /**
    * Print violations section.
    */
-  _printViolations() {
+  #printViolations() {
     console.log('\n❌ BASELINE VIOLATIONS DETECTED\n');
 
-    const violationsByFile = this._groupByFile(this.violations);
+    const violationsByFile = this.#groupByFile(this.violations);
 
     for (const [filePath, fileViolations] of Object.entries(violationsByFile)) {
       console.log(`  📁 ${filePath}`);
@@ -468,7 +475,7 @@ class ConsoleBaselineReporter {
       console.log('');
     }
 
-    const updateCmd = `yarn test:${this._options.testType}:update-baseline`;
+    const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
     console.log('  💡 Next steps:');
     console.log('     1. Fix the warnings in your code, OR');
     console.log(
@@ -479,7 +486,7 @@ class ConsoleBaselineReporter {
   /**
    * Print new files section.
    */
-  _printNewFiles() {
+  #printNewFiles() {
     console.log('\n📋 NEW FILES (not in baseline)\n');
     console.log('  The following test files are not in the baseline yet:\n');
 
@@ -496,18 +503,18 @@ class ConsoleBaselineReporter {
       console.log('');
     }
 
-    const updateCmd = `yarn test:${this._options.testType}:update-baseline`;
+    const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
     console.log(`  💡 Run "${updateCmd}" to add these files to baseline.\n`);
   }
 
   /**
    * Print improvements section.
    */
-  _printImprovements() {
+  #printImprovements() {
     console.log('\n✨ CONSOLE IMPROVEMENTS DETECTED\n');
     console.log('  Great job! The following warnings were reduced:\n');
 
-    const improvementsByFile = this._groupByFile(this.improvements);
+    const improvementsByFile = this.#groupByFile(this.improvements);
 
     for (const [filePath, fileImprovements] of Object.entries(
       improvementsByFile,
@@ -529,7 +536,7 @@ class ConsoleBaselineReporter {
       console.log('');
     }
 
-    const updateCmd = `yarn test:${this._options.testType}:update-baseline`;
+    const updateCmd = `yarn test:${this.#options.testType}:update-baseline`;
     console.log('  💡 Lock in improvements:');
     console.log(`     ${updateCmd}\n`);
   }
@@ -540,7 +547,7 @@ class ConsoleBaselineReporter {
    * @param {Array} items - Array of items with filePath property
    * @returns {object} Object keyed by filePath
    */
-  _groupByFile(items) {
+  #groupByFile(items) {
     const grouped = {};
     for (const item of items) {
       if (!grouped[item.filePath]) {
@@ -554,7 +561,7 @@ class ConsoleBaselineReporter {
   /**
    * Print summary statistics.
    */
-  _printSummary() {
+  #printSummary() {
     const totalViolations = this.violations.length;
     const totalImprovements = this.improvements.length;
     const totalNewFiles = this.newFiles.length;
