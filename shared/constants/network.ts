@@ -704,7 +704,6 @@ export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
 export const X_LAYER_IMAGE_URL = './images/x-layer.svg';
 export const X_LAYER_NATIVE_TOKEN_IMAGE_URL = './images/x-layer-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
-export const BOB_NATIVE_TOKEN_IMAGE_URL = './images/bob-native.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 
@@ -1320,7 +1319,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [CHAIN_IDS.CRONOS]: CRONOS_IMAGE_URL,
   [CHAIN_IDS.X_LAYER]: X_LAYER_NATIVE_TOKEN_IMAGE_URL,
-  [CHAIN_IDS.BOB]: BOB_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
