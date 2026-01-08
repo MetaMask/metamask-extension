@@ -1662,8 +1662,13 @@ export default class MetamaskController extends EventEmitter {
           this.accountsController.getSelectedMultichainAccount(
             network,
           )?.address;
-      } catch {
-        // noop
+      } catch (err) {
+        // This scenario shouldn't occur, but if it does, we track it for debugging
+        const error = new Error(
+          `Failed to get selected multichain account for network: ${network}`,
+          { cause: err },
+        );
+        captureException(error);
       }
     });
 
@@ -6271,20 +6276,27 @@ export default class MetamaskController extends EventEmitter {
           return;
         }
 
-        // Find the scope by checking all chains in the config
-        const scopeObject = chains
+        // Collect accounts from all scopeObjects for all chains in the config
+        // This ensures we don't miss accounts if different chains have different accounts
+        const scopeObjects = chains
           .map((chain) => sessionScopes[chain])
-          .find((scope) => scope !== undefined);
+          .filter((scope) => scope !== undefined);
 
-        if (!scopeObject) {
+        if (scopeObjects.length === 0) {
           return;
         }
 
-        const { accounts } = scopeObject;
-        const parsedPermittedAddresses = accounts.map((caipAccountId) => {
-          const { address } = parseCaipAccountId(caipAccountId);
-          return address;
-        });
+        // Collect all unique accounts from all scopeObjects
+        const allAccounts = new Set(
+          scopeObjects.flatMap((scopeObject) => scopeObject.accounts),
+        );
+
+        const parsedPermittedAddresses = Array.from(allAccounts).map(
+          (caipAccountId) => {
+            const { address } = parseCaipAccountId(caipAccountId);
+            return address;
+          },
+        );
 
         const [accountAddressToEmit] =
           this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
@@ -8664,12 +8676,12 @@ export default class MetamaskController extends EventEmitter {
       return undefined;
     }
     const caipAccountIds = getPermittedAccountsForScopes(caveatValue, scopes);
-    const hexAddresses = uniq(
+    const addresses = uniq(
       caipAccountIds.map(
         (caipAccountId) => parseCaipAccountId(caipAccountId).address,
       ),
     );
-    return this.sortMultichainAccountsByLastSelected(hexAddresses)?.[0];
+    return this.sortMultichainAccountsByLastSelected(addresses)?.[0];
   }
 
   async _notifyMultichainAccountChange(origin, accountAddressArray, scope) {
