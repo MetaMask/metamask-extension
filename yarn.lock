@@ -24806,7 +24806,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eth-lattice-keyring@npm:1.1.0":
+"eth-lattice-keyring@npm:^1.1.0":
   version: 1.1.0
   resolution: "eth-lattice-keyring@npm:1.1.0"
   dependencies:
@@ -33112,7 +33112,7 @@ __metadata:
     eta: "npm:^3.2.0"
     eth-chainlist: "npm:~0.0.498"
     eth-ens-namehash: "npm:^2.0.8"
-    eth-lattice-keyring: "npm:1.1.0"
+    eth-lattice-keyring: "npm:^1.1.0"
     eth-method-registry: "npm:^4.0.0"
     ethereumjs-util: "npm:^7.0.10"
     ethers: "npm:^5.7.0"

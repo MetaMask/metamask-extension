@@ -420,7 +420,7 @@
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
-    "eth-lattice-keyring": "1.1.0",
+    "eth-lattice-keyring": "^1.1.0",
     "eth-method-registry": "^4.0.0",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^5.0.2",
