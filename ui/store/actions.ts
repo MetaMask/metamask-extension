@@ -847,6 +847,9 @@ export function linkRewardToShieldSubscription(
         subscriptionId,
         rewardPoints,
       ]);
+
+      // refetch the subscriptions
+      await dispatch(getSubscriptions());
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
