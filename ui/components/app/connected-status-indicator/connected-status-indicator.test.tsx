@@ -29,6 +29,7 @@ jest.mock('../../multichain/connected-site-menu', () => ({
 }));
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   isInternalAccountInPermittedAccountIds: jest.fn(),
   getCaip25PermissionFromSubject: jest.fn(),
   getCaip25CaveatFromPermission: jest.fn(),
