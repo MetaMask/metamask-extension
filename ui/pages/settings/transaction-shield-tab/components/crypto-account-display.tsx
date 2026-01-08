@@ -12,7 +12,6 @@ import {
 } from '@metamask/design-system-react';
 import { NameType } from '@metamask/name-controller';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
-import Identicon from '../../../../components/ui/identicon';
 import { PreferredAvatar } from '../../../../components/app/preferred-avatar';
 
 const CryptoAccountDisplay = ({
@@ -24,7 +23,7 @@ const CryptoAccountDisplay = ({
   chainId: string;
   showIcon?: boolean;
 }) => {
-  const { name, icon, image, subtitle } = useDisplayName({
+  const { name, icon, subtitle } = useDisplayName({
     value: payerAddress,
     type: NameType.ETHEREUM_ADDRESS,
     preferContractSymbol: false,
@@ -43,10 +42,6 @@ const CryptoAccountDisplay = ({
           color={icon.color as unknown as IconColor}
         />
       );
-    }
-
-    if (image) {
-      return <Identicon address={payerAddress} diameter={16} image={image} />;
     }
 
     return (
