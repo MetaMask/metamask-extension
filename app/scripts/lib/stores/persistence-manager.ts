@@ -368,9 +368,8 @@ export class PersistenceManager {
               tags: { 'persistence.error': 'set-failed' },
               fingerprint: ['persistence-error', 'set-failed'],
             });
-
-            this.#notifySetFailed();
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
         } finally {
           this.#isExtensionInitialized = true;
@@ -475,9 +474,8 @@ export class PersistenceManager {
               tags: { 'persistence.error': 'persist-failed' },
               fingerprint: ['persistence-error', 'persist-failed'],
             });
-
-            this.#notifySetFailed();
           }
+          this.#notifySetFailed();
           log.error('error setting state in local store:', err);
         } finally {
           this.#isExtensionInitialized = true;
