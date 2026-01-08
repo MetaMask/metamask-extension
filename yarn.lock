@@ -6181,7 +6181,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/delegation-core@npm:0.2.0, @metamask/delegation-core@npm:^0.2.0, @metamask/delegation-core@npm:^0.2.0-rc.1":
+"@metamask/delegation-core@npm:0.3.0":
+  version: 0.3.0
+  resolution: "@metamask/delegation-core@npm:0.3.0"
+  dependencies:
+    "@metamask/abi-utils": "npm:^3.0.0"
+    "@metamask/utils": "npm:^11.4.0"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/5a09cf145b7918807d536714a975e7fc7b183e3ad9aa6a476175021e3def3dea730f36e403e72ea706e054897ab306b1eb6bf498c69b4bc70ec8fbe15dc56712
+  languageName: node
+  linkType: hard
+
+"@metamask/delegation-core@npm:^0.2.0, @metamask/delegation-core@npm:^0.2.0-rc.1":
   version: 0.2.0
   resolution: "@metamask/delegation-core@npm:0.2.0"
   dependencies:
@@ -6841,17 +6852,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/gator-permissions-snap@npm:^0.7.0":
-  version: 0.7.0
-  resolution: "@metamask/gator-permissions-snap@npm:0.7.0"
+"@metamask/gator-permissions-snap@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@metamask/gator-permissions-snap@npm:0.9.0"
   dependencies:
     "@metamask/abi-utils": "npm:3.0.0"
-    "@metamask/delegation-core": "npm:0.2.0"
+    "@metamask/delegation-core": "npm:0.3.0"
     "@metamask/profile-sync-controller": "npm:21.0.0"
-    "@metamask/snaps-sdk": "npm:8.1.0"
+    "@metamask/snaps-sdk": "npm:10.2.0"
     "@metamask/utils": "npm:11.4.2"
     zod: "npm:3.25.76"
-  checksum: 10/3bd043f4aa64a39af362d832cb37c416f5f9e994ca36cb32d23b7c0c39200d9f3b0980dbe05abf23af075d9067627774a42e44e48319a8bd25c0f6a7885eb798
+  checksum: 10/7294333e4fa70a1b8cbe17f03cc40828b68d69b398f491b1ddfa103c67b8b452ad9c655931e1e72e206f6c11113e32680fce5a1a273071c6cd0c43603ef70322
   languageName: node
   linkType: hard
 
@@ -7663,13 +7674,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permissions-kernel-snap@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@metamask/permissions-kernel-snap@npm:0.5.0"
+"@metamask/permissions-kernel-snap@npm:^0.6.0":
+  version: 0.6.0
+  resolution: "@metamask/permissions-kernel-snap@npm:0.6.0"
   dependencies:
-    "@metamask/snaps-sdk": "npm:8.1.0"
+    "@metamask/snaps-sdk": "npm:10.2.0"
     zod: "npm:3.25.76"
-  checksum: 10/8152d59f04908355acc0981f194793b9aa75e4f6361c39317ba9f50ca1e5ed921d81e2aabe3971aa9258b8866113d8880e81ffe07f47d529a315aa97e8620c92
+  checksum: 10/b5ea37180407f83e6bd4b500f3416ebaf6350eb3f5fd3c82475ef43fc13faef1039bef6547e19bf241aac6dcf9644ad4f990fcd8e76fcc2eb1716c7e1885ad7f
   languageName: node
   linkType: hard
 
@@ -32855,7 +32866,7 @@ __metadata:
     "@metamask/foundryup": "npm:^1.0.1"
     "@metamask/gas-fee-controller": "npm:^25.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.8.0"
-    "@metamask/gator-permissions-snap": "npm:^0.7.0"
+    "@metamask/gator-permissions-snap": "npm:^0.9.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
@@ -32890,7 +32901,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
-    "@metamask/permissions-kernel-snap": "npm:^0.5.0"
+    "@metamask/permissions-kernel-snap": "npm:^0.6.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"
