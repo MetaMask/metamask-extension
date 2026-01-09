@@ -73,7 +73,7 @@ const SnapUIRendererComponent = ({
     if (scrollableContainerRef.current) {
       scrollableContainerRef.current.scrollTo(0, scrollRef.current);
     }
-  }, [interfaceState.content]);
+  }, [interfaceState?.content]);
 
   /**
    * Sets the scroll position to the current scroll position of the scrollable container.

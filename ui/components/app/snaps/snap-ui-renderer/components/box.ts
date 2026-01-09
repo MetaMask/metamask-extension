@@ -65,7 +65,11 @@ export const box: UIComponentFactory<BoxElement> = ({ element, ...params }) => {
   return {
     element: 'Box',
     children: getJsxChildren(element).map((children) =>
-      mapToTemplate({ ...params, element: children as JSXElement }),
+      mapToTemplate({
+        ...params,
+        isScrollableContainer: false,
+        element: children as JSXElement,
+      }),
     ) as NonEmptyArray<UIComponent>,
     props: {
       display: Display.Flex,
