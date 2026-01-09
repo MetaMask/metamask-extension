@@ -2,7 +2,14 @@ import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  hexToNumber,
+  KnownCaipNamespace,
+  toCaipChainId,
+} from '@metamask/utils';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -211,6 +218,9 @@ export const CHAIN_IDS = {
   MONAD: '0x8f',
   HYPE: '0x3e7',
   X_LAYER: '0xc4',
+  BOB: '0xed88',
+  ROOTSTOCK: '0x1e',
+  ROOTSTOCK_TESTNET: '0x1f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -375,6 +385,9 @@ export const LUKSO_DISPLAY_NAME = 'Lukso';
 export const INJECTIVE_DISPLAY_NAME = 'Injective';
 export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
 export const X_LAYER_DISPLAY_NAME = 'X Layer';
+export const BOB_DISPLAY_NAME = 'BOB';
+export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
+export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -462,6 +475,9 @@ export const CURRENCY_SYMBOLS = {
   INJECTIVE: 'INJ',
   HYPE: 'HYPE',
   X_LAYER: 'OKB',
+  BOB: 'ETH',
+  ROOTSTOCK: 'RBTC',
+  ROOTSTOCK_TESTNET: 'tRBTC',
 } as const;
 
 // Non-EVM currency symbols
@@ -687,6 +703,9 @@ export const INJECTIVE_IMAGE_URL = './images/injective.svg';
 export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
 export const X_LAYER_IMAGE_URL = './images/x-layer.svg';
 export const X_LAYER_NATIVE_TOKEN_IMAGE_URL = './images/x-layer-native.svg';
+export const BOB_IMAGE_URL = './images/bob.svg';
+export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
+export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -704,9 +723,12 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MONAD_TESTNET,
 ];
 
-export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
-  (chainId) => `eip155:${hexToNumber(chainId)}`,
-);
+export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
+  ...TEST_CHAINS.map((chainId) =>
+    toCaipChainId(KnownCaipNamespace.Eip155, hexToNumber(chainId).toString()),
+  ),
+  ...NON_EVM_TESTNET_IDS,
+];
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -859,6 +881,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
   [CHAIN_IDS.CRONOS]: CRONOS_DISPLAY_NAME,
   [CHAIN_IDS.X_LAYER]: X_LAYER_DISPLAY_NAME,
+  [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1020,6 +1045,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
   [CHAIN_IDS.HYPE]: CURRENCY_SYMBOLS.HYPE,
   [CHAIN_IDS.X_LAYER]: CURRENCY_SYMBOLS.X_LAYER,
+  [CHAIN_IDS.BOB]: CURRENCY_SYMBOLS.BOB,
+  [CHAIN_IDS.ROOTSTOCK]: CURRENCY_SYMBOLS.ROOTSTOCK,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: CURRENCY_SYMBOLS.ROOTSTOCK_TESTNET,
 } as const;
 
 /**
@@ -1201,6 +1229,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [CHAIN_IDS.X_LAYER]: X_LAYER_IMAGE_URL,
+  [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1288,6 +1319,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
   [CHAIN_IDS.CRONOS]: CRONOS_IMAGE_URL,
   [CHAIN_IDS.X_LAYER]: X_LAYER_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1311,6 +1345,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
+  [MultichainNetworks.TRON]: 'https://app.metamask.io/explore/networks/tron',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';

@@ -73,9 +73,8 @@ import { useTimeout } from '../../../hooks/useTimeout';
 import { MINUTE } from '../../../../shared/constants/time';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldCtaActionClickedEnum,
-  ShieldCtaSourceEnum,
   ShieldUnexpectedErrorEventLocationEnum,
 } from '../../../../shared/constants/subscriptions';
 import { ThemeType } from '../../../../shared/constants/preferences';
@@ -213,9 +212,13 @@ const TransactionShield = () => {
     pointsMonthly,
     pointsYearly,
     isRewardsSeason,
-    hasAccountOptedIn: hasOptedIntoRewards,
+    hasAccountOptedIn,
     pending: pendingShieldRewards,
   } = useShieldRewards();
+
+  // Use rewardAccountId from subscription as additional signal for opt-in status
+  const hasOptedIntoRewards =
+    hasAccountOptedIn || Boolean(displayedShieldSubscription?.rewardAccountId);
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;
@@ -231,7 +234,7 @@ const TransactionShield = () => {
     if (!shouldWaitForSubscriptionCreation && !displayedShieldSubscription) {
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
+        search: `?source=${ShieldMetricsSourceEnum.Settings}`,
       });
     }
   }, [
@@ -459,7 +462,7 @@ const TransactionShield = () => {
   const handleViewFullBenefitsClicked = useCallback(() => {
     window.open(TRANSACTION_SHIELD_LINK, '_blank', 'noopener noreferrer');
     captureShieldCtaClickedEvent({
-      source: ShieldCtaSourceEnum.Settings,
+      source: ShieldMetricsSourceEnum.Settings,
       ctaActionClicked: ShieldCtaActionClickedEnum.ViewFullBenefits,
       redirectToUrl: TRANSACTION_SHIELD_LINK,
     });
@@ -630,7 +633,9 @@ const TransactionShield = () => {
                   style={{ flexShrink: 0 }}
                 />
               ) : (
-                <Icon name={detail.icon} size={IconSize.Xl} />
+                <Box className="flex-shrink-0">
+                  <Icon name={detail.icon} size={IconSize.Xl} />
+                </Box>
               )}
               <Box
                 width={BlockSize.Full}
@@ -664,7 +669,9 @@ const TransactionShield = () => {
               paddingTop={2}
               paddingBottom={2}
             >
-              <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+              <Box className="flex-shrink-0">
+                <Icon name={IconName.MetamaskFoxOutline} size={IconSize.Xl} />
+              </Box>
               <Box
                 width={BlockSize.Full}
                 display={Display.Flex}
@@ -792,7 +799,7 @@ const TransactionShield = () => {
               {billingDetails(
                 t('shieldTxMembershipBillingDetailsCharges'),
                 isCryptoPaymentMethod(displayedShieldSubscription.paymentMethod)
-                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol.toUpperCase()} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
+                  ? `${getProductPrice(productInfo as Product)} ${displayedShieldSubscription.paymentMethod.crypto.tokenSymbol} (${displayedShieldSubscription.interval === RECURRING_INTERVALS.year ? t('shieldPlanAnnual') : t('shieldPlanMonthly')})`
                   : `${formatCurrency(
                       getProductPrice(productInfo as Product),
                       productInfo?.currency.toUpperCase(),

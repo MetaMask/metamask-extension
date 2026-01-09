@@ -61,9 +61,9 @@ describe('EstimatesModal', () => {
     );
 
     expect(getByText('Edit gas fee')).toBeInTheDocument();
-    expect(getByTestId('gas-option-Low')).toBeInTheDocument();
-    expect(getByTestId('gas-option-Market')).toBeInTheDocument();
-    expect(getByTestId('gas-option-Aggressive')).toBeInTheDocument();
+    expect(getByTestId('gas-option-low')).toBeInTheDocument();
+    expect(getByTestId('gas-option-medium')).toBeInTheDocument();
+    expect(getByTestId('gas-option-high')).toBeInTheDocument();
   });
 
   it('renders network statistics', () => {
