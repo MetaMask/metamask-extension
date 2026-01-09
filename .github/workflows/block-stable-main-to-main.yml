@@ -25,5 +25,5 @@ jobs:
             echo "These branches should only be merged via automated workflows, comment 'Merge my PR' to merge."
             exit 1
           fi
-          
+
           echo "✅ Branch check passed"
