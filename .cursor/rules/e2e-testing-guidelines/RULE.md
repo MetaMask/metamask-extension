@@ -1,6 +1,11 @@
 ---
-alwaysApply: true
+description: Guidelines for Writing E2E Tests
+globs: test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts
+alwaysApply: false
 ---
+
+Reference: [MetaMask Extension E2E Test Guidelines](https://github.com/MetaMask/contributor-docs/blob/main/docs/testing/e2e/extension-e2e-guidelines.md)
+
 # MetaMask Extension E2E Testing Guidelines
 
 ## Core Principles
@@ -14,11 +19,13 @@ alwaysApply: true
 ## Test Naming Conventions
 
 ### DO:
+
 - Use clear, descriptive names that communicate the purpose of the test
 - Name tests based on what they verify (e.g., `adds Bob to the address book`)
 - Keep names concise but informative
 
 ### DON'T:
+
 - Use the prefix 'should' (e.g., `should add Bob to the address book`)
 - Include multiple behaviors with 'and' in a single test name
 - Use vague or generic names
@@ -38,16 +45,19 @@ alwaysApply: true
 ## Test Atomicity and Coupling
 
 ### When to Isolate Tests:
+
 - Testing specific functionality of a single component or feature
 - When you need to pinpoint exact failure causes
 - For basic unit-level behaviors
 
 ### When to Combine Tests:
+
 - For multi-step user flows that represent real user behavior
 - When testing how different parts of the application work together
 - When the setup for multiple tests is time-consuming and identical
 
 ### Guidelines:
+
 - Each test should run with a dedicated browser and mock services
 - Use the `withFixtures` function to create test prerequisites and clean up afterward
 - Avoid shared mocks and services between tests when possible
@@ -56,12 +66,14 @@ alwaysApply: true
 ## Controlling State
 
 ### Best Practices:
+
 - Control application state programmatically rather than through UI interactions
 - Use fixtures to set up test prerequisites instead of UI steps
 - Minimize UI interactions to reduce potential breaking points
 - Improve test stability by reducing timing and synchronization issues
 
 ### Example:
+
 ```typescript
 // GOOD: Use fixture to set up prerequisites
 new FixtureBuilder()
@@ -97,6 +109,7 @@ new FixtureBuilder().build();
 - **Helper Functions** (`/test/e2e/helpers.js`) - Common test utilities
 
 ### Key Features:
+
 - ✅ **Enhanced Element Interactions** - Selenium elements wrapped with enhanced methods (`.fill()`, `.press()`, `.click()`)
 - ✅ **Intelligent Waiting** - Built-in waits for element visibility, enabled state, stability, and custom conditions
 - ✅ **Click Intercepted Handling** - Automatic retry logic for loading overlays and modal backdrop interference
@@ -107,12 +120,14 @@ new FixtureBuilder().build();
 ## Framework Best Practices
 
 ### Page Object Model (POM) Pattern
+
 - ALWAYS use the Page Object Model pattern for organizing test code
 - Move all element selectors to Page Objects or dedicated selector files
 - Access UI elements through Page Object methods, not directly in test specs
 - **Sort class members alphabetically**: Variables first (sorted A-Z), then methods (sorted A-Z) for easier navigation
 
 #### Page Object Structure Example:
+
 ```typescript
 import { Driver } from '../../webdriver/driver';
 import { WALLET_PASSWORD } from '../../helpers';
@@ -235,16 +250,19 @@ export async function performCompleteOnboardingFlow(
 #### Flow Best Practices
 
 **Structure & Organization:**
+
 - Place flows in `/test/e2e/page-objects/flows/` directory
 - Use descriptive names ending with `.flow.ts`
 - Group related flows (e.g., `onboarding.flow.ts`, `swap.flow.ts`)
 
 **Implementation Guidelines:**
+
 - **Orchestrate, don't duplicate**: Flows should call page object methods, not contain UI logic
 - **Provide clear parameters**: Use typed options objects for configuration
 - **Add comprehensive logging**: Help with debugging when flows fail
 
 **Flow Testing & Maintenance:**
+
 - **Parameterize flows**: Make flows configurable for different test scenarios
 - **Version flows**: Update flows when UI changes, maintain backward compatibility
 
@@ -254,14 +272,16 @@ export async function performCompleteOnboardingFlow(
 - Use proper type annotations for page object properties and method parameters
 
 ### Proper Waiting and Assertions
+
 - NEVER use `driver.delay()` - it creates flaky tests and slows down test execution
 - ALWAYS use dynamic wait from the framework:
+
   ```typescript
   // DON'T:
   await driver.delay(5000);
 
   // DO:
-  await driver.waitForSelector(expectedElement)
+  await driver.waitForSelector(expectedElement);
   ```
 
 ### Element State Handling
@@ -291,6 +311,7 @@ await driver.assertElementNotPresent(loadingOverlay);
 The following patterns are prohibited in test specs:
 
 1. **Direct Driver Calls in Tests**
+
    ```typescript
    // DON'T:
    await driver.clickElement('[data-testid="some-button"]');
@@ -300,6 +321,7 @@ The following patterns are prohibited in test specs:
    ```
 
 2. **Hardcoded Selectors in Tests**
+
    ```typescript
    // DON'T:
    await driver.fill('#password-input', 'password123');
@@ -313,6 +335,7 @@ The following patterns are prohibited in test specs:
    ```
 
 3. **Direct Element State Checks in Tests**
+
    ```typescript
    // DON'T:
    await driver.waitForSelector('.loading-spinner', { state: 'detached' });
@@ -326,6 +349,7 @@ The following patterns are prohibited in test specs:
 ### Common Issues and Solutions
 
 #### Element Click Intercepted Errors
+
 - **Cause**: Loading overlays, modal backdrops, or other elements blocking interactions
 - **Solution**: Driver automatically detects and handles these with built-in retry logic
 
@@ -341,6 +365,7 @@ await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
 ```
 
 #### Element Timing and State Issues
+
 - **Cause**: Elements not ready for interaction due to loading states or animations
 - **Solution**: Use appropriate waiting strategies before interaction
 
@@ -349,7 +374,7 @@ await this.driver.clickElementAndWaitToDisappear(this.modalCloseButton);
 await this.driver.waitForMultipleSelectors([
   this.usernameField,
   this.passwordField,
-  this.loginButton
+  this.loginButton,
 ]);
 
 // Wait for element to stop moving (useful for animated carousels, sliding panels)
@@ -359,11 +384,12 @@ await this.driver.clickElement(this.animatedElement);
 // Wait for loading states to complete
 await this.driver.assertElementNotPresent(this.loadingSpinner, {
   waitAtLeastGuard: 1000,
-  timeout: 10000
+  timeout: 10000,
 });
 ```
 
 #### Network and Data Loading Issues
+
 - **Cause**: Tests failing due to slow API responses, network timeouts, or external service dependencies
 - **Solution**: Use mock responses and controlled data instead of relying on real network calls
 
@@ -375,7 +401,9 @@ The framework provides **two layers of mocking**:
 
 ```typescript
 // ✅ PREFERRED: Use test-specific mocks for reliable, fast tests
-async function mockTokenPriceApi(mockServer: Mockttp): Promise<MockedEndpoint[]> {
+async function mockTokenPriceApi(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint[]> {
   return [
     // Mock token price API to avoid external dependency
     await mockServer
@@ -396,9 +424,13 @@ await withFixtures(
   async ({ driver }) => {
     // Tests now run with predictable, fast mock data
     await loginWithBalanceValidation(driver);
-  }
+  },
 );
 ```
+
+## Deprecated Patterns
+
+For a complete list of E2E test anti-patterns with regex detection patterns, see [BUGBOT.md](../BUGBOT.md).
 
 ## Code Review Checklist
 
@@ -421,6 +453,7 @@ Before submitting E2E tests, ensure:
 - [ ] Error handling for expected failure scenarios
 
 ## Debugging Failed Tests
+
 - [ ] Console.log statements added for debugging complex flows
 - [ ] Tests work on both Chrome and Firefox browsers
 - [ ] Clear, descriptive test names that explain what is being tested
