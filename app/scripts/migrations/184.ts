@@ -105,8 +105,8 @@ function transformState(state: Record<string, unknown>) {
   }
 
   if (!hasProperty(state, 'NetworkEnablementController')) {
-    console.warn(
-      `Migration ${version}: NetworkEnablementController not found.`,
+    captureException(
+      new Error(`Migration ${version}: NetworkEnablementController not found.`),
     );
     return state;
   }

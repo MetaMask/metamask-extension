@@ -1,9 +1,9 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
-import { Messenger } from '@metamask/messenger';
-import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
+import { Messenger, MessengerActions } from '@metamask/messenger';
 import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
+  NetworkControllerMessenger as NetworkControllerMessengerType,
 } from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
@@ -15,7 +15,9 @@ import {
 } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = ErrorReportingServiceCaptureExceptionAction;
+// Allow ErrorReportingService actions and NetworkController's own namespace actions
+// Using ActionConstraint allows the controller to register handlers for its own actions
+type AllowedActions = MessengerActions<NetworkControllerMessengerType>;
 
 export type NetworkControllerMessenger = ReturnType<
   typeof getNetworkControllerMessenger
