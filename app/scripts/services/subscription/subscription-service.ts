@@ -45,6 +45,8 @@ import {
   getShieldSubscription,
 } from '../../../../shared/lib/shield';
 import { SHIELD_ERROR } from '../../../../shared/modules/shield';
+import { captureException as sentryCaptureException } from '../../../../shared/lib/sentry';
+import { createSentryError } from '../../../../shared/modules/error';
 import {
   SubscriptionServiceAction,
   SubscriptionServiceEvent,
@@ -72,14 +74,18 @@ export class SubscriptionService {
 
   #webAuthenticator: WebAuthenticator;
 
+  #captureException: (error: unknown) => void;
+
   constructor({
     messenger,
     platform,
     webAuthenticator,
+    captureException = sentryCaptureException,
   }: SubscriptionServiceOptions) {
     this.#messenger = messenger;
     this.#platform = platform;
     this.#webAuthenticator = webAuthenticator;
+    this.#captureException = captureException;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:submitSubscriptionSponsorshipIntent`,
@@ -91,59 +97,79 @@ export class SubscriptionService {
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'card' }>,
     currentTabId?: number,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCard) {
-      throw new Error('Only card payment type is supported');
-    }
-
-    const redirectUrl = this.#webAuthenticator.getRedirectURL();
-
-    const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      {
-        ...params,
-        successUrl: redirectUrl,
-      },
-    )) as { redirectUrl: string };
-
-    // skipping redirect and open new tab in test environment
-    if (!process.env.IN_TEST) {
-      await this.#openAndWaitForTabToClose({
-        url: checkoutSessionUrl,
-        successUrl: redirectUrl,
-      });
-
-      if (!currentTabId) {
-        // open extension browser shield settings if open from pop up (no current tab)
-        this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCard) {
+        throw new Error('Only card payment type is supported');
       }
+
+      const redirectUrl = this.#webAuthenticator.getRedirectURL();
+
+      const { redirectUrl: checkoutSessionUrl } = (await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        {
+          ...params,
+          successUrl: redirectUrl,
+        },
+      )) as { redirectUrl: string };
+
+      // skipping redirect and open new tab in test environment
+      if (!process.env.IN_TEST) {
+        await this.#openAndWaitForTabToClose({
+          url: checkoutSessionUrl,
+          successUrl: redirectUrl,
+        });
+
+        if (!currentTabId) {
+          // open extension browser shield settings if open from pop up (no current tab)
+          this.#platform.openExtensionInBrowser('/settings/transaction-shield');
+        }
+      }
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      this.#captureException(
+        createSentryError(
+          'Failed to update subscription card payment method',
+          error as Error,
+        ),
+      );
+      throw error;
     }
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async updateSubscriptionCryptoPaymentMethod(
     params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
   ) {
-    const { paymentType } = params;
-    if (paymentType !== PAYMENT_TYPES.byCrypto) {
-      throw new Error('Only crypto payment type is supported');
+    try {
+      const { paymentType } = params;
+      if (paymentType !== PAYMENT_TYPES.byCrypto) {
+        throw new Error('Only crypto payment type is supported');
+      }
+
+      await this.#messenger.call(
+        'SubscriptionController:updatePaymentMethod',
+        params,
+      );
+
+      const subscriptions = await this.#messenger.call(
+        'SubscriptionController:getSubscriptions',
+      );
+
+      return subscriptions;
+    } catch (error) {
+      this.#captureException(
+        createSentryError(
+          'Failed to update subscription crypto payment method',
+          error as Error,
+        ),
+      );
+      throw error;
     }
-
-    await this.#messenger.call(
-      'SubscriptionController:updatePaymentMethod',
-      params,
-    );
-
-    const subscriptions = await this.#messenger.call(
-      'SubscriptionController:getSubscriptions',
-    );
-
-    return subscriptions;
   }
 
   async startSubscriptionWithCard(
@@ -216,6 +242,13 @@ export class SubscriptionService {
       if (errorMessage.toLocaleLowerCase().includes('already exists')) {
         await this.#messenger.call('SubscriptionController:getSubscriptions');
       }
+
+      this.#captureException(
+        createSentryError(
+          'Failed to start subscription with card',
+          error as Error,
+        ),
+      );
       throw error;
     }
   }
@@ -271,6 +304,13 @@ export class SubscriptionService {
       );
     } catch (error) {
       log.error('Failed to submit sponsorship intent', error);
+
+      this.#captureException(
+        createSentryError(
+          'Failed to submit sponsorship intent',
+          error as Error,
+        ),
+      );
     }
   }
 
@@ -302,8 +342,15 @@ export class SubscriptionService {
           rewardPoints,
         );
       }
-    } catch (error) {
-      log.error('Failed to link reward to existing subscription', error);
+    } catch (err) {
+      log.error('Failed to link reward to existing subscription', err);
+
+      this.#captureException(
+        createSentryError(
+          'Failed to link reward to existing subscription',
+          err as Error,
+        ),
+      );
     }
   }
 
@@ -462,6 +509,13 @@ export class SubscriptionService {
           },
         );
       }
+
+      this.#captureException(
+        createSentryError(
+          'Error on Shield subscription approval transaction',
+          error as Error,
+        ),
+      );
       throw error;
     }
   }
@@ -664,6 +718,10 @@ export class SubscriptionService {
       }
     } catch (error) {
       log.error('Failed to assign post tx cohort', error);
+
+      this.#captureException(
+        createSentryError('Failed to assign post tx cohort', error as Error),
+      );
     }
   }
 

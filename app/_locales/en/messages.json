@@ -7634,7 +7634,7 @@
     "message": "Paid by MetaMask"
   },
   "swapGasFeesSponsoredExplanation": {
-    "message": "This network fee is paid by MetaMask, so you can swap without $1 in your account."
+    "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",

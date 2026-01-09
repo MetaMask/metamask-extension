@@ -111,6 +111,7 @@
     "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
+    "txAlertStatus": "number",
     "wasTxDeclined": "boolean"
   },
   "browser": "string",
@@ -853,10 +854,11 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
-      "enableMultichainAccountsState2": {
-        "enabled": "boolean",
-        "featureVersion": "string",
-        "minimumVersion": "string"
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": {
+        "name": "string",
+        "value": "string"
       },
       "sendRedesign": {
         "enabled": "boolean"
