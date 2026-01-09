@@ -75,8 +75,8 @@ function convertToPageLoadFormat(
 const BENCHMARKS: Record<string, BenchmarkFunction> = {
   onboardingImportWallet: runOnboardingImportWalletBenchmark,
   onboardingNewWallet: runOnboardingNewWalletBenchmark,
-  assetDetails: runAssetDetailsBenchmark,
-  solanaAssetDetails: runSolanaAssetDetailsBenchmark,
+  powerUserAssetDetails: runAssetDetailsBenchmark,
+  powerUserSolanaAssetDetails: runSolanaAssetDetailsBenchmark,
 };
 
 async function main(): Promise<Record<string, BenchmarkResults>> {
@@ -123,7 +123,9 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
     buildType: string;
   };
 
-  // Performance benchmarks only run on Chrome + Browserify
+  // At the moment, Performance benchmarks only run on Chrome + Browserify to reduce CI runtime.
+  // These benchmarks measure user-facing flows (onboarding, asset details) that are expected to behave consistently
+  // across browsers and build types.
   const browser = process.env.SELENIUM_BROWSER;
   if (browser === Browser.FIREFOX) {
     console.log('⏭️  Skipping: Performance benchmarks only run on Chrome');
@@ -158,7 +160,6 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
     results.push(summary);
   }
 
-  // Convert to page load benchmark format for consistency
   const output = convertToPageLoadFormat(results);
 
   if (out) {

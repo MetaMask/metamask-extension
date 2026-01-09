@@ -16,7 +16,7 @@ env:
       powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
       userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
       performanceOnboarding: 'IS_SIDEPANEL=true yarn tsx test/e2e/benchmarks/performance-benchmark.ts --benchmarks onboardingImportWallet onboardingNewWallet --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2',
-      performanceAssets: 'yarn tsx test/e2e/benchmarks/performance-benchmark.ts --benchmarks assetDetails solanaAssetDetails --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2',
+      performanceAssets: 'yarn tsx test/e2e/benchmarks/performance-benchmark.ts --benchmarks powerUserAssetDetails powerUserSolanaAssetDetails --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2',
     }
 
 jobs:
