@@ -1,5 +1,5 @@
 import React from 'react';
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
@@ -90,8 +90,7 @@ describe('Hardware Wallet Context - Hooks', () => {
 
       expect(result.current).toMatchObject({
         isHardwareWalletAccount: true,
-        detectedWalletType: HardwareWalletType.Ledger,
-        walletType: null,
+        walletType: HardwareWalletType.Ledger,
         deviceId: null,
         hardwareConnectionPermissionState: 'unknown',
         isWebHidAvailable: expect.any(Boolean),
@@ -114,7 +113,7 @@ describe('Hardware Wallet Context - Hooks', () => {
       });
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
-      expect(result.current.detectedWalletType).toBeNull();
+      expect(result.current.walletType).toBeNull();
     });
   });
 
@@ -181,6 +180,37 @@ describe('Hardware Wallet Context - Hooks', () => {
         ensureDeviceReady: expect.any(Function),
       });
     });
+
+    it('keeps action references stable when config state changes', async () => {
+      const store = mockStore(createMockState(true));
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <Provider store={store}>
+          <HardwareWalletProvider>{children}</HardwareWalletProvider>
+        </Provider>
+      );
+
+      const { result } = renderHook(
+        () => ({
+          actions: useHardwareWalletActions(),
+          config: useHardwareWalletConfig(),
+        }),
+        { wrapper },
+      );
+
+      const initialActions = result.current.actions;
+      expect(result.current.config.hardwareConnectionPermissionState).toBe(
+        HardwareConnectionPermissionState.Unknown,
+      );
+
+      await act(async () => {
+        await result.current.actions.checkHardwareWalletPermission(
+          HardwareWalletType.Ledger,
+        );
+      });
+
+      expect(result.current.actions).toBe(initialActions);
+    });
   });
 
   describe('useHardwareWallet', () => {
@@ -197,7 +227,7 @@ describe('Hardware Wallet Context - Hooks', () => {
 
       // Should have config properties
       expect(result.current.isHardwareWalletAccount).toBeDefined();
-      expect(result.current.detectedWalletType).toBeDefined();
+      expect(result.current.walletType).toBeDefined();
 
       // Should have state properties
       expect(result.current.connectionState).toBeDefined();

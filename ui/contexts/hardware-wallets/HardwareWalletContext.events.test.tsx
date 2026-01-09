@@ -8,7 +8,7 @@ import {
   useHardwareWalletActions,
   useHardwareWalletState,
 } from './HardwareWalletContext.split';
-import { HardwareWalletType, ConnectionStatus, DeviceEvent } from './types';
+import { ConnectionStatus, DeviceEvent } from './types';
 import * as webHIDUtils from './webHIDUtils';
 import { setupWebHIDUtilsMocks } from './__mocks__/webHIDUtils';
 import { MockHardwareWalletAdapter } from './__mocks__/MockHardwareWalletAdapter';
@@ -86,10 +86,7 @@ describe('Hardware Wallet Context - Device Events', () => {
       );
 
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       act(() => {
@@ -134,10 +131,7 @@ describe('Hardware Wallet Context - Device Events', () => {
       );
 
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       act(() => {
@@ -183,10 +177,7 @@ describe('Hardware Wallet Context - Device Events', () => {
 
       // Connect first
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       // Simulate disconnect
@@ -226,10 +217,7 @@ describe('Hardware Wallet Context - Device Events', () => {
       );
 
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       act(() => {
@@ -287,10 +275,7 @@ describe('Hardware Wallet Context - Device Events', () => {
       );
 
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       const error = new Error('Connection failed');
@@ -324,6 +309,39 @@ describe('Hardware Wallet Context - Device Events', () => {
   });
 
   describe('WebHID native events', () => {
+    it('keeps WebHID subscription stable when deviceId changes', async () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const wrapper = ({ children }: { children: React.ReactNode }) => (
+        <Provider store={store}>
+          <HardwareWalletProvider>{children}</HardwareWalletProvider>
+        </Provider>
+      );
+
+      renderHook(
+        () => ({
+          actions: useHardwareWalletActions(),
+          state: useHardwareWalletState(),
+        }),
+        { wrapper },
+      );
+
+      expect(webHIDUtils.subscribeToWebHIDEvents).toHaveBeenCalledTimes(1);
+
+      await act(async () => {
+        connectCallback?.({
+          productId: 123,
+          vendorId: 456,
+        } as HIDDevice);
+
+        await new Promise((resolve) => {
+          setTimeout(resolve, 25);
+        });
+      });
+
+      expect(webHIDUtils.subscribeToWebHIDEvents).toHaveBeenCalledTimes(1);
+    });
+
     it('should handle native HID connect event', async () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
@@ -381,7 +399,10 @@ describe('Hardware Wallet Context - Device Events', () => {
 
       // Connect first
       await act(async () => {
-        await result.current.actions.connect(HardwareWalletType.Ledger, '123');
+        (webHIDUtils.getHardwareWalletDeviceId as jest.Mock).mockResolvedValue(
+          '123',
+        );
+        await result.current.actions.connect();
       });
 
       // Simulate native disconnect event with matching productId
@@ -420,10 +441,7 @@ describe('Hardware Wallet Context - Device Events', () => {
 
       // Connect first
       await act(async () => {
-        await result.current.actions.connect(
-          HardwareWalletType.Ledger,
-          'test-device-id',
-        );
+        await result.current.actions.connect();
       });
 
       // Simulate disconnect of different device

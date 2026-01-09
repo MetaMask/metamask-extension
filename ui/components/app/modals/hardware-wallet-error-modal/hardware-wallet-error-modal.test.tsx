@@ -22,7 +22,6 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: () => ({
     deviceId: 'test-device-id',
     walletType: 'ledger',
-    detectedWalletType: 'ledger',
   }),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,
@@ -127,7 +126,6 @@ describe('HardwareWalletErrorModal', () => {
         useHardwareWalletConfig: () => ({
           deviceId: null,
           walletType: null,
-          detectedWalletType: null,
         }),
         useHardwareWalletActions: () => ({
           ensureDeviceReady: mockEnsureDeviceReady,
@@ -192,7 +190,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
         getByText('[hardwareWalletErrorRecoveryApp1]'),
@@ -215,13 +213,13 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection1'),
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection2'),
+        getByText('[hardwareWalletErrorRecoveryConnection2]'),
       ).toBeInTheDocument();
     });
 
@@ -235,10 +233,10 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+        getByText('[hardwareWalletErrorTitleConnectYourDevice]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection1'),
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
       ).toBeInTheDocument();
     });
 
@@ -252,10 +250,10 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryWebHID1'),
+        getByText('[hardwareWalletErrorRecoveryWebHID1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryWebHID2'),
+        getByText('[hardwareWalletErrorRecoveryWebHID2]'),
       ).toBeInTheDocument();
     });
 
@@ -269,13 +267,13 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryPermission1'),
+        getByText('[hardwareWalletErrorRecoveryPermission1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryPermission2'),
+        getByText('[hardwareWalletErrorRecoveryPermission2]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryPermission3'),
+        getByText('[hardwareWalletErrorRecoveryPermission3]'),
       ).toBeInTheDocument();
     });
 
@@ -289,13 +287,13 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection1'),
+        getByText('[hardwareWalletErrorRecoveryConnection1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection2'),
+        getByText('[hardwareWalletErrorRecoveryConnection2]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryConnection3'),
+        getByText('[hardwareWalletErrorRecoveryConnection3]'),
       ).toBeInTheDocument();
     });
 
@@ -309,10 +307,10 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryTimeout1'),
+        getByText('[hardwareWalletErrorRecoveryTimeout1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryTimeout2'),
+        getByText('[hardwareWalletErrorRecoveryTimeout2]'),
       ).toBeInTheDocument();
     });
 
@@ -326,7 +324,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryUserCancel'),
+        getByText('[hardwareWalletErrorRecoveryUserCancel]'),
       ).toBeInTheDocument();
     });
 
@@ -340,7 +338,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryUserCancel'),
+        getByText('[hardwareWalletErrorRecoveryUserCancel]'),
       ).toBeInTheDocument();
     });
 
@@ -354,10 +352,10 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorRecoveryDefault1'),
+        getByText('[hardwareWalletErrorRecoveryDefault1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryDefault2'),
+        getByText('[hardwareWalletErrorRecoveryDefault2]'),
       ).toBeInTheDocument();
     });
   });
@@ -533,13 +531,15 @@ describe('HardwareWalletErrorModal', () => {
 
       mockEnsureDeviceReady.mockResolvedValueOnce(true);
 
-      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+      const { getByText, getByLabelText } = render(
+        <HardwareWalletErrorModal error={error} />,
+      );
 
       await act(async () => {
         fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
       });
 
-      const closeButton = getByText('Close');
+      const closeButton = getByLabelText('[close]');
       await act(async () => {
         fireEvent.click(closeButton);
       });

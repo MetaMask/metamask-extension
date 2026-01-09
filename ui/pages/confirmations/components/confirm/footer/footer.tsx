@@ -223,7 +223,7 @@ const Footer = () => {
   const { onCancel, resetTransactionState } = useConfirmActions();
 
   const { connectionState } = useHardwareWalletState();
-  const { isHardwareWalletAccount, deviceId, detectedWalletType } =
+  const { isHardwareWalletAccount, deviceId, walletType } =
     useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
 
@@ -367,8 +367,8 @@ const Footer = () => {
               onClick={onSubmit}
               size={ButtonSize.Lg}
             >
-              {detectedWalletType
-                ? t('connectHardwareDevice', [t(detectedWalletType)])
+              {walletType
+                ? t('connectHardwareDevice', [t(walletType)])
                 : t('connect')}
             </Button>
           ) : (

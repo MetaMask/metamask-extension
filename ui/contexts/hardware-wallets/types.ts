@@ -116,7 +116,6 @@ export type HardwareWalletAdapterOptions = {
 export type HardwareWalletContextType = {
   // State
   isHardwareWalletAccount: boolean;
-  detectedWalletType: HardwareWalletType | null;
   walletType: HardwareWalletType | null;
   connectionState: HardwareWalletConnectionState;
   deviceId: string | null;

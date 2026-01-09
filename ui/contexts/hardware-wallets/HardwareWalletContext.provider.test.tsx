@@ -100,7 +100,7 @@ describe('Hardware Wallet Context - Provider', () => {
         wrapper,
       });
 
-      expect(result.current.walletType).toBeNull();
+      expect(result.current.walletType).toBe(HardwareWalletType.Ledger);
       expect(result.current.deviceId).toBeNull();
     });
 
@@ -134,7 +134,7 @@ describe('Hardware Wallet Context - Provider', () => {
       });
 
       expect(result.current.isHardwareWalletAccount).toBe(true);
-      expect(result.current.detectedWalletType).toBe(HardwareWalletType.Ledger);
+      expect(result.current.walletType).toBe(HardwareWalletType.Ledger);
     });
 
     it('detects non-hardware wallet account', () => {
@@ -151,7 +151,7 @@ describe('Hardware Wallet Context - Provider', () => {
       });
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
-      expect(result.current.detectedWalletType).toBeNull();
+      expect(result.current.walletType).toBeNull();
     });
 
     it('handles account with no keyring type', () => {
@@ -168,7 +168,7 @@ describe('Hardware Wallet Context - Provider', () => {
       });
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
-      expect(result.current.detectedWalletType).toBeNull();
+      expect(result.current.walletType).toBeNull();
     });
   });
 

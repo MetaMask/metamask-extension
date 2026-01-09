@@ -67,7 +67,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   // Optimized: Use split hooks to subscribe only to what we need
   const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
-  const { retry, clearError } = useHardwareWalletActions();
+  const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
   // Store the current error to display (independent of connection state)
   const [displayedError, setDisplayedError] =
@@ -89,8 +89,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
     dispatch(hideModal());
 
     // Attempt retry
-    await retry();
-  }, [retry, dispatch]);
+    await ensureDeviceReady();
+  }, [ensureDeviceReady, dispatch]);
 
   /**
    * Handle cancel/close action from the modal
