@@ -58,8 +58,8 @@ export const MEGAETH_TESTNET_V2_CONFIG: NetworkConfiguration = {
       failoverUrls: [],
       networkClientId: 'megaeth-testnet-v2',
       type: RpcEndpointType.Custom,
-      // On #184, we use timothy.megaeth.com/rpc,
-      // but now we have updated to use carrot.megaeth.com/rpc due to the megaETH change their RPC URL.
+      // In migration #184, we use timothy.megaeth.com/rpc,
+      // but now we have updated to use carrot.megaeth.com/rpc due to megaETH changing their RPC URL.
       url: 'https://carrot.megaeth.com/rpc',
     },
   ],
@@ -67,7 +67,7 @@ export const MEGAETH_TESTNET_V2_CONFIG: NetworkConfiguration = {
 
 /**
  * This migration does:
- * - Backfill the MegaETH Testnet v2 network configuration to handle the failure on migration #184
+ * - Backfill and update the MegaETH Testnet v2 network configuration, including updating its RPC endpoint URL originally set in migration #184
  * -- Add MegaETH Testnet v2 to the network controller
  * -- Update the selected network client id to mainnet if it is the old MegaETH Testnet v1.
  * -- Remove the old MegaETH Testnet v1 network configuration.
@@ -112,7 +112,9 @@ function transformState(state: Record<string, unknown>) {
   const { networkConfigurationsByChainId, selectedNetworkClientId } =
     networkControllerState;
 
-  // Merge the MegaETH Testnet v2 network configuration if user already has it.
+  // Migrate NetworkController:
+  // - Merge the MegaETH Testnet v2 network configuration if user already has it.
+  // - Add the MegaETH Testnet v2 network configuration if user doesn't have it.
   if (
     hasProperty(
       networkConfigurationsByChainId,
@@ -131,7 +133,6 @@ function transformState(state: Record<string, unknown>) {
 
     mergeMegaEthTestnetV2NetworkConfiguration(megaethTestnetV2Configuration);
   } else {
-    // Add the MegaETH Testnet v2 network configuration if user doesn't have it.
     networkControllerState.networkConfigurationsByChainId[
       MEGAETH_TESTNET_V2_CONFIG.chainId
     ] = MEGAETH_TESTNET_V2_CONFIG;
@@ -140,6 +141,9 @@ function transformState(state: Record<string, unknown>) {
   const networkEnablementControllerState =
     validateNetworkEnablementController(state);
 
+  // Migrate NetworkEnablementController:
+  // - Add the MegaETH Testnet v2 network configuration to the enabled network map if it doesn't exist.
+  // - Switch to mainnet if the selected network client id is one of the megaeth testnet v1 rpc endpoint network client id.
   if (networkEnablementControllerState === undefined) {
     console.warn(
       `Migration ${version}: Missing or invalid NetworkEnablementController state, skip the NetworkEnablementController migration`,
@@ -148,6 +152,7 @@ function transformState(state: Record<string, unknown>) {
     // Switch to mainnet either:
     // 1. The selected network client id is one of the megaeth testnet v1 rpc endpoint network client id
     if (
+      selectedNetworkClientId === 'megaeth-testnet' ||
       isNetworkClientIdExists(
         MEGAETH_TESTNET_V1_CHAIN_ID,
         selectedNetworkClientId,
@@ -184,6 +189,7 @@ function transformState(state: Record<string, unknown>) {
     // 2. The selected network client id is one of the megaeth testnet v1 rpc endpoint network client id
     if (
       isMegaEthTestnetV1Enabled ||
+      selectedNetworkClientId === 'megaeth-testnet' ||
       isNetworkClientIdExists(
         MEGAETH_TESTNET_V1_CHAIN_ID,
         selectedNetworkClientId,
@@ -205,9 +211,7 @@ function transformState(state: Record<string, unknown>) {
     }
   }
 
-  // It is safe to remove the MegaETH Testnet v1 network configuration,
-  // if MegaETH Testnet v1 is enabled, then it will be switched to mainnet.
-  // if MegaETH Testnet v1 is not enabled, then there is no concern to remove it.
+  // Remove the MegaETH Testnet v1 network configuration.
   if (
     hasProperty(networkConfigurationsByChainId, MEGAETH_TESTNET_V1_CHAIN_ID)
   ) {
