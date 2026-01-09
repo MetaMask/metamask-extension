@@ -1,0 +1,71 @@
+diff --git a/dist/ledger-keyring.cjs b/dist/ledger-keyring.cjs
+index b8bdf04a3de250bcdbe1064382682bc18f460cbc..9d1dc5c32b721a2cb1792358510dd6ee360de369 100644
+--- a/dist/ledger-keyring.cjs
++++ b/dist/ledger-keyring.cjs
+@@ -131,9 +131,12 @@ class LedgerKeyring {
+             });
+         }
+         catch (error) {
++            /**
++             * Patch to fix the ledger  app close error,when error will became `unknown error`.
++             */
+             throw error instanceof Error
+                 ? error
+-                : new Error('Ledger Ethereum app closed. Open it to unlock.');
++                : new Error('Ledger app closed in browser.');
+         }
+         if (updateHdk && payload.chainCode) {
+             this.hdk.publicKey = buffer_1.Buffer.from(payload.publicKey, 'hex');
+@@ -277,6 +280,14 @@ class LedgerKeyring {
+             });
+         }
+         catch (error) {
++
++             /**********
++            * Patch for error handling for Device Management kit
++            **********/
++            if (error?.errorCode === "6985" && error?.message === 'Condition not satisfied') {
++                throw new Error('Ledger: User rejected the transaction');
++            }
++
+             throw error instanceof Error
+                 ? error
+                 : new Error('Ledger: Unknown error while signing message');
+@@ -343,6 +354,18 @@ class LedgerKeyring {
+             });
+         }
+         catch (error) {
++            /**********
++            * Patch for error handling for Device Management kit
++            **********/
++            if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
++                 throw new Error('Ledger: User rejected the transaction');
++            }
++            /**
++            * for blind signing disabled error
++            */
++            if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
++                        throw new Error('Ledger: Blind signing must be enabled');
++                }
+             throw error instanceof Error
+                 ? error
+                 : new Error('Ledger: Unknown error while signing message');
+@@ -409,6 +432,18 @@ _LedgerKeyring_instances = new WeakSet(), _LedgerKeyring_migrateAccountDetails =
+         });
+     }
+     catch (error) {
++         /**********
++         * Patch for error handling for Device Management kit
++         **********/
++       if(error?.errorCode === "6985" && error?.message === 'Condition not satisfied'){
++               throw new Error('Ledger: User rejected the transaction');
++       }
++       /**
++        * for blind signing disabled error
++        */
++       if(error?.errorCode === "6a80" && error?.message === 'Invalid data'){
++               throw new Error('Ledger: Blind signing must be enabled');
++       }
+         throw error instanceof Error
+             ? error
+             : new Error('Ledger: Unknown error while signing transaction');

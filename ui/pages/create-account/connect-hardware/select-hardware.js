@@ -926,6 +926,8 @@ export default class SelectHardware extends Component {
         {this.renderHeader()}
         {this.renderButtons()}
         {this.state.selectedDevice ? this.renderTutorialSteps() : null}
+        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
+          this.context.t('ledgerAppOpenMessageTitle')}
         {this.renderContinueButton()}
         {this.renderFooter()}
       </Box>

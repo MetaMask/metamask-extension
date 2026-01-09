@@ -17,6 +17,7 @@ import {
   getTokens,
   getConversionRate,
   getCurrentCurrency,
+  isAddressLedger,
 } from '../../../ducks/metamask/metamask';
 import Box from '../../../components/ui/box';
 import {
@@ -166,6 +167,10 @@ export default function PrepareSwapPage({
   const navigate = useNavigate();
   const trackEvent = useContext(MetaMetricsContext);
   const { openBridgeExperience } = useBridging();
+  const isLedgerWallet = useSelector(
+    (state) =>
+      selectedAccountAddress && isAddressLedger(state, selectedAccountAddress),
+  );
 
   const [fetchedTokenExchangeRate, setFetchedTokenExchangeRate] =
     useState(undefined);
@@ -937,7 +942,6 @@ export default function PrepareSwapPage({
             </Box>
           </ModalContent>
         </Modal>
-
         <div className="prepare-swap-page__swap-from-content">
           <Box
             display={DISPLAY.FLEX}
@@ -1200,6 +1204,13 @@ export default function PrepareSwapPage({
             ])}
             textAlign={TextAlign.Left}
             onClose={() => setIsLowReturnBannerOpen(false)}
+          />
+        )}
+
+        {isLedgerWallet && (
+          <BannerAlert
+            marginTop={6}
+            title={t('ledgerAppOpenMessageDescription')}
           />
         )}
         {swapsErrorKey && (

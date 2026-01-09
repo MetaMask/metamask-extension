@@ -835,7 +835,10 @@
       "@metamask/kernel-browser-runtime>@metamask/streams": false,
       "@metamask/kernel-browser-runtime>@metamask/kernel-store>better-sqlite3": false,
       "@metamask/logger>@metamask/streams": false,
-      "@metamask/streams": false
+      "@metamask/streams": false,
+      "@metamask/notification-services-controller>firebase>@firebase/firestore>@grpc/proto-loader>protobufjs": false,
+      "@metamask/notification-services-controller>firebase>@firebase/util": false,
+      "sass-loader>sass>@parcel/watcher": false
     }
   },
   "packageManager": "yarn@4.10.3",

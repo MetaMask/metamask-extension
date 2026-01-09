@@ -85,6 +85,8 @@ export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   signTypedData = 'ledger-sign-typed-data',
+  ledgerDeviceConnected = 'ledger-device-connected',
+  ledgerBridgeClose = 'ledger-bridge-close',
 }
 
 /**
@@ -98,5 +100,5 @@ export enum KnownOrigins {
   lattice = 'https://lattice.gridplus.io',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  ledger = 'https://metamask.github.io',
+  ledger = 'http://localhost:5173',
 }

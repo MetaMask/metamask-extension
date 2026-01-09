@@ -10,6 +10,7 @@ import {
 import Checkbox from '../../../components/ui/check-box';
 import Dropdown from '../../../components/ui/dropdown';
 
+import { Box, BannerAlert } from '../../../components/component-library';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
@@ -63,6 +64,12 @@ class AccountList extends Component {
 
     return (
       <div>
+        <Box>
+          <BannerAlert
+            marginTop={6}
+            title={this.context.t('ledgerAppOpenMessageTitle')}
+          />
+        </Box>
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectHdPath')}
         </h3>
@@ -95,6 +102,7 @@ class AccountList extends Component {
         <h3 className="hw-connect__unlock-title">
           {this.context.t('selectAnAccount')}
         </h3>
+
         {shouldShowHDPaths ? this.renderHdPathSelector() : null}
         <h3 className="hw-connect__hdPath__title">
           {this.context.t('selectAnAccount')}
