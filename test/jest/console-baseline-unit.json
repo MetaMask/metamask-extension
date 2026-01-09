@@ -88,7 +88,7 @@
       "error: TypeError: Cannot convert undefined or": 2,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "MetaMask: Chain processing errors": 2,
-      "Test errors: Fetch failures": 4,
+      "Test errors: Fetch failures": 5,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "error: { name: 'controller', data: {": 1,
       "MetaMask: MetaMetrics invalid trait types": 2,
