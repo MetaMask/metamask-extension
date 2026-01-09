@@ -5,6 +5,7 @@ import {
   ErrorCode,
   RetryStrategy,
   HardwareWalletError,
+  createHardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext.split';
@@ -29,15 +30,15 @@ const meta: Meta<typeof HardwareWalletErrorModal> = {
 export default meta;
 type Story = StoryObj<typeof HardwareWalletErrorModal>;
 
-// Helper function to create error objects
-const createError = (
+// Helper function to create test error objects
+const createTestError = (
   code: ErrorCode,
   message: string,
   userMessage: string,
   retryStrategy: RetryStrategy = RetryStrategy.RETRY,
   userActionable: boolean = true,
-): HardwareWalletError =>
-  new HardwareWalletError(message, {
+): HardwareWalletError => {
+  return new HardwareWalletError(message, {
     code,
     severity: 'error' as any,
     category: 'unknown' as any,
@@ -45,6 +46,7 @@ const createError = (
     userActionable,
     userMessage,
   });
+};
 
 /**
  * Device Locked Error - User needs to unlock their device
@@ -52,8 +54,25 @@ const createError = (
 export const DeviceLocked: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.AUTH_LOCK_001,
+      'Device is locked',
+      'Your Ledger device is locked. Please unlock it to continue.',
+    ),
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
+ * Device Locked Error (AUTH_LOCK_002) - Alternative lock code
+ */
+export const DeviceLockedAlt: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.AUTH_LOCK_002,
       'Device is locked',
       'Your Ledger device is locked. Please unlock it to continue.',
     ),
@@ -69,10 +88,27 @@ export const DeviceLocked: Story = {
 export const WrongAppOpen: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.DEVICE_STATE_001,
       'Wrong app open',
       'Please open the Ethereum app on your Ledger device.',
+    ),
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
+ * Device State Error (DEVICE_STATE_002) - Device not ready
+ */
+export const DeviceNotReady: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.DEVICE_STATE_002,
+      'Device not ready',
+      'Your device is not ready. Please check the connection.',
     ),
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
@@ -86,7 +122,7 @@ export const WrongAppOpen: Story = {
 export const WebHIDPermissionError: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.CONN_TRANSPORT_001,
       'WebHID permission denied',
       'Browser permission is required to connect to your hardware wallet.',
@@ -103,7 +139,7 @@ export const WebHIDPermissionError: Story = {
 export const DevicePermissionError: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.CONFIG_PERM_001,
       'Device permission denied',
       'Please grant permission to access your Ledger device.',
@@ -120,7 +156,7 @@ export const DevicePermissionError: Story = {
 export const ConnectionLost: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.CONN_CLOSED_001,
       'Connection lost',
       'The connection to your hardware wallet was lost. Please reconnect.',
@@ -137,7 +173,7 @@ export const ConnectionLost: Story = {
 export const ConnectionTimeout: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.CONN_TIMEOUT_001,
       'Connection timeout',
       'The operation timed out. Please try again.',
@@ -154,7 +190,7 @@ export const ConnectionTimeout: Story = {
 export const UserCancelled: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.USER_CANCEL_001,
       'User cancelled',
       'You cancelled the operation on your device.',
@@ -168,13 +204,49 @@ export const UserCancelled: Story = {
 };
 
 /**
+ * User Cancelled Alternative - Different cancel code
+ */
+export const UserCancelledAlt: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.USER_CANCEL_002,
+      'User cancelled',
+      'You cancelled the operation on your device.',
+      RetryStrategy.RETRY,
+      true,
+    ),
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
+ * Device Disconnected - Connection issue
+ */
+export const DeviceDisconnected: Story = {
+  args: {
+    isOpen: true,
+    error: createTestError(
+      ErrorCode.DEVICE_STATE_003,
+      'Device disconnected',
+      'Your device was disconnected. Please reconnect and try again.',
+    ),
+    onRetry: () => console.log('Retry clicked'),
+    onCancel: () => console.log('Cancel clicked'),
+    onClose: () => console.log('Close clicked'),
+  },
+};
+
+/**
  * Unknown Error - Generic error with default recovery instructions
  */
 export const UnknownError: Story = {
   args: {
     isOpen: true,
-    error: createError(
-      ErrorCode.UNKNOWN_001,
+    error: createTestError(
+      'UNKNOWN_ERROR' as ErrorCode,
       'Unknown error occurred',
       'An unexpected error occurred. Please try again.',
     ),
@@ -190,7 +262,7 @@ export const UnknownError: Story = {
 export const NonRetryableError: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.AUTH_LOCK_001,
       'Device is locked',
       'Your Ledger device is locked. Please unlock it to continue.',
@@ -203,29 +275,12 @@ export const NonRetryableError: Story = {
 };
 
 /**
- * Device Disconnected - Connection issue with different error code
- */
-export const DeviceDisconnected: Story = {
-  args: {
-    isOpen: true,
-    error: createError(
-      ErrorCode.DEVICE_STATE_003,
-      'Device disconnected',
-      'Your device was disconnected. Please reconnect and try again.',
-    ),
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
  * Long Error Message - Tests text wrapping
  */
 export const LongErrorMessage: Story = {
   args: {
     isOpen: true,
-    error: createError(
+    error: createTestError(
       ErrorCode.UNKNOWN_001,
       'A very long error message that should wrap properly',
       'This is a very long error message that should wrap to multiple lines and still display correctly in the modal. It contains important information that the user needs to read carefully before proceeding.',

@@ -1,20 +1,18 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react';
-import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 import {
   ErrorCode,
   RetryStrategy,
   HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
+import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
 
-// Mock the useI18nContext hook
 const mockT = (key: string) => key;
 jest.mock('../../../../hooks/useI18nContext', () => ({
   useI18nContext: () => mockT,
 }));
 
-// Mock the useModalProps hook
 const mockHideModal = jest.fn();
 jest.mock('../../../../hooks/useModalProps', () => ({
   useModalProps: () => ({
@@ -23,7 +21,6 @@ jest.mock('../../../../hooks/useModalProps', () => ({
   }),
 }));
 
-// Mock hardware wallet hooks
 const mockEnsureDeviceReady = jest.fn();
 const mockClearError = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => ({
@@ -69,11 +66,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your Ledger device is locked. Please unlock it to continue.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorTitleDeviceLocked'),
@@ -92,11 +85,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorTitleDeviceLocked'),
@@ -110,11 +99,7 @@ describe('HardwareWalletErrorModal', () => {
         'User-friendly error message',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(getByText('User-friendly error message')).toBeInTheDocument();
     });
@@ -129,11 +114,7 @@ describe('HardwareWalletErrorModal', () => {
         timestamp: new Date(),
       } as HardwareWalletError;
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(getByText('Technical error message')).toBeInTheDocument();
     });
@@ -147,11 +128,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorTitleDeviceLocked'),
@@ -174,11 +151,7 @@ describe('HardwareWalletErrorModal', () => {
         'Please open the Ethereum app.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorTitleConnectYourDevice'),
@@ -195,11 +168,7 @@ describe('HardwareWalletErrorModal', () => {
         'Browser permission required.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryWebHID1'),
@@ -216,11 +185,7 @@ describe('HardwareWalletErrorModal', () => {
         'Permission required.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryPermission1'),
@@ -240,11 +205,7 @@ describe('HardwareWalletErrorModal', () => {
         'Connection lost.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryConnection1'),
@@ -264,11 +225,7 @@ describe('HardwareWalletErrorModal', () => {
         'Timeout.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryTimeout1'),
@@ -285,11 +242,7 @@ describe('HardwareWalletErrorModal', () => {
         'You cancelled.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryUserCancel'),
@@ -303,11 +256,7 @@ describe('HardwareWalletErrorModal', () => {
         'Unknown error.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorRecoveryDefault1'),
@@ -353,10 +302,7 @@ describe('HardwareWalletErrorModal', () => {
       const onCancel = jest.fn();
 
       const { getByText, queryByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          onCancel={onCancel}
-        />,
+        <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
       expect(getByText('close')).toBeInTheDocument();
@@ -373,10 +319,7 @@ describe('HardwareWalletErrorModal', () => {
       const onCancel = jest.fn();
 
       const { getByText, queryByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          onCancel={onCancel}
-        />,
+        <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
       expect(getByText('close')).toBeInTheDocument();
@@ -423,10 +366,7 @@ describe('HardwareWalletErrorModal', () => {
       const onCancel = jest.fn();
 
       const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-          onCancel={onCancel}
-        />,
+        <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
       fireEvent.click(getByText('close'));
@@ -442,11 +382,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(() => fireEvent.click(getByText('close'))).not.toThrow();
     });
@@ -460,11 +396,7 @@ describe('HardwareWalletErrorModal', () => {
         false,
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(() => fireEvent.click(getByText('close'))).not.toThrow();
     });
@@ -478,11 +410,7 @@ describe('HardwareWalletErrorModal', () => {
         'Your device is locked.',
       );
 
-      const { getByText } = render(
-        <HardwareWalletErrorModal
-          error={error}
-        />,
-      );
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
         getByText('hardwareWalletErrorTitleDeviceLocked'),

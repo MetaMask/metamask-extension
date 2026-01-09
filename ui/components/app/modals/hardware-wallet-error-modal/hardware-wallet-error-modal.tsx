@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Text,
   Box,
@@ -32,12 +32,11 @@ import {
   RetryStrategy,
   type HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
-import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
-import { buildErrorContent } from './error-content-builder';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
+import { buildErrorContent } from './error-content-builder';
 
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
@@ -58,21 +57,22 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, onCancel, onRetry, onClose } = { ...modalProps, ...props };
+    const { error, onCancel, onClose } = { ...modalProps, ...props };
 
     const { deviceId, detectedWalletType, walletType } =
       useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
-    console.log('[HardwareWalletErrorModal] error', error);
-    console.log(
-      '[HardwareWalletErrorModal] detectedWalletType',
-      detectedWalletType,
-    );
     // Use walletType if available (during connection), otherwise detectedWalletType
     const displayWalletType = walletType || detectedWalletType;
+
     // If no error, don't render anything
-    if (!error || !displayWalletType) {
+    if (!error) {
+      onClose?.();
+      return null;
+    }
+
+    if (!displayWalletType) {
       onClose?.();
       return null;
     }
@@ -102,11 +102,9 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     };
 
     const handleClose = () => {
-      onClose?.();
+      clearError();
       hideModal();
     };
-
-    useEffect(() => {}, [hideModal]);
 
     if (recovered) {
       return (
