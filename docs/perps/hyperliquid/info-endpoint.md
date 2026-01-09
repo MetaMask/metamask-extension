@@ -282,9 +282,9 @@ Returns at most 2000 fills per response and only the 10000 most recent fills are
 ```json
 {
   "cumVlm": "2854574.593578",
-  "nRequestsUsed": 2890, // max(0, cumulative_used minus reserved)
   "nRequestsCap": 2864574,
-  "nRequestsSurplus": 0 // max(0, reserved minus cumulative_used)
+  "nRequestsSurplus": 0, // max(0, reserved minus cumulative_used)
+  "nRequestsUsed": 2890 // max(0, cumulative_used minus reserved)
 }
 ```
 
@@ -410,7 +410,6 @@ Returns at most 20 levels per side
 ```json
 {
   "coin": "BTC",
-  "time": 1754450974231,
   "levels": [
     [
       {
@@ -431,7 +430,8 @@ Returns at most 20 levels per side
         "n": 3
       }
     ]
-  ]
+  ],
+  "time": 1754450974231
 }
 ```
 
@@ -940,23 +940,13 @@ Returns at most 2000 most recent TWAP slice fills
 
 ```json
 {
+  "builderRewards": "0.027802", // USDC Only
+  "claimedRewards": "22.743781", // USDC Only
+  "cumVlm": "149428030.6628420055", // USDC Only
   "referredBy": {
     "referrer": "0x5ac99df645f3414876c816caa18b2d234024b487",
     "code": "TESTNET"
   },
-  "cumVlm": "149428030.6628420055", // USDC Only
-  "unclaimedRewards": "11.047361", // USDC Only
-  "claimedRewards": "22.743781", // USDC Only
-  "builderRewards": "0.027802", // USDC Only
-  "tokenToState": [
-    0,
-    {
-      "cumVlm": "149428030.6628420055",
-      "unclaimedRewards": "11.047361",
-      "claimedRewards": "22.743781",
-      "builderRewards": "0.027802"
-    }
-  ],
   "referrerState": {
     "stage": "ready",
     "data": {
@@ -979,7 +969,17 @@ Returns at most 2000 most recent TWAP slice fills
       ]
     }
   },
-  "rewardHistory": []
+  "rewardHistory": [],
+  "tokenToState": [
+    0,
+    {
+      "cumVlm": "149428030.6628420055",
+      "unclaimedRewards": "11.047361",
+      "claimedRewards": "22.743781",
+      "builderRewards": "0.027802"
+    }
+  ],
+  "unclaimedRewards": "11.047361" // USDC Only
 }
 ```
 
@@ -1135,9 +1135,9 @@ Note that rewardHistory is for legacy rewards. Claimed rewards are now returned 
 ```json
 {
   "delegated": "12060.16529862",
-  "undelegated": "0.0",
+  "nPendingWithdrawals": 0,
   "totalPendingWithdrawal": "0.0",
-  "nPendingWithdrawals": 0
+  "undelegated": "0.0"
 }
 ```
 

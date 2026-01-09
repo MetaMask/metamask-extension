@@ -499,7 +499,7 @@ This method is used to transfer USDC from the user's spot wallet to perp wallet 
 {% tab title="200: OK" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -563,7 +563,7 @@ This method is used to transfer native token from the user's spot account into s
 {% tab title="200: OK" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -595,7 +595,7 @@ This method is used to transfer native token from staking into the user's spot a
 {% tab title="200: OK" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -627,7 +627,7 @@ Delegate or undelegate native tokens to or from a validator. Note that delegatio
 {% tab title="200: OK" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -660,7 +660,7 @@ Add or remove funds from a vault.
 {% tab title="200" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -692,7 +692,7 @@ Approves an API Wallet (also sometimes referred to as an Agent Wallet). See [her
 {% tab title="200" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
@@ -724,7 +724,7 @@ Approve a maximum fee rate for a builder.
 {% tab title="200" %}
 
 ```json
-{ "status": "ok", "response": { "type": "default" } }
+{ "response": { "type": "default" }, "status": "ok" }
 ```
 
 {% endtab %}
