@@ -1265,12 +1265,16 @@
     },
     "ui/components/multichain/edit-accounts-modal/edit-accounts-modal.test.tsx": {
       "React: PropTypes validation failures": 1,
-      "Reselect: Identity function warnings": 1,
+      "Reselect: Identity function warnings": 2,
       "Reselect: Input stability warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2,
       "MetaMask: Background connection not initialized": 1,
       "React: Act warnings (component updates not wrapped)": 1,
       "React: State updates on unmounted components": 1
+    },
+    "ui/components/multichain/multi-srp/srp-list/srp-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2,
+      "Reselect: Identity function warnings": 1
     },
     "ui/components/multichain/multi-srp/srp-list/srp-list-item.test.tsx": {
       "Reselect: Identity function warnings": 1,
