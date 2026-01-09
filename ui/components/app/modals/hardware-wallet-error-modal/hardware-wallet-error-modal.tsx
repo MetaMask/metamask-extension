@@ -32,6 +32,7 @@ import {
   RetryStrategy,
   type HardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
+import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -41,6 +42,7 @@ import { buildErrorContent } from './error-content-builder';
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
   error?: HardwareWalletError;
+  walletType?: HardwareWalletType;
   onCancel?: () => void;
   onClose?: () => void;
   onRetry?: () => void;
@@ -57,14 +59,20 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, onCancel, onClose } = { ...modalProps, ...props };
+    const {
+      error,
+      walletType: propWalletType,
+      onCancel,
+      onClose,
+    } = { ...modalProps, ...props };
 
     const { deviceId, detectedWalletType, walletType } =
       useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
-    // Use walletType if available (during connection), otherwise detectedWalletType
-    const displayWalletType = walletType || detectedWalletType;
+    // Use prop walletType first, then context walletType, then detectedWalletType
+    const displayWalletType =
+      propWalletType || walletType || detectedWalletType;
 
     // If no error, don't render anything
     if (!error) {

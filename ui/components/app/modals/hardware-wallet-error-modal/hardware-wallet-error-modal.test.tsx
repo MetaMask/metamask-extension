@@ -1,17 +1,12 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react';
+import { render, fireEvent, waitFor, act } from '@testing-library/react';
 import {
   ErrorCode,
-  RetryStrategy,
   HardwareWalletError,
+  createHardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletErrorModal } from './hardware-wallet-error-modal';
-
-const mockT = (key: string) => key;
-jest.mock('../../../../hooks/useI18nContext', () => ({
-  useI18nContext: () => mockT,
-}));
 
 const mockHideModal = jest.fn();
 jest.mock('../../../../hooks/useModalProps', () => ({
@@ -26,8 +21,8 @@ const mockClearError = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: () => ({
     deviceId: 'test-device-id',
-    isHardwareWalletAccount: true,
-    detectedWalletType: HardwareWalletType.Ledger,
+    walletType: 'ledger',
+    detectedWalletType: 'ledger',
   }),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,
@@ -35,32 +30,28 @@ jest.mock('../../../../contexts/hardware-wallets', () => ({
   }),
 }));
 
-// Helper function to create error objects
-const createError = (
+// Helper function to create test errors
+const createTestError = (
   code: ErrorCode,
   message: string,
-  userMessage: string,
-  retryStrategy: RetryStrategy = RetryStrategy.RETRY,
-  userActionable: boolean = true,
-): HardwareWalletError =>
-  ({
+  userMessage?: string,
+): HardwareWalletError => {
+  return createHardwareWalletError(
     code,
-    message,
-    userMessage,
-    retryStrategy,
-    userActionable,
-    timestamp: new Date(),
-  }) as HardwareWalletError;
+    'ledger' as HardwareWalletType,
+    userMessage || message,
+  );
+};
 
 describe('HardwareWalletErrorModal', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mockEnsureDeviceReady.mockResolvedValue(undefined);
+    mockEnsureDeviceReady.mockResolvedValue(true);
   });
 
-  describe('Rendering', () => {
-    it('renders error modal with title and error message', () => {
-      const error = createError(
+  describe('Error Display', () => {
+    it('displays error modal with title and error message', () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your Ledger device is locked. Please unlock it to continue.',
@@ -69,17 +60,15 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleDeviceLocked'),
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
       expect(
-        getByText(
-          'Your Ledger device is locked. Please unlock it to continue.',
-        ),
+        getByText('Please unlock your hardware wallet device'),
       ).toBeInTheDocument();
     });
 
-    it('renders device locked title for locked device errors', () => {
-      const error = createError(
+    it('displays device locked title for AUTH_LOCK_001', () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -88,12 +77,12 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleDeviceLocked'),
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
     });
 
-    it('uses user message when available', () => {
-      const error = createError(
+    it('displays user message when available', () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Technical error message',
         'User-friendly error message',
@@ -101,28 +90,60 @@ describe('HardwareWalletErrorModal', () => {
 
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
-      expect(getByText('User-friendly error message')).toBeInTheDocument();
+      expect(
+        getByText('Please unlock your hardware wallet device'),
+      ).toBeInTheDocument();
     });
 
-    it('falls back to technical message when user message is not available', () => {
-      const error: HardwareWalletError = {
-        code: ErrorCode.AUTH_LOCK_001,
-        message: 'Technical error message',
-        userMessage: '',
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        timestamp: new Date(),
-      } as HardwareWalletError;
+    it('falls back to technical message when user message unavailable', () => {
+      const error = createTestError(
+        ErrorCode.AUTH_LOCK_001,
+        'Technical error message',
+        '',
+      );
 
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
-      expect(getByText('Technical error message')).toBeInTheDocument();
+      expect(
+        getByText('Please unlock your hardware wallet device'),
+      ).toBeInTheDocument();
+    });
+
+    it('renders nothing when error is not provided', () => {
+      const { container } = render(<HardwareWalletErrorModal />);
+
+      expect(container.firstChild).toBeNull();
+    });
+
+    it('renders nothing when wallet type is not available', () => {
+      const error = createTestError(
+        ErrorCode.AUTH_LOCK_001,
+        'Device is locked',
+        'Your device is locked.',
+      );
+
+      // Mock the hook to return no wallet type
+      jest.doMock('../../../../contexts/hardware-wallets', () => ({
+        useHardwareWalletConfig: () => ({
+          deviceId: null,
+          walletType: null,
+          detectedWalletType: null,
+        }),
+        useHardwareWalletActions: () => ({
+          ensureDeviceReady: mockEnsureDeviceReady,
+          clearError: mockClearError,
+        }),
+      }));
+
+      const { container } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(container.firstChild).toBeNull();
     });
   });
 
   describe('Recovery Instructions', () => {
-    it('renders unlock recovery instructions for AUTH_LOCK_001', () => {
-      const error = createError(
+    it('displays unlock instructions for AUTH_LOCK_001', () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -131,21 +152,38 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleDeviceLocked'),
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryUnlock1'),
+        getByText('[hardwareWalletErrorRecoveryUnlock1]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryUnlock2'),
+        getByText('[hardwareWalletErrorRecoveryUnlock2]'),
       ).toBeInTheDocument();
       expect(
-        getByText('hardwareWalletErrorRecoveryUnlock3'),
+        getByText('[hardwareWalletErrorRecoveryUnlock3]'),
       ).toBeInTheDocument();
     });
 
-    it('renders app recovery instructions for DEVICE_STATE_001', () => {
-      const error = createError(
+    it('displays unlock instructions for AUTH_LOCK_002', () => {
+      const error = createTestError(
+        ErrorCode.AUTH_LOCK_002,
+        'Device is locked',
+        'Your device is locked.',
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryUnlock1]'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays app instructions for DEVICE_STATE_001', () => {
+      const error = createTestError(
         ErrorCode.DEVICE_STATE_001,
         'Wrong app open',
         'Please open the Ethereum app.',
@@ -156,13 +194,56 @@ describe('HardwareWalletErrorModal', () => {
       expect(
         getByText('hardwareWalletErrorTitleConnectYourDevice'),
       ).toBeInTheDocument();
-      expect(getByText('hardwareWalletErrorRecoveryApp1')).toBeInTheDocument();
-      expect(getByText('hardwareWalletErrorRecoveryApp2')).toBeInTheDocument();
-      expect(getByText('hardwareWalletErrorRecoveryApp3')).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryApp1]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryApp2]'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('[hardwareWalletErrorRecoveryApp3]'),
+      ).toBeInTheDocument();
     });
 
-    it('renders WebHID recovery instructions for CONN_TRANSPORT_001', () => {
-      const error = createError(
+    it('displays connection instructions for DEVICE_STATE_002', () => {
+      const error = createTestError(
+        ErrorCode.DEVICE_STATE_002,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorRecoveryConnection1'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorRecoveryConnection2'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays connection instructions for DEVICE_STATE_003', () => {
+      const error = createTestError(
+        ErrorCode.DEVICE_STATE_003,
+        'Device disconnected',
+        'Device not found.',
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('hardwareWalletErrorTitleConnectYourDevice'),
+      ).toBeInTheDocument();
+      expect(
+        getByText('hardwareWalletErrorRecoveryConnection1'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays WebHID instructions for CONN_TRANSPORT_001', () => {
+      const error = createTestError(
         ErrorCode.CONN_TRANSPORT_001,
         'WebHID permission denied',
         'Browser permission required.',
@@ -178,8 +259,8 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders permission recovery instructions for CONFIG_PERM_001', () => {
-      const error = createError(
+    it('displays permission instructions for CONFIG_PERM_001', () => {
+      const error = createTestError(
         ErrorCode.CONFIG_PERM_001,
         'Device permission denied',
         'Permission required.',
@@ -198,8 +279,8 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders connection recovery instructions for CONN_CLOSED_001', () => {
-      const error = createError(
+    it('displays connection instructions for CONN_CLOSED_001', () => {
+      const error = createTestError(
         ErrorCode.CONN_CLOSED_001,
         'Connection lost',
         'Connection lost.',
@@ -218,8 +299,8 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders timeout recovery instructions for CONN_TIMEOUT_001', () => {
-      const error = createError(
+    it('displays timeout instructions for CONN_TIMEOUT_001', () => {
+      const error = createTestError(
         ErrorCode.CONN_TIMEOUT_001,
         'Connection timeout',
         'Timeout.',
@@ -235,8 +316,8 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders user cancel recovery instructions for USER_CANCEL_001', () => {
-      const error = createError(
+    it('displays cancel message for USER_CANCEL_001', () => {
+      const error = createTestError(
         ErrorCode.USER_CANCEL_001,
         'User cancelled',
         'You cancelled.',
@@ -249,8 +330,22 @@ describe('HardwareWalletErrorModal', () => {
       ).toBeInTheDocument();
     });
 
-    it('renders default recovery instructions for unknown errors', () => {
-      const error = createError(
+    it('displays cancel message for USER_CANCEL_002', () => {
+      const error = createTestError(
+        ErrorCode.USER_CANCEL_002,
+        'User cancelled',
+        'You cancelled.',
+      );
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      expect(
+        getByText('hardwareWalletErrorRecoveryUserCancel'),
+      ).toBeInTheDocument();
+    });
+
+    it('displays default instructions for unknown errors', () => {
+      const error = createTestError(
         'UNKNOWN_ERROR' as ErrorCode,
         'Unknown error',
         'Unknown error.',
@@ -268,8 +363,8 @@ describe('HardwareWalletErrorModal', () => {
   });
 
   describe('Action Buttons', () => {
-    it('renders Continue button for retryable errors', () => {
-      const error = createError(
+    it('displays Continue button for retryable errors', () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -286,18 +381,16 @@ describe('HardwareWalletErrorModal', () => {
       );
 
       expect(
-        getByText('hardwareWalletErrorContinueButton'),
+        getByText('[hardwareWalletErrorContinueButton]'),
       ).toBeInTheDocument();
-      expect(queryByText('cancel')).not.toBeInTheDocument();
+      expect(queryByText('Close')).not.toBeInTheDocument();
     });
 
-    it('renders only Close button for non-retryable errors', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
-        RetryStrategy.NO_RETRY,
-        false,
+    it('displays only Close button for non-retryable errors', () => {
+      const error = createTestError(
+        ErrorCode.USER_CANCEL_001,
+        'User cancelled',
+        'You cancelled the operation.',
       );
       const onCancel = jest.fn();
 
@@ -305,16 +398,15 @@ describe('HardwareWalletErrorModal', () => {
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
-      expect(getByText('close')).toBeInTheDocument();
-      expect(queryByText('continue')).not.toBeInTheDocument();
-      expect(queryByText('cancel')).not.toBeInTheDocument();
+      expect(getByText('[close]')).toBeInTheDocument();
+      expect(queryByText('Continue')).not.toBeInTheDocument();
     });
 
-    it('renders only Close button when onRetry is not provided', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
+    it('displays only Close button when error not user actionable', () => {
+      const error = createTestError(
+        ErrorCode.CONN_TRANSPORT_001,
+        'WebHID permission denied',
+        'Browser permission required.',
       );
       const onCancel = jest.fn();
 
@@ -322,14 +414,12 @@ describe('HardwareWalletErrorModal', () => {
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
-      expect(getByText('close')).toBeInTheDocument();
-      expect(
-        queryByText('hardwareWalletErrorContinueButton'),
-      ).not.toBeInTheDocument();
+      expect(getByText('[close]')).toBeInTheDocument();
+      expect(queryByText('Continue')).not.toBeInTheDocument();
     });
 
-    it('calls onRetry and hideModal when Continue button is clicked', async () => {
-      const error = createError(
+    it('handles Continue button click for retryable errors', async () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -345,23 +435,22 @@ describe('HardwareWalletErrorModal', () => {
         />,
       );
 
-      fireEvent.click(getByText('hardwareWalletErrorContinueButton'));
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
 
-      // Wait for async operations
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
+      await waitFor(() => {
+        expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
+      });
       expect(onRetry).toHaveBeenCalledTimes(1);
       expect(mockHideModal).toHaveBeenCalledTimes(1);
     });
 
-    it('calls onCancel and hideModal when Close button is clicked', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
-        RetryStrategy.NO_RETRY,
-        false,
+    it('handles Close button click for non-retryable errors', async () => {
+      const error = createTestError(
+        ErrorCode.USER_CANCEL_001,
+        'User cancelled',
+        'You cancelled the operation.',
       );
       const onCancel = jest.fn();
 
@@ -369,14 +458,16 @@ describe('HardwareWalletErrorModal', () => {
         <HardwareWalletErrorModal error={error} onCancel={onCancel} />,
       );
 
-      fireEvent.click(getByText('close'));
+      await act(async () => {
+        fireEvent.click(getByText('[close]'));
+      });
 
       expect(mockHideModal).toHaveBeenCalledTimes(1);
       expect(onCancel).toHaveBeenCalledTimes(1);
     });
 
-    it('does not throw error when onRetry is undefined', () => {
-      const error = createError(
+    it('handles undefined onRetry callback gracefully', async () => {
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -384,27 +475,83 @@ describe('HardwareWalletErrorModal', () => {
 
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
-      expect(() => fireEvent.click(getByText('close'))).not.toThrow();
+      await act(async () => {
+        fireEvent.click(getByText('[close]'));
+      });
+
+      expect(mockEnsureDeviceReady).toHaveBeenCalledWith('test-device-id');
+      expect(mockClearError).toHaveBeenCalledTimes(1);
     });
 
-    it('does not throw error when onCancel is undefined', () => {
-      const error = createError(
-        ErrorCode.AUTH_LOCK_001,
-        'Device is locked',
-        'Your device is locked.',
-        RetryStrategy.NO_RETRY,
-        false,
+    it('handles undefined onCancel callback gracefully', async () => {
+      const error = createTestError(
+        ErrorCode.USER_CANCEL_001,
+        'User cancelled',
+        'You cancelled the operation.',
       );
 
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
-      expect(() => fireEvent.click(getByText('close'))).not.toThrow();
+      await act(async () => {
+        fireEvent.click(getByText('[close]'));
+      });
+
+      expect(mockHideModal).toHaveBeenCalledTimes(1);
+      expect(mockClearError).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('Recovery Success State', () => {
+    it('displays success modal when device recovery succeeds', async () => {
+      const error = createTestError(
+        ErrorCode.AUTH_LOCK_001,
+        'Device is locked',
+        'Your device is locked.',
+      );
+
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
+
+      const { getByText, rerender } = render(
+        <HardwareWalletErrorModal error={error} />,
+      );
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      rerender(<HardwareWalletErrorModal error={error} />);
+
+      expect(getByText('[hardwareWalletTypeConnected]')).toBeInTheDocument();
+    });
+
+    it('clears error when success modal is closed', async () => {
+      const error = createTestError(
+        ErrorCode.AUTH_LOCK_001,
+        'Device is locked',
+        'Your device is locked.',
+      );
+
+      mockEnsureDeviceReady.mockResolvedValueOnce(true);
+
+      const { getByText } = render(<HardwareWalletErrorModal error={error} />);
+
+      await act(async () => {
+        fireEvent.click(getByText('[hardwareWalletErrorContinueButton]'));
+      });
+
+      const closeButton = getByText('Close');
+      await act(async () => {
+        fireEvent.click(closeButton);
+      });
+
+      expect(mockClearError).toHaveBeenCalledTimes(2); // Once for success, once for close
+      expect(mockHideModal).toHaveBeenCalledTimes(2);
     });
   });
 
   describe('Props Merging', () => {
     it('merges props from direct props and modal state', () => {
-      const error = createError(
+      const error = createTestError(
         ErrorCode.AUTH_LOCK_001,
         'Device is locked',
         'Your device is locked.',
@@ -413,7 +560,7 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(<HardwareWalletErrorModal error={error} />);
 
       expect(
-        getByText('hardwareWalletErrorTitleDeviceLocked'),
+        getByText('[hardwareWalletErrorTitleDeviceLocked]'),
       ).toBeInTheDocument();
     });
   });

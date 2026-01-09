@@ -5,7 +5,6 @@ import {
   ErrorCode,
   RetryStrategy,
   HardwareWalletError,
-  createHardwareWalletError,
 } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 import { HardwareWalletProvider } from '../../../../contexts/hardware-wallets/HardwareWalletContext.split';
@@ -30,7 +29,6 @@ const meta: Meta<typeof HardwareWalletErrorModal> = {
 export default meta;
 type Story = StoryObj<typeof HardwareWalletErrorModal>;
 
-// Helper function to create test error objects
 const createTestError = (
   code: ErrorCode,
   message: string,
@@ -59,6 +57,7 @@ export const DeviceLocked: Story = {
       'Device is locked',
       'Your Ledger device is locked. Please unlock it to continue.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -76,6 +75,7 @@ export const DeviceLockedAlt: Story = {
       'Device is locked',
       'Your Ledger device is locked. Please unlock it to continue.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -93,6 +93,7 @@ export const WrongAppOpen: Story = {
       'Wrong app open',
       'Please open the Ethereum app on your Ledger device.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -110,6 +111,7 @@ export const DeviceNotReady: Story = {
       'Device not ready',
       'Your device is not ready. Please check the connection.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -127,6 +129,7 @@ export const WebHIDPermissionError: Story = {
       'WebHID permission denied',
       'Browser permission is required to connect to your hardware wallet.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -144,23 +147,7 @@ export const DevicePermissionError: Story = {
       'Device permission denied',
       'Please grant permission to access your Ledger device.',
     ),
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Connection Lost - Device disconnected
- */
-export const ConnectionLost: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.CONN_CLOSED_001,
-      'Connection lost',
-      'The connection to your hardware wallet was lost. Please reconnect.',
-    ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -178,61 +165,7 @@ export const ConnectionTimeout: Story = {
       'Connection timeout',
       'The operation timed out. Please try again.',
     ),
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * User Cancelled - User rejected the operation on device
- */
-export const UserCancelled: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.USER_CANCEL_001,
-      'User cancelled',
-      'You cancelled the operation on your device.',
-      RetryStrategy.RETRY,
-      true,
-    ),
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * User Cancelled Alternative - Different cancel code
- */
-export const UserCancelledAlt: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.USER_CANCEL_002,
-      'User cancelled',
-      'You cancelled the operation on your device.',
-      RetryStrategy.RETRY,
-      true,
-    ),
-    onRetry: () => console.log('Retry clicked'),
-    onCancel: () => console.log('Cancel clicked'),
-    onClose: () => console.log('Close clicked'),
-  },
-};
-
-/**
- * Device Disconnected - Connection issue
- */
-export const DeviceDisconnected: Story = {
-  args: {
-    isOpen: true,
-    error: createTestError(
-      ErrorCode.DEVICE_STATE_003,
-      'Device disconnected',
-      'Your device was disconnected. Please reconnect and try again.',
-    ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -250,6 +183,7 @@ export const UnknownError: Story = {
       'Unknown error occurred',
       'An unexpected error occurred. Please try again.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
@@ -269,6 +203,7 @@ export const NonRetryableError: Story = {
       RetryStrategy.NO_RETRY,
       false,
     ),
+    walletType: HardwareWalletType.Ledger,
     onCancel: () => console.log('Close clicked'),
     onClose: () => console.log('Close clicked'),
   },
@@ -285,6 +220,7 @@ export const LongErrorMessage: Story = {
       'A very long error message that should wrap properly',
       'This is a very long error message that should wrap to multiple lines and still display correctly in the modal. It contains important information that the user needs to read carefully before proceeding.',
     ),
+    walletType: HardwareWalletType.Ledger,
     onRetry: () => console.log('Retry clicked'),
     onCancel: () => console.log('Cancel clicked'),
     onClose: () => console.log('Close clicked'),
