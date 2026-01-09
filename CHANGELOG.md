@@ -11,8 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Bump @metamask/tron-wallet-snap to 1.17.0
-- Bump @metamask/keyring-api to 21.3.0
+- Bump @metamask/tron-wallet-snap to 1.17.0 (#38986)
+- Bump @metamask/keyring-api to 21.3.0 (#39066)
+- Bump @metamask/tron-wallet-snap to version 1.19.0 cp-13.13.2 (#39130)
+- Update react router to resolve advisory (#39115)
+
+### Fixed
+
+- Fix Tron resources calculation and default value (#39136)
 
 ## [13.13.1]
 
