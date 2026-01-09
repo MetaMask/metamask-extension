@@ -2,7 +2,10 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import * as backgroundConnection from '../../../ui/store/background-connection';
 import mockMetaMaskState from '../data/integration-init-state.json';
 import { integrationTestRender } from '../../lib/render-helpers';
-import { createMockImplementation } from '../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupName,
+} from '../helpers';
 import {
   mockSwapsToken,
   mockSwapsAggregatorMetadata,
@@ -150,13 +153,7 @@ describe.skip('Swaps Alert', () => {
   });
 
   it('displays the potentially inauthentic token alert', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     await act(async () => {
       await integrationTestRender({

@@ -69,6 +69,7 @@ export const BridgeCTAButton = ({
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isTxAlertPresent,
+    isTxAlertLoading,
   } = useSelector(getValidationErrors);
 
   const wasTxDeclined = useSelector(getWasTxDeclined);
@@ -116,7 +117,7 @@ export const BridgeCTAButton = ({
       return 'alertReasonInsufficientBalance';
     }
 
-    if (isTxSubmittable || isTxAlertPresent) {
+    if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
       if (isHardwareWalletAccount) {
         return 'hardwareWalletStartTransactionFlow';
       }
@@ -127,6 +128,7 @@ export const BridgeCTAButton = ({
   }, [
     isLoading,
     isTxAlertPresent,
+    isTxAlertLoading,
     fromAmount,
     toToken,
     isTxSubmittable,
@@ -192,8 +194,7 @@ export const BridgeCTAButton = ({
       }}
       loading={isSubmitting}
       disabled={
-        (!needsDestinationAddress &&
-          (!isTxSubmittable || isTxAlertPresent || isQuoteExpired)) ||
+        (!needsDestinationAddress && (!isTxSubmittable || isQuoteExpired)) ||
         isSubmitting
       }
     >

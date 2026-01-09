@@ -98,8 +98,7 @@ export default async function init() {
   return new Promise<void>((resolve) => {
     const iframe = document.createElement('iframe');
     iframe.src = 'https://montelaidev.github.io/ledger-iframe-bridge/10.0.1/'; // https://metamask.github.io/ledger-iframe-bridge/9.0.1/';
-    console.log('IFRAME SRC', iframe.src);
-    iframe.allow = 'hid';
+    iframe.allow = 'hid; usb';
     iframe.onload = () => {
       setupMessageListeners(iframe);
       resolve();

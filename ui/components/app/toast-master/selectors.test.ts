@@ -22,6 +22,7 @@ import { createMockInternalAccount } from '../../../../test/jest/mocks';
 import { selectShowConnectAccountGroupToast } from './selectors';
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   getAllScopesFromCaip25CaveatValue: jest.fn(),
   isInternalAccountInPermittedAccountIds: jest.fn(),
 }));
