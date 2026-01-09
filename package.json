@@ -383,7 +383,7 @@
     "@metamask/subscription-controller": "^5.3.1",
     "@metamask/transaction-controller": "^62.7.0",
     "@metamask/transaction-pay-controller": "^10.2.0",
-    "@metamask/tron-wallet-snap": "^1.17.0",
+    "@metamask/tron-wallet-snap": "^1.19.0",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
