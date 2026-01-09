@@ -62,7 +62,6 @@ const mockGetIntlLocale = getIntlLocale;
 
 let openTabSpy;
 
-// Old account model components.
 describe('EthOverview', () => {
   useIsOriginalNativeTokenSymbol.mockReturnValue(true);
   mockGetIntlLocale.mockReturnValue('en-US');

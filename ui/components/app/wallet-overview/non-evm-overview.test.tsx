@@ -190,7 +190,6 @@ function getStore(state?: Record<string, unknown>) {
   });
 }
 
-// Old account model components.
 describe('NonEvmOverview', () => {
   beforeEach(() => {
     // Clear previous mock implementations
