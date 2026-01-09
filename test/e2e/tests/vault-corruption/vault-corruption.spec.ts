@@ -198,8 +198,6 @@ describe('Vault Corruption', function () {
     // click the Recovery/Reset button
     await driver.waitForSelector('#critical-error-button');
     await driver.clickElement('#critical-error-button');
-    // Allow UI to settle
-    await driver.delay(1000);
 
     // Wait for the confirmation alert to appear and handle it immediately
     await driver.driver.wait(until.alertIsPresent(), 20000);
