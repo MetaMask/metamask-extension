@@ -14,29 +14,34 @@
     "test/integration/confirmations/transactions/set-approval-for-all.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/erc721-approve.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/alerts.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/increase-allowance.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 1
+      "React: Act warnings (component updates not wrapped)": 1,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/erc20-approve.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 1
+      "React: Act warnings (component updates not wrapped)": 1,
+      "error: Error: AggregateError": 1
     },
     "test/integration/onboarding/import-wallet.test.tsx": {
       "Reselect: Identity function warnings": 7,
@@ -47,12 +52,14 @@
     "test/integration/confirmations/signatures/personalSign.test.tsx": {
       "Reselect: Identity function warnings": 10,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/signatures/permit.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/notifications&auth/notifications-toggle.test.tsx": {
       "Reselect: Identity function warnings": 9,
@@ -68,51 +75,60 @@
     "test/integration/confirmations/transactions/contract-interaction.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/nfts/nfts.test.tsx": {
       "Reselect: Identity function warnings": 9,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
       "React: DOM nesting violations": 2,
-      "error: Error: Uncaught [TypeError: mediaQuery.removeEventListener i...": 3
+      "error: Error: Uncaught [TypeError: mediaQuery.removeEventListener i...": 3,
+      "error: Error: AggregateError": 3
     },
     "test/integration/confirmations/transactions/set-approval-for-all-revoke.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/transactions/contract-deployment.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/defi/defi-positions.test.tsx": {
       "Reselect: Identity function warnings": 10,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: DOM nesting violations": 1
+      "React: DOM nesting violations": 1,
+      "error: Error: AggregateError": 4
     },
     "test/integration/confirmations/signatures/permit-batch.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/signatures/permit-seaport.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/signatures/permit-single.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: State updates on unmounted components": 1
+      "React: State updates on unmounted components": 1,
+      "error: Error: AggregateError": 1
     },
     "test/integration/confirmations/signatures/permit-tradeOrder.test.tsx": {
       "Reselect: Identity function warnings": 11,
       "Reselect: Input stability warnings": 8,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
     }
   },
   "generated": "2025-12-15T13:30:25.527Z",

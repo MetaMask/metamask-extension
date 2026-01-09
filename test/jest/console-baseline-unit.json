@@ -512,7 +512,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/security-tab/reveal-srp-list/reveal-srp-list.test.tsx": {
-      "Reselect: Identity function warnings": 1,
+      "Reselect: Identity function warnings": 2,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -2655,6 +2655,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/onboarding-flow/welcome/welcome-login.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/multichain/import-account/import-account.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/import-account/json.test.tsx": {
