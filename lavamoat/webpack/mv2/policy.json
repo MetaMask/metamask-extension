@@ -2280,7 +2280,8 @@
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
