@@ -71,7 +71,7 @@ const SnapUIRendererComponent = ({
 
   useEffect(() => {
     if (scrollableContainerRef.current) {
-      scrollableContainerRef.current.scrollTo(0, scrollRef.current);
+      scrollableContainerRef.current.scrollTo?.(0, scrollRef.current);
     }
   }, [interfaceState?.content]);
 
