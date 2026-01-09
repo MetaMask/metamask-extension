@@ -48,12 +48,16 @@ export const MAX_EXCLUSION_RATE = 0.5; // 50%
 // ==================== Basic Statistics ====================
 
 export const calculateMean = (values: number[]): number => {
-  if (values.length === 0) return 0;
+  if (values.length === 0) {
+    return 0;
+  }
   return values.reduce((sum, val) => sum + val, 0) / values.length;
 };
 
 export const calculateStdDev = (values: number[]): number => {
-  if (values.length <= 1) return 0;
+  if (values.length <= 1) {
+    return 0;
+  }
   const mean = calculateMean(values);
   const squaredDiffs = values.map((val) => Math.pow(val - mean, 2));
   return Math.sqrt(calculateMean(squaredDiffs));
@@ -63,7 +67,9 @@ export const calculatePercentile = (
   sortedValues: number[],
   percentile: number,
 ): number => {
-  if (sortedValues.length === 0) return 0;
+  if (sortedValues.length === 0) {
+    return 0;
+  }
   const index = Math.floor((percentile / 100) * sortedValues.length);
   return sortedValues[Math.min(index, sortedValues.length - 1)];
 };
@@ -73,19 +79,28 @@ export const calculatePercentile = (
 /**
  * Calculate z-score for a value given mean and standard deviation
  * z = (x - mean) / stdDev
+ *
+ * @param value - The value to calculate z-score for
+ * @param mean - The mean of the distribution
+ * @param stdDev - The standard deviation of the distribution
  */
 export const calculateZScore = (
   value: number,
   mean: number,
   stdDev: number,
 ): number => {
-  if (stdDev === 0) return 0;
+  if (stdDev === 0) {
+    return 0;
+  }
   return (value - mean) / stdDev;
 };
 
 /**
  * Detect outliers using z-score method
  * Values with |z-score| > threshold are considered outliers
+ *
+ * @param values - Array of values to check for outliers
+ * @param threshold - Z-score threshold for outlier detection
  */
 export const detectOutliersZScore = (
   values: number[],
@@ -114,6 +129,8 @@ export const detectOutliersZScore = (
 /**
  * Detect outliers using IQR (Interquartile Range) method
  * Values outside [Q1 - 1.5*IQR, Q3 + 1.5*IQR] are considered outliers
+ *
+ * @param values - Array of values to check for outliers
  */
 export const detectOutliersIQR = (
   values: number[],
@@ -144,6 +161,8 @@ export const detectOutliersIQR = (
 /**
  * Combined outlier detection using both IQR and z-score methods
  * A value is only kept if it passes both methods
+ *
+ * @param values - Array of values to check for outliers
  */
 export const detectOutliers = (
   values: number[],
@@ -162,12 +181,18 @@ export const detectOutliers = (
 /**
  * Determine data quality based on Coefficient of Variation (CV)
  * CV = (stdDev / mean) * 100
+ *
+ * @param cv - Coefficient of variation value
  */
 export const assessDataQuality = (
   cv: number,
 ): 'good' | 'poor' | 'unreliable' => {
-  if (cv < CV_THRESHOLDS.GOOD) return 'good';
-  if (cv < CV_THRESHOLDS.POOR) return 'poor';
+  if (cv < CV_THRESHOLDS.GOOD) {
+    return 'good';
+  }
+  if (cv < CV_THRESHOLDS.POOR) {
+    return 'poor';
+  }
   return 'unreliable';
 };
 
@@ -180,6 +205,10 @@ export type SanityCheckResult = {
 
 /**
  * Validate a single metric value against sanity checks
+ *
+ * @param value - The metric value to validate
+ * @param maxDuration - Maximum allowed duration in milliseconds
+ * @param minDuration - Minimum allowed duration in milliseconds
  */
 export const validateMetricValue = (
   value: number,
@@ -193,12 +222,18 @@ export const validateMetricValue = (
 
   // Check for suspiciously small values
   if (value < minDuration) {
-    return { valid: false, reason: `Metric below minimum threshold (${minDuration}ms)` };
+    return {
+      valid: false,
+      reason: `Metric below minimum threshold (${minDuration}ms)`,
+    };
   }
 
   // Check for values exceeding timeout
   if (value > maxDuration) {
-    return { valid: false, reason: `Metric exceeds maximum threshold (${maxDuration}ms)` };
+    return {
+      valid: false,
+      reason: `Metric exceeds maximum threshold (${maxDuration}ms)`,
+    };
   }
 
   return { valid: true };
@@ -206,6 +241,10 @@ export const validateMetricValue = (
 
 /**
  * Filter metrics by sanity checks and return valid values
+ *
+ * @param values - Array of metric values to filter
+ * @param maxDuration - Maximum allowed duration in milliseconds
+ * @param minDuration - Minimum allowed duration in milliseconds
  */
 export const filterBySanityChecks = (
   values: number[],
@@ -221,7 +260,7 @@ export const filterBySanityChecks = (
     if (result.valid) {
       filtered.push(value);
     } else {
-      excludedCount++;
+      excludedCount += 1;
       if (result.reason) {
         reasons.push(result.reason);
       }
@@ -270,6 +309,10 @@ export const calculateTimerStatistics = (
 
 /**
  * Check if too many runs were excluded (indicates systemic issues)
+ *
+ * @param totalRuns - Total number of benchmark runs
+ * @param excludedRuns - Number of runs that were excluded
+ * @param maxRate - Maximum allowed exclusion rate (0-1)
  */
 export const checkExclusionRate = (
   totalRuns: number,

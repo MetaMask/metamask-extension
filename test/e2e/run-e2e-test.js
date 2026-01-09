@@ -73,7 +73,7 @@ async function main() {
     updatePrivacySnapshot,
   } = argv;
 
-  let { stopAfterOneFailure } = argv;
+  const { stopAfterOneFailure } = argv;
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {

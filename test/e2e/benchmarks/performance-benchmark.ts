@@ -7,10 +7,10 @@
  * NOTE: Performance benchmarks only run on Chrome + Browserify to reduce CI runtime.
  *
  * Usage:
- *   yarn test:e2e:benchmark:performance
- *   yarn test:e2e:benchmark:performance --benchmarks onboardingImportWallet --iterations 20
- *   yarn test:e2e:benchmark:performance --out results.json
- *   yarn test:e2e:benchmark:performance --buildType browserify
+ * yarn test:e2e:benchmark:performance
+ * yarn test:e2e:benchmark:performance --benchmarks onboardingImportWallet --iterations 20
+ * yarn test:e2e:benchmark:performance --out results.json
+ * yarn test:e2e:benchmark:performance --buildType browserify
  */
 import { promises as fs } from 'fs';
 import path from 'path';
@@ -41,6 +41,8 @@ import type {
 /**
  * Convert performance benchmark results to page load benchmark format
  * for consistent output across all benchmark types.
+ *
+ * @param results - Array of benchmark summaries to convert
  */
 function convertToPageLoadFormat(
   results: BenchmarkSummary[],
@@ -106,7 +108,8 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
     })
     .option('buildType', {
       default: 'browserify',
-      description: 'Build type (browserify or webpack). Performance benchmarks only run on browserify.',
+      description:
+        'Build type (browserify or webpack). Performance benchmarks only run on browserify.',
       type: 'string',
       choices: ['browserify', 'webpack'],
     })
@@ -179,7 +182,7 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
   } else {
     // Output to STDOUT when no output file is provided
     console.log('📊 Performance Benchmark Results:');
-    process.stdout.write(JSON.stringify(output, null, 2) + '\n');
+    process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
   }
 
   return output;

@@ -17,6 +17,9 @@ import type {
 /**
  * Run a benchmark function with retries
  * Handles the case where benchmark functions return { success: false } instead of throwing
+ *
+ * @param benchmarkFn - The benchmark function to execute
+ * @param retries - Number of retries if the benchmark fails
  */
 async function runWithRetries(
   benchmarkFn: BenchmarkFunction,
@@ -27,7 +30,7 @@ async function runWithRetries(
   const maxAttempts = retries + 1; // Initial attempt + retries
 
   while (attempts < maxAttempts) {
-    attempts++;
+    attempts += 1;
     try {
       const result = await benchmarkFn();
       lastResult = result;
@@ -81,9 +84,9 @@ export async function runBenchmarkWithIterations(
     allResults.push(result);
 
     if (result.success) {
-      successfulRuns++;
+      successfulRuns += 1;
     } else {
-      failedRuns++;
+      failedRuns += 1;
     }
   }
 
@@ -95,7 +98,10 @@ export async function runBenchmarkWithIterations(
         if (!timerMap.has(timer.id)) {
           timerMap.set(timer.id, []);
         }
-        timerMap.get(timer.id)!.push(timer.duration);
+        const timerDurations = timerMap.get(timer.id);
+        if (timerDurations) {
+          timerDurations.push(timer.duration);
+        }
       }
     }
   }
@@ -109,7 +115,7 @@ export async function runBenchmarkWithIterations(
     timerStats.push(stats);
 
     if (stats.dataQuality === 'unreliable') {
-      excludedDueToQuality++;
+      excludedDueToQuality += 1;
     }
 
     // Check if too many samples were excluded for this timer
@@ -122,7 +128,7 @@ export async function runBenchmarkWithIterations(
     if (!exclusionCheck.passed) {
       // Mark as unreliable if too many exclusions
       stats.dataQuality = 'unreliable';
-      excludedDueToQuality++;
+      excludedDueToQuality += 1;
     }
   }
 

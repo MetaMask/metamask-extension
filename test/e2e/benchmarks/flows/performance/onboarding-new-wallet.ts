@@ -128,4 +128,3 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
     };
   }
 }
-

@@ -92,4 +92,3 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
     };
   }
 }
-

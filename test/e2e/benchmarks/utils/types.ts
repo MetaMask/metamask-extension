@@ -99,4 +99,3 @@ export type PerformanceBenchmarkResults = {
 };
 
 export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
-

@@ -144,4 +144,3 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
     };
   }
 }
-
