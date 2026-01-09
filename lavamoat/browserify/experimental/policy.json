@@ -4927,6 +4927,7 @@
     "react-router-dom-v5-compat>react-router": {
       "globals": {
         "console.error": true,
+        "console.warn": true,
         "define": true
       },
       "packages": {

@@ -3586,7 +3586,8 @@
     },
     "react-router-dom-v5-compat>react-router": {
       "globals": {
-        "console.error": true
+        "console.error": true,
+        "console.warn": true
       },
       "packages": {
         "react-router-dom-v5-compat>@remix-run/router": true,

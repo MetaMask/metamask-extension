@@ -38756,7 +38756,7 @@ SOFTWARE.
 ******************************
 
 react-router
-6.26.2 <https://github.com/remix-run/react-router>
+6.30.3 <https://github.com/remix-run/react-router>
 MIT License
 
 Copyright (c) React Training LLC 2015-2019
@@ -38813,7 +38813,7 @@ SOFTWARE.
 ******************************
 
 react-router-dom-v5-compat
-6.26.2 <https://github.com/remix-run/react-router>
+6.30.3 <https://github.com/remix-run/react-router>
 MIT License
 
 Copyright (c) React Training LLC 2015-2019
@@ -39309,7 +39309,7 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ******************************
 
 @remix-run/router
-1.19.2 <https://github.com/remix-run/react-router>
+1.23.2 <https://github.com/remix-run/react-router>
 MIT License
 
 Copyright (c) React Training LLC 2015-2019
