@@ -36,8 +36,8 @@ export const container: UIComponentFactory<ContainerElement> = ({
       useFooter,
       onCancel,
       t,
-      isScrollableContainer: index === 0,
       ...params,
+      isScrollableContainer: index === 0,
       element: child as JSXElement,
     }),
   );
