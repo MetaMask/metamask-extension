@@ -56,10 +56,7 @@ export const BridgeAssetPicker = ({
   header: string;
   selectedAsset: BridgeToken;
 } & Pick<React.ComponentProps<typeof NetworkPicker>, 'chainIds'> &
-  Pick<
-    React.ComponentProps<typeof BridgeAssetList>,
-    'onAssetChange' | 'excludedAssetId'
-  >) => {
+  Pick<React.ComponentProps<typeof BridgeAssetList>, 'onAssetChange'>) => {
   // TODO remove this when actual balances are provided
   const fromToken = useSelector(getFromToken);
   const assetsWithBalance = fromToken ? [fromToken] : [];
