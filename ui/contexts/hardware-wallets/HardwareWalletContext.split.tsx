@@ -74,7 +74,6 @@ export type HardwareWalletActionsContextType = {
   connect: (type: HardwareWalletType, id?: string) => Promise<void>;
   disconnect: () => Promise<void>;
   clearError: () => void;
-  retry: () => Promise<void>;
   checkHardwareWalletPermission: (
     walletType: HardwareWalletType,
   ) => Promise<HardwareConnectionPermissionState>;
@@ -228,7 +227,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const pendingOperationRef = useRef<(() => Promise<unknown>) | null>(null);
   const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
@@ -394,7 +392,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       setWalletType(null);
       setDeviceId(null);
       setCurrentAppName(null);
-      pendingOperationRef.current = null;
       isConnectingRef.current = false;
       currentConnectionIdRef.current = null;
       hasAutoConnectedRef.current = false;
@@ -417,7 +414,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         setWalletType(null);
         setDeviceId(null);
         setCurrentAppName(null);
-        pendingOperationRef.current = null;
         isConnectingRef.current = false;
         currentConnectionIdRef.current = null;
         hasAutoConnectedRef.current = false;
@@ -805,7 +801,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         setWalletType(null);
         setDeviceId(null);
       }
-      pendingOperationRef.current = null;
     }
   }, [updateConnectionState]);
 
@@ -820,76 +815,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       updateConnectionState(ConnectionState.disconnected());
     }
   }, [updateConnectionState]);
-
-  const retry = useCallback(async (): Promise<void> => {
-    const abortSignal = abortControllerRef.current?.signal;
-
-    if (abortSignal?.aborted) {
-      return;
-    }
-
-    if (pendingOperationRef.current && adapterRef.current?.isConnected()) {
-      try {
-        if (!abortSignal?.aborted) {
-          updateConnectionState(ConnectionState.awaitingConfirmation());
-        }
-        await pendingOperationRef.current();
-        if (!abortSignal?.aborted) {
-          updateConnectionState(ConnectionState.ready());
-        }
-        pendingOperationRef.current = null;
-      } catch (err) {
-        if (!abortSignal?.aborted) {
-          if (err && typeof err === 'object' && 'code' in err) {
-            updateConnectionState(
-              getConnectionStateFromError(
-                err as unknown as HardwareWalletError,
-              ),
-            );
-          } else {
-            updateConnectionState(ConnectionState.disconnected());
-          }
-        }
-      }
-    } else {
-      // Use refs to access current state values without creating dependencies
-      const currentDeviceId = deviceIdRef.current;
-      const currentWalletType = walletTypeRef.current;
-
-      if (currentDeviceId && currentWalletType) {
-        await connect(currentWalletType, currentDeviceId);
-
-        if (!abortSignal?.aborted && adapterRef.current?.isConnected()) {
-          const adapter = adapterRef.current;
-          if (adapter.verifyDeviceReady && currentDeviceId) {
-            try {
-              const result = await adapter.verifyDeviceReady(currentDeviceId);
-
-              console.log('ensureDeviceReady result', result);
-              if (result) {
-                updateConnectionState(ConnectionState.ready());
-              } else {
-                updateConnectionState(
-                  ConnectionState.error(
-                    'device_not_ready',
-                    new Error('Device is not ready'),
-                  ),
-                );
-              }
-            } catch (err) {
-              if (err && typeof err === 'object' && 'code' in err) {
-                updateConnectionState(
-                  getConnectionStateFromError(
-                    err as unknown as HardwareWalletError,
-                  ),
-                );
-              }
-            }
-          }
-        }
-      }
-    }
-  }, [connect, updateConnectionState]);
 
   const checkHardwareWalletPermissionAction = useCallback(
     async (
@@ -1047,7 +972,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       connect,
       disconnect,
       clearError,
-      retry,
       checkHardwareWalletPermission: checkHardwareWalletPermissionAction,
       requestHardwareWalletPermission: requestHardwareWalletPermissionAction,
       ensureDeviceReady,
@@ -1056,7 +980,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       connect,
       disconnect,
       clearError,
-      retry,
       checkHardwareWalletPermissionAction,
       requestHardwareWalletPermissionAction,
       ensureDeviceReady,
