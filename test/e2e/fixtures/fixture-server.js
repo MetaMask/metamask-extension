@@ -64,7 +64,8 @@ function performStateSubstitutions(rawState, contractRegistry) {
 }
 
 class FixtureServer {
-  constructor() {
+  constructor({ port = FIXTURE_SERVER_PORT } = {}) {
+    this._port = port;
     this._app = new Koa();
     this._stateMap = new Map([[DEFAULT_STATE_KEY, Object.create(null)]]);
 
@@ -80,7 +81,7 @@ class FixtureServer {
   async start() {
     const options = {
       host: FIXTURE_SERVER_HOST,
-      port: FIXTURE_SERVER_PORT,
+      port: this._port,
       exclusive: true,
     };
 
@@ -89,6 +90,10 @@ class FixtureServer {
       this._server.once('error', reject);
       this._server.once('listening', resolve);
     });
+  }
+
+  getPort() {
+    return this._port;
   }
 
   async stop() {
