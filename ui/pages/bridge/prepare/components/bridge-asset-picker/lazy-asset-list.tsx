@@ -12,7 +12,6 @@ export const BridgeAssetList = ({
   isPopularTokensLoading,
   onAssetChange,
   selectedAssetId,
-  excludedAssetId,
   searchQuery,
 }: {
   popularTokensList: BridgeToken[];
@@ -20,7 +19,6 @@ export const BridgeAssetList = ({
   assetsToInclude: BridgeToken[];
   onAssetChange: (asset: BridgeToken) => void;
   selectedAssetId: CaipAssetType;
-  excludedAssetId?: CaipAssetType;
   searchQuery: string;
 } & React.ComponentProps<typeof Column>) => {
   // TODO call useTokenSearchResults hook here
@@ -65,12 +63,8 @@ export const BridgeAssetList = ({
    * Filter out the excluded asset
    */
   const filteredTokenList = useMemo(
-    () =>
-      (searchQuery.length > 0 ? searchResults : popularTokensList).filter(
-        (token) =>
-          token.assetId?.toLowerCase() !== excludedAssetId?.toLowerCase(),
-      ),
-    [searchQuery.length, searchResults, popularTokensList, excludedAssetId],
+    () => (searchQuery.length > 0 ? searchResults : popularTokensList),
+    [searchQuery.length, searchResults, popularTokensList],
   );
 
   return (
@@ -82,7 +76,9 @@ export const BridgeAssetList = ({
           onClick={() => {
             onAssetChange(token);
           }}
-          selected={selectedAssetId.toLowerCase() === token.assetId?.toLowerCase()}
+          selected={
+            selectedAssetId.toLowerCase() === token.assetId?.toLowerCase()
+          }
         />
       ))}
       {filteredTokenList.length < 1 && !shouldShowLoadingIndicator ? (
