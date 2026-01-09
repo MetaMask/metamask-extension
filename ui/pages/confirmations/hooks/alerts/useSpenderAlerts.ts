@@ -21,17 +21,17 @@ import {
 import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
 
-type RevokeCheckResult = {
-  isRevoke: boolean;
-  needsTokenCheck: boolean;
-  tokenAddress: string | undefined;
-};
+enum RevokeStatus {
+  NotRevoke = 'not-revoke',
+  Revoke = 'revoke',
+  RevokeUnlessNFT = 'revoke-unless-nft',
+}
 
-function checkRevokeOperation(
+function getRevokeStatus(
   currentConfirmation: TransactionMeta | SignatureRequestType | undefined,
-): RevokeCheckResult {
+): RevokeStatus {
   if (!currentConfirmation) {
-    return { isRevoke: false, needsTokenCheck: false, tokenAddress: undefined };
+    return RevokeStatus.NotRevoke;
   }
 
   const transactionMeta = currentConfirmation as TransactionMeta;
@@ -39,22 +39,16 @@ function checkRevokeOperation(
 
   if (txData) {
     const approvalData = parseApprovalTransactionData(txData as `0x${string}`);
-    if (approvalData) {
-      if (approvalData.isRevokeAll) {
-        return {
-          isRevoke: true,
-          needsTokenCheck: false,
-          tokenAddress: undefined,
-        };
-      }
-      if (approvalData.amountOrTokenId?.isZero()) {
-        const tokenAddress = (
-          approvalData.tokenAddress || transactionMeta.txParams?.to
-        )?.toLowerCase();
-        return { isRevoke: false, needsTokenCheck: true, tokenAddress };
-      }
+    if (approvalData?.isRevokeAll) {
+      return RevokeStatus.Revoke;
     }
-  } else if (
+    if (approvalData?.amountOrTokenId?.isZero()) {
+      return RevokeStatus.RevokeUnlessNFT;
+    }
+    return RevokeStatus.NotRevoke;
+  }
+
+  if (
     isSignatureTransactionType(currentConfirmation) &&
     currentConfirmation.type === 'eth_signTypedData'
   ) {
@@ -62,33 +56,26 @@ function checkRevokeOperation(
     const msgData = signatureRequest.msgParams?.data as string;
 
     if (msgData) {
-      const typedDataMessage = parseTypedDataMessage(msgData);
-      const { primaryType, message, domain } = typedDataMessage;
+      const { primaryType, message, domain } = parseTypedDataMessage(msgData);
+      const isPermit = PRIMARY_TYPES_PERMIT.some(
+        (type) => type === primaryType,
+      );
 
-      if (PRIMARY_TYPES_PERMIT.some((type) => type === primaryType)) {
-        if (
+      if (isPermit) {
+        const isDaiRevoke =
           message?.allowed === false &&
-          domain?.verifyingContract === DAI_CONTRACT_ADDRESS
-        ) {
-          return {
-            isRevoke: true,
-            needsTokenCheck: false,
-            tokenAddress: undefined,
-          };
-        }
-        const value = message?.value;
-        if (value === '0' || value === 0) {
-          return {
-            isRevoke: true,
-            needsTokenCheck: false,
-            tokenAddress: undefined,
-          };
+          domain?.verifyingContract === DAI_CONTRACT_ADDRESS;
+        const isZeroValuePermit =
+          message?.value === '0' || message?.value === 0;
+
+        if (isDaiRevoke || isZeroValuePermit) {
+          return RevokeStatus.Revoke;
         }
       }
     }
   }
 
-  return { isRevoke: false, needsTokenCheck: false, tokenAddress: undefined };
+  return RevokeStatus.NotRevoke;
 }
 
 /**
@@ -102,8 +89,8 @@ export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const revokeCheck = useMemo(
-    () => checkRevokeOperation(currentConfirmation),
+  const revokeStatus = useMemo(
+    () => getRevokeStatus(currentConfirmation),
     [currentConfirmation],
   );
 
@@ -112,17 +99,14 @@ export function useSpenderAlerts(): Alert[] {
   );
 
   const isRevoke = useMemo(() => {
-    if (revokeCheck.isRevoke) {
+    if (revokeStatus === RevokeStatus.Revoke) {
       return true;
     }
-    if (revokeCheck.needsTokenCheck) {
-      if (isNFTPending) {
-        return false;
-      }
-      return !isNFT;
+    if (revokeStatus === RevokeStatus.RevokeUnlessNFT) {
+      return !isNFTPending && !isNFT;
     }
     return false;
-  }, [revokeCheck, isNFT, isNFTPending]);
+  }, [revokeStatus, isNFT, isNFTPending]);
 
   const spenderAddress = useMemo(() => {
     if (!currentConfirmation) {
