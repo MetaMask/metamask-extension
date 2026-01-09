@@ -84,6 +84,13 @@ export class LedgerOffscreenBridge
     );
   }
 
+  getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
+    console.log('[LedgerOffscreenBridge] getAppNameAndVersion starting');
+    return this.#sendMessage({
+      action: LedgerAction.getAppAndName,
+    });
+  }
+
   getPublicKey(params: { hdPath: string }): Promise<{
     publicKey: string;
     address: string;
