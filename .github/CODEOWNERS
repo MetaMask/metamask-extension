@@ -95,6 +95,7 @@ ui/hooks/perps/ @MetaMask/perps
 ui/selectors/perps/ @MetaMask/perps
 shared/lib/deep-links/routes/perps.ts @MetaMask/perps
 test/e2e/tests/perps/ @MetaMask/perps
+docs/perps/ @MetaMask/perps
 **/perps/** @MetaMask/perps
 
 # Snaps
