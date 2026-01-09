@@ -5440,13 +5440,10 @@ export default class MetamaskController extends EventEmitter {
   }
 
   async getAppNameAndVersion() {
-    const result = await this.#withKeyringForDevice(
+    return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.getAppNameAndVersion(),
     );
-    console.log('[getAppNameAndVersion] result', result);
-
-    return result;
   }
 
   /**
