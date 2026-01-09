@@ -160,6 +160,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       console.log(LOG_TAG, 'Dispatching showModal with:', {
         name: HARDWARE_WALLET_ERROR_MODAL_NAME,
         errorCode: error?.code,
+        errorMessage: error?.message,
+        errorUserActionable: error?.userActionable,
       });
       setDisplayedError(error);
       isModalOpenRef.current = true;
@@ -169,14 +171,14 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         lastConnectionErrorRef.current = error;
       }
 
-      dispatch(
-        showModal({
-          name: HARDWARE_WALLET_ERROR_MODAL_NAME,
-          error,
-          onRetry: handleRetry,
-          onCancel: handleCancel,
-        }),
-      );
+      const modalPayload = {
+        name: HARDWARE_WALLET_ERROR_MODAL_NAME,
+        error,
+        onRetry: handleRetry,
+        onCancel: handleCancel,
+        isOpen: true,
+      };
+      dispatch(showModal(modalPayload));
     },
     [dispatch, handleRetry, handleCancel, displayedError],
   );
@@ -199,16 +201,18 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    * Only capture errors, don't auto-dismiss when state changes
    */
   useEffect(() => {
-    if (!isHardwareWalletAccount) {
-      // Reset state when not a hardware wallet account
-      if (displayedError) {
-        setDisplayedError(null);
-        lastConnectionErrorRef.current = null;
-        if (isModalOpenRef.current) {
-          isModalOpenRef.current = false;
-          dispatch(hideModal());
-        }
+    // Reset state when not a hardware wallet account
+    if (!isHardwareWalletAccount && displayedError) {
+      setDisplayedError(null);
+      lastConnectionErrorRef.current = null;
+      if (isModalOpenRef.current) {
+        isModalOpenRef.current = false;
+        dispatch(hideModal());
       }
+      return;
+    }
+
+    if (!isHardwareWalletAccount) {
       return;
     }
 

@@ -560,8 +560,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       isConnectingRef.current = true;
 
       // If device ID is not provided, try to find the device
-      let deviceId = id;
-      if (!deviceId) {
+      let discoveredDeviceId = id;
+      if (!discoveredDeviceId) {
         console.log(
           LOG_TAG,
           `Device ID not provided, attempting to discover ${type} device`,
@@ -587,8 +587,8 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
             isConnectingRef.current = false;
             return;
           }
-          deviceId = discoveredId;
-          console.log(LOG_TAG, `Discovered device ID: ${deviceId}`);
+          discoveredDeviceId = discoveredId;
+          console.log(LOG_TAG, `Discovered device ID: ${discoveredDeviceId}`);
         } catch (error) {
           console.error(LOG_TAG, 'Failed to discover device:', error);
           updateConnectionState(
@@ -608,11 +608,11 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
 
       console.log(
         LOG_TAG,
-        `Connecting to ${type} device: ${deviceId} (ID: ${connectionId})`,
+        `Connecting to ${type} device: ${discoveredDeviceId} (ID: ${connectionId})`,
       );
 
       if (!abortSignal?.aborted) {
-        setDeviceId(deviceId);
+        setDeviceId(discoveredDeviceId);
         updateConnectionState(ConnectionState.connecting());
       }
 
@@ -676,7 +676,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         }
 
         adapterRef.current = adapter;
-        await adapter.connect(deviceId);
+        await adapter.connect(discoveredDeviceId);
 
         // Verify this is still the latest connection attempt after async operation
         if (currentConnectionIdRef.current !== connectionId) {
@@ -939,59 +939,66 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [isWebHidAvailableState, isWebUsbAvailableState],
   );
 
-  const ensureDeviceReady = useCallback(async (): Promise<boolean> => {
-    const abortSignal = abortControllerRef.current?.signal;
+  const ensureDeviceReady = useCallback(
+    async (targetDeviceId?: string): Promise<boolean> => {
+      const effectiveDeviceId = targetDeviceId || deviceId;
+      const abortSignal = abortControllerRef.current?.signal;
 
-    if (abortSignal?.aborted) {
-      console.log(LOG_TAG, 'ensureDeviceReady aborted');
-      return false;
-    }
-
-    const adapter = adapterRef.current;
-
-    // If not connected, try to connect first
-    if (!adapter?.isConnected()) {
-      console.log(LOG_TAG, 'Device not connected, attempting connection');
-      const currentDetectedWalletType = detectedWalletTypeRef.current;
-
-      if (!currentDetectedWalletType) {
+      if (abortSignal?.aborted) {
+        console.log(LOG_TAG, 'ensureDeviceReady aborted');
         return false;
       }
 
-      try {
-        await connect(currentDetectedWalletType, deviceId ?? undefined);
-      } catch (error) {
-        // Error state already set by connect/adapter via device events
-        // HardwareWalletErrorMonitor will show modal automatically
-        console.error(
-          LOG_TAG,
-          'Connection failed in ensureDeviceReady:',
-          error,
-        );
-        return false;
-      }
-    }
+      const adapter = adapterRef.current;
 
-    if (!abortSignal?.aborted) {
-      if (adapter?.verifyDeviceReady && deviceId) {
+      // If not connected, try to connect first
+      if (!adapter?.isConnected()) {
+        console.log(LOG_TAG, 'Device not connected, attempting connection');
+        const currentDetectedWalletType = detectedWalletTypeRef.current;
+
+        if (!currentDetectedWalletType) {
+          return false;
+        }
+
         try {
-          const result = await adapter.verifyDeviceReady(deviceId);
-          console.log(LOG_TAG, 'ensureDeviceReady result:', result);
-          if (result) {
-            updateConnectionState(ConnectionState.ready());
-          }
-          return result;
+          await connect(
+            currentDetectedWalletType,
+            effectiveDeviceId ?? undefined,
+          );
         } catch (error) {
-          // Error state already set via onDeviceEvent in adapter
+          // Error state already set by connect/adapter via device events
           // HardwareWalletErrorMonitor will show modal automatically
-          console.error(LOG_TAG, 'verifyDeviceReady failed:', error);
+          console.error(
+            LOG_TAG,
+            'Connection failed in ensureDeviceReady:',
+            error,
+          );
           return false;
         }
       }
-    }
 
-    return false;
-  }, [connect, updateConnectionState]);
+      if (!abortSignal?.aborted) {
+        if (adapter?.verifyDeviceReady && effectiveDeviceId) {
+          try {
+            const result = await adapter.verifyDeviceReady(effectiveDeviceId);
+            console.log(LOG_TAG, 'ensureDeviceReady result:', result);
+            if (result) {
+              updateConnectionState(ConnectionState.ready());
+            }
+            return result;
+          } catch (error) {
+            // Error state already set via onDeviceEvent in adapter
+            // HardwareWalletErrorMonitor will show modal automatically
+            console.error(LOG_TAG, 'verifyDeviceReady failed:', error);
+            return false;
+          }
+        }
+      }
+
+      return false;
+    },
+    [connect, updateConnectionState, deviceId],
+  );
 
   // Memoized context values
   const configValue = useMemo<HardwareWalletConfigContextType>(
