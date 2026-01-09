@@ -378,7 +378,7 @@ describe('useFirstTimeInteractionAlert', () => {
 
     // Verify useTrustSignal was called with the actual recipient, not contract address
     expect(mockUseTrustSignal).toHaveBeenCalledWith(
-      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'i')),
+      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'iu')),
       expect.anything(),
       expect.anything(),
     );
@@ -430,7 +430,7 @@ describe('useFirstTimeInteractionAlert', () => {
 
     // Verify useTrustSignal was called with the actual recipient, not contract address
     expect(mockUseTrustSignal).toHaveBeenCalledWith(
-      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'i')),
+      expect.stringMatching(new RegExp(ACCOUNT_ADDRESS_2_MOCK, 'iu')),
       expect.anything(),
       expect.anything(),
     );
