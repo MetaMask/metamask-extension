@@ -1,8 +1,6 @@
 import { useMemo } from 'react';
 import { NameType } from '@metamask/name-controller';
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useSelector } from 'react-redux';
-import { NftContract } from '@metamask/assets-controllers';
 
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../context/confirm';
@@ -21,36 +19,19 @@ import {
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
-import { selectERC20TokensByChain } from '../../../../selectors';
-import { getNftContractsByAddressByChain } from '../../../../selectors/nft';
+import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
 
-type ERC20TokensByChain = Record<
-  string,
-  { data?: Record<string, unknown> } | undefined
->;
+type RevokeCheckResult = {
+  isRevoke: boolean;
+  needsTokenCheck: boolean;
+  tokenAddress: string | undefined;
+};
 
-type NftContractsByAddressByChain = Record<
-  string,
-  Record<string, NftContract> | undefined
->;
-
-/**
- * Determines if a transaction or signature is a revoke operation.
- * Revokes should not show blocking alerts since the user is performing
- * the safe action of removing a permission.
- *
- * @param currentConfirmation - The current confirmation object
- * @param erc20TokensByChain - ERC20 tokens cache from selector
- * @param nftContractsByChain - NFT contracts cache from selector
- * @returns boolean indicating if this is a revoke operation
- */
-function isRevokeOperation(
+function checkRevokeOperation(
   currentConfirmation: TransactionMeta | SignatureRequestType | undefined,
-  erc20TokensByChain: ERC20TokensByChain,
-  nftContractsByChain: NftContractsByAddressByChain,
-): boolean {
+): RevokeCheckResult {
   if (!currentConfirmation) {
-    return false;
+    return { isRevoke: false, needsTokenCheck: false, tokenAddress: undefined };
   }
 
   const transactionMeta = currentConfirmation as TransactionMeta;
@@ -60,31 +41,17 @@ function isRevokeOperation(
     const approvalData = parseApprovalTransactionData(txData as `0x${string}`);
     if (approvalData) {
       if (approvalData.isRevokeAll) {
-        return true;
+        return {
+          isRevoke: true,
+          needsTokenCheck: false,
+          tokenAddress: undefined,
+        };
       }
       if (approvalData.amountOrTokenId?.isZero()) {
-        const { chainId } = transactionMeta;
         const tokenAddress = (
           approvalData.tokenAddress || transactionMeta.txParams?.to
         )?.toLowerCase();
-
-        const isKnownNFT = Boolean(
-          tokenAddress &&
-            chainId &&
-            nftContractsByChain[chainId]?.[tokenAddress],
-        );
-        if (isKnownNFT) {
-          return false;
-        }
-
-        const isKnownERC20 = Boolean(
-          tokenAddress &&
-            chainId &&
-            erc20TokensByChain[chainId]?.data?.[tokenAddress],
-        );
-        if (isKnownERC20) {
-          return true;
-        }
+        return { isRevoke: false, needsTokenCheck: true, tokenAddress };
       }
     }
   } else if (
@@ -103,17 +70,25 @@ function isRevokeOperation(
           message?.allowed === false &&
           domain?.verifyingContract === DAI_CONTRACT_ADDRESS
         ) {
-          return true;
+          return {
+            isRevoke: true,
+            needsTokenCheck: false,
+            tokenAddress: undefined,
+          };
         }
         const value = message?.value;
         if (value === '0' || value === 0) {
-          return true;
+          return {
+            isRevoke: true,
+            needsTokenCheck: false,
+            tokenAddress: undefined,
+          };
         }
       }
     }
   }
 
-  return false;
+  return { isRevoke: false, needsTokenCheck: false, tokenAddress: undefined };
 }
 
 /**
@@ -126,22 +101,28 @@ function isRevokeOperation(
 export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
-  const erc20TokensByChain = useSelector(
-    selectERC20TokensByChain,
-  ) as ERC20TokensByChain;
-  const nftContractsByChain = useSelector(
-    getNftContractsByAddressByChain,
-  ) as NftContractsByAddressByChain;
 
-  const isRevoke = useMemo(
-    () =>
-      isRevokeOperation(
-        currentConfirmation,
-        erc20TokensByChain,
-        nftContractsByChain,
-      ),
-    [currentConfirmation, erc20TokensByChain, nftContractsByChain],
+  const revokeCheck = useMemo(
+    () => checkRevokeOperation(currentConfirmation),
+    [currentConfirmation],
   );
+
+  const { isNFT, pending: isNFTPending } = useIsNFT(
+    currentConfirmation as TransactionMeta,
+  );
+
+  const isRevoke = useMemo(() => {
+    if (revokeCheck.isRevoke) {
+      return true;
+    }
+    if (revokeCheck.needsTokenCheck) {
+      if (isNFTPending) {
+        return false;
+      }
+      return !isNFT;
+    }
+    return false;
+  }, [revokeCheck, isNFT, isNFTPending]);
 
   const spenderAddress = useMemo(() => {
     if (!currentConfirmation) {
