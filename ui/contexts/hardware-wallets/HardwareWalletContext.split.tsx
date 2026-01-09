@@ -1,12 +1,3 @@
-/**
- * Hardware Wallet Context - Split Context Implementation
- *
- * Splits the context into three separate contexts to prevent unnecessary rerenders:
- * 1. Config Context - Rarely changes (wallet type, device ID, permissions)
- * 2. State Context - Frequently changes (connection state)
- * 3. Actions Context - Stable callbacks (connect, disconnect, etc.)
- */
-
 import React, {
   createContext,
   useCallback,
@@ -24,6 +15,8 @@ import { ConnectionState } from './connectionState';
 import { LedgerAdapter } from './adapters/LedgerAdapter';
 import {
   getConnectionStateFromError,
+  createHardwareWalletError,
+  ErrorCode,
   type HardwareWalletError,
 } from './errors';
 import {
@@ -45,12 +38,9 @@ import {
   subscribeToWebHIDEvents,
   subscribeToWebUSBEvents,
 } from './webHIDUtils';
+import { TrezorAdapter } from './adapters';
 
 const LOG_TAG = '[HardwareWalletContext.Split]';
-
-// ============================================================================
-// TYPES
-// ============================================================================
 
 /**
  * Config context - rarely changes
@@ -81,7 +71,7 @@ export type HardwareWalletStateContextType = {
  * These never change, so components subscribing only to actions never rerender
  */
 export type HardwareWalletActionsContextType = {
-  connect: (type: HardwareWalletType, id: string) => Promise<void>;
+  connect: (type: HardwareWalletType, id?: string) => Promise<void>;
   disconnect: () => Promise<void>;
   clearError: () => void;
   retry: () => Promise<void>;
@@ -94,10 +84,6 @@ export type HardwareWalletActionsContextType = {
   ensureDeviceReady: (deviceId: string) => Promise<boolean>;
 };
 
-// ============================================================================
-// CONTEXTS
-// ============================================================================
-
 const HardwareWalletConfigContext =
   createContext<HardwareWalletConfigContextType | null>(null);
 
@@ -106,10 +92,6 @@ const HardwareWalletStateContext =
 
 const HardwareWalletActionsContext =
   createContext<HardwareWalletActionsContextType | null>(null);
-
-// ============================================================================
-// HOOKS
-// ============================================================================
 
 /**
  * Hook to access hardware wallet config (rarely changes)
@@ -174,10 +156,6 @@ export const useHardwareWallet = () => {
   };
 };
 
-// ============================================================================
-// HELPERS
-// ============================================================================
-
 function isError(error: unknown): error is Error {
   return error instanceof Error;
 }
@@ -192,14 +170,12 @@ function keyringTypeToHardwareWalletType(
   switch (keyringType) {
     case KeyringTypes.ledger:
       return HardwareWalletType.Ledger;
+    case KeyringTypes.trezor:
+      return HardwareWalletType.Trezor;
     default:
       return null;
   }
 }
-
-// ============================================================================
-// SELECTORS
-// ============================================================================
 
 /**
  * Selector that extracts only the account data we need for hardware wallet detection.
@@ -216,10 +192,6 @@ function selectAccountHardwareInfo(state: any) {
     address: account?.address ?? null,
   };
 }
-
-// ============================================================================
-// PROVIDER
-// ============================================================================
 
 export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   children,
@@ -262,7 +234,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   const lastConnectedAccountRef = useRef<string | null>(null);
   const currentConnectionIdRef = useRef<number | null>(null);
   const connectRef =
-    useRef<(type: HardwareWalletType, id: string) => Promise<void>>();
+    useRef<(type: HardwareWalletType, id?: string) => Promise<void>>();
 
   const walletTypeRef = useRef<HardwareWalletType | null>(null);
   const deviceIdRef = useRef<string | null>(null);
@@ -558,8 +530,11 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   ]);
 
   const connect = useCallback(
-    async (type: HardwareWalletType, id: string): Promise<void> => {
+    async (type: HardwareWalletType, id?: string): Promise<void> => {
       const abortSignal = abortControllerRef.current?.signal;
+
+      // Set wallet type immediately so error modals can display the correct wallet type
+      setWalletType(type);
 
       // Cancel any in-flight connection attempt
       if (isConnectingRef.current) {
@@ -584,14 +559,60 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       currentConnectionIdRef.current = connectionId;
       isConnectingRef.current = true;
 
+      // If device ID is not provided, try to find the device
+      let deviceId = id;
+      if (!deviceId) {
+        console.log(
+          LOG_TAG,
+          `Device ID not provided, attempting to discover ${type} device`,
+        );
+        try {
+          const discoveredId = await getHardwareWalletDeviceId(type);
+          if (!discoveredId) {
+            console.log(LOG_TAG, 'No hardware wallet device found');
+            console.log(
+              '[HardwareWalletContext] Creating error for no device found',
+            );
+            const error = createHardwareWalletError(
+              ErrorCode.DEVICE_STATE_003,
+              type,
+              `No ${type} device found. Please ensure your device is connected and unlocked.`,
+            );
+            console.log(
+              '[HardwareWalletContext] Created error:',
+              error.code,
+              error.userActionable,
+            );
+            updateConnectionState(getConnectionStateFromError(error));
+            isConnectingRef.current = false;
+            return;
+          }
+          deviceId = discoveredId;
+          console.log(LOG_TAG, `Discovered device ID: ${deviceId}`);
+        } catch (error) {
+          console.error(LOG_TAG, 'Failed to discover device:', error);
+          updateConnectionState(
+            getConnectionStateFromError(
+              createHardwareWalletError(
+                ErrorCode.CONN_CLOSED_001,
+                type,
+                `Failed to discover ${type} device: ${error instanceof Error ? error.message : String(error)}`,
+                { cause: error instanceof Error ? error : undefined },
+              ),
+            ),
+          );
+          isConnectingRef.current = false;
+          return;
+        }
+      }
+
       console.log(
         LOG_TAG,
-        `Connecting to ${type} device: ${id} (ID: ${connectionId})`,
+        `Connecting to ${type} device: ${deviceId} (ID: ${connectionId})`,
       );
 
       if (!abortSignal?.aborted) {
-        setWalletType(type);
-        setDeviceId(id);
+        setDeviceId(deviceId);
         updateConnectionState(ConnectionState.connecting());
       }
 
@@ -638,6 +659,9 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
           case HardwareWalletType.Ledger:
             adapter = new LedgerAdapter(adapterOptions);
             break;
+          case HardwareWalletType.Trezor:
+            adapter = new TrezorAdapter(adapterOptions);
+            break;
           default:
             throw new Error(
               `Unsupported hardware wallet type: ${String(type)}`,
@@ -652,7 +676,7 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         }
 
         adapterRef.current = adapter;
-        await adapter.connect(id);
+        await adapter.connect(deviceId);
 
         // Verify this is still the latest connection attempt after async operation
         if (currentConnectionIdRef.current !== connectionId) {
@@ -915,68 +939,59 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     [isWebHidAvailableState, isWebUsbAvailableState],
   );
 
-  const ensureDeviceReady = useCallback(
-    async (targetDeviceId: string): Promise<boolean> => {
-      const abortSignal = abortControllerRef.current?.signal;
+  const ensureDeviceReady = useCallback(async (): Promise<boolean> => {
+    const abortSignal = abortControllerRef.current?.signal;
 
-      if (abortSignal?.aborted) {
-        console.log(LOG_TAG, 'ensureDeviceReady aborted');
+    if (abortSignal?.aborted) {
+      console.log(LOG_TAG, 'ensureDeviceReady aborted');
+      return false;
+    }
+
+    const adapter = adapterRef.current;
+
+    // If not connected, try to connect first
+    if (!adapter?.isConnected()) {
+      console.log(LOG_TAG, 'Device not connected, attempting connection');
+      const currentDetectedWalletType = detectedWalletTypeRef.current;
+
+      if (!currentDetectedWalletType) {
         return false;
       }
 
-      const adapter = adapterRef.current;
+      try {
+        await connect(currentDetectedWalletType, deviceId ?? undefined);
+      } catch (error) {
+        // Error state already set by connect/adapter via device events
+        // HardwareWalletErrorMonitor will show modal automatically
+        console.error(
+          LOG_TAG,
+          'Connection failed in ensureDeviceReady:',
+          error,
+        );
+        return false;
+      }
+    }
 
-      // If not connected, try to connect first
-      if (!adapter?.isConnected()) {
-        console.log(LOG_TAG, 'Device not connected, attempting connection');
-        const currentDetectedWalletType = detectedWalletTypeRef.current;
-
-        if (!targetDeviceId || !currentDetectedWalletType) {
-          updateConnectionState(
-            ConnectionState.error(
-              'connection_failed',
-              new Error('Hardware wallet device not found'),
-            ),
-          );
-          return false;
-        }
-
+    if (!abortSignal?.aborted) {
+      if (adapter?.verifyDeviceReady && deviceId) {
         try {
-          await connect(currentDetectedWalletType, targetDeviceId);
+          const result = await adapter.verifyDeviceReady(deviceId);
+          console.log(LOG_TAG, 'ensureDeviceReady result:', result);
+          if (result) {
+            updateConnectionState(ConnectionState.ready());
+          }
+          return result;
         } catch (error) {
-          // Error state already set by connect/adapter via device events
+          // Error state already set via onDeviceEvent in adapter
           // HardwareWalletErrorMonitor will show modal automatically
-          console.error(
-            LOG_TAG,
-            'Connection failed in ensureDeviceReady:',
-            error,
-          );
+          console.error(LOG_TAG, 'verifyDeviceReady failed:', error);
           return false;
         }
       }
+    }
 
-      if (!abortSignal?.aborted) {
-        if (adapter?.verifyDeviceReady && targetDeviceId) {
-          try {
-            const result = await adapter.verifyDeviceReady(targetDeviceId);
-            console.log(LOG_TAG, 'ensureDeviceReady result:', result);
-            if (result) {
-              updateConnectionState(ConnectionState.ready());
-            }
-            return result;
-          } catch (error) {
-            // Error state already set via onDeviceEvent in adapter
-            // HardwareWalletErrorMonitor will show modal automatically
-            console.error(LOG_TAG, 'verifyDeviceReady failed:', error);
-            return false;
-          }
-        }
-      }
-
-      return false;
-    },
-    [connect, updateConnectionState],
-  );
+    return false;
+  }, [connect, updateConnectionState]);
 
   // Memoized context values
   const configValue = useMemo<HardwareWalletConfigContextType>(

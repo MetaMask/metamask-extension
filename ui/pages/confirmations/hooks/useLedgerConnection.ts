@@ -38,68 +38,63 @@ const useLedgerConnection = () => {
   );
 
   useEffect(() => {
-    if (
-      !isLedgerWallet ||
-      ledgerTransportType !== LedgerTransportTypes.webhid
-    ) {
+    if (!isLedgerWallet) {
       return;
     }
-
-    const initializeLedgerConnection = async () => {
-      try {
-        // Step 1: Check if device is connected first
-        if (webHidConnectedStatus !== WebHIDConnectedStatuses.connected) {
-          const devices = await window.navigator?.hid?.getDevices();
-          const webHidIsConnected = devices?.some(
-            (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-          );
-
-          dispatch(
-            setLedgerWebHidConnectedStatus(
-              webHidIsConnected
-                ? WebHIDConnectedStatuses.connected
-                : WebHIDConnectedStatuses.notConnected,
-            ),
-          );
-
-          if (!webHidIsConnected) {
-            return;
-          }
-        }
-
-        // Step 2: Create transport if device is connected and transport not established
-        if (
-          webHidConnectedStatus === WebHIDConnectedStatuses.connected &&
-          transportStatus === HardwareTransportStates.none
-        ) {
-          const transportCreated = await attemptLedgerTransportCreation();
+    const initialConnectedDeviceCheck = async () => {
+      if (
+        ledgerTransportType === LedgerTransportTypes.webhid &&
+        webHidConnectedStatus !== WebHIDConnectedStatuses.connected
+      ) {
+        const devices = await window.navigator?.hid?.getDevices();
+        const webHidIsConnected = devices?.some(
+          (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
+        );
+        dispatch(
+          setLedgerWebHidConnectedStatus(
+            webHidIsConnected
+              ? WebHIDConnectedStatuses.connected
+              : WebHIDConnectedStatuses.notConnected,
+          ),
+        );
+      }
+    };
+    const determineTransportStatus = async () => {
+      if (
+        ledgerTransportType === LedgerTransportTypes.webhid &&
+        webHidConnectedStatus === WebHIDConnectedStatuses.connected &&
+        transportStatus === HardwareTransportStates.none
+      ) {
+        try {
+          const transportedCreated = await attemptLedgerTransportCreation();
           dispatch(
             setLedgerTransportStatus(
-              transportCreated
+              transportedCreated
                 ? HardwareTransportStates.verified
                 : HardwareTransportStates.unknownFailure,
             ),
           );
-        }
-      } catch (error: unknown) {
-        const errorMessage =
-          error instanceof Error ? error.message : String(error);
-
-        if (errorMessage.includes('Failed to open the device')) {
-          dispatch(
-            setLedgerTransportStatus(HardwareTransportStates.deviceOpenFailure),
-          );
-        } else if (errorMessage.includes('device is already open')) {
-          dispatch(setLedgerTransportStatus(HardwareTransportStates.verified));
-        } else {
-          dispatch(
-            setLedgerTransportStatus(HardwareTransportStates.unknownFailure),
-          );
+        } catch (e: unknown) {
+          if ((e as Error).message.match('Failed to open the device')) {
+            dispatch(
+              setLedgerTransportStatus(
+                HardwareTransportStates.deviceOpenFailure,
+              ),
+            );
+          } else if ((e as Error).message.match('the device is already open')) {
+            dispatch(
+              setLedgerTransportStatus(HardwareTransportStates.verified),
+            );
+          } else {
+            dispatch(
+              setLedgerTransportStatus(HardwareTransportStates.unknownFailure),
+            );
+          }
         }
       }
     };
-
-    initializeLedgerConnection();
+    determineTransportStatus();
+    initialConnectedDeviceCheck();
   }, [
     dispatch,
     ledgerTransportType,
@@ -109,18 +104,15 @@ const useLedgerConnection = () => {
   ]);
 
   useEffect(() => {
+    if (!isLedgerWallet) {
+      return undefined;
+    }
     return () => {
-      if (isLedgerWallet) {
-        dispatch(setLedgerTransportStatus(HardwareTransportStates.none));
-      }
+      dispatch(setLedgerTransportStatus(HardwareTransportStates.none));
     };
-  }, [dispatch, isLedgerWallet]);
+  }, [dispatch]);
 
-  return {
-    isLedgerWallet,
-    transportStatus,
-    webHidConnectedStatus,
-  };
+  return { isLedgerWallet };
 };
 
 export default useLedgerConnection;

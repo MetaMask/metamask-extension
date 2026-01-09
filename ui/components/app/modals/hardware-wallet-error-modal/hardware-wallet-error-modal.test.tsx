@@ -25,14 +25,16 @@ jest.mock('../../../../hooks/useModalProps', () => ({
 
 // Mock hardware wallet hooks
 const mockEnsureDeviceReady = jest.fn();
+const mockClearError = jest.fn();
 jest.mock('../../../../contexts/hardware-wallets', () => ({
   useHardwareWalletConfig: () => ({
     deviceId: 'test-device-id',
     isHardwareWalletAccount: true,
-    walletType: 'ledger',
+    detectedWalletType: HardwareWalletType.Ledger,
   }),
   useHardwareWalletActions: () => ({
     ensureDeviceReady: mockEnsureDeviceReady,
+    clearError: mockClearError,
   }),
 }));
 
@@ -70,7 +72,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -94,7 +95,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -113,7 +113,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -133,7 +132,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -152,7 +150,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -180,7 +177,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -202,7 +198,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -224,7 +219,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -249,7 +243,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -274,7 +267,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -296,7 +288,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -315,7 +306,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -341,7 +331,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText, queryByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
           onRetry={onRetry}
           onCancel={onCancel}
         />,
@@ -366,7 +355,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText, queryByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
           onCancel={onCancel}
         />,
       );
@@ -387,7 +375,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText, queryByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
           onCancel={onCancel}
         />,
       );
@@ -410,7 +397,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
           onRetry={onRetry}
           onCancel={onCancel}
         />,
@@ -439,7 +425,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
           onCancel={onCancel}
         />,
       );
@@ -460,7 +445,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -479,7 +463,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 
@@ -498,7 +481,6 @@ describe('HardwareWalletErrorModal', () => {
       const { getByText } = render(
         <HardwareWalletErrorModal
           error={error}
-          walletType={HardwareWalletType.Ledger}
         />,
       );
 

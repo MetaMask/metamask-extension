@@ -42,9 +42,9 @@ import {
 type HardwareWalletErrorModalProps = {
   isOpen?: boolean;
   error?: HardwareWalletError;
-  walletType?: HardwareWalletType;
   onCancel?: () => void;
   onClose?: () => void;
+  onRetry?: () => void;
 };
 
 /**
@@ -58,15 +58,21 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
     const { hideModal, props: modalProps } = useModalProps();
     const [isLoading, setIsLoading] = useState(false);
     const [recovered, setRecovered] = useState(false);
-    const { error, walletType, onCancel, onClose } = {
-      ...props,
-      ...modalProps,
-    };
-    const { deviceId } = useHardwareWalletConfig();
+    const { error, onCancel, onRetry, onClose } = { ...modalProps, ...props };
+
+    const { deviceId, detectedWalletType, walletType } =
+      useHardwareWalletConfig();
     const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
+    console.log('[HardwareWalletErrorModal] error', error);
+    console.log(
+      '[HardwareWalletErrorModal] detectedWalletType',
+      detectedWalletType,
+    );
+    // Use walletType if available (during connection), otherwise detectedWalletType
+    const displayWalletType = walletType || detectedWalletType;
     // If no error, don't render anything
-    if (!error || !walletType) {
+    if (!error || !displayWalletType) {
       onClose?.();
       return null;
     }
@@ -76,7 +82,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
 
     const { icon, title, recoveryInstructions } = buildErrorContent(
       error,
-      walletType,
+      displayWalletType,
       t as (key: string, ...args: unknown[]) => string,
     );
 
@@ -137,7 +143,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   textAlign={TextAlign.Center}
                   color={TextColor.textAlternative}
                 >
-                  {t('hardwareWalletTypeConnected', [t(walletType)])}
+                  {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
                 </Text>
               </Box>
             </ModalBody>

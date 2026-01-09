@@ -65,7 +65,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const dispatch = useDispatch();
 
   // Optimized: Use split hooks to subscribe only to what we need
-  const { isHardwareWalletAccount, walletType } = useHardwareWalletConfig();
+  const { isHardwareWalletAccount } = useHardwareWalletConfig();
   const { connectionState } = useHardwareWalletState();
   const { retry, clearError } = useHardwareWalletActions();
 
@@ -160,7 +160,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       console.log(LOG_TAG, 'Dispatching showModal with:', {
         name: HARDWARE_WALLET_ERROR_MODAL_NAME,
         errorCode: error?.code,
-        walletType,
       });
       setDisplayedError(error);
       isModalOpenRef.current = true;
@@ -174,13 +173,12 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         showModal({
           name: HARDWARE_WALLET_ERROR_MODAL_NAME,
           error,
-          walletType,
           onRetry: handleRetry,
           onCancel: handleCancel,
         }),
       );
     },
-    [dispatch, walletType, handleRetry, handleCancel, displayedError],
+    [dispatch, handleRetry, handleCancel, displayedError],
   );
 
   /**
