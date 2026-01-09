@@ -899,10 +899,13 @@ export async function loadStateFromPersistence(backup) {
       // existed).
       // We need to set it properly here so that the persistence manager uses
       // the correct storage kind when restoring from the `backup`.
-      if (backup.meta.storageKind === "split" || backup.meta.storageKind === "data") {
+      if (
+        backup.meta.storageKind === 'split' ||
+        backup.meta.storageKind === 'data'
+      ) {
         persistenceManager.storageKind = backup.meta.storageKind;
       } else {
-        persistenceManager.storageKind = "data";
+        persistenceManager.storageKind = 'data';
       }
     }
     // sanity check on the meta property
