@@ -92,14 +92,14 @@ describe('Trezor Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkTransactionActivityByText('Deposit');
-        await activityListPage.checkWaitForTransactionStatus('confirmed');
         await homePage.goToNftTab();
         const nftListPage = new NFTListPage(driver);
         // Check that NFT image is displayed in NFT tab on homepagexp
         await nftListPage.checkNftImageIsDisplayed();
+        await homePage.goToActivityList();
+        const activityListPage = new ActivityListPage(driver);
+        await activityListPage.checkTransactionActivityByText('Deposit');
+        await activityListPage.checkWaitForTransactionStatus('confirmed');
       },
     );
   });

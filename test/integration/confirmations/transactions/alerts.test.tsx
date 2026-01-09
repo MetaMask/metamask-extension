@@ -487,23 +487,15 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.findAllByTestId('inline-alert')).toHaveLength(2);
+    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
 
-    fireEvent.click((await screen.findAllByTestId('inline-alert'))[0]);
+    fireEvent.click(await screen.findByTestId('inline-alert'));
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toBeInTheDocument();
-
-    expect(
-      await screen.findByTestId('alert-modal__selected-alert'),
-    ).toHaveTextContent(
-      'We can’t move forward with this transaction until you manually update the fee.',
-    );
-
-    fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),

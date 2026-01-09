@@ -34,18 +34,13 @@ export function GasFeeTokenIcon({
   tokenAddress: Hex;
 }) {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { chainId } = currentConfirmation ?? {};
+  const { chainId } = currentConfirmation;
 
   const networkConfiguration = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const erc20TokensByChain = useSelector(selectERC20TokensByChain);
-
-  if (!currentConfirmation) {
-    return null;
-  }
-
   const variation = chainId;
   const { iconUrl: image } =
     erc20TokensByChain?.[variation]?.data?.[tokenAddress] ?? {};

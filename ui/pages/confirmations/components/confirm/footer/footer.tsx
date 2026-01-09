@@ -295,10 +295,6 @@ const Footer = () => {
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
 
-  if (!currentConfirmation) {
-    return null;
-  }
-
   return (
     <>
       <ShieldFooterCoverageIndicator />
