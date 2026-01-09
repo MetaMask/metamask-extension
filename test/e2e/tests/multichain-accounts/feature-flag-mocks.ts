@@ -43,6 +43,10 @@ export const BIP44_STAGE_TWO = {
   sendRedesign: {
     enabled: false,
   },
+  tronAccounts: {
+    enabled: true,
+    minimumVersion: '13.6.0',
+  },
 };
 
 export const mockMultichainAccountsFeatureFlag = (mockServer: Mockttp) =>
