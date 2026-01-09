@@ -2,10 +2,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
-import {
-  getChainSupportsSmartTransactions,
-  getSmartTransactionsPreferenceEnabled,
-} from '../../../../shared/modules/selectors';
+import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
+import { getSmartTransactionsPreferenceEnabled } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
 import {
   fetchSmartTransactionsLiveness,
@@ -20,7 +18,7 @@ export function useSmartTransactionFeatureFlags() {
   const {
     id: transactionId,
     txParams,
-    networkClientId,
+    chainId: transactionChainId,
   } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
@@ -28,23 +26,24 @@ export function useSmartTransactionFeatureFlags() {
     getSmartTransactionsPreferenceEnabled,
   );
 
-  const currentChainSupportsSmartTransactions = useSelector(
-    getChainSupportsSmartTransactions,
-  );
+  // TODO: replace with the new feature flags when we have them.
+  const chainSupportsSTX =
+    transactionChainId &&
+    getAllowedSmartTransactionsChainIds().includes(transactionChainId);
 
   useEffect(() => {
     if (
       !isTransaction ||
       !transactionId ||
       !smartTransactionsPreferenceEnabled ||
-      !currentChainSupportsSmartTransactions
+      !chainSupportsSTX
     ) {
       return;
     }
 
     Promise.all([
       fetchSwapsFeatureFlags(),
-      fetchSmartTransactionsLiveness({ networkClientId })(),
+      fetchSmartTransactionsLiveness({ chainId: transactionChainId })(),
     ])
       .then(([swapsFeatureFlags]) => {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
@@ -61,7 +60,7 @@ export function useSmartTransactionFeatureFlags() {
     isTransaction,
     transactionId,
     smartTransactionsPreferenceEnabled,
-    currentChainSupportsSmartTransactions,
-    networkClientId,
+    chainSupportsSTX,
+    transactionChainId,
   ]);
 }
