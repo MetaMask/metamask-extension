@@ -1578,6 +1578,10 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
