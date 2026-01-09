@@ -50,7 +50,6 @@ describe('Send Tron', function () {
         await snapTransactionConfirmation.checkPageIsLoaded();
         await snapTransactionConfirmation.clickFooterConfirmButton();
         const activityList = new ActivityListPage(driver);
-        // await activityList.checkTxAction({ action: 'Sent' , confirmedTx: 1});
         await activityList.checkTxAmountInActivity('-50,000 HTX', 1); // mocked activity
         await activityList.checkNoFailedTransactions();
       },
