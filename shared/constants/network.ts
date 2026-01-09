@@ -218,6 +218,7 @@ export const CHAIN_IDS = {
   MONAD: '0x8f',
   HYPE: '0x3e7',
   X_LAYER: '0xc4',
+  TEMPO_TESTNET: '0xa5bd',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -659,6 +660,7 @@ export const XRPLEVM_TESTNET_NATIVE_TOKEN_IMAGE_URL =
 export const LENS_IMAGE_URL = './images/lens.png';
 export const LENS_NATIVE_TOKEN_IMAGE_URL = './images/lens-native.svg';
 export const PLUME_IMAGE_URL = './images/plume.png';
+export const TEMPO_TOKEN_IMAGE_URL = './images/tempo.svg';
 export const PLUME_NATIVE_TOKEN_IMAGE_URL = './images/plume-native.svg';
 export const MATCHAIN_IMAGE_URL = './images/matchain.svg';
 export const FLOW_IMAGE_URL = './images/flow.svg';
@@ -1101,6 +1103,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
+  [CHAIN_IDS.TEMPO_TESTNET]: TEMPO_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ARBITRUM_NOVA]: ARBITRUM_NOVA_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.ASTAR]: ASTAR_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.BAHAMUT_MAINNET]: BAHAMUT_IMAGE_URL,
