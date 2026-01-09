@@ -5,7 +5,7 @@
  * Reads JSON from --results and sends metrics as Sentry structured logs with
  * attributes for filtering (ci.browser, ci.buildType, ci.persona, etc.).
  *
- * Requires SENTRY_DSN_PERFORMANCE env var. Skips silently if not set.
+ * Requires SENTRY_DSN_PERFORMANCE env var. Throws if not set.
  */
 
 import { promises as fs } from 'fs';
@@ -38,8 +38,9 @@ async function main() {
   const SENTRY_DSN = process.env.SENTRY_DSN_PERFORMANCE;
 
   if (!SENTRY_DSN) {
-    console.log('ℹ️ SENTRY_DSN_PERFORMANCE not set, skipping Sentry upload');
-    process.exit(0);
+    throw new Error(
+      'SENTRY_DSN_PERFORMANCE env var is required. Use workflow `if:` condition to skip this step when not needed.',
+    );
   }
 
   const resultsJson = await fs.readFile(argv.results, 'utf-8');
