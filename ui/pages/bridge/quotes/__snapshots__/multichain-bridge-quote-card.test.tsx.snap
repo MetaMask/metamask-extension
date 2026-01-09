@@ -277,18 +277,6 @@ exports[`MultichainBridgeQuoteCard should render gas sponsored text when gasSpon
         >
           Paid by MetaMask
         </p>
-        <div
-          class="mm-box"
-        >
-          <div
-            class="mm-box mm-box--display-flex"
-          >
-            <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-alternative"
-              style="mask-image: url('./images/icons/info.svg');"
-            />
-          </div>
-        </div>
       </div>
     </div>
     <div

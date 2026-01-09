@@ -1311,7 +1311,7 @@
       },
       "packages": {
         "eslint>fast-deep-equal": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "eslint>ajv>json-schema-traverse": true,
         "uri-js": true
       }
@@ -1620,7 +1620,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exit": true
+        "process": true
       }
     },
     "bify-module-groups": {
@@ -1768,6 +1768,8 @@
         "path.resolve": true
       },
       "globals": {
+        "console.info": true,
+        "console.trace": true,
         "console.warn": true,
         "process.env": true,
         "process.versions.node": true
