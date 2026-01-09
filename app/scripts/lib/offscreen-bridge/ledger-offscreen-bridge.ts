@@ -86,7 +86,7 @@ export class LedgerOffscreenBridge
 
   getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
     return this.#sendMessage({
-      action: LedgerAction.getAppAndName,
+      action: LedgerAction.getAppNameAndVersion,
     });
   }
 
