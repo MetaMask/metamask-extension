@@ -104,6 +104,27 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.verifyDeviceReadyMock.mockClear();
     this.setPendingOperationMock.mockClear();
   }
+
+  reset(): void {
+    // Reset internal state
+    this.connected = false;
+    this.deviceIdValue = null;
+    // Reset mocks
+    this.resetMocks();
+    // Reset mock implementations to defaults
+    this.connectMock.mockImplementation(async (deviceId: string) => {
+      this.deviceIdValue = deviceId;
+      this.connected = true;
+    });
+    this.disconnectMock.mockImplementation(async () => {
+      this.connected = false;
+      this.deviceIdValue = null;
+    });
+    this.isConnectedMock.mockImplementation(() => this.connected);
+    this.destroyMock.mockImplementation(() => {
+      this.connected = false;
+      this.deviceIdValue = null;
+    });
+    this.verifyDeviceReadyMock.mockResolvedValue(true);
+  }
 }
-
-

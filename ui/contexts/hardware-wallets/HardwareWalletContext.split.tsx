@@ -827,6 +827,9 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
         (isLedger && !isWebHidAvailableState) ||
         (isTrezor && !isWebUsbAvailableState)
       ) {
+        setHardwareConnectionPermissionState(
+          HardwareConnectionPermissionState.Denied,
+        );
         return HardwareConnectionPermissionState.Denied;
       }
 
