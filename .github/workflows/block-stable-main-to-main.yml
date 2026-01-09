@@ -1,0 +1,28 @@
+name: Block stable-main to main PRs
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  check-branch:
+    name: Block stable-main-X.Y.Z to main
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source branch
+        run: |
+          SOURCE_BRANCH="${{ github.head_ref }}"
+          TARGET_BRANCH="${{ github.base_ref }}"
+          
+          echo "Source branch: $SOURCE_BRANCH"
+          echo "Target branch: $TARGET_BRANCH"
+          
+          # Check if source branch matches stable-main-X.Y.Z pattern
+          if [[ "$TARGET_BRANCH" == "main" && "$SOURCE_BRANCH" =~ ^stable-main-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ ERROR: PRs from stable-main-X.Y.Z branches to main are not allowed to be manually merged!"
+            echo "Source branch '$SOURCE_BRANCH' matches the blocked pattern 'stable-main-X.Y.Z'"
+            exit 1
+          fi
+          
+          echo "✅ Branch check passed"
