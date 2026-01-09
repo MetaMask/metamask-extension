@@ -2,6 +2,7 @@ name: Block stable-main to main PRs
 
 on:
   pull_request:
+    types: [opened, reopened, synchronize]
     branches:
       - main
 
