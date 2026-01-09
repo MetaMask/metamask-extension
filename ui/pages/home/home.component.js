@@ -469,9 +469,9 @@ export default class Home extends PureComponent {
               <i className="fa fa-check-circle home__new-network-notification-icon" />
               <Text variant={TextVariant.BodySm} asChild>
                 <h6>
-                  {editedNetwork.newNetwork
-                    ? t('newNetworkAdded', [editedNetwork.nickname])
-                    : t('newNetworkEdited', [editedNetwork.nickname])}
+                  {editedNetwork?.newNetwork
+                    ? t('newNetworkAdded', [editedNetwork?.nickname])
+                    : t('newNetworkEdited', [editedNetwork?.nickname])}
                 </h6>
               </Text>
               <ButtonIcon
