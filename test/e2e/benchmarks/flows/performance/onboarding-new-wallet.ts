@@ -54,7 +54,6 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         const timer4 = Timers.createTimer('secure_to_metrics');
         const timer5 = Timers.createTimer('metrics_to_complete');
         const timer6 = Timers.createTimer('complete_to_home');
-        const timer7 = Timers.createTimer('skip_backup_to_full_home');
 
         await driver.navigate();
 
@@ -107,24 +106,16 @@ export async function runOnboardingNewWalletBenchmark(): Promise<BenchmarkRunRes
         await onboardingCompletePage.completeOnboarding();
         await handleSidepanelPostOnboarding(driver);
 
-        // Timer 6: Time since user clicks "Done" until "Skip backup" screen and assets list are visible
+        // Timer 6: Time since user clicks "Done" until home page and assets list are visible
         timer6.startTimer();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
-        timer6.stopTimer();
-
-        // Timer 7: Time since user clicks "Skip backup" until "Home" screen is visible
-        await homePage.clickBackupRemindMeLaterButton();
-        timer7.startTimer();
-        await homePage.checkPageIsLoaded();
-        await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
         await assetListPage.waitForTokenToBeDisplayed('Ethereum');
         await assetListPage.waitForTokenToBeDisplayed('Solana', 60000);
-        timer7.stopTimer();
+        timer6.stopTimer();
       },
     );
 

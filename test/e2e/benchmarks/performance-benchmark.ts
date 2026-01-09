@@ -158,6 +158,10 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
   // Convert to page load benchmark format for consistency
   const output = convertToPageLoadFormat(results);
 
+  // Log results to console (visible in CI logs)
+  console.log('📊 Performance Benchmark Results:');
+  console.log(JSON.stringify(output, null, 2));
+
   if (out) {
     const outputDirectory = path.dirname(out);
     const existingParentDirectory =
