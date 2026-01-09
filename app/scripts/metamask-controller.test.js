@@ -1615,6 +1615,115 @@ describe('MetaMaskController', () => {
       });
     });
 
+    describe('#sortMultichainAccountsByLastSelected', () => {
+      const mockGetAccountContext = (lastSelectedMap) => {
+        return jest
+          .spyOn(
+            metamaskController.multichainAccountService,
+            'getAccountContext',
+          )
+          .mockImplementation((accountId) => {
+            const lastSelected = lastSelectedMap[accountId];
+            return {
+              group: {
+                get: () => ({
+                  metadata: { lastSelected },
+                }),
+              },
+            };
+          });
+      };
+
+      it('returns the accounts in lastSelected order', () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockImplementation((address) => {
+            const accounts = {
+              addr1: { id: 'id-1', address: 'addr1' },
+              addr2: { id: 'id-2', address: 'addr2' },
+              addr3: { id: 'id-3', address: 'addr3' },
+              addr4: { id: 'id-4', address: 'addr4' },
+            };
+            return accounts[address];
+          });
+
+        mockGetAccountContext({
+          'id-1': 1,
+          'id-2': undefined,
+          'id-3': 3,
+          'id-4': 3,
+        });
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected([
+            'addr1',
+            'addr2',
+            'addr3',
+            'addr4',
+          ]),
+        ).toStrictEqual(['addr3', 'addr4', 'addr1', 'addr2']);
+      });
+
+      it('handles missing account by treating lastSelected as 0', () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockImplementation((address) => {
+            if (address === 'addr1') {
+              return { id: 'id-1', address: 'addr1' };
+            }
+            return undefined;
+          });
+
+        mockGetAccountContext({
+          'id-1': 5,
+        });
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected([
+            'addr1',
+            'addr2',
+          ]),
+        ).toStrictEqual(['addr1', 'addr2']);
+      });
+
+      it('handles missing context by treating lastSelected as 0', () => {
+        jest
+          .spyOn(metamaskController.accountsController, 'getAccountByAddress')
+          .mockImplementation((address) => {
+            const accounts = {
+              addr1: { id: 'id-1', address: 'addr1' },
+              addr2: { id: 'id-2', address: 'addr2' },
+            };
+            return accounts[address];
+          });
+
+        jest
+          .spyOn(
+            metamaskController.multichainAccountService,
+            'getAccountContext',
+          )
+          .mockImplementation((accountId) => {
+            if (accountId === 'id-1') {
+              return {
+                group: {
+                  get: () => ({
+                    metadata: { lastSelected: 10 },
+                  }),
+                },
+              };
+            }
+            return undefined;
+          });
+
+        expect(
+          metamaskController.sortMultichainAccountsByLastSelected([
+            'addr1',
+            'addr2',
+          ]),
+        ).toStrictEqual(['addr1', 'addr2']);
+      });
+    });
+
     describe('NetworkConfiguration is removed', () => {
       it('should remove the permitted chain from all existing permissions', () => {
         jest

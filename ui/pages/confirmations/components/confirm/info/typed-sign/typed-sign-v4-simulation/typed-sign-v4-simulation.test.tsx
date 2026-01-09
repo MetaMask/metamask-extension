@@ -21,6 +21,9 @@ jest.mock('../../../../../../../store/actions', () => {
     getTokenStandardAndDetails: jest
       .fn()
       .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
+    getTokenStandardAndDetailsByChain: jest
+      .fn()
+      .mockResolvedValue({ decimals: 2, standard: 'ERC20' }),
     updateEventFragment: jest.fn(),
   };
 });

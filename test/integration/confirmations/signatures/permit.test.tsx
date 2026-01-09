@@ -36,6 +36,7 @@ describe('Permit Confirmation', () => {
     mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
       createMockImplementation({
         getTokenStandardAndDetails: { decimals: '2', standard: 'ERC20' },
+        getTokenStandardAndDetailsByChain: { decimals: '2', standard: 'ERC20' },
       }),
     );
   });
