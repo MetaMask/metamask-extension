@@ -169,6 +169,17 @@ export const AccountOverviewTabs = ({
             </Box>
           </Tab>
         )}
+
+        {isPerpsEnabled && (
+          <Tab
+            name="Perps"
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <Box />
+          </Tab>
+        )}
+
         {showDefi && (
           <Tab
             name={t('defi')}
@@ -206,16 +217,6 @@ export const AccountOverviewTabs = ({
             ) : (
               <TransactionList />
             )}
-          </Tab>
-        )}
-
-        {isPerpsEnabled && (
-          <Tab
-            name="Perps"
-            tabKey={AccountOverviewTabKey.Perps}
-            data-testid="account-overview__perps-tab"
-          >
-            <Box />
           </Tab>
         )}
       </Tabs>
