@@ -1453,16 +1453,6 @@ export function addNewAccount(
   };
 }
 
-export async function checkHardwareDeviceIsUnlocked(
-  deviceName: HardwareDeviceNames,
-  hdPath: string,
-): Promise<boolean> {
-  return await submitRequestToBackground<boolean>('checkHardwareStatus', [
-    deviceName,
-    hdPath,
-  ]);
-}
-
 export function checkHardwareStatus(
   deviceName: HardwareDeviceNames,
   hdPath: string,
@@ -1473,7 +1463,10 @@ export function checkHardwareStatus(
 
     let unlocked = false;
     try {
-      unlocked = await checkHardwareDeviceIsUnlocked(deviceName, hdPath);
+      unlocked = await submitRequestToBackground<boolean>(
+        'checkHardwareStatus',
+        [deviceName, hdPath],
+      );
     } catch (error) {
       logErrorWithMessage(error);
       dispatch(displayWarning(error));

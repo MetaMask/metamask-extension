@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -26,7 +26,6 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -41,9 +40,7 @@ import {
   useAddEthereumChain,
 } from '../../../hooks/useAddEthereumChain';
 import { isSignatureTransactionType } from '../../../utils';
-import { getConfirmationSender } from '../utils';
 import { useUserSubscriptions } from '../../../../../hooks/subscription/useSubscription';
-import { isAddressLedger } from '../../../../../ducks/metamask/metamask';
 import {
   ConnectionStatus,
   useHardwareWalletActions,
@@ -221,16 +218,9 @@ const Footer = () => {
     useConfirmContext<TransactionMeta>();
   const t = useI18nContext();
   const { isGaslessLoading } = useIsGaslessLoading();
-  const { from } = useMemo(
-    () => getConfirmationSender(currentConfirmation),
-    [currentConfirmation],
-  );
   const { shouldThrottleOrigin } = useOriginThrottling();
   const [showOriginThrottleModal, setShowOriginThrottleModal] = useState(false);
   const { onCancel, resetTransactionState } = useConfirmActions();
-  const isLedgerAccount = useSelector(
-    (state) => from && isAddressLedger(state, from),
-  );
 
   const { connectionState } = useHardwareWalletState();
   const { isHardwareWalletAccount, deviceId, detectedWalletType } =
@@ -265,31 +255,35 @@ const Footer = () => {
     //   return false;
     // }
 
-    console.log('[Footer] Verifying hardware wallet device is ready');
+    console.log(
+      '[Hardware debug Footer] Verifying hardware wallet device is ready',
+      {
+        deviceId,
+        isHardwareWalletAccount,
+      },
+    );
     const isDeviceReady = await ensureDeviceReady(deviceId || '');
+    console.log('[Hardware debug Footer] ensureDeviceReady result:', {
+      isDeviceReady,
+      deviceId,
+    });
+
     if (!isDeviceReady) {
       console.log(
-        '[Footer] Device not ready - HardwareWalletErrorMonitor will show error modal automatically',
+        '[Hardware debug Footer] Device not ready - HardwareWalletErrorMonitor will show error modal automatically',
       );
       return false;
     }
 
-    console.log('[Footer] Device is ready');
+    console.log('[Hardware debug Footer] Device is ready');
     return true;
   }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
 
   const onSubmit = useCallback(async () => {
-    console.log(
-      '[Footer onSubmit] Starting, isLedgerAccount:',
-      isLedgerAccount,
-      'from:',
-      from,
-    );
-
     const isReady = await onSubmitPreflightCheck();
     if (!isReady) {
       console.log(
-        '[Footer onSubmit] Preflight check failed, aborting submission',
+        '[Hardware debug Footer onSubmit] Preflight check failed, aborting submission',
       );
       return;
     }
@@ -307,15 +301,16 @@ const Footer = () => {
 
     resetTransactionState();
   }, [
-    currentConfirmation,
-    dispatch,
-    navigate,
-    isTransactionConfirmation,
+    onSubmitPreflightCheck,
     isAddEthereumChain,
-    navigateNext,
-    onTransactionConfirm,
+    isTransactionConfirmation,
     resetTransactionState,
     onAddEthereumChain,
+    navigate,
+    onTransactionConfirm,
+    navigateNext,
+    currentConfirmation.id,
+    dispatch,
   ]);
 
   const handleFooterCancel = useCallback(async () => {

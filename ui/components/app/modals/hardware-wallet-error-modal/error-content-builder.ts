@@ -32,7 +32,7 @@ export function buildErrorContent(
     case ErrorCode.AUTH_LOCK_002:
       return {
         icon: IconName.Lock,
-        title: t('hardwareWalletErrorTitleDeviceLocked', [walletType]),
+        title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
         description: t('hardwareWalletErrorDescriptionDeviceLocked'),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryUnlock1'),
@@ -45,7 +45,7 @@ export function buildErrorContent(
     case ErrorCode.DEVICE_STATE_001:
       return {
         icon: IconName.Apps,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryApp1'),
           t('hardwareWalletErrorRecoveryApp2'),
@@ -57,7 +57,7 @@ export function buildErrorContent(
     case ErrorCode.DEVICE_STATE_002:
       return {
         icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryConnection1'),
           t('hardwareWalletErrorRecoveryConnection2'),
@@ -69,7 +69,7 @@ export function buildErrorContent(
     case ErrorCode.DEVICE_STATE_005:
       return {
         icon: IconName.Plug,
-        title: t('hardwareWalletErrorTitleConnectYourDevice', [walletType]),
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
         recoveryInstructions: [
           t('hardwareWalletErrorRecoveryConnection1'),
           t('hardwareWalletErrorRecoveryConnection2'),
