@@ -26,6 +26,8 @@ jest.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
 }));
 
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 jest.mock(
   '../../../../shared/lib/multichain-accounts/remote-feature-flag',
   () => ({

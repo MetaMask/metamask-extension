@@ -10,6 +10,8 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AppHeader } from '.';
 
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
 const mockIsMultichainAccountsFeatureEnabled = jest.fn();
 jest.mock(
   '../../../../shared/lib/multichain-accounts/remote-feature-flag',
