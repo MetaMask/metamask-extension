@@ -2193,7 +2193,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                         <div
                           aria-describedby="tippy-tooltip-3"
                           class=""
-                          data-original-title="3,000"
+                          data-original-title="30"
                           data-tooltipped=""
                           style="display: inline;"
                           tabindex="0"
@@ -2203,7 +2203,7 @@ exports[`Confirm should match snapshot for signature - typed sign - permit 1`] =
                             data-testid="simulation-token-value"
                             style="padding-top: 1px; padding-bottom: 1px;"
                           >
-                            3,000
+                            30
                           </p>
                         </div>
                       </div>
