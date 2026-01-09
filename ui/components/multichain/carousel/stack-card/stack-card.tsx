@@ -24,6 +24,19 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Get translated or raw content, falling back to raw if translation fails
+  const getDisplayText = (text: string): string => {
+    if (isContentfulContent) {
+      return text;
+    }
+    // Attempt translation, fall back to original text if translation returns null
+    const translated = t(text);
+    return translated ?? text;
+  };
+
+  const title = getDisplayText(slide.title);
+  const description = getDisplayText(slide.description);
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +76,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={title} />
       </div>
 
       {/* Info container */}
@@ -75,7 +88,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {title}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +96,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [title])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +110,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {description}
           </Text>
         </div>
       </div>
