@@ -89,4 +89,6 @@ export type SubscriptionServiceOptions = {
   platform: ExtensionPlatform;
 
   webAuthenticator: WebAuthenticator;
+
+  captureException: (error: unknown) => void;
 };
