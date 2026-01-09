@@ -158,10 +158,6 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
   // Convert to page load benchmark format for consistency
   const output = convertToPageLoadFormat(results);
 
-  // Log results to console (visible in CI logs)
-  console.log('📊 Performance Benchmark Results:');
-  console.log(JSON.stringify(output, null, 2));
-
   if (out) {
     const outputDirectory = path.dirname(out);
     const existingParentDirectory =
@@ -176,9 +172,14 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
     }
 
     await fs.writeFile(out, JSON.stringify(output, null, 2));
+
+    // Log results to console (visible in CI logs)
+    console.log('📊 Performance Benchmark Results:');
+    console.log(JSON.stringify(output, null, 2));
   } else {
     // Output to STDOUT when no output file is provided
-    process.stdout.write(JSON.stringify(output, null, 2));
+    console.log('📊 Performance Benchmark Results:');
+    process.stdout.write(JSON.stringify(output, null, 2) + '\n');
   }
 
   return output;
