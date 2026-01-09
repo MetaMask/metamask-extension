@@ -63,7 +63,7 @@ export const BridgeAssetPicker = ({
 > &
   Pick<
     React.ComponentProps<typeof BridgeAssetList>,
-    'onAssetChange' | 'excludedAssetId'
+    'onAssetChange'
   >) => {
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
