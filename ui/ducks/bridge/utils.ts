@@ -9,10 +9,7 @@ import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
   ChainId,
   BridgeClientId,
-  formatChainIdToCaip,
   getNativeAssetForChainId,
-  isNativeAddress,
-  isBitcoinChainId,
   isNonEvmChainId,
   formatChainIdToHex,
   formatAddressToCaipReference,
@@ -225,54 +222,22 @@ export const toBridgeToken = (
 };
 
 export const getDefaultToToken = (
-  targetChainId: Hex | CaipChainId,
-  fromToken: Pick<BridgeToken, 'address' | 'chainId'>,
+  toChainId: CaipChainId,
+  fromAssetId: CaipAssetType,
 ) => {
-  const commonPair =
-    BRIDGE_CHAINID_COMMON_TOKEN_PAIR[formatChainIdToCaip(targetChainId)];
-
-  if (commonPair) {
-    // If bridging from Bitcoin, default to native mainnet token (ETH) instead of common pair token
-    if (fromToken.chainId && isBitcoinChainId(fromToken.chainId)) {
-      const nativeAsset = getNativeAssetForChainId(targetChainId);
-      if (nativeAsset) {
-        return toBridgeToken({
-          ...nativeAsset,
-          chainId: targetChainId,
-        });
-      }
-    }
-
-    // If source is native token, default to common pair token on destination chain
-    if (isNativeAddress(fromToken.address)) {
-      return toBridgeToken({
-        ...commonPair,
-        chainId: targetChainId,
-      });
-    }
-
-    // If source is USDC (or other common pair token), default to native token
-    if (fromToken.address?.toLowerCase() === commonPair.address.toLowerCase()) {
-      const nativeAsset = getNativeAssetForChainId(targetChainId);
-      if (nativeAsset) {
-        return toBridgeToken({
-          ...nativeAsset,
-          chainId: targetChainId,
-        });
-      }
-    }
-
-    // For any other token, default to USDC
+  const commonPair = BRIDGE_CHAINID_COMMON_TOKEN_PAIR[toChainId];
+  // If commonPair is defined and is not the same as the fromToken, return it
+  if (
+    commonPair &&
+    fromAssetId.toLowerCase() !== commonPair?.assetId.toLowerCase()
+  ) {
+    const { chainId } = parseCaipAssetType(commonPair.assetId);
     return toBridgeToken({
       ...commonPair,
-      chainId: targetChainId,
+      chainId,
     });
   }
 
   // Last resort: native token
-  const nativeAsset = getNativeAssetForChainId(targetChainId);
-  return toBridgeToken({
-    ...nativeAsset,
-    chainId: targetChainId,
-  });
+  return toBridgeToken(getNativeAssetForChainId(toChainId));
 };

@@ -4,6 +4,7 @@ import {
   BRIDGE_PROD_API_BASE_URL,
   ChainId,
   formatChainIdToCaip,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import type { CaipChainId, CaipAssetType } from '@metamask/utils';
@@ -237,6 +238,7 @@ export const BRIDGE_CHAINID_COMMON_TOKEN_PAIR: Partial<
     name: 'USD Coin',
     assetId: `${MultichainNetworks.SOLANA}/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v`,
   },
+  [MultichainNetworks.BITCOIN]: getNativeAssetForChainId(CHAIN_IDS.MAINNET),
   ///: BEGIN:ONLY_INCLUDE_IF(tron)
   [MultichainNetworks.TRON]: {
     // TRX -> USDT on Tron
