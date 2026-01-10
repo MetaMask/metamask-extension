@@ -14,7 +14,13 @@ import { type HardwareWalletRefs } from './HardwareWalletStateManager';
 export type DeviceEventHandlerProps = {
   refs: HardwareWalletRefs;
   setters: {
-    setConnectionState: (state: HardwareWalletConnectionState) => void;
+    setConnectionState: (
+      state:
+        | HardwareWalletConnectionState
+        | ((
+            prev: HardwareWalletConnectionState,
+          ) => HardwareWalletConnectionState),
+    ) => void;
     setCurrentAppName: (name: string | null) => void;
   };
   onDeviceEvent?: (payload: DeviceEventPayload) => void;

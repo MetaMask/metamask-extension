@@ -6,11 +6,9 @@ import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
   type HardwareWalletAdapter,
-} from './types';
-import {
-  ConnectionState,
   type HardwareWalletConnectionState,
-} from './connectionState';
+} from './types';
+import { ConnectionState } from './connectionState';
 
 /**
  * State and refs managed by the hardware wallet context

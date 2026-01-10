@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import {
   checkHardwareWalletPermission,
   getHardwareWalletDeviceId,
@@ -14,7 +14,7 @@ import {
 type UseHardwareWalletAutoConnectParams = {
   state: HardwareWalletState;
   refs: HardwareWalletRefs;
-  setDeviceId: (deviceId: string | null) => void;
+  setDeviceId: Dispatch<SetStateAction<string | null>>;
   setHardwareConnectionPermissionState: (
     permission: HardwareConnectionPermissionState,
   ) => void;
@@ -73,7 +73,6 @@ export const useHardwareWalletAutoConnect = ({
         !refs.adapterRef.current?.isConnected() &&
         !refs.isConnectingRef.current
       ) {
-        // eslint-disable-next-line react-compiler/react-compiler
         refs.deviceIdRef.current = newDeviceId;
         refs.connectRef.current?.();
       }
@@ -149,11 +148,8 @@ export const useHardwareWalletAutoConnect = ({
           hardwareConnectionPermissionState ===
             HardwareConnectionPermissionState.Granted
         ) {
-          // eslint-disable-next-line react-compiler/react-compiler
           refs.hasAutoConnectedRef.current = true;
-          // eslint-disable-next-line react-compiler/react-compiler
           refs.lastConnectedAccountRef.current = accountAddress ?? null;
-          // eslint-disable-next-line react-compiler/react-compiler
           refs.deviceIdRef.current = id;
           await refs.connectRef.current?.();
         }

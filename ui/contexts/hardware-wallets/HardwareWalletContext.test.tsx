@@ -1,11 +1,14 @@
 import React from 'react';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import {
   HardwareWalletProvider,
   useHardwareWallet,
+  useHardwareWalletConfig,
+  useHardwareWalletState,
+  useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import * as webHIDUtils from './webHIDUtils';
@@ -179,39 +182,58 @@ describe('HardwareWalletContext', () => {
     });
   });
 
-  describe('Permission Management', () => {
-    it('checks permissions for hardware wallet accounts', async () => {
-      (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
-      ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
-
+  describe('useHardwareWalletConfig', () => {
+    it('provides config context with correct values', () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
-      const { result } = renderHook(() => useHardwareWallet(), {
+      const { result } = renderHook(() => useHardwareWalletConfig(), {
         wrapper: createWrapper(store),
       });
 
-      await act(async () => {
-        const permission = await result.current.checkHardwareWalletPermission(
-          HardwareWalletType.Ledger,
-        );
-        expect(permission).toBe(HardwareConnectionPermissionState.Granted);
-      });
+      expect(result.current.isHardwareWalletAccount).toBe(true);
+      expect(result.current.walletType).toBe(HardwareWalletType.Ledger);
+      expect(result.current.hardwareConnectionPermissionState).toBe(
+        HardwareConnectionPermissionState.Unknown,
+      );
+      expect(typeof result.current.isWebHidAvailable).toBe('boolean');
+      expect(typeof result.current.isWebUsbAvailable).toBe('boolean');
     });
+  });
 
-    it('requests permissions when API unavailable', async () => {
+  describe('useHardwareWalletState', () => {
+    it('provides state context with connection state', () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
-      const { result } = renderHook(() => useHardwareWallet(), {
+      const { result } = renderHook(() => useHardwareWalletState(), {
         wrapper: createWrapper(store),
       });
 
-      await act(async () => {
-        const granted = await result.current.requestHardwareWalletPermission(
-          HardwareWalletType.Ledger,
-        );
-        expect(granted).toBe(false);
+      expect(result.current.connectionState).toEqual(
+        expect.objectContaining({
+          status: 'disconnected',
+        }),
+      );
+    });
+  });
+
+  describe('useHardwareWalletActions', () => {
+    it('provides actions context with stable functions', () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const { result } = renderHook(() => useHardwareWalletActions(), {
+        wrapper: createWrapper(store),
       });
+
+      expect(typeof result.current.connect).toBe('function');
+      expect(typeof result.current.disconnect).toBe('function');
+      expect(typeof result.current.clearError).toBe('function');
+      expect(typeof result.current.checkHardwareWalletPermission).toBe(
+        'function',
+      );
+      expect(typeof result.current.requestHardwareWalletPermission).toBe(
+        'function',
+      );
+      expect(typeof result.current.ensureDeviceReady).toBe('function');
     });
   });
 

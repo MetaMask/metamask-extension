@@ -40,14 +40,17 @@ type HardwareWalletErrorContextType = {
 };
 
 const HardwareWalletErrorContext =
-  createContext<HardwareWalletErrorContextType>({
-    showErrorModal: () => undefined,
-    dismissErrorModal: () => undefined,
-    isErrorModalVisible: false,
-  });
+  createContext<HardwareWalletErrorContextType | null>(null);
 
-export const useHardwareWalletError = () =>
-  useContext(HardwareWalletErrorContext);
+export const useHardwareWalletError = (): HardwareWalletErrorContextType => {
+  const context = useContext(HardwareWalletErrorContext);
+  if (!context) {
+    throw new Error(
+      'useHardwareWalletError must be used within HardwareWalletErrorProvider',
+    );
+  }
+  return context;
+};
 
 type HardwareWalletErrorProviderProps = {
   children: ReactNode;
@@ -144,25 +147,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
         return;
       }
 
-      // Always show the latest error - if a new error comes in, replace the current one
-      if (
-        isModalOpenRef.current &&
-        displayedError &&
-        displayedError !== error
-      ) {
-        console.log(LOG_TAG, 'Replacing current error with latest error:', {
-          current: displayedError.code,
-          new: error.code,
-        });
-      }
-
-      console.log(LOG_TAG, 'Showing error modal:', error.code);
-      console.log(LOG_TAG, 'Dispatching showModal with:', {
-        name: HARDWARE_WALLET_ERROR_MODAL_NAME,
-        errorCode: error?.code,
-        errorMessage: error?.message,
-        errorUserActionable: error?.userActionable,
-      });
       setDisplayedError(error);
       isModalOpenRef.current = true;
       // Track this error so we know when it's resolved
@@ -189,7 +173,6 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    */
   const showErrorModal = useCallback(
     (error: HardwareWalletError) => {
-      console.log(LOG_TAG, 'Manual showErrorModal called');
       // When called manually, we skip the filters (allow user cancellations, duplicates, etc.)
       showErrorModalInternal(error, true);
     },
