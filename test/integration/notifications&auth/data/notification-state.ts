@@ -43,6 +43,7 @@ export const getMockedNotificationsState = () => {
     isMetamaskNotificationsFeatureSeen: true,
     isNotificationServicesEnabled: true,
     isFeatureAnnouncementsEnabled: true,
+    hasShownMultichainAccountsIntroModal: true,
     notifications: {},
     metamaskNotificationsReadList: [featureNotification.id],
     metamaskNotificationsList: [featureNotification, ethSentNotification],
