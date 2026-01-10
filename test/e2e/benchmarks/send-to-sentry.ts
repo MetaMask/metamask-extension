@@ -8,8 +8,8 @@
  * Requires SENTRY_DSN_PERFORMANCE env var. Throws if not set.
  */
 
-import { promises as fs } from 'fs';
-import { createRequire } from 'module';
+import { promises as fs, readFileSync } from 'fs';
+import path from 'path';
 import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
@@ -17,8 +17,10 @@ import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
 import type { BenchmarkResults, UserActionResult } from './types-generated';
 
-const require = createRequire(import.meta.url);
-const { version } = require('../../../package.json') as { version: string };
+const packageJsonPath = path.resolve(__dirname, '../../../package.json');
+const { version } = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as {
+  version: string;
+};
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
