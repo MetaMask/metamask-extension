@@ -3,12 +3,12 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { HardwareWalletProvider } from './HardwareWalletContext';
 import {
-  HardwareWalletProvider,
   useHardwareWalletActions,
   useHardwareWalletState,
   useHardwareWalletConfig,
-} from './HardwareWalletContext.split';
+} from './HardwareWalletContext.hooks';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,
@@ -189,7 +189,7 @@ describe('Hardware Wallet Context - Connection', () => {
         .mockResolvedValueOnce('device-1')
         .mockResolvedValueOnce('device-2');
 
-      let firstAdapterDestroySpy: jest.Mock;
+      let firstAdapterDestroySpy: jest.Mock = jest.fn();
 
       // Mock the first adapter creation
       (

@@ -1,11 +1,10 @@
-// Split context exports (recommended - prevents unnecessary rerenders)
 export {
   HardwareWalletProvider,
   useHardwareWallet,
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletActions,
-} from './HardwareWalletContext.split';
+} from './HardwareWalletContext';
 
 export {
   HardwareWalletErrorProvider,

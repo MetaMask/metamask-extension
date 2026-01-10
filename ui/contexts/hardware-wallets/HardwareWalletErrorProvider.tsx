@@ -16,7 +16,7 @@ import {
   useHardwareWalletConfig,
   useHardwareWalletState,
   useHardwareWalletActions,
-} from './HardwareWalletContext.split';
+} from './HardwareWalletContext';
 import { ConnectionStatus } from './types';
 import type { HardwareWalletError } from './errors';
 
