@@ -11,6 +11,7 @@ import {
   formatAddressToCaipReference,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
+import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {
   setFromToken,
   setFromTokenInputValue,
@@ -98,7 +99,6 @@ import { useEnableMissingNetwork } from '../hooks/useEnableMissingNetwork';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
-import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 
 const PrepareBridgePage = ({
   onOpenSettings,

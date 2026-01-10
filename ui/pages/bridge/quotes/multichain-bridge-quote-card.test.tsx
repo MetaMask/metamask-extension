@@ -63,7 +63,6 @@ describe('MultichainBridgeQuoteCard', () => {
           assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
         },
         fromTokenInputValue: '1',
-        // toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -145,7 +144,6 @@ describe('MultichainBridgeQuoteCard', () => {
           assetId: `${formatChainIdToCaip(CHAIN_IDS.POLYGON)}/erc20:${toChecksumHexAddress('0x3c499c542cef5e3811e1192ce70d8cc03d5c3359')}`,
         },
         fromTokenInputValue: '1',
-        // toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {

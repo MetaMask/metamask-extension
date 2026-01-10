@@ -1,12 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import {
-  type QuoteResponse,
-  formatChainIdToCaip,
-  formatAddressToCaipReference,
-  isNativeAddress,
-  isNonEvmChainId,
-} from '@metamask/bridge-controller';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import { type QuoteResponse } from '@metamask/bridge-controller';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 import { DEFAULT_PRECISION } from '../../../hooks/useCurrencyDisplay';
 import { formatAmount } from '../../confirmations/components/simulation-details/formatAmount';
