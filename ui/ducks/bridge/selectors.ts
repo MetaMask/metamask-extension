@@ -733,7 +733,7 @@ export const getValidationErrors = createDeepEqualSelector(
           validatedSrcAmount &&
           fromToken &&
           !isGasless &&
-          (isNativeAddress(fromToken.address)
+          (isNativeAddress(fromToken.assetId)
             ? new BigNumber(nativeBalance)
                 .sub(minimumBalanceToUse)
                 .lte(validatedSrcAmount)
@@ -746,7 +746,7 @@ export const getValidationErrors = createDeepEqualSelector(
           fromToken &&
           fromTokenInputValue &&
           !isGasless &&
-          (isNativeAddress(fromToken.address)
+          (isNativeAddress(fromToken.assetId)
             ? new BigNumber(nativeBalance)
                 .sub(activeQuote.totalNetworkFee.amount)
                 .sub(activeQuote.sentAmount.amount)

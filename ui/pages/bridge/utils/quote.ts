@@ -141,67 +141,23 @@ export const safeAmountForCalc = (
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  fromChainId,
   isQuoteExpired,
-  insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  fromChainId?: Hex | CaipChainId;
   isQuoteExpired: boolean;
-  insufficientBal?: boolean;
 }): boolean => {
-  // 1. Ignore quotes that are expired (unless the only reason is an `insufficientBal` override for non-EVM chains)
-  if (
-    isQuoteExpired &&
-    (!insufficientBal ||
-      // `insufficientBal` is always true for non-EVM chains (Solana, Bitcoin)
-      (fromChainId && isNonEvmChainId(fromChainId)))
-  ) {
+  // 1. Ignore quotes that are expired
+  if (isQuoteExpired) {
     return true;
   }
 
   // 2. Ensure the quote still matches the currently selected destination asset / chain
   if (activeQuote && toToken) {
-    const destChainId = activeQuote.quote?.destChainId;
-
-    // For non-EVM chains (Solana, Bitcoin, Tron), don't use toLowerCase() as addresses
-    // are case-sensitive (base58 encoding uses both upper and lowercase letters)
-    const isNonEvmDest = destChainId && isNonEvmChainId(destChainId);
-
-    // Extract raw addresses from CAIP-19 format if present
-    // The bridge API returns plain addresses, but UI may store CAIP-19 asset IDs
-    const quoteDestAddressRaw = activeQuote.quote?.destAsset?.address
-      ? formatAddressToCaipReference(activeQuote.quote.destAsset.address)
-      : '';
-    const selectedDestAddressRaw = toToken.address
-      ? formatAddressToCaipReference(toToken.address)
-      : '';
-
-    // For EVM chains, normalize to lowercase for comparison (addresses are case-insensitive)
-    // For non-EVM chains, preserve case (base58 addresses are case-sensitive)
-    const quoteDestAddress = isNonEvmDest
-      ? quoteDestAddressRaw
-      : quoteDestAddressRaw.toLowerCase();
-    const selectedDestAddress = isNonEvmDest
-      ? selectedDestAddressRaw
-      : selectedDestAddressRaw.toLowerCase();
-
-    const quoteDestChainIdCaip = destChainId
-      ? formatChainIdToCaip(destChainId)
-      : '';
-    const selectedDestChainIdCaip = toToken?.chainId
-      ? formatChainIdToCaip(toToken.chainId)
-      : '';
-
-    const addressMatch =
-      quoteDestAddress === selectedDestAddress ||
-      (isNativeAddress(quoteDestAddress) &&
-        isNativeAddress(selectedDestAddress));
-    const chainMatch = quoteDestChainIdCaip === selectedDestChainIdCaip;
-    const isInvalid = !(addressMatch && chainMatch);
-
-    return isInvalid;
+    return (
+      activeQuote.quote.destAsset.assetId.toLowerCase() !==
+      toToken.assetId.toLowerCase()
+    );
   }
 
   return false;

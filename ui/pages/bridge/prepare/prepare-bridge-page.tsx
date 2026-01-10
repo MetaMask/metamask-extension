@@ -146,24 +146,19 @@ const PrepareBridgePage = ({
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
   );
-
-  const wasTxDeclined = useSelector(getWasTxDeclined);
-
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
-  // const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
-  //   activeQuote: unvalidatedQuote,
-  //   toToken,
-  //   fromChainId: fromChain?.chainId,
-  //   isQuoteExpired,
-  //   insufficientBal: quoteRequest.insufficientBal,
-  // });
-
-  const isQuoteExpiredOrInvalid = isQuoteExpired;
+  const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
+    activeQuote: unvalidatedQuote,
+    toToken,
+    isQuoteExpired,
+  });
 
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
+
+  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const gasIncluded7702 = useGasIncluded7702({
     isSwap,
@@ -264,18 +259,15 @@ const PrepareBridgePage = ({
   const quoteParams:
     | Parameters<BridgeController['updateBridgeQuoteRequestParams']>[0]
     | undefined = useMemo(() => {
-    const srcTokenAddress = fromToken?.assetId ?? fromToken?.address;
-    const destTokenAddress = toToken?.assetId ?? toToken?.address;
-
     if (!selectedAccount?.address) {
       return undefined;
     }
     return {
-      srcTokenAddress: srcTokenAddress
-        ? formatAddressToCaipReference(srcTokenAddress)
+      srcTokenAddress: fromToken?.assetId
+        ? formatAddressToCaipReference(fromToken.assetId)
         : undefined,
-      destTokenAddress: destTokenAddress
-        ? formatAddressToCaipReference(destTokenAddress)
+      destTokenAddress: toToken?.assetId
+        ? formatAddressToCaipReference(toToken.assetId)
         : undefined,
       srcTokenAmount: validatedFromValue,
       srcChainId: fromToken?.chainId,
@@ -293,8 +285,6 @@ const PrepareBridgePage = ({
       gasIncluded7702,
     };
   }, [
-    fromToken?.address,
-    toToken?.address,
     fromToken?.assetId,
     toToken?.assetId,
     validatedFromValue,

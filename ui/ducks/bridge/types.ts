@@ -13,10 +13,6 @@ export type BridgeToken = BridgeAssetV2 & {
   balance: string;
   tokenFiatAmount?: number | null;
   accountType?: KeyringAccountType;
-  /**
-   * @deprecated Should be removed when all tokens come from the bridge-api
-   */
-  address?: string;
 };
 
 /**
@@ -43,6 +39,7 @@ export type BridgeState = {
 
 export type TokenPayload = {
   payload: Omit<BridgeToken, 'chainId' | 'balance'> & {
+    address?: string;
     chainId?: number | CaipChainId | Hex;
     balance?: string;
   };
