@@ -3,12 +3,12 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { HardwareWalletProvider } from './HardwareWalletContext';
 import {
+  HardwareWalletProvider,
   useHardwareWalletActions,
   useHardwareWalletState,
   useHardwareWalletConfig,
-} from './HardwareWalletContext.hooks';
+} from './HardwareWalletContext';
 import {
   HardwareWalletType,
   HardwareConnectionPermissionState,

@@ -3,11 +3,11 @@ import { renderHook, act } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { HardwareWalletProvider } from './HardwareWalletContext';
 import {
+  HardwareWalletProvider,
   useHardwareWalletActions,
   useHardwareWalletState,
-} from './HardwareWalletContext.hooks';
+} from './HardwareWalletContext';
 import { ConnectionStatus, DeviceEvent } from './types';
 import * as webHIDUtils from './webHIDUtils';
 import { setupWebHIDUtilsMocks } from './__mocks__/webHIDUtils';
