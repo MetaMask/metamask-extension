@@ -8,9 +8,8 @@ import {
   isNativeAddress,
   UnifiedSwapBridgeEventName,
   type BridgeController,
-  isCrossChain,
-  isBitcoinChainId,
   formatAddressToCaipReference,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import {
   setFromToken,
@@ -544,7 +543,6 @@ const PrepareBridgePage = ({
               selectedDestinationAccount?.address ?? selectedAccount.address
             }
             token={toToken}
-            excludedAssetId={fromToken.assetId}
             // If the fromChain is a bridge-only chain, disable it in the toChain picker
             disabledChainId={
               fromChain?.chainId &&
@@ -552,8 +550,37 @@ const PrepareBridgePage = ({
                 ? fromChain.chainId
                 : undefined
             }
-            onAssetChange={(token) => {
-              dispatch(setToToken(token));
+            onAssetChange={(newToToken) => {
+              const currentFromAmount = fromAmount;
+              // If the new toToken is the same as the current fromToken
+              // try to set the fromToken to the old toToken
+              // If the old toToken's chain is disabled, it can't be set as the fromToken
+              // So reset fromToken to a fallback value (either native or default)
+              if (
+                fromToken?.assetId.toLowerCase() ===
+                newToToken.assetId.toLowerCase()
+              ) {
+                let fromTokenToUse = toToken;
+
+                if (
+                  fromChains.every(
+                    ({ chainId }) => chainId !== fromTokenToUse.chainId,
+                  )
+                ) {
+                  // If the new toToken is native, use default as the new fromToken
+                  // otherwise use the native asset
+                  fromTokenToUse = getDefaultToToken(
+                    fromToken.chainId,
+                    isNativeAddress(fromToken.assetId)
+                      ? getNativeAssetForChainId(fromToken.chainId)?.assetId
+                      : fromToken.assetId,
+                  );
+                }
+                dispatch(setFromToken(fromTokenToUse));
+              }
+
+              dispatch(setToToken(newToToken));
+              dispatch(setFromTokenInputValue(currentFromAmount));
             }}
             networks={toChains}
             amountInFiat={

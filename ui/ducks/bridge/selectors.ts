@@ -276,7 +276,7 @@ export const getFromToken = createSelector(
       return toBridgeToken(getNativeAssetForChainId(fromChains[0].chainId));
     }
     const fromChainId = fromChain.chainId;
-    if (fromToken && fromToken.chainId === fromChain.chainId) {
+    if (fromToken) {
       return fromToken;
     }
     const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);

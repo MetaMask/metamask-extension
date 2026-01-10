@@ -58,7 +58,6 @@ export const BridgeInputGroup = ({
   onBlockExplorerClick,
   buttonProps,
   accountAddress,
-  excludedAssetId,
   disabledChainId,
   containerProps = {},
 }: {
@@ -76,11 +75,7 @@ export const BridgeInputGroup = ({
   containerProps?: React.ComponentProps<typeof Column>;
 } & Pick<
   React.ComponentProps<typeof BridgeAssetPicker>,
-  | 'header'
-  | 'onAssetChange'
-  | 'accountAddress'
-  | 'excludedAssetId'
-  | 'disabledChainId'
+  'header' | 'onAssetChange' | 'accountAddress' | 'disabledChainId'
 >) => {
   const t = useI18nContext();
 
@@ -222,7 +217,6 @@ export const BridgeInputGroup = ({
           {...amountFieldProps}
         />
         <BridgeAssetPicker
-          excludedAssetId={excludedAssetId}
           disabledChainId={disabledChainId}
           selectedAsset={token}
           header={header}

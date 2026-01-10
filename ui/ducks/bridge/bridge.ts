@@ -1,12 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  getNativeAssetForChainId,
   calcLatestSrcBalance,
   isNonEvmChainId,
   formatChainIdToHex,
   type QuoteResponse,
-  isBitcoinChainId,
   isNativeAddress,
   RequestStatus,
 } from '@metamask/bridge-controller';
@@ -103,6 +101,7 @@ const bridgeSlice = createSlice({
   initialState: { ...initialState },
   reducers: {
     setFromToken: (state, { payload }: TokenPayload) => {
+      const currentFromToken = { ...state.fromToken };
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
@@ -110,23 +109,14 @@ const bridgeSlice = createSlice({
       state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
-      // Unset toToken if it's the same as the fromToken
+      // Set toToken to previous fromToken if new fromToken is the same as the current toToken
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
         state.fromToken.assetId.toLowerCase() ===
           state.toToken.assetId.toLowerCase()
       ) {
-        state.toToken = null;
-      }
-      // if new fromToken is BTC, and toToken is BTC, unset toToken
-      if (
-        state.fromToken?.chainId &&
-        isBitcoinChainId(state.fromToken.chainId) &&
-        state.toToken?.chainId &&
-        isBitcoinChainId(state.toToken.chainId)
-      ) {
-        state.toToken = null;
+        state.toToken = currentFromToken;
       }
     },
     setToToken: (state, { payload }: TokenPayload) => {
