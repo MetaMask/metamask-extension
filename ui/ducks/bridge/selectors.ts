@@ -331,34 +331,23 @@ export const getFromChain = createSelector(
   (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
 );
 
-const getDefaultTokenPair = createDeepEqualSelector(
-  [
-    (state: BridgeAppState) => getFromChain(state)?.chainId,
-    (state: BridgeAppState) => getBridgeFeatureFlags(state).bip44DefaultPairs,
-  ],
-  (fromChainId, bip44DefaultPairs): null | [CaipAssetType, CaipAssetType] => {
-    if (!fromChainId) {
-      return null;
-    }
-    const { namespace } = parseCaipChainId(fromChainId);
-    const defaultTokenPair = bip44DefaultPairs?.[namespace]?.standard;
-    if (defaultTokenPair) {
-      return Object.entries(defaultTokenPair).flat() as [
-        CaipAssetType,
-        CaipAssetType,
-      ];
-    }
-    return null;
-  },
-);
+export const getBip44DefaultPairsConfig = (state: BridgeAppState) =>
+  getBridgeFeatureFlags(state).bip44DefaultPairs;
 
-const getBIP44DefaultToChainId = createSelector(
-  [(state: BridgeAppState) => getDefaultTokenPair(state)?.[1]],
-  (defaultoAssetId) => {
-    if (!defaultoAssetId) {
-      return 'eip155:1';
+// Returns a mapping from src assetId to default dest assetId
+export const getBip44DefaultPairs = createSelector(
+  [getBip44DefaultPairsConfig],
+  (bip44DefaultPairsConfig) => {
+    if (!bip44DefaultPairsConfig) {
+      return {};
     }
-    return parseCaipAssetType(defaultoAssetId)?.chainId;
+    return Object.fromEntries(
+      Object.values(bip44DefaultPairsConfig)
+        .filter((s) => s !== undefined)
+        .flatMap(({ other, standard }) =>
+          Object.entries({ ...other, ...standard }),
+        ),
+    );
   },
 );
 

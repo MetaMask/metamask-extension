@@ -631,6 +631,30 @@ export const createBridgeMockStore = ({
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,
+            bip44DefaultPairs: {
+              bip122: {
+                other: {},
+                standard: {
+                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                    'eip155:1/slip44:60',
+                },
+              },
+              eip155: {
+                other: {},
+                standard: {
+                  'eip155:1/slip44:60':
+                    // USDC instead of MUSD
+                    'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+                },
+              },
+              solana: {
+                other: {},
+                standard: {
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501':
+                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+                },
+              },
+            },
             ...featureFlagOverrides?.bridgeConfig,
             chainRanking: [
               { chainId: formatChainIdToCaip('0x1') },
