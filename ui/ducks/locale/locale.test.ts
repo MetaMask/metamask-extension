@@ -2,8 +2,9 @@
 // eslint-disable-next-line import/no-restricted-paths
 import locales from '../../../app/_locales/index.json';
 import testData from '../../../test/data/mock-state.json';
+import * as actionConstants from '../../store/actionConstants';
 
-import {
+import reduceLocaleMessages, {
   getCurrentLocale,
   getIntlLocale,
   getCurrentLocaleMessages,
@@ -75,6 +76,56 @@ describe('Locale Selectors', () => {
         },
       };
       expect(getEnLocaleMessages(newAppState)).toBeUndefined();
+    });
+  });
+
+  describe('reduceLocaleMessages', () => {
+    it('preserves English locale messages when updating current locale', () => {
+      const initialState = {
+        current: { hello: 'Hello' },
+        currentLocale: 'en',
+        en: { hello: 'Hello', goodbye: 'Goodbye' },
+      };
+
+      const action = {
+        type: actionConstants.SET_CURRENT_LOCALE as typeof actionConstants.SET_CURRENT_LOCALE,
+        payload: {
+          messages: { hello: 'Hola' },
+          locale: 'es',
+        },
+      };
+
+      const newState = reduceLocaleMessages(initialState, action);
+
+      expect(newState).toEqual({
+        current: { hello: 'Hola' },
+        currentLocale: 'es',
+        en: { hello: 'Hello', goodbye: 'Goodbye' },
+      });
+    });
+
+    it('handles undefined English locale messages', () => {
+      const initialState = {
+        current: { hello: 'Hello' },
+        currentLocale: 'en',
+        en: undefined,
+      };
+
+      const action = {
+        type: actionConstants.SET_CURRENT_LOCALE as typeof actionConstants.SET_CURRENT_LOCALE,
+        payload: {
+          messages: { hello: 'Hola' },
+          locale: 'es',
+        },
+      };
+
+      const newState = reduceLocaleMessages(initialState, action);
+
+      expect(newState).toEqual({
+        current: { hello: 'Hola' },
+        currentLocale: 'es',
+        en: undefined,
+      });
     });
   });
 });

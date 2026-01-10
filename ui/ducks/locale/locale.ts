@@ -51,6 +51,8 @@ export default function reduceLocaleMessages(
         ...state,
         current: action.payload.messages,
         currentLocale: action.payload.locale,
+        // Preserve the English locale messages for fallback translation
+        en: state.en,
       };
     default:
       return state;
