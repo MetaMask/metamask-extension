@@ -723,7 +723,7 @@
       "globals": {
         "console.log": true,
         "console.warn": true,
-        "process.exit": true
+        "process": true
       }
     },
     "webpack-dev-server>serve-index>batch": {
@@ -808,6 +808,8 @@
         "path.resolve": true
       },
       "globals": {
+        "console.info": true,
+        "console.trace": true,
         "console.warn": true,
         "process.env": true,
         "process.versions.node": true
