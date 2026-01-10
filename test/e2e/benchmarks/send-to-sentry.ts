@@ -9,12 +9,16 @@
  */
 
 import { promises as fs } from 'fs';
+import { createRequire } from 'module';
 import mapKeys from 'lodash/mapKeys';
 import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
 import type { BenchmarkResults, UserActionResult } from './types-generated';
+
+const require = createRequire(import.meta.url);
+const { version } = require('../../../package.json') as { version: string };
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))
@@ -52,6 +56,7 @@ async function main() {
   Sentry.init({
     dsn: SENTRY_DSN,
     enableLogs: true,
+    release: `metamask-extension@${version}`,
   });
 
   // CI metadata as flat attributes (persona comes from each result's JSON)
