@@ -11,7 +11,6 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
 import { skipOnFirefox } from '../helpers';
 import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
@@ -37,7 +36,6 @@ describe('Account syncing - Accounts with Balances', function () {
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const phase1MockSetup = (server: Mockttp) => {
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -90,7 +88,6 @@ describe('Account syncing - Accounts with Balances', function () {
 
     // Phase 2: Fresh onboarding with balance mocking to discover additional accounts
     const phase2MockSetup = (server: Mockttp) => {
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockInfuraAndAccountSync(server, userStorageMockttpController, {
         accountsToMockBalances: balancesAccounts,
       });
@@ -98,15 +95,7 @@ describe('Account syncing - Accounts with Balances', function () {
 
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .withRemoteFeatureFlags({
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '13.5.0',
-            },
-          })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: phase2MockSetup,
       },
