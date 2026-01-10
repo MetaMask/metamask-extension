@@ -38,6 +38,7 @@ import type {
 } from '@metamask/assets-controllers';
 import type { MultichainTransactionsControllerState } from '@metamask/multichain-transactions-controller';
 import type { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
+import type { NetworkEnablementControllerState } from '@metamask/network-enablement-controller';
 import {
   type AccountGroupObject,
   type AccountTreeControllerState,
@@ -97,6 +98,7 @@ export type BridgeAppState = {
     AccountTreeControllerState &
     AccountTrackerControllerState &
     TokenBalancesControllerState &
+    NetworkEnablementControllerState &
     TokensControllerState &
     MultichainAccountsState['metamask'] &
     MultichainAssetsRatesControllerState &
@@ -243,20 +245,20 @@ export const getFromChains = createDeepEqualSelector(
 export const getLastSelectedChainId = createSelector(
   [getAllEnabledNetworksForAllNamespaces, getFromChains],
   (allEnabledNetworksForAllNamespaces, fromChains) => {
-    // If there is no network filter, return mainnet
+    // If there is no network filter, return top chain from LD
     if (allEnabledNetworksForAllNamespaces.length > 1) {
-      return CHAIN_IDS.MAINNET;
+      return fromChains[0]?.chainId ?? CHAIN_IDS.MAINNET;
     }
     // Find the matching bridge fromChain for the selected network filter
     return fromChains.find(
       ({ chainId: fromChainId }) =>
-        fromChainId === allEnabledNetworksForAllNamespaces[0],
+        fromChainId ===
+        formatChainIdToCaip(allEnabledNetworksForAllNamespaces[0]),
     )?.chainId;
   },
 );
 
 // This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
-// TODO use BIP44 defaults instead of mainnet fallback
 // TODO when GNS is removed, use the getLastSelectedChain instead of providerChainId
 export const getFromToken = createSelector(
   [

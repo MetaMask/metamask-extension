@@ -5,6 +5,7 @@ import {
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
   formatChainIdToHex,
+  isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { CaipAssetType, parseCaipAssetType } from '@metamask/utils';
@@ -12,6 +13,7 @@ import { selectDefaultNetworkClientIdsByChainId } from '../../../shared/modules/
 import {
   forceUpdateMetamaskState,
   setActiveNetworkWithError,
+  setEnabledAllPopularNetworks,
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
@@ -23,7 +25,12 @@ import {
   setEVMSrcNativeBalance,
 } from './bridge';
 import type { TokenPayload } from './types';
-import { type BridgeAppState, getFromAccount, getFromChain } from './selectors';
+import {
+  type BridgeAppState,
+  getFromAccount,
+  getFromChain,
+  getLastSelectedChainId,
+} from './selectors';
 
 const {
   setFromToken: setFromTokenAction,
@@ -145,6 +152,12 @@ export const setFromToken = (token: NonNullable<TokenPayload['payload']>) => {
     const shouldSetNetwork = currentChainId ? currentChainId !== chainId : true;
     // Set the src network
     if (shouldSetNetwork) {
+      // If the source chain changes, enable All Networks view so the user
+      // can see their bridging activity on the new chain
+      const lastSelectedChainId = getLastSelectedChainId(getState());
+      if (isCrossChain(chainId, lastSelectedChainId)) {
+        dispatch(setEnabledAllPopularNetworks());
+      }
       if (isNonEvm) {
         dispatch(setActiveNetworkWithError(chainId));
       } else {

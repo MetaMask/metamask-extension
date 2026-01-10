@@ -395,7 +395,6 @@ const PrepareBridgePage = ({
             dispatch(setFromTokenInputValue(e));
           }}
           onAssetChange={(token) => {
-            enableMissingNetwork(token.chainId);
             dispatch(setFromToken(token));
           }}
           networks={fromChains}
