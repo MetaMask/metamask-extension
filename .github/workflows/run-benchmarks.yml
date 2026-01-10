@@ -32,11 +32,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # Legacy benchmarks run on all 4 browser/buildType combinations
+        # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
         pageType: [standardHome, powerUserHome, userActions]
-        # New flow benchmarks only run on Chrome + Browserify to reduce CI runtime
+        # New added benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
           - browser: chrome
             buildType: browserify
