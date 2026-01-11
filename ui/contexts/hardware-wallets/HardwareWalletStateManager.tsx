@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { getSelectedInternalAccount } from '../../selectors/accounts';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
@@ -9,6 +8,7 @@ import {
   type HardwareWalletConnectionState,
 } from './types';
 import { ConnectionState } from './connectionState';
+import { getMaybeSelectedInternalAccount } from '../../selectors';
 
 /**
  * State and refs managed by the hardware wallet context
@@ -151,7 +151,7 @@ export const useHardwareWalletStateManager = () => {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function selectAccountHardwareInfo(state: any) {
-  const account = getSelectedInternalAccount(state);
+  const account = getMaybeSelectedInternalAccount(state);
   return {
     keyringType: account?.metadata?.keyring?.type ?? null,
     address: account?.address ?? null,
@@ -164,7 +164,7 @@ function selectAccountHardwareInfo(state: any) {
  * @param keyringType
  */
 function keyringTypeToHardwareWalletType(
-  keyringType?: string,
+  keyringType?: string | null,
 ): HardwareWalletType | null {
   if (!keyringType) {
     return null;
