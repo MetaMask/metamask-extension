@@ -146,11 +146,8 @@ export const useDeviceEventHandlers = ({
         return;
       }
 
-      // eslint-disable-next-line react-compiler/react-compiler
       refs.adapterRef.current = null;
-      // eslint-disable-next-line react-compiler/react-compiler
       refs.isConnectingRef.current = false;
-      // eslint-disable-next-line react-compiler/react-compiler
       refs.currentConnectionIdRef.current = null;
 
       if (
