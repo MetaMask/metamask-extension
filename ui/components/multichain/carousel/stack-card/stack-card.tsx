@@ -24,6 +24,15 @@ export const StackCard: React.FC<StackCardProps> = ({
   const t = useI18nContext();
   const isContentfulContent = slide.id.startsWith('contentful-');
 
+  // Get the slide title and description, falling back to raw values if translation is not available
+  const slideTitle = isContentfulContent
+    ? slide.title
+    : t(slide.title) || slide.title;
+
+  const slideDescription = isContentfulContent
+    ? slide.description
+    : t(slide.description) || slide.description;
+
   const handleCloseClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -63,7 +72,7 @@ export const StackCard: React.FC<StackCardProps> = ({
 
       {/* Image Container */}
       <div className="carousel-card__image">
-        <img src={slide.image} alt={slide.title} />
+        <img src={slide.image} alt={slideTitle} />
       </div>
 
       {/* Info container */}
@@ -75,7 +84,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textDefault}
             className="carousel-card__title"
           >
-            {isContentfulContent ? slide.title : t(slide.title)}
+            {slideTitle}
           </Text>
 
           {onTransitionToNextCard && (
@@ -83,9 +92,7 @@ export const StackCard: React.FC<StackCardProps> = ({
               iconName={IconName.Close}
               size={ButtonIconSize.Md}
               color={IconColor.iconAlternative}
-              ariaLabel={t('closeSlide', [
-                isContentfulContent ? slide.title : t(slide.title),
-              ])}
+              ariaLabel={t('closeSlide', [slideTitle])}
               onClick={handleCloseClick}
               data-testid={`carousel-slide-${slide.id}-close-button`}
             />
@@ -99,7 +106,7 @@ export const StackCard: React.FC<StackCardProps> = ({
             color={TextColor.textAlternative}
             className="carousel-card__description"
           >
-            {isContentfulContent ? slide.description : t(slide.description)}
+            {slideDescription}
           </Text>
         </div>
       </div>
