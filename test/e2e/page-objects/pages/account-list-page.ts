@@ -234,7 +234,7 @@ class AccountListPage {
           },
           this.multichainAccountOptionsMenuButton,
         ],
-        { timeout: 30000 },
+        { timeout: 15000 },
       );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);

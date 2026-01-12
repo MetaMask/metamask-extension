@@ -42,7 +42,7 @@ class AccountAddressModal {
   async getAccountAddress(): Promise<string> {
     console.log('Getting the address from the modal');
     // Wait for animation to complete
-    await this.driver.delay(3000);
+    await this.driver.delay(2000);
     await this.driver.waitForSelector(this.accountAddress);
     const element = await this.driver.findElement(this.accountAddress);
     await this.driver.waitForNonEmptyElement(element);
