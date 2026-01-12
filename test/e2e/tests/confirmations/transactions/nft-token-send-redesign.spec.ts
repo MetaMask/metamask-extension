@@ -27,7 +27,7 @@ describe('Confirmation Redesign Token Send', function () {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
   describe('ERC721', function () {
     describe('Wallet initiated', function () {
-      it.only('Sends a type 0 transaction (Legacy)', async function () {
+      it('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
@@ -47,7 +47,7 @@ describe('Confirmation Redesign Token Send', function () {
         );
       });
 
-      it.only('Sends a type 2 transaction (EIP1559)', async function () {
+      it('Sends a type 2 transaction (EIP1559)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
