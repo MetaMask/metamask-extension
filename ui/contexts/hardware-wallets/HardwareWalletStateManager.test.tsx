@@ -148,6 +148,17 @@ describe('HardwareWalletStateManager', () => {
       );
     });
 
+    it('initializes previousWalletTypeRef to null', () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const { result } = renderHook(() => useHardwareWalletStateManager(), {
+        wrapper: createWrapper(store),
+      });
+
+      // previousWalletTypeRef should start as null since there's no previous value
+      expect(result.current.refs.previousWalletTypeRef.current).toBe(null);
+    });
+
     it('returns null walletType for unknown keyring types', () => {
       const store = mockStore(createMockState('unknown-keyring'));
 

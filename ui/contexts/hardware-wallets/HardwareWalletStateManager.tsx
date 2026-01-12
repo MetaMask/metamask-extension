@@ -91,6 +91,7 @@ export const useHardwareWalletStateManager = () => {
 
   // Sync walletType with walletTypeRef
   useEffect(() => {
+    previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
   }, [walletType]);
 
