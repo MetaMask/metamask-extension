@@ -22,19 +22,16 @@ import { isBatchTransaction } from '../../../../../../shared/lib/transactions.ut
 
 /**
  * Inner component that renders the nested transaction tag.
- * Uses confirmationId as key to force remount when confirmation changes,
- * ensuring consistent hook calls.
+ * Must be keyed by confirmationId when rendered to force remount when
+ * confirmation changes, ensuring consistent hook calls in useNestedTransactionLabels.
  *
  * @param options0
  * @param options0.nestedTransactions
- * @param options0.confirmationId
  */
 const NestedTransactionTagContent = ({
   nestedTransactions,
-  confirmationId,
 }: {
   nestedTransactions: BatchTransactionParams[];
-  confirmationId: string | undefined;
 }) => {
   const t = useI18nContext();
   const functionNames = useNestedTransactionLabels({ nestedTransactions });
@@ -42,7 +39,7 @@ const NestedTransactionTagContent = ({
   const tooltip = t('transactionIncludesTypes', [functionNames.join(', ')]);
 
   return (
-    <Box key={confirmationId} paddingBottom={4} textAlign={TextAlign.Center}>
+    <Box paddingBottom={4} textAlign={TextAlign.Center}>
       <Tooltip title={tooltip} position="bottom">
         <Tag
           label={t('includesXTransactions', [nestedTransactions.length])}
@@ -79,8 +76,8 @@ export function NestedTransactionTag() {
 
   return (
     <NestedTransactionTagContent
+      key={currentConfirmation?.id}
       nestedTransactions={nestedTransactions}
-      confirmationId={currentConfirmation?.id}
     />
   );
 }
