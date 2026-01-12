@@ -44,6 +44,7 @@ const getFixtureOptions = (
   testContext: Mocha.Context,
   manifestTestingOverrides: Record<string, unknown> = {},
 ) => ({
+  ignoredConsoleErrors: [/getSubscriptions/u],
   title: testContext.test?.title,
   manifestFlags: {
     testing: {
