@@ -336,6 +336,8 @@ export class PersistenceManager {
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
         this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
         try {
           // atomically set all the keys
           await this.#localStore.set({
@@ -349,9 +351,15 @@ export class PersistenceManager {
             const stringifiedBackup = JSON.stringify(backup);
             // and the backup has changed
             if (this.#backup !== stringifiedBackup) {
-              // save it to the backup DB
-              await this.#backupDb?.set(backup);
-              this.#backup = stringifiedBackup;
+              // save it to the backup DB - wrapped in try-catch to differentiate
+              // backup failures from storage.local failures in Sentry
+              try {
+                await this.#backupDb?.set(backup);
+                this.#backup = stringifiedBackup;
+              } catch (backupErr) {
+                backupFailed = true;
+                throw backupErr;
+              }
             }
           }
 
@@ -361,12 +369,15 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+
             // Custom fingerprint prevents Sentry's deduplication from dropping
             // this event when other persistence errors with the same underlying
             // error message (e.g., "An unexpected error occurred") are reported.
             captureException(err, {
-              tags: { 'persistence.error': 'set-failed' },
-              fingerprint: ['persistence-error', 'set-failed'],
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
             });
           }
           this.#notifySetFailed();
@@ -429,6 +440,8 @@ export class PersistenceManager {
       { mode: 'exclusive', signal: abortController.signal },
       async () => {
         this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
         try {
           const clone = structuredClone(this.#pendingPairs);
           // reset the pendingPairs
@@ -457,8 +470,14 @@ export class PersistenceManager {
           }
           if (hasVault(partialState)) {
             const backup = makeBackup(partialState, meta);
-            // save it to the backup DB
-            await this.#backupDb?.set(backup);
+            // save it to the backup DB - wrapped in try-catch to differentiate
+            // backup failures from storage.local failures in Sentry
+            try {
+              await this.#backupDb?.set(backup);
+            } catch (backupErr) {
+              backupFailed = true;
+              throw backupErr;
+            }
           }
 
           if (this.#dataPersistenceFailing) {
@@ -467,12 +486,17 @@ export class PersistenceManager {
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = true;
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed
+              ? 'persist-backup-failed'
+              : 'persist-failed';
+
             // Custom fingerprint prevents Sentry's deduplication from dropping
             // this event when other persistence errors with the same underlying
             // error message (e.g., "An unexpected error occurred") are reported.
             captureException(err, {
-              tags: { 'persistence.error': 'persist-failed' },
-              fingerprint: ['persistence-error', 'persist-failed'],
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
             });
           }
           this.#notifySetFailed();
