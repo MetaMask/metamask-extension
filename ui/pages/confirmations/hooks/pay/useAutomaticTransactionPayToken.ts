@@ -1,12 +1,10 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import type { Hex } from '@metamask/utils';
-import type { TransactionMeta } from '@metamask/transaction-controller';
+import { getHardwareWalletType } from '../../../../selectors';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import { useConfirmContext } from '../../context/confirm';
-import { getHardwareWalletType } from '../../../../selectors';
 import type { TransactionPayAsset, SetPayTokenRequest } from './types';
 
 export function useAutomaticTransactionPayToken({
@@ -25,13 +23,6 @@ export function useAutomaticTransactionPayToken({
     () => tokens.filter((t) => !t.disabled),
     [tokens],
   );
-
-  const { currentConfirmation: transactionMeta } =
-    useConfirmContext<TransactionMeta>();
-
-  const {
-    txParams: { from },
-  } = transactionMeta ?? { txParams: {} };
 
   const hardwareWalletType = useSelector(getHardwareWalletType);
   const isHardwareWallet = useMemo(
@@ -121,4 +112,3 @@ function getBestToken({
 
   return targetTokenFallback;
 }
-

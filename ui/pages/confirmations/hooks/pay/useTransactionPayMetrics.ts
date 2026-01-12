@@ -6,6 +6,13 @@ import {
 } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { BigNumber } from 'bignumber.js';
+import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
+import { useConfirmContext } from '../../context/confirm';
+import {
+  getNativeTokenAddress,
+  hasTransactionType,
+} from '../../utils/transaction-pay';
+import { updateEventFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayQuotes,
@@ -13,10 +20,6 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import { useConfirmContext } from '../../context/confirm';
-import { getNativeTokenAddress, hasTransactionType } from '../../utils/transaction-pay';
-import { updateEventFragment } from '../../../../store/actions';
-import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 
 export function useTransactionPayMetrics() {
   const { currentConfirmation: transactionMeta } =
@@ -42,68 +45,79 @@ export function useTransactionPayMetrics() {
     automaticPayToken.current = payToken;
   }
 
-  const properties: Record<string, Json> = {};
-
-  if (payToken) {
-    properties.mm_pay = true;
-    properties.mm_pay_token_selected = payToken.symbol;
-    properties.mm_pay_chain_selected = payToken.chainId;
-    properties.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
-
-    properties.mm_pay_transaction_step =
-      properties.mm_pay_transaction_step_total;
-
-    properties.mm_pay_token_presented =
-      automaticPayToken.current?.symbol ?? null;
-
-    properties.mm_pay_chain_presented =
-      automaticPayToken.current?.chainId ?? null;
-
-    properties.mm_pay_payment_token_list_size = availableTokens.length;
-  }
-
-  if (payToken && type === TransactionType.perpsDeposit) {
-    properties.mm_pay_use_case = 'perps_deposit';
-    properties.simulation_sending_assets_total_value = sendingValue;
-  }
-
-  if (
-    payToken &&
-    hasTransactionType(transactionMeta, [TransactionType.predictDeposit])
-  ) {
-    properties.mm_pay_use_case = 'predict_deposit';
-    properties.simulation_sending_assets_total_value = sendingValue;
-  }
-
   const nativeTokenAddress = getNativeTokenAddress(chainId as Hex);
 
   const nonGasQuote = quotes?.find(
     (q) => q.request?.targetTokenAddress !== nativeTokenAddress,
   );
 
-  if (nonGasQuote) {
-    properties.mm_pay_dust_usd = nonGasQuote.dust.usd;
-  }
-
   const strategy = quotes?.[0]?.strategy;
 
-  if (strategy === TransactionPayStrategy.Bridge) {
-    properties.mm_pay_strategy = 'mm_swaps_bridge';
-  }
+  const properties = useMemo(() => {
+    const props: Record<string, Json> = {};
 
-  if (strategy === TransactionPayStrategy.Relay) {
-    properties.mm_pay_strategy = 'relay';
-  }
+    if (payToken) {
+      props.mm_pay = true;
+      props.mm_pay_token_selected = payToken.symbol;
+      props.mm_pay_chain_selected = payToken.chainId;
+      props.mm_pay_transaction_step_total = (quotes?.length ?? 0) + 1;
 
-  if (totals) {
-    properties.mm_pay_network_fee_usd = new BigNumber(
-      totals.fees.sourceNetwork.estimate.usd,
-    )
-      .plus(totals.fees.targetNetwork.usd)
-      .toString(10);
+      props.mm_pay_transaction_step = props.mm_pay_transaction_step_total;
 
-    properties.mm_pay_provider_fee_usd = totals.fees.provider.usd;
-  }
+      props.mm_pay_token_presented = automaticPayToken.current?.symbol ?? null;
+
+      props.mm_pay_chain_presented = automaticPayToken.current?.chainId ?? null;
+
+      props.mm_pay_payment_token_list_size = availableTokens.length;
+    }
+
+    if (payToken && type === TransactionType.perpsDeposit) {
+      props.mm_pay_use_case = 'perps_deposit';
+      props.simulation_sending_assets_total_value = sendingValue;
+    }
+
+    if (
+      payToken &&
+      hasTransactionType(transactionMeta, [TransactionType.predictDeposit])
+    ) {
+      props.mm_pay_use_case = 'predict_deposit';
+      props.simulation_sending_assets_total_value = sendingValue;
+    }
+
+    if (nonGasQuote) {
+      props.mm_pay_dust_usd = nonGasQuote.dust.usd;
+    }
+
+    if (strategy === TransactionPayStrategy.Bridge) {
+      props.mm_pay_strategy = 'mm_swaps_bridge';
+    }
+
+    if (strategy === TransactionPayStrategy.Relay) {
+      props.mm_pay_strategy = 'relay';
+    }
+
+    if (totals) {
+      props.mm_pay_network_fee_usd = new BigNumber(
+        totals.fees.sourceNetwork.estimate.usd,
+      )
+        .plus(totals.fees.targetNetwork.usd)
+        .toString(10);
+
+      props.mm_pay_provider_fee_usd = totals.fees.provider.usd;
+    }
+
+    return props;
+  }, [
+    availableTokens.length,
+    nonGasQuote,
+    payToken,
+    quotes?.length,
+    sendingValue,
+    strategy,
+    totals,
+    transactionMeta,
+    type,
+  ]);
 
   useEffect(() => {
     if (transactionId && Object.keys(properties).length > 0) {
@@ -111,4 +125,3 @@ export function useTransactionPayMetrics() {
     }
   }, [transactionId, properties]);
 }
-

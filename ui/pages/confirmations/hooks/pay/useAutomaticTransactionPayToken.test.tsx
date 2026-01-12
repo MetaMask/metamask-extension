@@ -4,11 +4,11 @@ import configureStore from 'redux-mock-store';
 import React from 'react';
 import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
+import { ConfirmContext } from '../../context/confirm';
 import { useAutomaticTransactionPayToken } from './useAutomaticTransactionPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import { ConfirmContext } from '../../context/confirm';
 import type { TransactionPayAsset, SetPayTokenRequest } from './types';
 
 jest.mock('./useTransactionPayToken');

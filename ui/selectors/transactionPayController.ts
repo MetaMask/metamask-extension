@@ -1,22 +1,15 @@
 import { createSelector } from 'reselect';
 import type { TransactionPayControllerState } from '@metamask/transaction-pay-controller';
 
-type TransactionPayState = {
-  metamask: {
-    TransactionPayController?: TransactionPayControllerState;
-  };
+export type TransactionPayState = {
+  metamask: TransactionPayControllerState;
 };
 
-const selectTransactionPayControllerState = (state: TransactionPayState) =>
-  state.metamask.TransactionPayController ?? {
-    transactionData: {},
-  };
-
 export const selectTransactionDataByTransactionId = createSelector(
-  selectTransactionPayControllerState,
+  (state: TransactionPayState) => state,
   (_state: TransactionPayState, transactionId: string) => transactionId,
-  (transactionPayControllerState, transactionId) =>
-    transactionPayControllerState.transactionData[transactionId],
+  (state: TransactionPayState, transactionId: string) =>
+    state.metamask.transactionData[transactionId],
 );
 
 export const selectTransactionPayTotalsByTransactionId = createSelector(
@@ -48,15 +41,3 @@ export const selectTransactionPaySourceAmountsByTransactionId = createSelector(
   selectTransactionDataByTransactionId,
   (transactionData) => transactionData?.sourceAmounts,
 );
-
-export const selectTransactionPayIsMaxAmountByTransactionId = createSelector(
-  selectTransactionDataByTransactionId,
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  (transactionData) => (transactionData as any)?.isMaxAmount ?? false,
-);
-
-export const selectTransactionPayTransactionData = createSelector(
-  selectTransactionPayControllerState,
-  (state) => state.transactionData,
-);
-

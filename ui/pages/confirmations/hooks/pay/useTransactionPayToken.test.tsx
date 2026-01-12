@@ -3,9 +3,9 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
-import { useTransactionPayToken } from './useTransactionPayToken';
 import * as controllerActions from '../../../../store/controller-actions/transaction-pay-controller';
 import { ConfirmContext } from '../../context/confirm';
+import { useTransactionPayToken } from './useTransactionPayToken';
 
 jest.mock(
   '../../../../store/controller-actions/transaction-pay-controller',
@@ -38,13 +38,11 @@ function createMockState({
 } = {}) {
   return {
     metamask: {
-      TransactionPayController: {
-        transactionData: {
-          [TRANSACTION_ID_MOCK]: {
-            isLoading: false,
-            paymentToken: payToken,
-            tokens: [],
-          },
+      transactionData: {
+        [TRANSACTION_ID_MOCK]: {
+          isLoading: false,
+          paymentToken: payToken,
+          tokens: [],
         },
       },
     },
@@ -127,4 +125,3 @@ describe('useTransactionPayToken', () => {
     expect(result.current.isNative).toBe(true);
   });
 });
-

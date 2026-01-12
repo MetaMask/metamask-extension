@@ -1,9 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
-import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
-import { TransactionPayAsset, NATIVE_TOKEN_ADDRESS } from './types';
 import { Asset, AssetStandard } from '../../types/send';
+import { TransactionPayAsset, NATIVE_TOKEN_ADDRESS } from './types';
+import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
 jest.mock('../../utils/transaction-pay', () => ({
@@ -70,4 +70,3 @@ describe('useTransactionPayAvailableTokens', () => {
     expect(result.current).toEqual([]);
   });
 });
-

@@ -10,15 +10,14 @@ import {
   TransactionPaySourceAmount,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
+import { ConfirmContext } from '../../context/confirm';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
   useTransactionPayRequiredTokens,
   useTransactionPaySourceAmounts,
   useTransactionPayTotals,
-  useTransactionPayIsMaxAmount,
 } from './useTransactionPayData';
-import { ConfirmContext } from '../../context/confirm';
 
 const TRANSACTION_ID_MOCK = 'transaction-id-mock';
 
@@ -40,16 +39,13 @@ const mockStore = configureStore([]);
 
 const STATE_MOCK = {
   metamask: {
-    TransactionPayController: {
-      transactionData: {
-        [TRANSACTION_ID_MOCK]: {
-          isLoading: true,
-          isMaxAmount: true,
-          quotes: [QUOTE_MOCK],
-          sourceAmounts: [SOURCE_AMOUNT_MOCK],
-          tokens: [REQUIRED_TOKEN_MOCK],
-          totals: TOTALS_MOCK,
-        },
+    transactionData: {
+      [TRANSACTION_ID_MOCK]: {
+        isLoading: true,
+        quotes: [QUOTE_MOCK],
+        sourceAmounts: [SOURCE_AMOUNT_MOCK],
+        tokens: [REQUIRED_TOKEN_MOCK],
+        totals: TOTALS_MOCK,
       },
     },
   },
@@ -118,14 +114,4 @@ describe('useTransactionPayData', () => {
       expect(result.current).toStrictEqual(TOTALS_MOCK);
     });
   });
-
-  describe('useTransactionPayIsMaxAmount', () => {
-    it('returns isMaxAmount', () => {
-      const { result } = renderHook(() => useTransactionPayIsMaxAmount(), {
-        wrapper: createWrapper(),
-      });
-      expect(result.current).toBe(true);
-    });
-  });
 });
-

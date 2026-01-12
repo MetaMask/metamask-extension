@@ -9,6 +9,7 @@ import {
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
+import { ConfirmContext } from '../../context/confirm';
 import { useTransactionPayMetrics } from './useTransactionPayMetrics';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -17,7 +18,6 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import { ConfirmContext } from '../../context/confirm';
 import type { TransactionPayAsset } from './types';
 
 jest.mock('./useTransactionPayToken');
@@ -201,4 +201,3 @@ describe('useTransactionPayMetrics', () => {
     expect(result.error).toBeUndefined();
   });
 });
-
