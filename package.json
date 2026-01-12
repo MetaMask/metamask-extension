@@ -286,7 +286,7 @@
     "@metamask/address-book-controller": "^7.0.0",
     "@metamask/announcement-controller": "^8.0.0",
     "@metamask/approval-controller": "^8.0.0",
-    "@metamask/assets-controllers": "^95.0.0",
+    "@metamask/assets-controllers": "^95.1.0",
     "@metamask/base-controller": "^9.0.0",
     "@metamask/bitcoin-wallet-snap": "^1.8.0",
     "@metamask/bridge-controller": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
