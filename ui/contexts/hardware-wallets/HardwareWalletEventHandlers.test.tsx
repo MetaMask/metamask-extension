@@ -123,14 +123,21 @@ describe('useDeviceEventHandlers', () => {
     it('handles DEVICE_LOCKED event', () => {
       const { result } = setupHook();
 
+      const error = new Error('Device locked');
       result.current.handleDeviceEvent({
         event: DeviceEvent.DeviceLocked,
-        error: new Error('Device locked'),
+        error,
       });
 
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(ConnectionState.error('locked', error));
     });
 
     it('handles APP_NOT_OPEN event with error', () => {
@@ -145,6 +152,12 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(ConnectionState.error('app_not_open', error));
     });
 
     it('handles APP_NOT_OPEN event without error', () => {
@@ -157,6 +170,12 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(ConnectionState.awaitingApp('not_open'));
     });
 
     it('handles DISCONNECTED event when not connecting', () => {
@@ -169,6 +188,12 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(ConnectionState.disconnected());
     });
 
     it('ignores DISCONNECTED event when connecting', () => {
@@ -194,6 +219,14 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.awaitingApp('wrong_app', 'Bitcoin'),
+      );
     });
 
     it('handles CONNECTION_FAILED event', () => {
@@ -208,18 +241,24 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.error('connection_failed', error),
+      );
     });
 
-    it('handles CONNECTION_FAILED event without error', () => {
+    it('ignores CONNECTION_FAILED event without error', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
         event: DeviceEvent.ConnectionFailed,
       });
 
-      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
-        expect.any(Function),
-      );
+      expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
     it('handles OPERATION_TIMEOUT event with error', () => {
@@ -234,6 +273,14 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.error('operation_timeout', error),
+      );
     });
 
     it('handles OPERATION_TIMEOUT event without error', () => {
@@ -245,6 +292,17 @@ describe('useDeviceEventHandlers', () => {
 
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
+      );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.error(
+          'operation_timeout',
+          new Error('Operation timed out'),
+        ),
       );
     });
 
