@@ -11,7 +11,7 @@ import SettingsPage from '../page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
-const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
+const VAULT_DECRYPTOR_PAGE = 'http://127.0.0.1:9966';
 
 /**
  * Copies a directory to a temporary location.
@@ -131,7 +131,8 @@ async function waitUntilFileIsWritten({
 }
 
 // skipped until the vault decryptor page is updated to support split state
-describe.skip('Vault Decryptor Page', function () {
+// eslint-disable-next-line mocha/no-skipped-tests
+describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
       // TODO: Get this working on Firefox
