@@ -72,6 +72,7 @@ import type { MetaMetricsControllerState } from '../../app/scripts/controllers/m
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
+import type { ConnectivityControllerState } from '../../app/scripts/controllers/connectivity/types';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
@@ -329,6 +330,7 @@ export type ControllerStatePropertiesEnumerated = {
   claims: ClaimsControllerState['claims'];
   claimsConfigurations: ClaimsControllerState['claimsConfigurations'];
   drafts: ClaimsControllerState['drafts'];
+  connectivityStatus: ConnectivityControllerState['connectivityStatus'];
 };
 
 type ControllerStateTypesMerged = AccountsControllerState &
@@ -391,7 +393,8 @@ type ControllerStateTypesMerged = AccountsControllerState &
   TransactionControllerState &
   UserOperationControllerState &
   UserStorageController.UserStorageControllerState &
-  RewardsControllerState;
+  RewardsControllerState &
+  ConnectivityControllerState;
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention

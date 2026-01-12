@@ -1,6 +1,7 @@
 import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
+  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
 
@@ -98,4 +99,28 @@ export async function createOffscreen() {
   await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
+}
+
+/**
+ * Sets up a listener for connectivity status messages from the offscreen document.
+ * This should be called after the controller is initialized.
+ *
+ * @param {Function} onConnectivityChange - Callback to invoke with the connectivity status.
+ * The callback receives a boolean indicating whether the device is online.
+ */
+export function setupOffscreenConnectivityListener(onConnectivityChange) {
+  const { chrome } = globalThis;
+  if (!chrome.offscreen) {
+    return;
+  }
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (
+      message &&
+      message.target === OffscreenCommunicationTarget.extensionMain &&
+      message.event === OffscreenCommunicationEvents.connectivityChange
+    ) {
+      onConnectivityChange(message.isOnline);
+    }
+  });
 }

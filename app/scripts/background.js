@@ -76,7 +76,10 @@ import MetamaskController, {
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
-import { createOffscreen } from './offscreen';
+import {
+  createOffscreen,
+  setupOffscreenConnectivityListener,
+} from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -743,6 +746,24 @@ async function initialize(backup) {
 
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  // Set up connectivity detection
+  if (controller.controllerApi?.setDeviceConnectivityStatus) {
+    const updateConnectivity = (isOnline) => {
+      const status = isOnline ? 'online' : 'offline';
+      controller.controllerApi.setDeviceConnectivityStatus(status);
+    };
+
+    if (isManifestV3) {
+      // MV3: Use offscreen document (service worker can't reliably detect connectivity)
+      setupOffscreenConnectivityListener(updateConnectivity);
+    } else {
+      // MV2: Background page has access to window events
+      updateConnectivity(globalThis.navigator.onLine);
+      globalThis.addEventListener('online', () => updateConnectivity(true));
+      globalThis.addEventListener('offline', () => updateConnectivity(false));
+    }
+  }
 
   if (!isManifestV3) {
     await loadPhishingWarningPage();

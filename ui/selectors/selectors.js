@@ -4116,21 +4116,11 @@ export function getNetworkConnectionBanner(state) {
 }
 
 /**
- * Get the device connectivity status (online/offline).
- *
- * @param {MetaMaskReduxState} state - The Redux state
- * @returns {'online' | 'offline'} The device connectivity status
- */
-export function getConnectivityStatus(state) {
-  return state.metamask.BrowserConnectivityController?.status ?? 'online';
-}
-
-/**
  * Check if the device is offline.
  *
  * @param {MetaMaskReduxState} state - The Redux state
  * @returns {boolean} True if the device is offline
  */
 export function getIsDeviceOffline(state) {
-  return state.metamask.BrowserConnectivityController?.status === 'offline';
+  return state.metamask.connectivityStatus === 'offline';
 }

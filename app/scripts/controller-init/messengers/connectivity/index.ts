@@ -1,1 +1,1 @@
-export { getBrowserConnectivityControllerMessenger } from './browser-connectivity-controller-messenger';
+export { getConnectivityControllerMessenger } from './connectivity-controller-messenger';

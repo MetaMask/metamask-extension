@@ -13,6 +13,7 @@ import { runKernel } from './ocap-kernel';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
+import initConnectivity from './connectivity';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -37,6 +38,7 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
+  initConnectivity();
   ///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
   runKernel().catch((error) => {
     console.error('Ocap Kernel fatal error:', error);

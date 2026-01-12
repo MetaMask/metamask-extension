@@ -1,13 +1,17 @@
-export { BrowserConnectivityController } from './browser-connectivity-controller';
+export { ConnectivityController } from './connectivity-controller';
+export { getDefaultConnectivityControllerState } from './connectivity-controller';
+export { PassiveConnectivityService } from './passive-connectivity-service';
 export {
   CONTROLLER_NAME,
   ConnectivityStatus,
   type ControllerName,
   type ConnectivityStatusType,
-  type BrowserConnectivityControllerState,
-  type BrowserConnectivityControllerGetStateAction,
-  type BrowserConnectivityControllerActions,
-  type BrowserConnectivityControllerStateChangeEvent,
-  type BrowserConnectivityControllerEvents,
-  type BrowserConnectivityControllerMessenger,
+  type ConnectivityService,
+  type ConnectivityControllerState,
+  type ConnectivityControllerOptions,
+  type ConnectivityControllerGetStateAction,
+  type ConnectivityControllerActions,
+  type ConnectivityControllerStateChangeEvent,
+  type ConnectivityControllerEvents,
+  type ConnectivityControllerMessenger,
 } from './types';

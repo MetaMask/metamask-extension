@@ -1,1 +1,1 @@
-export { BrowserConnectivityControllerInit } from './browser-connectivity-controller-init';
+export { ConnectivityControllerInit } from './connectivity-controller-init';

@@ -34,6 +34,7 @@ export const useNetworkConnectionBanner =
     const dispatch = useDispatch();
     const trackEvent = useContext(MetaMetricsContext);
     const isOffline = useSelector(getIsDeviceOffline);
+    console.log('isOffline', isOffline);
     const firstUnavailableEvmNetwork = useSelector(
       selectFirstUnavailableEvmNetwork,
     );
