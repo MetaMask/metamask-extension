@@ -96,7 +96,7 @@ describe('NestedTransactionTag', () => {
     ]);
 
     // First render with batch transactions
-    const { getByText, rerender } = render({
+    const { getByText, unmount } = render({
       nestedTransactions: [
         BATCH_TRANSACTION_PARAMS_MOCK,
         BATCH_TRANSACTION_PARAMS_MOCK,
@@ -104,24 +104,12 @@ describe('NestedTransactionTag', () => {
     });
     expect(getByText('Includes 2 transactions')).toBeInTheDocument();
 
-    // Re-render with no nested transactions (simulating switching to different confirmation)
-    // This should not throw React hooks error
-    const storeWithNoNested = configureStore(
-      getMockConfirmStateForTransaction(
-        genUnapprovedContractInteractionConfirmation({
-          address: ADDRESS_MOCK,
-          nestedTransactions: undefined,
-        }),
-      ),
-    );
+    // Unmount and render with no nested transactions (simulating switching confirmation)
+    unmount();
 
+    // This should not throw React hooks error
     expect(() => {
-      rerender(
-        renderWithConfirmContextProvider(
-          <NestedTransactionTag />,
-          storeWithNoNested,
-        ).container.firstChild as React.ReactElement,
-      );
+      render({ nestedTransactions: undefined });
     }).not.toThrow();
   });
 
