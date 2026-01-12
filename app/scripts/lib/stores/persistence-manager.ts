@@ -11,6 +11,7 @@ import type {
   BaseStore,
   MetaData,
 } from './base-store';
+import { runTrackedTask } from './utils/run-tracked-task';
 
 export type StorageKind = 'data' | 'split';
 
@@ -568,29 +569,33 @@ export class PersistenceManager {
    * occur.
    */
   async migrateToSplitState(state: MetaMaskStateType) {
-    if (this.storageKind === 'split') {
-      log.debug('[Split State]: Storage is already split, skipping migration');
-      return;
-    }
+    return runTrackedTask('migrateToSplitState', async () => {
+      if (this.storageKind === 'split') {
+        log.debug(
+          '[Split State]: Storage is already split, skipping migration',
+        );
+        return;
+      }
 
-    if (!this.#metadata) {
-      throw new Error(
-        'MetaMask - metadata must be set before calling "migrateToSplitState"',
-      );
-    }
+      if (!this.#metadata) {
+        throw new Error(
+          'MetaMask - metadata must be set before calling "migrateToSplitState"',
+        );
+      }
 
-    this.storageKind = 'split';
-    const metadata = structuredClone(this.#metadata);
-    metadata.storageKind = 'split';
-    this.setMetadata(metadata);
-    for (const [key, value] of Object.entries(state)) {
-      this.update(key, value);
-    }
+      this.storageKind = 'split';
+      const metadata = structuredClone(this.#metadata);
+      metadata.storageKind = 'split';
+      this.setMetadata(metadata);
+      for (const [key, value] of Object.entries(state)) {
+        this.update(key, value);
+      }
 
-    // mark data key for deletion
-    this.update('data', undefined);
+      // mark data key for deletion
+      this.update('data', undefined);
 
-    log.debug('[Split State]: Migrating to split state storage');
-    await this.persist();
+      log.debug('[Split State]: Migrating to split state storage');
+      await this.persist();
+    });
   }
 }
