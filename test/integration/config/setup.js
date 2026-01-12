@@ -59,3 +59,8 @@ const structuredClone = obj => {
 };
 
 global.structuredClone = structuredClone;
+
+// Mock DOM measurements for virtualizer
+Object.defineProperties(HTMLElement.prototype, {
+  offsetHeight: { configurable: true, get: () => 600 },
+});
