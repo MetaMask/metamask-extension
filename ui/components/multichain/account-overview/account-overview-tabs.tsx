@@ -32,6 +32,7 @@ import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
+import { PerpsTabView } from '../../app/perps';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
@@ -176,7 +177,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <Box />
+            <PerpsTabView />
           </Tab>
         )}
 

@@ -1,0 +1,51 @@
+@use "design-system";
+
+@import 'position-card/index';
+@import 'order-card/index';
+
+.perps-tab-view {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__section-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    padding: 16px 16px 0;
+  }
+
+  &__section-title {
+    font-weight: 500;
+  }
+
+  &__cards-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  &__empty-state {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+    align-items: center;
+    text-align: center;
+  }
+
+  &__loading {
+    padding: 24px;
+    align-items: center;
+    margin-top: 10px;
+    border-radius: 12px;
+  }
+}
+

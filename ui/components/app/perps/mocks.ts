@@ -1,9 +1,9 @@
-import type { Position, Order, PerpsMarketData } from '../controllers/types';
-
 /**
  * Mock data for Perps UI development
  * Used for building UI while PerpsController is being migrated to core
  */
+
+import { Order, PerpsMarketData, Position } from './types';
 
 /**
  * Mock positions data
