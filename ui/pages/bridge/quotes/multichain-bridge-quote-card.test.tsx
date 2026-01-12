@@ -6,7 +6,7 @@ import {
   formatChainIdToCaip,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
-import { renderWithProvider } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -231,7 +231,7 @@ describe('MultichainBridgeQuoteCard', () => {
         assetExchangeRates: {
           [toAssetId(
             '0x3c499c542cef5e3811e1192ce70d8cc03d5c3359',
-            formatChainIdToCaip(CHAIN_IDS.POLYGON),
+            CHAIN_IDS.POLYGON,
           ) ?? '']: {
             exchangeRate: '.99',
             usdExchangeRate: '.99',

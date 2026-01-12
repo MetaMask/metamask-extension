@@ -3,13 +3,16 @@ import { act } from 'react-dom/test-utils';
 import configureMockStore from 'redux-mock-store';
 
 import mockState from '../../../../../../../../../test/data/mock-state.json';
-import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../../../../contexts/metametrics';
 import PermitSimulationValueDisplay from './value-display';
 
 jest.mock('../../../../../../../../store/actions', () => {
   return {
     getTokenStandardAndDetails: jest
+      .fn()
+      .mockResolvedValue({ decimals: 4, standard: 'ERC20' }),
+    getTokenStandardAndDetailsByChain: jest
       .fn()
       .mockResolvedValue({ decimals: 4, standard: 'ERC20' }),
   };

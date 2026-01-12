@@ -17,13 +17,11 @@ import { handleSidepanelPostOnboarding } from '../../page-objects/flows/onboardi
 
 async function mockSpotPrices(mockServer: Mockttp) {
   return await mockServer
-    .forGet(
-      /^https:\/\/price\.api\.cx\.metamask\.io\/v2\/chains\/\d+\/spot-prices/u,
-    )
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
     .thenCallback(() => ({
       statusCode: 200,
       json: {
-        '0x0000000000000000000000000000000000000000': {
+        'eip155:1/slip44:60': {
           id: 'ethereum',
           price: 1700,
           marketCap: 382623505141,
@@ -40,8 +38,16 @@ describe('Incremental Security', function (this: Suite) {
         dappOptions: {
           customDappPaths: ['./send-eth-with-private-key-test'],
         },
-        fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        fixtures: new FixtureBuilder({ onboarding: true })
+          .withPreferencesControllerShowNativeTokenAsMainBalanceEnabled()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         testSpecificMock: mockSpotPrices,
+
         title: this.test?.fullTitle(),
       },
       async ({
@@ -105,8 +111,6 @@ describe('Incremental Security', function (this: Suite) {
         // copy the wallet address
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        // TODO: This is a temporary fix to unblock CI. Remove this once the issue is fixed.
-        await homePage.clickBackupRemindMeLaterButtonSafe();
         await homePage.headerNavbar.clickAddressCopyButton();
 
         // switched to Dapp and send eth to the current account
@@ -130,9 +134,7 @@ describe('Incremental Security', function (this: Suite) {
         await homePage.checkPageIsLoaded();
         // to update balance faster and avoid timeout error
         await driver.refresh();
-
-        await driver.delay(5000);
-        await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
+        await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
         // Backup SRP flow - only for non-sidepanel builds
         // With sidepanel, appState is lost during page reload, so this flow won't work
@@ -150,7 +152,7 @@ describe('Incremental Security', function (this: Suite) {
 
           // check the balance is correct after revealing and confirming the SRP
           await homePage.checkPageIsLoaded();
-          await homePage.checkExpectedBalanceIsDisplayed('5,100.00', '$');
+          await homePage.checkExpectedBalanceIsDisplayed('1', 'ETH');
 
           // check backup reminder is not displayed on homepage
           await homePage.checkBackupReminderIsNotDisplayed();

@@ -1,15 +1,11 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  setEnabledNetworks,
-  setTokenNetworkFilter,
-} from '../../../../../store/actions';
+import { setEnabledNetworks } from '../../../../../store/actions';
 import {
   getCurrentNetwork,
   getShouldHideZeroBalanceTokens,
   getSelectedAccount,
   getAllChainsToPoll,
-  getTokenNetworkFilter,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getEnabledNetworksByNamespace,
 } from '../../../../../selectors';
@@ -42,7 +38,6 @@ import {
 import { useGetFormattedTokensPerChain } from '../../../../../hooks/useGetFormattedTokensPerChain';
 import { useAccountTotalCrossChainFiatBalance } from '../../../../../hooks/useAccountTotalCrossChainFiatBalance';
 import InfoTooltip from '../../../../ui/info-tooltip';
-import { isGlobalNetworkSelectorRemoved } from '../../../../../selectors/selectors';
 
 type SortControlProps = {
   handleClose: () => void;
@@ -63,7 +58,6 @@ const NetworkFilter = ({
   const currentNetwork = useSelector(getCurrentNetwork);
   const selectedAccount = useSelector(getSelectedAccount);
   const allNetworks = useSelector(getNetworkConfigurationsByChainId);
-  const tokenNetworkFilter = useSelector(getTokenNetworkFilter);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
@@ -102,9 +96,7 @@ const NetworkFilter = ({
     if (handleFilterNetwork) {
       handleFilterNetwork(chainFilters);
     } else {
-      isGlobalNetworkSelectorRemoved
-        ? dispatch(setEnabledNetworks(chainId))
-        : dispatch(setTokenNetworkFilter(chainFilters));
+      dispatch(setEnabledNetworks(chainId));
     }
 
     // TODO Add metrics
@@ -119,12 +111,9 @@ const NetworkFilter = ({
     return allNetworks[chain].name;
   });
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? enabledNetworksByNamespace
-    : tokenNetworkFilter;
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
   // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-  const filter = networkFilter || networks;
+  const filter = networkFilter || enabledNetworksByNamespace;
 
   return (
     <>

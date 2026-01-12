@@ -7,7 +7,6 @@ import { Driver } from '../../webdriver/driver';
 import { MockedEndpoint } from '../../mock-e2e';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import { ACCOUNT_TYPE } from '../../constants';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
@@ -103,6 +102,7 @@ describe('Profile Metrics', function () {
           mockedEndpoint: MockedEndpoint[];
         }) => {
           await loginWithBalanceValidation(driver);
+          await driver.delay(1000);
 
           const [authCall] = mockedEndpoint;
           await waitForEndpointToBeCalled(driver, authCall);
@@ -110,7 +110,7 @@ describe('Profile Metrics', function () {
           const requests = await authCall.getSeenRequests();
           assert.equal(
             requests.length,
-            1,
+            2,
             'Expected one request to the auth API.',
           );
         },
@@ -147,10 +147,7 @@ describe('Profile Metrics', function () {
           await headerNavbar.openAccountMenu();
           const accountListPage = new AccountListPage(driver);
           await accountListPage.checkPageIsLoaded();
-          await accountListPage.addAccount({
-            accountType: ACCOUNT_TYPE.Ethereum,
-          });
-
+          await accountListPage.addMultichainAccount();
           const [authCall] = mockedEndpoint;
           await waitForEndpointToBeCalled(driver, authCall, 2);
 

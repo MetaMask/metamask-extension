@@ -13,6 +13,8 @@ import { unlockWallet, withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import AccountListPage from '../page-objects/pages/account-list-page';
 import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
@@ -30,8 +32,15 @@ async function mockTokensEthereum(mockServer: Mockttp) {
     });
 }
 
-async function loadNewAccount(): Promise<number> {
+const USER_ACTIONS_PERSONA = 'standard';
+
+async function loadNewAccount(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-loadNewAccount';
 
   await withFixtures(
     {
@@ -40,40 +49,39 @@ async function loadNewAccount(): Promise<number> {
       localNodeOptions: {
         accounts: 1,
       },
-      title: 'benchmark-userActions-loadNewAccount',
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
 
-      await driver.clickElement('[data-testid="account-menu-icon"]');
-      await driver.clickElement(
-        '[data-testid="multichain-account-menu-popover-action-button"]',
-      );
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.openAccountMenu();
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.checkPageIsLoaded();
+
       const timestampBeforeAction = new Date();
-      await driver.clickElement(
-        '[data-testid="multichain-account-menu-popover-add-account"]',
-      );
-      await driver.fill('[placeholder="Account 2"]', '2nd account');
-      await driver.clickElement({ text: 'Add account', tag: 'button' });
-      await driver.waitForSelector({
-        css: '.currency-display-component__text',
-        text: '0',
-      });
+      await accountListPage.addMultichainAccount();
       const timestampAfterAction = new Date();
       loadingTimes =
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
-async function confirmTx(): Promise<number> {
+async function confirmTx(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-confirmTx';
+
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-userActions-confirmTx',
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -101,28 +109,30 @@ async function confirmTx(): Promise<number> {
       );
       await driver.wait(async () => {
         const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .transaction-list-item',
+          '.transaction-status-label--confirmed',
         );
         return confirmedTxes.length === 1;
       }, 10000);
-
       await driver.waitForSelector('.transaction-status-label--confirmed');
       const timestampAfterAction = new Date();
       loadingTimes =
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
 async function bridgeUserActions(): Promise<{
   loadPage: number;
   loadAssetPicker: number;
   searchToken: number;
+  testTitle: string;
+  persona: string;
 }> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
+  const testTitle = 'benchmark-userActions-bridgeUserActions';
 
   const fixtureBuilder = new FixtureBuilder()
     .withNetworkControllerOnMainnet()
@@ -133,7 +143,7 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       testSpecificMock: mockTokensEthereum,
-      title: 'benchmark-userActions-bridgeUserActions',
+      title: testTitle,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -174,7 +184,13 @@ async function bridgeUserActions(): Promise<{
         timestampBeforeTokenSearch.getTime();
     },
   );
-  return { loadPage, loadAssetPicker, searchToken };
+  return {
+    loadPage,
+    loadAssetPicker,
+    searchToken,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function main(): Promise<void> {
@@ -190,14 +206,11 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<
-    string,
-    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
-  > = {};
+  const results: Record<string, Record<string, string | number>> = {};
+
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
-  const bridgeResults = await bridgeUserActions();
-  results.bridge = bridgeResults;
+  results.bridge = await bridgeUserActions();
   const { out } = argv as { out?: string };
 
   if (out) {

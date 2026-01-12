@@ -1,6 +1,6 @@
 import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import {
@@ -13,6 +13,7 @@ import {
 } from './multichain-account-cell';
 
 jest.mock('@metamask/chain-agnostic-permission', () => ({
+  ...jest.requireActual('@metamask/chain-agnostic-permission'),
   isInternalAccountInPermittedAccountIds: jest.fn(),
   getCaip25CaveatFromPermission: jest.fn(),
   getCaipAccountIdsFromCaip25CaveatValue: jest.fn(),

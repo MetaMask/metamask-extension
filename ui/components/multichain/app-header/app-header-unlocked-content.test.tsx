@@ -16,32 +16,18 @@ jest.mock('../../../../shared/lib/trace', () => {
 
 const mockNavigate = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => ({
-  ...jest.requireActual('react-router-dom-v5-compat'),
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockNavigate,
 }));
 
 describe('AppHeaderUnlockedContent trace', () => {
-  const buildStateWithState2 = () => ({
-    ...mockDefaultState,
-    metamask: {
-      ...mockDefaultState.metamask,
-      remoteFeatureFlags: {
-        enableMultichainAccountsState2: {
-          enabled: true,
-          featureVersion: '2',
-          minimumVersion: '0.0.0',
-        },
-      },
-    },
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('calls trace ShowAccountList when AccountPicker is clicked in multichain mode', () => {
-    const store = configureStore(buildStateWithState2());
+    const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
       <AppHeaderUnlockedContent
@@ -62,7 +48,7 @@ describe('AppHeaderUnlockedContent trace', () => {
   });
 
   it('calls trace ShowAccountAddressList when View All button is clicked in address popover', async () => {
-    const store = configureStore(buildStateWithState2());
+    const store = configureStore(mockDefaultState);
     const menuRef = { current: null } as React.RefObject<HTMLButtonElement>;
     renderWithProvider(
       <AppHeaderUnlockedContent

@@ -1,6 +1,12 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
@@ -48,11 +54,20 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
+  const [activeTabKey, setActiveTabKey] = useState<
+    AccountOverviewTabKey | undefined
+  >(defaultHomeActiveTabName ?? undefined);
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+
+  useEffect(() => {
+    if (defaultHomeActiveTabName) {
+      setActiveTabKey(defaultHomeActiveTabName);
+    }
+  }, [defaultHomeActiveTabName]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
@@ -73,6 +88,7 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
+      setActiveTabKey(tabName);
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
@@ -128,6 +144,7 @@ export const AccountOverviewTabs = ({
 
       <Tabs<AccountOverviewTabKey>
         defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+        activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',

@@ -1,6 +1,6 @@
 import { act } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
 import { getNetworkConnectionBanner } from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';

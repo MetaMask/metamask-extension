@@ -10,6 +10,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
+import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -25,7 +26,13 @@ describe('Transfer custom tokens', function () {
       await withFixtures(
         {
           dappOptions: { numberOfTestDapps: 1 },
-          fixtures: new FixtureBuilder().withTokensControllerERC20().build(),
+          fixtures: new FixtureBuilder()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
+            .build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
           title: this.test?.fullTitle(),
@@ -39,10 +46,14 @@ describe('Transfer custom tokens', function () {
           const sendTokenPage = new SendTokenPage(driver);
           const tokenTransferRedesignedConfirmPage =
             new TokenTransferTransactionConfirmation(driver);
+          const gasFeeModal = new GasFeeModal(driver);
           const activityListPage = new ActivityListPage(driver);
 
           await homePage.checkPageIsLoaded();
-
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // go to custom tokens view on extension, perform send tokens
           await assetListPage.openTokenDetails(symbol);
           await assetListPage.clickSendButton();
@@ -60,11 +71,14 @@ describe('Transfer custom tokens', function () {
             expectedNetworkFee,
           );
 
-          // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
-            GAS_LIMIT,
-            GAS_PRICE,
-          );
+          // edit gas fee using the new gas fee modal
+          await tokenTransferRedesignedConfirmPage.openGasFeeModal();
+          await gasFeeModal.setCustomLegacyGasFee({
+            gasPrice: GAS_PRICE,
+            gasLimit: GAS_LIMIT,
+          });
+
+          await tokenTransferRedesignedConfirmPage.checkGasFee('0.0004');
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
@@ -80,7 +94,11 @@ describe('Transfer custom tokens', function () {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
             .build(),
           localNodeOptions: { hardfork: 'muirGlacier' },
           smartContract,
@@ -97,8 +115,14 @@ describe('Transfer custom tokens', function () {
           const assetListPage = new AssetListPage(driver);
           const tokenTransferRedesignedConfirmPage =
             new TokenTransferTransactionConfirmation(driver);
+          const gasFeeModal = new GasFeeModal(driver);
           const activityListPage = new ActivityListPage(driver);
 
+          await homePage.checkPageIsLoaded();
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // transfer token from dapp
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -114,11 +138,12 @@ describe('Transfer custom tokens', function () {
             expectedNetworkFee,
           );
 
-          // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
-            GAS_LIMIT,
-            GAS_PRICE,
-          );
+          // edit gas fee using the new gas fee modal
+          await tokenTransferRedesignedConfirmPage.openGasFeeModal();
+          await gasFeeModal.setCustomLegacyGasFee({
+            gasPrice: GAS_PRICE,
+            gasLimit: GAS_LIMIT,
+          });
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list
@@ -148,7 +173,11 @@ describe('Transfer custom tokens', function () {
           dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
-            .withTokensControllerERC20()
+            .withEnabledNetworks({
+              eip155: {
+                '0x539': true,
+              },
+            })
             .build(),
           smartContract,
           title: this.test?.fullTitle(),
@@ -166,6 +195,11 @@ describe('Transfer custom tokens', function () {
             new TokenTransferTransactionConfirmation(driver);
           const activityListPage = new ActivityListPage(driver);
 
+          await homePage.checkPageIsLoaded();
+          await assetListPage.importCustomTokenByChain(
+            '0x539',
+            '0x581c3C1A2A4EBDE2A0Df29B5cf4c116E42945947',
+          );
           // transfer token from dapp
           await driver.openNewPage(`${DAPP_URL}/?contract=${contractAddress}`);
 
