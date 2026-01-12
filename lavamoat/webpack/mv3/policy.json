@@ -1170,6 +1170,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1201,7 +1204,7 @@
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "luxon": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -1217,7 +1220,8 @@
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
@@ -3291,7 +3295,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -4242,7 +4246,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

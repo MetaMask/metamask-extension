@@ -6,6 +6,7 @@ import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES, unlockWallet, withFixtures } from '../../../helpers';
+import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/redesign/gas-fee-token-modal';
 import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
@@ -29,11 +30,22 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
+          .withTokenBalancesController({
+            tokenBalances: {
+              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                '0x1': {
+                  '0x0000000000000000000000000000000000000000':
+                    '0x15af1d78b58c40000', // 25 ETH
+                },
+              },
+            },
+          })
           .build(),
         localNodeOptions: {
           hardfork: 'london',
         },
-        testSpecificMock: (mockServer: MockttpServer) => {
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
           mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
@@ -56,6 +68,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
 
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.clickAdvancedDetailsButton();
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);
@@ -114,6 +127,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         const transactionConfirmation = new TransactionConfirmation(driver);
+        await transactionConfirmation.closeGasFeeToastMessage();
         await transactionConfirmation.clickGasFeeTokenPill();
 
         const gasFeeTokenModal = new GasFeeTokenModal(driver);

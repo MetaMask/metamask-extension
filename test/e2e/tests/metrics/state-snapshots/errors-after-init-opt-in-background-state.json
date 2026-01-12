@@ -312,11 +312,9 @@
   "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
     "remoteFeatureFlags": {
-      "enableMultichainAccountsState2": {
-        "enabled": true,
-        "featureVersion": "2",
-        "minimumVersion": "12.19.0"
-      },
+      "feature1": true,
+      "feature2": false,
+      "feature3": { "name": "groupC", "value": "valueC" },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number"
@@ -350,6 +348,7 @@
     }
   },
   "SnapController": {
+    "isReady": "boolean",
     "snaps": "object",
     "snapStates": "object",
     "unencryptedSnapStates": "object"
@@ -359,7 +358,8 @@
   "SnapsRegistry": {
     "database": "object",
     "lastUpdated": "number",
-    "databaseUnavailable": "boolean"
+    "databaseUnavailable": "boolean",
+    "signature": "string"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",

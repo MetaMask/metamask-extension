@@ -100,6 +100,391 @@ export class ShieldMockttpService {
 
     // Rewards APIs (needed for useShieldRewards hook on Shield Plan page)
     await this.#handleRewardsApis(server);
+
+    // Gas API mocks
+    await this.#handleGasApi(server);
+
+    // Transaction Sentinel API mock
+    await this.#handleTxSentinelApi(server);
+
+    // Accounts API v4 for balance fetching
+    // await this.#handleAccountsApiV4(server);
+
+    // Mock mainnet RPC calls for balance and block data
+    await this.#handleMainnetRpc(server);
+  }
+
+  async #handleMainnetRpc(server: Mockttp) {
+    // Use regex to match any infura URL (mainnet, base-mainnet, etc.)
+    const infuraUrlPattern = /infura/u;
+
+    // Mock eth_blockNumber for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withBodyIncluding('eth_blockNumber')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x1234567',
+        },
+      }));
+
+    // Mock eth_getBlockByNumber for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withBodyIncluding('eth_getBlockByNumber')
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {
+            number: '0x1234567',
+            hash: '0x0000000000000000000000000000000000000000000000000000000000000000',
+            parentHash:
+              '0x0000000000000000000000000000000000000000000000000000000000000000',
+            timestamp: '0x64',
+            gasLimit: '0x1c9c380',
+            gasUsed: '0x0',
+            miner: '0x0000000000000000000000000000000000000000',
+            difficulty: '0x0',
+            totalDifficulty: '0x0',
+            size: '0x0',
+            transactions: [],
+            baseFeePerGas: '0x7',
+          },
+        },
+      }));
+
+    // Mock eth_getBalance to return 25 ETH for any infura endpoint
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_getBalance' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x15af1d78b58c40000', // 25 ETH in hex
+        },
+      }));
+
+    // Mock eth_chainId
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_chainId' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x1', // Mainnet
+        },
+      }));
+
+    // Mock net_version
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'net_version' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '1', // Mainnet
+        },
+      }));
+
+    // Mock eth_getCode - returns non-empty code for contracts
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_getCode' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x6080604052', // Non-empty bytecode indicating a contract exists
+        },
+      }));
+
+    // Mock eth_gasPrice
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_gasPrice' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x3b9aca00', // 1 Gwei
+        },
+      }));
+
+    // Mock eth_estimateGas
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_estimateGas' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x5208', // 21000 gas
+        },
+      }));
+
+    // Mock eth_getTransactionCount (nonce)
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_getTransactionCount' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: '0x0',
+        },
+      }));
+
+    // Mock eth_feeHistory
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({ method: 'eth_feeHistory' })
+      .thenCallback(() => ({
+        statusCode: 200,
+        json: {
+          jsonrpc: '2.0',
+          id: '1111111111111111',
+          result: {
+            baseFeePerGas: ['0x7', '0x7', '0x7', '0x7', '0x7'],
+            gasUsedRatio: [0.5, 0.5, 0.5, 0.5],
+            oldestBlock: '0x1234560',
+            reward: [
+              ['0x5f5e100'],
+              ['0x5f5e100'],
+              ['0x5f5e100'],
+              ['0x5f5e100'],
+            ],
+          },
+        },
+      }));
+
+    // Mock eth_call to Multicall3 contract (0xcA11bde05977b3631167028862bE2a173976CA11)
+    // Returns balances for ETH (25), USDC (100), USDT (100)
+    // The response is an array of (success: bool, returnData: bytes) tuples
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: '0xca11bde05977b3631167028862be2a173976ca11',
+          },
+        ],
+      })
+      .thenCallback(() => {
+        // Multicall3 aggregate3 response format:
+        // Returns Result[] where Result = (bool success, bytes returnData)
+        // Each balanceOf returns uint256
+        //
+        // Structure:
+        // - offset to array: 0x20
+        // - array length: 3 (ETH, USDC, USDT)
+        // - For each result:
+        //   - success (bool, padded to 32 bytes): 0x01
+        //   - offset to returnData
+        //   - returnData length
+        //   - returnData (balance as uint256)
+
+        // Balances:
+        // ETH: 25 ETH = 0x15af1d78b58c40000 (25 * 10^18)
+        // USDC: 100 USDC = 0x5f5e100 (100 * 10^6)
+        // USDT: 100 USDT = 0x5f5e100 (100 * 10^6)
+
+        const result =
+          '0x' +
+          // Offset to array start
+          '0000000000000000000000000000000000000000000000000000000000000020' +
+          // Array length: 3
+          '0000000000000000000000000000000000000000000000000000000000000003' +
+          // Result 0 (ETH): offset to tuple
+          '0000000000000000000000000000000000000000000000000000000000000060' +
+          // Result 1 (USDC): offset to tuple
+          '00000000000000000000000000000000000000000000000000000000000000c0' +
+          // Result 2 (USDT): offset to tuple
+          '0000000000000000000000000000000000000000000000000000000000000120' +
+          // Result 0 tuple: success = true
+          '0000000000000000000000000000000000000000000000000000000000000001' +
+          // Result 0 tuple: offset to returnData
+          '0000000000000000000000000000000000000000000000000000000000000040' +
+          // Result 0 tuple: returnData length (32 bytes)
+          '0000000000000000000000000000000000000000000000000000000000000020' +
+          // Result 0 tuple: returnData (25 ETH)
+          '0000000000000000000000000000000000000000000000015af1d78b58c40000' +
+          // Result 1 tuple: success = true
+          '0000000000000000000000000000000000000000000000000000000000000001' +
+          // Result 1 tuple: offset to returnData
+          '0000000000000000000000000000000000000000000000000000000000000040' +
+          // Result 1 tuple: returnData length (32 bytes)
+          '0000000000000000000000000000000000000000000000000000000000000020' +
+          // Result 1 tuple: returnData (100 USDC = 100000000)
+          '0000000000000000000000000000000000000000000000000000000005f5e100' +
+          // Result 2 tuple: success = true
+          '0000000000000000000000000000000000000000000000000000000000000001' +
+          // Result 2 tuple: offset to returnData
+          '0000000000000000000000000000000000000000000000000000000000000040' +
+          // Result 2 tuple: returnData length (32 bytes)
+          '0000000000000000000000000000000000000000000000000000000000000020' +
+          // Result 2 tuple: returnData (100 USDT = 100000000)
+          '0000000000000000000000000000000000000000000000000000000005f5e100';
+
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result,
+          },
+        };
+      });
+
+    // Mock eth_call for USDC contract - decimals() returns 6
+    // Function selector for decimals() is 0x313ce567
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC
+          },
+        ],
+      })
+      .thenCallback(async (req) => {
+        const body = (await req.body.getJson()) as {
+          params?: { data?: string }[];
+        };
+        const data = body.params?.[0]?.data || '';
+
+        // decimals() selector: 0x313ce567
+        if (data.startsWith('0x313ce567')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              result:
+                '0x0000000000000000000000000000000000000000000000000000000000000006', // 6 decimals
+            },
+          };
+        }
+        // symbol() selector: 0x95d89b41
+        if (data.startsWith('0x95d89b41')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              // "USDC" encoded as string
+              result:
+                '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000045553444300000000000000000000000000000000000000000000000000000000',
+            },
+          };
+        }
+        // name() selector: 0x06fdde03
+        if (data.startsWith('0x06fdde03')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              // "USD Coin" encoded as string
+              result:
+                '0x0000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000000855534420436f696e000000000000000000000000000000000000000000000000',
+            },
+          };
+        }
+        // Default response for other calls (like allowance, balanceOf)
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result:
+              '0x0000000000000000000000000000000000000000000000000000000005f5e100', // 100000000 (100 USDC)
+          },
+        };
+      });
+
+    // Mock eth_call for USDT contract - decimals() returns 6
+    await server
+      .forPost(infuraUrlPattern)
+      .withJsonBodyIncluding({
+        method: 'eth_call',
+        params: [
+          {
+            to: '0xdac17f958d2ee523a2206206994597c13d831ec7', // USDT
+          },
+        ],
+      })
+      .thenCallback(async (req) => {
+        const body = (await req.body.getJson()) as {
+          params?: { data?: string }[];
+        };
+        const data = body.params?.[0]?.data || '';
+
+        // decimals() selector: 0x313ce567
+        if (data.startsWith('0x313ce567')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              result:
+                '0x0000000000000000000000000000000000000000000000000000000000000006', // 6 decimals
+            },
+          };
+        }
+        // symbol() selector: 0x95d89b41
+        if (data.startsWith('0x95d89b41')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              // "USDT" encoded as string
+              result:
+                '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000045553445400000000000000000000000000000000000000000000000000000000',
+            },
+          };
+        }
+        // name() selector: 0x06fdde03
+        if (data.startsWith('0x06fdde03')) {
+          return {
+            statusCode: 200,
+            json: {
+              jsonrpc: '2.0',
+              id: '1111111111111111',
+              // "Tether USD" encoded as string
+              result:
+                '0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000a5465746865722055534400000000000000000000000000000000000000000000',
+            },
+          };
+        }
+        // Default response for other calls (like allowance, balanceOf)
+        return {
+          statusCode: 200,
+          json: {
+            jsonrpc: '2.0',
+            id: '1111111111111111',
+            result:
+              '0x0000000000000000000000000000000000000000000000000000000005f5e100', // 100000000 (100 USDT)
+          },
+        };
+      });
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {
@@ -567,5 +952,56 @@ export class ShieldMockttpService {
       .forGet(seasonMetadataRegex)
       .always()
       .thenJson(200, MOCK_REWARDS_SEASON_METADATA_RESPONSE);
+  }
+
+  async #handleGasApi(server: Mockttp) {
+    // Mock supported networks endpoint
+    await server
+      .forGet('https://gas.api.cx.metamask.io/v1/supportedNetworks')
+      .always()
+      .thenJson(200, ['0x1', '0x89', '0x38', '0xa', '0xa4b1']);
+
+    // Mock gas prices endpoint for mainnet
+    await server
+      .forGet('https://gas.api.cx.metamask.io/networks/1/suggestedGasFees')
+      .always()
+      .thenJson(200, {
+        low: {
+          suggestedMaxPriorityFeePerGas: '0.05',
+          suggestedMaxFeePerGas: '10',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 30000,
+        },
+        medium: {
+          suggestedMaxPriorityFeePerGas: '0.1',
+          suggestedMaxFeePerGas: '15',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 45000,
+        },
+        high: {
+          suggestedMaxPriorityFeePerGas: '0.3',
+          suggestedMaxFeePerGas: '20',
+          minWaitTimeEstimate: 15000,
+          maxWaitTimeEstimate: 60000,
+        },
+        estimatedBaseFee: '7',
+        networkCongestion: 0.5,
+        latestPriorityFeeRange: ['0.1', '1'],
+        historicalPriorityFeeRange: ['0.05', '2'],
+        historicalBaseFeeRange: ['5', '15'],
+        priorityFeeTrend: 'up',
+        baseFeeTrend: 'down',
+      });
+  }
+
+  async #handleTxSentinelApi(server: Mockttp) {
+    // Mock tx-sentinel endpoint for transaction simulation
+    await server
+      .forPost('https://tx-sentinel-ethereum-mainnet.api.cx.metamask.io/')
+      .always()
+      .thenJson(200, {
+        block: '0x1234567',
+        result: [],
+      });
   }
 }
