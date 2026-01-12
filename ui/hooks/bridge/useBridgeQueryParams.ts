@@ -74,7 +74,7 @@ export const useBridgeQueryParams = () => {
 
   const abortController = useRef<AbortController>(new AbortController());
 
-  const { search, pathname } = useLocation();
+  const { search, pathname, state } = useLocation();
   const navigate = useNavigate();
 
   // Parse CAIP asset data
@@ -271,4 +271,11 @@ export const useBridgeQueryParams = () => {
     fromChain?.chainId,
     searchParams,
   ]);
+
+  // If srcToken object is passed through navigation options, use it as the fromToken
+  useEffect(() => {
+    if (state?.srcToken) {
+      dispatch(setFromToken(state.srcToken));
+    }
+  }, [state?.srcToken]);
 };
