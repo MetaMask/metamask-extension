@@ -68,7 +68,12 @@ import { flushPromises } from '../../test/lib/timer-helpers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
-import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import {
+  REFERRAL_PARTNERS,
+  ReferralPartner,
+} from '../../shared/constants/referrals';
+
+const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';

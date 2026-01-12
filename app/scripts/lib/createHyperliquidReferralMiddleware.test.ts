@@ -2,12 +2,17 @@ import { PendingJsonRpcResponse } from '@metamask/utils';
 import { ValidPermission, type Caveat } from '@metamask/permission-controller';
 import type { Json } from '@metamask/utils';
 import log from 'loglevel';
-import { HYPERLIQUID_ORIGIN } from '../../../shared/constants/referrals';
+import {
+  REFERRAL_PARTNERS,
+  ReferralPartner,
+} from '../../../shared/constants/referrals';
 import {
   createHyperliquidReferralMiddleware,
   HyperliquidPermissionTriggerType,
   type ExtendedJSONRPCRequest,
 } from './createHyperliquidReferralMiddleware';
+
+const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
 
 jest.mock('loglevel', () => ({
   error: jest.fn(),

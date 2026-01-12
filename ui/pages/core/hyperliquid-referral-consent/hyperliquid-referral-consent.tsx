@@ -14,7 +14,13 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { HYPERLIQUID_REFERRAL_LEARN_MORE_URL } from '../../../../shared/lib/ui-utils';
+import {
+  REFERRAL_PARTNERS,
+  ReferralPartner,
+} from '../../../../shared/constants/referrals';
+
+const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
+  REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].learnMoreUrl;
 
 export type HyperliquidReferralConsentProps = {
   onActionComplete: (result: {

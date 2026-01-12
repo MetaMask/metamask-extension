@@ -49,7 +49,12 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import {
+  REFERRAL_PARTNERS,
+  ReferralPartner,
+} from '../../shared/constants/referrals';
+
+const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
 import {
   CorruptionHandler,
   hasVault,

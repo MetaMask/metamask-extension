@@ -9,7 +9,12 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import log from 'loglevel';
-import { HYPERLIQUID_ORIGIN } from '../../../shared/constants/referrals';
+import {
+  REFERRAL_PARTNERS,
+  ReferralPartner,
+} from '../../../shared/constants/referrals';
+
+const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & {
   origin: string;
