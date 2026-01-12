@@ -1,16 +1,24 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   useRive,
   Layout,
   Fit,
   Alignment,
   useRiveFile,
+  StateMachineInput,
 } from '@rive-app/react-canvas';
 import { Box } from '@metamask/design-system-react';
 import {
   useRiveWasmContext,
   useRiveWasmFile,
 } from '../../../contexts/rive-wasm';
+
+// State machine and input names as constants
+const STATE_MACHINE_NAME = 'shield_banner_illustration';
+const INPUT_NAMES = {
+  DARK: 'Dark',
+  START: 'Start',
+} as const;
 
 const ShieldBannerAnimation = ({
   containerClassName,
@@ -21,7 +29,6 @@ const ShieldBannerAnimation = ({
   canvasClassName?: string;
   isInactive?: boolean;
 }) => {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -29,6 +36,11 @@ const ShieldBannerAnimation = ({
     error: bufferError,
     loading: bufferLoading,
   } = useRiveWasmFile('./images/riv_animations/shield_banner.riv');
+
+  const inputsRef = useRef<{
+    dark?: StateMachineInput;
+    start?: StateMachineInput;
+  }>({});
 
   useEffect(() => {
     if (wasmError) {
@@ -57,24 +69,66 @@ const ShieldBannerAnimation = ({
     }),
   });
 
+  // Track if animation has been initialized
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Cache and initialize state machine inputs
+  const cacheInputs = useCallback(() => {
+    if (!rive) {
+      return false;
+    }
+    const inputs = rive.stateMachineInputs(STATE_MACHINE_NAME);
+    if (!inputs) {
+      return false;
+    }
+    inputsRef.current = {
+      dark: inputs.find((input) => input.name === INPUT_NAMES.DARK),
+      start: inputs.find((input) => input.name === INPUT_NAMES.START),
+    };
+    return true;
+  }, [rive]);
+
   // Trigger the animation start when rive is loaded
   useEffect(() => {
-    if (rive && isWasmReady && !bufferLoading && buffer) {
-      const inputs = rive.stateMachineInputs('shield_banner_illustration');
-      if (inputs) {
-        const darkToggle = inputs.find((input) => input.name === 'Dark');
-        if (darkToggle) {
-          darkToggle.value = isInactive;
-        }
+    const shouldInitialize =
+      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
+    if (shouldInitialize && cacheInputs()) {
+      const { dark, start } = inputsRef.current;
 
-        const startTrigger = inputs.find((input) => input.name === 'Start');
-        if (startTrigger) {
-          startTrigger.fire();
-        }
-        rive.play();
+      // Set the Dark toggle based on current theme
+      if (dark) {
+        dark.value = isInactive;
+      }
+
+      if (start) {
+        start.fire();
+      }
+
+      rive.play();
+      setIsInitialized(true);
+    }
+  }, [
+    rive,
+    isWasmReady,
+    bufferLoading,
+    buffer,
+    isInactive,
+    isInitialized,
+    cacheInputs,
+  ]);
+
+  // watch for changes to isInactive and update the dark toggle
+  useEffect(() => {
+    if (rive && isInitialized) {
+      const { dark, start } = inputsRef.current;
+      if (dark) {
+        dark.value = isInactive;
+      }
+      if (start) {
+        start.fire();
       }
     }
-  }, [rive, isWasmReady, bufferLoading, buffer, isInactive]);
+  }, [isInactive, rive, isInitialized]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
@@ -82,7 +136,6 @@ const ShieldBannerAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className={containerClassName}></Box>;
