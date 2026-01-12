@@ -210,6 +210,18 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
+    it('handles CONNECTION_FAILED event without error', () => {
+      const { result } = setupHook();
+
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.ConnectionFailed,
+      });
+
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+    });
+
     it('handles OPERATION_TIMEOUT event with error', () => {
       const { result } = setupHook();
 

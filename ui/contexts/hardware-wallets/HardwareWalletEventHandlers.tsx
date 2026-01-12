@@ -121,6 +121,8 @@ export const useDeviceEventHandlers = ({
             updateConnectionState(
               ConnectionState.error('connection_failed', payload.error),
             );
+          } else {
+            updateConnectionState(ConnectionState.disconnected());
           }
           break;
 
@@ -157,7 +159,6 @@ export const useDeviceEventHandlers = ({
       const adapter = refs.adapterRef.current;
       if (adapter) {
         adapter.destroy();
-        // eslint-disable-next-line react-compiler/react-compiler
         refs.adapterRef.current = null;
       }
 
