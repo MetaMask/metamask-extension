@@ -161,7 +161,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-overview/account-overview-non-evm.test.tsx": {
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -760,7 +760,7 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/multichain/account-overview/account-overview-eth.test.tsx": {
-      "Reselect: Identity function warnings": 3,
+      "Reselect: Identity function warnings": 5,
       "Reselect: Input stability warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -1492,7 +1492,8 @@
       "Reselect: Input stability warnings": 1,
       "React: DOM nesting violations": 2,
       "React: State updates on unmounted components": 1,
-      "warn: ⚠️ React Router Future Flag": 2
+      "warn: ⚠️ React Router Future Flag": 2,
+      "warn: useChartTimeRanges - failed, returning default": 18
     },
     "ui/pages/onboarding-flow/account-not-found/account-not-found.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2,
@@ -2441,6 +2442,13 @@
     },
     "app/scripts/lib/snap-keyring/utils/isBlockedUrl.test.ts": {
       "Test errors: Fetch failures": 2
+    },
+    "app/scripts/lib/stores/browser-storage-adapter.test.ts": {
+      "error: StorageService: Failed to get item:": 1,
+      "error: StorageService: Failed to set item:": 1,
+      "error: StorageService: Failed to remove item:": 1,
+      "error: StorageService: Failed to get keys": 1,
+      "error: StorageService: Failed to clear namespace": 1
     },
     "app/scripts/migrations/163.test.ts": {
       "MetaMask: Migration state warnings": 2

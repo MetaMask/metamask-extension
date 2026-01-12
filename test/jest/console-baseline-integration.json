@@ -98,6 +98,12 @@
       "warn: ⚠️ React Router Future Flag": 2,
       "error: Error: AggregateError": 1
     },
+    "test/integration/confirmations/transactions/dapp-swap-comparison-banner.test.tsx": {
+      "Reselect: Input stability warnings": 4,
+      "Reselect: Identity function warnings": 9,
+      "warn: ⚠️ React Router Future Flag": 2,
+      "error: Error: AggregateError": 1
+    },
     "test/integration/defi/defi-positions.test.tsx": {
       "Reselect: Identity function warnings": 10,
       "Reselect: Input stability warnings": 8,
