@@ -73,7 +73,7 @@ async function main() {
     updatePrivacySnapshot,
   } = argv;
 
-  let { stopAfterOneFailure } = argv;
+  const { stopAfterOneFailure } = argv;
 
   const runTestsOnSingleBrowser = async (selectedBrowserForRun) => {
     if (!selectedBrowserForRun) {
@@ -124,11 +124,6 @@ async function main() {
       process.env.UPDATE_PRIVACY_SNAPSHOT = 'true';
     }
 
-    // If the file path includes 'tolerate-failure', there is no reason to retry
-    if (e2eTestPath.includes('tolerate-failure')) {
-      stopAfterOneFailure = true;
-    }
-
     const configFile = path.join(__dirname, '.mocharc.js');
     const extraArgs = process.env.E2E_ARGS?.split(' ') || [];
 
@@ -152,16 +147,9 @@ async function main() {
         ]);
       });
     } catch (error) {
-      // If the file path includes 'tolerate-failure', we log and tolerate the failure
-      if (e2eTestPath.includes('tolerate-failure')) {
-        console.log(
-          `Failure on TestFile ${e2eTestPath}, but we will log and tolerate this failure`,
-        );
-      } else {
-        exitWithError(
-          `Error occurred while running tests on ${selectedBrowserForRun}: ${error}`,
-        );
-      }
+      exitWithError(
+        `Error occurred while running tests on ${selectedBrowserForRun}: ${error}`,
+      );
     }
   };
 

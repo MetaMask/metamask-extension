@@ -14,7 +14,7 @@ import * as Sentry from '@sentry/node';
 import { hideBin } from 'yargs/helpers';
 import yargs from 'yargs/yargs';
 import { getGitBranch, getGitCommitHash } from './send-to-sentry-utils';
-import type { BenchmarkResults, UserActionResult } from './types-generated';
+import type { BenchmarkResults, UserActionResult } from './utils/types';
 
 async function main() {
   const argv = await yargs(hideBin(process.argv))

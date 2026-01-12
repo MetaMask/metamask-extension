@@ -52,3 +52,53 @@ export type BenchmarkArguments = {
 export type NetworkReport = {
   numNetworkReqs: number;
 };
+
+// ==================== Performance Benchmark Types ====================
+
+export type TimerResult = {
+  id: string;
+  duration: number;
+};
+
+export type BenchmarkRunResult = {
+  timers: TimerResult[];
+  success: boolean;
+  error?: string;
+};
+
+export type TimerStatistics = {
+  id: string;
+  mean: number;
+  min: number;
+  max: number;
+  stdDev: number;
+  cv: number; // Coefficient of Variation
+  p50: number;
+  p75: number;
+  p95: number;
+  p99: number;
+  samples: number;
+  outliers: number;
+  dataQuality: 'good' | 'poor' | 'unreliable';
+};
+
+export type BenchmarkSummary = {
+  name: string;
+  iterations: number;
+  successfulRuns: number;
+  failedRuns: number;
+  timers: TimerStatistics[];
+  timestamp: string;
+  excludedDueToQuality: number;
+  /** Whether the exclusion rate is within acceptable limits */
+  exclusionRatePassed: boolean;
+  /** Percentage of runs that were excluded (0-1) */
+  exclusionRate: number;
+};
+
+export type PerformanceBenchmarkResults = {
+  timestamp: string;
+  benchmarks: BenchmarkSummary[];
+};
+
+export type BenchmarkFunction = () => Promise<BenchmarkRunResult>;
