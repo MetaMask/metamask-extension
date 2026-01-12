@@ -52,9 +52,9 @@ export function getTokenTransferData(
   );
 
   const nestedCall =
-    nestedCallIndex !== undefined
-      ? nestedTransactions?.[nestedCallIndex]
-      : undefined;
+    nestedCallIndex === undefined
+      ? undefined
+      : nestedTransactions?.[nestedCallIndex];
 
   if (nestedCall?.data && nestedCall.to) {
     return {
@@ -142,4 +142,3 @@ export function getAvailableTokens({
       };
     });
 }
-
