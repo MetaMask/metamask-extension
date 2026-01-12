@@ -535,7 +535,7 @@ jobs:
   trigger-regression-validation:
     name: Trigger Regression Validation
     # Only run for release branches, not forks
-    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') || (github.head_ref || github.ref_name) == 'run-regression-test') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
