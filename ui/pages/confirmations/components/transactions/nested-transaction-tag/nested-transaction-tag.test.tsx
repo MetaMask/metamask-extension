@@ -96,7 +96,7 @@ describe('NestedTransactionTag', () => {
     ]);
 
     // First render with batch transactions
-    const { getByText, rerender, container } = render({
+    const { getByText, rerender } = render({
       nestedTransactions: [
         BATCH_TRANSACTION_PARAMS_MOCK,
         BATCH_TRANSACTION_PARAMS_MOCK,
@@ -132,7 +132,7 @@ describe('NestedTransactionTag', () => {
       FUNCTION_NAME_MOCK,
     ]);
 
-    const { getByText, container } = render({
+    const { getByText } = render({
       nestedTransactions: [
         BATCH_TRANSACTION_PARAMS_MOCK,
         BATCH_TRANSACTION_PARAMS_MOCK,
