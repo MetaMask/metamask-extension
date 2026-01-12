@@ -1,6 +1,15 @@
 import { EventEmitter } from 'events';
-import React, { Component, lazy, Suspense } from 'react';
+import React, {
+  Component,
+  ComponentType,
+  lazy,
+  Suspense,
+  FormEvent,
+  ChangeEvent,
+  MutableRefObject,
+} from 'react';
 import PropTypes from 'prop-types';
+import { Location, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
@@ -49,11 +58,63 @@ import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
+type UnlockPageProps = {
+  navigate: NavigateFunction;
+  location: Location;
+  isUnlocked?: boolean;
+  isOnboardingCompleted?: boolean;
+  onRestore?: () => void;
+  onSubmit?: (password: string) => Promise<void>;
+  checkIsSeedlessPasswordOutdated?: () => Promise<void>;
+  getIsSeedlessOnboardingUserAuthenticated?: () => Promise<boolean>;
+  forceUpdateMetamaskState?: () => Promise<void>;
+  isSocialLoginFlow?: boolean;
+  onboardingParentContext?: MutableRefObject<unknown>;
+  loginWithDifferentMethod?: () => Promise<void>;
+  firstTimeFlowType?: string | null;
+  resetWallet?: () => Promise<void>;
+  isPopup?: boolean;
+  isWalletResetInProgress?: boolean;
+};
+
+type UnlockPageState = {
+  password: string;
+  error: string | null;
+  showResetPasswordModal: boolean;
+  isLocked: boolean;
+  isSubmitting: boolean;
+  unlockDelayPeriod: number;
+  showLoginErrorModal: boolean;
+  showConnectionsRemovedModal: boolean;
+};
+
+type UnlockPageContext = {
+  trackEvent: (event: object, options?: object) => void;
+  bufferedTrace?: (trace: object) => void;
+  bufferedEndTrace?: (trace: object) => void;
+  t: (key: string, args?: unknown[]) => string;
+};
+
+type LoginError = {
+  message: string;
+  data?: {
+    numberOfAttempts?: number;
+    remainingTime?: number;
+  };
+};
+
 const FoxAppearAnimation = lazy(
-  () => import('../onboarding-flow/welcome/fox-appear-animation'),
+  () =>
+    // @ts-expect-error - Build system resolves without extension, but TS wants .js
+    import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
+      default: ComponentType<{
+        isLoader?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
 );
 
-class UnlockPage extends Component {
+class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   static contextTypes = {
     trackEvent: PropTypes.func,
     bufferedTrace: PropTypes.func,
@@ -129,7 +190,7 @@ class UnlockPage extends Component {
     isWalletResetInProgress: PropTypes.bool,
   };
 
-  state = {
+  state: UnlockPageState = {
     password: '',
     error: null,
     showResetPasswordModal: false,
@@ -174,12 +235,12 @@ class UnlockPage extends Component {
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
-      await this.props.checkIsSeedlessPasswordOutdated();
+      await this.props.checkIsSeedlessPasswordOutdated?.();
     } else if (isSocialLoginFlow) {
       // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
       // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
       const isAuthenticated =
-        await this.props.getIsSeedlessOnboardingUserAuthenticated();
+        await this.props.getIsSeedlessOnboardingUserAuthenticated?.();
       if (!isAuthenticated) {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
@@ -193,7 +254,7 @@ class UnlockPage extends Component {
     }
   }
 
-  handleSubmit = async (event) => {
+  handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -228,7 +289,7 @@ class UnlockPage extends Component {
     }
 
     try {
-      await onSubmit(password);
+      await onSubmit?.(password);
 
       // Track wallet rehydration completed for social import users (only during rehydration)
       if (isRehydrationFlow) {
@@ -268,14 +329,14 @@ class UnlockPage extends Component {
         },
       );
     } catch (error) {
-      await this.handleLoginError(error, isRehydrationFlow);
+      await this.handleLoginError(error as LoginError, isRehydrationFlow);
     } finally {
       this.setState({ isSubmitting: false });
     }
   };
 
-  handleLoginError = async (error, isRehydrationFlow = false) => {
-    const { t } = this.context;
+  handleLoginError = async (error: LoginError, isRehydrationFlow = false) => {
+    const { t } = this.context as UnlockPageContext;
     const { message, data } = error;
     const { isOnboardingCompleted } = this.props;
 
@@ -296,7 +357,7 @@ class UnlockPage extends Component {
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage: message },
-        parentContext: this.props.onboardingParentContext.current,
+        parentContext: this.props.onboardingParentContext?.current,
       });
       this.context.bufferedEndTrace?.({
         name: TraceName.OnboardingPasswordLoginError,
@@ -314,7 +375,7 @@ class UnlockPage extends Component {
 
         finalErrorMessage = t('unlockPageTooManyFailedAttempts');
         errorReason = 'too_many_login_attempts';
-        finalUnlockDelayPeriod = data.remainingTime;
+        finalUnlockDelayPeriod = data?.remainingTime ?? 0;
         break;
       case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
         finalErrorMessage = t('passwordChangedRecently');
@@ -338,7 +399,7 @@ class UnlockPage extends Component {
     }
 
     if (errorReason) {
-      await this.props.forceUpdateMetamaskState();
+      await this.props.forceUpdateMetamaskState?.();
       // Track wallet rehydration failed for social import users (only during rehydration)
       if (isRehydrationFlow) {
         this.context.trackEvent({
@@ -368,7 +429,7 @@ class UnlockPage extends Component {
     });
   };
 
-  handleInputChange(event) {
+  handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { target } = event;
     this.setState({ password: target.value, error: null });
 
@@ -455,8 +516,8 @@ class UnlockPage extends Component {
         },
       });
 
-      await this.props.loginWithDifferentMethod();
-      await this.props.forceUpdateMetamaskState();
+      await this.props.loginWithDifferentMethod?.();
+      await this.props.forceUpdateMetamaskState?.();
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       return;
     }
@@ -482,7 +543,7 @@ class UnlockPage extends Component {
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
     });
-    this.props.onRestore();
+    this.props.onRestore?.();
   };
 
   onResetWallet = async () => {
@@ -491,8 +552,8 @@ class UnlockPage extends Component {
       showConnectionsRemovedModal: false,
       showResetPasswordModal: false,
     });
-    await this.props.resetWallet();
-    await this.props.forceUpdateMetamaskState();
+    await this.props.resetWallet?.();
+    await this.props.forceUpdateMetamaskState?.();
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
   };
 
@@ -506,7 +567,7 @@ class UnlockPage extends Component {
       showConnectionsRemovedModal,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-    const { t } = this.context;
+    const { t } = this.context as UnlockPageContext;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
@@ -561,7 +622,7 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <MetamaskWordmarkLogo isPopup={this.props.isPopup} />
+                <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
               )}
               {isBeta() ? (
                 <Text
@@ -598,7 +659,6 @@ class UnlockPage extends Component {
                   : t('enterYourPassword')
               }
               size={FormTextFieldSize.Lg}
-              placeholderColor={TextColor.textDefault}
               inputProps={{
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
@@ -606,7 +666,9 @@ class UnlockPage extends Component {
               textFieldProps={{
                 disabled: isLocked,
               }}
-              onChange={(event) => this.handleInputChange(event)}
+              onChange={(event) =>
+                this.handleInputChange(event as ChangeEvent<HTMLInputElement>)
+              }
               type={TextFieldType.Password}
               value={password}
               error={Boolean(error)}
@@ -691,4 +753,6 @@ class UnlockPage extends Component {
   }
 }
 
-export default withMetaMetrics(UnlockPage);
+export default withMetaMetrics(
+  UnlockPage as unknown as React.ComponentType<Record<string, unknown>>,
+);

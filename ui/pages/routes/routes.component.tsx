@@ -159,7 +159,7 @@ const Lock = mmLazy(
   (() => import('../lock/index.js')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
-  (() => import('../unlock-page/index.js')) as unknown as DynamicImportType,
+  (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
 );
 const RestoreVaultPage = mmLazy(
   (() =>
