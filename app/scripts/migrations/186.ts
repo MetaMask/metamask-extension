@@ -83,12 +83,14 @@ export async function migrate(
 ): Promise<void> {
   versionedData.meta.version = version;
   const changedVersionedData = cloneDeep(versionedData);
+  const changedLocalChangedControllers = new Set<string>();
 
   try {
-    localChangedControllers.add('NetworkController');
-    localChangedControllers.add('NetworkEnablementController');
-    transformState(changedVersionedData.data);
+    transformState(changedVersionedData.data, changedLocalChangedControllers);
     versionedData.data = changedVersionedData.data;
+    changedLocalChangedControllers.forEach((controller) =>
+      localChangedControllers.add(controller),
+    );
   } catch (error) {
     console.error(error);
     const newError = new Error(
@@ -100,7 +102,10 @@ export async function migrate(
   }
 }
 
-function transformState(state: Record<string, unknown>) {
+function transformState(
+  state: Record<string, unknown>,
+  changedLocalChangedControllers: Set<string>,
+) {
   const networkControllerState = validateNetworkController(state);
   if (networkControllerState === undefined) {
     console.warn(
@@ -108,6 +113,8 @@ function transformState(state: Record<string, unknown>) {
     );
     return state;
   }
+
+  changedLocalChangedControllers.add('NetworkController');
 
   const { networkConfigurationsByChainId, selectedNetworkClientId } =
     networkControllerState;
@@ -138,31 +145,33 @@ function transformState(state: Record<string, unknown>) {
     ] = MEGAETH_TESTNET_V2_CONFIG;
   }
 
+  // Switch selected network client id to mainnet
+  // if the selected network client id is one of the megaeth testnet v1 rpc endpoint network client id.
+  if (
+    selectedNetworkClientId === 'megaeth-testnet' ||
+    isNetworkClientIdExists(
+      MEGAETH_TESTNET_V1_CHAIN_ID,
+      selectedNetworkClientId,
+      networkConfigurationsByChainId,
+    )
+  ) {
+    networkControllerState.selectedNetworkClientId = 'mainnet';
+  }
+
   const networkEnablementControllerState =
     validateNetworkEnablementController(state);
 
+  // Only perform the NetworkEnablementController migration if the NetworkEnablementController state is valid.
   // Migrate NetworkEnablementController:
   // - Add the MegaETH Testnet v2 network configuration to the enabled network map if it doesn't exist.
-  // - Switch to mainnet if the selected network client id is one of the megaeth testnet v1 rpc endpoint network client id.
+  // - Switch to mainnet if the MegaETH Testnet v1 is enabled exclusively.
   if (networkEnablementControllerState === undefined) {
     console.warn(
       `Migration ${version}: Missing or invalid NetworkEnablementController state, skip the NetworkEnablementController migration`,
     );
-
-    // Switch to mainnet either:
-    // 1. The selected network client id is one of the megaeth testnet v1 rpc endpoint network client id
-    if (
-      selectedNetworkClientId === 'megaeth-testnet' ||
-      isNetworkClientIdExists(
-        MEGAETH_TESTNET_V1_CHAIN_ID,
-        selectedNetworkClientId,
-        networkConfigurationsByChainId,
-      )
-    ) {
-      networkControllerState.selectedNetworkClientId = 'mainnet';
-    }
   } else {
-    // Only perform the NetworkEnablementController migration if the NetworkEnablementController state is valid.
+    changedLocalChangedControllers.add('NetworkEnablementController');
+
     const eip155NetworkMap =
       networkEnablementControllerState.enabledNetworkMap[
         KnownCaipNamespace.Eip155
@@ -184,23 +193,20 @@ function transformState(state: Record<string, unknown>) {
       isMegaEthTestnetV1EnablementMapExists &&
       eip155NetworkMap[MEGAETH_TESTNET_V1_CHAIN_ID] === true;
 
-    // Switch to mainnet either:
-    // 1. The MegaETH Testnet v1 is enabled or
-    // 2. The selected network client id is one of the megaeth testnet v1 rpc endpoint network client id
+    // we force to switch to mainnet when:
+    // - MegaETH Testnet v1 is enabled exclusively and MegaETH Testnet v1 is enabled
     if (
-      isMegaEthTestnetV1Enabled ||
-      selectedNetworkClientId === 'megaeth-testnet' ||
-      isNetworkClientIdExists(
-        MEGAETH_TESTNET_V1_CHAIN_ID,
-        selectedNetworkClientId,
-        networkConfigurationsByChainId,
-      )
+      !isAllPopularNetworksEnabled(
+        networkEnablementControllerState.enabledNetworkMap,
+      ) &&
+      isMegaEthTestnetV1Enabled
     ) {
-      // force mainnet to be enabled
-      networkControllerState.selectedNetworkClientId = 'mainnet';
+      // force to swtich to mainnet
       networkEnablementControllerState.enabledNetworkMap[
         KnownCaipNamespace.Eip155
       ]['0x1'] = true;
+      // if mainnet is enabled, the selectedNetworkClientId should be followed
+      networkControllerState.selectedNetworkClientId = 'mainnet';
     }
 
     // Remove the MegaETH Testnet v1 enablement map if it exists.
@@ -492,4 +498,22 @@ function isValidEip155NetworkMap(
         typeof chainId === 'string' && typeof isEnabled === 'boolean',
     )
   );
+}
+
+function isAllPopularNetworksEnabled(value: unknown): boolean {
+  if (isObject(value)) {
+    let enabledCount = 0;
+    const values = Object.values(value);
+    for (const enabledNetworkMap of values) {
+      if (isValidEip155NetworkMap(enabledNetworkMap)) {
+        enabledCount += Object.values(enabledNetworkMap).filter(Boolean).length;
+      }
+      // if there is more than one enabled network,
+      // then we can assume that `all popular networks` are enabled.
+      if (enabledCount > 1) {
+        return true;
+      }
+    }
+  }
+  return false;
 }

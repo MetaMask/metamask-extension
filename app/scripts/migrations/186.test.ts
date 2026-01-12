@@ -1,6 +1,5 @@
 import { RpcEndpointType } from '@metamask/network-controller';
 import { cloneDeep } from 'lodash';
-import { jest } from '@jest/globals';
 import { KnownCaipNamespace } from '@metamask/utils';
 import {
   migrate,
@@ -9,6 +8,11 @@ import {
   MEGAETH_TESTNET_V1_CHAIN_ID,
   type VersionedData,
 } from './186';
+
+// Mock uuid
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'mocked-uuid-123'),
+}));
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
@@ -92,10 +96,6 @@ describe(`migration #${VERSION}`, () => {
     await migrate(oldStorage, localChangedControllers);
 
     expect(oldStorage.meta).toStrictEqual({ version: VERSION });
-    expect(localChangedControllers.has('NetworkController')).toBe(true);
-    expect(localChangedControllers.has('NetworkEnablementController')).toBe(
-      true,
-    );
   });
 
   const invalidStates = [
@@ -171,6 +171,10 @@ describe(`migration #${VERSION}`, () => {
 
       // State should be unchanged
       expect(state).toStrictEqual(orgState);
+      expect(localChangedControllers.has('NetworkController')).toBe(false);
+      expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+        false,
+      );
       expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
     },
   );
@@ -235,6 +239,10 @@ describe(`migration #${VERSION}`, () => {
     await migrate(oldStorage, localChangedControllers);
 
     expect(oldStorage).toStrictEqual(expectedStorage);
+    expect(localChangedControllers.has('NetworkController')).toBe(true);
+    expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+      true,
+    );
   });
 
   const invalidNetworkEnablementControllerStates = [
@@ -361,6 +369,10 @@ describe(`migration #${VERSION}`, () => {
         ],
       ).toBeUndefined();
       expect(networkController.selectedNetworkClientId).toBe('mainnet');
+      expect(localChangedControllers.has('NetworkController')).toBe(true);
+      expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+        false,
+      );
     },
   );
 
@@ -387,53 +399,6 @@ describe(`migration #${VERSION}`, () => {
         },
       },
       scenario: 'the megaeth testnet v1 is enabled',
-    },
-    {
-      state: {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {
-              ...mainnetConfiguration,
-              ...megaEthTestnetV1Configuration,
-            },
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
-          NetworkEnablementController: {
-            enabledNetworkMap: {
-              [KnownCaipNamespace.Eip155]: {
-                '0x1': true,
-                [MEGAETH_TESTNET_V1_CHAIN_ID]: false,
-              },
-            },
-          },
-        },
-      },
-      scenario:
-        'megaeth testnet v1 is not enabled but the selected network client id is megaeth testnet v1',
-    },
-    {
-      state: {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {
-              ...mainnetConfiguration,
-            },
-            selectedNetworkClientId: 'megaeth-testnet',
-          },
-          NetworkEnablementController: {
-            enabledNetworkMap: {
-              [KnownCaipNamespace.Eip155]: {
-                '0x1': true,
-                [MEGAETH_TESTNET_V1_CHAIN_ID]: false,
-              },
-            },
-          },
-        },
-      },
-      scenario:
-        'the selected network client id is megaeth testnet v1 regardless the networkConfigurationsByChainId has megaeth testnet v1 or not',
     },
   ];
 
@@ -480,33 +445,8 @@ describe(`migration #${VERSION}`, () => {
             networkConfigurationsByChainId: {
               ...mainnetConfiguration,
               ...lineaSepoliaConfiguration,
-            },
-            selectedNetworkClientId: 'linea-sepolia',
-          },
-          NetworkEnablementController: {
-            enabledNetworkMap: {
-              [KnownCaipNamespace.Eip155]: {
-                '0x1': false,
-                '0xe705': true,
-              },
-            },
-          },
-        },
-      },
-      scenario:
-        'the selected network client id is not megaeth testnet v1 and the megaeth testnet v1 is missing from the network configurations and enablement map',
-    },
-    {
-      state: {
-        meta: { version: oldVersion },
-        data: {
-          NetworkController: {
-            networkConfigurationsByChainId: {
-              ...mainnetConfiguration,
-              ...lineaSepoliaConfiguration,
               [MEGAETH_TESTNET_V1_CHAIN_ID]: {
                 ...megaEthTestnetV1Configuration[MEGAETH_TESTNET_V1_CHAIN_ID],
-                rpcEndpoints: 'uuid',
               },
             },
             selectedNetworkClientId: 'uuid',
@@ -521,9 +461,34 @@ describe(`migration #${VERSION}`, () => {
           },
         },
       },
-      // This case should never happen.
-      scenario:
-        'the megaeth testnet v1 is not enabled and the selected network client id is one of megaeth testnet v1 RPC but the rpcEndpoints of megaeth testnet v1 is not valid',
+      scenario: 'the megaeth testnet v1 is not enabled',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...lineaSepoliaConfiguration,
+              [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+                ...megaEthTestnetV1Configuration[MEGAETH_TESTNET_V1_CHAIN_ID],
+              },
+            },
+            selectedNetworkClientId: 'uuid',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                '0x1': false,
+                '0xe705': true,
+                [MEGAETH_TESTNET_V1_CHAIN_ID]: true,
+              },
+            },
+          },
+        },
+      },
+      scenario: 'the megaeth testnet v1 is not enabled exclusively',
     },
   ];
 
@@ -552,11 +517,10 @@ describe(`migration #${VERSION}`, () => {
           },
           NetworkEnablementController: {
             enabledNetworkMap: {
-              [KnownCaipNamespace.Eip155]: {
+              [KnownCaipNamespace.Eip155]: expect.objectContaining({
                 '0x1': false,
-                '0xe705': true,
                 [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
-              },
+              }),
             },
           },
         },
