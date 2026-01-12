@@ -3,6 +3,7 @@ import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
+import { StartTradeCta } from './start-trade-cta';
 
 /**
  * PerpsTabView component displays the perpetuals trading tab
@@ -16,6 +17,11 @@ export const PerpsTabView: React.FC = () => {
   const handleManageBalancePress = () => {
     // TODO: Navigate to manage balance screen
     console.log('Navigate to manage balance');
+  };
+
+  const handleNewTrade = () => {
+    // TODO: Navigate to trading view or tutorial for first-time users
+    console.log('Navigate to new trade');
   };
 
   return (
@@ -44,12 +50,14 @@ export const PerpsTabView: React.FC = () => {
         >
           <div className="perps-tab-view__section-header">
             <span className="perps-tab-view__section-title">Positions</span>
+            <span className="perps-tab-view__section-action">Close all</span>
           </div>
           <div className="perps-tab-view__cards-container">
             {mockPositions.map((position) => (
               <PositionCard key={position.coin} position={position} />
             ))}
           </div>
+          <StartTradeCta onPress={handleNewTrade} />
         </div>
       )}
 
@@ -61,6 +69,7 @@ export const PerpsTabView: React.FC = () => {
         >
           <div className="perps-tab-view__section-header">
             <span className="perps-tab-view__section-title">Open Orders</span>
+            <span className="perps-tab-view__section-action">Close all</span>
           </div>
           <div className="perps-tab-view__cards-container">
             {mockOrders.map((order) => (

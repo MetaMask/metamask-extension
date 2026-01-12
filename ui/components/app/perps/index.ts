@@ -15,3 +15,5 @@ export { OrderCard } from './order-card';
 export type { OrderCardProps } from './order-card';
 export { PerpsTokenLogo } from './perps-token-logo';
 export type { PerpsTokenLogoProps } from './perps-token-logo';
+export { StartTradeCta } from './start-trade-cta';
+export type { StartTradeCtaProps } from './start-trade-cta';

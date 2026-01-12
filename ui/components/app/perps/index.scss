@@ -3,6 +3,7 @@
 @import 'position-card/index';
 @import 'order-card/index';
 @import 'perps-tab-control-bar/index';
+@import 'start-trade-cta/index';
 
 .perps-tab-view {
   display: flex;
@@ -26,6 +27,11 @@
 
   &__section-title {
     font-weight: 500;
+  }
+
+  &__section-action {
+    font-size: 14px;
+    color: var(--color-text-alternative);
   }
 
   &__cards-container {
