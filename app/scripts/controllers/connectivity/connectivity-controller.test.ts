@@ -118,12 +118,10 @@ describe('ConnectivityController', () => {
 
   describe('service callbacks', () => {
     it('updates state when service reports offline', () => {
-      let capturedCallback: ((isOnline: boolean) => void) | null = null;
+      const mockOnConnectivityChange = jest.fn();
       const mockService: ConnectivityService = {
         isOnline: jest.fn().mockReturnValue(true),
-        onConnectivityChange: jest.fn((callback) => {
-          capturedCallback = callback;
-        }),
+        onConnectivityChange: mockOnConnectivityChange,
         destroy: jest.fn(),
       };
 
@@ -136,9 +134,14 @@ describe('ConnectivityController', () => {
         ConnectivityStatus.Online,
       );
 
+      // Get the callback that was passed to onConnectivityChange
+      const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as
+        | ((isOnline: boolean) => void)
+        | undefined;
+      expect(capturedCallback).toBeDefined();
+
       // Simulate service reporting offline
-      expect(capturedCallback).not.toBeNull();
-      capturedCallback!(false);
+      capturedCallback?.(false);
 
       expect(controller.state.connectivityStatus).toBe(
         ConnectivityStatus.Offline,
@@ -146,12 +149,10 @@ describe('ConnectivityController', () => {
     });
 
     it('updates state when service reports online', () => {
-      let capturedCallback: ((isOnline: boolean) => void) | null = null;
+      const mockOnConnectivityChange = jest.fn();
       const mockService: ConnectivityService = {
         isOnline: jest.fn().mockReturnValue(false),
-        onConnectivityChange: jest.fn((callback) => {
-          capturedCallback = callback;
-        }),
+        onConnectivityChange: mockOnConnectivityChange,
         destroy: jest.fn(),
       };
 
@@ -164,9 +165,14 @@ describe('ConnectivityController', () => {
         ConnectivityStatus.Offline,
       );
 
+      // Get the callback that was passed to onConnectivityChange
+      const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as
+        | ((isOnline: boolean) => void)
+        | undefined;
+      expect(capturedCallback).toBeDefined();
+
       // Simulate service reporting online
-      expect(capturedCallback).not.toBeNull();
-      capturedCallback!(true);
+      capturedCallback?.(true);
 
       expect(controller.state.connectivityStatus).toBe(
         ConnectivityStatus.Online,
@@ -174,12 +180,10 @@ describe('ConnectivityController', () => {
     });
 
     it('emits stateChange event when status changes', () => {
-      let capturedCallback: ((isOnline: boolean) => void) | null = null;
+      const mockOnConnectivityChange = jest.fn();
       const mockService: ConnectivityService = {
         isOnline: jest.fn().mockReturnValue(true),
-        onConnectivityChange: jest.fn((callback) => {
-          capturedCallback = callback;
-        }),
+        onConnectivityChange: mockOnConnectivityChange,
         destroy: jest.fn(),
       };
 
@@ -191,8 +195,13 @@ describe('ConnectivityController', () => {
       const eventHandler = jest.fn();
       messenger.subscribe(`${CONTROLLER_NAME}:stateChange`, eventHandler);
 
-      expect(capturedCallback).not.toBeNull();
-      capturedCallback!(false);
+      // Get the callback that was passed to onConnectivityChange
+      const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as
+        | ((isOnline: boolean) => void)
+        | undefined;
+      expect(capturedCallback).toBeDefined();
+
+      capturedCallback?.(false);
 
       expect(eventHandler).toHaveBeenCalledWith(
         { connectivityStatus: ConnectivityStatus.Offline },
@@ -201,12 +210,10 @@ describe('ConnectivityController', () => {
     });
 
     it('does not emit event when status does not change', () => {
-      let capturedCallback: ((isOnline: boolean) => void) | null = null;
+      const mockOnConnectivityChange = jest.fn();
       const mockService: ConnectivityService = {
         isOnline: jest.fn().mockReturnValue(true),
-        onConnectivityChange: jest.fn((callback) => {
-          capturedCallback = callback;
-        }),
+        onConnectivityChange: mockOnConnectivityChange,
         destroy: jest.fn(),
       };
 
@@ -218,9 +225,14 @@ describe('ConnectivityController', () => {
       const eventHandler = jest.fn();
       messenger.subscribe(`${CONTROLLER_NAME}:stateChange`, eventHandler);
 
+      // Get the callback that was passed to onConnectivityChange
+      const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as
+        | ((isOnline: boolean) => void)
+        | undefined;
+      expect(capturedCallback).toBeDefined();
+
       // Report online when already online
-      expect(capturedCallback).not.toBeNull();
-      capturedCallback!(true);
+      capturedCallback?.(true);
 
       expect(eventHandler).not.toHaveBeenCalled();
     });

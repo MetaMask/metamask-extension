@@ -82,7 +82,6 @@ export class ConnectivityController extends BaseController<
 
     // Subscribe to service connectivity changes
     connectivityService.onConnectivityChange((isOnline) => {
-      console.log('onConnectivityChange %s', isOnline);
       const newStatus = isOnline
         ? ConnectivityStatus.Online
         : ConnectivityStatus.Offline;
