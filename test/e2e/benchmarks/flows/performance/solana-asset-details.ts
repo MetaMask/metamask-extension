@@ -48,8 +48,6 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();
-        await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
 
         // Timer: Time since user clicks on the asset until the price chart is shown
         const timer = Timers.createTimer('solana_asset_click_to_price_chart');

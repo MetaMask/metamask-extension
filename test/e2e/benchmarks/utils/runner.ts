@@ -125,8 +125,8 @@ export async function runBenchmarkWithIterations(
       MAX_EXCLUSION_RATE,
     );
 
-    if (!exclusionCheck.passed) {
-      // Mark as unreliable if too many exclusions
+    if (!exclusionCheck.passed && stats.dataQuality !== 'unreliable') {
+      // Mark as unreliable if too many exclusions (only if not already unreliable)
       stats.dataQuality = 'unreliable';
       excludedDueToQuality += 1;
     }
