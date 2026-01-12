@@ -122,3 +122,15 @@ export interface Order {
   reduceOnly?: boolean; // Whether this is a reduce-only order
   triggerPrice?: string; // Trigger condition price for trigger orders (e.g., TP/SL trigger level)
 }
+
+/**
+ * Account state for perps trading
+ * Contains balance and P&L information
+ */
+export type AccountState = {
+  totalBalance: string; // Total account value in USD
+  availableBalance: string; // Available balance for new positions
+  marginUsed: string; // Margin currently used by positions
+  unrealizedPnl: string; // Unrealized profit/loss across all positions
+  returnOnEquity: string; // Return on equity percentage
+};

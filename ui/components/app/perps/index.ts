@@ -7,6 +7,8 @@
  */
 
 export { PerpsTabView } from './perps-tab-view';
+export { PerpsTabControlBar } from './perps-tab-control-bar';
+export type { PerpsTabControlBarProps } from './perps-tab-control-bar';
 export { PositionCard } from './position-card';
 export type { PositionCardProps } from './position-card';
 export { OrderCard } from './order-card';

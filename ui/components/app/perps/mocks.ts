@@ -3,7 +3,19 @@
  * Used for building UI while PerpsController is being migrated to core
  */
 
-import { Order, PerpsMarketData, Position } from './types';
+import { AccountState, Order, PerpsMarketData, Position } from './types';
+
+/**
+ * Mock account state data
+ * Represents the user's perps trading account balance and P&L
+ */
+export const mockAccountState: AccountState = {
+  totalBalance: '15250.00',
+  availableBalance: '10125.00',
+  marginUsed: '5125.00',
+  unrealizedPnl: '375.00',
+  returnOnEquity: '7.32',
+};
 
 /**
  * Mock positions data
