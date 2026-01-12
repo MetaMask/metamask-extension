@@ -210,6 +210,32 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
+    it('handles OPERATION_TIMEOUT event with error', () => {
+      const { result } = setupHook();
+
+      const error = new Error('Operation timed out');
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.OperationTimeout,
+        error,
+      });
+
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+    });
+
+    it('handles OPERATION_TIMEOUT event without error', () => {
+      const { result } = setupHook();
+
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.OperationTimeout,
+      });
+
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+    });
+
     it('ignores unknown events', () => {
       const { result } = setupHook();
 

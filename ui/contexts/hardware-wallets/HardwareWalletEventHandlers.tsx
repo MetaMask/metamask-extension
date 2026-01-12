@@ -124,6 +124,15 @@ export const useDeviceEventHandlers = ({
           }
           break;
 
+        case DeviceEvent.OperationTimeout:
+          updateConnectionState(
+            ConnectionState.error(
+              'operation_timeout',
+              payload.error || new Error('Operation timed out'),
+            ),
+          );
+          break;
+
         default:
           break;
       }
@@ -148,6 +157,7 @@ export const useDeviceEventHandlers = ({
       const adapter = refs.adapterRef.current;
       if (adapter) {
         adapter.destroy();
+        // eslint-disable-next-line react-compiler/react-compiler
         refs.adapterRef.current = null;
       }
 
