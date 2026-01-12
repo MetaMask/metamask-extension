@@ -204,7 +204,7 @@ const getTransactionGroupRecipientAddressFilter = (
     }
     const addressForMatching = extractAddressFromRecipient(recipientAddress);
     return (
-      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
+      isEqualCaseInsensitive(txParams?.to, addressForMatching) ||
       (chainIds.some((chainId) => {
         const hexChainId = normalizeChainIdToHex(chainId);
         return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
@@ -236,7 +236,7 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
     }
     const addressForMatching = extractAddressFromRecipient(recipientAddress);
     return (
-      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
+      isEqualCaseInsensitive(txParams?.to, addressForMatching) ||
       (chainIds.some((chainId) => {
         const hexChainId = normalizeChainIdToHex(chainId);
         return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
