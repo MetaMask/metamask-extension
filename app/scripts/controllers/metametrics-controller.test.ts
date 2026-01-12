@@ -109,6 +109,8 @@ const DEFAULT_SHARED_PROPERTIES = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   environment_type: 'background',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind: 'split',
 };
 
 const DEFAULT_EVENT_PROPERTIES = {
@@ -742,6 +744,8 @@ describe('MetaMetricsController', function () {
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 chain_id: '1',
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                storage_kind: 'split',
               },
               messageId: Utils.generateRandomId(),
               timestamp: new Date(),

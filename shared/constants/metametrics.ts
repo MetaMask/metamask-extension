@@ -317,6 +317,8 @@ export type SegmentEventPayload = {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type?: string;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    storage_kind: 'split' | 'data';
     revenue?: number;
     value?: number;
     currency?: string;
