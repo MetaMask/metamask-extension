@@ -11,3 +11,5 @@ export { PositionCard } from './position-card';
 export type { PositionCardProps } from './position-card';
 export { OrderCard } from './order-card';
 export type { OrderCardProps } from './order-card';
+export { PerpsTokenLogo } from './perps-token-logo';
+export type { PerpsTokenLogoProps } from './perps-token-logo';

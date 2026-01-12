@@ -1,5 +1,7 @@
 import React from 'react';
 import classnames from 'classnames';
+import { AvatarTokenSize } from '../../../component-library';
+import { PerpsTokenLogo } from '../perps-token-logo';
 import type { Order } from '../types';
 
 export interface OrderCardProps {
@@ -21,24 +23,44 @@ const formatStatus = (status: Order['status']): string => {
 };
 
 /**
+ * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
+ * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
+ */
+const getDisplayName = (symbol: string): string => {
+  const colonIndex = symbol.indexOf(':');
+  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
+    return symbol.substring(colonIndex + 1);
+  }
+  return symbol;
+};
+
+/**
  * OrderCard component displays individual order information
  * Two rows: symbol/type/side + size on left, price + status on right
  */
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const isBuy = order.side === 'buy';
+  const displayName = getDisplayName(order.symbol);
 
   return (
     <div className="order-card" data-testid={`order-card-${order.orderId}`}>
+      {/* Token Logo */}
+      <PerpsTokenLogo
+        symbol={order.symbol}
+        size={AvatarTokenSize.Md}
+        className="order-card__logo"
+      />
+
       {/* Left side: Symbol info and size */}
       <div className="order-card__left">
         <div className="order-card__header-row">
-          <span className="order-card__symbol">{order.symbol}</span>
+          <span className="order-card__symbol">{displayName}</span>
           <span className="order-card__type-side">
             {formatOrderType(order.orderType)} {isBuy ? 'buy' : 'sell'}
           </span>
         </div>
         <span className="order-card__size">
-          {order.size} {order.symbol}
+          {order.size} {displayName}
         </span>
       </div>
 
