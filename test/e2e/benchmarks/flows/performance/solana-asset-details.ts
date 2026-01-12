@@ -11,60 +11,68 @@ import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import LoginPage from '../../../page-objects/pages/login-page';
 import { Driver } from '../../../webdriver/driver';
-import { collectTimerResults, WITH_STATE_POWER_USER } from '../../utils';
-import type { BenchmarkRunResult } from '../../utils/types';
+import {
+  BENCHMARK_PERSONA,
+  collectTimerResults,
+  WITH_STATE_POWER_USER,
+} from '../../utils';
+import type { Benchmark } from '../../utils/types';
 
 const SOL_TOKEN_ADDRESS = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501';
 
-export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
-  Timers.resetTimers();
+export const solanaAssetDetailsBenchmark: Benchmark = {
+  testTitle: 'benchmark-solana-asset-details-power-user',
+  persona: BENCHMARK_PERSONA.POWER_USER,
+  run: async () => {
+    Timers.resetTimers();
 
-  try {
-    await withFixtures(
-      {
-        title: 'benchmark-solana-asset-details-power-user',
-        fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
-          .withEnabledNetworks(ALL_POPULAR_NETWORKS)
-          .build(),
-        manifestFlags: {
-          testing: {
-            disableSync: true,
-            infuraProjectId: process.env.INFURA_PROJECT_ID,
+    try {
+      await withFixtures(
+        {
+          title: 'benchmark-solana-asset-details-power-user',
+          fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true))
+            .withEnabledNetworks(ALL_POPULAR_NETWORKS)
+            .build(),
+          manifestFlags: {
+            testing: {
+              disableSync: true,
+              infuraProjectId: process.env.INFURA_PROJECT_ID,
+            },
           },
+          useMockingPassThrough: true,
+          disableServerMochaToBackground: true,
+          extendedTimeoutMultiplier: 3,
         },
-        useMockingPassThrough: true,
-        disableServerMochaToBackground: true,
-        extendedTimeoutMultiplier: 3,
-      },
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        async ({ driver }: { driver: Driver }) => {
+          await driver.navigate();
+          const loginPage = new LoginPage(driver);
+          await loginPage.checkPageIsLoaded();
+          await loginPage.loginToHomepage();
 
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
-        const assetListPage = new AssetListPage(driver);
-        await assetListPage.checkTokenListIsDisplayed();
-        await assetListPage.checkConversionRateDisplayed();
+          const assetListPage = new AssetListPage(driver);
+          await assetListPage.checkTokenListIsDisplayed();
+          await assetListPage.checkConversionRateDisplayed();
 
-        // Timer: Time since user clicks on the asset until the price chart is shown
-        const timer = Timers.createTimer('solana_asset_click_to_price_chart');
-        await assetListPage.clickOnAsset('Solana');
-        timer.startTimer();
-        await assetListPage.checkPriceChartIsShown();
-        await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
-        timer.stopTimer();
-      },
-    );
+          // Timer: Time since user clicks on the asset until the price chart is shown
+          const timer = Timers.createTimer('solana_asset_click_to_price_chart');
+          await assetListPage.clickOnAsset('Solana');
+          timer.startTimer();
+          await assetListPage.checkPriceChartIsShown();
+          await assetListPage.checkPriceChartLoaded(SOL_TOKEN_ADDRESS);
+          timer.stopTimer();
+        },
+      );
 
-    return { timers: collectTimerResults(), success: true };
-  } catch (error) {
-    return {
-      timers: collectTimerResults(),
-      success: false,
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
-}
+      return { timers: collectTimerResults(), success: true };
+    } catch (error) {
+      return {
+        timers: collectTimerResults(),
+        success: false,
+        error: error instanceof Error ? error.message : String(error),
+      };
+    }
+  },
+};

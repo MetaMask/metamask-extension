@@ -2,10 +2,21 @@
  * Shared constants and mocks for benchmarks
  */
 
-import { Mockttp } from 'mockttp';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 
 export const DEFAULT_NUM_BROWSER_LOADS = 10;
 export const DEFAULT_NUM_PAGE_LOADS = 10;
+
+export const BENCHMARK_PERSONA = {
+  STANDARD: 'standard',
+  POWER_USER: 'powerUser',
+} as const;
+
+export const BENCHMARK_TYPE = {
+  BENCHMARK: 'benchmark',
+  PERFORMANCE: 'performance',
+  USER_ACTION: 'userAction',
+} as const;
 
 export const ALL_METRICS = {
   uiStartup: 'UI Startup',
@@ -33,7 +44,7 @@ export const WITH_STATE_POWER_USER = {
   withUnreadNotifications: 15,
 };
 
-export function getCommonMocks(server: Mockttp) {
+export function getCommonMocks(server: Mockttp): Promise<MockedEndpoint>[] {
   return [
     server.forPost(/^https:\/\/sentry\.io\/api/u).thenCallback(() => ({
       statusCode: 200,

@@ -24,15 +24,15 @@ import {
 } from '../../helpers/file';
 
 import {
-  runAssetDetailsBenchmark,
-  runOnboardingImportWalletBenchmark,
-  runOnboardingNewWalletBenchmark,
-  runSolanaAssetDetailsBenchmark,
+  assetDetailsBenchmark,
+  onboardingImportWalletBenchmark,
+  onboardingNewWalletBenchmark,
+  solanaAssetDetailsBenchmark,
 } from './flows/performance';
 
-import { runBenchmarkWithIterations } from './utils/runner';
+import { BENCHMARK_TYPE, runBenchmarkWithIterations } from './utils';
 import type {
-  BenchmarkFunction,
+  Benchmark,
   BenchmarkResults,
   BenchmarkSummary,
   StatisticalResult,
@@ -66,17 +66,27 @@ function convertToPageLoadFormat(
       p95[timer.id] = timer.p95;
     }
 
-    output[benchmark.name] = { mean, min, max, stdDev, p75, p95 };
+    output[benchmark.name] = {
+      benchmarkType: BENCHMARK_TYPE.PERFORMANCE,
+      testTitle: benchmark.testTitle,
+      persona: benchmark.persona,
+      mean,
+      min,
+      max,
+      stdDev,
+      p75,
+      p95,
+    };
   }
 
   return output;
 }
 
-const BENCHMARKS: Record<string, BenchmarkFunction> = {
-  onboardingImportWallet: runOnboardingImportWalletBenchmark,
-  onboardingNewWallet: runOnboardingNewWalletBenchmark,
-  powerUserAssetDetails: runAssetDetailsBenchmark,
-  powerUserSolanaAssetDetails: runSolanaAssetDetailsBenchmark,
+const BENCHMARKS: Record<string, Benchmark> = {
+  onboardingImportWallet: onboardingImportWalletBenchmark,
+  onboardingNewWallet: onboardingNewWalletBenchmark,
+  powerUserAssetDetails: assetDetailsBenchmark,
+  powerUserSolanaAssetDetails: solanaAssetDetailsBenchmark,
 };
 
 async function main(): Promise<Record<string, BenchmarkResults>> {
@@ -146,14 +156,14 @@ async function main(): Promise<Record<string, BenchmarkResults>> {
   const results: BenchmarkSummary[] = [];
 
   for (const benchmarkName of benchmarks) {
-    const benchmarkFn = BENCHMARKS[benchmarkName];
-    if (!benchmarkFn) {
+    const benchmark = BENCHMARKS[benchmarkName];
+    if (!benchmark) {
       continue;
     }
 
     const summary = await runBenchmarkWithIterations(
       benchmarkName,
-      benchmarkFn,
+      benchmark,
       iterations,
       retries,
     );

@@ -8,7 +8,7 @@ import {
   MAX_EXCLUSION_RATE,
 } from './statistics';
 import type {
-  BenchmarkFunction,
+  Benchmark,
   BenchmarkRunResult,
   BenchmarkSummary,
   TimerStatistics,
@@ -18,11 +18,11 @@ import type {
  * Run a benchmark function with retries
  * Handles the case where benchmark functions return { success: false } instead of throwing
  *
- * @param benchmarkFn - The benchmark function to execute
+ * @param runFn - The benchmark run function to execute
  * @param retries - Number of retries if the benchmark fails
  */
 async function runWithRetries(
-  benchmarkFn: BenchmarkFunction,
+  runFn: () => Promise<BenchmarkRunResult>,
   retries: number,
 ): Promise<BenchmarkRunResult> {
   let lastResult: BenchmarkRunResult | null = null;
@@ -32,7 +32,7 @@ async function runWithRetries(
   while (attempts < maxAttempts) {
     attempts += 1;
     try {
-      const result = await benchmarkFn();
+      const result = await runFn();
       lastResult = result;
 
       // If successful, return immediately
@@ -71,16 +71,17 @@ async function runWithRetries(
 
 export async function runBenchmarkWithIterations(
   name: string,
-  benchmarkFn: BenchmarkFunction,
+  benchmark: Benchmark,
   iterations: number,
   retries: number,
 ): Promise<BenchmarkSummary> {
+  const { testTitle, persona, run } = benchmark;
   const allResults: BenchmarkRunResult[] = [];
   let successfulRuns = 0;
   let failedRuns = 0;
 
   for (let i = 0; i < iterations; i++) {
-    const result = await runWithRetries(benchmarkFn, retries);
+    const result = await runWithRetries(run, retries);
     allResults.push(result);
 
     if (result.success) {
@@ -149,5 +150,7 @@ export async function runBenchmarkWithIterations(
     excludedDueToQuality,
     exclusionRatePassed: overallExclusionCheck.passed,
     exclusionRate: overallExclusionCheck.rate,
+    testTitle,
+    persona,
   };
 }
