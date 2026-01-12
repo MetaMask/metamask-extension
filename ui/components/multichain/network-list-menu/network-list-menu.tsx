@@ -379,8 +379,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         );
         dispatch(setTokenNetworkFilter(allOpts));
       }
-
-      dispatch(setEnabledNetworks(hexChainId));
     } finally {
       dispatch(toggleNetworkMenu());
     }
@@ -390,9 +388,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
-
-      dispatch(setEnabledNetworks(chainId));
-
       return;
     }
 
