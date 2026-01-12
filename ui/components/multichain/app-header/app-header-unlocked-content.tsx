@@ -166,9 +166,7 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    if (origin) {
-      navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
-    }
+    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
   };
 
   const handleCopyClick = useCallback(() => {
