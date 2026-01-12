@@ -1,9 +1,3 @@
-/**
- * Shared types for all benchmarks
- */
-
-// ==================== Page Load Benchmark Types ====================
-
 type NavigationMetric = {
   load: number;
   domContentLoaded: number;
