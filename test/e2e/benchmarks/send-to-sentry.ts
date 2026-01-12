@@ -66,15 +66,17 @@ async function main() {
 
   for (const [name, value] of Object.entries(results)) {
     if ('mean' in value) {
-      // Standard benchmark result with statistical aggregations
+      // Statistical benchmark result (page load or performance)
       const benchmark = value as BenchmarkResults;
+      const type = benchmark.benchmarkType || 'benchmark';
+
       const benchmarkAttributes = {
-        ...mapKeys(benchmark.mean, (_, key) => `benchmark.mean.${key}`),
-        ...mapKeys(benchmark.p75, (_, key) => `benchmark.p75.${key}`),
-        ...mapKeys(benchmark.p95, (_, key) => `benchmark.p95.${key}`),
+        ...mapKeys(benchmark.mean, (_, key) => `${type}.${key}.mean`),
+        ...mapKeys(benchmark.p75, (_, key) => `${type}.${key}.p75`),
+        ...mapKeys(benchmark.p95, (_, key) => `${type}.${key}.p95`),
       };
 
-      Sentry.logger.info(`benchmark.${name}`, {
+      Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
         'ci.persona': benchmark.persona || 'standard',
         'ci.testTitle': benchmark.testTitle,
@@ -82,16 +84,19 @@ async function main() {
       });
     } else {
       // User action result with numeric timing metrics
-      const metrics = Object.entries(value).reduce(
+      const userAction = value as UserActionResult;
+      const type = userAction.benchmarkType || 'userAction';
+
+      const metrics = Object.entries(userAction).reduce(
         (acc, [key, val]) =>
           typeof val === 'number' ? { ...acc, [key]: val } : acc,
         {} as Record<string, number>,
       );
 
-      Sentry.logger.info(`userAction.${name}`, {
+      Sentry.logger.info(`${type}.${name}`, {
         ...baseCiAttributes,
-        'ci.persona': value.persona || 'standard',
-        'ci.testTitle': value.testTitle,
+        'ci.persona': userAction.persona || 'standard',
+        'ci.testTitle': userAction.testTitle,
         ...metrics,
       });
     }

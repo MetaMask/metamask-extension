@@ -26,6 +26,7 @@ import {
 } from './utils/types';
 import {
   ALL_METRICS,
+  BENCHMARK_TYPE,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
@@ -237,6 +238,7 @@ async function profilePageLoad(
     const reportingPageName = `${resultPersona}${capitalize(pageName)}`;
 
     results[reportingPageName] = {
+      benchmarkType: BENCHMARK_TYPE.BENCHMARK,
       testTitle,
       persona: resultPersona,
       mean: meanResult(result),

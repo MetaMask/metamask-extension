@@ -6,7 +6,7 @@
  * NOTE: These benchmarks only run on Chrome + Browserify to reduce CI runtime.
  */
 
-export { runOnboardingImportWalletBenchmark } from './onboarding-import-wallet';
-export { runOnboardingNewWalletBenchmark } from './onboarding-new-wallet';
-export { runAssetDetailsBenchmark } from './asset-details';
-export { runSolanaAssetDetailsBenchmark } from './solana-asset-details';
+export { onboardingImportWalletBenchmark } from './onboarding-import-wallet';
+export { onboardingNewWalletBenchmark } from './onboarding-new-wallet';
+export { assetDetailsBenchmark } from './asset-details';
+export { solanaAssetDetailsBenchmark } from './solana-asset-details';

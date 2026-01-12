@@ -20,6 +20,7 @@ import {
   MOCK_TOKENS_ETHEREUM,
 } from '../tests/bridge/constants';
 import { Driver } from '../webdriver/driver';
+import { BENCHMARK_TYPE } from './utils/constants';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
@@ -66,7 +67,12 @@ async function loadNewAccount(): Promise<{
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+  return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
+    duration: loadingTimes,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function confirmTx(): Promise<{
@@ -119,7 +125,12 @@ async function confirmTx(): Promise<{
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+  return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
+    duration: loadingTimes,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function bridgeUserActions(): Promise<{
@@ -185,6 +196,7 @@ async function bridgeUserActions(): Promise<{
     },
   );
   return {
+    benchmarkType: BENCHMARK_TYPE.USER_ACTION,
     loadPage,
     loadAssetPicker,
     searchToken,
