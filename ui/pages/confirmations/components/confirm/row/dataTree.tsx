@@ -105,7 +105,10 @@ export const DataTree = ({
   chainId: string;
 }) => {
   const tokenContract = getTokenContractInDataTree(data);
-  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+  const { decimalsNumber } = useGetTokenStandardAndDetails(
+    tokenContract,
+    chainId,
+  );
   const tokenDecimals =
     typeof decimalsNumber === 'number' ? decimalsNumber : tokenDecimalsProp;
 
