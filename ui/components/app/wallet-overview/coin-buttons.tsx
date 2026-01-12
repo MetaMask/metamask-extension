@@ -26,7 +26,6 @@ import {
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
-  isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
@@ -58,6 +57,7 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
@@ -77,6 +77,8 @@ type CoinButtonsProps = {
   isBuyableChain: boolean;
   classPrefix?: string;
   iconButtonClassName?: string;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 };
 
 const CoinButtons = ({
@@ -87,6 +89,7 @@ const CoinButtons = ({
   isSigningEnabled,
   isBuyableChain,
   classPrefix = 'coin',
+  disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
@@ -138,14 +141,18 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isNonEvmAccountWithoutExternalServices =
-    !isExternalServicesEnabled && isNonEvmAccount(account);
+  const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
+  const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
+      {
+        condition:
+          disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
     ],
     swapButton: [
       {
@@ -417,7 +424,10 @@ const CoinButtons = ({
             size={IconSize.Md}
           />
         }
-        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
+        disabled={
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+        }
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}

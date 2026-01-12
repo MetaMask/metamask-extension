@@ -107,7 +107,7 @@ describe('useTronResources', () => {
       });
     });
 
-    it('returns zero values with default max of 1 when no balances exist', () => {
+    it('returns zero values with max of 0 when no balances exist', () => {
       const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
       const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
 
@@ -131,14 +131,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -170,14 +170,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 250,
-        max: 1, // Defaults to 1 when max is 0
-        percentage: 25000, // 250 / 1 * 100
+        max: 0, // Actual max is 0 when not provided
+        percentage: 25000, // 250 / 1 * 100 (divisor is Math.max(1, 0) = 1)
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 150,
-        max: 1,
+        max: 0,
         percentage: 15000,
       });
     });
@@ -261,7 +261,7 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 100,
-        max: 1,
+        max: 0,
         percentage: 10000,
       });
 
@@ -269,7 +269,7 @@ describe('useTronResources', () => {
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -292,14 +292,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -320,14 +320,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -386,14 +386,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -414,14 +414,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -452,14 +452,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });

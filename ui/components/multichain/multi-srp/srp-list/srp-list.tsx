@@ -21,7 +21,7 @@ export const SrpList = ({
     getIsPrimarySeedPhraseBackedUp,
   );
 
-  const walletIdsFromStore = useSelector((state) =>
+  const entropyWalletIds = useSelector((state) =>
     getWalletIdsByType(state, AccountWalletType.Entropy),
   );
 
@@ -33,7 +33,7 @@ export const SrpList = ({
       padding={isSettingsPage ? 0 : 4}
       data-testid="srp-list"
     >
-      {walletIdsFromStore.map((walletId, index) => {
+      {entropyWalletIds.map((walletId, index) => {
         // We only consider the first(primary) keyring for the backup reminder.
         const shouldTriggerBackup = !isPrimarySeedPhraseBackedUp && index === 0;
 
