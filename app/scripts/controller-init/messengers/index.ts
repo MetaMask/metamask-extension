@@ -206,6 +206,7 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getStorageServiceMessenger } from './storage-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -276,6 +277,8 @@ export {
 } from './ens-controller-messenger';
 export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export type { StorageServiceMessenger } from './storage-service-messenger';
+export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -509,6 +512,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ErrorReportingService: {
     getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
+  },
+  StorageService: {
+    getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {
