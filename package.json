@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.13.1",
+  "version": "13.13.2",
   "private": true,
   "repository": {
     "type": "git",
@@ -251,7 +251,8 @@
     "@metamask/bridge-controller@npm:^63.2.0": "patch:@metamask/bridge-controller@npm%3A64.0.0#~/.yarn/patches/@metamask-bridge-controller-npm-64.0.0-956740f7c8.patch",
     "@metamask/assets-controllers@npm:^92.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
     "@metamask/assets-controllers@npm:^93.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
-    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch"
+    "@metamask/assets-controllers@npm:^91.0.0": "patch:@metamask/assets-controllers@patch%3A@metamask/assets-controllers@npm%253A93.0.0%23~/.yarn/patches/@metamask-assets-controllers-npm-93.0.0-ea998cb0bd.patch%3A%3Aversion=93.0.0&hash=224a2c#~/.yarn/patches/@metamask-assets-controllers-patch-0229f60576.patch",
+    "qs@npm:6.13.0": "^6.14.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -321,7 +322,7 @@
     "@metamask/kernel-shims": "^0.3.0",
     "@metamask/kernel-ui": "^0.3.0",
     "@metamask/kernel-utils": "^0.3.0",
-    "@metamask/keyring-api": "^21.2.0",
+    "@metamask/keyring-api": "^21.3.0",
     "@metamask/keyring-controller": "^25.0.0",
     "@metamask/keyring-internal-api": "^9.1.0",
     "@metamask/keyring-internal-snap-client": "^8.0.0",
@@ -376,7 +377,7 @@
     "@metamask/subscription-controller": "^5.3.1",
     "@metamask/transaction-controller": "^62.3.1",
     "@metamask/transaction-pay-controller": "^10.2.0",
-    "@metamask/tron-wallet-snap": "^1.16.0",
+    "@metamask/tron-wallet-snap": "^1.19.0",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
@@ -449,7 +450,7 @@
     "react-popper": "^2.2.3",
     "react-redux": "^7.2.9",
     "react-router-dom": "^5.3.4",
-    "react-router-dom-v5-compat": "^6.26.2",
+    "react-router-dom-v5-compat": "^6.30.3",
     "react-simple-file-input": "^2.0.0",
     "react-tippy": "^1.2.2",
     "react-toggle-button": "^2.2.0",
