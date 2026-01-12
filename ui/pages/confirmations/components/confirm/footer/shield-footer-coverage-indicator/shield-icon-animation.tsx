@@ -220,6 +220,15 @@ const ShieldIconAnimation = ({
     }
   }, [theme, rive, isInitialized]);
 
+  // Stop animation on unmount
+  useEffect(() => {
+    return () => {
+      if (rive) {
+        rive.stop();
+      }
+    };
+  }, []);
+
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
     !isWasmReady ||
