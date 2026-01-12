@@ -394,7 +394,9 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueEVMChainIds = enabledNetworks?.eip155
+    ? Object.keys(enabledNetworks?.eip155)
+    : [];
   const filteredUniqueNonEvmChainIds = [
     ...new Set(
       Object.keys(enabledNetworks)
