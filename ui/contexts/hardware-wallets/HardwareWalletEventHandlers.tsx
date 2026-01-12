@@ -82,8 +82,6 @@ export const useDeviceEventHandlers = ({
         return;
       }
 
-      console.log('[HardwareWalletEventHandlers] Device event:', payload.event);
-
       switch (payload.event) {
         case DeviceEvent.Disconnected:
           if (!refs.isConnectingRef.current) {
@@ -146,7 +144,13 @@ export const useDeviceEventHandlers = ({
         return;
       }
 
-      refs.adapterRef.current = null;
+      // Clean up existing adapter resources before nullifying reference
+      const adapter = refs.adapterRef.current;
+      if (adapter) {
+        adapter.destroy();
+        refs.adapterRef.current = null;
+      }
+
       refs.isConnectingRef.current = false;
       refs.currentConnectionIdRef.current = null;
 
