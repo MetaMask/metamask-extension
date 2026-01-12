@@ -19,7 +19,7 @@ describe('InfoTab', () => {
     });
 
     it('should have correct href for "Privacy Policy" link', () => {
-      const privacyPolicyLink = getByText('Privacy policy');
+      const privacyPolicyLink = getByText('Privacy Policy');
       expect(privacyPolicyLink).toHaveAttribute(
         'href',
         'https://metamask.io/privacy.html',
