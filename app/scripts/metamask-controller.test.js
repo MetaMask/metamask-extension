@@ -1997,6 +1997,75 @@ describe('MetaMaskController', () => {
           ignoreNetwork: false,
         });
       });
+
+      it('wipes transactions from all networks when "All popular networks" is selected', async () => {
+        const selectedAddressMock =
+          '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc';
+
+        jest
+          .spyOn(metamaskController.accountsController, 'getSelectedAccount')
+          .mockReturnValue({ address: selectedAddressMock });
+
+        // Mock tokenNetworkFilter with multiple networks (simulating "All popular networks")
+        metamaskController.preferencesController.update((state) => {
+          state.preferences.tokenNetworkFilter = {
+            [CHAIN_IDS.MAINNET]: true,
+            [CHAIN_IDS.LINEA_MAINNET]: true,
+            [CHAIN_IDS.OPTIMISM]: true,
+          };
+        });
+
+        jest.spyOn(metamaskController.txController, 'wipeTransactions');
+        jest.spyOn(
+          metamaskController.smartTransactionsController,
+          'wipeSmartTransactions',
+        );
+        jest.spyOn(
+          metamaskController.bridgeStatusController,
+          'wipeBridgeStatus',
+        );
+
+        await metamaskController.resetAccount();
+
+        // Should be called once for each network in the filter
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledTimes(3);
+
+        // Verify each network was cleared
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.MAINNET,
+        });
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
+        });
+        expect(
+          metamaskController.txController.wipeTransactions,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          chainId: CHAIN_IDS.OPTIMISM,
+        });
+
+        // Smart transactions and bridge should use ignoreNetwork: true
+        expect(
+          metamaskController.smartTransactionsController.wipeSmartTransactions,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          ignoreNetwork: true,
+        });
+        expect(
+          metamaskController.bridgeStatusController.wipeBridgeStatus,
+        ).toHaveBeenCalledWith({
+          address: selectedAddressMock,
+          ignoreNetwork: true,
+        });
+      });
     });
 
     describe('#removeAccount', () => {

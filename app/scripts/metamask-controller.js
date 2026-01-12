@@ -147,6 +147,7 @@ import { TokenStandard } from '../../shared/constants/transaction';
 import {
   CHAIN_IDS,
   CHAIN_SPEC_URL,
+  FEATURED_NETWORK_CHAIN_IDS,
   NetworkStatus,
   UNSUPPORTED_RPC_METHODS,
 } from '../../shared/constants/network';
@@ -5715,20 +5716,38 @@ export default class MetamaskController extends EventEmitter {
       this.accountsController.getSelectedAccount().address;
 
     const globalChainId = this.#getGlobalChainId();
+    const { tokenNetworkFilter } = this.preferencesController.state.preferences;
 
-    this.txController.wipeTransactions({
-      address: selectedAddress,
-      chainId: globalChainId,
-    });
+    // Check if we should clear transactions for all networks
+    // This happens when "All popular networks" is selected (multiple networks in filter)
+    const shouldClearAllNetworks =
+      FEATURED_NETWORK_CHAIN_IDS.includes(globalChainId) &&
+      Object.keys(tokenNetworkFilter || {}).length > 1;
+
+    if (shouldClearAllNetworks) {
+      // Clear transactions for all networks in the filter
+      Object.keys(tokenNetworkFilter).forEach((chainId) => {
+        this.txController.wipeTransactions({
+          address: selectedAddress,
+          chainId,
+        });
+      });
+    } else {
+      // Clear transactions for the current network only
+      this.txController.wipeTransactions({
+        address: selectedAddress,
+        chainId: globalChainId,
+      });
+    }
 
     this.smartTransactionsController.wipeSmartTransactions({
       address: selectedAddress,
-      ignoreNetwork: false,
+      ignoreNetwork: shouldClearAllNetworks,
     });
 
     this.bridgeStatusController.wipeBridgeStatus({
       address: selectedAddress,
-      ignoreNetwork: false,
+      ignoreNetwork: shouldClearAllNetworks,
     });
 
     this.networkController.resetConnection();
