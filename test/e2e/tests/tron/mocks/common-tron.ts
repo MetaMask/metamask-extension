@@ -9,6 +9,52 @@ export const TRX_BALANCE = 6072392; // ~6.07 TRX
 export const TRX_TO_USD_RATE = 0.29469;
 export const SUN_PER_TRX = 1_000_000;
 
+// Feature flags URL
+export const FEATURE_FLAGS_URL =
+  'https://client-config.api.cx.metamask.io/v1/flags';
+
+// BIP44 Stage 2 feature flags - enables automatic multichain account creation
+export const BIP44_STAGE_TWO = {
+  enableMultichainAccountsState2: {
+    enabled: true,
+    featureVersion: '2',
+    minimumVersion: '12.19.0',
+  },
+  sendRedesign: {
+    enabled: false,
+  },
+  bitcoinAccounts: {
+    enabled: true,
+    minimumVersion: '13.6.0',
+  },
+  tronAccounts: {
+    enabled: true,
+    minimumVersion: '13.6.0',
+  },
+};
+
+/**
+ * Mocks the feature flags endpoint with BIP44 Stage 2 configuration
+ * This enables automatic Tron account creation
+ *
+ * @param mockServer
+ */
+export async function mockTronFeatureFlags(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: [BIP44_STAGE_TWO],
+    }));
+}
+
 export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -968,6 +1014,7 @@ export async function mockTronApis(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint[]> {
   return [
+    await mockTronFeatureFlags(mockServer),
     await mockTronGetBlock(mockServer),
     await mockTronGetAccount(mockServer, mockZeroBalance),
     await mockTronGetAccountResource(mockServer),

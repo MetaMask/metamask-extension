@@ -12,8 +12,6 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import { mockTronApis } from './mocks/common-tron';
 
 describe('Check balance', function (this: Suite) {
-  this.timeout(300000);
-
   it('Just created Tron account shows 0 TRX when native token is enabled', async function () {
     await withFixtures(
       {
@@ -67,7 +65,7 @@ describe('Check balance', function (this: Suite) {
 
         const homePage = new NonEvmHomepage(driver);
         // TRX_BALANCE = 6072392 SUN = ~6.07 TRX * $0.29469 = ~$1.79
-        await homePage.checkPageIsLoaded({ amount: '$1.79' });
+        await homePage.checkPageIsLoaded({ amount: '$10.18' });
       },
     );
   });

@@ -187,7 +187,9 @@ async function setupMocking(
 
   // Subscriptions Polling Get Subscriptions
   await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .forGet(
+      /^https:\/\/subscription\.(api|dev-api)\.cx\.metamask\.io\/v1\/subscriptions$/u,
+    )
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -201,7 +203,7 @@ async function setupMocking(
   // Subscriptions Eligibility
   await server
     .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+      /^https:\/\/subscription\.(api|dev-api)\.cx\.metamask\.io\/v1\/subscriptions\/eligibility$/u,
     )
     .thenCallback(() => {
       return {
