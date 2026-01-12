@@ -1,4 +1,10 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { useSelector } from 'react-redux';
 import {
   ButtonIconSize,
@@ -61,10 +67,7 @@ export const BridgeAssetPicker = ({
   React.ComponentProps<typeof NetworkPicker>,
   'chainIds' | 'disabledChainId'
 > &
-  Pick<
-    React.ComponentProps<typeof BridgeAssetList>,
-    'onAssetChange'
-  >) => {
+  Pick<React.ComponentProps<typeof BridgeAssetList>, 'onAssetChange'>) => {
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
@@ -115,6 +118,26 @@ export const BridgeAssetPicker = ({
     : t('allNetworks');
 
   const [searchQuery, setSearchQuery] = useState<string>('');
+
+  // Persist selected chain id to restore the selected chain id if the modal is closed before a new token is selected
+  const [persistedChainId, setPersistedChainId] = useState<CaipChainId | null>(
+    selectedChainId,
+  );
+  useEffect(() => {
+    if (
+      isOpen &&
+      selectedChainId &&
+      selectedAsset.chainId !== selectedChainId
+    ) {
+      // Restore previously selected chainId
+      setSelectedChainId(
+        persistedChainId && selectedAsset.chainId !== persistedChainId
+          ? selectedAsset.chainId
+          : persistedChainId,
+      );
+    }
+  }, [isOpen]);
+
   const handleClose = useCallback(() => {
     setSearchQuery('');
     setIsNetworkPickerOpen(false);
@@ -246,6 +269,10 @@ export const BridgeAssetPicker = ({
                 onAssetChange={(asset: BridgeToken) => {
                   handleClose();
                   onAssetChange(asset);
+                  // If asset selection follows a chain selection, persist the selected chain id
+                  if (selectedChainId === asset.chainId) {
+                    setPersistedChainId(selectedChainId);
+                  }
                 }}
                 {...assetListProps}
               />
