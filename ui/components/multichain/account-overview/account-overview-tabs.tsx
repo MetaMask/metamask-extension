@@ -24,6 +24,7 @@ import {
   getEnabledChainIds,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
+import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
@@ -138,6 +139,9 @@ export const AccountOverviewTabs = ({
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+  console.log('isPerpsEnabled', isPerpsEnabled);
+
   return (
     <>
       <AssetListTokenDetection />
@@ -165,6 +169,17 @@ export const AccountOverviewTabs = ({
             </Box>
           </Tab>
         )}
+
+        {isPerpsEnabled && (
+          <Tab
+            name="Perps"
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <Box />
+          </Tab>
+        )}
+
         {showDefi && (
           <Tab
             name={t('defi')}
