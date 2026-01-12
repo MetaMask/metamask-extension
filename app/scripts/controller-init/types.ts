@@ -234,6 +234,11 @@ export type ControllerInitRequest<
    * The user's preferred language code, if any.
    */
   initLangCode: string | null;
+
+  /**
+   * Specifies the storage kind used by the PersistenceManager.
+   */
+  storageKind: 'data' | 'split';
 };
 
 /**

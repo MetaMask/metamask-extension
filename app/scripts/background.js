@@ -739,6 +739,7 @@ async function initialize(backup) {
     offscreenPromise,
     preinstalledSnaps,
     cronjobControllerStorageManager,
+    persistenceManager.storageKind,
   );
 
   // `setupController` sets up the `controller` object, so we can use it now:
@@ -1181,6 +1182,7 @@ function trackAppOpened(environment) {
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
  * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
+ * @param {'data' | 'split'} storageKind - The storage kind of the PersistenceManager.
  */
 export function setupController(
   initState,
@@ -1191,6 +1193,7 @@ export function setupController(
   offscreenPromise,
   preinstalledSnaps,
   cronjobControllerStorageManager,
+  storageKind,
 ) {
   //
   // MetaMask Controller
@@ -1221,6 +1224,7 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+    storageKind,
   });
 
   /**

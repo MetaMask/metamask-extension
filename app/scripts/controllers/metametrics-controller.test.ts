@@ -2310,6 +2310,7 @@ async function withController<ReturnValue>(
         version: '0.0.1',
         environment: 'test',
         extension: MOCK_EXTENSION,
+        storageKind: 'split',
         ...options,
         state: {
           participateInMetaMetrics: true,

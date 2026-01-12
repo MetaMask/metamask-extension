@@ -117,6 +117,7 @@ const metaMetricsController = new MetaMetricsController({
       setUninstallURL: () => undefined,
     },
   },
+  storageKind: 'split',
 });
 
 const createHandler = (opts) =>

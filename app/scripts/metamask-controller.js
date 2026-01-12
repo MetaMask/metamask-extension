@@ -682,6 +682,7 @@ export default class MetamaskController extends EventEmitter {
     } = this.#initControllers({
       initFunctions: controllerInitFunctions,
       initState,
+      storageKind: opts.storageKind,
     });
 
     this.controllerApi = controllerApi;
@@ -9162,7 +9163,7 @@ export default class MetamaskController extends EventEmitter {
     return isDisabled;
   }
 
-  #initControllers({ existingControllers, initFunctions, initState }) {
+  #initControllers({ existingControllers, initFunctions, initState, storageKind }) {
     const initRequest = {
       currentMigrationVersion: this.opts.currentMigrationVersion,
       encryptor: this.opts.encryptor,
@@ -9192,6 +9193,7 @@ export default class MetamaskController extends EventEmitter {
       getDeviceModel: this.getDeviceModel.bind(this),
       getHardwareTypeForMetric: this.getHardwareTypeForMetric.bind(this),
       trace,
+      storageKind
     };
 
     return initControllers({

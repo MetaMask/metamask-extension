@@ -11,12 +11,13 @@ import { ControllerInitFunction } from './types';
  * @param request.controllerMessenger - The messenger to use for the controller.
  * @param request.persistedState - The persisted state of the extension.
  * @param request.extension
+ * @param request.storageKind - The storage kind used by the PersistenceManager.
  * @returns The initialized controller.
  */
 export const MetaMetricsControllerInit: ControllerInitFunction<
   MetaMetricsController,
   MetaMetricsControllerMessenger
-> = ({ controllerMessenger, extension, persistedState }) => {
+> = ({ controllerMessenger, extension, persistedState, storageKind }) => {
   const controller = new MetaMetricsController({
     state: persistedState.MetaMetricsController,
     messenger: controllerMessenger,
@@ -25,6 +26,7 @@ export const MetaMetricsControllerInit: ControllerInitFunction<
     segment,
     extension,
     captureException,
+    storageKind,
   });
 
   return {

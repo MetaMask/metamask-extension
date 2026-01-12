@@ -403,6 +403,7 @@ export type MetaMetricsControllerOptions = {
   environment: string;
   extension: Browser;
   captureException?: CaptureException;
+  storageKind: 'split' | 'data';
 };
 
 /**
@@ -437,6 +438,8 @@ export default class MetaMetricsController extends BaseController<
 
   version: MetaMetricsControllerOptions['version'];
 
+  storageKind: MetaMetricsControllerOptions['storageKind'];
+
   #extension: MetaMetricsControllerOptions['extension'];
 
   #environment: MetaMetricsControllerOptions['environment'];
@@ -453,6 +456,7 @@ export default class MetaMetricsController extends BaseController<
    * @param options.environment - The environment the extension is running in
    * @param options.extension - webextension-polyfill
    * @param options.captureException
+   * @param options.storageKind - The PersistenceManager storage kind
    */
   constructor({
     state = {},
@@ -462,6 +466,7 @@ export default class MetaMetricsController extends BaseController<
     environment,
     extension,
     captureException = defaultCaptureException,
+    storageKind,
   }: MetaMetricsControllerOptions) {
     super({
       name: controllerName,
@@ -490,7 +495,7 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
-
+    this.storageKind = storageKind;
     this.messenger.registerActionHandler(
       'MetaMetricsController:trackEvent',
       this.trackEvent.bind(this),
@@ -1352,6 +1357,8 @@ export default class MetaMetricsController extends BaseController<
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        storage_kind: this.storageKind,
       },
       context: this.#buildContext(referrer, page),
       timestamp,
