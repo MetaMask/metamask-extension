@@ -65,6 +65,13 @@ jest.mock(
 const mockAsset = jest.fn((..._args) => <div>AssetComponent</div>);
 jest.mock('./Asset', () => jest.fn((...args) => mockAsset(...args)));
 
+// Helper to mock DOM measurements for virtualizer
+function mockVirtualizerDOM() {
+  Object.defineProperties(HTMLElement.prototype, {
+    offsetHeight: { configurable: true, get: () => 600 },
+  });
+}
+
 describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();
   const nativeCurrency = 'ETH';
@@ -108,6 +115,8 @@ describe('AssetList', () => {
   const secondaryCurrency = 'ETH';
 
   beforeEach(() => {
+    mockVirtualizerDOM();
+
     (useSelector as jest.Mock).mockImplementation((selector) => {
       if (selector === getNativeCurrency) {
         return nativeCurrency;

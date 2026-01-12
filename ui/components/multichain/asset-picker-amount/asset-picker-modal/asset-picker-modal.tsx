@@ -690,7 +690,7 @@ export function AssetPickerModal({
             />
           </Box>
         )}
-        <Box className="modal-tab__wrapper">
+        <Box className="modal-tab__wrapper flex flex-col overflow-hidden">
           {/* Show Solana account creation prompt if the destination is Solana but no Solana account exists */}
           {needsSolanaAccount ? (
             <SolanaAccountCreationPrompt />

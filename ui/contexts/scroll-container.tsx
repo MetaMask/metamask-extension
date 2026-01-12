@@ -1,7 +1,6 @@
-import React, { createContext, useContext, useRef } from 'react';
+import React, { createContext, useContext, useCallback, useState } from 'react';
 
-const ScrollContainerContext =
-  createContext<React.RefObject<HTMLDivElement> | null>(null);
+const ScrollContainerContext = createContext<HTMLDivElement | null>(null);
 
 /**
  * Provides a ref to this container element for its child components
@@ -14,10 +13,16 @@ export const ScrollContainer = ({
   children,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(
+    null,
+  );
+
+  const scrollRef = useCallback((element: HTMLDivElement | null) => {
+    setScrollElement(element);
+  }, []);
 
   return (
-    <ScrollContainerContext.Provider value={scrollRef}>
+    <ScrollContainerContext.Provider value={scrollElement}>
       <div ref={scrollRef} {...props}>
         {children}
       </div>
