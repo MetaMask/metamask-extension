@@ -1898,16 +1898,12 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 
     const { origin, protocol, host, href } = new URL(url);
 
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://') ||
-      origin.startsWith('chrome://') ||
-      origin.startsWith('about:')
-    ) {
-      // Clear appActiveTab for non-web pages
+    // Only update for http/https origins
+    const isWebOrigin =
+      origin?.startsWith('http://') || origin?.startsWith('https://');
+
+    if (!isWebOrigin) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
       controller.appStateController.clearAppActiveTab();
       return {};
     }
