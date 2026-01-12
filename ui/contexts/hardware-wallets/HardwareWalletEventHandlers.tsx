@@ -78,13 +78,16 @@ export const useDeviceEventHandlers = ({
 
   const handleDeviceEvent = useCallback(
     (payload: DeviceEventPayload) => {
-      if (refs.abortControllerRef.current?.signal.aborted) {
+      // Extract refs to local variables to satisfy React Compiler
+      const { abortControllerRef, isConnectingRef } = refs;
+
+      if (abortControllerRef.current?.signal.aborted) {
         return;
       }
 
       switch (payload.event) {
         case DeviceEvent.Disconnected:
-          if (!refs.isConnectingRef.current) {
+          if (!isConnectingRef.current) {
             updateConnectionState(ConnectionState.disconnected());
           }
           break;
@@ -147,23 +150,31 @@ export const useDeviceEventHandlers = ({
 
   const handleDisconnect = useCallback(
     (disconnectError?: unknown) => {
-      if (refs.abortControllerRef.current?.signal.aborted) {
+      // Extract refs to local variables to satisfy React Compiler
+      const {
+        abortControllerRef,
+        adapterRef,
+        isConnectingRef,
+        currentConnectionIdRef,
+      } = refs;
+
+      if (abortControllerRef.current?.signal.aborted) {
         return;
       }
 
-      if (refs.isConnectingRef.current) {
+      if (isConnectingRef.current) {
         return;
       }
 
       // Clean up existing adapter resources before nullifying reference
-      const adapter = refs.adapterRef.current;
+      const adapter = adapterRef.current;
       if (adapter) {
         adapter.destroy();
-        refs.adapterRef.current = null;
+        adapterRef.current = null;
       }
 
-      refs.isConnectingRef.current = false;
-      refs.currentConnectionIdRef.current = null;
+      isConnectingRef.current = false;
+      currentConnectionIdRef.current = null;
 
       if (
         disconnectError &&
