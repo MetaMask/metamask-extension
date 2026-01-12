@@ -1,0 +1,30 @@
+name: Block stable-main to main PRs
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+    branches:
+      - main
+
+jobs:
+  check-branch:
+    name: Block stable-main-X.Y.Z to main
+    # Pre-filter: only spin up runner for branches starting with 'stable-main-'
+    # This saves runner time for most PRs while still doing exact regex check below
+    if: startsWith(github.head_ref, 'stable-main-')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check exact branch pattern
+        env:
+          SOURCE_BRANCH: ${{ github.head_ref }}
+          TARGET_BRANCH: ${{ github.base_ref }}
+        run: |
+          # Check if source branch matches exact pattern: stable-main-X.Y.Z
+          if [[ "$TARGET_BRANCH" == "main" && "$SOURCE_BRANCH" =~ ^stable-main-[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "❌ ERROR: Manual merge from stable-main-X.Y.Z branches to main are not allowed!"
+            echo "Source branch '$SOURCE_BRANCH' matches the blocked pattern."
+            echo "These branches should only be merged via automated workflows, comment 'Merge my PR' to merge."
+            exit 1
+          fi
+
+          echo "✅ Branch check passed"
