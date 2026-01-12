@@ -17,6 +17,7 @@ import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
@@ -26,7 +27,7 @@ describe('Confirmation Redesign Token Send', function () {
   this.timeout(200000); // This test is very long, so we need an unusually high timeout
   describe('ERC721', function () {
     describe('Wallet initiated', function () {
-      it('Sends a type 0 transaction (Legacy)', async function () {
+      it.only('Sends a type 0 transaction (Legacy)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.legacy,
@@ -46,7 +47,7 @@ describe('Confirmation Redesign Token Send', function () {
         );
       });
 
-      it('Sends a type 2 transaction (EIP1559)', async function () {
+      it.only('Sends a type 2 transaction (EIP1559)', async function () {
         await withTransactionEnvelopeTypeFixtures(
           this.test?.fullTitle(),
           TransactionEnvelopeType.feeMarket,
@@ -258,7 +259,12 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await new HomePage(driver).goToNftTab();
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
+  await homePage.goToNftTab();
   await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
