@@ -91,9 +91,6 @@ module.exports.setEnvironmentVariables = function setEnvironmentVariables({
     METAMASK_SHIELD_ENABLED: isTestBuild
       ? 'true'
       : variables.getMaybe('METAMASK_SHIELD_ENABLED'),
-    FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG: isTestBuild
-      ? 'true'
-      : variables.getMaybe('FORCE_MULTICHAIN_ACCOUNTS_FEATURE_FLAG'),
     GOOGLE_CLIENT_ID,
     APPLE_CLIENT_ID,
   });
