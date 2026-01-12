@@ -51,7 +51,7 @@ async function runHook(args: Record<string, unknown> = {}) {
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation, {
       metamask: {
         dappSwapComparisonData: {
-          'f8172040-b3d0-11f0-a882-3f99aa2e9f0c': {
+          '1234567': {
             quotes: mockBridgeQuotes,
             latency: 3600,
             commands: '0x0a100604',

@@ -327,15 +327,15 @@ const AssetPage = ({
   const showTronResources = isTron && type === AssetType.native;
 
   return (
-    <Box marginTop={4} className="asset__content">
+    <Box className="asset__content">
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Row}
         justifyContent={JustifyContent.spaceBetween}
-        paddingTop={1}
         paddingBottom={3}
         paddingLeft={2}
         paddingRight={4}
+        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <Box display={Display.Flex}>
           <ButtonIcon
@@ -378,10 +378,15 @@ const AssetPage = ({
               isSwapsChain,
               isBridgeChain,
               chainId,
+              disableSendForNonEvm: true,
             }}
           />
         ) : (
-          <TokenButtons token={updatedAsset} account={selectedAccount} />
+          <TokenButtons
+            token={updatedAsset}
+            account={selectedAccount}
+            disableSendForNonEvm
+          />
         )}
       </Box>
       <Box

@@ -60,6 +60,7 @@ import {
 } from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
 import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
 import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
@@ -118,11 +119,15 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { update, requestSafeReload } = getRequestSafeReload(persistenceManager);
+const { safePersist, requestSafeReload, evacuate } =
+  getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
+
+// Expose storageKind for Sentry tagging (used to distinguish 'data' vs 'split' storage)
+global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
@@ -888,6 +893,20 @@ export async function loadStateFromPersistence(backup) {
     // migrations will behave correctly.
     if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
       preMigrationVersionedData.meta = backup.meta;
+      // old versions of meta used "data" as the storage kind, without
+      // explicitly setting the "storageKind" to data. If it is missing, we just
+      // always default to "data" ("data" was the default before "split"
+      // existed).
+      // We need to set it properly here so that the persistence manager uses
+      // the correct storage kind when restoring from the `backup`.
+      if (
+        backup.meta.storageKind === 'split' ||
+        backup.meta.storageKind === 'data'
+      ) {
+        persistenceManager.storageKind = backup.meta.storageKind;
+      } else {
+        persistenceManager.storageKind = 'data';
+      }
     }
     // sanity check on the meta property
     if (typeof preMigrationVersionedData.meta.version !== 'number') {
@@ -917,18 +936,23 @@ export async function loadStateFromPersistence(backup) {
     console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
-    sentry.captureException(err, {
+    sentry?.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     });
   });
 
+  let writeAllKeysToState = false;
   if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    // brand new state; write all keys!
+    writeAllKeysToState = true;
     preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
   }
 
   // migrate data
-  const versionedData = await migrator.migrateData(preMigrationVersionedData);
+  const { state: versionedData, changedKeys } = await migrator.migrateData(
+    preMigrationVersionedData,
+  );
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -940,6 +964,12 @@ export async function loadStateFromPersistence(backup) {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
+  } else if (
+    !['data', 'split', undefined].includes(versionedData.meta.storageKind)
+  ) {
+    throw new Error(
+      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
+    );
   } else if (!isObject(versionedData.data)) {
     throw new Error(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
@@ -948,8 +978,61 @@ export async function loadStateFromPersistence(backup) {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  // write to disk
-  await persistenceManager.set(versionedData.data);
+  log.debug(
+    "[Split State]: Loaded data from persistence with storageKind '%s'",
+    persistenceManager.storageKind,
+  );
+  if (persistenceManager.storageKind === 'data') {
+    const alreadyTried =
+      versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
+    const shouldUseSplitStateStorage =
+      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    log.debug(
+      '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
+      shouldUseSplitStateStorage,
+      alreadyTried,
+    );
+    if (shouldUseSplitStateStorage) {
+      // a sigil to mark that we *tried* to migrate to split state storage
+      versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
+      persistenceManager.setMetadata(versionedData.meta);
+    }
+
+    log.debug(
+      "[Split State]: Writing data to persistence with storageKind 'data'",
+    );
+    // write to disk
+    await persistenceManager.set(versionedData.data);
+
+    if (shouldUseSplitStateStorage) {
+      await persistenceManager.migrateToSplitState(versionedData.data);
+      versionedData.meta = persistenceManager.getMetaData();
+      if (versionedData.meta !== undefined) {
+        delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
+        // persist the new metadata one more time
+        persistenceManager.setMetadata(versionedData.meta);
+      }
+      await persistenceManager.persist();
+    }
+  } else if (persistenceManager.storageKind === 'split') {
+    if (writeAllKeysToState) {
+      for (const [key, value] of Object.entries(versionedData.data)) {
+        persistenceManager.update(key, value);
+      }
+    } else {
+      // write changes only
+      for (const key of changedKeys) {
+        persistenceManager.update(key, versionedData.data[key]);
+      }
+    }
+    // write to disk
+    await persistenceManager.persist();
+  } else {
+    throw new Error(
+      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+    );
+  }
+  log.debug('[Split State]: Load complete.');
 
   // return just the data
   return versionedData;
@@ -1167,20 +1250,64 @@ export function setupController(
       changedControllerKeys.push(key);
     }
   }
-  if (changedControllerKeys.length > 0) {
-    log.info(
-      `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
-    );
-    // persist the new state
-    update(currentState).catch((error) => {
-      log.error('Error persisting updated controller state:', error);
-      sentry?.captureException(error);
-    });
-  }
 
-  // this persistence hooks must happen before `controller.configureAllControllers`
-  // or some updates might not be persisted!
-  controller.store.on('update', update);
+  if (persistenceManager.storageKind === 'split') {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // update the new state
+      changedControllerKeys.forEach((key) => {
+        persistenceManager.update(key, currentState[key]);
+      });
+      // then persist it
+      safePersist().catch((error) => {
+        log.error('Error persisting updated state:', error);
+        sentry?.captureException(error);
+      });
+    }
+
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+
+        // if this key is one of the `backedUpStateKeys` we must always
+        // re-persist all of the other `backedUpStateKeys`, as they must always
+        // stored in the backup DB together.
+        if (backedUpStateKeys.includes(controllerKey)) {
+          backedUpStateKeys.forEach((key) => {
+            if (key === controllerKey) {
+              // already updated this one
+              return;
+            }
+            const state = controller.controllerMessenger.call(
+              `${key}:getState`,
+            );
+            persistenceManager.update(key, state);
+          });
+        }
+        try {
+          await safePersist();
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
+      },
+    );
+  } else {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // persist the new state
+      safePersist(currentState).catch((error) => {
+        log.error('Error persisting updated controller state:', error);
+        sentry?.captureException(error);
+      });
+    }
+    controller.store.on('update', safePersist);
+  }
   controller.store.on('error', (error) => {
     log.error('MetaMask controller.store error:', error);
     sentry?.captureException(error);
@@ -1911,4 +2038,17 @@ async function initBackground(backup) {
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground(null);
+}
+
+if (inTest) {
+  // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  browser.runtime.onMessage.addListener(async (message, _sender) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      await evacuate();
+      return { status: 'PERSISTENCE_STOPPED' };
+    }
+    return Promise.resolve();
+  });
 }

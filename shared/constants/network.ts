@@ -2,7 +2,14 @@ import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  hexToNumber,
+  KnownCaipNamespace,
+  toCaipChainId,
+} from '@metamask/utils';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -213,6 +220,9 @@ export const CHAIN_IDS = {
   X_LAYER: '0xc4',
   ETHERLINK: '0xa729',
   MSU: '0x10b3e',
+  BOB: '0xed88',
+  ROOTSTOCK: '0x1e',
+  ROOTSTOCK_TESTNET: '0x1f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -379,6 +389,9 @@ export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
 export const X_LAYER_DISPLAY_NAME = 'X Layer';
 export const ETHERLINK_DISPLAY_NAME = 'Etherlink';
 export const MSU_DISPLAY_NAME = 'MapleStory Universe';
+export const BOB_DISPLAY_NAME = 'BOB';
+export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
+export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -468,6 +481,9 @@ export const CURRENCY_SYMBOLS = {
   X_LAYER: 'OKB',
   ETHERLINK: 'XTZ',
   MSU: 'NXPC',
+  BOB: 'ETH',
+  ROOTSTOCK: 'RBTC',
+  ROOTSTOCK_TESTNET: 'tRBTC',
 } as const;
 
 // Non-EVM currency symbols
@@ -697,6 +713,9 @@ export const ETHERLINK_IMAGE_URL = './images/etherlink.svg';
 export const ETHERLINK_NATIVE_TOKEN_IMAGE_URL = './images/etherlink-native.svg';
 export const MSU_IMAGE_URL = './images/msu.svg';
 export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
+export const BOB_IMAGE_URL = './images/bob.svg';
+export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
+export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -714,9 +733,12 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.MONAD_TESTNET,
 ];
 
-export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
-  (chainId) => `eip155:${hexToNumber(chainId)}`,
-);
+export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
+  ...TEST_CHAINS.map((chainId) =>
+    toCaipChainId(KnownCaipNamespace.Eip155, hexToNumber(chainId).toString()),
+  ),
+  ...NON_EVM_TESTNET_IDS,
+];
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -871,6 +893,9 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.X_LAYER]: X_LAYER_DISPLAY_NAME,
   [CHAIN_IDS.ETHERLINK]: ETHERLINK_DISPLAY_NAME,
   [CHAIN_IDS.MSU]: MSU_DISPLAY_NAME,
+  [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1034,6 +1059,9 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.X_LAYER]: CURRENCY_SYMBOLS.X_LAYER,
   [CHAIN_IDS.ETHERLINK]: CURRENCY_SYMBOLS.ETHERLINK,
   [CHAIN_IDS.MSU]: CURRENCY_SYMBOLS.MSU,
+  [CHAIN_IDS.BOB]: CURRENCY_SYMBOLS.BOB,
+  [CHAIN_IDS.ROOTSTOCK]: CURRENCY_SYMBOLS.ROOTSTOCK,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: CURRENCY_SYMBOLS.ROOTSTOCK_TESTNET,
 } as const;
 
 /**
@@ -1217,6 +1245,9 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.X_LAYER]: X_LAYER_IMAGE_URL,
   [CHAIN_IDS.ETHERLINK]: ETHERLINK_IMAGE_URL,
   [CHAIN_IDS.MSU]: MSU_IMAGE_URL,
+  [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1306,6 +1337,9 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.X_LAYER]: X_LAYER_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ETHERLINK]: ETHERLINK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MSU]: MSU_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,

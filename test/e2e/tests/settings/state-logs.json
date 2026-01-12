@@ -111,6 +111,7 @@
     "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
+    "txAlertStatus": "number",
     "wasTxDeclined": "boolean"
   },
   "browser": "string",
@@ -379,6 +380,7 @@
     "delegations": {},
     "dismissSeedBackUpReminder": "boolean",
     "domains": {},
+    "drafts": [],
     "enabledNetworkMap": {
       "eip155": {
         "0x539": "boolean",
@@ -607,6 +609,7 @@
     "isNotificationServicesEnabled": "boolean",
     "isPushEnabled": "boolean",
     "isRampCardClosed": "boolean",
+    "isReady": "boolean",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "isSignedIn": "boolean",
     "isUnlocked": "boolean",
@@ -851,10 +854,11 @@
       "hyperliquid": {}
     },
     "remoteFeatureFlags": {
-      "enableMultichainAccountsState2": {
-        "enabled": "boolean",
-        "featureVersion": "string",
-        "minimumVersion": "string"
+      "feature1": "boolean",
+      "feature2": "boolean",
+      "feature3": {
+        "name": "string",
+        "value": "string"
       },
       "sendRedesign": {
         "enabled": "boolean"
@@ -882,6 +886,7 @@
     "showShieldEntryModalOnce": "boolean",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
+    "signature": "string",
     "signatureRequests": {},
     "signatureSecurityAlertResponses": {},
     "syncQueue": {

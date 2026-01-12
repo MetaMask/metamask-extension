@@ -289,6 +289,9 @@
     "message": "Adicionar $1",
     "description": "$1 represents network name"
   },
+  "addNetworkDescription": {
+    "message": "Um site está sugerindo detalhes adicionais da rede."
+  },
   "addNewAccount": {
     "message": "Adicionar uma nova conta Ethereum"
   },
@@ -297,6 +300,9 @@
   },
   "addNewSolanaAccountLabel": {
     "message": "Conta Solana"
+  },
+  "addNewTronAccountLabel": {
+    "message": "Conta Tron"
   },
   "addNft": {
     "message": "Adicionar NFT"
@@ -415,6 +421,12 @@
   "advancedGasPriceTitle": {
     "message": "Preço do gás"
   },
+  "advancedPermissionSmallCase": {
+    "message": "permissão avançada"
+  },
+  "advancedPermissionsSmallCase": {
+    "message": "permissões avançadas"
+  },
   "advancedPriorityFeeToolTip": {
     "message": "A taxa de prioridade (ou seja, \"gorjeta do minerador\") vai diretamente para os mineradores e os incentiva a priorizar a sua transação."
   },
@@ -431,10 +443,13 @@
     "message": "Alerta"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Você está atualizando sua conta para uma conta inteligente. Você manterá o mesmo endereço de conta, além de desbloquear transações mais rápidas e taxas de rede mais baixas. $1."
+    "message": "Você está atualizando sua conta para uma conta inteligente. Você manterá o mesmo endereço de conta, além de desbloquear transações mais rápidas e taxas de rede mais baixas. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Tipo de conta"
+  },
+  "alertActionBurnAddress": {
+    "message": "Enviando ativos para endereço de queima"
   },
   "alertActionBuyWithNativeCurrency": {
     "message": "Comprar $1"
@@ -462,6 +477,9 @@
   },
   "alertMessageAddressTrustSignalMalicious": {
     "message": "Se você confirmar essa solicitação, provavelmente perderá seus ativos para um golpista."
+  },
+  "alertMessageBurnAddress": {
+    "message": "Você está enviando seus ativos para um endereço de queima. Se continuar, você perderá seus ativos."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "As mudanças estimadas para esta transação foram atualizadas. Revise com atenção antes de prosseguir."
@@ -577,11 +595,12 @@
   "allPopularNetworks": {
     "message": "Todas as redes populares"
   },
-  "allTimeHigh": {
-    "message": "Máximo desde o início"
+  "allowAddRpc": {
+    "message": "Adicionar RPC"
   },
-  "allTimeLow": {
-    "message": "Mínimo desde o início"
+  "allowAddRpcDescription": {
+    "message": "Permitir que o site adicione um URL RPC por $1.\n\nAcesse Redes em Configurações e defina seu RPC preferido quando quiser",
+    "description": "$1 is the chain name"
   },
   "allowNotifications": {
     "message": "Permitir notificações"
@@ -810,6 +829,12 @@
   "basicConfigurationModalHeadingOn": {
     "message": "Ativar funcionalidade básica"
   },
+  "bestQuote": {
+    "message": "Melhor cotação"
+  },
+  "bestQuoteTooltip": {
+    "message": "A melhor cotação que encontramos entre fornecedores, incluindo taxas de fornecedor e uma taxa de 0,25% da MetaMask. O valor mínimo que você receberá, em caso de mudança de preço, é de $1."
+  },
   "beta": {
     "message": "Beta"
   },
@@ -918,8 +943,11 @@
   "bridgeApprovalWarning": {
     "message": "Você está permitindo acesso a $1 $2. O contrato não acessará nenhum fundo adicional."
   },
+  "bridgeApprovalWarningForHardware": {
+    "message": "Você precisará permitir acesso à $1 $2 para fazer a ponte e, em seguida, aprovar a realização de ponte para $3. Isso exigirá duas confirmações separadas."
+  },
   "bridgeBlockExplorerLinkCopied": {
-    "message": "Link do explorador de blocos copiado!"
+    "message": "Link do explorador de blocos copiado"
   },
   "bridgeCalculatingAmount": {
     "message": "Calculando..."
@@ -962,6 +990,34 @@
   "bridgeNoMMFee": {
     "message": "Sem taxa da MM"
   },
+  "bridgePoints": {
+    "message": "Est. de pontos",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_couldntLoad": {
+    "message": "Não foi possível carregar",
+    "description": "Text shown in rewards badge when points couldn't be loaded"
+  },
+  "bridgePoints_error": {
+    "message": "Não foi possível carregar pontos",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "Não se preocupe, você ainda está ganhando pontos. Eles aparecerão em sua conta em breve, ou você pode conferir a guia Recompensas no aplicativo MetaMask Mobile.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Pontos",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Os pontos são a forma de você ganhar MetaMask Rewards ao concluir transações, como quando você faz trocas, pontes ou negocia perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Lembre-se de que este valor é uma estimativa e será finalizado após a conclusão da transação. Os pontos podem levar até 1 hora para serem confirmados no seu saldo de recompensas.",
+    "description": "Second part of tooltip content explaining how points are calculated"
+  },
   "bridgePriceImpact": {
     "message": "Impacto no preço"
   },
@@ -976,9 +1032,6 @@
   },
   "bridgeQuoteExpired": {
     "message": "O prazo da sua cotação esgotou."
-  },
-  "bridgeSelectDestinationAccount": {
-    "message": "Selecione a conta de destino"
   },
   "bridgeSelectDifferentQuote": {
     "message": "Selecione uma cotação diferente."
@@ -1162,6 +1215,9 @@
   "chainListReturnedDifferentTickerSymbol": {
     "message": "O símbolo deste token não corresponde ao nome ou ID da cadeia inseridos para a rede. Muitos tokens populares apresentam símbolos semelhantes, que podem ser usados por golpistas para induzir você ao erro de enviar um token mais valioso em troca. Verifique todos os detalhes antes de continuar."
   },
+  "changePasswordDetailsSocial": {
+    "message": "Perder esta senha significa perder acesso à carteira em todos os dispositivos."
+  },
   "changePasswordLoading": {
     "message": "Alterando senha..."
   },
@@ -1173,6 +1229,13 @@
   },
   "changePasswordWarningDescription": {
     "message": "Alterar sua senha aqui bloqueará a MetaMask em outros dispositivos que você esteja usando. Você precisará fazer login novamente com a sua nova senha."
+  },
+  "checkNetworkConnectivity": {
+    "message": "Verifique a conexão de rede."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Verifique a conexão da rede ou $1.",
+    "description": "$1 is a link to update the network."
   },
   "chooseYourNetwork": {
     "message": "Escolha sua rede"
@@ -1235,6 +1298,9 @@
     "message": "Nenhuma opção encontrada",
     "description": "Default text shown in the combo field dropdown if no options."
   },
+  "completed": {
+    "message": "Concluído"
+  },
   "concentratedSupplyDistributionDescription": {
     "message": "A maior parte do suprimento de tokens está em posse dos principais detentores do token, o que representa um risco de manipulação centralizada de preços"
   },
@@ -1274,20 +1340,54 @@
   "confirmFieldAllowance": {
     "message": "Limite de gasto"
   },
+  "confirmFieldAvailablePerDay": {
+    "message": "Disponível por dia"
+  },
+  "confirmFieldExpiration": {
+    "message": "Expiração"
+  },
+  "confirmFieldFrequency": {
+    "message": "Frequência"
+  },
+  "confirmFieldInitialAllowance": {
+    "message": "Provisão inicial"
+  },
+  "confirmFieldMaxAllowance": {
+    "message": "Provisão máxima"
+  },
   "confirmFieldPaymaster": {
     "message": "Taxa paga por"
+  },
+  "confirmFieldPeriodDurationBiWeekly": {
+    "message": "Quinzenal"
   },
   "confirmFieldPeriodDurationDaily": {
     "message": "Diário"
   },
+  "confirmFieldPeriodDurationHourly": {
+    "message": "Por hora"
+  },
   "confirmFieldPeriodDurationMonthly": {
     "message": "Mensal"
+  },
+  "confirmFieldPeriodDurationSeconds": {
+    "message": "segundos",
+    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
   },
   "confirmFieldPeriodDurationWeekly": {
     "message": "Semanal"
   },
   "confirmFieldPeriodDurationYearly": {
     "message": "Anual"
+  },
+  "confirmFieldStartDate": {
+    "message": "Data de início"
+  },
+  "confirmFieldStreamRate": {
+    "message": "Taxa de fluxo"
+  },
+  "confirmFieldTooltipJustification": {
+    "message": "Justificativa para a solicitação fornecida pelo site"
   },
   "confirmFieldTooltipPaymaster": {
     "message": "A taxa dessa transação será paga pelo contrato inteligente do tesoureiro."
@@ -1377,13 +1477,16 @@
     "message": "Você está voltando para uma conta padrão (EOA)."
   },
   "confirmTitleDescDelegationUpgrade": {
-    "message": "Você está mudando para uma conta inteligente"
+    "message": "Você está mudando para uma conta inteligente."
   },
   "confirmTitleDescDeployContract": {
     "message": "Este site quer que você implemente um contrato"
   },
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Este site quer permissão para sacar seus tokens"
+  },
+  "confirmTitleDescPermission": {
+    "message": "Este site quer permissões para gastar seus tokens."
   },
   "confirmTitleDescPermitSignature": {
     "message": "Este site quer permissão para gastar seus tokens."
@@ -1618,6 +1721,14 @@
   "create": {
     "message": "Criar"
   },
+  "createMultichainAccountButton": {
+    "message": "Adicionar conta",
+    "description": "Name of a button used on multichain account related pages for triggering the account creation process."
+  },
+  "createMultichainAccountButtonLoading": {
+    "message": "Adicionando conta...",
+    "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
+  },
   "createNewAccountHeader": {
     "message": "Crie uma conta"
   },
@@ -1675,6 +1786,9 @@
   },
   "currencySymbolDefinition": {
     "message": "O símbolo do ticker exibido para a moeda dessa rede."
+  },
+  "current": {
+    "message": "Atual"
   },
   "currentAccountNotConnected": {
     "message": "Sua conta atual não está conectada"
@@ -1754,6 +1868,18 @@
   "dappSuggestedTooltip": {
     "message": "$1 recomendou esse preço.",
     "description": "$1 represents the Dapp's origin"
+  },
+  "dappSwapAdvantage": {
+    "message": "Economize e ganhe com swaps da MetaMask"
+  },
+  "dappSwapBenefits": {
+    "message": "Reembolso das taxas de rede em caso de falhas nos swaps"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Economize $1"
+  },
+  "dappSwapRewardText": {
+    "message": "Ganhe $1 pontos"
   },
   "darkTheme": {
     "message": "Escuro"
@@ -1872,11 +1998,20 @@
   "deepLink_thePerpsPage": {
     "message": "a página de perps"
   },
+  "deepLink_thePredictPage": {
+    "message": "a página dos mercados de previsão"
+  },
+  "deepLink_theRewardsPage": {
+    "message": "a página de recompensas da MetaMask"
+  },
   "deepLink_theSwapsPage": {
     "message": "a página de trocas"
   },
   "deepLink_theSwapsRampsPage": {
     "message": "a página de trocas/rampas"
+  },
+  "deepLink_theTransactionShieldPage": {
+    "message": "a página de proteção de transações"
   },
   "defaultRpcUrl": {
     "message": "URL padrão da RPC"
@@ -1943,9 +2078,6 @@
   },
   "deprecatedNetworkButtonMsg": {
     "message": "Entendi"
-  },
-  "deprecatedNetworkDescription": {
-    "message": "A rede à qual você está tentando conectar-se não é mais suportada pela MetaMask. $1"
   },
   "description": {
     "message": "Descrição"
@@ -2254,6 +2386,12 @@
   "enableFromSettings": {
     "message": " Ative nas Configurações."
   },
+  "enableSmartContractAccount": {
+    "message": "Usar conta inteligente"
+  },
+  "enableSmartContractAccountDescription": {
+    "message": "Desbloqueie transações mais rápidas, taxas de rede mais baixas e segurança adicional em redes compatíveis."
+  },
   "enableSnap": {
     "message": "Ativar"
   },
@@ -2334,9 +2472,6 @@
   },
   "enterYourPasswordContinue": {
     "message": "Insira a senha para continuar"
-  },
-  "enterYourPasswordSocialLoginFlow": {
-    "message": "Insira a senha da MetaMask"
   },
   "errorCode": {
     "message": "Código: $1",
@@ -2425,6 +2560,9 @@
   "estimatedFeeTooltip": {
     "message": "Valor pago para processar a transação na rede."
   },
+  "estimatedPointsRow": {
+    "message": "Est. de pontos"
+  },
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
@@ -2500,6 +2638,12 @@
     "message": "A importação de arquivo não está funcionando? Clique aqui!",
     "description": "Helps user import their account from a JSON file"
   },
+  "fileUploaderDescription": {
+    "message": "Clique para upload ou arraste e solte"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "Tipo de arquivo inválido. Envie um arquivo em um formato compatível."
+  },
   "fileUploaderMaxFileSizeError": {
     "message": "O tamanho do arquivo excede $1 MB. Por favor, carregue um arquivo menor.",
     "description": "$1 is the maximum file size in MB"
@@ -2541,34 +2685,20 @@
     "message": "Esqueceu a senha?"
   },
   "forgotPasswordModalButton": {
-    "message": "Redefinir carteira"
+    "message": "Importar carteira"
   },
-  "forgotPasswordModalDescription1": {
-    "message": "A MetaMask não consegue recuperar sua senha para você."
-  },
-  "forgotPasswordModalDescription2": {
-    "message": "Para redefinir sua carteira, insira a Frase de Recuperação Secreta que você usou ao configurar sua carteira."
+  "forgotPasswordModalContactSupportLink": {
+    "message": "Falar com o suporte"
   },
   "forgotPasswordModalTitle": {
     "message": "Esqueceu sua senha?"
   },
-  "forgotPasswordSocialDescription": {
-    "message": "A MetaMask não consegue recuperar sua senha para você.",
-    "description": "$1 is the support link"
-  },
-  "forgotPasswordSocialStep1": {
-    "message": "Se você estiver conectado à MetaMask em um dispositivo com $1 (como Face ID), sua senha pode ser redefinida nele.",
-    "description": "$1 is bold heading"
-  },
-  "forgotPasswordSocialStep1Biometrics": {
-    "message": "biometria ativada"
-  },
-  "forgotPasswordSocialStep2": {
-    "message": "Se você tiver sua $1, poderá redefinir sua carteira atual e importá-la novamente usando a Frase de Recuperação Secreta.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "formulário"
+  },
+  "freeTrialDays": {
+    "message": "Teste grátis por $1 dia",
+    "description": "The $1 is the number of days"
   },
   "from": {
     "message": "De"
@@ -2578,6 +2708,10 @@
   },
   "function": {
     "message": "Função: $1"
+  },
+  "fundYourWallet": {
+    "message": "Deposite fundos em sua carteira",
+    "description": "Title for the balance empty state component encouraging users to add funds"
   },
   "gas": {
     "message": "Gás"
@@ -2607,6 +2741,9 @@
   "gasOption": {
     "message": "Opção de gás"
   },
+  "gasPrice": {
+    "message": "Preço do gás"
+  },
   "gasPriceExcessive": {
     "message": "Sua taxa de gás está desnecessariamente alta. Considere reduzir o valor."
   },
@@ -2631,6 +2768,74 @@
   "gasUsed": {
     "message": "Gás usado"
   },
+  "gatorPermissionAnnualFrequency": {
+    "message": "Anual",
+    "description": "Time period for annual recurring permissions redemption"
+  },
+  "gatorPermissionCustomFrequency": {
+    "message": "Personalizado",
+    "description": "Time period for custom recurring permissions redemption"
+  },
+  "gatorPermissionDailyFrequency": {
+    "message": "Diário",
+    "description": "Time period for daily recurring permissions redemption"
+  },
+  "gatorPermissionFortnightlyFrequency": {
+    "message": "Quinzenal",
+    "description": "Time period for fortnightly recurring permissions redemption"
+  },
+  "gatorPermissionMonthlyFrequency": {
+    "message": "Mensal",
+    "description": "Time period for monthly recurring permissions redemption"
+  },
+  "gatorPermissionNoExpiration": {
+    "message": "Sem expiração",
+    "description": "Label for a permission with no expiration"
+  },
+  "gatorPermissionTokenPeriodicFrequencyLabel": {
+    "message": "Prazo de transferência",
+    "description": "Label for the transfer window of a token periodic permission"
+  },
+  "gatorPermissionTokenStreamFrequencyLabel": {
+    "message": "Período",
+    "description": "Label for the period of a token stream permission"
+  },
+  "gatorPermissionWeeklyFrequency": {
+    "message": "Semanal",
+    "description": "Time period for weekly recurring permissions redemption"
+  },
+  "gatorPermissionsExpirationDate": {
+    "message": "Data de validade",
+    "description": "Label for the expiration date of a permission"
+  },
+  "gatorPermissionsInitialAllowance": {
+    "message": "Provisão inicial",
+    "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsMaxAllowance": {
+    "message": "Provisão máxima",
+    "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsRevocationPending": {
+    "message": "Revogação pendente",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Revogar",
+    "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsStartDate": {
+    "message": "Data de início",
+    "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStreamRate": {
+    "message": "Taxa de fluxo",
+    "description": "Label for the stream rate of a permission"
+  },
+  "gatorPermissionsStreamingAmountLabel": {
+    "message": "Valor de streaming",
+    "description": "Label for the stream rate of a permission"
+  },
   "general": {
     "message": "Geral"
   },
@@ -2646,8 +2851,15 @@
   "genericExplorerView": {
     "message": "Ver conta na $1"
   },
+  "getDollarMore": {
+    "message": "Ganhe mais $1"
+  },
   "getTheNewestFeatures": {
     "message": "Obtenha os recursos mais recentes"
+  },
+  "getYourWalletReadyToUseWeb3": {
+    "message": "Prepare sua carteira para usar a web3",
+    "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "goToSite": {
     "message": "Ir ao site"
@@ -2704,6 +2916,9 @@
   },
   "hexDataPlaceholder": {
     "message": "Insira os dados hexa (opcional)"
+  },
+  "hidden": {
+    "message": "Oculto"
   },
   "hiddenAccounts": {
     "message": "Contas ocultas"
@@ -2927,6 +3142,9 @@
   "initialTransactionConfirmed": {
     "message": "Sua transação inicial foi confirmada pela rede. Clique em OK para voltar."
   },
+  "insights": {
+    "message": "Informações"
+  },
   "insightsFromSnap": {
     "message": "Insights de $1",
     "description": "$1 represents the name of the snap"
@@ -3136,7 +3354,7 @@
     "message": "Mais informações"
   },
   "learnMoreUpperCaseWithDot": {
-    "message": "Saiba mais."
+    "message": "Mais informações"
   },
   "learnScamRisk": {
     "message": "golpes e riscos de segurança."
@@ -3353,8 +3571,14 @@
   "marketCap": {
     "message": "Capitalização de mercado"
   },
+  "marketCapFDV": {
+    "message": "Capitalização de mercado (FDV)"
+  },
   "marketDetails": {
     "message": "Detalhes do mercado"
+  },
+  "marketRate": {
+    "message": "Taxa de mercado"
   },
   "maskicons": {
     "message": "Polycons"
@@ -3364,6 +3588,9 @@
   },
   "maxBaseFee": {
     "message": "Taxa-base máxima"
+  },
+  "maxBaseFeeMustBeGreaterThanPriorityFee": {
+    "message": "A taxa-base máxima deve ser maior que a taxa de prioridade"
   },
   "maxFee": {
     "message": "Taxa máxima"
@@ -3405,6 +3632,9 @@
   },
   "metamaskNotificationsAreOff": {
     "message": "As notificações de carteiras estão inativas no momento."
+  },
+  "metamaskSwap": {
+    "message": "Swap da MetaMask"
   },
   "metamaskSwapsOfflineDescription": {
     "message": "O MetaMask Swaps está em manutenção. Verifique novamente mais tarde."
@@ -3522,6 +3752,9 @@
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Você está adicionando esta rede à MetaMask e dando a este site permissão para usá-la."
   },
+  "multichainAddressViewAll": {
+    "message": "Ver tudo"
+  },
   "multichainQuoteCardRateExplanation": {
     "message": "A melhor taxa que encontramos entre os provedores, já incluindo as taxas do provedor e uma taxa de $1% da MetaMask."
   },
@@ -3617,6 +3850,9 @@
   "nameProvider_token": {
     "message": "MetaMask"
   },
+  "nameResolutionFailedError": {
+    "message": "Nenhuma resolução de endereço encontrada para este nome."
+  },
   "nameSetPlaceholder": {
     "message": "Escolha um apelido...",
     "description": "Placeholder text for name input field in name component modal."
@@ -3667,6 +3903,9 @@
   "negativeOrZeroAmountToken": {
     "message": "Não é possível enviar valores negativos ou zerados de ativos."
   },
+  "negativeValuesNotAllowed": {
+    "message": "Valores negativos não são permitidos"
+  },
   "network": {
     "message": "Rede"
   },
@@ -3716,6 +3955,9 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinSegwit": {
+    "message": "SegWit nativo do Bitcoin"
+  },
   "networkNameDefinition": {
     "message": "O nome associado a essa rede."
   },
@@ -3739,6 +3981,9 @@
   },
   "networkNameTestnet": {
     "message": "Testnet"
+  },
+  "networkNameTron": {
+    "message": "Tron"
   },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
@@ -3765,6 +4010,9 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "As taxas de gás estão $1 em relação às últimas 72 horas.",
     "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkSuggested": {
+    "message": "Rede sugerida"
   },
   "networkTabCustom": {
     "message": "Personalizado"
@@ -3906,9 +4154,6 @@
   "noAccountsFound": {
     "message": "Nenhuma conta encontrada para a pesquisa efetuada"
   },
-  "noConnectionDescription": {
-    "message": "Para se conectar a um site, encontre e selecione o botão \"conectar\". Lembre-se de que a MetaMask só pode se conectar a sites na web3"
-  },
   "noConversionRateAvailable": {
     "message": "Não há uma taxa de conversão disponível"
   },
@@ -3920,6 +4165,9 @@
   },
   "noMMFeeSwapping": {
     "message": "Sem taxa da MM ao trocar por $1."
+  },
+  "noNetworkFee": {
+    "message": "Sem taxa de rede"
   },
   "noNetworksAvailable": {
     "message": "Nenhuma rede disponível"
@@ -4220,7 +4468,7 @@
     "message": "Ao continuar, eu concordo com o $1 e os $2 da MetaMask"
   },
   "onboardingLoginFooterPrivacyNotice": {
-    "message": "Aviso de privacidade."
+    "message": "Aviso de privacidade"
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Termos de uso"
@@ -4242,6 +4490,9 @@
   },
   "onboardingMetametricsDescription": {
     "message": "Gostaríamos de solicitar estas permissões. Você pode optar por não concedê-las ou excluir seus dados de uso a qualquer momento."
+  },
+  "onboardingMetametricsTitle": {
+    "message": "Ajude a melhorar a MetaMask"
   },
   "onboardingOptionIcon": {
     "message": "Ícone $1",
@@ -4276,12 +4527,27 @@
     "message": "Conecte-se somente com sites em que você confia. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
+  "onlyIntegersAllowed": {
+    "message": "Apenas números inteiros são permitidos"
+  },
+  "onlyNumbersAllowed": {
+    "message": "Somente números são permitidos"
+  },
+  "openFullScreen": {
+    "message": "Abrir em tela cheia"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Abra o app em tela cheia para conectar seu Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
   },
   "openInBlockExplorer": {
     "message": "Abrir no explorador de blocos"
+  },
+  "openSettings": {
+    "message": "Abrir configurações"
+  },
+  "openWallet": {
+    "message": "Carteira aberta"
   },
   "optional": {
     "message": "Opcional"
@@ -4308,6 +4574,12 @@
   "other": {
     "message": "outro"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "As seguintes permissões também foram encontradas neste site. Deseja removê-las?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Outras permissões neste site"
+  },
   "otherSnaps": {
     "message": "outros snaps",
     "description": "Used in the 'permission_rpc' message."
@@ -4326,6 +4598,9 @@
   },
   "padlock": {
     "message": "Cadeado"
+  },
+  "paidByMetaMask": {
+    "message": "Pago pela MetaMask"
   },
   "participateInMetaMetrics": {
     "message": "Participe do MetaMetrics"
@@ -4385,6 +4660,12 @@
   "pendingTransactionAlertMessageHyperlink": {
     "message": "Aprenda como cancelar ou agilizar uma transação.",
     "description": "The text for the hyperlink in the pending transaction alert message"
+  },
+  "perSecond": {
+    "message": "por segundo"
+  },
+  "percentChange": {
+    "message": "Variação percentual"
   },
   "permissionFor": {
     "message": "Permissão para"
@@ -4637,9 +4918,6 @@
   "permissions": {
     "message": "Permissões"
   },
-  "permissionsPageEmptyDescription": {
-    "message": "Aqui você pode ver as permissões que deu aos snaps instalados ou sites conectados."
-  },
   "permitSimulationChange_approve": {
     "message": "Limite de gastos"
   },
@@ -4683,6 +4961,9 @@
   "pinToTop": {
     "message": "Fixar ao topo"
   },
+  "pinned": {
+    "message": "Fixado"
+  },
   "pleaseConfirm": {
     "message": "Por favor, confirme"
   },
@@ -4720,6 +5001,9 @@
   },
   "priorityFeeProperCase": {
     "message": "Taxa de prioridade"
+  },
+  "priorityFeeTooHigh": {
+    "message": "A taxa de prioridade deve ser inferior à taxa-base máxima"
   },
   "privacy": {
     "message": "Privacidade"
@@ -4793,6 +5077,33 @@
   },
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Posição liquidada"
+  },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Sua reivindicação foi criada"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Reivindicação criada"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Sua reivindicação foi atualizada"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Reivindicação atualizada"
+  },
+  "pushNotificationShieldLearnMoreCta": {
+    "message": "Mais informações"
+  },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Seu plano agora está ativo."
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Seu plano foi pausado devido a falha no pagamento."
+  },
+  "pushNotificationShieldSubscriptionTitle": {
+    "message": "MetaMask Transaction Shield"
+  },
+  "pushNotificationShieldUpdatePaymentCta": {
+    "message": "Atualizar pagamento"
   },
   "pushNotificationStopLossTriggeredDescriptionLong": {
     "message": "Sua posição long em $1 foi encerrada no seu stop loss.",
@@ -4987,6 +5298,9 @@
     "message": "Esta conta será removida da MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
   },
+  "removeAll": {
+    "message": "Remover tudo"
+  },
   "removeKeyringSnap": {
     "message": "Remover este Snap remove estas contas da MetaMask:"
   },
@@ -5062,6 +5376,9 @@
   },
   "resetWallet": {
     "message": "Redefina sua carteira"
+  },
+  "resetWalletButton": {
+    "message": "Sim, redefinir carteira"
   },
   "resolutionProtocol": {
     "message": "Endereço resolvido via $1",
@@ -5169,6 +5486,144 @@
   },
   "reward": {
     "message": "Recompensa"
+  },
+  "rewardsAuthFailDescription": {
+    "message": "Ocorreu um erro desconhecido ao autenticar esta conta no programa de recompensas. Tente novamente mais tarde."
+  },
+  "rewardsAuthFailTitle": {
+    "message": "Erro desconhecido."
+  },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "Esta conta já está cadastrada em outro perfil do programa de recompensas. Troque de conta para continuar."
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "Falha ao resgatar a recompensa. Tente novamente em instantes."
+  },
+  "rewardsErrorMessagesRequestRejected": {
+    "message": "Você recusou a solicitação."
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "Serviço não disponível no momento. Tente novamente em instantes."
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "Algo deu errado. Tente novamente em instantes."
+  },
+  "rewardsLinkAccount": {
+    "message": "Adicionar conta"
+  },
+  "rewardsLinkAccountError": {
+    "message": "Falha ao adicionar a conta"
+  },
+  "rewardsOnboardingIntroDescription": {
+    "message": "Ganhe pontos por sua atividade. \nSuba de nível para desbloquear recompensas."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "Não foi possível determinar se o seu país permite a participação no programa de recompensas. Verifique sua conexão e tente novamente."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedTitle": {
+    "message": "Não foi possível determinar a qualificação para participação"
+  },
+  "rewardsOnboardingIntroGeoCheckRetry": {
+    "message": "Tentar novamente"
+  },
+  "rewardsOnboardingIntroHardwareWalletDescription": {
+    "message": "Contas de carteira de hardware ainda não são qualificadas para receber recompensas. Mude para uma conta diferente para continuar."
+  },
+  "rewardsOnboardingIntroHardwareWalletTitle": {
+    "message": "Não há suporte para esta conta"
+  },
+  "rewardsOnboardingIntroRewardsAuthFailRetry": {
+    "message": "Tentar novamente"
+  },
+  "rewardsOnboardingIntroStepConfirm": {
+    "message": "Resgatar 250 pontos"
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Verificando região.."
+  },
+  "rewardsOnboardingIntroStepSkip": {
+    "message": "Agora não"
+  },
+  "rewardsOnboardingIntroTitle": {
+    "message": "As recompensas chegaram"
+  },
+  "rewardsOnboardingIntroUnsupportedRegionDescription": {
+    "message": "Ainda não oferecemos suporte às recompensas em sua região. Estamos trabalhando para expandir o acesso. Volte mais tarde."
+  },
+  "rewardsOnboardingIntroUnsupportedRegionTitle": {
+    "message": "Não há suporte a essa região"
+  },
+  "rewardsOnboardingStep1Description": {
+    "message": "Cada troca e negociação de perps que você faz na MetaMask te deixa mais perto das recompensas. Adicione suas contas e veja seus pontos acumularem."
+  },
+  "rewardsOnboardingStep1Title": {
+    "message": "Ganhe pontos a cada negociação"
+  },
+  "rewardsOnboardingStep2Description": {
+    "message": "Atinja marcos de pontos para obter vantagens como 50% de desconto nas taxas de perps, tokens exclusivos e um Cartão MetaMask Metal grátis."
+  },
+  "rewardsOnboardingStep2Title": {
+    "message": "Suba de nível para obter mais vantagens"
+  },
+  "rewardsOnboardingStep3Description": {
+    "message": "Você pode ganhar pontos na extensão, mas precisará do aplicativo móvel para negociar perps, acompanhar seu progresso e resgatar recompensas."
+  },
+  "rewardsOnboardingStep3Title": {
+    "message": "Desbloqueie recompensas no celular"
+  },
+  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+    "message": "Saiba mais"
+  },
+  "rewardsOnboardingStep4OptInError": {
+    "message": "A participação falhou"
+  },
+  "rewardsOnboardingStep4ReferralCodeError": {
+    "message": "Código de indicação inválido"
+  },
+  "rewardsOnboardingStep4ReferralCodeInput": {
+    "message": "Use um código de indicação para ganhar 250 pontos"
+  },
+  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+    "message": "Código de indicação (opcional)"
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+    "message": "Não foi possível validar o código de indicação."
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+    "message": "Verifique sua conexão e tente novamente."
+  },
+  "rewardsOnboardingStep4Title": {
+    "message": "Você ganhará 250 pontos ao se inscrever!"
+  },
+  "rewardsOnboardingStep4TitleWithReferralCode": {
+    "message": "Você ganhará 500 pontos ao se inscrever usando um código!"
+  },
+  "rewardsOnboardingStepConfirm": {
+    "message": "Seguinte"
+  },
+  "rewardsOnboardingStepOptIn": {
+    "message": "Resgatar pontos"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 pontos",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsBalance_couldntLoad": {
+    "message": "Não foi possível carregar",
+    "description": "Text shown when points balance couldn't be loaded"
+  },
+  "rewardsPointsIcon": {
+    "message": "Pontos de recompensa",
+    "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Você precisará do aplicativo para acompanhar seu progresso e resgatar recompensas. Escaneie este código QR e nós ajudaremos a importar suas contas."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "Obtenha o aplicativo móvel"
+  },
+  "rewardsSignUp": {
+    "message": "Inscreva-se para receber recompensas"
   },
   "rpcNameOptional": {
     "message": "Nome da RPC (opcional)"
@@ -5319,6 +5774,10 @@
   "seedPhraseReq": {
     "message": "As Frases de Recuperação Secretas contêm 12, 15, 18, 21 ou 24 palavras"
   },
+  "seedPhraseReviewDetails": {
+    "message": "Esta é a sua $1. Anote-a na ordem correta e guarde-a em segurança. Se alguém tiver sua Frase de Recuperação Secreta, poderá acessar sua carteira. Nunca a compartilhe com ninguém.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
+  },
   "seedPhraseReviewTitle": {
     "message": "Salve sua Frase de Recuperação Secreta"
   },
@@ -5369,9 +5828,6 @@
   },
   "selectSecretRecoveryPhrase": {
     "message": "Selecionar Frase de Recuperação Secreta"
-  },
-  "selectType": {
-    "message": "Selecione o tipo"
   },
   "selectedAccountMismatch": {
     "message": "Conta diferente selecionada"
@@ -5461,14 +5917,43 @@
   "shieldClaim": {
     "message": "Enviar uma reclamação"
   },
+  "shieldClaimChainNotSupported": {
+    "message": "Não há suporte para esta blockchain."
+  },
   "shieldClaimDescription": {
     "message": "Descrição do caso"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Forneça um breve resumo do incidente"
+  },
+  "shieldClaimDetailsViewClaims": {
+    "message": "Nossa equipe está analisando esta reivindicação. Notificaremos você por e-mail assim que ela for aprovada. Veja a apólice de cobertura completa em $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDuplicateClaimExists": {
+    "message": "Uma reivindicação referente a este hash de transação já foi apresentada."
   },
   "shieldClaimEmail": {
     "message": "E-mail"
   },
   "shieldClaimEmailHelpText": {
     "message": "Usaremos este e-mail para manter você em dia com as atualizações."
+  },
+  "shieldClaimFileErrorCountExceeded": {
+    "message": "O número de arquivos é superior ao limite máximo permitido."
+  },
+  "shieldClaimFileErrorInvalidType": {
+    "message": "Tipo de arquivo inválido."
+  },
+  "shieldClaimFileErrorSizeExceeded": {
+    "message": "O tamanho total do arquivo é superior ao tamanho máximo permitido."
+  },
+  "shieldClaimFileUploader": {
+    "message": "Upload de imagem"
+  },
+  "shieldClaimFileUploaderAcceptText": {
+    "message": "PDF, PNG, JPG (máx. $1MB)",
+    "description": "The $1 is the maximum file size in MB"
   },
   "shieldClaimFileUploaderHelpText": {
     "message": "Se você tiver quaisquer outras provas, carregue-as aqui."
@@ -5482,11 +5967,38 @@
   "shieldClaimImpactedTxHashHelpTextLink": {
     "message": "Precisa de ajuda para encontrar?"
   },
+  "shieldClaimImpactedTxHashNotEligible": {
+    "message": "Como esta transação não foi realizada na plataforma da MetaMask, ela não se qualifica para reembolso"
+  },
   "shieldClaimImpactedWalletAddress": {
     "message": "Endereço da carteira afetada"
   },
+  "shieldClaimIncidentDetails": {
+    "message": "Detalhes do incidente"
+  },
+  "shieldClaimInvalidChainId": {
+    "message": "Insira uma ID de blockchain válida"
+  },
   "shieldClaimInvalidEmail": {
     "message": "Insira um endereço de e-mail válido"
+  },
+  "shieldClaimInvalidRequired": {
+    "message": "Este campo é obrigatório"
+  },
+  "shieldClaimInvalidTxHash": {
+    "message": "Insira um hash de transação válido"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "Insira um endereço de carteira válido"
+  },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "Você atingiu o limite máximo de reivindicações em aberto. Entre em contato com o suporte caso precise enviar reivindicações adicionais."
+  },
+  "shieldClaimNetwork": {
+    "message": "Selecionar rede"
+  },
+  "shieldClaimPersonalDetails": {
+    "message": "Dados pessoais"
   },
   "shieldClaimReimbursementWalletAddress": {
     "message": "Endereço de carteira para reembolso"
@@ -5494,8 +6006,148 @@
   "shieldClaimReimbursementWalletAddressHelpText": {
     "message": "Certifique-se de que não seja uma carteira comprometida."
   },
+  "shieldClaimSameWalletAddressesError": {
+    "message": "O endereço da carteira afetada e o endereço da carteira de reembolso devem ser diferentes."
+  },
+  "shieldClaimSelectAccount": {
+    "message": "Selecionar uma conta"
+  },
+  "shieldClaimSelectNetwork": {
+    "message": "Selecione uma rede"
+  },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Não foi encontrada cobertura de assinatura para o hash da transação fornecido."
+  },
+  "shieldClaimSubmissionWindowExpired": {
+    "message": "O prazo para envio de reivindicações expirou. Reivindicações devem ser apresentadas em até $1 dias após o incidente.",
+    "description": "The $1 is the number of days"
+  },
   "shieldClaimSubmit": {
     "message": "Enviar uma reclamação"
+  },
+  "shieldClaimSubmitError": {
+    "message": "Apresentação da reivindicação falhou"
+  },
+  "shieldClaimTransactionNotFound": {
+    "message": "Transação não encontrada na blockchain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "O hash da transação não corresponde ao endereço da carteira."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Transação falhou na blockchain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Validação da propriedade da carteira falhou."
+  },
+  "shieldClaimsNumber": {
+    "message": "Reivindicação #$1",
+    "description": "The $1 is the claim number"
+  },
+  "shieldConfirmMembership": {
+    "message": "Confirmar plano"
+  },
+  "shieldCoverageAlertHighRiskTransaction": {
+    "message": "Esta é uma transação de alto risco, portanto não está protegida pelo MetaMask Transaction Shield. $1."
+  },
+  "shieldCoverageAlertMessageChainNotSupported": {
+    "message": "Esta blockchain não é suportada, portanto não é protegida pelo MetaMask Transaction Shield. $1"
+  },
+  "shieldCoverageAlertMessagePaused": {
+    "message": "Ocorreu um problema com o pagamento do seu plano MetaMask Transaction Shield. Atualize sua forma de pagamento para retomar a cobertura."
+  },
+  "shieldCoverageAlertMessagePausedAcknowledgeButton": {
+    "message": "Atualizar método de pagamento"
+  },
+  "shieldCoverageAlertMessagePotentialRisks": {
+    "message": "Esta transação apresenta riscos potenciais, portanto não está protegida pelo MetaMask Transaction Shield. $1"
+  },
+  "shieldCoverageAlertMessageSignatureNotSupported": {
+    "message": "Essa assinatura não é suportada, portanto não está protegida pelo MetaMask Transaction Shield. $1"
+  },
+  "shieldCoverageAlertMessageTitle": {
+    "message": "Esta transação não é coberta"
+  },
+  "shieldCoverageAlertMessageTitleCovered": {
+    "message": "Esta transação é coberta"
+  },
+  "shieldCoverageAlertMessageTitlePaused": {
+    "message": "Escudo para transações pausado"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequest": {
+    "message": "Esta solicitação de assinatura não é coberta"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
+    "message": "Esta solicitação de assinatura é coberta"
+  },
+  "shieldCoverageAlertMessageTokenTrustSignalWarning": {
+    "message": "Este token mostra sinais fortes de comportamento mal-intencionado. Continuar pode resultar em perda de fundos. $1."
+  },
+  "shieldCoverageAlertMessageTxTypeNotSupported": {
+    "message": "Este tipo de transação não é suportado e, portanto, não é protegido pelo MetaMask Transaction Shield. $1"
+  },
+  "shieldCoverageAlertMessageUnknown": {
+    "message": "Não foi possível verificar esta solicitação, portanto ela não está protegida pelo MetaMask Transaction Shield. $1."
+  },
+  "shieldCoverageEnding": {
+    "message": "A cobertura do MetaMask Transaction Shield termina em breve"
+  },
+  "shieldCoverageEndingAction": {
+    "message": "Renovar"
+  },
+  "shieldCoverageEndingDescription": {
+    "message": "O plano termina em $1.",
+    "description": "The $1 is the date"
+  },
+  "shieldCovered": {
+    "message": "Coberto"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Comece seu teste de 14 dias gratuitos"
+  },
+  "shieldEntryModalSubtitleA": {
+    "message": "O Transaction Shield oferece proteção de até $1 e suporte prioritário 24 horas por dia, 7 dias por semana.",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldEntryModalSubtitleB": {
+    "message": "Faça transações com mais segurança, com proteção de até $1 e suporte prioritário 24 horas por dia, 7 dias por semana.",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldEntryModalTitleA": {
+    "message": "Faça transações com mais confiança"
+  },
+  "shieldEntryModalTitleB": {
+    "message": "Apresentando o Transaction Shield"
+  },
+  "shieldEstimatedChangesMonthlyTooltipText": {
+    "message": "Autorize $1/mês por 12 meses (Total de $2). O valor será pago em parcelas mensais, não integralmente agora."
+  },
+  "shieldNotCovered": {
+    "message": "Não coberto"
+  },
+  "shieldPaused": {
+    "message": "Pausada"
+  },
+  "shieldPaymentPaused": {
+    "message": "Transaction Shield pausado"
+  },
+  "shieldPaymentPausedActionCardPayment": {
+    "message": "Atualizar"
+  },
+  "shieldPaymentPausedActionCryptoPayment": {
+    "message": "Atualizar"
+  },
+  "shieldPaymentPausedActionUnexpectedError": {
+    "message": "Ver"
+  },
+  "shieldPaymentPausedDescriptionCardPayment": {
+    "message": "Falha no pagamento com cartão."
+  },
+  "shieldPaymentPausedDescriptionCryptoPayment": {
+    "message": "Saldo de token insuficiente."
+  },
+  "shieldPaymentPausedDescriptionUnexpectedError": {
+    "message": "Ocorreu um erro inesperado."
   },
   "shieldPlanAnnual": {
     "message": "Anual"
@@ -5504,8 +6156,37 @@
     "message": "$1/ano",
     "description": "The $1 is the price of the annual plan"
   },
+  "shieldPlanBillingDate": {
+    "message": "Data de cobrança"
+  },
   "shieldPlanCard": {
     "message": "Cartão"
+  },
+  "shieldPlanCryptoMonthlyNote": {
+    "message": "Total das taxas mensais pré-aprovadas por um ano"
+  },
+  "shieldPlanDetails": {
+    "message": "O que você ganha"
+  },
+  "shieldPlanDetails1": {
+    "message": "Teste grátis por $1 dia",
+    "description": "The $1 is the number of days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Proteção de transação de até $1",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldPlanDetails3": {
+    "message": "Acesso 24 horas por dia, 7 dias por semana, ao suporte prioritário por chat ao vivo"
+  },
+  "shieldPlanDetailsRewardsTitle": {
+    "message": "Recompensas"
+  },
+  "shieldPlanFooterNoteMonthly": {
+    "message": "Cobrança mensal, cancele quando quiser"
+  },
+  "shieldPlanFooterNoteYearly": {
+    "message": "Cobrança anual, cancele quando quiser"
   },
   "shieldPlanMonthly": {
     "message": "Mensal"
@@ -5527,11 +6208,20 @@
   "shieldPlanPaymentTitle": {
     "message": "Alterar método de pagamento"
   },
+  "shieldPlanSave": {
+    "message": "Economize 17%"
+  },
   "shieldPlanSelectToken": {
     "message": "Selecione um token"
   },
   "shieldPlanTitle": {
     "message": "Escolha seu plano"
+  },
+  "shieldStartNowCTA": {
+    "message": "Comece agora"
+  },
+  "shieldStartNowCTAWithTrial": {
+    "message": "Iniciar teste gratuito"
   },
   "shieldTx": {
     "message": "Escudo para transações"
@@ -5540,11 +6230,29 @@
     "message": "Se você cancelar, sua carteira e transações deixarão de ser cobertas a partir de $1.",
     "description": "The $1 is the date subscription ends"
   },
+  "shieldTxCancelWhenPausedDetails": {
+    "message": "Seu plano não estará ativo enquanto estiver pausado. Se você cancelar, seu plano será encerrado imediatamente."
+  },
+  "shieldTxDetails1Description": {
+    "message": "Garanta a segurança dos ativos em transações cobertas"
+  },
+  "shieldTxDetails1Title": {
+    "message": "Proteção de transações de até US$10.000"
+  },
   "shieldTxDetails2Description": {
     "message": "Receba suporte mais rápido e dedicado a qualquer momento"
   },
   "shieldTxDetails2Title": {
     "message": "Suporte prioritário"
+  },
+  "shieldTxDetails3DescriptionLinkReward": {
+    "message": "Link"
+  },
+  "shieldTxDetails3DescriptionSignUp": {
+    "message": "Inscrever-se"
+  },
+  "shieldTxMembershipActive": {
+    "message": "Plano ativo"
   },
   "shieldTxMembershipBillingDetails": {
     "message": "Detalhes da cobrança"
@@ -5561,8 +6269,47 @@
   "shieldTxMembershipBillingDetailsPaymentMethod": {
     "message": "Método de pagamento"
   },
+  "shieldTxMembershipBillingDetailsViewBillingHistory": {
+    "message": "Gerenciar cobrança"
+  },
+  "shieldTxMembershipCancel": {
+    "message": "Cancelar plano"
+  },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Seu plano será cancelado em $1.",
+    "description": "The $1 is the date"
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Seu plano termina em $1. Renove agora para continuar aproveitando seus benefícios.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxMembershipErrorInsufficientToken": {
+    "message": "Repetir pagamento"
+  },
+  "shieldTxMembershipErrorPausedCard": {
+    "message": "Seu plano foi pausado devido a uma falha no pagamento com cartão."
+  },
+  "shieldTxMembershipErrorPausedCardAction": {
+    "message": "Atualizar dados do cartão"
+  },
   "shieldTxMembershipErrorPausedCardTooltip": {
     "message": "Seu pagamento foi recusado. Por favor, atualize seu método de pagamento para continuar sua cobertura."
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
+    "message": "Plano pausado devido à insuficiência de fundos. Atualizações de pagamento podem levar até $1 horas.",
+    "description": "The $1 is the number of hours"
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFundsAction": {
+    "message": "Adicionar fundos"
+  },
+  "shieldTxMembershipErrorPausedCryptoTooltip": {
+    "message": "Saldo insuficiente de tokens em sua carteira. Clique em \"Tentar novamente\" após adicionar fundos à sua carteira."
+  },
+  "shieldTxMembershipErrorPausedUnexpected": {
+    "message": "O plano foi pausado devido a um erro inesperado."
+  },
+  "shieldTxMembershipErrorPausedUnexpectedAction": {
+    "message": "Falar com o suporte"
   },
   "shieldTxMembershipErrorUpdateCard": {
     "message": "Atualizar dados do cartão"
@@ -5570,8 +6317,20 @@
   "shieldTxMembershipFreeTrial": {
     "message": "Teste grátis"
   },
+  "shieldTxMembershipId": {
+    "message": "ID do plano"
+  },
+  "shieldTxMembershipInactive": {
+    "message": "Plano inativo"
+  },
   "shieldTxMembershipPaused": {
     "message": "Pausada"
+  },
+  "shieldTxMembershipRenew": {
+    "message": "Renovar plano"
+  },
+  "shieldTxMembershipResubscribe": {
+    "message": "Reiniciar plano"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Enviar uma reclamação"
@@ -5672,11 +6431,23 @@
   "simulationDetailsIncomingHeading": {
     "message": "Você recebe"
   },
+  "simulationDetailsIncomingHeadingReceived": {
+    "message": "Você recebeu"
+  },
+  "simulationDetailsIncomingHeadingReceiving": {
+    "message": "Você está recebendo"
+  },
   "simulationDetailsNoChanges": {
     "message": "Sem alterações"
   },
   "simulationDetailsOutgoingHeading": {
     "message": "Você envia"
+  },
+  "simulationDetailsOutgoingHeadingSending": {
+    "message": "Você está enviando"
+  },
+  "simulationDetailsOutgoingHeadingSent": {
+    "message": "Você enviou"
   },
   "simulationDetailsRevokeSetApprovalForAllDesc": {
     "message": "Você está removendo a permissão para outra pessoa sacar NFTs da sua conta."
@@ -5750,6 +6521,9 @@
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Pular"
   },
   "skipDeepLinkInterstitial": {
     "message": "Não mostrar tela intersticial ao abrir links profundos"
@@ -5999,18 +6773,6 @@
   "snapsNoInsight": {
     "message": "Sem insights para mostrar"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Você reconhece que qualquer Snap instalado é um Serviço Terceirizado, a menos que identificado de outra forma, conforme definido nos $1 da Consensys. Seu uso de Serviços Terceirizados é regido por termos e condições separados, estabelecidos pelo prestador de Serviços Terceirizados. A Consensys não faz recomendação de uso de nenhum Snap a nenhuma pessoa específica por qualquer motivo específico. Você acessa, confia e usa o Serviço Terceirizado por sua conta e risco. A Consensys se isenta de toda e qualquer responsabilidade por perdas relacionadas ao seu uso de Serviços Terceirizados.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Informações compartilhadas com Serviços de Terceiros serão coletadas diretamente por eles, de acordo com políticas de privacidade próprias. Por favor, consulte-as para obter mais informações.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "A Consensys não tem acesso às informações que você compartilha com Serviços Terceirizados.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettings": {
     "message": "Configurações de Snaps"
   },
@@ -6123,6 +6885,9 @@
   "spendingCaps": {
     "message": "Limites de gastos"
   },
+  "srpAlreadyImportedError": {
+    "message": "Essa Frase de Recuperação Secreta já foi importada."
+  },
   "srpDetailsDescription": {
     "message": "Uma Frase de Recuperação Secreta, também chamada de frase-semente ou mnemônica, é um conjunto de palavras que permite que você acesse e controle sua carteira de criptomoedas. Para mover sua carteira para a MetaMask, você precisa dessa frase."
   },
@@ -6140,6 +6905,9 @@
   },
   "srpDetailsTitle": {
     "message": "O que é uma Frase de Recuperação Secreta?"
+  },
+  "srpImportDuplicateAccountError": {
+    "message": "A conta que você está tentando importar é duplicada."
   },
   "srpInputNumberOfWords": {
     "message": "Eu tenho uma frase com $1 palavras",
@@ -6251,6 +7019,9 @@
   },
   "staked": {
     "message": "Em staking"
+  },
+  "stakingDeposit": {
+    "message": "Depósito em staking"
   },
   "standardAccountLabel": {
     "message": "Conta padrão"
@@ -6566,6 +7337,12 @@
   "swapGasFeesSplit": {
     "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
   },
+  "swapGasFeesSponsored": {
+    "message": "Pago pela MetaMask"
+  },
+  "swapGasFeesSponsoredExplanation": {
+    "message": "Essa taxa de rede é paga pela MetaMask, portanto, você pode realizar swaps sem precisar ter $1 em sua conta."
+  },
   "swapGasFeesSummary": {
     "message": "As taxas de gás são pagas aos mineradores de criptoativos que processam as transações na rede de $1. A MetaMask não lucra com taxas de gás.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
@@ -6848,6 +7625,12 @@
   "switchNetwork": {
     "message": "Alternar rede"
   },
+  "switchToPopup": {
+    "message": "Alternar para janela pop-up"
+  },
+  "switchToSidePanel": {
+    "message": "Mudar para o painel lateral"
+  },
   "switchToThisAccount": {
     "message": "Alternar para esta conta"
   },
@@ -6933,6 +7716,10 @@
   "tokenContractError": {
     "message": "Este endereço é um endereço de contrato de token. Se você enviar tokens para este endereço, você os perderá."
   },
+  "tokenCount": {
+    "message": "token",
+    "description": "is number of tokens used for token transfers (singular form)"
+  },
   "tokenDecimal": {
     "message": "Decimal do token"
   },
@@ -6965,6 +7752,12 @@
   "tokenStandard": {
     "message": "Padrão de token"
   },
+  "tokenStream": {
+    "message": "Fluxo de token"
+  },
+  "tokenSubscription": {
+    "message": "Assinatura de token"
+  },
   "tokenSymbol": {
     "message": "Símbolo do token"
   },
@@ -6973,6 +7766,10 @@
   },
   "tokens": {
     "message": "Tokens"
+  },
+  "tokensCount": {
+    "message": "tokens",
+    "description": "is the count of tokens used for token transfers (plural form)"
   },
   "tokensFoundTitle": {
     "message": "$1 novos tokens encontrados",
@@ -7099,6 +7896,15 @@
   },
   "transferRequest": {
     "message": "Solicitação de transferência"
+  },
+  "tronBandwidth": {
+    "message": "Largura de banda"
+  },
+  "tronDailyResources": {
+    "message": "Recurso diário"
+  },
+  "tronEnergy": {
+    "message": "Energia"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Estamos com problemas para conectar o seu Ledger. $1",
@@ -7341,6 +8147,9 @@
   "userName": {
     "message": "Nome de usuário"
   },
+  "userOpContractDeployError": {
+    "message": "A implementação do contrato a partir de uma conta inteligente não é suportada"
+  },
   "value": {
     "message": "Valor"
   },
@@ -7386,6 +8195,9 @@
   "viewOnOpensea": {
     "message": "Ver na OpenSea"
   },
+  "viewTokenDetails": {
+    "message": "Ver detalhes do token"
+  },
   "viewTransaction": {
     "message": "Ver transação"
   },
@@ -7410,6 +8222,9 @@
   },
   "visitWebSite": {
     "message": "Visite nosso site"
+  },
+  "volume": {
+    "message": "Volume"
   },
   "wallet": {
     "message": "Carteira"
@@ -7468,6 +8283,9 @@
   "websites": {
     "message": "sites",
     "description": "Used in the 'permission_rpc' message."
+  },
+  "weekly": {
+    "message": "semanal"
   },
   "welcomeBack": {
     "message": "Boas-vindas de volta"
