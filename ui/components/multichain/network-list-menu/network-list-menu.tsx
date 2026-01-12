@@ -43,7 +43,6 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
-  setEnabledNetworks,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
