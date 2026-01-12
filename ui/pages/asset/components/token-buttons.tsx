@@ -48,7 +48,6 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 
 const TokenButtons = ({
   token,
-  account,
   disableSendForNonEvm = false,
 }: {
   token: Asset & { type: AssetType.token };

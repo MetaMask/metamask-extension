@@ -16,7 +16,6 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { getNftImage } from '../../../../helpers/utils/nfts';
 import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
 import { NftEmptyState } from '../../../app/assets/nfts/nft-empty-state';
 import { NFT } from './types';

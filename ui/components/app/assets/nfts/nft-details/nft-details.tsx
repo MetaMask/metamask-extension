@@ -140,8 +140,7 @@ export function NftDetailsComponent({
 
   const [addressCopied, handleAddressCopy] = useCopyToClipboard();
 
-  const { image: imageFromTokenURI, name: nameFromTokenURI } =
-    useFetchNftDetailsFromTokenURI(tokenURI);
+  const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
 
   const nftImageAlt = getNftImageAlt(nft);
   const image = getNftImage(_image);

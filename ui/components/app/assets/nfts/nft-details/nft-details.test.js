@@ -8,7 +8,6 @@ import { renderWithProvider } from '../../../../../../test/lib/render-helpers-na
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import { COPY_OPTIONS } from '../../../../../../shared/constants/copy';
-import { AssetType } from '../../../../../../shared/constants/transaction';
 import {
   removeAndIgnoreNft,
   setRemoveNftMessage,
@@ -147,7 +146,7 @@ describe('NFT Details', () => {
     expect(copyToClipboard).toHaveBeenCalledWith(nfts[5].address, COPY_OPTIONS);
   });
 
-  it('should navigate to draft transaction send route with ERC721 data', async () => {
+  it('should navigate to send route with ERC721 data', async () => {
     const nftProps = {
       nft: nfts[5],
       nftChainId: CHAIN_IDS.MAINNET,
@@ -162,11 +161,6 @@ describe('NFT Details', () => {
     fireEvent.click(nftSendButton);
 
     await waitFor(() => {
-      expect(startNewDraftTransaction).toHaveBeenCalledWith({
-        type: AssetType.NFT,
-        details: { ...nfts[5], tokenId: '1' },
-      });
-
       expect(mockUseNavigate).toHaveBeenCalledWith(
         '/send/amount-recipient?asset=0xDc7382Eb0Bc9C352A4CbA23c909bDA01e0206414&chainId=0x1&tokenId=1',
       );

@@ -1,6 +1,5 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { matchPath } from 'react-router-dom';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
@@ -8,7 +7,6 @@ import mockState from '../../../../test/data/mock-state.json';
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
-import { SEND_ROUTE } from '../../../helpers/constants/routes';
 import { AppHeader } from '.';
 
 // TODO: Remove this mock when multichain accounts feature flag is entirely removed.
@@ -197,31 +195,6 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).not.toBeInTheDocument();
-    });
-  });
-
-  describe('network picker disabled states', () => {
-    afterEach(() => {
-      matchPath.mockReset();
-    });
-
-    it('disables network picker when on send page', () => {
-      matchPath.mockImplementation(({ path }) => {
-        if (path === SEND_ROUTE) {
-          return { path: SEND_ROUTE };
-        }
-        return null;
-      });
-
-      const { container } = render({
-        location: { pathname: '/send' },
-      });
-
-      const networkPickerButton = container.querySelector(
-        '[data-testid="network-display"]',
-      );
-      expect(networkPickerButton).toBeInTheDocument();
-      expect(networkPickerButton).toBeDisabled();
     });
   });
 });
