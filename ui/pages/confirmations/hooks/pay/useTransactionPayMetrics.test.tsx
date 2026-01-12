@@ -34,7 +34,12 @@ const TOKEN_AMOUNT_MOCK = '1.23';
 
 const PAY_TOKEN_MOCK = {
   address: TOKEN_ADDRESS_MOCK,
+  balanceFiat: '100.00',
+  balanceHuman: '50',
+  balanceRaw: '50000000000000000000',
+  balanceUsd: '100.00',
   chainId: CHAIN_ID_MOCK,
+  decimals: 18,
   symbol: 'TST',
 };
 
