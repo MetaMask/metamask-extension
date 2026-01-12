@@ -108,8 +108,6 @@ class HomePage {
   private readonly shieldEntryModalSkip =
     '[data-testid="shield-entry-modal-close-button"]';
 
-  private readonly multichainTokenListButton = `[data-testid="multichain-token-list-button"]`;
-
   private readonly emptyBalance =
     '[data-testid="coin-overview-balance-empty-state"]';
 
@@ -205,11 +203,6 @@ class HomePage {
     await this.driver.clickElementAndWaitToDisappear(
       this.backupRemindMeLaterButton,
     );
-  }
-
-  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
-    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
-    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
   }
 
   async closeSurveyToast(surveyName: string): Promise<void> {
@@ -316,6 +309,19 @@ class HomePage {
     await this.driver.assertElementNotPresent(
       this.backupSecretRecoveryPhraseNotification,
     );
+  }
+
+  /**
+   * Checks that balance is displayed with ETH symbol.
+   * We verify the element contains "ETH" rather than exact values since gas fees vary.
+   */
+  async checkBalanceIsDisplayed(): Promise<void> {
+    console.log('Check balance element is displayed on homepage');
+    await this.driver.waitForSelector({
+      css: this.balance,
+      text: 'ETH',
+    });
+    console.log('Balance is displayed in correct format');
   }
 
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {

@@ -119,7 +119,7 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { safePersist, requestSafeReload } =
+const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -893,6 +893,20 @@ export async function loadStateFromPersistence(backup) {
     // migrations will behave correctly.
     if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
       preMigrationVersionedData.meta = backup.meta;
+      // old versions of meta used "data" as the storage kind, without
+      // explicitly setting the "storageKind" to data. If it is missing, we just
+      // always default to "data" ("data" was the default before "split"
+      // existed).
+      // We need to set it properly here so that the persistence manager uses
+      // the correct storage kind when restoring from the `backup`.
+      if (
+        backup.meta.storageKind === 'split' ||
+        backup.meta.storageKind === 'data'
+      ) {
+        persistenceManager.storageKind = backup.meta.storageKind;
+      } else {
+        persistenceManager.storageKind = 'data';
+      }
     }
     // sanity check on the meta property
     if (typeof preMigrationVersionedData.meta.version !== 'number') {
@@ -2024,4 +2038,17 @@ async function initBackground(backup) {
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground(null);
+}
+
+if (inTest) {
+  // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  browser.runtime.onMessage.addListener(async (message, _sender) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      await evacuate();
+      return { status: 'PERSISTENCE_STOPPED' };
+    }
+    return Promise.resolve();
+  });
 }
