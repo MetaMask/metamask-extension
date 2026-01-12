@@ -1626,6 +1626,16 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Clears the active tab information when switching to a non-web page
+   * (e.g., chrome://, about:, extension pages, or blank tabs)
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
+    });
+  }
+
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;

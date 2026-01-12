@@ -1891,6 +1891,8 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     const { id, title, url, favIconUrl } = tabInfo;
 
     if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
@@ -1901,8 +1903,12 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
       !origin ||
       origin === 'null' ||
       origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
+      origin.startsWith('moz-extension://') ||
+      origin.startsWith('chrome://') ||
+      origin.startsWith('about:')
     ) {
+      // Clear appActiveTab for non-web pages
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 

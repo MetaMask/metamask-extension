@@ -146,7 +146,6 @@ export const AppHeaderUnlockedContent = ({
   const showConnectedStatus =
     (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
       getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin &&
     origin !== browser.runtime.id;
 
   const handleMainMenuToggle = () => {
@@ -167,7 +166,9 @@ export const AppHeaderUnlockedContent = ({
   };
 
   const handleConnectionsRoute = () => {
-    navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    if (origin) {
+      navigate(`${REVIEW_PERMISSIONS}/${encodeURIComponent(origin)}`);
+    }
   };
 
   const handleCopyClick = useCallback(() => {
