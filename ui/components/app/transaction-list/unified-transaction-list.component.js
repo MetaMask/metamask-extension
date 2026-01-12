@@ -158,6 +158,24 @@ const normalizeChainIdToHex = (chainId) => {
   }
 };
 
+// Extracts address from CAIP format or returns hex address
+const extractAddressFromRecipient = (recipientAddress) => {
+  if (!recipientAddress) {
+    return recipientAddress;
+  }
+
+  if (isCaipAssetType(recipientAddress)) {
+    try {
+      const { assetReference } = parseCaipAssetType(recipientAddress);
+      return assetReference;
+    } catch {
+      return recipientAddress;
+    }
+  }
+
+  return recipientAddress;
+};
+
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
 // token contract. In the case of swaps, these will be transactions sent to the swaps contract
@@ -184,13 +202,15 @@ const getTransactionGroupRecipientAddressFilter = (
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
+    const addressForMatching = extractAddressFromRecipient(recipientAddress);
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some((chainId) => {
         const hexChainId = normalizeChainIdToHex(chainId);
         return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
       }) &&
-        txParams.data.match(recipientAddress.slice(2)))
+        addressForMatching &&
+        txParams.data.match(addressForMatching.slice(2)))
     );
   };
 };
@@ -214,13 +234,15 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
+    const addressForMatching = extractAddressFromRecipient(recipientAddress);
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some((chainId) => {
         const hexChainId = normalizeChainIdToHex(chainId);
         return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
       }) &&
-        txParams.data.match(recipientAddress.slice(2)))
+        addressForMatching &&
+        txParams.data.match(addressForMatching.slice(2)))
     );
   };
 };
