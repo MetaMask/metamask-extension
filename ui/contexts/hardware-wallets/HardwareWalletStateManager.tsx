@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
+import { getMaybeSelectedInternalAccount } from '../../selectors';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
@@ -8,7 +9,6 @@ import {
   type HardwareWalletConnectionState,
 } from './types';
 import { ConnectionState } from './connectionState';
-import { getMaybeSelectedInternalAccount } from '../../selectors';
 
 /**
  * State and refs managed by the hardware wallet context
@@ -175,6 +175,12 @@ function keyringTypeToHardwareWalletType(
       return HardwareWalletType.Ledger;
     case KeyringTypes.trezor:
       return HardwareWalletType.Trezor;
+    case KeyringTypes.oneKey:
+      return HardwareWalletType.OneKey;
+    case KeyringTypes.lattice:
+      return HardwareWalletType.Lattice;
+    case KeyringTypes.qr:
+      return HardwareWalletType.Qr;
     default:
       return null;
   }
