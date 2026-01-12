@@ -1,4 +1,3 @@
-import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -1699,26 +1698,6 @@ const state = {
   },
   history: {
     mostRecentOverviewPage: '/',
-  },
-  send: {
-    toDropdownOpen: false,
-    gasButtonGroupShown: true,
-    errors: {},
-    asset: {
-      type: 'NATIVE',
-      balance: '0x0',
-      details: null,
-    },
-    gas: { error: 'gas' },
-    amount: {
-      error: 'amount',
-    },
-    currentTransactionUUID: 'test-uuid',
-    draftTransactions: {
-      'test-uuid': {
-        ...draftTransactionInitialState,
-      },
-    },
   },
   confirmTransaction: {
     txData: {

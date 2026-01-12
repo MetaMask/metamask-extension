@@ -2,12 +2,10 @@ import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { I18nContext } from '../../../contexts/i18n';
-import { startNewDraftTransaction } from '../../../ducks/send';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
   getNetworkConfigurationIdByChainId,
@@ -25,7 +23,6 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import {
   Display,
   IconColor,
@@ -48,7 +45,6 @@ import { getCurrentChainId } from '../../../../shared/modules/selectors/networks
 import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
-import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSendFlow';
 
 const TokenButtons = ({
   token,
@@ -69,7 +65,6 @@ const TokenButtons = ({
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
   const { chainId: multichainChainId } = useSelector(
     getSelectedMultichainNetworkConfiguration,
   );
@@ -176,23 +171,9 @@ const TokenButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     try {
       await setCorrectChain();
-      await dispatch(
-        startNewDraftTransaction({
-          type: AssetType.token,
-          details: token,
-        }),
-      );
-      navigateToSendRoute(navigate, isSendRedesignEnabled, {
+      navigateToSendRoute(navigate, {
         address: token.address,
         chainId: token.chainId,
       });
@@ -206,15 +187,12 @@ const TokenButtons = ({
     }
   }, [
     trackEvent,
-    dispatch,
     navigate,
     token,
     setCorrectChain,
-    account,
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
-    isSendRedesignEnabled,
   ]);
 
   const handleSwapOnClick = useCallback(async () => {

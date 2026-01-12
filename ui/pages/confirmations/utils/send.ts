@@ -18,7 +18,7 @@ import {
   generateERC1155TransferData,
   generateERC20TransferData,
   generateERC721TransferData,
-} from '../send-legacy/send.utils';
+} from '../send-utils/send.utils';
 import { SEND_ROUTE } from '../../../helpers/constants/routes';
 
 export const trimTrailingZeros = (numStr: string) => {
@@ -278,32 +278,27 @@ export function convertedCurrency(
 
 export const navigateToSendRoute = (
   navigate: NavigateFunction,
-  isSendRedesignEnabled: boolean,
   params?: {
     address?: string;
     chainId?: string;
     tokenId?: string;
   },
 ) => {
-  if (isSendRedesignEnabled) {
-    if (params) {
-      const queryParams = new URLSearchParams();
-      const { address, chainId, tokenId } = params;
-      if (address) {
-        queryParams.append('asset', address);
-      }
-      if (chainId) {
-        queryParams.append('chainId', chainId);
-      }
-      if (tokenId) {
-        queryParams.append('tokenId', tokenId);
-      }
-      navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
-    } else {
-      navigate(`${SEND_ROUTE}/asset`);
+  if (params) {
+    const queryParams = new URLSearchParams();
+    const { address, chainId, tokenId } = params;
+    if (address) {
+      queryParams.append('asset', address);
     }
+    if (chainId) {
+      queryParams.append('chainId', chainId);
+    }
+    if (tokenId) {
+      queryParams.append('tokenId', tokenId);
+    }
+    navigate(`${SEND_ROUTE}/amount-recipient?${queryParams.toString()}`);
   } else {
-    navigate(SEND_ROUTE);
+    navigate(`${SEND_ROUTE}/asset`);
   }
 };
 

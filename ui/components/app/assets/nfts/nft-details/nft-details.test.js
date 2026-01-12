@@ -4,7 +4,6 @@ import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import copyToClipboard from 'copy-to-clipboard';
 import { toHex } from '@metamask/controller-utils';
-import { startNewDraftTransaction } from '../../../../../ducks/send';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
@@ -36,13 +35,6 @@ jest.mock('react-router-dom', () => {
     useNavigate: () => mockUseNavigate,
   };
 });
-
-jest.mock('../../../../../ducks/send/index.js', () => ({
-  ...jest.requireActual('../../../../../ducks/send/index.js'),
-  startNewDraftTransaction: jest
-    .fn()
-    .mockReturnValue(jest.fn().mockResolvedValue()),
-}));
 
 jest.mock('../../../../../store/actions.ts', () => ({
   ...jest.requireActual('../../../../../store/actions.ts'),

@@ -29,7 +29,6 @@ import {
 } from '../../../../ducks/metamask/metamask';
 import { getTopAssets } from '../../../../ducks/swaps/swaps';
 import * as actions from '../../../../store/actions';
-import { getSwapsBlockedTokens } from '../../../../ducks/send';
 import {
   getMultichainNetworkConfigurationsByChainId,
   getMultichainCurrentChainId,
@@ -102,13 +101,6 @@ jest.mock('lodash', () => ({
     return debouncedFn;
   }),
 }));
-
-jest.mock(
-  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
-  () => ({
-    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
-  }),
-);
 
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
@@ -192,10 +184,6 @@ describe('AssetPickerModal', () => {
       }
       if (selector === getTopAssets) {
         return [];
-      }
-
-      if (selector === getSwapsBlockedTokens) {
-        return new Set(['0xtoken1']);
       }
       return undefined;
     });
@@ -513,8 +501,6 @@ describe('AssetPickerModal token filtering', () => {
           return '0xa';
         case getMultichainIsEvm:
           return true;
-        case getSwapsBlockedTokens:
-          return [];
         case getMultichainCurrentCurrency:
           return 'USD';
         default:
