@@ -4757,7 +4757,10 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.preferencesController
               .setAccountsReferralApproved,
-          ).toHaveBeenCalledWith(mockPermittedAccounts);
+          ).toHaveBeenCalledWith(
+            ReferralPartner.Hyperliquid,
+            mockPermittedAccounts,
+          );
         });
 
         it('approves the permitted account and removes the previously declined account from the declined list when it exists there', () => {
@@ -4768,11 +4771,17 @@ describe('MetaMaskController', () => {
           );
           expect(
             metamaskController.preferencesController.addReferralApprovedAccount,
-          ).toHaveBeenCalledWith(mockPermittedAccount);
+          ).toHaveBeenCalledWith(
+            ReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
           expect(
             metamaskController.preferencesController
               .removeReferralDeclinedAccount,
-          ).toHaveBeenCalledWith(mockPermittedAccounts[1]);
+          ).toHaveBeenCalledWith(
+            ReferralPartner.Hyperliquid,
+            mockPermittedAccounts[1],
+          );
         });
       });
 
@@ -4795,7 +4804,10 @@ describe('MetaMaskController', () => {
           ).toHaveBeenCalledWith(mockTabId);
           expect(
             metamaskController.preferencesController.addReferralPassedAccount,
-          ).toHaveBeenCalledWith(mockPermittedAccount);
+          ).toHaveBeenCalledWith(
+            ReferralPartner.Hyperliquid,
+            mockPermittedAccount,
+          );
         });
       });
     });

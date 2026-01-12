@@ -6172,9 +6172,9 @@ export default class MetamaskController extends EventEmitter {
     const activePermittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount =
-      this.preferencesController.state.referrals.hyperliquid;
+      this.preferencesController.state.referrals[ReferralPartner.Hyperliquid];
     const permittedAccountStatus =
-      referralStatusByAccount[activePermittedAccount];
+      referralStatusByAccount[activePermittedAccount.toLowerCase()];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
@@ -6217,6 +6217,7 @@ export default class MetamaskController extends EventEmitter {
           );
         } else {
           this.preferencesController.addReferralDeclinedAccount(
+            ReferralPartner.Hyperliquid,
             activePermittedAccount,
           );
         }
@@ -6255,7 +6256,10 @@ export default class MetamaskController extends EventEmitter {
   async _handleHyperliquidReferralRedirect(tabId, permittedAccount) {
     await this._updateHyperliquidReferralUrl(tabId);
     // Mark this account as having been shown the Hyperliquid referral page
-    this.preferencesController.addReferralPassedAccount(permittedAccount);
+    this.preferencesController.addReferralPassedAccount(
+      ReferralPartner.Hyperliquid,
+      permittedAccount,
+    );
   }
 
   /**
@@ -6274,9 +6278,13 @@ export default class MetamaskController extends EventEmitter {
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
-      this.preferencesController.setAccountsReferralApproved(permittedAccounts);
+      this.preferencesController.setAccountsReferralApproved(
+        ReferralPartner.Hyperliquid,
+        permittedAccounts,
+      );
     } else {
       this.preferencesController.addReferralApprovedAccount(
+        ReferralPartner.Hyperliquid,
         activePermittedAccount,
       );
       // If there are any previously declined accounts then
@@ -6284,7 +6292,10 @@ export default class MetamaskController extends EventEmitter {
       // so they have the option to participate again in future
       permittedAccounts.forEach((account) => {
         if (declinedAccounts.includes(account)) {
-          this.preferencesController.removeReferralDeclinedAccount(account);
+          this.preferencesController.removeReferralDeclinedAccount(
+            ReferralPartner.Hyperliquid,
+            account,
+          );
         }
       });
     }
