@@ -13,6 +13,11 @@ import { TransactionType } from '@metamask/transaction-controller';
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
+  parseCaipAssetType,
+  isCaipAssetType,
+  isCaipChainId,
+} from '@metamask/utils';
+import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
   getTransactions,
@@ -43,6 +48,9 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+import { hasTransactionData } from '../../../../shared/modules/transaction.utils';
+import { isNativeAddress } from '../../../helpers/utils/token-insights';
 import {
   useEarliestNonceByChain,
   isTransactionEarliestNonce,
@@ -109,6 +117,47 @@ import { TransactionActivityEmptyState } from '../transaction-activity-empty-sta
 
 const PAGE_DAYS_INCREMENT = 10;
 
+// Checks if address represents a native token (zero address or CAIP format)
+const isNativeTokenAddress = (recipientAddress) => {
+  if (!recipientAddress) {
+    return false;
+  }
+
+  if (isNativeAddress(recipientAddress)) {
+    return true;
+  }
+
+  if (isCaipAssetType(recipientAddress)) {
+    try {
+      const { assetReference, assetNamespace } =
+        parseCaipAssetType(recipientAddress);
+      if (assetNamespace === 'native' || isNativeAddress(assetReference)) {
+        return true;
+      }
+    } catch {
+      // fall through
+    }
+  }
+
+  return false;
+};
+
+// Normalizes chainId to hex format for comparison (handles CAIP and hex)
+const normalizeChainIdToHex = (chainId) => {
+  if (!chainId || typeof chainId !== 'string') {
+    return chainId;
+  }
+
+  try {
+    return isCaipChainId(chainId)
+      ? convertCaipToHexChainId(chainId).toLowerCase()
+      : chainId.toLowerCase();
+  } catch {
+    // If conversion fails, return lowercase version
+    return chainId.toLowerCase();
+  }
+};
+
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
 // token contract. In the case of swaps, these will be transactions sent to the swaps contract
@@ -120,13 +169,27 @@ const getTransactionGroupRecipientAddressFilter = (
   recipientAddress,
   chainIds,
 ) => {
-  return ({ initialTransaction: { txParams } }) => {
+  return ({ initialTransaction }) => {
+    const { txParams } = initialTransaction;
+    const isNativeAssetActivityFilter = isNativeTokenAddress(recipientAddress);
+    const isSimpleSendTx =
+      !hasTransactionData(txParams.data) || txParams?.data === '0x0';
+    const normalizedTxChainId = normalizeChainIdToHex(
+      initialTransaction?.chainId,
+    );
+    const isOnSameChain = chainIds.some((chainId) => {
+      const normalizedChainId = normalizeChainIdToHex(chainId);
+      return normalizedTxChainId === normalizedChainId;
+    });
+    if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
+      return true;
+    }
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (chainIds.some(
-        (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
-      ) &&
+      (chainIds.some((chainId) => {
+        const hexChainId = normalizeChainIdToHex(chainId);
+        return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
+      }) &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
@@ -136,24 +199,27 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
   recipientAddress,
   chainIds,
 ) => {
-  return ({ initialTransaction: { txParams } }) => {
-    const isNativeAssetActivityFilter =
-      recipientAddress === '0x0000000000000000000000000000000000000000';
+  return ({ initialTransaction }) => {
+    const { txParams } = initialTransaction;
+    const isNativeAssetActivityFilter = isNativeTokenAddress(recipientAddress);
     const isSimpleSendTx =
-      !txParams.data ||
-      txParams?.data === '' ||
-      txParams?.data === '0x' ||
-      txParams?.data === '0x0';
-    const isOnSameChain = chainIds.includes(txParams?.chainId);
+      !hasTransactionData(txParams.data) || txParams?.data === '0x0';
+    const normalizedTxChainId = normalizeChainIdToHex(
+      initialTransaction?.chainId,
+    );
+    const isOnSameChain = chainIds.some((chainId) => {
+      const normalizedChainId = normalizeChainIdToHex(chainId);
+      return normalizedTxChainId === normalizedChainId;
+    });
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (chainIds.some(
-        (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
-      ) &&
+      (chainIds.some((chainId) => {
+        const hexChainId = normalizeChainIdToHex(chainId);
+        return txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[hexChainId];
+      }) &&
         txParams.data.match(recipientAddress.slice(2)))
     );
   };
