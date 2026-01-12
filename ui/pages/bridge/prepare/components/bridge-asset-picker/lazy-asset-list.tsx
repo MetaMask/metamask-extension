@@ -14,6 +14,7 @@ export const BridgeAssetList = ({
   onAssetChange,
   selectedAssetId,
   searchQuery,
+  isDestination,
   ...searchResultsProps
 }: {
   popularTokensList: BridgeToken[];
@@ -22,6 +23,7 @@ export const BridgeAssetList = ({
   onAssetChange: (asset: BridgeToken) => void;
   selectedAssetId: CaipAssetType;
 } & React.ComponentProps<typeof Column> &
+  Pick<React.ComponentProps<typeof AssetListItem>, 'isDestination'> &
   Pick<
     Parameters<typeof useTokenSearchResults>[0],
     'searchQuery' | 'accountAddress' | 'chainIds'

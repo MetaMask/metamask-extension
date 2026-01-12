@@ -12,7 +12,10 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { formatChainIdToCaip } from '@metamask/bridge-controller';
-import { ContainerProps } from '../../../../../components/component-library';
+import {
+  ContainerProps,
+  Tag,
+} from '../../../../../components/component-library';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../ducks/locale/locale';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
@@ -26,19 +29,24 @@ import {
   BlockSize,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
+import { ACCOUNT_TYPE_LABELS } from '../../../../../components/app/assets/constants';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column, Row } from '../../../layout';
 import { formatCurrencyAmount, formatTokenAmount } from '../../../utils/quote';
 
 export const AssetListItem = ({
   asset,
   selected,
+  isDestination = false,
   ...buttonProps
 }: {
   asset: BridgeToken;
   selected: boolean;
+  isDestination?: boolean;
 } & ContainerProps<'button'>) => {
   const currency = useSelector(getCurrentCurrency);
   const locale = useSelector(getIntlLocale);
+  const t = useI18nContext();
 
   return (
     <Row
@@ -97,7 +105,15 @@ export const AssetListItem = ({
 
       <Column width={BlockSize.Full} style={{ overflow: 'hidden' }}>
         <Row alignItems={AlignItems.flexStart} gap={4}>
-          <Text ellipsis>{asset.symbol}</Text>
+          <Row gap={2}>
+            <Text ellipsis>{asset.symbol}</Text>
+            {asset.accountType && ACCOUNT_TYPE_LABELS[asset.accountType] && (
+              <Tag label={ACCOUNT_TYPE_LABELS[asset.accountType]} />
+            )}
+            {asset.noFee?.[isDestination ? 'isDestination' : 'isSource'] && (
+              <Tag label={t('bridgeNoMMFee')} />
+            )}
+          </Row>
           <Text style={{ whiteSpace: 'nowrap' }}>
             {asset.tokenFiatAmount
               ? formatCurrencyAmount(

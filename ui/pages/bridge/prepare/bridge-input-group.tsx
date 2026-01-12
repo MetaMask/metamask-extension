@@ -75,7 +75,11 @@ export const BridgeInputGroup = ({
   containerProps?: React.ComponentProps<typeof Column>;
 } & Pick<
   React.ComponentProps<typeof BridgeAssetPicker>,
-  'header' | 'onAssetChange' | 'accountAddress' | 'disabledChainId'
+  | 'header'
+  | 'onAssetChange'
+  | 'accountAddress'
+  | 'disabledChainId'
+  | 'isDestination'
 >) => {
   const t = useI18nContext();
 

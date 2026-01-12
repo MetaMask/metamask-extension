@@ -8,6 +8,7 @@ import { type AccountGroupId } from '@metamask/account-api';
 import { createSelector as untypedCreateSelector } from 'reselect';
 import { BigNumber } from 'bignumber.js';
 import { zeroAddress } from 'ethereumjs-util';
+import { type KeyringAccountType } from '@metamask/keyring-api';
 import {
   type CaipAssetType,
   type CaipChainId,
@@ -238,21 +239,40 @@ const getEvmExchangeRates = createSelector(
 
 // Creates a map of asset IDs to balances for all non-EVM accounts
 const getNonEvmBalances = createSelector(
-  [getNonEvmAccountIds, getAccountAssets, getMultichainBalances],
-  (accountIds, assetIdsByAccountId, balanceByAccountIdByAssetId) =>
-    accountIds.reduce(
+  [
+    getNonEvmAccountIds,
+    getAccountAssets,
+    getMultichainBalances,
+    (state) => state.metamask.internalAccounts,
+  ],
+  (
+    accountIds,
+    assetIdsByAccountId,
+    balanceByAccountIdByAssetId,
+    internalAccounts,
+  ) =>
+    accountIds.reduce<
+      Record<
+        CaipAssetType,
+        { balance: string; accountType: KeyringAccountType }
+      >
+    >(
       (acc1, accountId) => ({
         ...acc1,
         ...(assetIdsByAccountId[accountId]?.reduce(
           (acc2, assetId) => ({
             ...acc2,
-            [assetId]:
-              balanceByAccountIdByAssetId[accountId]?.[assetId]?.amount ?? '0',
+            [assetId]: {
+              balance:
+                balanceByAccountIdByAssetId[accountId]?.[assetId]?.amount ??
+                '0',
+              accountType: internalAccounts.accounts[accountId]?.type,
+            },
           }),
-          {} as Record<CaipAssetType, string>,
+          {},
         ) ?? {}),
       }),
-      {} as Record<CaipAssetType, string>,
+      {},
     ),
 );
 
@@ -262,7 +282,7 @@ const getNonEvmAssetsWithBalance = createSelector(
   (balancesByAssetId, assetsMetadataByAssetId): BridgeToken[] => {
     const assetsWithBalance: BridgeToken[] = [];
 
-    Object.entries(balancesByAssetId).forEach(([assetId, balance]) => {
+    Object.entries(balancesByAssetId).forEach(([assetId, balanceData]) => {
       if (!isCaipAssetType(assetId)) {
         return;
       }
@@ -278,7 +298,8 @@ const getNonEvmAssetsWithBalance = createSelector(
         chainId,
         symbol: symbol ?? '',
         assetId,
-        balance,
+        accountType: balanceData?.accountType,
+        balance: balanceData?.balance,
         decimals: units[0]?.decimals,
         name: assetMetadata.name ?? assetMetadata.symbol ?? '',
       });
@@ -353,12 +374,12 @@ export const getBridgeSortedAssets = createSelector(
 export const getBridgeAssetsByAssetId = createSelector(
   [getBridgeAssetsForAccountGroupId],
   (assetsWithBalance) =>
-    assetsWithBalance.reduce(
+    assetsWithBalance.reduce<Record<CaipAssetType, BridgeToken>>(
       (acc, asset) => {
         acc[asset.assetId] = asset;
         return acc;
       },
-      {} as Record<CaipAssetType, BridgeToken>,
+      {},
     ),
 );
 
@@ -372,14 +393,11 @@ export const getBridgeAssetsByAssetId = createSelector(
 export const getBridgeBalancesByChainId = createSelector(
   [getBridgeAssetsForAccountGroupId],
   (assetsWithBalance) =>
-    assetsWithBalance.reduce(
-      (acc, asset) => {
-        if (!acc[asset.chainId]) {
-          acc[asset.chainId] = 0;
-        }
-        acc[asset.chainId] += asset.tokenFiatAmount ?? 0;
-        return acc;
-      },
-      {} as Record<CaipChainId, number>,
-    ),
+    assetsWithBalance.reduce<Record<CaipChainId, number>>((acc, asset) => {
+      if (!acc[asset.chainId]) {
+        acc[asset.chainId] = 0;
+      }
+      acc[asset.chainId] += asset.tokenFiatAmount ?? 0;
+      return acc;
+    }, {}),
 );

@@ -538,6 +538,7 @@ const PrepareBridgePage = ({
 
           <BridgeInputGroup
             header={getToInputHeader()}
+            isDestination={true}
             accountAddress={
               selectedDestinationAccount?.address ?? selectedAccount.address
             }

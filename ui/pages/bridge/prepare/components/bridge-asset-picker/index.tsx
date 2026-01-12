@@ -67,7 +67,10 @@ export const BridgeAssetPicker = ({
   React.ComponentProps<typeof NetworkPicker>,
   'chainIds' | 'disabledChainId'
 > &
-  Pick<React.ComponentProps<typeof BridgeAssetList>, 'onAssetChange'>) => {
+  Pick<
+    React.ComponentProps<typeof BridgeAssetList>,
+    'onAssetChange' | 'isDestination'
+  >) => {
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
