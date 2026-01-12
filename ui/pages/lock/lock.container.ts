@@ -3,8 +3,9 @@ import { connect } from 'react-redux';
 import { lockMetamask } from '../../store/actions';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import Lock from './lock.component';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state: MetaMaskReduxState) => {
   const {
     metamask: { isUnlocked },
   } = state;
@@ -14,7 +15,7 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
     lockMetamask: () => dispatch(lockMetamask()),
   };

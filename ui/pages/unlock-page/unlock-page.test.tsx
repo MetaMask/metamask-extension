@@ -210,12 +210,10 @@ describe('Unlock Page', () => {
       metamask: { isUnlocked: false, completedOnboarding: true },
     };
     const store = configureMockStore([thunk])(mockStateNonUnlocked);
-    mockTryUnlockMetamask.mockImplementationOnce(() => {
-      return async () => {
-        throw new Error(
-          SeedlessOnboardingControllerErrorMessage.AuthenticationError,
-        );
-      };
+    (mockTryUnlockMetamask as jest.Mock).mockImplementationOnce(() => {
+      return Promise.reject(
+        new Error(SeedlessOnboardingControllerErrorMessage.AuthenticationError),
+      );
     });
     const mockForceUpdateMetamaskState = jest.fn();
 
