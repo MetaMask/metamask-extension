@@ -87,5 +87,10 @@ export const QuotedSwapTransactionData = () => {
     return null;
   }
 
-  return <QuotedSwapTransactionDataContent selectedQuote={selectedQuote} />;
+  return (
+    <QuotedSwapTransactionDataContent
+      key={selectedQuote.quote.requestId}
+      selectedQuote={selectedQuote}
+    />
+  );
 };

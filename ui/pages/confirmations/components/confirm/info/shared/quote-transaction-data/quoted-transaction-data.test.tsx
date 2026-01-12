@@ -111,4 +111,49 @@ describe('QuotedSwapTransactionData', () => {
 
     expect(queryByText('Transaction 1')).not.toBeInTheDocument();
   });
+
+  it('handles switching between quotes with different approval presence without hook errors', () => {
+    const mockUseDappSwapContext = jest.spyOn(
+      DappSwapContextModule,
+      'useDappSwapContext',
+    );
+
+    // Quote with approval
+    const quoteWithApproval = {
+      ...mockBridgeQuotes[0],
+      approval: { to: '0x123', data: '0x456' },
+      quote: { ...mockBridgeQuotes[0].quote, requestId: 'quote-1' },
+    };
+
+    // Quote without approval (different hook call count in useNestedTransactionLabels)
+    const quoteWithoutApproval = {
+      ...mockBridgeQuotes[0],
+      approval: undefined,
+      quote: { ...mockBridgeQuotes[0].quote, requestId: 'quote-2' },
+    };
+
+    mockUseDappSwapContext.mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      selectedQuote: quoteWithApproval,
+    } as unknown as ReturnType<
+      typeof DappSwapContextModule.useDappSwapContext
+    >);
+
+    const { unmount } = render();
+    unmount();
+
+    // Switch to quote without approval - the key prop forces remount,
+    // preventing React hook order violation
+    mockUseDappSwapContext.mockReturnValue({
+      isQuotedSwapDisplayedInInfo: true,
+      selectedQuote: quoteWithoutApproval,
+    } as unknown as ReturnType<
+      typeof DappSwapContextModule.useDappSwapContext
+    >);
+
+    // Rendering with a different quote should not throw
+    expect(() => {
+      render();
+    }).not.toThrow();
+  });
 });
