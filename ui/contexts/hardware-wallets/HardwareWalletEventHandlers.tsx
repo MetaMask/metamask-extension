@@ -78,7 +78,6 @@ export const useDeviceEventHandlers = ({
 
   const handleDeviceEvent = useCallback(
     (payload: DeviceEventPayload) => {
-      // Extract refs to local variables to satisfy React Compiler
       const { abortControllerRef, isConnectingRef } = refs;
 
       if (abortControllerRef.current?.signal.aborted) {
@@ -122,10 +121,11 @@ export const useDeviceEventHandlers = ({
         case DeviceEvent.ConnectionFailed:
           if (payload.error) {
             updateConnectionState(
-              ConnectionState.error('connection_failed', payload.error),
+              ConnectionState.error(
+                'connection_failed',
+                payload.error || new Error('Hardware wallet connection failed'),
+              ),
             );
-          } else {
-            updateConnectionState(ConnectionState.disconnected());
           }
           break;
 
