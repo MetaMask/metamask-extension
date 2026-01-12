@@ -40,6 +40,14 @@ export type ManifestFlags = {
      * The number of minutes to allow the E2E tests to run before timing out
      */
     timeoutMinutes?: number;
+    /**
+     * The user persona being tested (e.g., 'standard' or 'powerUser')
+     */
+    persona?: string;
+    /**
+     * The test title for Sentry metrics grouping
+     */
+    testTitle?: string;
   };
   /**
    * Sentry flags

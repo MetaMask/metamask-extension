@@ -2180,6 +2180,12 @@
         "@metamask/snaps-utils>validate-npm-package-name": true
       }
     },
+    "@metamask/storage-service": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
+      }
+    },
     "@metamask/subscription-controller": {
       "globals": {
         "URL": true
