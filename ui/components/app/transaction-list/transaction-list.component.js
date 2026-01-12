@@ -27,7 +27,6 @@ import {
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getEnabledNetworksByNamespace,
@@ -102,19 +101,10 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
-import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
-import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import {
   startIncomingTransactionPolling,
   stopIncomingTransactionPolling,
@@ -314,7 +304,6 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
-  const currentNetworkConfig = useSelector(getCurrentNetwork);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -353,10 +342,6 @@ export default function TransactionList({
     overrideFilterForCurrentChain,
   ]);
 
-  const isTestNetwork = useMemo(() => {
-    return TEST_CHAINS.includes(currentNetworkConfig.chainId);
-  }, [currentNetworkConfig.chainId]);
-
   const unfilteredCompletedTransactionsCurrentChain = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
@@ -373,18 +358,6 @@ export default function TransactionList({
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
-
-  const unfilteredCompletedTransactions = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overrideFilterForCurrentChain
-      ? unfilteredCompletedTransactionsCurrentChain
-      : unfilteredCompletedTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredCompletedTransactionsAllChains,
-    unfilteredCompletedTransactionsCurrentChain,
-    overrideFilterForCurrentChain,
-  ]);
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!enabledNetworksByNamespace || !currentMultichainChainId) {
@@ -422,14 +395,6 @@ export default function TransactionList({
     unfilteredCompletedTransactionsCurrentChain,
     unfilteredCompletedTransactionsAllChains,
   ]);
-
-  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
-    useState(false);
-
-  const windowType = getEnvironmentType();
-  const isFullScreen =
-    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-    windowType !== ENVIRONMENT_TYPE_POPUP;
 
   useEffect(() => {
     stopIncomingTransactionPolling();
@@ -482,9 +447,7 @@ export default function TransactionList({
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          isGlobalNetworkSelectorRemoved
-            ? enabledNetworksFilteredCompletedTransactions
-            : unfilteredCompletedTransactions,
+          enabledNetworksFilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
         ),
@@ -493,7 +456,6 @@ export default function TransactionList({
       hideTokenTransactions,
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
-      unfilteredCompletedTransactions,
     ],
   );
 
@@ -501,14 +463,6 @@ export default function TransactionList({
     () => setLimit((prev) => prev + PAGE_INCREMENT),
     [],
   );
-
-  const toggleNetworkFilterPopover = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  }, [isNetworkFilterPopoverOpen]);
-
-  const closePopover = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(false);
-  }, []);
 
   // Remove transactions within each date group that are incoming transactions
   // to a user that not the current one.
@@ -535,7 +489,7 @@ export default function TransactionList({
     if (hideNetworkFilter) {
       return null;
     }
-    if (isGlobalNetworkSelectorRemoved && isEvmNetwork) {
+    if (isEvmNetwork) {
       return (
         <AssetListControlBar
           showSortControl={false}
@@ -544,30 +498,8 @@ export default function TransactionList({
         />
       );
     }
-    return isEvmNetwork ? (
-      <NetworkFilterComponent
-        isFullScreen={isFullScreen}
-        toggleNetworkFilterPopover={toggleNetworkFilterPopover}
-        isTestNetwork={isTestNetwork}
-        currentNetworkConfig={currentNetworkConfig}
-        isNetworkFilterPopoverOpen={isNetworkFilterPopoverOpen}
-        closePopover={closePopover}
-        isTokenNetworkFilterEqualCurrentNetwork={
-          isTokenNetworkFilterEqualCurrentNetwork
-        }
-      />
-    ) : null;
-  }, [
-    hideNetworkFilter,
-    isEvmNetwork,
-    isFullScreen,
-    isNetworkFilterPopoverOpen,
-    currentNetworkConfig,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    toggleNetworkFilterPopover,
-    closePopover,
-    isTestNetwork,
-  ]);
+    return null;
+  }, [hideNetworkFilter, isEvmNetwork]);
 
   // Remove date groups with no transaction groups
   const dateGroupsWithTransactionGroups = (dateGroup) =>

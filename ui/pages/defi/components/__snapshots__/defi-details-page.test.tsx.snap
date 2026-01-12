@@ -6,7 +6,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
     class="mm-box main-container asset__container"
   >
     <div
-      class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
     >
       <button
         aria-label="Back"
