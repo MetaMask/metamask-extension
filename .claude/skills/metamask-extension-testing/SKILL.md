@@ -128,7 +128,79 @@ await homePage.clickSwap();
 await homePage.openSettings();
 ```
 
-### 5. Capture Screenshots
+### 5. Handle Multi-Window Flows (Dapp Connections, Tx Confirmations)
+
+When interacting with dapps, MetaMask opens notification popups for approvals:
+
+```typescript
+import { NotificationPage } from './test/e2e/playwright/llm-workflow';
+
+// Open a dapp page
+const dappPage = await launcher.openNewDappPage('https://app.uniswap.org');
+
+// Trigger a connect request from the dapp (dapp-specific code)
+// await dappPage.click('button:has-text("Connect Wallet")');
+
+// Wait for MetaMask notification popup
+const notificationPage = await launcher.waitForNotificationPage(10000);
+const notification = new NotificationPage(notificationPage);
+
+// Check notification type
+const type = await notification.getNotificationType();
+console.log('Notification type:', type);
+// Values: 'connect' | 'signature' | 'transaction' | 'add-network' | 'switch-network' | 'add-token' | 'unknown'
+
+// Approve or reject
+await notification.approve();
+// OR: await notification.reject();
+
+// For signature requests that require scrolling
+await notification.scrollAndApprove();
+
+// Switch back to extension home
+await launcher.switchToExtensionHome();
+```
+
+#### Multi-Window Helper Methods
+
+```typescript
+// Wait for notification popup to appear
+const notifPage = await launcher.waitForNotificationPage(10000);
+
+// Get notification page if it exists (returns null if not)
+const notifPage = await launcher.getNotificationPage();
+
+// Get all extension pages (home, notification, etc.)
+const pages = await launcher.getAllExtensionPages();
+
+// Switch focus back to main extension page
+await launcher.switchToExtensionHome();
+
+// Close notification page if open
+const wasClosed = await launcher.closeNotificationPage();
+```
+
+#### NotificationPage Methods
+
+```typescript
+const notification = new NotificationPage(notifPage);
+
+// Actions
+await notification.approve(); // Click approve/confirm button
+await notification.reject(); // Click reject/cancel button
+await notification.scrollAndApprove(); // Scroll then approve (for signatures)
+
+// Information
+const type = await notification.getNotificationType();
+const title = await notification.getTitle();
+const message = await notification.getMessage();
+const txDetails = await notification.getTransactionDetails();
+
+// Wait for popup to close after action
+await notification.waitForClose(10000);
+```
+
+### 6. Capture Screenshots
 
 ```typescript
 const screenshot = await launcher.screenshot({ name: 'after-change' });
@@ -258,8 +330,7 @@ const launcher = await launchMetaMask({
 
 1. **Headed mode only**: Chrome extensions cannot run headless. Requires display (use XVFB on Linux CI).
 2. **MockServer limitation**: Does NOT intercept extension HTTP traffic. Only useful for dapp pages.
-3. **Single window**: Multi-window flows (tx confirmations, dapp connections) require manual page switching.
-4. **macOS/Linux**: Port cleanup commands (`lsof`) are Unix-specific.
+3. **macOS/Linux**: Port cleanup commands (`lsof`) are Unix-specific.
 
 ## Common Failures & Solutions
 
@@ -275,12 +346,13 @@ const launcher = await launchMetaMask({
 
 ## Key Files
 
-| File                                                     | Purpose                      |
-| -------------------------------------------------------- | ---------------------------- |
-| `test/e2e/playwright/llm-workflow/README.md`             | Full documentation           |
-| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Main launcher class          |
-| `test/e2e/playwright/llm-workflow/page-objects/`         | Page interaction classes     |
-| `test/e2e/playwright/llm-workflow/fixture-helper.ts`     | Fixture builders and presets |
+| File                                                                 | Purpose                         |
+| -------------------------------------------------------------------- | ------------------------------- |
+| `test/e2e/playwright/llm-workflow/README.md`                         | Full documentation              |
+| `test/e2e/playwright/llm-workflow/extension-launcher.ts`             | Main launcher class             |
+| `test/e2e/playwright/llm-workflow/page-objects/`                     | Page interaction classes        |
+| `test/e2e/playwright/llm-workflow/page-objects/notification-page.ts` | Notification popup interactions |
+| `test/e2e/playwright/llm-workflow/fixture-helper.ts`                 | Fixture builders and presets    |
 
 ## Visual Testing Decision Rules
 
