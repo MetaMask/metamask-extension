@@ -9,7 +9,6 @@ import {
   UnifiedSwapBridgeEventName,
   type BridgeController,
   formatAddressToCaipReference,
-  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { BRIDGE_ONLY_CHAINS } from '../../../../shared/constants/bridge';
 import {
@@ -95,7 +94,6 @@ import { useBridgeQueryParams } from '../../../hooks/bridge/useBridgeQueryParams
 import { useSmartSlippage } from '../../../hooks/bridge/useSmartSlippage';
 import { useGasIncluded7702 } from '../hooks/useGasIncluded7702';
 import { useIsSendBundleSupported } from '../hooks/useIsSendBundleSupported';
-import { useEnableMissingNetwork } from '../hooks/useEnableMissingNetwork';
 import { BridgeInputGroup } from './bridge-input-group';
 import { PrepareBridgePageFooter } from './prepare-bridge-page-footer';
 import { DestinationAccountPickerModal } from './components/destination-account-picker-modal';
@@ -106,7 +104,6 @@ const PrepareBridgePage = ({
   onOpenSettings: () => void;
 }) => {
   const dispatch = useDispatch();
-  const enableMissingNetwork = useEnableMissingNetwork();
 
   const t = useI18nContext();
 
@@ -554,14 +551,14 @@ const PrepareBridgePage = ({
               const currentFromAmount = fromAmount;
               // If the new toToken is the same as the current fromToken
               // try to set the fromToken to the old toToken
-              // If the old toToken's chain is disabled, it can't be set as the fromToken
-              // So reset fromToken to a fallback value (either native or default)
               if (
                 fromToken?.assetId.toLowerCase() ===
                 newToToken.assetId.toLowerCase()
               ) {
                 let fromTokenToUse = toToken;
 
+                // If the old toToken's chain is disabled, it can't be set as the fromToken
+                // So reset fromToken to a fallback value (either native or default)
                 if (
                   fromChains.every(
                     ({ chainId }) => chainId !== fromTokenToUse.chainId,
@@ -571,9 +568,7 @@ const PrepareBridgePage = ({
                   // otherwise use the native asset
                   fromTokenToUse = getDefaultToToken(
                     fromToken.chainId,
-                    isNativeAddress(fromToken.assetId)
-                      ? getNativeAssetForChainId(fromToken.chainId)?.assetId
-                      : fromToken.assetId,
+                    fromToken.assetId,
                   );
                 }
                 dispatch(setFromToken(fromTokenToUse));

@@ -44,7 +44,10 @@ import {
   type AccountTreeControllerState,
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
-import { ALLOWED_BRIDGE_CHAIN_IDS } from '../../../shared/constants/bridge';
+import {
+  ALLOWED_BRIDGE_CHAIN_IDS,
+  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
+} from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
 import {
@@ -225,7 +228,7 @@ export const getFromChains = createDeepEqualSelector(
       ) {
         filteredNetworks.push({
           chainId,
-          name,
+          name: name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId],
         });
       }
     });
@@ -300,7 +303,10 @@ export const getToChains = createDeepEqualSelector(
     const filteredChains: BridgeNetwork[] = [];
     chainRanking.forEach(({ chainId, name }) => {
       if (allChains[chainId]) {
-        filteredChains.push({ ...allChains[chainId], name });
+        filteredChains.push({
+          ...allChains[chainId],
+          name: name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId],
+        });
       }
     });
     return filteredChains;
