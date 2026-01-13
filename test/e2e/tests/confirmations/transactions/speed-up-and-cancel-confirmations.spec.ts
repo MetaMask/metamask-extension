@@ -4,7 +4,7 @@ import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.u
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import { unlockWallet } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';

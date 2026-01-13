@@ -182,9 +182,13 @@ const TransactionShield = () => {
     pointsMonthly,
     pointsYearly,
     isRewardsSeason,
-    hasAccountOptedIn: hasOptedIntoRewards,
+    hasAccountOptedIn,
     pending: pendingShieldRewards,
   } = useShieldRewards();
+
+  // Use rewardAccountId from subscription as additional signal for opt-in status
+  const hasOptedIntoRewards =
+    hasAccountOptedIn || Boolean(displayedShieldSubscription?.rewardAccountId);
 
   const isWaitingForSubscriptionCreation =
     shouldWaitForSubscriptionCreation && !currentShieldSubscription;

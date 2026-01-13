@@ -34,7 +34,6 @@ import {
 } from '@metamask/utils';
 import { QrScanRequestType } from '@metamask/eth-qr-keyring';
 
-import { isMultichainFeatureEnabled } from '../../shared/lib/multichain-feature-flags';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import {
   getCurrentChainId,
@@ -43,6 +42,23 @@ import {
   getNetworkConfigurationsByChainId,
 } from '../../shared/modules/selectors/networks';
 import { getEnabledNetworks } from '../../shared/modules/selectors/multichain';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import { getRemoteFeatureFlags } from './remote-feature-flags';
+// TODO: Fix circular dependency
+// To avoid import evaluating as `undefined` due to circular dependency,
+// this needs to be imported before `'../pages/confirmations/confirmation/templates'`
+// eslint-disable-next-line import/order
+import {
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+} from './multichain/feature-flags';
 
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -143,7 +159,11 @@ import {
   getCurrentNetworkTransactions,
 } from './transactions';
 // eslint-disable-next-line import/order
-import { getSelectedInternalAccount, getInternalAccounts } from './accounts';
+import {
+  getSelectedInternalAccount,
+  getInternalAccounts,
+  getInternalAccountByAddress,
+} from './accounts';
 import {
   getMultichainBalances,
   getMultichainNetworkProviders,
@@ -153,7 +173,6 @@ import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
 } from './multichain/networks';
-import { getRemoteFeatureFlags } from './remote-feature-flags';
 import { getApprovalRequestsByType } from './approvals';
 import { getHasShieldEntryModalShownOnce } from './subscription';
 
@@ -163,9 +182,15 @@ import { getHasShieldEntryModalShownOnce } from './subscription';
 
 // Re-export this file so we don't have to update all references
 // TODO: Update all references
-export { getEnabledNetworks };
-
-export const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
+export {
+  getEnabledNetworks,
+  getIsBitcoinSupportEnabled,
+  getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+};
 
 /** `appState` slice selectors */
 
@@ -470,7 +495,7 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
     currentChainId,
     chainId,
   ) =>
-    Object.values(internalAccounts).reduce((accounts, internalAccount) => {
+    internalAccounts.reduce((accounts, internalAccount) => {
       // TODO: mix in the identity state here as well, consolidating this
       // selector with `accountsWithSendEtherInfoSelector`
       let account = internalAccount;
@@ -528,16 +553,6 @@ export const getMetaMaskAccounts = createDeepEqualSelector(
 export function getSelectedAddress(state) {
   return getSelectedInternalAccount(state)?.address;
 }
-
-export const getInternalAccountByAddress = createSelector(
-  (state) => state.metamask.internalAccounts.accounts,
-  (_, address) => address,
-  (accounts, address) => {
-    return Object.values(accounts).find((account) =>
-      isEqualCaseInsensitive(account.address, address),
-    );
-  },
-);
 
 export function getMaybeSelectedInternalAccount(state) {
   // Same as `getSelectedInternalAccount`, but might potentially be `undefined`:
@@ -1166,8 +1181,8 @@ export function getAddressBookEntryOrAccountName(state, address) {
     return entry.name;
   }
 
-  const internalAccount = Object.values(getInternalAccounts(state)).find(
-    (account) => isEqualCaseInsensitive(account.address, address),
+  const internalAccount = getInternalAccounts(state).find((account) =>
+    isEqualCaseInsensitive(account.address, address),
   );
 
   return internalAccount?.metadata.name || address;
@@ -1478,14 +1493,11 @@ export const getTokenNetworkFilter = createDeepEqualSelector(
 export function getIsTokenNetworkFilterEqualCurrentNetwork(state) {
   const chainId = getCurrentChainId(state);
   const enabledNetworks = getEnabledNetworks(state);
-  const tokenNetworkFilter = getTokenNetworkFilter(state);
 
   const currentMultichainChainId = getSelectedMultichainNetworkChainId(state);
   const { namespace } = parseCaipChainId(currentMultichainChainId);
 
-  const networks = isGlobalNetworkSelectorRemoved
-    ? (enabledNetworks?.[namespace] ?? {})
-    : tokenNetworkFilter;
+  const networks = enabledNetworks?.[namespace] ?? {};
 
   if (
     Object.keys(networks).length === 1 &&
@@ -1618,6 +1630,18 @@ const selectSnapId = (_state, snapId) => snapId;
  */
 export const selectInstalledSnaps = (state) => state.metamask.snaps;
 
+/**
+ * Input selector for retrieving all installed non-preinstalled Snaps.
+ *
+ * @param state - Redux state object.
+ * @returns Array - Installed non-preinstalled Snaps.
+ */
+export const selectInstalledNonPreinstalledSnaps = createSelector(
+  [selectInstalledSnaps],
+  (installedSnaps) =>
+    Object.values(installedSnaps).filter((snap) => !snap.preinstalled),
+);
+
 export const selectIsNetworkMenuOpen = (state) =>
   state.appState.isNetworkMenuOpen;
 
@@ -1662,18 +1686,16 @@ export const getSnapLatestVersion = createSelector(
  * @returns Map Snap IDs mapped to a boolean value (true if update is available, false otherwise).
  */
 export const getAllSnapAvailableUpdates = createSelector(
-  [selectInstalledSnaps, rawStateSelector],
+  [selectInstalledNonPreinstalledSnaps, rawStateSelector],
   (installedSnaps, state) => {
     const snapMap = new Map();
 
-    Object.keys(installedSnaps).forEach((snapId) => {
-      const latestVersion = getSnapLatestVersion(state, snapId);
+    installedSnaps.forEach((snap) => {
+      const latestVersion = getSnapLatestVersion(state, snap.id);
 
       snapMap.set(
-        snapId,
-        latestVersion
-          ? semver.gt(latestVersion, installedSnaps[snapId].version)
-          : false,
+        snap.id,
+        latestVersion ? semver.gt(latestVersion, snap.version) : false,
       );
     });
 
@@ -2019,17 +2041,6 @@ export function getNativeCurrencyImage(state) {
 export function getNativeCurrencyForChain(chainId) {
   return CHAIN_ID_TOKEN_IMAGE_MAP[chainId] ?? undefined;
 }
-
-/**
- * Returns a memoized selector that gets the internal accounts from the Redux store.
- *
- * @param state - The Redux store state.
- * @returns {Array} An array of internal accounts.
- */
-export const getMemoizedMetaMaskInternalAccounts = createDeepEqualSelector(
-  getInternalAccounts,
-  (internalAccounts) => internalAccounts,
-);
 
 export const selectERC20TokensByChain = createDeepEqualSelector(
   (state) => state.metamask.tokensChainsCache,
@@ -2472,19 +2483,27 @@ export function getShowRecoveryPhraseReminder(state) {
  * @param state - Redux state object.
  * @returns Number of unapproved transactions
  */
-export function getNumberOfAllUnapprovedTransactionsAndMessages(state) {
-  const unapprovedTxs = getUnapprovedTransactions(state);
-
-  const allUnapprovedMessages = {
-    ...unapprovedTxs,
-    ...state.metamask.unapprovedDecryptMsgs,
-    ...state.metamask.unapprovedPersonalMsgs,
-    ...state.metamask.unapprovedEncryptionPublicKeyMsgs,
-    ...state.metamask.unapprovedTypedMessages,
-  };
-  const numUnapprovedMessages = Object.keys(allUnapprovedMessages).length;
-  return numUnapprovedMessages;
-}
+export const getNumberOfAllUnapprovedTransactionsAndMessages = createSelector(
+  [
+    getUnapprovedTransactions,
+    (state) => state.metamask.unapprovedDecryptMsgs,
+    (state) => state.metamask.unapprovedPersonalMsgs,
+    (state) => state.metamask.unapprovedEncryptionPublicKeyMsgs,
+    (state) => state.metamask.unapprovedTypedMessages,
+  ],
+  (
+    unapprovedTxs,
+    unapprovedDecryptMsgs,
+    unapprovedPersonalMsgs,
+    unapprovedEncryptionPublicKeyMsgs,
+    unapprovedTypedMessages,
+  ) =>
+    Object.keys(unapprovedTxs ?? {}).length +
+    Object.keys(unapprovedDecryptMsgs ?? {}).length +
+    Object.keys(unapprovedPersonalMsgs ?? {}).length +
+    Object.keys(unapprovedEncryptionPublicKeyMsgs ?? {}).length +
+    Object.keys(unapprovedTypedMessages ?? {}).length,
+);
 
 export const getCurrentNetwork = createDeepEqualSelector(
   getNetworkConfigurationsByChainId,
@@ -3162,86 +3181,8 @@ export function getIsAddSnapAccountEnabled(state) {
 }
 ///: END:ONLY_INCLUDE_IF
 
-/**
- * Get the state of the `solanaTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `solanaTestnetsEnabled` remote feature flag.
- */
-export function getIsSolanaTestnetSupportEnabled(state) {
-  const { solanaTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(solanaTestnetsEnabled);
-}
-
-/**
- * Get the state of the `bitcoinTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `bitcoinTestnetsEnabled` remote feature flag.
- */
-export function getIsBitcoinTestnetSupportEnabled(state) {
-  const { bitcoinTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(bitcoinTestnetsEnabled);
-}
-
-/**
- * Get the state of the `tronTestnetsEnabled` remote feature flag.
- *
- * @param {*} state
- * @returns The state of the `tronTestnetsEnabled` remote feature flag.
- */
-export function getIsTronTestnetSupportEnabled(state) {
-  const { tronTestnetsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(tronTestnetsEnabled);
-}
-
 export function getIsWatchEthereumAccountEnabled(state) {
   return state.metamask.watchEthereumAccountEnabled;
-}
-
-/**
- * Get the state of the `bitcoinAccounts` feature flag with version check.
- *
- * @param {*} _state
- * @returns The state of the `bitcoinAccounts` feature flag.
- */
-export function getIsBitcoinSupportEnabled(
-  // Use `_` prefix to avoid lint issue if `bitcoin` code-fence is not enabled
-  _state,
-) {
-  // When bitcoin is not enabled, always return false
-  let enabled = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  const { bitcoinAccounts } = getRemoteFeatureFlags(_state);
-  enabled = isMultichainFeatureEnabled(bitcoinAccounts);
-  ///: END:ONLY_INCLUDE_IF
-  return enabled;
-}
-
-/**
- * Get the state of the `solanaAccounts` feature flag with version check.
- *
- * @param {*} state
- * @returns The state of the `solanaAccounts` feature flag.
- */
-export function getIsSolanaSupportEnabled(state) {
-  const { solanaAccounts } = getRemoteFeatureFlags(state);
-  return isMultichainFeatureEnabled(solanaAccounts);
-}
-
-/**
- * Get the state of the `tronSupportEnabled` remote feature flag.
- *
- * @param {*} _state
- * @returns The state of the `tronSupportEnabled` remote feature flag.
- */
-export function getIsTronSupportEnabled(_state) {
-  let enabled = false;
-  ///: BEGIN:ONLY_INCLUDE_IF(tron)
-  const { tronAccounts } = getRemoteFeatureFlags(_state);
-  enabled = isMultichainFeatureEnabled(tronAccounts);
-  ///: END:ONLY_INCLUDE_IF
-  return enabled;
 }
 
 /**
@@ -3603,17 +3544,16 @@ export function getSnapRegistry(state) {
   return snapRegistryList;
 }
 
-export function getKeyringSnapAccounts(state) {
-  const internalAccounts = getInternalAccounts(state);
-
-  const keyringAccounts = Object.values(internalAccounts).filter(
-    (internalAccount) => {
+export const getKeyringSnapAccounts = createSelector(
+  getInternalAccounts,
+  (internalAccounts) => {
+    const keyringAccounts = internalAccounts.filter((internalAccount) => {
       const { keyring } = internalAccount.metadata;
       return keyring.type === KeyringType.snap;
-    },
-  );
-  return keyringAccounts;
-}
+    });
+    return keyringAccounts;
+  },
+);
 ///: END:ONLY_INCLUDE_IF
 
 export const getSelectedKeyringByIdOrDefault = createSelector(
