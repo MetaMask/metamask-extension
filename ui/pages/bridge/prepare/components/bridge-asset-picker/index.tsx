@@ -41,7 +41,7 @@ import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
 
 export const BridgeAssetPicker = ({
-  chainIds,
+  chains,
   isOpen,
   onClose,
   onAssetChange,
@@ -55,7 +55,7 @@ export const BridgeAssetPicker = ({
   onClose: () => void;
   header: string;
   selectedAsset: BridgeToken;
-} & Pick<React.ComponentProps<typeof NetworkPicker>, 'chainIds'> &
+} & Pick<React.ComponentProps<typeof NetworkPicker>, 'chains'> &
   Pick<React.ComponentProps<typeof BridgeAssetList>, 'onAssetChange'>) => {
   // TODO remove this when actual balances are provided
   const fromToken = useSelector(getFromToken);
@@ -68,6 +68,11 @@ export const BridgeAssetPicker = ({
   // This is the network that the user has selected from the dropdown
   const [selectedChainId, setSelectedChainId] = useState<CaipChainId | null>(
     null,
+  );
+
+  const chainIds = useMemo(
+    () => chains.map(({ chainId }) => chainId),
+    [chains],
   );
 
   const chainIdsList = useMemo(() => {
@@ -180,7 +185,7 @@ export const BridgeAssetPicker = ({
             <NetworkPicker
               buttonElement={networkPickerButtonRef.current}
               isOpen={isNetworkPickerOpen}
-              chainIds={chainIds}
+              chains={chains}
               selectedChainId={selectedChainId}
               onNetworkChange={(chainId) => {
                 setSelectedChainId(chainId);
