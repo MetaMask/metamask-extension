@@ -1,5 +1,35 @@
 #!/usr/bin/env npx tsx
 
+import { existsSync } from 'fs';
+import path from 'path';
+
+// Pre-flight check: Ensure dependencies are installed before importing workflow modules
+const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+const distPath = path.join(process.cwd(), 'dist', 'chrome');
+
+if (!existsSync(nodeModulesPath)) {
+  console.error('ERROR: Dependencies not installed.');
+  console.error('');
+  console.error('Run the following commands first:');
+  console.error('  1. yarn install    # Install dependencies');
+  console.error('  2. yarn build:test # Build the extension');
+  console.error('');
+  process.exit(1);
+}
+
+if (!existsSync(distPath)) {
+  console.error('ERROR: Extension not built.');
+  console.error('');
+  console.error('Run the following command:');
+  console.error('  yarn build:test');
+  console.error('');
+  console.error(
+    '(Note: This test has autoBuild: false, so you must build manually)',
+  );
+  console.error('');
+  process.exit(1);
+}
+
 import { launchMetaMask, DEFAULT_PASSWORD, HomePage } from './index';
 
 async function testOnboarding() {

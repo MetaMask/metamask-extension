@@ -1,0 +1,107 @@
+---
+description: LLM-friendly workflow for building, launching, and testing the MetaMask Chrome extension with Playwright
+globs: test/e2e/playwright/llm-workflow/**/*
+alwaysApply: false
+---
+
+# MetaMask LLM Workflow
+
+Use this workflow when you need to **visually validate MetaMask UI changes** or **implement features that require browser interaction**.
+
+## Prerequisites (CRITICAL)
+
+Before using this workflow, ensure:
+
+1. **Dependencies installed**: Run `yarn` or `yarn install`
+2. **Extension built**: Run `yarn build:test`
+
+If you see errors about missing modules or the extension not loading, these prerequisites are likely not met.
+
+## Quick Start
+
+```typescript
+import { launchMetaMask, DEFAULT_PASSWORD, HomePage } from './test/e2e/playwright/llm-workflow';
+
+const launcher = await launchMetaMask();
+try {
+  await launcher.unlock(DEFAULT_PASSWORD);
+  
+  const homePage = new HomePage(launcher.getPage());
+  console.log('Balance:', await homePage.getBalance());
+  
+  await launcher.screenshot({ name: 'validation' });
+} finally {
+  await launcher.cleanup();
+}
+```
+
+## Key Commands
+
+```bash
+# Install dependencies (required first time)
+yarn
+
+# Build extension for testing
+yarn build:test
+
+# Run validation test
+npx tsx test/e2e/playwright/llm-workflow/test-run.ts
+
+# Run onboarding test
+npx tsx test/e2e/playwright/llm-workflow/test-onboarding.ts
+
+# Kill orphan processes (if ports are in use)
+lsof -ti:8545,12345,8000 | xargs kill -9
+```
+
+## Key Files
+
+| File | Purpose |
+|------|---------|
+| `test/e2e/playwright/llm-workflow/README.md` | Full documentation |
+| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Main launcher class |
+| `test/e2e/playwright/llm-workflow/index.ts` | Public exports |
+| `test/e2e/playwright/llm-workflow/page-objects/` | Page object classes |
+
+## Launch Modes
+
+| Mode | Use Case | Example |
+|------|----------|---------|
+| `default` | Pre-onboarded wallet with 25 ETH | `launchMetaMask()` |
+| `onboarding` | Fresh wallet, test onboarding flow | `launchMetaMask({ stateMode: 'onboarding' })` |
+| `custom` | Custom fixture with specific state | `launchMetaMask({ stateMode: 'custom', fixture })` |
+
+## Default Credentials
+
+- **Password**: `correct horse battery staple`
+- **Chain ID**: `1337`
+- **Balance**: 25 ETH
+
+## Debugging
+
+When automation fails, use `debugDump()`:
+
+```typescript
+try {
+  // ... your code
+} catch (error) {
+  const dump = await launcher.debugDump('failure');
+  console.error('Screenshot:', dump.screenshot.path);
+  console.error('State:', JSON.stringify(dump.state, null, 2));
+  throw error;
+}
+```
+
+## Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| `node_modules` not found | Run `yarn` to install dependencies |
+| Extension not loading | Run `yarn build:test` to build |
+| Port already in use | Run `lsof -ti:8545,12345,8000 \| xargs kill -9` |
+| Wallet not unlocking | Use password: `correct horse battery staple` |
+
+## See Also
+
+- Full documentation: `test/e2e/playwright/llm-workflow/README.md`
+- E2E testing guidelines: `.cursor/rules/e2e-testing-guidelines.mdc`

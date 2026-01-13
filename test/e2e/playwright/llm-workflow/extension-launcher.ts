@@ -1,5 +1,5 @@
 import path from 'path';
-import { promises as fs } from 'fs';
+import { promises as fs, existsSync } from 'fs';
 import { execSync } from 'child_process';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
 import type {
@@ -84,8 +84,22 @@ export class MetaMaskExtensionLauncher {
   }
 
   private validateConfig(): void {
+    this.ensureDependenciesInstalled();
     this.validateCustomStateModeRequiresFixture();
     this.validateNetworkModeRequiresRpcUrl();
+  }
+
+  private ensureDependenciesInstalled(): void {
+    const nodeModulesPath = path.join(process.cwd(), 'node_modules');
+    if (!existsSync(nodeModulesPath)) {
+      throw new Error(
+        'Dependencies not installed. The node_modules directory was not found.\n\n' +
+          'To fix this, run the following commands:\n' +
+          '  1. yarn install    # Install dependencies\n' +
+          '  2. yarn build:test # Build the extension\n\n' +
+          'Then try running this workflow again.',
+      );
+    }
   }
 
   private validateCustomStateModeRequiresFixture(): void {
