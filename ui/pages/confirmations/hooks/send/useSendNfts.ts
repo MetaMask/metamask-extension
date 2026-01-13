@@ -41,7 +41,11 @@ export const useSendNfts = () => {
     );
 
     // Filter out NFTs from networks that are not in the Network Manager
-    return allNfts.filter((nft) => enabledNetworks.includes(nft.chainId));
+    return allNfts.filter(
+      (nft) =>
+        nft.chainId !== undefined &&
+        enabledNetworks.includes(nft.chainId as string),
+    );
   }, [
     // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
     accountGroupWithInternalAccounts?.length,

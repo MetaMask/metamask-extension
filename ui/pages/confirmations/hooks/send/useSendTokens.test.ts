@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
 import { AssetStandard, type Asset } from '../../types/send';
 import * as useChainNetworkNameAndImageModule from '../useChainNetworkNameAndImage';
@@ -88,12 +89,17 @@ describe('useSendTokens', () => {
 
   const mockFormatter = jest.fn();
 
+  const mockEnabledNetworks = ['0x1', '0x5', '0xaa36a7'];
+
   beforeEach(() => {
     jest.clearAllMocks();
 
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getAssetsBySelectedAccountGroup) {
         return mockAssetsData;
+      }
+      if (selector === getAllEnabledNetworksForAllNamespaces) {
+        return mockEnabledNetworks;
       }
       return undefined;
     });
@@ -123,6 +129,9 @@ describe('useSendTokens', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getAssetsBySelectedAccountGroup) {
         return testNetAssetData;
+      }
+      if (selector === getAllEnabledNetworksForAllNamespaces) {
+        return mockEnabledNetworks;
       }
       return undefined;
     });
@@ -208,6 +217,9 @@ describe('useSendTokens', () => {
       if (selector === getAssetsBySelectedAccountGroup) {
         return [];
       }
+      if (selector === getAllEnabledNetworksForAllNamespaces) {
+        return mockEnabledNetworks;
+      }
       return undefined;
     });
 
@@ -244,6 +256,9 @@ describe('useSendTokens', () => {
       if (selector === getAssetsBySelectedAccountGroup) {
         return newAssetsData;
       }
+      if (selector === getAllEnabledNetworksForAllNamespaces) {
+        return mockEnabledNetworks;
+      }
       return undefined;
     });
 
@@ -273,6 +288,9 @@ describe('useSendTokens', () => {
     mockUseSelector.mockImplementation((selector) => {
       if (selector === getAssetsBySelectedAccountGroup) {
         return assetsWithEmptyBalance;
+      }
+      if (selector === getAllEnabledNetworksForAllNamespaces) {
+        return mockEnabledNetworks;
       }
       return undefined;
     });
