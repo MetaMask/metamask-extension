@@ -7,12 +7,12 @@ import {
 } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
+import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 describe('Switch Ethereum Chain for two dapps', function () {

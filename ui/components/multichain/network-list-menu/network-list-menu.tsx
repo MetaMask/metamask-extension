@@ -43,7 +43,6 @@ import {
   addPermittedChain,
   setTokenNetworkFilter,
   detectNfts,
-  setEnabledNetworks,
 } from '../../../store/actions';
 import {
   FEATURED_RPCS,
@@ -357,8 +356,9 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
           dispatch(showPermittedNetworkToast());
         }
 
-        dispatch(
-          setNetworkClientIdForDomain(selectedTabOrigin, finalNetworkClientId),
+        await setNetworkClientIdForDomain(
+          selectedTabOrigin,
+          finalNetworkClientId,
         );
       }
 
@@ -379,8 +379,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         );
         dispatch(setTokenNetworkFilter(allOpts));
       }
-
-      dispatch(setEnabledNetworks(hexChainId));
     } finally {
       dispatch(toggleNetworkMenu());
     }
@@ -390,9 +388,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
     if (hasAnyAccountsInNetwork(chainId)) {
       dispatch(toggleNetworkMenu());
       dispatch(setActiveNetwork(chainId));
-
-      dispatch(setEnabledNetworks(chainId));
-
       return;
     }
 
