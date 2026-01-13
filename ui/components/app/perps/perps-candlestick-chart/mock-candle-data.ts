@@ -1,4 +1,4 @@
-import type { CandlestickData, Time } from 'lightweight-charts';
+import type { CandlestickData, HistogramData, Time } from 'lightweight-charts';
 
 /**
  * Raw candle data structure from the API/mock data
@@ -144,6 +144,46 @@ export function formatCandleDataForChart(
       return formatted;
     })
     .filter((candle): candle is CandlestickData<Time> => candle !== null)
+    .sort((a, b) => (a.time as number) - (b.time as number));
+}
+
+/**
+ * Formats raw candle data into volume histogram data for lightweight-charts
+ * Transforms volume to USD notional value (volume × close price)
+ * Colors bars based on candle direction (green = bullish, red = bearish)
+ */
+export function formatVolumeDataForChart(
+  data: CandleData,
+): HistogramData<Time>[] {
+  if (!data?.candles) {
+    return [];
+  }
+
+  return data.candles
+    .map((candle) => {
+      const timeInSeconds = Math.floor(candle.time / 1000) as Time;
+      const volume = parseFloat(candle.volume || '0');
+      const close = parseFloat(candle.close);
+      const open = parseFloat(candle.open);
+
+      // USD notional value = volume × close price
+      const value = volume * close;
+
+      // Color based on candle direction
+      const isBullish = close >= open;
+      const color = isBullish ? '#BAF24A' : '#FF7584';
+
+      if (isNaN(value) || value <= 0) {
+        return null;
+      }
+
+      return {
+        time: timeInSeconds,
+        value,
+        color,
+      };
+    })
+    .filter((item): item is HistogramData<Time> => item !== null)
     .sort((a, b) => (a.time as number) - (b.time as number));
 }
 

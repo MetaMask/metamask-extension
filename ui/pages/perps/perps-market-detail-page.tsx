@@ -280,11 +280,6 @@ const PerpsMarketDetailPage: React.FC = () => {
         onPeriodChange={handlePeriodChange}
       />
 
-      {/* Divider */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <hr style={{ border: '1px solid var(--border-muted, #858B9A33)' }} />
-      </Box>
-
       {/* Position Section */}
       {position && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>

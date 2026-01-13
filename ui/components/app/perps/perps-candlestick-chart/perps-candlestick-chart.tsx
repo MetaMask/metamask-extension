@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
-import { createChart, IChartApi, CandlestickSeries, ISeriesApi } from 'lightweight-charts';
-import { mockCandleData, formatCandleDataForChart, CandleData } from './mock-candle-data';
+import { createChart, IChartApi, CandlestickSeries, HistogramSeries, ISeriesApi } from 'lightweight-charts';
+import { mockCandleData, formatCandleDataForChart, formatVolumeDataForChart, CandleData } from './mock-candle-data';
 import { CandlePeriod, ZOOM_CONFIG, getVisibleRange } from '../constants/chartConfig';
 
 interface PerpsCandlestickChartProps {
@@ -44,6 +44,7 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
     const containerRef = useRef<HTMLDivElement>(null);
     const chartRef = useRef<IChartApi | null>(null);
     const seriesRef = useRef<ISeriesApi<'Candlestick'> | null>(null);
+    const volumeSeriesRef = useRef<ISeriesApi<'Histogram'> | null>(null);
     const dataLengthRef = useRef<number>(0);
     const previousPeriodRef = useRef<CandlePeriod>(selectedPeriod);
 
@@ -102,6 +103,11 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
           background: { color: 'transparent' },
           textColor: 'rgba(255, 255, 255, 0.4)',
           attributionLogo: false,
+          panes: {
+            separatorColor: 'transparent',
+            separatorHoverColor: 'transparent',
+            enableResize: false,
+          },
         },
         grid: {
           vertLines: { color: 'rgba(255, 255, 255, 0.06)' },
@@ -143,7 +149,7 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
 
       chartRef.current = chart;
 
-      // Create candlestick series
+      // Create candlestick series (pane 0 - top)
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
         upColor: '#BAF24A',
         downColor: '#FF7584',
@@ -156,6 +162,38 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
 
       seriesRef.current = candlestickSeries;
 
+      // Create volume histogram series (pane 1 - bottom)
+      const volumeSeries = chart.addSeries(
+        HistogramSeries,
+        {
+          color: '#BAF24A', // Default green
+          priceFormat: { type: 'volume' },
+          priceScaleId: '', // Independent price scale
+          lastValueVisible: false,
+          priceLineVisible: false,
+        },
+        1, // Pane index 1 = bottom pane
+      );
+
+      // Hide volume price scale
+      volumeSeries.priceScale().applyOptions({
+        visible: false,
+        scaleMargins: { top: 0.1, bottom: 0.2 },
+      });
+
+      volumeSeriesRef.current = volumeSeries;
+
+      // Set pane heights (80/20 split)
+      setTimeout(() => {
+        const panes = chart.panes();
+        if (panes.length >= 2) {
+          const mainHeight = Math.floor(height * 0.8);
+          const volumeHeight = Math.floor(height * 0.2);
+          panes[0].setHeight(mainHeight);
+          panes[1].setHeight(volumeHeight);
+        }
+      }, 50);
+
       // Add resize listener
       window.addEventListener('resize', handleResize);
 
@@ -166,6 +204,7 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
           chartRef.current.remove();
           chartRef.current = null;
           seriesRef.current = null;
+          volumeSeriesRef.current = null;
         }
       };
     }, [height, handleResize]);
@@ -183,6 +222,12 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
       if (formattedData.length > 0) {
         seriesRef.current.setData(formattedData);
         dataLengthRef.current = formattedData.length;
+
+        // Update volume data
+        if (volumeSeriesRef.current) {
+          const volumeData = formatVolumeDataForChart(dataToUse);
+          volumeSeriesRef.current.setData(volumeData);
+        }
 
         // Check if period changed
         const periodChanged = previousPeriodRef.current !== selectedPeriod;
@@ -211,6 +256,7 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
     return (
       <div
         ref={containerRef}
+        className="perps-candlestick-chart"
         data-testid="perps-candlestick-chart"
         style={{
           width: '100%',
