@@ -77,6 +77,8 @@ describe('Permissions Approved Event', function (this: Suite) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          storage_kind: 'data',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
@@ -91,6 +93,8 @@ describe('Permissions Approved Event', function (this: Suite) {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'background',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          storage_kind: 'data',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           api_source: MetaMetricsRequestedThrough.EthereumProvider,
