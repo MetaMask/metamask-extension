@@ -7,21 +7,12 @@ import type {
   TransactionPayRequiredToken,
   TransactionPaymentToken,
 } from '@metamask/transaction-pay-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { Asset, AssetStandard } from '../types/send';
-import { TransactionPayAsset, NATIVE_TOKEN_ADDRESS } from '../hooks/pay/types';
+import { TransactionPayAsset } from '../hooks/pay/types';
 
 const FOUR_BYTE_TOKEN_TRANSFER = '0xa9059cbb';
-
-export function getNativeTokenAddress(chainId: Hex): Hex {
-  switch (chainId) {
-    case CHAIN_IDS.POLYGON:
-      return '0x0000000000000000000000000000000000001010' as Hex;
-    default:
-      return NATIVE_TOKEN_ADDRESS;
-  }
-}
 
 export function hasTransactionType(
   transactionMeta: TransactionMeta | undefined,

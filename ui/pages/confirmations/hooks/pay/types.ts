@@ -11,6 +11,3 @@ export type SetPayTokenRequest = {
   address: Hex;
   chainId: Hex;
 };
-
-export const NATIVE_TOKEN_ADDRESS =
-  '0x0000000000000000000000000000000000000000' as Hex;

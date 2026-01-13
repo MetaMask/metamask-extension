@@ -5,13 +5,11 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPaymentToken } from '@metamask/transaction-pay-controller';
 import { useConfirmContext } from '../../context/confirm';
-import {
-  getNativeTokenAddress,
-  hasTransactionType,
-} from '../../utils/transaction-pay';
+import { hasTransactionType } from '../../utils/transaction-pay';
 import { updateEventFragment } from '../../../../store/actions';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
