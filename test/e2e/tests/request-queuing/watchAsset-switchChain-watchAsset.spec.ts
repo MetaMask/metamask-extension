@@ -5,7 +5,7 @@ import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { DAPP_URL } from '../../constants';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
