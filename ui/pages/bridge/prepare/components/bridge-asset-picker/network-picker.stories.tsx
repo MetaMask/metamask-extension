@@ -42,9 +42,10 @@ export const NetworkPickerStory = () => {
   return (
     networks && (
       <NetworkPicker
-        chainIds={networks.map((network) =>
-          formatChainIdToCaip(network.chainId),
-        )}
+        chains={networks.map((network) => ({
+          chainId: formatChainIdToCaip(network.chainId),
+          name: network.name,
+        }))}
         selectedChainId={'eip155:1'}
         onNetworkChange={() => {}}
         buttonElement={null}
