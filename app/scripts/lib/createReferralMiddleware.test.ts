@@ -17,7 +17,6 @@ jest.mock('loglevel', () => ({
 }));
 
 const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
-const ASTERDEX_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.AsterDex].origin;
 
 const createMockRequest = (origin: string): ExtendedJSONRPCRequest => ({
   id: 1,
@@ -69,32 +68,6 @@ describe('createReferralMiddleware', () => {
     expect(mockHandleReferral).toHaveBeenCalledTimes(1);
     expect(mockHandleReferral).toHaveBeenCalledWith(
       REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
-      123,
-      ReferralTriggerType.NewConnection,
-    );
-  });
-
-  it('triggers referral for AsterDex when permissions are granted', async () => {
-    const mockHandleReferral = jest.fn().mockResolvedValue(undefined);
-    const middleware = createReferralMiddleware(mockHandleReferral);
-
-    const mockNext = jest.fn((cb) => {
-      if (cb) cb();
-    });
-
-    await new Promise<void>((resolve) => {
-      middleware(
-        createMockRequest(ASTERDEX_ORIGIN),
-        createMockResponse(ASTERDEX_ORIGIN),
-        mockNext,
-        () => resolve(),
-      );
-    });
-
-    expect(mockNext).toHaveBeenCalledTimes(1);
-    expect(mockHandleReferral).toHaveBeenCalledTimes(1);
-    expect(mockHandleReferral).toHaveBeenCalledWith(
-      REFERRAL_PARTNERS[ReferralPartner.AsterDex],
       123,
       ReferralTriggerType.NewConnection,
     );

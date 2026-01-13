@@ -3,23 +3,21 @@
  */
 export enum ReferralPartner {
   Hyperliquid = 'hyperliquid',
-  AsterDex = 'asterdex',
+  // AsterDex = 'asterdex',
 }
 
 /**
  * Configuration for a referral partner
  */
 export type ReferralPartnerConfig = {
-  /** Unique identifier for the partner */
+  /** Unique identifier for partner */
   id: ReferralPartner;
   /** Display name for UI */
   name: string;
-  /** Origin domain to detect (used for matching requests) */
+  /** Origin domain */
   origin: string;
   /** Full referral URL including the referral code */
   referralUrl: string;
-  /** The referral code portion only */
-  referralCode: string;
   /** URL for "Learn more" link in the consent UI */
   learnMoreUrl: string;
   /** Approval type string for ApprovalController */
@@ -38,21 +36,19 @@ export const REFERRAL_PARTNERS: Record<ReferralPartner, ReferralPartnerConfig> =
       name: 'Hyperliquid',
       origin: 'https://app.hyperliquid.xyz',
       referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
-      referralCode: 'MMREFCSI',
       learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
       approvalType: 'hyperliquid_referral_consent',
       featureFlagKey: 'extensionUxDefiReferral',
     },
-    [ReferralPartner.AsterDex]: {
-      id: ReferralPartner.AsterDex,
-      name: 'AsterDex',
-      origin: 'https://www.asterdex.com',
-      referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
-      referralCode: 'wsuZBc',
-      learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
-      approvalType: 'asterdex_referral_consent',
-      featureFlagKey: 'extensionUxAsterdexReferral',
-    },
+    // [ReferralPartner.AsterDex]: {
+    //   id: ReferralPartner.AsterDex,
+    //   name: 'AsterDex',
+    //   origin: 'https://www.asterdex.com',
+    //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
+    //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
+    //   approvalType: 'asterdex_referral_consent',
+    //   featureFlagKey: 'tbd',
+    // },
   };
 
 /**

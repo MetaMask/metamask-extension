@@ -4423,7 +4423,6 @@ describe('MetaMaskController', () => {
         metamaskController.preferencesController.update((state) => {
           state.referrals = {
             [ReferralPartner.Hyperliquid]: {},
-            [ReferralPartner.AsterDex]: {},
           };
         });
       });

@@ -1301,7 +1301,6 @@ describe('preferences controller', () => {
                 [testAccount1]: ReferralStatus.Declined,
                 [testAccount2]: ReferralStatus.Declined,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1324,7 +1323,6 @@ describe('preferences controller', () => {
               [ReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1364,7 +1362,6 @@ describe('preferences controller', () => {
               [ReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Declined,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1386,7 +1383,6 @@ describe('preferences controller', () => {
               [ReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Approved,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1407,7 +1403,6 @@ describe('preferences controller', () => {
               [ReferralPartner.Hyperliquid]: {
                 [testAccount]: ReferralStatus.Approved,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1433,7 +1428,6 @@ describe('preferences controller', () => {
               [ReferralPartner.Hyperliquid]: {
                 '0xabcdef123456': ReferralStatus.Approved,
               },
-              [ReferralPartner.AsterDex]: {},
             },
           },
         });
@@ -1451,32 +1445,6 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[ReferralPartner.Hyperliquid],
         ).toStrictEqual({});
-        expect(
-          controller.state.referrals[ReferralPartner.AsterDex],
-        ).toStrictEqual({});
-      });
-    });
-
-    describe('multi-partner support', () => {
-      it('maintains separate state for different partners', () => {
-        const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
-
-        controller.addReferralApprovedAccount(
-          ReferralPartner.Hyperliquid,
-          testAccount,
-        );
-        controller.addReferralDeclinedAccount(
-          ReferralPartner.AsterDex,
-          testAccount,
-        );
-
-        expect(
-          controller.state.referrals[ReferralPartner.Hyperliquid][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals[ReferralPartner.AsterDex][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
       });
     });
   });
