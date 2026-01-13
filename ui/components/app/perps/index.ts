@@ -17,3 +17,5 @@ export { PerpsTokenLogo } from './perps-token-logo';
 export type { PerpsTokenLogoProps } from './perps-token-logo';
 export { StartTradeCta } from './start-trade-cta';
 export type { StartTradeCtaProps } from './start-trade-cta';
+export { PerpsEmptyState } from './perps-empty-state';
+export type { PerpsEmptyStateProps } from './perps-empty-state';

@@ -14,6 +14,7 @@ import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
+import { PerpsEmptyState } from './perps-empty-state';
 
 /**
  * PerpsTabView component displays the perpetuals trading tab
@@ -50,16 +51,7 @@ export const PerpsTabView: React.FC = () => {
 
       {/* Empty State */}
       {hasNoPositionsOrOrders && (
-        <Box
-          className="perps-tab-view__empty-state"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          alignItems={AlignItems.center}
-          padding={6}
-          data-testid="perps-empty-state"
-        >
-          <Text color={TextColor.textAlternative}>No positions or orders</Text>
-        </Box>
+        <PerpsEmptyState onStartTrade={handleNewTrade} />
       )}
 
       {/* Positions Section */}

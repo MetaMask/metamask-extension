@@ -5055,6 +5055,18 @@
   "perps": {
     "message": "Perps"
   },
+  "perpsEmptyDescription": {
+    "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsStartTrading": {
+    "message": "Start trading"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
+  },
+  "perpsUnrealizedPnl": {
+    "message": "Unrealised P&L"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },

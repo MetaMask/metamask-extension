@@ -1,32 +1,35 @@
 import React from 'react';
 import classnames from 'classnames';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
-  AlignItems,
   TextVariant,
   TextColor,
-  FontWeight,
-} from '../../../../helpers/constants/design-system';
-import {
+  IconColor,
   Box,
   Icon,
   IconName,
   IconSize,
   Text,
-} from '../../../component-library';
+  BoxFlexDirection,
+  BoxJustifyContent,
+  BoxAlignItems,
+  FontWeight,
+  ButtonBase,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mockAccountState } from '../mocks';
 
-export interface PerpsTabControlBarProps {
+export type PerpsTabControlBarProps = {
   /** Callback when balance row is clicked */
   onManageBalancePress?: () => void;
   /** Whether the user has open positions (controls P&L row visibility) */
   hasPositions?: boolean;
-}
+};
 
 /**
  * Format a number as currency with $ prefix
+ *
+ * @param value - The number to format
+ * @returns The formatted currency string
  */
 const formatCurrency = (value: string): string => {
   const num = parseFloat(value);
@@ -38,6 +41,9 @@ const formatCurrency = (value: string): string => {
 
 /**
  * Format P&L with +/- prefix
+ *
+ * @param value - The number to format
+ * @returns The formatted P&L string
  */
 const formatPnl = (value: string): string => {
   const num = parseFloat(value);
@@ -50,6 +56,9 @@ const formatPnl = (value: string): string => {
 
 /**
  * Format ROE as percentage
+ *
+ * @param value - The number to format
+ * @returns The formatted ROE string
  */
 const formatPercentage = (value: string): string => {
   const num = parseFloat(value);
@@ -59,11 +68,16 @@ const formatPercentage = (value: string): string => {
 /**
  * PerpsTabControlBar displays total balance and unrealized P&L
  * at the top of the Perps tab
+ *
+ * @param options0 - Component props
+ * @param options0.onManageBalancePress - Callback when balance row is clicked
+ * @param options0.hasPositions - Whether the user has open positions (controls P&L row visibility)
  */
 export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   onManageBalancePress,
   hasPositions = false,
 }) => {
+  const t = useI18nContext();
   const { totalBalance, unrealizedPnl, returnOnEquity } = mockAccountState;
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
@@ -75,8 +89,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   return (
     <Box
       className="perps-tab-control-bar"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       gap={0}
       paddingLeft={4}
       paddingRight={4}
@@ -84,58 +97,57 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
       data-testid="perps-tab-control-bar"
     >
       {/* Total Balance Row */}
-      <Box
-        as="button"
-        className={classnames('perps-tab-control-bar__row', {
+      <ButtonBase
+        className={classnames('perps-tab-control-bar__row w-full', {
           'perps-tab-control-bar__row--top': hasPositions,
           'perps-tab-control-bar__row--single': !hasPositions,
         })}
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        justifyContent={JustifyContent.spaceBetween}
-        alignItems={AlignItems.center}
-        padding={3}
         onClick={handleBalanceClick}
         data-testid="perps-control-bar-balance"
       >
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-          Total Balance
-        </Text>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
-          gap={2}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
+          className="w-full"
         >
-          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
-            {formatCurrency(totalBalance)}
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsTotalBalance')}
           </Text>
-          <Icon
-            name={IconName.ArrowRight}
-            size={IconSize.Sm}
-            color={TextColor.iconAlternative}
-          />
+          <Box
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            gap={2}
+          >
+            <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
+              {formatCurrency(totalBalance)}
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
         </Box>
-      </Box>
+      </ButtonBase>
 
       {/* Unrealized P&L Row - only shown when there are positions */}
       {hasPositions && (
         <Box
           className="perps-tab-control-bar__row perps-tab-control-bar__row--bottom"
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          justifyContent={BoxJustifyContent.Between}
+          alignItems={BoxAlignItems.Center}
           padding={3}
           data-testid="perps-control-bar-pnl"
         >
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
-            Unrealized P&L
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {t('perpsUnrealizedPnl')}
           </Text>
           <Text
-            variant={TextVariant.bodySm}
+            variant={TextVariant.BodySm}
             fontWeight={FontWeight.Medium}
-            color={isProfit ? TextColor.successDefault : TextColor.errorDefault}
+            color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
           >
             {formatPnl(unrealizedPnl)} ({formatPercentage(returnOnEquity)})
           </Text>
