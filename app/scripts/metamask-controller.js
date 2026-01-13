@@ -7558,10 +7558,10 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
 
-      // Add referral partner permission monitoring middleware
+      // Add Defi referral partner permission monitoring middleware
       engine.push(
-        createDefiReferralMiddleware((partner, tabId, triggerType) =>
-          this.handleDefiReferral(partner, tabId, triggerType),
+        createDefiReferralMiddleware((partner, referralTabId, triggerType) =>
+          this.handleDefiReferral(partner, referralTabId, triggerType),
         ),
       );
     }
