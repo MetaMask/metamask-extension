@@ -341,7 +341,7 @@
     "@metamask/message-signing-snap": "1.1.4",
     "@metamask/messenger": "^0.3.0",
     "@metamask/metamask-eth-abis": "^3.1.1",
-    "@metamask/multichain-account-service": "^3.0.0",
+    "@metamask/multichain-account-service": "^5.0.0",
     "@metamask/multichain-api-client": "^0.10.1",
     "@metamask/multichain-api-middleware": "^1.2.5",
     "@metamask/multichain-network-controller": "^2.0.0",
