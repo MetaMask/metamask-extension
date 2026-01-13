@@ -1,8 +1,9 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
-import { TransactionPayAsset, NATIVE_TOKEN_ADDRESS } from './types';
+import type { TransactionPayAsset } from './types';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
@@ -10,6 +11,8 @@ jest.mock('../../utils/transaction-pay', () => ({
   ...jest.requireActual('../../utils/transaction-pay'),
   getAvailableTokens: jest.fn(),
 }));
+
+const NATIVE_TOKEN_ADDRESS = getNativeTokenAddress('0x1');
 
 const SEND_TOKEN_MOCK: Asset = {
   accountType: 'eip155:eoa',
