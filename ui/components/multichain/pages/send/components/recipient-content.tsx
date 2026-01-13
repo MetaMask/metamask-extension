@@ -1,23 +1,14 @@
 import React, { useCallback, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TokenListMap } from '@metamask/assets-controllers';
 import {
   BannerAlert,
   BannerAlertSeverity,
   Box,
 } from '../../../../component-library';
 import {
-  getNativeCurrency,
-  getSendHexDataFeatureFlagState,
-} from '../../../../../ducks/metamask/metamask';
-import {
   Asset,
   acknowledgeRecipientWarning,
-  getBestQuote,
-  getCurrentDraftTransaction,
-  getIsSwapAndSendDisabledForNetwork,
-  getSwapsBlockedTokens,
-  getSendAsset,
+  selectRecipientContentData,
 } from '../../../../../ducks/send';
 import { AssetType } from '../../../../../../shared/constants/transaction';
 import { CONTRACT_ADDRESS_LINK } from '../../../../../helpers/constants/common';
@@ -25,16 +16,8 @@ import { Display } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { AssetPickerAmount } from '../../..';
 import { decimalToHex } from '../../../../../../shared/modules/conversion.utils';
-import {
-  getIpfsGateway,
-  getIsSwapsChain,
-  getNativeCurrencyImage,
-  getTokenList,
-  getUseExternalServices,
-} from '../../../../../selectors';
 import useGetAssetImageUrl from '../../../../../hooks/useGetAssetImageUrl';
 
-import type { Quote } from '../../../../../ducks/send/swap-and-send-utils';
 import { isEqualCaseInsensitive } from '../../../../../../shared/modules/string-utils';
 import { AssetPicker } from '../../../asset-picker-amount/asset-picker';
 import { TabName } from '../../../asset-picker-amount/asset-picker-modal/asset-picker-modal-tabs';
@@ -53,47 +36,58 @@ export const SendPageRecipientContent = ({
 }) => {
   const t = useI18nContext();
 
+  // Use structured selector to reduce subscriptions from 13 to 1
+  const {
+    draftTransaction,
+    isBasicFunctionality,
+    isSwapsChain,
+    isSwapAndSendDisabledForNetwork,
+    swapsBlockedTokens,
+    nativeCurrencySymbol,
+    nativeCurrencyImageUrl,
+    tokenList,
+    ipfsGateway,
+    bestQuote,
+    showHexDataFlag,
+    sendAsset,
+  } = useSelector(selectRecipientContentData);
+
   const {
     receiveAsset,
-    sendAsset,
+    sendAsset: draftSendAsset,
     amount: sendAmount,
     isSwapQuoteLoading,
-  } = useSelector(getCurrentDraftTransaction);
+  } = draftTransaction;
 
-  const isBasicFunctionality = useSelector(getUseExternalServices);
-  const isSwapsChain = useSelector(getIsSwapsChain);
-  const isSwapAndSendDisabledForNetwork = useSelector(
-    getIsSwapAndSendDisabledForNetwork,
-  );
-  const swapsBlockedTokens = useSelector(getSwapsBlockedTokens);
+  // Use sendAsset from structured selector if available, otherwise use from draftTransaction
+  const effectiveSendAsset = sendAsset || draftSendAsset;
+
+  // Use sendAsset from structured selector if available, otherwise use from draftTransaction
+  const effectiveSendAsset = sendAsset || draftSendAsset;
+
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);
 
-  const nativeCurrencySymbol = useSelector(getNativeCurrency);
-  const nativeCurrencyImageUrl = useSelector(getNativeCurrencyImage);
-  const tokenList = useSelector(getTokenList) as TokenListMap;
-  const ipfsGateway = useSelector(getIpfsGateway);
-
   const nftImageURL = useGetAssetImageUrl(
-    sendAsset.details?.image ?? undefined,
+    effectiveSendAsset.details?.image ?? undefined,
     ipfsGateway,
   );
 
   const isSwapAllowed =
     isSwapsChain &&
     !isSwapAndSendDisabledForNetwork &&
-    [AssetType.token, AssetType.native].includes(sendAsset.type) &&
+    [AssetType.token, AssetType.native].includes(effectiveSendAsset.type) &&
     isBasicFunctionality &&
-    !memoizedSwapsBlockedTokens.has(sendAsset.details?.address?.toLowerCase());
-
-  const bestQuote: Quote = useSelector(getBestQuote);
+    !memoizedSwapsBlockedTokens.has(
+      effectiveSendAsset.details?.address?.toLowerCase(),
+    );
 
   const isLoadingInitialQuotes = !bestQuote && isSwapQuoteLoading;
 
   const isBasicSend = isEqualCaseInsensitive(
     receiveAsset.details?.address ?? '',
-    sendAsset.details?.address ?? '',
+    effectiveSendAsset.details?.address ?? '',
   );
 
   const amount = isBasicSend
@@ -101,14 +95,12 @@ export const SendPageRecipientContent = ({
     : { value: decimalToHex(bestQuote?.destinationAmount || '0') };
 
   // Hex data
-  const showHexDataFlag = useSelector(getSendHexDataFeatureFlagState);
-  const asset = useSelector(getSendAsset);
   const showHexData =
     isBasicSend &&
     showHexDataFlag &&
-    asset &&
-    asset.type !== AssetType.token &&
-    asset.type !== AssetType.NFT;
+    effectiveSendAsset &&
+    effectiveSendAsset.type !== AssetType.token &&
+    effectiveSendAsset.type !== AssetType.NFT;
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -146,21 +138,23 @@ export const SendPageRecipientContent = ({
         <AssetPickerAmount
           header={t('sendSelectReceiveAsset')}
           action="receive"
-          asset={isSwapAllowed ? receiveAsset : sendAsset}
+          asset={isSwapAllowed ? receiveAsset : effectiveSendAsset}
           sendingAsset={
             isSwapAllowed &&
-            sendAsset && {
+            effectiveSendAsset && {
               image:
-                sendAsset.type === AssetType.native
+                effectiveSendAsset.type === AssetType.native
                   ? nativeCurrencyImageUrl
                   : tokenList &&
-                    sendAsset.details &&
+                    effectiveSendAsset.details &&
                     (nftImageURL ||
-                      tokenList[sendAsset.details.address?.toLowerCase()]
-                        ?.iconUrl),
+                      tokenList[
+                        effectiveSendAsset.details.address?.toLowerCase()
+                      ]?.iconUrl),
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
               // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-              symbol: sendAsset?.details?.symbol || nativeCurrencySymbol,
+              symbol:
+                effectiveSendAsset?.details?.symbol || nativeCurrencySymbol,
             }
           }
           onAssetChange={useCallback(

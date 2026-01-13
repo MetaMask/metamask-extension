@@ -23,20 +23,12 @@ import {
 import { Content, Footer, Header, Page } from '../page';
 import {
   SEND_STAGES,
-  getCurrentDraftTransaction,
-  getDraftTransactionExists,
-  getDraftTransactionID,
-  getRecipient,
-  getRecipientWarningAcknowledgement,
-  getSendAnalyticProperties,
-  getSendErrors,
-  getSendStage,
-  isSendFormInvalid,
   resetSendState,
   signTransaction,
   startNewDraftTransaction,
   updateSendAmount,
   updateSendAsset,
+  selectSendPageData,
 } from '../../../../ducks/send';
 
 import {
@@ -45,10 +37,6 @@ import {
   SmartTransactionStatus,
 } from '../../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import {
-  INSUFFICIENT_FUNDS_ERROR,
-  INVALID_HEX_DATA_ERROR,
-} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { cancelTx, showQrScanner } from '../../../../store/actions';
 import {
   DEFAULT_ROUTE,
@@ -58,11 +46,13 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
-import { getMostRecentOverviewPage } from '../../../../ducks/history/history';
+import {
+  INSUFFICIENT_FUNDS_ERROR,
+  INVALID_HEX_DATA_ERROR,
+} from '../../../../pages/confirmations/send-legacy/send.constants';
 import { AssetPickerAmount } from '../..';
 import useUpdateSwapsState from '../../../../pages/swaps/hooks/useUpdateSwapsState';
 import { getIsDraftSwapAndSend } from '../../../../ducks/send/helpers';
-import { smartTransactionsListSelector } from '../../../../selectors';
 import { TextVariant } from '../../../../helpers/constants/design-system';
 import { TRANSACTION_ERRORED_EVENT } from '../../../app/transaction-activity-log/transaction-activity-log.constants';
 import { trace, TraceName } from '../../../../../shared/lib/trace';
@@ -73,17 +63,32 @@ import {
   SendPageRecipientInput,
 } from './components';
 
+// eslint-disable-next-line react-compiler/react-compiler
 export const SendPage = ({
   navigate: navigateProp,
   location: locationProp,
 } = {}) => {
+  'use no memo';
+
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const startedNewDraftTransaction = useRef(false);
-  const draftTransactionExists = useSelector(getDraftTransactionExists);
 
-  const draftTransaction = useSelector(getCurrentDraftTransaction);
+  // Use structured selector to reduce subscriptions from 12 to 1
+  const {
+    draftTransactionExists,
+    draftTransaction,
+    draftTransactionID,
+    mostRecentOverviewPage,
+    sendStage,
+    sendAnalytics,
+    recipient,
+    recipientWarningAcknowledged,
+    sendErrors,
+    isInvalidSendForm,
+    smartTransactions,
+  } = useSelector(selectSendPageData);
 
   const {
     sendAsset: transactionAsset,
@@ -91,9 +96,6 @@ export const SendPage = ({
     swapQuotesError,
   } = draftTransaction;
 
-  const draftTransactionID = useSelector(getDraftTransactionID);
-  const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
-  const sendStage = useSelector(getSendStage);
   const isSwapAndSend = getIsDraftSwapAndSend(draftTransaction);
 
   // Use React Router v6 hooks
@@ -103,7 +105,6 @@ export const SendPage = ({
   const location = locationProp || locationHook;
 
   const trackEvent = useContext(MetaMetricsContext);
-  const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(undefined);
@@ -283,8 +284,7 @@ export const SendPage = ({
         { excludeMetaMetricsId: false },
       );
     }
-    // sendAnalytics should not result in the event refiring
-  }, [trackEvent, swapQuotesError]);
+  }, [trackEvent, swapQuotesError, sendAnalytics]);
 
   const onSubmit = async (event) => {
     event.preventDefault();
@@ -321,19 +321,10 @@ export const SendPage = ({
   };
 
   // Submit button
-  const recipient = useSelector(getRecipient);
   const showKnownRecipientWarning =
     recipient.warning === 'knownAddressRecipient';
-  const recipientWarningAcknowledged = useSelector(
-    getRecipientWarningAcknowledgement,
-  );
   const requireContractAddressAcknowledgement =
     showKnownRecipientWarning && !recipientWarningAcknowledged;
-
-  const sendErrors = useSelector(getSendErrors);
-  const isInvalidSendForm = useSelector(isSendFormInvalid);
-
-  const smartTransactions = useSelector(smartTransactionsListSelector);
 
   const isSmartTransactionPending = smartTransactions?.find(
     ({ status }) => status === SmartTransactionStatus.pending,

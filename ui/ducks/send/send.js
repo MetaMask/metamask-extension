@@ -59,7 +59,16 @@ import {
   getUnapprovedTransactions,
   getIsSwapsChain,
   getUseExternalServices,
+  getIpfsGateway,
+  getNativeCurrencyImage,
 } from '../../selectors';
+import {
+  getSendHexDataFeatureFlagState,
+  getGasEstimateType,
+  getNativeCurrency,
+  getTokens,
+} from '../metamask/metamask';
+import { getMostRecentOverviewPage } from '../history/history';
 import {
   displayWarning,
   hideLoadingIndication,
@@ -101,11 +110,6 @@ import {
   checkExistingAddresses,
   isOriginContractAddress,
 } from '../../helpers/utils/util';
-import {
-  getGasEstimateType,
-  getNativeCurrency,
-  getTokens,
-} from '../metamask/metamask';
 
 import { resetDomainResolution } from '../domains';
 import {
@@ -3579,4 +3583,125 @@ export const getSendAnalyticProperties = createSelector(
       return { analyticsError: error };
     }
   },
+);
+
+/**
+ * Structured selector for SendPage component data
+ * Reduces useSelector subscriptions from 12 to 1
+ *
+ * @type {Selector<{
+ *   draftTransactionExists: boolean,
+ *   draftTransaction: object,
+ *   draftTransactionID: string,
+ *   mostRecentOverviewPage: string,
+ *   sendStage: string,
+ *   sendAnalytics: object,
+ *   recipient: object,
+ *   recipientWarningAcknowledged: boolean,
+ *   sendErrors: object,
+ *   isInvalidSendForm: boolean,
+ *   smartTransactions: Array
+ * }>}
+ */
+export const selectSendPageData = createSelector(
+  getDraftTransactionExists,
+  getCurrentDraftTransaction,
+  getDraftTransactionID,
+  (state) => getMostRecentOverviewPage(state),
+  getSendStage,
+  getSendAnalyticProperties,
+  getRecipient,
+  getRecipientWarningAcknowledgement,
+  getSendErrors,
+  isSendFormInvalid,
+  (state) =>
+    state.metamask.smartTransactionsState.smartTransactions[
+      getCurrentChainId(state)
+    ] || [],
+  (
+    draftTransactionExists,
+    draftTransaction,
+    draftTransactionID,
+    mostRecentOverviewPage,
+    sendStage,
+    sendAnalytics,
+    recipient,
+    recipientWarningAcknowledged,
+    sendErrors,
+    isInvalidSendForm,
+    smartTransactions,
+  ) => ({
+    draftTransactionExists,
+    draftTransaction,
+    draftTransactionID,
+    mostRecentOverviewPage,
+    sendStage,
+    sendAnalytics,
+    recipient,
+    recipientWarningAcknowledged,
+    sendErrors,
+    isInvalidSendForm,
+    smartTransactions,
+  }),
+);
+
+/**
+ * Structured selector for RecipientContent component data
+ * Reduces useSelector subscriptions from 13 to 1
+ *
+ * @type {Selector<{
+ *   draftTransaction: object,
+ *   isBasicFunctionality: boolean,
+ *   isSwapsChain: boolean,
+ *   isSwapAndSendDisabledForNetwork: boolean,
+ *   swapsBlockedTokens: Array,
+ *   nativeCurrencySymbol: string,
+ *   nativeCurrencyImageUrl: string,
+ *   tokenList: object,
+ *   ipfsGateway: string,
+ *   bestQuote: object,
+ *   showHexDataFlag: boolean,
+ *   sendAsset: object
+ * }>}
+ */
+export const selectRecipientContentData = createSelector(
+  getCurrentDraftTransaction,
+  (state) => getUseExternalServices(state),
+  (state) => getIsSwapsChain(state),
+  getIsSwapAndSendDisabledForNetwork,
+  getSwapsBlockedTokens,
+  (state) => getNativeCurrency(state),
+  (state) => getNativeCurrencyImage(state),
+  (state) => getTokenList(state),
+  (state) => getIpfsGateway(state),
+  getBestQuote,
+  (state) => getSendHexDataFeatureFlagState(state),
+  getSendAsset,
+  (
+    draftTransaction,
+    isBasicFunctionality,
+    isSwapsChain,
+    isSwapAndSendDisabledForNetwork,
+    swapsBlockedTokens,
+    nativeCurrencySymbol,
+    nativeCurrencyImageUrl,
+    tokenList,
+    ipfsGateway,
+    bestQuote,
+    showHexDataFlag,
+    sendAsset,
+  ) => ({
+    draftTransaction,
+    isBasicFunctionality,
+    isSwapsChain,
+    isSwapAndSendDisabledForNetwork,
+    swapsBlockedTokens,
+    nativeCurrencySymbol,
+    nativeCurrencyImageUrl,
+    tokenList,
+    ipfsGateway,
+    bestQuote,
+    showHexDataFlag,
+    sendAsset,
+  }),
 );
