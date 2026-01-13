@@ -100,7 +100,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
+import { ReferralTriggerType } from './lib/createReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -1802,7 +1802,7 @@ function onNavigateToTab() {
           controller
             .handleHyperliquidReferral(
               tabId,
-              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+              ReferralTriggerType.OnNavigateConnectedTab,
             )
             .catch((error) => {
               log.error(

@@ -276,9 +276,9 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
-  createHyperliquidReferralMiddleware,
-  HyperliquidPermissionTriggerType,
-} from './lib/createHyperliquidReferralMiddleware';
+  createReferralMiddleware,
+  ReferralTriggerType,
+} from './lib/createReferralMiddleware';
 
 import {
   diffMap,
@@ -6141,7 +6141,7 @@ export default class MetamaskController extends EventEmitter {
    * This can be triggered by connection permission grants or existing connections.
    *
    * @param {number} tabId - The browser tab ID to update.
-   * @param {HyperliquidPermissionTriggerType} triggerType - The trigger type.
+   * @param {ReferralTriggerType} triggerType - The trigger type.
    */
   async handleHyperliquidReferral(tabId, triggerType) {
     const isHyperliquidReferralEnabled =
@@ -6202,7 +6202,7 @@ export default class MetamaskController extends EventEmitter {
           type: HYPERLIQUID_APPROVAL_TYPE,
           requestData: { selectedAddress: activePermittedAccount },
           shouldShowRequest:
-            triggerType === HyperliquidPermissionTriggerType.NewConnection,
+            triggerType === ReferralTriggerType.NewConnection,
         });
 
         if (approvalResponse?.approved) {
@@ -7551,11 +7551,15 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
 
-      // Add Hyperliquid permission monitoring middleware
+      // Add referral partner permission monitoring middleware
       engine.push(
-        createHyperliquidReferralMiddleware(
-          this.handleHyperliquidReferral.bind(this),
-        ),
+        createReferralMiddleware((partner, tabId, triggerType) => {
+          // Currently only Hyperliquid is fully implemented
+          if (partner.id === ReferralPartner.Hyperliquid) {
+            return this.handleHyperliquidReferral(tabId, triggerType);
+          }
+          return Promise.resolve();
+        }),
       );
     }
 
