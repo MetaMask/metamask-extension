@@ -295,7 +295,13 @@ function setSentryClient() {
     tracesSampleRate,
   });
 
-  Sentry.registerSpanErrorInstrumentation();
+  // DISABLED: registerSpanErrorInstrumentation() causes conflicts with LavaMoat
+  // This function instruments Function.prototype methods (bind, apply) which
+  // interferes with LavaMoat's FERAL_FUNCTION creation during runtime initialization.
+  // When LavaMoat tries to create functions, Sentry's wrapper receives a null context
+  // and attempts to access .constructor on it, causing:
+  // TypeError: Cannot read properties of null (reading 'constructor')
+  // Sentry.registerSpanErrorInstrumentation();
   Sentry.init(clientOptions);
 
   setCITags();
