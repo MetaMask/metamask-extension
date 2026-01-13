@@ -62,9 +62,6 @@ export const SendPageRecipientContent = ({
   // Use sendAsset from structured selector if available, otherwise use from draftTransaction
   const effectiveSendAsset = sendAsset || draftSendAsset;
 
-  // Use sendAsset from structured selector if available, otherwise use from draftTransaction
-  const effectiveSendAsset = sendAsset || draftSendAsset;
-
   const memoizedSwapsBlockedTokens = useMemo(() => {
     return new Set(swapsBlockedTokens);
   }, [swapsBlockedTokens]);

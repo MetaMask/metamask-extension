@@ -3615,7 +3615,7 @@ export const selectSendPageData = createSelector(
   getSendErrors,
   isSendFormInvalid,
   (state) =>
-    state.metamask.smartTransactionsState.smartTransactions[
+    state.metamask?.smartTransactionsState?.smartTransactions?.[
       getCurrentChainId(state)
     ] || [],
   (
