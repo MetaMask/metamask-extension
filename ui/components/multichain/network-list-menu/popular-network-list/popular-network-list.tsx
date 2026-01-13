@@ -175,23 +175,24 @@ const PopularNetworkList = ({
                 </Text>
               </Box>
             </Box>
-            <ButtonIcon
-              iconName={IconName.Add}
-              size={ButtonIconSize.Md}
-              data-testid="test-add-button"
-              ariaLabel={t('add')}
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-              // eslint-disable-next-line @typescript-eslint/no-misused-promises
-              onClick={async () => {
-                dispatch(toggleNetworkMenu());
+            <Box data-testid="test-add-button">
+              <ButtonIcon
+                iconName={IconName.Add}
+                size={ButtonIconSize.Md}
+                ariaLabel={t('add')}
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+                // eslint-disable-next-line @typescript-eslint/no-misused-promises
+                onClick={async () => {
+                  dispatch(toggleNetworkMenu());
 
-                // First add the network to user's configuration
-                await dispatch(addNetwork(network));
+                  // First add the network to user's configuration
+                  await dispatch(addNetwork(network));
 
-                // Then enable it in the network list
-                await dispatch(setEnabledNetworks(network.chainId));
-              }}
-            />
+                  // Then enable it in the network list
+                  await dispatch(setEnabledNetworks(network.chainId));
+                }}
+              />
+            </Box>
           </Box>
         ))}
       </Box>

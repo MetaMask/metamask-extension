@@ -430,10 +430,20 @@ exports[`NetworkListMenu renders properly 1`] = `
                       <div
                         class="mm-box mm-box--margin-top-1"
                       >
-                        <span
-                          class="mm-box add-network__warning-icon mm-icon mm-icon--size-sm mm-box--margin-left-2 mm-box--display-inline-block mm-box--color-icon-muted"
-                          style="mask-image: url('./images/icons/info.svg');"
-                        />
+                        <div
+                          class="mm-box mm-box--margin-left-2"
+                        >
+                          <svg
+                            class="inline-block w-4 h-4 text-icon-muted add-network__warning-icon"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                            />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -463,17 +473,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -501,17 +516,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -539,17 +559,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -577,17 +602,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -615,17 +645,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -653,17 +688,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -691,17 +731,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -729,17 +774,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -767,17 +817,22 @@ exports[`NetworkListMenu renders properly 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1576,10 +1631,20 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                       <div
                         class="mm-box mm-box--margin-top-1"
                       >
-                        <span
-                          class="mm-box add-network__warning-icon mm-icon mm-icon--size-sm mm-box--margin-left-2 mm-box--display-inline-block mm-box--color-icon-muted"
-                          style="mask-image: url('./images/icons/info.svg');"
-                        />
+                        <div
+                          class="mm-box mm-box--margin-left-2"
+                        >
+                          <svg
+                            class="inline-block w-4 h-4 text-icon-muted add-network__warning-icon"
+                            fill="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M11 17h2v-6h-2zm1-8q.424 0 .713-.287c.289-.287.287-.43.287-.713s-.096-.52-.287-.712S12.283 7 12 7s-.52.096-.712.288S11 7.717 11 8s.096.52.288.713S11.717 9 12 9m0 13q-2.075 0-3.9-.787c-1.825-.788-2.275-1.238-3.175-2.138S3.313 17.117 2.788 15.9 2 13.383 2 12s.262-2.683.787-3.9 1.238-2.275 2.138-3.175S6.883 3.312 8.1 2.787 10.617 2 12 2s2.683.262 3.9.787 2.275 1.238 3.175 2.138 1.613 1.958 2.138 3.175S22 10.617 22 12s-.262 2.683-.787 3.9-1.238 2.275-2.138 3.175-1.958 1.613-3.175 2.138S13.383 22 12 22m0-2q3.35 0 5.675-2.325C20 15.35 20 14.233 20 12q0-3.35-2.325-5.675C15.35 4 14.233 4 12 4Q8.65 4 6.325 6.325C4 8.65 4 9.767 4 12q0 3.35 2.325 5.675C8.65 20 9.767 20 12 20"
+                            />
+                          </svg>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -1609,17 +1674,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1647,17 +1717,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1685,17 +1760,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1723,17 +1803,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1761,17 +1846,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1799,17 +1889,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1837,17 +1932,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1875,17 +1975,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                   <div
                     class="mm-box new-network-list__list-of-networks mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--justify-content-space-between mm-box--align-items-center"
@@ -1913,17 +2018,22 @@ exports[`NetworkListMenu should match snapshot when editing a network 1`] = `
                         </p>
                       </div>
                     </div>
-                    <div
-                      class="mm-box mm-box--margin-left-1 mm-box--display-flex mm-box--align-items-center"
+                    <button
+                      aria-label="Add"
+                      class="inline-flex items-center justify-center p-0 h-8 w-8 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+                      data-testid="test-add-button"
                     >
-                      <button
-                        class="mm-box mm-text mm-button-base add-network__add-button mm-button-link mm-button-link--size-auto mm-text--body-md-medium mm-box--padding-0 mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-primary-default mm-box--background-color-transparent"
-                        data-testid="test-add-button"
-                        type="link"
+                      <svg
+                        class="inline-block w-5 h-5 text-inherit"
+                        fill="currentColor"
+                        viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg"
                       >
-                        Add
-                      </button>
-                    </div>
+                        <path
+                          d="M11 13H5v-2h6V5h2v6h6v2h-6v6h-2z"
+                        />
+                      </svg>
+                    </button>
                   </div>
                 </div>
               </div>
