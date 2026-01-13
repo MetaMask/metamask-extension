@@ -31,7 +31,7 @@ const useTokenContract = () => {
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
 
   if (!currentConfirmation?.msgParams) {
-    return {};
+    return { chainId: '' };
   }
 
   const {
@@ -42,24 +42,26 @@ const useTokenContract = () => {
   const isPermit = isPermitSignatureRequest(currentConfirmation);
   const isOrder = isOrderSignatureRequest(currentConfirmation);
   const tokenContract = isPermit || isOrder ? verifyingContract : undefined;
+  const chainId = currentConfirmation.chainId as string;
 
-  return { tokenContract, verifyingContract, spender, isPermit };
+  return { tokenContract, verifyingContract, spender, isPermit, chainId };
 };
 
 const TypedSignInfo: React.FC = () => {
   const t = useI18nContext();
   const isSimulationSupported = useTypesSignSimulationEnabledInfo();
   const isBIP44 = useIsBIP44();
-  const { tokenContract, verifyingContract, spender, isPermit } =
+  const { tokenContract, verifyingContract, spender, isPermit, chainId } =
     useTokenContract();
-  const { decimalsNumber } = useGetTokenStandardAndDetails(tokenContract);
+  const { decimalsNumber } = useGetTokenStandardAndDetails(
+    tokenContract,
+    chainId,
+  );
 
   const { currentConfirmation } = useConfirmContext<SignatureRequestType>();
   if (!currentConfirmation?.msgParams) {
     return null;
   }
-
-  const chainId = currentConfirmation.chainId as string;
 
   const toolTipMessage = isSnapId(currentConfirmation.msgParams.origin)
     ? t('requestFromInfoSnap')
