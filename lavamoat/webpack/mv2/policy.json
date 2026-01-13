@@ -861,7 +861,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Headers": true,
         "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
@@ -2247,7 +2246,6 @@
         "buffer": true,
         "eth-method-registry": true,
         "webpack>events": true,
-        "fast-json-patch": true,
         "lodash": true,
         "uuid": true
       }
