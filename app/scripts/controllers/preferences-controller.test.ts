@@ -13,7 +13,6 @@ import {
   MessengerEvents,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
@@ -1187,47 +1186,47 @@ describe('preferences controller', () => {
     describe('addReferralApprovedAccount', () => {
       it('adds an account with approved status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('overwrites existing account status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('adds multiple unique accounts', () => {
         const { controller } = setupController({});
-        const testAccount1 = '0x123' as Hex;
-        const testAccount2 = '0x456' as Hex;
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
 
         controller.addReferralApprovedAccount(partner, testAccount1);
         controller.addReferralApprovedAccount(partner, testAccount2);
-        expect(
-          controller.state.referrals[partner][testAccount1],
-        ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals[partner][testAccount2],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('normalizes addresses to lowercase', () => {
         const { controller } = setupController({});
-        const mixedCaseAccount = '0xAbCdEf123456' as Hex;
+        const mixedCaseAccount = '0xAbCdEf123456';
 
         controller.addReferralApprovedAccount(partner, mixedCaseAccount);
         expect(
@@ -1239,61 +1238,61 @@ describe('preferences controller', () => {
     describe('addReferralPassedAccount', () => {
       it('adds account with passed status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
       });
 
       it('overwrites existing account status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
       });
     });
 
     describe('addReferralDeclinedAccount', () => {
       it('adds account with declined status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
 
       it('overwrites existing account status', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
     });
 
     describe('removeReferralDeclinedAccount', () => {
       it('removes the specified account from referrals completely', () => {
-        const testAccount1 = '0x123' as Hex;
-        const testAccount2 = '0x456' as Hex;
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
         const { controller } = setupController({
           state: {
             referrals: {
@@ -1309,14 +1308,14 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[partner][testAccount1],
         ).toBeUndefined();
-        expect(
-          controller.state.referrals[partner][testAccount2],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
 
       it('handles removing non-existent account gracefully', () => {
-        const testAccount1 = '0x123' as Hex;
-        const testAccount2 = '0x456' as Hex;
+        const testAccount1 = '0x123';
+        const testAccount2 = '0x456';
         const { controller } = setupController({
           state: {
             referrals: {
@@ -1328,9 +1327,9 @@ describe('preferences controller', () => {
         });
 
         controller.removeReferralDeclinedAccount(partner, testAccount2);
-        expect(
-          controller.state.referrals[partner][testAccount1],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
         expect(
           controller.state.referrals[partner][testAccount2],
         ).toBeUndefined();
@@ -1340,7 +1339,7 @@ describe('preferences controller', () => {
     describe('setAccountsReferralApproved', () => {
       it('sets all accounts to approved status', () => {
         const { controller } = setupController({});
-        const testAccounts = ['0x123', '0x456'] as Hex[];
+        const testAccounts = ['0x123', '0x456'];
 
         controller.setAccountsReferralApproved(partner, testAccounts);
         expect(controller.state.referrals[partner]['0x123']).toStrictEqual(
@@ -1352,9 +1351,9 @@ describe('preferences controller', () => {
       });
 
       it('overwrites existing account statuses', () => {
-        const existingAccount = '0x123' as Hex;
-        const newAccount = '0x456' as Hex;
-        const accountsToApprove = [existingAccount, newAccount] as Hex[];
+        const existingAccount = '0x123';
+        const newAccount = '0x456';
+        const accountsToApprove = [existingAccount, newAccount];
 
         const { controller } = setupController({
           state: {
@@ -1370,13 +1369,13 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[partner][existingAccount],
         ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals[partner][newAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][newAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('handles empty array input gracefully', () => {
-        const existingAccount = '0x123' as Hex;
+        const existingAccount = '0x123';
         const { controller } = setupController({
           state: {
             referrals: {
@@ -1396,7 +1395,7 @@ describe('preferences controller', () => {
 
     describe('getReferralStatus', () => {
       it('returns the status for an existing account', () => {
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
         const { controller } = setupController({
           state: {
             referrals: {
@@ -1414,7 +1413,7 @@ describe('preferences controller', () => {
 
       it('returns undefined for non-existent account', () => {
         const { controller } = setupController({});
-        const testAccount = '0x123' as Hex;
+        const testAccount = '0x123';
 
         expect(
           controller.getReferralStatus(partner, testAccount),
@@ -1432,9 +1431,9 @@ describe('preferences controller', () => {
           },
         });
 
-        expect(
-          controller.getReferralStatus(partner, '0xAbCdEf123456' as Hex),
-        ).toBe(ReferralStatus.Approved);
+        expect(controller.getReferralStatus(partner, '0xAbCdEf123456')).toBe(
+          ReferralStatus.Approved,
+        );
       });
     });
 

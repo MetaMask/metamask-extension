@@ -1072,28 +1072,25 @@ export class PreferencesController extends BaseController<
 
   addReferralApprovedAccount(partner: ReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      state.referrals[partner][accountAddress.toLowerCase() as Hex] =
-        ReferralStatus.Approved;
+      state.referrals[partner][accountAddress] = ReferralStatus.Approved;
     });
   }
 
   addReferralPassedAccount(partner: ReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      state.referrals[partner][accountAddress.toLowerCase() as Hex] =
-        ReferralStatus.Passed;
+      state.referrals[partner][accountAddress] = ReferralStatus.Passed;
     });
   }
 
   addReferralDeclinedAccount(partner: ReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      state.referrals[partner][accountAddress.toLowerCase() as Hex] =
-        ReferralStatus.Declined;
+      state.referrals[partner][accountAddress] = ReferralStatus.Declined;
     });
   }
 
   removeReferralDeclinedAccount(partner: ReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      delete state.referrals[partner][accountAddress.toLowerCase() as Hex];
+      delete state.referrals[partner][accountAddress];
     });
   }
 
@@ -1103,8 +1100,7 @@ export class PreferencesController extends BaseController<
   ) {
     this.update((state) => {
       accountAddresses.forEach((address) => {
-        state.referrals[partner][address.toLowerCase() as Hex] =
-          ReferralStatus.Approved;
+        state.referrals[partner][address] = ReferralStatus.Approved;
       });
     });
   }
@@ -1113,6 +1109,6 @@ export class PreferencesController extends BaseController<
     partner: ReferralPartner,
     accountAddress: Hex,
   ): ReferralStatus | undefined {
-    return this.state.referrals[partner][accountAddress.toLowerCase() as Hex];
+    return this.state.referrals[partner][accountAddress];
   }
 }
