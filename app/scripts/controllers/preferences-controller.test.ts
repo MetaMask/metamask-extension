@@ -1190,9 +1190,9 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('overwrites existing account status', () => {
@@ -1200,14 +1200,14 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('adds multiple unique accounts', () => {
@@ -1217,12 +1217,12 @@ describe('preferences controller', () => {
 
         controller.addReferralApprovedAccount(partner, testAccount1);
         controller.addReferralApprovedAccount(partner, testAccount2);
-        expect(
-          controller.state.referrals[partner][testAccount1],
-        ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals[partner][testAccount2],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
     });
 
@@ -1232,9 +1232,9 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
       });
 
       it('overwrites existing account status', () => {
@@ -1242,14 +1242,14 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralApprovedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
       });
     });
 
@@ -1259,9 +1259,9 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
 
       it('overwrites existing account status', () => {
@@ -1269,14 +1269,14 @@ describe('preferences controller', () => {
         const testAccount = '0x123';
 
         controller.addReferralPassedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Passed);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Passed,
+        );
 
         controller.addReferralDeclinedAccount(partner, testAccount);
-        expect(
-          controller.state.referrals[partner][testAccount],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
     });
 
@@ -1299,9 +1299,9 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[partner][testAccount1],
         ).toBeUndefined();
-        expect(
-          controller.state.referrals[partner][testAccount2],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount2]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
       });
 
       it('handles removing non-existent account gracefully', () => {
@@ -1318,9 +1318,9 @@ describe('preferences controller', () => {
         });
 
         controller.removeReferralDeclinedAccount(partner, testAccount2);
-        expect(
-          controller.state.referrals[partner][testAccount1],
-        ).toStrictEqual(ReferralStatus.Declined);
+        expect(controller.state.referrals[partner][testAccount1]).toStrictEqual(
+          ReferralStatus.Declined,
+        );
         expect(
           controller.state.referrals[partner][testAccount2],
         ).toBeUndefined();
@@ -1360,9 +1360,9 @@ describe('preferences controller', () => {
         expect(
           controller.state.referrals[partner][existingAccount],
         ).toStrictEqual(ReferralStatus.Approved);
-        expect(
-          controller.state.referrals[partner][newAccount],
-        ).toStrictEqual(ReferralStatus.Approved);
+        expect(controller.state.referrals[partner][newAccount]).toStrictEqual(
+          ReferralStatus.Approved,
+        );
       });
 
       it('handles empty array input gracefully', () => {

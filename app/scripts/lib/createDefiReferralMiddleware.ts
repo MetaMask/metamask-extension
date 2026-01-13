@@ -80,15 +80,17 @@ export function createDefiReferralMiddleware(
         );
 
       if (isConnectionRequest && arePermissionsGranted) {
-        handleDefiReferral(partner, req.tabId, ReferralTriggerType.NewConnection)
-          .catch((error) => {
-            log.error(
-              `Failed to handle ${partner.name} referral after wallet_requestPermissions grant: `,
-              error,
-            );
-          });
+        handleDefiReferral(
+          partner,
+          req.tabId,
+          ReferralTriggerType.NewConnection,
+        ).catch((error) => {
+          log.error(
+            `Failed to handle ${partner.name} referral after wallet_requestPermissions grant: `,
+            error,
+          );
+        });
       }
     },
   );
 }
-

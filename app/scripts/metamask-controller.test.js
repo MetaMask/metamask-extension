@@ -72,8 +72,6 @@ import {
   DEFI_REFERRAL_PARTNERS,
   DefiReferralPartner,
 } from '../../shared/constants/defi-referrals';
-
-const HYPERLIQUID_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -84,6 +82,9 @@ import {
   getPermittedAccountsForScopesByOrigin,
 } from './controllers/permissions';
 import MetaMaskController from './metamask-controller';
+
+const HYPERLIQUID_ORIGIN =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
 
 const { Ganache } = require('../../test/e2e/seeder/ganache');
 

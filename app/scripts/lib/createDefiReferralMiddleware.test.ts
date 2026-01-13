@@ -16,7 +16,8 @@ jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
 
-const HYPERLIQUID_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
+const HYPERLIQUID_ORIGIN =
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
 
 const createMockRequest = (origin: string): ExtendedJSONRPCRequest => ({
   id: 1,
@@ -52,7 +53,9 @@ describe('createDefiReferralMiddleware', () => {
     const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -78,7 +81,9 @@ describe('createDefiReferralMiddleware', () => {
     const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -108,7 +113,9 @@ describe('createDefiReferralMiddleware', () => {
     };
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -145,7 +152,9 @@ describe('createDefiReferralMiddleware', () => {
     };
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -167,7 +176,9 @@ describe('createDefiReferralMiddleware', () => {
     const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -200,7 +211,9 @@ describe('createDefiReferralMiddleware', () => {
     };
 
     const mockNext = jest.fn((cb) => {
-      if (cb) cb();
+      if (cb) {
+        cb();
+      }
     });
 
     await new Promise<void>((resolve) => {
@@ -215,4 +228,3 @@ describe('createDefiReferralMiddleware', () => {
     expect(mockHandleReferral).not.toHaveBeenCalled();
   });
 });
-

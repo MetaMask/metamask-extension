@@ -29,27 +29,29 @@ export type DefiReferralPartnerConfig = {
 /**
  * Configuration for all supported Defi referral partners
  */
-export const DEFI_REFERRAL_PARTNERS: Record<DefiReferralPartner, DefiReferralPartnerConfig> =
-  {
-    [DefiReferralPartner.Hyperliquid]: {
-      id: DefiReferralPartner.Hyperliquid,
-      name: 'Hyperliquid',
-      origin: 'https://app.hyperliquid.xyz',
-      referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
-      learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
-      approvalType: 'hyperliquid_referral_consent',
-      featureFlagKey: 'extensionUxDefiReferral',
-    },
-    // [DefiReferralPartner.AsterDex]: {
-    //   id: DefiReferralPartner.AsterDex,
-    //   name: 'AsterDex',
-    //   origin: 'https://www.asterdex.com',
-    //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
-    //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
-    //   approvalType: 'asterdex_referral_consent',
-    //   featureFlagKey: 'tbd',
-    // },
-  };
+export const DEFI_REFERRAL_PARTNERS: Record<
+  DefiReferralPartner,
+  DefiReferralPartnerConfig
+> = {
+  [DefiReferralPartner.Hyperliquid]: {
+    id: DefiReferralPartner.Hyperliquid,
+    name: 'Hyperliquid',
+    origin: 'https://app.hyperliquid.xyz',
+    referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
+    learnMoreUrl: 'https://hyperliquid.gitbook.io/hyperliquid-docs/referrals',
+    approvalType: 'hyperliquid_referral_consent',
+    featureFlagKey: 'extensionUxDefiReferral',
+  },
+  // [DefiReferralPartner.AsterDex]: {
+  //   id: DefiReferralPartner.AsterDex,
+  //   name: 'AsterDex',
+  //   origin: 'https://www.asterdex.com',
+  //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
+  //   learnMoreUrl: 'https://docs.asterdex.com/product/aster-perpetuals/referral-program',
+  //   approvalType: 'asterdex_referral_consent',
+  //   featureFlagKey: 'tbd',
+  // },
+};
 
 /**
  * Helper to look up a Defi referral partner configuration by origin URL.
@@ -60,7 +62,7 @@ export const DEFI_REFERRAL_PARTNERS: Record<DefiReferralPartner, DefiReferralPar
 export function getPartnerByOrigin(
   origin: string,
 ): DefiReferralPartnerConfig | undefined {
-  return Object.values(DEFI_REFERRAL_PARTNERS).find((partner) =>
-    origin === partner.origin,
+  return Object.values(DEFI_REFERRAL_PARTNERS).find(
+    (partner) => origin === partner.origin,
   );
 }

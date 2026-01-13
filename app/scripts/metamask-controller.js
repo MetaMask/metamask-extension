@@ -6196,8 +6196,7 @@ export default class MetamaskController extends EventEmitter {
           origin: partner.origin,
           type: partner.approvalType,
           requestData: { selectedAddress: activePermittedAccount },
-          shouldShowRequest:
-            triggerType === ReferralTriggerType.NewConnection,
+          shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
         });
 
         if (approvalResponse?.approved) {
@@ -6237,7 +6236,11 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldRedirect) {
-      await this._handleDefiReferralRedirect(partner, tabId, activePermittedAccount);
+      await this._handleDefiReferralRedirect(
+        partner,
+        tabId,
+        activePermittedAccount,
+      );
     }
   }
 
@@ -6271,9 +6274,9 @@ export default class MetamaskController extends EventEmitter {
     permittedAccounts,
     declinedAccounts,
   ) {
-    console.log("getting here?")
+    console.log('getting here?');
     if (declinedAccounts.length === 0) {
-      console.log("getting here? 2")
+      console.log('getting here? 2');
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
@@ -6282,7 +6285,7 @@ export default class MetamaskController extends EventEmitter {
         permittedAccounts,
       );
     } else {
-      console.log("getting here? 3")
+      console.log('getting here? 3');
       this.preferencesController.addReferralApprovedAccount(
         partner.id,
         activePermittedAccount,
@@ -9529,4 +9532,3 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 }
-

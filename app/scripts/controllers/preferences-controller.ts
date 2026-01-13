@@ -1071,7 +1071,10 @@ export class PreferencesController extends BaseController<
   }
 
   // Defi Referral methods
-  addReferralApprovedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
+  addReferralApprovedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
       state.referrals[partner][accountAddress] = ReferralStatus.Approved;
     });
@@ -1083,13 +1086,19 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  addReferralDeclinedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
+  addReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
       state.referrals[partner][accountAddress] = ReferralStatus.Declined;
     });
   }
 
-  removeReferralDeclinedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
+  removeReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
       delete state.referrals[partner][accountAddress];
     });
