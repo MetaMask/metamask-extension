@@ -28,6 +28,8 @@ import {
 } from '../../components/app/perps/mocks';
 import { PositionCard } from '../../components/app/perps/position-card';
 import { OrderCard } from '../../components/app/perps/order-card';
+import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
+import { AvatarTokenSize } from '../../components/component-library';
 import type { PerpsMarketData } from '../../components/app/perps/types';
 import '../../components/app/perps/index.scss';
 
@@ -157,46 +159,54 @@ const PerpsMarketDetailPage: React.FC = () => {
       className="main-container asset__container"
       data-testid="perps-market-detail-page"
     >
-      {/* Header with back button */}
+      {/* Header */}
       <Box
-        paddingLeft={2}
         display={Display.Flex}
-        paddingBottom={4}
-        paddingTop={4}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={4}
+        paddingBottom={4}
+        gap={2}
       >
+        {/* Back Button */}
         <ButtonIcon
           data-testid="perps-market-detail-back-button"
           color={IconColor.iconAlternative}
-          marginRight={1}
-          size={ButtonIconSize.Sm}
+          size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
           onClick={handleBackClick}
+          style={{ marginRight: '-4px' }}
         />
-        <Text variant={TextVariant.headingMd} paddingLeft={2}>
-          {displayName}
-        </Text>
-      </Box>
 
-      {/* Market Info Section */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
-          alignItems={AlignItems.center}
-        >
-          <Box>
+        {/* Token Logo */}
+        <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
+
+        {/* Symbol and Price */}
+        <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+          {/* Symbol */}
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+            {displayName}-USD
+          </Text>
+
+          {/* Price and Change Row */}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.baseline}
+            gap={1}
+          >
             <Text
-              variant={TextVariant.headingLg}
-              fontWeight={FontWeight.Bold}
+              variant={TextVariant.bodySm}
+              fontWeight={FontWeight.Medium}
               data-testid="perps-market-detail-price"
             >
               {market.price}
             </Text>
             <Text
-              variant={TextVariant.bodySm}
+              variant={TextVariant.bodyXs}
               color={
                 isPositiveChange
                   ? TextColor.successDefault
@@ -207,15 +217,22 @@ const PerpsMarketDetailPage: React.FC = () => {
               {market.change24h} ({market.change24hPercent})
             </Text>
           </Box>
-          <Box>
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
-            >
-              Max Leverage: {market.maxLeverage}
-            </Text>
-          </Box>
         </Box>
+
+        {/* Spacer */}
+        <Box style={{ flex: 1 }} />
+
+        {/* Favorite Star */}
+        <ButtonIcon
+          data-testid="perps-market-detail-favorite-button"
+          color={IconColor.iconAlternative}
+          size={ButtonIconSize.Md}
+          ariaLabel="Add to favorites"
+          iconName={IconName.Star}
+          onClick={() => {
+            // TODO: Handle favorite toggle
+          }}
+        />
       </Box>
 
       {/* Chart Placeholder */}
@@ -256,7 +273,6 @@ const PerpsMarketDetailPage: React.FC = () => {
           >
             Position
           </Text>
-          <PositionCard position={position} />
 
           {/* Position Details Cards */}
           <Box
