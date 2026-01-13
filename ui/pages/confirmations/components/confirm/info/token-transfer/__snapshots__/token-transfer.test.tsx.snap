@@ -62,18 +62,63 @@ exports[`TokenTransferInfo renders correctly 1`] = `
               class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
             >
               <div
-                class="name name__clickable name__missing"
+                class="name name__recognized_unsaved"
               >
-                <span
-                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
-                  style="mask-image: url('./images/icons/question.svg');"
-                />
-                <p
-                  class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+                <div
+                  class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section h-4 w-4 rounded-md"
                 >
-                  0x2e0D7...5d09B
+                  <div
+                    class="flex [&>div]:!rounded-none"
+                  >
+                    <div
+                      style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 16px; height: 16px; display: inline-block; background: rgb(250, 58, 0);"
+                    >
+                      <svg
+                        height="16"
+                        width="16"
+                        x="0"
+                        y="0"
+                      >
+                        <rect
+                          fill="#18CDF2"
+                          height="16"
+                          transform="translate(-0.52419675189697 -1.65214203473025) rotate(328.9 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#035E56"
+                          height="16"
+                          transform="translate(-9.14923085441602 5.29623093587430) rotate(176.2 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                        <rect
+                          fill="#F26602"
+                          height="16"
+                          transform="translate(8.33392100911196 -7.10256986149854) rotate(468.9 8.00000000000000 8.00000000000000)"
+                          width="16"
+                          x="0"
+                          y="0"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                </div>
+                <p
+                  class="mm-box mm-text name__name mm-text--body-md mm-box--color-text-default"
+                >
+                  Account 1
                 </p>
               </div>
+              <p
+                class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
+                style="text-align: right;"
+              >
+                Wallet 1
+              </p>
             </div>
           </div>
         </div>

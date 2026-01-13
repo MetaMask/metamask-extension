@@ -6,7 +6,11 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
-import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
+import {
+  SnapControllerStateChangeEvent,
+  SnapControllerGetStateAction,
+  HandleSnapRequest as SnapControllerHandleRequestAction,
+} from '@metamask/snaps-controllers';
 import {
   KeyringControllerWithKeyringAction,
   KeyringControllerGetStateAction,
@@ -22,7 +26,6 @@ import {
   RemoteFeatureFlagControllerStateChangeEvent,
   RemoteFeatureFlagControllerGetStateAction,
 } from '@metamask/remote-feature-flag-controller';
-import { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
@@ -33,20 +36,21 @@ type Actions =
   | AccountsControllerListMultichainAccountsAction
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | SnapControllerHandleRequest
+  | SnapControllerGetStateAction
+  | SnapControllerHandleRequestAction
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringAction
   | KeyringControllerAddNewKeyringAction
   | KeyringControllerGetKeyringsByTypeAction
   | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
-  | ErrorReportingServiceCaptureExceptionAction;
+  | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | RemoteFeatureFlagControllerStateChangeEvent;
+  | RemoteFeatureFlagControllerStateChangeEvent
+  | SnapControllerStateChangeEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
@@ -75,6 +79,7 @@ export function getMultichainAccountServiceMessenger(
     messenger: serviceMessenger,
     events: [
       'KeyringController:stateChange',
+      'SnapController:stateChange',
       'AccountsController:accountAdded',
       'AccountsController:accountRemoved',
       'RemoteFeatureFlagController:stateChange',
@@ -83,6 +88,7 @@ export function getMultichainAccountServiceMessenger(
       'AccountsController:listMultichainAccounts',
       'AccountsController:getAccountByAddress',
       'AccountsController:getAccount',
+      'SnapController:getState',
       'SnapController:handleRequest',
       'KeyringController:getState',
       'KeyringController:withKeyring',
@@ -90,7 +96,6 @@ export function getMultichainAccountServiceMessenger(
       'KeyringController:getKeyringsByType',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
-      'ErrorReportingService:captureException',
     ],
   });
   return serviceMessenger;

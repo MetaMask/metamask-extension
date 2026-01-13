@@ -13,6 +13,7 @@ import {
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
   getTokenSortConfig,
+  getUseExternalServices,
 } from '../../../../selectors';
 import { endTrace, TraceName } from '../../../../../shared/lib/trace';
 import { type TokenWithFiatAmount } from '../types';
@@ -77,6 +78,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getIsMultichainAccountsState2Enabled,
   );
 
+  const useExternalServices = useSelector(getUseExternalServices);
+
   const allEnabledNetworksForAllNamespaces = useSelector(
     getAllEnabledNetworksForAllNamespaces,
   );
@@ -92,9 +95,18 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
         },
       ]);
 
-      return sortAssets([...filteredAssets], tokenSortConfig);
-    }
+      // Filter out non-EVM assets when basic functionality toggle is OFF
+      // Exception: Keep assets for the currently selected non-EVM chain
+      const finalAssets = useExternalServices
+        ? filteredAssets
+        : filteredAssets.filter(
+            (asset) =>
+              isEvmChainId(asset.chainId) ||
+              (!isEvm && asset.chainId === currentNetwork.chainId),
+          );
 
+      return sortAssets([...finalAssets], tokenSortConfig);
+    }
     const accountAssetsPreSort = Object.entries(accountGroupIdAssets).flatMap(
       ([chainId, assets]) => {
         if (!allEnabledNetworksForAllNamespaces.includes(chainId)) {
@@ -119,7 +131,17 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
       tokenSortConfig,
     );
 
-    return accountAssets.map((asset) => {
+    // Filter out non-EVM assets when basic functionality toggle is OFF
+    // Exception: Keep assets for the currently selected non-EVM chain
+    const finalAccountAssets = useExternalServices
+      ? accountAssets
+      : accountAssets.filter(
+          (asset) =>
+            isEvmChainId(asset.chainId) ||
+            (!isEvm && asset.chainId === currentNetwork.chainId),
+        );
+
+    return finalAccountAssets.map((asset) => {
       const token: TokenWithFiatAmount = {
         ...asset,
         tokenFiatAmount: asset.fiat?.balance,
@@ -143,6 +165,8 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     // newTokensImported included in deps, but not in hook's logic
     newTokensImported,
     allEnabledNetworksForAllNamespaces,
+    shouldHideZeroBalanceTokens,
+    useExternalServices,
   ]);
 
   const virtualizer = useVirtualizer({
