@@ -15,7 +15,9 @@ import {
   Box,
   ButtonIcon,
   ButtonIconSize,
+  Icon,
   IconName,
+  IconSize,
   Text,
 } from '../../components/component-library';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -433,100 +435,272 @@ const PerpsMarketDetailPage: React.FC = () => {
               </Text>
             </Box>
           </Box>
-        </Box>
-      )}
 
-      {/* Orders Section */}
-      {orders.length > 0 && (
-        <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+          {/* Details Section */}
           <Text
             variant={TextVariant.headingSm}
             fontWeight={FontWeight.Medium}
+            paddingTop={4}
             paddingBottom={2}
           >
-            Open Orders ({orders.length})
+            Details
           </Text>
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {orders.map((order) => (
-              <Box key={order.orderId} paddingBottom={2}>
-                <OrderCard order={order} />
-              </Box>
-            ))}
-          </Box>
-        </Box>
-      )}
+          <div className="perps-details-list">
+            {/* Direction Row */}
+            <div className="perps-details-list__row perps-details-list__row--first">
+              <span className="perps-details-list__label">Direction</span>
+              <span
+                className={`perps-details-list__value ${
+                  parseFloat(position.size) >= 0
+                    ? 'perps-details-list__value--long'
+                    : 'perps-details-list__value--short'
+                }`}
+              >
+                {parseFloat(position.size) >= 0 ? 'LONG' : 'SHORT'}
+              </span>
+            </div>
 
-      {/* Market Statistics Section */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Text
-          variant={TextVariant.headingSm}
-          fontWeight={FontWeight.Medium}
-          paddingBottom={2}
-        >
-          Market Statistics
-        </Text>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{
-            backgroundColor: 'var(--color-background-alternative)',
-            borderRadius: '8px',
-            padding: '16px',
-          }}
-        >
+            {/* Entry Price Row */}
+            <div className="perps-details-list__row">
+              <span className="perps-details-list__label">Entry price</span>
+              <span className="perps-details-list__value">
+                ${position.entryPrice}
+              </span>
+            </div>
+
+            {/* Liquidation Price Row */}
+            <div className="perps-details-list__row">
+              <span className="perps-details-list__label">
+                Liquidation price
+              </span>
+              <span className="perps-details-list__value">
+                {position.liquidationPrice
+                  ? `$${position.liquidationPrice}`
+                  : '-'}
+              </span>
+            </div>
+
+            {/* Funding Payments Row */}
+            <div className="perps-details-list__row perps-details-list__row--last">
+              <span className="perps-details-list__label">
+                Funding payments
+              </span>
+              <span className="perps-details-list__value">
+                ${position.cumulativeFunding.sinceOpen}
+              </span>
+            </div>
+          </div>
+
+          {/* Orders Section */}
+          {orders.length > 0 && (
+            <>
+              <Text
+                variant={TextVariant.headingSm}
+                fontWeight={FontWeight.Medium}
+                paddingTop={4}
+                paddingBottom={2}
+              >
+                Orders
+              </Text>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                style={{ gap: '1px' }}
+              >
+                {orders.map((order, index) => (
+                  <div
+                    key={order.orderId}
+                    style={{
+                      borderRadius:
+                        orders.length === 1
+                          ? '12px'
+                          : index === 0
+                            ? '12px 12px 0 0'
+                            : index === orders.length - 1
+                              ? '0 0 12px 12px'
+                              : '0',
+                      overflow: 'hidden',
+                    }}
+                  >
+                    <OrderCard order={order} />
+                  </div>
+                ))}
+              </Box>
+            </>
+          )}
+
+          {/* Stats Section */}
+          <Text
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Medium}
+            paddingTop={4}
+            paddingBottom={2}
+          >
+            Stats
+          </Text>
+          <div className="perps-details-list">
+            {/* 24h Volume Row */}
+            <div
+              className={`perps-details-list__row perps-details-list__row--first ${
+                !market.openInterest && market.fundingRate === undefined
+                  ? 'perps-details-list__row--last'
+                  : ''
+              }`}
+            >
+              <span className="perps-details-list__label">24h Volume</span>
+              <span className="perps-details-list__value">{market.volume}</span>
+            </div>
+
+            {/* Open Interest Row */}
+            {market.openInterest && (
+              <div
+                className={`perps-details-list__row ${
+                  market.fundingRate === undefined
+                    ? 'perps-details-list__row--last'
+                    : ''
+                }`}
+              >
+                <span className="perps-details-list__label">Open Interest</span>
+                <span className="perps-details-list__value">
+                  {market.openInterest}
+                </span>
+              </div>
+            )}
+
+            {/* Funding Rate Row */}
+            {market.fundingRate !== undefined && (
+              <div className="perps-details-list__row perps-details-list__row--last">
+                <span className="perps-details-list__label">Funding Rate</span>
+                <span
+                  className={`perps-details-list__value ${
+                    market.fundingRate >= 0
+                      ? 'perps-details-list__value--long'
+                      : 'perps-details-list__value--short'
+                  }`}
+                >
+                  {(market.fundingRate * 100).toFixed(4)}%
+                </span>
+              </div>
+            )}
+          </div>
+
+          {/* Recent Activity Section */}
+          <Text
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Medium}
+            paddingTop={4}
+            paddingBottom={2}
+          >
+            Recent Activity
+          </Text>
           <Box
             display={Display.Flex}
-            justifyContent={JustifyContent.spaceBetween}
-            paddingBottom={2}
+            flexDirection={FlexDirection.Column}
+            style={{ gap: '1px' }}
           >
-            <Text
-              variant={TextVariant.bodySm}
-              color={TextColor.textAlternative}
+            {/* Activity Item 1 - Opened long */}
+            <div
+              className="perps-activity-item perps-activity-item--first"
+              role="button"
+              tabIndex={0}
             >
-              24h Volume
-            </Text>
-            <Text variant={TextVariant.bodySm}>{market.volume}</Text>
+              <PerpsTokenLogo
+                symbol={position.coin}
+                size={AvatarTokenSize.Md}
+              />
+              <div className="perps-activity-item__left">
+                <span className="perps-activity-item__action">Opened long</span>
+                <span className="perps-activity-item__amount">
+                  {Math.abs(parseFloat(position.size)).toFixed(5)} {displayName}
+                </span>
+              </div>
+              <span className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+                +$125.00
+              </span>
+            </div>
+
+            {/* Activity Item 2 - Increased position */}
+            <div className="perps-activity-item" role="button" tabIndex={0}>
+              <PerpsTokenLogo
+                symbol={position.coin}
+                size={AvatarTokenSize.Md}
+              />
+              <div className="perps-activity-item__left">
+                <span className="perps-activity-item__action">
+                  Increased position
+                </span>
+                <span className="perps-activity-item__amount">
+                  0.50000 {displayName}
+                </span>
+              </div>
+              <span className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+                +$45.20
+              </span>
+            </div>
+
+            {/* Activity Item 3 - Closed short */}
+            <div
+              className="perps-activity-item perps-activity-item--last"
+              role="button"
+              tabIndex={0}
+            >
+              <PerpsTokenLogo
+                symbol={position.coin}
+                size={AvatarTokenSize.Md}
+              />
+              <div className="perps-activity-item__left">
+                <span className="perps-activity-item__action">
+                  Closed short
+                </span>
+                <span className="perps-activity-item__amount">
+                  1.25000 {displayName}
+                </span>
+              </div>
+              <span className="perps-activity-item__pnl perps-activity-item__pnl--loss">
+                -$32.50
+              </span>
+            </div>
           </Box>
-          {market.openInterest && (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-              paddingBottom={2}
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                Open Interest
-              </Text>
-              <Text variant={TextVariant.bodySm}>{market.openInterest}</Text>
-            </Box>
-          )}
-          {market.fundingRate !== undefined && (
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.spaceBetween}
-            >
-              <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
-              >
-                Funding Rate
-              </Text>
-              <Text
-                variant={TextVariant.bodySm}
-                color={
-                  market.fundingRate >= 0
-                    ? TextColor.successDefault
-                    : TextColor.errorDefault
-                }
-              >
-                {(market.fundingRate * 100).toFixed(4)}%
-              </Text>
-            </Box>
-          )}
+
+          {/* Learn Section */}
+          <Box
+            className="perps-position-detail-card perps-position-detail-card--pressable"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            marginTop={4}
+            role="button"
+            tabIndex={0}
+            onClick={() => {
+              // TODO: Navigate to learn page
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                // TODO: Navigate to learn page
+              }
+            }}
+          >
+            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+              Learn the basics of perps
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.iconAlternative}
+            />
+          </Box>
+
+          {/* Disclaimer */}
+          <Text
+            variant={TextVariant.bodyXs}
+            color={TextColor.textAlternative}
+            paddingTop={4}
+          >
+            {t('perpsDisclaimer')}
+          </Text>
         </Box>
-      </Box>
+      )}
     </Box>
   );
 };
