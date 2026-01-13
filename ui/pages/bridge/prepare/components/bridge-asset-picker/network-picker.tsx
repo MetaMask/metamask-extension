@@ -6,10 +6,7 @@ import {
   IconName,
 } from '@metamask/design-system-react';
 import { type CaipChainId } from '@metamask/utils';
-import {
-  BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
-} from '../../../../../../shared/constants/bridge';
+import { BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP } from '../../../../../../shared/constants/bridge';
 import {
   Popover,
   PopoverRole,
@@ -84,14 +81,14 @@ export const NetworkPicker = ({
         <NetworkListItem
           selected={Boolean(selectedChainId === chainId)}
           key={chainId}
-          name={name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId]}
+          name={name}
           iconSrc={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId]}
           chainId={chainId}
+          focus={false}
           onClick={() => {
             onNetworkChange(chainId);
           }}
           disabled={disabledChainId === chainId}
-          focus={false}
         />
       ))}
     </Popover>

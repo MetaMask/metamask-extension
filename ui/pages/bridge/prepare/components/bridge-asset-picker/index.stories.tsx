@@ -63,9 +63,10 @@ export const BridgeAssetPickerStory = () => {
         onAssetChange={(asset) => {
           dispatch(setFromToken(asset));
         }}
-        chainIds={networks.map((network) =>
-          formatChainIdToCaip(network.chainId),
-        )}
+        chains={networks.map((network) => ({
+          chainId: formatChainIdToCaip(network.chainId),
+          name: network.name,
+        }))}
         accountAddress={account?.address}
       />
       <SelectedAssetButton
