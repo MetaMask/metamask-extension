@@ -1,7 +1,7 @@
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import AddTokenConfirmation from '../../page-objects/pages/confirmations/redesign/add-token-confirmations';
+import AddTokenConfirmation from '../../page-objects/pages/confirmations/add-token-confirmations';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
