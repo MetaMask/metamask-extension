@@ -31,6 +31,7 @@ import {
   mockHip3Markets,
 } from '../../components/app/perps/mocks';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
+import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
 import '../../components/app/perps/index.scss';
 
 /**
@@ -127,8 +128,8 @@ const PerpsHomePage: React.FC = () => {
 
         {/* Title */}
         <Text
-          variant={TextVariant.headingMd}
-          fontWeight={FontWeight.Medium}
+          variant={TextVariant.headingLg}
+          fontWeight={FontWeight.Bold}
           style={{ flex: 1 }}
         >
           Perps
@@ -142,6 +143,21 @@ const PerpsHomePage: React.FC = () => {
           ariaLabel="Search"
           iconName={IconName.Search}
           onClick={handleSearchClick}
+        />
+      </Box>
+
+      {/* Balance Actions */}
+      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        <PerpsMarketBalanceActions
+          onAddFunds={() => {
+            // TODO: Navigate to add funds flow
+          }}
+          onWithdraw={() => {
+            // TODO: Navigate to withdraw flow
+          }}
+          onLearnMore={() => {
+            // TODO: Navigate to learn more
+          }}
         />
       </Box>
 
