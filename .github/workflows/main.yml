@@ -535,7 +535,7 @@ jobs:
   trigger-regression-validation:
     name: Trigger Regression Validation
     # Only run for release branches, not forks
-    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
     needs:
       - build-dist-browserify
     runs-on: ubuntu-latest
@@ -546,13 +546,14 @@ jobs:
           DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
         run: |
           # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
-          VERSION="${GITHUB_REF_NAME#release/}"
+          # Use BRANCH env var which correctly handles both push and pull_request events
+          VERSION="${BRANCH#release/}"
 
           echo "Triggering regression validation..."
           echo "Run ID: ${{ github.run_id }}"
-          echo "Branch: ${{ github.ref_name }}"
+          echo "Branch: $BRANCH"
           echo "Version: $VERSION"
-          echo "Commit SHA: ${{ github.sha }}"
+          echo "Commit SHA: $HEAD_COMMIT_HASH"
 
           curl -X POST \
             -H "Accept: application/vnd.github.v3+json" \
@@ -563,8 +564,8 @@ jobs:
               "client_payload": {
                 "run_id": "${{ github.run_id }}",
                 "version": "'"$VERSION"'",
-                "branch": "${{ github.ref_name }}",
-                "commit_sha": "${{ github.sha }}"
+                "branch": "'"$BRANCH"'",
+                "commit_sha": "'"$HEAD_COMMIT_HASH"'"
               }
             }'
 
