@@ -7411,6 +7411,15 @@
   "stillGettingMessage": {
     "message": "Still getting this message?"
   },
+  "storageErrorAction": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "storageErrorDescription": {
+    "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
+  },
+  "storageErrorTitle": {
+    "message": "We couldn't save your data"
+  },
   "strong": {
     "message": "Strong"
   },
