@@ -31,6 +31,9 @@ import {
 import { PositionCard } from '../../components/app/perps/position-card';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
+import { PerpsCandlestickChart } from '../../components/app/perps/perps-candlestick-chart';
+import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
+import { CandlePeriod } from '../../components/app/perps/constants/chartConfig';
 import { AvatarTokenSize } from '../../components/component-library';
 import type { PerpsMarketData } from '../../components/app/perps/types';
 import '../../components/app/perps/index.scss';
@@ -237,28 +240,27 @@ const PerpsMarketDetailPage: React.FC = () => {
         />
       </Box>
 
-      {/* Chart Placeholder */}
+      {/* Candlestick Chart */}
       <Box
         paddingLeft={4}
         paddingRight={4}
-        paddingBottom={4}
-        data-testid="perps-market-detail-chart-placeholder"
+        data-testid="perps-market-detail-chart"
       >
-        <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          style={{
-            height: '200px',
-            backgroundColor: 'var(--color-background-alternative)',
-            borderRadius: '8px',
-          }}
-        >
-          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
-            Chart coming soon
-          </Text>
-        </Box>
+        <PerpsCandlestickChart height={250} />
       </Box>
+
+      {/* Candle Period Selector */}
+      <PerpsCandlePeriodSelector
+        selectedPeriod={CandlePeriod.FIVE_MINUTES}
+        onPeriodChange={(period) => {
+          // TODO: Handle period change
+          console.log('Period changed to:', period);
+        }}
+        onMorePress={() => {
+          // TODO: Show more periods modal
+          console.log('More pressed');
+        }}
+      />
 
       {/* Divider */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>

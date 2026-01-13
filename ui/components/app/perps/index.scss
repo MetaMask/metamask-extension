@@ -191,3 +191,37 @@
   }
 }
 
+.perps-candle-period-button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color 0.15s ease-in-out, opacity 0.15s ease-in-out;
+
+  &:hover {
+    background-color: var(--color-background-muted);
+  }
+
+  &:active {
+    opacity: 0.7;
+  }
+
+  &--selected {
+    background-color: var(--color-background-muted);
+
+    &:hover {
+      background-color: var(--color-background-muted-hover);
+    }
+  }
+
+  &--more {
+    gap: 4px;
+  }
+}
+
