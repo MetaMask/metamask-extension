@@ -8,6 +8,7 @@ import { SmartTransactionStatuses } from '@metamask/smart-transactions-controlle
 import {
   PRIORITY_STATUS_HASH,
   PENDING_STATUS_HASH,
+  EXCLUDED_TRANSACTION_TYPES,
 } from '../helpers/constants/transactions';
 import txHelper from '../helpers/utils/tx-helper';
 import { SmartTransactionStatus } from '../../shared/constants/transaction';
@@ -218,8 +219,7 @@ export const selectedAddressTxListSelectorAllChain = createSelector(
       .filter(
         ({ txParams }) => txParams.from === selectedInternalAccount.address,
       )
-      .filter(({ type }) => type !== TransactionType.incoming)
-      .filter(({ type }) => type !== TransactionType.gasPayment)
+      .filter(({ type }) => !EXCLUDED_TRANSACTION_TYPES.has(type))
       .concat(smTransactions);
   },
 );
@@ -233,8 +233,7 @@ export const selectedAddressTxListSelector = createSelector(
       .filter(
         ({ txParams }) => txParams.from === selectedInternalAccount.address,
       )
-      .filter(({ type }) => type !== TransactionType.incoming)
-      .filter(({ type }) => type !== TransactionType.gasPayment)
+      .filter(({ type }) => !EXCLUDED_TRANSACTION_TYPES.has(type))
       .concat(smTransactions);
   },
 );

@@ -36,6 +36,7 @@ import {
   TOKEN_CATEGORY_HASH,
   TransactionKind,
   PENDING_STATUS_HASH,
+  EXCLUDED_TRANSACTION_TYPES,
 } from '../../../helpers/constants/transactions';
 import {
   SmartTransactionStatus,
@@ -507,8 +508,7 @@ export default function UnifiedTransactionList({
     if (needsGroupEvmTransactions) {
       const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
-        .filter((tx) => tx.type !== TransactionType.gasPayment)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => tx.status in PENDING_STATUS_HASH);
 
       return groupAndSortTransactionsByNonce(evmTxs);
@@ -532,8 +532,7 @@ export default function UnifiedTransactionList({
 
       const evmTxs = [...allTransactions, ...smartTxs]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
-        .filter((tx) => tx.type !== TransactionType.gasPayment)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
         .filter(
           (tx) =>
