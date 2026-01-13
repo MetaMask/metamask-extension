@@ -522,7 +522,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       overflow: 'hidden',
                     }}
                   >
-                    <OrderCard order={order} />
+                    <OrderCard order={order} variant="muted" />
                   </div>
                 ))}
               </Box>

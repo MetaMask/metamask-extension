@@ -10,6 +10,8 @@ export interface OrderCardProps {
   order: Order;
   /** Optional click handler override. If not provided, navigates to market detail page. */
   onClick?: (order: Order) => void;
+  /** Visual variant - 'default' for perps tab, 'muted' for detail page */
+  variant?: 'default' | 'muted';
 }
 
 /**
@@ -43,7 +45,11 @@ const getDisplayName = (symbol: string): string => {
  * Two rows: symbol/type/side + size on left, price + status on right
  * Clicking the card navigates to the market detail page for that symbol
  */
-export const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({
+  order,
+  onClick,
+  variant = 'default',
+}) => {
   const navigate = useNavigate();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
@@ -60,7 +66,9 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
 
   return (
     <div
-      className="order-card order-card--clickable"
+      className={classnames('order-card order-card--clickable', {
+        'order-card--muted': variant === 'muted',
+      })}
       data-testid={`order-card-${order.orderId}`}
       onClick={handleClick}
       onKeyDown={(e) => {

@@ -37,7 +37,13 @@
   &__cards-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 0;
+
+    .position-card,
+    .order-card {
+      border-radius: 0;
+      margin: 0;
+    }
   }
 
   &__empty-state {
