@@ -6274,9 +6274,7 @@ export default class MetamaskController extends EventEmitter {
     permittedAccounts,
     declinedAccounts,
   ) {
-    console.log('getting here?');
     if (declinedAccounts.length === 0) {
-      console.log('getting here? 2');
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
@@ -6285,7 +6283,6 @@ export default class MetamaskController extends EventEmitter {
         permittedAccounts,
       );
     } else {
-      console.log('getting here? 3');
       this.preferencesController.addReferralApprovedAccount(
         partner.id,
         activePermittedAccount,
