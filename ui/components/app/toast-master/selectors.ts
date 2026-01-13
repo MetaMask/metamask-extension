@@ -51,6 +51,8 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
+      | 'showStorageErrorToast'
+      | 'isUnlocked'
     >
   >;
 };
@@ -238,6 +240,24 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - showStorageErrorToast flag is true
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { showStorageErrorToast, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
 }
 
 /**
