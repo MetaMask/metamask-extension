@@ -41,7 +41,7 @@ export type BridgeState = {
 export type TokenPayload = {
   payload: Omit<BridgeToken, 'chainId' | 'balance'> & {
     address?: string;
-    chainId?: number | CaipChainId | Hex;
+    chainId?: number | CaipChainId | Hex | string;
     balance?: string;
   };
 };

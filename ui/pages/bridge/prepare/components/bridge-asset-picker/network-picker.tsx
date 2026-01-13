@@ -12,7 +12,6 @@ import {
 } from '../../../../../../shared/constants/bridge';
 import {
   Popover,
-  PopoverPosition,
   PopoverRole,
 } from '../../../../../components/component-library';
 import { NetworkListItem } from '../../../../../components/multichain';
@@ -21,7 +20,6 @@ import {
   BackgroundColor,
   BorderRadius,
 } from '../../../../../helpers/constants/design-system';
-import { Column } from '../../../layout';
 
 export const NetworkPicker = ({
   chains,

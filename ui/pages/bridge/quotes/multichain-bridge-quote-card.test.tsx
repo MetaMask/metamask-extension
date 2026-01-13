@@ -15,12 +15,12 @@ import mockBridgeQuotesErc20Erc20 from '../../../../test/data/bridge/mock-quotes
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
-import { useRewards } from '../../../hooks/bridge/useRewards';
-import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { toBridgeToken } from '../../../ducks/bridge/utils';
-import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
+import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { useRewards } from '../../../hooks/bridge/useRewards';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
+import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
+import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
   useRewards: jest.fn(),

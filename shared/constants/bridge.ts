@@ -104,10 +104,11 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [CHAIN_IDS.ARBITRUM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM],
   [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]:
     NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM],
-  [CHAIN_IDS.OPTIMISM]: 'Optimism',
-  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: 'Optimism',
+  [CHAIN_IDS.OPTIMISM]: NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
+  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]:
+    NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
   [CHAIN_IDS.ZKSYNC_ERA]: 'zkSync Era',
-  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
+  [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'zkSync Era',
   [CHAIN_IDS.BASE]: 'Base',
   [toEvmCaipChainId(CHAIN_IDS.BASE)]: 'Base',
   [CHAIN_IDS.SEI]: 'Sei',
@@ -118,7 +119,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [MultichainNetworks.SOLANA_TESTNET]: 'Solana Testnet',
   [MultichainNetworks.SOLANA_DEVNET]: 'Solana Devnet',
   ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
-  [MultichainNetworks.BITCOIN]: 'BTC',
+  [MultichainNetworks.BITCOIN]: 'Bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: 'Bitcoin Testnet',
   [MultichainNetworks.BITCOIN_SIGNET]: 'Bitcoin Mutinynet',
   ///: END:ONLY_INCLUDE_IF

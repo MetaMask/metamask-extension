@@ -156,7 +156,7 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
       // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
       chainRanking: bridgeConfig?.chainRanking as {
         chainId: CaipChainId;
-        name: string;
+        name?: string;
       }[],
     };
   },

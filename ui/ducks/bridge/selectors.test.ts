@@ -124,6 +124,7 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         chainId: formatChainIdToCaip(ChainId.LINEA),
+        name: 'Linea',
       });
     });
 
@@ -132,7 +133,7 @@ describe('Bridge selectors', () => {
         featureFlagOverrides: {
           bridgeConfig: {
             chainRanking: [
-              { chainId: formatChainIdToCaip(ChainId.ETH) },
+              { chainId: formatChainIdToCaip(ChainId.ETH), name: 'Test' },
               { chainId: formatChainIdToCaip(ChainId.LINEA) },
             ],
           },
@@ -147,7 +148,7 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         defaultBlockExplorerUrlIndex: 0,
         defaultRpcEndpointIndex: 0,
-        name: 'Ethereum',
+        name: 'Test',
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -265,7 +266,7 @@ describe('Bridge selectors', () => {
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
       // Check that there are no duplicates
-      expect(resultsInCaip.length).toBe(new Set(resultsInCaip).size);
+      expect(resultsInCaip.length).toBe(7);
       // Check that the results are in the correct order
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
@@ -274,27 +275,38 @@ describe('Bridge selectors', () => {
         'eip155:42161',
         'eip155:10',
         'eip155:59144',
+        'eip155:10',
       ]);
-      expect(result).toHaveLength(6);
+      expect(result).toHaveLength(7);
       expect(result).toMatchInlineSnapshot(`
         [
           {
             "chainId": "eip155:1",
+            "name": "Ethereum",
           },
           {
             "chainId": "eip155:56",
+            "name": "BNB Chain",
           },
           {
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
+            "name": "Solana",
           },
           {
             "chainId": "eip155:42161",
+            "name": "Arbitrum",
           },
           {
             "chainId": "eip155:10",
+            "name": "OP",
           },
           {
             "chainId": "eip155:59144",
+            "name": "Linea",
+          },
+          {
+            "chainId": "eip155:10",
+            "name": "OP",
           },
         ]
       `);
@@ -328,18 +340,23 @@ describe('Bridge selectors', () => {
         [
           {
             "chainId": "eip155:59144",
+            "name": "Linea",
           },
           {
             "chainId": "eip155:42161",
+            "name": "Arbitrum",
           },
           {
             "chainId": "eip155:56",
+            "name": "BNB Chain",
           },
           {
             "chainId": "eip155:10",
+            "name": "OP",
           },
           {
             "chainId": "eip155:137",
+            "name": "Polygon",
           },
         ]
       `);
@@ -407,7 +424,7 @@ describe('Bridge selectors', () => {
         .map((r) => formatChainIdToCaip(r.chainId))
         .filter(Boolean);
       // Check that there are no duplicates
-      expect(resultsInCaip.length).toBe(new Set(resultsInCaip).size);
+      expect(resultsInCaip.length).toBe(10);
       // Check that the results are in the correct order
       expect(resultsInCaip).toStrictEqual([
         'eip155:1',
@@ -419,8 +436,9 @@ describe('Bridge selectors', () => {
         'eip155:10',
         'eip155:59144',
         'eip155:137',
+        'eip155:10',
       ]);
-      expect(result).toHaveLength(9);
+      expect(result).toHaveLength(10);
       expect(result.map((r) => NETWORK_TO_SHORT_NETWORK_NAME_MAP[r.chainId]))
         .toMatchInlineSnapshot(`
         [
@@ -433,6 +451,7 @@ describe('Bridge selectors', () => {
           "OP",
           "Linea",
           "Polygon",
+          "OP",
         ]
       `);
       expect(result).not.toContain(undefined);

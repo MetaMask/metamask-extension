@@ -32,6 +32,7 @@ import {
 } from '../../selectors';
 import { MetaMetricsContext } from '../../contexts/metametrics';
 import type { BridgeToken } from '../../ducks/bridge/types';
+import { toBridgeToken } from '../../ducks/bridge/utils';
 import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
@@ -105,11 +106,7 @@ const useBridging = () => {
           formatChainIdToCaip(srcToken.chainId),
         );
         if (assetId) {
-          navigationState.srcToken = {
-            ...srcToken,
-            chainId: formatChainIdToCaip(srcToken.chainId),
-            assetId,
-          };
+          navigationState.srcToken = toBridgeToken({ ...srcToken, assetId });
         }
       } else if (fallbackChainId !== fromChain.chainId) {
         /* If srcToken is not supported or is not specified

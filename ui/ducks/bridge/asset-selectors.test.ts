@@ -103,6 +103,7 @@ describe('Bridge asset selectors', () => {
             "tokenFiatAmount": 2524.2443591635597,
           },
           {
+            "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
             "balance": "1.530",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
@@ -112,6 +113,7 @@ describe('Bridge asset selectors', () => {
             "tokenFiatAmount": 210.8493,
           },
           {
+            "accountType": "bip122:p2wpkh",
             "assetId": "bip122:000000000019d6689c085ae165831e93/slip44:0",
             "balance": ".001",
             "chainId": "bip122:000000000019d6689c085ae165831e93",
@@ -130,6 +132,7 @@ describe('Bridge asset selectors', () => {
             "tokenFiatAmount": 25.242128065034784,
           },
           {
+            "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             "balance": "2.043238",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
@@ -161,6 +164,7 @@ describe('Bridge asset selectors', () => {
       expect(balanceByAssetId).toMatchInlineSnapshot(`
         {
           "bip122:000000000019d6689c085ae165831e93/slip44:0": {
+            "accountType": "bip122:p2wpkh",
             "assetId": "bip122:000000000019d6689c085ae165831e93/slip44:0",
             "balance": ".001",
             "chainId": "bip122:000000000019d6689c085ae165831e93",
@@ -224,6 +228,7 @@ describe('Bridge asset selectors', () => {
             "tokenFiatAmount": 2524.2443591635597,
           },
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+            "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
             "balance": "1.530",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",
@@ -233,6 +238,7 @@ describe('Bridge asset selectors', () => {
             "tokenFiatAmount": 210.8493,
           },
           "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
+            "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             "balance": "2.043238",
             "chainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp",

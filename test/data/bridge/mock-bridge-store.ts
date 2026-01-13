@@ -177,7 +177,7 @@ export const createBridgeMockStore = ({
 }: {
   featureFlagOverrides?: {
     bridgeConfig: Partial<FeatureFlagResponse> & {
-      chainRanking?: { chainId: CaipChainId }[];
+      chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
   };
   bridgeStateOverrides?: Partial<BridgeControllerState>;

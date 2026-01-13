@@ -2,7 +2,6 @@ import {
   formatChainIdToCaip,
   formatChainIdToHex,
   getNativeAssetForChainId,
-  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import { type AccountGroupId } from '@metamask/account-api';
 import { createSelector as untypedCreateSelector } from 'reselect';
