@@ -8,7 +8,6 @@ import {
   Display,
   BlockSize,
   TextVariant,
-  IconColor,
   BorderRadius,
   BackgroundColor,
 } from '../../../../helpers/constants/design-system';
