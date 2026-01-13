@@ -46,6 +46,7 @@ import {
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
   ALLOWED_BRIDGE_CHAIN_IDS,
+  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
   NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
@@ -91,6 +92,8 @@ import {
   getMaybeHexChainId,
 } from './utils';
 import type { BridgeNetwork, BridgeState } from './types';
+
+const FALLBACK_CHAIN_ID = CHAIN_IDS.MAINNET;
 
 export type BridgeAppState = {
   metamask: BridgeAppStateFromController &
@@ -153,11 +156,13 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     });
     return {
       ...validatedFlags,
-      // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
-      chainRanking: bridgeConfig?.chainRanking as {
-        chainId: CaipChainId;
-        name?: string;
-      }[],
+      chainRanking:
+        // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
+        (bridgeConfig?.chainRanking as {
+          chainId: CaipChainId;
+          name?: string;
+        }[]) ??
+        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.map((chainId) => ({ chainId })),
     };
   },
 );
@@ -208,7 +213,7 @@ export const getFromChains = createDeepEqualSelector(
     hasTronAccount,
   ) => {
     const filteredNetworks: BridgeNetwork[] = [];
-    chainRanking.forEach(({ chainId, name }) => {
+    chainRanking?.forEach(({ chainId, name }) => {
       const shouldAddSolana = isSolanaChainId(chainId)
         ? hasSolanaAccount
         : true;
@@ -244,13 +249,15 @@ export const getLastSelectedChainId = createSelector(
   (allEnabledNetworksForAllNamespaces, fromChains) => {
     // If there is no network filter, return top chain from LD
     if (allEnabledNetworksForAllNamespaces.length > 1) {
-      return fromChains[0]?.chainId ?? CHAIN_IDS.MAINNET;
+      return fromChains[0]?.chainId ?? FALLBACK_CHAIN_ID;
     }
     // Find the matching bridge fromChain for the selected network filter
     return fromChains.find(
       ({ chainId: fromChainId }) =>
         fromChainId ===
-        formatChainIdToCaip(allEnabledNetworksForAllNamespaces[0]),
+        formatChainIdToCaip(
+          allEnabledNetworksForAllNamespaces[0] ?? FALLBACK_CHAIN_ID,
+        ),
     )?.chainId;
   },
 );
@@ -272,7 +279,9 @@ export const getFromToken = createSelector(
     );
     // If selected network is not supported by swap/bridge, return ETH
     if (!fromChain) {
-      return toBridgeToken(getNativeAssetForChainId(fromChains[0].chainId));
+      return toBridgeToken(
+        getNativeAssetForChainId(fromChains[0]?.chainId ?? FALLBACK_CHAIN_ID),
+      );
     }
     const fromChainId = fromChain.chainId;
     if (fromToken) {
@@ -301,7 +310,7 @@ export const getToChains = createDeepEqualSelector(
       ),
     };
     const filteredChains: BridgeNetwork[] = [];
-    chainRanking.forEach(({ chainId, name }) => {
+    chainRanking?.forEach(({ chainId, name }) => {
       if (allChains[chainId]) {
         filteredChains.push({
           ...allChains[chainId],
