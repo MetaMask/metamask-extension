@@ -34,7 +34,6 @@ export const VirtualizedList = <TItem,>({
     getScrollElement: () => scrollElement,
     estimateSize: () => estimatedItemSize,
     overscan,
-    enabled: !disabled,
   });
 
   if (data.length === 0) {
