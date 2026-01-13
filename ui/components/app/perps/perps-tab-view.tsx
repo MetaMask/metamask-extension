@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 import { StartTradeCta } from './start-trade-cta';
+import { PERPS_HOME_ROUTE } from '../../../helpers/constants/routes';
 
 /**
  * PerpsTabView component displays the perpetuals trading tab
  * with positions and orders sections using mock data
  */
 export const PerpsTabView: React.FC = () => {
+  const navigate = useNavigate();
   const hasPositions = mockPositions.length > 0;
   const hasOrders = mockOrders.length > 0;
   const hasNoPositionsOrOrders = !hasPositions && !hasOrders;
@@ -19,10 +22,9 @@ export const PerpsTabView: React.FC = () => {
     console.log('Navigate to manage balance');
   };
 
-  const handleNewTrade = () => {
-    // TODO: Navigate to trading view or tutorial for first-time users
-    console.log('Navigate to new trade');
-  };
+  const handleNewTrade = useCallback(() => {
+    navigate(PERPS_HOME_ROUTE);
+  }, [navigate]);
 
   return (
     <div className="perps-tab-view" data-testid="perps-tab-view">
