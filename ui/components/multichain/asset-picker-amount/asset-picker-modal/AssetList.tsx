@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef } from 'react';
 import classnames from 'classnames';
 import {
   AddNetworkFields,
@@ -6,6 +6,7 @@ import {
 } from '@metamask/network-controller';
 import { isStrictHexString, type CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import { useCurrencyDisplay } from '../../../../hooks/useCurrencyDisplay';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import { Box } from '../../../component-library';
@@ -116,98 +117,126 @@ export default function AssetList({
   );
   const nativeCurrencySymbol = safeChainDetails?.nativeCurrency?.symbol;
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const virtualizer = useVirtualizer({
+    count: tokenList.length,
+    getScrollElement: () => scrollContainerRef?.current || null,
+    estimateSize: () => 62,
+    overscan: 10,
+  });
+
+  const virtualItems = virtualizer.getVirtualItems();
+
   return (
-    <Box className="tokens-main-view-modal">
+    <Box
+      ref={scrollContainerRef}
+      className="tokens-main-view-modal flex-1 overflow-y-auto min-h-0"
+    >
       {isTokenListLoading && (
         <LoadingScreen
           loadingMessage={t('loadingTokenList')}
           showLoadingSpinner
         />
       )}
-      {tokenList.map((token) => {
-        const tokenAddress = token.address?.toLowerCase();
+      <div
+        className="relative w-full"
+        style={{ height: virtualizer.getTotalSize() }}
+      >
+        {virtualItems.map((virtualItem) => {
+          const token = tokenList[virtualItem.index];
+          const tokenAddress = token.address?.toLowerCase();
 
-        const isMatchingChainId = token.chainId === networkToUse?.chainId;
-        const isMatchingAddress =
-          // the native asset can have an undefined, null, '', or zero address so compare symbols
-          (token.type === AssetType.native && token.symbol === asset?.symbol) ||
-          tokenAddress === asset?.address?.toLowerCase();
-        const isSelected = isMatchingChainId && isMatchingAddress;
+          const isMatchingChainId = token.chainId === networkToUse?.chainId;
+          const isMatchingAddress =
+            // the native asset can have an undefined, null, '', or zero address so compare symbols
+            (token.type === AssetType.native &&
+              token.symbol === asset?.symbol) ||
+            tokenAddress === asset?.address?.toLowerCase();
+          const isSelected = isMatchingChainId && isMatchingAddress;
 
-        const isDisabled = isTokenDisabled?.(token) ?? false;
+          const isDisabled = isTokenDisabled?.(token) ?? false;
 
-        return (
-          <Box
-            padding={0}
-            gap={0}
-            margin={0}
-            key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
-            backgroundColor={
-              isSelected
-                ? BackgroundColor.primaryMuted
-                : BackgroundColor.transparent
-            }
-            className={classnames('multichain-asset-picker-list-item', {
-              'multichain-asset-picker-list-item--selected': isSelected,
-              'multichain-asset-picker-list-item--disabled': isDisabled,
-            })}
-            data-testid="asset-list-item"
-            onClick={() => {
-              if (isDisabled) {
-                return;
-              }
-              handleAssetChange(token);
-            }}
-          >
-            {isSelected ? (
-              <Box
-                className="multichain-asset-picker-list-item__selected-indicator"
-                borderRadius={BorderRadius.pill}
-                backgroundColor={BackgroundColor.primaryDefault}
-              />
-            ) : null}
-            <Box
-              key={token.address}
-              padding={0}
-              display={Display.Block}
-              flexWrap={FlexWrap.NoWrap}
-              alignItems={AlignItems.center}
+          return (
+            <div
+              key={`${token.symbol}-${tokenAddress ?? ''}-${token.chainId}`}
+              data-index={virtualItem.index}
+              className="absolute top-0 left-0 w-full"
+              style={{
+                transform: `translateY(${virtualItem.start}px)`,
+              }}
             >
-              <Box>
-                {token.type === AssetType.native &&
-                token.chainId === chainId &&
-                isSelectedNetworkActive ? (
-                  // Only use this component for the native token of the active network
-                  <TokenListItem
-                    chainId={token.chainId}
-                    title={token.name ?? token.symbol}
-                    primary={primaryCurrencyValue}
-                    tokenSymbol={token.symbol}
-                    secondary={secondaryCurrencyValue}
-                    tokenImage={token.image}
-                    tokenChainImage={getImageForChainId(token.chainId)}
-                    nativeCurrencySymbol={nativeCurrencySymbol}
-                    {...assetItemProps}
-                    isTitleNetworkName={false}
+              <Box
+                padding={0}
+                gap={0}
+                margin={0}
+                backgroundColor={
+                  isSelected
+                    ? BackgroundColor.primaryMuted
+                    : BackgroundColor.transparent
+                }
+                className={classnames('multichain-asset-picker-list-item', {
+                  'multichain-asset-picker-list-item--selected': isSelected,
+                  'multichain-asset-picker-list-item--disabled': isDisabled,
+                })}
+                data-testid="asset-list-item"
+                onClick={() => {
+                  if (isDisabled) {
+                    return;
+                  }
+                  handleAssetChange(token);
+                }}
+              >
+                {isSelected ? (
+                  <Box
+                    className="multichain-asset-picker-list-item__selected-indicator"
+                    borderRadius={BorderRadius.pill}
+                    backgroundColor={BackgroundColor.primaryDefault}
                   />
-                ) : (
-                  <AssetComponent
-                    {...token}
-                    tooltipText={
-                      isDisabled ? 'swapTokenNotAvailable' : undefined
-                    }
-                    assetItemProps={{
-                      ...assetItemProps,
-                      nativeCurrencySymbol,
-                    }}
-                    isDestinationToken={isDestinationToken}
-                  />
-                )}
+                ) : null}
+                <Box
+                  padding={0}
+                  display={Display.Block}
+                  flexWrap={FlexWrap.NoWrap}
+                  alignItems={AlignItems.center}
+                >
+                  <Box>
+                    {token.type === AssetType.native &&
+                    token.chainId === chainId &&
+                    isSelectedNetworkActive ? (
+                      // Only use this component for the native token of the active network
+                      <TokenListItem
+                        chainId={token.chainId}
+                        title={token.name ?? token.symbol}
+                        primary={primaryCurrencyValue}
+                        tokenSymbol={token.symbol}
+                        secondary={secondaryCurrencyValue}
+                        tokenImage={token.image}
+                        tokenChainImage={getImageForChainId(token.chainId)}
+                        nativeCurrencySymbol={nativeCurrencySymbol}
+                        {...assetItemProps}
+                        isTitleNetworkName={false}
+                      />
+                    ) : (
+                      <AssetComponent
+                        {...token}
+                        tooltipText={
+                          isDisabled ? 'swapTokenNotAvailable' : undefined
+                        }
+                        assetItemProps={{
+                          ...assetItemProps,
+                          nativeCurrencySymbol,
+                        }}
+                        isDestinationToken={isDestinationToken}
+                      />
+                    )}
+                  </Box>
+                </Box>
               </Box>
-            </Box>
-          </Box>
-        );
-      })}
+            </div>
+          );
+        })}
+      </div>
     </Box>
   );
 }

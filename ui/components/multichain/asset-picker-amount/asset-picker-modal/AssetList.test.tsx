@@ -65,6 +65,12 @@ jest.mock(
 const mockAsset = jest.fn((..._args) => <div>AssetComponent</div>);
 jest.mock('./Asset', () => jest.fn((...args) => mockAsset(...args)));
 
+function mockVirtualizerDOM() {
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    value: 800,
+  });
+}
+
 describe('AssetList', () => {
   const handleAssetChangeMock = jest.fn();
   const nativeCurrency = 'ETH';
@@ -108,6 +114,8 @@ describe('AssetList', () => {
   const secondaryCurrency = 'ETH';
 
   beforeEach(() => {
+    mockVirtualizerDOM();
+
     (useSelector as jest.Mock).mockImplementation((selector) => {
       if (selector === getNativeCurrency) {
         return nativeCurrency;
@@ -134,10 +142,10 @@ describe('AssetList', () => {
         numberOfDecimals: 4,
       });
 
-    (useCurrencyDisplay as jest.Mock)
-      .mockReturnValueOnce(['100 USD', { value: '100', suffix: 'USD' }])
-      .mockReturnValueOnce(['1 ETH', { value: '1', suffix: 'ETH' }]);
-
+    (useCurrencyDisplay as jest.Mock).mockReturnValue([
+      '100 USD',
+      { value: '100', suffix: 'USD' },
+    ]);
     handleAssetChangeMock.mockClear();
     jest.clearAllMocks();
   });
