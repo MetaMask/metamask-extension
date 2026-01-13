@@ -2621,7 +2621,13 @@ export function updateMetamaskState(
     const providerConfig = getProviderConfig(state);
     const { metamask: currentState } = state;
 
-    if (!patches?.length) {
+    // Validate that patches is an array
+    if (!Array.isArray(patches)) {
+      log.warn('updateMetamaskState received non-array patches:', patches);
+      return currentState;
+    }
+
+    if (!patches.length) {
       return currentState;
     }
 
@@ -4785,6 +4791,16 @@ export async function forceUpdateMetamaskState(
   } catch (error) {
     dispatch(displayWarning(error));
     throw error;
+  }
+
+  // Validate that we received a valid array of patches
+  if (!Array.isArray(pendingPatches)) {
+    log.error(
+      'forceUpdateMetamaskState received invalid patches (not an array):',
+      pendingPatches,
+    );
+    // Return empty array to prevent crashes
+    return dispatch(updateMetamaskState([]));
   }
 
   return dispatch(updateMetamaskState(pendingPatches));
@@ -7935,14 +7951,77 @@ export async function endBackgroundTrace(request: EndTraceRequest) {
   ]);
 }
 
+/**
+ * Validates if a value is a valid Immer patch object.
+ * A valid patch must be an object with 'op' and 'path' properties.
+ *
+ * @param patch - The value to validate
+ * @returns True if the value is a valid patch object
+ */
+function isValidPatch(patch: unknown): patch is Patch {
+  if (typeof patch !== 'object' || patch === null) {
+    return false;
+  }
+
+  const patchObj = patch as Record<string, unknown>;
+
+  // A valid Immer patch must have 'op' and 'path' properties
+  if (typeof patchObj.op !== 'string' || !Array.isArray(patchObj.path)) {
+    return false;
+  }
+
+  // Valid operations are 'replace', 'remove', and 'add'
+  const validOps = ['replace', 'remove', 'add'];
+  if (!validOps.includes(patchObj.op as string)) {
+    return false;
+  }
+
+  return true;
+}
+
 function applyPatches(
   oldState: Record<string, unknown>,
   patches: Patch[],
 ): Record<string, unknown> {
-  const immer = new Immer();
-  immer.setAutoFreeze(false);
+  // Filter out invalid patches and log warnings
+  const validPatches = patches.filter((patch, index) => {
+    const isValid = isValidPatch(patch);
+    if (!isValid) {
+      log.warn(
+        `Invalid patch detected at index ${index}:`,
+        patch,
+        'This patch will be skipped to prevent state corruption.',
+      );
+    }
+    return isValid;
+  });
 
-  return immer.applyPatches(oldState, patches);
+  // If no valid patches remain, return the original state
+  if (validPatches.length === 0) {
+    log.warn('No valid patches to apply. Original state will be returned.');
+    return oldState;
+  }
+
+  // Log if we filtered out any patches
+  if (validPatches.length < patches.length) {
+    log.warn(
+      `Filtered out ${patches.length - validPatches.length} invalid patch(es) out of ${patches.length} total.`,
+    );
+  }
+
+  try {
+    const immer = new Immer();
+    immer.setAutoFreeze(false);
+
+    return immer.applyPatches(oldState, validPatches);
+  } catch (error) {
+    log.error('Failed to apply patches:', error);
+    log.error('Patches that failed:', validPatches);
+
+    // If applying patches fails, return the original state to prevent crashes
+    // This ensures the app continues to function even with malformed state updates
+    return oldState;
+  }
 }
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)

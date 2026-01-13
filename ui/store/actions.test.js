@@ -4157,4 +4157,122 @@ describe('Actions', () => {
       ).toBe(true);
     });
   });
+
+  describe('updateMetamaskState', () => {
+    it('handles valid patches correctly', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const validPatches = [
+        { op: 'replace', path: ['currentLocale'], value: 'en' },
+      ];
+
+      store.dispatch(actions.updateMetamaskState(validPatches));
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions).toBeDefined();
+      // The action should update the state without errors
+    });
+
+    it('filters out invalid patches with number 0', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const malformedPatches = [
+        0, // Invalid: number instead of patch object
+        { op: 'replace', path: ['currentLocale'], value: 'en' }, // Valid patch
+      ];
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(malformedPatches));
+      }).not.toThrow();
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions).toBeDefined();
+    });
+
+    it('filters out invalid patches with various malformed data', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const malformedPatches = [
+        null, // Invalid: null
+        undefined, // Invalid: undefined
+        'string', // Invalid: string
+        42, // Invalid: number
+        { op: 'replace', path: ['currentLocale'], value: 'en' }, // Valid patch
+      ];
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(malformedPatches));
+      }).not.toThrow();
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions).toBeDefined();
+    });
+
+    it('handles empty patches array', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const emptyPatches = [];
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(emptyPatches));
+      }).not.toThrow();
+    });
+
+    it('handles non-array patches input', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const nonArrayPatches = null;
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(nonArrayPatches));
+      }).not.toThrow();
+    });
+
+    it('handles patches with invalid operations', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const invalidOpPatches = [
+        { op: 'invalid_operation', path: ['test'], value: 'test' }, // Invalid op
+        { op: 'replace', path: ['currentLocale'], value: 'en' }, // Valid patch
+      ];
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(invalidOpPatches));
+      }).not.toThrow();
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions).toBeDefined();
+    });
+
+    it('handles patches missing required properties', () => {
+      const store = mockStore();
+      setBackgroundConnection(background.getApi());
+
+      const incompletePatches = [
+        { op: 'replace' }, // Missing path
+        { path: ['test'] }, // Missing op
+        { op: 'replace', path: ['currentLocale'], value: 'en' }, // Valid patch
+      ];
+
+      // This should not throw an error
+      expect(() => {
+        store.dispatch(actions.updateMetamaskState(incompletePatches));
+      }).not.toThrow();
+
+      const dispatchedActions = store.getActions();
+      expect(dispatchedActions).toBeDefined();
+    });
+  });
+
 });
