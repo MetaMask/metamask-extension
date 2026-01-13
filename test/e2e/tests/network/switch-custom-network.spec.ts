@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { regularDelayMs, WINDOW_TITLES, withFixtures } from '../../helpers';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import AssetListPage from '../../page-objects/pages/home/asset-list';

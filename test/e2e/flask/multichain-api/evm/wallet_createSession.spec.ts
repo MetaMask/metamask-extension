@@ -7,7 +7,7 @@ import {
   ACCOUNT_2,
 } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkPermissionSelectModal from '../../../page-objects/pages/dialog/network-permission-select-modal';

@@ -1,4 +1,4 @@
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 
 import { withFixtures, unlockWallet } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
