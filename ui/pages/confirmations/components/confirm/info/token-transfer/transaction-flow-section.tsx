@@ -20,6 +20,12 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useTransferRecipient } from '../hooks/useTransferRecipient';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../../../../app/scripts/lib/util';
+import {
+  ENVIRONMENT_TYPE_FULLSCREEN,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../../../../shared/constants/app';
 
 export const TransactionFlowSection = () => {
   const t = useI18nContext();
@@ -29,6 +35,11 @@ export const TransactionFlowSection = () => {
 
   const recipientAddress = useTransferRecipient();
   const { chainId } = transactionMeta;
+
+  const environmentType = getEnvironmentType();
+  const showFullName =
+    environmentType === ENVIRONMENT_TYPE_FULLSCREEN ||
+    environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
     <ConfirmInfoSection data-testid="confirmation__transaction-flow">
@@ -46,12 +57,14 @@ export const TransactionFlowSection = () => {
           style={{
             flex: 1,
             flexDirection: FlexDirection.Column,
+            overflow: 'hidden',
           }}
         >
-          <Box marginTop={2} data-testid="sender-address">
+          <Box marginTop={2} data-testid="sender-address" className="w-full">
             <ConfirmInfoRowAddress
               address={transactionMeta.txParams.from}
               chainId={chainId}
+              showFullName={showFullName}
             />
           </Box>
         </ConfirmInfoAlertRow>
@@ -76,6 +89,7 @@ export const TransactionFlowSection = () => {
             <ConfirmInfoRowAddress
               address={recipientAddress ?? ''}
               chainId={chainId}
+              showFullName={showFullName}
             />
           </Box>
         </ConfirmInfoAlertRow>
