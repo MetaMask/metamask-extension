@@ -19,7 +19,7 @@ import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { ReferralPartner } from '../../../shared/constants/referrals';
+import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 
 /**
  * Referral status for an account
@@ -161,7 +161,7 @@ export type PreferencesControllerState = Omit<
   isMultiAccountBalancesEnabled: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
-  referrals: Record<ReferralPartner, Record<Hex, ReferralStatus>>;
+  referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
@@ -251,7 +251,7 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
-      [ReferralPartner.Hyperliquid]: {},
+      [DefiReferralPartner.Hyperliquid]: {},
     },
   });
 
@@ -1070,32 +1070,33 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  addReferralApprovedAccount(partner: ReferralPartner, accountAddress: Hex) {
+  // Defi Referral methods
+  addReferralApprovedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
       state.referrals[partner][accountAddress] = ReferralStatus.Approved;
     });
   }
 
-  addReferralPassedAccount(partner: ReferralPartner, accountAddress: Hex) {
+  addReferralPassedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
       state.referrals[partner][accountAddress] = ReferralStatus.Passed;
     });
   }
 
-  addReferralDeclinedAccount(partner: ReferralPartner, accountAddress: Hex) {
+  addReferralDeclinedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
       state.referrals[partner][accountAddress] = ReferralStatus.Declined;
     });
   }
 
-  removeReferralDeclinedAccount(partner: ReferralPartner, accountAddress: Hex) {
+  removeReferralDeclinedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
       delete state.referrals[partner][accountAddress];
     });
   }
 
   setAccountsReferralApproved(
-    partner: ReferralPartner,
+    partner: DefiReferralPartner,
     accountAddresses: Hex[],
   ) {
     this.update((state) => {

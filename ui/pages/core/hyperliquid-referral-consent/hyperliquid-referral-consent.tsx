@@ -15,12 +15,12 @@ import {
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
-  REFERRAL_PARTNERS,
-  ReferralPartner,
-} from '../../../../shared/constants/referrals';
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../../../shared/constants/defi-referrals';
 
 const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
-  REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].learnMoreUrl;
+  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
 
 export type HyperliquidReferralConsentProps = {
   onActionComplete: (result: {

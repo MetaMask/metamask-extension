@@ -49,7 +49,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { getPartnerByOrigin } from '../../shared/constants/referrals';
+import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -95,7 +95,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { ReferralTriggerType } from './lib/createReferralMiddleware';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -1796,7 +1796,7 @@ function onNavigateToTab() {
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           controller
-            .handleReferral(
+            .handleDefiReferral(
               partner,
               tabId,
               ReferralTriggerType.OnNavigateConnectedTab,

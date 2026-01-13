@@ -225,11 +225,11 @@ import {
   updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
 import {
-  REFERRAL_PARTNERS,
-  ReferralPartner,
-} from '../../shared/constants/referrals';
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../shared/constants/defi-referrals';
 
-const HYPERLIQUID_CONFIG = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid];
+const HYPERLIQUID_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -275,9 +275,9 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
-  createReferralMiddleware,
+  createDefiReferralMiddleware,
   ReferralTriggerType,
-} from './lib/createReferralMiddleware';
+} from './lib/createDefiReferralMiddleware';
 
 import {
   diffMap,
@@ -6135,15 +6135,15 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles referral approval flow for a partner.
+   * Handles DeFi referral approval flow for a partner.
    * Shows approval confirmation screen if needed and manages referral URL redirection.
    * This can be triggered by connection permission grants or existing connections.
    *
-   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    * @param {ReferralTriggerType} triggerType - The trigger type.
    */
-  async handleReferral(partner, tabId, triggerType) {
+  async handleDefiReferral(partner, tabId, triggerType) {
     const isReferralEnabled =
       this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
         partner.featureFlagKey
@@ -6207,13 +6207,13 @@ export default class MetamaskController extends EventEmitter {
         });
 
         if (approvalResponse?.approved) {
-          this._handleReferralApprovedAccount(
+          this._handleDefiReferralApprovedAccount(
             partner,
             activePermittedAccount,
             permittedAccounts,
             declinedAccounts,
           );
-          await this._handleReferralRedirect(
+          await this._handleDefiReferralRedirect(
             partner,
             tabId,
             activePermittedAccount,
@@ -6243,19 +6243,19 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldRedirect) {
-      await this._handleReferralRedirect(partner, tabId, activePermittedAccount);
+      await this._handleDefiReferralRedirect(partner, tabId, activePermittedAccount);
     }
   }
 
   /**
-   * Handles redirection to the partner's referral page.
+   * Handles redirection to the DeFi partner's referral page.
    *
-   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    * @param {string} permittedAccount - The permitted account.
    */
-  async _handleReferralRedirect(partner, tabId, permittedAccount) {
-    await this._updateReferralUrl(partner, tabId);
+  async _handleDefiReferralRedirect(partner, tabId, permittedAccount) {
+    await this._updateDefiReferralUrl(partner, tabId);
     // Mark this account as having been shown the referral page
     this.preferencesController.addReferralPassedAccount(
       partner.id,
@@ -6266,12 +6266,12 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Handles referral states for permitted accounts after user approval.
    *
-   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {string} activePermittedAccount - The active permitted account.
    * @param {string[]} permittedAccounts - The permitted accounts.
    * @param {string[]} declinedAccounts - The previously declined permitted accounts.
    */
-  _handleReferralApprovedAccount(
+  _handleDefiReferralApprovedAccount(
     partner,
     activePermittedAccount,
     permittedAccounts,
@@ -6305,12 +6305,12 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Updates the browser tab URL to the partner's referral page.
+   * Updates the browser tab URL to the DeFi partner's referral page.
    *
-   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    */
-  async _updateReferralUrl(partner, tabId) {
+  async _updateDefiReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
       const { search } = new URL(url || '');
@@ -7560,8 +7560,8 @@ export default class MetamaskController extends EventEmitter {
 
       // Add referral partner permission monitoring middleware
       engine.push(
-        createReferralMiddleware((partner, tabId, triggerType) =>
-          this.handleReferral(partner, tabId, triggerType),
+        createDefiReferralMiddleware((partner, tabId, triggerType) =>
+          this.handleDefiReferral(partner, tabId, triggerType),
         ),
       );
     }

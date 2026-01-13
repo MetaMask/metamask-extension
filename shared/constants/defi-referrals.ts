@@ -1,17 +1,17 @@
 /**
- * Enum of supported referral partners
+ * Enum of supported Defi referral partners
  */
-export enum ReferralPartner {
+export enum DefiReferralPartner {
   Hyperliquid = 'hyperliquid',
   // AsterDex = 'asterdex',
 }
 
 /**
- * Configuration for a referral partner
+ * Configuration for a Defi referral partner
  */
-export type ReferralPartnerConfig = {
+export type DefiReferralPartnerConfig = {
   /** Unique identifier for partner */
-  id: ReferralPartner;
+  id: DefiReferralPartner;
   /** Display name for UI */
   name: string;
   /** Origin domain */
@@ -27,12 +27,12 @@ export type ReferralPartnerConfig = {
 };
 
 /**
- * Configuration for all supported referral partners
+ * Configuration for all supported Defi referral partners
  */
-export const REFERRAL_PARTNERS: Record<ReferralPartner, ReferralPartnerConfig> =
+export const DEFI_REFERRAL_PARTNERS: Record<DefiReferralPartner, DefiReferralPartnerConfig> =
   {
-    [ReferralPartner.Hyperliquid]: {
-      id: ReferralPartner.Hyperliquid,
+    [DefiReferralPartner.Hyperliquid]: {
+      id: DefiReferralPartner.Hyperliquid,
       name: 'Hyperliquid',
       origin: 'https://app.hyperliquid.xyz',
       referralUrl: 'https://app.hyperliquid.xyz/join/MMREFCSI',
@@ -40,8 +40,8 @@ export const REFERRAL_PARTNERS: Record<ReferralPartner, ReferralPartnerConfig> =
       approvalType: 'hyperliquid_referral_consent',
       featureFlagKey: 'extensionUxDefiReferral',
     },
-    // [ReferralPartner.AsterDex]: {
-    //   id: ReferralPartner.AsterDex,
+    // [DefiReferralPartner.AsterDex]: {
+    //   id: DefiReferralPartner.AsterDex,
     //   name: 'AsterDex',
     //   origin: 'https://www.asterdex.com',
     //   referralUrl: 'https://www.asterdex.com/en/referral/wsuZBc',
@@ -52,15 +52,15 @@ export const REFERRAL_PARTNERS: Record<ReferralPartner, ReferralPartnerConfig> =
   };
 
 /**
- * Helper to look up a partner configuration by origin URL.
+ * Helper to look up a Defi referral partner configuration by origin URL.
  *
  * @param origin - The origin URL to match
  * @returns The partner configuration if found, undefined otherwise
  */
 export function getPartnerByOrigin(
   origin: string,
-): ReferralPartnerConfig | undefined {
-  return Object.values(REFERRAL_PARTNERS).find((partner) =>
+): DefiReferralPartnerConfig | undefined {
+  return Object.values(DEFI_REFERRAL_PARTNERS).find((partner) =>
     origin === partner.origin,
   );
 }

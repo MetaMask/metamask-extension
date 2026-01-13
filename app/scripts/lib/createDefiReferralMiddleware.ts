@@ -11,8 +11,8 @@ import type {
 import log from 'loglevel';
 import {
   getPartnerByOrigin,
-  type ReferralPartnerConfig,
-} from '../../../shared/constants/referrals';
+  type DefiReferralPartnerConfig,
+} from '../../../shared/constants/defi-referrals';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & {
   origin: string;
@@ -37,15 +37,15 @@ function isExtendedJSONRPCRequest(
 }
 
 /**
- * Creates middleware that monitors permission requests for referral partners.
+ * Creates middleware that monitors permission requests for DeFi referral partners.
  * When a permission is granted to a supported partner, it triggers the referral flow.
  *
- * @param handleReferral - Function to handle the referral flow for a partner
+ * @param handleDefiReferral - Function to handle the referral flow for a partner
  * @returns Middleware function
  */
-export function createReferralMiddleware(
-  handleReferral: (
-    partner: ReferralPartnerConfig,
+export function createDefiReferralMiddleware(
+  handleDefiReferral: (
+    partner: DefiReferralPartnerConfig,
     tabId: number,
     triggerType: ReferralTriggerType,
   ) => Promise<void>,
@@ -80,7 +80,7 @@ export function createReferralMiddleware(
         );
 
       if (isConnectionRequest && arePermissionsGranted) {
-        handleReferral(partner, req.tabId, ReferralTriggerType.NewConnection)
+        handleDefiReferral(partner, req.tabId, ReferralTriggerType.NewConnection)
           .catch((error) => {
             log.error(
               `Failed to handle ${partner.name} referral after wallet_requestPermissions grant: `,

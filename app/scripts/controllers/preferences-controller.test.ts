@@ -17,7 +17,7 @@ import type { Hex } from '@metamask/utils';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { mockNetworkState } from '../../../test/stub/networks';
 import { ThemeType } from '../../../shared/constants/preferences';
-import { ReferralPartner } from '../../../shared/constants/referrals';
+import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 import type {
   PreferencesControllerMessenger,
   PreferencesControllerState,
@@ -1182,7 +1182,7 @@ describe('preferences controller', () => {
   });
 
   describe('Referral methods', () => {
-    const partner = ReferralPartner.Hyperliquid;
+    const partner = DefiReferralPartner.Hyperliquid;
 
     describe('addReferralApprovedAccount', () => {
       it('adds an account with approved status', () => {
@@ -1287,7 +1287,7 @@ describe('preferences controller', () => {
         const { controller } = setupController({
           state: {
             referrals: {
-              [ReferralPartner.Hyperliquid]: {
+              [DefiReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
                 [testAccount2]: ReferralStatus.Declined,
               },
@@ -1310,7 +1310,7 @@ describe('preferences controller', () => {
         const { controller } = setupController({
           state: {
             referrals: {
-              [ReferralPartner.Hyperliquid]: {
+              [DefiReferralPartner.Hyperliquid]: {
                 [testAccount1]: ReferralStatus.Declined,
               },
             },
@@ -1349,7 +1349,7 @@ describe('preferences controller', () => {
         const { controller } = setupController({
           state: {
             referrals: {
-              [ReferralPartner.Hyperliquid]: {
+              [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Declined,
               },
             },
@@ -1370,7 +1370,7 @@ describe('preferences controller', () => {
         const { controller } = setupController({
           state: {
             referrals: {
-              [ReferralPartner.Hyperliquid]: {
+              [DefiReferralPartner.Hyperliquid]: {
                 [existingAccount]: ReferralStatus.Approved,
               },
             },
@@ -1389,7 +1389,7 @@ describe('preferences controller', () => {
         const { controller } = setupController({});
 
         expect(
-          controller.state.referrals[ReferralPartner.Hyperliquid],
+          controller.state.referrals[DefiReferralPartner.Hyperliquid],
         ).toStrictEqual({});
       });
     });

@@ -3,20 +3,20 @@ import { ValidPermission, type Caveat } from '@metamask/permission-controller';
 import type { Json } from '@metamask/utils';
 import log from 'loglevel';
 import {
-  REFERRAL_PARTNERS,
-  ReferralPartner,
-} from '../../../shared/constants/referrals';
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../../shared/constants/defi-referrals';
 import {
-  createReferralMiddleware,
+  createDefiReferralMiddleware,
   ReferralTriggerType,
   type ExtendedJSONRPCRequest,
-} from './createReferralMiddleware';
+} from './createDefiReferralMiddleware';
 
 jest.mock('loglevel', () => ({
   error: jest.fn(),
 }));
 
-const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
+const HYPERLIQUID_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
 
 const createMockRequest = (origin: string): ExtendedJSONRPCRequest => ({
   id: 1,
@@ -42,14 +42,14 @@ const createMockResponse = (
   ],
 });
 
-describe('createReferralMiddleware', () => {
+describe('createDefiReferralMiddleware', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
   it('triggers referral for Hyperliquid when permissions are granted', async () => {
     const mockHandleReferral = jest.fn().mockResolvedValue(undefined);
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
       if (cb) cb();
@@ -67,7 +67,7 @@ describe('createReferralMiddleware', () => {
     expect(mockNext).toHaveBeenCalledTimes(1);
     expect(mockHandleReferral).toHaveBeenCalledTimes(1);
     expect(mockHandleReferral).toHaveBeenCalledWith(
-      REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+      DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
       123,
       ReferralTriggerType.NewConnection,
     );
@@ -75,7 +75,7 @@ describe('createReferralMiddleware', () => {
 
   it('does not trigger referral for non-partner origins', async () => {
     const mockHandleReferral = jest.fn();
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
       if (cb) cb();
@@ -96,7 +96,7 @@ describe('createReferralMiddleware', () => {
 
   it('does not trigger referral if method is not wallet_requestPermissions', async () => {
     const mockHandleReferral = jest.fn();
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const request: ExtendedJSONRPCRequest = {
       id: 1,
@@ -126,7 +126,7 @@ describe('createReferralMiddleware', () => {
 
   it('does not trigger referral when result is missing eth_accounts permission', async () => {
     const mockHandleReferral = jest.fn();
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const responseNoEthAccounts: PendingJsonRpcResponse<
       ValidPermission<string, Caveat<string, Json>>[]
@@ -164,7 +164,7 @@ describe('createReferralMiddleware', () => {
   it('handles errors in referral handler gracefully', async () => {
     const error = new Error('Referral handler failed');
     const mockHandleReferral = jest.fn().mockRejectedValue(error);
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const mockNext = jest.fn((cb) => {
       if (cb) cb();
@@ -190,7 +190,7 @@ describe('createReferralMiddleware', () => {
 
   it('does not trigger referral when request is missing origin or tabId', async () => {
     const mockHandleReferral = jest.fn();
-    const middleware = createReferralMiddleware(mockHandleReferral);
+    const middleware = createDefiReferralMiddleware(mockHandleReferral);
 
     const requestMissingOrigin = {
       id: 1,

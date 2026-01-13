@@ -69,11 +69,11 @@ import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import { MultichainNetworks } from '../../shared/constants/multichain/networks';
 import { HYPERLIQUID_APPROVAL_TYPE } from '../../shared/constants/app';
 import {
-  REFERRAL_PARTNERS,
-  ReferralPartner,
-} from '../../shared/constants/referrals';
+  DEFI_REFERRAL_PARTNERS,
+  DefiReferralPartner,
+} from '../../shared/constants/defi-referrals';
 
-const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
+const HYPERLIQUID_ORIGIN = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].origin;
 import { BITCOIN_WALLET_SNAP_ID } from '../../shared/lib/accounts/bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from '../../shared/lib/accounts/solana-wallet-snap';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
@@ -4396,7 +4396,7 @@ describe('MetaMaskController', () => {
       });
     });
 
-    describe('handleReferral', () => {
+    describe('handleDefiReferral', () => {
       const mockTabId = 140;
       const mockNewConnectionTriggerType = 'new_connection';
       const mockOnNavigateTriggerType = 'on_navigate_connected_tab';
@@ -4404,8 +4404,8 @@ describe('MetaMaskController', () => {
       const mockPermittedAccounts = [mockPermittedAccount, '0x456'];
 
       beforeEach(async () => {
-        jest.spyOn(metamaskController, '_handleReferralApprovedAccount');
-        jest.spyOn(metamaskController, '_handleReferralRedirect');
+        jest.spyOn(metamaskController, '_handleDefiReferralApprovedAccount');
+        jest.spyOn(metamaskController, '_handleDefiReferralRedirect');
         jest.spyOn(metamaskController.metaMetricsController, 'trackEvent');
         jest
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
@@ -4422,7 +4422,7 @@ describe('MetaMaskController', () => {
         // Initialize referral state
         metamaskController.preferencesController.update((state) => {
           state.referrals = {
-            [ReferralPartner.Hyperliquid]: {},
+            [DefiReferralPartner.Hyperliquid]: {},
           };
         });
       });
@@ -4437,8 +4437,8 @@ describe('MetaMaskController', () => {
           });
         jest.spyOn(metamaskController, 'getPermittedAccounts');
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4450,8 +4450,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController, 'getPermittedAccounts')
           .mockReturnValueOnce([]);
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4462,7 +4462,7 @@ describe('MetaMaskController', () => {
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).not.toHaveBeenCalled();
       });
 
@@ -4474,8 +4474,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'has')
           .mockReturnValueOnce(true); // Pending approval exists
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4488,7 +4488,7 @@ describe('MetaMaskController', () => {
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).not.toHaveBeenCalled();
       });
 
@@ -4506,8 +4506,8 @@ describe('MetaMaskController', () => {
           };
         });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4515,7 +4515,7 @@ describe('MetaMaskController', () => {
           metamaskController.approvalController.add,
         ).not.toHaveBeenCalled();
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).not.toHaveBeenCalled();
       });
 
@@ -4527,8 +4527,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4548,8 +4548,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockOnNavigateTriggerType,
         );
@@ -4569,23 +4569,23 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: true });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
         expect(
-          metamaskController._handleReferralApprovedAccount,
+          metamaskController._handleDefiReferralApprovedAccount,
         ).toHaveBeenCalledWith(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockPermittedAccount,
           mockPermittedAccounts,
           [],
         );
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).toHaveBeenCalledWith(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockPermittedAccount,
         );
@@ -4599,16 +4599,16 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: false });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
         expect(
-          metamaskController._handleReferralApprovedAccount,
+          metamaskController._handleDefiReferralApprovedAccount,
         ).not.toHaveBeenCalled();
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).not.toHaveBeenCalled();
       });
 
@@ -4620,8 +4620,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'has')
           .mockResolvedValueOnce(true); // Pending approval exists
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4638,8 +4638,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4663,8 +4663,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({});
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockOnNavigateTriggerType,
         );
@@ -4688,8 +4688,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: true });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4712,8 +4712,8 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.approvalController, 'add')
           .mockResolvedValueOnce({ approved: false });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
@@ -4737,20 +4737,20 @@ describe('MetaMaskController', () => {
           .mockResolvedValueOnce({});
         // Set account as approved
         metamaskController.preferencesController.update((state) => {
-          state.referrals[ReferralPartner.Hyperliquid] = {
+          state.referrals[DefiReferralPartner.Hyperliquid] = {
             [mockPermittedAccount]: ReferralStatus.Approved,
           };
         });
 
-        await metamaskController.handleReferral(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+        await metamaskController.handleDefiReferral(
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockNewConnectionTriggerType,
         );
         expect(
-          metamaskController._handleReferralRedirect,
+          metamaskController._handleDefiReferralRedirect,
         ).toHaveBeenCalledWith(
-          REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
           mockTabId,
           mockPermittedAccount,
         );
@@ -4759,7 +4759,7 @@ describe('MetaMaskController', () => {
         ).not.toHaveBeenCalled();
       });
 
-      describe('_handleReferralApprovedAccount', () => {
+      describe('_handleDefiReferralApprovedAccount', () => {
         beforeEach(() => {
           jest.spyOn(
             metamaskController.preferencesController,
@@ -4776,8 +4776,8 @@ describe('MetaMaskController', () => {
         });
 
         it('approves all permitted accounts when there are no previously declined accounts', () => {
-          metamaskController._handleReferralApprovedAccount(
-            REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          metamaskController._handleDefiReferralApprovedAccount(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
             mockPermittedAccount,
             mockPermittedAccounts,
             [],
@@ -4792,8 +4792,8 @@ describe('MetaMaskController', () => {
         });
 
         it('approves the permitted account and removes the previously declined account from the declined list when it exists there', () => {
-          metamaskController._handleReferralApprovedAccount(
-            REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          metamaskController._handleDefiReferralApprovedAccount(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
             mockPermittedAccount,
             mockPermittedAccounts,
             [mockPermittedAccounts[1]],
@@ -4814,25 +4814,25 @@ describe('MetaMaskController', () => {
         });
       });
 
-      describe('_handleReferralRedirect', () => {
+      describe('_handleDefiReferralRedirect', () => {
         it('calls the url update method and marks the permitted account as passed', async () => {
           jest
-            .spyOn(metamaskController, '_updateReferralUrl')
+            .spyOn(metamaskController, '_updateDefiReferralUrl')
             .mockResolvedValueOnce({});
           jest.spyOn(
             metamaskController.preferencesController,
             'addReferralPassedAccount',
           );
 
-          await metamaskController._handleReferralRedirect(
-            REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+          await metamaskController._handleDefiReferralRedirect(
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
             mockTabId,
             mockPermittedAccount,
           );
           expect(
-            metamaskController._updateReferralUrl,
+            metamaskController._updateDefiReferralUrl,
           ).toHaveBeenCalledWith(
-            REFERRAL_PARTNERS[ReferralPartner.Hyperliquid],
+            DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid],
             mockTabId,
           );
           expect(
