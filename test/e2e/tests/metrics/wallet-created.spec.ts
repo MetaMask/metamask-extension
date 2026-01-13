@@ -315,6 +315,8 @@ describe('Wallet Created Events', function () {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          storage_kind: 'data',
           locale: 'en',
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
           // eslint-disable-next-line @typescript-eslint/naming-convention
