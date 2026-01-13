@@ -50,6 +50,7 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { Toast, ToastContainer } from '../../multichain/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -65,6 +66,21 @@ import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRed
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
+
+const TabOpenedToast = ({ onClose }: { onClose: () => void }) => (
+  <ToastContainer>
+    <Toast
+      startAdornment={
+        <Icon name={IconName.Export} color={IconColor.iconDefault} />
+      }
+      text="Continue in your browser tab"
+      description="We've opened a new tab for buying."
+      onClose={onClose}
+      autoHideTime={3000}
+      onAutoHideToast={onClose}
+    />
+  </ToastContainer>
+);
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -96,6 +112,7 @@ const CoinButtons = ({
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -299,6 +316,7 @@ const CoinButtons = ({
   ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
+    setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -455,6 +473,9 @@ const CoinButtons = ({
         width={BlockSize.Full}
         onClick={handleReceiveOnClick}
       />
+      {showTabOpenedToast && (
+        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
+      )}
     </Box>
   );
 };
