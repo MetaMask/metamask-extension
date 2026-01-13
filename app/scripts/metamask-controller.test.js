@@ -4786,7 +4786,7 @@ describe('MetaMaskController', () => {
             metamaskController.preferencesController
               .setAccountsReferralApproved,
           ).toHaveBeenCalledWith(
-            ReferralPartner.Hyperliquid,
+            DefiReferralPartner.Hyperliquid,
             mockPermittedAccounts,
           );
         });
@@ -4801,14 +4801,14 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.preferencesController.addReferralApprovedAccount,
           ).toHaveBeenCalledWith(
-            ReferralPartner.Hyperliquid,
+            DefiReferralPartner.Hyperliquid,
             mockPermittedAccount,
           );
           expect(
             metamaskController.preferencesController
               .removeReferralDeclinedAccount,
           ).toHaveBeenCalledWith(
-            ReferralPartner.Hyperliquid,
+            DefiReferralPartner.Hyperliquid,
             mockPermittedAccounts[1],
           );
         });
@@ -4838,7 +4838,7 @@ describe('MetaMaskController', () => {
           expect(
             metamaskController.preferencesController.addReferralPassedAccount,
           ).toHaveBeenCalledWith(
-            ReferralPartner.Hyperliquid,
+            DefiReferralPartner.Hyperliquid,
             mockPermittedAccount,
           );
         });

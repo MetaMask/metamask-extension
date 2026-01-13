@@ -224,12 +224,6 @@ import {
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
-import {
-  DEFI_REFERRAL_PARTNERS,
-  DefiReferralPartner,
-} from '../../shared/constants/defi-referrals';
-
-const HYPERLIQUID_CONFIG = DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid];
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
@@ -6175,7 +6169,7 @@ export default class MetamaskController extends EventEmitter {
     const referralStatusByAccount =
       this.preferencesController.state.referrals[partner.id];
     const permittedAccountStatus =
-      referralStatusByAccount[activePermittedAccount.toLowerCase()];
+      referralStatusByAccount[activePermittedAccount];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
       (account) => referralStatusByAccount[account] === ReferralStatus.Declined,
     );
@@ -6277,7 +6271,9 @@ export default class MetamaskController extends EventEmitter {
     permittedAccounts,
     declinedAccounts,
   ) {
+    console.log("getting here?")
     if (declinedAccounts.length === 0) {
+      console.log("getting here? 2")
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
@@ -6286,6 +6282,7 @@ export default class MetamaskController extends EventEmitter {
         permittedAccounts,
       );
     } else {
+      console.log("getting here? 3")
       this.preferencesController.addReferralApprovedAccount(
         partner.id,
         activePermittedAccount,
