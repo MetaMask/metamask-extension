@@ -38,7 +38,6 @@ async function init(): Promise<void> {
   initializePostMessageStream();
   initTrezor();
   initLattice();
-  initConnectivity();
   ///: BEGIN:ONLY_INCLUDE_IF(ocap-kernel)
   runKernel().catch((error) => {
     console.error('Ocap Kernel fatal error:', error);
@@ -80,4 +79,9 @@ init().then(() => {
     // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
     webdriverPresent: navigator.webdriver === true,
   });
+
+  // Initialize connectivity detection AFTER isBooted is sent.
+  // This ensures the background listener (setupOffscreenConnectivityListener)
+  // is set up before we send the initial connectivity status.
+  initConnectivity();
 });
