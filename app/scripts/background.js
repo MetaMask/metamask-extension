@@ -75,7 +75,11 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
+import {
+  getPlatform,
+  isWebOrigin,
+  shouldEmitDappViewedEvent,
+} from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -1898,11 +1902,7 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
 
     const { origin, protocol, host, href } = new URL(url);
 
-    // Only update for http/https origins
-    const isWebOrigin =
-      origin?.startsWith('http://') || origin?.startsWith('https://');
-
-    if (!isWebOrigin) {
+    if (!isWebOrigin(origin)) {
       // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
       controller.appStateController.clearAppActiveTab();
       return {};
@@ -1947,18 +1947,15 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
     const { id, title, url, favIconUrl } = tabInfo;
 
     if (!url) {
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
     const { origin, protocol, host, href } = new URL(url);
 
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
-    ) {
+    if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
