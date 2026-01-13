@@ -18,7 +18,7 @@ import {
   useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { ConnectionStatus } from './types';
-import type { HardwareWalletError } from './errors';
+import { ErrorCode, type HardwareWalletError } from './errors';
 
 const LOG_TAG = '[HardwareWalletErrorProvider]';
 
@@ -135,7 +135,8 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
       // Don't show modal for user cancellations (unless forced)
       if (
         !skipFilters &&
-        (error.code === 'USER_CANCEL_001' || error.code === 'USER_CANCEL_002')
+        (error.code === ErrorCode.UserRejected ||
+          error.code === ErrorCode.UserCancelled)
       ) {
         console.log(LOG_TAG, 'Skipping modal for user cancellation');
         return;

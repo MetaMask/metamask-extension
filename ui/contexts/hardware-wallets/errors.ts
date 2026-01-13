@@ -4,6 +4,7 @@ import {
   Severity,
   Category,
   RetryStrategy,
+  HARDWARE_MAPPINGS,
 } from '@metamask/keyring-utils';
 import { ConnectionState } from './connectionState';
 import {
@@ -25,7 +26,6 @@ export { HardwareWalletError, ErrorCode, Severity, Category, RetryStrategy };
  * @param options - Optional error options
  * @param options.cause - The underlying error that caused this error
  * @param options.metadata - Additional metadata about the error
- * @param options.documentationUrl - URL to documentation about this error
  * @returns A new HardwareWalletError instance
  */
 export function createHardwareWalletError(
@@ -35,10 +35,9 @@ export function createHardwareWalletError(
   options?: {
     cause?: Error;
     metadata?: Record<string, unknown>;
-    documentationUrl?: string;
   },
 ): HardwareWalletError {
-  // Determine error properties based on error code
+  // Get error properties based on error code
   const { severity, category, retryStrategy, userActionable, userMessage } =
     getErrorProperties(code);
 
@@ -54,9 +53,82 @@ export function createHardwareWalletError(
       ...options?.metadata,
       walletType,
     },
-    documentationUrl: options?.documentationUrl,
   });
 }
+
+/**
+ * Error properties map built from HARDWARE_MAPPINGS
+ */
+const ERROR_PROPERTIES_MAP = (() => {
+  const map = new Map<
+    ErrorCode,
+    {
+      severity: Severity;
+      category: Category;
+      retryStrategy: RetryStrategy;
+      userActionable: boolean;
+      userMessage: string;
+    }
+  >();
+
+  // Extract properties from HARDWARE_MAPPINGS
+  const extractFromMappings = (
+    mappings: Record<
+      string,
+      {
+        customCode?: ErrorCode;
+        severity?: Severity;
+        category?: Category;
+        retryStrategy?: RetryStrategy;
+        userActionable?: boolean;
+        userMessage?: string;
+      }
+    >,
+  ) => {
+    for (const mapping of Object.values(mappings)) {
+      if (mapping.customCode && typeof mapping.customCode === 'number') {
+        map.set(mapping.customCode, {
+          severity: mapping.severity ?? Severity.Err,
+          category: mapping.category ?? Category.Unknown,
+          retryStrategy: mapping.retryStrategy ?? RetryStrategy.NoRetry,
+          userActionable: mapping.userActionable ?? false,
+          userMessage: mapping.userMessage ?? 'An error occurred',
+        });
+      }
+    }
+  };
+
+  // Extract from Ledger and Trezor mappings
+  extractFromMappings(HARDWARE_MAPPINGS.ledger.errorMappings);
+  extractFromMappings(HARDWARE_MAPPINGS.trezor.errorMappings);
+
+  // Add custom properties for specific error codes not in mappings
+  map.set(ErrorCode.AuthSecurityCondition, {
+    severity: Severity.Err,
+    category: Category.Authentication,
+    retryStrategy: RetryStrategy.Retry,
+    userActionable: true,
+    userMessage: 'Permission to access the device was denied',
+  });
+
+  map.set(ErrorCode.UserRejected, {
+    severity: Severity.Warning,
+    category: Category.UserAction,
+    retryStrategy: RetryStrategy.NoRetry,
+    userActionable: false,
+    userMessage: 'Operation cancelled by user',
+  });
+
+  map.set(ErrorCode.UserCancelled, {
+    severity: Severity.Warning,
+    category: Category.UserAction,
+    retryStrategy: RetryStrategy.NoRetry,
+    userActionable: false,
+    userMessage: 'Operation cancelled by user',
+  });
+
+  return map;
+})();
 
 /**
  * Get error properties based on error code
@@ -71,74 +143,15 @@ function getErrorProperties(code: ErrorCode): {
   userActionable: boolean;
   userMessage: string;
 } {
-  switch (code) {
-    case ErrorCode.AUTH_LOCK_001:
-      return {
-        severity: Severity.ERROR,
-        category: Category.AUTHENTICATION,
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        userMessage: 'Please unlock your hardware wallet device',
-      };
-    case ErrorCode.DEVICE_STATE_001:
-      return {
-        severity: Severity.ERROR,
-        category: Category.DEVICE_STATE,
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        userMessage: 'Please open the Ethereum app on your device',
-      };
-    case ErrorCode.CONN_TRANSPORT_001:
-      return {
-        severity: Severity.ERROR,
-        category: Category.CONNECTION,
-        retryStrategy: RetryStrategy.NO_RETRY,
-        userActionable: true,
-        userMessage: 'WebHID is not available in your browser',
-      };
-    case ErrorCode.CONFIG_PERM_001:
-      return {
-        severity: Severity.ERROR,
-        category: Category.CONFIGURATION,
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        userMessage: 'Permission to access the device was denied',
-      };
-    case ErrorCode.USER_CANCEL_001:
-    case ErrorCode.USER_CANCEL_002:
-      return {
-        severity: Severity.WARNING,
-        category: Category.USER_ACTION,
-        retryStrategy: RetryStrategy.NO_RETRY,
-        userActionable: false,
-        userMessage: 'Operation cancelled by user',
-      };
-    case ErrorCode.CONN_TIMEOUT_001:
-      return {
-        severity: Severity.ERROR,
-        category: Category.CONNECTION,
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        userMessage: 'Connection timeout. Please try again',
-      };
-    case ErrorCode.CONN_CLOSED_001:
-    case ErrorCode.DEVICE_STATE_003:
-      return {
-        severity: Severity.ERROR,
-        category: Category.CONNECTION,
-        retryStrategy: RetryStrategy.RETRY,
-        userActionable: true,
-        userMessage: 'Device connection failed. Please reconnect your device',
-      };
-    default:
-      return {
-        severity: Severity.ERROR,
-        category: Category.UNKNOWN,
-        retryStrategy: RetryStrategy.NO_RETRY,
-        userActionable: false,
-        userMessage: 'An unknown error occurred',
-      };
-  }
+  return (
+    ERROR_PROPERTIES_MAP.get(code) ?? {
+      severity: Severity.Err,
+      category: Category.Unknown,
+      retryStrategy: RetryStrategy.NoRetry,
+      userActionable: false,
+      userMessage: 'An unknown error occurred',
+    }
+  );
 }
 
 /**
@@ -162,134 +175,87 @@ export function parseErrorByType(
   const errorMessageLower = errorMessage.toLowerCase();
   const cause = error instanceof Error ? error : undefined;
 
-  // Parse Ledger-specific error codes (hex codes from Ledger APDU responses)
-  if (errorMessageLower.includes('0x5515')) {
-    return createHardwareWalletError(
-      ErrorCode.AUTH_LOCK_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
+  // Parse hardware wallet error codes using mappings from keyring-utils
+  const ledgerMappings = HARDWARE_MAPPINGS.ledger.errorMappings;
+  for (const [errorCode, mapping] of Object.entries(ledgerMappings)) {
+    if (errorMessageLower.includes(errorCode)) {
+      return createHardwareWalletError(
+        mapping.customCode,
+        walletType,
+        errorMessage,
+        { cause },
+      );
+    }
   }
 
-  if (
-    errorMessageLower.includes('0x6804') ||
-    errorMessageLower.includes('0x6511') ||
-    errorMessageLower.includes('0x6d00')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.DEVICE_STATE_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('0x5501') ||
-    errorMessageLower.includes('0x6985')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.USER_CANCEL_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
+  // Check Trezor mappings
+  const trezorMappings = HARDWARE_MAPPINGS.trezor.errorMappings;
+  for (const [errorKey, mapping] of Object.entries(trezorMappings)) {
+    if (errorMessageLower.includes(errorKey.toLowerCase())) {
+      return createHardwareWalletError(
+        mapping.customCode,
+        walletType,
+        errorMessage,
+        { cause },
+      );
+    }
   }
 
   // Parse common error patterns
-  if (errorMessageLower.includes('locked')) {
-    return createHardwareWalletError(
-      ErrorCode.AUTH_LOCK_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
+  const errorPatterns = [
+    {
+      patterns: ['locked'],
+      code: ErrorCode.AuthDeviceLocked,
+    },
+    {
+      patterns: ['app'],
+      code: ErrorCode.DeviceStateEthAppClosed,
+    },
+    {
+      patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
+      code: ErrorCode.UserRejected,
+    },
+    {
+      patterns: ['timeout'],
+      code: ErrorCode.ConnTimeout,
+    },
+    {
+      patterns: ['webhid', 'hid'],
+      code: ErrorCode.ConnTransportMissing,
+    },
+    {
+      patterns: ['permission.*denied'],
+      code: ErrorCode.AuthSecurityCondition,
+    },
+    {
+      patterns: ['disconnected', 'not found'],
+      code: ErrorCode.DeviceDisconnected,
+    },
+    {
+      patterns: ['connection', 'connect'],
+      code: ErrorCode.ConnClosed,
+    },
+  ];
 
-  if (errorMessageLower.includes('app')) {
-    return createHardwareWalletError(
-      ErrorCode.DEVICE_STATE_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('rejected') ||
-    errorMessageLower.includes('denied') ||
-    errorMessageLower.includes('cancelled') ||
-    errorMessageLower.includes('canceled')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.USER_CANCEL_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (errorMessageLower.includes('timeout')) {
-    return createHardwareWalletError(
-      ErrorCode.CONN_TIMEOUT_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('webhid') ||
-    errorMessageLower.includes('hid')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.CONN_TRANSPORT_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('permission') &&
-    errorMessageLower.includes('denied')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.CONFIG_PERM_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('disconnected') ||
-    errorMessageLower.includes('not found')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.DEVICE_STATE_003,
-      walletType,
-      errorMessage,
-      { cause },
-    );
-  }
-
-  if (
-    errorMessageLower.includes('connection') ||
-    errorMessageLower.includes('connect')
-  ) {
-    return createHardwareWalletError(
-      ErrorCode.CONN_CLOSED_001,
-      walletType,
-      errorMessage,
-      { cause },
-    );
+  for (const { patterns, code } of errorPatterns) {
+    if (
+      patterns.some((pattern) => {
+        if (pattern.includes('.*')) {
+          // Use regex for patterns with wildcards
+          return new RegExp(pattern, 'u').test(errorMessageLower);
+        }
+        return errorMessageLower.includes(pattern);
+      })
+    ) {
+      return createHardwareWalletError(code, walletType, errorMessage, {
+        cause,
+      });
+    }
   }
 
   // Default to unknown error
   return createHardwareWalletError(
-    ErrorCode.UNKNOWN_001,
+    ErrorCode.Unknown,
     walletType,
     errorMessage,
     { cause },
@@ -306,22 +272,22 @@ export function getConnectionStateFromError(
   error: HardwareWalletError,
 ): HardwareWalletConnectionState {
   switch (error.code) {
-    case ErrorCode.AUTH_LOCK_001:
-    case ErrorCode.AUTH_LOCK_002:
+    case ErrorCode.AuthDeviceLocked:
+    case ErrorCode.AuthDeviceBlocked:
       return ConnectionState.error('locked', error);
-    case ErrorCode.DEVICE_STATE_001:
+    case ErrorCode.DeviceStateEthAppClosed:
       return ConnectionState.awaitingApp('not_open');
-    case ErrorCode.CONN_TRANSPORT_001:
+    case ErrorCode.ConnTransportMissing:
       return ConnectionState.error('webhid_not_available', error);
-    case ErrorCode.CONFIG_PERM_001:
+    case ErrorCode.AuthSecurityCondition:
       return ConnectionState.error('webhid_permission_denied', error);
-    case ErrorCode.CONN_CLOSED_001:
-    case ErrorCode.DEVICE_STATE_003:
+    case ErrorCode.ConnClosed:
+    case ErrorCode.DeviceDisconnected:
       return ConnectionState.error('connection_failed', error);
-    case ErrorCode.USER_CANCEL_001:
-    case ErrorCode.USER_CANCEL_002:
+    case ErrorCode.UserRejected:
+    case ErrorCode.UserCancelled:
       return ConnectionState.error('user_rejected', error);
-    case ErrorCode.CONN_TIMEOUT_001:
+    case ErrorCode.ConnTimeout:
       return ConnectionState.error('timeout', error);
     default:
       return ConnectionState.error('unknown', error);

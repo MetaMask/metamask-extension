@@ -81,7 +81,7 @@ export const useHardwareWalletConnection = ({
         const discoveredId = await getHardwareWalletDeviceId(targetWalletType);
         if (!discoveredId) {
           const error = createHardwareWalletError(
-            ErrorCode.DEVICE_STATE_003,
+            ErrorCode.DeviceDisconnected,
             targetWalletType,
             `No ${targetWalletType} device found. Please ensure your device is connected and unlocked.`,
           );
@@ -97,7 +97,7 @@ export const useHardwareWalletConnection = ({
         updateConnectionState(
           getConnectionStateFromError(
             createHardwareWalletError(
-              ErrorCode.CONN_CLOSED_001,
+              ErrorCode.ConnClosed,
               targetWalletType,
               `Failed to discover ${targetWalletType} device: ${error instanceof Error ? error.message : String(error)}`,
               { cause: error instanceof Error ? error : undefined },
