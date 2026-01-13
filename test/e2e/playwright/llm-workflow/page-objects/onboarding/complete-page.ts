@@ -1,9 +1,14 @@
 import type { Page } from '@playwright/test';
 
 export class CompletePage {
-  constructor(private readonly page: Page) {}
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
 
   private readonly doneButton = '[data-testid="onboarding-complete-done"]';
+
   private readonly manageSettingsButton =
     '[data-testid="manage-default-settings"]';
 
@@ -35,6 +40,7 @@ export class CompletePage {
       await downloadLocator.click();
       await downloadLocator
         .waitFor({ state: 'hidden', timeout: 5000 })
+        // eslint-disable-next-line no-empty-function
         .catch(() => {});
     }
 
@@ -47,6 +53,7 @@ export class CompletePage {
       await pinLocator.click();
       await pinLocator
         .waitFor({ state: 'hidden', timeout: 5000 })
+        // eslint-disable-next-line no-empty-function
         .catch(() => {});
     }
 

@@ -2,6 +2,7 @@ import path from 'path';
 import { promises as fs, existsSync } from 'fs';
 import { execSync } from 'child_process';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
+import { Anvil } from '../../seeder/anvil';
 import type {
   LaunchOptions,
   ScreenshotOptions,
@@ -9,21 +10,23 @@ import type {
   ExtensionState,
   LauncherContext,
   FixtureData,
+  MockServerConfig,
+  NetworkConfig,
 } from './types';
-import { Anvil } from '../../seeder/anvil';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+
+import { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
+import { MockServer } from './mock-server';
+import { HomePage } from './page-objects/home-page';
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const FixtureServer = require('../../fixtures/fixture-server');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 const {
   defaultFixture,
   FIXTURE_STATE_METADATA_VERSION,
 } = require('../../fixtures/default-fixture');
-// eslint-disable-next-line @typescript-eslint/no-require-imports
+/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const FixtureBuilderClass = require('../../fixtures/fixture-builder');
-
-import { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
-import { MockServer } from './mock-server';
-import type { MockServerConfig, NetworkConfig, PortsConfig } from './types';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_ANVIL_PORT = 8545;
@@ -48,13 +51,28 @@ type ResolvedOptions = {
 
 export class MetaMaskExtensionLauncher {
   private context: BrowserContext | undefined;
+
   private extensionPage: Page | undefined;
+
   private extensionId: string | undefined;
+
   private anvil: Anvil | undefined;
+
   private fixtureServer: typeof FixtureServer | undefined;
+
   private mockServer: MockServer | undefined;
+
   private options: ResolvedOptions;
+
   private userDataDir: string;
+
+  private consoleErrorBuffer: {
+    timestamp: number;
+    message: string;
+    source: string;
+  }[] = [];
+
+  private readonly maxConsoleErrors = 100;
 
   constructor(options: LaunchOptions = {}) {
     this.options = {
@@ -122,6 +140,7 @@ export class MetaMaskExtensionLauncher {
         );
       }
       try {
+        // eslint-disable-next-line no-new
         new URL(rpcUrl);
       } catch {
         throw new Error(
@@ -281,7 +300,9 @@ export class MetaMaskExtensionLauncher {
             return;
           }
         }
-      } catch {}
+      } catch {
+        // Retry on connection failure
+      }
       await new Promise((r) => setTimeout(r, 500));
     }
     throw new Error(
@@ -332,8 +353,10 @@ export class MetaMaskExtensionLauncher {
           console.log('FixtureServer is ready');
           return;
         }
-      } catch {}
-      await new Promise((r) => setTimeout(r, 200));
+      } catch {
+        // Retry on connection failure
+      }
+      await new Promise((r) => setTimeout(r, 500));
     }
     throw new Error(
       `FixtureServer failed to respond after ${maxAttempts} attempts on port ${port}. ` +
@@ -362,7 +385,9 @@ export class MetaMaskExtensionLauncher {
   }
 
   private async waitForMockServerReady(maxAttempts = 10): Promise<void> {
-    if (!this.mockServer) return;
+    if (!this.mockServer) {
+      return;
+    }
 
     const port = this.mockServer.getPort();
     for (let i = 0; i < maxAttempts; i++) {
@@ -436,7 +461,14 @@ export class MetaMaskExtensionLauncher {
       page = await this.context.newPage();
     }
 
-    this.extensionId = await this.getExtensionId(page);
+    this.extensionId = await this.getExtensionIdFromServiceWorker();
+
+    if (!this.extensionId) {
+      console.log(
+        'Service worker discovery failed, falling back to chrome://extensions',
+      );
+      this.extensionId = await this.getExtensionIdFromExtensionsPage(page);
+    }
 
     if (!this.extensionId) {
       throw new Error('Could not find MetaMask extension ID');
@@ -444,9 +476,79 @@ export class MetaMaskExtensionLauncher {
 
     await page.goto(`chrome-extension://${this.extensionId}/home.html`);
     await page.waitForLoadState('domcontentloaded');
+
+    this.attachConsoleListeners(page);
+
     await this.waitForExtensionUIReady(page);
 
     this.extensionPage = page;
+  }
+
+  private attachConsoleListeners(page: Page): void {
+    page.on('console', (msg) => {
+      if (msg.type() === 'error') {
+        this.addConsoleError(msg.text(), page.url());
+      }
+    });
+
+    page.on('pageerror', (error) => {
+      this.addConsoleError(`Page error: ${error.message}`, page.url());
+    });
+  }
+
+  private addConsoleError(message: string, source: string): void {
+    this.consoleErrorBuffer.push({
+      timestamp: Date.now(),
+      message,
+      source,
+    });
+
+    if (this.consoleErrorBuffer.length > this.maxConsoleErrors) {
+      this.consoleErrorBuffer.shift();
+    }
+  }
+
+  private async getExtensionIdFromServiceWorker(): Promise<string | undefined> {
+    if (!this.context) {
+      return undefined;
+    }
+
+    try {
+      const existingWorkers = this.context.serviceWorkers();
+      for (const worker of existingWorkers) {
+        const extensionId = this.extractExtensionIdFromUrl(worker.url());
+        if (extensionId) {
+          console.log(
+            `Found extension ID from existing service worker: ${extensionId}`,
+          );
+          return extensionId;
+        }
+      }
+
+      const worker = await Promise.race([
+        this.context.waitForEvent('serviceworker', { timeout: 10000 }),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000)),
+      ]);
+
+      if (worker && typeof worker !== 'number') {
+        const extensionId = this.extractExtensionIdFromUrl(worker.url());
+        if (extensionId) {
+          console.log(
+            `Found extension ID from new service worker: ${extensionId}`,
+          );
+          return extensionId;
+        }
+      }
+    } catch (error) {
+      console.warn('Service worker extension ID discovery failed:', error);
+    }
+
+    return undefined;
+  }
+
+  private extractExtensionIdFromUrl(url: string): string | undefined {
+    const match = url.match(/chrome-extension:\/\/([a-z]{32})\//u);
+    return match ? match[1] : undefined;
   }
 
   private async waitForExtensionUIReady(
@@ -488,7 +590,7 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
-  private async getExtensionId(
+  private async getExtensionIdFromExtensionsPage(
     page: Page,
     maxRetries = 3,
   ): Promise<string | undefined> {
@@ -501,12 +603,16 @@ export class MetaMaskExtensionLauncher {
         const extensionId = await page.evaluate(() => {
           const extensionsManager =
             document.querySelector('extensions-manager');
-          if (!extensionsManager?.shadowRoot) return undefined;
+          if (!extensionsManager?.shadowRoot) {
+            return undefined;
+          }
 
           const itemList = extensionsManager.shadowRoot.querySelector(
             'extensions-item-list',
           );
-          if (!itemList?.shadowRoot) return undefined;
+          if (!itemList?.shadowRoot) {
+            return undefined;
+          }
 
           const items = itemList.shadowRoot.querySelectorAll('extensions-item');
 
@@ -558,12 +664,16 @@ export class MetaMaskExtensionLauncher {
     for (let i = 0; i < maxAttempts; i++) {
       const isReady = await page.evaluate(() => {
         const extensionsManager = document.querySelector('extensions-manager');
-        if (!extensionsManager?.shadowRoot) return false;
+        if (!extensionsManager?.shadowRoot) {
+          return false;
+        }
 
         const itemList = extensionsManager.shadowRoot.querySelector(
           'extensions-item-list',
         );
-        if (!itemList?.shadowRoot) return false;
+        if (!itemList?.shadowRoot) {
+          return false;
+        }
 
         const items = itemList.shadowRoot.querySelectorAll('extensions-item');
         return items.length > 0;
@@ -637,9 +747,11 @@ export class MetaMaskExtensionLauncher {
       for (const selector of modalSelectors) {
         const button = this.extensionPage.locator(selector).first();
         if (await button.isVisible({ timeout: 1500 }).catch(() => false)) {
+          // eslint-disable-next-line no-empty-function
           await button.click().catch(() => {});
           await button
             .waitFor({ state: 'hidden', timeout: 3000 })
+            // eslint-disable-next-line no-empty-function
             .catch(() => {});
         }
       }
@@ -654,6 +766,7 @@ export class MetaMaskExtensionLauncher {
           .click();
         await accountMenuIcon
           .waitFor({ state: 'visible', timeout: 10000 })
+          // eslint-disable-next-line no-empty-function
           .catch(() => {});
       }
 
@@ -734,11 +847,13 @@ export class MetaMaskExtensionLauncher {
     for (const selector of modalSelectors) {
       const button = this.extensionPage.locator(selector).first();
       if (await button.isVisible({ timeout: 500 }).catch(() => false)) {
+        // eslint-disable-next-line no-empty-function
         await button.click().catch(() => {});
         await button
           .waitFor({ state: 'hidden', timeout: 2000 })
+          // eslint-disable-next-line no-empty-function
           .catch(() => {});
-        closedCount++;
+        closedCount += 1;
       }
     }
 
@@ -762,7 +877,7 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Extension page not initialized');
     }
 
-    const timestamp = options.timestamp !== false ? `-${Date.now()}` : '';
+    const timestamp = options.timestamp === false ? '' : `-${Date.now()}`;
     const filename = `${options.name}${timestamp}.png`;
     const filepath = path.join(this.options.screenshotDir, filename);
 
@@ -792,18 +907,12 @@ export class MetaMaskExtensionLauncher {
   async debugDump(name: string): Promise<{
     screenshot: ScreenshotResult;
     state: ExtensionState;
-    consoleErrors: string[];
+    consoleErrors: {
+      timestamp: number;
+      message: string;
+      source: string;
+    }[];
   }> {
-    const consoleErrors: string[] = [];
-
-    if (this.extensionPage) {
-      this.extensionPage.on('console', (msg) => {
-        if (msg.type() === 'error') {
-          consoleErrors.push(msg.text());
-        }
-      });
-    }
-
     const screenshot = await this.screenshot({ name, timestamp: false });
     const state = await this.getState();
 
@@ -811,17 +920,46 @@ export class MetaMaskExtensionLauncher {
       this.options.screenshotDir,
       `${name}-state.json`,
     );
-    await fs.writeFile(stateFilePath, JSON.stringify(state, null, 2));
+
+    const dumpData = {
+      state,
+      consoleErrors: this.consoleErrorBuffer,
+      timestamp: Date.now(),
+    };
+
+    await fs.writeFile(stateFilePath, JSON.stringify(dumpData, null, 2));
 
     console.log(`[debugDump] Screenshot: ${screenshot.path}`);
     console.log(`[debugDump] State JSON: ${stateFilePath}`);
     console.log(`[debugDump] Current screen: ${state.currentScreen}`);
     console.log(`[debugDump] Current URL: ${state.currentUrl}`);
-    if (consoleErrors.length > 0) {
-      console.log(`[debugDump] Console errors: ${consoleErrors.length}`);
+    console.log(
+      `[debugDump] Console errors captured: ${this.consoleErrorBuffer.length}`,
+    );
+
+    if (this.consoleErrorBuffer.length > 0) {
+      console.log(`[debugDump] Recent errors:`);
+      const recentErrors = this.consoleErrorBuffer.slice(-5);
+      for (const error of recentErrors) {
+        console.log(
+          `  - ${error.message.substring(0, 100)}${error.message.length > 100 ? '...' : ''}`,
+        );
+      }
     }
 
-    return { screenshot, state, consoleErrors };
+    return { screenshot, state, consoleErrors: [...this.consoleErrorBuffer] };
+  }
+
+  getConsoleErrors(): {
+    timestamp: number;
+    message: string;
+    source: string;
+  }[] {
+    return [...this.consoleErrorBuffer];
+  }
+
+  clearConsoleErrors(): void {
+    this.consoleErrorBuffer = [];
   }
 
   async getState(): Promise<ExtensionState> {
@@ -839,11 +977,10 @@ export class MetaMaskExtensionLauncher {
 
     let accountAddress: string | null = null;
     let networkName: string | null = null;
-    let chainId: number | null = this.getChainId();
+    const chainId: number | null = this.getChainId();
     let balance: string | null = null;
 
     if (currentScreen === 'home' && isUnlocked) {
-      const { HomePage } = await import('./page-objects/home-page');
       const homePage = new HomePage(this.extensionPage);
 
       accountAddress = (await homePage.getAccountAddress()) || null;
@@ -867,12 +1004,14 @@ export class MetaMaskExtensionLauncher {
   private async detectCurrentScreen(): Promise<
     ExtensionState['currentScreen']
   > {
-    if (!this.extensionPage) return 'unknown';
+    if (!this.extensionPage) {
+      return 'unknown';
+    }
 
-    const screenSelectors: Array<{
+    const screenSelectors: {
       screen: ExtensionState['currentScreen'];
       selector: string;
-    }> = [
+    }[] = [
       { screen: 'unlock', selector: '[data-testid="unlock-password"]' },
       { screen: 'home', selector: '[data-testid="account-menu-icon"]' },
       { screen: 'onboarding-welcome', selector: '[data-testid="get-started"]' },
@@ -1029,26 +1168,52 @@ export class MetaMaskExtensionLauncher {
     }
 
     const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
-    const startTime = Date.now();
 
-    while (Date.now() - startTime < timeoutMs) {
-      const existingPage = await this.getNotificationPage();
-      if (existingPage) {
-        await existingPage.waitForLoadState('domcontentloaded');
-        return existingPage;
-      }
-
-      await new Promise((r) => setTimeout(r, 200));
+    const existingPage = await this.getNotificationPage();
+    if (existingPage) {
+      await existingPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(existingPage);
+      return existingPage;
     }
 
-    const allPages = await this.getAllExtensionPages();
-    const pageUrls = allPages.map((p) => p.url()).join(', ');
+    try {
+      const newPage = await this.context.waitForEvent('page', {
+        timeout: timeoutMs,
+        predicate: (page: Page) => {
+          const url = page.url();
+          return url.startsWith(notificationUrl) || url === 'about:blank';
+        },
+      });
 
-    throw new Error(
-      `Notification page did not appear within ${timeoutMs}ms. ` +
-        `Expected URL starting with: ${notificationUrl}. ` +
-        `Current extension pages: [${pageUrls}]`,
-    );
+      if (newPage.url() === 'about:blank') {
+        await newPage.waitForURL(
+          (url) => url.toString().startsWith(notificationUrl),
+          {
+            timeout: timeoutMs / 2,
+          },
+        );
+      }
+
+      await newPage.waitForLoadState('domcontentloaded');
+      this.attachConsoleListeners(newPage);
+      return newPage;
+    } catch (error) {
+      const finalCheck = await this.getNotificationPage();
+      if (finalCheck) {
+        await finalCheck.waitForLoadState('domcontentloaded');
+        this.attachConsoleListeners(finalCheck);
+        return finalCheck;
+      }
+
+      const allPages = await this.getAllExtensionPages();
+      const pageUrls = allPages.map((p) => p.url()).join(', ');
+
+      throw new Error(
+        `Notification page did not appear within ${timeoutMs}ms. ` +
+          `Expected URL starting with: ${notificationUrl}. ` +
+          `Current extension pages: [${pageUrls}]`,
+      );
+    }
   }
 
   async switchToExtensionHome(): Promise<Page> {

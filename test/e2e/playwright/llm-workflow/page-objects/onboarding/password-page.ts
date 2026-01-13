@@ -1,7 +1,11 @@
 import type { Page } from '@playwright/test';
 
 export class PasswordPage {
-  constructor(private readonly page: Page) {}
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
 
   private readonly newPasswordInput =
     '[data-testid="create-password-new-input"]';
@@ -10,6 +14,7 @@ export class PasswordPage {
     '[data-testid="create-password-confirm-input"]';
 
   private readonly termsCheckbox = '[data-testid="create-password-terms"]';
+
   private readonly submitButton = '[data-testid="create-password-submit"]';
 
   async isLoaded(): Promise<boolean> {

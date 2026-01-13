@@ -9,6 +9,7 @@ export type MockServerOptions = {
 
 export class MockServer {
   private server: Mockttp | null = null;
+
   private port: number;
 
   constructor(options: MockServerOptions = {}) {
@@ -46,7 +47,7 @@ export class MockServer {
     }
 
     await this.server.forAnyRequest().thenPassThrough({
-      beforeRequest: ({ headers: { host }, url }) => {
+      beforeRequest: ({ headers: { host }, url: _url }) => {
         const blocklist = [
           'phishing-detection.api.cx.metamask.io',
           'sentry.io',
@@ -70,9 +71,11 @@ export class MockServer {
   }
 
   private async mockGasApi(): Promise<void> {
-    if (!this.server) return;
+    if (!this.server) {
+      return;
+    }
 
-    await this.server.forGet(/gas\.api\.cx\.metamask\.io/).thenJson(200, {
+    await this.server.forGet(/gas\.api\.cx\.metamask\.io/u).thenJson(200, {
       low: { suggestedMaxPriorityFeePerGas: '1', suggestedMaxFeePerGas: '20' },
       medium: {
         suggestedMaxPriorityFeePerGas: '1.5',
@@ -88,25 +91,29 @@ export class MockServer {
   }
 
   private async mockTokenApi(): Promise<void> {
-    if (!this.server) return;
+    if (!this.server) {
+      return;
+    }
 
     await this.server
-      .forGet(/token\.api\.cx\.metamask\.io\/tokens/)
+      .forGet(/token\.api\.cx\.metamask\.io\/tokens/u)
       .thenJson(200, []);
 
     await this.server
-      .forGet(/token\.api\.cx\.metamask\.io\/token/)
+      .forGet(/token\.api\.cx\.metamask\.io\/token/u)
       .thenJson(200, {});
   }
 
   private async mockCurrencyApi(): Promise<void> {
-    if (!this.server) return;
+    if (!this.server) {
+      return;
+    }
 
     await this.server
-      .forGet(/min-api\.cryptocompare\.com/)
+      .forGet(/min-api\.cryptocompare\.com/u)
       .thenJson(200, { USD: 1700 });
 
-    await this.server.forGet(/price\.api\.cx\.metamask\.io/).thenJson(200, {
+    await this.server.forGet(/price\.api\.cx\.metamask\.io/u).thenJson(200, {
       prices: {
         '0x0000000000000000000000000000000000000000': {
           usd: 1700,
@@ -140,6 +147,8 @@ export class MockServer {
       case 'DELETE':
         await this.server.forDelete(urlPattern).thenJson(status, body);
         break;
+      default:
+        throw new Error(`Unsupported HTTP method: ${String(method)}`);
     }
   }
 }

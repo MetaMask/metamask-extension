@@ -4,27 +4,43 @@ export class HomePage {
   readonly page: Page;
 
   private readonly accountMenuIcon: Locator;
+
   private readonly accountOptionsButton: Locator;
+
   private readonly activityTab: Locator;
+
   private readonly bridgeButton: Locator;
+
   private readonly buyButton: Locator;
+
   private readonly receiveButton: Locator;
+
   private readonly sendButton: Locator;
+
   private readonly settingsButton: Locator;
+
   private readonly swapButton: Locator;
+
   private readonly tokensTab: Locator;
 
   private readonly networkPicker: Locator;
+
   private readonly networkPickerLabel: Locator;
+
   private readonly networkSubtitle: Locator;
+
   private readonly networkDisplay: Locator;
 
   private readonly addressCopyButton: Locator;
+
   private readonly selectedAccountAddress: Locator;
 
   private readonly ethPrimaryCurrency: Locator;
+
   private readonly ethSecondaryCurrency: Locator;
+
   private readonly coinPrimaryCurrency: Locator;
+
   private readonly coinSecondaryCurrency: Locator;
 
   constructor(page: Page) {
@@ -95,25 +111,37 @@ export class HomePage {
       const ethPrimary = await this.ethPrimaryCurrency
         .textContent({ timeout: 2000 })
         .catch(() => null);
-      if (ethPrimary?.includes('ETH')) return ethPrimary.trim();
+      if (ethPrimary?.includes('ETH')) {
+        return ethPrimary.trim();
+      }
 
       const ethSecondary = await this.ethSecondaryCurrency
         .textContent({ timeout: 1500 })
         .catch(() => null);
-      if (ethSecondary?.includes('ETH')) return ethSecondary.trim();
+      if (ethSecondary?.includes('ETH')) {
+        return ethSecondary.trim();
+      }
 
       const coinPrimary = await this.coinPrimaryCurrency
         .textContent({ timeout: 1500 })
         .catch(() => null);
-      if (coinPrimary?.includes('ETH')) return coinPrimary.trim();
+      if (coinPrimary?.includes('ETH')) {
+        return coinPrimary.trim();
+      }
 
       const coinSecondary = await this.coinSecondaryCurrency
         .textContent({ timeout: 1500 })
         .catch(() => null);
-      if (coinSecondary?.includes('ETH')) return coinSecondary.trim();
+      if (coinSecondary?.includes('ETH')) {
+        return coinSecondary.trim();
+      }
 
-      if (ethPrimary) return ethPrimary.trim();
-      if (coinPrimary) return coinPrimary.trim();
+      if (ethPrimary) {
+        return ethPrimary.trim();
+      }
+      if (coinPrimary) {
+        return coinPrimary.trim();
+      }
 
       return '';
     } catch {
@@ -133,7 +161,9 @@ export class HomePage {
           .catch(() => false)
       ) {
         const text = await this.networkPickerLabel.textContent();
-        if (text?.trim()) return text.trim();
+        if (text?.trim()) {
+          return text.trim();
+        }
       }
 
       if (
@@ -142,7 +172,9 @@ export class HomePage {
           .catch(() => false)
       ) {
         const text = await this.networkSubtitle.textContent();
-        if (text?.trim()) return text.trim();
+        if (text?.trim()) {
+          return text.trim();
+        }
       }
 
       if (
@@ -151,17 +183,23 @@ export class HomePage {
           .catch(() => false)
       ) {
         const text = await this.networkDisplay.textContent();
-        if (text?.trim()) return text.trim();
+        if (text?.trim()) {
+          return text.trim();
+        }
       }
 
       if (
         await this.networkPicker.isVisible({ timeout: 1500 }).catch(() => false)
       ) {
         const ariaLabel = await this.networkPicker.getAttribute('aria-label');
-        if (ariaLabel?.trim()) return ariaLabel.trim();
+        if (ariaLabel?.trim()) {
+          return ariaLabel.trim();
+        }
 
         const innerText = await this.networkPicker.innerText();
-        if (innerText?.trim()) return innerText.trim();
+        if (innerText?.trim()) {
+          return innerText.trim();
+        }
       }
 
       return '';
@@ -182,14 +220,20 @@ export class HomePage {
           .catch(() => false)
       ) {
         const title = await this.addressCopyButton.getAttribute('title');
-        if (title?.startsWith('0x')) return title;
+        if (title?.startsWith('0x')) {
+          return title;
+        }
 
         const dataAddress =
           await this.addressCopyButton.getAttribute('data-address');
-        if (dataAddress?.startsWith('0x')) return dataAddress;
+        if (dataAddress?.startsWith('0x')) {
+          return dataAddress;
+        }
 
         const text = await this.addressCopyButton.textContent();
-        if (text?.trim()) return text.trim();
+        if (text?.trim()) {
+          return text.trim();
+        }
       }
 
       if (
@@ -198,7 +242,9 @@ export class HomePage {
           .catch(() => false)
       ) {
         const text = await this.selectedAccountAddress.textContent();
-        if (text?.trim()) return text.trim();
+        if (text?.trim()) {
+          return text.trim();
+        }
       }
 
       return '';

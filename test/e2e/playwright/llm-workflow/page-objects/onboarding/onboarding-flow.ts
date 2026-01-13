@@ -15,12 +15,18 @@ const DEFAULT_SEED_PHRASE =
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 
 export class OnboardingFlow {
+  private readonly page: Page;
+
   private readonly startPage: StartOnboardingPage;
+
   private readonly srpPage: SrpPage;
+
   private readonly passwordPage: PasswordPage;
+
   private readonly completePage: CompletePage;
 
-  constructor(private readonly page: Page) {
+  constructor(page: Page) {
+    this.page = page;
     this.startPage = new StartOnboardingPage(page);
     this.srpPage = new SrpPage(page);
     this.passwordPage = new PasswordPage(page);

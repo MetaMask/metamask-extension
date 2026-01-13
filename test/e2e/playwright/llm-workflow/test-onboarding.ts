@@ -3,6 +3,8 @@
 import { existsSync } from 'fs';
 import path from 'path';
 
+import { launchMetaMask, DEFAULT_PASSWORD, HomePage } from '.';
+
 // Pre-flight check: Ensure dependencies are installed before importing workflow modules
 const nodeModulesPath = path.join(process.cwd(), 'node_modules');
 const distPath = path.join(process.cwd(), 'dist', 'chrome');
@@ -29,8 +31,6 @@ if (!existsSync(distPath)) {
   console.error('');
   process.exit(1);
 }
-
-import { launchMetaMask, DEFAULT_PASSWORD, HomePage } from './index';
 
 async function testOnboarding() {
   console.log('=== LLM Workflow Onboarding Test ===\n');

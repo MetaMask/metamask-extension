@@ -1,9 +1,14 @@
 import type { Page } from '@playwright/test';
 
 export class SrpPage {
-  constructor(private readonly page: Page) {}
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
 
   private readonly srpInput = '[data-testid="srp-input-import__srp-note"]';
+
   private readonly confirmButton = '[data-testid="import-srp-confirm"]';
 
   async isLoaded(): Promise<boolean> {

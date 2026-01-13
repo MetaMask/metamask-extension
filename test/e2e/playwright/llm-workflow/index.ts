@@ -25,7 +25,7 @@ export {
   FIXTURE_STATE_METADATA_VERSION,
 } from './fixture-helper';
 
-export type { IFixtureBuilder, FixtureBuilderOptions } from './fixture-helper';
+export type { FixtureBuilderOptions } from './fixture-helper';
 
 export type {
   LaunchOptions,

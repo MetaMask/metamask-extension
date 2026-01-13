@@ -13,7 +13,7 @@ import {
   HomePage,
   createFixtureBuilder,
   FixturePresets,
-} from './index';
+} from '.';
 
 async function exampleDefault() {
   console.log('=== Example: Default Pre-Onboarded Wallet ===\n');
@@ -39,6 +39,7 @@ async function exampleDefault() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function exampleOnboarding() {
   console.log('=== Example: Fresh Wallet Onboarding ===\n');
 
@@ -60,6 +61,7 @@ async function exampleOnboarding() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function exampleCustomFixture() {
   console.log('=== Example: Custom Fixture State ===\n');
 
@@ -87,6 +89,7 @@ async function exampleCustomFixture() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function examplePresets() {
   console.log('=== Example: Fixture Presets ===\n');
 
@@ -106,6 +109,7 @@ async function examplePresets() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function exampleMockServer() {
   console.log('=== Example: With Mock Server ===\n');
 
@@ -114,7 +118,7 @@ async function exampleMockServer() {
     mockServer: {
       enabled: true,
       testSpecificMock: async (server) => {
-        await server.forGet(/token\.api/).thenJson(200, {
+        await server.forGet(/token\.api/u).thenJson(200, {
           tokens: [{ symbol: 'TEST', name: 'Test Token', address: '0x123...' }],
         });
       },
@@ -131,6 +135,7 @@ async function exampleMockServer() {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function exampleScreenshotInspection() {
   console.log('=== Example: Screenshot and State Inspection ===\n');
 

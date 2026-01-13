@@ -3,6 +3,8 @@
 import { existsSync } from 'fs';
 import path from 'path';
 
+import { launchMetaMask, DEFAULT_PASSWORD } from '.';
+
 const nodeModulesPath = path.join(process.cwd(), 'node_modules');
 const distPath = path.join(process.cwd(), 'dist', 'chrome');
 
@@ -17,13 +19,6 @@ if (!existsSync(distPath)) {
   console.error('Run: yarn build:test');
   process.exit(1);
 }
-
-import {
-  launchMetaMask,
-  DEFAULT_PASSWORD,
-  HomePage,
-  NotificationPage,
-} from './index';
 
 async function testMultiWindow() {
   console.log('=== LLM Workflow Multi-Window Test ===\n');
