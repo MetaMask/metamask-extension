@@ -7,21 +7,29 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
 } from '../../../../../shared/constants/network';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { AssetStandard, type Asset } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 
 export const useSendTokens = (): Asset[] => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const assets = useSelector(getAssetsBySelectedAccountGroup);
+  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
 
   const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
 
   const assetsWithBalance = useMemo(() => {
     return flatAssets.filter((asset) => {
+      // Only include assets from networks that are in the Network Manager
+      const isNetworkEnabled = enabledNetworks.includes(asset.chainId);
+      if (!isNetworkEnabled) {
+        return false;
+      }
+
       const haveBalance = asset.rawBalance !== '0x0';
       return asset.isNative || haveBalance;
     });
-  }, [flatAssets]);
+  }, [flatAssets, enabledNetworks]);
 
   const processedAssets = useMemo(() => {
     return assetsWithBalance.map((asset) => {
