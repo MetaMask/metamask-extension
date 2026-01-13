@@ -223,7 +223,7 @@ const createBridgeTokenPayload = (
     assetId?: CaipAssetType;
   },
   chainId: ChainId | Hex | CaipChainId,
-): TokenPayload['payload'] | null => {
+): BridgeToken => {
   return toBridgeToken({
     ...tokenData,
     chainId,
