@@ -98,6 +98,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   } else if (
     process.env.METAMASK_DEBUG ||
@@ -113,6 +114,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   }
 
@@ -137,6 +139,7 @@ const generateDefaultNetworkEnablementControllerState = (
         enabledMultichainNetworks,
       ),
     },
+    nativeAssetIdentifiers: {},
   };
 };
 
@@ -235,6 +238,34 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       }
     },
   );
+
+  // Initialize native asset identifiers from network configurations
+  const evmNetworks = Object.values(networkControllerState.networkConfigurationsByChainId).map(
+    (network) => ({
+      chainId: `eip155:${parseInt(network.chainId, 16)}` as CaipChainId,
+      nativeCurrency: network.nativeCurrency,
+    }),
+  );
+
+  console.log('[NetworkEnablementController] EVM networks:', JSON.stringify(evmNetworks, null, 2));
+  console.log('[NetworkEnablementController] enabledNetworkMap BEFORE init:', JSON.stringify(controller.state.enabledNetworkMap, null, 2));
+
+  const multichainNetworks = Object.values(
+    multichainNetworkControllerState.multichainNetworkConfigurationsByChainId,
+  ).map((network) => {
+    const mapped = {
+      chainId: network.chainId,
+      nativeCurrency: network.nativeCurrency,
+    };
+    console.log('[NetworkEnablementController] Multichain network mapped:', JSON.stringify(mapped, null, 2));
+    return mapped;
+  });
+
+  console.log('[NetworkEnablementController] All networks to init:', JSON.stringify([...evmNetworks, ...multichainNetworks], null, 2));
+
+  controller.initNativeAssetIdentifiers([...evmNetworks, ...multichainNetworks]);
+
+  console.log('[NetworkEnablementController] State after init:', JSON.stringify(controller.state.nativeAssetIdentifiers, null, 2));
 
   return {
     controller,

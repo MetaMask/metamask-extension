@@ -135,6 +135,7 @@
     "yarn-binary:hydrate": "corepack hydrate .yarn/yarn-corepack.tgz --activate"
   },
   "resolutions": {
+    "@metamask/network-enablement-controller@^3.1.0": "npm:@metamask-previews/network-enablement-controller@4.0.0-preview-e6f8648b",
     "jest-clean-console-reporter/chalk": "^4.1.2",
     "http-cache-semantics": "^4.1.1",
     "semver-regex": "^3.1.4",
