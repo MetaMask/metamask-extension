@@ -8281,9 +8281,6 @@
   "unknown": {
     "message": "Unknown"
   },
-  "urlUnknown": {
-    "message": "URL unknown"
-  },
   "unknownCollection": {
     "message": "Unnamed collection"
   },
@@ -8371,6 +8368,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
