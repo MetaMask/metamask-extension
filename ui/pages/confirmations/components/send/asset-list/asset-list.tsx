@@ -168,9 +168,9 @@ export const AssetList = ({
 };
 
 function extractKey(item: { type: 'token' | 'nft'; asset: Asset }) {
-  const { asset: token } = item;
+  const { asset } = item;
   if (item.type === 'token') {
-    return `${token.address ?? token.assetId}-${token.chainId}`;
+    return `${asset.address ?? asset.assetId}-${asset.chainId}`;
   }
-  return `${token.address}-${token.chainId}-${token.tokenId}`;
+  return `${asset.address}-${asset.chainId}-${asset.tokenId}`;
 }
