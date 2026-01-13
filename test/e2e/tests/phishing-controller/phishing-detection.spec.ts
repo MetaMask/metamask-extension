@@ -138,7 +138,7 @@ describe('Phishing Detection', function (this: Suite) {
       );
     });
 
-    it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they continue', async function () {
+    it('should display the MetaMask Phishing Detection page in an iframe and take the user to the blocked page if they TEST', async function () {
       await withFixtures(
         getFixtureOptions({
           title: this.test?.fullTitle(),

@@ -50,11 +50,23 @@ class PhishingWarningPage {
     console.log(
       'Clicking open warning in new tab link on phishing warning page',
     );
-    const iframe = (await this.driver.findElement(
-      this.iframeSelector,
-    )) as WebElement;
-    await this.driver.switchToFrame(iframe as unknown as string);
-    await this.checkPageIsLoaded();
+    // Switch to iframe and wait for content to load with waitUntil()
+    // to mitigate a race condition where we search in a stale iframe context if that's replaced on load
+    await this.driver.waitUntil(
+      async () => {
+        try {
+          const iframe = (await this.driver.findElement(
+            this.iframeSelector,
+          )) as WebElement;
+          await this.driver.switchToFrame(iframe as unknown as string);
+          await this.checkPageIsLoaded();
+          return true;
+        } catch {
+          return false;
+        }
+      },
+      { interval: 1000, timeout: 10000 },
+    );
     await this.driver.clickElement(this.openWarningInNewTabLink);
   }
 
