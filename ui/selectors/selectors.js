@@ -166,11 +166,7 @@ import {
   getInternalAccounts,
   getInternalAccountByAddress,
 } from './accounts';
-import {
-  getMultichainBalances,
-  getMultichainNetworkProviders,
-  getMultichainNetwork,
-} from './multichain';
+import { getMultichainBalances, getMultichainNetwork } from './multichain';
 import {
   getSelectedMultichainNetworkChainId,
   getIsEvmMultichainNetworkSelected,
