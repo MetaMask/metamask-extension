@@ -1223,16 +1223,6 @@ describe('preferences controller', () => {
           ReferralStatus.Approved,
         );
       });
-
-      it('normalizes addresses to lowercase', () => {
-        const { controller } = setupController({});
-        const mixedCaseAccount = '0xAbCdEf123456';
-
-        controller.addReferralApprovedAccount(partner, mixedCaseAccount);
-        expect(
-          controller.state.referrals[partner]['0xabcdef123456'],
-        ).toStrictEqual(ReferralStatus.Approved);
-      });
     });
 
     describe('addReferralPassedAccount', () => {

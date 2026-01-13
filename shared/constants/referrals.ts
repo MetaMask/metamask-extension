@@ -53,7 +53,6 @@ export const REFERRAL_PARTNERS: Record<ReferralPartner, ReferralPartnerConfig> =
 
 /**
  * Helper to look up a partner configuration by origin URL.
- * Matches if the provided origin starts with the partner's configured origin.
  *
  * @param origin - The origin URL to match
  * @returns The partner configuration if found, undefined otherwise
@@ -62,13 +61,6 @@ export function getPartnerByOrigin(
   origin: string,
 ): ReferralPartnerConfig | undefined {
   return Object.values(REFERRAL_PARTNERS).find((partner) =>
-    origin.startsWith(partner.origin),
+    origin === partner.origin,
   );
 }
-
-/**
- * All referral partner origins for use in middleware matching
- */
-export const REFERRAL_PARTNER_ORIGINS = Object.values(REFERRAL_PARTNERS).map(
-  (p) => p.origin,
-);
