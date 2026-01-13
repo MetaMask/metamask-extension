@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures, unlockWallet, regularDelayMs } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
@@ -58,7 +58,7 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Ethereum');
+        await switchToNetworkFromNetworkSelect(driver, 'Popular', 'Ethereum');
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // Get chain ID after manual network switch
@@ -125,7 +125,11 @@ describe('Request Queueing chainId proxy sync', function () {
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, 'Localhost 8546');
+        await switchToNetworkFromNetworkSelect(
+          driver,
+          'Custom',
+          'Localhost 8546',
+        );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 

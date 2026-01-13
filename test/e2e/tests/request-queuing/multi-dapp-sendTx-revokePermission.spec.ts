@@ -3,7 +3,7 @@ import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { withFixtures, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function (this: Suite) {
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
@@ -56,7 +56,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
         );
 
         // Network Selector
-        await switchToNetworkFromSendFlow(driver, hostname);
+        await switchToNetworkFromNetworkSelect(driver, 'Custom', hostname);
 
         // Wait for the first dapp's connect confirmation to disappear
         await driver.waitUntilXWindowHandles(2);
