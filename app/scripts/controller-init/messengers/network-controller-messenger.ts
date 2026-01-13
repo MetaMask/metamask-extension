@@ -1,6 +1,5 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
-import type { ErrorReportingServiceCaptureExceptionAction } from '@metamask/error-reporting-service';
 import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
@@ -15,8 +14,6 @@ import {
 } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = ErrorReportingServiceCaptureExceptionAction;
-
 export type NetworkControllerMessenger = ReturnType<
   typeof getNetworkControllerMessenger
 >;
@@ -28,11 +25,11 @@ export type NetworkControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNetworkControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
+  messenger: RootMessenger<never, never>,
 ) {
   const controllerMessenger = new Messenger<
     'NetworkController',
-    AllowedActions,
+    never,
     never,
     typeof messenger
   >({
@@ -41,7 +38,7 @@ export function getNetworkControllerMessenger(
   });
   messenger.delegate({
     messenger: controllerMessenger,
-    actions: ['ErrorReportingService:captureException'],
+    actions: [],
   });
   return controllerMessenger;
 }

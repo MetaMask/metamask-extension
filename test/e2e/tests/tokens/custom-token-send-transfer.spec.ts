@@ -9,8 +9,8 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 

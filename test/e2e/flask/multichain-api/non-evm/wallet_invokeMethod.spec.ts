@@ -4,8 +4,8 @@ import { WINDOW_TITLES } from '../../../helpers';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
-import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
-import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
+import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
 
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
