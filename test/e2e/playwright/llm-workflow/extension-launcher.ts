@@ -995,6 +995,87 @@ export class MetaMaskExtensionLauncher {
     return page;
   }
 
+  async getAllExtensionPages(): Promise<Page[]> {
+    if (!this.context || !this.extensionId) {
+      throw new Error('Browser context not initialized');
+    }
+
+    const extensionPrefix = `chrome-extension://${this.extensionId}`;
+    return this.context
+      .pages()
+      .filter((page) => page.url().startsWith(extensionPrefix));
+  }
+
+  async getNotificationPage(): Promise<Page | null> {
+    if (!this.context || !this.extensionId) {
+      throw new Error('Browser context not initialized');
+    }
+
+    const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
+    const pages = this.context.pages();
+
+    for (const page of pages) {
+      if (page.url().startsWith(notificationUrl)) {
+        return page;
+      }
+    }
+
+    return null;
+  }
+
+  async waitForNotificationPage(timeoutMs: number = 10000): Promise<Page> {
+    if (!this.context || !this.extensionId) {
+      throw new Error('Browser context not initialized');
+    }
+
+    const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
+    const startTime = Date.now();
+
+    while (Date.now() - startTime < timeoutMs) {
+      const existingPage = await this.getNotificationPage();
+      if (existingPage) {
+        await existingPage.waitForLoadState('domcontentloaded');
+        return existingPage;
+      }
+
+      await new Promise((r) => setTimeout(r, 200));
+    }
+
+    const allPages = await this.getAllExtensionPages();
+    const pageUrls = allPages.map((p) => p.url()).join(', ');
+
+    throw new Error(
+      `Notification page did not appear within ${timeoutMs}ms. ` +
+        `Expected URL starting with: ${notificationUrl}. ` +
+        `Current extension pages: [${pageUrls}]`,
+    );
+  }
+
+  async switchToExtensionHome(): Promise<Page> {
+    if (!this.extensionPage || !this.extensionId) {
+      throw new Error('Extension not initialized');
+    }
+
+    await this.extensionPage.bringToFront();
+    const currentUrl = this.extensionPage.url();
+    const homeUrl = `chrome-extension://${this.extensionId}/home.html`;
+
+    if (!currentUrl.startsWith(homeUrl)) {
+      await this.navigateToHome();
+    }
+
+    return this.extensionPage;
+  }
+
+  async closeNotificationPage(): Promise<boolean> {
+    const notificationPage = await this.getNotificationPage();
+    if (notificationPage) {
+      await notificationPage.close();
+      return true;
+    }
+    return false;
+  }
+
   async cleanup(): Promise<void> {
     const errors: string[] = [];
 
