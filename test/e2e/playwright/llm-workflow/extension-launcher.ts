@@ -671,6 +671,80 @@ export class MetaMaskExtensionLauncher {
     );
   }
 
+  async waitForScreen(
+    screen: ExtensionState['currentScreen'],
+    timeoutMs: number = 10000,
+  ): Promise<void> {
+    if (!this.extensionPage) {
+      throw new Error('Extension page not initialized');
+    }
+
+    const startTime = Date.now();
+    const pollInterval = 500;
+
+    while (Date.now() - startTime < timeoutMs) {
+      const currentScreen = await this.detectCurrentScreen();
+      if (currentScreen === screen) {
+        return;
+      }
+      await new Promise((r) => setTimeout(r, pollInterval));
+    }
+
+    const dump = await this.debugDump(`waitForScreen-${screen}-timeout`);
+    throw new Error(
+      `Timeout waiting for screen '${screen}' after ${timeoutMs}ms. ` +
+        `Current screen: '${dump.state.currentScreen}'. ` +
+        `Debug screenshot: ${dump.screenshot.path}`,
+    );
+  }
+
+  async assertScreen(screen: ExtensionState['currentScreen']): Promise<void> {
+    if (!this.extensionPage) {
+      throw new Error('Extension page not initialized');
+    }
+
+    const currentScreen = await this.detectCurrentScreen();
+    if (currentScreen !== screen) {
+      const dump = await this.debugDump(`assertScreen-${screen}-failed`);
+      throw new Error(
+        `Expected screen '${screen}' but found '${currentScreen}'. ` +
+          `Debug screenshot: ${dump.screenshot.path}. ` +
+          `State JSON: ${dump.screenshot.path.replace('.png', '-state.json')}`,
+      );
+    }
+  }
+
+  async closeInterferingModals(): Promise<number> {
+    if (!this.extensionPage) {
+      throw new Error('Extension page not initialized');
+    }
+
+    const modalSelectors = [
+      '[data-testid="popover-close"]',
+      '[data-testid="modal-header-close-button"]',
+      '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
+      '[data-testid="shield-entry-modal-close-button"]',
+      '[data-testid="pin-extension-done"]',
+      '[data-testid="download-app-continue"]',
+      'button[aria-label="Close"]',
+    ];
+
+    let closedCount = 0;
+
+    for (const selector of modalSelectors) {
+      const button = this.extensionPage.locator(selector).first();
+      if (await button.isVisible({ timeout: 500 }).catch(() => false)) {
+        await button.click().catch(() => {});
+        await button
+          .waitFor({ state: 'hidden', timeout: 2000 })
+          .catch(() => {});
+        closedCount++;
+      }
+    }
+
+    return closedCount;
+  }
+
   async completeOnboarding(options?: {
     seedPhrase?: string;
     password?: string;
