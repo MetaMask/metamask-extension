@@ -160,7 +160,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
-  HYPERLIQUID_APPROVAL_TYPE,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
@@ -6136,43 +6135,45 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles Hyperliquid referral approval flow.
+   * Handles referral approval flow for a partner.
    * Shows approval confirmation screen if needed and manages referral URL redirection.
    * This can be triggered by connection permission grants or existing connections.
    *
+   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    * @param {ReferralTriggerType} triggerType - The trigger type.
    */
-  async handleHyperliquidReferral(tabId, triggerType) {
-    const isHyperliquidReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.extensionUxDefiReferral;
+  async handleReferral(partner, tabId, triggerType) {
+    const isReferralEnabled =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
+        partner.featureFlagKey
+      ];
 
-    if (!isHyperliquidReferralEnabled) {
+    if (!isReferralEnabled) {
       return;
     }
 
-    // Only continue if Hyperliquid has permitted accounts
-    const permittedAccounts = this.getPermittedAccounts(HYPERLIQUID_CONFIG.origin);
+    // Only continue if the partner has permitted accounts
+    const permittedAccounts = this.getPermittedAccounts(partner.origin);
     if (permittedAccounts.length === 0) {
       return;
     }
 
     // Only continue if there is no pending approval
     const hasPendingApproval = this.approvalController.has({
-      origin: HYPERLIQUID_CONFIG.origin,
-      type: HYPERLIQUID_APPROVAL_TYPE,
+      origin: partner.origin,
+      type: partner.approvalType,
     });
 
     if (hasPendingApproval) {
       return;
     }
 
-    // First account is the active Hyperliquid account
+    // First account is the active permitted account for this partner
     const activePermittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount =
-      this.preferencesController.state.referrals[ReferralPartner.Hyperliquid];
+      this.preferencesController.state.referrals[partner.id];
     const permittedAccountStatus =
       referralStatusByAccount[activePermittedAccount.toLowerCase()];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
@@ -6192,32 +6193,34 @@ export default class MetamaskController extends EventEmitter {
           event: MetaMetricsEventName.ReferralViewed,
           category: MetaMetricsEventCategory.Referrals,
           properties: {
-            url: HYPERLIQUID_CONFIG.origin,
+            url: partner.origin,
             trigger_type: triggerType,
           },
         });
 
         const approvalResponse = await this.approvalController.add({
-          origin: HYPERLIQUID_CONFIG.origin,
-          type: HYPERLIQUID_APPROVAL_TYPE,
+          origin: partner.origin,
+          type: partner.approvalType,
           requestData: { selectedAddress: activePermittedAccount },
           shouldShowRequest:
             triggerType === ReferralTriggerType.NewConnection,
         });
 
         if (approvalResponse?.approved) {
-          this._handleHyperliquidApprovedAccount(
+          this._handleReferralApprovedAccount(
+            partner,
             activePermittedAccount,
             permittedAccounts,
             declinedAccounts,
           );
-          await this._handleHyperliquidReferralRedirect(
+          await this._handleReferralRedirect(
+            partner,
             tabId,
             activePermittedAccount,
           );
         } else {
           this.preferencesController.addReferralDeclinedAccount(
-            ReferralPartner.Hyperliquid,
+            partner.id,
             activePermittedAccount,
           );
         }
@@ -6240,24 +6243,33 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldRedirect) {
-      await this._handleHyperliquidReferralRedirect(
-        tabId,
-        activePermittedAccount,
-      );
+      await this._handleReferralRedirect(partner, tabId, activePermittedAccount);
     }
   }
 
   /**
-   * Handles redirection to the Hyperliquid referral page.
+   * Handles Hyperliquid referral approval flow.
+   * Convenience wrapper for handleReferral with Hyperliquid config.
    *
+   * @param {number} tabId - The browser tab ID to update.
+   * @param {ReferralTriggerType} triggerType - The trigger type.
+   */
+  async handleHyperliquidReferral(tabId, triggerType) {
+    return this.handleReferral(HYPERLIQUID_CONFIG, tabId, triggerType);
+  }
+
+  /**
+   * Handles redirection to the partner's referral page.
+   *
+   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    * @param {string} permittedAccount - The permitted account.
    */
-  async _handleHyperliquidReferralRedirect(tabId, permittedAccount) {
-    await this._updateHyperliquidReferralUrl(tabId);
-    // Mark this account as having been shown the Hyperliquid referral page
+  async _handleReferralRedirect(partner, tabId, permittedAccount) {
+    await this._updateReferralUrl(partner, tabId);
+    // Mark this account as having been shown the referral page
     this.preferencesController.addReferralPassedAccount(
-      ReferralPartner.Hyperliquid,
+      partner.id,
       permittedAccount,
     );
   }
@@ -6265,11 +6277,13 @@ export default class MetamaskController extends EventEmitter {
   /**
    * Handles referral states for permitted accounts after user approval.
    *
+   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
    * @param {string} activePermittedAccount - The active permitted account.
    * @param {string[]} permittedAccounts - The permitted accounts.
    * @param {string[]} declinedAccounts - The previously declined permitted accounts.
    */
-  _handleHyperliquidApprovedAccount(
+  _handleReferralApprovedAccount(
+    partner,
     activePermittedAccount,
     permittedAccounts,
     declinedAccounts,
@@ -6279,12 +6293,12 @@ export default class MetamaskController extends EventEmitter {
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
       this.preferencesController.setAccountsReferralApproved(
-        ReferralPartner.Hyperliquid,
+        partner.id,
         permittedAccounts,
       );
     } else {
       this.preferencesController.addReferralApprovedAccount(
-        ReferralPartner.Hyperliquid,
+        partner.id,
         activePermittedAccount,
       );
       // If there are any previously declined accounts then
@@ -6293,7 +6307,7 @@ export default class MetamaskController extends EventEmitter {
       permittedAccounts.forEach((account) => {
         if (declinedAccounts.includes(account)) {
           this.preferencesController.removeReferralDeclinedAccount(
-            ReferralPartner.Hyperliquid,
+            partner.id,
             account,
           );
         }
@@ -6302,18 +6316,22 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Updates the browser tab URL to the Hyperliquid referral page.
+   * Updates the browser tab URL to the partner's referral page.
    *
+   * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    */
-  async _updateHyperliquidReferralUrl(tabId) {
+  async _updateReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
       const { search } = new URL(url || '');
-      const newUrl = `${HYPERLIQUID_CONFIG.referralUrl}${search}`;
+      const newUrl = `${partner.referralUrl}${search}`;
       await browser.tabs.update(tabId, { url: newUrl });
     } catch (error) {
-      log.error('Failed to update URL to Hyperliquid referral page: ', error);
+      log.error(
+        `Failed to update URL to ${partner.name} referral page: `,
+        error,
+      );
     }
   }
 
@@ -7553,13 +7571,9 @@ export default class MetamaskController extends EventEmitter {
 
       // Add referral partner permission monitoring middleware
       engine.push(
-        createReferralMiddleware((partner, tabId, triggerType) => {
-          // Currently only Hyperliquid is fully implemented
-          if (partner.id === ReferralPartner.Hyperliquid) {
-            return this.handleHyperliquidReferral(tabId, triggerType);
-          }
-          return Promise.resolve();
-        }),
+        createReferralMiddleware((partner, tabId, triggerType) =>
+          this.handleReferral(partner, tabId, triggerType),
+        ),
       );
     }
 
@@ -9529,3 +9543,4 @@ export default class MetamaskController extends EventEmitter {
     };
   }
 }
+
