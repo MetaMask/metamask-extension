@@ -56,3 +56,22 @@
   }
 }
 
+.perps-position-detail-card {
+  background-color: var(--color-background-muted);
+  border-radius: 12px;
+  padding: 12px 16px;
+  transition: background-color 0.15s ease-in-out;
+
+  &--pressable {
+    cursor: pointer;
+
+    &:hover {
+      background-color: var(--color-background-muted-hover);
+    }
+
+    &:active {
+      background-color: var(--color-background-muted-pressed);
+    }
+  }
+}
+

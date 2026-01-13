@@ -29,6 +29,7 @@ import {
 import { PositionCard } from '../../components/app/perps/position-card';
 import { OrderCard } from '../../components/app/perps/order-card';
 import type { PerpsMarketData } from '../../components/app/perps/types';
+import '../../components/app/perps/index.scss';
 
 /**
  * Finds market data by symbol from mock data
@@ -253,9 +254,169 @@ const PerpsMarketDetailPage: React.FC = () => {
             fontWeight={FontWeight.Medium}
             paddingBottom={2}
           >
-            Your Position
+            Position
           </Text>
           <PositionCard position={position} />
+
+          {/* Position Details Cards */}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+            paddingTop={2}
+          >
+            {/* First Row: P&L and Return */}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              gap={2}
+            >
+              {/* P&L Card */}
+              <Box className="perps-position-detail-card" style={{ flex: 1 }}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  paddingBottom={1}
+                >
+                  P&L
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={
+                    parseFloat(position.unrealizedPnl) >= 0
+                      ? TextColor.successDefault
+                      : TextColor.errorDefault
+                  }
+                >
+                  {parseFloat(position.unrealizedPnl) >= 0 ? '+' : ''}$
+                  {position.unrealizedPnl}
+                </Text>
+              </Box>
+
+              {/* Return Card */}
+              <Box className="perps-position-detail-card" style={{ flex: 1 }}>
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  paddingBottom={1}
+                >
+                  Return
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                  color={
+                    parseFloat(position.returnOnEquity) >= 0
+                      ? TextColor.successDefault
+                      : TextColor.errorDefault
+                  }
+                >
+                  {parseFloat(position.returnOnEquity) >= 0 ? '+' : ''}
+                  {position.returnOnEquity}%
+                </Text>
+              </Box>
+            </Box>
+
+            {/* Second Row: Size and Margin */}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              gap={2}
+            >
+              {/* Size Card */}
+              <Box
+                className="perps-position-detail-card perps-position-detail-card--pressable"
+                style={{ flex: 1 }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    // TODO: Handle size card press
+                  }
+                }}
+                onClick={() => {
+                  // TODO: Handle size card press
+                }}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  paddingBottom={1}
+                >
+                  Size
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  {Math.abs(parseFloat(position.size)).toFixed(5)}{' '}
+                  {getDisplayName(position.coin)}
+                </Text>
+              </Box>
+
+              {/* Margin Card */}
+              <Box
+                className="perps-position-detail-card perps-position-detail-card--pressable"
+                style={{ flex: 1 }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    // TODO: Handle margin card press
+                  }
+                }}
+                onClick={() => {
+                  // TODO: Handle margin card press
+                }}
+              >
+                <Text
+                  variant={TextVariant.bodySm}
+                  color={TextColor.textAlternative}
+                  paddingBottom={1}
+                >
+                  Margin
+                </Text>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  ${position.marginUsed}
+                </Text>
+              </Box>
+            </Box>
+
+            {/* Third Row: Auto Close (Full Width) */}
+            <Box
+              className="perps-position-detail-card perps-position-detail-card--pressable"
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  // TODO: Handle auto close card press
+                }
+              }}
+              onClick={() => {
+                // TODO: Handle auto close card press
+              }}
+            >
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+                paddingBottom={1}
+              >
+                Auto close
+              </Text>
+              <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+                TP{' '}
+                {position.takeProfitPrice
+                  ? `$${position.takeProfitPrice}`
+                  : '-'}
+                , SL{' '}
+                {position.stopLossPrice ? `$${position.stopLossPrice}` : '-'}
+              </Text>
+            </Box>
+          </Box>
         </Box>
       )}
 
