@@ -39,7 +39,6 @@
     },
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
-    "ConnectivityController": { "connectivityStatus": "online" },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
