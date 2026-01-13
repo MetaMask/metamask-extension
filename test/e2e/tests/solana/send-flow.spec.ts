@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 
 import SendPage from '../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import { mockSendRedesignFeatureFlag } from '../send/common';

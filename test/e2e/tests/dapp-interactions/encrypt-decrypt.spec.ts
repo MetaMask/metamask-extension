@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
 import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/redesign/decrypt-message-confirmation';
+import DecryptMessageConfirmation from '../../page-objects/pages/confirmations/decrypt-message-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {

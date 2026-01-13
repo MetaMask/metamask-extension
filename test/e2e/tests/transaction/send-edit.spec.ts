@@ -3,7 +3,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
