@@ -20,6 +20,7 @@ export type BridgeToken = BridgeAssetV2 & {
  */
 export type BridgeNetwork = {
   chainId: CaipChainId;
+  name: string;
 };
 
 export type BridgeState = {

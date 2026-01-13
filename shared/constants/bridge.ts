@@ -105,8 +105,7 @@ export const NETWORK_TO_SHORT_NETWORK_NAME_MAP: Record<
   [toEvmCaipChainId(CHAIN_IDS.ARBITRUM)]:
     NETWORK_TO_NAME_MAP[CHAIN_IDS.ARBITRUM],
   [CHAIN_IDS.OPTIMISM]: 'Optimism',
-  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]:
-    NETWORK_TO_NAME_MAP[CHAIN_IDS.OPTIMISM],
+  [toEvmCaipChainId(CHAIN_IDS.OPTIMISM)]: 'Optimism',
   [CHAIN_IDS.ZKSYNC_ERA]: 'zkSync Era',
   [toEvmCaipChainId(CHAIN_IDS.ZKSYNC_ERA)]: 'ZkSync Era',
   [CHAIN_IDS.BASE]: 'Base',

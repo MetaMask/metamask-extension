@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   AvatarIcon,
   AvatarIconSize,
@@ -24,7 +24,7 @@ import {
 import { Column } from '../../../layout';
 
 export const NetworkPicker = ({
-  chainIds,
+  chains,
   selectedChainId,
   disabledChainId,
   onNetworkChange,
@@ -32,7 +32,7 @@ export const NetworkPicker = ({
   isOpen,
   onClose,
 }: {
-  chainIds: CaipChainId[];
+  chains: { chainId: CaipChainId; name: string }[];
   selectedChainId: CaipChainId | null;
   disabledChainId?: CaipChainId;
   onNetworkChange: (chainId: CaipChainId | null) => void;
@@ -82,11 +82,11 @@ export const NetworkPicker = ({
           />
         }
       />
-      {chainIds.map((chainId) => (
+      {chains.map(({ chainId, name }) => (
         <NetworkListItem
           selected={Boolean(selectedChainId === chainId)}
           key={chainId}
-          name={NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId]}
+          name={name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId]}
           iconSrc={BRIDGE_CHAIN_ID_TO_NETWORK_IMAGE_MAP[chainId]}
           chainId={chainId}
           onClick={() => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   formatChainIdToCaip,
@@ -151,10 +151,6 @@ export const BridgeInputGroup = ({
       }
     }
   };
-  const chainIds = useMemo(
-    () => networks.map((network) => network.chainId),
-    [networks],
-  );
   const [isAssetPickerOpen, setIsAssetPickerOpen] = useState(false);
 
   return (
@@ -229,7 +225,7 @@ export const BridgeInputGroup = ({
           onAssetChange={(asset) => {
             onAssetChange?.(asset);
           }}
-          chainIds={chainIds}
+          chains={networks}
           accountAddress={accountAddress}
         />
         <SelectedAssetButton

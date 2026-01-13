@@ -153,6 +153,7 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
       // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
       chainRanking: bridgeConfig?.chainRanking as {
         chainId: CaipChainId;
+        name: string;
       }[],
     };
   },
@@ -167,15 +168,7 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
 );
 
 const getChainRanking = (state: BridgeAppState) => {
-  const chainRanking = getBridgeFeatureFlags(state)?.chainRanking?.map(
-    ({ chainId }) => chainId,
-  );
-  // Remove duplicates
-  return (
-    chainRanking?.filter(
-      (value, index, self) => self.indexOf(value) === index,
-    ) ?? []
-  );
+  return getBridgeFeatureFlags(state)?.chainRanking;
 };
 
 export const getFromChains = createDeepEqualSelector(
@@ -212,7 +205,7 @@ export const getFromChains = createDeepEqualSelector(
     hasTronAccount,
   ) => {
     const filteredNetworks: BridgeNetwork[] = [];
-    chainRanking.forEach((chainId) => {
+    chainRanking.forEach(({ chainId, name }) => {
       const shouldAddSolana = isSolanaChainId(chainId)
         ? hasSolanaAccount
         : true;
@@ -232,6 +225,7 @@ export const getFromChains = createDeepEqualSelector(
       ) {
         filteredNetworks.push({
           chainId,
+          name,
         });
       }
     });
@@ -304,9 +298,9 @@ export const getToChains = createDeepEqualSelector(
       ),
     };
     const filteredChains: BridgeNetwork[] = [];
-    chainRanking.forEach((chainId) => {
+    chainRanking.forEach(({ chainId, name }) => {
       if (allChains[chainId]) {
-        filteredChains.push(allChains[chainId]);
+        filteredChains.push({ ...allChains[chainId], name });
       }
     });
     return filteredChains;
