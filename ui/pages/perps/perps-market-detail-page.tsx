@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useState, useRef } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   Display,
@@ -31,9 +31,15 @@ import {
 import { PositionCard } from '../../components/app/perps/position-card';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
-import { PerpsCandlestickChart } from '../../components/app/perps/perps-candlestick-chart';
+import {
+  PerpsCandlestickChart,
+  PerpsCandlestickChartRef,
+} from '../../components/app/perps/perps-candlestick-chart';
 import { PerpsCandlePeriodSelector } from '../../components/app/perps/perps-candle-period-selector';
-import { CandlePeriod } from '../../components/app/perps/constants/chartConfig';
+import {
+  CandlePeriod,
+  ZOOM_CONFIG,
+} from '../../components/app/perps/constants/chartConfig';
 import { AvatarTokenSize } from '../../components/component-library';
 import type { PerpsMarketData } from '../../components/app/perps/types';
 import '../../components/app/perps/index.scss';
@@ -102,6 +108,21 @@ const PerpsMarketDetailPage: React.FC = () => {
         order.status === 'open',
     );
   }, [symbol]);
+
+  // Candle period state and chart ref
+  const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
+    CandlePeriod.FIVE_MINUTES,
+  );
+  const chartRef = useRef<PerpsCandlestickChartRef>(null);
+
+  // Handle candle period change
+  const handlePeriodChange = useCallback((period: CandlePeriod) => {
+    setSelectedPeriod(period);
+    // Apply default zoom when period changes
+    if (chartRef.current) {
+      chartRef.current.applyZoom(ZOOM_CONFIG.DEFAULT_CANDLES, true);
+    }
+  }, []);
 
   // Navigation handlers
   const handleBackClick = useCallback(() => {
@@ -246,20 +267,17 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingRight={4}
         data-testid="perps-market-detail-chart"
       >
-        <PerpsCandlestickChart height={250} />
+        <PerpsCandlestickChart
+          ref={chartRef}
+          height={250}
+          selectedPeriod={selectedPeriod}
+        />
       </Box>
 
       {/* Candle Period Selector */}
       <PerpsCandlePeriodSelector
-        selectedPeriod={CandlePeriod.FIVE_MINUTES}
-        onPeriodChange={(period) => {
-          // TODO: Handle period change
-          console.log('Period changed to:', period);
-        }}
-        onMorePress={() => {
-          // TODO: Show more periods modal
-          console.log('More pressed');
-        }}
+        selectedPeriod={selectedPeriod}
+        onPeriodChange={handlePeriodChange}
       />
 
       {/* Divider */}
