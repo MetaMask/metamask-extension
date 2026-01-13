@@ -181,6 +181,9 @@ export const BridgeAssetPicker = ({
             gap={4}
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
+            style={{
+              overflow: 'scroll',
+            }}
           >
             <PickerNetwork
               label={selectedNetworkName}
