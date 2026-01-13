@@ -5,6 +5,7 @@ import {
   FlexDirection,
   IconColor,
   AlignItems,
+  JustifyContent,
   TextVariant,
   FontWeight,
   TextColor,
@@ -164,13 +165,29 @@ const PerpsHomePage: React.FC = () => {
       {/* Section 1: Your positions */}
       {positions.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          <Text
-            variant={TextVariant.headingSm}
-            fontWeight={FontWeight.Medium}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             paddingBottom={2}
           >
-            Your positions
-          </Text>
+            <Text
+              variant={TextVariant.headingSm}
+              fontWeight={FontWeight.Medium}
+            >
+              Your positions
+            </Text>
+            <ButtonIcon
+              color={IconColor.iconAlternative}
+              size={ButtonIconSize.Sm}
+              ariaLabel="Position options"
+              iconName={IconName.MoreHorizontal}
+              onClick={() => {
+                // TODO: Handle positions menu
+              }}
+            />
+          </Box>
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -234,13 +251,29 @@ const PerpsHomePage: React.FC = () => {
       {/* Section 2: Your orders */}
       {openOrders.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-          <Text
-            variant={TextVariant.headingSm}
-            fontWeight={FontWeight.Medium}
+          <Box
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.spaceBetween}
             paddingBottom={2}
           >
-            Your orders
-          </Text>
+            <Text
+              variant={TextVariant.headingSm}
+              fontWeight={FontWeight.Medium}
+            >
+              Your orders
+            </Text>
+            <ButtonIcon
+              color={IconColor.iconAlternative}
+              size={ButtonIconSize.Sm}
+              ariaLabel="Order options"
+              iconName={IconName.MoreHorizontal}
+              onClick={() => {
+                // TODO: Handle orders menu
+              }}
+            />
+          </Box>
           <Box
             display={Display.Flex}
             flexDirection={FlexDirection.Column}
@@ -298,13 +331,25 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Section 3: Explore crypto */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Text
-          variant={TextVariant.headingSm}
-          fontWeight={FontWeight.Medium}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
           paddingBottom={2}
         >
-          Explore crypto
-        </Text>
+          <Text
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Medium}
+          >
+            Explore crypto
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+          />
+        </Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -376,13 +421,25 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Section 4: Explore stocks and commodities */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Text
-          variant={TextVariant.headingSm}
-          fontWeight={FontWeight.Medium}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
           paddingBottom={2}
         >
-          Explore stocks and commodities
-        </Text>
+          <Text
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Medium}
+          >
+            Explore stocks and commodities
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+          />
+        </Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
@@ -454,13 +511,25 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Section 5: Activity */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Text
-          variant={TextVariant.headingSm}
-          fontWeight={FontWeight.Medium}
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
           paddingBottom={2}
         >
-          Activity
-        </Text>
+          <Text
+            variant={TextVariant.headingSm}
+            fontWeight={FontWeight.Medium}
+          >
+            Activity
+          </Text>
+          <Icon
+            name={IconName.ArrowRight}
+            size={IconSize.Sm}
+            color={IconColor.iconAlternative}
+          />
+        </Box>
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
