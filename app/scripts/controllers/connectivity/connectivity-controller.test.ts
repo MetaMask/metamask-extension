@@ -3,7 +3,7 @@ import { ConnectivityController } from './connectivity-controller';
 import { PassiveConnectivityService } from './passive-connectivity-service';
 import {
   ConnectivityStatus,
-  CONTROLLER_NAME,
+  controllerName,
   ConnectivityControllerActions,
   ConnectivityControllerEvents,
   ConnectivityControllerMessenger,
@@ -16,11 +16,11 @@ describe('ConnectivityController', () => {
 
   beforeEach(() => {
     messenger = new Messenger<
-      typeof CONTROLLER_NAME,
+      typeof controllerName,
       ConnectivityControllerActions,
       ConnectivityControllerEvents
     >({
-      namespace: CONTROLLER_NAME,
+      namespace: controllerName,
     });
   });
 
@@ -65,24 +65,6 @@ describe('ConnectivityController', () => {
       );
     });
 
-    it('uses provided state over service state', () => {
-      const mockService: ConnectivityService = {
-        isOnline: jest.fn().mockReturnValue(true),
-        onConnectivityChange: jest.fn(),
-        destroy: jest.fn(),
-      };
-
-      controller = new ConnectivityController({
-        messenger,
-        connectivityService: mockService,
-        state: { connectivityStatus: ConnectivityStatus.Offline },
-      });
-
-      expect(controller.state.connectivityStatus).toBe(
-        ConnectivityStatus.Offline,
-      );
-    });
-
     it('subscribes to service connectivity changes', () => {
       const mockService: ConnectivityService = {
         isOnline: jest.fn().mockReturnValue(true),
@@ -112,7 +94,7 @@ describe('ConnectivityController', () => {
         connectivityService: mockService,
       });
 
-      expect(controller.name).toBe(CONTROLLER_NAME);
+      expect(controller.name).toBe(controllerName);
     });
   });
 
@@ -193,7 +175,7 @@ describe('ConnectivityController', () => {
       });
 
       const eventHandler = jest.fn();
-      messenger.subscribe(`${CONTROLLER_NAME}:stateChange`, eventHandler);
+      messenger.subscribe(`${controllerName}:stateChange`, eventHandler);
 
       // Get the callback that was passed to onConnectivityChange
       const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as
@@ -223,7 +205,7 @@ describe('ConnectivityController', () => {
       });
 
       const eventHandler = jest.fn();
-      messenger.subscribe(`${CONTROLLER_NAME}:stateChange`, eventHandler);
+      messenger.subscribe(`${controllerName}:stateChange`, eventHandler);
 
       // Get the callback that was passed to onConnectivityChange
       const capturedCallback = mockOnConnectivityChange.mock.calls[0]?.[0] as

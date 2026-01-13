@@ -1,7 +1,6 @@
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import {
-  CONTROLLER_NAME,
-  ControllerName,
+  controllerName,
   ConnectivityStatus,
   ConnectivityControllerState,
   ConnectivityControllerMessenger,
@@ -9,19 +8,25 @@ import {
   ConnectivityService,
 } from './types';
 
-const controllerMetadata: StateMetadata<ConnectivityControllerState> = {
+/**
+ * The metadata for each property in {@link ConnectivityControllerState}.
+ */
+const controllerMetadata = {
   connectivityStatus: {
     persist: false,
     includeInDebugSnapshot: true,
     includeInStateLogs: true,
     usedInUi: true,
   },
-};
+} satisfies StateMetadata<ConnectivityControllerState>;
 
 /**
- * Get the default state for the ConnectivityController.
+ * Constructs the default {@link ConnectivityController} state. This allows
+ * consumers to provide a partial state object when initializing the controller
+ * and also helps in constructing complete state objects for this controller in
+ * tests.
  *
- * @returns The default state.
+ * @returns The default {@link ConnectivityController} state.
  */
 export function getDefaultConnectivityControllerState(): ConnectivityControllerState {
   return {
@@ -50,7 +55,7 @@ export function getDefaultConnectivityControllerState(): ConnectivityControllerS
  * enabling the UI and other controllers to adapt when the user goes offline.
  */
 export class ConnectivityController extends BaseController<
-  ControllerName,
+  typeof controllerName,
   ConnectivityControllerState,
   ConnectivityControllerMessenger
 > {
@@ -58,18 +63,15 @@ export class ConnectivityController extends BaseController<
 
   constructor({
     messenger,
-    state,
     connectivityService,
   }: ConnectivityControllerOptions) {
-    // Determine initial status from state or service
-    const initialStatus =
-      state?.connectivityStatus ??
-      (connectivityService.isOnline()
-        ? ConnectivityStatus.Online
-        : ConnectivityStatus.Offline);
+    // Get initial status from service - state is not persisted
+    const initialStatus = connectivityService.isOnline()
+      ? ConnectivityStatus.Online
+      : ConnectivityStatus.Offline;
 
     super({
-      name: CONTROLLER_NAME,
+      name: controllerName,
       metadata: controllerMetadata,
       messenger,
       state: {

@@ -48,9 +48,12 @@ export type ConnectivityService = {
   destroy(): void;
 };
 
-export const CONTROLLER_NAME = 'ConnectivityController';
-
-export type ControllerName = typeof CONTROLLER_NAME;
+/**
+ * The name of the {@link ConnectivityController}, used to namespace the
+ * controller's actions and events and to namespace the controller's state data
+ * when composed with other controllers.
+ */
+export const controllerName = 'ConnectivityController';
 
 /**
  * State for the ConnectivityController.
@@ -67,7 +70,7 @@ export type ConnectivityControllerState = {
  * Action to get the controller state.
  */
 export type ConnectivityControllerGetStateAction = ControllerGetStateAction<
-  ControllerName,
+  typeof controllerName,
   ConnectivityControllerState
 >;
 
@@ -81,7 +84,7 @@ export type ConnectivityControllerActions =
  * Event emitted when the controller state changes.
  */
 export type ConnectivityControllerStateChangeEvent = ControllerStateChangeEvent<
-  ControllerName,
+  typeof controllerName,
   ConnectivityControllerState
 >;
 
@@ -95,7 +98,7 @@ export type ConnectivityControllerEvents =
  * Messenger type for the ConnectivityController.
  */
 export type ConnectivityControllerMessenger = Messenger<
-  ControllerName,
+  typeof controllerName,
   ConnectivityControllerActions,
   ConnectivityControllerEvents
 >;
@@ -108,11 +111,6 @@ export type ConnectivityControllerOptions = {
    * The messenger for inter-controller communication.
    */
   messenger: ConnectivityControllerMessenger;
-
-  /**
-   * Initial state for the controller.
-   */
-  state?: Partial<ConnectivityControllerState>;
 
   /**
    * Connectivity service for platform-specific detection.

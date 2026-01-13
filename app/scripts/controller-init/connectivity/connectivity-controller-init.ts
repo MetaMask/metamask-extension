@@ -15,14 +15,13 @@ import {
  *
  * @param request - The controller init request.
  * @param request.controllerMessenger - The messenger for the controller.
- * @param request.persistedState - The persisted state.
  * @returns The controller init result.
  */
 export const ConnectivityControllerInit: ControllerInitFunction<
   ConnectivityController,
   ConnectivityControllerMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState } = request;
+  const { controllerMessenger } = request;
 
   // Use PassiveConnectivityService for extension since detection happens in:
   // - MV3: Offscreen document (app/offscreen/connectivity.ts)
@@ -31,7 +30,6 @@ export const ConnectivityControllerInit: ControllerInitFunction<
 
   const controller = new ConnectivityController({
     messenger: controllerMessenger,
-    state: persistedState.ConnectivityController,
     connectivityService,
   });
 

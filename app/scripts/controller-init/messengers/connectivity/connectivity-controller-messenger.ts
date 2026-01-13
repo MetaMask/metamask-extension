@@ -1,6 +1,6 @@
 import { Messenger } from '@metamask/messenger';
 import {
-  CONTROLLER_NAME,
+  controllerName,
   ConnectivityControllerActions,
   ConnectivityControllerEvents,
   ConnectivityControllerMessenger,
@@ -20,12 +20,12 @@ export function getConnectivityControllerMessenger(
   >,
 ): ConnectivityControllerMessenger {
   return new Messenger<
-    typeof CONTROLLER_NAME,
+    typeof controllerName,
     ConnectivityControllerActions,
     ConnectivityControllerEvents,
     typeof messenger
   >({
-    namespace: CONTROLLER_NAME,
+    namespace: controllerName,
     parent: messenger,
   });
 }

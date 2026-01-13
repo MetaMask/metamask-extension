@@ -2,9 +2,7 @@ export { ConnectivityController } from './connectivity-controller';
 export { getDefaultConnectivityControllerState } from './connectivity-controller';
 export { PassiveConnectivityService } from './passive-connectivity-service';
 export {
-  CONTROLLER_NAME,
   ConnectivityStatus,
-  type ControllerName,
   type ConnectivityStatusType,
   type ConnectivityService,
   type ConnectivityControllerState,
