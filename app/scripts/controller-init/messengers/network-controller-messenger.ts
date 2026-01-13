@@ -1,9 +1,8 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
-import { Messenger, MessengerActions } from '@metamask/messenger';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
-  NetworkControllerMessenger as NetworkControllerMessengerType,
 } from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
@@ -14,10 +13,6 @@ import {
   MetaMetricsControllerTrackEventAction,
 } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
-
-// Allow ErrorReportingService actions and NetworkController's own namespace actions
-// Using ActionConstraint allows the controller to register handlers for its own actions
-type AllowedActions = MessengerActions<NetworkControllerMessengerType>;
 
 export type NetworkControllerMessenger = ReturnType<
   typeof getNetworkControllerMessenger
@@ -30,16 +25,20 @@ export type NetworkControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getNetworkControllerMessenger(
-  messenger: RootMessenger<AllowedActions, never>,
+  messenger: RootMessenger<never, never>,
 ) {
   const controllerMessenger = new Messenger<
     'NetworkController',
-    AllowedActions,
+    never,
     never,
     typeof messenger
   >({
     namespace: 'NetworkController',
     parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [],
   });
   return controllerMessenger;
 }

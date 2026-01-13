@@ -5,6 +5,7 @@ on:
     types: [opened, reopened, synchronize, edited]
     branches:
       - main
+  merge_group:
 
 jobs:
   check-branch:
