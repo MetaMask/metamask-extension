@@ -673,6 +673,27 @@ function saveTimestamp() {
 async function initialize(backup) {
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
+  // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
+  // This ensures we capture the initial connectivity status from the offscreen document
+  // which is sent right after isBooted. We queue the status until the controller is ready.
+  let pendingConnectivityStatus = null;
+  let connectivityReady = false;
+
+  if (isManifestV3) {
+    setupOffscreenConnectivityListener((isOnline) => {
+      if (
+        connectivityReady &&
+        controller.controllerApi?.setDeviceConnectivityStatus
+      ) {
+        const status = isOnline ? 'online' : 'offline';
+        controller.controllerApi.setDeviceConnectivityStatus(status);
+      } else {
+        // Queue until controller is ready
+        pendingConnectivityStatus = isOnline;
+      }
+    });
+  }
+
   const initData = await loadStateFromPersistence(backup);
 
   const initState = initData.data;
@@ -749,16 +770,19 @@ async function initialize(backup) {
 
   // Set up connectivity detection
   if (controller.controllerApi?.setDeviceConnectivityStatus) {
-    const updateConnectivity = (isOnline) => {
-      const status = isOnline ? 'online' : 'offline';
-      controller.controllerApi.setDeviceConnectivityStatus(status);
-    };
-
     if (isManifestV3) {
-      // MV3: Use offscreen document (service worker can't reliably detect connectivity)
-      setupOffscreenConnectivityListener(updateConnectivity);
+      // MV3: Listener was set up earlier, now apply any pending status and mark ready
+      connectivityReady = true;
+      if (pendingConnectivityStatus !== null) {
+        const status = pendingConnectivityStatus ? 'online' : 'offline';
+        controller.controllerApi.setDeviceConnectivityStatus(status);
+      }
     } else {
       // MV2: Background page has access to window events
+      const updateConnectivity = (isOnline) => {
+        const status = isOnline ? 'online' : 'offline';
+        controller.controllerApi.setDeviceConnectivityStatus(status);
+      };
       updateConnectivity(globalThis.navigator.onLine);
       globalThis.addEventListener('online', () => updateConnectivity(true));
       globalThis.addEventListener('offline', () => updateConnectivity(false));
