@@ -134,7 +134,7 @@ const ShieldBannerAnimation = ({
   useEffect(() => {
     return () => {
       if (rive) {
-        rive.stop();
+        rive.cleanup();
       }
     };
   }, []);

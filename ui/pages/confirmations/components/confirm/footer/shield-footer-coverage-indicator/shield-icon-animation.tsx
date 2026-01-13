@@ -224,7 +224,7 @@ const ShieldIconAnimation = ({
   useEffect(() => {
     return () => {
       if (rive) {
-        rive.stop();
+        rive.cleanup();
       }
     };
   }, []);
