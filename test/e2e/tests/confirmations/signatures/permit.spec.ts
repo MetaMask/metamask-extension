@@ -12,8 +12,8 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,

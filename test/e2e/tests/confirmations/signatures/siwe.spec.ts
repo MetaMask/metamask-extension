@@ -9,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import {
   BlockaidReason,
   BlockaidResultType,
