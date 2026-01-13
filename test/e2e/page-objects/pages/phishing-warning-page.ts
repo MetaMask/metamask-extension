@@ -62,6 +62,8 @@ class PhishingWarningPage {
           await this.checkPageIsLoaded();
           return true;
         } catch {
+          // Switch back to default content before retrying, in case we're stuck in the iframe context that was replaced on load
+          await this.driver.switchToDefaultContent();
           return false;
         }
       },
