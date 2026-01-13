@@ -92,8 +92,9 @@ export const ConnectedStatus: React.FC<ConnectedStatusProps> = ({
     tooltipText = t('tooltipSatusConnectedUpperCase');
   }
 
-  const connectedAndNotActive =
-    currentTabIsConnectedToSelectedAddress && !isActive;
+  const connectedAndNotActive = Boolean(
+    currentTabIsConnectedToSelectedAddress && !isActive,
+  );
 
   return (
     <BadgeStatus
