@@ -84,7 +84,9 @@ export const SrpCard = ({
             button_type: 'srp_select',
           },
         });
-        keyringId && onActionComplete(keyringId, shouldTriggerBackup);
+        if (keyringId) {
+          onActionComplete(keyringId, shouldTriggerBackup);
+        }
       }}
       className="select-srp__container"
       marginBottom={3}
