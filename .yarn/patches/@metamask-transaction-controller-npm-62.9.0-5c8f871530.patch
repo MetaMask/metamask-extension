@@ -1,0 +1,74 @@
+diff --git a/dist/TransactionController.cjs b/dist/TransactionController.cjs
+index bcccfac963c3b13e121085436dbcdb6dc4d1b41e..c8331ceed108cca4282258cfb90b2b6fa18c645b 100644
+--- a/dist/TransactionController.cjs
++++ b/dist/TransactionController.cjs
+@@ -2204,6 +2204,11 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+     let isGasFeeSponsored = false;
+     const isBalanceChangesSkipped = __classPrivateFieldGet(this, _TransactionController_skipSimulationTransactionIds, "f").has(transactionId);
+     if (__classPrivateFieldGet(this, _TransactionController_isSimulationEnabled, "f").call(this) && !isBalanceChangesSkipped) {
++        // Get gas fee tokens FIRST to determine if transaction is sponsored
++        // This needs to happen BEFORE getBalanceChanges so we can exclude gas costs
++        const gasFeeTokensResponse = await __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getGasFeeTokens).call(this, transactionMeta);
++        gasFeeTokens = gasFeeTokensResponse?.gasFeeTokens ?? [];
++        isGasFeeSponsored = gasFeeTokensResponse?.isGasFeeSponsored ?? false;
+         const balanceChangesResult = await __classPrivateFieldGet(this, _TransactionController_trace, "f").call(this, { name: 'Simulate', parentContext: traceContext }, () => (0, balance_changes_1.getBalanceChanges)({
+             blockTime,
+             chainId,
+@@ -2216,6 +2221,7 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+             },
+             nestedTransactions,
+             txParams,
++            isGasFeeSponsored,
+         }));
+         simulationData = balanceChangesResult.simulationData;
+         gasUsed = balanceChangesResult.gasUsed;
+@@ -2227,9 +2233,6 @@ async function _TransactionController_approveTransaction(transactionId, traceCon
+                 isUpdatedAfterSecurityCheck: true,
+             };
+         }
+-        const gasFeeTokensResponse = await __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getGasFeeTokens).call(this, transactionMeta);
+-        gasFeeTokens = gasFeeTokensResponse?.gasFeeTokens ?? [];
+-        isGasFeeSponsored = gasFeeTokensResponse?.isGasFeeSponsored ?? false;
+     }
+     const latestTransactionMeta = __classPrivateFieldGet(this, _TransactionController_instances, "m", _TransactionController_getTransaction).call(this, transactionId);
+     /* istanbul ignore if */
+diff --git a/dist/utils/balance-changes.cjs b/dist/utils/balance-changes.cjs
+index 6c16019e9a4664bdc98c746b4c3214c12084ee22..81686deeca176adfd4fafa132e02101e1e8fddda 100644
+--- a/dist/utils/balance-changes.cjs
++++ b/dist/utils/balance-changes.cjs
+@@ -134,7 +134,10 @@ function getNativeBalanceChange(request, response) {
+     if (!previousBalance || !newBalance) {
+         return undefined;
+     }
+-    return getSimulationBalanceChange(previousBalance, newBalance, transactionResponse.gasCost);
++    // For sponsored transactions, withGas: false ensures stateDiff excludes gas costs.
++    // For non-sponsored transactions, withGas: true includes gas costs in stateDiff.
++    // Hence gas cost not needed here.
++    return getSimulationBalanceChange(previousBalance, newBalance);
+ }
+ /**
+  * Extract events from a simulation response.
+@@ -439,11 +442,11 @@ function extractLogs(call) {
+  *
+  * @param previousBalance - The previous balance.
+  * @param newBalance - The new balance.
+- * @param offset - Optional offset to apply to the new balance.
++ * @param offset - Optional offset to apply to the new balance (as BN to maintain precision).
+  * @returns The balance change data or undefined if unchanged.
+  */
+-function getSimulationBalanceChange(previousBalance, newBalance, offset = 0) {
+-    const newBalanceBN = (0, controller_utils_1.hexToBN)(newBalance).add(new bn_js_1.default(offset));
++function getSimulationBalanceChange(previousBalance, newBalance, offset = new bn_js_1.default(0)) {
++    const newBalanceBN = (0, controller_utils_1.hexToBN)(newBalance).add(offset);
+     const previousBalanceBN = (0, controller_utils_1.hexToBN)(previousBalance);
+     const differenceBN = newBalanceBN.sub(previousBalanceBN);
+     const isDecrease = differenceBN.isNeg();
+@@ -514,7 +517,7 @@ async function baseRequest({ request, params, before = [], after = [], }) {
+         ...params,
+         getSimulationConfig,
+         transactions,
+-        withGas: true,
++        withGas: !request.isGasFeeSponsored,
+         withDefaultBlockOverrides: true,
+         ...(blockTime && {
+             blockOverrides: {
