@@ -1104,11 +1104,4 @@ export class PreferencesController extends BaseController<
       });
     });
   }
-
-  getReferralStatus(
-    partner: ReferralPartner,
-    accountAddress: Hex,
-  ): ReferralStatus | undefined {
-    return this.state.referrals[partner][accountAddress];
-  }
 }

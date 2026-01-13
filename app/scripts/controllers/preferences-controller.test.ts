@@ -1393,50 +1393,6 @@ describe('preferences controller', () => {
       });
     });
 
-    describe('getReferralStatus', () => {
-      it('returns the status for an existing account', () => {
-        const testAccount = '0x123';
-        const { controller } = setupController({
-          state: {
-            referrals: {
-              [ReferralPartner.Hyperliquid]: {
-                [testAccount]: ReferralStatus.Approved,
-              },
-            },
-          },
-        });
-
-        expect(controller.getReferralStatus(partner, testAccount)).toBe(
-          ReferralStatus.Approved,
-        );
-      });
-
-      it('returns undefined for non-existent account', () => {
-        const { controller } = setupController({});
-        const testAccount = '0x123';
-
-        expect(
-          controller.getReferralStatus(partner, testAccount),
-        ).toBeUndefined();
-      });
-
-      it('normalizes addresses to lowercase for lookup', () => {
-        const { controller } = setupController({
-          state: {
-            referrals: {
-              [ReferralPartner.Hyperliquid]: {
-                '0xabcdef123456': ReferralStatus.Approved,
-              },
-            },
-          },
-        });
-
-        expect(controller.getReferralStatus(partner, '0xAbCdEf123456')).toBe(
-          ReferralStatus.Approved,
-        );
-      });
-    });
-
     describe('referral state defaults', () => {
       it('initializes with empty referral records for all partners', () => {
         const { controller } = setupController({});
