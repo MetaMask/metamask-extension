@@ -1,5 +1,5 @@
-import { tEn } from '../../../../../lib/i18n-helpers';
-import { Driver } from '../../../../webdriver/driver';
+import { tEn } from '../../../../lib/i18n-helpers';
+import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
 class TokenTransferTransactionConfirmation extends TransactionConfirmation {

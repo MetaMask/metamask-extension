@@ -1,5 +1,5 @@
-import { Driver } from '../../../../webdriver/driver';
-import { RawLocator } from '../../../common';
+import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 
 class WatchAssetConfirmation {
   private driver: Driver;

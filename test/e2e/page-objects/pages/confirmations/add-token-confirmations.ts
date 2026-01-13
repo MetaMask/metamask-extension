@@ -1,4 +1,4 @@
-import { Driver } from '../../../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 class AddTokenConfirmation {
   driver: Driver;

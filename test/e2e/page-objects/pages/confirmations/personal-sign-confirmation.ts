@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
-import { DAPP_HOST_ADDRESS } from '../../../../constants';
-import { Driver } from '../../../../webdriver/driver';
+import { DAPP_HOST_ADDRESS } from '../../../constants';
+import { Driver } from '../../../webdriver/driver';
 import Confirmation from './confirmation';
 
 export default class PersonalSignConfirmation extends Confirmation {

@@ -1,5 +1,5 @@
-import { Driver } from '../../../../webdriver/driver';
-import { RawLocator } from '../../../common';
+import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 import Confirmation from './confirmation';
 
 class AccountDetailsModal extends Confirmation {

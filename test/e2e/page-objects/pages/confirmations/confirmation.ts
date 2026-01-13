@@ -1,6 +1,6 @@
 import { Key } from 'selenium-webdriver';
-import { Driver } from '../../../../webdriver/driver';
-import { RawLocator } from '../../../common';
+import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 
 class Confirmation {
   protected driver: Driver;

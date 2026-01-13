@@ -1,4 +1,4 @@
-import { Driver } from '../../../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 import TransactionConfirmation from './transaction-confirmation';
 
 export default class Eip7702AndSendCalls extends TransactionConfirmation {

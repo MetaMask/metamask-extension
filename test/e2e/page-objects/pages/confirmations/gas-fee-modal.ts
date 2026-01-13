@@ -1,5 +1,5 @@
-import { Driver } from '../../../../webdriver/driver';
-import { RawLocator } from '../../../common';
+import { Driver } from '../../../webdriver/driver';
+import { RawLocator } from '../../common';
 
 /**
  * Page object for the new redesigned gas fee modal.

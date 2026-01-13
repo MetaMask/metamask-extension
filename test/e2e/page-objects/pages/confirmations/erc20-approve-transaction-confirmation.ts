@@ -1,4 +1,4 @@
-import { tEn } from '../../../../../lib/i18n-helpers';
+import { tEn } from '../../../../lib/i18n-helpers';
 import TransactionConfirmation from './transaction-confirmation';
 
 class ERC20ApproveTransactionConfirmation extends TransactionConfirmation {

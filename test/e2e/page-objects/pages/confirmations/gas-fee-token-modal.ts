@@ -1,4 +1,4 @@
-import { Driver } from '../../../../webdriver/driver';
+import { Driver } from '../../../webdriver/driver';
 
 export default class GasFeeTokenModal {
   constructor(driver: Driver) {
