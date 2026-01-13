@@ -1,15 +1,32 @@
 import { ControllerStateChangeEvent } from '@metamask/base-controller';
 import {
   ActionConstraint,
+  EventConstraint,
   MOCK_ANY_NAMESPACE,
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkController,
+  NetworkControllerRpcEndpointDegradedEvent,
+  NetworkControllerRpcEndpointUnavailableEvent,
+} from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
+import {
+  onRpcEndpointUnavailable,
+  onRpcEndpointDegraded,
+} from '../lib/network-controller/messenger-action-handlers';
+import {
+  MetaMetricsControllerGetMetaMetricsIdAction,
+  MetaMetricsControllerTrackEventAction,
+} from '../controllers/metametrics-controller';
+import {
+  ConnectivityControllerGetStateAction,
+  ConnectivityStatusType,
+} from '../controllers/connectivity';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -39,15 +56,34 @@ jest.mock('@metamask/network-controller', () => {
   };
 });
 
+jest.mock('../lib/network-controller/messenger-action-handlers', () => ({
+  onRpcEndpointUnavailable: jest.fn(),
+  onRpcEndpointDegraded: jest.fn(),
+}));
+
+type RpcEndpointEvents =
+  | NetworkControllerRpcEndpointUnavailableEvent
+  | NetworkControllerRpcEndpointDegradedEvent
+  | ControllerStateChangeEvent<
+      'RemoteFeatureFlagController',
+      RemoteFeatureFlagControllerState
+    >;
+
+type InitActions =
+  | RemoteFeatureFlagControllerGetStateAction
+  | ConnectivityControllerGetStateAction
+  | MetaMetricsControllerGetMetaMetricsIdAction
+  | MetaMetricsControllerTrackEventAction;
+
 function getInitRequestMock(
   messenger = new Messenger<
     MockAnyNamespace,
-    RemoteFeatureFlagControllerGetStateAction | ActionConstraint,
-    ControllerStateChangeEvent<
-      'RemoteFeatureFlagController',
-      RemoteFeatureFlagControllerState
-    >
+    InitActions | ActionConstraint,
+    RpcEndpointEvents | EventConstraint
   >({ namespace: MOCK_ANY_NAMESPACE }),
+  {
+    connectivityStatus = 'online',
+  }: { connectivityStatus?: ConnectivityStatusType } = {},
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
@@ -61,6 +97,20 @@ function getInitRequestMock(
         walletFrameworkRpcFailoverEnabled: true,
       },
     }),
+  );
+
+  messenger.registerActionHandler('ConnectivityController:getState', () => ({
+    connectivityStatus,
+  }));
+
+  messenger.registerActionHandler(
+    'MetaMetricsController:getMetaMetricsId',
+    jest.fn().mockReturnValue('test-metrics-id'),
+  );
+
+  messenger.registerActionHandler(
+    'MetaMetricsController:trackEvent',
+    jest.fn(),
   );
 
   const requestMock = {
@@ -385,5 +435,113 @@ describe('NetworkControllerInit', () => {
     );
 
     expect(controller.disableRpcFailover).toHaveBeenCalled();
+  });
+
+  describe('RPC endpoint events', () => {
+    it('suppresses rpcEndpointUnavailable events when device is offline', () => {
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        RpcEndpointEvents | EventConstraint
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      const request = getInitRequestMock(messenger, {
+        connectivityStatus: 'offline',
+      });
+
+      NetworkControllerInit(request);
+
+      messenger.publish('NetworkController:rpcEndpointUnavailable', {
+        chainId: '0x1',
+        endpointUrl: 'https://example.com',
+        error: new Error('Connection failed'),
+        networkClientId: 'mainnet',
+        primaryEndpointUrl: 'https://mainnet.infura.io',
+      });
+
+      expect(onRpcEndpointUnavailable).not.toHaveBeenCalled();
+    });
+
+    it('suppresses rpcEndpointDegraded events when device is offline', () => {
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        RpcEndpointEvents | EventConstraint
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      const request = getInitRequestMock(messenger, {
+        connectivityStatus: 'offline',
+      });
+
+      NetworkControllerInit(request);
+
+      messenger.publish('NetworkController:rpcEndpointDegraded', {
+        chainId: '0x1',
+        endpointUrl: 'https://example.com',
+        error: new Error('Slow response'),
+        networkClientId: 'mainnet',
+        primaryEndpointUrl: 'https://mainnet.infura.io',
+      });
+
+      expect(onRpcEndpointDegraded).not.toHaveBeenCalled();
+    });
+
+    it('processes rpcEndpointUnavailable events when device is online', () => {
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        RpcEndpointEvents | EventConstraint
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      const request = getInitRequestMock(messenger, {
+        connectivityStatus: 'online',
+      });
+
+      NetworkControllerInit(request);
+
+      messenger.publish('NetworkController:rpcEndpointUnavailable', {
+        chainId: '0x1',
+        endpointUrl: 'https://example.com',
+        error: new Error('Connection failed'),
+        networkClientId: 'mainnet',
+        primaryEndpointUrl: 'https://mainnet.infura.io',
+      });
+
+      expect(onRpcEndpointUnavailable).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x1',
+          endpointUrl: 'https://example.com',
+        }),
+      );
+    });
+
+    it('processes rpcEndpointDegraded events when device is online', () => {
+      const messenger = new Messenger<
+        MockAnyNamespace,
+        ActionConstraint,
+        RpcEndpointEvents | EventConstraint
+      >({ namespace: MOCK_ANY_NAMESPACE });
+
+      const request = getInitRequestMock(messenger, {
+        connectivityStatus: 'online',
+      });
+
+      NetworkControllerInit(request);
+
+      messenger.publish('NetworkController:rpcEndpointDegraded', {
+        chainId: '0x1',
+        endpointUrl: 'https://example.com',
+        error: new Error('Slow response'),
+        networkClientId: 'mainnet',
+        primaryEndpointUrl: 'https://mainnet.infura.io',
+      });
+
+      expect(onRpcEndpointDegraded).toHaveBeenCalledWith(
+        expect.objectContaining({
+          chainId: '0x1',
+          endpointUrl: 'https://example.com',
+        }),
+      );
+    });
   });
 });

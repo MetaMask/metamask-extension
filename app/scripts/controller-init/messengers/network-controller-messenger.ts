@@ -12,6 +12,7 @@ import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
 } from '../../controllers/metametrics-controller';
+import { ConnectivityControllerGetStateAction } from '../../controllers/connectivity';
 import { RootMessenger } from '../../lib/messenger';
 
 export type NetworkControllerMessenger = ReturnType<
@@ -44,6 +45,7 @@ export function getNetworkControllerMessenger(
 }
 
 type AllowedInitializationActions =
+  | ConnectivityControllerGetStateAction
   | MetaMetricsControllerGetMetaMetricsIdAction
   | MetaMetricsControllerTrackEventAction
   | RemoteFeatureFlagControllerGetStateAction;
@@ -85,6 +87,7 @@ export function getNetworkControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
+      'ConnectivityController:getState',
       'MetaMetricsController:getMetaMetricsId',
       'MetaMetricsController:trackEvent',
       'RemoteFeatureFlagController:getState',
