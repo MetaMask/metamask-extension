@@ -75,15 +75,16 @@ class StartOnboardingPage {
     await this.driver.clickElement(this.termsOfUseCheckbox);
     await this.driver.clickElementAndWaitToDisappear(
       this.termsOfUseAgreeButton,
+      15000,
     );
   }
 
   async checkLoginPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.createWalletButton,
-        this.importWalletButton,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [this.createWalletButton, this.importWalletButton],
+        { timeout: 20000 },
+      );
     } catch (e) {
       console.log('Timeout while waiting for get started page to be loaded', e);
       throw e;

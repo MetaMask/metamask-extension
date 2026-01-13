@@ -7,7 +7,7 @@ import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/inst
 import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { DAPP_ONE_URL, DAPP_PATH } from '../../constants';
 
 describe('Petnames - Signatures', function (this: Suite) {

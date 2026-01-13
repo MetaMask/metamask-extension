@@ -7,11 +7,23 @@ class ActivityListPage {
   private readonly activityListAction =
     '[data-testid="activity-list-item-action"]';
 
-  private readonly completedTransactionItems =
-    '.transaction-list__completed-transactions .activity-list-item';
-
   private readonly activityTab =
     '[data-testid="account-overview__activity-tab"]';
+
+  private readonly baseFeeLabel = {
+    xpath: "//div[contains(text(), 'Base fee')]",
+  };
+
+  private readonly bridgeTransactionCompleted =
+    '.transaction-status-label--confirmed';
+
+  private readonly bridgeTransactionPending =
+    '.bridge-transaction-details__segment--pending';
+
+  private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
+
+  private readonly completedTransactionItems =
+    '.transaction-list__completed-transactions .activity-list-item';
 
   private readonly completedTransactions = '[data-testid="activity-list-item"]';
 
@@ -20,18 +32,29 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
+  private readonly confirmTransactionReplacementButton = {
+    text: 'Submit',
+    tag: 'button',
+  };
+
   private readonly failedTransactions = {
     text: 'Failed',
     css: '.transaction-status-label--failed',
   };
 
+  private readonly feeValues = '.currency-display-component__text';
+
+  private readonly gasPrice =
+    '[data-testid="transaction-breakdown__gas-price"]';
+
+  private readonly pendingTransactionItems =
+    '.transaction-list__pending-transactions .activity-list-item';
+
+  private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
+
+  private readonly speedupModalButton = '[data-testid="speedup-button"]';
+
   private readonly tooltip = '.tippy-tooltip-content';
-
-  private readonly bridgeTransactionCompleted =
-    '.transaction-status-label--confirmed';
-
-  private readonly bridgeTransactionPending =
-    '.bridge-transaction-details__segment--pending';
 
   private readonly transactionAmountsInActivity =
     '[data-testid="transaction-list-item-primary-currency"]';
@@ -40,20 +63,6 @@ class ActivityListPage {
     text: 'View on block explorer',
     tag: 'button',
   };
-
-  private readonly cancelTransactionButton = '[data-testid="cancel-button"]';
-
-  private readonly speedupInlineButton = '[data-testid="speed-up-button"]';
-
-  private readonly speedupModalButton = '[data-testid="speedup-button"]';
-
-  private readonly confirmTransactionReplacementButton = {
-    text: 'Submit',
-    tag: 'button',
-  };
-
-  private readonly pendingTransactionItems =
-    '.transaction-list__pending-transactions .activity-list-item';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -135,6 +144,30 @@ class ActivityListPage {
     console.log(
       `${expectedNumber} confirmed transactions found in activity list on homepage`,
     );
+  }
+
+  /**
+   * Checks that fee values are displayed in the tx details.
+   */
+  async checkFeeValuesAreDisplayed(): Promise<void> {
+    console.log('Checking that fee values are displayed');
+    await this.driver.waitForSelector(this.baseFeeLabel);
+    await this.driver.waitForSelector(this.feeValues);
+    console.log('Fee values are displayed');
+  }
+
+  /**
+   * Checks that the gas price displayed in transaction details matches the expected value.
+   *
+   * @param expectedGasPrice - The expected gas price value.
+   */
+  async checkGasPrice(expectedGasPrice: string): Promise<void> {
+    console.log(`Checking gas price is ${expectedGasPrice}`);
+    await this.driver.waitForSelector({
+      css: this.gasPrice,
+      text: expectedGasPrice,
+    });
+    console.log(`Gas price ${expectedGasPrice} verified`);
   }
 
   /**
@@ -225,7 +258,7 @@ class ActivityListPage {
   }
 
   /**
-   * This function checks the specified number of pending Birdge transactions are displayed in the activity list on the homepage.
+   * This function checks the specified number of pending Bridge transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of pending transactions to be visible.
    *
    * @param expectedNumber - The number of pending Bridge transactions expected to be displayed in the activity list. Defaults to 1.
@@ -249,7 +282,7 @@ class ActivityListPage {
   }
 
   /**
-   * This function checks the specified number of completed Birdge transactions are displayed in the activity list on the homepage.
+   * This function checks the specified number of completed Bridge transactions are displayed in the activity list on the homepage.
    * It waits up to 10 seconds for the expected number of completed transactions to be visible.
    *
    * @param expectedNumber - The number of completed Bridge transactions expected to be displayed in the activity list. Defaults to 1.
