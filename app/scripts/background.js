@@ -49,12 +49,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import {
-  REFERRAL_PARTNERS,
-  ReferralPartner,
-} from '../../shared/constants/referrals';
-
-const HYPERLIQUID_ORIGIN = REFERRAL_PARTNERS[ReferralPartner.Hyperliquid].origin;
+import { getPartnerByOrigin } from '../../shared/constants/referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -1792,21 +1787,23 @@ function onNavigateToTab() {
         }
       }
 
-      // If the connected dApp is Hyperliquid, trigger the referral flow
-      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+      // If the connected dApp is a referral partner, trigger the referral flow
+      const partner = getPartnerByOrigin(currentTabOrigin);
+      if (partner) {
         const connectSitePermissions =
           controller.permissionController.state.subjects[currentTabOrigin];
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           controller
-            .handleHyperliquidReferral(
+            .handleReferral(
+              partner,
               tabId,
               ReferralTriggerType.OnNavigateConnectedTab,
             )
             .catch((error) => {
               log.error(
-                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
                 error,
               );
             });
