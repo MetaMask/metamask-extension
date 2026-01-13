@@ -3,8 +3,6 @@ import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-  type ChainId,
-  type GenericQuoteRequest,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
