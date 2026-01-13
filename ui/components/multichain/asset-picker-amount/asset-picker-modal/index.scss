@@ -63,6 +63,9 @@
     }
   }
 
+  .tokens-main-view-modal {
+    max-height: 100%;
+  }
 
   .network-picker {
     display: flex;
@@ -84,6 +87,11 @@
       display: flex;
       flex-direction: column;
       overflow: auto;
+    }
+
+    &__wrapper {
+      max-height: 100%;
+      overflow-y: scroll;
     }
 
     &__loading {
