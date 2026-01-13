@@ -70,6 +70,7 @@
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
     "ClaimsController": "object",
+    "ConnectivityController": { "connectivityStatus": "online" },
     "CurrencyController": {
       "currencyRates": {
         "ETH": {
