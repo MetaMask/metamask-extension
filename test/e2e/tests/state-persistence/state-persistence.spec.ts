@@ -230,7 +230,7 @@ const assertDataStateStorage = (storage: DataStorage) => {
  */
 const expectSplitStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  console.log("split storage:", Object.keys(storage));
+  console.log('split storage:', Object.keys(storage));
   assertSplitStateStorage(storage as SplitStateStorage);
   return storage;
 };
@@ -243,7 +243,7 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
-  console.log("data storage:", Object.keys(storage));
+  console.log('data storage:', Object.keys(storage));
   assertDataStateStorage(storage as DataStorage);
   return storage;
 };
@@ -392,22 +392,22 @@ describe('State Persistence', function () {
           const accountListPage = new AccountListPage(driver);
 
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log("completeOnboardingAndSync")
+          console.log('completeOnboardingAndSync');
           await completeOnboardingAndSync(driver);
-          console.log("expectDataStateStorage")
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
-          console.log("headerNavbar.checkPageIsLoaded")
+          console.log('headerNavbar.checkPageIsLoaded');
           await headerNavbar.checkPageIsLoaded();
-          console.log("headerNavbar.openAccountMenu")
+          console.log('headerNavbar.openAccountMenu');
           await headerNavbar.openAccountMenu();
-          console.log("accountListPage.checkPageIsLoaded")
+          console.log('accountListPage.checkPageIsLoaded');
           await accountListPage.checkPageIsLoaded();
-          console.log("accountListPage.addMultichainAccount")
+          console.log('accountListPage.addMultichainAccount');
           await accountListPage.addMultichainAccount();
-          console.log("accountListPage.renameAccount")
+          console.log('accountListPage.renameAccount');
           await accountListPage.closeMultichainAccountsPage();
-          console.log("accountListPage.renameAccount")
+          console.log('accountListPage.renameAccount');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
@@ -415,36 +415,36 @@ describe('State Persistence', function () {
           );
 
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log("expectDataStateStorage")
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
-          console.log("pausePersistence")
+          console.log('pausePersistence');
           await pausePersistence(driver);
-          console.log("setLocalStorageFlags")
+          console.log('setLocalStorageFlags');
           await setLocalStorageFlags(driver);
-          console.log("reloadAndUnlock")
+          console.log('reloadAndUnlock');
           await reloadAndUnlock(driver);
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log("assertAccountVisible")
+          console.log('assertAccountVisible');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log("expectSplitStateStorage")
+          console.log('expectSplitStateStorage');
           await expectSplitStateStorage(driver);
 
-          console.log("reloadAndUnlock 2")
+          console.log('reloadAndUnlock 2');
           await reloadAndUnlock(driver);
           await driver.delay(5000); // wait for any background migrations to finish
-          console.log("assertAccountVisible 2")
+          console.log('assertAccountVisible 2');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
-          console.log("expectSplitStateStorage 2")
+          console.log('expectSplitStateStorage 2');
           await expectSplitStateStorage(driver);
         },
       );
