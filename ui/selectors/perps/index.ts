@@ -6,4 +6,4 @@
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
-export {};
+export { getIsPerpsEnabled } from './feature-flags';
