@@ -10,17 +10,15 @@ jest.mock('../../../package.json', () => ({
 type MockState = {
   metamask: {
     remoteFeatureFlags: {
-      perpsEnabled?: boolean | PerpsFeatureFlag;
+      perpsEnabledVersion?: PerpsFeatureFlag;
     };
   };
 };
 
-const getMockState = (
-  perpsEnabled?: boolean | PerpsFeatureFlag,
-): MockState => ({
+const getMockState = (perpsEnabledVersion?: PerpsFeatureFlag): MockState => ({
   metamask: {
     remoteFeatureFlags: {
-      perpsEnabled,
+      perpsEnabledVersion,
     },
   },
 });
@@ -33,20 +31,8 @@ describe('Perps Feature Flags', () => {
   });
 
   describe('getIsPerpsEnabled', () => {
-    describe('boolean flags (backward compatibility)', () => {
-      it('returns true when perpsEnabled flag is true', () => {
-        const state = getMockState(true);
-        expect(getIsPerpsEnabled(state)).toBe(true);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
-
-      it('returns false when perpsEnabled flag is false', () => {
-        const state = getMockState(false);
-        expect(getIsPerpsEnabled(state)).toBe(false);
-        expect(semverGteMock).not.toHaveBeenCalled();
-      });
-
-      it('returns false when perpsEnabled flag is undefined', () => {
+    describe('undefined or missing flag', () => {
+      it('returns false when perpsEnabledVersion flag is undefined', () => {
         const state = getMockState(undefined);
         expect(getIsPerpsEnabled(state)).toBe(false);
         expect(semverGteMock).not.toHaveBeenCalled();
@@ -59,7 +45,7 @@ describe('Perps Feature Flags', () => {
       });
     });
 
-    describe('object flags with version gating', () => {
+    describe('JSON flags with version gating', () => {
       it('returns true when enabled is true and version check passes', () => {
         semverGteMock.mockReturnValue(true);
 
