@@ -1,4 +1,14 @@
 import React from 'react';
+import {
+  Display,
+  FlexDirection,
+  JustifyContent,
+  AlignItems,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '../../../helpers/constants/design-system';
+import { Box, Text } from '../../component-library';
 import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
@@ -25,7 +35,13 @@ export const PerpsTabView: React.FC = () => {
   };
 
   return (
-    <div className="perps-tab-view" data-testid="perps-tab-view">
+    <Box
+      className="perps-tab-view"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={4}
+      data-testid="perps-tab-view"
+    >
       {/* Control Bar with Balance and P&L */}
       <PerpsTabControlBar
         onManageBalancePress={handleManageBalancePress}
@@ -34,51 +50,101 @@ export const PerpsTabView: React.FC = () => {
 
       {/* Empty State */}
       {hasNoPositionsOrOrders && (
-        <div
+        <Box
           className="perps-tab-view__empty-state"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          alignItems={AlignItems.center}
+          padding={6}
           data-testid="perps-empty-state"
         >
-          <span>No positions or orders</span>
-        </div>
+          <Text color={TextColor.textAlternative}>No positions or orders</Text>
+        </Box>
       )}
 
       {/* Positions Section */}
       {hasPositions && (
-        <div
+        <Box
           className="perps-tab-view__section"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
           data-testid="perps-positions-section"
         >
-          <div className="perps-tab-view__section-header">
-            <span className="perps-tab-view__section-title">Positions</span>
-            <span className="perps-tab-view__section-action">Close all</span>
-          </div>
-          <div className="perps-tab-view__cards-container">
+          <Box
+            className="perps-tab-view__section-header"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingTop={4}
+            marginBottom={2}
+          >
+            <Text fontWeight={FontWeight.Medium}>Positions</Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              Close all
+            </Text>
+          </Box>
+          <Box
+            className="perps-tab-view__cards-container"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
             {mockPositions.map((position) => (
               <PositionCard key={position.coin} position={position} />
             ))}
-          </div>
+          </Box>
           <StartTradeCta onPress={handleNewTrade} />
-        </div>
+        </Box>
       )}
 
       {/* Orders Section */}
       {hasOrders && (
-        <div
+        <Box
           className="perps-tab-view__section"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Column}
+          gap={2}
           data-testid="perps-orders-section"
         >
-          <div className="perps-tab-view__section-header">
-            <span className="perps-tab-view__section-title">Open Orders</span>
-            <span className="perps-tab-view__section-action">Close all</span>
-          </div>
-          <div className="perps-tab-view__cards-container">
+          <Box
+            className="perps-tab-view__section-header"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Row}
+            justifyContent={JustifyContent.spaceBetween}
+            alignItems={AlignItems.center}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingTop={4}
+            marginBottom={2}
+          >
+            <Text fontWeight={FontWeight.Medium}>Open Orders</Text>
+            <Text
+              variant={TextVariant.bodySm}
+              color={TextColor.textAlternative}
+            >
+              Close all
+            </Text>
+          </Box>
+          <Box
+            className="perps-tab-view__cards-container"
+            display={Display.Flex}
+            flexDirection={FlexDirection.Column}
+            gap={2}
+          >
             {mockOrders.map((order) => (
               <OrderCard key={order.orderId} order={order} />
             ))}
-          </div>
-        </div>
+          </Box>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

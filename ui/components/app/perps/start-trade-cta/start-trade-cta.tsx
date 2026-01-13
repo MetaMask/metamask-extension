@@ -1,13 +1,32 @@
 import React from 'react';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import {
+  Display,
+  FlexDirection,
+  AlignItems,
+  JustifyContent,
+  TextVariant,
+  FontWeight,
+  BackgroundColor,
+  BorderRadius,
+} from '../../../../helpers/constants/design-system';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
 
-export interface StartTradeCtaProps {
+export type StartTradeCtaProps = {
   /** Callback when the CTA is clicked */
   onPress?: () => void;
-}
+};
 
 /**
  * StartTradeCta displays a "Start a new trade" call-to-action button
+ *
+ * @param options0 - Component props
+ * @param options0.onPress - Callback when the CTA is clicked
  */
 export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
   const handleClick = () => {
@@ -15,25 +34,42 @@ export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
   };
 
   return (
-    <button
-      type="button"
+    <Box
+      as="button"
       className="start-trade-cta"
+      display={Display.Flex}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={3}
+      paddingBottom={3}
       onClick={handleClick}
       data-testid="start-new-trade-cta"
     >
-      <div className="start-trade-cta__content">
-        <div className="start-trade-cta__icon-container">
-          <Icon
-            name={IconName.Add}
-            size={IconSize.Sm}
-            className="start-trade-cta__icon"
-          />
-        </div>
-        <span className="start-trade-cta__text">Start a new trade</span>
-      </div>
-    </button>
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        alignItems={AlignItems.center}
+      >
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          alignItems={AlignItems.center}
+          backgroundColor={BackgroundColor.backgroundMuted}
+          borderRadius={BorderRadius.full}
+          style={{ width: '40px', height: '40px' }}
+        >
+          <Icon name={IconName.Add} size={IconSize.Sm} />
+        </Box>
+        <Text
+          variant={TextVariant.bodySm}
+          fontWeight={FontWeight.Medium}
+          marginLeft={3}
+        >
+          Start a new trade
+        </Text>
+      </Box>
+    </Box>
   );
 };
 
 export default StartTradeCta;
-

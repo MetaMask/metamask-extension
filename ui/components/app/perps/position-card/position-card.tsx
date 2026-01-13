@@ -1,6 +1,13 @@
 import React from 'react';
-import classnames from 'classnames';
-import { AvatarTokenSize } from '../../../component-library';
+import {
+  Display,
+  FlexDirection,
+  AlignItems,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '../../../../helpers/constants/design-system';
+import { AvatarTokenSize, Box, Text } from '../../../component-library';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import type { Position } from '../types';
 
@@ -38,8 +45,16 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
   const displayName = getDisplayName(position.coin);
 
   return (
-    <div
+    <Box
       className="position-card"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      gap={3}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={3}
+      paddingBottom={3}
       data-testid={`position-card-${position.coin}`}
     >
       {/* Token Logo */}
@@ -50,33 +65,49 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
       />
 
       {/* Left side: Coin info and size */}
-      <div className="position-card__left">
-        <div className="position-card__header-row">
-          <span className="position-card__coin-symbol">{displayName}</span>
-          <span className="position-card__leverage-direction">
+      <Box
+        className="position-card__left"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        gap={1}
+        style={{ flex: 1, minWidth: 0 }}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
+        >
+          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {position.leverage.value}x {direction}
-          </span>
-        </div>
-        <span className="position-card__size">
+          </Text>
+        </Box>
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
           {absSize} {displayName}
-        </span>
-      </div>
+        </Text>
+      </Box>
 
       {/* Right side: Entry price and P&L */}
-      <div className="position-card__right">
-        <span className="position-card__entry-price">
+      <Box
+        className="position-card__right"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexEnd}
+        gap={1}
+      >
+        <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
           ${position.entryPrice}
-        </span>
-        <span
-          className={classnames('position-card__pnl', {
-            'position-card__pnl--profit': isProfit,
-            'position-card__pnl--loss': !isProfit,
-          })}
+        </Text>
+        <Text
+          variant={TextVariant.bodySm}
+          color={isProfit ? TextColor.successDefault : TextColor.errorDefault}
         >
           {isProfit ? '+' : ''}${position.unrealizedPnl}
-        </span>
-      </div>
-    </div>
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

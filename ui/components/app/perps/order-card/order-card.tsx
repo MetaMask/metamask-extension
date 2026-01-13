@@ -1,6 +1,13 @@
 import React from 'react';
-import classnames from 'classnames';
-import { AvatarTokenSize } from '../../../component-library';
+import {
+  Display,
+  FlexDirection,
+  AlignItems,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '../../../../helpers/constants/design-system';
+import { AvatarTokenSize, Box, Text } from '../../../component-library';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import type { Order } from '../types';
 
@@ -35,6 +42,24 @@ const getDisplayName = (symbol: string): string => {
 };
 
 /**
+ * Get the appropriate text color for order status
+ */
+const getStatusColor = (status: Order['status']): TextColor => {
+  switch (status) {
+    case 'filled':
+      return TextColor.successDefault;
+    case 'canceled':
+    case 'rejected':
+      return TextColor.errorDefault;
+    case 'open':
+    case 'queued':
+    case 'triggered':
+    default:
+      return TextColor.textAlternative;
+  }
+};
+
+/**
  * OrderCard component displays individual order information
  * Two rows: symbol/type/side + size on left, price + status on right
  */
@@ -43,7 +68,18 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const displayName = getDisplayName(order.symbol);
 
   return (
-    <div className="order-card" data-testid={`order-card-${order.orderId}`}>
+    <Box
+      className="order-card"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      alignItems={AlignItems.center}
+      gap={3}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={3}
+      paddingBottom={3}
+      data-testid={`order-card-${order.orderId}`}
+    >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={order.symbol}
@@ -52,39 +88,48 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       />
 
       {/* Left side: Symbol info and size */}
-      <div className="order-card__left">
-        <div className="order-card__header-row">
-          <span className="order-card__symbol">{displayName}</span>
-          <span className="order-card__type-side">
+      <Box
+        className="order-card__left"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexStart}
+        gap={1}
+        style={{ flex: 1, minWidth: 0 }}
+      >
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={1}
+        >
+          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
             {formatOrderType(order.orderType)} {isBuy ? 'buy' : 'sell'}
-          </span>
-        </div>
-        <span className="order-card__size">
+          </Text>
+        </Box>
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
           {order.size} {displayName}
-        </span>
-      </div>
+        </Text>
+      </Box>
 
       {/* Right side: Price and status */}
-      <div className="order-card__right">
-        <span className="order-card__price">
+      <Box
+        className="order-card__right"
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        alignItems={AlignItems.flexEnd}
+        gap={1}
+      >
+        <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
           {order.orderType === 'limit' && order.price !== '0'
             ? `$${order.price}`
             : 'Market'}
-        </span>
-        <span
-          className={classnames('order-card__status', {
-            'order-card__status--filled': order.status === 'filled',
-            'order-card__status--canceled': order.status === 'canceled',
-            'order-card__status--rejected': order.status === 'rejected',
-            'order-card__status--open': order.status === 'open',
-            'order-card__status--queued': order.status === 'queued',
-            'order-card__status--triggered': order.status === 'triggered',
-          })}
-        >
+        </Text>
+        <Text variant={TextVariant.bodySm} color={getStatusColor(order.status)}>
           {formatStatus(order.status)}
-        </span>
-      </div>
-    </div>
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

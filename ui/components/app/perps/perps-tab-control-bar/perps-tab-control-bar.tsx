@@ -1,6 +1,21 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import {
+  Display,
+  FlexDirection,
+  JustifyContent,
+  AlignItems,
+  TextVariant,
+  TextColor,
+  FontWeight,
+} from '../../../../helpers/constants/design-system';
+import {
+  Box,
+  Icon,
+  IconName,
+  IconSize,
+  Text,
+} from '../../../component-library';
 import { mockAccountState } from '../mocks';
 
 export interface PerpsTabControlBarProps {
@@ -58,52 +73,76 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   };
 
   return (
-    <div className="perps-tab-control-bar" data-testid="perps-tab-control-bar">
+    <Box
+      className="perps-tab-control-bar"
+      display={Display.Flex}
+      flexDirection={FlexDirection.Column}
+      gap={0}
+      paddingLeft={4}
+      paddingRight={4}
+      paddingTop={4}
+      data-testid="perps-tab-control-bar"
+    >
       {/* Total Balance Row */}
-      <div
+      <Box
+        as="button"
         className={classnames('perps-tab-control-bar__row', {
           'perps-tab-control-bar__row--top': hasPositions,
           'perps-tab-control-bar__row--single': !hasPositions,
         })}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Row}
+        justifyContent={JustifyContent.spaceBetween}
+        alignItems={AlignItems.center}
+        padding={3}
         onClick={handleBalanceClick}
-        onKeyDown={(e) => e.key === 'Enter' && handleBalanceClick()}
-        role="button"
-        tabIndex={0}
         data-testid="perps-control-bar-balance"
       >
-        <span className="perps-tab-control-bar__label">Total Balance</span>
-        <div className="perps-tab-control-bar__value-container">
-          <span className="perps-tab-control-bar__value">
+        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          Total Balance
+        </Text>
+        <Box
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          alignItems={AlignItems.center}
+          gap={2}
+        >
+          <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
             {formatCurrency(totalBalance)}
-          </span>
+          </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            className="perps-tab-control-bar__arrow"
+            color={TextColor.iconAlternative}
           />
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       {/* Unrealized P&L Row - only shown when there are positions */}
       {hasPositions && (
-        <div
+        <Box
           className="perps-tab-control-bar__row perps-tab-control-bar__row--bottom"
+          display={Display.Flex}
+          flexDirection={FlexDirection.Row}
+          justifyContent={JustifyContent.spaceBetween}
+          alignItems={AlignItems.center}
+          padding={3}
           data-testid="perps-control-bar-pnl"
         >
-          <span className="perps-tab-control-bar__label">Unrealized P&L</span>
-          <span
-            className={classnames('perps-tab-control-bar__pnl', {
-              'perps-tab-control-bar__pnl--profit': isProfit,
-              'perps-tab-control-bar__pnl--loss': !isProfit,
-            })}
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            Unrealized P&L
+          </Text>
+          <Text
+            variant={TextVariant.bodySm}
+            fontWeight={FontWeight.Medium}
+            color={isProfit ? TextColor.successDefault : TextColor.errorDefault}
           >
             {formatPnl(unrealizedPnl)} ({formatPercentage(returnOnEquity)})
-          </span>
-        </div>
+          </Text>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 
 export default PerpsTabControlBar;
-

@@ -176,7 +176,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >
-            <Box />
+            <PerpsTabView />
           </Tab>
         )}
 
