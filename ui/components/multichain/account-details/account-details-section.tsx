@@ -36,10 +36,9 @@ export const AccountDetailsSection = ({
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
-  const {
-    metadata: { keyring },
-  } = account;
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
+  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(
+    account?.metadata.keyring?.type,
+  );
   const keyrings = useSelector(getMetaMaskKeyrings);
   const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
 

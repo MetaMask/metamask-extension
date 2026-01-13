@@ -5052,6 +5052,9 @@
   "permittedChainToastUpdate": {
     "message": "$1 has access to $2."
   },
+  "perps": {
+    "message": "Perps"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -7411,6 +7414,15 @@
   "stillGettingMessage": {
     "message": "Still getting this message?"
   },
+  "storageErrorAction": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "storageErrorDescription": {
+    "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
+  },
+  "storageErrorTitle": {
+    "message": "We couldn't save your data"
+  },
   "strong": {
     "message": "Strong"
   },
@@ -7634,7 +7646,7 @@
     "message": "Paid by MetaMask"
   },
   "swapGasFeesSponsoredExplanation": {
-    "message": "This network fee is paid by MetaMask, so you can swap without $1 in your account."
+    "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",

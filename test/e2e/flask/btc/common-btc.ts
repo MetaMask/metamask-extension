@@ -18,7 +18,6 @@ export async function withBtcAccountSnap(
 ) {
   await withFixtures(
     {
-      forceBip44Version: false,
       fixtures: new FixtureBuilder()
         .withEnabledNetworks({
           eip155: {
