@@ -8,7 +8,7 @@ import NetworkManager, {
 } from '../../page-objects/pages/network-manager';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 
 describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager', async function () {

@@ -8,7 +8,7 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DAPP_HOST_ADDRESS } from '../../../constants';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
