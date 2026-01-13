@@ -35,10 +35,10 @@ import { getInternalAccountByAddress } from '../../../../../selectors/selectors'
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
-  extractExpiryToReadableDate,
-  GatorPermissionRule,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
+  extractExpiryToReadableDate,
+  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -165,6 +165,7 @@ export const ReviewGatorPermissionItem = ({
   hasRevokeBeenClicked = false,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
+
   const { permissionResponse, siteOrigin } = gatorPermission;
   const { chainId } = permissionResponse;
   const {
@@ -215,7 +216,8 @@ export const ReviewGatorPermissionItem = ({
       if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
-      return extractExpiryToReadableDate(rules);
+      const expiryDate = extractExpiryToReadableDate(rules);
+      return expiryDate || t('gatorPermissionNoExpiration');
     },
     [t],
   );
@@ -273,12 +275,9 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -292,7 +291,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -331,18 +330,15 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
     },
-    [tokenMetadata, getExpirationDate],
+    [tokenMetadata, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -366,18 +362,12 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (
-                permissionResponse.permission as unknown as {
-                  rules: GatorPermissionRule[];
-                }
-              ).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
-    }, [t, getExpirationDate, permissionResponse.permission]);
+    }, [t, getExpirationDate, permissionResponse.rules]);
 
   /**
    * Returns the permission details

@@ -1619,7 +1619,8 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true
+        "@metamask/eth-qr-keyring>async-mutex": true,
+        "lodash": true
       }
     },
     "@metamask/multichain-api-middleware": {
