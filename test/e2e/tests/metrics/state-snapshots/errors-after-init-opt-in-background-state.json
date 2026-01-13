@@ -32,7 +32,6 @@
     "appActiveTab": "object",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "connectedStatusPopoverHasBeenShown": true,
-    "connectivityStatus": "online",
     "defaultHomeActiveTabName": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
@@ -109,6 +108,7 @@
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
+  "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",
