@@ -144,6 +144,10 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const DEEP_LINK_ROUTE = '/link';
 export const DEFI_ROUTE = '/defi';
 
+// Perps routes
+export const PERPS_ROUTE = '/perps';
+export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 
@@ -549,6 +553,13 @@ export const ROUTES = [
   },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
+  // Perps routes
+  { path: PERPS_ROUTE, label: 'Perps Home', trackInAnalytics: true },
+  {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',

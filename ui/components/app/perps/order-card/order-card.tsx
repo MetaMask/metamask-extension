@@ -1,11 +1,15 @@
-import React from 'react';
+import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { AvatarTokenSize } from '../../../component-library';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 import type { Order } from '../types';
 
 export interface OrderCardProps {
   order: Order;
+  /** Optional click handler override. If not provided, navigates to market detail page. */
+  onClick?: (order: Order) => void;
 }
 
 /**
@@ -37,13 +41,36 @@ const getDisplayName = (symbol: string): string => {
 /**
  * OrderCard component displays individual order information
  * Two rows: symbol/type/side + size on left, price + status on right
+ * Clicking the card navigates to the market detail page for that symbol
  */
-export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
+export const OrderCard: React.FC<OrderCardProps> = ({ order, onClick }) => {
+  const navigate = useNavigate();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
+  const handleClick = useCallback(() => {
+    if (onClick) {
+      onClick(order);
+    } else {
+      navigate(
+        `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(order.symbol)}`,
+      );
+    }
+  }, [navigate, order, onClick]);
+
   return (
-    <div className="order-card" data-testid={`order-card-${order.orderId}`}>
+    <div
+      className="order-card order-card--clickable"
+      data-testid={`order-card-${order.orderId}`}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClick();
+        }
+      }}
+      role="button"
+      tabIndex={0}
+    >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={order.symbol}
