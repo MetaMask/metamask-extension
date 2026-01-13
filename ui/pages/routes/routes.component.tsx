@@ -156,7 +156,7 @@ const OnboardingFlow = mmLazy(
   (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
-  (() => import('../lock/index.js')) as unknown as DynamicImportType,
+  (() => import('../lock/index.ts')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
   (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
