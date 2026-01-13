@@ -374,7 +374,7 @@ export const getToToken = createSelector(
         ? defaultToChainId
         : formatChainIdToCaip(fromToken.chainId);
     // Otherwise, determine the default token to use based on fromToken
-    return getDefaultToToken(targetChainId, fromToken);
+    return toBridgeToken(getDefaultToToken(targetChainId, fromToken));
   },
 );
 
