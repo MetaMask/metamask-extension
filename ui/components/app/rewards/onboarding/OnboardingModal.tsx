@@ -17,6 +17,7 @@ import {
   selectOnboardingActiveStep,
   selectCandidateSubscriptionId,
 } from '../../../../ducks/rewards/selectors';
+import { getHardwareWalletType } from '../../../../selectors';
 import {
   setOnboardingActiveStep,
   setOnboardingModalOpen,
@@ -33,6 +34,7 @@ import OnboardingStep1 from './OnboardingStep1';
 import OnboardingStep2 from './OnboardingStep2';
 import OnboardingStep3 from './OnboardingStep3';
 import OnboardingStep4 from './OnboardingStep4';
+import { HardwareKeyringType } from '../../../../../shared/constants/hardware-wallets';
 
 type OnboardingModalProps = {
   onClose?: () => void;
@@ -60,6 +62,7 @@ export default function OnboardingModal({
   const rewardActiveAccountSubscriptionId = useAppSelector(
     (state) => state.metamask.rewardsActiveAccount?.subscriptionId,
   );
+  const hardwareWalletType = useSelector(getHardwareWalletType);
   const dispatch = useDispatch();
 
   const theme = useTheme();
@@ -121,9 +124,12 @@ export default function OnboardingModal({
       data-testid="rewards-onboarding-modal"
       isOpen={isOpen}
       onClose={handleClose}
+      // qr code hadware wallet uses a popover signing modal, so we don't want to close the onboarding modal when clicking to sign a message
+      isClosedOnOutsideClick={hardwareWalletType !== HardwareKeyringType.qr}
     >
-      <ModalOverlay />
+      <ModalOverlay className="rewards-onboarding-modal__overlay" />
       <ModalContent
+        className="rewards-onboarding-modal__content"
         alignItems={AlignItems.center}
         justifyContent={JustifyContent.center}
         size={ModalContentSize.Md}

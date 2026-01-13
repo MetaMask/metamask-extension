@@ -25,6 +25,8 @@ import {
 import { handleRewardsErrorMessage } from '../../components/app/rewards/utils/handleRewardsErrorMessage';
 import { useI18nContext } from '../useI18nContext';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { getHardwareWalletName } from '../../ducks/bridge/selectors';
+import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
 
 export type UseOptinResult = {
   /**
@@ -54,6 +56,7 @@ type UseOptInOptions = {
 export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const [optinError, setOptinError] = useState<string | null>(null);
   const dispatch = useDispatch();
+  const hardwareWalletName = useSelector(getHardwareWalletName);
   const [optinLoading, setOptinLoading] = useState<boolean>(false);
   const trackEvent = useContext(MetaMetricsContext);
   const t = useI18nContext();
@@ -62,6 +65,10 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
   const { id: walletId } = useSelector((state) =>
     getWalletIdAndNameByAccountAddress(state, selectedAccount.address),
   ) || { walletId: undefined };
+
+  // Hardware wallet detection and access
+  const { requestHardwareWalletAccess, isHardwareWalletAccount } =
+    useRequestHardwareWalletAccess();
 
   const accountGroupsByWallet = useSelector((state: MultichainAccountsState) =>
     walletId
@@ -103,6 +110,8 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         referred,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         referral_code_used: referralCode,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_hardware_wallet: isHardwareWalletAccount,
       };
       trackEvent({
         category: MetaMetricsEventCategory.Rewards,
@@ -115,6 +124,27 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
       try {
         setOptinLoading(true);
         setOptinError(null);
+
+        // For hardware wallets, request USB/HID access first (must be in user gesture context)
+        if (isHardwareWalletAccount) {
+          const accessGranted = await requestHardwareWalletAccess();
+          if (!accessGranted) {
+            setOptinError(
+              t('hardwareWalletSubmissionWarningStep1', [hardwareWalletName]),
+            );
+            setOptinLoading(false);
+            trackEvent({
+              category: MetaMetricsEventCategory.Rewards,
+              event: MetaMetricsEventName.RewardsOptInFailed,
+              properties: {
+                ...metricsProps,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                failure_reason: 'hardware_wallet_access_denied',
+              },
+            });
+            return;
+          }
+        }
 
         // First, opt in with side effect accounts
         const accountsToOptIn =
@@ -132,7 +162,9 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
         )) as unknown as string | null;
 
         if (subscriptionId) {
-          if (accountsToLinkAfterOptIn.length > 0) {
+          // Prevent more than 1 explicit sign request for opting in, in case of hardware wallet
+          // Linking of other accounts for the hardware wallet can be handled later.
+          if (accountsToLinkAfterOptIn.length > 0 && !isHardwareWalletAccount) {
             try {
               await dispatch(
                 rewardsLinkAccountsToSubscriptionCandidate(
@@ -206,6 +238,9 @@ export const useOptIn = (options?: UseOptInOptions): UseOptinResult => {
       t,
       options?.rewardPoints,
       options?.shieldSubscriptionId,
+      isHardwareWalletAccount,
+      requestHardwareWalletAccess,
+      hardwareWalletName,
     ],
   );
 

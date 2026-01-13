@@ -123,18 +123,6 @@ const OnboardingIntroStep: React.FC = () => {
       return;
     }
 
-    // Show error modal if hardware wallet
-    if (hardwareWalletUsed) {
-      dispatch(
-        setErrorToast({
-          isOpen: true,
-          title: t('rewardsOnboardingIntroHardwareWalletTitle'),
-          description: t('rewardsOnboardingIntroHardwareWalletDescription'),
-        }),
-      );
-      return;
-    }
-
     // Proceed to next onboarding step
     dispatch(setOnboardingActiveStep(OnboardingStep.STEP1));
   }, [

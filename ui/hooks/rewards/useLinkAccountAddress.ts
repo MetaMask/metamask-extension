@@ -14,6 +14,7 @@ import {
 } from '../../../shared/constants/metametrics';
 import { getAccountTypeCategory } from '../../pages/multichain-accounts/account-details/account-type-utils';
 import { setRewardsAccountLinkedTimestamp } from '../../ducks/rewards';
+import { useRequestHardwareWalletAccess } from './useRequestHardwareWalletAccess';
 
 type UseLinkAccountAddressResult = {
   linkAccountAddress: (account: InternalAccount) => Promise<boolean>;
@@ -27,6 +28,7 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
   const [isError, setIsError] = useState(false);
   const trackEvent = useContext(MetaMetricsContext);
   const isMountedRef = useRef(true);
+  const { requestHardwareWalletAccess } = useRequestHardwareWalletAccess();
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -85,6 +87,17 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
         // If already opted in, return success
         if (optInResponse.ois[0]) {
           return true;
+        }
+
+        // Request hardware wallet access before signing (must be in user gesture context)
+        const accessGranted = await requestHardwareWalletAccess();
+        if (!accessGranted) {
+          triggerAccountLinkingEvent(
+            MetaMetricsEventName.RewardsAccountLinkingFailed,
+            account,
+          );
+          setIsError(true);
+          return false;
         }
 
         // Emit started event
@@ -146,7 +159,7 @@ export const useLinkAccountAddress = (): UseLinkAccountAddressResult => {
         }
       }
     },
-    [triggerAccountLinkingEvent, dispatch],
+    [triggerAccountLinkingEvent, dispatch, requestHardwareWalletAccess],
   );
 
   return {
