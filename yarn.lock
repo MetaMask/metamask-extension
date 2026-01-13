@@ -8488,7 +8488,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/snaps-utils@npm:^11.0.0, @metamask/snaps-utils@npm:^11.5.0, @metamask/snaps-utils@npm:^11.6.0, @metamask/snaps-utils@npm:^11.6.1, @metamask/snaps-utils@npm:^11.6.2, @metamask/snaps-utils@npm:^11.7.1":
+"@metamask/snaps-utils@npm:^11.0.0, @metamask/snaps-utils@npm:^11.5.0, @metamask/snaps-utils@npm:^11.6.0, @metamask/snaps-utils@npm:^11.6.1, @metamask/snaps-utils@npm:^11.6.2, @metamask/snaps-utils@npm:^11.7.0, @metamask/snaps-utils@npm:^11.7.1":
   version: 11.7.1
   resolution: "@metamask/snaps-utils@npm:11.7.1"
   dependencies:
