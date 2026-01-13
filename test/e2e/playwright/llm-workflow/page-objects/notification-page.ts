@@ -10,10 +10,14 @@ export type NotificationType =
   | 'unknown';
 
 export class NotificationPage {
-  constructor(private page: Page) {}
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
 
   async getNotificationType(): Promise<NotificationType> {
-    const selectors: Array<{ type: NotificationType; selector: string }> = [
+    const selectors: { type: NotificationType; selector: string }[] = [
       {
         type: 'connect',
         selector: '[data-testid="page-container-footer-next"]',
@@ -71,8 +75,9 @@ export class NotificationPage {
     }
 
     throw new Error(
-      'Could not find approve button. Tried selectors: ' +
-        approveSelectors.join(', '),
+      `Could not find approve button. Tried selectors: ${approveSelectors.join(
+        ', ',
+      )}`,
     );
   }
 
@@ -93,8 +98,9 @@ export class NotificationPage {
     }
 
     throw new Error(
-      'Could not find reject button. Tried selectors: ' +
-        rejectSelectors.join(', '),
+      `Could not find reject button. Tried selectors: ${rejectSelectors.join(
+        ', ',
+      )}`,
     );
   }
 

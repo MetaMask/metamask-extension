@@ -4,8 +4,11 @@ export class LoginPage {
   readonly page: Page;
 
   private readonly forgotPasswordLink: Locator;
+
   private readonly passwordInput: Locator;
+
   private readonly unlockButton: Locator;
+
   private readonly welcomeMessage: Locator;
 
   constructor(page: Page) {

@@ -1,11 +1,16 @@
 import type { Page } from '@playwright/test';
 
 export class StartOnboardingPage {
-  constructor(private readonly page: Page) {}
+  private readonly page: Page;
+
+  constructor(page: Page) {
+    this.page = page;
+  }
 
   private readonly getStartedButton = '[data-testid="get-started"]';
 
   private readonly termsOfUseCheckbox = '[data-testid="terms-of-use-checkbox"]';
+
   private readonly termsOfUseScrollButton =
     '[data-testid="terms-of-use-scroll-button"]';
 
