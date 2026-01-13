@@ -189,7 +189,7 @@ describe('AssetList', () => {
     expect(mockOnClearFilters).toHaveBeenCalled();
   });
 
-  it.skip('calls updateAsset and navigation when asset is clicked', () => {
+  it('calls updateAsset and navigation when asset is clicked', () => {
     const { getAllByTestId } = render(
       <AssetList
         tokens={mockTokens}
@@ -208,7 +208,7 @@ describe('AssetList', () => {
     expect(mockCaptureAssetSelected).toHaveBeenCalledWith(mockTokens[0]);
   });
 
-  it.skip('renders empty when no assets available', () => {
+  it('renders empty when no assets available', () => {
     const { container } = render(
       <AssetList
         tokens={[]}
