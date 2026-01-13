@@ -69,8 +69,8 @@ const mockStore = configureStore([thunk]);
 
 // Helper to mock DOM measurements for virtualizer
 function mockVirtualizerDOM() {
-  Object.defineProperties(HTMLElement.prototype, {
-    offsetHeight: { configurable: true, get: () => 600 },
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    value: 800,
   });
 }
 
