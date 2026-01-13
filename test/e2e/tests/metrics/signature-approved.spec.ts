@@ -56,6 +56,8 @@ const expectedEventPropertiesBase = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   environment_type: 'background',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind: 'data',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_alert_reason: 'validation_in_progress',
