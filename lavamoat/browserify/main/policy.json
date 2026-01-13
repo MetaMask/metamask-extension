@@ -838,7 +838,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Headers": true,
         "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
@@ -1575,7 +1574,8 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true
+        "@metamask/eth-qr-keyring>async-mutex": true,
+        "lodash": true
       }
     },
     "@metamask/multichain-api-middleware": {
@@ -2192,7 +2192,6 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "fetch": true,
@@ -2206,7 +2205,6 @@
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true,
         "@scure/base": true,
         "chalk": true,
         "cron-parser": true,
@@ -2217,6 +2215,12 @@
         "@metamask/snaps-utils>rfdc": true,
         "semver": true,
         "@metamask/snaps-utils>validate-npm-package-name": true
+      }
+    },
+    "@metamask/storage-service": {
+      "globals": {
+        "console.error": true,
+        "console.warn": true
       }
     },
     "@metamask/subscription-controller": {
@@ -2277,7 +2281,6 @@
         "browserify>buffer": true,
         "eth-method-registry": true,
         "webpack>events": true,
-        "fast-json-patch": true,
         "lodash": true,
         "uuid": true
       }

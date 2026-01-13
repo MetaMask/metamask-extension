@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../../../constants';
