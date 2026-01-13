@@ -66,6 +66,8 @@ type SignatureEventProperty = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   environment_type: 'background';
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind: 'split' | 'data';
   locale: 'en';
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -166,6 +168,8 @@ function getSignatureEventProperty(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type: 'background',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    storage_kind: 'data',
     locale: 'en',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
