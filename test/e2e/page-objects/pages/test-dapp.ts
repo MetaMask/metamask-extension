@@ -1089,30 +1089,6 @@ class TestDapp {
     await this.driver.openNewPage(dappUrl);
   }
 
-  /**
-   * Switch to the test dapp window if it exists, otherwise open a new one.
-   *
-   * @param options - The options for opening the test dapp page.
-   * @param options.contractAddress - The contract address to open the dapp with. Defaults to null.
-   * @param options.url - The URL of the dapp. Defaults to DAPP_URL.
-   */
-  async switchToOrOpenDapp({
-    contractAddress = null,
-    url = DAPP_URL,
-  }: {
-    contractAddress?: string | null;
-    url?: string;
-  } = {}): Promise<void> {
-    const handle = this.driver.windowHandles
-      ? await this.driver.windowHandles.switchToWindowIfKnown(
-          WINDOW_TITLES.TestDApp,
-        )
-      : null;
-    if (!handle) {
-      await this.openTestDappPage({ contractAddress, url });
-    }
-  }
-
   async pasteIntoEip747ContractAddressInput() {
     await this.driver.findElement(this.eip747ContractAddressInput);
     await this.driver.pasteFromClipboardIntoField(

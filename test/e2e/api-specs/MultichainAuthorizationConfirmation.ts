@@ -12,7 +12,6 @@ import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
 import { WINDOW_TITLES } from '../helpers';
-import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {
@@ -62,8 +61,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
             await this.driver.clickElement({ text, tag: 'button' });
 
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
-            const testDapp = new TestDapp(this.driver);
-            await testDapp.switchToOrOpenDapp();
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           } catch (e) {
             console.log(e);
           }

@@ -87,7 +87,7 @@ export class ConfirmationsRejectRule implements Rule {
                 tag: 'button',
               });
 
-              await testDapp.switchToOrOpenDapp();
+              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
               await testDapp.checkConnectedAccounts(
                 DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -144,8 +144,8 @@ export class ConfirmationsRejectRule implements Rule {
               tag: 'button',
             });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             const testDapp = new TestDapp(this.driver);
-            await testDapp.switchToOrOpenDapp();
             await testDapp.checkPageIsLoaded();
             await testDapp.checkConnectedAccounts(
               DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
