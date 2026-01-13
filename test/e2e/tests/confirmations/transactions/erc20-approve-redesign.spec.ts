@@ -4,7 +4,7 @@ import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
-import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/erc20-approve-transaction-confirmation';
+import ERC20ApproveTransactionConfirmation from '../../../page-objects/pages/confirmations/erc20-approve-transaction-confirmation';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';

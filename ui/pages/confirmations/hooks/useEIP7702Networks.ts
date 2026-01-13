@@ -9,7 +9,7 @@ import { TEST_CHAINS } from '../../../../shared/constants/network';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import {
   AccountsState,
-  getMemoizedInternalAccountByAddress,
+  getInternalAccountByAddress,
   getMultichainNetworkConfigurationsByChainId,
 } from '../../../selectors';
 import { useAsyncResult } from '../../../hooks/useAsync';
@@ -23,7 +23,7 @@ export type EIP7702NetworkConfiguration = MultichainNetworkConfiguration & {
 
 export const useEIP7702Networks = (address: string) => {
   const account = useSelector((state: AccountsState) =>
-    getMemoizedInternalAccountByAddress(state as AccountsState, address),
+    getInternalAccountByAddress(state as AccountsState, address),
   );
   const keyringType = account?.metadata?.keyring?.type;
   const isSupportedKeyringType =
