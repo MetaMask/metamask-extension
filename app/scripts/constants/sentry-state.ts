@@ -81,6 +81,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showNetworkBanner: true,
     showAccountBanner: true,
     showTestnetMessageInDropdown: true,
+    sidePanelGasPollTokens: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,

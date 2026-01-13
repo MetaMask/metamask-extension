@@ -11,6 +11,7 @@ import {
 import configureStore from '../../../../../../store/store';
 import { ConfirmContextProvider } from '../../../../context/confirm';
 import { DappSwapContextProvider } from '../../../../context/dapp-swap';
+import { GasFeeModalContextProvider } from '../../../../context/gas-fee-modal';
 import TokenTransferInfo from './token-transfer';
 
 const store = configureStore(getMockTokenTransferConfirmState({}));
@@ -23,14 +24,16 @@ const Story = {
       <Provider store={store}>
         <ConfirmContextProvider>
           <DappSwapContextProvider>
-            <Box
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
-            >
-              {story()}
-            </Box>
+            <GasFeeModalContextProvider>
+              <Box
+                display={Display.Flex}
+                justifyContent={JustifyContent.center}
+                alignItems={AlignItems.center}
+                flexDirection={FlexDirection.Column}
+              >
+                {story()}
+              </Box>
+            </GasFeeModalContextProvider>
           </DappSwapContextProvider>
         </ConfirmContextProvider>
       </Provider>

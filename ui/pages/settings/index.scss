@@ -66,15 +66,10 @@
       }
 
       &__title {
-        @include design-system.screen-sm-min {
-          margin-right: 16px;
-        }
-
         @include design-system.screen-sm-max {
           text-overflow: ellipsis;
           overflow: hidden;
           white-space: nowrap;
-          max-width: 250px;
         }
       }
     }
@@ -236,7 +231,6 @@
     flex-flow: row nowrap;
     height: 100%;
     overflow: auto;
-    scrollbar-color: var(--color-icon-muted) transparent;
 
     &__tabs {
       display: flex;
