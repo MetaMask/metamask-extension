@@ -7,9 +7,9 @@ import {
   AccountsControllerListMultichainAccountsAction,
 } from '@metamask/accounts-controller';
 import {
-  SnapControllerGetStateAction,
-  HandleSnapRequest as SnapControllerHandleRequest,
   SnapControllerStateChangeEvent,
+  SnapControllerGetStateAction,
+  HandleSnapRequest as SnapControllerHandleRequestAction,
 } from '@metamask/snaps-controllers';
 import {
   KeyringControllerWithKeyringAction,
@@ -37,7 +37,7 @@ type Actions =
   | AccountsControllerGetAccountAction
   | AccountsControllerGetAccountByAddressAction
   | SnapControllerGetStateAction
-  | SnapControllerHandleRequest
+  | SnapControllerHandleRequestAction
   | KeyringControllerGetStateAction
   | KeyringControllerWithKeyringAction
   | KeyringControllerAddNewKeyringAction
@@ -50,7 +50,8 @@ type Events =
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
-  | RemoteFeatureFlagControllerStateChangeEvent;
+  | RemoteFeatureFlagControllerStateChangeEvent
+  | SnapControllerStateChangeEvent;
 
 export type MultichainAccountServiceMessenger = ReturnType<
   typeof getMultichainAccountServiceMessenger
