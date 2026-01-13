@@ -3,12 +3,14 @@ import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import {
+  createDappTransaction,
+  createInternalTransaction,
+} from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import {
@@ -73,29 +75,23 @@ describe('Smart Transactions', function () {
       async ({ driver }) => {
         const homePage = new HomePage(driver);
         await homePage.checkExpectedTokenBalanceIsDisplayed('20', 'ETH');
-        await homePage.checkIfSendButtonIsClickable();
-        await homePage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendPage = new SendTokenPage(driver);
-        await sendPage.checkPageIsLoaded();
-        await sendPage.selectRecipientAccount('Account 1');
-        await sendPage.fillAmount('.01');
+        const transactionConfirmation = new TransactionConfirmation(driver);
+        await createInternalTransaction({
+          driver,
+          chainId: '0x1',
+          symbol: 'ETH',
+          amount: '0.01',
+        });
 
-        await sendPage.clickContinueButton();
-        await sendPage.selectTokenFee('USDC');
+        await transactionConfirmation.selectTokenFee('USDC');
         await driver.delay(1000);
-        await sendPage.clickConfirmButton();
+        await transactionConfirmation.clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
-        // At the moment, there is 1 Sent and 1 Unnamed transaction (issue #35565)
-        // The fix will consolidate the 2 into 1 tx
-        await activityList.checkTxAction({
-          action: 'Sent',
-          txIndex: 2,
-          confirmedTx: 2,
-        });
+
         await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
       },

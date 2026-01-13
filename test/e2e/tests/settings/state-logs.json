@@ -859,9 +859,6 @@
       "feature3": {
         "name": "string",
         "value": "string"
-      },
-      "sendRedesign": {
-        "enabled": "boolean"
       }
     },
     "rewardsAccounts": {},

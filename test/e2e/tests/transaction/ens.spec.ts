@@ -5,9 +5,10 @@ import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('ENS', function (this: Suite) {
   const sampleAddress: string = '1111111111111111111111111111111111111111';
@@ -100,18 +101,12 @@ describe('ENS', function (this: Suite) {
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
-        const sendToPage = new SendTokenPage(driver);
-        await sendToPage.checkPageIsLoaded();
+        const sendToPage = new SendPage(driver);
+        await sendToPage.selectToken('0x1', 'ETH');
         await sendToPage.fillRecipient(sampleEnsDomain);
 
-        // verify that ens domain resolves to the correct address
+        // Verify that ens is resolved to the correct address
         await sendToPage.checkEnsAddressResolution(
-          sampleEnsDomain,
-          shortSampleAddress,
-        );
-
-        // Verify the resolved ENS address can be used as the recipient address
-        await sendToPage.checkEnsAddressAsRecipient(
           sampleEnsDomain,
           shortSampleAddress,
         );

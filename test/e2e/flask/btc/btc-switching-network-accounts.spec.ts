@@ -46,7 +46,7 @@ describe('Switching between account from different networks', function (this: Su
     await withBtcAccountSnap(async (driver) => {
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.checkPageIsLoaded();
-      // await switchToNetworkFromSendFlow(driver, 'Bitcoin Testnet', true);
+      // await switchToNetworkFromNetworkSelect(driver, 'Bitcoin Testnet', true);
       const modalPage = new ModalPage(driver);
 
       await modalPage.checkModalTitle('Add Bitcoin Testnet account');

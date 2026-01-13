@@ -12,7 +12,7 @@ import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { mockSendRedesignFeatureFlag } from './common';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 describe('Send ETH', function () {
   it('it should be possible to send ETH', async function () {
@@ -20,7 +20,6 @@ describe('Send ETH', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -56,7 +55,6 @@ describe('Send ETH', function () {
       {
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -100,22 +98,20 @@ describe('Send ETH', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
 
-        await homePage.startSendFlow();
-
-        await sendPage.selectToken('0x539', 'ETH');
-        await sendPage.selectAccountFromRecipientModal('Test Name 1');
-        await sendPage.fillAmount('1');
-        await sendPage.pressContinueButton();
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '1',
+        });
 
         await sendTokenConfirmationPage.clickOnConfirm();
         await activityListPage.checkTransactionActivityByText('Sent');
@@ -136,7 +132,6 @@ describe('Send ETH', function () {
         }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) => {
-          mockSendRedesignFeatureFlag(mockServer);
           mockLookupSnap(mockServer);
         },
       },

@@ -13,6 +13,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -40,12 +41,13 @@ describe('Send ETH', function () {
 
           await homePage.startSendFlow();
 
+          await sendPage.selectToken('0x539', 'ETH');
           await sendPage.fillRecipient(
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
           // Type 1000 to trigger insufficient funds error
-          await sendPage.typeAmount('1000');
+          await sendPage.fillAmount('1000');
           await sendPage.checkInsufficientFundsErrorDetailed();
 
           // Remove last 3 characters
@@ -54,7 +56,7 @@ describe('Send ETH', function () {
           await sendPage.pressOnAmountInput('BACK_SPACE');
 
           // Click max button and verify amount is greater than 24
-          await sendPage.clickMaxClearButton();
+          await sendPage.clickMaxButton();
           let inputValue = await sendPage.getAmountInputValue();
           assert(
             Number(inputValue) > 24,
@@ -62,7 +64,7 @@ describe('Send ETH', function () {
           );
 
           // Click max/clear button again to clear the amount
-          await sendPage.clickMaxClearButton();
+          await sendPage.clickMaxButton();
 
           // Fill with 1 ETH
           await sendPage.fillAmount('1');
@@ -88,22 +90,14 @@ describe('Send ETH', function () {
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
-          const homePage = new HomePage(driver);
-          const sendPage = new SendPage(driver);
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const activityListPage = new ActivityListPage(driver);
 
-          await homePage.startSendFlow();
-
-          await sendPage.fillRecipient(
-            '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-          );
-
-          await sendPage.typeAmount('1');
-          const inputValue = await sendPage.getAmountInputValue();
-          assert.equal(inputValue, '1');
-
-          await sendPage.pressContinueButton();
+          await createInternalTransaction({
+            driver,
+            recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+            amount: '1',
+          });
 
           // Verify transaction amount on confirmation screen
           await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
@@ -141,16 +135,14 @@ describe('Send ETH', function () {
           await loginWithBalanceValidation(driver, localNodes[0]);
 
           const homePage = new HomePage(driver);
-          const sendPage = new SendPage(driver);
           const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
           const activityListPage = new ActivityListPage(driver);
 
-          await homePage.startSendFlow();
-
-          await sendPage.fillRecipient(contractAddress);
-          await sendPage.typeAmount('1');
-
-          await sendPage.pressContinueButton();
+          await createInternalTransaction({
+            driver,
+            recipientAddress: contractAddress,
+            amount: '1',
+          });
           await sendTokenConfirmPage.clickOnConfirm();
 
           // Verify balance is displayed correctly (format: "X.XX ETH")
@@ -159,34 +151,6 @@ describe('Send ETH', function () {
           await activityListPage.openActivityTab();
           await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
           await activityListPage.checkNoFailedTransactions();
-        },
-      );
-    });
-
-    it('shows no error when cancel transaction when sending via QR code', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          const homePage = new HomePage(driver);
-          const sendPage = new SendPage(driver);
-
-          await homePage.startSendFlow();
-
-          // Open QR scanner
-          await sendPage.clickQrScanButton();
-          await sendPage.checkQrScannerModalIsOpen();
-
-          // Wait for camera error (expected in test environment)
-          await sendPage.checkQrScannerCameraError();
-
-          // Cancel should close the modal without errors
-          await sendPage.cancelQrScannerModal();
-          await sendPage.checkQrScannerModalIsClosed();
         },
       );
     });
@@ -341,6 +305,8 @@ describe('Send ETH', function () {
 
             await homePage.startSendFlow();
 
+            await sendPage.selectToken('0x539', 'ETH');
+
             await sendPage.fillRecipient(
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
             );
@@ -354,7 +320,7 @@ describe('Send ETH', function () {
             // Verify the recipient address is displayed correctly (should show the actual recipient, not the one in the data)
             await sendTokenConfirmPage.checkRecipientAddressDisplayedCount(
               '0xc427D...Acd28',
-              2,
+              1,
             );
           },
         );

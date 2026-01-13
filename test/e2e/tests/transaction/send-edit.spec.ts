@@ -29,7 +29,7 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransaction(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);
@@ -99,7 +99,7 @@ describe('Editing Confirm Transaction', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        await createInternalTransaction(driver);
+        await createInternalTransaction({ driver });
 
         const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
         const gasFeeModal = new GasFeeModal(driver);

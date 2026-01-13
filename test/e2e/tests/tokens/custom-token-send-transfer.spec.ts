@@ -7,10 +7,10 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
+import SendPage from '../../page-objects/pages/send/send-page';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -43,7 +43,7 @@ describe('Transfer custom tokens', function () {
 
           const homePage = new HomePage(driver);
           const assetListPage = new AssetListPage(driver);
-          const sendTokenPage = new SendTokenPage(driver);
+          const sendPage = new SendPage(driver);
           const tokenTransferRedesignedConfirmPage =
             new TokenTransferTransactionConfirmation(driver);
           const gasFeeModal = new GasFeeModal(driver);
@@ -58,10 +58,9 @@ describe('Transfer custom tokens', function () {
           await assetListPage.openTokenDetails(symbol);
           await assetListPage.clickSendButton();
 
-          await sendTokenPage.checkPageIsLoaded();
-          await sendTokenPage.fillRecipient(recipientAddress);
-          await sendTokenPage.fillAmount('1');
-          await sendTokenPage.clickContinueButton();
+          await sendPage.fillRecipient(recipientAddress);
+          await sendPage.fillAmount('1');
+          await sendPage.pressContinueButton();
 
           // check transaction details
           const expectedNetworkFee = '0.0001';
@@ -78,7 +77,7 @@ describe('Transfer custom tokens', function () {
             gasLimit: GAS_LIMIT,
           });
 
-          await tokenTransferRedesignedConfirmPage.checkGasFee('0.0004');
+          await tokenTransferRedesignedConfirmPage.checkGasFee('0.0005');
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // check that transaction has completed correctly and is displayed in the activity list
