@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useRef } from 'react';
 
-const ScrollContainerContext = createContext<HTMLDivElement | null>(null);
+const ScrollContainerContext =
+  createContext<React.RefObject<HTMLDivElement> | null>(null);
 
 /**
  * Provides a ref to this container element for its child components
@@ -16,7 +17,7 @@ export const ScrollContainer = ({
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
-    <ScrollContainerContext.Provider value={scrollRef.current}>
+    <ScrollContainerContext.Provider value={scrollRef}>
       <div ref={scrollRef} {...props}>
         {children}
       </div>
@@ -25,10 +26,11 @@ export const ScrollContainer = ({
 };
 
 /**
- * Hook to access the scroll container ref from any child component
+ * Hook to access the scroll container element from any child component
  *
- * @returns Ref to the scroll container
+ * @returns The scroll container element or null
  */
 export const useScrollContainer = () => {
-  return useContext(ScrollContainerContext);
+  const scrollRef = useContext(ScrollContainerContext);
+  return scrollRef?.current ?? null;
 };

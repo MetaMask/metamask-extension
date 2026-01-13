@@ -141,7 +141,7 @@ export default function AssetList({
         <VirtualizedList
           data={tokenList}
           estimatedItemSize={72}
-          scrollElement={scrollElement}
+          scrollContainer={scrollElement}
           keyExtractor={(token) =>
             `${token.symbol}-${token.address?.toLowerCase() ?? ''}-${token.chainId}`
           }
