@@ -11,7 +11,7 @@ import SettingsPage from '../page-objects/pages/settings/settings-page';
 import VaultDecryptorPage from '../page-objects/pages/vault-decryptor-page';
 import { completeCreateNewWalletOnboardingFlowWithCustomSettings } from '../page-objects/flows/onboarding.flow';
 
-const VAULT_DECRYPTOR_PAGE = 'http://127.0.0.1:9966';
+const VAULT_DECRYPTOR_PAGE = 'https://metamask.github.io/vault-decryptor';
 
 /**
  * Copies a directory to a temporary location.
