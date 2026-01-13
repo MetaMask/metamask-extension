@@ -6248,17 +6248,6 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles Hyperliquid referral approval flow.
-   * Convenience wrapper for handleReferral with Hyperliquid config.
-   *
-   * @param {number} tabId - The browser tab ID to update.
-   * @param {ReferralTriggerType} triggerType - The trigger type.
-   */
-  async handleHyperliquidReferral(tabId, triggerType) {
-    return this.handleReferral(HYPERLIQUID_CONFIG, tabId, triggerType);
-  }
-
-  /**
    * Handles redirection to the partner's referral page.
    *
    * @param {import('../../../shared/constants/referrals').ReferralPartnerConfig} partner - The partner configuration.
