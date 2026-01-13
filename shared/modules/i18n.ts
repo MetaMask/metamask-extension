@@ -95,7 +95,7 @@ export async function fetchLocale(
 ): Promise<I18NMessageDict> {
   try {
     const response = await fetchWithTimeout(
-      `../_locales/${localeCode}/messages.json`,
+      `/_locales/${localeCode}/messages.json`,
     );
     return await response.json();
   } catch (error) {
@@ -231,7 +231,7 @@ function hasSubstitutions(substitutions?: I18NSubstitution[]) {
 
 async function fetchRelativeTimeFormatData(languageTag: string): Promise<Json> {
   const response = await fetchWithTimeout(
-    `./intl/${languageTag}/relative-time-format-data.json`,
+    `/intl/${languageTag}/relative-time-format-data.json`,
   );
   return await response.json();
 }

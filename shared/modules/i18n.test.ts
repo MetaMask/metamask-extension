@@ -295,7 +295,7 @@ describe('I18N Module', () => {
     it('returns json from locale file', async () => {
       const result = await fetchLocale(localeCodeMock);
       expect(result).toStrictEqual({
-        url: `../_locales/${localeCodeMock}/messages.json`,
+        url: `/_locales/${localeCodeMock}/messages.json`,
       });
     });
 
@@ -331,7 +331,7 @@ describe('I18N Module', () => {
 
       expect(addMock).toHaveBeenCalledTimes(1);
       expect(addMock).toHaveBeenCalledWith({
-        url: `./intl/${localeCodeMock}/relative-time-format-data.json`,
+        url: `/intl/${localeCodeMock}/relative-time-format-data.json`,
       });
     });
 
