@@ -9,7 +9,7 @@ import React, {
   MutableRefObject,
 } from 'react';
 import PropTypes from 'prop-types';
-import { Location, NavigateFunction } from 'react-router-dom';
+import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
@@ -60,21 +60,21 @@ import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
 type UnlockPageProps = {
   navigate: NavigateFunction;
-  location: Location;
-  isUnlocked?: boolean;
-  isOnboardingCompleted?: boolean;
-  onRestore?: () => void;
-  onSubmit?: (password: string) => Promise<void>;
-  checkIsSeedlessPasswordOutdated?: () => Promise<void>;
-  getIsSeedlessOnboardingUserAuthenticated?: () => Promise<boolean>;
-  forceUpdateMetamaskState?: () => Promise<void>;
-  isSocialLoginFlow?: boolean;
-  onboardingParentContext?: MutableRefObject<unknown>;
-  loginWithDifferentMethod?: () => Promise<void>;
-  firstTimeFlowType?: string | null;
-  resetWallet?: () => Promise<void>;
-  isPopup?: boolean;
-  isWalletResetInProgress?: boolean;
+  location: RouterLocation;
+  isUnlocked: boolean;
+  isOnboardingCompleted: boolean;
+  onRestore: () => void;
+  onSubmit: (password: string) => Promise<void>;
+  checkIsSeedlessPasswordOutdated: () => Promise<void>;
+  getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
+  forceUpdateMetamaskState: () => Promise<void>;
+  isSocialLoginFlow: boolean;
+  onboardingParentContext: MutableRefObject<unknown>;
+  loginWithDifferentMethod: () => Promise<void>;
+  firstTimeFlowType: string | null;
+  resetWallet: () => Promise<void>;
+  isPopup: boolean;
+  isWalletResetInProgress: boolean;
 };
 
 type UnlockPageState = {
@@ -90,8 +90,8 @@ type UnlockPageState = {
 
 type UnlockPageContext = {
   trackEvent: (event: object, options?: object) => void;
-  bufferedTrace?: (trace: object) => void;
-  bufferedEndTrace?: (trace: object) => void;
+  bufferedTrace: (trace: object) => void;
+  bufferedEndTrace: (trace: object) => void;
   t: (key: string, args?: unknown[]) => string;
 };
 
@@ -201,6 +201,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     showConnectionsRemovedModal: false,
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
@@ -208,7 +210,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   /**
    * Determines if the current user is in the social import rehydration phase
    *
-   * @returns {boolean} True if user is importing social wallet during onboarding
+   * @returns True if user is importing social wallet during onboarding
    */
   isSocialImportRehydration() {
     return (
@@ -217,6 +219,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   UNSAFE_componentWillMount() {
     const { isUnlocked, navigate, location } = this.props;
 
@@ -235,15 +239,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   async componentDidMount() {
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
     if (isOnboardingCompleted) {
-      await this.props.checkIsSeedlessPasswordOutdated?.();
+      await this.props.checkIsSeedlessPasswordOutdated();
     } else if (isSocialLoginFlow) {
       // if the onboarding is not completed, check if the seedless onboarding user is authenticated to do the rehydration
       // we have to consider the case where required tokens for rehydration are removed when user closed the browser app after social login is completed.
-      let isAuthenticated = false;
-      if (this.props?.getIsSeedlessOnboardingUserAuthenticated) {
-        isAuthenticated =
-          await this.props.getIsSeedlessOnboardingUserAuthenticated();
-      }
+      const isAuthenticated =
+        await this.props.getIsSeedlessOnboardingUserAuthenticated();
       if (!isAuthenticated) {
         // if the seedless onboarding user is not authenticated, redirect to the onboarding welcome page
         this.props.navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
@@ -279,12 +280,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'social',
           biometrics: false,
         },
       });
     } else if (!isOnboardingCompleted) {
-      this.context.bufferedTrace?.({
+      this.context.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginAttempt,
         op: TraceOperation.OnboardingUserJourney,
         parentContext: this.props.onboardingParentContext?.current,
@@ -292,9 +295,7 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
 
     try {
-      if (onSubmit) {
-        await onSubmit(password);
-      }
+      await onSubmit(password);
 
       // Track wallet rehydration completed for social import users (only during rehydration)
       if (isRehydrationFlow) {
@@ -302,21 +303,27 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             biometrics: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
           },
         });
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingExistingSocialLogin,
         });
       }
 
       if (!isOnboardingCompleted) {
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingJourneyOverall,
         });
       }
@@ -326,6 +333,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
           },
         },
@@ -358,13 +367,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
 
     // Check if we are in the onboarding flow
     if (!isOnboardingCompleted) {
-      this.context.bufferedTrace?.({
+      this.context.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginError,
         op: TraceOperation.OnboardingError,
         tags: { errorMessage: message },
         parentContext: this.props.onboardingParentContext?.current,
       });
-      this.context.bufferedEndTrace?.({
+
+      this.context.bufferedEndTrace({
         name: TraceName.OnboardingPasswordLoginError,
       });
     }
@@ -404,15 +414,22 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     }
 
     if (errorReason) {
-      await this.props.forceUpdateMetamaskState?.();
+      await this.props.forceUpdateMetamaskState();
+
       // Track wallet rehydration failed for social import users (only during rehydration)
       if (isRehydrationFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationPasswordFailed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             error_type: errorReason,
           },
         });
@@ -422,6 +439,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         event: MetaMetricsEventName.AppUnlockedFailed,
         properties: {
           reason: errorReason,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           failed_attempts: this.failed_attempts,
         },
       });
@@ -517,12 +536,14 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'social',
         },
       });
 
-      await this.props.loginWithDifferentMethod?.();
-      await this.props.forceUpdateMetamaskState?.();
+      await this.props.loginWithDifferentMethod();
+      await this.props.forceUpdateMetamaskState();
       navigate(ONBOARDING_WELCOME_ROUTE, { replace: true });
       return;
     }
@@ -531,6 +552,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ForgotPasswordClicked,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
     });
@@ -545,10 +568,12 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
     });
-    this.props.onRestore?.();
+    this.props.onRestore();
   };
 
   onResetWallet = async () => {
@@ -557,8 +582,8 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       showConnectionsRemovedModal: false,
       showResetPasswordModal: false,
     });
-    await this.props.resetWallet?.();
-    await this.props.forceUpdateMetamaskState?.();
+    await this.props.resetWallet();
+    await this.props.forceUpdateMetamaskState();
     this.props.navigate(DEFAULT_ROUTE, { replace: true });
   };
 

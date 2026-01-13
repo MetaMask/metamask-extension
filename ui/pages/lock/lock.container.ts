@@ -2,8 +2,8 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { lockMetamask } from '../../store/actions';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import Lock from './lock.component';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import Lock from './lock.component';
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
   const {

@@ -1,5 +1,7 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -23,8 +25,14 @@ import {
   getIsWalletResetInProgress,
 } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
-import UnlockPage from './unlock-page.component';
 import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
+import UnlockPage from './unlock-page.component';
+
+type OwnProps = {
+  navigate: NavigateFunction;
+  location: RouterLocation;
+  onSubmit?: (password: string) => Promise<void>;
+};
 
 const mapStateToProps = (state: MetaMaskReduxState) => {
   const {
@@ -57,7 +65,7 @@ const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
 const mergeProps = (
   stateProps: ReturnType<typeof mapStateToProps>,
   dispatchProps: ReturnType<typeof mapDispatchToProps>,
-  ownProps: any,
+  ownProps: OwnProps,
 ) => {
   const {
     markPasswordForgotten: propsMarkPasswordForgotten,
@@ -109,6 +117,8 @@ const mergeProps = (
 const UnlockPageConnected = compose(
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(UnlockPage);
+)(UnlockPage) as React.ComponentType<{
+  onSubmit?: (password: string) => Promise<void>;
+}>;
 
 export default UnlockPageConnected;
