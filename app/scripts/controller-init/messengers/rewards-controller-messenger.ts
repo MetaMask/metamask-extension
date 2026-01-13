@@ -25,12 +25,15 @@ import {
   RewardsDataServiceEstimatePointsAction,
   RewardsDataServiceGetSeasonStatusAction,
   RewardsDataServiceLoginAction,
+  RewardsDataServiceSiweLoginAction,
   RewardsDataServiceMobileJoinAction,
+  RewardsDataServiceSiweJoinAction,
   RewardsDataServiceMobileOptinAction,
   RewardsDataServiceValidateReferralCodeAction,
   RewardsDataServiceFetchGeoLocationAction,
   RewardsDataServiceGetSeasonMetadataAction,
   RewardsDataServiceGetDiscoverSeasonsAction,
+  RewardsDataServiceGenerateChallengeAction,
 } from '../../controllers/rewards/rewards-data-service-types';
 import {
   RewardsControllerState,
@@ -91,15 +94,18 @@ type AllowedActions =
   | AccountsControllerListMultichainAccountsAction
   | KeyringControllerSignPersonalMessageAction
   | RewardsDataServiceLoginAction
+  | RewardsDataServiceSiweLoginAction
   | RewardsDataServiceEstimatePointsAction
   | RewardsDataServiceGetSeasonStatusAction
   | RewardsDataServiceFetchGeoLocationAction
   | RewardsDataServiceMobileOptinAction
   | RewardsDataServiceValidateReferralCodeAction
   | RewardsDataServiceMobileJoinAction
+  | RewardsDataServiceSiweJoinAction
   | RewardsDataServiceGetOptInStatusAction
   | RewardsDataServiceGetSeasonMetadataAction
   | RewardsDataServiceGetDiscoverSeasonsAction
+  | RewardsDataServiceGenerateChallengeAction
   | AccountTreeControllerGetAccountsFromSelectedAccountGroupAction
   | HandleSnapRequest;
 
@@ -136,15 +142,18 @@ export function getRewardsControllerMessenger(
       'AccountsController:listMultichainAccounts',
       'KeyringController:signPersonalMessage',
       'RewardsDataService:login',
+      'RewardsDataService:siweLogin',
       'RewardsDataService:estimatePoints',
       'RewardsDataService:getSeasonStatus',
       'RewardsDataService:fetchGeoLocation',
       'RewardsDataService:mobileOptin',
       'RewardsDataService:validateReferralCode',
       'RewardsDataService:mobileJoin',
+      'RewardsDataService:siweJoin',
       'RewardsDataService:getOptInStatus',
       'RewardsDataService:getSeasonMetadata',
       'RewardsDataService:getDiscoverSeasons',
+      'RewardsDataService:generateChallenge',
       'SnapController:handleRequest',
     ],
     events: [
