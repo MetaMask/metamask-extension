@@ -564,26 +564,6 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
-
 const clickNestedButton = async (driver, tabName) => {
   try {
     await driver.clickElement({ text: tabName, tag: 'button' });
@@ -834,8 +814,6 @@ module.exports = {
   veryLargeDelayMs,
   withFixtures,
   createDownloadFolder,
-  openDapp,
-  switchToOrOpenDapp,
   unlockWallet,
   WALLET_PASSWORD,
   WINDOW_TITLES,
