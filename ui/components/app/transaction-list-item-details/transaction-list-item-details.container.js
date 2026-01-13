@@ -14,10 +14,9 @@ import { tryReverseResolveAddress } from '../../../store/actions';
 import TransactionListItemDetails from './transaction-list-item-details.component';
 
 const mapStateToProps = (state, ownProps) => {
-  const { recipientAddress, senderAddress } = ownProps;
+  const { senderAddress } = ownProps;
   const addressBook = getAddressBook(state);
   const accounts = getInternalAccounts(state);
-  const recipientName = getAccountName(accounts, recipientAddress);
   const senderAccountName = getAccountName(accounts, senderAddress);
 
   const getNickName = (address) => {
@@ -37,7 +36,6 @@ const mapStateToProps = (state, ownProps) => {
     senderNickname: senderAccountName || getNickName(senderAddress),
     isCustomNetwork,
     blockExplorerLinkText: getBlockExplorerLinkText(state),
-    recipientName,
   };
 };
 

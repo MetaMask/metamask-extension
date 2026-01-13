@@ -15,7 +15,7 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
-  getAllNetworkTransactions,
+  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from '../../../selectors/transactions';
@@ -394,7 +394,9 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueEVMChainIds = enabledNetworks?.eip155
+    ? Object.keys(enabledNetworks?.eip155)
+    : [];
   const filteredUniqueNonEvmChainIds = [
     ...new Set(
       Object.keys(enabledNetworks)
@@ -459,7 +461,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress &&
     groupEvmAddress !== selectedAccount?.address?.toLowerCase();
 
-  const allTransactions = useSelector(getAllNetworkTransactions);
+  const allTransactions = useSelector(getTransactions);
 
   const allSmartTransactionsState = useSelector(
     (state) => state.metamask.smartTransactionsState?.smartTransactions,
