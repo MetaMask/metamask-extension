@@ -1,7 +1,10 @@
 import log from 'loglevel';
 import { isEmpty } from 'lodash';
 import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
-import { captureException } from '../../../../shared/lib/sentry';
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
 import { IndexedDBStore } from './indexeddb-store';
@@ -365,6 +368,16 @@ export class PersistenceManager {
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'set-recovered' },
+                fingerprint: ['persistence-event', 'set-recovered'],
+              },
+            );
           }
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
@@ -482,6 +495,16 @@ export class PersistenceManager {
 
           if (this.#dataPersistenceFailing) {
             this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'persist-recovered' },
+                fingerprint: ['persistence-event', 'persist-recovered'],
+              },
+            );
           }
         } catch (err) {
           if (!this.#dataPersistenceFailing) {
