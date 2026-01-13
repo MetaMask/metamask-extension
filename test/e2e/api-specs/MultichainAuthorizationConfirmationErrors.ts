@@ -9,7 +9,8 @@ import {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { WINDOW_TITLES } from '../helpers';
+import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {
@@ -62,7 +63,8 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
               });
               await this.driver.clickElement({ text, tag: 'button' });
               // make sure to switch back to the dapp or else the next test will fail on the wrong window
-              await switchToOrOpenDapp(this.driver);
+              const testDapp = new TestDapp(this.driver);
+              await testDapp.switchToOrOpenDapp();
             } catch (e) {
               console.log(e);
             }

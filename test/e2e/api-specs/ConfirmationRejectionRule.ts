@@ -9,7 +9,7 @@ import {
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
 import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../constants';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { WINDOW_TITLES } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 
@@ -87,7 +87,7 @@ export class ConfirmationsRejectRule implements Rule {
                 tag: 'button',
               });
 
-              await switchToOrOpenDapp(this.driver);
+              await testDapp.switchToOrOpenDapp();
 
               await testDapp.checkConnectedAccounts(
                 DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
@@ -144,8 +144,8 @@ export class ConfirmationsRejectRule implements Rule {
               tag: 'button',
             });
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
-            await switchToOrOpenDapp(this.driver);
             const testDapp = new TestDapp(this.driver);
+            await testDapp.switchToOrOpenDapp();
             await testDapp.checkPageIsLoaded();
             await testDapp.checkConnectedAccounts(
               DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
