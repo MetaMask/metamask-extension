@@ -1392,6 +1392,31 @@ describe('preferences controller', () => {
           controller.state.referrals[DefiReferralPartner.Hyperliquid],
         ).toStrictEqual({});
       });
+
+      it('deep merges referrals state to preserve new partners when existing user state is missing them', () => {
+        const existingUserState = {
+          referrals: {
+            [DefiReferralPartner.Hyperliquid]: {
+              '0x123': ReferralStatus.Approved,
+            } as Record<`0x${string}`, ReferralStatus>,
+          },
+        };
+
+        const { controller } = setupController({
+          state: existingUserState as Partial<PreferencesControllerState>,
+        });
+
+        // Existing Hyperliquid data should be preserved
+        expect(
+          controller.state.referrals[DefiReferralPartner.Hyperliquid],
+        ).toStrictEqual({
+          '0x123': ReferralStatus.Approved,
+        });
+
+        Object.values(DefiReferralPartner).forEach((partnerId) => {
+          expect(controller.state.referrals[partnerId]).toBeDefined();
+        });
+      });
     });
   });
 });

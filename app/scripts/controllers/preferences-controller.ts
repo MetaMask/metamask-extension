@@ -516,6 +516,10 @@ export class PreferencesController extends BaseController<
         ...defaultState.preferences,
         ...state?.preferences,
       },
+      referrals: {
+        ...defaultState.referrals,
+        ...state?.referrals,
+      },
       // TODO - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
       // At some point we should completely remove all references and methods for useMultiAccountBalanceChecker and use isMultiAccountBalancesEnabled instead.
       isMultiAccountBalancesEnabled:
