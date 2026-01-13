@@ -344,6 +344,7 @@
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
+    "connectivityStatus": "string",
     "conversionRates": {},
     "coverageResults": {},
     "cryptocurrencies": ["string"],
