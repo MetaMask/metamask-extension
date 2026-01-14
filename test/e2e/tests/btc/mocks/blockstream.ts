@@ -2,8 +2,6 @@ import { Mockttp } from 'mockttp';
 import {
     DEFAULT_BTC_ADDRESS,
     SATS_IN_1_BTC,
-    DEFAULT_BTC_FEE_RATE,
-    SATS_IN_1_BTC,
   } from '../../../constants';
 
 const BLOCKSTREAM_URL = 'https://blockstream.info';
