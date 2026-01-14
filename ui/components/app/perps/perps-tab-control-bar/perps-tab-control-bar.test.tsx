@@ -85,17 +85,20 @@ describe('PerpsTabControlBar', () => {
     expect(() => fireEvent.click(balanceRow)).not.toThrow();
   });
 
-  it('applies single row styling when hasPositions is false', () => {
+  it('applies full rounded styling when hasPositions is false', () => {
     renderWithProvider(<PerpsTabControlBar hasPositions={false} />, mockStore);
 
     const balanceButton = screen.getByTestId('perps-control-bar-balance');
-    expect(balanceButton).toHaveClass('perps-tab-control-bar__row--single');
+    // Single row has fully rounded corners
+    expect(balanceButton).toHaveClass('rounded-xl');
   });
 
-  it('applies top row styling when hasPositions is true', () => {
+  it('applies top-only rounded styling when hasPositions is true', () => {
     renderWithProvider(<PerpsTabControlBar hasPositions />, mockStore);
 
     const balanceButton = screen.getByTestId('perps-control-bar-balance');
-    expect(balanceButton).toHaveClass('perps-tab-control-bar__row--top');
+    // Top row has only top corners rounded
+    expect(balanceButton).toHaveClass('rounded-t-xl');
+    expect(balanceButton).toHaveClass('rounded-b-none');
   });
 });

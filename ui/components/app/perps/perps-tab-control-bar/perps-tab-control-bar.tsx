@@ -1,6 +1,6 @@
 import React from 'react';
-import classnames from 'classnames';
 import {
+  twMerge,
   TextVariant,
   TextColor,
   IconColor,
@@ -47,11 +47,16 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
     onManageBalancePress?.();
   };
 
+  // Base row styles
+  const rowBaseStyles = 'w-full bg-muted px-4 py-3';
+  // Rounded styles based on whether P&L row is shown
+  const balanceRowStyles = hasPositions
+    ? 'rounded-t-xl rounded-b-none hover:bg-muted-hover active:bg-muted-pressed'
+    : 'rounded-xl hover:bg-muted-hover active:bg-muted-pressed';
+
   return (
     <Box
-      className="perps-tab-control-bar"
       flexDirection={BoxFlexDirection.Column}
-      gap={0}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={4}
@@ -59,10 +64,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
     >
       {/* Total Balance Row */}
       <ButtonBase
-        className={classnames('perps-tab-control-bar__row w-full', {
-          'perps-tab-control-bar__row--top': hasPositions,
-          'perps-tab-control-bar__row--single': !hasPositions,
-        })}
+        className={twMerge(rowBaseStyles, balanceRowStyles)}
         onClick={handleBalanceClick}
         data-testid="perps-control-bar-balance"
       >
@@ -95,11 +97,10 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
       {/* Unrealized P&L Row - only shown when there are positions */}
       {hasPositions && (
         <Box
-          className="perps-tab-control-bar__row perps-tab-control-bar__row--bottom"
+          className="w-full rounded-t-none rounded-b-xl bg-muted px-4 py-3"
           flexDirection={BoxFlexDirection.Row}
           justifyContent={BoxJustifyContent.Between}
           alignItems={BoxAlignItems.Center}
-          padding={3}
           data-testid="perps-control-bar-pnl"
         >
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
