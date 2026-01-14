@@ -1,12 +1,13 @@
 import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
+import { AssertionError } from 'node:assert';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
-import { ENVIRONMENT } from '../../build/constants';
 import type { Variables } from '../../lib/variables';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
+import { ENVIRONMENT, VARIABLES_REQUIRED_IN_PRODUCTION } from './constants';
 
 type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 
@@ -171,6 +172,27 @@ export function getVariables(
 
   // Resolve the MetaMask environment using proper detection logic
   const environment = resolveEnvironment({ ...args, env });
+
+  // Validate required production variables
+  if (environment === ENVIRONMENT.PRODUCTION) {
+    const requiredVars =
+      VARIABLES_REQUIRED_IN_PRODUCTION[
+        type as keyof typeof VARIABLES_REQUIRED_IN_PRODUCTION
+      ];
+    if (requiredVars) {
+      const undefinedVariables = requiredVars.filter(
+        (variable) =>
+          !variables.has(variable) ||
+          variables.get(variable) === null ||
+          variables.get(variable) === undefined,
+      );
+      if (undefinedVariables.length !== 0) {
+        throw new AssertionError({
+          message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
+        });
+      }
+    }
+  }
 
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
