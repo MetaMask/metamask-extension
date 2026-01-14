@@ -303,8 +303,6 @@ export class SubscriptionService {
         },
       );
     } catch (error) {
-      log.error('Failed to submit sponsorship intent', error);
-
       this.#captureException(
         createSentryError(
           'Failed to submit sponsorship intent',
@@ -343,8 +341,6 @@ export class SubscriptionService {
         );
       }
     } catch (err) {
-      log.error('Failed to link reward to existing subscription', err);
-
       this.#captureException(
         createSentryError(
           'Failed to link reward to existing subscription',
@@ -720,8 +716,6 @@ export class SubscriptionService {
         });
       }
     } catch (error) {
-      log.error('Failed to assign post tx cohort', error);
-
       this.#captureException(
         createSentryError('Failed to assign post tx cohort', error as Error),
       );

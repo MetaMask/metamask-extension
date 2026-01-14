@@ -145,7 +145,6 @@ export function getQuotesForConfirmation({
                 error: `Error fetching bridge quotes: ${error.message}`,
                 commands,
               });
-              log.error('Error fetching dapp swap quotes', error);
               captureException(error);
             });
         }

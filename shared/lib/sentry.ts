@@ -19,9 +19,9 @@ export function captureException(
   exception: unknown,
   hint?: Parameters<(typeof Sentry)['captureException']>[1],
 ): string | undefined {
+  console.error(exception, ...(hint ? [hint] : []));
   if (!globalThis.sentry?.captureException) {
     console.warn('Sentry not initialized');
-    console.error(exception, ...(hint ? [hint] : []));
     return undefined;
   }
   return globalThis.sentry.captureException(exception, ...(hint ? [hint] : []));
