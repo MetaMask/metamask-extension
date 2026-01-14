@@ -9,13 +9,13 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockedSourcifyTokenSend,
   withTransactionEnvelopeTypeFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from './shared';
-import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
