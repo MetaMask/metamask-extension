@@ -13,7 +13,7 @@ export function useTabState(defaultTab: AccountOverviewTab = 'tokens') {
   const tab = searchParams.get('tab');
 
   useEffect(() => {
-    if (!tab) {
+    if (!tab && browser?.storage?.local) {
       browser.storage.local
         .get(STORAGE_KEY)
         .then((result) => {
@@ -29,7 +29,7 @@ export function useTabState(defaultTab: AccountOverviewTab = 'tokens') {
   }, [tab, setSearchParams]);
 
   useEffect(() => {
-    if (tab) {
+    if (tab && browser?.storage?.local) {
       browser.storage.local
         .set({ [STORAGE_KEY]: tab })
         .catch((error) => console.error('Failed to persist tab:', error));

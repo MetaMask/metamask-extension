@@ -12,19 +12,6 @@ import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
-// Mock browser API
-jest.mock('webextension-polyfill', () => ({
-  storage: {
-    local: {
-      get: jest.fn().mockResolvedValue({}),
-      set: jest.fn().mockResolvedValue(undefined),
-    },
-  },
-  runtime: {
-    getManifest: jest.fn().mockReturnValue({}),
-  },
-}));
-
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
