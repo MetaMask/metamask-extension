@@ -4,7 +4,11 @@ import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { DAPP_PATH, MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';

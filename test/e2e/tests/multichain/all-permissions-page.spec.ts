@@ -1,4 +1,8 @@
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';

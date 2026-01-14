@@ -1,5 +1,8 @@
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC, WINDOW_TITLES } from '../../constants';
+import {
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  WINDOW_TITLES,
+} from '../../constants';
 import DecryptMessageConfirmation from '../pages/confirmations/decrypt-message-confirmation';
 import GetEncryptionKeyConfirmation from '../pages/confirmations/get-encryption-key-confirmation';
 import TestDapp from '../pages/test-dapp';

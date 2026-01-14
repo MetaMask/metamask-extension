@@ -1,6 +1,11 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
-import { DAPP_PATH, DEFAULT_FIXTURE_ACCOUNT, PRIVATE_KEY_TWO, WINDOW_TITLES } from '../../constants';
+import {
+  DAPP_PATH,
+  DEFAULT_FIXTURE_ACCOUNT,
+  PRIVATE_KEY_TWO,
+  WINDOW_TITLES,
+} from '../../constants';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';

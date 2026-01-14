@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../constants';
 import { unlockWallet } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
@@ -10,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
