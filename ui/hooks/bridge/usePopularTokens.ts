@@ -58,8 +58,8 @@ export const usePopularTokens = ({
   const tokenListWithBalance = useMemo(() => {
     return (
       tokenList?.map(toBridgeToken).map((token) => {
+        // Balance keys are lowercased for easier lookup
         const balanceData =
-          balanceByAssetId?.[token.assetId] ?? // non-EVM assetIds are not lowercased
           balanceByAssetId?.[
             token.assetId.toLowerCase() as keyof typeof balanceByAssetId
           ];

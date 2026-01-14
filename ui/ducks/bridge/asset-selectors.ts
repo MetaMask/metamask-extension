@@ -364,7 +364,7 @@ export const getBridgeSortedAssets = createSelector(
 );
 
 /**
- * Get all assets owned by the wallet's accounts by asset ID
+ * Get all assets owned by the wallet's accounts by lowercased asset ID
  *
  * @param state - The state of the bridge app.
  * @param accountGroupId - The ID of the account group to get the assets for.
@@ -375,7 +375,7 @@ export const getBridgeAssetsByAssetId = createSelector(
   (assetsWithBalance) =>
     assetsWithBalance.reduce<Record<CaipAssetType, BridgeToken>>(
       (acc, asset) => {
-        acc[asset.assetId] = asset;
+        acc[asset.assetId.toLowerCase() as keyof typeof acc] = asset;
         return acc;
       },
       {},

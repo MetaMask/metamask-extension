@@ -80,8 +80,8 @@ export const useTokenSearchResults = ({
             // If fetched data is empty, preserve the previous state
             ...(cursor || tokens.length === 0 ? currentSearchResults : []),
             ...tokens.map(toBridgeToken).map((token) => {
+              // Balance keys are lowercased for easier lookup
               const balanceData =
-                balanceByAssetId?.[token.assetId] ??
                 balanceByAssetId?.[
                   token.assetId.toLowerCase() as keyof typeof balanceByAssetId
                 ];

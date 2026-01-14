@@ -173,7 +173,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "BTC",
             "tokenFiatAmount": 91.238,
           },
-          "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984": {
+          "eip155:1/erc20:0x1f9840a85d5af5bf1d1762f925bdaddc4201f984": {
             "assetId": "eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
             "balance": "0.0000001848",
             "chainId": "eip155:1",
@@ -182,7 +182,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "UNI",
             "tokenFiatAmount": 0.0010728914112762384,
           },
-          "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA": {
+          "eip155:1/erc20:0x514910771af9ca656af840dff83e8264ecf986ca": {
             "assetId": "eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
             "balance": "0.000000001",
             "chainId": "eip155:1",
@@ -200,7 +200,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "ETH",
             "tokenFiatAmount": 25.242128065034784,
           },
-          "eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA": {
+          "eip155:10/erc20:0x514910771af9ca656af840dff83e8264ecf986ca": {
             "assetId": "eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA",
             "balance": "9535.2030001",
             "chainId": "eip155:10",
@@ -209,7 +209,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "LINK",
             "tokenFiatAmount": 2888.265783055537,
           },
-          "eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888": {
+          "eip155:10/erc20:0xc00e94cb662c3520282e6f5717214004a7f26888": {
             "assetId": "eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888",
             "balance": "5.030001",
             "chainId": "eip155:10",
@@ -227,7 +227,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "ETH",
             "tokenFiatAmount": 2524.2443591635597,
           },
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501": {
+          "solana:5eykt4usfv8p8njdtrepy1vzqkqzkvdp/slip44:501": {
             "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501",
             "balance": "1.530",
@@ -237,7 +237,7 @@ describe('Bridge asset selectors', () => {
             "symbol": "SOL",
             "tokenFiatAmount": 210.8493,
           },
-          "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v": {
+          "solana:5eykt4usfv8p8njdtrepy1vzqkqzkvdp/token:epjfwdd5aufqssqem2qn1xzybapc8g4weggkzwytdt1v": {
             "accountType": "solana:data-account",
             "assetId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
             "balance": "2.043238",
