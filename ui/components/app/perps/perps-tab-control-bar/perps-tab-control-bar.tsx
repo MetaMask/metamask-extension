@@ -16,6 +16,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { formatCurrency, formatPnl, formatPercentage } from '../utils';
 import { mockAccountState } from '../mocks';
 
 export type PerpsTabControlBarProps = {
@@ -23,46 +24,6 @@ export type PerpsTabControlBarProps = {
   onManageBalancePress?: () => void;
   /** Whether the user has open positions (controls P&L row visibility) */
   hasPositions?: boolean;
-};
-
-/**
- * Format a number as currency with $ prefix
- *
- * @param value - The number to format
- * @returns The formatted currency string
- */
-const formatCurrency = (value: string): string => {
-  const num = parseFloat(value);
-  return `$${num.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-};
-
-/**
- * Format P&L with +/- prefix
- *
- * @param value - The number to format
- * @returns The formatted P&L string
- */
-const formatPnl = (value: string): string => {
-  const num = parseFloat(value);
-  const prefix = num >= 0 ? '+' : '';
-  return `${prefix}$${Math.abs(num).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-};
-
-/**
- * Format ROE as percentage
- *
- * @param value - The number to format
- * @returns The formatted ROE string
- */
-const formatPercentage = (value: string): string => {
-  const num = parseFloat(value);
-  return `${num.toFixed(2)}%`;
 };
 
 /**

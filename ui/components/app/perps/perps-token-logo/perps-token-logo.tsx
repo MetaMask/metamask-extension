@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { AvatarToken, AvatarTokenSize } from '@metamask/design-system-react';
-
-// HyperLiquid asset icons base URL
-const HYPERLIQUID_ASSET_ICONS_BASE_URL = 'https://app.hyperliquid.xyz/coins/';
+import { getDisplaySymbol, getAssetIconUrl } from '../utils';
 
 export type PerpsTokenLogoProps = {
   /** Asset symbol (e.g., "BTC", "ETH", "xyz:TSLA") */
@@ -11,52 +9,6 @@ export type PerpsTokenLogoProps = {
   size?: AvatarTokenSize;
   /** Additional CSS class */
   className?: string;
-};
-
-/**
- * Extract the display symbol from a full symbol string
- * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
- *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
- * @example
- * getDisplaySymbol('xyz:TSLA') => 'TSLA'
- * getDisplaySymbol('BTC') => 'BTC'
- */
-const getDisplaySymbol = (symbol: string): string => {
-  if (!symbol || typeof symbol !== 'string') {
-    return symbol;
-  }
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
-
-/**
- * Generate the icon URL for an asset symbol
- * Handles both regular assets and HIP-3 assets (dex:symbol format)
- *
- * @param symbol - The symbol to generate the icon URL for
- * @returns The icon URL
- * @example
- * getAssetIconUrl('BTC') => 'https://app.hyperliquid.xyz/coins/BTC.svg'
- * getAssetIconUrl('xyz:TSLA') => 'https://app.hyperliquid.xyz/coins/xyz:TSLA.svg'
- */
-const getAssetIconUrl = (symbol: string): string => {
-  if (!symbol) {
-    return '';
-  }
-
-  // Check for HIP-3 asset (contains colon)
-  if (symbol.includes(':')) {
-    const [dex, assetSymbol] = symbol.split(':');
-    return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${dex.toLowerCase()}:${assetSymbol.toUpperCase()}.svg`;
-  }
-
-  // Regular asset - uppercase the symbol
-  return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
 };
 
 /**

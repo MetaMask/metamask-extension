@@ -10,35 +10,11 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import { getDisplayName, getPositionDirection } from '../utils';
 import type { Position } from '../types';
 
 export type PositionCardProps = {
   position: Position;
-};
-
-/**
- * Determines if a position is long (positive size) or short (negative size)
- *
- * @param size - The position size as a string
- * @returns 'long' or 'short'
- */
-const getPositionDirection = (size: string): 'long' | 'short' => {
-  return parseFloat(size) >= 0 ? 'long' : 'short';
-};
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The full symbol string
- * @returns The display name
- */
-const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
 };
 
 /**

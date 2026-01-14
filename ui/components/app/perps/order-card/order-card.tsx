@@ -10,86 +10,16 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
+import {
+  getDisplayName,
+  formatOrderType,
+  formatStatus,
+  getStatusColor,
+} from '../utils';
 import type { Order } from '../types';
 
 export type OrderCardProps = {
   order: Order;
-};
-
-/**
- * Formats the order type for display (capitalizes first letter)
- *
- * @param orderType - The order type to format
- * @returns The formatted order type
- * @example
- * formatOrderType('market') => 'Market'
- * formatOrderType('limit') => 'Limit'
- */
-const formatOrderType = (orderType: Order['orderType']): string => {
-  return orderType.charAt(0).toUpperCase() + orderType.slice(1);
-};
-
-/**
- * Formats the order status for display (capitalizes first letter)
- *
- * @param status - The order status to format
- * @returns The formatted order status
- * @example
- * formatStatus('open') => 'Open'
- * formatStatus('filled') => 'Filled'
- * formatStatus('canceled') => 'Canceled'
- * formatStatus('rejected') => 'Rejected'
- * formatStatus('queued') => 'Queued'
- * formatStatus('triggered') => 'Triggered'
- */
-const formatStatus = (status: Order['status']): string => {
-  return status.charAt(0).toUpperCase() + status.slice(1);
-};
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The symbol to extract the display name from
- * @returns The display name
- * @example
- * getDisplayName('xyz:TSLA') => 'TSLA'
- * getDisplayName('BTC') => 'BTC'
- */
-const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
-
-/**
- * Get the appropriate text color for order status
- *
- * @param status - The order status to get the color for
- * @returns The appropriate text color
- * @example
- * getStatusColor('open') => TextColor.TextAlternative
- * getStatusColor('filled') => TextColor.SuccessDefault
- * getStatusColor('canceled') => TextColor.ErrorDefault
- * getStatusColor('rejected') => TextColor.ErrorDefault
- * getStatusColor('queued') => TextColor.TextAlternative
- * getStatusColor('triggered') => TextColor.TextAlternative
- */
-const getStatusColor = (status: Order['status']): TextColor => {
-  switch (status) {
-    case 'filled':
-      return TextColor.SuccessDefault;
-    case 'canceled':
-    case 'rejected':
-      return TextColor.ErrorDefault;
-    case 'open':
-    case 'queued':
-    case 'triggered':
-    default:
-      return TextColor.TextAlternative;
-  }
 };
 
 /**
