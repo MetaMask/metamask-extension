@@ -57,6 +57,7 @@ import type {
   NotificationServicesPushController,
 } from '@metamask/notification-services-controller';
 import type { SmartTransactionsControllerState } from '@metamask/smart-transactions-controller';
+import type { ConnectivityControllerState } from '@metamask/connectivity-controller';
 
 import type { ClaimsControllerState } from '@metamask/claims-controller';
 import type { NetworkOrderControllerState } from '../../app/scripts/controllers/network-order';
@@ -72,7 +73,6 @@ import type { MetaMetricsControllerState } from '../../app/scripts/controllers/m
 import type { AppMetadataControllerState } from '../../app/scripts/controllers/app-metadata';
 import type { SwapsControllerState } from '../../app/scripts/controllers/swaps/swaps.types';
 import type { RewardsControllerState } from '../../app/scripts/controllers/rewards/rewards-controller.types';
-import type { ConnectivityControllerState } from '../../app/scripts/controllers/connectivity/types';
 
 export type ControllerStatePropertiesEnumerated = {
   internalAccounts: AccountsControllerState['internalAccounts'];
