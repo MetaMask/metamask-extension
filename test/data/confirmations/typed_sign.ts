@@ -192,7 +192,7 @@ export const orderSignatureMsg = {
   securityAlertResponse: {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    result_type: 'Loading',
+    result_type: 'loading',
     reason: 'validation_in_progress',
     securityAlertId: 'dadfc03d-43f9-4515-9aa2-cb00715c3e07',
   },
@@ -248,7 +248,7 @@ export const seaportSignatureMsg = {
   securityAlertResponse: {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    result_type: 'Loading',
+    result_type: 'loading',
     reason: 'validation_in_progress',
     securityAlertId: 'def3b0ef-c96b-4c87-b1b1-c69cc02a0f78',
   },
