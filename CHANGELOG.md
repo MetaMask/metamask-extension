@@ -119,10 +119,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated Blockaid alerts to only display for `Malicious`, `Warning`, and `Errored` results (#38468)
 - Remove auto scroll from network filter modal (#38556)
 
-### Changed
-
-- Update ENS snap protocol display name (#38709)
-
 ## [13.13.2]
 
 ### Changed
