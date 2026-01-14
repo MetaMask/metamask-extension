@@ -242,6 +242,11 @@ describe('Vault Corruption', function () {
       password: WALLET_PASSWORD,
     });
 
+    // Wait for the home page to be fully loaded before trying to access the account menu
+    const homePage = new HomePage(driver);
+    await homePage.checkPageIsLoaded();
+    await homePage.waitForLoadingOverlayToDisappear();
+
     // now that we are re-onboarded, get the first account's address
     return await getFirstAddress(driver);
   }
