@@ -99,4 +99,3 @@ describe('PerpsTabControlBar', () => {
     expect(balanceButton).toHaveClass('perps-tab-control-bar__row--top');
   });
 });
-

@@ -94,4 +94,3 @@ describe('PerpsTokenLogo', () => {
     expect(screen.getByTestId('perps-token-logo-SOL')).toBeInTheDocument();
   });
 });
-

@@ -69,4 +69,3 @@ describe('StartTradeCta', () => {
     expect(onPress).toHaveBeenCalledTimes(3);
   });
 });
-

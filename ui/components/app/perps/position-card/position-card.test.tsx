@@ -142,4 +142,3 @@ describe('PositionCard', () => {
     expect(screen.getByText('+$0.00')).toBeInTheDocument();
   });
 });
-

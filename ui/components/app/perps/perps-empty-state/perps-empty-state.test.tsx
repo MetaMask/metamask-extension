@@ -71,4 +71,3 @@ describe('PerpsEmptyState', () => {
     expect(screen.getByTestId('perps-tab-empty-state')).toBeInTheDocument();
   });
 });
-
