@@ -95,6 +95,9 @@ export const DAPP_PATH = Object.freeze({
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';
 
+/* Second BTC address created using test SRP */
+export const SECONDARY_BTC_ADDRESS = 'bc1qk9u7870r6zrjr6euzkdyx5np94wkduvul0zmg7';
+
 /* Default BTC Account name */
 export const DEFAULT_BTC_ACCOUNT_NAME = 'Bitcoin Account 1';
 
