@@ -197,7 +197,7 @@
     "networkConfigurationsByChainId": "object"
   },
   "NetworkEnablementController": {
-    "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+    "enabledNetworkMap": { "eip155": "object", "solana": "object", "tron": "object" }
   },
   "NetworkOrderController": {
     "orderedNetworkList": {
