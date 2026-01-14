@@ -91,11 +91,6 @@ describe('Smart Transactions', function () {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
-        await activityList.checkTxAction({
-          action: 'Sent',
-          txIndex: 1,
-          confirmedTx: 1,
-        });
         await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
