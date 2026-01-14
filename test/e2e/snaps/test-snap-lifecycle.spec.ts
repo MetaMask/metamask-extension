@@ -3,10 +3,10 @@ import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { unlockWallet, withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { unlockWallet, withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockLifecycleHooksSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Lifecycle Hooks', function () {
   it('runs the `onInstall` lifecycle hook when the Snap is installed', async function () {
