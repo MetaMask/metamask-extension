@@ -30,7 +30,6 @@ import {
   getIsParticipateInMetaMetricsSet,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
-import { getSeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
 
 import {
   MetaMetricsEventCategory,
@@ -63,7 +62,6 @@ export default function OnboardingMetametrics() {
   const navigate = useNavigate();
 
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
-  const hasSeedPhraseBackedUp = useSelector(getSeedPhraseBackedUp);
 
   const participateInMetaMetricsSet = useSelector(
     getIsParticipateInMetaMetricsSet,
@@ -96,12 +94,6 @@ export default function OnboardingMetametrics() {
     participateInMetaMetrics,
     dataCollectionForMarketing,
   ]);
-
-  useEffect(() => {
-    if (hasSeedPhraseBackedUp) {
-      navigate(ONBOARDING_COMPLETION_ROUTE, { replace: true });
-    }
-  }, [navigate, hasSeedPhraseBackedUp]);
 
   const currentKeyring = useSelector(getCurrentKeyring);
 
