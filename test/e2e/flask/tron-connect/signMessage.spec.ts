@@ -31,6 +31,7 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
         const signMessageTest = await testDappTron.getSignMessageTest();
         await signMessageTest.setMessage(messageToSign);
 
+        // 2. Sign message
         await signMessageTest.signMessage();
 
         await driver.delay(veryLargeDelayMs);
@@ -41,6 +42,7 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
 
         const signedMessage = await signMessageTest.getSignedMessage();
 
+        // 3. Verify signed message
         await assertSignedMessageIsValid({
           signature: signedMessage[0],
           originalMessageString: messageToSign,

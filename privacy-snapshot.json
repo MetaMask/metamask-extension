@@ -124,6 +124,6 @@
   "verify.walletconnect.com",
   "www.4byte.directory",
   "api.trongrid.io",
-  "api.shasta.trongrid.io",
-  "shasta.api.trongrid.io"
+  "tron-mainnet.infura.io",
+  "api.shasta.trongrid.io"
 ]
