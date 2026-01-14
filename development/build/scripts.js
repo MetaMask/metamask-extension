@@ -1019,6 +1019,8 @@ function setupBundlerDefaults(
             './**/node_modules/eth-lattice-keyring',
             './**/node_modules/gridplus-sdk',
             './**/node_modules/viem',
+            './**/node_modules/uuid',
+            './**/node_modules/isows',
             // Ocap Kernel
             './**/node_modules/@endo',
             './**/node_modules/@agoric',
