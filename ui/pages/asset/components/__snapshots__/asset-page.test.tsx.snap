@@ -3,10 +3,10 @@
 exports[`AssetPage should render a native asset 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -118,8 +118,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/plus-and-minus.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/dollar.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -137,7 +137,7 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
               style="mask-image: url('./images/icons/swap-vertical.svg');"
             />
             <span
@@ -156,8 +156,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/arrow-2-up-right.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/send.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -175,8 +175,8 @@ exports[`AssetPage should render a native asset 1`] = `
             class="mm-box mm-text icon-button__label mm-text--inherit mm-text--ellipsis mm-box--color-text-default"
           >
             <span
-              class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-icon-default"
-              style="mask-image: url('./images/icons/scan-barcode.svg');"
+              class="mm-box mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-icon-alternative"
+              style="mask-image: url('./images/icons/received.svg');"
             />
             <span
               class="mm-box mm-text mm-text--body-sm-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
@@ -422,10 +422,10 @@ exports[`AssetPage should render a native asset 1`] = `
 exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"
@@ -869,10 +869,10 @@ exports[`AssetPage should render an ERC20 asset without prices 1`] = `
 exports[`AssetPage should render an ERC20 token with prices 1`] = `
 <div>
   <div
-    class="mm-box asset__content mm-box--margin-top-4"
+    class="mm-box asset__content"
   >
     <div
-      class="mm-box mm-box--padding-top-1 mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-right-4 mm-box--padding-bottom-3 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
     >
       <div
         class="mm-box mm-box--display-flex"

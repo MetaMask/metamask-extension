@@ -31,6 +31,7 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const {
   getBrowserVersionMap,
+  getBuildTargetFromTask,
   getEnvironment,
   isDevBuild,
   isTestBuild,
@@ -503,10 +504,9 @@ function getIgnoredFiles(target) {
 Please fix builds.yml or specify a compatible set of features.`);
   }
 
-  if (
-    target.includes(BUILD_TARGETS.DEV) ||
-    target.includes(BUILD_TARGETS.TEST)
-  ) {
+  const buildTarget = getBuildTargetFromTask(target);
+
+  if (isDevBuild(buildTarget) || isTestBuild(buildTarget)) {
     return ignoredPaths;
   }
 

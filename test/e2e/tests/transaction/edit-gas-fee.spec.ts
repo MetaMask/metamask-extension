@@ -8,7 +8,7 @@ import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 
 const PREFERENCES_STATE_MOCK = {

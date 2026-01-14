@@ -7,7 +7,7 @@ import {
   largeDelayMs,
 } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 

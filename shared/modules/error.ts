@@ -64,3 +64,16 @@ export function isUserCancelledLoginError(error: Error | undefined): boolean {
     error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR_FIREFOX
   );
 }
+
+/**
+ * Creates an error instance with readable message and cause for sentry.
+ *
+ * @param message - The message to create the error with.
+ * @param cause - The cause of the error.
+ * @returns The created error.
+ */
+export function createSentryError(message: string, cause: Error): Error {
+  const error = new Error(message) as Error & { cause: Error };
+  error.cause = cause;
+  return error;
+}

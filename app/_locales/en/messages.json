@@ -5052,6 +5052,9 @@
   "permittedChainToastUpdate": {
     "message": "$1 has access to $2."
   },
+  "perps": {
+    "message": "Perps"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -6085,6 +6088,15 @@
   "shieldClaimChainNotSupported": {
     "message": "This chain is not supported."
   },
+  "shieldClaimDeleteDraft": {
+    "message": "Delete draft"
+  },
+  "shieldClaimDeleteDraftDescription": {
+    "message": "Your claim draft has been deleted."
+  },
+  "shieldClaimDeletedDraft": {
+    "message": "Draft deleted"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -6098,6 +6110,24 @@
   "shieldClaimDetailsViewClaims": {
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDraftDeleteFailed": {
+    "message": "Deleting draft failed"
+  },
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "Unable to delete your claim draft. Please try again."
+  },
+  "shieldClaimDraftSaveFailed": {
+    "message": "Saving draft failed"
+  },
+  "shieldClaimDraftSaveFailedDescription": {
+    "message": "Unable to save your claim draft. Please try again."
+  },
+  "shieldClaimDraftSaved": {
+    "message": "Draft saved"
+  },
+  "shieldClaimDraftSavedDescription": {
+    "message": "Your claim draft has been saved."
   },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
@@ -6131,11 +6161,14 @@
     "message": "Active claims"
   },
   "shieldClaimGroupActiveNote": {
-    "message": "Note: You can have a maximum of $1 active claims at a single time.",
-    "description": "The $1 is the maximum number of active claims"
+    "message": "Note: You can have a maximum of $1 drafts and $2 active claims at a single time.",
+    "description": "The $1 is the maximum number of drafts and $2 is the maximum number of active claims"
   },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
+  },
+  "shieldClaimGroupDrafts": {
+    "message": "Drafts"
   },
   "shieldClaimGroupNoCompletedClaims": {
     "message": "No completed claims"
@@ -6188,6 +6221,9 @@
   "shieldClaimMaxClaimsLimitExceeded": {
     "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
   },
+  "shieldClaimMaxDraftsReached": {
+    "message": "You have reached the maximum number of drafts. Please delete a draft to save a new one."
+  },
   "shieldClaimNetwork": {
     "message": "Select network"
   },
@@ -6202,6 +6238,9 @@
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSaveAsDraft": {
+    "message": "Save as draft"
   },
   "shieldClaimSelectAccount": {
     "message": "Select an account"
@@ -6242,6 +6281,10 @@
   },
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
+  },
+  "shieldClaimsLastEdited": {
+    "message": "Last edited: $1",
+    "description": "The $1 is the date"
   },
   "shieldClaimsListTitle": {
     "message": "Claims"
@@ -7371,6 +7414,15 @@
   "stillGettingMessage": {
     "message": "Still getting this message?"
   },
+  "storageErrorAction": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "storageErrorDescription": {
+    "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
+  },
+  "storageErrorTitle": {
+    "message": "We couldn't save your data"
+  },
   "strong": {
     "message": "Strong"
   },
@@ -7594,7 +7646,7 @@
     "message": "Paid by MetaMask"
   },
   "swapGasFeesSponsoredExplanation": {
-    "message": "This network fee is paid by MetaMask, so you can swap without $1 in your account."
+    "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",

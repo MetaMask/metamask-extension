@@ -81,6 +81,7 @@ import {
 
 import {
   Claim,
+  ClaimDraft,
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
@@ -163,6 +164,7 @@ import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
+  createSentryError,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -287,18 +289,6 @@ export function startOAuthLogin(
         ]));
         seedlessAuthSuccess = true;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error';
-
-        bufferedTrace?.({
-          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        bufferedEndTrace?.({
-          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
-        });
-
         trackEvent?.({
           event: MetaMetricsEventName.SocialLoginFailed,
           category: MetaMetricsEventCategory.Onboarding,
@@ -318,6 +308,13 @@ export function startOAuthLogin(
             error_category: 'seedless_auth',
           },
         });
+
+        captureException(
+          createSentryError(
+            TraceName.OnboardingOAuthSeedlessAuthenticateError,
+            error as Error,
+          ),
+        );
 
         throw error;
       } finally {
@@ -522,9 +519,10 @@ export function getSubscriptions(): ThunkAction<
       return subscriptions;
     } catch (error) {
       log.error('[getSubscriptions] error', error);
-      throw new Error(
-        `Failed to fetch subscriptions, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to fetch subscriptions', error),
       );
+      throw error;
     }
   };
 }
@@ -548,9 +546,10 @@ export function getSubscriptionPricing(): ThunkAction<
       return pricing;
     } catch (error) {
       log.error('[getSubscriptionPricing] error', error);
-      throw new Error(
-        `Failed to fetch subscription pricing, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to fetch subscription pricing', error),
       );
+      throw error;
     }
   };
 }
@@ -566,10 +565,22 @@ export function getSubscriptionPricing(): ThunkAction<
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
 ): Promise<GetCryptoApproveTransactionResponse> {
-  return await submitRequestToBackground<string>(
-    'getSubscriptionCryptoApprovalAmount',
-    [params],
-  );
+  try {
+    const cryptoApprovalAmount = await submitRequestToBackground<string>(
+      'getSubscriptionCryptoApprovalAmount',
+      [params],
+    );
+    return cryptoApprovalAmount;
+  } catch (error) {
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
+    captureException(
+      createSentryError(
+        'Failed to get subscription crypto approval amount',
+        error,
+      ),
+    );
+    throw error;
+  }
 }
 
 /**
@@ -597,8 +608,11 @@ export function startSubscriptionWithCard(params: {
       );
 
       return subscriptions;
-    } catch (error) {
-      console.error('[startSubscriptionWithCard] error', error);
+    } catch (err) {
+      log.error('[startSubscriptionWithCard] error', err);
+      const error = new Error(
+        `Failed to start subscription with card, ${getErrorMessage(err)}`,
+      );
       throw error;
     }
   };
@@ -639,9 +653,12 @@ export function cancelSubscription(params: {
     } catch (error) {
       log.error('[cancelSubscription] error', error);
       dispatch(displayWarning(error));
-      throw new Error(
-        `Failed to cancel subscription, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError('Failed to cancel subscription', error),
       );
+
+      // rethrow the original error
+      throw error;
     }
   };
 }
@@ -654,9 +671,11 @@ export function unCancelSubscription(params: {
       await submitRequestToBackground('unCancelSubscription', [params]);
     } catch (error) {
       log.error('[unCancelSubscription] error', error);
-      throw new Error(
+      const unCancelSubscriptionError = new Error(
         `Failed to uncancel subscription, ${getErrorMessage(error)}`,
       );
+      captureException(unCancelSubscriptionError);
+      throw unCancelSubscriptionError;
     }
   };
 }
@@ -675,9 +694,15 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
       return billingPortalUrl;
     } catch (error) {
       log.error('[getSubscriptionBillingPortalUrl] error', error);
-      throw new Error(
-        `Failed to get subscription billing portal url, ${getErrorMessage(error)}`,
+      captureException(
+        createSentryError(
+          'Failed to get subscription billing portal url',
+          error,
+        ),
       );
+
+      // rethrow the original error
+      throw error;
     }
   };
 }
@@ -817,6 +842,9 @@ export function linkRewardToShieldSubscription(
         subscriptionId,
         rewardPoints,
       ]);
+
+      // refetch the subscriptions
+      await dispatch(getSubscriptions());
     } catch (error) {
       dispatch(displayWarning(error));
       throw error;
@@ -6789,13 +6817,16 @@ export function cancelSmartTransaction(
 // TODO: Not a thunk but rather a wrapper around a background call
 export function fetchSmartTransactionsLiveness({
   networkClientId,
+  chainId,
 }: {
+  /** @deprecated Use `chainId` instead. */
   networkClientId?: string;
+  chainId?: string;
 } = {}) {
   return async () => {
     try {
       await submitRequestToBackground('fetchSmartTransactionsLiveness', [
-        { networkClientId },
+        { networkClientId, chainId },
       ]);
     } catch (err) {
       logErrorWithMessage(err);
@@ -8119,6 +8150,7 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    captureException(createSentryError('Failed to submit shield claim', error));
     if (error instanceof SubmitClaimError) {
       throw error;
     }
@@ -8157,4 +8189,26 @@ export async function generateClaimSignature(
     chainId,
     walletAddress,
   ]);
+}
+
+/**
+ * Saves a claim draft.
+ *
+ * @param draft - The draft to save.
+ * @returns The saved draft.
+ */
+export async function saveClaimDraft(
+  draft: Partial<ClaimDraft>,
+): Promise<ClaimDraft> {
+  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+}
+
+/**
+ * Deletes a claim draft.
+ *
+ * @param draftId - The ID of the draft to delete.
+ * @returns The deleted draft.
+ */
+export async function deleteClaimDraft(draftId: string): Promise<void> {
+  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }

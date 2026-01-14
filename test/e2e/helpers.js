@@ -52,10 +52,6 @@ const convertToHexValue = (val) => `0x${new BigNumber(val, 10).toString(16)}`;
 
 const convertETHToHexGwei = (eth) => convertToHexValue(eth * 10 ** 18);
 
-const {
-  mockMultichainAccountsFeatureFlagStateTwo,
-} = require('./tests/multichain-accounts/feature-flag-mocks');
-
 /**
  * Normalizes the localNodeOptions into a consistent format to handle different data structures.
  * Case 1: A string: localNodeOptions = 'anvil'
@@ -169,7 +165,6 @@ async function withFixtures(options, testSuite) {
     monConversionInUsd,
     manifestFlags,
     solanaWebSocketSpecificMocks = [],
-    forceBip44Version = true,
     extendedTimeoutMultiplier = 1,
   } = options;
 
@@ -337,11 +332,6 @@ async function withFixtures(options, testSuite) {
     webSocketServer = LocalWebSocketServer.getServerInstance();
     webSocketServer.start();
     await setupSolanaWebsocketMocks(solanaWebSocketSpecificMocks);
-
-    if (forceBip44Version) {
-      console.log('BIP-44 stage 2 enabled');
-      await mockMultichainAccountsFeatureFlagStateTwo(mockServer);
-    }
 
     // Decide between the regular setupMocking and the passThrough version
     const mockingSetupFunction = useMockingPassThrough
@@ -573,26 +563,6 @@ async function withFixtures(options, testSuite) {
     }
   }
 }
-
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
 
 const clickNestedButton = async (driver, tabName) => {
   try {
@@ -844,8 +814,6 @@ module.exports = {
   veryLargeDelayMs,
   withFixtures,
   createDownloadFolder,
-  openDapp,
-  switchToOrOpenDapp,
   unlockWallet,
   WALLET_PASSWORD,
   WINDOW_TITLES,
