@@ -1,12 +1,12 @@
 const { strict: assert } = require('assert');
-const {
-  withFixtures,
-  unlockWallet,
-  getEventPayloads,
-  WINDOW_TITLES,
-} = require('../helpers');
+const { withFixtures, unlockWallet, getEventPayloads } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
-const { MOCK_META_METRICS_ID, DAPP_PATH, DAPP_URL } = require('../constants');
+const {
+  MOCK_META_METRICS_ID,
+  DAPP_PATH,
+  DAPP_URL,
+  WINDOW_TITLES,
+} = require('../constants');
 const {
   mockNotificationSnap,
   mockWebpackPluginOldSnap,
