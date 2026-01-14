@@ -28,3 +28,16 @@ index 793949dd1f22aec3542aa667b267b02c7c670cb8..5d594e1a6201d6417221351ca1cae6fa
    return urlWithRoute + apiKeyParam;
  }
  function selectDefFrom4byteABI(abiData, selector) {
+diff --git a/package.json b/package.json
+index cbed44cee2237787346d0559522d56e479d474e6..581ff1417dd35005dae55eb9f9260d10462733d0 100644
+--- a/package.json
++++ b/package.json
+@@ -24,7 +24,6 @@
+     "@ethereumjs/common": "^10.0.0",
+     "@ethereumjs/rlp": "^10.0.0",
+     "@ethereumjs/tx": "^10.0.0",
+     "@metamask/eth-sig-util": "^8.2.0",
+-    "@types/uuid": "^11.0.0",
+     "aes-js": "^3.1.2",
+     "bech32": "^2.0.0",
+     "bignumber.js": "^9.3.1",
