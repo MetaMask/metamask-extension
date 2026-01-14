@@ -27,12 +27,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated activity details to support sponsored transactions (#38884)
 - Added deep link support for `/onboarding` route (#38448)
 - Add selector creator factory and preconfigured selector creators that can be used to speed up app load times and responsiveness (#38789)
-- feat: added environment type for sidepanel (#38906)
+- Added environment type for sidepanel (#38906)
 - Remove full stop on Shield confirmation screen footer (#38928)
 - Prevent start adornment from shrinking on small screens (#38929)
 - Implement new gas fee modals (#38857)
 - Fix backup SRP flow fields flickering on very small screen (#38848)
-- feat: Update public address copy in contacts page (#38864)
+- Update public address copy in contacts page (#38864)
 - Block concurrent RPCs while serving `wallet_requestExecutionPermissions` (#37407)
 - Fix shield details icon shrinking on very small screen (#38797)
 - mUSD will not be transformed to uppercase (MUSD) now on shield settings page (#38793)
@@ -43,6 +43,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integrate i18n context for trust signal labels (#38598)
 - Update row key colors in Confirmations (#38553)
 - Add metrics for shield-rewards integration (#38567)
+
+### Changed
+
+- Update ENS snap protocol display name (#38709)
 
 ### Fixed
 
@@ -59,7 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve responsiveness of network connection banner to connection issues (#37966)
 - Fixes issue when switching networks from the dapp permissions networks button (#39173)
 - Network list when switching to hardware wallet (#39080)
-- fix: removed manifest for experimental build (#39070)
+- Removed manifest for experimental build (#39070)
 - Fix duplicate key import error message (#39006)
 - Disable swap submit button while tx alerts are loading (#38975)
 - Update SRP flow to display multichain accounts (#39005)
@@ -70,10 +74,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tracked `post_transaction_type` in `Shield Entry Modal` event, and tracked `is_basic_functionality_enabled` in `Onboarding Completed` event (#39009)
 - Bitcoin explorer name (#38988)
 - Switch to side panel menu toggle (#38949)
-- Fixed the Spender field in the "Remove permission" screen to display the correct address from the transaction data instead (#38972)
-  of the signer's address
+- Fixed the Spender field in the "Remove permission" screen to display the correct address from the transaction data instead of the signer's address (#38972)
 - Updated Shield Subscription Metrics source prop (#38953)
-- fix: render the account name instead of the address for the transaction details (#38959)
+- Render the account name instead of the address for the transaction details (#38959)
 - Reduce write volume to reasonable levels (#37060)
 - Toast positioning (#38927)
 - Update CTA text on Clear Metametrics Data Modal (#38955)
@@ -96,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed an issue where Blockaid validation was unnecessarily triggered for transfers between internal accounts (#38516)
 - Show token charts when adding new network (#38730)
 - Fixed an issue with Snap insights styling (#38755)
-- fix: fixed ENS Resolution for selected chain in contacts (#38661)
+- Fixed ENS Resolution for selected chain in contacts (#38661)
 - Fixed minor display issues with the import token dialog (#38718)
 - Fix transaction shield change payment token filter current token (#38702)
 - Fixed swap/bridge transaction details page not loading when clicking on a transaction from the activity list (#38686)
@@ -108,13 +111,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed Import NFT modal to require network selection before enabling button (#38669)
 - Fixed Blurry Metamask logo in the welcome page (#38623)
 - Pending transaction filtering (#38603)
-- fix: updated navigation for asset-detail page (#38559)
+- Updated navigation for asset-detail page (#38559)
 - Adds favicon for Firefox expanded view page (#38632)
 - Fixed a flicker where the insufficient balance alert appeared before gas-station checks completed (#38306)
 - Add fallback image for NFT items (#38605)
 - Pr to fix the migration number of 185.ts (#38629)
 - Updated Blockaid alerts to only display for `Malicious`, `Warning`, and `Errored` results (#38468)
-- fix: Remove auto scroll from network filter modal (#38556)
+- Remove auto scroll from network filter modal (#38556)
 
 ### Changed
 
