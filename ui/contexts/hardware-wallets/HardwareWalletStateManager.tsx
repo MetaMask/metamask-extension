@@ -94,6 +94,7 @@ export const useHardwareWalletStateManager = () => {
 
   // Sync walletType with walletTypeRef
   useEffect(() => {
+    // Keep the previous reference so we know when to reset event subscriptions (e.g Trezor -> Ledger).
     previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
   }, [walletType]);

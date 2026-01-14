@@ -1,5 +1,5 @@
 /**
- * Enum for hardware wallet types
+ * Hardware wallet types normalized for the hardware wallet context
  */
 export enum HardwareWalletType {
   Ledger = 'ledger',
@@ -10,7 +10,7 @@ export enum HardwareWalletType {
 }
 
 /**
- * Enum for connection status
+ * Hardware wallet connection status
  */
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
@@ -23,7 +23,7 @@ export enum ConnectionStatus {
 }
 
 /**
- * Enum for WebHID/WebUSB permission state
+ * Hardware wallet connection permission state
  */
 export enum HardwareConnectionPermissionState {
   Unknown = 'unknown',
@@ -33,7 +33,7 @@ export enum HardwareConnectionPermissionState {
 }
 
 /**
- * Enum for device events
+ * Hardware wallet device events
  */
 export enum DeviceEvent {
   Disconnected = 'disconnected',
@@ -45,7 +45,7 @@ export enum DeviceEvent {
 }
 
 /**
- * Connection state type (discriminated union)
+ * Hardware wallet connection State
  */
 export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Disconnected }
@@ -87,7 +87,6 @@ export type HardwareWalletAdapter = {
   destroy(): void;
 
   // Optional methods
-  setPendingOperation?(pending: boolean): void;
   getCurrentAppName?(): Promise<string>;
   /**
    * Verify the device is ready for operations
