@@ -9,56 +9,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.14.0]
 
-### Uncategorized
-
-- Adds 'erc20-token-revocation' Advanced Permission type in Flask build only (#39008)
-- Fixed gas fees sponsored tooltip message (#39099)
-- Improve reference stability for `getMultichainNetworkConfigurationsByChainId` selector (#38766)
-- Updated network fee tooltip for gas fees sponsored case (#39021)
-- Null (#38978)
-- Bump `@metamask/notification-services-controller` to `^21.0.0` (#38965)
-- Bump @metamask/tron-wallet-snap to 1.17.0 (#38986)
-- Add account cell gap (#38981)
-- Remove duplicated calls to account api v2 (#38841)
-- Added support for `erc20-token-revocation` permission (#38888)
-- Added recipient when signing a 7715 permission. (#38934)
-- Update ENS snap protocol display name (#38709)
-- Adds a migration to cleanup user historical prices and removes cache for historical price fetching. (#38892)
-- Added the discover button for Tron network (#38636)
-- Fixes minor issues relates to locales removed Fox logo and locale dropdown in Onboarding app (#38839)
-  header (Sidepanel view)
-- Remove migration 171 error logging (#38739)
-- Update styling of accounts address popover (#38687)
-- Improve Snaps registry verification speed. (#38628)
-- Bump assets controllers to v93.1.0 (#38554)
-- Add `DateTimePicker` Snaps UI component and force fetching the registry without cache (#38354)
-- Added the network and token icons for X Layer (#38473)
-- Improve responsiveness of network connection banner to connection issues (#37966)
-
 ### Added
 
+- Adds 'erc20-token-revocation' Advanced Permission type in Flask build only (#39008)
+- Added support for `erc20-token-revocation` permission (#38888)
+- Added recipient when signing a 7715 permission (#38934)
+- Adds a migration to cleanup user historical prices and removes cache for historical price fetching (#38892)
+- Added the discover button for Tron network (#38636)
+- Add `DateTimePicker` Snaps UI component and force fetching the registry without cache (#38354)
+- Added the network and token icons for X Layer (#38473)
 - Fix shield reward signup button showing unexpectedly (#39091)
-- Added network specific smart transactions liveness check before submitting bridge quotes. (#38877)
-- Optimized network polling requests for tokens, rates, currencies, gas fees etc. (#38339)
+- Added network specific smart transactions liveness check before submitting bridge quotes (#38877)
+- Optimized network polling requests for tokens, rates, currencies, gas fees etc (#38339)
 - Removed the check for smart account when assessing support for gas included swaps with 7702 (#39022)
 - Removed copy-to-clipboard functionality from sender and recipient address in transaction details (#39018)
 - Allow saving claims as draft (#38795)
 - Updated activity details to support sponsored transactions (#38884)
 - Added deep link support for `/onboarding` route (#38448)
-- Add selector creator factory and preconfigured selector creators that can be used to speed up app load times and responsiveness. (#38789)
+- Add selector creator factory and preconfigured selector creators that can be used to speed up app load times and responsiveness (#38789)
 - feat: added environment type for sidepanel (#38906)
 - Remove full stop on Shield confirmation screen footer (#38928)
 - Prevent start adornment from shrinking on small screens (#38929)
-- Implement new gas fee modals. (#38857)
+- Implement new gas fee modals (#38857)
 - Fix backup SRP flow fields flickering on very small screen (#38848)
 - feat: Update public address copy in contacts page (#38864)
-- Block concurrent RPCs while serving `wallet_requestExecutionPermissions`. (#37407)
+- Block concurrent RPCs while serving `wallet_requestExecutionPermissions` (#37407)
 - Fix shield details icon shrinking on very small screen (#38797)
-- MUSD will not be transform to uppercase (MUSD) now on shield settings page (#38793)
+- mUSD will not be transformed to uppercase (MUSD) now on shield settings page (#38793)
 - Add Tron Account Change detection support for multichain Api (#38536)
 - Add skeleton loader for dapp Confirmations (#38656)
-- Enhanced the UI for the 'Forgot Password Modal' and the wallet import section and create new password in the Forgot Password (#37727)
-  process.
+- Enhanced the UI for the 'Forgot Password Modal' and the wallet import section and create new password in the Forgot Password process (#37727)
 - Add justification field; add account name & copy option; improve time display; fix “Unknown” amount (#37768)
 - Integrate i18n context for trust signal labels (#38598)
 - Update row key colors in Confirmations (#38553)
@@ -66,18 +46,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Network list when switching to hardware walelt (#39080)
+- Fixed gas fees sponsored tooltip message (#39099)
+- Improve reference stability for `getMultichainNetworkConfigurationsByChainId` selector (#38766)
+- Updated network fee tooltip for gas fees sponsored case (#39021)
+- Add account cell gap (#38981)
+- Remove duplicated calls to account api v2 (#38841)
+- Add account cell gap (#38981)
+- Remove duplicated calls to account api v2 (#38841)
+- Fixes minor issues relates to locales removed Fox logo and locale dropdown in Onboarding app header (sidepanel view) (#38839)
+- Update styling of accounts address popover (#38687)
+- Improve Snaps registry verification speed (#38628)
+- Improve responsiveness of network connection banner to connection issues (#37966)
+- Fixes issue when switching networks from the dapp permissions networks button (#39173)
+- Network list when switching to hardware wallet (#39080)
 - fix: removed manifest for experimental build (#39070)
 - Fix duplicate key import error message (#39006)
 - Disable swap submit button while tx alerts are loading (#38975)
 - Update SRP flow to display multichain accounts (#39005)
-- Fixed redirect bug during onboarding when side panel is already set as default. (#39036)
-- Snap update dot doesn't take preinstalled snaps into account. (#39037)
+- Fixed redirect bug during onboarding when side panel is already set as default (#39036)
+- Snap update dot doesn't take preinstalled snaps into account (#39037)
 - Fix `MenuItem` info dot (#39042)
 - ToAssetId util should checksum EVM assetIds and support Tron tokens (#38971)
-- Tracked `post_transaction_type` in `Shield Entry Modal` event (#39009)
-  tracked `is_basic_functionality_enabled` in `Onboarding
-Completed` event
+- Tracked `post_transaction_type` in `Shield Entry Modal` event, and tracked `is_basic_functionality_enabled` in `Onboarding Completed` event (#39009)
 - Bitcoin explorer name (#38988)
 - Switch to side panel menu toggle (#38949)
 - Fixed the Spender field in the "Remove permission" screen to display the correct address from the transaction data instead (#38972)
@@ -93,8 +83,7 @@ Completed` event
 - Standardized scrollbar styling across the extension for visual consistency (#38874)
 - Swap confirmation width in sidepanel (#38915)
 - Fix ERC1155 NFT Balance Display showing "NaN" (#38916)
-- Fixed an issue where switching back to the native token after automatic gas fee token selection did not trigger the insufficient (#38714)
-  balance alert.
+- Fixed an issue where switching back to the native token after automatic gas fee token selection did not trigger the insufficient balance alert (#38714)
 - Show fiat value for some tokens in Confirmations (#38902)
 - Prepare storage listener for split state storage (#38784)
 - Srp details modal header (#38903)
@@ -127,12 +116,22 @@ Completed` event
 - Updated Blockaid alerts to only display for `Malicious`, `Warning`, and `Errored` results (#38468)
 - fix: Remove auto scroll from network filter modal (#38556)
 
+### Changed
+
+- Update ENS snap protocol display name (#38709)
+
 ## [13.13.2]
 
 ### Changed
 
-- Bump @metamask/tron-wallet-snap to 1.17.0
-- Bump @metamask/keyring-api to 21.3.0
+- Bump @metamask/tron-wallet-snap to 1.17.0 (#38986)
+- Bump @metamask/keyring-api to 21.3.0 (#39066)
+- Bump @metamask/tron-wallet-snap to version 1.19.0 cp-13.13.2 (#39130)
+- Update react router to resolve advisory (#39115)
+
+### Fixed
+
+- Fix Tron resources calculation and default value (#39136)
 
 ## [13.13.1]
 
