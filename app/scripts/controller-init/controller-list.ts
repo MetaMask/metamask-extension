@@ -84,6 +84,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConfigRegistryController } from '@metamask/config-registry-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -125,6 +126,7 @@ export type Controller =
   | BridgeController
   | BridgeStatusController
   | ClaimsController
+  | ConfigRegistryController
   | CronjobController
   | CurrencyRateController
   | DecryptMessageController

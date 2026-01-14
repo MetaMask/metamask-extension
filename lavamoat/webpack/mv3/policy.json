@@ -600,6 +600,15 @@
         "reselect": true
       }
     },
+    "@metamask/config-registry-controller": {
+      "packages": {
+        "@metamask/config-registry-controller>@metamask/polling-controller": true,
+        "@metamask/base-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/messenger": true,
+        "@metamask/remote-feature-flag-controller": true
+      }
+    },
     "@metamask/chain-agnostic-permission": {
       "packages": {
         "@metamask/chain-agnostic-permission>@metamask/api-specs": true,
@@ -1008,6 +1017,18 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/config-registry-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/name-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -1093,6 +1114,18 @@
         "deep-freeze-strict": true,
         "immer": true,
         "nanoid": true
+      }
+    },
+    "@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
       }
     },
     "@metamask/post-message-stream": {

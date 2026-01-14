@@ -387,6 +387,7 @@ import { TokenListControllerInit } from './controller-init/token-list-controller
 import { TokenDetectionControllerInit } from './controller-init/token-detection-controller-init';
 import { TokensControllerInit } from './controller-init/tokens-controller-init';
 import { TokenBalancesControllerInit } from './controller-init/token-balances-controller-init';
+import { ConfigRegistryControllerInit } from './controller-init/config-registry-controller-init';
 import { RatesControllerInit } from './controller-init/rates-controller-init';
 import { CurrencyRateControllerInit } from './controller-init/currency-rate-controller-init';
 import { EnsControllerInit } from './controller-init/confirmations/ens-controller-init';
@@ -605,6 +606,7 @@ export default class MetamaskController extends EventEmitter {
       InstitutionalSnapController: InstitutionalSnapControllerInit,
       RateLimitController: RateLimitControllerInit,
       SnapsRegistry: SnapsRegistryInit,
+      ConfigRegistryController: ConfigRegistryControllerInit,
       CronjobController: CronjobControllerInit,
       SelectedNetworkController: SelectedNetworkControllerInit,
       SnapController: SnapControllerInit,
