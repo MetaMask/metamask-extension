@@ -43,6 +43,9 @@ export const TokenListControllerInit: ControllerInitFunction<
     chainId: getGlobalChainId(initMessenger),
   });
 
+  // Initialize the controller to load cached token lists from storage.
+  controller.initialize();
+
   /**
    * Enable or disable token list polling based on whether any feature that
    * requires it is enabled.
