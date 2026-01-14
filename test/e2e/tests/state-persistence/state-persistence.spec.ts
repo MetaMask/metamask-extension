@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { WINDOW_TITLES } from '../../constants';
-import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
