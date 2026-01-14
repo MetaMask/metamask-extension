@@ -2286,6 +2286,22 @@
         "@noble/hashes": true
       }
     },
+    "viem>ox>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "viem>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
@@ -2477,14 +2493,14 @@
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
-    "viem>ox>@scure/bip32": {
+    "viem>@scure/bip32": {
       "packages": {
         "@noble/curves": true,
         "@noble/hashes": true,
         "@scure/base": true
       }
     },
-    "viem>ox>@scure/bip39": {
+    "viem>@scure/bip39": {
       "packages": {
         "@noble/hashes": true,
         "@scure/base": true
@@ -3856,7 +3872,7 @@
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
         "uuid": true,
         "eth-lattice-keyring>gridplus-sdk>uuid": true,
-        "eth-lattice-keyring>gridplus-sdk>viem": true,
+        "viem": true,
         "eth-lattice-keyring>gridplus-sdk>zod": true
       }
     },
@@ -4068,7 +4084,7 @@
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>viem>isows": {
+    "viem>isows": {
       "globals": {
         "WebSocket": true
       }
@@ -4446,26 +4462,27 @@
         "setTimeout": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>ox>@adraffy/ens-normalize": true,
+        "viem>ox>@adraffy/ens-normalize": true,
         "@noble/ciphers": true,
         "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
         "@noble/hashes": true,
-        "viem>ox>@scure/bip32": true,
-        "viem>ox>@scure/bip39": true,
+        "viem>@scure/bip32": true,
+        "viem>@scure/bip39": true,
         "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
+        "viem>ox>abitype": true,
         "viem>ox>eventemitter3": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>viem>ox": {
+    "viem>ox": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true,
         "crypto.getRandomValues": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
+        "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
-        "eth-lattice-keyring>gridplus-sdk>viem>ox>abitype": true
+        "viem>ox>abitype": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
@@ -5652,7 +5669,7 @@
         "react-markdown>vfile>vfile-message": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>viem": {
+    "viem": {
       "globals": {
         "AbortController": true,
         "Image": true,
@@ -5669,11 +5686,11 @@
         "setTimeout": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
+        "viem>@noble/curves": true,
         "@noble/hashes": true,
-        "eth-lattice-keyring>gridplus-sdk>viem>abitype": true,
-        "eth-lattice-keyring>gridplus-sdk>viem>isows": true,
-        "eth-lattice-keyring>gridplus-sdk>viem>ox": true
+        "viem>abitype": true,
+        "viem>isows": true,
+        "viem>ox": true
       }
     },
     "browserify>vm-browserify": {

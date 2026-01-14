@@ -44,7 +44,8 @@
       "packages": {
         "@noble/hashes": true,
         "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
-        "eth-lattice-keyring>gridplus-sdk>ox>abitype": true
+        "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
+        "viem>ox>abitype": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>uuid": {
