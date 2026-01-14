@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   Text,
   Box,
@@ -28,10 +29,6 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
-import {
-  RetryStrategy,
-  type HardwareWalletError,
-} from '../../../../contexts/hardware-wallets/errors';
 import {
   useHardwareWalletActions,
   useHardwareWalletConfig,
@@ -75,9 +72,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
       return null;
     }
 
-    const canRetry =
-      error.retryStrategy === RetryStrategy.RETRY && error.userActionable;
-
     const { icon, title, recoveryInstructions } = buildErrorContent(
       error,
       displayWalletType,
@@ -92,11 +86,6 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
         clearError();
       }
       setIsLoading(false);
-    };
-
-    const handleCancel = () => {
-      onCancel?.();
-      hideModal();
     };
 
     const handleClose = () => {
@@ -193,7 +182,7 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
                   textAlign={TextAlign.Center}
                   color={TextColor.errorDefault}
                 >
-                  {error.userMessage || error.message}
+                  {(error as any).userMessage || (error as any).message}
                 </Text>
               </Box>
 
@@ -245,34 +234,21 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               gap={2}
               width={BlockSize.Full}
             >
-              {canRetry ? (
-                <>
-                  <Button
-                    variant={ButtonVariant.Primary}
-                    size={ButtonSize.Lg}
-                    block
-                    onClick={handleRetry}
-                  >
-                    {isLoading ? (
-                      <Icon
-                        name={IconName.Loading}
-                        style={{ animation: 'spin 1.2s linear infinite' }}
-                      />
-                    ) : (
-                      t('hardwareWalletErrorContinueButton')
-                    )}
-                  </Button>
-                </>
-              ) : (
-                <Button
-                  variant={ButtonVariant.Primary}
-                  size={ButtonSize.Lg}
-                  block
-                  onClick={handleCancel}
-                >
-                  {t('close')}
-                </Button>
-              )}
+              <Button
+                variant={ButtonVariant.Primary}
+                size={ButtonSize.Lg}
+                block
+                onClick={handleRetry}
+              >
+                {isLoading ? (
+                  <Icon
+                    name={IconName.Loading}
+                    style={{ animation: 'spin 1.2s linear infinite' }}
+                  />
+                ) : (
+                  t('hardwareWalletErrorContinueButton')
+                )}
+              </Button>
             </Box>
           </ModalFooter>
         </ModalContent>

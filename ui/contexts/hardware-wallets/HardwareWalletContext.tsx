@@ -27,7 +27,6 @@ export type HardwareWalletConfigContextType = {
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
-  currentAppName: string | null;
 };
 
 export type HardwareWalletStateContextType = {
@@ -59,7 +58,6 @@ export type HardwareWalletContextType = {
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
-  currentAppName: string | null;
 
   // Actions (stable, won't cause rerenders)
   connect: () => Promise<void>;
@@ -159,7 +157,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   const {
     deviceId,
     hardwareConnectionPermissionState,
-    currentAppName,
     connectionState,
     walletType,
     isHardwareWalletAccount,
@@ -168,7 +165,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
   const {
     setDeviceId,
     setHardwareConnectionPermissionState,
-    setCurrentAppName,
     setConnectionState,
   } = setters;
 
@@ -180,7 +176,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs,
       setters: {
         setConnectionState,
-        setCurrentAppName,
       },
     });
 
@@ -254,19 +249,12 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs.adapterRef.current = null;
       updateConnectionState(ConnectionState.disconnected());
       setDeviceId(null);
-      setCurrentAppName(null);
       refs.isConnectingRef.current = false;
       refs.currentConnectionIdRef.current = null;
       refs.hasAutoConnectedRef.current = false;
       refs.lastConnectedAccountRef.current = null;
     }
-  }, [
-    isHardwareWalletAccount,
-    updateConnectionState,
-    refs,
-    setDeviceId,
-    setCurrentAppName,
-  ]);
+  }, [isHardwareWalletAccount, updateConnectionState, refs, setDeviceId]);
 
   // Disconnect when switching wallet type
   useEffect(() => {
@@ -289,7 +277,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       refs.adapterRef.current = null;
       updateConnectionState(ConnectionState.disconnected());
       setDeviceId(null);
-      setCurrentAppName(null);
       refs.isConnectingRef.current = false;
       refs.currentConnectionIdRef.current = null;
       refs.hasAutoConnectedRef.current = false;
@@ -301,7 +288,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     updateConnectionState,
     refs,
     setDeviceId,
-    setCurrentAppName,
   ]);
 
   // === CONTEXT VALUE ===
@@ -315,7 +301,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
-      currentAppName,
 
       // Actions (stable)
       connect: stableActionsRef.current.connect,
@@ -335,7 +320,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
-      currentAppName,
       stableActionsRef,
     ],
   );
@@ -349,7 +333,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       hardwareConnectionPermissionState,
       isWebHidAvailable: isWebHidAvailableState,
       isWebUsbAvailable: isWebUsbAvailableState,
-      currentAppName,
     }),
     [
       isHardwareWalletAccount,
@@ -358,7 +341,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
       hardwareConnectionPermissionState,
       isWebHidAvailableState,
       isWebUsbAvailableState,
-      currentAppName,
     ],
   );
 

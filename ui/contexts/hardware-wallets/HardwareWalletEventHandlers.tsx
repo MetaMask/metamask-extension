@@ -1,4 +1,5 @@
 import { useCallback } from 'react';
+import { type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   DeviceEvent,
   ConnectionStatus,
@@ -7,6 +8,7 @@ import {
 } from './types';
 import { ConnectionState } from './connectionState';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
+import { getConnectionStateFromError } from './errors';
 
 /**
  * Props required by device event handlers
@@ -21,7 +23,6 @@ export type DeviceEventHandlerProps = {
             prev: HardwareWalletConnectionState,
           ) => HardwareWalletConnectionState),
     ) => void;
-    setCurrentAppName: (name: string | null) => void;
   };
   onDeviceEvent?: (payload: DeviceEventPayload) => void;
 };
@@ -109,15 +110,6 @@ export const useDeviceEventHandlers = ({
           }
           break;
 
-        case DeviceEvent.AppChanged:
-          setters.setCurrentAppName(payload.currentAppName || null);
-          if (payload.currentAppName) {
-            updateConnectionState(
-              ConnectionState.awaitingApp('wrong_app', payload.currentAppName),
-            );
-          }
-          break;
-
         case DeviceEvent.ConnectionFailed:
           if (payload.error) {
             updateConnectionState(
@@ -174,16 +166,3 @@ export const useDeviceEventHandlers = ({
     handleDisconnect,
   };
 };
-
-// TODO: Import these from the errors module when PR 2 is complete
-// For now, these are placeholder functions that will be replaced
-type HardwareWalletError = {
-  code: string;
-};
-
-function getConnectionStateFromError(
-  _error: HardwareWalletError,
-): HardwareWalletConnectionState {
-  // Placeholder implementation - will be replaced when errors module is available
-  return ConnectionState.error('unknown_error', new Error('Unknown error'));
-}

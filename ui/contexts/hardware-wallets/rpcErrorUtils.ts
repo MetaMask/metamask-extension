@@ -7,9 +7,8 @@ import {
   ErrorCode,
   Severity,
   Category,
-  RetryStrategy,
   parseErrorByType,
-} from './errors';
+} from '@metamask/hw-wallet-sdk';
 import { HardwareWalletType } from './types';
 
 const LOG_TAG = '[RpcErrorUtils]';
@@ -19,11 +18,8 @@ type HardwareWalletErrorData = {
   code: ErrorCode;
   severity?: string;
   category?: string;
-  retryStrategy?: string;
-  userActionable?: boolean;
   userMessage?: string;
   metadata?: Record<string, unknown>;
-  documentationUrl?: string;
 };
 
 /**
@@ -112,11 +108,8 @@ export function reconstructHardwareWalletError(
         code: error.data.code,
         severity: error.data.severity as Severity,
         category: error.data.category as Category,
-        retryStrategy: error.data.retryStrategy as RetryStrategy,
-        userActionable: error.data.userActionable ?? false,
         userMessage: error.data.userMessage ?? '',
         metadata: error.data.metadata,
-        documentationUrl: error.data.documentationUrl,
       },
     );
 

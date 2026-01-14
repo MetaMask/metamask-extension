@@ -3,19 +3,13 @@ import {
   ErrorCode,
   Severity,
   Category,
-  RetryStrategy,
-  HARDWARE_MAPPINGS,
-} from '@metamask/keyring-utils';
+  LEDGER_ERROR_MAPPINGS,
+} from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import {
   HardwareWalletType,
   type HardwareWalletConnectionState,
 } from './types';
-
-/**
- * Re-export types from @metamask/keyring-utils for convenience
- */
-export { HardwareWalletError, ErrorCode, Severity, Category, RetryStrategy };
 
 /**
  * Factory function to create hardware wallet errors
@@ -38,15 +32,12 @@ export function createHardwareWalletError(
   },
 ): HardwareWalletError {
   // Get error properties based on error code
-  const { severity, category, retryStrategy, userActionable, userMessage } =
-    getErrorProperties(code);
+  const { severity, category, userMessage } = getErrorProperties(code);
 
   return new HardwareWalletError(message || userMessage, {
     code,
     severity,
     category,
-    retryStrategy,
-    userActionable,
     userMessage,
     cause: options?.cause,
     metadata: {
@@ -57,7 +48,7 @@ export function createHardwareWalletError(
 }
 
 /**
- * Error properties map built from HARDWARE_MAPPINGS
+ * Error properties map built from LEDGER_ERROR_MAPPINGS
  */
 const ERROR_PROPERTIES_MAP = (() => {
   const map = new Map<
@@ -65,8 +56,6 @@ const ERROR_PROPERTIES_MAP = (() => {
     {
       severity: Severity;
       category: Category;
-      retryStrategy: RetryStrategy;
-      userActionable: boolean;
       userMessage: string;
     }
   >();
@@ -76,54 +65,43 @@ const ERROR_PROPERTIES_MAP = (() => {
     mappings: Record<
       string,
       {
-        customCode?: ErrorCode;
+        code?: ErrorCode;
         severity?: Severity;
         category?: Category;
-        retryStrategy?: RetryStrategy;
-        userActionable?: boolean;
         userMessage?: string;
       }
     >,
   ) => {
     for (const mapping of Object.values(mappings)) {
-      if (mapping.customCode && typeof mapping.customCode === 'number') {
-        map.set(mapping.customCode, {
+      if (mapping.code && typeof mapping.code === 'number') {
+        map.set(mapping.code, {
           severity: mapping.severity ?? Severity.Err,
           category: mapping.category ?? Category.Unknown,
-          retryStrategy: mapping.retryStrategy ?? RetryStrategy.NoRetry,
-          userActionable: mapping.userActionable ?? false,
           userMessage: mapping.userMessage ?? 'An error occurred',
         });
       }
     }
   };
 
-  // Extract from Ledger and Trezor mappings
-  extractFromMappings(HARDWARE_MAPPINGS.ledger.errorMappings);
-  extractFromMappings(HARDWARE_MAPPINGS.trezor.errorMappings);
+  // Extract from Ledger
+  extractFromMappings(LEDGER_ERROR_MAPPINGS);
 
   // Add custom properties for specific error codes not in mappings
-  map.set(ErrorCode.AuthSecurityCondition, {
+  map.set(ErrorCode.AuthenticationSecurityCondition, {
     severity: Severity.Err,
     category: Category.Authentication,
-    retryStrategy: RetryStrategy.Retry,
-    userActionable: true,
     userMessage: 'Permission to access the device was denied',
   });
 
   map.set(ErrorCode.UserRejected, {
     severity: Severity.Warning,
     category: Category.UserAction,
-    retryStrategy: RetryStrategy.NoRetry,
-    userActionable: false,
     userMessage: 'Operation cancelled by user',
   });
 
   map.set(ErrorCode.UserCancelled, {
     severity: Severity.Warning,
     category: Category.UserAction,
-    retryStrategy: RetryStrategy.NoRetry,
-    userActionable: false,
     userMessage: 'Operation cancelled by user',
   });
 
@@ -134,21 +112,17 @@ const ERROR_PROPERTIES_MAP = (() => {
  * Get error properties based on error code
  *
  * @param code - The error code to get properties for
- * @returns Error properties including severity, category, retry strategy, etc.
+ * @returns Error properties including severity, category, etc.
  */
 function getErrorProperties(code: ErrorCode): {
   severity: Severity;
   category: Category;
-  retryStrategy: RetryStrategy;
-  userActionable: boolean;
   userMessage: string;
 } {
   return (
     ERROR_PROPERTIES_MAP.get(code) ?? {
       severity: Severity.Err,
       category: Category.Unknown,
-      retryStrategy: RetryStrategy.NoRetry,
-      userActionable: false,
       userMessage: 'An unknown error occurred',
     }
   );
@@ -176,28 +150,11 @@ export function parseErrorByType(
   const cause = error instanceof Error ? error : undefined;
 
   // Parse hardware wallet error codes using mappings from keyring-utils
-  const ledgerMappings = HARDWARE_MAPPINGS.ledger.errorMappings;
-  for (const [errorCode, mapping] of Object.entries(ledgerMappings)) {
+  for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
     if (errorMessageLower.includes(errorCode)) {
-      return createHardwareWalletError(
-        mapping.customCode,
-        walletType,
-        errorMessage,
-        { cause },
-      );
-    }
-  }
-
-  // Check Trezor mappings
-  const trezorMappings = HARDWARE_MAPPINGS.trezor.errorMappings;
-  for (const [errorKey, mapping] of Object.entries(trezorMappings)) {
-    if (errorMessageLower.includes(errorKey.toLowerCase())) {
-      return createHardwareWalletError(
-        mapping.customCode,
-        walletType,
-        errorMessage,
-        { cause },
-      );
+      return createHardwareWalletError(mapping.code, walletType, errorMessage, {
+        cause,
+      });
     }
   }
 
@@ -205,7 +162,7 @@ export function parseErrorByType(
   const errorPatterns = [
     {
       patterns: ['locked'],
-      code: ErrorCode.AuthDeviceLocked,
+      code: ErrorCode.AuthenticationDeviceLocked,
     },
     {
       patterns: ['app'],
@@ -217,15 +174,15 @@ export function parseErrorByType(
     },
     {
       patterns: ['timeout'],
-      code: ErrorCode.ConnTimeout,
+      code: ErrorCode.ConnectionTimeout,
     },
     {
       patterns: ['webhid', 'hid'],
-      code: ErrorCode.ConnTransportMissing,
+      code: ErrorCode.ConnectionTransportMissing,
     },
     {
       patterns: ['permission.*denied'],
-      code: ErrorCode.AuthSecurityCondition,
+      code: ErrorCode.AuthenticationSecurityCondition,
     },
     {
       patterns: ['disconnected', 'not found'],
@@ -233,7 +190,7 @@ export function parseErrorByType(
     },
     {
       patterns: ['connection', 'connect'],
-      code: ErrorCode.ConnClosed,
+      code: ErrorCode.ConnectionClosed,
     },
   ];
 
@@ -272,22 +229,22 @@ export function getConnectionStateFromError(
   error: HardwareWalletError,
 ): HardwareWalletConnectionState {
   switch (error.code) {
-    case ErrorCode.AuthDeviceLocked:
-    case ErrorCode.AuthDeviceBlocked:
+    case ErrorCode.AuthenticationDeviceLocked:
+    case ErrorCode.AuthenticationDeviceBlocked:
       return ConnectionState.error('locked', error);
     case ErrorCode.DeviceStateEthAppClosed:
       return ConnectionState.awaitingApp('not_open');
-    case ErrorCode.ConnTransportMissing:
+    case ErrorCode.ConnectionTransportMissing:
       return ConnectionState.error('webhid_not_available', error);
-    case ErrorCode.AuthSecurityCondition:
+    case ErrorCode.AuthenticationSecurityCondition:
       return ConnectionState.error('webhid_permission_denied', error);
-    case ErrorCode.ConnClosed:
+    case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
       return ConnectionState.error('connection_failed', error);
     case ErrorCode.UserRejected:
     case ErrorCode.UserCancelled:
       return ConnectionState.error('user_rejected', error);
-    case ErrorCode.ConnTimeout:
+    case ErrorCode.ConnectionTimeout:
       return ConnectionState.error('timeout', error);
     default:
       return ConnectionState.error('unknown', error);

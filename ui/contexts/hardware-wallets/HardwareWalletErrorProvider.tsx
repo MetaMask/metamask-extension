@@ -9,6 +9,7 @@ import React, {
   type ReactNode,
 } from 'react';
 import { useDispatch } from 'react-redux';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { showModal, hideModal } from '../../store/actions';
 import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../components/app/modals/hardware-wallet-error-modal';
 import {
@@ -18,7 +19,6 @@ import {
   useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { ConnectionStatus } from './types';
-import { ErrorCode, type HardwareWalletError } from './errors';
 
 const LOG_TAG = '[HardwareWalletErrorProvider]';
 
@@ -26,7 +26,7 @@ type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error
    */
-  showErrorModal: (error: HardwareWalletError) => void;
+  showErrorModal: (error: unknown) => void;
 
   /**
    * Manually dismiss the error modal
@@ -73,11 +73,10 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
   const { ensureDeviceReady, clearError } = useHardwareWalletActions();
 
   // Store the current error to display (independent of connection state)
-  const [displayedError, setDisplayedError] =
-    useState<HardwareWalletError | null>(null);
+  const [displayedError, setDisplayedError] = useState<unknown | null>(null);
   const isModalOpenRef = useRef(false);
   // Track the last error from connection state to detect resolution
-  const lastConnectionErrorRef = useRef<HardwareWalletError | null>(null);
+  const lastConnectionErrorRef = useRef<unknown | null>(null);
 
   /**
    * Handle retry action from the modal
@@ -124,19 +123,17 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    * Show error modal (internal implementation)
    */
   const showErrorModalInternal = useCallback(
-    (error: HardwareWalletError, skipFilters = false) => {
+    (error: unknown, skipFilters = false) => {
       console.log(LOG_TAG, 'showErrorModalInternal called with:', {
         error,
         skipFilters,
-        errorCode: error?.code,
-        userActionable: error?.userActionable,
+        errorCode: (error as any)?.code,
       });
 
       // Don't show modal for user cancellations (unless forced)
       if (
-        !skipFilters &&
-        (error.code === ErrorCode.UserRejected ||
-          error.code === ErrorCode.UserCancelled)
+        (!skipFilters && (error as any)?.code === ErrorCode.UserRejected) ||
+        (error as any)?.code === ErrorCode.UserCancelled
       ) {
         console.log(LOG_TAG, 'Skipping modal for user cancellation');
         return;
@@ -173,7 +170,7 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
    * This allows components to manually trigger the error modal
    */
   const showErrorModal = useCallback(
-    (error: HardwareWalletError) => {
+    (error: unknown) => {
       // When called manually, we skip the filters (allow user cancellations, duplicates, etc.)
       showErrorModalInternal(error, true);
     },
@@ -202,15 +199,11 @@ const HardwareWalletErrorMonitor: React.FC<{ children: ReactNode }> = ({
 
     // Check if we have a NEW error state
     if (connectionState.status === ConnectionStatus.ErrorState) {
-      const error = connectionState.error as HardwareWalletError;
+      const error = connectionState.error;
       lastConnectionErrorRef.current = error;
 
-      // Only show modal for actionable errors
-      if (error?.userActionable) {
-        // Check if this is a different error than what we're currently displaying
-        if (error !== displayedError) {
-          showErrorModalInternal(error, false);
-        }
+      if (error !== displayedError) {
+        showErrorModalInternal(error, false);
       }
     }
   }, [

@@ -1,13 +1,10 @@
-import {
-  HardwareDeviceNames,
-  LEDGER_USB_VENDOR_ID,
-} from '../../../../shared/constants/hardware-wallets';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { LEDGER_USB_VENDOR_ID } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
-  getHdPathForHardwareKeyring,
   getAppNameAndVersion,
 } from '../../../store/actions';
-import { createHardwareWalletError, ErrorCode } from '../errors';
+import { createHardwareWalletError } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -64,12 +61,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     }
   }
 
-  private async getHdPath(): Promise<string> {
-    const path = await getHdPathForHardwareKeyring(HardwareDeviceNames.ledger);
-    console.log(LOG_TAG, 'Hd path:', path);
-    return path;
-  }
-
   /**
    * Connect to Ledger device
    * Verifies device is physically connected AND Ethereum app is open
@@ -83,7 +74,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       // Step 1: Check WebHID availability
       if (!this.isWebHIDAvailable()) {
         throw createHardwareWalletError(
-          ErrorCode.CONN_TRANSPORT_001,
+          ErrorCode.ConnectionTransportMissing,
           HardwareWalletType.Ledger,
           'WebHID is not available',
         );
@@ -93,7 +84,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       const isDeviceConnected = await this.checkDeviceConnected();
       if (!isDeviceConnected) {
         throw createHardwareWalletError(
-          ErrorCode.DEVICE_STATE_003,
+          ErrorCode.DeviceDisconnected,
           HardwareWalletType.Ledger,
           'Ledger device not found. Please connect your Ledger device.',
         );
@@ -101,14 +92,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       // Step 3: Attempt to create a transport for the device
       await attemptLedgerTransportCreation();
-
-      // Step 4: set current app name
-      try {
-        const { appName } = await getAppNameAndVersion();
-        this.currentAppName = appName;
-      } catch (e) {
-        // temp
-      }
 
       // Mark as connected - device is present AND app is open
       this.connected = true;
@@ -127,28 +110,27 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       console.log(LOG_TAG, 'Connection failed with error:', {
         code: hwError.code,
-        userActionable: hwError.userActionable,
       });
 
       const errorCode = hwError.code;
 
       if (errorCode) {
         if (
-          errorCode === ErrorCode.AUTH_LOCK_001 ||
-          errorCode === ErrorCode.AUTH_LOCK_002
+          errorCode === ErrorCode.AuthenticationDeviceLocked ||
+          errorCode === ErrorCode.AuthenticationDeviceBlocked
         ) {
           console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event from connect');
           this.options.onDeviceEvent({
             event: DeviceEvent.DeviceLocked,
             error: hwError,
           });
-        } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
+        } else if (errorCode === ErrorCode.DeviceStateEthAppClosed) {
           console.log(LOG_TAG, 'Emitting APP_NOT_OPEN event from connect');
           this.options.onDeviceEvent({
             event: DeviceEvent.AppNotOpen,
             error: hwError,
           });
-        } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
+        } else if (errorCode === ErrorCode.DeviceDisconnected) {
           console.log(LOG_TAG, 'Emitting DISCONNECTED event from connect');
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
@@ -217,7 +199,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         await this.connect(deviceId);
       } catch (error) {
         throw createHardwareWalletError(
-          ErrorCode.DEVICE_STATE_003,
+          ErrorCode.DeviceDisconnected,
           HardwareWalletType.Ledger,
           error instanceof Error ? error.message : 'Unknown error',
           {
@@ -235,7 +217,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       if (appName !== 'Ethereum') {
         throw createHardwareWalletError(
-          ErrorCode.DEVICE_STATE_001,
+          ErrorCode.DeviceStateEthAppClosed,
           HardwareWalletType.Ledger,
           `Ethereum app is not open, got ${appName}`,
         );
@@ -245,54 +227,40 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     } catch (error) {
       console.error(LOG_TAG, 'Error verifying device ready:', error);
 
-      const hwError = reconstructHardwareWalletError(
-        error,
-        HardwareWalletType.Ledger,
-      );
-
-      console.log(LOG_TAG, 'Reconstructed error:', {
-        code: hwError.code,
-        userActionable: hwError.userActionable,
-      });
-
-      const errorCode = hwError.code;
-
-      console.log(LOG_TAG, 'Error code:', errorCode);
-
-      if (errorCode) {
+      if (error instanceof HardwareWalletError && error.code) {
         // Emit appropriate device events with the properly reconstructed error
         if (
-          errorCode === ErrorCode.AUTH_LOCK_001 ||
-          errorCode === ErrorCode.AUTH_LOCK_002
+          error.code === ErrorCode.AuthenticationDeviceLocked ||
+          error.code === ErrorCode.AuthenticationDeviceBlocked
         ) {
           console.log(LOG_TAG, 'Emitting DEVICE_LOCKED event');
           this.options.onDeviceEvent({
             event: DeviceEvent.DeviceLocked,
-            error: hwError,
+            error,
           });
-        } else if (errorCode === ErrorCode.DEVICE_STATE_001) {
+        } else if (error.code === ErrorCode.DeviceStateEthAppClosed) {
           console.log(LOG_TAG, 'Emitting APP_NOT_OPEN event');
           this.options.onDeviceEvent({
             event: DeviceEvent.AppNotOpen,
-            error: hwError,
+            error,
           });
-        } else if (errorCode === ErrorCode.DEVICE_STATE_003) {
+        } else if (error.code === ErrorCode.DeviceDisconnected) {
           console.log(LOG_TAG, 'Emitting DISCONNECTED event');
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
-            error: hwError,
+            error,
           });
         } else {
           // Catch-all for other errors
           console.log(LOG_TAG, 'Emitting DISCONNECTED event (catch-all)');
           this.options.onDeviceEvent({
             event: DeviceEvent.Disconnected,
-            error: hwError,
+            error,
           });
         }
       }
 
-      throw hwError;
+      throw error;
     }
   }
 }

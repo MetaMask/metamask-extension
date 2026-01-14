@@ -1,6 +1,5 @@
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { IconName } from '../../../component-library';
-import { ErrorCode } from '../../../../contexts/hardware-wallets/errors';
-import type { HardwareWalletError } from '../../../../contexts/hardware-wallets/errors';
 import { HardwareWalletType } from '../../../../contexts/hardware-wallets/types';
 
 /**
@@ -22,14 +21,13 @@ export type ErrorContent = {
  * @returns The formatted error content with icon, title, description, and recovery instructions
  */
 export function buildErrorContent(
-  error: HardwareWalletError,
+  error: unknown,
   walletType: HardwareWalletType,
   t: (key: string, substitutions?: string[]) => string,
 ): ErrorContent {
-  switch (error.code) {
+  switch ((error as any).code) {
     // Locked device errors
-    case ErrorCode.AUTH_LOCK_001:
-    case ErrorCode.AUTH_LOCK_002:
+    case ErrorCode.AuthenticationDeviceLocked:
       return {
         icon: IconName.Lock,
         title: t('hardwareWalletErrorTitleDeviceLocked', [t(walletType)]),
@@ -42,7 +40,7 @@ export function buildErrorContent(
       };
 
     // Device state - Wrong app
-    case ErrorCode.DEVICE_STATE_001:
+    case ErrorCode.DeviceStateEthAppClosed:
       return {
         icon: IconName.Apps,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
@@ -53,8 +51,7 @@ export function buildErrorContent(
         ],
       };
 
-    // Device state - Disconnected/Connection issues
-    case ErrorCode.DEVICE_STATE_002:
+    case ErrorCode.DeviceStateBlindSignNotSupported:
       return {
         icon: IconName.Plug,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
@@ -64,9 +61,30 @@ export function buildErrorContent(
           t('hardwareWalletErrorRecoveryConnection3'),
         ],
       };
-    case ErrorCode.DEVICE_STATE_003:
-    case ErrorCode.DEVICE_STATE_004:
-    case ErrorCode.DEVICE_STATE_005:
+    case ErrorCode.DeviceStateOnlyV4Supported:
+      return {
+        icon: IconName.Plug,
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryConnection1'),
+          t('hardwareWalletErrorRecoveryConnection2'),
+          t('hardwareWalletErrorRecoveryConnection3'),
+        ],
+      };
+
+    case ErrorCode.DeviceStateEthAppOutOfDate:
+      return {
+        icon: IconName.Plug,
+        title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
+        recoveryInstructions: [
+          t('hardwareWalletErrorRecoveryConnection1'),
+          t('hardwareWalletErrorRecoveryConnection2'),
+          t('hardwareWalletErrorRecoveryConnection3'),
+        ],
+      };
+
+    // Device state - Disconnected/Connection issues
+    case ErrorCode.DeviceDisconnected:
       return {
         icon: IconName.Plug,
         title: t('hardwareWalletErrorTitleConnectYourDevice', [t(walletType)]),
@@ -78,7 +96,7 @@ export function buildErrorContent(
       };
 
     // WebHID transport error
-    case ErrorCode.CONN_TRANSPORT_001:
+    case ErrorCode.ConnectionTransportMissing:
       return {
         icon: IconName.Danger,
         title: t('hardwareWalletErrorTitle'),
@@ -88,20 +106,7 @@ export function buildErrorContent(
         ],
       };
 
-    // Permission denied
-    case ErrorCode.CONFIG_PERM_001:
-      return {
-        icon: IconName.SecurityKey,
-        title: t('hardwareWalletErrorRecoveryPermissionTitle'),
-        recoveryInstructions: [
-          t('hardwareWalletErrorRecoveryPermission1'),
-          t('hardwareWalletErrorRecoveryPermission2'),
-          t('hardwareWalletErrorRecoveryPermission3'),
-        ],
-      };
-
-    // Connection closed
-    case ErrorCode.CONN_CLOSED_001:
+    case ErrorCode.ConnectionClosed:
       return {
         icon: IconName.Close,
         title: t('hardwareWalletErrorRecoveryConnectionTitle'),
@@ -112,8 +117,7 @@ export function buildErrorContent(
         ],
       };
 
-    // Timeout
-    case ErrorCode.CONN_TIMEOUT_001:
+    case ErrorCode.ConnectionTimeout:
       return {
         icon: IconName.Clock,
         title: t('hardwareWalletErrorTitle'),
@@ -123,9 +127,8 @@ export function buildErrorContent(
         ],
       };
 
-    // User cancelled
-    case ErrorCode.USER_CANCEL_001:
-    case ErrorCode.USER_CANCEL_002:
+    case ErrorCode.UserCancelled:
+    case ErrorCode.UserRejected:
       return {
         icon: IconName.Close,
         title: t('hardwareWalletErrorTitle'),

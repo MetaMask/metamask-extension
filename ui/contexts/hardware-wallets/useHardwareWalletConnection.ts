@@ -2,9 +2,8 @@ import { useCallback, useEffect } from 'react';
 import {
   getConnectionStateFromError,
   createHardwareWalletError,
-  ErrorCode,
-  type HardwareWalletError,
 } from './errors';
+import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import {
@@ -97,7 +96,7 @@ export const useHardwareWalletConnection = ({
         updateConnectionState(
           getConnectionStateFromError(
             createHardwareWalletError(
-              ErrorCode.ConnClosed,
+              ErrorCode.ConnectionClosed,
               targetWalletType,
               `Failed to discover ${targetWalletType} device: ${error instanceof Error ? error.message : String(error)}`,
               { cause: error instanceof Error ? error : undefined },
@@ -366,9 +365,9 @@ export const useHardwareWalletConnection = ({
 
       if (!abortSignal?.aborted) {
         const adapter = refs.adapterRef.current;
-        if (adapter?.verifyDeviceReady && effectiveDeviceId) {
+        if (adapter?.ensureDeviceReady && effectiveDeviceId) {
           try {
-            const result = await adapter.verifyDeviceReady(effectiveDeviceId);
+            const result = await adapter.ensureDeviceReady(effectiveDeviceId);
             // eslint-disable-next-line no-console
             console.log(
               '[HardwareWalletConnection] ensureDeviceReady:',
