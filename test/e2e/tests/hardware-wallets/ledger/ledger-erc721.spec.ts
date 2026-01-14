@@ -5,10 +5,10 @@ import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 
@@ -101,14 +101,15 @@ describe('Ledger Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.goToNftTab();
-        const nftListPage = new NFTListPage(driver);
-        // Check that NFT image is displayed in NFT tab on homepage
-        await nftListPage.checkNftImageIsDisplayed();
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText('Deposit');
         await activityListPage.checkWaitForTransactionStatus('confirmed');
+
+        // Check that NFT image is displayed in NFT tab on homepage
+        await homePage.goToNftTab();
+        const nftListPage = new NFTListPage(driver);
+        await nftListPage.checkNftImageIsDisplayed();
       },
     );
   });

@@ -230,6 +230,7 @@ import {
   METAMASK_REFERRAL_CODE,
 } from '../../shared/constants/referrals';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
+import { createSentryError } from '../../shared/modules/error';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -420,6 +421,7 @@ import { MetaMetricsDataDeletionControllerInit } from './controller-init/metamet
 import { LoggingControllerInit } from './controller-init/logging-controller-init';
 import { AppMetadataControllerInit } from './controller-init/app-metadata-controller-init';
 import { ErrorReportingServiceInit } from './controller-init/error-reporting-service-init';
+import { StorageServiceInit } from './controller-init/storage-service-init';
 import { ApprovalControllerInit } from './controller-init/confirmations/approval-controller-init';
 import { AddressBookControllerInit } from './controller-init/confirmations/address-book-controller-init';
 import { DecryptMessageManagerInit } from './controller-init/confirmations/decrypt-message-manager-init';
@@ -575,6 +577,7 @@ export default class MetamaskController extends EventEmitter {
       ApprovalController: ApprovalControllerInit,
       LoggingController: LoggingControllerInit,
       ErrorReportingService: ErrorReportingServiceInit,
+      StorageService: StorageServiceInit,
       AppMetadataController: AppMetadataControllerInit,
       PreferencesController: PreferencesControllerInit,
       SnapKeyringBuilder: SnapKeyringBuilderInit,
@@ -3983,17 +3986,12 @@ export default class MetamaskController extends EventEmitter {
 
       await this.syncKeyringEncryptionKey();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
-      });
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          TraceName.OnboardingCreateKeyAndBackupSrpError,
+          error,
+        ),
+      );
 
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
@@ -4024,18 +4022,7 @@ export default class MetamaskController extends EventEmitter {
 
       return allSeedPhrases;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingFetchSrpsError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingFetchSrpsError,
-      });
-
+      log.error('error while fetching all seed phrases', error);
       throw error;
     } finally {
       this.metaMetricsController.bufferedEndTrace?.({
@@ -4174,17 +4161,9 @@ export default class MetamaskController extends EventEmitter {
               });
           });
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingResetPasswordError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingResetPasswordError,
-        });
+        this.controllerMessenger?.captureException?.(
+          createSentryError(TraceName.OnboardingResetPasswordError, err),
+        );
 
         // lock app again on error after submitPassword succeeded
         // here we skip the seedless operation lock as we are already in the seedless operation lock
@@ -4222,19 +4201,30 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    const { completedOnboarding } = this.onboardingController.state;
+    try {
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
+      const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow || !completedOnboarding) {
-      // this is only available for seedless onboarding flow and completed onboarding
-      return false;
+      if (!isSocialLoginFlow || !completedOnboarding) {
+        // this is only available for seedless onboarding flow and completed onboarding
+        return false;
+      }
+
+      const isPasswordOutdated =
+        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache,
+        });
+      return isPasswordOutdated;
+    } catch (error) {
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          'Failed to check if seedless password is outdated',
+          error,
+        ),
+      );
+      throw error;
     }
-
-    const isPasswordOutdated =
-      await this.seedlessOnboardingController.checkIsPasswordOutdated({
-        skipCache,
-      });
-    return isPasswordOutdated;
   }
 
   /**
@@ -4243,57 +4233,68 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async syncSeedPhrases() {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    try {
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
 
-    if (!isSocialLoginFlow) {
-      throw new Error(
-        'Syncing seed phrases is only available for social login flow',
-      );
-    }
-
-    // 1. fetch all seed phrases
-    const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
-    if (!rootSecret) {
-      throw new Error('No root SRP found');
-    }
-
-    for (const secret of otherSecrets) {
-      // import SRP secret
-      // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(
-          secret.data,
-          secret.type,
+      if (!isSocialLoginFlow) {
+        throw new Error(
+          'Syncing seed phrases is only available for social login flow',
         );
-
-      if (!srpHash) {
-        // import private key secret
-        if (secret.type === SecretType.PrivateKey) {
-          await this.importAccountWithStrategy(
-            'privateKey',
-            [bytesToHex(secret.data)],
-            {
-              shouldCreateSocialBackup: false,
-              shouldSelectAccount: false,
-            },
-          );
-          continue;
-        }
-
-        // If SRP is not in the local state, import it to the vault
-        // convert the seed phrase to a mnemonic (string)
-        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-          secret.data,
-        );
-        const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-        // import the new mnemonic to the current vault
-        await this.importMnemonicToVault(mnemonicToRestore, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-          shouldImportSolanaAccount: true,
-        });
       }
+
+      // 1. fetch all seed phrases
+      const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
+      if (!rootSecret) {
+        throw new Error('No root SRP found');
+      }
+
+      for (const secret of otherSecrets) {
+        // import SRP secret
+        // Get the SRP hash, and find the hash in the local state
+        const srpHash =
+          this.seedlessOnboardingController.getSecretDataBackupState(
+            secret.data,
+            secret.type,
+          );
+
+        if (!srpHash) {
+          // import private key secret
+          if (secret.type === SecretType.PrivateKey) {
+            await this.importAccountWithStrategy(
+              'privateKey',
+              [bytesToHex(secret.data)],
+              {
+                shouldCreateSocialBackup: false,
+                shouldSelectAccount: false,
+              },
+            );
+            continue;
+          }
+
+          // If SRP is not in the local state, import it to the vault
+          // convert the seed phrase to a mnemonic (string)
+          const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+            secret.data,
+          );
+          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+
+          // import the new mnemonic to the current vault
+          await this.importMnemonicToVault(mnemonicToRestore, {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: true,
+          });
+        }
+      }
+    } catch (error) {
+      log.error('error while syncing seed phrases', error);
+
+      this.controllerMessenger?.captureException?.(
+        createSentryError('Error while syncing seed phrases', error),
+      );
+
+      throw error;
     }
   }
 
@@ -4330,17 +4331,9 @@ export default class MetamaskController extends EventEmitter {
         );
         addNewSeedPhraseBackupSuccess = true;
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingAddSrpError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingAddSrpError,
-        });
+        this.controllerMessenger?.captureException?.(
+          createSentryError(TraceName.OnboardingAddSrpError, err),
+        );
 
         throw err;
       } finally {
@@ -4396,6 +4389,13 @@ export default class MetamaskController extends EventEmitter {
             await this.keyringController.exportEncryptionKey();
           await this.seedlessOnboardingController.storeKeyringEncryptionKey(
             revertedKeyringEncKey,
+          );
+
+          this.controllerMessenger?.captureException?.(
+            createSentryError(
+              'error while changing password for social login flow',
+              err,
+            ),
           );
           throw err;
         }
@@ -4790,6 +4790,14 @@ export default class MetamaskController extends EventEmitter {
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
       }
+
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          'Failed to restore social backup and get seed phrase',
+          error,
+        ),
+      );
+
       throw error;
     }
   }

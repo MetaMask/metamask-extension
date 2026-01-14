@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
