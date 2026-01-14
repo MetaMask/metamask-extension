@@ -6,8 +6,8 @@ import {
   DEFAULT_FIXTURE_ACCOUNT,
 } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
