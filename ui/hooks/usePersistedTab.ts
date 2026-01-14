@@ -1,7 +1,7 @@
 import { useCallback, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import browser from 'webextension-polyfill';
-import { AccountOverviewTabKey } from '../helpers/constants/home';
+import { AccountOverviewTab } from '../../shared/constants/app-state';
 
 const STORAGE_KEY = 'home-active-tab';
 
@@ -10,10 +10,10 @@ const STORAGE_KEY = 'home-active-tab';
  * This ensures tab selection persists even when the extension popup is closed/reopened
  */
 export function usePersistedTab(
-  defaultTab: AccountOverviewTabKey = AccountOverviewTabKey.Tokens,
-): [AccountOverviewTabKey, (tab: AccountOverviewTabKey) => void] {
+  defaultTab: AccountOverviewTab = 'tokens',
+): [AccountOverviewTab, (tab: AccountOverviewTab) => void] {
   const [searchParams, setSearchParams] = useSearchParams();
-  const urlTab = searchParams.get('tab') as AccountOverviewTabKey | null;
+  const urlTab = searchParams.get('tab') as AccountOverviewTab | null;
 
   // On mount, restore from browser.storage if no URL param
   useEffect(() => {
@@ -21,12 +21,11 @@ export function usePersistedTab(
       if (!urlTab) {
         try {
           const result = await browser.storage.local.get(STORAGE_KEY);
-          const savedTab = result[STORAGE_KEY] as AccountOverviewTabKey;
+          const savedTab = result[STORAGE_KEY] as
+            | AccountOverviewTab
+            | undefined;
 
-          if (
-            savedTab &&
-            Object.values(AccountOverviewTabKey).includes(savedTab)
-          ) {
+          if (savedTab) {
             // Restore saved tab to URL without adding to history
             setSearchParams({ tab: savedTab }, { replace: true });
           }
@@ -41,20 +40,17 @@ export function usePersistedTab(
 
   // Sync URL param changes to browser.storage
   useEffect(() => {
-    if (urlTab && Object.values(AccountOverviewTabKey).includes(urlTab)) {
+    if (urlTab) {
       browser.storage.local
         .set({ [STORAGE_KEY]: urlTab })
         .catch((error) => console.error('Failed to persist tab:', error));
     }
   }, [urlTab]);
 
-  const activeTab =
-    urlTab && Object.values(AccountOverviewTabKey).includes(urlTab)
-      ? urlTab
-      : defaultTab;
+  const activeTab = urlTab || defaultTab;
 
   const setActiveTab = useCallback(
-    (tab: AccountOverviewTabKey) => {
+    (tab: AccountOverviewTab) => {
       // Update URL param (replaces history entry instead of pushing)
       setSearchParams({ tab }, { replace: true });
 

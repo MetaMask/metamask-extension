@@ -1,11 +1,17 @@
 import { NetworkClientId } from '@metamask/network-controller';
 import { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
-// eslint-disable-next-line import/no-restricted-paths
-import { AccountOverviewTabKey } from '../../ui/helpers/constants/home';
 import { MetaMetricsEventName } from './metametrics';
 
-export { AccountOverviewTabKey };
+export enum AccountOverviewTabKey {
+  Tokens = 'tokens',
+  Nfts = 'nfts',
+  Activity = 'activity',
+  DeFi = 'defi',
+  Perps = 'perps',
+}
+
+export type AccountOverviewTab = `${AccountOverviewTabKey}`;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,

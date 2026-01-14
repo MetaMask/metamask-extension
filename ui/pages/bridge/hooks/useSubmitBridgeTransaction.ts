@@ -99,7 +99,7 @@ export default function useSubmitBridgeTransaction() {
           ),
         );
         navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-          state: { stayOnHomePage: true }, // What is this for?
+          state: { stayOnHomePage: true },
         });
         return;
       }
@@ -129,7 +129,7 @@ export default function useSubmitBridgeTransaction() {
     }
 
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
-      state: { stayOnHomePage: true }, // What is this for?
+      state: { stayOnHomePage: true },
     });
   };
 

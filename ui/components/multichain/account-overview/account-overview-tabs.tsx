@@ -6,8 +6,9 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
+  AccountOverviewTabKey,
+  AccountOverviewTab,
 } from '../../../../shared/constants/app-state';
-import { AccountOverviewTabKey } from '../../../helpers/constants/home';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
@@ -50,7 +51,7 @@ export const AccountOverviewTabs = ({
   showDefi,
 }: AccountOverviewTabsProps) => {
   const [activeTabKey, setActiveTabKey] = usePersistedTab(
-    defaultHomeActiveTabName ?? AccountOverviewTabKey.Tokens,
+    defaultHomeActiveTabName ?? 'tokens',
   );
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -76,7 +77,7 @@ export const AccountOverviewTabs = ({
   });
 
   const handleTabClick = useCallback(
-    (tabName: AccountOverviewTabKey) => {
+    (tabName: AccountOverviewTab) => {
       setActiveTabKey(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
@@ -140,7 +141,7 @@ export const AccountOverviewTabs = ({
     <>
       <AssetListTokenDetection />
 
-      <Tabs<AccountOverviewTabKey>
+      <Tabs<AccountOverviewTab>
         activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{

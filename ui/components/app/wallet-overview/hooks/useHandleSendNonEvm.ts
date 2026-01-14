@@ -29,11 +29,6 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
   const account = useSelector(getSelectedInternalAccount);
   const navigate = useNavigate();
 
-  const currentActivityTabName = useSelector(
-    // @ts-expect-error TODO: fix state type
-    (state) => state.metamask.defaultHomeActiveTabName,
-  );
-
   const unapprovedTemplatedConfirmations = useSelector(
     getMemoizedUnapprovedTemplatedConfirmations,
   );
@@ -86,17 +81,13 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
     const { chainId } = parseCaipAssetType(assetTypeToUse);
 
     try {
-      // FIXME: We switch the tab before starting the send flow (we
-      // faced some inconsistencies when changing it after).
-      navigate(`/?tab=activity`);
       await sendMultichainTransaction(account.metadata.snap.id, {
         account: account.id,
         scope: chainId,
         assetType: assetTypeToUse,
       });
-    } catch (error) {
-      // Restore the previous tab in case of any error (see FIXME comment above).
-      navigate(`/?tab=${currentActivityTabName}`);
+    } catch {
+      // Navigation is handled by ConfirmContextProvider when confirmation disappears.
     }
   };
 };
