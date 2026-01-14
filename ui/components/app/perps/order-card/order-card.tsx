@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
@@ -10,7 +11,6 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
   getDisplayName,
@@ -55,15 +55,15 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
+  const baseStyles = 'cursor-pointer px-4 py-3';
+  const variantStyles =
+    variant === 'muted'
+      ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+      : 'bg-default hover:bg-hover active:bg-pressed';
+
   return (
     <Box
-<<<<<<< HEAD
-      className={classnames('order-card order-card--clickable', {
-        'order-card--muted': variant === 'muted',
-      })}
-=======
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
->>>>>>> perps/mocks
+      className={twMerge(baseStyles, variantStyles)}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}

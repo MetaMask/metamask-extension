@@ -51,11 +51,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
 
   return (
     <Box
-<<<<<<< HEAD
-      className="position-card position-card--clickable"
-=======
       className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
->>>>>>> perps/mocks
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}
