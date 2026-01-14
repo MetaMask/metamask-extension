@@ -4,6 +4,7 @@ import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
 } from '@metamask/network-controller';
+import { ConnectivityControllerGetStateAction } from '@metamask/connectivity-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
@@ -12,7 +13,6 @@ import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
 } from '../../controllers/metametrics-controller';
-import { ConnectivityControllerGetStateAction } from '../../controllers/connectivity';
 import { RootMessenger } from '../../lib/messenger';
 
 export type NetworkControllerMessenger = ReturnType<

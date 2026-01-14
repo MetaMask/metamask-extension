@@ -1,4 +1,5 @@
-import { ConnectivityStatus } from './types';
+import { ConnectivityStatus } from '@metamask/connectivity-controller';
+
 import { PassiveConnectivityService } from './passive-connectivity-service';
 
 describe('PassiveConnectivityService', () => {

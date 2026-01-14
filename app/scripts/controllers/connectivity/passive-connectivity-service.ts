@@ -1,5 +1,5 @@
-import type { ConnectivityService } from './types';
-import { ConnectivityStatus } from './types';
+import type { ConnectivityService } from '@metamask/connectivity-controller';
+import { ConnectivityStatus } from '@metamask/connectivity-controller';
 
 /**
  * A passive connectivity service for cross-context scenarios.

@@ -1,9 +1,8 @@
+import { ConnectivityController } from '@metamask/connectivity-controller';
+import type { ConnectivityControllerMessenger } from '@metamask/connectivity-controller';
+
 import { ControllerInitFunction } from '../types';
-import {
-  ConnectivityController,
-  ConnectivityControllerMessenger,
-  PassiveConnectivityService,
-} from '../../controllers/connectivity';
+import { PassiveConnectivityService } from '../../controllers/connectivity';
 
 /**
  * Initialize the ConnectivityController.

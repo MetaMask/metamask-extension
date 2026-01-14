@@ -1,3 +1,9 @@
+import { ConnectivityController } from '@metamask/connectivity-controller';
+import type {
+  ConnectivityControllerMessenger,
+  ConnectivityControllerActions,
+  ConnectivityControllerEvents,
+} from '@metamask/connectivity-controller';
 import {
   Messenger,
   MOCK_ANY_NAMESPACE,
@@ -6,12 +12,6 @@ import {
 import { ControllerInitRequest } from '../types';
 import { getConnectivityControllerMessenger } from '../messengers/connectivity';
 import { buildControllerInitRequestMock } from '../test/utils';
-import {
-  ConnectivityControllerMessenger,
-  ConnectivityControllerActions,
-  ConnectivityControllerEvents,
-} from '../../controllers/connectivity/types';
-import { ConnectivityController } from '../../controllers/connectivity/connectivity-controller';
 import { ConnectivityControllerInit } from './connectivity-controller-init';
 
 function buildInitRequestMock(): jest.Mocked<

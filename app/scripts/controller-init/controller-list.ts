@@ -84,6 +84,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -107,7 +108,6 @@ import DecryptMessageController from '../controllers/decrypt-message';
 import EncryptionPublicKeyController from '../controllers/encryption-public-key';
 import { RewardsDataService } from '../controllers/rewards/rewards-data-service';
 import { RewardsController } from '../controllers/rewards/rewards-controller';
-import { ConnectivityController } from '../controllers/connectivity';
 
 /**
  * Union of all controllers supporting or required by modular initialization.
