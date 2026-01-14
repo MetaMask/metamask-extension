@@ -4,7 +4,7 @@ import { Driver } from '../../webdriver/driver';
 import HomePage from '../pages/home/homepage';
 import TestDappIndividualRequest from '../pages/test-dapp-individual-request';
 import SendPage from '../pages/send/send-page';
-import TransactionConfirmation from '../pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 
 export const createInternalTransaction = async ({
   driver,
