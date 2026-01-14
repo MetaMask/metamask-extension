@@ -28,6 +28,7 @@ export const LoadingSkeleton = React.forwardRef(
           height={32}
           width={32}
           {...props}
+          style={{ ...props.style, flexShrink: 0 }}
         />
         <Column gap={1}>
           <Skeleton height={16} width={60} {...props} />
