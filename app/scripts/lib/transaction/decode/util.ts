@@ -122,7 +122,9 @@ function normalizeDecodedParamValue(value: any): any {
   const hexValue = value._hex;
 
   if (hexValue) {
-    return BigInt(hexValue).toString();
+    // Keep hex values as hex strings to avoid locale-specific formatting
+    // and to ensure they can be used in contexts expecting hex format
+    return hexValue;
   }
 
   return value;
