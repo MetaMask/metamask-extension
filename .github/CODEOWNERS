@@ -190,7 +190,7 @@ app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
 app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
-app/scripts/lib/createHyperliquidReferralMiddleware.ts                @MetaMask/wallet-integrations
+app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
 app/scripts/lib/metaRPCClientFactory.ts                               @MetaMask/wallet-integrations
 app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations
