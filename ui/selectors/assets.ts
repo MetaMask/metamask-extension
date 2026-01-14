@@ -585,6 +585,21 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     multichainBalances: ReturnType<typeof getMultichainBalances>,
     nativeAssetType: ReturnType<typeof getMultichainNativeAssetType>,
   ) => {
+    // DEBUG: Log para ver balances de Bitcoin/Non-EVM
+    console.log(
+      '[DEBUG getMultichainNativeTokenBalance]',
+      JSON.stringify(
+        {
+          accountId: selectedAccountAddress?.id,
+          accountType: selectedAccountAddress?.type,
+          nativeAssetType,
+          allBalances: multichainBalances?.[selectedAccountAddress?.id ?? ''],
+        },
+        null,
+        2,
+      ),
+    );
+
     if (!selectedAccountAddress) {
       return zeroBalanceAssetFallback;
     }
@@ -592,9 +607,14 @@ export const getMultichainNativeTokenBalance = createDeepEqualSelector(
     const balances = multichainBalances?.[selectedAccountAddress.id];
 
     if (!nativeAssetType || !balances?.[nativeAssetType]) {
+      console.log('[DEBUG] No balance found, returning zero fallback');
       return zeroBalanceAssetFallback;
     }
 
+    console.log(
+      '[DEBUG] Found balance:',
+      JSON.stringify(balances[nativeAssetType], null, 2),
+    );
     return balances[nativeAssetType];
   },
 );
