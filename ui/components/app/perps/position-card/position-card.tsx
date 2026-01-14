@@ -10,7 +10,7 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getPositionDirection } from '../utils';
+import { getDisplayName, getPositionDirection, formatPnl } from '../utils';
 import type { Position } from '../types';
 
 export type PositionCardProps = {
@@ -85,7 +85,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
           variant={TextVariant.BodySm}
           color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
         >
-          {isProfit ? '+' : ''}${position.unrealizedPnl}
+          {formatPnl(position.unrealizedPnl)}
         </Text>
       </Box>
     </Box>

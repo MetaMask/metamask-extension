@@ -118,7 +118,7 @@ export const formatCurrency = (value: string): string => {
  */
 export const formatPnl = (value: string): string => {
   const num = parseFloat(value);
-  const prefix = num >= 0 ? '+' : '';
+  const prefix = num >= 0 ? '+' : '-';
   return `${prefix}$${Math.abs(num).toLocaleString('en-US', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
