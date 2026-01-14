@@ -4,7 +4,8 @@ import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { showModal, hideModal } from '../../store/actions';
-import { createHardwareWalletError, ErrorCode } from './errors';
+import { createHardwareWalletError } from './errors';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   HardwareWalletErrorProvider,
   useHardwareWalletError,
@@ -82,7 +83,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const error = createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_001,
+        ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
         'Device is locked',
       );
@@ -107,7 +108,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const error = createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_001,
+        ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
         'Device is locked',
       );
@@ -132,7 +133,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const error = createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_001,
+        ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
         'Device is locked',
       );
@@ -159,7 +160,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const error = createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_001,
+        ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
         'Device is locked',
       );
@@ -184,7 +185,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const error = createHardwareWalletError(
-        ErrorCode.DEVICE_STATE_001,
+        ErrorCode.AuthenticationDeviceLocked,
         HardwareWalletType.Ledger,
         'Device is locked',
       );
@@ -209,7 +210,7 @@ describe('HardwareWalletErrorProvider', () => {
       });
 
       const userCancelError = createHardwareWalletError(
-        ErrorCode.USER_CANCEL_001,
+        ErrorCode.UserCancelled,
         HardwareWalletType.Ledger,
         'User cancelled',
       );

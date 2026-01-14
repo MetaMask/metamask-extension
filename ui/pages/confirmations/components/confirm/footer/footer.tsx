@@ -280,6 +280,10 @@ const Footer = () => {
   }, [isHardwareWalletAccount, deviceId, ensureDeviceReady]);
 
   const onSubmit = useCallback(async () => {
+    if (!currentConfirmation) {
+      return;
+    }
+
     const isReady = await onSubmitPreflightCheck();
     if (!isReady) {
       console.log(

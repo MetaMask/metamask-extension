@@ -11,7 +11,7 @@ import React, {
 import { useDispatch } from 'react-redux';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { showModal, hideModal } from '../../store/actions';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from '../../components/app/modals/hardware-wallet-error-modal';
+import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,

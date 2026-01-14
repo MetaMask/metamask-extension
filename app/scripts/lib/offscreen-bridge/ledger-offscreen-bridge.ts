@@ -162,37 +162,38 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
+            reject(response?.payload?.error);
             // Process the error from the offscreen document
-            const error = response?.payload?.error;
+            // const error = response?.payload?.error;
 
-            // Reconstruct the original error from the serialized error
-            let reconstructedError: Error;
-            if (
-              error &&
-              typeof error.statusCode === 'number' &&
-              error.statusCode > 0
-            ) {
-              // Reconstruct TransportStatusError
-              reconstructedError = new TransportStatusError(error.statusCode);
-            } else if (error?.message) {
-              // Reconstruct generic Error
-              reconstructedError = new Error(error.message, {
-                cause: error,
-              });
-            } else {
-              // Fallback for unknown error structure
-              reconstructedError = new Error('Unknown Ledger error occurred');
-            }
+            // // Reconstruct the original error from the serialized error
+            // let reconstructedError: Error;
+            // if (
+            //   error &&
+            //   typeof error.statusCode === 'number' &&
+            //   error.statusCode > 0
+            // ) {
+            //   // Reconstruct TransportStatusError
+            //   reconstructedError = new TransportStatusError(error.statusCode);
+            // } else if (error?.message) {
+            //   // Reconstruct generic Error
+            //   reconstructedError = new Error(error.message, {
+            //     cause: error,
+            //   });
+            // } else {
+            //   // Fallback for unknown error structure
+            //   reconstructedError = new Error('Unknown Ledger error occurred');
+            // }
 
-            // Use centralized error handler to convert to LedgerHardwareWalletError
-            try {
-              handleLedgerTransportError(
-                reconstructedError,
-                'Ledger operation failed',
-              );
-            } catch (ledgerError) {
-              reject(ledgerError);
-            }
+            // // Use centralized error handler to convert to LedgerHardwareWalletError
+            // try {
+            //   handleLedgerTransportError(
+            //     reconstructedError,
+            //     'Ledger operation failed',
+            //   );
+            // } catch (ledgerError) {
+            //   reject(ledgerError);
+            // }
           }
         },
       );

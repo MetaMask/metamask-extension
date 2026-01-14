@@ -22,7 +22,7 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
 
   public destroyMock = jest.fn();
 
-  public verifyDeviceReadyMock = jest.fn();
+  public ensureDeviceReadyMock = jest.fn();
 
   public setPendingOperationMock = jest.fn();
 
@@ -47,7 +47,7 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
       this.deviceIdValue = null;
     });
 
-    this.verifyDeviceReadyMock.mockResolvedValue(true);
+    this.ensureDeviceReadyMock.mockResolvedValue(true);
   }
 
   async connect(deviceId: string): Promise<void> {
@@ -66,8 +66,8 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     return this.destroyMock();
   }
 
-  verifyDeviceReady(deviceId: string): Promise<boolean> {
-    return this.verifyDeviceReadyMock(deviceId);
+  ensureDeviceReady(deviceId: string): Promise<boolean> {
+    return this.ensureDeviceReadyMock(deviceId);
   }
 
   setPendingOperation(pending: boolean): void {

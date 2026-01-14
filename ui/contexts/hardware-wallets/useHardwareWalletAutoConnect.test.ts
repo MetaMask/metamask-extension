@@ -19,7 +19,6 @@ const createMockState = (
 ): HardwareWalletState => ({
   deviceId: 'test-device-id',
   hardwareConnectionPermissionState: HardwareConnectionPermissionState.Granted,
-  currentAppName: null,
   connectionState: { status: ConnectionStatus.Disconnected },
   walletType: HardwareWalletType.Ledger,
   isHardwareWalletAccount: true,

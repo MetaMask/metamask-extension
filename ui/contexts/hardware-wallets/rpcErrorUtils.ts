@@ -7,9 +7,9 @@ import {
   ErrorCode,
   Severity,
   Category,
-  parseErrorByType,
 } from '@metamask/hw-wallet-sdk';
 import { HardwareWalletType } from './types';
+import { createHardwareWalletError } from './errors';
 
 const LOG_TAG = '[RpcErrorUtils]';
 
@@ -123,5 +123,9 @@ export function reconstructHardwareWalletError(
 
   // Fallback: use the error parser to create a HardwareWalletError
   console.log(LOG_TAG, 'Parsing unknown error type');
-  return parseErrorByType(error, walletType);
+  return createHardwareWalletError(
+    ErrorCode.Unknown,
+    walletType,
+    error instanceof Error ? error.message : String(error),
+  );
 }

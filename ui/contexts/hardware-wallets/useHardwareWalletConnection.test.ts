@@ -1,8 +1,9 @@
 import { renderHook, act } from '@testing-library/react-hooks';
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
 import { HardwareWalletType, ConnectionStatus } from './types';
 import { ConnectionState } from './connectionState';
-import { createHardwareWalletError, ErrorCode } from './errors';
+import { createHardwareWalletError } from './errors';
 import * as webHIDUtils from './webHIDUtils';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 
@@ -14,7 +15,7 @@ type MockAdapter = {
   disconnect?: jest.Mock;
   destroy?: jest.Mock;
   isConnected?: jest.Mock;
-  verifyDeviceReady?: jest.Mock;
+  ensureDeviceReady?: jest.Mock;
 };
 
 describe('useHardwareWalletConnection', () => {
@@ -348,7 +349,7 @@ describe('useHardwareWalletConnection', () => {
 
       const mockAdapter = {
         connect: jest.fn().mockResolvedValue(undefined),
-        verifyDeviceReady: jest.fn().mockResolvedValue(true),
+        ensureDeviceReady: jest.fn().mockResolvedValue(true),
         destroy: jest.fn(),
       };
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
@@ -364,7 +365,7 @@ describe('useHardwareWalletConnection', () => {
 
       expect(ready).toBe(true);
       expect(mockAdapter.connect).toHaveBeenCalledWith('device-123');
-      expect(mockAdapter.verifyDeviceReady).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith('device-123');
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.ready(),
       );
@@ -476,7 +477,7 @@ describe('useHardwareWalletConnection', () => {
           .fn()
           .mockRejectedValue(
             createHardwareWalletError(
-              ErrorCode.DEVICE_STATE_001,
+              ErrorCode.AuthenticationDeviceLocked,
               HardwareWalletType.Ledger,
               'Device locked',
             ),

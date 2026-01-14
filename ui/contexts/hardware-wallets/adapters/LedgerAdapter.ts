@@ -193,11 +193,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @param deviceId - The device ID to verify
    * @returns true if device is ready
    */
-  async verifyDeviceReady(deviceId: string): Promise<boolean> {
+  async ensureDeviceReady(deviceId: string): Promise<boolean> {
     if (!this.isConnected()) {
       try {
         await this.connect(deviceId);
       } catch (error) {
+        console.log('Error in verifyDeviceReady', error);
         throw createHardwareWalletError(
           ErrorCode.DeviceDisconnected,
           HardwareWalletType.Ledger,

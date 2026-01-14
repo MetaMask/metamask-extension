@@ -131,6 +131,10 @@ export const useHardwareWalletStateManager = () => {
     [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
   );
 
+  useEffect(() => {
+    console.log('[Hardware Context]: State', state);
+  }, [state]);
+
   return {
     state,
     refs,
