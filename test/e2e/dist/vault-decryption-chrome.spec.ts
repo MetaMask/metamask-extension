@@ -262,11 +262,7 @@ describe('Vault Decryptor Page', function () {
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          KeyringController: {
-            vault: string;
-          };
+          vault: string;
         };
         let newDir;
         let vaultObj;
@@ -275,8 +271,10 @@ describe('Vault Decryptor Page', function () {
           newDir = await copyDirectoryToTmp(extensionPath);
           db = new level.Level(newDir, { valueEncoding: 'json' });
           await db.open();
-          const data = (await db.get('data')) as unknown as VaultData;
-          vaultObj = JSON.parse(data.KeyringController.vault);
+          const keyringController = (await db.get(
+            'KeyringController',
+          )) as unknown as VaultData;
+          vaultObj = JSON.parse(keyringController.vault);
         } finally {
           if (db) {
             await db.close();
