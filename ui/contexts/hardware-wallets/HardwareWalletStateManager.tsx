@@ -1,7 +1,10 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useSelector, shallowEqual } from 'react-redux';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { getMaybeSelectedInternalAccount } from '../../selectors';
+import {
+  AccountsState,
+  getMaybeSelectedInternalAccount,
+} from '../../selectors';
 import {
   HardwareConnectionPermissionState,
   HardwareWalletType,
@@ -17,7 +20,6 @@ export type HardwareWalletState = {
   // Basic state
   deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
-  currentAppName: string | null;
   connectionState: HardwareWalletConnectionState;
 
   // Derived state
@@ -46,7 +48,7 @@ export type HardwareWalletRefs = {
  * Hook that manages all hardware wallet state and refs
  */
 export const useHardwareWalletStateManager = () => {
-  const accountInfo = useSelector(selectAccountHardwareInfo, shallowEqual);
+  const accountInfo = useSelector(getAccountHardwareInfo, shallowEqual);
 
   const walletType = useMemo(
     () => keyringTypeToHardwareWalletType(accountInfo.keyringType),
@@ -68,7 +70,6 @@ export const useHardwareWalletStateManager = () => {
   ] = useState<HardwareConnectionPermissionState>(
     HardwareConnectionPermissionState.Unknown,
   );
-  const [currentAppName, setCurrentAppName] = useState<string | null>(null);
   const [connectionState, setConnectionState] =
     useState<HardwareWalletConnectionState>(ConnectionState.disconnected());
 
@@ -91,13 +92,14 @@ export const useHardwareWalletStateManager = () => {
 
   // Sync walletType with walletTypeRef
   useEffect(() => {
+    // Keep the previous reference so we know when to reset event subscriptions (e.g Trezor -> Ledger).
+    previousWalletTypeRef.current = walletTypeRef.current;
     walletTypeRef.current = walletType;
   }, [walletType]);
 
   const state: HardwareWalletState = {
     deviceId,
     hardwareConnectionPermissionState,
-    currentAppName,
     connectionState,
     walletType,
     isHardwareWalletAccount,
@@ -124,15 +126,9 @@ export const useHardwareWalletStateManager = () => {
     () => ({
       setDeviceId,
       setHardwareConnectionPermissionState,
-      setCurrentAppName,
       setConnectionState,
     }),
-    [
-      setDeviceId,
-      setHardwareConnectionPermissionState,
-      setCurrentAppName,
-      setConnectionState,
-    ],
+    [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
   );
 
   return {
@@ -149,8 +145,7 @@ export const useHardwareWalletStateManager = () => {
  * @param state - Redux state object
  * @returns Account hardware info with keyring type and address
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function selectAccountHardwareInfo(state: any) {
+function getAccountHardwareInfo(state: AccountsState) {
   const account = getMaybeSelectedInternalAccount(state);
   return {
     keyringType: account?.metadata?.keyring?.type ?? null,

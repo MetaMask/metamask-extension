@@ -2,9 +2,9 @@ import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../helpers';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
-import PersonalSignConfirmation from '../pages/confirmations/redesign/personal-sign-confirmation';
-import SignTypedDataConfirmation from '../pages/confirmations/redesign/sign-typed-data-confirmation';
-import PermitConfirmation from '../pages/confirmations/redesign/permit-confirmation';
+import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
+import SignTypedDataConfirmation from '../pages/confirmations/sign-typed-data-confirmation';
+import PermitConfirmation from '../pages/confirmations/permit-confirmation';
 
 /**
  * This function initiates the steps for a personal sign with snap account on test dapp.
@@ -110,6 +110,7 @@ export const signTypedDataV3WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   if (isSyncFlow) {
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
@@ -152,6 +153,7 @@ export const signTypedDataV4WithSnapAccount = async (
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   const confirmation = new SignTypedDataConfirmation(driver);
   await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
   if (isSyncFlow) {
     await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
   } else {
@@ -214,4 +216,66 @@ export const signPermitWithSnapAccount = async (
       'Error: Request rejected by user or snap.',
     );
   }
+};
+
+/**
+ * Sign typed data (eth_signTypedData) flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedData = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedData();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedData(publicAddress);
+};
+
+/**
+ * Sign typed data V3 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedDataV3 = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav3();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedDataV3(publicAddress);
+};
+
+/**
+ * Sign typed data V4 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedDataV4 = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav4();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedDataV4(publicAddress);
 };

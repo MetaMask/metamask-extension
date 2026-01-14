@@ -9,7 +9,7 @@ import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { validateTransaction } from '../../page-objects/flows/send-transaction.flow';
 import { mockSpotPrices } from '../tokens/utils/mocks';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 
 const PREFERENCES_STATE_MOCK = {

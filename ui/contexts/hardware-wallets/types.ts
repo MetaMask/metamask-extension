@@ -1,5 +1,5 @@
 /**
- * Enum for hardware wallet types
+ * Hardware wallet types normalized for the hardware wallet context
  */
 export enum HardwareWalletType {
   Ledger = 'ledger',
@@ -10,7 +10,7 @@ export enum HardwareWalletType {
 }
 
 /**
- * Enum for connection status
+ * Hardware wallet connection status
  */
 export enum ConnectionStatus {
   Disconnected = 'disconnected',
@@ -23,7 +23,7 @@ export enum ConnectionStatus {
 }
 
 /**
- * Enum for WebHID/WebUSB permission state
+ * Hardware wallet connection permission state
  */
 export enum HardwareConnectionPermissionState {
   Unknown = 'unknown',
@@ -33,7 +33,7 @@ export enum HardwareConnectionPermissionState {
 }
 
 /**
- * Enum for device events
+ * Hardware wallet device events
  */
 export enum DeviceEvent {
   Disconnected = 'disconnected',
@@ -45,7 +45,7 @@ export enum DeviceEvent {
 }
 
 /**
- * Connection state type (discriminated union)
+ * Hardware wallet connection State
  */
 export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Disconnected }
@@ -86,17 +86,14 @@ export type HardwareWalletAdapter = {
   isConnected(): boolean;
   destroy(): void;
 
-  // Optional methods
-  setPendingOperation?(pending: boolean): void;
-  getCurrentAppName?(): Promise<string>;
   /**
-   * Verify the device is ready for operations
+   * Ensure the device is ready for operations
    * (e.g., Ledger requires the Ethereum app to be open)
    *
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  verifyDeviceReady?(deviceId: string): Promise<boolean>;
+  ensureDeviceReady?(deviceId: string): Promise<boolean>;
 };
 
 /**
@@ -122,7 +119,6 @@ export type HardwareWalletContextType = {
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
-  currentAppName: string | null;
 
   // Actions
   connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;

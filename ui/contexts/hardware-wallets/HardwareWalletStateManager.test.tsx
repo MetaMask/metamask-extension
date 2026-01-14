@@ -49,7 +49,6 @@ describe('HardwareWalletStateManager', () => {
         deviceId: null,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Unknown,
-        currentAppName: null,
         connectionState: {
           status: 'disconnected',
         },
@@ -92,7 +91,6 @@ describe('HardwareWalletStateManager', () => {
       expect(
         typeof result.current.setters.setHardwareConnectionPermissionState,
       ).toBe('function');
-      expect(typeof result.current.setters.setCurrentAppName).toBe('function');
       expect(typeof result.current.setters.setConnectionState).toBe('function');
     });
 
@@ -146,6 +144,17 @@ describe('HardwareWalletStateManager', () => {
       expect(result.current.refs.walletTypeRef.current).toBe(
         HardwareWalletType.Ledger,
       );
+    });
+
+    it('initializes previousWalletTypeRef to null', () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const { result } = renderHook(() => useHardwareWalletStateManager(), {
+        wrapper: createWrapper(store),
+      });
+
+      // previousWalletTypeRef should start as null since there's no previous value
+      expect(result.current.refs.previousWalletTypeRef.current).toBe(null);
     });
 
     it('returns null walletType for unknown keyring types', () => {
