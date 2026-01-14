@@ -16,6 +16,10 @@ import {
   RemoteFeatureFlagControllerState,
 } from '@metamask/remote-feature-flag-controller';
 import {
+  ConnectivityControllerGetStateAction,
+  ConnectivityStatus,
+} from '@metamask/connectivity-controller';
+import {
   onRpcEndpointUnavailable,
   onRpcEndpointDegraded,
 } from '../lib/network-controller/messenger-action-handlers';
@@ -23,10 +27,6 @@ import {
   MetaMetricsControllerGetMetaMetricsIdAction,
   MetaMetricsControllerTrackEventAction,
 } from '../controllers/metametrics-controller';
-import {
-  ConnectivityControllerGetStateAction,
-  ConnectivityStatus,
-} from '../controllers/connectivity';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
