@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import {
   BlockaidReason,

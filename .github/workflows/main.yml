@@ -532,6 +532,45 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
 
+  trigger-regression-validation:
+    name: Trigger Regression Validation
+    # Only run for release branches, not forks
+    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
+    needs:
+      - build-dist-browserify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger regression validation in external repo
+        env:
+          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+        run: |
+          # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
+          # Use BRANCH env var which correctly handles both push and pull_request events
+          VERSION="${BRANCH#release/}"
+
+          echo "Triggering regression validation..."
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Branch: $BRANCH"
+          echo "Version: $VERSION"
+          echo "Commit SHA: $HEAD_COMMIT_HASH"
+
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token $DISPATCH_TOKEN" \
+            https://api.github.com/repos/MetaMask/extension-regression-validation-poc/dispatches \
+            -d '{
+              "event_type": "release_pr_updated",
+              "client_payload": {
+                "run_id": "${{ github.run_id }}",
+                "version": "'"$VERSION"'",
+                "branch": "'"$BRANCH"'",
+                "commit_sha": "'"$HEAD_COMMIT_HASH"'"
+              }
+            }'
+
+          echo "Regression validation triggered successfully"
+
   # Explanation for all-jobs-completed and all-jobs-pass being separate:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
