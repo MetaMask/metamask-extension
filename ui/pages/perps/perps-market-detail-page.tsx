@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -15,6 +16,7 @@ import {
   IconColor,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import { mockPositions, mockOrders } from '../../components/app/perps/mocks';
@@ -36,6 +38,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   // Find market data for the given symbol
   const market = useMemo(() => {
@@ -73,6 +76,11 @@ const PerpsMarketDetailPage: React.FC = () => {
   const handleBackClick = useCallback(() => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
+
+  // Guard: redirect if perps feature is disabled
+  if (!isPerpsEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
 
   // If no symbol provided, redirect to home
   if (!symbol) {
