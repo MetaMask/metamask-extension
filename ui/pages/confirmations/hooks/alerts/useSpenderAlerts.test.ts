@@ -35,7 +35,7 @@ jest.mock('../../../../../shared/modules/transaction.utils', () => ({
 jest.mock('../../../../hooks/useTrustSignals', () => ({
   useTrustSignal: jest.fn(),
   TrustSignalDisplayState: {
-    Loading: 'loading',
+    Loading: 'Loading',
     Malicious: 'malicious',
     Petname: 'petname',
     Verified: 'verified',
