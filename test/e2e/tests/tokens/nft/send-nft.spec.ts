@@ -2,10 +2,8 @@ import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { Driver } from '../../../webdriver/driver';
-import { switchToNetworkFromNetworkSelect } from '../../../page-objects/flows/network.flow';
 import { Anvil } from '../../../seeder/anvil';
 
-import AssetPicker from '../../../page-objects/pages/asset-picker';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';

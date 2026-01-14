@@ -1,5 +1,6 @@
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
-
+const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');

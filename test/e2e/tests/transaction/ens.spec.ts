@@ -7,7 +7,6 @@ import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.fl
 import HomePage from '../../page-objects/pages/home/homepage';
 import { mockServerJsonRpc } from '../ppom/mocks/mock-server-json-rpc';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
 import SendPage from '../../page-objects/pages/send/send-page';
 
 describe('ENS', function (this: Suite) {

@@ -1,6 +1,7 @@
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
-import SendPage from '../../page-objects/pages/send/send-page';
-
+const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+const SendPage = require('../../page-objects/pages/send/send-page');
 const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
