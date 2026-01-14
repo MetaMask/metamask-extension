@@ -102,25 +102,6 @@ export async function withBtcAccountSnap(
     async ({ driver, mockServer }: { driver: Driver; mockServer: Mockttp }) => {
       await loginWithBalanceValidation(driver);
 
-      // const headerComponent = new HeaderNavbar(driver);
-      // const assetList = new AssetListPage(driver);
-      // const accountListPage = new AccountListPage(driver);
-
-      // for (let i = 1; i <= numberOfAccounts; i++) {
-      //   await headerComponent.openAccountMenu();
-      //   await accountListPage.addAccount({
-      //     accountType: ACCOUNT_TYPE.Bitcoin,
-      //     accountName: `Bitcoin ${i}`,
-      //   });
-      //   await new NonEvmHomepage(driver).checkPageIsLoaded();
-      //   await headerComponent.checkAccountLabel(`Bitcoin ${i}`);
-      //   await assetList.checkNetworkFilterText('Bitcoin');
-      // }
-
-      // if (numberOfAccounts > 0) {
-      //   await headerComponent.checkAccountLabel(`Bitcoin ${numberOfAccounts}`);
-      // }
-
       await driver.delay(regularDelayMs); // workaround to avoid flakiness
       await test(driver, mockServer);
     },
