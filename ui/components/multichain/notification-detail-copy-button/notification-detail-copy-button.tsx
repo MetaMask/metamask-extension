@@ -23,7 +23,6 @@ import {
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { MINUTE } from '../../../../shared/constants/time';
 
 type Notification = NotificationServicesController.Types.INotification;
 
@@ -53,7 +52,8 @@ export const NotificationDetailCopyButton: FC<
   displayText,
   color = TextColor.textAlternative,
 }): JSX.Element => {
-  const [copied, handleCopy] = useCopyToClipboard(MINUTE);
+  // useCopyToClipboard analysis: Copies the text of the notification detail, which is never a private key
+  const [copied, handleCopy] = useCopyToClipboard(-1);
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
 

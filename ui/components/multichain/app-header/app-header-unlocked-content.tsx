@@ -125,6 +125,8 @@ export const AppHeaderUnlockedContent = ({
 
   // Passing non-evm address to checksum function will throw an error
   const normalizedCurrentAddress = normalizeSafeAddress(currentAddress);
+
+  // useCopyToClipboard analysis: Copies a public address
   const [copied, handleCopy, resetCopyState] = useCopyToClipboard(-1);
 
   const showSupportDataConsentModal = useSelector(

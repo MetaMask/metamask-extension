@@ -15,7 +15,7 @@ import { Icon, IconName, Box, Text } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import Tooltip from '../../../ui/tooltip';
 import { ShowMore } from '../show-more';
-import { SECOND } from '../../../../../shared/constants/time';
+import { MINUTE, SECOND } from '../../../../../shared/constants/time';
 import { useTimeout } from '../../../../hooks/useTimeout';
 
 export const Copyable = ({
@@ -25,7 +25,9 @@ export const Copyable = ({
   marginBottom,
 }) => {
   const t = useI18nContext();
-  const [, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Could be sensitive or non-sensitive, so the param decides
+  const [, handleCopy] = useCopyToClipboard(sensitive ? MINUTE : -1);
   const [isVisible, setIsVisible] = useState(!sensitive);
   const [isClicked, setIsClicked] = useState(false);
 

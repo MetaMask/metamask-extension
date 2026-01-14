@@ -49,7 +49,9 @@ export const AccountDetailsDisplay = ({
   const formatedAddress = isEvmAccountType(accountType)
     ? toChecksumHexAddress(address)?.toLowerCase()
     : address;
-  const [copied, handleCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies one of your public addresses
+  const [copied, handleCopy] = useCopyToClipboard(-1);
   const handleClick = useCallback(() => {
     handleCopy(formatedAddress);
   }, [formatedAddress, handleCopy]);
