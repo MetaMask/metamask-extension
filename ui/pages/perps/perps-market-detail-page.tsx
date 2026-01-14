@@ -568,7 +568,16 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} className="gap-px">
             {/* Activity Item 1 - Opened long */}
-            <ButtonBase className="perps-activity-item perps-activity-item--first w-full">
+            <Box
+              className="perps-activity-item perps-activity-item--first w-full"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+            >
               <PerpsTokenLogo
                 symbol={position.coin}
                 size={AvatarTokenSize.Md}
@@ -576,7 +585,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 ml-3"
+                className="flex-1 min-w-0"
+                gap={1}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -598,10 +608,19 @@ const PerpsMarketDetailPage: React.FC = () => {
               >
                 +$125.00
               </Text>
-            </ButtonBase>
+            </Box>
 
             {/* Activity Item 2 - Increased position */}
-            <ButtonBase className="perps-activity-item w-full">
+            <Box
+              className="perps-activity-item w-full"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+            >
               <PerpsTokenLogo
                 symbol={position.coin}
                 size={AvatarTokenSize.Md}
@@ -609,7 +628,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 ml-3"
+                className="flex-1 min-w-0"
+                gap={1}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -631,10 +651,19 @@ const PerpsMarketDetailPage: React.FC = () => {
               >
                 +$45.20
               </Text>
-            </ButtonBase>
+            </Box>
 
             {/* Activity Item 3 - Closed short */}
-            <ButtonBase className="perps-activity-item perps-activity-item--last w-full">
+            <Box
+              className="perps-activity-item perps-activity-item--last w-full"
+              flexDirection={BoxFlexDirection.Row}
+              alignItems={BoxAlignItems.Center}
+              gap={3}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+            >
               <PerpsTokenLogo
                 symbol={position.coin}
                 size={AvatarTokenSize.Md}
@@ -642,7 +671,8 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 ml-3"
+                className="flex-1 min-w-0"
+                gap={1}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -664,7 +694,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               >
                 -$32.50
               </Text>
-            </ButtonBase>
+            </Box>
           </Box>
 
           {/* Learn Section */}
