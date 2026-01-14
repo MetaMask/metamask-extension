@@ -25,7 +25,6 @@ describe('ConnectivityController', () => {
   });
 
   afterEach(() => {
-    controller?.destroy();
     jest.restoreAllMocks();
   });
 
@@ -238,25 +237,6 @@ describe('ConnectivityController', () => {
       expect(controller.state.connectivityStatus).toBe(
         ConnectivityStatus.Offline,
       );
-    });
-  });
-
-  describe('destroy', () => {
-    it('calls service destroy', () => {
-      const mockService: ConnectivityService = {
-        isOnline: jest.fn().mockReturnValue(true),
-        onConnectivityChange: jest.fn(),
-        destroy: jest.fn(),
-      };
-
-      controller = new ConnectivityController({
-        messenger,
-        connectivityService: mockService,
-      });
-
-      controller.destroy();
-
-      expect(mockService.destroy).toHaveBeenCalled();
     });
   });
 });

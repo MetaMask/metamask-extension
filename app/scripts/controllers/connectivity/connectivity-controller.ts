@@ -65,7 +65,6 @@ export class ConnectivityController extends BaseController<
     messenger,
     connectivityService,
   }: ConnectivityControllerOptions) {
-    // Get initial status from service - state is not persisted
     const initialStatus = connectivityService.isOnline()
       ? ConnectivityStatus.Online
       : ConnectivityStatus.Offline;
@@ -82,24 +81,14 @@ export class ConnectivityController extends BaseController<
 
     this.#connectivityService = connectivityService;
 
-    // Subscribe to service connectivity changes
     connectivityService.onConnectivityChange((isOnline) => {
       const newStatus = isOnline
         ? ConnectivityStatus.Online
         : ConnectivityStatus.Offline;
 
-      if (this.state.connectivityStatus !== newStatus) {
-        this.update((draftState) => {
-          draftState.connectivityStatus = newStatus;
-        });
-      }
+      this.update((draftState) => {
+        draftState.connectivityStatus = newStatus;
+      });
     });
-  }
-
-  /**
-   * Clean up resources when the controller is destroyed.
-   */
-  destroy(): void {
-    this.#connectivityService.destroy();
   }
 }
