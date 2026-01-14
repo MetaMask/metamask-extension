@@ -89,15 +89,12 @@ describe('Smart Transactions', function () {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
-        // At the moment, there is 1 Sent and 1 Unnamed transaction (issue #35565)
-        // The fix will consolidate the 2 into 1 tx
         await activityList.checkTxAction({
           action: 'Sent',
-          txIndex: 2,
-          confirmedTx: 2,
+          txIndex: 1,
+          confirmedTx: 1,
         });
-        await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
-        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
+        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
   });
