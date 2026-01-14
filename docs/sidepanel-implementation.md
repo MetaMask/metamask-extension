@@ -49,11 +49,13 @@ The `getIsSidePanelFeatureEnabled()` function (located in `shared/modules/enviro
 3. **Arc Browser Detection**: Detects Arc browser via CSS variable `--arc-palette-title` and disables feature (API exists but doesn't work properly)
 
 **Supported Browsers:**
+
 - ✅ Chrome 115+ (Manifest V3)
 - ✅ Edge (Chromium-based)
 - ✅ Brave (Chromium-based)
 
 **Unsupported Browsers:**
+
 - ❌ Firefox (no sidePanel API)
 - ❌ Opera (uses `sidebarAction` API instead of `sidePanel` API - not implemented in MetaMask)
 - ❌ Arc Browser (API exists but doesn't work properly)
@@ -71,6 +73,7 @@ The `useBrowserSupportsSidePanel()` hook (located in `ui/hooks/useBrowserSupport
 ## Manifest Configuration
 
 The sidepanel is configured in the Chrome Manifest V3 (`app/manifest/v3/chrome.json`) with `side_panel.default_path` set to `"sidepanel.html"`. This configuration:
+
 - Defines `sidepanel.html` as the entry point
 - Requires Chrome 115+ (specified by `minimum_chrome_version`)
 - Only applies to Manifest V3 builds (Chrome/Edge/Brave, not Opera)
@@ -86,6 +89,7 @@ The sidepanel HTML file (`app/html/pages/sidepanel.html`) is minimal and uses th
 ### Initialization
 
 The `initSidePanelBehavior()` function (located in `app/scripts/background.js`) initializes sidepanel behavior on startup. It:
+
 - Only runs if feature flag is enabled and browser supports sidePanel API
 - Waits for controller initialization
 - Gets user preference (`useSidePanelAsDefault`, defaults to `false`)
@@ -112,10 +116,12 @@ Components detect if they're running in sidepanel context by comparing `getEnvir
 The `toggleDefaultView()` function (located in `ui/components/multichain/global-menu/global-menu.tsx`) handles switching between popup and sidepanel:
 
 **When switching from sidepanel to popup:**
+
 - Sets preference to `false`
 - Closes the sidepanel window
 
 **When switching from popup to sidepanel:**
+
 - Opens sidepanel first using `browser.sidePanel.open()`
 - Waits 500ms and verifies sidepanel opened using `chrome.runtime.getContexts()`
 - Only sets preference if sidepanel successfully opened (fail-fast approach)
@@ -125,6 +131,7 @@ The `toggleDefaultView()` function (located in `ui/components/multichain/global-
 ### Onboarding Flow
 
 During onboarding (in `ui/pages/onboarding-flow/creation-successful/creation-successful.tsx`), new users are redirected to use sidepanel. The flow:
+
 - Checks if sidepanel is enabled
 - Opens sidepanel using `browser.sidePanel.open()` with current window ID
 - Sets `useSidePanelAsDefault` preference to `true`
@@ -150,6 +157,7 @@ Key actions for sidepanel preferences (located in `ui/store/actions.ts`):
 ### Preferences Controller State
 
 The preference is stored in `PreferencesController`:
+
 - **Key**: `useSidePanelAsDefault`
 - **Type**: `boolean`
 - **Default**: `false`
@@ -166,16 +174,19 @@ The `AppStateController` tracks `sidePanelGasPollTokens: string[]` to allow the 
 ### Setting Preference
 
 Users can toggle between sidepanel and popup via:
+
 1. **Global Menu**: Settings → "Switch to Side Panel" / "Switch to Popup"
 2. **Onboarding**: Option to use sidepanel during initial setup
 
 ### Preference Behavior
 
 When `useSidePanelAsDefault` is `true`:
+
 - Clicking the extension icon opens the sidepanel
 - Background script calls `browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })`
 
 When `useSidePanelAsDefault` is `false`:
+
 - Clicking the extension icon opens the popup (default behavior)
 - Background script calls `browser.sidePanel.setPanelBehavior({ openPanelOnActionClick: false })`
 
@@ -190,11 +201,13 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 ### Browser Detection
 
 **Firefox:**
+
 - No `chrome.sidePanel` API
 - Feature automatically disabled
 - Falls back to popup behavior
 
 **Opera:**
+
 - Uses a different extension API model despite being Chromium-based
 - **Uses `chrome.sidebarAction` API instead of `chrome.sidePanel` API**
 - MetaMask currently only checks for `chrome.sidePanel` API (see `shared/modules/environment.ts`)
@@ -205,11 +218,13 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 - **Note**: To support Opera, MetaMask would need to implement `chrome.sidebarAction` API separately
 
 **Arc Browser:**
+
 - Has `chrome.sidePanel` API but doesn't work properly
 - Detected via CSS variable `--arc-palette-title`
 - Feature disabled to prevent broken behavior
 
 **Chrome/Edge/Brave:**
+
 - Full support for sidepanel
 - API works as expected
 
@@ -219,38 +234,38 @@ Since `webextension-polyfill` doesn't include sidePanel API types yet, custom ty
 
 ### Core Implementation Files
 
-| File | Purpose |
-|------|---------|
-| `app/manifest/v3/chrome.json` | Manifest configuration for sidepanel |
-| `app/html/pages/sidepanel.html` | Sidepanel HTML entry point |
-| `app/scripts/background.js` | Background script initialization and preference handling |
-| `shared/modules/environment.ts` | Browser support detection |
-| `shared/types/sidepanel.ts` | TypeScript type definitions |
-| `app/scripts/lib/util.ts` | Environment type detection |
+| File                            | Purpose                                                  |
+| ------------------------------- | -------------------------------------------------------- |
+| `app/manifest/v3/chrome.json`   | Manifest configuration for sidepanel                     |
+| `app/html/pages/sidepanel.html` | Sidepanel HTML entry point                               |
+| `app/scripts/background.js`     | Background script initialization and preference handling |
+| `shared/modules/environment.ts` | Browser support detection                                |
+| `shared/types/sidepanel.ts`     | TypeScript type definitions                              |
+| `app/scripts/lib/util.ts`       | Environment type detection                               |
 
 ### UI Components
 
-| File | Purpose |
-|------|---------|
-| `ui/hooks/useSidePanelEnabled.ts` | React hook for feature detection |
-| `ui/hooks/useBrowserSupportsSidePanel.ts` | Runtime browser support check |
-| `ui/components/multichain/global-menu/global-menu.tsx` | Toggle between popup/sidepanel |
-| `ui/pages/onboarding-flow/creation-successful/creation-successful.tsx` | Onboarding sidepanel option |
-| `ui/pages/routes/routes.component.tsx` | Route handling with sidepanel detection |
-| `ui/pages/settings/index.scss` | Sidepanel-specific styles |
+| File                                                                   | Purpose                                 |
+| ---------------------------------------------------------------------- | --------------------------------------- |
+| `ui/hooks/useSidePanelEnabled.ts`                                      | React hook for feature detection        |
+| `ui/hooks/useBrowserSupportsSidePanel.ts`                              | Runtime browser support check           |
+| `ui/components/multichain/global-menu/global-menu.tsx`                 | Toggle between popup/sidepanel          |
+| `ui/pages/onboarding-flow/creation-successful/creation-successful.tsx` | Onboarding sidepanel option             |
+| `ui/pages/routes/routes.component.tsx`                                 | Route handling with sidepanel detection |
+| `ui/pages/settings/index.scss`                                         | Sidepanel-specific styles               |
 
 ### State Management
 
-| File | Purpose |
-|------|---------|
-| `ui/store/actions.ts` | Redux actions for sidepanel preferences |
+| File                                                | Purpose                                   |
+| --------------------------------------------------- | ----------------------------------------- |
+| `ui/store/actions.ts`                               | Redux actions for sidepanel preferences   |
 | `app/scripts/controllers/preferences-controller.ts` | Stores `useSidePanelAsDefault` preference |
-| `app/scripts/controllers/app-state-controller.ts` | Tracks sidepanel polling tokens |
+| `app/scripts/controllers/app-state-controller.ts`   | Tracks sidepanel polling tokens           |
 
 ### Constants
 
-| File | Purpose |
-|------|---------|
+| File                      | Purpose                               |
+| ------------------------- | ------------------------------------- |
 | `shared/constants/app.ts` | `ENVIRONMENT_TYPE_SIDEPANEL` constant |
 
 ---
@@ -294,6 +309,7 @@ Opera uses a different API (`chrome.sidebarAction`) instead of Chrome's `chrome.
 ### How E2E Tests Detect Sidepanel
 
 Tests check if sidepanel is enabled using the `isSidePanelEnabled()` helper function (located in `test/e2e/helpers.js`). This function:
+
 - Only returns `true` for Chrome (`SELENIUM_BROWSER === 'chrome'`)
 - Requires `IS_SIDEPANEL === 'true'` build flag
 - Returns `false` for Firefox (no sidepanel support)
@@ -301,11 +317,13 @@ Tests check if sidepanel is enabled using the `isSidePanelEnabled()` helper func
 ### Post-Onboarding Navigation Helper
 
 The main sidepanel-specific helper is `handleSidepanelPostOnboarding()` (located in `test/e2e/page-objects/flows/onboarding.flow.ts`). This function:
+
 - Only runs when sidepanel is enabled on Chrome
 - Waits 2 seconds for onboarding completion to process
 - Navigates the test window directly to `home.html` to continue testing
 
 **Why This Helper Exists:**
+
 - When sidepanel is enabled, clicking "Done" during onboarding opens the home page in the sidepanel
 - The main test window remains on the onboarding completion page
 - This helper ensures the test window navigates to the home page to continue testing
@@ -342,18 +360,21 @@ yarn test:e2e:single test/e2e/tests/onboarding/onboarding.spec.ts --browser=chro
 ### Current Testing Strategy
 
 **What Works:**
+
 - ✅ Tests detect sidepanel builds and adapt behavior
 - ✅ Post-onboarding navigation is handled
 - ✅ Window switching works with URL-based approach
 - ✅ Most core functionality tests pass with sidepanel
 
 **What's Limited:**
+
 - ⚠️ No dedicated sidepanel-specific test coverage
 - ⚠️ Some tests skip assertions/flows when sidepanel is enabled
 - ⚠️ State persistence tests may be unreliable
 - ⚠️ Network request counting is skipped
 
 **Future Improvements:**
+
 - Add dedicated sidepanel E2E tests
 - Improve state persistence handling
 - Better window management for sidepanel scenarios
