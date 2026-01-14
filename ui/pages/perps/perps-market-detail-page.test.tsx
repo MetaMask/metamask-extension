@@ -4,9 +4,6 @@ import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import mockState from '../../../test/data/mock-state.json';
 
-// Mock SCSS imports to prevent Jest parsing errors
-jest.mock('../../components/app/perps/index.scss', () => ({}));
-
 // Mock semver to control version comparison in tests
 jest.mock('semver', () => ({
   gte: jest.fn(() => true),

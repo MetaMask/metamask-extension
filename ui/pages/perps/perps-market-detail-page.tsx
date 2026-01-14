@@ -27,7 +27,6 @@ import {
   findMarketBySymbol,
   formatPnl,
 } from '../../components/app/perps/utils';
-import '../../components/app/perps/index.scss';
 
 /**
  * PerpsMarketDetailPage component
@@ -258,7 +257,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             {/* First Row: P&L and Return */}
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
               {/* P&L Card */}
-              <Box className="perps-position-detail-card flex-1">
+              <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
                 <Box paddingBottom={1}>
                   <Text
                     variant={TextVariant.BodySm}
@@ -281,7 +280,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               </Box>
 
               {/* Return Card */}
-              <Box className="perps-position-detail-card flex-1">
+              <Box className="flex-1 rounded-xl bg-muted px-4 py-3">
                 <Box paddingBottom={1}>
                   <Text
                     variant={TextVariant.BodySm}
@@ -309,12 +308,8 @@ const PerpsMarketDetailPage: React.FC = () => {
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
               {/* Size Card */}
               <Box
-                className="perps-position-detail-card perps-position-detail-card--pressable flex-1"
+                className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                 flexDirection={BoxFlexDirection.Column}
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={3}
-                paddingBottom={3}
                 onClick={() => {
                   // TODO: Handle size card press
                 }}
@@ -338,12 +333,8 @@ const PerpsMarketDetailPage: React.FC = () => {
 
               {/* Margin Card */}
               <Box
-                className="perps-position-detail-card perps-position-detail-card--pressable flex-1"
+                className="flex-1 cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
                 flexDirection={BoxFlexDirection.Column}
-                paddingLeft={4}
-                paddingRight={4}
-                paddingTop={3}
-                paddingBottom={3}
                 onClick={() => {
                   // TODO: Handle margin card press
                 }}
@@ -367,12 +358,8 @@ const PerpsMarketDetailPage: React.FC = () => {
 
             {/* Third Row: Auto Close (Full Width) */}
             <Box
-              className="perps-position-detail-card perps-position-detail-card--pressable"
+              className="cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
               flexDirection={BoxFlexDirection.Column}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
               onClick={() => {
                 // TODO: Handle auto close card press
               }}
@@ -405,9 +392,14 @@ const PerpsMarketDetailPage: React.FC = () => {
               Details
             </Text>
           </Box>
-          <Box className="perps-details-list">
+          <Box flexDirection={BoxFlexDirection.Column}>
             {/* Direction Row */}
-            <Box className="perps-details-list__row perps-details-list__row--first">
+            <Box
+              className="rounded-t-xl bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
               <Text
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
@@ -428,7 +420,12 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Box>
 
             {/* Entry Price Row */}
-            <Box className="perps-details-list__row">
+            <Box
+              className="bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
               <Text
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
@@ -441,7 +438,12 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Box>
 
             {/* Liquidation Price Row */}
-            <Box className="perps-details-list__row">
+            <Box
+              className="bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
               <Text
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
@@ -456,7 +458,12 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Box>
 
             {/* Funding Payments Row */}
-            <Box className="perps-details-list__row perps-details-list__row--last">
+            <Box
+              className="rounded-b-xl bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
+            >
               <Text
                 variant={TextVariant.BodySm}
                 color={TextColor.TextAlternative}
@@ -482,12 +489,10 @@ const PerpsMarketDetailPage: React.FC = () => {
               </Box>
               <Box
                 flexDirection={BoxFlexDirection.Column}
-                className="perps-list-container"
+                className="overflow-hidden rounded-xl"
               >
                 {orders.map((order) => (
-                  <Box key={order.orderId} className="perps-list-item">
-                    <OrderCard order={order} variant="muted" />
-                  </Box>
+                  <OrderCard key={order.orderId} order={order} />
                 ))}
               </Box>
             </>
@@ -502,14 +507,16 @@ const PerpsMarketDetailPage: React.FC = () => {
               Stats
             </Text>
           </Box>
-          <Box className="perps-details-list">
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="overflow-hidden rounded-xl"
+          >
             {/* 24h Volume Row */}
             <Box
-              className={`perps-details-list__row perps-details-list__row--first ${
-                !market.openInterest && market.fundingRate === undefined
-                  ? 'perps-details-list__row--last'
-                  : ''
-              }`}
+              className="bg-muted px-4 py-3"
+              flexDirection={BoxFlexDirection.Row}
+              justifyContent={BoxJustifyContent.Between}
+              alignItems={BoxAlignItems.Center}
             >
               <Text
                 variant={TextVariant.BodySm}
@@ -525,11 +532,10 @@ const PerpsMarketDetailPage: React.FC = () => {
             {/* Open Interest Row */}
             {market.openInterest && (
               <Box
-                className={`perps-details-list__row ${
-                  market.fundingRate === undefined
-                    ? 'perps-details-list__row--last'
-                    : ''
-                }`}
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
               >
                 <Text
                   variant={TextVariant.BodySm}
@@ -548,7 +554,12 @@ const PerpsMarketDetailPage: React.FC = () => {
 
             {/* Funding Rate Row */}
             {market.fundingRate !== undefined && (
-              <Box className="perps-details-list__row perps-details-list__row--last">
+              <Box
+                className="bg-muted px-4 py-3"
+                flexDirection={BoxFlexDirection.Row}
+                justifyContent={BoxJustifyContent.Between}
+                alignItems={BoxAlignItems.Center}
+              >
                 <Text
                   variant={TextVariant.BodySm}
                   color={TextColor.TextAlternative}
@@ -579,17 +590,16 @@ const PerpsMarketDetailPage: React.FC = () => {
               Recent Activity
             </Text>
           </Box>
-          <Box flexDirection={BoxFlexDirection.Column} className="gap-px">
+          <Box
+            flexDirection={BoxFlexDirection.Column}
+            className="overflow-hidden rounded-xl"
+          >
             {/* Activity Item 1 - Opened long */}
             <Box
-              className="perps-activity-item perps-activity-item--first w-full"
+              className="w-full bg-muted px-4 py-3"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={3}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
             >
               <PerpsTokenLogo
                 symbol={position.coin}
@@ -598,7 +608,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 min-w-0"
+                className="min-w-0 flex-1"
                 gap={1}
               >
                 <Text
@@ -625,14 +635,10 @@ const PerpsMarketDetailPage: React.FC = () => {
 
             {/* Activity Item 2 - Increased position */}
             <Box
-              className="perps-activity-item w-full"
+              className="w-full bg-muted px-4 py-3"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={3}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
             >
               <PerpsTokenLogo
                 symbol={position.coin}
@@ -641,7 +647,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 min-w-0"
+                className="min-w-0 flex-1"
                 gap={1}
               >
                 <Text
@@ -668,14 +674,10 @@ const PerpsMarketDetailPage: React.FC = () => {
 
             {/* Activity Item 3 - Closed short */}
             <Box
-              className="perps-activity-item perps-activity-item--last w-full"
+              className="w-full bg-muted px-4 py-3"
               flexDirection={BoxFlexDirection.Row}
               alignItems={BoxAlignItems.Center}
               gap={3}
-              paddingLeft={4}
-              paddingRight={4}
-              paddingTop={3}
-              paddingBottom={3}
             >
               <PerpsTokenLogo
                 symbol={position.coin}
@@ -684,7 +686,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               <Box
                 flexDirection={BoxFlexDirection.Column}
                 alignItems={BoxAlignItems.Start}
-                className="flex-1 min-w-0"
+                className="min-w-0 flex-1"
                 gap={1}
               >
                 <Text
@@ -712,14 +714,10 @@ const PerpsMarketDetailPage: React.FC = () => {
 
           {/* Learn Section */}
           <Box
-            className="perps-position-detail-card perps-position-detail-card--pressable w-full mt-4"
+            className="mt-4 w-full cursor-pointer rounded-xl bg-muted px-4 py-3 hover:bg-muted-hover active:bg-muted-pressed"
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
-            paddingLeft={4}
-            paddingRight={4}
-            paddingTop={3}
-            paddingBottom={3}
             onClick={() => {
               // TODO: Navigate to learn page
             }}
