@@ -141,7 +141,7 @@ describe('NetworkControllerInit', () => {
                 "failoverUrls": [],
                 "networkClientId": "megaeth-testnet-v2",
                 "type": "custom",
-                "url": "https://timothy.megaeth.com/rpc",
+                "url": "https://carrot.megaeth.com/rpc",
               },
             ],
           },
