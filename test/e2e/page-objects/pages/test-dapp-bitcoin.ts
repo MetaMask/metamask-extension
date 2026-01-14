@@ -187,6 +187,28 @@ export class TestDappBitcoin {
     };
   }
 
+    /**
+   * Get Sign psbt tests.
+   *
+   * @returns The Sign psbt component helper methods.
+   */
+    async getSignPsbtTest() {
+      await this.waitSelectorTestId(dataTestIds.testPage.signTransaction.id);
+  
+      return {
+        setPsbt: (psbt: string) =>
+          this.setInputValue(dataTestIds.testPage.signTransaction.psbt, psbt),
+        signPsbt: async () =>
+          await this.clickElement(
+            dataTestIds.testPage.signTransaction.signTransaction,
+          ),
+        getSignedPsbt: async () =>
+          await this.getTextById(
+            dataTestIds.testPage.signTransaction.signedPsbt,
+          ),
+      };
+    }
+
   /**
    * Switch to the mainnet network.
    */
