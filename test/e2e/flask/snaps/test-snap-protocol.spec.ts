@@ -1,6 +1,6 @@
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../multichain-api/testHelpers';
-import { DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDappMultichain from '../../page-objects/pages/test-dapp-multichain';

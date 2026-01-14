@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';

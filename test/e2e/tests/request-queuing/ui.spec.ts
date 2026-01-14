@@ -3,20 +3,19 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import {
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
+  DAPP_URL,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  WINDOW_TITLES,
+} from '../../constants';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../constants';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-  DAPP_TWO_URL,
-} from '../../helpers';
+import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';

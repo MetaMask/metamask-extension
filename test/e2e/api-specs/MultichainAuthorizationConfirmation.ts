@@ -11,7 +11,7 @@ import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {

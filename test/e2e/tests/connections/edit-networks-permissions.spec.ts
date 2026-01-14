@@ -1,5 +1,9 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';

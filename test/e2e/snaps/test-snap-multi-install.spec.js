@@ -1,5 +1,5 @@
-const { DAPP_PATH, DAPP_URL } = require('../constants');
-const { withFixtures, unlockWallet, WINDOW_TITLES } = require('../helpers');
+const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
+const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockBip32Snap,

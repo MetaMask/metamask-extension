@@ -1,7 +1,7 @@
 import { Suite } from 'mocha';
-import { withFixtures, unlockWallet, WINDOW_TITLES } from '../../helpers';
+import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures, unlockWallet } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { DAPP_URL, DAPP_ONE_URL } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 

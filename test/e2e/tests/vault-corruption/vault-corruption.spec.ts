@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { until } from 'selenium-webdriver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,

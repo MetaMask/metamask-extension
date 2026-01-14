@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';

@@ -8,8 +8,7 @@ import {
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
 import { Driver } from '../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE } from '../constants';
-import { WINDOW_TITLES } from '../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT_LOWERCASE, WINDOW_TITLES } from '../constants';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { addToQueue } from './helpers';
 

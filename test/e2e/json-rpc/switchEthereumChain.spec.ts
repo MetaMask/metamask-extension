@@ -1,12 +1,12 @@
 import { strict as assert } from 'assert';
 import {
-  withFixtures,
-  DAPP_URL,
   DAPP_ONE_URL,
+  DAPP_URL,
+  DEFAULT_FIXTURE_ACCOUNT,
   WINDOW_TITLES,
-} from '../helpers';
+} from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../constants';
 import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../page-objects/pages/dialog/network-permission-select-modal';

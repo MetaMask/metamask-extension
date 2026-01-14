@@ -1,10 +1,6 @@
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';

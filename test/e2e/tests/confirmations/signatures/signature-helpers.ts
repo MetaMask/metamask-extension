@@ -1,13 +1,9 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import {
-  WINDOW_TITLES,
-  getEventPayloads,
-  unlockWallet,
-} from '../../../helpers';
+import { getEventPayloads, unlockWallet } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { DAPP_URL } from '../../../constants';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import {

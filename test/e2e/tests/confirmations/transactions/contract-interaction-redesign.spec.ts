@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { unlockWallet, withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -19,7 +20,6 @@ import {
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');

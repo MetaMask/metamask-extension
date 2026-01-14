@@ -1,8 +1,8 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import nacl from 'tweetnacl';
-import { largeDelayMs, regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import { DAPP_PATH } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, regularDelayMs } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
 import { SOLANA_DEVNET_URL } from '../../tests/solana/common-solana';

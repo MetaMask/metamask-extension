@@ -3,12 +3,11 @@ import { isHexString } from '@metamask/utils';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
-  convertETHToHexGwei,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
   WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+} from '../../../constants';
+import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';

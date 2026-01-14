@@ -2,9 +2,9 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import TestDapp from '../../page-objects/pages/test-dapp';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { withFixtures } from '../../helpers';
 
 describe('Request Queuing', function () {
   // TODO: add a new spec which checks that after revoking and connecting again
