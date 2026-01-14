@@ -138,7 +138,8 @@ export function NftDetailsComponent({
     string
   >;
 
-  const [addressCopied, handleAddressCopy] = useCopyToClipboard();
+  // useCopyToClipboard analysis: Copies the public address of the NFT
+  const [addressCopied, handleAddressCopy] = useCopyToClipboard(-1);
 
   const { image: imageFromTokenURI } = useFetchNftDetailsFromTokenURI(tokenURI);
 

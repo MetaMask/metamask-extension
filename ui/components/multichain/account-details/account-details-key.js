@@ -26,6 +26,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useCopyToClipboard } from '../../../hooks/useCopyToClipboard';
+import { MINUTE } from '../../../../shared/constants/time';
 
 const inTest = Boolean(process.env.IN_TEST);
 
@@ -33,7 +34,9 @@ export const AccountDetailsKey = ({ accountName, onClose, privateKey }) => {
   const t = useI18nContext();
 
   const [showSelectDisableWarn, setShowDisableSelectWarn] = useState(false);
-  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard();
+
+  // useCopyToClipboard analysis: Copies your private key
+  const [privateKeyCopied, handlePrivateKeyCopy] = useCopyToClipboard(MINUTE);
 
   return (
     <>
