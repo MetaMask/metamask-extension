@@ -25,7 +25,7 @@ export const mockTronFeatureFlag = (mockServer: Mockttp) =>
             },
             sendRedesign: {
               enabled: false,
-            }
+            },
           },
         ],
       };

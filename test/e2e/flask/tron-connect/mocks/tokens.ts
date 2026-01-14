@@ -10,9 +10,9 @@ export const mockTokens = (mockServer: Mockttp) =>
     })
     .thenJson(200, [
       {
-        assetId: "tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t",
+        assetId: 'tron:728126428/trc20:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t',
         decimals: 6,
-        name: "Tether",
-        symbol: "USDT"
-      }
+        name: 'Tether',
+        symbol: 'USDT',
+      },
     ]);

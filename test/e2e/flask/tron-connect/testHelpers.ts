@@ -3,11 +3,11 @@ import { strict as assert } from 'assert';
 import { Trx } from 'tronweb';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
-import { withTronAccountSnap } from './common-tron';
 import { DEFAULT_TRON_ADDRESS } from '../../constants';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { withTronAccountSnap } from './common-tron';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -41,6 +41,7 @@ export const DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS = {
  * @param options.selectAllAccounts
  * @param options.includeTestnet
  * @param options.onboard
+ * @param options.includeDevnet
  */
 export const connectTronTestDapp = async (
   driver: Driver,
@@ -123,9 +124,13 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
 
 /**
  * Asserts that the signed message is valid.
+ *
+ * @param signature.signature
  * @param signature - The signature to verify.
  * @param originalMessageString - The original message string to verify.
  * @param addressBase58 - The address to verify.
+ * @param signature.originalMessageString
+ * @param signature.addressBase58
  * @returns void
  */
 export const assertSignedMessageIsValid = async ({
@@ -137,28 +142,31 @@ export const assertSignedMessageIsValid = async ({
   originalMessageString: string;
   addressBase58?: string;
 }) => {
-  const recoveredSigner = Trx.verifyMessageV2(
-    originalMessageString,
-    signature
-  );
+  const recoveredSigner = Trx.verifyMessageV2(originalMessageString, signature);
 
-  assert.equal(recoveredSigner, addressBase58, 'Tron signature verification failed');
-}
+  assert.equal(
+    recoveredSigner,
+    addressBase58,
+    'Tron signature verification failed',
+  );
+};
 
 /**
  * Asserts that the required properties for a signed transaction are present.
+ *
+ * @param transaction.transaction
  * @param transaction - The transaction to verify.
  * @returns void
  */
 export const assertSignedTransactionIsValid = ({
-  transaction
+  transaction,
 }: {
-  transaction: any
+  transaction: any;
 }) => {
-  assert.ok(transaction.txID)
-  assert.ok(transaction.raw_data_hex)
-  assert.ok(transaction.raw_data)
-  assert.ok(transaction.signature)
-  assert.ok(transaction.signature[0])
-  assert.equal(transaction.signature[0].length, 132)
-}
+  assert.ok(transaction.txID);
+  assert.ok(transaction.raw_data_hex);
+  assert.ok(transaction.raw_data);
+  assert.ok(transaction.signature);
+  assert.ok(transaction.signature[0]);
+  assert.equal(transaction.signature[0].length, 132);
+};

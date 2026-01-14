@@ -2,11 +2,11 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { mockTronFeatureFlag } from './mocks/feature-flag';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { mockTronFeatureFlag } from './mocks/feature-flag';
 import {
   mockExchangeRates,
   mockPriceMulti,
@@ -22,20 +22,24 @@ import {
   mockGetBlock,
   mockScanTransaction,
   mockBroadcastTransaction,
-  mockTriggerSmartContract
+  mockTriggerSmartContract,
 } from './mocks';
 
-export const TRANSACTION_HASH_MOCK = "36c4096d30a82641ee9d8c12297ed330ddb0f8ae272dc2564995de7a4201a67e"
+export const TRANSACTION_HASH_MOCK =
+  '36c4096d30a82641ee9d8c12297ed330ddb0f8ae272dc2564995de7a4201a67e';
 
-export const withTronAccountSnap = async ({
-  title,
-  numberOfAccounts = 1,
-  dappPaths,
-}: {
-  title?: string;
-  numberOfAccounts?: number;
-  dappPaths?: string[];
-}, test: (driver: Driver) => Promise<void>) => {
+export const withTronAccountSnap = async (
+  {
+    title,
+    numberOfAccounts = 1,
+    dappPaths,
+  }: {
+    title?: string;
+    numberOfAccounts?: number;
+    dappPaths?: string[];
+  },
+  test: (driver: Driver) => Promise<void>,
+) => {
   await withFixtures(
     {
       forceBip44Version: false,
@@ -51,7 +55,7 @@ export const withTronAccountSnap = async ({
           },
         })
         .build(),
-      title: title,
+      title,
       dapp: true,
       dappOptions: { numberOfTestDapps: 0, customDappPaths: dappPaths },
       testSpecificMock: async (mockServer: Mockttp) => [
@@ -71,7 +75,7 @@ export const withTronAccountSnap = async ({
         await mockScanTransaction(mockServer),
         await mockBroadcastTransaction(mockServer),
         await mockTriggerSmartContract(mockServer),
-      ]
+      ],
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -88,7 +92,7 @@ export const withTronAccountSnap = async ({
       }
 
       await accountListPage.selectAccount('Account 1');
-      
+
       await test(driver);
     },
   );

@@ -7,11 +7,12 @@ export const mockExchangeRates = (mockServer: Mockttp) =>
     .forGet(`${PRICE_API_URL}/v3/spot-prices`)
     .withQuery({
       vsCurrency: 'usd',
-      assetIds: 'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
+      assetIds:
+        'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
     })
     .thenJson(200, {
-      "tron:728126428/slip44:195": {
-        id: "tron",
+      'tron:728126428/slip44:195': {
+        id: 'tron',
         price: 0.27989,
         marketCap: 26501571090,
         allTimeHigh: 0.431288,
@@ -29,10 +30,10 @@ export const mockExchangeRates = (mockServer: Mockttp) =>
         pricePercentChange14d: 0.395394234400669,
         pricePercentChange30d: -4.69037102835574,
         pricePercentChange200d: 4.7347558395209,
-        pricePercentChange1y: -1.29971018156079
+        pricePercentChange1y: -1.29971018156079,
       },
-      "tron:3448148188/slip44:195": null,
-      "tron:2494104990/slip44:195": null
+      'tron:3448148188/slip44:195': null,
+      'tron:2494104990/slip44:195': null,
     });
 
 export const mockExchangeRatesV1 = (mockServer: Mockttp) =>
@@ -62,7 +63,7 @@ export const mockHistoricalPrices7d = (mockServer: Mockttp) =>
     .thenJson(200, historicalPrices7d);
 
 const historicalPrices1d = {
-  "prices": [
+  prices: [
     [1765907123637, 0.280626127831253],
     [1765907440876, 0.280570163696151],
     [1765907731559, 0.28059437479581],
@@ -74,7 +75,7 @@ const historicalPrices1d = {
     [1765909548942, 0.280637899165565],
     [1765909924391, 0.280657165196107],
   ],
-  "marketCaps": [
+  marketCaps: [
     [1765907123637, 26575276923.1885],
     [1765907440876, 26564792620.4621],
     [1765907731559, 26564792620.4621],
@@ -86,7 +87,7 @@ const historicalPrices1d = {
     [1765909548942, 26561516998.9781],
     [1765909924391, 26561516998.9781],
   ],
-  "totalVolumes": [
+  totalVolumes: [
     [1765907123637, 626528640.188989],
     [1765907440876, 626986064.919585],
     [1765907731559, 614043608.236183],
@@ -97,11 +98,11 @@ const historicalPrices1d = {
     [1765909260659, 600633391.333043],
     [1765909548942, 609500071.688516],
     [1765909924391, 601629689.057957],
-  ]
-}
+  ],
+};
 
 const historicalPrices7d = {
-  "prices": [
+  prices: [
     [1765389694031, 0.277039795901075],
     [1765393286951, 0.277761445840328],
     [1765396875984, 0.278573518322504],
@@ -113,7 +114,7 @@ const historicalPrices7d = {
     [1765418493934, 0.27879668105408],
     [1765422173298, 0.278525748779846],
   ],
-  "marketCaps": [
+  marketCaps: [
     [1765389694031, 26238709915.47],
     [1765393286951, 26294315073.5492],
     [1765396875984, 26376422538.5454],
@@ -125,7 +126,7 @@ const historicalPrices7d = {
     [1765418493934, 26397199355.577],
     [1765422173298, 26379966171.5641],
   ],
-  "totalVolumes": [
+  totalVolumes: [
     [1765389694031, 547418167.266959],
     [1765393286951, 610320837.194207],
     [1765396875984, 632134730.285097],
@@ -136,32 +137,32 @@ const historicalPrices7d = {
     [1765414867358, 664352283.261472],
     [1765418493934, 689153010.391872],
     [1765422173298, 702513336.843355],
-  ]
-}
+  ],
+};
 
 const exchangeRatesV1 = {
-  "btc": {
-    "name": "Bitcoin",
-    "ticker": "btc",
-    "value": 0.000011553382153844,
-    "currencyType": "crypto"
+  btc: {
+    name: 'Bitcoin',
+    ticker: 'btc',
+    value: 0.000011553382153844,
+    currencyType: 'crypto',
   },
-  "eth": {
-    "name": "Ether",
-    "ticker": "eth",
-    "value": 0.000350460294254708,
-    "currencyType": "crypto"
+  eth: {
+    name: 'Ether',
+    ticker: 'eth',
+    value: 0.000350460294254708,
+    currencyType: 'crypto',
   },
-  "usd": {
-    "name": "US Dollar",
-    "ticker": "usd",
-    "value": 1,
-    "currencyType": "fiat"
+  usd: {
+    name: 'US Dollar',
+    ticker: 'usd',
+    value: 1,
+    currencyType: 'fiat',
   },
-  "trx": {
-    "name": "Tron",
-    "ticker": "trx",
-    "value": 3.57770104624172,
-    "currencyType": "crypto"
+  trx: {
+    name: 'Tron',
+    ticker: 'trx',
+    value: 3.57770104624172,
+    currencyType: 'crypto',
   },
-}
+};

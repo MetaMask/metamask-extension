@@ -108,7 +108,7 @@ export class TestDappTron {
         await this.driver.clickElement({
           testId: dataTestIds.testPage.header.disconnect,
           tag: 'button',
-        })
+        });
 
         await this.driver.delay(regularDelayMs);
 
@@ -116,11 +116,13 @@ export class TestDappTron {
           css: '.adapter-dropdown-list-item',
           text: 'Disconnect',
         });
-          
+
         await disconnectButton.click();
       },
-      getAccount: async () =>{
-        const account = await this.getElementText(dataTestIds.testPage.header.account);
+      getAccount: async () => {
+        const account = await this.getElementText(
+          dataTestIds.testPage.header.account,
+        );
         return account.split('\n')[0].trim();
       },
     };
@@ -213,10 +215,10 @@ export class TestDappTron {
   }
 
   /**
- * Get Sign USDT tests.
- *
- * @returns The Sign USDT component helper methods.
- */
+   * Get Sign USDT tests.
+   *
+   * @returns The Sign USDT component helper methods.
+   */
   async getSignAndSendUsdtTest() {
     await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
 
@@ -233,7 +235,6 @@ export class TestDappTron {
         ),
     };
   }
-
 
   /**
    * Wait for an element to be present in the DOM by its data-testid.
@@ -262,7 +263,9 @@ export class TestDappTron {
    * @returns The text of the element.
    */
   private async getElementText(testId: string) {
-    const element = await this.driver.findElement(this.getElementSelectorTestId(testId));
+    const element = await this.driver.findElement(
+      this.getElementSelectorTestId(testId),
+    );
     return element.getText();
   }
 
@@ -300,7 +303,7 @@ export class TestDappTron {
     return value.split('\n').map((hash) => hash.trim());
   }
 
-    /**
+  /**
    * Get signed transaction from an element by its data-testid.
    *
    * @param id - The data-testid of the element containing signed transaction.
