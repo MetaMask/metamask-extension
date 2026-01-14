@@ -46,6 +46,7 @@ type Actions =
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
 type Events =
+  | SnapControllerStateChangeEvent
   | KeyringControllerStateChangeEvent
   | AccountsControllerAccountAddedEvent
   | AccountsControllerAccountRemovedEvent
