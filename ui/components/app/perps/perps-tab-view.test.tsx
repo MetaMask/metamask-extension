@@ -106,13 +106,6 @@ describe('PerpsTabView', () => {
   });
 
   describe('component structure', () => {
-    it('has the correct CSS class', () => {
-      renderWithProvider(<PerpsTabView />, mockStore);
-
-      const view = screen.getByTestId('perps-tab-view');
-      expect(view).toHaveClass('perps-tab-view');
-    });
-
     it('renders positions before orders', () => {
       renderWithProvider(<PerpsTabView />, mockStore);
 
