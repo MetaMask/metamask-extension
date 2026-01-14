@@ -1,22 +1,29 @@
 import React from 'react';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
   TextVariant,
   TextColor,
   FontWeight,
-} from '../../../../helpers/constants/design-system';
-import { AvatarTokenSize, Box, Text } from '../../../component-library';
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import type { Order } from '../types';
 
-export interface OrderCardProps {
+export type OrderCardProps = {
   order: Order;
-}
+};
 
 /**
  * Formats the order type for display (capitalizes first letter)
+ *
+ * @param orderType - The order type to format
+ * @returns The formatted order type
+ * @example
+ * formatOrderType('market') => 'Market'
+ * formatOrderType('limit') => 'Limit'
  */
 const formatOrderType = (orderType: Order['orderType']): string => {
   return orderType.charAt(0).toUpperCase() + orderType.slice(1);
@@ -24,6 +31,16 @@ const formatOrderType = (orderType: Order['orderType']): string => {
 
 /**
  * Formats the order status for display (capitalizes first letter)
+ *
+ * @param status - The order status to format
+ * @returns The formatted order status
+ * @example
+ * formatStatus('open') => 'Open'
+ * formatStatus('filled') => 'Filled'
+ * formatStatus('canceled') => 'Canceled'
+ * formatStatus('rejected') => 'Rejected'
+ * formatStatus('queued') => 'Queued'
+ * formatStatus('triggered') => 'Triggered'
  */
 const formatStatus = (status: Order['status']): string => {
   return status.charAt(0).toUpperCase() + status.slice(1);
@@ -32,6 +49,12 @@ const formatStatus = (status: Order['status']): string => {
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
+ *
+ * @param symbol - The symbol to extract the display name from
+ * @returns The display name
+ * @example
+ * getDisplayName('xyz:TSLA') => 'TSLA'
+ * getDisplayName('BTC') => 'BTC'
  */
 const getDisplayName = (symbol: string): string => {
   const colonIndex = symbol.indexOf(':');
@@ -43,25 +66,38 @@ const getDisplayName = (symbol: string): string => {
 
 /**
  * Get the appropriate text color for order status
+ *
+ * @param status - The order status to get the color for
+ * @returns The appropriate text color
+ * @example
+ * getStatusColor('open') => TextColor.TextAlternative
+ * getStatusColor('filled') => TextColor.SuccessDefault
+ * getStatusColor('canceled') => TextColor.ErrorDefault
+ * getStatusColor('rejected') => TextColor.ErrorDefault
+ * getStatusColor('queued') => TextColor.TextAlternative
+ * getStatusColor('triggered') => TextColor.TextAlternative
  */
 const getStatusColor = (status: Order['status']): TextColor => {
   switch (status) {
     case 'filled':
-      return TextColor.successDefault;
+      return TextColor.SuccessDefault;
     case 'canceled':
     case 'rejected':
-      return TextColor.errorDefault;
+      return TextColor.ErrorDefault;
     case 'open':
     case 'queued':
     case 'triggered':
     default:
-      return TextColor.textAlternative;
+      return TextColor.TextAlternative;
   }
 };
 
 /**
  * OrderCard component displays individual order information
  * Two rows: symbol/type/side + size on left, price + status on right
+ *
+ * @param options0 - Component props
+ * @param options0.order - The order data to display
  */
 export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   const isBuy = order.side === 'buy';
@@ -70,9 +106,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
   return (
     <Box
       className="order-card"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       gap={3}
       paddingLeft={4}
       paddingRight={4}
@@ -89,25 +124,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
       {/* Left side: Symbol info and size */}
       <Box
-        className="order-card__left"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
+        className="order-card__left flex-1 min-w-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
         gap={1}
-        style={{ flex: 1, minWidth: 0 }}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {formatOrderType(order.orderType)} {isBuy ? 'buy' : 'sell'}
           </Text>
         </Box>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {order.size} {displayName}
         </Text>
       </Box>
@@ -115,17 +147,16 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
       {/* Right side: Price and status */}
       <Box
         className="order-card__right"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {order.orderType === 'limit' && order.price !== '0'
             ? `$${order.price}`
             : 'Market'}
         </Text>
-        <Text variant={TextVariant.bodySm} color={getStatusColor(order.status)}>
+        <Text variant={TextVariant.BodySm} color={getStatusColor(order.status)}>
           {formatStatus(order.status)}
         </Text>
       </Box>

@@ -1,22 +1,26 @@
 import React from 'react';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
   TextVariant,
   TextColor,
   FontWeight,
-} from '../../../../helpers/constants/design-system';
-import { AvatarTokenSize, Box, Text } from '../../../component-library';
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import type { Position } from '../types';
 
-export interface PositionCardProps {
+export type PositionCardProps = {
   position: Position;
-}
+};
 
 /**
  * Determines if a position is long (positive size) or short (negative size)
+ *
+ * @param size - The position size as a string
+ * @returns 'long' or 'short'
  */
 const getPositionDirection = (size: string): 'long' | 'short' => {
   return parseFloat(size) >= 0 ? 'long' : 'short';
@@ -25,6 +29,9 @@ const getPositionDirection = (size: string): 'long' | 'short' => {
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
+ *
+ * @param symbol - The full symbol string
+ * @returns The display name
  */
 const getDisplayName = (symbol: string): string => {
   const colonIndex = symbol.indexOf(':');
@@ -37,6 +44,9 @@ const getDisplayName = (symbol: string): string => {
 /**
  * PositionCard component displays individual position information
  * Two rows: coin/leverage/direction + size on left, entry price + P&L on right
+ *
+ * @param options0 - Component props
+ * @param options0.position - The position data to display
  */
 export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
   const direction = getPositionDirection(position.size);
@@ -47,9 +57,8 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
   return (
     <Box
       className="position-card"
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
       gap={3}
       paddingLeft={4}
       paddingRight={4}
@@ -66,25 +75,22 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
 
       {/* Left side: Coin info and size */}
       <Box
-        className="position-card__left"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
+        className="position-card__left flex-1 min-w-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
         gap={1}
-        style={{ flex: 1, minWidth: 0 }}
       >
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {position.leverage.value}x {direction}
           </Text>
         </Box>
-        <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {absSize} {displayName}
         </Text>
       </Box>
@@ -92,17 +98,16 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
       {/* Right side: Entry price and P&L */}
       <Box
         className="position-card__right"
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexEnd}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           ${position.entryPrice}
         </Text>
         <Text
-          variant={TextVariant.bodySm}
-          color={isProfit ? TextColor.successDefault : TextColor.errorDefault}
+          variant={TextVariant.BodySm}
+          color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
         >
           {isProfit ? '+' : ''}${position.unrealizedPnl}
         </Text>

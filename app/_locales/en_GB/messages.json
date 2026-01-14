@@ -5055,8 +5055,20 @@
   "perps": {
     "message": "Perps"
   },
+  "perpsCloseAll": {
+    "message": "Close all"
+  },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsOpenOrders": {
+    "message": "Open Orders"
+  },
+  "perpsPositions": {
+    "message": "Positions"
+  },
+  "perpsStartNewTrade": {
+    "message": "Start a new trade"
   },
   "perpsStartTrading": {
     "message": "Start trading"

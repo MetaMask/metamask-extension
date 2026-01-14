@@ -1,21 +1,19 @@
 import React from 'react';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  BoxBackgroundColor,
+  Text,
   TextVariant,
   FontWeight,
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
-import {
-  Box,
   Icon,
   IconName,
   IconSize,
-  Text,
-} from '../../../component-library';
+  ButtonBase,
+} from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 
 export type StartTradeCtaProps = {
   /** Callback when the CTA is clicked */
@@ -29,46 +27,43 @@ export type StartTradeCtaProps = {
  * @param options0.onPress - Callback when the CTA is clicked
  */
 export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
+  const t = useI18nContext();
+
   const handleClick = () => {
     onPress?.();
   };
 
   return (
-    <Box
-      as="button"
-      className="start-trade-cta"
-      display={Display.Flex}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={3}
-      paddingBottom={3}
+    <ButtonBase
+      className="start-trade-cta w-full"
       onClick={handleClick}
       data-testid="start-new-trade-cta"
     >
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
+        paddingLeft={4}
+        paddingRight={4}
+        paddingTop={3}
+        paddingBottom={3}
       >
         <Box
-          display={Display.Flex}
-          justifyContent={JustifyContent.center}
-          alignItems={AlignItems.center}
-          backgroundColor={BackgroundColor.backgroundMuted}
-          borderRadius={BorderRadius.full}
-          style={{ width: '40px', height: '40px' }}
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
+          backgroundColor={BoxBackgroundColor.BackgroundMuted}
+          className="rounded-full w-10 h-10"
         >
           <Icon name={IconName.Add} size={IconSize.Sm} />
         </Box>
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           fontWeight={FontWeight.Medium}
-          marginLeft={3}
+          className="ml-3"
         >
-          Start a new trade
+          {t('perpsStartNewTrade')}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 
