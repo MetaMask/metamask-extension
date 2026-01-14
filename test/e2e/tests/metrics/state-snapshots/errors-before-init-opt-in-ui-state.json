@@ -143,7 +143,11 @@
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
-      "enabledNetworkMap": { "eip155": "object", "solana": "object", "tron": "object" }
+      "enabledNetworkMap": {
+        "eip155": "object",
+        "solana": "object",
+        "tron": "object"
+      }
     },
     "NetworkOrderController": {
       "orderedNetworkList": {

@@ -270,7 +270,11 @@
       "6": "object",
       "7": "object"
     },
-    "enabledNetworkMap": { "eip155": "object", "solana": "object", "tron": "object" },
+    "enabledNetworkMap": {
+      "eip155": "object",
+      "solana": "object",
+      "tron": "object"
+    },
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},
