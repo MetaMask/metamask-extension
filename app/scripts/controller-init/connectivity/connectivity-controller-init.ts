@@ -10,8 +10,11 @@ import {
  *
  * This controller stores device connectivity status. For the extension,
  * we use a PassiveConnectivityService since the actual detection happens
- * in the UI context (where browser events work), and the status is synced
- * to this controller via the setDeviceConnectivityStatus API.
+ * in a different context where browser events work reliably:
+ * - MV3: Offscreen document (app/offscreen/connectivity.ts)
+ * - MV2: Background page (app/scripts/background.js)
+ *
+ * The status is synced to this controller via the setDeviceConnectivityStatus API.
  *
  * @param request - The controller init request.
  * @param request.controllerMessenger - The messenger for the controller.
@@ -37,7 +40,7 @@ export const ConnectivityControllerInit: ControllerInitFunction<
     controller,
     api: {
       setDeviceConnectivityStatus: (status: 'online' | 'offline') =>
-        connectivityService.setStatus(status === 'online'),
+        connectivityService.setStatus(status),
     },
     persistedStateKey: null,
   };

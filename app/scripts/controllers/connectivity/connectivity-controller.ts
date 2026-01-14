@@ -5,7 +5,6 @@ import {
   ConnectivityControllerState,
   ConnectivityControllerMessenger,
   ConnectivityControllerOptions,
-  ConnectivityService,
 } from './types';
 
 /**
@@ -48,8 +47,10 @@ export function getDefaultConnectivityControllerState(): ConnectivityControllerS
  * **Platform implementations:**
  *
  * - **Mobile:** Inject `NetInfoConnectivityService` using `@react-native-community/netinfo`
- * - **Extension:** Inject `PassiveConnectivityService` in the background,
- * UI calls `service.setStatus()` via the background API
+ * - **Extension:** Inject `PassiveConnectivityService` in the background.
+ * Status is updated via the `setDeviceConnectivityStatus` API, which is called from:
+ * - MV3: Offscreen document (where browser events work reliably)
+ * - MV2: Background page (where browser events work directly)
  *
  * This controller provides a centralized state for connectivity status,
  * enabling the UI and other controllers to adapt when the user goes offline.
@@ -59,15 +60,11 @@ export class ConnectivityController extends BaseController<
   ConnectivityControllerState,
   ConnectivityControllerMessenger
 > {
-  readonly #connectivityService: ConnectivityService;
-
   constructor({
     messenger,
     connectivityService,
   }: ConnectivityControllerOptions) {
-    const initialStatus = connectivityService.isOnline()
-      ? ConnectivityStatus.Online
-      : ConnectivityStatus.Offline;
+    const initialStatus = connectivityService.getStatus();
 
     super({
       name: controllerName,
@@ -79,15 +76,9 @@ export class ConnectivityController extends BaseController<
       },
     });
 
-    this.#connectivityService = connectivityService;
-
-    connectivityService.onConnectivityChange((isOnline) => {
-      const newStatus = isOnline
-        ? ConnectivityStatus.Online
-        : ConnectivityStatus.Offline;
-
+    connectivityService.onConnectivityChange((status) => {
       this.update((draftState) => {
-        draftState.connectivityStatus = newStatus;
+        draftState.connectivityStatus = status;
       });
     });
   }

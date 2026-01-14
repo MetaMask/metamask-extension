@@ -103,7 +103,6 @@ export async function createOffscreen() {
 
 /**
  * Sets up a listener for connectivity status messages from the offscreen document.
- * This should be called after the controller is initialized.
  *
  * @param {Function} onConnectivityChange - Callback to invoke with the connectivity status.
  * The callback receives a boolean indicating whether the device is online.

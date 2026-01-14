@@ -1,3 +1,4 @@
+import { ConnectivityStatus } from './types';
 import { PassiveConnectivityService } from './passive-connectivity-service';
 
 describe('PassiveConnectivityService', () => {
@@ -11,20 +12,20 @@ describe('PassiveConnectivityService', () => {
     service.destroy();
   });
 
-  describe('isOnline', () => {
-    it('returns true by default', () => {
-      expect(service.isOnline()).toBe(true);
+  describe('getStatus', () => {
+    it('returns online by default', () => {
+      expect(service.getStatus()).toBe(ConnectivityStatus.Online);
     });
 
-    it('returns false after setStatus(false)', () => {
-      service.setStatus(false);
-      expect(service.isOnline()).toBe(false);
+    it('returns offline after setStatus(offline)', () => {
+      service.setStatus(ConnectivityStatus.Offline);
+      expect(service.getStatus()).toBe(ConnectivityStatus.Offline);
     });
 
-    it('returns true after setStatus(true)', () => {
-      service.setStatus(false);
-      service.setStatus(true);
-      expect(service.isOnline()).toBe(true);
+    it('returns online after setStatus(online)', () => {
+      service.setStatus(ConnectivityStatus.Offline);
+      service.setStatus(ConnectivityStatus.Online);
+      expect(service.getStatus()).toBe(ConnectivityStatus.Online);
     });
   });
 
@@ -41,20 +42,20 @@ describe('PassiveConnectivityService', () => {
       const callback = jest.fn();
       service.onConnectivityChange(callback);
 
-      service.setStatus(false);
+      service.setStatus(ConnectivityStatus.Offline);
 
-      expect(callback).toHaveBeenCalledWith(false);
+      expect(callback).toHaveBeenCalledWith(ConnectivityStatus.Offline);
     });
 
     it('calls callback when status changes to online', () => {
       const callback = jest.fn();
       service.onConnectivityChange(callback);
-      service.setStatus(false);
+      service.setStatus(ConnectivityStatus.Offline);
       callback.mockClear();
 
-      service.setStatus(true);
+      service.setStatus(ConnectivityStatus.Online);
 
-      expect(callback).toHaveBeenCalledWith(true);
+      expect(callback).toHaveBeenCalledWith(ConnectivityStatus.Online);
     });
 
     it('calls callback even when status does not change (controller handles deduplication)', () => {
@@ -62,9 +63,25 @@ describe('PassiveConnectivityService', () => {
       service.onConnectivityChange(callback);
 
       // Already online, setting to online again - still calls callback
-      service.setStatus(true);
+      service.setStatus(ConnectivityStatus.Online);
 
-      expect(callback).toHaveBeenCalledWith(true);
+      expect(callback).toHaveBeenCalledWith(ConnectivityStatus.Online);
+    });
+
+    it('calls all registered callbacks when status changes', () => {
+      const callback1 = jest.fn();
+      const callback2 = jest.fn();
+      const callback3 = jest.fn();
+
+      service.onConnectivityChange(callback1);
+      service.onConnectivityChange(callback2);
+      service.onConnectivityChange(callback3);
+
+      service.setStatus(ConnectivityStatus.Offline);
+
+      expect(callback1).toHaveBeenCalledWith(ConnectivityStatus.Offline);
+      expect(callback2).toHaveBeenCalledWith(ConnectivityStatus.Offline);
+      expect(callback3).toHaveBeenCalledWith(ConnectivityStatus.Offline);
     });
   });
 
@@ -74,7 +91,7 @@ describe('PassiveConnectivityService', () => {
       service.onConnectivityChange(callback);
 
       service.destroy();
-      service.setStatus(false);
+      service.setStatus(ConnectivityStatus.Offline);
 
       expect(callback).not.toHaveBeenCalled();
     });

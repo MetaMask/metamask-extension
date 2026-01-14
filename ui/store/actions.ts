@@ -8217,18 +8217,3 @@ export async function saveClaimDraft(
 export async function deleteClaimDraft(draftId: string): Promise<void> {
   return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }
-
-/**
- * Sets the device connectivity status.
- * Called from the UI context where browser online/offline events work properly.
- *
- * @param status - The connectivity status ('online' or 'offline').
- * @returns A promise that resolves when the status is updated.
- */
-export async function setDeviceConnectivityStatus(
-  status: 'online' | 'offline',
-): Promise<void> {
-  return await submitRequestToBackground<void>('setDeviceConnectivityStatus', [
-    status,
-  ]);
-}

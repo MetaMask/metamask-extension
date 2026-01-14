@@ -1,4 +1,5 @@
 import type { ConnectivityService } from './types';
+import { ConnectivityStatus } from './types';
 
 /**
  * A passive connectivity service for cross-context scenarios.
@@ -11,53 +12,54 @@ import type { ConnectivityService } from './types';
  * - Returns a default online state
  * - Does not actively detect connectivity changes
  * - Receives updates via `setStatus()` method from external callers
- * - Forwards updates to the callback (controller handles deduplication)
+ * - Forwards updates to all registered callbacks
  *
  * Detection happens in background.js which calls `setDeviceConnectivityStatus()`:
  * - MV3: Offscreen document sends connectivity changes via chrome.runtime.sendMessage
  * - MV2: Background page listens to window online/offline events directly
  */
 export class PassiveConnectivityService implements ConnectivityService {
-  #isOnline: boolean = true;
+  #status: ConnectivityStatus = ConnectivityStatus.Online;
 
-  #callback: ((isOnline: boolean) => void) | null = null;
+  #onConnectivityChangeCallbacks: ((status: ConnectivityStatus) => void)[] = [];
 
   /**
    * Returns the current connectivity status.
    *
-   * @returns True if online, false if offline.
+   * @returns 'online' if online, 'offline' if offline.
    */
-  isOnline(): boolean {
-    return this.#isOnline;
+  getStatus(): ConnectivityStatus {
+    return this.#status;
   }
 
   /**
    * Registers a callback to be called when connectivity status changes.
    *
-   * @param callback - Function called with true when online, false when offline.
+   * @param callback - Function called with the connectivity status ('online' or 'offline').
    */
-  onConnectivityChange(callback: (isOnline: boolean) => void): void {
-    this.#callback = callback;
+  onConnectivityChange(callback: (status: ConnectivityStatus) => void): void {
+    this.#onConnectivityChangeCallbacks.push(callback);
   }
 
   /**
    * Sets the connectivity status.
    *
    * Called from the background when connectivity changes.
-   * This triggers the registered callback to update the controller.
-   * The controller handles deduplication of status changes.
+   * This triggers all registered callbacks to update the controller.
    *
-   * @param isOnline - Whether the device is online.
+   * @param status - The connectivity status ('online' or 'offline').
    */
-  setStatus(isOnline: boolean): void {
-    this.#isOnline = isOnline;
-    this.#callback?.(isOnline);
+  setStatus(status: ConnectivityStatus): void {
+    this.#status = status;
+    for (const callback of this.#onConnectivityChangeCallbacks) {
+      callback(status);
+    }
   }
 
   /**
-   * No-op cleanup.
+   * Cleans up all registered callbacks.
    */
   destroy(): void {
-    this.#callback = null;
+    this.#onConnectivityChangeCallbacks = [];
   }
 }

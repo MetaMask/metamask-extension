@@ -1663,11 +1663,11 @@ export default class MetamaskController extends EventEmitter {
 
     NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(({ network }) => {
       // this throws if there is no account for the given network... perhaps we should handle this better at the controller level
-      try {
+    try {
         lastSelectedAccountAddressByNetwork[network] =
-          this.accountsController.getSelectedMultichainAccount(
+        this.accountsController.getSelectedMultichainAccount(
             network,
-          )?.address;
+        )?.address;
       } catch (err) {
         // This scenario shouldn't occur, but if it does, we track it for debugging
         const error = new Error(
@@ -1675,7 +1675,7 @@ export default class MetamaskController extends EventEmitter {
           { cause: err },
         );
         captureException(error);
-      }
+    }
     });
 
     this.controllerMessenger.subscribe(
@@ -1811,23 +1811,23 @@ export default class MetamaskController extends EventEmitter {
         const origins = uniq([...previousValue.keys(), ...currentValue.keys()]);
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ chains, notificationProperty, network }) => {
-            origins.forEach((origin) => {
-              const previousCaveatValue = previousValue.get(origin);
-              const currentCaveatValue = currentValue.get(origin);
+        origins.forEach((origin) => {
+          const previousCaveatValue = previousValue.get(origin);
+          const currentCaveatValue = currentValue.get(origin);
 
               const notificationsEnabled =
                 Boolean(
-                  previousCaveatValue?.sessionProperties?.[
+            previousCaveatValue?.sessionProperties?.[
                     notificationProperty
-                  ],
+            ],
                 ) ||
                 Boolean(
                   currentCaveatValue?.sessionProperties?.[notificationProperty],
-                );
+          );
 
               if (!notificationsEnabled) {
-                return;
-              }
+            return;
+          }
 
               const previousSelectedAddress =
                 this._getSelectedMultichainAccountAddress(
@@ -1838,17 +1838,17 @@ export default class MetamaskController extends EventEmitter {
                 this._getSelectedMultichainAccountAddress(
                   currentCaveatValue,
                   chains,
-                );
+            );
 
               if (previousSelectedAddress !== currentSelectedAddress) {
-                this._notifyMultichainAccountChange(
-                  origin,
+            this._notifyMultichainAccountChange(
+              origin,
                   currentSelectedAddress ? [currentSelectedAddress] : [],
                   network,
-                );
-              }
-            });
-          },
+            );
+          }
+        });
+      },
         );
       },
       getAuthorizedScopesByOrigin,
@@ -1868,8 +1868,8 @@ export default class MetamaskController extends EventEmitter {
 
         NON_EVM_ACCOUNT_CHANGED_CONFIGS.forEach(
           ({ network, accountType, notificationProperty, chains }) => {
-            const [account] =
-              this.accountTreeController.getAccountsFromSelectedAccountGroup({
+        const [account] =
+          this.accountTreeController.getAccountsFromSelectedAccountGroup({
                 scopes: [network],
                 type: accountType,
               });
@@ -1881,42 +1881,42 @@ export default class MetamaskController extends EventEmitter {
               !account ||
               account.type !== accountType ||
               account.address === lastSelectedAccountAddress
-            ) {
-              return;
-            }
+          ) {
+            return;
+          }
 
             lastSelectedAccountAddressByNetwork[network] = account.address;
 
             const originsWithAccountChangedNotifications =
-              getOriginsWithSessionProperty(
-                this.permissionController.state,
+            getOriginsWithSessionProperty(
+              this.permissionController.state,
                 notificationProperty,
-              );
+            );
 
             const permittedAccounts = getPermittedAccountsForScopesByOrigin(
-              this.permissionController.state,
+            this.permissionController.state,
               chains,
-            );
+          );
 
             for (const [origin, accounts] of permittedAccounts.entries()) {
               const parsedAddresses = accounts.map((caipAccountId) => {
-                const { address } = parseCaipAccountId(caipAccountId);
-                return address;
-              });
+              const { address } = parseCaipAccountId(caipAccountId);
+              return address;
+            });
 
-              if (
+            if (
                 parsedAddresses.includes(account.address) &&
                 originsWithAccountChangedNotifications[origin]
-              ) {
-                this._notifyMultichainAccountChange(
-                  origin,
-                  [account.address],
+            ) {
+              this._notifyMultichainAccountChange(
+                origin,
+                [account.address],
                   network,
-                );
-              }
-            }
-          },
-        );
+              );
+          }
+        }
+      },
+    );
       },
     );
 
@@ -3055,8 +3055,8 @@ export default class MetamaskController extends EventEmitter {
         ),
       submitDirectRevocation:
         gatorPermissionsController.submitDirectRevocation.bind(
-          gatorPermissionsController,
-        ),
+        gatorPermissionsController,
+      ),
       checkDelegationDisabled: this.checkDelegationDisabled.bind(this),
 
       // KeyringController
@@ -6322,7 +6322,7 @@ export default class MetamaskController extends EventEmitter {
 
         if (scopeObjects.length === 0) {
           return;
-        }
+    }
 
         // Collect all unique accounts from all scopeObjects
         const allAccounts = new Set(
@@ -6331,24 +6331,24 @@ export default class MetamaskController extends EventEmitter {
 
         const parsedPermittedAddresses = Array.from(allAccounts).map(
           (caipAccountId) => {
-            const { address } = parseCaipAccountId(caipAccountId);
-            return address;
+        const { address } = parseCaipAccountId(caipAccountId);
+        return address;
           },
-        );
+      );
 
         const [accountAddressToEmit] =
           this.sortMultichainAccountsByLastSelected(parsedPermittedAddresses);
 
-        if (accountAddressToEmit) {
-          this._notifyMultichainAccountChange(
-            origin,
-            [accountAddressToEmit],
+      if (accountAddressToEmit) {
+        this._notifyMultichainAccountChange(
+          origin,
+          [accountAddressToEmit],
             network,
-          );
-        }
+        );
+      }
       },
     );
-  }
+    }
   // Identity Management (signature operations)
 
   getAddTransactionRequest({

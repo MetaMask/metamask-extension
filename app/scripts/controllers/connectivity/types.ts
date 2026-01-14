@@ -13,7 +13,7 @@ export const ConnectivityStatus = {
   Offline: 'offline',
 } as const;
 
-export type ConnectivityStatusType =
+export type ConnectivityStatus =
   (typeof ConnectivityStatus)[keyof typeof ConnectivityStatus];
 
 /**
@@ -31,16 +31,16 @@ export type ConnectivityService = {
   /**
    * Returns the current connectivity status.
    *
-   * @returns True if the device is online, false otherwise.
+   * @returns 'online' if the device is online, 'offline' otherwise.
    */
-  isOnline(): boolean;
+  getStatus(): ConnectivityStatus;
 
   /**
    * Registers a callback to be called when connectivity status changes.
    *
-   * @param callback - Function called with true when online, false when offline.
+   * @param callback - Function called with 'online' when online, 'offline' when offline.
    */
-  onConnectivityChange(callback: (isOnline: boolean) => void): void;
+  onConnectivityChange(callback: (status: ConnectivityStatus) => void): void;
 
   /**
    * Cleans up any resources (event listeners, subscriptions).
@@ -63,7 +63,7 @@ export type ConnectivityControllerState = {
    * The current device connectivity status.
    * Named with 'connectivity' prefix to avoid conflicts when state is flattened in Redux.
    */
-  connectivityStatus: ConnectivityStatusType;
+  connectivityStatus: ConnectivityStatus;
 };
 
 /**
