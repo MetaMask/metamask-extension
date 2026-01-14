@@ -1,6 +1,7 @@
 import { TextColor } from '@metamask/design-system-react';
-import type { Order } from './types';
+import type { Order, PerpsMarketData } from './types';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import { mockCryptoMarkets, mockHip3Markets } from './mocks';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -183,4 +184,23 @@ export const getAssetIconUrl = (symbol: string): string => {
 
   // Regular asset - uppercase the symbol
   return `${HYPERLIQUID_ASSET_ICONS_BASE_URL}${symbol.toUpperCase()}.svg`;
+};
+
+/**
+ * Finds market data by symbol from mock data
+ * Searches both crypto and HIP-3 markets
+ *
+ * @param symbol - The market symbol to search for
+ * @returns The market data if found, undefined otherwise
+ * @example
+ * findMarketBySymbol('BTC') => { symbol: 'BTC', name: 'Bitcoin', ... }
+ * findMarketBySymbol('xyz:TSLA') => { symbol: 'xyz:TSLA', name: 'Tesla', ... }
+ */
+export const findMarketBySymbol = (
+  symbol: string,
+): PerpsMarketData | undefined => {
+  const allMarkets = [...mockCryptoMarkets, ...mockHip3Markets];
+  return allMarkets.find(
+    (market) => market.symbol.toLowerCase() === symbol.toLowerCase(),
+  );
 };

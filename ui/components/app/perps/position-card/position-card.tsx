@@ -9,14 +9,15 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import { getDisplayName, getPositionDirection, formatPnl } from '../utils';
 import type { Position } from '../types';
-import { useNavigate } from 'react-router-dom';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
 export type PositionCardProps = {
   position: Position;
+  onClick?: (position: Position) => void;
 };
 
 /**
@@ -26,6 +27,7 @@ export type PositionCardProps = {
  *
  * @param options0 - Component props
  * @param options0.position - The position data to display
+ * @param options0.onClick
  */
 export const PositionCard: React.FC<PositionCardProps> = ({
   position,

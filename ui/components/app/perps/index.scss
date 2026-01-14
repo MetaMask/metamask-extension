@@ -191,3 +191,25 @@
   }
 }
 
+// Generic list container with border radius handled via pseudo-selectors
+.perps-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.perps-list-item {
+  overflow: hidden;
+
+  &:only-child {
+    border-radius: 12px;
+  }
+
+  &:first-child:not(:only-child) {
+    border-radius: 12px 12px 0 0;
+  }
+
+  &:last-child:not(:only-child) {
+    border-radius: 0 0 12px 12px;
+  }
+}
