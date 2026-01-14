@@ -242,27 +242,27 @@ export const getFromChains = createDeepEqualSelector(
 );
 
 /**
- * This matches the network filter in the activity and asset lists
+ * This returns a supported bridge chainId that matches the network filter in the activity and asset lists.
+ * Returns undefined if network filter is not supported by swap/bridge.
  */
 export const getLastSelectedChainId = createSelector(
   [getAllEnabledNetworksForAllNamespaces, getFromChains],
   (allEnabledNetworksForAllNamespaces, fromChains) => {
     // If there is no network filter, return top chain from LD
     if (allEnabledNetworksForAllNamespaces.length > 1) {
-      return fromChains[0]?.chainId ?? FALLBACK_CHAIN_ID;
+      return fromChains[0]?.chainId;
     }
     // Find the matching bridge fromChain for the selected network filter
-    return fromChains.find(
-      ({ chainId: fromChainId }) =>
-        fromChainId ===
-        formatChainIdToCaip(
-          allEnabledNetworksForAllNamespaces[0] ?? FALLBACK_CHAIN_ID,
-        ),
-    )?.chainId;
+    return allEnabledNetworksForAllNamespaces.length === 1
+      ? fromChains.find(
+          ({ chainId: fromChainId }) =>
+            fromChainId ===
+            formatChainIdToCaip(allEnabledNetworksForAllNamespaces[0]),
+        )?.chainId
+      : undefined;
   },
 );
 
-// This returns undefined if the selected chain is not supported by swap/bridge (i.e, testnets)
 // TODO when GNS is removed, use the getLastSelectedChain instead of providerChainId
 export const getFromToken = createSelector(
   [
@@ -271,24 +271,19 @@ export const getFromToken = createSelector(
     getMultichainProviderConfig,
   ],
   (fromToken, fromChains, providerConfig) => {
+    if (fromToken) {
+      return fromToken;
+    }
     // When the page loads the global network always matches the network filter
     // Because useBridging checks whether the lastSelectedNetwork matches the provider config
     // Then useBridgeQueryParams sets the global network to lastSelectedNetwork as needed
     const fromChain = fromChains.find(
       ({ chainId }) => !isCrossChain(chainId, providerConfig?.chainId),
     );
-    // If selected network is not supported by swap/bridge, return ETH
-    if (!fromChain) {
-      return toBridgeToken(
-        getNativeAssetForChainId(fromChains[0]?.chainId ?? FALLBACK_CHAIN_ID),
-      );
-    }
-    const fromChainId = fromChain.chainId;
-    if (fromToken) {
-      return fromToken;
-    }
-    const { iconUrl, ...nativeAsset } = getNativeAssetForChainId(fromChainId);
-    return toBridgeToken(nativeAsset);
+    // If the user has not selected a token, return the native token for the selected network as default
+    // If selected network is not supported by swap/bridge, return ETH (edge case)
+    const fromChainId = fromChain?.chainId ?? FALLBACK_CHAIN_ID;
+    return toBridgeToken(getNativeAssetForChainId(fromChainId));
   },
 );
 

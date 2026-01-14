@@ -7,13 +7,17 @@ import {
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
-import { type BridgeAssetV2 } from '../../pages/bridge/utils/tokens';
+import type {
+  MinimalAsset,
+  BridgeAssetV2,
+} from '../../pages/bridge/utils/tokens';
 
-export type BridgeToken = BridgeAssetV2 & {
+type BridgeTokenBalanceData = {
   balance: string;
   tokenFiatAmount?: number | null;
   accountType?: KeyringAccountType;
 };
+export type BridgeToken = BridgeAssetV2 & BridgeTokenBalanceData;
 
 /**
  * This is the minimal network configuration used by the Swap UI
@@ -39,9 +43,8 @@ export type BridgeState = {
 };
 
 export type TokenPayload = {
-  payload: Omit<BridgeToken, 'chainId' | 'balance'> & {
-    address?: string;
-    chainId?: number | CaipChainId | Hex | string;
-    balance?: string;
-  };
+  payload: MinimalAsset &
+    Partial<BridgeTokenBalanceData> & {
+      chainId?: number | CaipChainId | Hex | string;
+    };
 };

@@ -10,7 +10,6 @@ import { MultichainNetworks } from '../../../shared/constants/multichain/network
 import { mockNetworkState } from '../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import * as bridgeSelectors from '../../ducks/bridge/selectors';
-import { toBridgeToken } from '../../ducks/bridge/utils';
 import useBridging from './useBridging';
 
 const mockUseNavigate = jest.fn();
@@ -53,27 +52,21 @@ describe('useBridging', () => {
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         'Home',
         false,
-        {
-          srcToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-        },
+        { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         '/cross-chain/swaps/prepare-swap-page',
         getNativeAssetForChainId(CHAIN_IDS.MAINNET),
         MetaMetricsSwapsEventSource.TokenView,
         false,
-        {
-          srcToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.MAINNET)),
-        },
+        { srcToken: getNativeAssetForChainId(CHAIN_IDS.MAINNET) },
       ],
       [
         '/cross-chain/swaps/prepare-swap-page',
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         false,
-        {
-          srcToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
-        },
+        { srcToken: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM) },
       ],
       [
         '/cross-chain/swaps/prepare-swap-page',
@@ -106,7 +99,9 @@ describe('useBridging', () => {
         MetaMetricsSwapsEventSource.TokenView,
         true,
         {
-          srcToken: toBridgeToken({
+          srcToken: {
+            iconUrl: 'https://icon.url',
+            string: '123',
             symbol: 'TEST',
             address: toChecksumAddress(
               '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
@@ -117,7 +112,7 @@ describe('useBridging', () => {
             name: 'TEST',
             assetId:
               'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-          }),
+          },
         },
       ],
     ])(
@@ -194,7 +189,7 @@ describe('useBridging', () => {
         getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.OPTIMISM)),
+          srcToken: getNativeAssetForChainId(CHAIN_IDS.OPTIMISM),
         },
       ],
       [
@@ -214,19 +209,37 @@ describe('useBridging', () => {
         },
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: toBridgeToken({
+          srcToken: {
             symbol: 'TEST',
             address: toChecksumAddress(
               '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
             ),
             balance: '0x5f5e100',
+            iconUrl: 'https://icon.url',
+            string: '123',
             chainId: '0xa',
             decimals: 18,
             name: 'Test token',
             assetId:
               'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-          }),
+          },
         },
+      ],
+      [
+        '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
+        {
+          iconUrl: 'https://icon.url',
+          address: toChecksumAddress(
+            '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
+          ),
+          balance: '0x5f5e100',
+          name: 'Test token',
+          string: '123',
+          chainId: '0xa',
+          decimals: 18,
+        },
+        MetaMetricsSwapsEventSource.TokenView,
       ],
       // Should use bip44 default asset for BTC
       [
@@ -235,9 +248,7 @@ describe('useBridging', () => {
         getNativeAssetForChainId(MultichainNetworks.BITCOIN),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: toBridgeToken(
-            getNativeAssetForChainId(MultichainNetworks.BITCOIN),
-          ),
+          srcToken: getNativeAssetForChainId(MultichainNetworks.BITCOIN),
         },
       ],
       // Should use bip44 default asset for SOLANA
@@ -247,9 +258,7 @@ describe('useBridging', () => {
         getNativeAssetForChainId(MultichainNetworks.SOLANA),
         MetaMetricsSwapsEventSource.TokenView,
         {
-          srcToken: toBridgeToken(
-            getNativeAssetForChainId(MultichainNetworks.SOLANA),
-          ),
+          srcToken: getNativeAssetForChainId(MultichainNetworks.SOLANA),
         },
       ],
       // test account has no TRON account

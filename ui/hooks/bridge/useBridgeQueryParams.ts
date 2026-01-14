@@ -7,10 +7,6 @@ import {
   parseCaipAssetType,
 } from '@metamask/utils';
 import {
-  getNativeAssetForChainId,
-  isNativeAddress,
-} from '@metamask/bridge-controller';
-import {
   type AssetMetadata,
   fetchAssetMetadataForAssetIds,
 } from '../../../shared/lib/asset-utils';
@@ -154,40 +150,13 @@ export const useBridgeQueryParams = () => {
     }
   }, [searchParams]);
 
-  // Set fromChain and fromToken
-  const setFromChainAndToken = useCallback(
-    (fromTokenMetadata: AssetMetadata) => {
-      if (fromTokenMetadata) {
-        const { chainId, assetReference } = parseCaipAssetType(
-          fromTokenMetadata.assetId,
-        );
-        const nativeAsset = getNativeAssetForChainId(chainId);
-        // TODO remove this after v36.0.0 bridge-controller bump
-        const isNativeReference = nativeAsset?.assetId.includes(assetReference);
-        const token = {
-          ...fromTokenMetadata,
-          chainId,
-          address:
-            isNativeReference || isNativeAddress(assetReference)
-              ? (nativeAsset?.address ?? '')
-              : assetReference,
-        };
-        dispatch(setFromToken(token));
-      }
-    },
-    [],
-  );
-
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
-      const { chainId, assetReference } = parseCaipAssetType(
-        toTokenMetadata.assetId,
-      );
+      const { chainId } = parseCaipAssetType(toTokenMetadata.assetId);
       dispatch(
         setToToken({
           ...toTokenMetadata,
           chainId,
-          address: assetReference,
         }),
       );
       // Clear parsed to asset ID after successful processing
@@ -209,7 +178,14 @@ export const useBridgeQueryParams = () => {
       ];
 
     // Process from chain/token first
-    setFromChainAndToken(fromTokenMetadata);
+    if (fromTokenMetadata) {
+      const { chainId } = parseCaipAssetType(fromTokenMetadata.assetId);
+      const token = {
+        ...fromTokenMetadata,
+        chainId,
+      };
+      dispatch(setFromToken(token));
+    }
   }, [assetMetadataByAssetId, parsedFromAssetId]);
 
   // Set toChainId and toToken
@@ -232,6 +208,7 @@ export const useBridgeQueryParams = () => {
     if (
       parsedFromAssetId &&
       fromToken &&
+      assetMetadataByAssetId &&
       fromToken.assetId?.toLowerCase() ===
         parsedFromAssetId.assetId.toLowerCase()
     ) {
@@ -248,7 +225,7 @@ export const useBridgeQueryParams = () => {
         setParsedAmount(null);
       }
     }
-  }, [parsedAmount, parsedFromAssetId, fromToken]);
+  }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
 
   // Set src token balance after url params are applied
   // This effect runs on each load regardless of the url params

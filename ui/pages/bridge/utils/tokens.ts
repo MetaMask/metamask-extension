@@ -56,7 +56,7 @@ const BridgeAssetV2Schema = intersection([
  * This is the interface for the asset object returned by the bridge-api popular and search token endpoints
  */
 export type BridgeAssetV2 = Infer<typeof BridgeAssetV2Schema>;
-type MinimalAsset = Infer<typeof MinimalAssetSchema>;
+export type MinimalAsset = Infer<typeof MinimalAssetSchema>;
 
 const validateSwapsAssetV2Object = (
   data: unknown,

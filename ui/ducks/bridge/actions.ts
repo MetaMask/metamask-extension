@@ -17,6 +17,7 @@ import {
 } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import type { MetaMaskReduxDispatch } from '../../store/store';
+import { getMultichainProviderConfig } from '../../selectors/multichain';
 import {
   bridgeSlice,
   setSrcTokenExchangeRates,
@@ -28,9 +29,9 @@ import type { TokenPayload } from './types';
 import {
   type BridgeAppState,
   getFromAccount,
-  getFromChain,
   getLastSelectedChainId,
 } from './selectors';
+import { getMaybeHexChainId } from './utils';
 
 const {
   setFromToken: setFromTokenAction,
@@ -148,8 +149,10 @@ export const setFromToken = (token: NonNullable<TokenPayload['payload']>) => {
     const { chainId } = parseCaipAssetType(assetId);
     const isNonEvm = isNonEvmChainId(chainId);
 
-    const currentChainId = getFromChain(getState())?.chainId;
-    const shouldSetNetwork = currentChainId ? currentChainId !== chainId : true;
+    const currentChainId = getMultichainProviderConfig(getState()).chainId;
+    const shouldSetNetwork = currentChainId
+      ? currentChainId !== getMaybeHexChainId(chainId)
+      : true;
     // Set the src network
     if (shouldSetNetwork) {
       // If the source chain changes, enable All Networks view so the user
