@@ -46,12 +46,13 @@ export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
         paddingRight={4}
         paddingTop={3}
         paddingBottom={3}
+        className="w-full"
       >
         <Box
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
           backgroundColor={BoxBackgroundColor.BackgroundMuted}
-          className="rounded-full w-10 h-10"
+          className="flex rounded-full w-10 h-10"
         >
           <Icon name={IconName.Add} size={IconSize.Sm} />
         </Box>
