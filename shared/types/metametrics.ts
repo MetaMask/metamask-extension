@@ -2,7 +2,7 @@ import type { Provider } from '@metamask/network-controller';
 import type { FetchGasFeeEstimateOptions } from '@metamask/gas-fee-controller';
 import type { SmartTransaction } from '@metamask/smart-transactions-controller';
 import type { TransactionMeta } from '@metamask/transaction-controller';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import {
   PaymentType,
   RecurringInterval,
