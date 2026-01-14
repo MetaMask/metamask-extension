@@ -1,0 +1,125 @@
+import type { BENCHMARK_PERSONA, BENCHMARK_TYPE } from './constants';
+
+export type BenchmarkPersona =
+  (typeof BENCHMARK_PERSONA)[keyof typeof BENCHMARK_PERSONA];
+
+export type BenchmarkType =
+  (typeof BENCHMARK_TYPE)[keyof typeof BENCHMARK_TYPE];
+
+type NavigationMetric = {
+  load: number;
+  domContentLoaded: number;
+  domInteractive: number;
+  type: string;
+};
+
+export type Metrics = {
+  navigation: NavigationMetric[];
+  paint: Record<string, number>;
+  'UI Startup': number;
+  'Background Connect': number;
+  'First Render': number;
+  'Get State': number;
+  'Initial Actions': number;
+  'Load Scripts': number;
+  'Setup Store': number;
+  numNetworkReqs: number;
+};
+
+export type StatisticalResult = {
+  [key: string]: number;
+};
+
+export type BenchmarkResults = {
+  benchmarkType?: BenchmarkType;
+  testTitle?: string;
+  persona?: BenchmarkPersona;
+  mean: StatisticalResult;
+  min: StatisticalResult;
+  max: StatisticalResult;
+  stdDev: StatisticalResult;
+  p75: StatisticalResult;
+  p95: StatisticalResult;
+};
+
+/** User action result with testTitle, persona and numeric timing metrics. */
+export type UserActionResult = {
+  benchmarkType?: BenchmarkType;
+  testTitle: string;
+  persona?: BenchmarkPersona;
+  [key: string]: string | number | undefined;
+};
+
+export type BenchmarkArguments = {
+  pages: string[];
+  browserLoads: number;
+  pageLoads: number;
+  out?: string;
+  retries: number;
+  persona: BenchmarkPersona;
+};
+
+export type NetworkReport = {
+  numNetworkReqs: number;
+};
+
+// ==================== Performance Benchmark Types ====================
+
+export type TimerResult = {
+  id: string;
+  duration: number;
+};
+
+export type BenchmarkRunResult = {
+  timers: TimerResult[];
+  success: boolean;
+  error?: string;
+};
+
+export type BenchmarkMetadata = {
+  testTitle: string;
+  persona: BenchmarkPersona;
+};
+
+export type Benchmark = BenchmarkMetadata & {
+  run: () => Promise<BenchmarkRunResult>;
+};
+
+export type TimerStatistics = {
+  id: string;
+  mean: number;
+  min: number;
+  max: number;
+  stdDev: number;
+  cv: number; // Coefficient of Variation
+  p50: number;
+  p75: number;
+  p95: number;
+  p99: number;
+  samples: number;
+  outliers: number;
+  dataQuality: 'good' | 'poor' | 'unreliable';
+};
+
+export type BenchmarkSummary = {
+  name: string;
+  iterations: number;
+  successfulRuns: number;
+  failedRuns: number;
+  timers: TimerStatistics[];
+  timestamp: string;
+  excludedDueToQuality: number;
+  /** Whether the exclusion rate is within acceptable limits */
+  exclusionRatePassed: boolean;
+  /** Percentage of runs that were excluded (0-1) */
+  exclusionRate: number;
+  /** Test title for Sentry logging */
+  testTitle: string;
+  /** User persona for Sentry logging */
+  persona: BenchmarkPersona;
+};
+
+export type PerformanceBenchmarkResults = {
+  timestamp: string;
+  benchmarks: BenchmarkSummary[];
+};

@@ -23,13 +23,14 @@ import {
   BenchmarkResults,
   Metrics,
   StatisticalResult,
-} from './types-generated';
+} from './utils/types';
 import {
   ALL_METRICS,
+  BENCHMARK_TYPE,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
-} from './constants';
+} from './utils/constants';
 
 const ALL_PAGES = Object.values(PAGES);
 
@@ -88,6 +89,7 @@ async function measurePagePowerUser(
       },
       useMockingPassThrough: true,
       disableServerMochaToBackground: true,
+      extendedTimeoutMultiplier: 3,
       testSpecificMock: async (server: Mockttp) => {
         await mockNotificationServices(server);
       },
@@ -102,7 +104,7 @@ async function measurePagePowerUser(
         await driver.navigate(pageName);
 
         // Confirm the number of accounts in the account list
-        new HeaderNavbar(driver).openAccountMenu();
+        await new HeaderNavbar(driver).openAccountMenu();
         const accountListPage = new AccountListPage(driver);
         await accountListPage.checkNumberOfAvailableAccounts(
           WITH_STATE_POWER_USER.withAccounts,
@@ -236,6 +238,7 @@ async function profilePageLoad(
     const reportingPageName = `${resultPersona}${capitalize(pageName)}`;
 
     results[reportingPageName] = {
+      benchmarkType: BENCHMARK_TYPE.BENCHMARK,
       testTitle,
       persona: resultPersona,
       mean: meanResult(result),
