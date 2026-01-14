@@ -141,7 +141,6 @@ export const AccountOverviewTabs = ({
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
-  console.log('isPerpsEnabled', isPerpsEnabled);
 
   return (
     <>
@@ -173,7 +172,7 @@ export const AccountOverviewTabs = ({
 
         {isPerpsEnabled && (
           <Tab
-            name="Perps"
+            name={t('perps')}
             tabKey={AccountOverviewTabKey.Perps}
             data-testid="account-overview__perps-tab"
           >

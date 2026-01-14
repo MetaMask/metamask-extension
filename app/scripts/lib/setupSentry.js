@@ -157,6 +157,12 @@ function setCITags() {
     Sentry.setTag('ci.job', ci.job);
     Sentry.setTag('ci.matrixIndex', ci.matrixIndex);
     Sentry.setTag('ci.prNumber', ci.prNumber);
+    if (ci.persona) {
+      Sentry.setTag('ci.persona', ci.persona);
+    }
+    if (ci.testTitle) {
+      Sentry.setTag('ci.testTitle', ci.testTitle);
+    }
   }
 }
 
