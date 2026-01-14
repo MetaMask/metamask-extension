@@ -1,10 +1,9 @@
 // import { strict as assert } from 'assert';
 import { withBtcAccountSnap } from '../btc/common-btc';
 import { TestDappBitcoin } from '../../page-objects/pages/test-dapp-bitcoin';
-import { regularDelayMs, WINDOW_TITLES, veryLargeDelayMs } from '../../helpers';
+import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
-import { DEFAULT_BTC_ADDRESS } from '../../constants';
 import {
   account1Short,
   assertConnected,
