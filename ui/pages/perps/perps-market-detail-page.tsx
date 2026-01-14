@@ -13,7 +13,6 @@ import {
   IconName,
   IconSize,
   IconColor,
-  ButtonBase,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
@@ -85,18 +84,18 @@ const PerpsMarketDetailPage: React.FC = () => {
     return (
       <Box className="main-container asset__container">
         <Box paddingLeft={2} paddingBottom={4} paddingTop={4}>
-          <ButtonBase
+          <Box
             data-testid="perps-market-detail-back-button"
             onClick={handleBackClick}
             aria-label={t('back')}
-            className="p-2"
+            className="p-2 cursor-pointer"
           >
             <Icon
               name={IconName.ArrowLeft}
               size={IconSize.Sm}
               color={IconColor.IconAlternative}
             />
-          </ButtonBase>
+          </Box>
         </Box>
         <Box
           flexDirection={BoxFlexDirection.Column}
@@ -141,18 +140,18 @@ const PerpsMarketDetailPage: React.FC = () => {
         gap={2}
       >
         {/* Back Button */}
-        <ButtonBase
+        <Box
           data-testid="perps-market-detail-back-button"
           onClick={handleBackClick}
           aria-label={t('back')}
-          className="p-2 -ml-2"
+          className="p-2 -ml-2 cursor-pointer"
         >
           <Icon
             name={IconName.ArrowLeft}
             size={IconSize.Md}
             color={IconColor.IconAlternative}
           />
-        </ButtonBase>
+        </Box>
 
         {/* Token Logo */}
         <PerpsTokenLogo symbol={market.symbol} size={AvatarTokenSize.Md} />
@@ -195,10 +194,10 @@ const PerpsMarketDetailPage: React.FC = () => {
         <Box className="flex-1" />
 
         {/* Favorite Star */}
-        <ButtonBase
+        <Box
           data-testid="perps-market-detail-favorite-button"
           aria-label="Add to favorites"
-          className="p-2"
+          className="p-2 cursor-pointer"
           onClick={() => {
             // TODO: Handle favorite toggle
           }}
@@ -208,7 +207,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             size={IconSize.Md}
             color={IconColor.IconAlternative}
           />
-        </ButtonBase>
+        </Box>
       </Box>
 
       {/* Chart Placeholder */}
@@ -301,86 +300,92 @@ const PerpsMarketDetailPage: React.FC = () => {
             {/* Second Row: Size and Margin */}
             <Box flexDirection={BoxFlexDirection.Row} gap={2}>
               {/* Size Card */}
-              <ButtonBase
+              <Box
                 className="perps-position-detail-card perps-position-detail-card--pressable flex-1"
+                flexDirection={BoxFlexDirection.Column}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={3}
+                paddingBottom={3}
                 onClick={() => {
                   // TODO: Handle size card press
                 }}
               >
-                <Box flexDirection={BoxFlexDirection.Column}>
-                  <Box paddingBottom={1}>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      Size
-                    </Text>
-                  </Box>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {Math.abs(parseFloat(position.size)).toFixed(5)}{' '}
-                    {getDisplayName(position.coin)}
-                  </Text>
-                </Box>
-              </ButtonBase>
-
-              {/* Margin Card */}
-              <ButtonBase
-                className="perps-position-detail-card perps-position-detail-card--pressable flex-1"
-                onClick={() => {
-                  // TODO: Handle margin card press
-                }}
-              >
-                <Box flexDirection={BoxFlexDirection.Column}>
-                  <Box paddingBottom={1}>
-                    <Text
-                      variant={TextVariant.BodySm}
-                      color={TextColor.TextAlternative}
-                    >
-                      Margin
-                    </Text>
-                  </Box>
-                  <Text
-                    variant={TextVariant.BodyMd}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    ${position.marginUsed}
-                  </Text>
-                </Box>
-              </ButtonBase>
-            </Box>
-
-            {/* Third Row: Auto Close (Full Width) */}
-            <ButtonBase
-              className="perps-position-detail-card perps-position-detail-card--pressable"
-              onClick={() => {
-                // TODO: Handle auto close card press
-              }}
-            >
-              <Box flexDirection={BoxFlexDirection.Column}>
                 <Box paddingBottom={1}>
                   <Text
                     variant={TextVariant.BodySm}
                     color={TextColor.TextAlternative}
                   >
-                    Auto close
+                    Size
                   </Text>
                 </Box>
                 <Text
                   variant={TextVariant.BodyMd}
                   fontWeight={FontWeight.Medium}
                 >
-                  TP{' '}
-                  {position.takeProfitPrice
-                    ? `$${position.takeProfitPrice}`
-                    : '-'}
-                  , SL{' '}
-                  {position.stopLossPrice ? `$${position.stopLossPrice}` : '-'}
+                  {Math.abs(parseFloat(position.size)).toFixed(5)}{' '}
+                  {getDisplayName(position.coin)}
                 </Text>
               </Box>
-            </ButtonBase>
+
+              {/* Margin Card */}
+              <Box
+                className="perps-position-detail-card perps-position-detail-card--pressable flex-1"
+                flexDirection={BoxFlexDirection.Column}
+                paddingLeft={4}
+                paddingRight={4}
+                paddingTop={3}
+                paddingBottom={3}
+                onClick={() => {
+                  // TODO: Handle margin card press
+                }}
+              >
+                <Box paddingBottom={1}>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    color={TextColor.TextAlternative}
+                  >
+                    Margin
+                  </Text>
+                </Box>
+                <Text
+                  variant={TextVariant.BodyMd}
+                  fontWeight={FontWeight.Medium}
+                >
+                  ${position.marginUsed}
+                </Text>
+              </Box>
+            </Box>
+
+            {/* Third Row: Auto Close (Full Width) */}
+            <Box
+              className="perps-position-detail-card perps-position-detail-card--pressable"
+              flexDirection={BoxFlexDirection.Column}
+              paddingLeft={4}
+              paddingRight={4}
+              paddingTop={3}
+              paddingBottom={3}
+              onClick={() => {
+                // TODO: Handle auto close card press
+              }}
+            >
+              <Box paddingBottom={1}>
+                <Text
+                  variant={TextVariant.BodySm}
+                  color={TextColor.TextAlternative}
+                >
+                  Auto close
+                </Text>
+              </Box>
+              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+                TP{' '}
+                {position.takeProfitPrice
+                  ? `$${position.takeProfitPrice}`
+                  : '-'}
+                , SL{' '}
+                {position.stopLossPrice ? `$${position.stopLossPrice}` : '-'}
+              </Text>
+            </Box>
           </Box>
 
           {/* Details Section */}
@@ -698,28 +703,28 @@ const PerpsMarketDetailPage: React.FC = () => {
           </Box>
 
           {/* Learn Section */}
-          <ButtonBase
+          <Box
             className="perps-position-detail-card perps-position-detail-card--pressable w-full mt-4"
+            flexDirection={BoxFlexDirection.Row}
+            justifyContent={BoxJustifyContent.Between}
+            alignItems={BoxAlignItems.Center}
+            paddingLeft={4}
+            paddingRight={4}
+            paddingTop={3}
+            paddingBottom={3}
             onClick={() => {
               // TODO: Navigate to learn page
             }}
           >
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              justifyContent={BoxJustifyContent.Between}
-              alignItems={BoxAlignItems.Center}
-              className="w-full"
-            >
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-                Learn the basics of perps
-              </Text>
-              <Icon
-                name={IconName.ArrowRight}
-                size={IconSize.Sm}
-                color={IconColor.IconAlternative}
-              />
-            </Box>
-          </ButtonBase>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
+              Learn the basics of perps
+            </Text>
+            <Icon
+              name={IconName.ArrowRight}
+              size={IconSize.Sm}
+              color={IconColor.IconAlternative}
+            />
+          </Box>
 
           {/* Disclaimer */}
           <Box paddingTop={4}>
