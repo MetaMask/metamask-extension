@@ -63,6 +63,12 @@ jest.mock('../../../hooks/send/useNavigateSendPage');
 jest.mock('../../../context/send');
 jest.mock('../../../hooks/send/metrics/useAssetSelectionMetrics');
 
+function mockVirtualizerDOM() {
+  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
+    value: 800,
+  });
+}
+
 describe('AssetList', () => {
   const mockUseI18nContext = jest.mocked(useI18nContext);
   const mockUseNavigateSendPage = jest.mocked(useNavigateSendPage);
@@ -83,6 +89,7 @@ describe('AssetList', () => {
   ];
 
   beforeEach(() => {
+    mockVirtualizerDOM();
     mockUseI18nContext.mockReturnValue((key: string) => key);
     mockUseNavigateSendPage.mockReturnValue({
       goToAmountRecipientPage: mockGoToAmountRecipientPage,
