@@ -87,8 +87,6 @@ async function confirmTx(): Promise<{
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
 
-      const homePage = new HomePage(driver);
-      await homePage.startSendFlow();
       await createInternalTransaction({
         driver,
         recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
