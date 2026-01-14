@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -78,6 +78,11 @@ import {
   isCryptoPaymentMethod,
 } from '../../../pages/settings/transaction-shield-tab/types';
 import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import {
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
@@ -845,22 +850,43 @@ function ShieldEndingToast() {
 function StorageErrorToast() {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const trackEvent = useContext(MetaMetricsContext);
   const [isDismissed, setIsDismissed] = useState(false);
+  const [hasTrackedView, setHasTrackedView] = useState(false);
 
   // Selector includes all conditions: flag is true, onboarding complete, and unlocked
   const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
 
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  // Track "Viewed" event when toast becomes visible
+  useEffect(() => {
+    if (shouldShow && !hasTrackedView) {
+      trackEvent({
+        event: MetaMetricsEventName.StorageErrorToastViewed,
+        category: MetaMetricsEventCategory.Error,
+      });
+      setHasTrackedView(true);
+    }
+  }, [shouldShow, hasTrackedView, trackEvent]);
+
   const handleRevealSrpClick = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastBackupSrpButtonPressed,
+      category: MetaMetricsEventCategory.Error,
+    });
     setIsDismissed(true);
     navigate(REVEAL_SEED_ROUTE);
   };
 
   const handleClose = () => {
+    trackEvent({
+      event: MetaMetricsEventName.StorageErrorToastDismissed,
+      category: MetaMetricsEventCategory.Error,
+    });
     setIsDismissed(true);
   };
-
-  // Only show toast if selector returns true and user hasn't dismissed it
-  const shouldShow = showStorageErrorToast && !isDismissed;
 
   return (
     shouldShow && (
