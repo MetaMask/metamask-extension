@@ -86,8 +86,10 @@ jobs:
       - name: Send benchmark results to Sentry
         if: ${{ vars.SENTRY_DSN_PERFORMANCE }}
         env:
-          GITHUB_REF_NAME: ${{ github.head_ref || github.ref_name }}
+          GH_HEAD_REF: ${{ github.head_ref }}
+          GH_REF_NAME: ${{ github.ref_name }}
         run: |
+          export GITHUB_REF_NAME="${GH_HEAD_REF:-$GH_REF_NAME}"
           yarn tsx test/e2e/benchmarks/send-to-sentry.ts \
             --results test-artifacts/benchmarks/${{ env.OUTPUT_NAME }} \
             --browser ${{ matrix.browser }} \
