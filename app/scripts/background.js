@@ -1966,15 +1966,12 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
     const { id, title, url, favIconUrl } = tabInfo;
 
     if (!url) {
-      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
     const { origin, protocol, host, href } = new URL(url);
 
     if (!isWebOrigin(origin)) {
-      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
-      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
