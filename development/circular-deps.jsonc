@@ -14,7 +14,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "shared/modules/selectors/index.ts",
@@ -23,7 +23,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "shared/modules/selectors/index.ts",
@@ -31,7 +31,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/components/app/metamask-template-renderer/index.js",
@@ -53,7 +53,7 @@
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
@@ -65,7 +65,7 @@
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
@@ -76,7 +76,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
@@ -87,7 +87,7 @@
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
@@ -97,7 +97,7 @@
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
@@ -106,7 +106,7 @@
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
   [
@@ -118,7 +118,7 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/metamask/metamask.js",
@@ -126,13 +126,13 @@
     "ui/pages/confirmations/confirmation/templates/error.js",
     "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/selectors.js",
-    "ui/store/actions.ts",
+    "ui/store/actions.ts"
   ],
   [
     "ui/ducks/metamask/metamask.js",
     "ui/selectors/multichain.ts",
-    "ui/selectors/selectors.js",
+    "ui/selectors/selectors.js"
   ],
   ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
-  ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"],
+  ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"]
 ]
