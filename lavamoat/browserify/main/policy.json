@@ -1023,6 +1023,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/connectivity-controller": {
+      "packages": {
+        "@metamask/base-controller": true
+      }
+    },
     "@metamask/controller-utils": {
       "globals": {
         "URL": true,
