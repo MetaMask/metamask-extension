@@ -130,7 +130,6 @@ async function waitUntilFileIsWritten({
   );
 }
 
-// skipped until the vault decryptor page is updated to support split state
 describe('Vault Decryptor Page', function () {
   it('is able to decrypt the vault uploading the log file in the vault-decryptor webapp', async function () {
     if (process.env.SELENIUM_BROWSER !== 'chrome') {
