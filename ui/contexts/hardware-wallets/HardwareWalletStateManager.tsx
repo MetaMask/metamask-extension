@@ -17,7 +17,6 @@ export type HardwareWalletState = {
   // Basic state
   deviceId: string | null;
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
-  currentAppName: string | null;
   connectionState: HardwareWalletConnectionState;
 
   // Derived state
@@ -68,7 +67,6 @@ export const useHardwareWalletStateManager = () => {
   ] = useState<HardwareConnectionPermissionState>(
     HardwareConnectionPermissionState.Unknown,
   );
-  const [currentAppName, setCurrentAppName] = useState<string | null>(null);
   const [connectionState, setConnectionState] =
     useState<HardwareWalletConnectionState>(ConnectionState.disconnected());
 
@@ -97,7 +95,6 @@ export const useHardwareWalletStateManager = () => {
   const state: HardwareWalletState = {
     deviceId,
     hardwareConnectionPermissionState,
-    currentAppName,
     connectionState,
     walletType,
     isHardwareWalletAccount,
@@ -124,15 +121,9 @@ export const useHardwareWalletStateManager = () => {
     () => ({
       setDeviceId,
       setHardwareConnectionPermissionState,
-      setCurrentAppName,
       setConnectionState,
     }),
-    [
-      setDeviceId,
-      setHardwareConnectionPermissionState,
-      setCurrentAppName,
-      setConnectionState,
-    ],
+    [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
   );
 
   return {

@@ -28,8 +28,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
-  private pendingOperation = false;
-
   private currentDeviceId: string | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -103,6 +101,14 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       // Step 3: Attempt to create a transport for the device
       await attemptLedgerTransportCreation();
+
+      // Step 4: set current app name
+      try {
+        const { appName } = await getAppNameAndVersion();
+        this.currentAppName = appName;
+      } catch (e) {
+        // temp
+      }
 
       // Mark as connected - device is present AND app is open
       this.connected = true;
@@ -195,16 +201,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
     this.connected = false;
     this.currentDeviceId = null;
-    this.pendingOperation = false;
-  }
-
-  /**
-   * Set pending operation state
-   *
-   * @param pending - Whether an operation is pending
-   */
-  setPendingOperation(pending: boolean): void {
-    this.pendingOperation = pending;
   }
 
   /**
