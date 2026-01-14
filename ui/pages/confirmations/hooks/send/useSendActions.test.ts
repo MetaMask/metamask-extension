@@ -116,9 +116,8 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
     });
   });
 });

@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { useCallback, useContext, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -12,13 +6,14 @@ import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
-  AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
+import { AccountOverviewTabKey } from '../../../helpers/constants/home';
 import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
 import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { usePersistedTab } from '../../../hooks/usePersistedTab';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getEnabledChainIds,
@@ -47,7 +42,6 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 };
 
 export const AccountOverviewTabs = ({
-  onTabClick,
   defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
@@ -55,20 +49,14 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const [activeTabKey, setActiveTabKey] = useState<
-    AccountOverviewTabKey | undefined
-  >(defaultHomeActiveTabName ?? undefined);
+  const [activeTabKey, setActiveTabKey] = usePersistedTab(
+    defaultHomeActiveTabName ?? AccountOverviewTabKey.Tokens,
+  );
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
-
-  useEffect(() => {
-    if (defaultHomeActiveTabName) {
-      setActiveTabKey(defaultHomeActiveTabName);
-    }
-  }, [defaultHomeActiveTabName]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
@@ -90,7 +78,7 @@ export const AccountOverviewTabs = ({
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
       setActiveTabKey(tabName);
-      onTabClick(tabName);
+
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
       }
@@ -118,7 +106,14 @@ export const AccountOverviewTabs = ({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
     },
-    [networkFilterForMetrics, onTabClick],
+    [
+      networkFilterForMetrics,
+      setActiveTabKey,
+      dispatch,
+      selectedChainIds,
+      trackEvent,
+      defaultHomeActiveTabName,
+    ],
   );
 
   const onClickAsset = useCallback(
@@ -146,7 +141,6 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTabKey>
-        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
         activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{

@@ -80,7 +80,6 @@ import {
   getBalancesInSingleCall,
   estimateGas,
   addTransactionAndWaitForPublish,
-  setDefaultHomeActiveTabName,
   rejectPendingApproval,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
@@ -2988,8 +2987,7 @@ export function signTransaction(navigate) {
         );
         transactionId = swapAndSendTxId;
 
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } else {
         // basic send
         const { id: basicSendTxId } = await dispatch(
