@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { unlockWallet } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,

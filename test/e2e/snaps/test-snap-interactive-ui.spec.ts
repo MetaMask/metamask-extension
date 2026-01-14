@@ -1,4 +1,5 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import SnapInteractiveDialog from '../page-objects/pages/dialog/snap-interactive-dialog';

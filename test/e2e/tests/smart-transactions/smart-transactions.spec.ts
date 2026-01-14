@@ -1,7 +1,8 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';

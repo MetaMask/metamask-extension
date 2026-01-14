@@ -1,5 +1,5 @@
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
