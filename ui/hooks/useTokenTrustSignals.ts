@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { ResultType } from '../../shared/lib/trust-signals';
 import { getTokenScanResultsForAddresses } from '../selectors/selectors';
 import { generateTokenCacheKey } from '../helpers/utils/token-cache-utils';
 import { TrustSignalDisplayState, TrustSignalResult } from './useTrustSignals';
@@ -23,11 +22,11 @@ function getTrustState(
   }
 
   switch (resultType) {
-    case ResultType.Malicious:
+    case 'Malicious':
       return TrustSignalDisplayState.Malicious;
-    case ResultType.Warning:
+    case 'Warning':
       return TrustSignalDisplayState.Warning;
-    case ResultType.Benign:
+    case 'Benign':
     default:
       return TrustSignalDisplayState.Unknown;
   }
