@@ -5077,7 +5077,7 @@
     "message": "Total Balance"
   },
   "perpsUnrealizedPnl": {
-    "message": "Unrealised P&L"
+    "message": "Unrealized P&L"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
