@@ -4599,10 +4599,9 @@ export default class MetamaskController extends EventEmitter {
     try {
       // TODO: `getKeyringsByType` is deprecated, this logic should probably be moved to the `KeyringController`.
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
-
       const { entropySource: id } = await this.controllerMessenger.call(
         'MultichainAccountService:createMultichainAccountWallet',
-        { type: 'import', mnemonic },
+        { type: 'import', mnemonic: this._convertMnemonicToWordlistIndices(Buffer.from(mnemonic, 'utf8')) },
       );
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
