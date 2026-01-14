@@ -49,7 +49,6 @@ describe('HardwareWalletStateManager', () => {
         deviceId: null,
         hardwareConnectionPermissionState:
           HardwareConnectionPermissionState.Unknown,
-        currentAppName: null,
         connectionState: {
           status: 'disconnected',
         },
@@ -92,7 +91,6 @@ describe('HardwareWalletStateManager', () => {
       expect(
         typeof result.current.setters.setHardwareConnectionPermissionState,
       ).toBe('function');
-      expect(typeof result.current.setters.setCurrentAppName).toBe('function');
       expect(typeof result.current.setters.setConnectionState).toBe('function');
     });
 
