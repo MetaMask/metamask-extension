@@ -15,7 +15,7 @@ import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
-  getAllNetworkTransactions,
+  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from '../../../selectors/transactions';
@@ -36,6 +36,7 @@ import {
   TOKEN_CATEGORY_HASH,
   TransactionKind,
   PENDING_STATUS_HASH,
+  EXCLUDED_TRANSACTION_TYPES,
 } from '../../../helpers/constants/transactions';
 import {
   SmartTransactionStatus,
@@ -394,7 +395,9 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueEVMChainIds = enabledNetworks?.eip155
+    ? Object.keys(enabledNetworks?.eip155)
+    : [];
   const filteredUniqueNonEvmChainIds = [
     ...new Set(
       Object.keys(enabledNetworks)
@@ -459,7 +462,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress &&
     groupEvmAddress !== selectedAccount?.address?.toLowerCase();
 
-  const allTransactions = useSelector(getAllNetworkTransactions);
+  const allTransactions = useSelector(getTransactions);
 
   const allSmartTransactionsState = useSelector(
     (state) => state.metamask.smartTransactionsState?.smartTransactions,
@@ -507,7 +510,7 @@ export default function UnifiedTransactionList({
     if (needsGroupEvmTransactions) {
       const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => tx.status in PENDING_STATUS_HASH);
 
       return groupAndSortTransactionsByNonce(evmTxs);
@@ -531,7 +534,7 @@ export default function UnifiedTransactionList({
 
       const evmTxs = [...allTransactions, ...smartTxs]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
         .filter(
           (tx) =>

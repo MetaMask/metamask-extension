@@ -12,10 +12,10 @@ import { DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
 import { mockEip7702FeatureFlag } from '../../../tests/confirmations/helpers';
 import {
   DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS,

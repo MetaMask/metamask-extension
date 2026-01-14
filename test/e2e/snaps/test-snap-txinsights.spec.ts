@@ -12,7 +12,7 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
-import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { DAPP_ONE_URL, DAPP_PATH } from '../constants';

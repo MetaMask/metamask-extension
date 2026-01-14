@@ -166,6 +166,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": true,
     "showPermissionsTour": true,
+    "showStorageErrorToast": false,
     "showTestnetMessageInDropdown": true,
     "slides": "object",
     "surveyLinkLastClickedOrClosed": "object",
@@ -295,6 +296,7 @@
     "allNfts": "object",
     "ignoredNfts": "object",
     "domains": "object",
+    "drafts": "object",
     "logs": "object",
     "fiatCurrency": "usd",
     "rates": {
@@ -302,11 +304,13 @@
       "sol": { "conversionDate": 0, "conversionRate": 0 }
     },
     "cryptocurrencies": ["btc", "sol"],
+    "isReady": "boolean",
     "snaps": "object",
     "events": "object",
     "database": "object",
     "lastUpdated": "number",
     "databaseUnavailable": "boolean",
+    "signature": "string",
     "interfaces": "object",
     "insights": "object",
     "names": "object",
@@ -332,11 +336,9 @@
     "fcmToken": "string",
     "isUpdatingFCMToken": "boolean",
     "remoteFeatureFlags": {
-      "enableMultichainAccountsState2": {
-        "enabled": true,
-        "featureVersion": "2",
-        "minimumVersion": "12.19.0"
-      },
+      "feature1": true,
+      "feature2": false,
+      "feature3": { "name": "groupC", "value": "valueC" },
       "sendRedesign": { "enabled": false }
     },
     "cacheTimestamp": "number",

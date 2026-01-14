@@ -8,12 +8,13 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { DAPP_URL } from '../../../constants';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { ResultType } from '../../../../../shared/lib/trust-signals';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 type EventPayload = {
@@ -100,6 +101,9 @@ type SignatureEventProperty = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source?: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response?: string;
 };
 
 const signatureAnonProperties = {
@@ -181,6 +185,9 @@ function getSignatureEventProperty(
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     api_source: requestedThrough,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    address_alert_response: ResultType.Loading,
   };
 
   if (primaryType !== '') {

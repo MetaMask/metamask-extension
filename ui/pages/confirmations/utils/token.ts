@@ -72,6 +72,30 @@ export const memoizedGetTokenStandardAndDetails = memoize(
   },
 );
 
+export const memoizedGetTokenStandardAndDetailsByChain = memoize(
+  async (
+    tokenAddress?: Hex | string,
+    chainId?: Hex | string,
+  ): Promise<TokenDetails | Record<string, never>> => {
+    try {
+      if (!tokenAddress) {
+        return {};
+      }
+
+      return (await getTokenStandardAndDetailsByChain(
+        tokenAddress,
+        undefined,
+        undefined,
+        chainId,
+      )) as TokenDetails;
+    } catch {
+      return {};
+    }
+  },
+  // Custom resolver to use both tokenAddress and chainId as cache key
+  (tokenAddress, chainId) => `${tokenAddress}-${chainId}`,
+);
+
 /**
  * Fetches the decimals for the given token address.
  *

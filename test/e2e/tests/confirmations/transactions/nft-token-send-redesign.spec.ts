@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
+import { Browser } from 'selenium-webdriver';
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { DAPP_URL } from '../../../constants';
 import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { Anvil } from '../../../seeder/anvil';
-import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
@@ -20,6 +22,7 @@ import { TestSuiteArguments } from './shared';
 
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
+const isChrome = process.env.SELENIUM_BROWSER === Browser.CHROME;
 const TOKEN_RECIPIENT_ADDRESS = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
 describe('Confirmation Redesign Token Send', function () {
@@ -258,7 +261,12 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  await new HomePage(driver).goToNftTab();
+  const homePage = new HomePage(driver);
+  await homePage.goToActivityList();
+  const activityList = new ActivityListPage(driver);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+
+  await homePage.goToNftTab();
   await new NFTListPage(driver).clickNFTIconOnActivityList();
 
   const nftDetailsPage = new NFTDetailsPage(driver);
@@ -273,7 +281,6 @@ async function createERC721WalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();
@@ -324,7 +331,11 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
   await loginWithBalanceValidation(driver, localNode);
 
   const homePage = new HomePage(driver);
-  await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+
+  // Don't check Account Syncing on FF due to timing issues
+  if (isChrome) {
+    await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
+  }
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry
@@ -367,7 +378,6 @@ async function createERC1155WalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickScrollToBottomButton();

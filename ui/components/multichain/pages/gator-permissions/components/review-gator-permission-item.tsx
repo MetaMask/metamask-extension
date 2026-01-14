@@ -31,14 +31,14 @@ import { getImageForChainId } from '../../../../../selectors/multichain';
 import { getURLHost, shortenAddress } from '../../../../../helpers/utils/util';
 import Card from '../../../../ui/card';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { getInternalAccountByAddress } from '../../../../../selectors/selectors';
+import { getInternalAccountByAddress } from '../../../../../selectors';
 import {
   convertTimestampToReadableDate,
   getPeriodFrequencyValueTranslationKey,
-  extractExpiryToReadableDate,
-  GatorPermissionRule,
   convertAmountPerSecondToAmountPerPeriod,
   getDecimalizedHexValue,
+  extractExpiryToReadableDate,
+  GatorPermissionRule,
 } from '../../../../../../shared/lib/gator-permissions';
 import { PreferredAvatar } from '../../../../app/preferred-avatar';
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
@@ -165,6 +165,7 @@ export const ReviewGatorPermissionItem = ({
   hasRevokeBeenClicked = false,
 }: ReviewGatorPermissionItemProps) => {
   const t = useI18nContext();
+
   const { permissionResponse, siteOrigin } = gatorPermission;
   const { chainId } = permissionResponse;
   const {
@@ -215,7 +216,8 @@ export const ReviewGatorPermissionItem = ({
       if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
-      return extractExpiryToReadableDate(rules);
+      const expiryDate = extractExpiryToReadableDate(rules);
+      return expiryDate || t('gatorPermissionNoExpiration');
     },
     [t],
   );
@@ -273,12 +275,9 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -292,7 +291,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -331,19 +330,44 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
-            ),
+            value: getExpirationDate(permissionResponse.rules || []),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
     },
-    [tokenMetadata, getExpirationDate],
+    [tokenMetadata, getExpirationDate, permissionResponse.rules],
   );
+
+  /**
+   * Returns the token revocation permission details
+   *
+   * @returns The permission details for erc20-token-revocation
+   */
+  const getTokenRevocationPermissionDetails =
+    useCallback((): PermissionDetails => {
+      return {
+        amountLabel: {
+          translationKey: 'revokeTokenApprovals',
+          value: t('allTokens'),
+          testId: 'review-gator-permission-amount-label',
+        },
+        frequencyLabel: {
+          translationKey: '',
+          valueTranslationKey: '',
+          testId: 'review-gator-permission-frequency-label',
+        },
+        expandedDetails: {
+          expirationDate: {
+            translationKey: 'gatorPermissionsExpirationDate',
+            value: getExpirationDate(permissionResponse.rules || []),
+            testId: 'review-gator-permission-expiration-date',
+          },
+        },
+      };
+    }, [t, getExpirationDate, permissionResponse.rules]);
 
   /**
    * Returns the permission details
@@ -362,6 +386,8 @@ export const ReviewGatorPermissionItem = ({
         return getTokenPeriodicPermissionDetails(
           permissionResponse.permission as Erc20TokenPeriodicPermission,
         );
+      case 'erc20-token-revocation':
+        return getTokenRevocationPermissionDetails();
       default:
         throw new Error(`Invalid permission type: ${permissionType}`);
     }
@@ -370,6 +396,7 @@ export const ReviewGatorPermissionItem = ({
     getTokenStreamPermissionDetails,
     permissionResponse.permission,
     getTokenPeriodicPermissionDetails,
+    getTokenRevocationPermissionDetails,
   ]);
 
   return (
@@ -426,11 +453,13 @@ export const ReviewGatorPermissionItem = ({
           testId={permissionDetails.amountLabel.testId}
           isLoading={loading}
         />
-        <PermissionDetailRow
-          label={t(permissionDetails.frequencyLabel.translationKey)}
-          value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
-          testId={permissionDetails.frequencyLabel.testId}
-        />
+        {permissionDetails.frequencyLabel.translationKey && (
+          <PermissionDetailRow
+            label={t(permissionDetails.frequencyLabel.translationKey)}
+            value={t(permissionDetails.frequencyLabel.valueTranslationKey)}
+            testId={permissionDetails.frequencyLabel.testId}
+          />
+        )}
         {/* Account row - custom layout with avatar and copy icon */}
         <Box
           flexDirection={BoxFlexDirection.Row}
