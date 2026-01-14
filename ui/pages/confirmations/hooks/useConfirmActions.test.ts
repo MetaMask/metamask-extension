@@ -30,10 +30,29 @@ function renderHook() {
 }
 
 describe('useConfirmActions', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns correct functions', () => {
     const result = renderHook();
     expect(result.onCancel).toBeDefined();
     expect(result.resetTransactionState).toBeDefined();
+  });
+
+  it('resetTransactionState dispatches actions to clear custom nonce and next nonce', () => {
+    const result = renderHook();
+    result.resetTransactionState();
+
+    // Verify that updateCustomNonce('') and setNextNonce('') are dispatched
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'UPDATE_CUSTOM_NONCE',
+      value: '',
+    });
+    expect(mockDispatch).toHaveBeenCalledWith({
+      type: 'SET_NEXT_NONCE',
+      payload: '',
+    });
   });
 
   it('call navigateBackIfSend when onCancel is called, if navigateBackForSend is true', () => {
