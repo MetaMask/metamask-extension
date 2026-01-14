@@ -8,8 +8,8 @@ import {
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { DAPP_URL } from '../../../constants';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import {
   BlockaidReason,
   BlockaidResultType,

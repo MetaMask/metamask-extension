@@ -53,6 +53,7 @@ import { withMetaMetrics } from '../../contexts/metametrics';
 import LoginErrorModal from '../onboarding-flow/welcome/login-error-modal';
 import { LOGIN_ERROR } from '../onboarding-flow/welcome/types';
 import ConnectionsRemovedModal from '../../components/app/connections-removed-modal';
+import { captureException } from '../../../shared/lib/sentry';
 import { getCaretCoordinates } from './unlock-page.util';
 import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
@@ -365,20 +366,6 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
     let shouldShowLoginErrorModal = false;
     let shouldShowConnectionsRemovedModal = false;
 
-    // Check if we are in the onboarding flow
-    if (!isOnboardingCompleted) {
-      this.context.bufferedTrace({
-        name: TraceName.OnboardingPasswordLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage: message },
-        parentContext: this.props.onboardingParentContext?.current,
-      });
-
-      this.context.bufferedEndTrace({
-        name: TraceName.OnboardingPasswordLoginError,
-      });
-    }
-
     switch (message) {
       case 'Incorrect password':
       case SeedlessOnboardingControllerErrorMessage.IncorrectPassword:
@@ -399,6 +386,9 @@ class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
       case SeedlessOnboardingControllerErrorMessage.AuthenticationError:
       case SeedlessOnboardingControllerErrorMessage.InvalidRevokeToken:
       case SeedlessOnboardingControllerErrorMessage.InvalidRefreshToken:
+        // capture the error to sentry
+        captureException(error);
+
         if (isOnboardingCompleted) {
           finalErrorMessage = message;
           shouldShowLoginErrorModal = true;
