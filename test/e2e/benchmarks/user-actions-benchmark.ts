@@ -19,8 +19,8 @@ import {
   DEFAULT_BRIDGE_FEATURE_FLAGS,
   MOCK_TOKENS_ETHEREUM,
 } from '../tests/bridge/constants';
-import { Driver } from '../webdriver/driver';
 import { createInternalTransaction } from '../page-objects/flows/transaction';
+import { Driver } from '../webdriver/driver';
 
 async function mockTokensEthereum(mockServer: Mockttp) {
   return await mockServer
