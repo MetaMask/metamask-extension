@@ -8,6 +8,7 @@ import Confirmation from '../../../page-objects/pages/confirmations/confirmation
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
+
 const FixtureBuilder = require('../../../fixtures/fixture-builder');
 
 const ethInHexWei = (eth: number): Hex => decimalToPrefixedHex(eth * 10 ** 18);
