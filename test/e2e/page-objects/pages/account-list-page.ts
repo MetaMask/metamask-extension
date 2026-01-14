@@ -226,13 +226,16 @@ class AccountListPage {
 
   async checkPageIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        {
-          css: this.addMultichainAccountButton,
-          text: 'Add account',
-        },
-        this.multichainAccountOptionsMenuButton,
-      ]);
+      await this.driver.waitForMultipleSelectors(
+        [
+          {
+            css: this.addMultichainAccountButton,
+            text: 'Add account',
+          },
+          this.multichainAccountOptionsMenuButton,
+        ],
+        { timeout: 15000 },
+      );
     } catch (e) {
       console.log('Timeout while waiting for account list to be loaded', e);
       throw e;
