@@ -69,7 +69,7 @@ const PopularNetworkList = ({
 
   // Memoize the popover content so it only updates when searchAddNetworkResults changes
   const popoverContent = useMemo(() => {
-    if (Object.keys(searchAddNetworkResults).length === 0) {
+    if (searchAddNetworkResults.length === 0) {
       return null;
     }
 
