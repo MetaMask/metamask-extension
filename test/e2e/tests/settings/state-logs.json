@@ -390,6 +390,7 @@
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean"
       }
     },
+    "nativeAssetIdentifiers": {},
     "enableEnforcedSimulations": "boolean",
     "enableEnforcedSimulationsForTransactions": {},
     "enableMV3TimestampSave": "boolean",

@@ -272,6 +272,7 @@
       "7": "object"
     },
     "enabledNetworkMap": { "eip155": "object", "solana": "object" },
+    "nativeAssetIdentifiers": {},
     "pinnedAccountList": {},
     "hiddenAccountList": {},
     "gasFeeEstimatesByChainId": {},

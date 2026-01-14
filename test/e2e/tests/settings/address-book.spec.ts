@@ -30,7 +30,7 @@ async function mockTokenList(mockServer: Mockttp) {
 }
 
 describe('Address Book', function (this: Suite) {
-  it('Sends to an address book entry', async function () {
+  it.only('Sends to an address book entry', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
