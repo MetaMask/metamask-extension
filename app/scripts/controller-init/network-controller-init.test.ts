@@ -25,7 +25,7 @@ import {
 } from '../controllers/metametrics-controller';
 import {
   ConnectivityControllerGetStateAction,
-  ConnectivityStatusType,
+  ConnectivityStatus,
 } from '../controllers/connectivity';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
@@ -83,7 +83,7 @@ function getInitRequestMock(
   >({ namespace: MOCK_ANY_NAMESPACE }),
   {
     connectivityStatus = 'online',
-  }: { connectivityStatus?: ConnectivityStatusType } = {},
+  }: { connectivityStatus?: ConnectivityStatus } = {},
 ): jest.Mocked<
   ControllerInitRequest<
     NetworkControllerMessenger,
