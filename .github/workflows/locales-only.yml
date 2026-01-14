@@ -8,9 +8,10 @@ on:
       - synchronize
 
 jobs:
-  locales-only:
+  all-jobs-pass:
+    name: All jobs pass
     # For the `pull_request` event, the branch is `github.head_ref``.
-    if: ${{ github.head_ref == 'l10n_crowdin_action' }}
+    if: ${{ github.head_ref == 'l10n_crowdin_action' || github.head_ref == 'fix-locales-only' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -29,5 +30,8 @@ jobs:
       - name: Validate locales only
         run: yarn tsx .github/scripts/validate-locales-only.ts
 
-      - name: Run lint
-        run: yarn lint && yarn verify-locales --quiet
+      - name: Lint
+        run: yarn lint
+
+      - name: Verify locales
+        run: yarn verify-locales --quiet
