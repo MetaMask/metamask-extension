@@ -9,6 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
@@ -29,12 +30,12 @@ export const PerpsTabView: React.FC = () => {
 
   const handleManageBalancePress = () => {
     // TODO: Navigate to manage balance screen
-    console.log('Navigate to manage balance');
+    log.info('handleManageBalancePress');
   };
 
   const handleNewTrade = () => {
     // TODO: Navigate to trading view or tutorial for first-time users
-    console.log('Navigate to new trade');
+    log.info('handleNewTrade');
   };
 
   return (
