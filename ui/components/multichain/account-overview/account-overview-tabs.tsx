@@ -14,7 +14,7 @@ import { endTrace, trace } from '../../../../shared/lib/trace';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { usePersistedTab } from '../../../hooks/usePersistedTab';
+import { useTabState } from '../../../hooks/useTabState';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getEnabledChainIds,
@@ -50,7 +50,7 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const [activeTabKey, setActiveTabKey] = usePersistedTab(
+  const [activeTabKey, setActiveTabKey] = useTabState(
     defaultHomeActiveTabName ?? 'tokens',
   );
   const navigate = useNavigate();
