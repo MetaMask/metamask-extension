@@ -1,4 +1,3 @@
-import log from 'loglevel';
 import { Hex, JsonRpcParams, JsonRpcRequest } from '@metamask/utils';
 import {
   GenericQuoteRequest,
