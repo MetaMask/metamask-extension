@@ -1,8 +1,7 @@
 import { isCrossChain, isSolanaChainId } from '@metamask/bridge-controller';
-import type { Hex, CaipAssetType } from '@metamask/utils';
-import { toAssetId } from '../../../../shared/lib/asset-utils';
+import type { CaipAssetType } from '@metamask/utils';
 import type { BridgeToken } from '../../../ducks/bridge/types';
-import { STABLECOINS_BY_CHAIN_ID } from './stablecoins';
+import { STABLECOIN_ASSET_IDS } from './stablecoins';
 
 /**
  * Slippage values for different scenarios
@@ -27,17 +26,7 @@ export type SlippageContext = {
  * @param assetId
  */
 function isStablecoin(assetId: CaipAssetType): boolean {
-  const stablecoinAssetIds = new Set<CaipAssetType>();
-  Object.entries(STABLECOINS_BY_CHAIN_ID).forEach(([chainId, stablecoins]) => {
-    stablecoins?.forEach((address) => {
-      const stablecoinAssetId = toAssetId(address, chainId as Hex);
-      if (stablecoinAssetId === assetId) {
-        return stablecoinAssetIds.add(stablecoinAssetId);
-      }
-    });
-  });
-
-  return stablecoinAssetIds.has(assetId);
+  return STABLECOIN_ASSET_IDS.has(assetId.toLowerCase());
 }
 
 /**
@@ -50,7 +39,7 @@ function isStablecoinPair(
   fromToken: BridgeToken | null,
   toToken: BridgeToken | null,
 ): boolean {
-  if (!fromToken || !toToken) {
+  if (!fromToken?.assetId || !toToken?.assetId) {
     return false;
   }
 

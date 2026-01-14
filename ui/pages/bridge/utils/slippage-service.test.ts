@@ -1,4 +1,4 @@
-import type { CaipChainId } from '@metamask/utils';
+import type { CaipChainId, CaipAssetType } from '@metamask/utils';
 import type { BridgeToken } from '../../../ducks/bridge/types';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import { toAssetId } from '../../../../shared/lib/asset-utils';
@@ -17,7 +17,7 @@ describe('Slippage Service', () => {
     assetId: toAssetId(
       '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
       chainId,
-    ) as never,
+    ) as CaipAssetType,
     symbol: 'USDC',
     decimals: 6,
     image: '',
@@ -31,7 +31,7 @@ describe('Slippage Service', () => {
     assetId: toAssetId(
       '0xdac17f958d2ee523a2206206994597c13d831ec7',
       chainId,
-    ) as never,
+    ) as CaipAssetType,
     symbol: 'USDT',
     decimals: 6,
     image: '',
@@ -39,13 +39,13 @@ describe('Slippage Service', () => {
     name: 'USDT',
   });
 
-  const mockWETH = (chainId: CaipChainId = 'eip155:1') => ({
+  const mockWETH = (
+    chainId: CaipChainId = 'eip155:1',
+    address: string = '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
+  ) => ({
     chainId,
-    address: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-    assetId: toAssetId(
-      '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2',
-      chainId,
-    ) as never,
+    address,
+    assetId: toAssetId(address, chainId) as CaipAssetType,
     symbol: 'WETH',
     decimals: 18,
     image: '',
@@ -55,7 +55,6 @@ describe('Slippage Service', () => {
 
   const mockSolanaToken: BridgeToken = {
     chainId: MultichainNetworks.SOLANA,
-    address: 'So11111111111111111111111111111111111111112',
     assetId:
       'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:So11111111111111111111111111111111111111112',
     symbol: 'SOL',
@@ -122,10 +121,7 @@ describe('Slippage Service', () => {
       });
 
       it('returns 2% for unknown token addresses', () => {
-        const unknownToken: BridgeToken = {
-          ...mockWETH('eip155:1'),
-          address: '0xunknown',
-        };
+        const unknownToken: BridgeToken = mockWETH('eip155:1', '0xunknown');
 
         const context: SlippageContext = {
           fromToken: unknownToken,
@@ -191,9 +187,10 @@ describe('Slippage Service', () => {
       });
 
       it('handles case-insensitive stablecoin addresses', () => {
+        const token = mockUSDC();
         const uppercaseUSDC: BridgeToken = {
-          ...mockUSDC(),
-          address: '0xA0B86991C6218B36C1D19D4A2E9EB0CE3606EB48', // Uppercase
+          ...token,
+          assetId: token.assetId.toUpperCase() as CaipAssetType,
         };
 
         const context: SlippageContext = {

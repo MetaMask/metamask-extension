@@ -37,7 +37,6 @@ import type {
 } from '../../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
-import type { BridgeToken } from '../../ducks/bridge/types';
 import { isTronEnergyOrBandwidthResource } from '../../ducks/bridge/utils';
 
 // This transforms the token object from the bridge-api into the format expected by the AssetPicker
@@ -120,7 +119,7 @@ type FilterPredicate = (
  */
 export const useTokensWithFiltering = (
   chainId?: ChainId | Hex | CaipChainId,
-  tokenToExclude?: null | Pick<BridgeToken, 'symbol' | 'address' | 'chainId'>,
+  tokenToExclude?: null | { address: string; chainId: string; symbol: string },
   accountAddress?: string,
 ) => {
   const topAssetsFromFeatureFlags = useSelector((state: BridgeAppState) =>

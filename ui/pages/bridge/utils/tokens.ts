@@ -64,6 +64,12 @@ const validateSwapsAssetV2Object = (
   return is(data, BridgeAssetV2Schema);
 };
 
+export const validateMinimalAssetObject = (
+  data: unknown,
+): data is Infer<typeof MinimalAssetSchema> => {
+  return is(data, MinimalAssetSchema);
+};
+
 /**
  * Fetches a list of tokens sorted by balance, popularity and other criteria from the bridge-api
  *

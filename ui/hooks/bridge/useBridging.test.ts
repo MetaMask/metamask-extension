@@ -207,6 +207,7 @@ describe('useBridging', () => {
             '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580D',
           ),
           balance: '0x5f5e100',
+          name: 'Test token',
           string: '123',
           chainId: '0xa',
           decimals: 18,
@@ -221,6 +222,7 @@ describe('useBridging', () => {
             balance: '0x5f5e100',
             chainId: '0xa',
             decimals: 18,
+            name: 'Test token',
             assetId:
               'eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
           }),

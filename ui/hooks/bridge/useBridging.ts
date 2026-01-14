@@ -2,7 +2,6 @@ import { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
-  type BridgeAsset,
   formatChainIdToCaip,
   type GenericQuoteRequest,
   getNativeAssetForChainId,
@@ -37,6 +36,7 @@ import {
   CROSS_CHAIN_SWAP_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { validateMinimalAssetObject } from '../../pages/bridge/utils/tokens';
 
 const useBridging = () => {
   const navigate = useNavigate();
@@ -65,10 +65,11 @@ const useBridging = () => {
   const openBridgeExperience = useCallback(
     (
       location: MetaMetricsSwapsEventSource | 'Carousel',
-      srcToken?: Pick<
-        BridgeAsset,
-        'symbol' | 'address' | 'decimals' | 'name'
-      > & {
+      srcToken?: {
+        symbol: string;
+        address: string;
+        decimals?: number;
+        name?: string;
         chainId: GenericQuoteRequest['srcChainId'];
       },
     ) => {
@@ -100,13 +101,22 @@ const useBridging = () => {
           : formatChainIdToCaip(CHAIN_IDS.MAINNET);
 
       // If srcToken is a bridge token, propagate it to the bridge experience
-      if (srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)) {
-        const assetId = toAssetId(
-          srcToken.address,
-          formatChainIdToCaip(srcToken.chainId),
-        );
-        if (assetId) {
-          navigationState.srcToken = toBridgeToken({ ...srcToken, assetId });
+      const assetId =
+        srcToken?.chainId && isChainIdEnabledForBridging(srcToken.chainId)
+          ? toAssetId(srcToken.address, formatChainIdToCaip(srcToken.chainId))
+          : undefined;
+      if (srcToken && assetId) {
+        // If srcToken is a bridge token, propagate it to the bridge experience
+        const tokenToUse = {
+          ...srcToken,
+          assetId,
+          name: srcToken.name ?? srcToken.symbol,
+        };
+        if (validateMinimalAssetObject(tokenToUse)) {
+          navigationState.srcToken = toBridgeToken(tokenToUse);
+        } else {
+          // Otherwise, the bridge experience will fetch asset metadata
+          queryParams.push(`${BridgeQueryParams.FROM}=${assetId}`);
         }
       } else if (fallbackChainId !== fromChain.chainId) {
         /* If srcToken is not supported or is not specified
