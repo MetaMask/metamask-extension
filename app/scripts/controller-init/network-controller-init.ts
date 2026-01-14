@@ -277,15 +277,6 @@ export const NetworkControllerInit: ControllerInitFunction<
   initMessenger.subscribe(
     'NetworkController:rpcEndpointUnavailable',
     async ({ chainId, endpointUrl, error }) => {
-      // Suppress RPC endpoint events when device is offline - these are expected
-      // failures due to lack of connectivity, not actual endpoint issues
-      const { connectivityStatus } = initMessenger.call(
-        'ConnectivityController:getState',
-      );
-      if (connectivityStatus === 'offline') {
-        return;
-      }
-
       onRpcEndpointUnavailable({
         chainId,
         endpointUrl,
@@ -305,15 +296,6 @@ export const NetworkControllerInit: ControllerInitFunction<
   initMessenger.subscribe(
     'NetworkController:rpcEndpointDegraded',
     async ({ chainId, endpointUrl, error }) => {
-      // Suppress RPC endpoint events when device is offline - these are expected
-      // failures due to lack of connectivity, not actual endpoint issues
-      const { connectivityStatus } = initMessenger.call(
-        'ConnectivityController:getState',
-      );
-      if (connectivityStatus === 'offline') {
-        return;
-      }
-
       onRpcEndpointDegraded({
         chainId,
         endpointUrl,

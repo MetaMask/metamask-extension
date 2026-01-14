@@ -6210,13 +6210,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.0.0-preview-9e00b40b":
-  version: 0.0.0-preview-9e00b40b
-  resolution: "@metamask-previews/connectivity-controller@npm:0.0.0-preview-9e00b40b"
+"@metamask/connectivity-controller@npm:@metamask-previews/connectivity-controller@0.0.0-preview-85ecacba":
+  version: 0.0.0-preview-85ecacba
+  resolution: "@metamask-previews/connectivity-controller@npm:0.0.0-preview-85ecacba"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/messenger": "npm:^0.3.0"
-  checksum: 10/2e1e8637849e4e6dd690ac0a20be6922da01af4e789dd5452c397dde18e6e60ac990406a12d4ae87b244529c5af0edacb5a4e6a317f787582611cab95e62d682
+  checksum: 10/8f795ce001583d528c3698d34a5e9f88efd2b9af799c1dccbe86f826a1335fd704c99191e6b2cd02dc4272b6a79a264355cd27f12c1b16c570195c8b37175cf8
   languageName: node
   linkType: hard
 

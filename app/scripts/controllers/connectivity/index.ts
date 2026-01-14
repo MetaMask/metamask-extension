@@ -1,1 +1,1 @@
-export { PassiveConnectivityService } from './passive-connectivity-service';
+export { ExtensionConnectivityAdapter } from './extension-connectivity-adapter';

@@ -2,13 +2,13 @@ import { ConnectivityController } from '@metamask/connectivity-controller';
 import type { ConnectivityControllerMessenger } from '@metamask/connectivity-controller';
 
 import { ControllerInitFunction } from '../types';
-import { PassiveConnectivityService } from '../../controllers/connectivity';
+import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
 
 /**
  * Initialize the ConnectivityController.
  *
  * This controller stores device connectivity status. For the extension,
- * we use a PassiveConnectivityService since the actual detection happens
+ * we use a ExtensionConnectivityAdapter since the actual detection happens
  * in a different context where browser events work reliably:
  * - MV3: Offscreen document (app/offscreen/connectivity.ts)
  * - MV2: Background page (app/scripts/background.js)
@@ -25,21 +25,21 @@ export const ConnectivityControllerInit: ControllerInitFunction<
 > = (request) => {
   const { controllerMessenger } = request;
 
-  // Use PassiveConnectivityService for extension since detection happens in:
+  // Use ExtensionConnectivityAdapter for extension since detection happens in:
   // - MV3: Offscreen document (app/offscreen/connectivity.ts)
   // - MV2: Background page directly (app/scripts/background.js)
-  const connectivityService = new PassiveConnectivityService();
+  const connectivityAdapter = new ExtensionConnectivityAdapter();
 
   const controller = new ConnectivityController({
     messenger: controllerMessenger,
-    connectivityService,
+    connectivityAdapter,
   });
 
   return {
     controller,
     api: {
       setDeviceConnectivityStatus: (status: 'online' | 'offline') =>
-        connectivityService.setStatus(status),
+        connectivityAdapter.setStatus(status),
     },
     persistedStateKey: null,
   };

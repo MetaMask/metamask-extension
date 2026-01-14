@@ -4,7 +4,6 @@ import {
   NetworkControllerRpcEndpointDegradedEvent,
   NetworkControllerRpcEndpointUnavailableEvent,
 } from '@metamask/network-controller';
-import { ConnectivityControllerGetStateAction } from '@metamask/connectivity-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
@@ -45,7 +44,6 @@ export function getNetworkControllerMessenger(
 }
 
 type AllowedInitializationActions =
-  | ConnectivityControllerGetStateAction
   | MetaMetricsControllerGetMetaMetricsIdAction
   | MetaMetricsControllerTrackEventAction
   | RemoteFeatureFlagControllerGetStateAction;
@@ -87,7 +85,6 @@ export function getNetworkControllerInitMessenger(
   messenger.delegate({
     messenger: controllerInitMessenger,
     actions: [
-      'ConnectivityController:getState',
       'MetaMetricsController:getMetaMetricsId',
       'MetaMetricsController:trackEvent',
       'RemoteFeatureFlagController:getState',
