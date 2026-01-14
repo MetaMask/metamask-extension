@@ -379,5 +379,49 @@ describe('useGasIncluded7702', () => {
         expect(result.current).toBe(false);
       });
     });
+
+    it('ignores API result when isSwap changes from true to false during async operation', async () => {
+      // This test verifies the fix for the loop caused by isSwap flip-flopping
+      // Scenario: API call starts with isSwap=true, but isSwap becomes false before API returns
+      let resolveRelay: (value: boolean) => void;
+      const relayPromise = new Promise<boolean>((resolve) => {
+        resolveRelay = resolve;
+      });
+
+      mockIsRelaySupported.mockReturnValue(relayPromise);
+
+      const { result, rerender } = renderHookWithProvider(
+        ({
+          children: { isSwap } = {
+            isSwap: true,
+          },
+        } = {}) =>
+          useGasIncluded7702({
+            isSwap,
+            selectedAccount: { address: '0x123' },
+            fromChain: { chainId: '0x1' },
+            isSendBundleSupportedForChain: false,
+          }),
+        {
+          initialProps: { children: { isSwap: true } },
+        },
+      );
+
+      // Initial state should be false
+      expect(result.current).toBe(false);
+
+      // API call is in flight, now change isSwap to false (simulating swap->bridge transition)
+      rerender({ children: { isSwap: false } });
+
+      // Now resolve the API with true (this would cause the loop without the fix)
+      await act(async () => {
+        resolveRelay?.(true);
+        await Promise.resolve();
+      });
+
+      // State should remain false because isSwap is now false
+      // Without the ref guard, this would be true and cause a re-render loop
+      expect(result.current).toBe(false);
+    });
   });
 });
