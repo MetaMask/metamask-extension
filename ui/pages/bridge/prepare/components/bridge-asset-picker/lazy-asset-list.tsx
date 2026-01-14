@@ -91,7 +91,7 @@ export const BridgeAssetList = ({
           }
         />
       ))}
-      {filteredTokenList.length < 1 && !shouldShowLoadingIndicator ? (
+      {filteredTokenList.length < 1 && !shouldShowLoadingIndicator && (
         <Text
           style={{ paddingInline: 16 }}
           fontWeight={FontWeight.Regular}
@@ -99,9 +99,10 @@ export const BridgeAssetList = ({
         >
           No tokens match &quot;{searchQuery}&quot;
         </Text>
-      ) : (
+      )}
+      {shouldShowLoadingIndicator && (
         <LoadingSkeleton
-          isLoading={shouldShowLoadingIndicator}
+          isLoading
           style={{ backgroundColor: BackgroundColor.backgroundSubsection }}
           ref={loadingRef}
         />
