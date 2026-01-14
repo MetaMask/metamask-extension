@@ -7550,6 +7550,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/multichain-network-controller@npm:^3.0.1":
+  version: 3.0.1
+  resolution: "@metamask/multichain-network-controller@npm:3.0.1"
+  dependencies:
+    "@metamask/accounts-controller": "npm:^35.0.1"
+    "@metamask/base-controller": "npm:^9.0.0"
+    "@metamask/controller-utils": "npm:^11.18.0"
+    "@metamask/keyring-api": "npm:^21.0.0"
+    "@metamask/keyring-internal-api": "npm:^9.0.0"
+    "@metamask/messenger": "npm:^0.3.0"
+    "@metamask/network-controller": "npm:^28.0.0"
+    "@metamask/superstruct": "npm:^3.1.0"
+    "@metamask/utils": "npm:^11.9.0"
+    "@solana/addresses": "npm:^2.0.0"
+    lodash: "npm:^4.17.21"
+  checksum: 10/01f34609a48e7381c87de0086a22d1a7436bbfe9471e41c8c2b527f261832cc4646450c8c8d01637af326be12962ece368037677f9926e6919c89fb3d8807799
+  languageName: node
+  linkType: hard
+
 "@metamask/multichain-transactions-controller@npm:^6.0.0":
   version: 6.0.0
   resolution: "@metamask/multichain-transactions-controller@npm:6.0.0"
@@ -7669,21 +7688,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-enablement-controller@npm:@metamask-previews/network-enablement-controller@4.0.0-preview-e6f8648b":
-  version: 4.0.0-preview-e6f8648b
-  resolution: "@metamask-previews/network-enablement-controller@npm:4.0.0-preview-e6f8648b"
+"@metamask/network-enablement-controller@npm:@metamask-previews/network-enablement-controller@4.0.0-preview-f075c1f":
+  version: 4.0.0-preview-f075c1f
+  resolution: "@metamask-previews/network-enablement-controller@npm:4.0.0-preview-f075c1f"
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.18.0"
     "@metamask/keyring-api": "npm:^21.0.0"
     "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/multichain-network-controller": "npm:^3.0.0"
-    "@metamask/network-controller": "npm:^27.2.0"
+    "@metamask/multichain-network-controller": "npm:^3.0.1"
+    "@metamask/network-controller": "npm:^28.0.0"
     "@metamask/slip44": "npm:^4.3.0"
-    "@metamask/transaction-controller": "npm:^62.9.0"
+    "@metamask/transaction-controller": "npm:^62.9.1"
     "@metamask/utils": "npm:^11.9.0"
     reselect: "npm:^5.1.1"
-  checksum: 10/a211621b3387cf88a81f0c02855870f55253fc58ed5e2a5c7973fe23e0fd15d600ccb7e69afc302de3a2ae8bb0992a1546b85320e3e4935a89be3a0aef1300de
+  checksum: 10/995becfc11cae5882459acbf1dbc847cd48a73fd3e48297572a831d546866417eb3264400ab5c448083ff0c8055cd482bdb4bda8f4c6ee4db0bee62250285cdf
   languageName: node
   linkType: hard
 
@@ -8852,7 +8871,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.9.0":
+"@metamask/transaction-controller@npm:^62.9.1":
   version: 62.9.1
   resolution: "@metamask/transaction-controller@npm:62.9.1"
   dependencies:

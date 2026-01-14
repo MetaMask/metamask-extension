@@ -247,15 +247,6 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
     nativeCurrency: network.nativeCurrency,
   }));
 
-  console.log(
-    '[NetworkEnablementController] EVM networks:',
-    JSON.stringify(evmNetworks, null, 2),
-  );
-  console.log(
-    '[NetworkEnablementController] enabledNetworkMap BEFORE init:',
-    JSON.stringify(controller.state.enabledNetworkMap, null, 2),
-  );
-
   const multichainNetworks = Object.values(
     multichainNetworkControllerState.multichainNetworkConfigurationsByChainId,
   ).map((network) => {
@@ -263,27 +254,13 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       chainId: network.chainId,
       nativeCurrency: network.nativeCurrency,
     };
-    console.log(
-      '[NetworkEnablementController] Multichain network mapped:',
-      JSON.stringify(mapped, null, 2),
-    );
     return mapped;
   });
-
-  console.log(
-    '[NetworkEnablementController] All networks to init:',
-    JSON.stringify([...evmNetworks, ...multichainNetworks], null, 2),
-  );
 
   controller.initNativeAssetIdentifiers([
     ...evmNetworks,
     ...multichainNetworks,
   ]);
-
-  console.log(
-    '[NetworkEnablementController] State after init:',
-    JSON.stringify(controller.state.nativeAssetIdentifiers, null, 2),
-  );
 
   return {
     controller,
