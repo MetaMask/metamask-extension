@@ -40,7 +40,6 @@ export const PerpsTabView: React.FC = () => {
 
   return (
     <Box
-      className="perps-tab-view"
       flexDirection={BoxFlexDirection.Column}
       gap={4}
       data-testid="perps-tab-view"
@@ -59,13 +58,11 @@ export const PerpsTabView: React.FC = () => {
       {/* Positions Section */}
       {hasPositions && (
         <Box
-          className="perps-tab-view__section"
           flexDirection={BoxFlexDirection.Column}
           gap={2}
           data-testid="perps-positions-section"
         >
           <Box
-            className="perps-tab-view__section-header"
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
@@ -82,11 +79,7 @@ export const PerpsTabView: React.FC = () => {
               {t('perpsCloseAll')}
             </Text>
           </Box>
-          <Box
-            className="perps-tab-view__cards-container"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box flexDirection={BoxFlexDirection.Column}>
             {mockPositions.map((position) => (
               <PositionCard key={position.coin} position={position} />
             ))}
@@ -98,13 +91,11 @@ export const PerpsTabView: React.FC = () => {
       {/* Orders Section */}
       {hasOrders && (
         <Box
-          className="perps-tab-view__section"
           flexDirection={BoxFlexDirection.Column}
           gap={2}
           data-testid="perps-orders-section"
         >
           <Box
-            className="perps-tab-view__section-header"
             flexDirection={BoxFlexDirection.Row}
             justifyContent={BoxJustifyContent.Between}
             alignItems={BoxAlignItems.Center}
@@ -121,11 +112,7 @@ export const PerpsTabView: React.FC = () => {
               {t('perpsCloseAll')}
             </Text>
           </Box>
-          <Box
-            className="perps-tab-view__cards-container"
-            flexDirection={BoxFlexDirection.Column}
-            gap={2}
-          >
+          <Box flexDirection={BoxFlexDirection.Column}>
             {mockOrders.map((order) => (
               <OrderCard key={order.orderId} order={order} />
             ))}

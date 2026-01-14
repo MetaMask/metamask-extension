@@ -35,7 +35,7 @@ export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
 
   return (
     <ButtonBase
-      className="start-trade-cta w-full"
+      className="w-full bg-transparent hover:bg-hover active:bg-pressed"
       onClick={handleClick}
       data-testid="start-new-trade-cta"
     >
@@ -52,7 +52,7 @@ export const StartTradeCta: React.FC<StartTradeCtaProps> = ({ onPress }) => {
           justifyContent={BoxJustifyContent.Center}
           alignItems={BoxAlignItems.Center}
           backgroundColor={BoxBackgroundColor.BackgroundMuted}
-          className="flex rounded-full w-10 h-10"
+          className="flex h-10 w-10 rounded-full"
         >
           <Icon name={IconName.Add} size={IconSize.Sm} />
         </Box>

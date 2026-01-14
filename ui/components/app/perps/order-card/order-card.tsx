@@ -35,26 +35,22 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
   return (
     <Box
-      className="order-card"
+      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={3}
-      paddingBottom={3}
       data-testid={`order-card-${order.orderId}`}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={order.symbol}
         size={AvatarTokenSize.Md}
-        className="order-card__logo"
+        className="shrink-0"
       />
 
       {/* Left side: Symbol info and size */}
       <Box
-        className="order-card__left flex-1 min-w-0"
+        className="min-w-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         gap={1}
@@ -76,7 +72,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({ order }) => {
 
       {/* Right side: Price and status */}
       <Box
-        className="order-card__right"
+        className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.End}
         gap={1}

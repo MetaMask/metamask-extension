@@ -32,26 +32,22 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
 
   return (
     <Box
-      className="position-card"
+      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}
-      paddingLeft={4}
-      paddingRight={4}
-      paddingTop={3}
-      paddingBottom={3}
       data-testid={`position-card-${position.coin}`}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={position.coin}
         size={AvatarTokenSize.Md}
-        className="position-card__logo"
+        className="shrink-0"
       />
 
       {/* Left side: Coin info and size */}
       <Box
-        className="position-card__left flex-1 min-w-0"
+        className="min-w-0 flex-1"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Start}
         gap={1}
@@ -73,7 +69,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
 
       {/* Right side: Entry price and P&L */}
       <Box
-        className="position-card__right"
+        className="shrink-0"
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.End}
         gap={1}
