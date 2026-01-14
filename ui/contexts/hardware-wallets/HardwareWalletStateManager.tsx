@@ -48,7 +48,7 @@ export type HardwareWalletRefs = {
  * Hook that manages all hardware wallet state and refs
  */
 export const useHardwareWalletStateManager = () => {
-  const accountInfo = useSelector(selectAccountHardwareInfo, shallowEqual);
+  const accountInfo = useSelector(getAccountHardwareInfo, shallowEqual);
 
   const walletType = useMemo(
     () => keyringTypeToHardwareWalletType(accountInfo.keyringType),
@@ -145,7 +145,7 @@ export const useHardwareWalletStateManager = () => {
  * @param state - Redux state object
  * @returns Account hardware info with keyring type and address
  */
-function selectAccountHardwareInfo(state: AccountsState) {
+function getAccountHardwareInfo(state: AccountsState) {
   const account = getMaybeSelectedInternalAccount(state);
   return {
     keyringType: account?.metadata?.keyring?.type ?? null,

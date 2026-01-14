@@ -86,16 +86,14 @@ export type HardwareWalletAdapter = {
   isConnected(): boolean;
   destroy(): void;
 
-  // Optional methods
-  getCurrentAppName?(): Promise<string>;
   /**
-   * Verify the device is ready for operations
+   * Ensure the device is ready for operations
    * (e.g., Ledger requires the Ethereum app to be open)
    *
    * @returns true if ready
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
-  verifyDeviceReady?(deviceId: string): Promise<boolean>;
+  ensureDeviceReady?(deviceId: string): Promise<boolean>;
 };
 
 /**
@@ -121,7 +119,6 @@ export type HardwareWalletContextType = {
   hardwareConnectionPermissionState: HardwareConnectionPermissionState;
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
-  currentAppName: string | null;
 
   // Actions
   connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
