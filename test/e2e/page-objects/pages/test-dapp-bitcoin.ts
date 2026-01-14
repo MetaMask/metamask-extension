@@ -129,8 +129,11 @@ export class TestDappBitcoin {
           testId: dataTestIds.testPage.header.disconnect,
           tag: 'button',
         }),
-      getAccount: async () =>
-        await this.getSolscanShortContent(dataTestIds.testPage.header.account),
+      getAccount: async () =>{
+        const value = await this.getTextById(dataTestIds.testPage.header.account)
+
+        return value.split('\n').map((hash) => hash.trim())[0];
+      },
       selectNetwork: async (label: 'Mainnet' | 'Testnet') => {
         const selectEl = await this.driver.findElement(
           this.getElementSelectorTestId(dataTestIds.testPage.header.network),
@@ -165,15 +168,36 @@ export class TestDappBitcoin {
    *
    * @returns The Sign Transaction component helper methods.
    */
-  async getSignTransactionTest() {
+  async getSendTransactionTest() {
     await this.waitSelectorTestId(dataTestIds.testPage.signTransaction.id);
 
     return {
-      signTransaction: async () =>
+      setRecepient: (message: string) =>
+        this.setInputValue(dataTestIds.testPage.sendTransaction.recipient, message),
+      setAmount: (message: string) =>
+        this.setInputValue(dataTestIds.testPage.sendTransaction.amout, message),
+      sendTransaction: async () =>
         await this.clickElement(
-          dataTestIds.testPage.signTransaction.signTransaction,
+          dataTestIds.testPage.sendTransaction.sendTransaction,
+        ),
+      getTransactionHash: async () =>
+        await this.getTextById(
+          dataTestIds.testPage.sendTransaction.txId,
         ),
     };
+  }
+
+  /**
+   * Switch to the mainnet network.
+   */
+  async switchToMainnet() {
+    await this.clickElement(
+      dataTestIds.testPage.header.network,
+    )
+    
+    await this.clickElement(
+      dataTestIds.testPage.header.networks.mainnet,
+    )
   }
 
   /**
@@ -248,28 +272,15 @@ export class TestDappBitcoin {
   }
 
   /**
-   * Get the first transaction hash from an element by its data-testid.
+   * Get text from an element by its data-testid.
    *
-   * @param id - The data-testid of the element containing transaction hashes.
-   * @returns The first transaction hash.
+   * @param id - The data-testid of the element containing text.
+   * @returns An array of text.
    */
-  private async getSolscanShortContent(id: string) {
-    const contents = await this.getSolscanShortContents(id);
-    return contents[0];
-  }
-
-  /**
-   * Get all transaction hashes from an element by its data-testid.
-   *
-   * @param id - The data-testid of the element containing transaction hashes.
-   * @returns An array of transaction hashes.
-   */
-  private async getSolscanShortContents(id: string) {
+  private async getTextById(id: string) {
     const element = await this.driver.findElement(
       this.getElementSelectorTestId(id),
     );
-    const contents = await element.findElements(By.css('.content'));
-
-    return contents.map((content) => content.getText());
+    return element.getText();
   }
 }
