@@ -23,7 +23,7 @@ const TRANSACTION_HASH_2 =
   '0x62700f83ba1bbc29004bf7aef71ed0ea735de4fd59861b4235200d8fa028281f';
 
 describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
-  it('confirms two transactions if successful', async function () {
+  it('confirms one transaction if successful', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -95,12 +95,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(2);
+        await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
       },
     );
   });
 
-  it('fails two transactions if error', async function () {
+  it('fails one transaction if error', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -144,7 +144,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         await homepage.goToActivityList();
 
         const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkFailedTxNumberDisplayedInActivity(2);
+        await activityListPage.checkFailedTxNumberDisplayedInActivity(1);
       },
     );
   });
