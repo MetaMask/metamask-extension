@@ -103,7 +103,7 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
         await switchToNetworkFromNetworkSelect(
           driver,
           'Custom',
-          'Localhost 8545',
+          'Localhost 8546',
         );
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
