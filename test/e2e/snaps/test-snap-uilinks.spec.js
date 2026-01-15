@@ -1,9 +1,9 @@
 const { emptyHtmlPage } = require('../mock-e2e');
-const { DAPP_PATH, DAPP_URL } = require('../constants');
-const { withFixtures, WINDOW_TITLES } = require('../helpers');
+const { withFixtures } = require('../helpers');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
+const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockDialogSnap,

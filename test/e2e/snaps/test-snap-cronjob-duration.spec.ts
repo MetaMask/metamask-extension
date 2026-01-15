@@ -2,12 +2,12 @@ import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockCronjobDurationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Cronjob Duration', function () {
   it('runs a cronjob every 10 seconds that sends a notification', async function () {

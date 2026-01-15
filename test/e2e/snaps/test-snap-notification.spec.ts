@@ -3,12 +3,12 @@ import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockNotificationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Notification', function () {
   it('can send 1 correctly read in-app notification', async function () {

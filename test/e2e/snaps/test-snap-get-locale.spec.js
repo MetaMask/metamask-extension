@@ -1,9 +1,9 @@
-const { DAPP_PATH, DAPP_URL } = require('../constants');
-const { withFixtures, WINDOW_TITLES } = require('../helpers');
 const {
   loginWithBalanceValidation,
 } = require('../page-objects/flows/login.flow');
 
+const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
+const { withFixtures } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockLocalizationSnap,
