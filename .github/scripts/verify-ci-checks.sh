@@ -73,7 +73,7 @@ check_run_status() {
               | reverse
               | .[0]
               | if . == null then empty else {status: .status, conclusion: .conclusion} end
-            ' | head -1
+            '
         )
         if [[ "${check_result}" == "null" ]]; then
             check_result=""
