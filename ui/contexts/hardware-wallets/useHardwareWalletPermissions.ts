@@ -44,18 +44,28 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
-    let cancelled = false;
+    // Abort any previous check request (from effect re-runs or manual actions)
+    // to prevent race conditions between initial check and manual actions
+    checkAbortControllerRef.current?.abort();
+    const abortController = new AbortController();
+    checkAbortControllerRef.current = abortController;
 
     checkHardwareWalletPermission(walletType)
       .then((permissionState) => {
-        // Only update state if effect hasn't been cleaned up and not externally aborted
-        if (!cancelled && !refs.abortControllerRef.current?.signal.aborted) {
+        // Only update state if this request wasn't aborted and not externally aborted
+        if (
+          !abortController.signal.aborted &&
+          !refs.abortControllerRef.current?.signal.aborted
+        ) {
           setHardwareConnectionPermissionState(permissionState);
         }
       })
       .catch(() => {
-        // Only update state if effect hasn't been cleaned up and not externally aborted
-        if (!cancelled && !refs.abortControllerRef.current?.signal.aborted) {
+        // Only update state if this request wasn't aborted and not externally aborted
+        if (
+          !abortController.signal.aborted &&
+          !refs.abortControllerRef.current?.signal.aborted
+        ) {
           setHardwareConnectionPermissionState(
             HardwareConnectionPermissionState.Unknown,
           );
@@ -63,7 +73,7 @@ export const useHardwareWalletPermissions = ({
       });
 
     return () => {
-      cancelled = true;
+      abortController.abort();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
