@@ -8297,7 +8297,33 @@ export default class MetamaskController extends EventEmitter {
       return;
     }
 
-    await this.seedlessOnboardingController.runMigrations();
+    try {
+      await this.seedlessOnboardingController.runMigrations();
+
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SeedlessOnboardingMigrationCompleted,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          migration_version:
+            this.seedlessOnboardingController.state?.migrationVersion,
+        },
+      });
+    } catch (error) {
+      // Track failure via Segment
+      this.metaMetricsController.trackEvent({
+        event: MetaMetricsEventName.SeedlessOnboardingMigrationFailed,
+        category: MetaMetricsEventCategory.Background,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          migration_version:
+            this.seedlessOnboardingController.state?.migrationVersion,
+          error: error.message,
+        },
+      });
+
+      throw error; // Re-throw so Sentry also catches it
+    }
   }
 
   /**

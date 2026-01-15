@@ -811,6 +811,8 @@ export enum MetaMetricsEventName {
   RpcServiceDegraded = 'RPC Service Degraded',
   RpcServiceUnavailable = 'RPC Service Unavailable',
   SecretRecoveryPhrasePickerClicked = 'Secret Recovery Phrase Picker Clicked',
+  SeedlessOnboardingMigrationCompleted = 'Seedless Onboarding Migration Completed',
+  SeedlessOnboardingMigrationFailed = 'Seedless Onboarding Migration Failed',
   SettingsUpdated = 'Settings Updated',
   SendStarted = 'Send Started',
   SignatureApproved = 'Signature Approved',
