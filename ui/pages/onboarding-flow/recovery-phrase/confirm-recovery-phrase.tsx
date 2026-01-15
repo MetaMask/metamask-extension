@@ -283,7 +283,7 @@ export default function ConfirmRecoveryPhrase({ secretRecoveryPhrase = '' }) {
             </Box>
           </>
         )}
-        <Box marginBottom={6}>
+        <Box>
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('confirmRecoveryPhraseDetails')}
           </Text>
