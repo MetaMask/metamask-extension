@@ -13,7 +13,7 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   encodeDisableDelegation,
   getDelegationHashOffchain,
@@ -102,7 +102,7 @@ export function useRevokeGatorPermissionsMultiChain({
         for (const permission of permissions) {
           try {
             const { permissionResponse } = permission;
-            const internalAccount = getMemoizedInternalAccountByAddress(
+            const internalAccount = getInternalAccountByAddress(
               store.getState(),
               permissionResponse.from as Hex,
             );
