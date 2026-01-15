@@ -155,7 +155,7 @@ export class TestDappTron {
    * @returns The Sign TRX component helper methods.
    */
   async getSignTrxTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
+    await this.waitSelectorTestId(dataTestIds.testPage.sendTRX.id);
 
     return {
       setRecipientAddress: (address: string) =>
@@ -177,7 +177,7 @@ export class TestDappTron {
    * @returns The Sign and Send TRX component helper methods.
    */
   async getSignAndSendTrxTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
+    await this.waitSelectorTestId(dataTestIds.testPage.sendTRX.id);
 
     return {
       setRecipientAddress: (address: string) =>
@@ -199,7 +199,7 @@ export class TestDappTron {
    * @returns The Sign USDT component helper methods.
    */
   async getSignUsdtTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
+    await this.waitSelectorTestId(dataTestIds.testPage.sendUSDT.id);
 
     return {
       setRecipientAddress: (address: string) =>
@@ -221,7 +221,7 @@ export class TestDappTron {
    * @returns The Sign USDT component helper methods.
    */
   async getSignAndSendUsdtTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.signMessage.id);
+    await this.waitSelectorTestId(dataTestIds.testPage.sendUSDT.id);
 
     return {
       setRecipientAddress: (address: string) =>
