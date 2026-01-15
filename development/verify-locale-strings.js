@@ -29,6 +29,7 @@ const log = require('loglevel');
 const glob = require('fast-glob');
 const matchAll = require('string.prototype.matchall').getPolyfill();
 const localeIndex = require('../app/_locales/index.json');
+const sentenceCaseExceptions = require('../app/_locales/sentence-case-exceptions.json');
 const {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
@@ -38,6 +39,224 @@ const {
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+
+// Build and compile a single regex from all exceptions for performance
+function buildExceptionsRegex(exceptions) {
+  const patterns = [];
+
+  // Escape special regex characters for exact matches
+  const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/gu, '\\$&');
+
+  // Add exact matches (escaped to treat as literals)
+  exceptions.exactMatches.forEach((term) => {
+    patterns.push(escapeRegex(term));
+  });
+
+  // Add acronyms (escaped to treat as literals)
+  exceptions.acronyms.forEach((acronym) => {
+    patterns.push(escapeRegex(acronym));
+  });
+
+  // Add existing regex patterns (already in regex format)
+  Object.values(exceptions.patterns).forEach((pattern) => {
+    patterns.push(pattern);
+  });
+
+  // Combine all patterns with OR operator
+  return new RegExp(patterns.join('|'), 'u');
+}
+
+// Pre-compile the exceptions regex once at module load time
+const specialCaseRegex = buildExceptionsRegex(sentenceCaseExceptions);
+
+// Helper function to check if text contains special case terms
+function containsSpecialCase(text) {
+  return specialCaseRegex.test(text);
+}
+
+// Helper function to detect title case violations
+function hasTitleCaseViolation(text) {
+  // Remove quoted text (single quotes and escaped double quotes) before checking
+  // Quoted text refers to UI elements and should preserve capitalization
+  let textWithoutQuotes = text.replace(/'[^']*'/gu, ''); // Remove 'text'
+  textWithoutQuotes = textWithoutQuotes.replace(/\\"[^"]*\\"/gu, ''); // Remove \"text\"
+
+  // Ignore single words (filter out empty strings from whitespace)
+  const words = textWithoutQuotes
+    .split(/\s+/u)
+    .filter((word) => word.length > 0);
+  if (words.length < 2) {
+    return false;
+  }
+
+  // Check if multiple words start with capital letters (Title Case pattern)
+  // This pattern: "Word Word" or "Word Word Word"
+  const titleCasePattern = /^([A-Z][a-z]+\s+)+[A-Z][a-z]+/u;
+
+  // Also catch patterns like "In Progress", "Not Available"
+  const multipleCapsPattern = /\b[A-Z][a-z]+\s+[A-Z][a-z]+\b/u;
+
+  return (
+    titleCasePattern.test(textWithoutQuotes) ||
+    multipleCapsPattern.test(textWithoutQuotes)
+  );
+}
+
+// Helper function to convert to sentence case while preserving special cases
+function toSentenceCase(text) {
+  // If text contains special cases, we need to be careful
+  if (containsSpecialCase(text)) {
+    // Build a map of special terms and their positions
+    const specialTerms = [];
+
+    // Find all special terms from exact matches
+    for (const term of sentenceCaseExceptions.exactMatches) {
+      let index = text.indexOf(term);
+      while (index !== -1) {
+        specialTerms.push({ term, start: index, end: index + term.length });
+        index = text.indexOf(term, index + 1);
+      }
+    }
+
+    // Find all acronyms
+    for (const acronym of sentenceCaseExceptions.acronyms) {
+      let index = text.indexOf(acronym);
+      while (index !== -1) {
+        specialTerms.push({
+          term: acronym,
+          start: index,
+          end: index + acronym.length,
+        });
+        index = text.indexOf(acronym, index + 1);
+      }
+    }
+
+    // Sort by position first, then by length descending (prefer longer matches)
+    // This ensures overlapping terms like "MetaMask Portfolio" are processed before "MetaMask"
+    specialTerms.sort((a, b) => {
+      if (a.start !== b.start) {
+        return a.start - b.start;
+      }
+      // If same start position, prefer longer match
+      return b.end - b.start - (a.end - a.start);
+    });
+
+    // Build result preserving special terms
+    let result = '';
+    let lastIndex = 0;
+
+    for (const special of specialTerms) {
+      // Skip overlapping terms (already covered by a previous term)
+      if (special.start < lastIndex) {
+        continue;
+      }
+
+      // Process text before this special term
+      const before = text.substring(lastIndex, special.start);
+      if (before) {
+        result += convertToSentenceCase(before);
+      }
+      // Add the special term as-is
+      result += special.term;
+      lastIndex = special.end;
+    }
+
+    // Process remaining text
+    if (lastIndex < text.length) {
+      result += convertToSentenceCase(text.substring(lastIndex));
+    }
+
+    return result;
+  }
+
+  return convertToSentenceCase(text);
+}
+
+// Simple sentence case conversion
+function convertToSentenceCase(text) {
+  if (!text) {
+    return text;
+  }
+
+  // Extract quoted text (single quotes and escaped double quotes) and preserve them
+  const quotedTexts = [];
+  let textToProcess = text;
+  let placeholderIndex = 0;
+
+  // Find all single-quoted text and replace with unique placeholders
+  textToProcess = textToProcess.replace(/'([^']*)'/gu, (match) => {
+    const uniquePlaceholder = `___QUOTED_${placeholderIndex}___`;
+    quotedTexts.push({ placeholder: uniquePlaceholder, text: match });
+    placeholderIndex += 1;
+    return uniquePlaceholder;
+  });
+
+  // Find all escaped double-quoted text and replace with unique placeholders
+  textToProcess = textToProcess.replace(/\\"([^"]*)\\"/gu, (match) => {
+    const uniquePlaceholder = `___QUOTED_${placeholderIndex}___`;
+    quotedTexts.push({ placeholder: uniquePlaceholder, text: match });
+    placeholderIndex += 1;
+    return uniquePlaceholder;
+  });
+
+  // Convert to sentence case
+  const words = textToProcess.split(/\s+/u).filter((word) => word.length > 0);
+  let converted = words
+    .map((word, index) => {
+      // Check if word contains a placeholder (exact match or with punctuation)
+      if (
+        quotedTexts.some(
+          (q) => word === q.placeholder || word.includes(q.placeholder),
+        )
+      ) {
+        return word;
+      }
+      if (index === 0) {
+        // First word: capitalize first letter
+        return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+      }
+      // Other words: all lowercase
+      return word.toLowerCase();
+    })
+    .join(' ');
+
+  // Restore quoted text with unique placeholders
+  quotedTexts.forEach(({ placeholder, text: quotedText }) => {
+    converted = converted.replace(placeholder, quotedText);
+  });
+
+  return converted;
+}
+
+// Validate sentence case compliance for a locale
+function validateSentenceCaseCompliance(locale) {
+  const violations = [];
+
+  for (const [key, value] of Object.entries(locale)) {
+    if (!value || !value.message) {
+      continue;
+    }
+
+    const text = value.message;
+
+    // Skip if contains special cases
+    if (containsSpecialCase(text)) {
+      continue;
+    }
+
+    // Check for title case violations
+    if (hasTitleCaseViolation(text)) {
+      const suggested = toSentenceCase(text);
+      violations.push({
+        key,
+        current: text,
+        suggested,
+      });
+    }
+  }
+
+  return violations;
+}
 
 log.setDefaultLevel('info');
 
@@ -296,15 +515,47 @@ async function verifyEnglishLocale() {
     });
   }
 
-  if (!unusedMessages.length && !templateUsage.length) {
+  // Check sentence case compliance
+  const sentenceCaseViolations = validateSentenceCaseCompliance(englishLocale);
+
+  if (sentenceCaseViolations.length) {
+    console.log(
+      `**en**: ${sentenceCaseViolations.length} sentence case violations`,
+    );
+    log.info(`Messages not following sentence case:`);
+    sentenceCaseViolations.forEach(function (violation) {
+      log.info(
+        `  - [ ] ${violation.key}: "${violation.current}" → "${violation.suggested}"`,
+      );
+    });
+  }
+
+  if (
+    !unusedMessages.length &&
+    !templateUsage.length &&
+    !sentenceCaseViolations.length
+  ) {
     return false; // failed === false
   }
 
-  if (unusedMessages.length > 0 && fix) {
+  // Apply fixes if --fix flag is used
+  // Combine both unused message deletions and sentence case fixes into a single write
+  if ((unusedMessages.length > 0 || sentenceCaseViolations.length > 0) && fix) {
     const newLocale = { ...englishLocale };
+
+    // Remove unused messages
     for (const key of unusedMessages) {
       delete newLocale[key];
     }
+
+    // Apply sentence case fixes
+    for (const violation of sentenceCaseViolations) {
+      if (newLocale[violation.key]) {
+        newLocale[violation.key].message = violation.suggested;
+      }
+    }
+
+    // Write once with all changes applied
     await writeLocale('en', newLocale);
   }
 
