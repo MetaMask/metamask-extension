@@ -36,7 +36,6 @@ import {
   findMarketBySymbol,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
-import '../../components/app/perps/index.scss';
 
 /**
  * Safely decode a URI component, returning undefined if decoding fails

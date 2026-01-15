@@ -30,7 +30,6 @@ import {
 } from '../../components/app/perps/mocks';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
-import '../../components/app/perps/index.scss';
 
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
@@ -162,7 +161,7 @@ const PerpsHomePage: React.FC = () => {
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.SpaceBetween}
+            justifyContent={BoxJustifyContent.Between}
             paddingBottom={2}
           >
             <Text
@@ -243,7 +242,7 @@ const PerpsHomePage: React.FC = () => {
           <Box
             flexDirection={BoxFlexDirection.Row}
             alignItems={BoxAlignItems.Center}
-            justifyContent={BoxJustifyContent.SpaceBetween}
+            justifyContent={BoxJustifyContent.Between}
             paddingBottom={2}
           >
             <Text
