@@ -9,6 +9,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
@@ -26,7 +27,6 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const signatureMessageWithoutVerifyingContract = [
   DEFAULT_FIXTURE_ACCOUNT,

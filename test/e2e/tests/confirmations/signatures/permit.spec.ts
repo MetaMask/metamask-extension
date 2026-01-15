@@ -12,6 +12,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
@@ -28,7 +29,6 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
