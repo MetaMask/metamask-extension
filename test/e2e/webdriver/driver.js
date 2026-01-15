@@ -1182,6 +1182,16 @@ class Driver {
   }
 
   /**
+   * Switches the WebDriver's context back to the default content (main page).
+   * Use this after interacting with an iframe to return to the parent document.
+   *
+   * @returns {Promise<void>} promise that resolves once the switch is complete
+   */
+  async switchToDefaultContent() {
+    await this.driver.switchTo().defaultContent();
+  }
+
+  /**
    * Retrieves the handles of all open window tabs in the browser session.
    *
    * @returns {Promise<Array<string>>} A promise that will
