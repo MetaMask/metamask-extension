@@ -92,53 +92,6 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
- * Format a number as currency with $ prefix
- *
- * @param value - The number to format as a string
- * @returns The formatted currency string
- * @example
- * formatCurrency('1234.5') => '$1,234.50'
- */
-export const formatCurrency = (value: string): string => {
-  const num = parseFloat(value);
-  return `$${num.toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-};
-
-/**
- * Format P&L with +/- prefix
- *
- * @param value - The P&L value to format as a string
- * @returns The formatted P&L string
- * @example
- * formatPnl('100.50') => '+$100.50'
- * formatPnl('-50.25') => '-$50.25'
- */
-export const formatPnl = (value: string): string => {
-  const num = parseFloat(value);
-  const prefix = num >= 0 ? '+' : '-';
-  return `${prefix}$${Math.abs(num).toLocaleString('en-US', {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  })}`;
-};
-
-/**
- * Format a value as percentage
- *
- * @param value - The value to format as a string
- * @returns The formatted percentage string
- * @example
- * formatPercentage('12.345') => '12.35%'
- */
-export const formatPercentage = (value: string): string => {
-  const num = parseFloat(value);
-  return `${num.toFixed(2)}%`;
-};
-
-/**
  * Extract the display symbol from a full symbol string
  * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
  * Includes null/type safety checks

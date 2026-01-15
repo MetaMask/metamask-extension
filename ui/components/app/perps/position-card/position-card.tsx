@@ -9,8 +9,9 @@ import {
   FontWeight,
   AvatarTokenSize,
 } from '@metamask/design-system-react';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { getDisplayName, getPositionDirection, formatPnl } from '../utils';
+import { getDisplayName, getPositionDirection } from '../utils';
 import type { Position } from '../types';
 
 export type PositionCardProps = {
@@ -25,10 +26,14 @@ export type PositionCardProps = {
  * @param options0.position - The position data to display
  */
 export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
-  const isProfit = parseFloat(position.unrealizedPnl) >= 0;
+  const pnlNum = parseFloat(position.unrealizedPnl);
+  const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
   const displayName = getDisplayName(position.coin);
+  const pnlPrefix = isProfit ? '+' : '-';
+  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
 
   return (
     <Box
@@ -81,7 +86,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({ position }) => {
           variant={TextVariant.BodySm}
           color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
         >
-          {formatPnl(position.unrealizedPnl)}
+          {formattedPnl}
         </Text>
       </Box>
     </Box>

@@ -5,9 +5,6 @@ import {
   formatOrderType,
   formatStatus,
   getStatusColor,
-  formatCurrency,
-  formatPnl,
-  formatPercentage,
   getDisplaySymbol,
   getAssetIconUrl,
 } from './utils';
@@ -80,50 +77,6 @@ describe('Perps Utils', () => {
       expect(getStatusColor('open')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('queued')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('triggered')).toBe(TextColor.TextAlternative);
-    });
-  });
-
-  describe('formatCurrency', () => {
-    it('formats a number as currency with $ prefix', () => {
-      expect(formatCurrency('1234.5')).toBe('$1,234.50');
-      expect(formatCurrency('100')).toBe('$100.00');
-    });
-
-    it('handles decimal precision', () => {
-      expect(formatCurrency('1234.567')).toBe('$1,234.57');
-      expect(formatCurrency('0.1')).toBe('$0.10');
-    });
-
-    it('handles large numbers', () => {
-      expect(formatCurrency('1000000')).toBe('$1,000,000.00');
-    });
-  });
-
-  describe('formatPnl', () => {
-    it('formats positive values with + prefix', () => {
-      expect(formatPnl('100.50')).toBe('+$100.50');
-      expect(formatPnl('0')).toBe('+$0.00');
-    });
-
-    it('formats negative values with - prefix', () => {
-      expect(formatPnl('-50.25')).toBe('-$50.25');
-      expect(formatPnl('-1000')).toBe('-$1,000.00');
-    });
-
-    it('handles decimal precision', () => {
-      expect(formatPnl('123.456')).toBe('+$123.46');
-      expect(formatPnl('-123.456')).toBe('-$123.46');
-    });
-  });
-
-  describe('formatPercentage', () => {
-    it('formats a value as percentage with 2 decimal places', () => {
-      expect(formatPercentage('12.345')).toBe('12.35%');
-      expect(formatPercentage('100')).toBe('100.00%');
-    });
-
-    it('handles negative percentages', () => {
-      expect(formatPercentage('-5.5')).toBe('-5.50%');
     });
   });
 

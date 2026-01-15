@@ -5,6 +5,18 @@ import configureStore from '../../../../store/store';
 import mockState from '../../../../../test/data/mock-state.json';
 import { PerpsTabControlBar } from './perps-tab-control-bar';
 
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+    formatPercentWithMinThreshold: (value: number) =>
+      `${(value * 100).toFixed(2)}%`,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,
