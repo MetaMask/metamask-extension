@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect } from 'react';
-import { useSyncEqualityCheck } from '../../../../../../hooks/useSyncEqualityCheck';
+import { useDeepMemo } from '../../../../hooks/useDeepMemo';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 
 export type UseSendingValueMetricProps = {
@@ -15,24 +15,17 @@ export const useSendingValueMetric = ({
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const transactionId = transactionMeta.id;
-  const hasValidFiatValue = fiatValue !== undefined && fiatValue !== '';
-
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  const properties = { sending_value: hasValidFiatValue ? fiatValue : 0 };
+  const properties = { sending_value: fiatValue };
   const sensitiveProperties = {};
   const params = { properties, sensitiveProperties };
 
-  const stableParams = useSyncEqualityCheck(params);
+  const stableParams = useDeepMemo(() => params, [params]);
 
   useEffect(() => {
-    if (hasValidFiatValue) {
+    if (fiatValue !== undefined && fiatValue !== '') {
       updateTransactionEventFragment(stableParams, transactionId);
     }
-  }, [
-    updateTransactionEventFragment,
-    transactionId,
-    stableParams,
-    hasValidFiatValue,
-  ]);
+  }, [updateTransactionEventFragment, transactionId, stableParams, fiatValue]);
 };

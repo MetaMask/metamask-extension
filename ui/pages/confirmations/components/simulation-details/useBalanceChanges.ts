@@ -9,7 +9,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
-import { useSyncEqualityCheck } from '../../../../hooks/useSyncEqualityCheck';
+import { useDeepMemo } from '../../hooks/useDeepMemo';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
@@ -176,7 +176,10 @@ export const useBalanceChanges = ({
     .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
     .map((tbc) => tbc.address);
 
-  const stableErc20Addresses = useSyncEqualityCheck(erc20TokenAddresses);
+  const stableErc20Addresses = useDeepMemo(
+    () => erc20TokenAddresses,
+    [erc20TokenAddresses],
+  );
 
   const erc20Decimals = useAsyncResultOrThrow(
     () => fetchAllErc20Decimals(stableErc20Addresses, chainId),
