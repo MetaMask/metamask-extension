@@ -985,8 +985,14 @@ export async function loadStateFromPersistence(backup) {
   if (persistenceManager.storageKind === 'data') {
     const alreadyTried =
       versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
-    const shouldUseSplitStateStorage =
-      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // const shouldUseSplitStateStorage =
+    //   !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
+    const disableSplitStateMigration = true;
+    const shouldUseSplitStateStorage = disableSplitStateMigration
+      ? false
+      : !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
     log.debug(
       '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
       shouldUseSplitStateStorage,
