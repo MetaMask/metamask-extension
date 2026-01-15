@@ -137,7 +137,9 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(ConnectionState.error('locked', error));
+      expect(resultState).toEqual(
+        ConnectionState.error(DeviceEvent.DeviceLocked, error),
+      );
     });
 
     it('handles APP_NOT_OPEN event with error', () => {
@@ -207,7 +209,9 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
-    it('handles APP_CHANGED event', () => {
+    it('handles APP_CHANGED event with wrong app', () => {
+      // Set up Ledger wallet type for this test
+      mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
@@ -225,8 +229,30 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(
-        ConnectionState.awaitingApp('wrong_app', 'Bitcoin'),
+        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, 'Bitcoin'),
       );
+    });
+
+    it('handles APP_CHANGED event with correct app', () => {
+      // Set up Ledger wallet type for this test
+      mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
+      const { result } = setupHook();
+
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.AppChanged,
+        currentAppName: 'Ethereum',
+      });
+
+      expect(mockSetters.setCurrentAppName).toHaveBeenCalledWith('Ethereum');
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(ConnectionState.ready());
     });
 
     it('handles CONNECTION_FAILED event', () => {
@@ -247,7 +273,7 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(
-        ConnectionState.error('connection_failed', error),
+        ConnectionState.error(DeviceEvent.ConnectionFailed, error),
       );
     });
 
@@ -279,7 +305,7 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(
-        ConnectionState.error('operation_timeout', error),
+        ConnectionState.error(DeviceEvent.OperationTimeout, error),
       );
     });
 
@@ -300,7 +326,7 @@ describe('useDeviceEventHandlers', () => {
 
       expect(resultState).toEqual(
         ConnectionState.error(
-          'operation_timeout',
+          DeviceEvent.OperationTimeout,
           new Error('Operation timed out'),
         ),
       );
