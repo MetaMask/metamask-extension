@@ -64,9 +64,9 @@ export async function checkHardwareWalletPermission(
 ): Promise<HardwareConnectionPermissionState> {
   switch (walletType) {
     case HardwareWalletType.Ledger:
-      return checkWebHIDPermission();
+      return await checkWebHIDPermission();
     case HardwareWalletType.Trezor:
-      return checkWebUSBPermission();
+      return await checkWebUSBPermission();
     default:
       return HardwareConnectionPermissionState.Denied;
   }
