@@ -1269,16 +1269,17 @@ export const selectBalanceByWallet = (walletId: string) =>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- There is no type for the root state
 const getStateForAssetSelector = ({ metamask }: any) => {
   const initialState = {
-    accountTree: metamask.accountTree,
-    internalAccounts: metamask.internalAccounts,
-    allTokens: metamask.allTokens,
-    allIgnoredTokens: metamask.allIgnoredTokens,
-    tokenBalances: metamask.tokenBalances,
-    marketData: metamask.marketData,
-    currencyRates: metamask.currencyRates,
-    currentCurrency: metamask.currentCurrency,
-    networkConfigurationsByChainId: metamask.networkConfigurationsByChainId,
-    accountsByChainId: metamask.accountsByChainId,
+    accountTree: metamask?.accountTree,
+    internalAccounts: metamask?.internalAccounts,
+    allTokens: metamask?.allTokens ?? EMPTY_OBJECT,
+    allIgnoredTokens: metamask?.allIgnoredTokens ?? EMPTY_OBJECT,
+    tokenBalances: metamask?.tokenBalances ?? EMPTY_OBJECT,
+    marketData: metamask?.marketData ?? EMPTY_OBJECT,
+    currencyRates: metamask?.currencyRates ?? EMPTY_OBJECT,
+    currentCurrency: metamask?.currentCurrency,
+    networkConfigurationsByChainId:
+      metamask?.networkConfigurationsByChainId ?? EMPTY_OBJECT,
+    accountsByChainId: metamask?.accountsByChainId ?? EMPTY_OBJECT,
   };
 
   let multichainState = {
