@@ -3,6 +3,7 @@ import {
   NetworkConfiguration,
   NetworkController,
   RpcEndpointType,
+  NetworkControllerMessenger,
 } from '@metamask/network-controller';
 import {
   DEFAULT_MAX_RETRIES,
@@ -24,10 +25,7 @@ import {
 } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { ControllerInitFunction } from './types';
-import {
-  NetworkControllerInitMessenger,
-  NetworkControllerMessenger,
-} from './messengers';
+import { NetworkControllerInitMessenger } from './messengers';
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
   ChainId['monad-testnet'],
