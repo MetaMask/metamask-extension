@@ -32,17 +32,11 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
-    checkHardwareWalletPermission(walletType)
-      .then((permissionState) => {
-        if (!refs.abortControllerRef.current?.signal.aborted) {
-          setHardwareConnectionPermissionState(permissionState);
-        }
-      })
-      .catch((error: unknown) => {
-        // Preserve existing behavior: log and keep current permission state.
-        // eslint-disable-next-line no-console
-        console.error('[HardwareWalletPermissions]', error);
-      });
+    checkHardwareWalletPermission(walletType).then((permissionState) => {
+      if (!refs.abortControllerRef.current?.signal.aborted) {
+        setHardwareConnectionPermissionState(permissionState);
+      }
+    });
   }, [
     isHardwareWalletAccount,
     walletType,
