@@ -83,7 +83,7 @@ export async function checkHardwareWalletPermission(
     case HardwareWalletType.Ledger:
       return await checkWebHidPermission(walletType);
     case HardwareWalletType.Trezor:
-      return awaitcheckWebUsbPermission(walletType);
+      return await checkWebUsbPermission(walletType);
     default:
       return HardwareConnectionPermissionState.Denied;
   }
