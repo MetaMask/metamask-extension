@@ -325,10 +325,11 @@ export function useTransactionDisplayData(transactionGroup) {
       prefix = '-';
     }
   } else if (type === TransactionType.swapApproval) {
-    title = t('swapApproval', [
+    const tokenSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        primaryTransaction.sourceTokenSymbol,
-    ]);
+      primaryTransaction.sourceTokenSymbol ??
+      t('token').toLowerCase();
+    title = t('swapApproval', [tokenSymbol]);
     primarySuffix =
       bridgeTokenDisplayData.sourceTokenSymbol ??
       primaryTransaction.sourceTokenSymbol;
