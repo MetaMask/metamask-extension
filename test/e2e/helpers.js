@@ -770,9 +770,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel =
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.IS_SIDEPANEL === 'true';
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);
