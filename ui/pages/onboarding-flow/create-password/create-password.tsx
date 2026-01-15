@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import log from 'loglevel';
 import {
   ONBOARDING_COMPLETION_ROUTE,
   ONBOARDING_DOWNLOAD_APP_ROUTE,
@@ -299,21 +300,6 @@ export default function CreatePassword({
     }
   };
 
-  const handlePasswordSetupError = (error: unknown) => {
-    const errorMessage =
-      error instanceof Error ? error.message : 'Unknown error';
-
-    bufferedTrace?.({
-      name: TraceName.OnboardingPasswordSetupError,
-      op: TraceOperation.OnboardingUserJourney,
-      parentContext: onboardingParentContext?.current,
-      tags: { errorMessage },
-    });
-    bufferedEndTrace?.({ name: TraceName.OnboardingPasswordSetupError });
-
-    console.error(error);
-  };
-
   const handleCreatePassword = async (
     password: string,
     termsChecked: boolean,
@@ -334,7 +320,8 @@ export default function CreatePassword({
         await handleCreateNewWallet(password, termsChecked);
       }
     } catch (error) {
-      handlePasswordSetupError(error);
+      log.error('Error creating password', error);
+
       trackEvent({
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.WalletSetupFailure,
