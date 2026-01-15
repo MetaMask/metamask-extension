@@ -57,11 +57,11 @@ export const useHardwareWalletPermissions = ({
     return () => {
       cancelled = true;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isHardwareWalletAccount,
     walletType,
     setHardwareConnectionPermissionState,
-    refs.abortControllerRef,
   ]);
 
   const checkHardwareWalletPermissionAction = useCallback(
