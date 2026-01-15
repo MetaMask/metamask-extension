@@ -1,5 +1,7 @@
+import React from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../app/scripts/lib/util';
@@ -23,9 +25,16 @@ import {
   getIsWalletResetInProgress,
 } from '../../ducks/metamask/metamask';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import { MetaMaskReduxDispatch, MetaMaskReduxState } from '../../store/store';
 import UnlockPage from './unlock-page.component';
 
-const mapStateToProps = (state) => {
+type OwnProps = {
+  navigate: NavigateFunction;
+  location: RouterLocation;
+  onSubmit?: (password: string) => Promise<void>;
+};
+
+const mapStateToProps = (state: MetaMaskReduxState) => {
   const {
     metamask: { isUnlocked },
   } = state;
@@ -38,9 +47,10 @@ const mapStateToProps = (state) => {
   };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch: MetaMaskReduxDispatch) => {
   return {
-    tryUnlockMetamask: (password) => dispatch(tryUnlockMetamask(password)),
+    tryUnlockMetamask: (password: string) =>
+      dispatch(tryUnlockMetamask(password)),
     markPasswordForgotten: () => dispatch(markPasswordForgotten()),
     forceUpdateMetamaskState: () => forceUpdateMetamaskState(dispatch),
     loginWithDifferentMethod: () => dispatch(resetOnboarding()),
@@ -52,7 +62,11 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-const mergeProps = (stateProps, dispatchProps, ownProps) => {
+const mergeProps = (
+  stateProps: ReturnType<typeof mapStateToProps>,
+  dispatchProps: ReturnType<typeof mapDispatchToProps>,
+  ownProps: OwnProps,
+) => {
   const {
     markPasswordForgotten: propsMarkPasswordForgotten,
     tryUnlockMetamask: propsTryUnlockMetamask,
@@ -76,7 +90,7 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
     }
   };
 
-  const onSubmit = async (password) => {
+  const onSubmit = async (password: string) => {
     await propsTryUnlockMetamask(password);
     // Redirect to the intended route if available, otherwise DEFAULT_ROUTE
     let redirectTo = DEFAULT_ROUTE;
@@ -103,6 +117,8 @@ const mergeProps = (stateProps, dispatchProps, ownProps) => {
 const UnlockPageConnected = compose(
   withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps, mergeProps),
-)(UnlockPage);
+)(UnlockPage) as React.ComponentType<{
+  onSubmit?: (password: string) => Promise<void>;
+}>;
 
 export default UnlockPageConnected;
