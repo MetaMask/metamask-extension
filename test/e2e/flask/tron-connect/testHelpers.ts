@@ -6,7 +6,7 @@ import { Driver } from '../../webdriver/driver';
 import { DEFAULT_TRON_ADDRESS } from '../../constants';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { withTronAccountSnap } from './common-tron';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
