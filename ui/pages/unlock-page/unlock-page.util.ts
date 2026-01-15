@@ -1,4 +1,4 @@
-export function getCaretCoordinates(element, position) {
+export function getCaretCoordinates(element: HTMLElement, position: number) {
   const div = document.createElement('div');
   div.id = 'password-mirror-div';
   document.body.appendChild(div);
