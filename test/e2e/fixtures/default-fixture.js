@@ -279,7 +279,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
       },
       MultichainAccountService: {},
       TransactionController: {
-        transactions: [],
+        transactions: {},
       },
       ProfileMetricsController: {
         initialEnqueueCompleted: false,
