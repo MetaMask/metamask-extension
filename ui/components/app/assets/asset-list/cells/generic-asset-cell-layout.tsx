@@ -15,6 +15,7 @@ type GenericAssetCellLayoutProps = {
   headerRightDisplay: ReactNode;
   footerLeftDisplay: ReactNode;
   footerRightDisplay: ReactNode;
+  isHoverEnabled?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -26,7 +27,15 @@ export default function GenericAssetCellLayout({
   headerRightDisplay,
   footerLeftDisplay,
   footerRightDisplay,
+  isHoverEnabled = true,
 }: GenericAssetCellLayoutProps) {
+  let hoverClassName = '';
+  if (onClick) {
+    hoverClassName = isHoverEnabled
+      ? 'hover:bg-hover cursor-pointer'
+      : 'cursor-pointer';
+  }
+
   return (
     <Box
       display={Display.Flex}
@@ -50,7 +59,7 @@ export default function GenericAssetCellLayout({
         paddingLeft={4}
         paddingRight={4}
         width={BlockSize.Full}
-        className={onClick ? 'hover:bg-hover cursor-pointer' : ''}
+        className={hoverClassName}
         style={{
           height: ASSET_CELL_HEIGHT,
         }}
