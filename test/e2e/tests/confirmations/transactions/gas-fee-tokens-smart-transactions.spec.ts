@@ -16,6 +16,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { mockSmartTransactionsRemoteFlags } from '../../smart-transactions/remote-flags';
 
 const TRANSACTION_HASH =
   '0xf25183af3bf64af01e9210201a2ede3c1dcd6d16091283152d13265242939fc4';
@@ -46,6 +47,7 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
           hardfork: 'london',
         },
         testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSmartTransactionsRemoteFlags(mockServer);
           await mockMultiNetworkBalancePolling(mockServer);
           mockSimulationResponse(mockServer);
           mockSmartTransactionBatchRequests(mockServer, {
@@ -112,13 +114,14 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         localNodeOptions: {
           hardfork: 'london',
         },
-        testSpecificMock: (mockServer: MockttpServer) => {
-          mockSimulationResponse(mockServer);
-          mockSmartTransactionBatchRequests(mockServer, {
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSmartTransactionsRemoteFlags(mockServer);
+          await mockSimulationResponse(mockServer);
+          await mockSmartTransactionBatchRequests(mockServer, {
             transactionHashes: [TRANSACTION_HASH, TRANSACTION_HASH_2],
             error: true,
           });
-          mockSentinelNetworks(mockServer);
+          await mockSentinelNetworks(mockServer);
         },
         title: this.test?.fullTitle(),
       },
