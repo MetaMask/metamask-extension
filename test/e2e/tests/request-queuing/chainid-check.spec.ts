@@ -1,17 +1,12 @@
 import { strict as assert } from 'assert';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  unlockWallet,
-  DAPP_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, unlockWallet, regularDelayMs } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import type { Driver } from '../../webdriver/driver';
 
 describe('Request Queueing chainId proxy sync', function () {
