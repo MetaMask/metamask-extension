@@ -7,7 +7,6 @@ import {
   getAccountGroupWithInternalAccounts,
   getSelectedAccountGroup,
 } from '../../../../selectors/multichain-accounts/account-tree';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 // This is fine to use it in send flow - might be removed in the future
 // eslint-disable-next-line no-restricted-syntax
 import { getNftsByChainByAccount } from '../../../../selectors/nft';
@@ -84,8 +83,6 @@ describe('useSendNfts', () => {
     ['137', { networkName: 'Polygon', networkImage: 'polygon.svg' }],
   ]);
 
-  const mockEnabledNetworks = ['1', '137'];
-
   const mockFetchBalanceForNft = jest.fn();
 
   beforeEach(() => {
@@ -100,9 +97,6 @@ describe('useSendNfts', () => {
       }
       if (selector === getAccountGroupWithInternalAccounts) {
         return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
-      }
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
       }
       return undefined;
     });
@@ -210,9 +204,6 @@ describe('useSendNfts', () => {
       if (selector === getAccountGroupWithInternalAccounts) {
         return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
       }
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
-      }
       return undefined;
     });
 
@@ -232,9 +223,6 @@ describe('useSendNfts', () => {
       if (selector === getAccountGroupWithInternalAccounts) {
         return [];
       }
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
-      }
       return undefined;
     });
 
@@ -253,9 +241,6 @@ describe('useSendNfts', () => {
       }
       if (selector === getAccountGroupWithInternalAccounts) {
         return [{ accounts: [mockAccounts[0]], id: 'dummy_group_id' }];
-      }
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
       }
       return undefined;
     });
@@ -336,9 +321,6 @@ describe('useSendNfts', () => {
       }
       if (selector === getAccountGroupWithInternalAccounts) {
         return [{ accounts: mockAccounts, id: 'dummy_group_id' }];
-      }
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
       }
       return undefined;
     });

@@ -11,7 +11,6 @@ import {
   getSelectedAccountGroup,
 } from '../../../../selectors/multichain-accounts/account-tree';
 import { getInternalAccounts } from '../../../../selectors';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
 import { type Asset, AssetStandard } from '../../types/send';
 import { useChainNetworkNameAndImageMap } from '../useChainNetworkNameAndImage';
 import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
@@ -19,7 +18,6 @@ import { useERC1155BalanceChecker } from './useERC1155BalanceChecker';
 export const useSendNfts = () => {
   const chainNetworkNAmeAndImageMap = useChainNetworkNameAndImageMap();
   const nftsOwnedByAccounts = useSelector(getNftsByChainByAccount);
-  const enabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
   const [nfts, setNfts] = useState<Asset[]>([]);
   const { fetchBalanceForNft } = useERC1155BalanceChecker();
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
@@ -40,17 +38,11 @@ export const useSendNfts = () => {
       chainNetworkNAmeAndImageMap,
     );
 
-    // Filter out NFTs from networks that are not in the Network Manager
-    return allNfts.filter(
-      (nft) =>
-        nft.chainId !== undefined &&
-        enabledNetworks.includes(nft.chainId as string),
-    );
+    return allNfts;
   }, [
     // using accountGroupWithInternalAccounts as dependency is somehow causing repeated renders
     accountGroupWithInternalAccounts?.length,
     chainNetworkNAmeAndImageMap,
-    enabledNetworks,
     nftsOwnedByAccounts,
     selectedAccountGroup,
   ]);
