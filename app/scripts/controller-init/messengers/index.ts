@@ -302,10 +302,7 @@ export type { MetaMetricsControllerMessenger } from './metametrics-controller-me
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type {
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
