@@ -71,8 +71,6 @@ describe('AccountOverviewTabs - event metrics', () => {
     const { getByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <AccountOverviewTabs
-          onTabClick={jest.fn()}
-          defaultHomeActiveTabName={AccountOverviewTabKey.Activity}
           showTokens={true}
           showNfts={false}
           showActivity={true}
@@ -83,7 +81,12 @@ describe('AccountOverviewTabs - event metrics', () => {
       store,
     );
 
-    // Click a tab to trigger event
+    // Click Activity tab first to change from default Tokens tab
+    fireEvent.click(getByText('Activity'));
+    // Clear the mock to ignore the Activity tab click
+    mockTrackEvent.mockClear();
+
+    // Click Tokens tab to trigger the event we want to test
     fireEvent.click(getByText('Tokens'));
 
     // Verify network_filter property is included in correct format

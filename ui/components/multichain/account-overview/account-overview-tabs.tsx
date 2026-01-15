@@ -43,16 +43,13 @@ export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
 };
 
 export const AccountOverviewTabs = ({
-  defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const [activeTabKey, setActiveTabKey] = useTabState(
-    defaultHomeActiveTabName ?? 'tokens',
-  );
+  const [activeTabKey, setActiveTabKey] = useTabState('tokens');
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -78,6 +75,16 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
+      // End trace for the previous active tab before switching
+      if (
+        activeTabKey &&
+        activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
+      ) {
+        endTrace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
+        });
+      }
+
       setActiveTabKey(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
@@ -96,24 +103,17 @@ export const AccountOverviewTabs = ({
           },
         });
       }
-      if (defaultHomeActiveTabName) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-      }
       trace({
         name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
       });
     },
     [
+      activeTabKey,
       networkFilterForMetrics,
       setActiveTabKey,
       dispatch,
       selectedChainIds,
       trackEvent,
-      defaultHomeActiveTabName,
     ],
   );
 
