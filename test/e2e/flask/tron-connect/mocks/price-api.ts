@@ -2,66 +2,6 @@ import { Mockttp } from 'mockttp';
 
 const PRICE_API_URL = 'https://price.api.cx.metamask.io';
 
-export const mockExchangeRates = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
-    .withQuery({
-      vsCurrency: 'usd',
-      assetIds:
-        'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
-    })
-    .thenJson(200, {
-      'tron:728126428/slip44:195': {
-        id: 'tron',
-        price: 0.27989,
-        marketCap: 26501571090,
-        allTimeHigh: 0.431288,
-        allTimeLow: 0.00180434,
-        totalVolume: 584039469,
-        high1d: 0.281458,
-        low1d: 0.278801,
-        circulatingSupply: 94683395974.3822,
-        dilutedMarketCap: 26501570979,
-        marketCapPercentChange1d: -0.25,
-        priceChange1d: -0.000716844753300194,
-        pricePercentChange1h: 0.357582350741983,
-        pricePercentChange1d: -0.255462049152282,
-        pricePercentChange7d: 0.862835815143018,
-        pricePercentChange14d: 0.395394234400669,
-        pricePercentChange30d: -4.69037102835574,
-        pricePercentChange200d: 4.7347558395209,
-        pricePercentChange1y: -1.29971018156079,
-      },
-      'tron:3448148188/slip44:195': null,
-      'tron:2494104990/slip44:195': null,
-    });
-
-export const mockExchangeRatesV1 = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v1/exchange-rates`)
-    .withQuery({
-      baseCurrency: 'usd',
-    })
-    .thenJson(200, exchangeRatesV1);
-
-export const mockHistoricalPrices1d = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/historical-prices/tron:728126428/slip44:195`)
-    .withQuery({
-      timePeriod: '1d',
-      vsCurrency: 'usd',
-    })
-    .thenJson(200, historicalPrices1d);
-
-export const mockHistoricalPrices7d = (mockServer: Mockttp) =>
-  mockServer
-    .forGet(`${PRICE_API_URL}/v3/historical-prices/tron:728126428/slip44:195`)
-    .withQuery({
-      timePeriod: '7d',
-      vsCurrency: 'usd',
-    })
-    .thenJson(200, historicalPrices7d);
-
 const historicalPrices1d = {
   prices: [
     [1765907123637, 0.280626127831253],
@@ -166,3 +106,63 @@ const exchangeRatesV1 = {
     currencyType: 'crypto',
   },
 };
+
+export const mockExchangeRates = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v3/spot-prices`)
+    .withQuery({
+      vsCurrency: 'usd',
+      assetIds:
+        'tron:728126428/slip44:195,tron:3448148188/slip44:195,tron:2494104990/slip44:195',
+    })
+    .thenJson(200, {
+      'tron:728126428/slip44:195': {
+        id: 'tron',
+        price: 0.27989,
+        marketCap: 26501571090,
+        allTimeHigh: 0.431288,
+        allTimeLow: 0.00180434,
+        totalVolume: 584039469,
+        high1d: 0.281458,
+        low1d: 0.278801,
+        circulatingSupply: 94683395974.3822,
+        dilutedMarketCap: 26501570979,
+        marketCapPercentChange1d: -0.25,
+        priceChange1d: -0.000716844753300194,
+        pricePercentChange1h: 0.357582350741983,
+        pricePercentChange1d: -0.255462049152282,
+        pricePercentChange7d: 0.862835815143018,
+        pricePercentChange14d: 0.395394234400669,
+        pricePercentChange30d: -4.69037102835574,
+        pricePercentChange200d: 4.7347558395209,
+        pricePercentChange1y: -1.29971018156079,
+      },
+      'tron:3448148188/slip44:195': null,
+      'tron:2494104990/slip44:195': null,
+    });
+
+export const mockExchangeRatesV1 = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v1/exchange-rates`)
+    .withQuery({
+      baseCurrency: 'usd',
+    })
+    .thenJson(200, exchangeRatesV1);
+
+export const mockHistoricalPrices1d = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v3/historical-prices/tron:728126428/slip44:195`)
+    .withQuery({
+      timePeriod: '1d',
+      vsCurrency: 'usd',
+    })
+    .thenJson(200, historicalPrices1d);
+
+export const mockHistoricalPrices7d = (mockServer: Mockttp) =>
+  mockServer
+    .forGet(`${PRICE_API_URL}/v3/historical-prices/tron:728126428/slip44:195`)
+    .withQuery({
+      timePeriod: '7d',
+      vsCurrency: 'usd',
+    })
+    .thenJson(200, historicalPrices7d);
