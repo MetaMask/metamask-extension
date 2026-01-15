@@ -32,26 +32,38 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
+    // Check if already aborted (for test scenarios or external abort)
     if (refs.abortControllerRef.current?.signal.aborted) {
       return;
     }
 
     checkHardwareWalletPermission(walletType)
       .then((permissionState) => {
-        if (!refs.abortControllerRef.current?.signal.aborted) {
+        // Only update state if this walletType is still current and not aborted
+        if (
+          state.walletType === walletType &&
+          !refs.abortControllerRef.current?.signal.aborted
+        ) {
           setHardwareConnectionPermissionState(permissionState);
         }
       })
       .catch(() => {
-        setHardwareConnectionPermissionState(
-          HardwareConnectionPermissionState.Unknown,
-        );
+        // Only update state if this walletType is still current and not aborted
+        if (
+          state.walletType === walletType &&
+          !refs.abortControllerRef.current?.signal.aborted
+        ) {
+          setHardwareConnectionPermissionState(
+            HardwareConnectionPermissionState.Unknown,
+          );
+        }
       });
   }, [
     isHardwareWalletAccount,
     walletType,
-    refs.abortControllerRef,
+    state.walletType,
     setHardwareConnectionPermissionState,
+    refs.abortControllerRef,
   ]);
 
   const checkHardwareWalletPermissionAction = useCallback(

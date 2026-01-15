@@ -120,6 +120,20 @@ describe('useHardwareWalletPermissions', () => {
 
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
+
+    it('aborts when AbortController is aborted during error handling', async () => {
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockRejectedValue(new Error('Permission check failed'));
+
+      mockRefs.abortControllerRef.current.abort();
+
+      setupHook();
+
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
   });
 
   describe('checkHardwareWalletPermissionAction', () => {
