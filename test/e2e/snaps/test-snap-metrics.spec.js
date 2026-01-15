@@ -1,5 +1,8 @@
 const { strict: assert } = require('assert');
-const { withFixtures, unlockWallet, getEventPayloads } = require('../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../page-objects/flows/login.flow');
+const { withFixtures, getEventPayloads } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   MOCK_META_METRICS_ID,
@@ -203,7 +206,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -321,7 +324,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -414,7 +417,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -503,7 +506,7 @@ describe('Test Snap Metrics', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.openNewPage(DAPP_URL);
@@ -638,7 +641,7 @@ describe('Test Snap Metrics', function () {
         testSpecificMock: mockSegment,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);
@@ -805,7 +808,7 @@ describe('Test Snap Metrics', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);
@@ -960,7 +963,7 @@ describe('Test Snap Metrics', function () {
         ],
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // open a new tab and navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);
