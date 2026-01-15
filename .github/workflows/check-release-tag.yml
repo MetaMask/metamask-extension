@@ -23,43 +23,78 @@ jobs:
       pull-requests: read
       statuses: write
     steps:
-      - name: Check 'release/tagged' status on PR HEAD
+      - name: Checkout PR HEAD
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          fetch-depth: 0
+
+      - name: Verify release tags on PR HEAD
         id: check-tag
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PR_HEAD_BRANCH: ${{ github.head_ref }}
         run: |
-          STATUSES=$(gh api \
-            -H "Accept: application/vnd.github+json" \
-            "/repos/${{ github.repository }}/commits/${HEAD_SHA}/statuses")
+          tagged="true"
 
-          if echo "${STATUSES}" | jq -e '.[] | select(.context == "release/tagged" and .state == "success")' > /dev/null 2>&1; then
+          if [[ "${PR_HEAD_BRANCH}" =~ ^release/([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            semver="${BASH_REMATCH[1]}"
+          else
+            echo "::error::PR head branch must be release/X.Y.Z"
+            tagged="false"
+          fi
+
+          check_tag_matches_head() {
+            local tag_name="${1}"
+            local expected_sha="${2}"
+            local existing_sha=""
+
+            existing_sha=$(git rev-parse "${tag_name}^{}" 2>/dev/null || true)
+            if [[ -z "${existing_sha}" ]]; then
+              echo "::error::Missing tag ${tag_name} on repository"
+              tagged="false"
+              return
+            fi
+
+            if [[ "${existing_sha}" != "${expected_sha}" ]]; then
+              echo "::error::Tag ${tag_name} points to ${existing_sha:0:7}, expected ${expected_sha:0:7}"
+              tagged="false"
+            fi
+          }
+
+          if [[ "${tagged}" == "true" ]]; then
+            main_tag="v${semver}"
+            flask_tag="v${semver}-flask.0"
+
+            check_tag_matches_head "${main_tag}" "${HEAD_SHA}"
+            check_tag_matches_head "${flask_tag}" "${HEAD_SHA}"
+          fi
+
+          if [[ "${tagged}" == "true" ]]; then
             echo "Release is properly tagged at PR HEAD"
             echo "tagged=true" >> "${GITHUB_OUTPUT}"
             echo "tag_sha=${HEAD_SHA}" >> "${GITHUB_OUTPUT}"
 
-            # Set success status on PR HEAD
             gh api \
               --method POST \
               -H "Accept: application/vnd.github.v3+json" \
               "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
               -f state='success' \
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-              -f description='Release is properly tagged' \
+              -f description='Release tags present at PR HEAD' \
               -f context='release/tag-check' \
               || echo "::notice::Failed to update status (non-fatal)"
           else
-            echo "::warning::No successful 'release/tagged' status found on PR HEAD"
             echo "tagged=false" >> "${GITHUB_OUTPUT}"
 
-            # Set pending status on PR HEAD
             gh api \
               --method POST \
               -H "Accept: application/vnd.github.v3+json" \
               "/repos/${{ github.repository }}/statuses/${HEAD_SHA}" \
               -f state='pending' \
               -f target_url='${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}' \
-              -f description='Tag missing on PR HEAD - run Tag Release Branch workflow' \
+              -f description='Release tags missing on PR HEAD - run Publish Release from Release HEAD' \
               -f context='release/tag-check' \
               || echo "::notice::Failed to update status (non-fatal)"
           fi
@@ -71,12 +106,12 @@ jobs:
           if [[ "${{ steps.check-tag.outputs.tagged }}" == "true" ]]; then
             {
               echo "### Release Tag Check Passed"
-              echo "'release/tagged' status found on PR HEAD. Ready for merge."
+              echo "Release tags present on PR HEAD. Ready for merge."
             } >> "${GITHUB_STEP_SUMMARY}"
           else
             {
               echo "### Release Tag Check - Action Required"
-              echo "Run the 'Tag Release Branch' workflow with inputs:"
+              echo "Run the 'Publish Release from Release HEAD' workflow for:"
               echo "- release-branch: ${PR_HEAD_BRANCH}"
             } >> "${GITHUB_STEP_SUMMARY}"
           fi
@@ -84,5 +119,5 @@ jobs:
       - name: Fail if not tagged
         if: steps.check-tag.outputs.tagged != 'true'
         run: |
-          echo "::error::Release tag missing at PR HEAD. Run Tag Release Branch and re-run checks."
+          echo "::error::Release tags missing at PR HEAD. Run Publish Release from Release HEAD and re-run checks."
           exit 1

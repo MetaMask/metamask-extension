@@ -10,7 +10,6 @@
 #   GITHUB_REPOSITORY - Repository in format owner/repo
 #   RELEASE_TAG - Tag name (e.g., v12.5.0)
 #   RELEASE_SHA - Target SHA for the tag
-#   DRY_RUN - If "true", skip actual tag creation
 #
 # Optional environment variables:
 #   FLASK_TAG - Flask tag name (e.g., v12.5.0-flask.0), created if provided
@@ -42,13 +41,8 @@ fi
 echo "=== Release Tag Creation ==="
 echo "Tag: ${RELEASE_TAG}"
 echo "SHA: ${RELEASE_SHA}"
-echo "Dry run: ${DRY_RUN:-false}"
-
-# Configure git (skip in dry-run to avoid mutating .git/config)
-if [[ "${DRY_RUN}" != "true" ]]; then
-    git config user.email "metamaskbot@users.noreply.github.com"
-    git config user.name "MetaMask Bot"
-fi
+git config user.email "metamaskbot@users.noreply.github.com"
+git config user.name "MetaMask Bot"
 
 # Track whether a new tag was created in this run.
 tag_created="false"
@@ -81,25 +75,20 @@ create_tag_if_needed() {
     fi
 
     # Tag doesn't exist, create it
-    if [[ "${DRY_RUN}" == "true" ]]; then
-        echo "🔸 DRY RUN: Would create tag ${tag_name} at ${target_sha:0:7}"
-        echo "   Message: ${tag_message}"
-    else
-        echo "Creating tag ${tag_name} at ${target_sha:0:7}..."
-        if ! git tag -a "${tag_name}" "${target_sha}" -m "${tag_message}"; then
-            echo "::error::Failed to create tag ${tag_name} at ${target_sha:0:7}"
-            return 1
-        fi
-
-        echo "Pushing tag to origin..."
-        if ! git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag_name}"; then
-            echo "::error::Failed to push tag ${tag_name} to origin"
-            return 1
-        fi
-
-        echo "✅ Tag ${tag_name} created and pushed successfully"
-        tag_created="true"
+    echo "Creating tag ${tag_name} at ${target_sha:0:7}..."
+    if ! git tag -a "${tag_name}" "${target_sha}" -m "${tag_message}"; then
+        echo "::error::Failed to create tag ${tag_name} at ${target_sha:0:7}"
+        return 1
     fi
+
+    echo "Pushing tag to origin..."
+    if ! git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag_name}"; then
+        echo "::error::Failed to push tag ${tag_name} to origin"
+        return 1
+    fi
+
+    echo "✅ Tag ${tag_name} created and pushed successfully"
+    tag_created="true"
 }
 
 # Create main release tag

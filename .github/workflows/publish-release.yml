@@ -1,7 +1,12 @@
 name: Publish release
 
 on:
-  workflow_call:
+  workflow_dispatch:
+    inputs:
+      builds-from-run:
+        description: 'Run ID that produced the build artifacts (required)'
+        required: true
+        type: string
 
 jobs:
   publish-release:
@@ -61,6 +66,23 @@ jobs:
       TZ: 'UTC' # Ensures the bundles are consistent across machine time zones
       VAPID_KEY: ${{ secrets.VAPID_KEY }}
     steps:
+      - name: Deprecation warning
+        run: |
+          echo "::warning::Stable-trigger publish is deprecated. Use 'Publish Release from Release HEAD'."
+          {
+            echo "## Deprecation Notice"
+            echo ""
+            echo "Prefer **Publish Release from Release HEAD** for production releases."
+          } >> "${GITHUB_STEP_SUMMARY}"
+      - name: Validate build run input
+        env:
+          BUILDS_FROM_RUN: ${{ inputs.builds-from-run }}
+        run: |
+          if [[ -z "${BUILDS_FROM_RUN}" ]]; then
+            echo "::error::Missing builds-from-run input. Provide the run ID that produced release artifacts."
+            exit 1
+          fi
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -74,6 +96,7 @@ jobs:
         with:
           path: build-dist-browserify
           name: build-dist-browserify
+          run-id: ${{ inputs.builds-from-run }}
 
       - name: Publish main release to Sentry
         run: yarn sentry:publish --dist-directory build-dist-browserify/dist
@@ -83,6 +106,7 @@ jobs:
         with:
           path: build-dist-mv2-browserify
           name: build-dist-mv2-browserify
+          run-id: ${{ inputs.builds-from-run }}
 
       - name: Publish main MV2 release to Sentry
         run: yarn sentry:publish --dist mv2 --dist-directory build-dist-mv2-browserify/dist
@@ -92,6 +116,7 @@ jobs:
         with:
           path: build-flask-browserify
           name: build-flask-browserify
+          run-id: ${{ inputs.builds-from-run }}
 
       - name: Publish Flask release to Sentry
         run: yarn sentry:publish --build-type flask --dist-directory build-flask-browserify/dist
@@ -101,6 +126,7 @@ jobs:
         with:
           path: build-flask-mv2-browserify
           name: build-flask-mv2-browserify
+          run-id: ${{ inputs.builds-from-run }}
 
       - name: Publish Flask MV2 release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
