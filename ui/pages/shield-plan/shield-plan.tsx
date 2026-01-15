@@ -10,12 +10,8 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  AvatarBaseShape,
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
   BadgeWrapper,
+  Box,
   Button,
   ButtonIcon,
   ButtonIconSize,
@@ -37,11 +33,9 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import {
-  AvatarNetwork as DsAvatarNetwork,
-  AvatarNetworkSize as DsAvatarNetworkSize,
-  AvatarToken as DsAvatarToken,
-  Box,
-  BoxProps,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
 } from '../../components/component-library';
 import {
   Content,
@@ -53,14 +47,10 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderColor,
-  BorderRadius,
-  Display,
   FlexDirection,
   JustifyContent,
-  TextAlign,
-  TextVariant as DSTextVariant,
+  TextVariant as OldTextVariant,
 } from '../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -404,19 +394,13 @@ const ShieldPlan = () => {
     }
   };
 
-  const rowsStyleProps: BoxProps<'div'> = {
-    display: Display.Flex,
-    justifyContent: JustifyContent.spaceBetween,
-    alignItems: AlignItems.center,
-    backgroundColor: BackgroundColor.backgroundSection,
-    padding: 4,
-  };
+  const boxRowClassName = 'flex justify-between items-center p-4 bg-section';
 
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
         textProps={{
-          variant: DSTextVariant.headingSm,
+          variant: OldTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -446,154 +430,116 @@ const ShieldPlan = () => {
         subscriptionPricing && (
           <>
             <Content>
-              <Box
-                display={Display.Grid}
-                gap={2}
-                marginBottom={4}
-                paddingTop={2}
-                className="shield-plan-page__plans"
-              >
+              <Box className="shield-plan-page__plans grid gap-2 mb-4 pt-2">
                 {plans.map((plan) => (
                   <Box
-                    as="button"
+                    asChild
                     key={plan.id}
-                    {...rowsStyleProps}
-                    borderRadius={BorderRadius.LG}
-                    className={classnames('shield-plan-page__plan', {
-                      'shield-plan-page__plan--selected':
-                        plan.id === selectedPlan,
-                    })}
+                    className={classnames(
+                      boxRowClassName,
+                      'shield-plan-page__plan rounded-lg',
+                      {
+                        'shield-plan-page__plan--selected':
+                          plan.id === selectedPlan,
+                      },
+                    )}
                     data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                     onClick={() => setSelectedPlan(plan.id)}
                   >
-                    <div className="shield-plan-page__radio" />
-                    <Box
-                      textAlign={TextAlign.Left}
-                      className="shield-plan-page__radio-label"
-                    >
-                      <Text variant={TextVariant.BodySm}>{plan.label}</Text>
-                      <Text
-                        variant={TextVariant.HeadingMd}
-                        className="shield-plan-page__plan-price"
-                      >
-                        {plan.price}
-                      </Text>
-                    </Box>
-                    {plan.id === RECURRING_INTERVALS.year && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        justifyContent={JustifyContent.center}
-                        paddingInline={2}
-                        borderRadius={BorderRadius.SM}
-                        className="shield-plan-page__save-badge"
-                      >
+                    <button>
+                      <div className="shield-plan-page__radio" />
+                      <Box className="shield-plan-page__radio-label text-left">
+                        <Text variant={TextVariant.BodySm}>{plan.label}</Text>
                         <Text
-                          variant={TextVariant.BodyXs}
-                          fontWeight={FontWeight.Medium}
-                          color={TextColor.InfoInverse}
+                          variant={TextVariant.HeadingMd}
+                          className="shield-plan-page__plan-price"
                         >
-                          {t('shieldPlanSave')}
+                          {plan.price}
                         </Text>
                       </Box>
-                    )}
+                      {plan.id === RECURRING_INTERVALS.year && (
+                        <Box className="shield-plan-page__save-badge flex items-center justify-center px-2">
+                          <Text
+                            variant={TextVariant.BodyXs}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.InfoInverse}
+                          >
+                            {t('shieldPlanSave')}
+                          </Text>
+                        </Box>
+                      )}
+                    </button>
                   </Box>
                 ))}
               </Box>
               <Box className="shield-plan-page__group" marginBottom={4}>
                 <Box
-                  as="button"
-                  className="shield-plan-page__row"
-                  {...rowsStyleProps}
+                  asChild
+                  className={classnames(
+                    boxRowClassName,
+                    'shield-plan-page__row w-full',
+                  )}
                   onClick={() => setShowPaymentModal(true)}
-                  width={BlockSize.Full}
                 >
-                  <Text
-                    variant={TextVariant.BodyLg}
-                    fontWeight={FontWeight.Medium}
-                  >
-                    {t('shieldPlanPayWith')}
-                  </Text>
-
-                  <Box
-                    display={Display.Flex}
-                    gap={2}
-                    alignItems={AlignItems.center}
-                  >
-                    {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
-                    selectedToken ? (
-                      <Box className="flex items-center gap-2">
-                        <BadgeWrapper
-                          badge={
-                            <DsAvatarNetwork
-                              size={DsAvatarNetworkSize.Xs}
-                              name={
-                                NETWORK_TO_NAME_MAP[
-                                  selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                                ]
-                              }
-                              src={
-                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                  selectedToken.chainId
-                                ]
-                              }
-                              borderColor={BorderColor.borderMuted}
-                            />
-                          }
-                        >
-                          <DsAvatarToken
-                            name={selectedToken?.symbol || ''}
-                            src={selectedToken?.image || ''}
-                            borderColor={BorderColor.borderMuted}
-                          />
-                        </BadgeWrapper>
-                        <BadgeWrapper
-                          badge={
-                            <AvatarNetwork
-                              size={AvatarNetworkSize.Xs}
-                              shape={AvatarBaseShape.Circle}
-                              name={
-                                NETWORK_TO_NAME_MAP[
-                                  selectedToken?.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                                ]
-                              }
-                              src={
-                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                  selectedToken?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
-                                ]
-                              }
-                              hasBorder
-                            />
-                          }
-                        >
-                          <AvatarToken
-                            name={selectedToken?.symbol || ''}
-                            src={selectedToken?.image || ''}
-                            size={AvatarTokenSize.Md}
-                            hasBorder
-                          />
-                        </BadgeWrapper>
-                      </Box>
-                    ) : (
-                      <Icon size={IconSize.Xl} name={IconName.Card} />
-                    )}
+                  <button>
                     <Text
                       variant={TextVariant.BodyLg}
                       fontWeight={FontWeight.Medium}
                     >
-                      {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-                        ? selectedToken?.symbol || ''
-                        : t('shieldPlanCard')}
+                      {t('shieldPlanPayWith')}
                     </Text>
-                    <Icon size={IconSize.Md} name={IconName.ArrowDown} />
-                  </Box>
+
+                    <Box className="flex items-center gap-2">
+                      {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                      selectedToken ? (
+                        <Box className="flex items-center gap-2">
+                          <BadgeWrapper
+                            badge={
+                              <AvatarNetwork
+                                size={AvatarNetworkSize.Xs}
+                                name={
+                                  NETWORK_TO_NAME_MAP[
+                                    selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                                  ]
+                                }
+                                src={
+                                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                    selectedToken.chainId
+                                  ]
+                                }
+                                borderColor={BorderColor.borderMuted}
+                              />
+                            }
+                          >
+                            <AvatarToken
+                              name={selectedToken?.symbol || ''}
+                              src={selectedToken?.image || ''}
+                              borderColor={BorderColor.borderMuted}
+                            />
+                          </BadgeWrapper>
+                        </Box>
+                      ) : (
+                        <Icon size={IconSize.Xl} name={IconName.Card} />
+                      )}
+                      <Text
+                        variant={TextVariant.BodyLg}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
+                          ? selectedToken?.symbol || ''
+                          : t('shieldPlanCard')}
+                      </Text>
+                      <Icon size={IconSize.Md} name={IconName.ArrowDown} />
+                    </Box>
+                  </button>
                 </Box>
               </Box>
               <Box className="shield-plan-page__group">
                 <Box
-                  className="shield-plan-page__row"
-                  {...rowsStyleProps}
-                  display={Display.Block}
+                  className={classnames(
+                    boxRowClassName,
+                    'shield-plan-page__row block',
+                  )}
                 >
                   <Text
                     variant={TextVariant.BodyLg}
@@ -602,16 +548,11 @@ const ShieldPlan = () => {
                   >
                     {t('shieldPlanDetails')}
                   </Text>
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    gap={2}
-                  >
+                  <Box className="flex flex-col gap-2">
                     {planDetails.map((detail, index) => (
-                      <Box key={index} display={Display.Flex} gap={2}>
+                      <Box key={index} className="flex gap-2">
                         <Box
-                          display={Display.Flex}
-                          alignItems={AlignItems.center}
+                          className="flex items-center"
                           style={{ height: '1lh' }}
                         >
                           <Icon
