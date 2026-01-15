@@ -62,7 +62,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
         >
-          Transfer Window
+          Transfer window
         </p>
         <div
           class="flex flex-row gap-2 items-center justify-end"
@@ -165,7 +165,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
@@ -360,7 +360,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
@@ -535,7 +535,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
@@ -725,7 +725,7 @@ exports[`Permission List Item render ERC20 token permissions renders erc20 token
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
@@ -812,7 +812,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
         <p
           class="text-alternative text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default text-left"
         >
-          Transfer Window
+          Transfer window
         </p>
         <div
           class="flex flex-row gap-2 items-center justify-end"
@@ -915,7 +915,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
@@ -1105,7 +1105,7 @@ exports[`Permission List Item render NATIVE token permissions renders native tok
           <p
             class="text-primary-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
           >
-            Show Details
+            Show details
           </p>
           <button
             aria-label="expand"
