@@ -274,12 +274,15 @@ export function useTransactionDisplayData(transactionGroup) {
   if (signatureTypes.includes(type)) {
     title = t('signatureRequest');
   } else if (type === TransactionType.swap) {
-    title = t('swapTokenToToken', [
+    const sourceTokenSymbol =
       bridgeTokenDisplayData.sourceTokenSymbol ??
-        initialTransaction.sourceTokenSymbol,
+      initialTransaction.sourceTokenSymbol ??
+      t('token').toLowerCase();
+    const destinationTokenSymbol =
       bridgeTokenDisplayData.destinationTokenSymbol ??
-        initialTransaction.destinationTokenSymbol,
-    ]);
+      initialTransaction.destinationTokenSymbol ??
+      t('token').toLowerCase();
+    title = t('swapTokenToToken', [sourceTokenSymbol, destinationTokenSymbol]);
     const symbolFromTx =
       bridgeTokenDisplayData.sourceTokenSymbol ??
       initialTransaction.sourceTokenSymbol;
@@ -376,7 +379,9 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.simpleSend) {
     title = t('sent');
   } else if (type === TransactionType.bridgeApproval) {
-    title = t('bridgeApproval', [bridgeTokenDisplayData.sourceTokenSymbol]);
+    const tokenSymbol =
+      bridgeTokenDisplayData.sourceTokenSymbol ?? t('token').toLowerCase();
+    title = t('bridgeApproval', [tokenSymbol]);
     primarySuffix = bridgeTokenDisplayData.sourceTokenSymbol;
   } else if (type === TransactionType.bridge) {
     title = destChainName ? t('bridgedToChain', [destChainName]) : t('bridged');
