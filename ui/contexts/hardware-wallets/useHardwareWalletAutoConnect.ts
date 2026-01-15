@@ -52,18 +52,16 @@ export const useHardwareWalletAutoConnect = ({
       return undefined;
     }
 
-    const {
-      abortControllerRef,
-      adapterRef,
-      isConnectingRef,
-      deviceIdRef,
-      connectRef,
-    } = refs;
+    const { abortControllerRef, adapterRef, isConnectingRef, connectRef } =
+      refs;
 
     const isLedger = walletType === HardwareWalletType.Ledger;
     const isTrezor = walletType === HardwareWalletType.Trezor;
 
-    if ((isLedger && !isWebHidAvailable) || (isTrezor && !isWebUsbAvailable)) {
+    const isSupportedWalletType = isLedger || isTrezor;
+    const hasRequiredWebAPI = (isLedger && isWebHidAvailable) || (isTrezor && isWebUsbAvailable);
+
+    if (!isSupportedWalletType || !hasRequiredWebAPI) {
       return undefined;
     }
 
