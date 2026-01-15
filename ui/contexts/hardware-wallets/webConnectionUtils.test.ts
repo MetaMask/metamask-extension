@@ -291,7 +291,7 @@ describe('webConnectionUtils', () => {
         createMockHIDDevice(),
       ]);
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Granted);
       expect(window.navigator.hid.getDevices).toHaveBeenCalled();
@@ -300,7 +300,7 @@ describe('webConnectionUtils', () => {
     it('returns Prompt when no paired Ledger devices exist', async () => {
       (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([]);
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
       expect(window.navigator.hid.getDevices).toHaveBeenCalled();
@@ -311,7 +311,7 @@ describe('webConnectionUtils', () => {
         createMockHIDDevice(0x1234) as HIDDevice, // Wrong vendor ID
       ]);
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
       expect(
@@ -324,7 +324,7 @@ describe('webConnectionUtils', () => {
       const originalHid = window.navigator.hid;
       delete (window.navigator as { hid?: HID }).hid;
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Denied);
 
@@ -341,7 +341,7 @@ describe('webConnectionUtils', () => {
         error,
       );
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Unknown);
     });
@@ -353,7 +353,7 @@ describe('webConnectionUtils', () => {
         createMockUSBDevice(),
       ]);
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Granted);
       expect(
@@ -366,7 +366,7 @@ describe('webConnectionUtils', () => {
         [],
       );
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
       expect(
@@ -379,7 +379,7 @@ describe('webConnectionUtils', () => {
         createMockUSBDevice(0x1234), // Wrong vendor ID
       ]);
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
       expect(
@@ -392,7 +392,7 @@ describe('webConnectionUtils', () => {
       const originalUsb = window.navigator.usb;
       delete (window.navigator as { usb?: USB }).usb;
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Denied);
 
@@ -409,7 +409,7 @@ describe('webConnectionUtils', () => {
         error,
       );
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Unknown);
     });
@@ -458,13 +458,13 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockResolvedValue([mockDevice]);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(true);
       expect(
         (window.navigator.hid as jest.Mocked<HID>).requestDevice,
       ).toHaveBeenCalledWith({
-        filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
+        filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
       });
     });
 
@@ -474,13 +474,13 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockResolvedValue([mockDevice]);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
       expect(
         (window.navigator.hid as jest.Mocked<HID>).requestDevice,
       ).toHaveBeenCalledWith({
-        filters: [{ vendorId: LEDGER_USB_VENDOR_ID as unknown as number }],
+        filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
       });
     });
 
@@ -490,7 +490,7 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
     });
@@ -501,7 +501,7 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
     });
@@ -512,7 +512,7 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
     });
@@ -524,7 +524,7 @@ describe('webConnectionUtils', () => {
         configurable: true,
       });
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
     });
@@ -537,7 +537,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockResolvedValue(mockDevice);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(true);
       expect(
@@ -553,7 +553,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockResolvedValue(mockDevice);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
       expect(
@@ -569,7 +569,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
     });
@@ -580,7 +580,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
     });
@@ -591,7 +591,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
     });
@@ -603,7 +603,7 @@ describe('webConnectionUtils', () => {
         configurable: true,
       });
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
     });
@@ -1315,7 +1315,7 @@ describe('webConnectionUtils', () => {
         window.navigator.hid as jest.Mocked<HID>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebHidPermission();
+      const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
     });
@@ -1334,7 +1334,7 @@ describe('webConnectionUtils', () => {
           window.navigator.hid as jest.Mocked<HID>
         ).requestDevice.mockRejectedValue(error);
 
-        const result = await requestWebHidPermission();
+        const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
         expect(result).toBe(false);
       }
@@ -1348,7 +1348,7 @@ describe('webConnectionUtils', () => {
         window.navigator.usb as jest.Mocked<USB>
       ).requestDevice.mockRejectedValue(error);
 
-      const result = await requestWebUsbPermission();
+      const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
     });
@@ -1367,7 +1367,7 @@ describe('webConnectionUtils', () => {
           window.navigator.usb as jest.Mocked<USB>
         ).requestDevice.mockRejectedValue(error);
 
-        const result = await requestWebUsbPermission();
+        const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
         expect(result).toBe(false);
       }
@@ -1432,7 +1432,7 @@ describe('webConnectionUtils', () => {
         nonLedgerDevices,
       );
 
-      const result = await checkWebHidPermission();
+      const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
     });
@@ -1446,7 +1446,7 @@ describe('webConnectionUtils', () => {
         nonTrezorDevices,
       );
 
-      const result = await checkWebUsbPermission();
+      const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
     });
