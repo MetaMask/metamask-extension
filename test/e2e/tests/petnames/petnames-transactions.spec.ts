@@ -1,8 +1,9 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
