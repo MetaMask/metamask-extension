@@ -2,7 +2,6 @@ import React from 'react';
 import { Hex } from '@metamask/utils';
 import {
   StoredGatorPermissionSanitized,
-  Signer,
   NativeTokenStreamPermission,
   Erc20TokenStreamPermission,
   NativeTokenPeriodicPermission,
@@ -110,13 +109,10 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
-      const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenStreamPermission
-      > = {
+      const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<NativeTokenStreamPermission> = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockAccountAddress,
+          from: mockAccountAddress,
           permission: {
             type: 'native-token-stream',
             isAdjustmentAllowed: false,
@@ -130,20 +126,15 @@ describe('Permission List Item', () => {
             },
           },
           context: '0x00000000',
-          signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
         },
         siteOrigin: 'http://localhost:8000',
       };
 
-      const mockNativeTokenPeriodicPermission: StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenPeriodicPermission
-      > = {
+      const mockNativeTokenPeriodicPermission: StoredGatorPermissionSanitized<NativeTokenPeriodicPermission> = {
         permissionResponse: {
           chainId: '0x1',
-          address: mockAccountAddress,
+          from: mockAccountAddress,
           permission: {
             type: 'native-token-periodic',
             isAdjustmentAllowed: false,
@@ -156,9 +147,7 @@ describe('Permission List Item', () => {
             },
           },
           context: '0x00000000',
-          signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -357,13 +346,10 @@ describe('Permission List Item', () => {
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
 
-      const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<
-        Signer,
-        Erc20TokenPeriodicPermission
-      > = {
+      const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<Erc20TokenPeriodicPermission> = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockAccountAddress,
+          from: mockAccountAddress,
           permission: {
             type: 'erc20-token-periodic',
             isAdjustmentAllowed: false,
@@ -377,20 +363,15 @@ describe('Permission List Item', () => {
             },
           },
           context: '0x00000000',
-          signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
         },
         siteOrigin: 'http://localhost:8000',
       };
 
-      const mockErc20TokenStreamPermission: StoredGatorPermissionSanitized<
-        Signer,
-        Erc20TokenStreamPermission
-      > = {
+      const mockErc20TokenStreamPermission: StoredGatorPermissionSanitized<Erc20TokenStreamPermission> = {
         permissionResponse: {
           chainId: '0x5',
-          address: mockAccountAddress,
+          from: mockAccountAddress,
           permission: {
             type: 'erc20-token-stream',
             isAdjustmentAllowed: false,
@@ -405,9 +386,7 @@ describe('Permission List Item', () => {
             },
           },
           context: '0x00000000',
-          signerMeta: {
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
         },
         siteOrigin: 'http://localhost:8000',
       };
@@ -522,13 +501,10 @@ describe('Permission List Item', () => {
         const unknownTokenAddress: Hex =
           '0x0000000000000000000000000000000000000001';
 
-        const mockUnknownTokenStreamPermission: StoredGatorPermissionSanitized<
-          Signer,
-          Erc20TokenStreamPermission
-        > = {
+        const mockUnknownTokenStreamPermission: StoredGatorPermissionSanitized<Erc20TokenStreamPermission> = {
           permissionResponse: {
             chainId: '0x5',
-            address: mockAccountAddress,
+            from: mockAccountAddress,
             permission: {
               type: 'erc20-token-stream',
               isAdjustmentAllowed: false,
@@ -542,9 +518,7 @@ describe('Permission List Item', () => {
               },
             },
             context: '0x00000000',
-            signerMeta: {
               delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -596,40 +570,29 @@ describe('Permission List Item', () => {
       });
 
       it('renders erc20 token revocation permission correctly without frequency row', () => {
-        const mockErc20TokenRevocationPermission: StoredGatorPermissionSanitized<
-          Signer,
-          {
-            type: 'erc20-token-revocation';
-            isAdjustmentAllowed: boolean;
-            data: Record<string, unknown>;
-            rules?: {
-              type: string;
-              isAdjustmentAllowed: boolean;
-              data: { timestamp: number };
-            }[];
-          }
-        > = {
+        const mockErc20TokenRevocationPermission: StoredGatorPermissionSanitized<{
+          type: 'erc20-token-revocation';
+          isAdjustmentAllowed: boolean;
+          data: Record<string, unknown>;
+        }> = {
           permissionResponse: {
             chainId: '0x1',
-            address: mockAccountAddress,
+            from: mockAccountAddress,
             permission: {
               type: 'erc20-token-revocation',
               isAdjustmentAllowed: false,
               data: {
                 justification: 'Revoke all token approvals',
               },
-              rules: [
-                {
-                  type: 'expiry',
-                  isAdjustmentAllowed: false,
-                  data: { timestamp: 1736358176 }, // January 8, 2025
-                },
-              ],
             },
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: 1736358176 }, // January 8, 2025
+              },
+            ],
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         };

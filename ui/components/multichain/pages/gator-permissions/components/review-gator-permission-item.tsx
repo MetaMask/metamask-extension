@@ -24,7 +24,6 @@ import {
   NativeTokenPeriodicPermission,
   NativeTokenStreamPermission,
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { getImageForChainId } from '../../../../../selectors/multichain';
@@ -119,10 +118,7 @@ type ReviewGatorPermissionItemProps = {
   /**
    * The gator permission to display
    */
-  gatorPermission: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >;
+  gatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>;
 
   /**
    * The function to call when the revoke is clicked
@@ -170,9 +166,11 @@ export const ReviewGatorPermissionItem = ({
   const {
     permission: { type: permissionType, data },
     context: permissionContext,
-    address: permissionAccount = '0x',
   } = permissionResponse;
   const { justification, tokenAddress } = data;
+
+  // `from` is the delegator address (the account granting the permission)
+  const permissionAccount = permissionResponse.from || '0x';
 
   const [isExpanded, setIsExpanded] = useState(false);
   const pendingRevocations = useSelector(getPendingRevocations);
@@ -211,7 +209,7 @@ export const ReviewGatorPermissionItem = ({
    * Returns the expiration date from the rules
    */
   const getExpirationDate = useCallback(
-    (rules: GatorPermissionRule[]): string => {
+    (rules: GatorPermissionRule[] | undefined | null): string => {
       if (!rules?.length) {
         return t('gatorPermissionNoExpiration');
       }
@@ -235,6 +233,7 @@ export const ReviewGatorPermissionItem = ({
         permission.data.amountPerSecond,
         'weekly',
       );
+
       return {
         amountLabel: {
           translationKey: 'gatorPermissionsStreamingAmountLabel',
@@ -273,11 +272,10 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
             value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+              permissionResponse.rules as GatorPermissionRule[] | undefined,
             ),
             testId: 'review-gator-permission-expiration-date',
           },
@@ -292,7 +290,7 @@ export const ReviewGatorPermissionItem = ({
         },
       };
     },
-    [tokenMetadata, t, getExpirationDate],
+    [tokenMetadata, t, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -331,18 +329,17 @@ export const ReviewGatorPermissionItem = ({
             testId: 'review-gator-permission-start-date',
           },
 
-          // TODO: Need to expose rules on StoredGatorPermissionSanitized in the gator-permissions-controller so we can have stronger typing
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
             value: getExpirationDate(
-              (permission as unknown as { rules: GatorPermissionRule[] }).rules,
+              permissionResponse.rules as GatorPermissionRule[] | undefined,
             ),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
     },
-    [tokenMetadata, getExpirationDate],
+    [tokenMetadata, getExpirationDate, permissionResponse.rules],
   );
 
   /**
@@ -367,17 +364,13 @@ export const ReviewGatorPermissionItem = ({
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
             value: getExpirationDate(
-              (
-                permissionResponse.permission as unknown as {
-                  rules: GatorPermissionRule[];
-                }
-              ).rules,
+              permissionResponse.rules as GatorPermissionRule[] | undefined,
             ),
             testId: 'review-gator-permission-expiration-date',
           },
         },
       };
-    }, [t, getExpirationDate, permissionResponse.permission]);
+    }, [t, getExpirationDate, permissionResponse.rules]);
 
   /**
    * Returns the permission details
