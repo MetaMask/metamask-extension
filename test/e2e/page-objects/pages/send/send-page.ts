@@ -3,14 +3,14 @@ import { Driver } from '../../../webdriver/driver';
 class SendPage {
   private readonly driver: Driver;
 
-  private readonly amountInput = 'input[placeholder="0"]';
+  private readonly amountInput = '[data-testid="send-amount-input"]';
 
   private readonly continueButton = {
     text: 'Continue',
     tag: 'button',
   };
 
-  private readonly hexDataInput = '[data-testid="send-amount-input"]';
+  private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
   private readonly inputRecipient =
     'input[placeholder="Enter or paste an address or name"]';
