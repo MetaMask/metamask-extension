@@ -314,6 +314,14 @@ export default function OnboardingFlow() {
         ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
         borderColor={BorderColor.borderMuted}
+        style={{
+          backgroundColor:
+            [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(
+              pathname,
+            ) || isPopup
+              ? 'transparent'
+              : 'var(--color-background-muted)',
+        }}
       >
         <Routes>
           <Route

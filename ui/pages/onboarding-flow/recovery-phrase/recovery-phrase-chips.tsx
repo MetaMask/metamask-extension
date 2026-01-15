@@ -190,11 +190,15 @@ export default function RecoveryPhraseChips({
                 className="recovery-phrase__text"
                 display={Display.Flex}
                 alignItems={AlignItems.center}
-                backgroundColor={BackgroundColor.backgroundDefault}
+                backgroundColor={
+                  isQuizWord
+                    ? BackgroundColor.backgroundDefault
+                    : BackgroundColor.backgroundMuted
+                }
                 borderColor={
                   isTargetIndex
                     ? BorderColor.primaryDefault
-                    : BorderColor.borderDefault
+                    : BorderColor.borderMuted
                 }
                 borderWidth={isTargetIndex ? 2 : 1}
                 borderRadius={BorderRadius.LG}
@@ -244,6 +248,7 @@ export default function RecoveryPhraseChips({
                 type={TextFieldType.Password}
                 disabled
                 readOnly
+                backgroundColor={BackgroundColor.backgroundMuted}
               />
             );
           })}

@@ -7,10 +7,16 @@
 
   &__chips {
     grid-template-columns: 1fr 1fr 1fr;
-    gap: 4px;
+    column-gap: 8px;
+    row-gap: 4px;
+    padding-top: 8px;
+    padding-bottom: 8px;
 
     @include design-system.screen-sm-min {
-      gap: 8px;
+      column-gap: 8px;
+      row-gap: 8px;
+      padding-top: 16px;
+      padding-bottom: 16px;
     }
 
     &--hidden {
@@ -72,11 +78,6 @@
   &__secret {
     position: relative;
     min-height: 216px;
-    padding: 8px;
-
-    @include design-system.screen-sm-min {
-      padding: 16px;
-    }
   }
 
   &__secret-blocker-container {
