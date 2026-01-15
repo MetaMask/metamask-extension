@@ -121,6 +121,7 @@ class SendPage {
 
   async fillAmount(amount: string): Promise<void> {
     console.log(`Filling amount with ${amount}`);
+    await this.driver.waitForSelector(this.amountInput);
     await this.driver.pasteIntoField(this.amountInput, amount);
   }
 
