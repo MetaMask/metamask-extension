@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1301,9 +1304,6 @@
   },
   "closeExtension": {
     "message": "Close extension"
-  },
-  "backToHome": {
-    "message": "Back to home"
   },
   "closeSlide": {
     "message": "Close $1",
