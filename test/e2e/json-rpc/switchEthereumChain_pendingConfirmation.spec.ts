@@ -1,9 +1,10 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import NetworkSwitchAlertModal from '../page-objects/pages/dialog/network-switch-alert-modal';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/redesign/switch-network-confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
+import SwitchNetworkConfirmation from '../page-objects/pages/confirmations/switch-network-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
