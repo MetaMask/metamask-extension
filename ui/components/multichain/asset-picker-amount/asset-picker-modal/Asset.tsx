@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, memo } from 'react';
 import { useSelector } from 'react-redux';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import { useTokenFiatAmount } from '../../../../hooks/useTokenFiatAmount';
@@ -23,7 +23,7 @@ type AssetProps = AssetWithDisplayData<NativeAsset | ERC20Asset> & {
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function Asset({
+function Asset({
   address,
   image,
   symbol,
@@ -53,29 +53,44 @@ export default function Asset({
     {},
     true,
   );
-  const formattedAmount = decimalTokenAmount
-    ? `${formatTokenQuantity(Number(decimalTokenAmount), symbol)}`
-    : undefined;
-  const primaryAmountToUse = tokenFiatAmount
-    ? formatCurrency(tokenFiatAmount, currency)
-    : formattedFiat;
+
+  const formattedAmount = useMemo(
+    () =>
+      decimalTokenAmount
+        ? `${formatTokenQuantity(Number(decimalTokenAmount), symbol)}`
+        : undefined,
+    [decimalTokenAmount, formatTokenQuantity, symbol],
+  );
+
+  const primaryAmountToUse = useMemo(
+    () =>
+      tokenFiatAmount
+        ? formatCurrency(tokenFiatAmount, currency)
+        : formattedFiat,
+    [tokenFiatAmount, formatCurrency, currency, formattedFiat],
+  );
+
+  const tokenImage = useMemo(
+    () =>
+      image ??
+      cachedTokens?.[chainId]?.data?.[((address as string) ?? '').toLowerCase()]
+        ?.iconUrl,
+    [image, cachedTokens, chainId, address],
+  );
+
+  const tokenChainImage = useMemo(() => getImageForChainId(chainId), [chainId]);
 
   return (
     <TokenListItem
       key={`${chainId}-${symbol}-${address}`}
       chainId={chainId}
       tokenSymbol={symbol}
-      tokenImage={
-        image ??
-        cachedTokens?.[chainId]?.data?.[
-          ((address as string) ?? '').toLowerCase()
-        ]?.iconUrl
-      }
+      tokenImage={tokenImage}
       secondary={isTokenChainIdInWallet ? formattedAmount : undefined}
       primary={isTokenChainIdInWallet ? primaryAmountToUse : undefined}
       title={name ?? symbol}
       tooltipText={tooltipText}
-      tokenChainImage={getImageForChainId(chainId)}
+      tokenChainImage={tokenChainImage}
       isDestinationToken={isDestinationToken}
       address={address}
       accountType={accountType}
@@ -83,3 +98,5 @@ export default function Asset({
     />
   );
 }
+
+export default memo(Asset);

@@ -90,6 +90,289 @@ import AssetChart from './chart/asset-chart';
 import TokenButtons from './token-buttons';
 import { TronDailyResources } from './tron-daily-resources';
 
+/**
+ * Props for TokenBalanceDisplay component
+ */
+type TokenBalanceDisplayProps = {
+  asset: Asset;
+  tokenWithFiatAmount: TokenWithFiatAmount;
+  safeChains: ReturnType<typeof useSafeChains>['safeChains'];
+  symbol: string;
+  address: string;
+};
+
+/**
+ * Renders the token balance cell. Extracted to share between
+ * TokenBalanceSection and the BIP44-enabled path.
+ * Note: AssetMarketDetails is rendered separately to preserve DOM order.
+ */
+// Note: React Compiler handles memoization for same-file components
+const TokenBalanceDisplay = ({
+  asset,
+  tokenWithFiatAmount,
+  safeChains,
+  symbol,
+  address,
+}: TokenBalanceDisplayProps) => {
+  const { type } = asset;
+
+  return (
+    <>
+      {[AssetType.token, AssetType.native].includes(type) && (
+        <TokenCell
+          key={`${symbol}-${address}`}
+          token={tokenWithFiatAmount}
+          safeChains={safeChains}
+        />
+      )}
+    </>
+  );
+};
+
+/**
+ * Props for the TokenBalanceSection component
+ */
+type TokenBalanceSectionProps = {
+  asset: Asset;
+  chainId: Hex;
+  address: string;
+  selectedAccount: InternalAccount;
+  nativeBalances: Record<Hex, Hex>;
+  isNative: boolean;
+  decimals: number;
+  currentPrice: number | null | undefined;
+  showFiat: boolean;
+  symbol: string;
+  name: string | undefined;
+  image: string | undefined;
+  aggregators: string[] | undefined;
+  accountType: string | undefined;
+  safeChains: ReturnType<typeof useSafeChains>['safeChains'];
+};
+
+/**
+ * Isolated component that subscribes to useTokenBalances.
+ * This prevents the parent AssetPage from re-rendering when token balances update.
+ */
+// Note: React Compiler handles memoization for same-file components
+const TokenBalanceSection = ({
+  asset,
+  chainId,
+  address,
+  selectedAccount,
+  nativeBalances,
+  isNative,
+  decimals,
+  currentPrice,
+  showFiat,
+  symbol,
+  name,
+  image,
+  aggregators,
+  accountType,
+  safeChains,
+}: TokenBalanceSectionProps) => {
+  // This hook subscription is now isolated to this component
+  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address as Hex];
+
+  const balance = calculateTokenBalance({
+    isNative,
+    chainId,
+    address: address as Hex,
+    decimals,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+  });
+
+  const tokenFiatAmount = currentPrice
+    ? currentPrice * parseFloat(String(balance))
+    : 0;
+
+  const tokenWithFiatAmount: TokenWithFiatAmount = {
+    address: address as Hex,
+    chainId,
+    symbol,
+    image: image ?? '',
+    title: name ?? symbol,
+    tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+    string: balance ? balance.toString() : '',
+    decimals,
+    aggregators:
+      asset.type === AssetType.token && aggregators ? aggregators : [],
+    isNative: asset.type === AssetType.native,
+    balance,
+    secondary: balance ? Number(balance) : 0,
+    accountType: accountType as TokenWithFiatAmount['accountType'],
+  };
+
+  return (
+    <TokenBalanceDisplay
+      asset={asset}
+      tokenWithFiatAmount={tokenWithFiatAmount}
+      safeChains={safeChains}
+      symbol={symbol}
+      address={address}
+    />
+  );
+};
+
+/**
+ * Props for AssetButtonsSection component
+ */
+type AssetButtonsSectionProps = {
+  asset: Asset;
+  chainId: Hex;
+  address: string;
+  selectedAccount: InternalAccount;
+  nativeBalances: Record<Hex, Hex>;
+  isNative: boolean;
+  decimals: number;
+  currentPrice: number | null | undefined;
+  isBuyableChain: boolean;
+  isSigningEnabled: boolean;
+  isSwapsChain: boolean;
+  isBridgeChain: boolean;
+};
+
+/**
+ * Isolated component for action buttons that subscribes to useTokenBalances.
+ * This prevents the parent AssetPage from re-rendering when token balances update.
+ */
+// Note: React Compiler handles memoization for same-file components
+const AssetButtonsSection = ({
+  asset,
+  chainId,
+  address,
+  selectedAccount,
+  nativeBalances,
+  isNative,
+  decimals,
+  currentPrice,
+  isBuyableChain,
+  isSigningEnabled,
+  isSwapsChain,
+  isBridgeChain,
+}: AssetButtonsSectionProps) => {
+  // This hook subscription is now isolated to this component
+  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address as Hex];
+
+  const tokenHexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+
+  const balance = calculateTokenBalance({
+    isNative,
+    chainId,
+    address: address as Hex,
+    decimals,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+  });
+
+  const tokenFiatAmount = currentPrice
+    ? currentPrice * parseFloat(String(balance))
+    : 0;
+
+  const updatedAsset = {
+    ...asset,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    },
+  };
+
+  return (
+    <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+      {isNativeAsset(updatedAsset) ? (
+        <CoinButtons
+          {...{
+            account: selectedAccount,
+            trackingLocation: 'asset-page',
+            isBuyableChain,
+            isSigningEnabled,
+            isSwapsChain,
+            isBridgeChain,
+            chainId,
+            disableSendForNonEvm: true,
+          }}
+        />
+      ) : (
+        <TokenButtons
+          token={updatedAsset}
+          account={selectedAccount}
+          disableSendForNonEvm
+        />
+      )}
+    </Box>
+  );
+};
+
+/**
+ * Props for AssetMarketDetailsSection component
+ */
+type AssetMarketDetailsSectionProps = {
+  asset: Asset;
+  chainId: Hex;
+  address: string;
+  selectedAccount: InternalAccount;
+  nativeBalances: Record<Hex, Hex>;
+  isNative: boolean;
+  decimals: number;
+  currentPrice: number | null | undefined;
+};
+
+// Isolated component for market details that subscribes to useTokenBalances.
+// This prevents the parent AssetPage from re-rendering when token balances update.
+const AssetMarketDetailsSection = ({
+  asset,
+  chainId,
+  address,
+  selectedAccount,
+  nativeBalances,
+  isNative,
+  decimals,
+  currentPrice,
+}: AssetMarketDetailsSectionProps) => {
+  // This hook subscription is now isolated to this component
+  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
+
+  const selectedAccountTokenBalancesAcrossChains =
+    tokenBalances[selectedAccount.address as Hex];
+
+  const tokenHexBalance =
+    selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
+
+  const balance = calculateTokenBalance({
+    isNative,
+    chainId,
+    address: address as Hex,
+    decimals,
+    nativeBalances,
+    selectedAccountTokenBalancesAcrossChains,
+  });
+
+  const tokenFiatAmount = currentPrice
+    ? currentPrice * parseFloat(String(balance))
+    : 0;
+
+  const updatedAsset = {
+    ...asset,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: String(balance),
+      fiat: String(tokenFiatAmount),
+    },
+  };
+
+  return <AssetMarketDetails asset={updatedAsset} address={address} />;
+};
+
 // TODO BIP44 Refactor: This page needs a significant refactor after BIP44 is enabled to remove confusing branching logic
 // A page representing a native or token asset
 const AssetPage = ({
@@ -149,84 +432,107 @@ const AssetPage = ({
     getSelectedAccountNativeTokenCachedBalanceByChainId,
   ) as Record<Hex, Hex>;
 
-  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
-
-  const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address as Hex];
+  // NOTE: useTokenBalances is now called in isolated child components (TokenBalanceSection, AssetButtonsSection)
+  // to prevent re-renders of the entire AssetPage when token balances poll/update.
 
   const multiChainAssets = useMultiChainAssets();
-  const mutichainTokenWithFiatAmount = multiChainAssets
-    .filter((item) => item.chainId === chainId && item.address !== undefined)
-    .find((item) => {
-      switch (type) {
-        case AssetType.native:
-          return item.isNative;
-        case AssetType.token:
-          return item.address === asset.address;
-        default:
-          return false;
-      }
-    }) ?? {
-    // TODO: remove the fallback case where the mutichainTokenWithFiatAmount is undefined
-    // Root cause: There is a race condition where when switching from a non-EVM network
-    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
-    // This is a workaround to avoid the error
-    // Look into the isEvm selector
-    // We might be switching network before account.
-    address: '',
-    chainId: '',
-    symbol: '',
-    title: '',
-    image: '',
-    tokenFiatAmount: 0,
-    string: '',
-    decimals: 0,
-    aggregators: [],
-    isNative: false,
-    balance: 0,
-    secondary: 0,
-  };
+  const mutichainTokenWithFiatAmount = useMemo(
+    () =>
+      multiChainAssets
+        .filter(
+          (item) => item.chainId === chainId && item.address !== undefined,
+        )
+        .find((item) => {
+          switch (type) {
+            case AssetType.native:
+              return item.isNative;
+            case AssetType.token:
+              return item.address === asset.address;
+            default:
+              return false;
+          }
+        }) ?? {
+        // TODO: remove the fallback case where the mutichainTokenWithFiatAmount is undefined
+        // Root cause: There is a race condition where when switching from a non-EVM network
+        // to an EVM network, the mutichainTokenWithFiatAmount is undefined
+        // This is a workaround to avoid the error
+        // Look into the isEvm selector
+        // We might be switching network before account.
+        address: '',
+        chainId: '',
+        symbol: '',
+        title: '',
+        image: '',
+        tokenFiatAmount: 0,
+        string: '',
+        decimals: 0,
+        aggregators: [],
+        isNative: false,
+        balance: 0,
+        secondary: 0,
+      },
+    [multiChainAssets, chainId, type, asset],
+  );
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
   const metaMetricsId = useSelector(getMetaMetricsId);
 
-  let address =
-    (() => {
-      if (type === AssetType.token) {
-        return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
-      }
-      return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
-    })() ?? '';
+  // Calculate address - used for both BIP44 enabled and disabled paths
+  const baseAddress = useMemo(() => {
+    if (type === AssetType.token) {
+      return isEvm ? toChecksumHexAddress(asset.address) : asset.address;
+    }
+    return isEvm ? getNativeTokenAddress(chainId) : nativeAssetType;
+  }, [type, isEvm, asset, chainId, nativeAssetType]);
+
+  // For BIP44 enabled, we need to look up the asset to get the correct address/assetId
+  const bip44AssetData = useMemo(() => {
+    if (!isMultichainAccountsState2Enabled) {
+      return null;
+    }
+    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
+      (item) =>
+        item.assetId.toLowerCase() === (baseAddress ?? '').toLowerCase() ||
+        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
+        (!baseAddress && !isEvm && item.isNative),
+    );
+    return assetWithBalance ?? null;
+  }, [
+    isMultichainAccountsState2Enabled,
+    accountGroupIdAssets,
+    chainId,
+    baseAddress,
+    isEvm,
+  ]);
+
+  // Final address used throughout the component
+  const address = isMultichainAccountsState2Enabled
+    ? bip44AssetData?.assetId || baseAddress || ''
+    : baseAddress || '';
 
   const shouldShowContractAddress = type === AssetType.token;
-  const contractAddress = (() => {
+  const contractAddress = useMemo(() => {
     if (shouldShowContractAddress) {
       return isEvm
         ? toChecksumHexAddress(asset.address)
         : parseCaipAssetType(address as CaipAssetType).assetReference;
     }
     return '';
-  })();
+  }, [shouldShowContractAddress, isEvm, asset, address]);
 
   const { currentPrice } = useCurrentPrice(asset);
 
-  let balance, tokenFiatAmount, assetId, updatedAsset;
-  if (isMultichainAccountsState2Enabled) {
-    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
-      (item) =>
-        item.assetId.toLowerCase() === address.toLowerCase() ||
-        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
-        (!address && !isEvm && item.isNative),
-    );
+  // Calculate balance and updatedAsset for BIP44-enabled path (uses selector data, not useTokenBalances)
+  const bip44BalanceData = useMemo(() => {
+    if (!isMultichainAccountsState2Enabled || !bip44AssetData) {
+      return null;
+    }
+    const balance = bip44AssetData.balance ?? '0';
+    const tokenFiatAmount = bip44AssetData.fiat?.balance ?? 0;
+    const tokenHexBalance = bip44AssetData.rawBalance as string;
 
-    assetId = assetWithBalance?.assetId || '';
-    address = assetWithBalance?.assetId || '';
-    balance = assetWithBalance?.balance ?? '0';
-    tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
-    const tokenHexBalance = assetWithBalance?.rawBalance as string;
-
-    updatedAsset = {
+    const updatedAsset = {
       ...asset,
       balance: {
         value: hexToDecimal(tokenHexBalance),
@@ -234,33 +540,9 @@ const AssetPage = ({
         fiat: String(tokenFiatAmount),
       },
     };
-  } else {
-    const tokenHexBalance =
-      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
 
-    balance = calculateTokenBalance({
-      isNative,
-      chainId,
-      address: address as Hex,
-      decimals,
-      nativeBalances,
-      selectedAccountTokenBalancesAcrossChains,
-    });
-
-    tokenFiatAmount = currentPrice
-      ? currentPrice * parseFloat(String(balance))
-      : 0;
-
-    // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-    updatedAsset = {
-      ...asset,
-      balance: {
-        value: hexToDecimal(tokenHexBalance),
-        display: String(balance),
-        fiat: String(tokenFiatAmount),
-      },
-    };
-  }
+    return { balance, tokenFiatAmount, updatedAsset };
+  }, [isMultichainAccountsState2Enabled, bip44AssetData, asset]);
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -290,30 +572,50 @@ const AssetPage = ({
 
   const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
 
-  const tokenWithFiatAmount =
-    isEvm || isMultichainAccountsState2Enabled
-      ? {
-          address: isEvm ? address : assetId,
-          chainId,
-          symbol,
-          image,
-          title: name ?? symbol,
-          tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-          string: balance ? balance.toString() : '',
-          decimals: asset.decimals,
-          aggregators:
-            type === AssetType.token && asset.aggregators
-              ? asset.aggregators
-              : [],
-          isNative: type === AssetType.native,
-          balance,
-          secondary: balance ? Number(balance) : 0,
-          accountType: bip44Asset?.accountType,
-        }
-      : {
-          ...mutichainTokenWithFiatAmount,
-          accountType: bip44Asset?.accountType,
-        };
+  // tokenWithFiatAmount for BIP44-enabled path and non-EVM assets
+  const tokenWithFiatAmount = useMemo(() => {
+    if (isEvm || isMultichainAccountsState2Enabled) {
+      const balance = bip44BalanceData?.balance ?? '0';
+      const tokenFiatAmount = bip44BalanceData?.tokenFiatAmount ?? 0;
+      return {
+        address: isEvm ? address : (bip44AssetData?.assetId ?? ''),
+        chainId,
+        symbol,
+        image,
+        title: name ?? symbol,
+        tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+        string: balance ? balance.toString() : '',
+        decimals: asset.decimals,
+        aggregators:
+          type === AssetType.token && asset.aggregators
+            ? asset.aggregators
+            : [],
+        isNative: type === AssetType.native,
+        balance,
+        secondary: balance ? Number(balance) : 0,
+        accountType: bip44Asset?.accountType,
+      };
+    }
+    return {
+      ...mutichainTokenWithFiatAmount,
+      accountType: bip44Asset?.accountType,
+    };
+  }, [
+    isEvm,
+    isMultichainAccountsState2Enabled,
+    bip44BalanceData,
+    bip44AssetData,
+    address,
+    chainId,
+    symbol,
+    image,
+    name,
+    showFiat,
+    asset,
+    type,
+    bip44Asset,
+    mutichainTokenWithFiatAmount,
+  ]);
 
   const { safeChains } = useSafeChains();
 
@@ -367,28 +669,46 @@ const AssetPage = ({
         currency={currency}
         asset={tokenWithFiatAmount as TokenFiatDisplayInfo}
       />
-      <Box marginTop={4} paddingLeft={4} paddingRight={4}>
-        {isNativeAsset(updatedAsset) ? (
-          <CoinButtons
-            {...{
-              account: selectedAccount,
-              trackingLocation: 'asset-page',
-              isBuyableChain,
-              isSigningEnabled,
-              isSwapsChain,
-              isBridgeChain,
-              chainId,
-              disableSendForNonEvm: true,
-            }}
-          />
-        ) : (
-          <TokenButtons
-            token={updatedAsset}
-            account={selectedAccount}
-            disableSendForNonEvm
-          />
-        )}
-      </Box>
+      {/* Action buttons - isolated to prevent re-renders from balance polling */}
+      {isMultichainAccountsState2Enabled && bip44BalanceData ? (
+        <Box marginTop={4} paddingLeft={4} paddingRight={4}>
+          {isNativeAsset(bip44BalanceData.updatedAsset) ? (
+            <CoinButtons
+              {...{
+                account: selectedAccount,
+                trackingLocation: 'asset-page',
+                isBuyableChain,
+                isSigningEnabled,
+                isSwapsChain,
+                isBridgeChain,
+                chainId,
+                disableSendForNonEvm: true,
+              }}
+            />
+          ) : (
+            <TokenButtons
+              token={bip44BalanceData.updatedAsset}
+              account={selectedAccount}
+              disableSendForNonEvm
+            />
+          )}
+        </Box>
+      ) : (
+        <AssetButtonsSection
+          asset={asset}
+          chainId={chainId}
+          address={address}
+          selectedAccount={selectedAccount}
+          nativeBalances={nativeBalances}
+          isNative={isNative}
+          decimals={decimals}
+          currentPrice={currentPrice}
+          isBuyableChain={isBuyableChain}
+          isSigningEnabled={isSigningEnabled}
+          isSwapsChain={isSwapsChain}
+          isBridgeChain={isBridgeChain}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -414,10 +734,33 @@ const AssetPage = ({
         >
           {t('yourBalance')}
         </Text>
-        {[AssetType.token, AssetType.native].includes(type) && (
-          <TokenCell
-            key={`${symbol}-${address}`}
-            token={tokenWithFiatAmount as TokenWithFiatAmount}
+        {/* Balance display - isolated to prevent re-renders from balance polling */}
+        {isMultichainAccountsState2Enabled && bip44BalanceData ? (
+          <TokenBalanceDisplay
+            asset={asset}
+            tokenWithFiatAmount={tokenWithFiatAmount as TokenWithFiatAmount}
+            safeChains={safeChains}
+            symbol={symbol}
+            address={address}
+          />
+        ) : (
+          <TokenBalanceSection
+            asset={asset}
+            chainId={chainId}
+            address={address}
+            selectedAccount={selectedAccount}
+            nativeBalances={nativeBalances}
+            isNative={isNative}
+            decimals={decimals}
+            currentPrice={currentPrice}
+            showFiat={showFiat}
+            symbol={symbol}
+            name={name}
+            image={image}
+            aggregators={
+              asset.type === AssetType.token ? asset.aggregators : undefined
+            }
+            accountType={bip44Asset?.accountType}
             safeChains={safeChains}
           />
         )}
@@ -519,7 +862,24 @@ const AssetPage = ({
               </Box>
             </Box>
           )}
-          <AssetMarketDetails asset={updatedAsset} address={address} />
+          {/* Market details - isolated to prevent re-renders from balance polling */}
+          {isMultichainAccountsState2Enabled && bip44BalanceData ? (
+            <AssetMarketDetails
+              asset={bip44BalanceData.updatedAsset}
+              address={address}
+            />
+          ) : (
+            <AssetMarketDetailsSection
+              asset={asset}
+              chainId={chainId}
+              address={address}
+              selectedAccount={selectedAccount}
+              nativeBalances={nativeBalances}
+              isNative={isNative}
+              decimals={decimals}
+              currentPrice={currentPrice}
+            />
+          )}
           <Box
             borderColor={BorderColor.borderMuted}
             marginInline={4}

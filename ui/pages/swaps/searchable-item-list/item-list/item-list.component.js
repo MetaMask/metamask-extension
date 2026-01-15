@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
@@ -16,6 +16,135 @@ import { MetaMetricsEventCategory } from '../../../../../shared/constants/metame
 import { CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP } from '../../../../../shared/constants/common';
 import { getURLHostName } from '../../../../helpers/utils/util';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
+
+/**
+ * List item component - React Compiler handles memoization automatically
+ */
+function SearchableListItem({
+  result,
+  onClickItem,
+  onOpenImportTokenModalClick,
+  useCurrencyRateCheck,
+  hideRightLabels,
+  t,
+}) {
+  const {
+    iconUrl,
+    identiconAddress,
+    selected,
+    blocked,
+    primaryLabel,
+    secondaryLabel,
+    rightPrimaryLabel,
+    rightSecondaryLabel,
+    IconComponent,
+    notImported,
+  } = result;
+
+  const handleClick = () => {
+    if (blocked) {
+      return;
+    }
+    if (notImported) {
+      onOpenImportTokenModalClick(result);
+    } else {
+      onClickItem?.(result);
+    }
+  };
+
+  const handleKeyUp = (e) => {
+    if (e.key === 'Enter') {
+      handleClick();
+    }
+  };
+
+  return (
+    <div
+      tabIndex="0"
+      className={classnames('searchable-item-list__item', {
+        'searchable-item-list__item--selected': selected,
+        'searchable-item-list__item--disabled': blocked,
+      })}
+      data-testid="searchable-item-list__item"
+      onClick={handleClick}
+      onKeyUp={handleKeyUp}
+      title={blocked ? t('swapTokenNotAvailable') : null}
+    >
+      {iconUrl || primaryLabel ? (
+        <UrlIcon url={iconUrl} name={primaryLabel} />
+      ) : null}
+      {!(iconUrl || primaryLabel) && identiconAddress ? (
+        <div className="searchable-item-list__identicon">
+          <Identicon address={identiconAddress} diameter={24} />
+        </div>
+      ) : null}
+      {IconComponent ? <IconComponent /> : null}
+      <div className="searchable-item-list__labels">
+        <div className="searchable-item-list__item-labels">
+          {primaryLabel ? (
+            <span
+              className="searchable-item-list__primary-label"
+              data-testid="searchable-item-list-primary-label"
+            >
+              {primaryLabel}
+            </span>
+          ) : null}
+          {secondaryLabel ? (
+            <span className="searchable-item-list__secondary-label">
+              {secondaryLabel}
+            </span>
+          ) : null}
+        </div>
+        {!hideRightLabels && (rightPrimaryLabel || rightSecondaryLabel) ? (
+          <div className="searchable-item-list__right-labels">
+            {rightPrimaryLabel ? (
+              <span className="searchable-item-list__right-primary-label">
+                {rightPrimaryLabel}
+              </span>
+            ) : null}
+            {rightSecondaryLabel && useCurrencyRateCheck ? (
+              <span className="searchable-item-list__right-secondary-label">
+                {rightSecondaryLabel}
+              </span>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+      {notImported && (
+        <Button
+          type="primary"
+          onClick={handleClick}
+          data-testid="searchable-item-list-import-button"
+        >
+          {t('import')}
+        </Button>
+      )}
+    </div>
+  );
+}
+
+SearchableListItem.propTypes = {
+  result: PropTypes.shape({
+    iconUrl: PropTypes.string,
+    identiconAddress: PropTypes.string,
+    selected: PropTypes.bool,
+    blocked: PropTypes.bool,
+    primaryLabel: PropTypes.string,
+    secondaryLabel: PropTypes.string,
+    rightPrimaryLabel: PropTypes.string,
+    rightSecondaryLabel: PropTypes.string,
+    IconComponent: PropTypes.func,
+    notImported: PropTypes.bool,
+    balance: PropTypes.number,
+    address: PropTypes.string,
+    symbol: PropTypes.string,
+  }),
+  onClickItem: PropTypes.func,
+  onOpenImportTokenModalClick: PropTypes.func,
+  useCurrencyRateCheck: PropTypes.bool,
+  hideRightLabels: PropTypes.bool,
+  t: PropTypes.func,
+};
 
 export default function ItemList({
   results = [],
@@ -38,7 +167,10 @@ export default function ItemList({
     CHAINID_DEFAULT_BLOCK_EXPLORER_URL_MAP[chainId] ??
     null;
   const useCurrencyRateCheck = useSelector(getUseCurrencyRateCheck);
-  const blockExplorerHostName = getURLHostName(blockExplorerLink);
+  const blockExplorerHostName = useMemo(
+    () => getURLHostName(blockExplorerLink),
+    [blockExplorerLink],
+  );
   const trackEvent = useContext(MetaMetricsContext);
 
   // If there is a token for import based on a contract address, it's the only one in the list.
@@ -46,6 +178,21 @@ export default function ItemList({
   const placeholder = Placeholder ? (
     <Placeholder searchQuery={searchQuery} />
   ) : null;
+
+  // Memoize filtered results to prevent recalculation on every render
+  const filteredResults = useMemo(() => {
+    return results.slice(0, maxListItems).filter((result) => {
+      if (hideItemIf?.(result)) {
+        return false;
+      }
+      const hasBalance = result.balance > 0;
+      if (result.blocked && !hasBalance && !searchQuery) {
+        return false;
+      }
+      return true;
+    });
+  }, [results, maxListItems, hideItemIf, searchQuery]);
+
   return results.length === 0 ? (
     placeholder
   ) : (
@@ -61,102 +208,17 @@ export default function ItemList({
         ref={containerRef}
         data-testid="searchable-item-list-list-container"
       >
-        {results.slice(0, maxListItems).map((result, i) => {
-          if (hideItemIf?.(result)) {
-            return null;
-          }
-          const hasBalance = result.balance > 0;
-          if (result.blocked && !hasBalance && !searchQuery) {
-            return null;
-          }
-
-          const onClick = () => {
-            if (result.blocked) {
-              return;
-            }
-            if (result.notImported) {
-              onOpenImportTokenModalClick(result);
-            } else {
-              onClickItem?.(result);
-            }
-          };
-          const {
-            iconUrl,
-            identiconAddress,
-            selected,
-            blocked,
-            primaryLabel,
-            secondaryLabel,
-            rightPrimaryLabel,
-            rightSecondaryLabel,
-            IconComponent,
-          } = result;
-          return (
-            <div
-              tabIndex="0"
-              className={classnames('searchable-item-list__item', {
-                'searchable-item-list__item--selected': selected,
-                'searchable-item-list__item--disabled': blocked,
-              })}
-              data-testid="searchable-item-list__item"
-              onClick={onClick}
-              onKeyUp={(e) => e.key === 'Enter' && onClick()}
-              key={`searchable-item-list-item-${i}`}
-              title={blocked ? t('swapTokenNotAvailable') : null}
-            >
-              {iconUrl || primaryLabel ? (
-                <UrlIcon url={iconUrl} name={primaryLabel} />
-              ) : null}
-              {!(iconUrl || primaryLabel) && identiconAddress ? (
-                <div className="searchable-item-list__identicon">
-                  <Identicon address={identiconAddress} diameter={24} />
-                </div>
-              ) : null}
-              {IconComponent ? <IconComponent /> : null}
-              <div className="searchable-item-list__labels">
-                <div className="searchable-item-list__item-labels">
-                  {primaryLabel ? (
-                    <span
-                      className="searchable-item-list__primary-label"
-                      data-testid="searchable-item-list-primary-label"
-                    >
-                      {primaryLabel}
-                    </span>
-                  ) : null}
-                  {secondaryLabel ? (
-                    <span className="searchable-item-list__secondary-label">
-                      {secondaryLabel}
-                    </span>
-                  ) : null}
-                </div>
-                {!hideRightLabels &&
-                (rightPrimaryLabel || rightSecondaryLabel) ? (
-                  <div className="searchable-item-list__right-labels">
-                    {rightPrimaryLabel ? (
-                      <span className="searchable-item-list__right-primary-label">
-                        {rightPrimaryLabel}
-                      </span>
-                    ) : null}
-                    {rightSecondaryLabel && useCurrencyRateCheck ? (
-                      <span className="searchable-item-list__right-secondary-label">
-                        {rightSecondaryLabel}
-                      </span>
-                    ) : null}
-                  </div>
-                ) : null}
-              </div>
-              {result.notImported && (
-                <Button
-                  type="primary"
-                  onClick={onClick}
-                  data-testid="searchable-item-list-import-button"
-                >
-                  {t('import')}
-                </Button>
-              )}
-            </div>
-          );
-        })}
+        {filteredResults.map((result) => (
+          <SearchableListItem
+            key={result.address || result.symbol || result.primaryLabel}
+            result={result}
+            onClickItem={onClickItem}
+            onOpenImportTokenModalClick={onOpenImportTokenModalClick}
+            useCurrencyRateCheck={useCurrencyRateCheck}
+            hideRightLabels={hideRightLabels}
+            t={t}
+          />
+        ))}
         {!hasTokenForImport && blockExplorerLink && (
           <div
             tabIndex="0"

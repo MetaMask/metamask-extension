@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BN } from 'bn.js';
 import { Token } from '@metamask/assets-controllers';
@@ -32,13 +33,16 @@ export const useGetFormattedTokensPerChain = (
       chainIds: allChainIDs as `0x${string}`[],
     });
 
-  // We will calculate aggregated balance only after the user imports the tokens to the wallet
-  // we need to format the balances we get from useTokenBalances and match them with symbol and decimals we get from getAllTokens
-  const networksToFormat = shouldGetTokensPerCurrentChain
-    ? [currentChainId]
-    : allChainIDs;
-  const formattedTokensWithBalancesPerChain = networksToFormat.map(
-    (singleChain) => {
+  // Memoize the formatted tokens to prevent unnecessary recalculations
+  // when balance polling updates but the specific values haven't changed
+  const formattedTokensWithBalancesPerChain = useMemo(() => {
+    // We will calculate aggregated balance only after the user imports the tokens to the wallet
+    // we need to format the balances we get from useTokenBalances and match them with symbol and decimals we get from getAllTokens
+    const networksToFormat = shouldGetTokensPerCurrentChain
+      ? [currentChainId]
+      : allChainIDs;
+
+    return networksToFormat.map((singleChain) => {
       const tokens = importedTokens?.[singleChain]?.[account?.address] ?? [];
 
       const tokensWithBalances = tokens.reduce(
@@ -69,8 +73,16 @@ export const useGetFormattedTokensPerChain = (
         chainId: singleChain,
         tokensWithBalances,
       };
-    },
-  );
+    });
+  }, [
+    shouldGetTokensPerCurrentChain,
+    currentChainId,
+    allChainIDs,
+    importedTokens,
+    account?.address,
+    currentTokenBalances.tokenBalances,
+    shouldHideZeroBalanceTokens,
+  ]);
 
   return {
     formattedTokensWithBalancesPerChain,

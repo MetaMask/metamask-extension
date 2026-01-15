@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import { useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
@@ -20,7 +20,7 @@ import {
   ButtonLinkSize,
 } from '../../../components/component-library';
 
-export default function FeeCard({
+function FeeCard({
   primaryFee,
   secondaryFee,
   hideTokenApprovalRow,
@@ -35,11 +35,20 @@ export default function FeeCard({
 
   const trackEvent = useContext(MetaMetricsContext);
 
+  // Simple JSX - React Compiler handles this automatically
   const tokenApprovalTextComponent = (
     <span key="fee-card-approve-symbol" className="fee-card__bold">
       {t('enableToken', [tokenApprovalSourceTokenSymbol])}
     </span>
   );
+
+  // Keep useCallback - uses trackEvent from external MetaMetricsContext
+  const handleGasFeesLinkClick = useCallback(() => {
+    trackEvent({
+      event: 'Clicked "Gas Fees: Learn More" Link',
+      category: MetaMetricsEventCategory.Swaps,
+    });
+  }, [trackEvent]);
 
   return (
     <div className="fee-card">
@@ -64,12 +73,7 @@ export default function FeeCard({
                             rel="noopener noreferrer"
                             externalLink
                             key="gas-fees-learn-more"
-                            onClick={() => {
-                              trackEvent({
-                                event: 'Clicked "Gas Fees: Learn More" Link',
-                                category: MetaMetricsEventCategory.Swaps,
-                              });
-                            }}
+                            onClick={handleGasFeesLinkClick}
                           >
                             {t('swapGasFeesExplanationLinkText')}
                           </ButtonLink>,
@@ -118,10 +122,7 @@ export default function FeeCard({
                 />
               </div>
             </div>
-            <div
-              className="fee-card__link"
-              onClick={() => onTokenApprovalClick()}
-            >
+            <div className="fee-card__link" onClick={onTokenApprovalClick}>
               {t('swapEditLimit')}
             </div>
           </div>
@@ -167,3 +168,5 @@ FeeCard.propTypes = {
   onQuotesClick: PropTypes.func.isRequired,
   numberOfQuotes: PropTypes.number.isRequired,
 };
+
+export default memo(FeeCard);
