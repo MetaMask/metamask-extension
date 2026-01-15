@@ -136,8 +136,10 @@ function maybeGetCauseMessage(error: ErrorLike): string | null {
  */
 function getVaultCorruptionType(error: ErrorLike): VaultCorruptionType {
   // If the error has a cause, it means the database was inaccessible
-  // (e.g., Firefox's "An unexpected error occurred")
-  if (error instanceof PersistenceError && error.cause instanceof Error) {
+  // (e.g., Firefox's "An unexpected error occurred").
+  // We use error.cause truthiness check here to be consistent with persistence-manager.ts
+  // where the corruption type is first determined using `localStoreError ? ...`
+  if (error instanceof PersistenceError && error.cause) {
     return VaultCorruptionType.UnaccessibleDatabase;
   }
   // Otherwise, the database was accessible but the vault was missing
