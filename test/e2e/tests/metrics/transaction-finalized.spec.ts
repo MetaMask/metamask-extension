@@ -192,7 +192,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver);
 
-
         // TODO: Update Test when Multichain Send Flow is added
         await sendRedesignedTransactionToAddress({
           driver,
