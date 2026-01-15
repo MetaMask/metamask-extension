@@ -105,7 +105,7 @@ export const useDeviceEventHandlers = ({
 
   const handleDeviceEvent = useCallback(
     (payload: DeviceEventPayload) => {
-      const { abortControllerRef, isConnectingRef } = refs;
+      const { abortControllerRef } = refs;
 
       if (abortControllerRef.current?.signal.aborted) {
         return;
@@ -113,9 +113,7 @@ export const useDeviceEventHandlers = ({
 
       switch (payload.event) {
         case DeviceEvent.Disconnected:
-          if (!isConnectingRef.current) {
-            updateConnectionState(ConnectionState.disconnected());
-          }
+          updateConnectionState(ConnectionState.disconnected());
           break;
 
         case DeviceEvent.DeviceLocked:
@@ -204,10 +202,6 @@ export const useDeviceEventHandlers = ({
       } = refs;
 
       if (abortControllerRef.current?.signal.aborted) {
-        return;
-      }
-
-      if (isConnectingRef.current) {
         return;
       }
 

@@ -198,17 +198,6 @@ describe('useDeviceEventHandlers', () => {
       expect(resultState).toEqual(ConnectionState.disconnected());
     });
 
-    it('ignores DISCONNECTED event when connecting', () => {
-      mockRefs.isConnectingRef.current = true;
-      const { result } = setupHook();
-
-      result.current.handleDeviceEvent({
-        event: DeviceEvent.Disconnected,
-      });
-
-      expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
-    });
-
     it('handles APP_CHANGED event with wrong app', () => {
       // Set up Ledger wallet type for this test
       mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
@@ -380,15 +369,6 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
-    });
-
-    it('ignores disconnect when connecting', () => {
-      mockRefs.isConnectingRef.current = true;
-      const { result } = setupHook();
-
-      result.current.handleDisconnect();
-
-      expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
     it('handles structured hardware wallet errors', () => {
