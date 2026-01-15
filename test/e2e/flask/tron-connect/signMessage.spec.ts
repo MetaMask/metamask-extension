@@ -1,5 +1,5 @@
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
-import { DEFAULT_TRON_ADDRESS, WINDOW_TITLES } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
 import { veryLargeDelayMs } from '../../helpers';
 import {
   DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
@@ -43,11 +43,7 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
           const signedMessage = await signMessageTest.getSignedMessage();
 
           // 3. Verify signed message
-          await assertSignedMessageIsValid({
-            signature: signedMessage[0],
-            originalMessageString: messageToSign,
-            addressBase58: DEFAULT_TRON_ADDRESS,
-          });
+          await assertSignedMessageIsValid(signedMessage[0]);
         },
       );
     });

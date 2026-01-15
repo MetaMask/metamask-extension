@@ -1,13 +1,11 @@
 import * as path from 'path';
 import { strict as assert } from 'assert';
-import { Trx } from 'tronweb';
 import { By } from 'selenium-webdriver';
 import { Driver } from '../../webdriver/driver';
-import { DEFAULT_TRON_ADDRESS } from '../../constants';
 import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
 import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
-import { withTronAccountSnap } from './common-tron';
+import { withTronAccountSnap, DEFAULT_MESSAGE_SIGNATURE } from './common-tron';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
 
@@ -125,29 +123,13 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
 /**
  * Asserts that the signed message is valid.
  *
- * @param signature.signature
  * @param signature - The signature to verify.
- * @param originalMessageString - The original message string to verify.
- * @param addressBase58 - The address to verify.
- * @param signature.originalMessageString
- * @param signature.addressBase58
  * @returns void
  */
-export const assertSignedMessageIsValid = async ({
-  signature,
-  originalMessageString,
-  addressBase58 = DEFAULT_TRON_ADDRESS,
-}: {
-  signature: string;
-  originalMessageString: string;
-  addressBase58?: string;
-}) => {
-  const recoveredSigner = Trx.verifyMessageV2(originalMessageString, signature);
-
+export const assertSignedMessageIsValid = async (signature: string) => {
   assert.equal(
-    recoveredSigner,
-    addressBase58,
-    'Tron signature verification failed',
+    signature,
+    DEFAULT_MESSAGE_SIGNATURE
   );
 };
 
