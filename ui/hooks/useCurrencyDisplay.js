@@ -160,13 +160,12 @@ export function useCurrencyDisplay(
   // Check if the transaction's chain is EVM, not just the account
   const isTransactionOnEvmChain = chainId ? isEvmChainId(chainId) : isEvm;
 
-  // When chainId is provided, use the chain-specific native currency and conversion rate.
-  // Fall back to account defaults if the chain is not in the predefined map (custom networks).
+  // When chainId is provided, use the chain-specific native currency and conversion rate
+  // Fall back to account defaults if the chain is not in the predefined map (custom networks)
   const chainNativeCurrency =
     (chainId && CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]) || nativeCurrency;
-  const chainConversionRate = chainId
-    ? currencyRates?.[chainNativeCurrency]?.conversionRate
-    : conversionRate;
+  const chainConversionRate =
+    currencyRates?.[chainNativeCurrency]?.conversionRate ?? conversionRate;
 
   const value = useMemo(() => {
     if (displayValue) {
