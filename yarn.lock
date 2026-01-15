@@ -16294,15 +16294,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@types/uuid@npm:11.0.0"
-  dependencies:
-    uuid: "npm:*"
-  checksum: 10/9f94bd34e5d220c53cc58ea9f48a0061d3bc343e29bc33a17edc705f5e21fedda21553318151f2bc227c2b2b03727bbb536da2b82a61f84d2e1ca38abc5e5c3f
-  languageName: node
-  linkType: hard
-
 "@types/uuid@npm:^9.0.1, @types/uuid@npm:^9.0.8":
   version: 9.0.8
   resolution: "@types/uuid@npm:9.0.8"
@@ -27243,7 +27234,6 @@ __metadata:
     "@ethereumjs/rlp": "npm:^10.0.0"
     "@ethereumjs/tx": "npm:^10.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@types/uuid": "npm:^11.0.0"
     aes-js: "npm:^3.1.2"
     bech32: "npm:^2.0.0"
     bignumber.js: "npm:^9.3.1"
@@ -27274,7 +27264,6 @@ __metadata:
     "@ethereumjs/rlp": "npm:^10.0.0"
     "@ethereumjs/tx": "npm:^10.0.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
-    "@types/uuid": "npm:^11.0.0"
     aes-js: "npm:^3.1.2"
     bech32: "npm:^2.0.0"
     bignumber.js: "npm:^9.3.1"
@@ -43717,15 +43706,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:*, uuid@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "uuid@npm:13.0.0"
-  bin:
-    uuid: dist-node/bin/uuid
-  checksum: 10/2742b24d1e00257e60612572e4d28679423469998cafbaf1fe9f1482e3edf9c40754b31bfdb3d08d71b29239f227a304588f75210b3b48f2609f0673f1feccef
-  languageName: node
-  linkType: hard
-
 "uuid@npm:3.2.1":
   version: 3.2.1
   resolution: "uuid@npm:3.2.1"
@@ -43741,6 +43721,15 @@ __metadata:
   bin:
     uuid: dist/bin/uuid
   checksum: 10/9a5f7aa1d6f56dd1e8d5f2478f855f25c645e64e26e347a98e98d95781d5ed20062d6cca2eecb58ba7c84bc3910be95c0451ef4161906abaab44f9cb68ffbdd1
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^13.0.0":
+  version: 13.0.0
+  resolution: "uuid@npm:13.0.0"
+  bin:
+    uuid: dist-node/bin/uuid
+  checksum: 10/2742b24d1e00257e60612572e4d28679423469998cafbaf1fe9f1482e3edf9c40754b31bfdb3d08d71b29239f227a304588f75210b3b48f2609f0673f1feccef
   languageName: node
   linkType: hard
 
