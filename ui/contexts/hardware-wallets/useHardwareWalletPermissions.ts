@@ -32,36 +32,35 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
-    // Check if already aborted (for test scenarios or external abort)
     if (refs.abortControllerRef.current?.signal.aborted) {
       return;
     }
 
+    let cancelled = false;
+
     checkHardwareWalletPermission(walletType)
       .then((permissionState) => {
-        // Only update state if this walletType is still current and not aborted
-        if (
-          state.walletType === walletType &&
-          !refs.abortControllerRef.current?.signal.aborted
-        ) {
+        // Only update state if effect hasn't been cleaned up and not externally aborted
+        if (!cancelled && !refs.abortControllerRef.current?.signal.aborted) {
           setHardwareConnectionPermissionState(permissionState);
         }
       })
       .catch(() => {
-        // Only update state if this walletType is still current and not aborted
-        if (
-          state.walletType === walletType &&
-          !refs.abortControllerRef.current?.signal.aborted
-        ) {
+        // Only update state if effect hasn't been cleaned up and not externally aborted
+        if (!cancelled && !refs.abortControllerRef.current?.signal.aborted) {
           setHardwareConnectionPermissionState(
             HardwareConnectionPermissionState.Unknown,
           );
         }
       });
+
+    // Cleanup: cancel pending async operation when walletType changes or unmount
+    return () => {
+      cancelled = true;
+    };
   }, [
     isHardwareWalletAccount,
     walletType,
-    state.walletType,
     setHardwareConnectionPermissionState,
     refs.abortControllerRef,
   ]);
