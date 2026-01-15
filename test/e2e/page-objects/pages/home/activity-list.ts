@@ -64,6 +64,11 @@ class ActivityListPage {
     tag: 'button',
   };
 
+  private readonly copyTransactionHashButton = {
+    text: 'Copy transaction ID',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -467,6 +472,14 @@ class ActivityListPage {
       state: 'detached',
       timeout: 30000,
     });
+  }
+
+  /**
+   * Clicks the copy transaction hash button.
+   */
+  async clickCopyTransactionHashButton(): Promise<void> {
+    console.log('Clicking copy transaction hash button');
+    await this.driver.clickElement(this.copyTransactionHashButton);
   }
 }
 
