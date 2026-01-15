@@ -86,7 +86,7 @@ export function useSuggestedGasFeeHighAlert(): Alert[] {
     );
 
     // Check if dapp suggested fee is at least 20% higher than market estimation
-    const isDappFeeHigh = dappFeeInGwei.greaterThan(threshold);
+    const isDappFeeHigh = dappFeeInGwei.greaterThanOrEqualTo(threshold);
 
     if (!isDappFeeHigh) {
       return [];

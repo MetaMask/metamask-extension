@@ -1,4 +1,7 @@
-import { TransactionMeta, TransactionParams } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionParams,
+} from '@metamask/transaction-controller';
 
 import {
   getMockConfirmState,
@@ -15,7 +18,7 @@ import { useSuggestedGasFeeHighAlert } from './useSuggestedGasFeeHighAlert';
 
 // Market medium estimation: suggestedMaxFeePerGas = '70' GWEI
 // 20% threshold = 70 * 1.2 = 84 GWEI
-// So anything above 84 GWEI should trigger the alert
+// So anything at or above 84 GWEI should trigger the alert
 const FEE_MARKET_ESTIMATES = {
   low: {
     minWaitTimeEstimate: 180000,
@@ -145,6 +148,54 @@ describe('useSuggestedGasFeeHighAlert', () => {
         ),
       ),
     ).toEqual([]);
+  });
+
+  it('returns alert if dapp fee is exactly 20% higher than market estimation (boundary case)', () => {
+    // Market medium is 70 GWEI, 20% higher is exactly 84 GWEI
+    // 84 GWEI = 0x138eca4800 in WEI (should trigger alert at boundary)
+    const alerts = runHook(
+      getMockConfirmStateForTransaction(
+        {
+          ...CONFIRMATION_MOCK,
+          dappSuggestedGasFees: {
+            maxFeePerGas: '0x138eca4800',
+            maxPriorityFeePerGas: '0x138eca4800',
+          },
+          txParams: {
+            ...CONFIRMATION_MOCK.txParams,
+            maxFeePerGas: '0x138eca4800',
+            maxPriorityFeePerGas: '0x138eca4800',
+          } as TransactionParams,
+        },
+        {
+          metamask: {
+            gasFeeEstimatesByChainId: {
+              '0x5': {
+                gasFeeEstimates: FEE_MARKET_ESTIMATES,
+                gasEstimateType: 'fee-market',
+              },
+            },
+          },
+        },
+      ),
+    );
+
+    expect(alerts).toEqual([
+      {
+        actions: [
+          {
+            key: AlertActionKey.ShowGasFeeModal,
+            label: 'Edit network fee',
+          },
+        ],
+        field: RowAlertKey.EstimatedFee,
+        key: 'suggestedGasFeeHigh',
+        message:
+          'This site is suggesting a higher network fee than necessary. Edit the network fee to pay less.',
+        reason: 'High site fee',
+        severity: Severity.Warning,
+      },
+    ]);
   });
 
   it('returns alert if dapp fee is more than 20% higher than market estimation (EIP-1559)', () => {
@@ -283,7 +334,8 @@ describe('useSuggestedGasFeeHighAlert', () => {
           {
             ...CONFIRMATION_MOCK,
             // USDC token address - non-native gas token
-            selectedGasFeeToken: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
+            selectedGasFeeToken:
+              '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as const,
             dappSuggestedGasFees: {
               maxFeePerGas: '0x174876e800', // 100 GWEI (would trigger alert)
               maxPriorityFeePerGas: '0x174876e800',
@@ -309,4 +361,3 @@ describe('useSuggestedGasFeeHighAlert', () => {
     ).toEqual([]);
   });
 });
-
