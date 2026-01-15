@@ -5050,8 +5050,13 @@ export default class MetamaskController extends EventEmitter {
 
       // Run migration for existing users rehydrating their data.
       // Skip onboarding check because completedOnboarding is not yet true during restore flow.
-      await this._runSeedlessOnboardingMigrations({
+      // Run non-blocking so migration failures don't block an otherwise successful restore.
+      this._runSeedlessOnboardingMigrations({
         skipOnboardingCheck: true,
+      }).catch((err) => {
+        const message = 'Error during seedless onboarding migrations';
+        log.error(message, err);
+        captureException(err);
       });
 
       return mnemonic;
@@ -5603,7 +5608,9 @@ export default class MetamaskController extends EventEmitter {
     // Run seedless onboarding migrations asynchronously after unlock for social login users
     if (isSocialLoginFlow) {
       this._runSeedlessOnboardingMigrations().catch((err) => {
-        log.error('Error during seedless onboarding migrations', err);
+        const message = 'Error during seedless onboarding migrations';
+        log.error(message, err);
+        captureException(err);
       });
     }
   }
