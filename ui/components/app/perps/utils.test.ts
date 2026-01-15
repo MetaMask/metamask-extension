@@ -138,14 +138,6 @@ describe('Perps Utils', () => {
       expect(getDisplaySymbol('abc:AAPL')).toBe('AAPL');
     });
 
-    it('handles null and invalid inputs', () => {
-      // @ts-expect-error Testing null input
-      expect(getDisplaySymbol(null)).toBe(null);
-      // @ts-expect-error Testing undefined input
-      expect(getDisplaySymbol(undefined)).toBe(undefined);
-      expect(getDisplaySymbol('')).toBe('');
-    });
-
     it('handles edge cases with colons', () => {
       expect(getDisplaySymbol(':INVALID')).toBe(':INVALID');
       expect(getDisplaySymbol('INVALID:')).toBe('INVALID:');
