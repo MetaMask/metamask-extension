@@ -1,9 +1,8 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../constants';
 import {
   convertToHexValue,
-  TEST_SEED_PHRASE,
-  WALLET_PASSWORD,
   withFixtures,
   unlockWallet,
   isSidePanelEnabled,

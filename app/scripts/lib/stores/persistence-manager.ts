@@ -144,11 +144,11 @@ export class PersistenceManager {
    * DefaultStorageKind is a static property that defines the default storage
    * kind to be used by the PersistenceManager. It checks if the code is running
    * in a test environment and retrieves the storage kind from manifest flags
-   * if available; otherwise, it defaults to 'data'.
+   * if available; otherwise, it defaults to 'split'.
    */
   static readonly defaultStorageKind = ((process.env.IN_TEST
     ? getManifestFlags().testing?.storageKind
-    : null) ?? 'data') as StorageKind;
+    : null) ?? 'split') as StorageKind;
 
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage

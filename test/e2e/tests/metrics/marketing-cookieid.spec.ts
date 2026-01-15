@@ -4,12 +4,11 @@ import { MockedEndpoint, Mockttp } from 'mockttp';
 import {
   getCleanAppState,
   getEventPayloads,
-  WINDOW_TITLES,
   withFixtures,
 } from '../../helpers';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { MOCK_META_METRICS_ID, WINDOW_TITLES } from '../../constants';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
