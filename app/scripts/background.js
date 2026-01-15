@@ -15,6 +15,7 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -1286,8 +1287,25 @@ export function setupController(
               // already updated this one
               return;
             }
-            const state = controller.controllerMessenger.call(
+            // Get the state for this backed-up key using messenger.
+            // We filter to only persistent properties using deriveStateFromMetadata
+            // to match what ComposableObservableStore does in stateChange events.
+            // This ensures non-persistent properties (e.g., KeyringController's
+            // isUnlocked, keyrings, encryptionKey) are not written to storage.
+            const controllerConfig = controller.store.config[key];
+            if (!controllerConfig?.metadata) {
+              throw new Error(
+                `Cannot backup ${key}: controller metadata is required but not found. ` +
+                  `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
+              );
+            }
+            const fullState = controller.controllerMessenger.call(
               `${key}:getState`,
+            );
+            const state = deriveStateFromMetadata(
+              fullState,
+              controllerConfig.metadata,
+              'persist',
             );
             persistenceManager.update(key, state);
           });
