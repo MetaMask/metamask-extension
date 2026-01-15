@@ -1,7 +1,8 @@
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WALLET_PASSWORD, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
+import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';

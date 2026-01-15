@@ -62,11 +62,6 @@ export const PositionCard: React.FC<PositionCardProps> = ({
       gap={3}
       data-testid={`position-card-${position.coin}`}
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
       role="button"
       tabIndex={0}
     >
