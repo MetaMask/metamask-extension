@@ -6554,16 +6554,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-json-rpc-filters@npm:^9.0.0":
+"@metamask/eth-json-rpc-filters@file:./metamask-eth-json-rpc-filters-9.0.0.tgz::locator=metamask-crx%40workspace%3A.":
   version: 9.0.0
-  resolution: "@metamask/eth-json-rpc-filters@npm:9.0.0"
+  resolution: "@metamask/eth-json-rpc-filters@file:./metamask-eth-json-rpc-filters-9.0.0.tgz#./metamask-eth-json-rpc-filters-9.0.0.tgz::hash=e65c20&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/eth-query": "npm:^4.0.0"
-    "@metamask/json-rpc-engine": "npm:^10.0.0"
+    "@metamask/json-rpc-engine": "npm:^10.2.0"
     "@metamask/safe-event-emitter": "npm:^3.0.0"
     async-mutex: "npm:^0.5.0"
     pify: "npm:^5.0.0"
-  checksum: 10/12095db69902e267d568d67b4241677502558159691d47216f82701f8e2875a051636b8ff483351d17e01d090b7a1eb8d5dec4cc17a9e47c99aa6d2ec0a073b4
+  checksum: 10/9b3a5493d052393e7e493d5409cfd1774f7d8ded8be026b69e69d6e6692c58e2f99371a015ff90b0e4df33bea3b48b0a1a6e12d0268f6c11e4fd788a3d8726e9
   languageName: node
   linkType: hard
 
@@ -6980,7 +6980,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/json-rpc-engine@npm:^10.0.0, @metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.0":
+"@metamask/json-rpc-engine@npm:^10.0.2, @metamask/json-rpc-engine@npm:^10.0.3, @metamask/json-rpc-engine@npm:^10.1.0, @metamask/json-rpc-engine@npm:^10.1.1, @metamask/json-rpc-engine@npm:^10.2.0":
   version: 10.2.0
   resolution: "@metamask/json-rpc-engine@npm:10.2.0"
   dependencies:
@@ -33513,7 +33513,7 @@ __metadata:
     "@metamask/eslint-config-nodejs": "npm:^9.0.0"
     "@metamask/eslint-config-typescript": "npm:^9.0.1"
     "@metamask/eslint-plugin-design-tokens": "npm:^1.1.0"
-    "@metamask/eth-json-rpc-filters": "npm:^9.0.0"
+    "@metamask/eth-json-rpc-filters": "file:./metamask-eth-json-rpc-filters-9.0.0.tgz"
     "@metamask/eth-json-rpc-middleware": "npm:^22.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
