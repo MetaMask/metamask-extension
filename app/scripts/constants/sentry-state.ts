@@ -93,6 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    showStorageErrorToast: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
