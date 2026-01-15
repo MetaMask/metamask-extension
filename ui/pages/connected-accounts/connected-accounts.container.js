@@ -19,7 +19,6 @@ import { getMostRecentOverviewPage } from '../../ducks/history/history';
 import ConnectedAccounts from './connected-accounts.component';
 
 const mapStateToProps = (state) => {
-  const { activeTab } = state;
   const accountToConnect = getAccountToConnectToActiveTab(state);
   const connectedAccounts = getOrderedConnectedAccountsForActiveTab(state);
   const internalAccounts = getInternalAccounts(state);
@@ -45,7 +44,9 @@ const mapStateToProps = (state) => {
   const originOfActiveTab = getOriginOfCurrentTab(state);
   const permissionSubjects = getPermissionSubjects(state);
 
-  const isActiveTabExtension = isExtensionUrl(activeTab);
+  // Use originOfActiveTab instead of activeTab to ensure consistency with sidepanel context
+  // where appActiveTab reflects the current browser tab, not the stale activeTab
+  const isActiveTabExtension = isExtensionUrl(originOfActiveTab);
   return {
     accountToConnect: accountToConnectWithName,
     isActiveTabExtension,

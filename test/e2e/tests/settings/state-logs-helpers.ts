@@ -195,7 +195,6 @@ const getIgnoredKeys = (): string[] => [
   'metamask.subjects',
   'metamask.verifiedSnaps',
   'metamask.networksMetadata',
-  'metamask.appActiveTab', // Depends on active tabs being available, which may not be the case in E2E tests
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {

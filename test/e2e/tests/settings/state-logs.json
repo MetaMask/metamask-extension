@@ -298,7 +298,6 @@
       }
     },
     "appActiveTab": {
-      "favIconUrl": "null",
       "host": "string",
       "href": "string",
       "id": "number",
