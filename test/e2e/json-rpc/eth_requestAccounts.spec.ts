@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';

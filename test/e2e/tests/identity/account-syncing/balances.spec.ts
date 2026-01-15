@@ -2,7 +2,8 @@ import { Mockttp } from 'mockttp';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
+import { withFixtures, unlockWallet } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
