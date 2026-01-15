@@ -72,6 +72,7 @@ describe('Send ETH', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
+        await sendTokenConfirmationPage.checkPageIsLoaded();
         await sendTokenConfirmationPage.clickOnConfirm();
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);

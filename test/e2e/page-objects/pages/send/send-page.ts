@@ -181,6 +181,7 @@ class SendPage {
 
   async selectNft(nftName: string): Promise<void> {
     console.log(`Selecting nft ${nftName}`);
+    await this.driver.waitForSelector({ text: nftName });
     await this.driver.clickElement({ text: nftName });
   }
 

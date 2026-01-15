@@ -281,11 +281,10 @@ describe('Sending with max amount', function () {
         await sendPage.fillAmount('10'); // update the value
         await sendPage.pressContinueButton();
 
-        // confirms the transaction
-        await driver.clickElementAndWaitToDisappear({
-          text: 'Confirm',
-          tag: 'button',
-        });
+        const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+
+        await sendTokenConfirmationPage.checkPageIsLoaded();
+        await sendTokenConfirmationPage.clickOnConfirm();
 
         await validateTransaction(driver, '-10');
       },
