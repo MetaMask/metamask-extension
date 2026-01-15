@@ -1,4 +1,4 @@
-import { MockedEndpoint, Mockttp } from 'mockttp';
+import { Mockttp } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
