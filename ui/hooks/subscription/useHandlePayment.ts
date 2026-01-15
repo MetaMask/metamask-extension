@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   CRYPTO_PAYMENT_METHOD_ERRORS,
   PAYMENT_TYPES,
@@ -13,7 +13,7 @@ import {
 import { getIsShieldSubscriptionPaused } from '../../../shared/lib/shield';
 import { useSubscriptionMetrics } from '../shield/metrics/useSubscriptionMetrics';
 import {
-  EntryModalSourceEnum,
+  ShieldMetricsSourceEnum,
   ShieldErrorStateActionClickedEnum,
   ShieldErrorStateLocationEnum,
   ShieldErrorStateViewEnum,
@@ -256,7 +256,7 @@ export const useHandlePayment = ({
       // go to shield plan page to renew subscription for cancelled subscription
       navigate({
         pathname: SHIELD_PLAN_ROUTE,
-        search: `?source=${EntryModalSourceEnum.Settings}`,
+        search: `?source=${ShieldMetricsSourceEnum.Settings}`,
       });
     } else if (isUnexpectedErrorCryptoPayment) {
       // handle support action

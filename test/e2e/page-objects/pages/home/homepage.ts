@@ -4,6 +4,11 @@ import { Ganache } from '../../../seeder/ganache';
 import { Anvil } from '../../../seeder/anvil';
 import HeaderNavbar from '../header-navbar';
 import { getCleanAppState, regularDelayMs } from '../../../helpers';
+import {
+  BASE_ACCOUNT_SYNC_INTERVAL,
+  BASE_ACCOUNT_SYNC_TIMEOUT,
+  POST_UNLOCK_DELAY,
+} from '../../../tests/identity/account-syncing/helpers';
 
 class HomePage {
   protected driver: Driver;
@@ -47,6 +52,10 @@ class HomePage {
 
   private readonly erc20TokenDropdown = {
     testId: 'asset-list-control-bar-action-button',
+  };
+
+  private readonly fundYourWalletBanner = {
+    text: 'Fund your wallet',
   };
 
   private readonly loadingOverlay = {
@@ -198,11 +207,6 @@ class HomePage {
     );
   }
 
-  async clickBackupRemindMeLaterButtonSafe(): Promise<void> {
-    await this.driver.clickElementSafe(this.backupRemindMeLaterButton);
-    await this.driver.assertElementNotPresent(this.backupRemindMeLaterButton);
-  }
-
   async closeSurveyToast(surveyName: string): Promise<void> {
     console.log(`Close survey toast for ${surveyName}`);
     await this.driver.waitForSelector({
@@ -348,6 +352,10 @@ class HomePage {
     expectedBalance: string = '25',
     symbol: string = 'ETH',
   ): Promise<void> {
+    if (expectedBalance === '0') {
+      await this.driver.waitForSelector(this.fundYourWalletBanner);
+      return;
+    }
     try {
       await this.driver.waitForSelector({
         css: this.balance,
@@ -396,13 +404,27 @@ class HomePage {
 
   /**
    * This function checks if account syncing has been successfully completed at least once.
+   * Includes a delay before checking to give Firefox more time to initialize (reduces flakiness).
    */
   async checkHasAccountSyncingSyncedAtLeastOnce(): Promise<void> {
+    console.log(
+      `Waiting ${POST_UNLOCK_DELAY}ms before checking account sync state (Firefox timing fix)`,
+    );
+    await this.driver.delay(POST_UNLOCK_DELAY);
     console.log('Check if account syncing has synced at least once');
-    await this.driver.wait(async () => {
-      const uiState = await getCleanAppState(this.driver);
-      return uiState.metamask.hasAccountTreeSyncingSyncedAtLeastOnce === true;
-    }, 30000); // Syncing can take some time so adding a longer timeout to reduce flakes
+    await this.driver.waitUntil(
+      async () => {
+        const uiState = await getCleanAppState(this.driver);
+        // Check for nullish, as the state we might seems to be `null` sometimes.
+        return (
+          uiState?.metamask?.hasAccountTreeSyncingSyncedAtLeastOnce === true
+        );
+      },
+      {
+        interval: BASE_ACCOUNT_SYNC_INTERVAL,
+        timeout: BASE_ACCOUNT_SYNC_TIMEOUT, // Syncing can take some time so adding a longer timeout to reduce flakes
+      },
+    );
   }
 
   async checkIfSendButtonIsClickable(): Promise<boolean> {
@@ -437,7 +459,9 @@ class HomePage {
   ): Promise<void> {
     let expectedBalance: string;
     if (localNode) {
-      expectedBalance = (await localNode.getBalance(address)).toString();
+      const balance = await localNode.getBalance(address);
+      expectedBalance = balance.toFixed(3);
+      expectedBalance = Number(expectedBalance).toString();
     } else {
       expectedBalance = '25';
     }

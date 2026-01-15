@@ -194,6 +194,7 @@ export const NetworkFilter = ({
               iconSize={IconSize.Xl}
               selected={selectedChainId === null}
               onClick={() => handleNetworkSelection(null)}
+              focus={false}
             />
             {uniqueChainIds.map((chainId) => {
               const networkName = chainNetworkNAmeAndImageMap.get(
@@ -210,6 +211,7 @@ export const NetworkFilter = ({
                   iconSrc={networkImage || ''}
                   selected={selectedChainId === chainId}
                   onClick={() => handleNetworkSelection(chainId)}
+                  focus={false}
                 />
               );
             })}

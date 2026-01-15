@@ -16,7 +16,7 @@ import {
   MONAD_TESTNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { NetworkListMenu } from '.';
 
 const mockSetShowTestNetworks = jest.fn();
@@ -612,7 +612,7 @@ describe('NetworkListMenu', () => {
     });
   });
 
-  describe('NetworkListMenu with REMOVE_GNS enabled', () => {
+  describe('NetworkListMenu network switching behavior', () => {
     it('should not switch networks when clicking network items', () => {
       const { getByText } = render({ selectedTabOriginInDomainsState: false });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));

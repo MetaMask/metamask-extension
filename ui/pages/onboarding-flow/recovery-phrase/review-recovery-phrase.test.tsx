@@ -4,6 +4,7 @@ import configureMockStore from 'redux-mock-store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   ONBOARDING_CONFIRM_SRP_ROUTE,
+  ONBOARDING_METAMETRICS,
   REVEAL_SRP_LIST_ROUTE,
 } from '../../../helpers/constants/routes';
 import RecoveryPhrase from './review-recovery-phrase';
@@ -11,15 +12,15 @@ import RecoveryPhrase from './review-recovery-phrase';
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
   };
 });
 
-const mockStore = configureMockStore()({
+const mockState = {
   metamask: {
     internalAccounts: {
       accounts: {
@@ -39,7 +40,9 @@ const mockStore = configureMockStore()({
       },
     ],
   },
-});
+};
+
+const mockStore = configureMockStore()(mockState);
 
 describe('Review Recovery Phrase Component', () => {
   beforeEach(() => {
@@ -63,6 +66,21 @@ describe('Review Recovery Phrase Component', () => {
     );
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should redirect to onboarding metametrics page if seed phrase is already backed up', () => {
+    const store = configureMockStore()({
+      ...mockState,
+      metamask: {
+        ...mockState.metamask,
+        seedPhraseBackedUp: true,
+      },
+    });
+    renderWithProvider(<RecoveryPhrase {...props} />, store);
+
+    expect(mockUseNavigate).toHaveBeenCalledWith(ONBOARDING_METAMETRICS, {
+      replace: true,
+    });
   });
 
   it('should match snapshot after reveal recovery button is clicked', () => {

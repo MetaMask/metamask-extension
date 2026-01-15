@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import PropTypes from 'prop-types';
-import { useLocation } from 'react-router-dom-v5-compat';
+import { useLocation } from 'react-router-dom';
 import {
   DEFAULT_ROUTE,
   ONBOARDING_COMPLETION_ROUTE,

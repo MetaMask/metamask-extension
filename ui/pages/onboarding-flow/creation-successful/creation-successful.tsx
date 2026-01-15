@@ -5,7 +5,7 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import browser from 'webextension-polyfill';
 import {
@@ -44,6 +44,7 @@ import {
 import {
   getExternalServicesOnboardingToggleState,
   getFirstTimeFlowType,
+  getPreferences,
 } from '../../../selectors';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
@@ -51,7 +52,10 @@ import {
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
 import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
-import { getIsPrimarySeedPhraseBackedUp } from '../../../ducks/metamask/metamask';
+import {
+  getCompletedOnboarding,
+  getIsPrimarySeedPhraseBackedUp,
+} from '../../../ducks/metamask/metamask';
 import {
   toggleExternalServices,
   setCompletedOnboarding,
@@ -77,6 +81,9 @@ export default function CreationSuccessful() {
   const trackEvent = useContext(MetaMetricsContext);
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const isSidePanelEnabled = useSidePanelEnabled();
+  const preferences = useSelector(getPreferences);
+  const isSidePanelSetAsDefault = preferences?.useSidePanelAsDefault ?? false;
+  const isOnboardingCompleted = useSelector(getCompletedOnboarding);
 
   const learnMoreLink =
     'https://support.metamask.io/stay-safe/safety-in-web3/basic-safety-and-security-tips-for-metamask/';
@@ -175,23 +182,29 @@ export default function CreationSuccessful() {
   }, [navigate, t]);
 
   const onDone = useCallback(async () => {
-    if (isWalletReady) {
-      trackEvent({
-        category: MetaMetricsEventCategory.Onboarding,
-        event: MetaMetricsEventName.ExtensionPinned,
-        properties: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          wallet_setup_type:
-            firstTimeFlowType === FirstTimeFlowType.import ? 'import' : 'new',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          new_wallet: firstTimeFlowType === FirstTimeFlowType.create,
-        },
-      });
-    }
-
     if (isFromReminder) {
       navigate(isFromSettingsSecurity ? SECURITY_ROUTE : DEFAULT_ROUTE);
       return;
+    }
+
+    // Track onboarding completion event
+    if (!isOnboardingCompleted) {
+      const isNewWallet =
+        firstTimeFlowType === FirstTimeFlowType.create ||
+        firstTimeFlowType === FirstTimeFlowType.socialCreate;
+
+      trackEvent({
+        category: MetaMetricsEventCategory.Onboarding,
+        event: MetaMetricsEventName.OnboardingCompleted,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          wallet_setup_type: firstTimeFlowType,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          new_wallet: isNewWallet,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_basic_functionality_enabled: externalServicesOnboardingToggleState,
+        },
+      });
     }
 
     await dispatch(
@@ -200,6 +213,14 @@ export default function CreationSuccessful() {
 
     // Side Panel - only if feature flag is enabled
     if (isSidePanelEnabled) {
+      // If useSidePanelAsDefault is already true, side panel is already set up
+      // Just complete onboarding and redirect to home page
+      if (isSidePanelSetAsDefault) {
+        await dispatch(setCompletedOnboarding());
+        navigate(DEFAULT_ROUTE);
+        return;
+      }
+
       try {
         // Type assertion needed as webextension-polyfill doesn't include sidePanel API types yet
         const browserWithSidePanel = browser as BrowserWithSidePanel;
@@ -226,10 +247,9 @@ export default function CreationSuccessful() {
     }
     // Fallback to regular onboarding completion
     await dispatch(setCompletedOnboarding());
-
     navigate(DEFAULT_ROUTE);
   }, [
-    isWalletReady,
+    isOnboardingCompleted,
     isFromReminder,
     dispatch,
     externalServicesOnboardingToggleState,
@@ -238,6 +258,7 @@ export default function CreationSuccessful() {
     firstTimeFlowType,
     isFromSettingsSecurity,
     isSidePanelEnabled,
+    isSidePanelSetAsDefault,
   ]);
 
   const renderDoneButton = () => {

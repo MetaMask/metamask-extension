@@ -44,6 +44,7 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
+
       async ({ driver }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);

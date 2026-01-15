@@ -60,6 +60,7 @@ describe('Add token using wallet_watchAsset', function () {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .build(),
         smartContract,
         title: this.test?.fullTitle(),

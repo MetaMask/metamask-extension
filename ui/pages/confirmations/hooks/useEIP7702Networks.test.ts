@@ -1,5 +1,5 @@
 import { waitFor } from '@testing-library/react';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   useEIP7702Networks,
   EIP7702NetworkConfiguration,

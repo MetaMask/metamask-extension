@@ -1,6 +1,6 @@
 import React, { useContext, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import classnames from 'classnames';
 import { CaipChainId } from '@metamask/utils';
 import type { Hex } from '@metamask/utils';
@@ -37,7 +37,6 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
   getEnabledNetworksByNamespace,
-  isGlobalNetworkSelectorRemoved,
   getIsMultichainAccountsState2Enabled,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../selectors';
@@ -132,9 +131,8 @@ export const LegacyAggregatedBalance = ({
     selectAnyEnabledNetworksAreAvailable,
   );
 
-  const showNativeTokenAsMain = isGlobalNetworkSelectorRemoved
-    ? showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1
-    : showNativeTokenAsMainBalance;
+  const showNativeTokenAsMain =
+    showNativeTokenAsMainBalance && Object.keys(enabledNetworks).length === 1;
 
   const isNotAggregatedFiatBalance =
     !shouldShowFiat || showNativeTokenAsMain || isTestnet;
@@ -148,17 +146,13 @@ export const LegacyAggregatedBalance = ({
 
   /**
    * Determines the currency display type based on network configuration.
-   * Returns SECONDARY for multi-network setups when global network selector is removed,
-   * otherwise returns PRIMARY for single network or legacy configurations.
+   * Returns SECONDARY for multi-network setups, otherwise returns PRIMARY for single network configurations.
    */
   const getCurrencyDisplayType = (): typeof PRIMARY | typeof SECONDARY => {
     const isMultiNetwork = Object.keys(enabledNetworks).length > 1;
 
-    if (isGlobalNetworkSelectorRemoved) {
-      if (isMultiNetwork && showNativeTokenAsMainBalance) {
-        return SECONDARY;
-      }
-      return PRIMARY;
+    if (isMultiNetwork && showNativeTokenAsMainBalance) {
+      return SECONDARY;
     }
     return PRIMARY;
   };

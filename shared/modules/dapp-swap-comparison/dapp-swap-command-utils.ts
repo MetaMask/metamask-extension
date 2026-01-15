@@ -6,6 +6,8 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 
 import { decodeCommandV3Path } from '../decoding';
 
+export class DappSwapDecodingError extends Error {}
+
 enum SwapCommands {
   V3_SWAP_EXACT_IN = '00',
   V3_SWAP_EXACT_OUT = '01',
@@ -212,7 +214,9 @@ function decodeCommandData(
   ABI_DEFINITION: Record<string, { name: string; type: string }[]>,
 ): Result {
   if (!ABI_DEFINITION[action]) {
-    throw new Error(`Action ${action} not found in ABI definition`);
+    throw new DappSwapDecodingError(
+      `Action ${action} not found in ABI definition`,
+    );
   }
 
   const abiDecoder = Interface.getAbiCoder();
@@ -475,7 +479,7 @@ function handleCommandUnwrapETH(
 }
 
 function handleCommandExactOut(_1: string, _2: COMMAND_VALUES_RESULT, _3: Hex) {
-  throw new Error('Exact-out commands are not supported yet');
+  throw new DappSwapDecodingError('Exact-out commands are not supported yet');
 }
 
 function getGenericValues(
@@ -503,7 +507,9 @@ function getGenericValues(
   );
 
   if (swapCommands.length !== 1) {
-    throw new Error(`Found swap commands ${swapCommands.length} instead of 1`);
+    throw new DappSwapDecodingError(
+      `Found swap commands ${swapCommands.length} instead of 1`,
+    );
   }
 
   let nonSwapCommands: string[] = [];

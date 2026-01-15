@@ -61,10 +61,10 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
         >
           <div
-            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
@@ -73,193 +73,193 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 candy
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 maple
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 cake
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 sugar
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 pudding
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 cream
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 honey
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 rich
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 smooth
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 crumble
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 sweet
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 treat
-              </p>
+              </span>
             </div>
           </div>
           <div
@@ -347,10 +347,10 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
         >
           <div
-            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box recovery-phrase__chips recovery-phrase__chips--hidden mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
@@ -359,193 +359,193 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 candy
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 maple
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 cake
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 sugar
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 pudding
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 cream
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 honey
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 rich
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 smooth
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 crumble
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 sweet
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 treat
-              </p>
+              </span>
             </div>
           </div>
           <div
@@ -640,10 +640,10 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         class="mm-box mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column"
       >
         <div
-          class="mm-box recovery-phrase__secret mm-box--padding-4 mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
+          class="mm-box recovery-phrase__secret mm-box--display-grid mm-box--width-full mm-box--background-color-background-section mm-box--rounded-lg"
         >
           <div
-            class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--gap-2 mm-box--justify-content-center mm-box--align-items-center"
+            class="mm-box recovery-phrase__chips mm-box--display-grid mm-box--justify-content-center mm-box--align-items-center"
             data-quiz-words="[]"
             data-recovery-phrase="debris:dizzy:just:program:just:float:decrease:vacant:alarm:reduce:speak:stadium"
             data-testid="recovery-phrase-chips"
@@ -652,193 +652,193 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-0"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 1
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 debris
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-1"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 2
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 dizzy
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-2"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 3
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 just
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-3"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 4
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 program
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-4"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 5
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 just
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-5"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 6
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 float
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-6"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 7
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 decrease
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-7"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 8
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 vacant
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-8"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 9
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 alarm
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-9"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 10
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 reduce
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-10"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 11
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 speak
-              </p>
+              </span>
             </div>
             <div
               class="mm-box recovery-phrase__text mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--display-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-lg mm-box--border-color-border-default mm-box--border-width-1 box--border-style-solid"
               data-testid="recovery-phrase-chip-11"
             >
-              <p
-                class="mm-box mm-text recovery-phrase__word-index mm-text--body-md mm-box--color-text-alternative"
+              <span
+                class="mm-box mm-text recovery-phrase__word-index mm-text--inherit mm-box--color-text-alternative"
               >
                 12
                 .
-              </p>
-              <p
-                class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+              </span>
+              <span
+                class="mm-box mm-text mm-text--inherit mm-box--color-text-default"
               >
                 stadium
-              </p>
+              </span>
             </div>
           </div>
         </div>

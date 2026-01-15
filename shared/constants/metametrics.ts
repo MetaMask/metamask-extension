@@ -787,6 +787,7 @@ export enum MetaMetricsEventName {
   OnboardingWalletSecurityPhraseWrittenDown = 'SRP Backup Confirm Display',
   OnboardingWalletSecurityPhraseConfirmed = 'SRP Backup Confirmed',
   OnboardingWalletVideoPlay = 'SRP Intro Video Played',
+  OnboardingCompleted = 'Onboarding Completed',
   OnrampProviderSelected = 'On-ramp Provider Selected',
   PasswordChanged = 'Password Changed',
   ForgotPasswordClicked = 'Forgot Password Clicked',
@@ -965,7 +966,6 @@ export enum MetaMetricsEventName {
   Wallet5792Called = 'EIP-5792 API Called',
   // Delete Wallet Modal
   WalletRestored = 'Wallet Restored',
-  ExtensionPinned = 'Extension Pinned',
   // Extension Port Stream
   PortStreamChunked = 'Port Stream Chunked',
   // Hardware Wallets
@@ -1140,7 +1140,6 @@ export enum MetaMetricsEventUiCustomization {
   FlaggedAsWarning = 'flagged_as_warning',
   GasEstimationFailed = 'gas_estimation_failed',
   Order = 'order',
-  RedesignedConfirmation = 'redesigned_confirmation',
   SecurityAlertError = 'security_alert_error',
   Siwe = 'sign_in_with_ethereum',
   Permit = 'permit',
