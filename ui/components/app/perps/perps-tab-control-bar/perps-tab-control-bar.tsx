@@ -16,7 +16,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
-import { formatCurrency, formatPnl, formatPercentage } from '../utils';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { mockAccountState } from '../mocks';
 
 export type PerpsTabControlBarProps = {
@@ -39,9 +39,16 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
   hasPositions = false,
 }) => {
   const t = useI18nContext();
+  const { formatCurrencyWithMinThreshold, formatPercentWithMinThreshold } =
+    useFormatters();
   const { totalBalance, unrealizedPnl, returnOnEquity } = mockAccountState;
   const pnlNum = parseFloat(unrealizedPnl);
   const isProfit = pnlNum >= 0;
+  const pnlPrefix = isProfit ? '+' : '-';
+  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
+  const formattedRoe = formatPercentWithMinThreshold(
+    parseFloat(returnOnEquity) / 100,
+  );
 
   const handleBalanceClick = () => {
     onManageBalancePress?.();
@@ -83,7 +90,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
             gap={2}
           >
             <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
-              {formatCurrency(totalBalance)}
+              {formatCurrencyWithMinThreshold(parseFloat(totalBalance), 'USD')}
             </Text>
             <Icon
               name={IconName.ArrowRight}
@@ -111,7 +118,7 @@ export const PerpsTabControlBar: React.FC<PerpsTabControlBarProps> = ({
             fontWeight={FontWeight.Medium}
             color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
           >
-            {formatPnl(unrealizedPnl)} ({formatPercentage(returnOnEquity)})
+            {formattedPnl} ({formattedRoe})
           </Text>
         </Box>
       )}

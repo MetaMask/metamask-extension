@@ -29,7 +29,8 @@ describe('PerpsTokenLogo', () => {
   it('renders with HIP-3 prefixed symbol', () => {
     renderWithProvider(<PerpsTokenLogo symbol="xyz:TSLA" />, mockStore);
 
-    expect(screen.getByTestId('perps-token-logo-xyz:TSLA')).toBeInTheDocument();
+    // Test ID sanitizes colons to hyphens (xyz:TSLA -> xyz-TSLA)
+    expect(screen.getByTestId('perps-token-logo-xyz-TSLA')).toBeInTheDocument();
   });
 
   it('uses the correct icon URL for regular assets', () => {
@@ -46,7 +47,8 @@ describe('PerpsTokenLogo', () => {
   it('uses the correct icon URL for HIP-3 assets', () => {
     renderWithProvider(<PerpsTokenLogo symbol="xyz:AAPL" />, mockStore);
 
-    const avatar = screen.getByTestId('perps-token-logo-xyz:AAPL');
+    // Test ID sanitizes colons to hyphens
+    const avatar = screen.getByTestId('perps-token-logo-xyz-AAPL');
     const img = avatar.querySelector('img');
     expect(img).toHaveAttribute(
       'src',
@@ -64,7 +66,8 @@ describe('PerpsTokenLogo', () => {
   it('displays extracted symbol name for HIP-3 assets', () => {
     renderWithProvider(<PerpsTokenLogo symbol="xyz:TSLA" />, mockStore);
 
-    const avatar = screen.getByTestId('perps-token-logo-xyz:TSLA');
+    // Test ID sanitizes colons to hyphens
+    const avatar = screen.getByTestId('perps-token-logo-xyz-TSLA');
     expect(avatar).toBeInTheDocument();
   });
 

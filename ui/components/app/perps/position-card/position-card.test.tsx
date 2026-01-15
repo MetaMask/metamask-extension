@@ -6,6 +6,16 @@ import mockState from '../../../../../test/data/mock-state.json';
 import type { Position } from '../types';
 import { PositionCard } from './position-card';
 
+jest.mock('../../../../hooks/useFormatters', () => ({
+  useFormatters: () => ({
+    formatCurrencyWithMinThreshold: (value: number, _currency: string) =>
+      `$${value.toLocaleString('en-US', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`,
+  }),
+}));
+
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

@@ -28,13 +28,16 @@ export const PerpsTokenLogo: React.FC<PerpsTokenLogoProps> = ({
   const iconUrl = useMemo(() => getAssetIconUrl(symbol), [symbol]);
   const displaySymbol = useMemo(() => getDisplaySymbol(symbol), [symbol]);
 
+  // Sanitize symbol for test ID (e.g., xyz:TSLA -> xyz-TSLA)
+  const sanitizedSymbol = symbol.replace(/:/gu, '-');
+
   return (
     <AvatarToken
       name={displaySymbol}
       src={iconUrl}
       size={size}
       className={className}
-      data-testid={`perps-token-logo-${symbol}`}
+      data-testid={`perps-token-logo-${sanitizedSymbol}`}
     />
   );
 };

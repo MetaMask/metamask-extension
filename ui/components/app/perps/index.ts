@@ -25,9 +25,6 @@ export {
   formatOrderType,
   formatStatus,
   getStatusColor,
-  formatCurrency,
-  formatPnl,
-  formatPercentage,
   getDisplaySymbol,
   getAssetIconUrl,
 } from './utils';

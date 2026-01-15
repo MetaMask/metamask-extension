@@ -11,6 +11,7 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
 import {
   getDisplayName,
@@ -42,6 +43,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   variant = 'default',
 }) => {
   const navigate = useNavigate();
+  const t = useI18nContext();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
@@ -91,7 +93,8 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         >
           <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
           <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {formatOrderType(order.orderType)} {isBuy ? 'buy' : 'sell'}
+            {formatOrderType(order.orderType)}{' '}
+            {isBuy ? t('perpsBuy') : t('perpsSell')}
           </Text>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
@@ -109,7 +112,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
         <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {order.orderType === 'limit' && order.price !== '0'
             ? `$${order.price}`
-            : 'Market'}
+            : t('perpsMarket')}
         </Text>
         <Text variant={TextVariant.BodySm} color={getStatusColor(order.status)}>
           {formatStatus(order.status)}
