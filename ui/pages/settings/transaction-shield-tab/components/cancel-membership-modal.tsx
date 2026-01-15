@@ -8,14 +8,14 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-} from '../../../components/component-library';
+} from '../../../../components/component-library';
 import {
   AlignItems,
   TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getShortDateFormatterV2 } from '../../asset/util';
-import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getShortDateFormatterV2 } from '../../../asset/util';
+import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
