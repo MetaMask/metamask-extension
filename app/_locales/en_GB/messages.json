@@ -2204,10 +2204,10 @@
     "message": "Dismiss Secret Recovery Phrase backup reminder"
   },
   "dismissSmartAccountSuggestionEnabledDescription": {
-    "message": "Turn this on to no longer see the \"Switch to Smart Account\" suggestion on any account. Smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
+    "message": "Turn this on to no longer see the \"Switch to smart account\" suggestion on any account. smart accounts unlocks faster transactions, lower network fees and more flexibility on payment for those."
   },
   "dismissSmartAccountSuggestionEnabledTitle": {
-    "message": "Dismiss \"Switch to Smart Account\" suggestion"
+    "message": "Dismiss \"Switch to smart account\" suggestion"
   },
   "displayNftMedia": {
     "message": "Display NFT media"
@@ -5068,7 +5068,7 @@
     "message": "Market"
   },
   "perpsOpenOrders": {
-    "message": "Open Orders"
+    "message": "Open orders"
   },
   "perpsPositions": {
     "message": "Positions"
@@ -5083,7 +5083,7 @@
     "message": "Start trading"
   },
   "perpsTotalBalance": {
-    "message": "Total Balance"
+    "message": "Total balance"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
@@ -6366,7 +6366,7 @@
     "message": "This transaction is covered"
   },
   "shieldCoverageAlertMessageTitlePaused": {
-    "message": "Transaction Shield paused"
+    "message": "Transaction shield paused"
   },
   "shieldCoverageAlertMessageTitleSignatureRequest": {
     "message": "This signature request isn't covered"
@@ -6400,7 +6400,7 @@
     "message": "Start 14-day free trial"
   },
   "shieldEntryModalSubtitleA": {
-    "message": "Transaction Shield provides protection up to $1 and 24/7 priority support.",
+    "message": "Transaction shield provides protection up to $1 and 24/7 priority support.",
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalSubtitleB": {
@@ -6411,13 +6411,13 @@
     "message": "Transact with added confidence"
   },
   "shieldEntryModalTitleB": {
-    "message": "Introducing Transaction Shield"
+    "message": "Introducing transaction shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1"
+    "message": "By continuing, i agree to transaction shield $1"
   },
   "shieldManagePlan": {
     "message": "Manage plan"
@@ -6432,7 +6432,7 @@
     "message": "Paused"
   },
   "shieldPaymentPaused": {
-    "message": "Transaction Shield paused"
+    "message": "Transaction shield paused"
   },
   "shieldPaymentPausedActionCardPayment": {
     "message": "Update"
@@ -6493,7 +6493,7 @@
     "message": "Rewards"
   },
   "shieldPlanErrorText": {
-    "message": "Couldn’t connect to Transaction Shield"
+    "message": "Couldn’t connect to transaction shield"
   },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
@@ -6540,7 +6540,7 @@
     "message": "Start free trial"
   },
   "shieldTx": {
-    "message": "Transaction Shield"
+    "message": "Transaction shield"
   },
   "shieldTxBillingAccount": {
     "message": "Billing account"
@@ -6933,7 +6933,7 @@
     "message": "Keep the same account address, and you can switch back anytime."
   },
   "smartAccountLabel": {
-    "message": "Smart Account"
+    "message": "Smart account"
   },
   "smartAccountPayToken": {
     "message": "Pay with any token, any time"
@@ -6972,7 +6972,7 @@
     "message": "Not enough funds for a smart swap."
   },
   "smartSwapsErrorUnavailable": {
-    "message": "Smart Swaps are temporarily unavailable."
+    "message": "Smart swaps are temporarily unavailable."
   },
   "smartTransactionCancelled": {
     "message": "Your transaction was canceled"
@@ -6993,7 +6993,7 @@
     "message": "Your transaction is complete"
   },
   "smartTransactions": {
-    "message": "Smart Transactions"
+    "message": "Smart transactions"
   },
   "smartTransactionsEnabledDescription": {
     "message": " and MEV protection. Now on by default."
@@ -7536,7 +7536,7 @@
     "description": "This message is shown to a user if their swap fails. The $1 will be replaced by support.metamask.io"
   },
   "stxOptInSupportedNetworksDescription": {
-    "message": "Turn on Smart Transactions for more reliable and secure transactions on supported networks. $1"
+    "message": "Turn on smart transactions for more reliable and secure transactions on supported networks. $1"
   },
   "stxPendingPrivatelySubmittingSwap": {
     "message": "Privately submitting your Swap..."
@@ -8268,7 +8268,7 @@
     "message": "Transaction settings"
   },
   "transactionShield": {
-    "message": "Transaction Shield"
+    "message": "Transaction shield"
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."

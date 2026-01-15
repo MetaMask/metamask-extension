@@ -21,6 +21,7 @@
     "MetaMask Portfolio",
     "Snaps",
     "Snap",
+    "Transaction Shield",
     "Ledger Live",
     "Ledger",
     "OpenSea",
@@ -49,7 +50,8 @@
     "Content-Security-Policy",
     "MetaMetrics",
     "Terms of Use",
-    "Privacy Notice"
+    "Privacy Notice",
+    "Privacy Policy"
   ],
   "patterns": {
     "testNetworks": "\\b(Goerli|Sepolia|Rinkeby|Ropsten|Kovan)\\s+Test\\s+Network\\b",
