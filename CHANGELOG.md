@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.14.0]
 
+### Uncategorized
+
+- Null (#38978)
+- Bump `@metamask/notification-services-controller` to `^21.0.0` (#38965)
+- Remove migration 171 error logging (#38739)
+- Bump assets controllers to v93.1.0 (#38554)
+
 ### Added
 
 - Adds 'erc20-token-revocation' Advanced Permission type in Flask build only (#39008)
