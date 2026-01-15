@@ -8,7 +8,8 @@ import { ALL_POPULAR_NETWORKS } from '../../../../../app/scripts/fixtures/with-n
 import Timers from '../../../../timers/Timers';
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { WALLET_PASSWORD, withFixtures } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
