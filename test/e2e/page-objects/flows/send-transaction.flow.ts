@@ -26,7 +26,7 @@ export const sendRedesignedTransactionToAddress = async ({
     `Start flow to send amount ${amount} to recipient ${recipientAddress} on home screen`,
   );
 
-  createInternalTransaction({
+  await createInternalTransaction({
     driver,
     recipientAddress,
     amount,
@@ -59,11 +59,10 @@ export const sendRedesignedTransactionToAccount = async ({
   );
   // click send button on homepage to start flow
   const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
 
   await createInternalTransaction({
     driver,
-    recipientAddress: recipientAccount,
+    recipientName: recipientAccount,
     amount,
   });
 
