@@ -47,6 +47,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update ENS snap protocol display name (#38709)
+- Temporarily disable the ability to migrate to split state storage (#39292)
 
 ### Fixed
 
