@@ -1,10 +1,5 @@
 import { hasProperty } from '@metamask/utils';
-import { cloneDeep } from 'lodash';
-
-type VersionedData = {
-  meta: { version: number };
-  data: Record<string, unknown>;
-};
+import { Migrate } from './types';
 
 export const version = 187;
 
@@ -13,24 +8,22 @@ export const version = 187;
  * if `pna25Acknowledged` is set to `true`. i.e. if the user has already acknowledged PNA25,
  * we want to start collecting profile metrics right away.
  *
- * @param originalVersionedData - Versioned MetaMask extension state, exactly
- * what we persist to dist.
- * @param originalVersionedData.meta - State metadata.
- * @param originalVersionedData.meta.version - The current state version.
- * @param originalVersionedData.data - The persisted MetaMask state, keyed by
- * controller.
- * @returns Updated versioned MetaMask extension state.
+ * @param versionedData - Versioned MetaMask extension state; what we persist to disk.
+ * @param versionedData.meta - Metadata about the state being migrated.
+ * @param versionedData.meta.version - The current state version.
+ * @param versionedData.meta.storageKind - The kind of storage being used.
+ * @param versionedData.data - The persisted MetaMask state, keyed by controller.
+ * @param changedKeys - `Set` to track which controller keys were modified by a migration
  */
-export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
-  const versionedData = cloneDeep(originalVersionedData);
+export const migrate = (async (versionedData, changedKeys) => {
   versionedData.meta.version = version;
-  transformState(versionedData.data);
-  return versionedData;
-}
+  transformState(versionedData.data, changedKeys);
+}) satisfies Migrate;
 
-function transformState(state: Record<string, unknown>) {
+function transformState(
+  state: Record<string, unknown>,
+  changedKeys: Set<string>,
+): Promise<void> | void {
   const appStateControllerState = state?.AppStateController as
     | Record<string, unknown>
     | undefined;
@@ -48,5 +41,6 @@ function transformState(state: Record<string, unknown>) {
     !hasProperty(profileMetricsControllerState, 'initialDelayEndTimestamp')
   ) {
     profileMetricsControllerState.initialDelayEndTimestamp = Date.now();
+    changedKeys.add('ProfileMetricsController');
   }
 }

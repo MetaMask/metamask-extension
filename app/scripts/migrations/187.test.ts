@@ -12,19 +12,20 @@ describe('migration #187', () => {
   });
 
   it('updates the version metadata', async () => {
-    const oldStorage = {
+    const storage = {
       meta: { version: 186 },
       data: {},
     };
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(storage, new Set());
 
-    expect(newStorage.meta).toStrictEqual({ version });
+    expect(storage.meta).toStrictEqual({ version });
   });
 
   describe('when `pna25Acknowledged` is `false`', () => {
     it('does not set `initialDelayEndTimestamp` if it does not exist', async () => {
-      const oldStorage = {
+      const changedKeys = new Set<string>();
+      const storage = {
         meta: { version: 186 },
         data: {
           AppStateController: {
@@ -34,14 +35,16 @@ describe('migration #187', () => {
         },
       };
 
-      const newStorage = await migrate(oldStorage);
+      await migrate(storage, changedKeys);
 
-      expect(newStorage.data.ProfileMetricsController).toStrictEqual({});
+      expect(storage.data.ProfileMetricsController).toStrictEqual({});
+      expect(changedKeys.has('ProfileMetricsController')).toBe(false);
     });
 
     it('does not overwrite existing `initialDelayEndTimestamp`', async () => {
+      const changedKeys = new Set<string>();
       const existingTimestamp = 1620000000000;
-      const oldStorage = {
+      const storage = {
         meta: { version: 186 },
         data: {
           AppStateController: {
@@ -53,9 +56,9 @@ describe('migration #187', () => {
         },
       };
 
-      const newStorage = await migrate(oldStorage);
+      await migrate(storage, changedKeys);
 
-      expect(newStorage.data.ProfileMetricsController).toStrictEqual({
+      expect(storage.data.ProfileMetricsController).toStrictEqual({
         initialDelayEndTimestamp: existingTimestamp,
       });
     });
@@ -63,7 +66,8 @@ describe('migration #187', () => {
 
   describe('when `pna25Acknowledged` is `true`', () => {
     it('sets `initialDelayEndTimestamp` to current time if it does not exist', async () => {
-      const oldStorage = {
+      const changedKeys = new Set<string>();
+      const storage = {
         meta: { version: 186 },
         data: {
           AppStateController: {
@@ -74,10 +78,10 @@ describe('migration #187', () => {
       };
 
       const beforeMigrationTime = Date.now();
-      const newStorage = await migrate(oldStorage);
+      await migrate(storage, changedKeys);
       const afterMigrationTime = Date.now();
 
-      const { initialDelayEndTimestamp } = newStorage.data
+      const { initialDelayEndTimestamp } = storage.data
         .ProfileMetricsController as {
         initialDelayEndTimestamp: number;
       };
@@ -87,11 +91,13 @@ describe('migration #187', () => {
         beforeMigrationTime,
       );
       expect(initialDelayEndTimestamp).toBeLessThanOrEqual(afterMigrationTime);
+      expect(changedKeys.has('ProfileMetricsController')).toBe(true);
     });
 
     it('does not overwrite existing `initialDelayEndTimestamp`', async () => {
+      const changedKeys = new Set<string>();
       const existingTimestamp = 1620000000000;
-      const oldStorage = {
+      const storage = {
         meta: { version: 186 },
         data: {
           AppStateController: {
@@ -103,11 +109,12 @@ describe('migration #187', () => {
         },
       };
 
-      const newStorage = await migrate(oldStorage);
+      migrate(storage, changedKeys);
 
-      expect(newStorage.data.ProfileMetricsController).toStrictEqual({
+      expect(storage.data.ProfileMetricsController).toStrictEqual({
         initialDelayEndTimestamp: existingTimestamp,
       });
+      expect(changedKeys.has('ProfileMetricsController')).toBe(false);
     });
   });
 });
