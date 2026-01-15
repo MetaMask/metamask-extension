@@ -71,10 +71,10 @@ describe('useHardwareWalletPermissions', () => {
         webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
 
-      setupHook();
+      const { waitForNextUpdate } = setupHook();
 
       // Wait for useEffect to run
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -88,9 +88,9 @@ describe('useHardwareWalletPermissions', () => {
       mockState.isHardwareWalletAccount = false;
       mockState.walletType = null;
 
-      setupHook();
+      const { waitForNextUpdate } = setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -102,9 +102,9 @@ describe('useHardwareWalletPermissions', () => {
         webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockRejectedValue(new Error('Permission check failed'));
 
-      setupHook();
+      const { waitForNextUpdate } = setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
 
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
         HardwareConnectionPermissionState.Unknown,
@@ -114,9 +114,9 @@ describe('useHardwareWalletPermissions', () => {
     it('aborts when AbortController is aborted', async () => {
       mockRefs.abortControllerRef.current.abort();
 
-      setupHook();
+      const { waitForNextUpdate } = setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
 
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
@@ -128,9 +128,9 @@ describe('useHardwareWalletPermissions', () => {
 
       mockRefs.abortControllerRef.current.abort();
 
-      setupHook();
+      const { waitForNextUpdate } = setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitForNextUpdate();
 
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
