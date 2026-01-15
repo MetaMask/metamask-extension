@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   useRive,
   Layout,
@@ -42,6 +42,9 @@ const ShieldBannerAnimation = ({
     start?: StateMachineInput;
   }>({});
 
+  // Track if animation has been initialized (using ref to avoid triggering watcher effects)
+  const isInitializedRef = useRef(false);
+
   useEffect(() => {
     if (wasmError) {
       console.error('[Rive] Failed to load WASM:', wasmError);
@@ -69,9 +72,6 @@ const ShieldBannerAnimation = ({
     }),
   });
 
-  // Track if animation has been initialized
-  const [isInitialized, setIsInitialized] = useState(false);
-
   // Cache and initialize state machine inputs
   const cacheInputs = useCallback(() => {
     if (!rive) {
@@ -91,7 +91,11 @@ const ShieldBannerAnimation = ({
   // Trigger the animation start when rive is loaded
   useEffect(() => {
     const shouldInitialize =
-      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
+      rive &&
+      isWasmReady &&
+      !bufferLoading &&
+      buffer &&
+      !isInitializedRef.current;
     if (shouldInitialize && cacheInputs()) {
       const { dark, start } = inputsRef.current;
 
@@ -105,39 +109,34 @@ const ShieldBannerAnimation = ({
       }
 
       rive.play();
-      setIsInitialized(true);
+      isInitializedRef.current = true;
     }
-  }, [
-    rive,
-    isWasmReady,
-    bufferLoading,
-    buffer,
-    isInactive,
-    isInitialized,
-    cacheInputs,
-  ]);
+  }, [rive, isWasmReady, bufferLoading, buffer, isInactive, cacheInputs]);
 
-  // watch for changes to isInactive and update the dark toggle
+  // Watch for changes to isInactive and update the dark toggle
   useEffect(() => {
-    if (rive && isInitialized) {
-      const { dark, start } = inputsRef.current;
-      if (dark) {
-        dark.value = isInactive;
-      }
-      if (start) {
-        start.fire();
-      }
+    // Skip if not initialized yet (initialization effect handles the first trigger)
+    if (!isInitializedRef.current || !rive) {
+      return;
     }
-  }, [isInactive, rive, isInitialized]);
 
-  // Stop animation on unmount
+    const { dark, start } = inputsRef.current;
+    if (dark) {
+      dark.value = isInactive;
+    }
+    if (start) {
+      start.fire();
+    }
+  }, [isInactive, rive]);
+
+  // Stop animation on unmount or when rive instance changes
   useEffect(() => {
     return () => {
       if (rive) {
         rive.cleanup();
       }
     };
-  }, []);
+  }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (

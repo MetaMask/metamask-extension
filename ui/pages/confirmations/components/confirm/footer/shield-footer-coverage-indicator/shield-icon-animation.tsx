@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import {
   useRive,
   Layout,
@@ -74,10 +74,10 @@ const setSeverityToggle = (
 const ShieldIconAnimation = ({
   // TODO: Update with neutral severity
   severity = Severity.Info,
-  playAnimation = false,
+  isDisabled = true,
 }: {
   severity?: AlertSeverity;
-  playAnimation?: boolean;
+  isDisabled?: boolean;
 }) => {
   const theme = useTheme();
   const context = useRiveWasmContext();
@@ -89,6 +89,9 @@ const ShieldIconAnimation = ({
   } = useRiveWasmFile('./images/riv_animations/shield_icon.riv');
 
   const inputsRef = useRef<CachedInputs>({});
+
+  // Track if animation has been initialized (using ref to avoid triggering watcher effects)
+  const isInitializedRef = useRef(false);
 
   useEffect(() => {
     if (wasmError) {
@@ -117,9 +120,6 @@ const ShieldIconAnimation = ({
     }),
   });
 
-  // Track if animation has been initialized
-  const [isInitialized, setIsInitialized] = useState(false);
-
   // Cache and initialize state machine inputs
   const cacheInputs = useCallback(() => {
     if (!rive) {
@@ -146,7 +146,11 @@ const ShieldIconAnimation = ({
   // Initialize Rive once when ready
   useEffect(() => {
     const shouldInitialize =
-      rive && isWasmReady && !bufferLoading && buffer && !isInitialized;
+      rive &&
+      isWasmReady &&
+      !bufferLoading &&
+      buffer &&
+      !isInitializedRef.current;
     if (shouldInitialize && cacheInputs()) {
       const { dark } = inputsRef.current;
 
@@ -160,74 +164,79 @@ const ShieldIconAnimation = ({
       setSeverityToggle(severity, inputsRef.current);
 
       // Play initial animation if requested
-      if (playAnimation) {
-        const { start } = inputsRef.current;
-        if (start) {
-          start.fire();
-        }
-      } else {
+      if (isDisabled) {
         const { disable } = inputsRef.current;
         if (disable) {
           disable.fire();
+        }
+      } else {
+        const { start } = inputsRef.current;
+        if (start) {
+          start.fire();
         }
       }
 
       rive.play();
 
-      setIsInitialized(true);
+      isInitializedRef.current = true;
     }
   }, [
     rive,
     isWasmReady,
     bufferLoading,
     buffer,
-    isInitialized,
     cacheInputs,
     theme,
     severity,
-    playAnimation,
+    isDisabled,
   ]);
 
-  // Watch for changes to severity and playAnimation after initialization
+  // Watch for changes to severity and isDisabled after initialization
   useEffect(() => {
-    if (rive && isInitialized) {
-      // Update severity toggles
-      resetSeverityToggles(inputsRef.current);
-      setSeverityToggle(severity, inputsRef.current);
+    // Skip if not initialized yet (initialization effect handles the first trigger)
+    if (!isInitializedRef.current || !rive) {
+      return;
+    }
 
-      // Fire animation on change
-      if (playAnimation) {
-        const { start } = inputsRef.current;
-        if (start) {
-          start.fire();
-        }
-      } else {
-        const { disable } = inputsRef.current;
-        if (disable) {
-          disable.fire();
-        }
+    // Update severity toggles
+    resetSeverityToggles(inputsRef.current);
+    setSeverityToggle(severity, inputsRef.current);
+
+    // Fire animation on change
+    if (isDisabled) {
+      const { disable } = inputsRef.current;
+      if (disable) {
+        disable.fire();
+      }
+    } else {
+      const { start } = inputsRef.current;
+      if (start) {
+        start.fire();
       }
     }
-  }, [severity, playAnimation, rive, isInitialized]);
+  }, [severity, rive, isDisabled]);
 
   // Watch for theme changes
   useEffect(() => {
-    if (rive && isInitialized) {
-      const { dark } = inputsRef.current;
-      if (dark) {
-        dark.value = theme === ThemeType.dark;
-      }
+    // Skip if not initialized yet (initialization effect handles the first theme set)
+    if (!isInitializedRef.current || !rive) {
+      return;
     }
-  }, [theme, rive, isInitialized]);
 
-  // Stop animation on unmount
+    const { dark } = inputsRef.current;
+    if (dark) {
+      dark.value = theme === ThemeType.dark;
+    }
+  }, [theme, rive]);
+
+  // Stop animation on unmount or when rive instance changes
   useEffect(() => {
     return () => {
       if (rive) {
         rive.cleanup();
       }
     };
-  }, []);
+  }, [rive]);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
