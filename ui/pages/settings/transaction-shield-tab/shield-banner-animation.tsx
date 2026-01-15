@@ -64,7 +64,7 @@ const ShieldBannerAnimation = ({
   // but we control when to actually render the component
   const { rive, RiveComponent } = useRive({
     riveFile: riveFile ?? undefined,
-    stateMachines: riveFile ? 'shield_banner_illustration' : undefined,
+    stateMachines: riveFile ? STATE_MACHINE_NAME : undefined,
     autoplay: false,
     layout: new Layout({
       fit: Fit.Contain,
