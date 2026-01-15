@@ -1444,6 +1444,17 @@
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
+    "@segment/loosely-validate-event": {
+      "globals": {
+        "Buffer.byteLength": true
+      },
+      "packages": {
+        "@ngraveio/bc-ur>assert": true,
+        "buffer": true,
+        "@segment/loosely-validate-event>component-type": true,
+        "@segment/loosely-validate-event>join-component": true
+      }
+    },
     "@sentry/browser>@sentry-internal/browser-utils": {
       "globals": {
         "PerformanceEventTiming.prototype": true,
