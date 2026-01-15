@@ -517,7 +517,7 @@
     "@metamask/test-dapp": "9.3.0",
     "@metamask/test-dapp-multichain": "^0.17.0",
     "@metamask/test-dapp-solana": "^0.3.1",
-    "@metamask/test-dapp-tron": "^0.2.1",
+    "@metamask/test-dapp-tron": "^0.3.0",
     "@metamask/test-snaps": "^3.2.0",
     "@noble/ciphers": "^1.3.0",
     "@noble/curves": "^1.9.2",
