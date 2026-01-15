@@ -1,4 +1,3 @@
-import { cloneDeep } from 'lodash';
 import browser from 'webextension-polyfill';
 import type { Hex } from '@metamask/utils';
 
@@ -51,13 +50,13 @@ function makeStorageKey(chainId: string): string {
  * 2. For each chain, saves the cache to browser.storage.local
  * 3. Clears tokensChainsCache from state (since persist: false now)
  *
- * @param originalVersionedData - Versioned MetaMask extension state
- * @returns Updated versioned MetaMask extension state
+ * @param versionedData - Versioned MetaMask extension state
+ * @param changedControllers - Set of controller names that were modified
  */
 export async function migrate(
-  originalVersionedData: VersionedData,
-): Promise<VersionedData> {
-  const versionedData = cloneDeep(originalVersionedData);
+  versionedData: VersionedData,
+  changedControllers: Set<string>,
+): Promise<void> {
   versionedData.meta.version = version;
 
   const tokenListControllerState = versionedData.data
@@ -65,14 +64,14 @@ export async function migrate(
 
   // Check if there's data to migrate
   if (!tokenListControllerState?.tokensChainsCache) {
-    return versionedData;
+    return;
   }
 
   const chainsCache = tokenListControllerState.tokensChainsCache;
   const chainIds = Object.keys(chainsCache) as Hex[];
 
   if (chainIds.length === 0) {
-    return versionedData;
+    return;
   }
 
   try {
@@ -111,6 +110,7 @@ export async function migrate(
     // The controller has persist: false for this field, so this just cleans up
     // any leftover data in state
     tokenListControllerState.tokensChainsCache = {};
+    changedControllers.add('TokenListController');
   } catch (error) {
     console.error(
       `Migration #${version}: Failed to migrate tokensChainsCache to StorageService:`,
@@ -119,7 +119,6 @@ export async function migrate(
     // Don't fail the migration - the cache will self-heal when fetchTokenList runs
     // Just clear the state to prevent double-storage
     tokenListControllerState.tokensChainsCache = {};
+    changedControllers.add('TokenListController');
   }
-
-  return versionedData;
 }

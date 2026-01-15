@@ -29,10 +29,11 @@ describe(`migration #${version}`, () => {
       meta: { version: oldVersion },
       data: {},
     };
+    const changedControllers = new Set<string>();
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
-    expect(newStorage.meta).toStrictEqual({ version });
+    expect(oldStorage.meta).toStrictEqual({ version });
   });
 
   it('does nothing if TokenListController state does not exist', async () => {
@@ -40,11 +41,13 @@ describe(`migration #${version}`, () => {
       meta: { version: oldVersion },
       data: {},
     };
+    const changedControllers = new Set<string>();
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
-    expect(newStorage.data).toStrictEqual({});
+    expect(oldStorage.data).toStrictEqual({});
     expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    expect(changedControllers.size).toBe(0);
   });
 
   it('does nothing if tokensChainsCache is empty', async () => {
@@ -57,14 +60,16 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
-    expect(newStorage.data.TokenListController).toStrictEqual({
+    expect(oldStorage.data.TokenListController).toStrictEqual({
       tokensChainsCache: {},
       preventPollingOnNetworkRestart: false,
     });
     expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    expect(changedControllers.size).toBe(0);
   });
 
   it('migrates tokensChainsCache to browser.storage.local', async () => {
@@ -87,8 +92,9 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
     // Should save to storage
     expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
@@ -97,15 +103,18 @@ describe(`migration #${version}`, () => {
 
     // Should clear state
     expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
+      (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
 
     // Should preserve other state
     expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
+      (oldStorage.data.TokenListController as Record<string, unknown>)
         .preventPollingOnNetworkRestart,
     ).toBe(false);
+
+    // Should mark TokenListController as changed
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
   it('migrates multiple chains in a single storage call', async () => {
@@ -134,8 +143,9 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
-    await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
     // Should save all chains in a single call
     expect(mockBrowser.storage.local.set).toHaveBeenCalledTimes(1);
@@ -145,6 +155,9 @@ describe(`migration #${version}`, () => {
       'storageService:TokenListController:tokensChainsCache:0xa86a':
         chain3Cache,
     });
+
+    // Should mark TokenListController as changed
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
   it('does not overwrite chains that already exist in storage', async () => {
@@ -173,13 +186,17 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
-    await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
     // Should only save the new chain, not overwrite existing
     expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
       'storageService:TokenListController:tokensChainsCache:0x89': newCache,
     });
+
+    // Should mark TokenListController as changed
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
   it('skips storage.set if all chains already exist in storage', async () => {
@@ -206,17 +223,21 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
     // Should not call set since all chains already exist
     expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
 
     // Should still clear state
     expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
+      (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
+
+    // Should still mark TokenListController as changed (state was cleared)
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
   it('handles storage errors gracefully and clears state', async () => {
@@ -234,17 +255,21 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
     // Should not throw
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
-    expect(newStorage.meta.version).toBe(version);
+    expect(oldStorage.meta.version).toBe(version);
 
     // Should still clear state even on error
     expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
+      (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
+
+    // Should mark TokenListController as changed even on error
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 
   it('handles storage.get errors gracefully', async () => {
@@ -262,16 +287,20 @@ describe(`migration #${version}`, () => {
         },
       },
     };
+    const changedControllers = new Set<string>();
 
     // Should not throw
-    const newStorage = await migrate(oldStorage);
+    await migrate(oldStorage, changedControllers);
 
-    expect(newStorage.meta.version).toBe(version);
+    expect(oldStorage.meta.version).toBe(version);
 
     // Should clear state even on error
     expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
+      (oldStorage.data.TokenListController as Record<string, unknown>)
         .tokensChainsCache,
     ).toStrictEqual({});
+
+    // Should mark TokenListController as changed even on error
+    expect(changedControllers.has('TokenListController')).toBe(true);
   });
 });
