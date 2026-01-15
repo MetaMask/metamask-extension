@@ -1,6 +1,7 @@
 import { dataTestIds } from '@metamask/test-dapp-tron';
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
+import { regularDelayMs } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
 const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
