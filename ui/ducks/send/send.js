@@ -72,7 +72,6 @@ import {
   getTokenStandardAndDetails,
   showModal,
   addTransactionAndRouteToConfirmationPage,
-  updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
   getLayer1GasFee,
   gasFeeStopPollingByPollingToken,
@@ -2844,13 +2843,6 @@ export function signTransaction(navigate) {
       await dispatch(
         addHistoryEntry(
           `sendFlow - user clicked next and transaction should be updated in controller`,
-        ),
-      );
-      await dispatch(
-        updateTransactionSendFlowHistory(
-          draftTransaction.id,
-          unapprovedTx.sendFlowHistory?.length || 0,
-          draftTransaction.history,
         ),
       );
       await dispatch(
