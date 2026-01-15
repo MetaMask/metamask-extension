@@ -9,28 +9,39 @@ import {
 } from '@metamask/subscription-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Checkbox, TextVariant } from '@metamask/design-system-react';
+import {
+  AvatarBaseShape,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  AvatarToken,
+  AvatarTokenSize,
+  BadgeWrapper,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
+  Checkbox,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../shared/constants/network';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  BadgeWrapper,
+  AvatarNetwork as DsAvatarNetwork,
+  AvatarNetworkSize as DsAvatarNetworkSize,
+  AvatarToken as DsAvatarToken,
   Box,
   BoxProps,
-  Button,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
 } from '../../components/component-library';
 import {
   Content,
@@ -47,10 +58,8 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant as DSTextVariant,
 } from '../../helpers/constants/design-system';
 import {
@@ -462,9 +471,9 @@ const ShieldPlan = () => {
                       textAlign={TextAlign.Left}
                       className="shield-plan-page__radio-label"
                     >
-                      <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
+                      <Text variant={TextVariant.BodySm}>{plan.label}</Text>
                       <Text
-                        variant={DSTextVariant.headingMd}
+                        variant={TextVariant.HeadingMd}
                         className="shield-plan-page__plan-price"
                       >
                         {plan.price}
@@ -480,8 +489,9 @@ const ShieldPlan = () => {
                         className="shield-plan-page__save-badge"
                       >
                         <Text
-                          variant={DSTextVariant.bodyXsMedium}
-                          color={TextColor.iconInverse}
+                          variant={TextVariant.BodyXs}
+                          fontWeight={FontWeight.Medium}
+                          color={TextColor.InfoInverse}
                         >
                           {t('shieldPlanSave')}
                         </Text>
@@ -498,7 +508,10 @@ const ShieldPlan = () => {
                   onClick={() => setShowPaymentModal(true)}
                   width={BlockSize.Full}
                 >
-                  <Text variant={DSTextVariant.bodyLgMedium}>
+                  <Text
+                    variant={TextVariant.BodyLg}
+                    fontWeight={FontWeight.Medium}
+                  >
                     {t('shieldPlanPayWith')}
                   </Text>
 
@@ -509,34 +522,65 @@ const ShieldPlan = () => {
                   >
                     {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
                     selectedToken ? (
-                      <BadgeWrapper
-                        badge={
-                          <AvatarNetwork
-                            size={AvatarNetworkSize.Xs}
-                            name={
-                              NETWORK_TO_NAME_MAP[
-                                selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                              ]
-                            }
-                            src={
-                              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                selectedToken.chainId
-                              ]
-                            }
+                      <Box className="flex items-center gap-2">
+                        <BadgeWrapper
+                          badge={
+                            <DsAvatarNetwork
+                              size={DsAvatarNetworkSize.Xs}
+                              name={
+                                NETWORK_TO_NAME_MAP[
+                                  selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                                ]
+                              }
+                              src={
+                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                  selectedToken.chainId
+                                ]
+                              }
+                              borderColor={BorderColor.borderMuted}
+                            />
+                          }
+                        >
+                          <DsAvatarToken
+                            name={selectedToken?.symbol || ''}
+                            src={selectedToken?.image || ''}
                             borderColor={BorderColor.borderMuted}
                           />
-                        }
-                      >
-                        <AvatarToken
-                          name={selectedToken?.symbol || ''}
-                          src={selectedToken?.image || ''}
-                          borderColor={BorderColor.borderMuted}
-                        />
-                      </BadgeWrapper>
+                        </BadgeWrapper>
+                        <BadgeWrapper
+                          badge={
+                            <AvatarNetwork
+                              size={AvatarNetworkSize.Xs}
+                              shape={AvatarBaseShape.Circle}
+                              name={
+                                NETWORK_TO_NAME_MAP[
+                                  selectedToken?.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                                ]
+                              }
+                              src={
+                                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                  selectedToken?.chainId as keyof typeof CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP
+                                ]
+                              }
+                              hasBorder
+                            />
+                          }
+                        >
+                          <AvatarToken
+                            name={selectedToken?.symbol || ''}
+                            src={selectedToken?.image || ''}
+                            size={AvatarTokenSize.Md}
+                            hasBorder
+                          />
+                        </BadgeWrapper>
+                      </Box>
                     ) : (
                       <Icon size={IconSize.Xl} name={IconName.Card} />
                     )}
-                    <Text variant={DSTextVariant.bodyLgMedium}>
+                    <Text
+                      variant={TextVariant.BodyLg}
+                      fontWeight={FontWeight.Medium}
+                    >
                       {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
                         ? selectedToken?.symbol || ''
                         : t('shieldPlanCard')}
@@ -551,7 +595,11 @@ const ShieldPlan = () => {
                   {...rowsStyleProps}
                   display={Display.Block}
                 >
-                  <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
+                  <Text
+                    variant={TextVariant.BodyLg}
+                    fontWeight={FontWeight.Medium}
+                    className="mb-4"
+                  >
                     {t('shieldPlanDetails')}
                   </Text>
                   <Box
@@ -569,10 +617,10 @@ const ShieldPlan = () => {
                           <Icon
                             size={IconSize.Sm}
                             name={IconName.Check}
-                            color={IconColor.primaryDefault}
+                            color={IconColor.PrimaryDefault}
                           />
                         </Box>
-                        <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
+                        <Text variant={TextVariant.BodyMd}>{detail}</Text>
                       </Box>
                     ))}
                     {isRewardsSeason && planDetailsRewardsText && (
@@ -593,9 +641,9 @@ const ShieldPlan = () => {
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
                   selectedPlan === RECURRING_INTERVALS.month && (
                     <Text
-                      variant={DSTextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                      marginTop={4}
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                      className="mt-4"
                     >
                       * {t('shieldPlanCryptoMonthlyNote')}
                     </Text>
@@ -640,16 +688,16 @@ const ShieldPlan = () => {
               <Button
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Primary}
-                block
+                isFullWidth
                 onClick={handleSubscription}
                 data-testid="shield-plan-continue-button"
               >
                 {t('continue')}
               </Button>
               <Text
-                variant={DSTextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.Center}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                className="text-center"
               >
                 {selectedPlan === RECURRING_INTERVALS.year
                   ? t('shieldPlanFooterNoteYearly')
