@@ -44,6 +44,7 @@ import { type BridgeAppState } from '../../../../../ducks/bridge/selectors';
 import { getBridgeSortedAssets } from '../../../../../ducks/bridge/asset-selectors';
 import { usePopularTokens } from '../../../../../hooks/bridge/usePopularTokens';
 import { type BridgeToken } from '../../../../../ducks/bridge/types';
+import { toBridgeToken } from '../../../../../ducks/bridge/utils';
 import { NetworkPicker } from './network-picker';
 import { BridgeAssetList } from './lazy-asset-list';
 
@@ -109,7 +110,7 @@ export const BridgeAssetPicker = ({
           return matchesChainIdFilter;
         }),
         (a) => a.assetId?.toLowerCase(),
-      ),
+      ).map((token)=>toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
     [chainIdsSet, selectedAsset],
   );

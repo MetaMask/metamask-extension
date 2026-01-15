@@ -108,8 +108,9 @@ const getERC20AssetsWithBalance = createSelector(
             : undefined);
         const assetId = toAssetId(lowercasedTokenAddress, caipChainId);
         if (token && assetId) {
-          const { decimals, symbol, name } = token;
+          const { decimals, symbol, name, rwaData } = token;
           assetsWithBalance.push({
+            rwaData,
             balance: convertHexBalanceToDecimal(balance, decimals),
             chainId: caipChainId,
             assetId,

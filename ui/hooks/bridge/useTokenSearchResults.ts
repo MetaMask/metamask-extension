@@ -34,7 +34,7 @@ export const useTokenSearchResults = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const balanceByAssetId = useSelector((state: BridgeAppState) =>
+  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
     getBridgeAssetsByAssetId(state, accountGroup.id),
   );
 
@@ -79,22 +79,15 @@ export const useTokenSearchResults = ({
             // Clear the list on initial fetch and if token data is not empty
             // If fetched data is empty, preserve the previous state
             ...(cursor || tokens.length === 0 ? currentSearchResults : []),
-            ...tokens.map(toBridgeToken).map((token) => {
-              // Balance keys are lowercased for easier lookup
-              const balanceData =
-                balanceByAssetId?.[
-                  token.assetId.toLowerCase() as keyof typeof balanceByAssetId
-                ];
-              if (balanceData) {
-                return {
-                  ...token,
-                  accountType: balanceData.accountType,
-                  balance: balanceData.balance,
-                  tokenFiatAmount: balanceData.tokenFiatAmount,
-                };
-              }
-              return token;
-            }),
+            ...tokens.map((token) =>
+              toBridgeToken(
+                token,
+                ownedAssetsByAssetId?.[
+                  // Balance keys are lowercased for easier lookup
+                  token.assetId.toLowerCase() as keyof typeof ownedAssetsByAssetId
+                ],
+              ),
+            ),
           ]);
           // Only update cursor if fetch succeeds
           // If fetching fails the failed page will be retried next time the callback runs
@@ -104,7 +97,7 @@ export const useTokenSearchResults = ({
           setIsSearchResultsLoading(false);
         });
     },
-    [balanceByAssetId, chainIds, abortControllerRef],
+    [ownedAssetsByAssetId, chainIds, abortControllerRef],
   );
 
   const debouncedFetchSearchResults = useRef(
@@ -133,7 +126,7 @@ export const useTokenSearchResults = ({
     setHasMoreResults(false);
     if (searchQuery.length > 0) {
       setIsSearchResultsLoading(true);
-      setSearchResultsWithBalance(filteredAssetsToInclude.map(toBridgeToken));
+      setSearchResultsWithBalance(filteredAssetsToInclude);
       // Debounce the initial fetch until the user stops typing
       debouncedFetchSearchResults.current(searchQuery, filteredAssetsToInclude);
     }

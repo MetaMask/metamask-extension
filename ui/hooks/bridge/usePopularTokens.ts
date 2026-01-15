@@ -35,7 +35,7 @@ export const usePopularTokens = ({
   const [accountGroup] = useSelector((state: BridgeAppState) =>
     getAccountGroupsByAddress(state, [accountAddress]),
   );
-  const balanceByAssetId = useSelector((state: BridgeAppState) =>
+  const ownedAssetsByAssetId = useSelector((state: BridgeAppState) =>
     getBridgeAssetsByAssetId(state, accountGroup.id),
   );
 
@@ -56,22 +56,16 @@ export const usePopularTokens = ({
     }, [assetsToInclude]);
 
   const tokenListWithBalance = useMemo(() => {
-    return (
-      tokenList?.map(toBridgeToken).map((token) => {
-        // Balance keys are lowercased for easier lookup
-        const balanceData =
-          balanceByAssetId?.[
-            token.assetId.toLowerCase() as keyof typeof balanceByAssetId
-          ];
-        return {
-          ...token,
-          accountType: balanceData?.accountType,
-          balance: balanceData?.balance,
-          tokenFiatAmount: balanceData?.tokenFiatAmount,
-        };
-      }) ?? assetsToInclude.map(toBridgeToken)
+    return tokenList?.map((token) =>
+      toBridgeToken(
+        token,
+        ownedAssetsByAssetId?.[
+          // Balance keys are lowercased for easier lookup
+          token.assetId.toLowerCase() as keyof typeof ownedAssetsByAssetId
+        ],
+      ),
     );
-  }, [tokenList, assetsToInclude, balanceByAssetId]);
+  }, [tokenList, assetsToInclude, ownedAssetsByAssetId]);
 
   useEffect(() => {
     return () => {
@@ -81,9 +75,9 @@ export const usePopularTokens = ({
 
   return {
     popularTokensList:
-      isTokenListLoading || tokenList?.length === 0
-        ? assetsToInclude.map(toBridgeToken)
-        : tokenListWithBalance,
-    isLoading: isTokenListLoading || tokenList?.length === 0,
+      tokenListWithBalance && tokenListWithBalance.length > 0
+        ? tokenListWithBalance
+        : assetsToInclude,
+    isLoading: isTokenListLoading || tokenListWithBalance?.length === 0,
   };
 };

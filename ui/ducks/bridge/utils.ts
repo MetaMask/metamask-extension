@@ -195,7 +195,8 @@ export const isNetworkAdded = (
 ) => availableNetworks.some((network) => network.chainId === chainId);
 
 export const toBridgeToken = (
-  payload: TokenPayload['payload'],
+  payload: TokenPayload,
+  tokenMetadata?: Partial<BridgeToken>,
 ): BridgeToken => {
   const {
     assetId,
@@ -205,18 +206,20 @@ export const toBridgeToken = (
     balance,
     tokenFiatAmount,
     accountType,
+    rwaData,
   } = payload;
   const { chainId } = parseCaipAssetType(assetId);
   return {
     decimals,
     symbol,
     name: name ?? symbol,
-    balance: balance ?? '0',
     chainId,
     image: getAssetImageUrl(assetId, chainId),
     assetId,
-    tokenFiatAmount,
-    accountType,
+    balance: tokenMetadata?.balance ?? balance ?? '0',
+    tokenFiatAmount: tokenMetadata?.tokenFiatAmount ?? tokenFiatAmount,
+    accountType: tokenMetadata?.accountType ?? accountType,
+    rwaData: tokenMetadata?.rwaData ?? rwaData,
   };
 };
 
@@ -228,13 +231,9 @@ export const getDefaultToToken = (
   // If commonPair is defined and is not the same as the fromToken, return it
   if (
     commonPair &&
-    fromAssetId.toLowerCase() !== commonPair?.assetId.toLowerCase()
+    fromAssetId.toLowerCase() !== commonPair.assetId.toLowerCase()
   ) {
-    const { chainId } = parseCaipAssetType(commonPair.assetId);
-    return toBridgeToken({
-      ...commonPair,
-      chainId,
-    });
+    return toBridgeToken(commonPair);
   }
 
   // Last resort: native token

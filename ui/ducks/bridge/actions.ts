@@ -140,7 +140,7 @@ export const setEvmBalances = (assetId: CaipAssetType) => {
   };
 };
 
-export const setFromToken = (token: NonNullable<TokenPayload['payload']>) => {
+export const setFromToken = (token: TokenPayload) => {
   return async (
     dispatch: MetaMaskReduxDispatch,
     getState: () => BridgeAppState,

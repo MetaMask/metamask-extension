@@ -100,8 +100,17 @@ const bridgeSlice = createSlice({
   name: 'bridge',
   initialState: { ...initialState },
   reducers: {
-    setFromToken: (state, { payload }: TokenPayload) => {
-      const currentFromToken = { ...state.fromToken };
+    setFromToken: (state, { payload }: { payload: TokenPayload }) => {
+      const currentFromToken = state.fromToken;
+      // Set toToken to previous fromToken if new fromToken is the same as the current toToken
+      if (
+        currentFromToken?.assetId &&
+        state.toToken?.assetId &&
+        currentFromToken.assetId.toLowerCase() ===
+          state.toToken.assetId.toLowerCase()
+      ) {
+        state.toToken = currentFromToken;
+      }
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
@@ -109,17 +118,8 @@ const bridgeSlice = createSlice({
       state.fromTokenInputValue = initialState.fromTokenInputValue;
       state.txAlertStatus = initialState.txAlertStatus;
       state.txAlert = initialState.txAlert;
-      // Set toToken to previous fromToken if new fromToken is the same as the current toToken
-      if (
-        state.fromToken?.assetId &&
-        state.toToken?.assetId &&
-        state.fromToken.assetId.toLowerCase() ===
-          state.toToken.assetId.toLowerCase()
-      ) {
-        state.toToken = currentFromToken;
-      }
     },
-    setToToken: (state, { payload }: TokenPayload) => {
+    setToToken: (state, { payload }: { payload: TokenPayload }) => {
       state.toToken = payload ? toBridgeToken(payload) : null;
     },
     setFromTokenInputValue: (
