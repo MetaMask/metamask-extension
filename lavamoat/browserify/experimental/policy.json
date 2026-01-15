@@ -1864,6 +1864,18 @@
         "uuid": true
       }
     },
+    "@metamask/profile-metrics-controller>@metamask/polling-controller": {
+      "globals": {
+        "clearTimeout": true,
+        "console.error": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "fast-json-stable-stringify": true,
+        "uuid": true
+      }
+    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1927,7 +1939,7 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
