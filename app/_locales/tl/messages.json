@@ -888,7 +888,7 @@
     "message": "Kapag kinumpirma mo ang kahilingang ito, pinapayagan mo ang scammer na i-withdraw at gastusin ang mga asset mo. Hindi mo na mababawi ang mga iyon."
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third party na kilala sa mga panloloko ang lahat asset mo."
+    "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third-party na kilala sa mga panloloko ang lahat asset mo."
   },
   "blockaidDescriptionBlurFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa Blur."
@@ -906,10 +906,10 @@
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa OpenSea."
   },
   "blockaidDescriptionTransferFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
+    "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third-party na kilala sa mga panloloko ang lahat ng asset mo."
   },
   "blockaidMessage": {
-    "message": "Pagpapanatili ng privacy - walang data na ibinabahagi sa mga third party. Available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
+    "message": "Pagpapanatili ng privacy - walang data na ibinabahagi sa mga third-party. Available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
   },
   "blockaidTitleDeceptive": {
     "message": "Isa itong mapanlinlang na kahilingan"
@@ -1983,7 +1983,7 @@
     "message": "Inire-redirect sa MetaMask"
   },
   "deepLink_ThirdPartyDescription": {
-    "message": "Ipinadala ka rito ng third party, hindi ng MetaMask.$1",
+    "message": "Ipinadala ka rito ng third-party, hindi ng MetaMask.$1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
   "deepLink_theBuyPage": {
@@ -2168,7 +2168,7 @@
     "message": "Ipakita ang NFT media"
   },
   "displayNftMediaDescription": {
-    "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
+    "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third-party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
   },
   "doNotShare": {
     "message": "Huwag itong ibahagi kahit kanino"
@@ -2423,7 +2423,7 @@
     "message": "Pinahihintulutan ng MetaMask na makita mo ang mga ENS mula mismo sa address bar ng iyong browser. Here's how it works:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
-    "message": "Mangyaring tandaan na ang paggamit ng tampok na ito ay naglalantad sa iyong IP address sa serbisyong third party."
+    "message": "Mangyaring tandaan na ang paggamit ng tampok na ito ay naglalantad sa iyong IP address sa serbisyong third-party."
   },
   "ensDomainsSettingDescriptionPart1": {
     "message": "Sinusuri ng MetaMask ang kontrata ng ENS ng Ethereum para mahanap ang code na konektado sa pangalan ng ENS."
@@ -2611,7 +2611,7 @@
     "message": "Mga mungkahing palayaw"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third party."
+    "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third-party."
   },
   "failed": {
     "message": "Pumalya"
@@ -4434,7 +4434,7 @@
     "message": "Tulungan kami na paghusayin ang iyong karanasan"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
+    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third-party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "Maglagay ng wastong URL"
@@ -4972,7 +4972,7 @@
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "popularNetworkAddToolTip": {
-    "message": "Umaasa sa mga third party ang ilan sa mga network na ito. Ang mga koneksyong ito ay maaaring hindi gaanong maaasahan o nagbibigay-daan sa mga third-party na sumubaybay ng aktibidad.",
+    "message": "Umaasa sa mga third-party ang ilan sa mga network na ito. Ang mga koneksyong ito ay maaaring hindi gaanong maaasahan o nagbibigay-daan sa mga third-party na sumubaybay ng aktibidad.",
     "description": "Learn more link"
   },
   "popularNetworks": {
@@ -8102,7 +8102,7 @@
     "message": "Maramihang kahilingan sa balanse ng account"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third party ang iyong mga account sa isa't isa."
+    "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third-party ang iyong mga account sa isa't isa."
   },
   "useNftDetection": {
     "message": "Awtomatikong tuklasin and mga NFT"
@@ -8133,7 +8133,7 @@
     "message": "Gumamit ng smart account"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
+    "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third-party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"

@@ -139,7 +139,7 @@ describe('DisconnectPermissionsModal', () => {
       <DisconnectPermissionsModal {...args} />,
       mockStore,
     );
-    expect(getByText('Token Stream')).toBeInTheDocument();
+    expect(getByText('Token stream')).toBeInTheDocument();
     expect(getByText('1 ETH per second • 0x12345...67890')).toBeInTheDocument();
   });
 });

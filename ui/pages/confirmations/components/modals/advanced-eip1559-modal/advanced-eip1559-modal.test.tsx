@@ -58,7 +58,7 @@ describe('AdvancedEIP1559Modal', () => {
 
   it('renders the modal with header', () => {
     const { getByText } = render();
-    expect(getByText('Advanced Network Fee')).toBeInTheDocument();
+    expect(getByText('Advanced network fee')).toBeInTheDocument();
   });
 
   it('renders all gas input components', () => {
