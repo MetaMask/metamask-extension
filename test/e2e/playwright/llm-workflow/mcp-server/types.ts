@@ -119,6 +119,9 @@ export type LaunchInput = {
   };
   slowMo?: number;
   extensionPath?: string;
+  goal?: string;
+  flowTags?: string[];
+  tags?: string[];
 };
 
 /**
@@ -209,10 +212,31 @@ export type WaitForInput = TargetSelection & {
 };
 
 /**
+ * Knowledge scope for cross-session queries
+ * - "current": only active session
+ * - "all": all sessions under test-artifacts/llm-knowledge/
+ * - { sessionId: "mm-..." }: a specific prior session
+ */
+export type KnowledgeScope = 'current' | 'all' | { sessionId: string };
+
+/**
+ * Filters for knowledge queries
+ */
+export type KnowledgeFilters = {
+  flowTag?: string;
+  tag?: string;
+  screen?: string;
+  sinceHours?: number;
+  gitBranch?: string;
+};
+
+/**
  * mm_knowledge_last input
  */
 export type KnowledgeLastInput = {
   n?: number;
+  scope?: KnowledgeScope;
+  filters?: KnowledgeFilters;
 };
 
 /**
@@ -221,6 +245,8 @@ export type KnowledgeLastInput = {
 export type KnowledgeSearchInput = {
   query: string;
   limit?: number;
+  scope?: KnowledgeScope;
+  filters?: KnowledgeFilters;
 };
 
 /**
@@ -228,6 +254,15 @@ export type KnowledgeSearchInput = {
  */
 export type KnowledgeSummarizeInput = {
   sessionId?: string;
+  scope?: KnowledgeScope;
+};
+
+/**
+ * mm_knowledge_sessions input
+ */
+export type KnowledgeSessionsInput = {
+  limit?: number;
+  filters?: KnowledgeFilters;
 };
 
 // =============================================================================
@@ -420,6 +455,28 @@ export type KnowledgeSummarizeResult = {
   recipe: RecipeStep[];
 };
 
+/**
+ * Session metadata summary for mm_knowledge_sessions result
+ */
+export type SessionSummary = {
+  sessionId: string;
+  createdAt: string;
+  goal?: string;
+  flowTags: string[];
+  tags: string[];
+  git?: {
+    branch?: string;
+    commit?: string;
+  };
+};
+
+/**
+ * mm_knowledge_sessions result
+ */
+export type KnowledgeSessionsResult = {
+  sessions: SessionSummary[];
+};
+
 // =============================================================================
 // StepRecord Schema (v1)
 // =============================================================================
@@ -521,7 +578,53 @@ export type StepRecord = {
   outcome: StepRecordOutcome;
   observation: StepRecordObservation;
   artifacts?: StepRecordArtifacts;
+  labels?: string[];
 };
+
+/**
+ * Session metadata stored in session.json
+ */
+export type SessionMetadata = {
+  schemaVersion: 1;
+  sessionId: string;
+  createdAt: string;
+  goal?: string;
+  flowTags: string[];
+  tags: string[];
+  git?: StepRecordGit;
+  build?: StepRecordBuild;
+  launch: {
+    stateMode: 'default' | 'onboarding' | 'custom';
+    fixturePreset?: string | null;
+    extensionPath?: string;
+    ports?: {
+      anvil?: number;
+      fixtureServer?: number;
+    };
+  };
+};
+
+export const FLOW_TAGS = [
+  'send',
+  'swap',
+  'connect',
+  'sign',
+  'onboarding',
+  'settings',
+  'tx-confirmation',
+] as const;
+
+export type FlowTag = (typeof FLOW_TAGS)[number];
+
+export const STEP_LABELS = [
+  'discovery',
+  'navigation',
+  'interaction',
+  'confirmation',
+  'error-recovery',
+] as const;
+
+export type StepLabel = (typeof STEP_LABELS)[number];
 
 // =============================================================================
 // Discovery Types

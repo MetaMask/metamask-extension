@@ -8,9 +8,11 @@ import type { FixtureData, LaunchOptions, ExtensionState } from '../types';
 import {
   type SessionState,
   type LaunchInput,
+  type SessionMetadata,
   ErrorCodes,
   generateSessionId,
 } from './types';
+import { knowledgeStore } from './knowledge-store';
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
@@ -113,11 +115,13 @@ export class SessionManager {
     const launcher = await launchMetaMask(launchOptions);
     const extensionState = await launcher.getState();
 
+    const startedAt = new Date().toISOString();
+
     this.activeSession = {
       state: {
         sessionId,
         extensionId: extensionState.extensionId,
-        startedAt: new Date().toISOString(),
+        startedAt,
         ports: {
           anvil: launchOptions.ports?.anvil ?? DEFAULT_ANVIL_PORT,
           fixtureServer:
@@ -127,6 +131,32 @@ export class SessionManager {
       },
       launcher,
     };
+
+    const sessionMetadata: SessionMetadata = {
+      schemaVersion: 1,
+      sessionId,
+      createdAt: startedAt,
+      goal: input.goal,
+      flowTags: input.flowTags ?? [],
+      tags: input.tags ?? [],
+      git: knowledgeStore.getGitInfoSync(),
+      build: {
+        buildType: 'build:test',
+        extensionPathResolved: input.extensionPath,
+      },
+      launch: {
+        stateMode,
+        fixturePreset: input.fixturePreset ?? null,
+        extensionPath: input.extensionPath,
+        ports: {
+          anvil: launchOptions.ports?.anvil ?? DEFAULT_ANVIL_PORT,
+          fixtureServer:
+            launchOptions.ports?.fixtureServer ?? DEFAULT_FIXTURE_SERVER_PORT,
+        },
+      },
+    };
+
+    await knowledgeStore.writeSessionMetadata(sessionMetadata);
 
     return {
       sessionId,

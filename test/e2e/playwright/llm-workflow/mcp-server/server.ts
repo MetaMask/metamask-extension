@@ -22,6 +22,7 @@ import type {
   KnowledgeLastInput,
   KnowledgeSearchInput,
   KnowledgeSummarizeInput,
+  KnowledgeSessionsInput,
 } from './types';
 
 import { handleBuild } from './tools/build';
@@ -40,6 +41,7 @@ import {
   handleKnowledgeLast,
   handleKnowledgeSearch,
   handleKnowledgeSummarize,
+  handleKnowledgeSessions,
 } from './tools/knowledge';
 import { sessionManager } from './session-manager';
 
@@ -112,6 +114,21 @@ const TOOL_DEFINITIONS = [
         extensionPath: {
           type: 'string',
           description: 'Custom path to extension directory',
+        },
+        goal: {
+          type: 'string',
+          description: 'Goal or task description for this session',
+        },
+        flowTags: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'Flow tags for categorization (e.g., send, swap, connect, sign)',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Free-form tags for ad-hoc filtering',
         },
       },
       additionalProperties: false,
@@ -373,6 +390,31 @@ const TOOL_DEFINITIONS = [
           maximum: 200,
           default: 20,
         },
+        scope: {
+          oneOf: [
+            { type: 'string', enum: ['current', 'all'] },
+            {
+              type: 'object',
+              properties: { sessionId: { type: 'string', minLength: 4 } },
+              required: ['sessionId'],
+              additionalProperties: false,
+            },
+          ],
+          default: 'current',
+          description:
+            'current: only active session, all: all sessions, {sessionId}: specific session',
+        },
+        filters: {
+          type: 'object',
+          properties: {
+            flowTag: { type: 'string', minLength: 1 },
+            tag: { type: 'string', minLength: 1 },
+            screen: { type: 'string', minLength: 1 },
+            sinceHours: { type: 'integer', minimum: 1, maximum: 720 },
+            gitBranch: { type: 'string', minLength: 1 },
+          },
+          additionalProperties: false,
+        },
       },
       additionalProperties: false,
     },
@@ -380,7 +422,7 @@ const TOOL_DEFINITIONS = [
   {
     name: 'mm_knowledge_search',
     description:
-      'Search step records by tool name, screen, testId, or accessibility names.',
+      'Search step records by tool name, screen, testId, or accessibility names. Default searches all sessions.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -395,6 +437,31 @@ const TOOL_DEFINITIONS = [
           maximum: 100,
           default: 20,
         },
+        scope: {
+          oneOf: [
+            { type: 'string', enum: ['current', 'all'] },
+            {
+              type: 'object',
+              properties: { sessionId: { type: 'string', minLength: 4 } },
+              required: ['sessionId'],
+              additionalProperties: false,
+            },
+          ],
+          default: 'all',
+          description:
+            'current: only active session, all: all sessions (default), {sessionId}: specific session',
+        },
+        filters: {
+          type: 'object',
+          properties: {
+            flowTag: { type: 'string', minLength: 1 },
+            tag: { type: 'string', minLength: 1 },
+            screen: { type: 'string', minLength: 1 },
+            sinceHours: { type: 'integer', minimum: 1, maximum: 720 },
+            gitBranch: { type: 'string', minLength: 1 },
+          },
+          additionalProperties: false,
+        },
       },
       required: ['query'],
       additionalProperties: false,
@@ -408,7 +475,48 @@ const TOOL_DEFINITIONS = [
       properties: {
         sessionId: {
           type: 'string',
-          description: 'Session to summarize (defaults to current)',
+          description: 'Deprecated: use scope. Session to summarize.',
+        },
+        scope: {
+          oneOf: [
+            { type: 'string', enum: ['current'] },
+            {
+              type: 'object',
+              properties: { sessionId: { type: 'string', minLength: 4 } },
+              required: ['sessionId'],
+              additionalProperties: false,
+            },
+          ],
+          default: 'current',
+          description:
+            'current: active session, {sessionId}: specific session. Cannot use "all".',
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_knowledge_sessions',
+    description:
+      'List recent sessions with metadata for cross-session knowledge retrieval.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        limit: {
+          type: 'integer',
+          minimum: 1,
+          maximum: 50,
+          default: 10,
+        },
+        filters: {
+          type: 'object',
+          properties: {
+            flowTag: { type: 'string', minLength: 1 },
+            tag: { type: 'string', minLength: 1 },
+            sinceHours: { type: 'integer', minimum: 1, maximum: 720 },
+            gitBranch: { type: 'string', minLength: 1 },
+          },
+          additionalProperties: false,
         },
       },
       additionalProperties: false,
@@ -491,6 +599,11 @@ async function main() {
       case 'mm_knowledge_summarize':
         response = await handleKnowledgeSummarize(
           args as KnowledgeSummarizeInput,
+        );
+        break;
+      case 'mm_knowledge_sessions':
+        response = await handleKnowledgeSessions(
+          args as KnowledgeSessionsInput,
         );
         break;
       default:

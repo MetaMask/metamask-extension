@@ -10,6 +10,12 @@ import type {
   A11yNodeTrimmed,
   KnowledgeStepSummary,
   RecipeStep,
+  SessionMetadata,
+  KnowledgeScope,
+  KnowledgeFilters,
+  SessionSummary,
+  StepRecordGit,
+  StepRecordBuild,
 } from './types';
 import {
   generateFilesafeTimestamp,
@@ -24,8 +30,134 @@ const SCHEMA_VERSION = 1;
 export class KnowledgeStore {
   private knowledgeRoot: string;
 
+  private sessionMetadataCache: Map<string, SessionMetadata | null> = new Map();
+
   constructor(rootDir?: string) {
     this.knowledgeRoot = rootDir ?? path.join(process.cwd(), KNOWLEDGE_ROOT);
+  }
+
+  async writeSessionMetadata(metadata: SessionMetadata): Promise<string> {
+    const sessionDir = path.join(this.knowledgeRoot, metadata.sessionId);
+    await fs.mkdir(sessionDir, { recursive: true });
+
+    const filepath = path.join(sessionDir, 'session.json');
+    await fs.writeFile(filepath, JSON.stringify(metadata, null, 2));
+
+    this.sessionMetadataCache.set(metadata.sessionId, metadata);
+
+    return filepath;
+  }
+
+  async readSessionMetadata(
+    sessionId: string,
+  ): Promise<SessionMetadata | null> {
+    if (this.sessionMetadataCache.has(sessionId)) {
+      return this.sessionMetadataCache.get(sessionId) ?? null;
+    }
+
+    const filepath = path.join(this.knowledgeRoot, sessionId, 'session.json');
+
+    try {
+      const content = await fs.readFile(filepath, 'utf-8');
+      const metadata = JSON.parse(content) as SessionMetadata;
+      this.sessionMetadataCache.set(sessionId, metadata);
+      return metadata;
+    } catch {
+      this.sessionMetadataCache.set(sessionId, null);
+      return null;
+    }
+  }
+
+  async listSessions(
+    limit: number,
+    filters?: KnowledgeFilters,
+  ): Promise<SessionSummary[]> {
+    const sessionIds = await this.getAllSessionIds();
+    const sessions: { metadata: SessionMetadata; createdAt: Date }[] = [];
+
+    for (const sid of sessionIds) {
+      const metadata = await this.readSessionMetadata(sid);
+      if (!metadata) continue;
+
+      if (!this.matchesFilters(metadata, filters)) continue;
+
+      sessions.push({
+        metadata,
+        createdAt: new Date(metadata.createdAt),
+      });
+    }
+
+    sessions.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return sessions.slice(0, limit).map((s) => ({
+      sessionId: s.metadata.sessionId,
+      createdAt: s.metadata.createdAt,
+      goal: s.metadata.goal,
+      flowTags: s.metadata.flowTags,
+      tags: s.metadata.tags,
+      git: s.metadata.git
+        ? { branch: s.metadata.git.branch, commit: s.metadata.git.commit }
+        : undefined,
+    }));
+  }
+
+  private matchesFilters(
+    metadata: SessionMetadata,
+    filters?: KnowledgeFilters,
+  ): boolean {
+    if (!filters) return true;
+
+    if (filters.flowTag && !metadata.flowTags.includes(filters.flowTag)) {
+      return false;
+    }
+
+    if (filters.tag && !metadata.tags.includes(filters.tag)) {
+      return false;
+    }
+
+    if (filters.gitBranch && metadata.git?.branch !== filters.gitBranch) {
+      return false;
+    }
+
+    if (filters.sinceHours) {
+      const cutoff = Date.now() - filters.sinceHours * 60 * 60 * 1000;
+      const createdAt = new Date(metadata.createdAt).getTime();
+      if (createdAt < cutoff) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  async resolveSessionIds(
+    scope: KnowledgeScope,
+    currentSessionId: string | undefined,
+    filters?: KnowledgeFilters,
+  ): Promise<string[]> {
+    if (scope === 'current') {
+      return currentSessionId ? [currentSessionId] : [];
+    }
+
+    if (typeof scope === 'object' && 'sessionId' in scope) {
+      return [scope.sessionId];
+    }
+
+    const allIds = await this.getAllSessionIds();
+
+    if (!filters) return allIds;
+
+    const filtered: string[] = [];
+    for (const sid of allIds) {
+      const metadata = await this.readSessionMetadata(sid);
+      if (metadata && this.matchesFilters(metadata, filters)) {
+        filtered.push(sid);
+      } else if (!metadata) {
+        filtered.push(sid);
+      }
+    }
+
+    return filtered;
   }
 
   async recordStep(params: {
@@ -47,6 +179,11 @@ export class KnowledgeStore {
     await fs.mkdir(stepsDir, { recursive: true });
 
     const sanitizedInput = this.sanitizeInput(params.toolName, params.input);
+    const labels = this.computeLabels(
+      params.toolName,
+      params.target,
+      params.outcome,
+    );
 
     const stepRecord: StepRecord = {
       schemaVersion: SCHEMA_VERSION,
@@ -66,6 +203,7 @@ export class KnowledgeStore {
       },
       outcome: params.outcome,
       observation: params.observation,
+      labels,
     };
 
     if (params.screenshotPath) {
@@ -86,17 +224,67 @@ export class KnowledgeStore {
     return filepath;
   }
 
+  private computeLabels(
+    toolName: string,
+    target?: StepRecordTool['target'],
+    outcome?: StepRecordOutcome,
+  ): string[] {
+    const labels: string[] = [];
+
+    const discoveryTools = [
+      'mm_describe_screen',
+      'mm_list_testids',
+      'mm_accessibility_snapshot',
+      'mm_get_state',
+    ];
+    const navigationTools = ['mm_navigate', 'mm_wait_for_notification'];
+    const interactionTools = ['mm_click', 'mm_type', 'mm_wait_for'];
+
+    if (discoveryTools.includes(toolName)) {
+      labels.push('discovery');
+    } else if (navigationTools.includes(toolName)) {
+      labels.push('navigation');
+    } else if (interactionTools.includes(toolName)) {
+      labels.push('interaction');
+
+      const targetStr = JSON.stringify(target ?? {}).toLowerCase();
+      if (
+        targetStr.includes('confirm') ||
+        targetStr.includes('approve') ||
+        targetStr.includes('submit')
+      ) {
+        labels.push('confirmation');
+      }
+    }
+
+    if (outcome && !outcome.ok) {
+      labels.push('error-recovery');
+    }
+
+    return labels;
+  }
+
   async getLastSteps(
-    sessionId: string | undefined,
     n: number,
+    scope: KnowledgeScope,
+    currentSessionId: string | undefined,
+    filters?: KnowledgeFilters,
   ): Promise<KnowledgeStepSummary[]> {
-    const sessionIds = sessionId ? [sessionId] : await this.getAllSessionIds();
+    const sessionIds = await this.resolveSessionIds(
+      scope,
+      currentSessionId,
+      filters,
+    );
 
     const allSteps: { step: StepRecord; filepath: string }[] = [];
 
     for (const sid of sessionIds) {
       const steps = await this.loadSessionSteps(sid);
-      allSteps.push(...steps);
+      for (const s of steps) {
+        if (this.stepMatchesFilters(s.step, filters)) {
+          allSteps.push(s);
+        }
+      }
     }
 
     allSteps.sort(
@@ -111,9 +299,15 @@ export class KnowledgeStore {
   async searchSteps(
     query: string,
     limit: number,
-    sessionId?: string,
+    scope: KnowledgeScope,
+    currentSessionId: string | undefined,
+    filters?: KnowledgeFilters,
   ): Promise<KnowledgeStepSummary[]> {
-    const sessionIds = sessionId ? [sessionId] : await this.getAllSessionIds();
+    const sessionIds = await this.resolveSessionIds(
+      scope,
+      currentSessionId,
+      filters,
+    );
 
     const matches: { step: StepRecord; score: number }[] = [];
     const queryLower = query.toLowerCase();
@@ -122,6 +316,8 @@ export class KnowledgeStore {
       const steps = await this.loadSessionSteps(sid);
 
       for (const { step } of steps) {
+        if (!this.stepMatchesFilters(step, filters)) continue;
+
         const score = this.computeSearchScore(step, queryLower);
         if (score > 0) {
           matches.push({ step, score });
@@ -132,6 +328,22 @@ export class KnowledgeStore {
     matches.sort((a, b) => b.score - a.score);
 
     return matches.slice(0, limit).map((m) => this.summarizeStep(m.step));
+  }
+
+  private stepMatchesFilters(
+    step: StepRecord,
+    filters?: KnowledgeFilters,
+  ): boolean {
+    if (!filters) return true;
+
+    if (
+      filters.screen &&
+      step.observation?.state?.currentScreen !== filters.screen
+    ) {
+      return false;
+    }
+
+    return true;
   }
 
   async summarizeSession(sessionId: string): Promise<{
@@ -181,7 +393,7 @@ export class KnowledgeStore {
     return filepath;
   }
 
-  private async getAllSessionIds(): Promise<string[]> {
+  async getAllSessionIds(): Promise<string[]> {
     try {
       const entries = await fs.readdir(this.knowledgeRoot, {
         withFileTypes: true,
@@ -192,6 +404,10 @@ export class KnowledgeStore {
     } catch {
       return [];
     }
+  }
+
+  getGitInfoSync(): StepRecordGit {
+    return this.getGitInfo();
   }
 
   private async loadSessionSteps(

@@ -33,6 +33,9 @@ export type {
   KnowledgeLastInput,
   KnowledgeSearchInput,
   KnowledgeSummarizeInput,
+  KnowledgeSessionsInput,
+  KnowledgeScope,
+  KnowledgeFilters,
   // Tool outputs
   BuildResult,
   LaunchResult,
@@ -55,6 +58,8 @@ export type {
   KnowledgeSearchResult,
   RecipeStep,
   KnowledgeSummarizeResult,
+  SessionSummary,
+  KnowledgeSessionsResult,
   // StepRecord types
   StepRecordEnvironment,
   StepRecordGit,
@@ -65,6 +70,10 @@ export type {
   StepRecordObservation,
   StepRecordArtifacts,
   StepRecord,
+  // Session metadata types
+  SessionMetadata,
+  FlowTag,
+  StepLabel,
   // Discovery types
   ActionableRole,
   ImportantRole,
@@ -85,6 +94,8 @@ export {
   IMPORTANT_ROLES,
   INCLUDED_ROLES,
   SENSITIVE_FIELD_PATTERNS,
+  FLOW_TAGS,
+  STEP_LABELS,
 } from './types';
 
 // =============================================================================
@@ -138,4 +149,5 @@ export {
   handleKnowledgeLast,
   handleKnowledgeSearch,
   handleKnowledgeSummarize,
+  handleKnowledgeSessions,
 } from './tools/knowledge';
