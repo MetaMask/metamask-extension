@@ -8,27 +8,32 @@ import {
  */
 
 // Mock functions
-export const isWebHIDAvailable = jest.fn();
-export const isWebUSBAvailable = jest.fn();
-export const checkWebHIDPermission = jest.fn();
-export const checkWebUSBPermission = jest.fn();
+export const isWebHidAvailable = jest.fn();
+export const isWebUsbAvailable = jest.fn();
+export const checkWebHidPermission = jest.fn();
+export const checkWebUsbPermission = jest.fn();
 export const checkHardwareWalletPermission = jest.fn();
-export const requestWebHIDPermission = jest.fn();
-export const requestWebUSBPermission = jest.fn();
+export const requestWebHidPermission = jest.fn();
+export const requestWebUsbPermission = jest.fn();
 export const requestHardwareWalletPermission = jest.fn();
 export const getDeviceId = jest.fn();
 export const getHardwareWalletDeviceId = jest.fn();
-export const subscribeToWebHIDEvents = jest.fn();
-export const subscribeToWebUSBEvents = jest.fn();
+export const subscribeToWebHidEvents = jest.fn();
+export const subscribeToWebUsbEvents = jest.fn();
 export const subscribeToHardwareWalletEvents = jest.fn();
+export const getConnectedLedgerDevices = jest.fn();
+export const getConnectedTrezorDevices = jest.fn();
+export const getConnectedDevices = jest.fn();
+export const isDeviceConnected = jest.fn();
+export const isHardwareWalletConnected = jest.fn();
 
 // Default mock implementations
-isWebHIDAvailable.mockReturnValue(true);
-isWebUSBAvailable.mockReturnValue(true);
-checkWebHIDPermission.mockResolvedValue(
+isWebHidAvailable.mockReturnValue(true);
+isWebUsbAvailable.mockReturnValue(true);
+checkWebHidPermission.mockResolvedValue(
   HardwareConnectionPermissionState.Granted,
 );
-checkWebUSBPermission.mockResolvedValue(
+checkWebUsbPermission.mockResolvedValue(
   HardwareConnectionPermissionState.Granted,
 );
 checkHardwareWalletPermission.mockImplementation(
@@ -43,8 +48,8 @@ checkHardwareWalletPermission.mockImplementation(
     }
   },
 );
-requestWebHIDPermission.mockResolvedValue(true);
-requestWebUSBPermission.mockResolvedValue(true);
+requestWebHidPermission.mockResolvedValue(true);
+requestWebUsbPermission.mockResolvedValue(true);
 requestHardwareWalletPermission.mockImplementation(
   (walletType: HardwareWalletType) => {
     switch (walletType) {
@@ -58,18 +63,23 @@ requestHardwareWalletPermission.mockImplementation(
 );
 getDeviceId.mockResolvedValue('test-device-id');
 getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
-subscribeToWebHIDEvents.mockReturnValue(jest.fn());
-subscribeToWebUSBEvents.mockReturnValue(jest.fn());
+subscribeToWebHidEvents.mockReturnValue(jest.fn());
+subscribeToWebUsbEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
+getConnectedLedgerDevices.mockResolvedValue([]);
+getConnectedTrezorDevices.mockResolvedValue([]);
+getConnectedDevices.mockResolvedValue([]);
+isDeviceConnected.mockResolvedValue(false);
+isHardwareWalletConnected.mockResolvedValue(false);
 
 // Reset all mocks to defaults
 export const resetwebConnectionUtilsMocks = () => {
-  isWebHIDAvailable.mockReturnValue(true);
-  isWebUSBAvailable.mockReturnValue(true);
-  checkWebHIDPermission.mockResolvedValue(
+  isWebHidAvailable.mockReturnValue(true);
+  isWebUsbAvailable.mockReturnValue(true);
+  checkWebHidPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Granted,
   );
-  checkWebUSBPermission.mockResolvedValue(
+  checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Granted,
   );
   checkHardwareWalletPermission.mockImplementation(
@@ -84,8 +94,8 @@ export const resetwebConnectionUtilsMocks = () => {
       }
     },
   );
-  requestWebHIDPermission.mockResolvedValue(true);
-  requestWebUSBPermission.mockResolvedValue(true);
+  requestWebHidPermission.mockResolvedValue(true);
+  requestWebUsbPermission.mockResolvedValue(true);
   requestHardwareWalletPermission.mockImplementation(
     (walletType: HardwareWalletType) => {
       switch (walletType) {
@@ -99,9 +109,14 @@ export const resetwebConnectionUtilsMocks = () => {
   );
   getDeviceId.mockResolvedValue('test-device-id');
   getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
-  subscribeToWebHIDEvents.mockReturnValue(jest.fn());
-  subscribeToWebUSBEvents.mockReturnValue(jest.fn());
+  subscribeToWebHidEvents.mockReturnValue(jest.fn());
+  subscribeToWebUsbEvents.mockReturnValue(jest.fn());
   subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
+  getConnectedLedgerDevices.mockResolvedValue([]);
+  getConnectedTrezorDevices.mockResolvedValue([]);
+  getConnectedDevices.mockResolvedValue([]);
+  isDeviceConnected.mockResolvedValue(false);
+  isHardwareWalletConnected.mockResolvedValue(false);
 };
 
 // Helper to setup common test scenarios
@@ -111,26 +126,26 @@ export const setupWebConnectionUtilsMocks = () => {
 
 // Helper to mock permission denied scenarios
 export const mockPermissionsDenied = () => {
-  checkWebHIDPermission.mockResolvedValue(
+  checkWebHidPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
-  checkWebUSBPermission.mockResolvedValue(
+  checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
   checkHardwareWalletPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
-  requestWebHIDPermission.mockResolvedValue(false);
-  requestWebUSBPermission.mockResolvedValue(false);
+  requestWebHidPermission.mockResolvedValue(false);
+  requestWebUsbPermission.mockResolvedValue(false);
   requestHardwareWalletPermission.mockResolvedValue(false);
 };
 
 // Helper to mock permission prompt scenarios
 export const mockPermissionsPrompt = () => {
-  checkWebHIDPermission.mockResolvedValue(
+  checkWebHidPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Prompt,
   );
-  checkWebUSBPermission.mockResolvedValue(
+  checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Prompt,
   );
   checkHardwareWalletPermission.mockResolvedValue(
@@ -139,20 +154,20 @@ export const mockPermissionsPrompt = () => {
 };
 
 // Helper to mock API unavailability
-export const mockWebHIDUnavailable = () => {
-  isWebHIDAvailable.mockReturnValue(false);
-  checkWebHIDPermission.mockResolvedValue(
+export const mockWebHidUnavailable = () => {
+  isWebHidAvailable.mockReturnValue(false);
+  checkWebHidPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
-  requestWebHIDPermission.mockResolvedValue(false);
+  requestWebHidPermission.mockResolvedValue(false);
 };
 
-export const mockWebUSBUnavailable = () => {
-  isWebUSBAvailable.mockReturnValue(false);
-  checkWebUSBPermission.mockResolvedValue(
+export const mockWebUsbUnavailable = () => {
+  isWebUsbAvailable.mockReturnValue(false);
+  checkWebUsbPermission.mockResolvedValue(
     HardwareConnectionPermissionState.Denied,
   );
-  requestWebUSBPermission.mockResolvedValue(false);
+  requestWebUsbPermission.mockResolvedValue(false);
 };
 
 // Helper to mock device discovery failures
