@@ -292,7 +292,7 @@
     "@metamask/approval-controller": "^8.0.0",
     "@metamask/assets-controllers": "^95.1.0",
     "@metamask/base-controller": "^9.0.0",
-    "@metamask/bitcoin-wallet-snap": "^1.8.0",
+    "@metamask/bitcoin-wallet-snap": "^1.9.0",
     "@metamask/bridge-controller": "^64.3.0",
     "@metamask/bridge-status-controller": "^64.3.0",
     "@metamask/browser-passworder": "^6.0.0",

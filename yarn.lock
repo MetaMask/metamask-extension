@@ -6022,10 +6022,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bitcoin-wallet-snap@npm:^1.8.0":
-  version: 1.8.0
-  resolution: "@metamask/bitcoin-wallet-snap@npm:1.8.0"
-  checksum: 10/4a437b4efef2669970b60b8b8d579ed34ef677ca207313430924f4424aeb1e58a5601bae75a54744ba466fc1394f0d478e29fcbcf2cb7a5e73124316fb9a260a
+"@metamask/bitcoin-wallet-snap@npm:^1.9.0":
+  version: 1.9.0
+  resolution: "@metamask/bitcoin-wallet-snap@npm:1.9.0"
+  checksum: 10/cfcd2da23ccccddeb981d2e81576995e6ee9ad4e16023d238219c29feecf9e5ac9a49baeadc79013d2001b6aa20170897f082ae9c18c91ae124e17688aa4f973
   languageName: node
   linkType: hard
 
@@ -33486,7 +33486,7 @@ __metadata:
     "@metamask/assets-controllers": "npm:^95.1.0"
     "@metamask/auto-changelog": "npm:^5.3.0"
     "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/bitcoin-wallet-snap": "npm:^1.8.0"
+    "@metamask/bitcoin-wallet-snap": "npm:^1.9.0"
     "@metamask/bridge-controller": "npm:^64.3.0"
     "@metamask/bridge-status-controller": "npm:^64.3.0"
     "@metamask/browser-passworder": "npm:^6.0.0"
