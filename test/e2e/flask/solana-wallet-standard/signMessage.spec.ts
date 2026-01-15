@@ -1,5 +1,6 @@
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, veryLargeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   account1,

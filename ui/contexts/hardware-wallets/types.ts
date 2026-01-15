@@ -1,56 +1,135 @@
 /**
- * Types and interfaces for hardware wallet functionality
- */
-
-/**
- * Hardware wallet types supported by the application
+ * Hardware wallet types normalized for the hardware wallet context
  */
 export enum HardwareWalletType {
   Ledger = 'ledger',
   Trezor = 'trezor',
+  OneKey = 'oneKey',
+  Lattice = 'lattice',
   Qr = 'qr',
 }
 
 /**
- * Permission states for hardware wallet connections
+ * Hardware wallet connection status
+ */
+export enum ConnectionStatus {
+  Disconnected = 'disconnected',
+  Connecting = 'connecting',
+  Connected = 'connected',
+  Ready = 'ready',
+  AwaitingConfirmation = 'awaiting_confirmation',
+  AwaitingApp = 'awaiting_app',
+  ErrorState = 'error',
+}
+
+/**
+ * Hardware wallet connection permission state
  */
 export enum HardwareConnectionPermissionState {
+  Unknown = 'unknown',
   Granted = 'granted',
   Prompt = 'prompt',
   Denied = 'denied',
-  Unknown = 'unknown',
 }
 
 /**
- * Events that can occur during hardware wallet operations
+ * Hardware wallet device events
  */
 export enum DeviceEvent {
-  Connected = 'connected',
   Disconnected = 'disconnected',
-  ConnectionFailed = 'connection_failed',
   DeviceLocked = 'device_locked',
   AppNotOpen = 'app_not_open',
+  AppChanged = 'app_changed',
+  ConnectionFailed = 'connection_failed',
+  OperationTimeout = 'operation_timeout',
 }
 
 /**
- * Options for initializing a hardware wallet adapter
+ * Hardware wallet connection State
  */
-export type HardwareWalletAdapterOptions = {
-  onDisconnect: (error?: Error) => void;
-  onDeviceEvent: (event: { event: DeviceEvent; error?: Error }) => void;
-  onAwaitingConfirmation: () => void;
-  onDeviceLocked: (error?: Error) => void;
-  onAppNotOpen: (error?: Error) => void;
+export type HardwareWalletConnectionState =
+  | { status: ConnectionStatus.Disconnected }
+  | { status: ConnectionStatus.Connecting }
+  | { status: ConnectionStatus.Connected }
+  | { status: ConnectionStatus.Ready }
+  | { status: ConnectionStatus.AwaitingConfirmation }
+  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
+  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
+
+/**
+ * Device event payload
+ */
+export type DeviceEventPayload = {
+  event: DeviceEvent;
+  error?: Error;
+  currentAppName?: string;
+  previousAppName?: string;
+  deviceName?: string;
 };
 
 /**
- * Base interface for hardware wallet adapters
+ * Unsubscribe function type
+ */
+export type Unsubscribe = () => void;
+
+/**
+ * Adapter interface
+ *
+ * Note: This adapter manages connection state only.
+ * Actual signing operations flow through the existing MetaMask infrastructure
+ * (TransactionController, SignatureController, etc.) which already use the
+ * KeyringController's hardware wallet keyrings.
  */
 export type HardwareWalletAdapter = {
-  connect(deviceId?: string): Promise<void>;
+  connect(deviceId: string): Promise<void>;
   disconnect(): Promise<void>;
   isConnected(): boolean;
-  verifyDeviceReady(deviceId?: string): Promise<void>;
-  setPendingOperation(pending: boolean): void;
   destroy(): void;
+
+  /**
+   * Ensure the device is ready for operations
+   * (e.g., Ledger requires the Ethereum app to be open)
+   *
+   * @returns true if ready
+   * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
+   */
+  ensureDeviceReady?(deviceId: string): Promise<boolean>;
+};
+
+/**
+ * Adapter options (callbacks)
+ */
+export type HardwareWalletAdapterOptions = {
+  onDisconnect: (error?: unknown) => void;
+  onAwaitingConfirmation: () => void;
+  onDeviceLocked: () => void;
+  onAppNotOpen: () => void;
+  onDeviceEvent: (payload: DeviceEventPayload) => void;
+};
+
+/**
+ * Context type
+ */
+export type HardwareWalletContextType = {
+  // State
+  isHardwareWalletAccount: boolean;
+  walletType: HardwareWalletType | null;
+  connectionState: HardwareWalletConnectionState;
+  deviceId: string | null;
+  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
+  isWebHidAvailable: boolean;
+  isWebUsbAvailable: boolean;
+
+  // Actions
+  connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
+  disconnect: () => Promise<void>;
+  clearError: () => void;
+  retry: () => Promise<void>;
+  checkHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<HardwareConnectionPermissionState>;
+  requestHardwareWalletPermission: (
+    walletType: HardwareWalletType,
+  ) => Promise<boolean>;
+  ensureDeviceReady: () => Promise<boolean>;
 };

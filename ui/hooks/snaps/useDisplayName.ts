@@ -5,10 +5,10 @@ import {
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  getMemoizedAccountName,
   getAddressBookEntryByNetwork,
   AddressBookMetaMaskState,
   AccountsMetaMaskState,
+  getAccountNameFromState,
 } from '../../selectors/snaps';
 import { toChecksumHexAddress } from '../../../shared/modules/hexstring-utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
@@ -54,7 +54,7 @@ export const useDisplayName = (
 
   const accountGroupName = accountGroups[0]?.metadata.name;
   const accountName = useSelector((state: AccountsMetaMaskState) =>
-    getMemoizedAccountName(state, parsedAddress),
+    getAccountNameFromState(state, parsedAddress),
   );
 
   const addressBookEntry = useSelector((state: AddressBookMetaMaskState) =>

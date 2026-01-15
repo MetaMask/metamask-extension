@@ -61,6 +61,8 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -194,10 +196,22 @@ const SnapList = mmLazy(
 const SnapView = mmLazy(
   (() => import('../snaps/snap-view/index.js')) as unknown as DynamicImportType,
 );
-const ConfirmTransaction = mmLazy(
+const ConfirmEncryptionPublicKey = mmLazy(
   (() =>
     import(
-      '../confirmations/confirm-transaction/index.js'
+      '../confirm-encryption-public-key/index.js'
+    )) as unknown as DynamicImportType,
+);
+const ConfirmDecryptMessage = mmLazy(
+  (() =>
+    import(
+      '../confirm-decrypt-message/index.js'
+    )) as unknown as DynamicImportType,
+);
+const Confirm = mmLazy(
+  (() =>
+    import(
+      '../confirmations/confirm/confirm.tsx'
     )) as unknown as DynamicImportType,
 );
 const SendPage = mmLazy(
@@ -571,8 +585,20 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
+        component: ConfirmDecryptMessage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+        component: ConfirmEncryptionPublicKey,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
-        component: ConfirmTransaction,
+        component: Confirm,
         layout: RootLayout,
         authenticated: true,
       }),
