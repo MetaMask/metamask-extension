@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
@@ -12,6 +12,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
@@ -88,7 +89,7 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
       }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
