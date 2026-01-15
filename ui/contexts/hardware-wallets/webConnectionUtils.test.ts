@@ -908,7 +908,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns unsubscribe function when WebHID is available', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       expect(typeof unsubscribe).toBe('function');
       expect(
@@ -920,7 +924,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('calls onConnect callback when Ledger device connects', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
 
       // Get the connect event handler that was registered
@@ -937,7 +945,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('ignores non-Ledger devices on connect', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
 
       const connectHandler = getMockEventHandler(
@@ -951,7 +963,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('calls onDisconnect callback when Ledger device disconnects', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
 
       const disconnectHandler = getMockEventHandler(
@@ -966,7 +982,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('ignores non-Ledger devices on disconnect', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
 
       const disconnectHandler = getMockEventHandler(
@@ -980,7 +1000,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('handles multiple Ledger devices correctly', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const ledgerDevice1 = createMockHIDDevice(
         DEFAULT_LEDGER_VENDOR_ID,
         0x0001,
@@ -1008,7 +1032,11 @@ describe('webConnectionUtils', () => {
       const originalHid = window.navigator.hid;
       delete (window.navigator as { hid?: HID }).hid;
 
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       expect(typeof unsubscribe).toBe('function');
 
@@ -1025,7 +1053,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('unsubscribes by removing event listeners', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       unsubscribe();
 
@@ -1038,7 +1070,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('unsubscribe removes the correct event listeners', () => {
-      unsubscribe = subscribeToWebHidEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebHidEvents(
+        HardwareWalletType.Ledger,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       // Get the handlers that were added
       const connectHandler = getMockEventHandler(
@@ -1079,7 +1115,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns unsubscribe function when WebUSB is available', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       expect(typeof unsubscribe).toBe('function');
       expect(
@@ -1091,7 +1131,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('calls onConnect callback when Trezor device connects', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const trezorDevice = createMockUSBDevice() as USBDevice;
 
       const connectHandler = getMockEventHandler(
@@ -1106,7 +1150,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('ignores non-Trezor devices on connect', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const nonTrezorDevice = createMockUSBDevice(0x1234);
 
       const connectHandler = getMockEventHandler(
@@ -1120,7 +1168,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('calls onDisconnect callback when Trezor device disconnects', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const trezorDevice = createMockUSBDevice() as USBDevice;
 
       const disconnectHandler = getMockEventHandler(
@@ -1135,7 +1187,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('ignores non-Trezor devices on disconnect', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const nonTrezorDevice = createMockUSBDevice(0x1234);
 
       const disconnectHandler = getMockEventHandler(
@@ -1149,7 +1205,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('handles multiple Trezor devices correctly', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
       const trezorDevice1 = createMockUSBDevice();
       const trezorDevice2 = createMockUSBDevice(
         TREZOR_USB_VENDOR_IDS[1].vendorId,
@@ -1174,7 +1234,11 @@ describe('webConnectionUtils', () => {
       const originalUsb = window.navigator.usb;
       delete (window.navigator as { usb?: USB }).usb;
 
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       expect(typeof unsubscribe).toBe('function');
 
@@ -1191,7 +1255,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('unsubscribes by removing event listeners', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       unsubscribe();
 
@@ -1204,7 +1272,11 @@ describe('webConnectionUtils', () => {
     });
 
     it('unsubscribe removes the correct event listeners', () => {
-      unsubscribe = subscribeToWebUsbEvents(mockOnConnect, mockOnDisconnect);
+      unsubscribe = subscribeToWebUsbEvents(
+        HardwareWalletType.Trezor,
+        mockOnConnect,
+        mockOnDisconnect,
+      );
 
       const connectHandler = getMockEventHandler(
         (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
