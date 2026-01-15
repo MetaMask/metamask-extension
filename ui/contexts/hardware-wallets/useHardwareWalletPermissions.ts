@@ -54,7 +54,6 @@ export const useHardwareWalletPermissions = ({
         }
       });
 
-    // Cleanup: cancel pending async operation when walletType changes or unmount
     return () => {
       cancelled = true;
     };
