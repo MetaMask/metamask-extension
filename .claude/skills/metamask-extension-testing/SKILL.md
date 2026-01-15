@@ -3,7 +3,7 @@ name: metamask-extension-testing
 description: Launch and test MetaMask Chrome extension with Playwright. Use for visual validation of UI changes, testing onboarding/unlock flows, and capturing screenshots.
 compatibility: opencode
 metadata:
-  location: test/e2e/playwright/llm-workflow
+  location: test/e2e/playwright/llm-workflow/mcp-server
   type: browser-testing
 ---
 
@@ -23,7 +23,7 @@ Run from repository root (macOS/Linux):
 
 ```bash
 yarn install      # Install dependencies
-yarn build:test   # Build the extension
+yarn build:test   # Build the extension (or use mm_build tool)
 ```
 
 If ports are in use from previous runs:
@@ -32,290 +32,209 @@ If ports are in use from previous runs:
 lsof -ti:8545,12345,8000 | xargs kill -9
 ```
 
-## Quick Start
+## MCP Tools Overview
 
-```typescript
-import {
-  launchMetaMask,
-  DEFAULT_PASSWORD,
-  HomePage,
-} from './test/e2e/playwright/llm-workflow';
+The MetaMask MCP server provides 16 tools for browser automation:
 
-const launcher = await launchMetaMask();
-try {
-  await launcher.unlock(DEFAULT_PASSWORD);
+| Tool                        | Description                                   |
+| --------------------------- | --------------------------------------------- |
+| `mm_build`                  | Build extension using `yarn build:test`       |
+| `mm_launch`                 | Launch MetaMask in headed Chrome              |
+| `mm_cleanup`                | Stop browser and all services                 |
+| `mm_get_state`              | Get current extension state                   |
+| `mm_navigate`               | Navigate to home, settings, or URL            |
+| `mm_wait_for_notification`  | Wait for notification popup                   |
+| `mm_list_testids`           | List visible data-testid attributes           |
+| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)           |
+| `mm_describe_screen`        | Combined state + testIds + a11y snapshot      |
+| `mm_screenshot`             | Take and save screenshot                      |
+| `mm_click`                  | Click element by a11yRef, testId, or selector |
+| `mm_type`                   | Type text into element                        |
+| `mm_wait_for`               | Wait for element to be visible                |
+| `mm_knowledge_last`         | Get last N step records                       |
+| `mm_knowledge_search`       | Search step records                           |
+| `mm_knowledge_summarize`    | Generate session recipe                       |
 
-  const homePage = new HomePage(launcher.getPage());
-  console.log('Balance:', await homePage.getBalance());
+## Core Workflow
 
-  await launcher.screenshot({ name: 'validation' });
-} finally {
-  await launcher.cleanup();
-}
+### 1. Build Extension (if needed)
+
+```
+mm_build
 ```
 
-## Validation Scripts
+Builds the extension using `yarn build:test`. Skip if already built.
 
-Run these first to verify the workflow is working:
+### 2. Launch Extension
 
-```bash
-npx tsx test/e2e/playwright/llm-workflow/test-run.ts        # Test pre-onboarded wallet
-npx tsx test/e2e/playwright/llm-workflow/test-onboarding.ts # Test onboarding flow
+```
+mm_launch
 ```
 
-## Core Procedure
+Options:
 
-### 1. Launch Extension
+- `stateMode`: `"default"` (pre-onboarded with 25 ETH), `"onboarding"` (fresh wallet), or `"custom"`
+- `fixturePreset`: Name of preset fixture (e.g., `"withMultipleAccounts"`)
+- `fixture`: Custom fixture object
+- `ports`: `{ anvil: 8545, fixtureServer: 12345 }`
 
-```typescript
-import { launchMetaMask } from './test/e2e/playwright/llm-workflow';
+Examples:
 
-// Pre-onboarded wallet with 25 ETH (default)
-const launcher = await launchMetaMask();
+```json
+// Pre-onboarded wallet (default)
+{ "stateMode": "default" }
 
 // Fresh wallet requiring onboarding
-const launcher = await launchMetaMask({ stateMode: 'onboarding' });
+{ "stateMode": "onboarding" }
 
-// Custom fixture with specific state
-const launcher = await launchMetaMask({ stateMode: 'custom', fixture });
+// Custom fixture
+{ "stateMode": "custom", "fixturePreset": "withMultipleAccounts" }
 ```
 
-### 2. Unlock or Onboard
+### 3. Describe Current Screen
 
-```typescript
-import { DEFAULT_PASSWORD } from './test/e2e/playwright/llm-workflow';
-
-// For pre-onboarded wallet
-await launcher.unlock(DEFAULT_PASSWORD);
-
-// For fresh wallet
-await launcher.completeOnboarding({ password: DEFAULT_PASSWORD });
-
-// Robust unlock that handles modals/popovers automatically
-await launcher.ensureUnlockedAndReady(DEFAULT_PASSWORD);
+```
+mm_describe_screen
 ```
 
-### 3. Verify Screen State (LLM-Safe Helpers)
+Returns combined state information:
 
-```typescript
-// Wait for a specific screen (throws with diagnostics on timeout)
-await launcher.waitForScreen('home', 10000);
-
-// Assert current screen (throws with debugDump on mismatch)
-await launcher.assertScreen('home');
-
-// Close any interfering modals/popovers
-await launcher.closeInterferingModals();
-
-// Get current screen without throwing
-const state = await launcher.getState();
-console.log('Current screen:', state.currentScreen);
-// Values: 'home' | 'unlock' | 'onboarding-*' | 'settings' | 'unknown'
-```
+- Current screen (home, unlock, onboarding-\*, settings, unknown)
+- Visible testIds
+- Accessibility tree with refs (e1, e2, ...)
+- Optional screenshot
 
 ### 4. Interact with UI
 
-```typescript
-import { HomePage } from './test/e2e/playwright/llm-workflow';
+Use one of three targeting methods (exactly ONE required):
 
-const homePage = new HomePage(launcher.getPage());
-const balance = await homePage.getBalance();
-const network = await homePage.getNetworkName();
-const address = await homePage.getAccountAddress();
+**By a11yRef** (from accessibility snapshot):
 
-await homePage.clickSend();
-await homePage.clickSwap();
-await homePage.openSettings();
+```json
+{ "a11yRef": "e5" }
 ```
 
-### 5. Handle Multi-Window Flows (Dapp Connections, Tx Confirmations)
+**By testId** (data-testid attribute):
 
-When interacting with dapps, MetaMask opens notification popups for approvals:
-
-```typescript
-import { NotificationPage } from './test/e2e/playwright/llm-workflow';
-
-// Open a dapp page
-const dappPage = await launcher.openNewDappPage('https://app.uniswap.org');
-
-// Trigger a connect request from the dapp (dapp-specific code)
-// await dappPage.click('button:has-text("Connect Wallet")');
-
-// Wait for MetaMask notification popup
-const notificationPage = await launcher.waitForNotificationPage(10000);
-const notification = new NotificationPage(notificationPage);
-
-// Check notification type
-const type = await notification.getNotificationType();
-console.log('Notification type:', type);
-// Values: 'connect' | 'signature' | 'transaction' | 'add-network' | 'switch-network' | 'add-token' | 'unknown'
-
-// Approve or reject
-await notification.approve();
-// OR: await notification.reject();
-
-// For signature requests that require scrolling
-await notification.scrollAndApprove();
-
-// Switch back to extension home
-await launcher.switchToExtensionHome();
+```json
+{ "testId": "unlock-password" }
 ```
 
-#### Multi-Window Helper Methods
+**By CSS selector**:
 
-```typescript
-// Wait for notification popup to appear
-const notifPage = await launcher.waitForNotificationPage(10000);
-
-// Get notification page if it exists (returns null if not)
-const notifPage = await launcher.getNotificationPage();
-
-// Get all extension pages (home, notification, etc.)
-const pages = await launcher.getAllExtensionPages();
-
-// Switch focus back to main extension page
-await launcher.switchToExtensionHome();
-
-// Close notification page if open
-const wasClosed = await launcher.closeNotificationPage();
+```json
+{ "selector": "button.primary" }
 ```
 
-#### NotificationPage Methods
-
-```typescript
-const notification = new NotificationPage(notifPage);
-
-// Actions
-await notification.approve(); // Click approve/confirm button
-await notification.reject(); // Click reject/cancel button
-await notification.scrollAndApprove(); // Scroll then approve (for signatures)
-
-// Information
-const type = await notification.getNotificationType();
-const title = await notification.getTitle();
-const message = await notification.getMessage();
-const txDetails = await notification.getTransactionDetails();
-
-// Wait for popup to close after action
-await notification.waitForClose(10000);
-```
-
-### 6. Capture Screenshots
-
-```typescript
-const screenshot = await launcher.screenshot({ name: 'after-change' });
-console.log('Screenshot path:', screenshot.path);
-console.log('Base64 (first 100 chars):', screenshot.base64.substring(0, 100));
-```
-
-### 6. Cleanup (Always Required)
-
-```typescript
-await launcher.cleanup();
-```
-
-## Error Recovery (Critical for Automation)
-
-**Always wrap your code in try/catch and call `debugDump()` on failure:**
-
-```typescript
-const launcher = await launchMetaMask();
-try {
-  await launcher.ensureUnlockedAndReady(DEFAULT_PASSWORD);
-  // ... your automation code
-} catch (error) {
-  const dump = await launcher.debugDump('failure');
-  console.error('Screenshot:', dump.screenshot.path);
-  console.error('State:', JSON.stringify(dump.state, null, 2));
-  console.error('Console errors:', dump.consoleErrors);
-  throw error;
-} finally {
-  await launcher.cleanup();
-}
-```
-
-### Recovery Decision Tree
+#### Click Element
 
 ```
-Error occurred
-    │
-    ├─► Call debugDump('failure')
-    │
-    ├─► Check state.currentScreen:
-    │       'unlock'     → Call launcher.unlock(DEFAULT_PASSWORD)
-    │       'home'       → Already ready, check for modals
-    │       'onboarding-*' → Call launcher.completeOnboarding()
-    │       'unknown'    → Check screenshot, may need manual intervention
-    │
-    ├─► If modals blocking:
-    │       → Call launcher.closeInterferingModals()
-    │
-    └─► If still failing after 3 attempts:
-            → Review screenshot and state JSON
-            → May indicate UI change or test environment issue
+mm_click { "testId": "unlock-submit" }
+mm_click { "a11yRef": "e12" }
 ```
 
-## Fixture Configuration
+#### Type Text
 
-### Using Presets
-
-```typescript
-import {
-  launchMetaMask,
-  FixturePresets,
-} from './test/e2e/playwright/llm-workflow';
-
-// Multiple accounts
-const launcher = await launchMetaMask({
-  stateMode: 'custom',
-  fixture: FixturePresets.withMultipleAccounts(),
-});
+```
+mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
 ```
 
-### Using FixtureBuilder
+#### Wait for Element
 
-```typescript
-import {
-  launchMetaMask,
-  createFixtureBuilder,
-} from './test/e2e/playwright/llm-workflow';
-
-const fixture = createFixtureBuilder()
-  .withPreferencesController({ showTestNetworks: true })
-  .withPopularNetworks()
-  .build();
-
-const launcher = await launchMetaMask({ stateMode: 'custom', fixture });
+```
+mm_wait_for { "testId": "home-balance", "timeoutMs": 10000 }
 ```
 
-## Network Configuration
+### 5. Take Screenshots
 
-### Localhost (Default)
-
-```typescript
-const launcher = await launchMetaMask();
-// Anvil runs on port 8545 with chainId 1337
+```
+mm_screenshot { "name": "after-unlock" }
 ```
 
-### Mainnet Fork
+Options:
 
-```typescript
-const launcher = await launchMetaMask({
-  network: {
-    mode: 'fork',
-    chainId: 1,
-    rpcUrl: 'https://eth.llamarpc.com',
-    forkBlockNumber: 18500000,
-  },
-});
+- `name`: Screenshot filename (required)
+- `fullPage`: Capture full page (default: false)
+- `selector`: Capture specific element
+- `includeBase64`: Include base64 in response
+
+### 6. Handle Notifications (Dapp flows)
+
+Wait for notification popup:
+
+```
+mm_wait_for_notification { "timeoutMs": 10000 }
 ```
 
-### Custom Ports (Parallel Runs)
+Then use `mm_describe_screen` to see notification content and interact with it.
 
-```typescript
-const launcher = await launchMetaMask({
-  ports: { anvil: 8546, fixtureServer: 12346 },
-});
+### 7. Navigate
+
+```
+mm_navigate { "screen": "home" }
+mm_navigate { "screen": "settings" }
+mm_navigate { "screen": "notification" }
+mm_navigate { "screen": "url", "url": "chrome-extension://..." }
+```
+
+### 8. Cleanup (Always Required)
+
+```
+mm_cleanup
+```
+
+Stops browser and all background services.
+
+## Typical Workflow Example
+
+```
+1. mm_build                                              → Build extension
+2. mm_launch { "stateMode": "default" }                  → Start browser
+3. mm_describe_screen                                    → See unlock screen
+4. mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
+5. mm_click { "testId": "unlock-submit" }                → Submit password
+6. mm_describe_screen                                    → Verify home screen
+7. mm_screenshot { "name": "home-validated" }            → Capture result
+8. mm_cleanup                                            → End session
+```
+
+## Error Recovery
+
+### On Failure
+
+1. Call `mm_describe_screen` to see current state
+2. Check the `state.currentScreen` value:
+   - `unlock` → Type password and click submit
+   - `home` → Already ready, check for modals
+   - `onboarding-*` → Complete onboarding flow
+   - `unknown` → Take screenshot, investigate
+3. Use `mm_knowledge_last` to review recent steps
+
+### Error Codes
+
+| Code                         | Meaning                               |
+| ---------------------------- | ------------------------------------- |
+| `MM_BUILD_FAILED`            | Build command failed                  |
+| `MM_SESSION_ALREADY_RUNNING` | Session exists, call mm_cleanup first |
+| `MM_NO_ACTIVE_SESSION`       | No session, call mm_launch first      |
+| `MM_LAUNCH_FAILED`           | Browser launch failed                 |
+| `MM_INVALID_INPUT`           | Invalid tool parameters               |
+| `MM_TARGET_NOT_FOUND`        | Element not found                     |
+| `MM_CLICK_FAILED`            | Click operation failed                |
+| `MM_TYPE_FAILED`             | Type operation failed                 |
+| `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
+| `MM_SCREENSHOT_FAILED`       | Screenshot capture failed             |
+
+## Knowledge Store
+
+Every tool invocation is recorded to `test-artifacts/llm-knowledge/<sessionId>/steps/`.
+
+Query past steps:
+
+```
+mm_knowledge_last { "n": 5 }           → Get last 5 steps
+mm_knowledge_search { "query": "click" } → Search for click actions
+mm_knowledge_summarize                  → Generate session recipe
 ```
 
 ## Default Credentials
@@ -326,47 +245,68 @@ const launcher = await launchMetaMask({
 | Chain ID | `1337`                         |
 | Balance  | 25 ETH                         |
 
+## Response Format
+
+All tool responses follow this structure:
+
+```json
+{
+  "ok": true,
+  "result": { ... },
+  "meta": {
+    "timestamp": "2026-01-15T15:30:00.000Z",
+    "sessionId": "mm-abc123-xyz789",
+    "durationMs": 150
+  }
+}
+```
+
+Error responses:
+
+```json
+{
+  "ok": false,
+  "error": {
+    "code": "MM_TARGET_NOT_FOUND",
+    "message": "Element not found",
+    "details": { ... }
+  },
+  "meta": { ... }
+}
+```
+
 ## Known Limitations
 
 1. **Headed mode only**: Chrome extensions cannot run headless. Requires display (use XVFB on Linux CI).
-2. **MockServer limitation**: Does NOT intercept extension HTTP traffic. Only useful for dapp pages.
+2. **Single session**: Only one browser session at a time. Call `mm_cleanup` before `mm_launch`.
 3. **macOS/Linux**: Port cleanup commands (`lsof`) are Unix-specific.
 
 ## Common Failures & Solutions
 
-| Symptom                     | Likely Cause                  | Solution                                    |
-| --------------------------- | ----------------------------- | ------------------------------------------- |
-| `Cannot find module`        | Dependencies not installed    | `yarn install`                              |
-| Extension not loading       | Extension not built           | `yarn build:test`                           |
-| `EADDRINUSE` port error     | Orphan processes              | `lsof -ti:8545,12345,8000 \| xargs kill -9` |
-| Stuck on unlock screen      | Wrong password                | Use `correct horse battery staple`          |
-| `unknown` screen state      | Modal/popover blocking        | Call `closeInterferingModals()`             |
-| Timeout waiting for element | Slow environment or UI change | Increase timeout, check screenshot          |
-| `Extension not initialized` | Launch failed                 | Check `yarn build:test` output              |
+| Symptom                      | Likely Cause                  | Solution                                    |
+| ---------------------------- | ----------------------------- | ------------------------------------------- |
+| `MM_SESSION_ALREADY_RUNNING` | Previous session not cleaned  | Call `mm_cleanup` first                     |
+| `MM_NO_ACTIVE_SESSION`       | No browser running            | Call `mm_launch` first                      |
+| Extension not loading        | Extension not built           | Call `mm_build` or `yarn build:test`        |
+| `EADDRINUSE` port error      | Orphan processes              | `lsof -ti:8545,12345,8000 \| xargs kill -9` |
+| `MM_TARGET_NOT_FOUND`        | Element not visible           | Use `mm_describe_screen` to check state     |
+| `MM_WAIT_TIMEOUT`            | Slow environment or UI change | Increase timeout, check screenshot          |
 
 ## Key Files
 
-| File                                                                 | Purpose                         |
-| -------------------------------------------------------------------- | ------------------------------- |
-| `test/e2e/playwright/llm-workflow/README.md`                         | Full documentation              |
-| `test/e2e/playwright/llm-workflow/extension-launcher.ts`             | Main launcher class             |
-| `test/e2e/playwright/llm-workflow/page-objects/`                     | Page interaction classes        |
-| `test/e2e/playwright/llm-workflow/page-objects/notification-page.ts` | Notification popup interactions |
-| `test/e2e/playwright/llm-workflow/fixture-helper.ts`                 | Fixture builders and presets    |
+| File                                                     | Purpose                  |
+| -------------------------------------------------------- | ------------------------ |
+| `test/e2e/playwright/llm-workflow/mcp-server/README.md`  | MCP server documentation |
+| `test/e2e/playwright/llm-workflow/mcp-server/server.ts`  | MCP server entrypoint    |
+| `test/e2e/playwright/llm-workflow/extension-launcher.ts` | Core launcher class      |
+| `test/e2e/playwright/llm-workflow/SPEC.md`               | Full specification       |
 
 ## Visual Testing Decision Rules
 
 When performing visual validation:
 
-1. **Before action**: Capture screenshot with descriptive name
-2. **Perform action**: Use page objects (preferred) or launcher methods
-3. **After action**: Capture screenshot, check state
-4. **On success**: Compare screenshots if baseline exists
-5. **On failure**: Call `debugDump()`, analyze state.currentScreen, retry or report
-
-```typescript
-await launcher.screenshot({ name: 'before-send' });
-await homePage.clickSend();
-await launcher.waitForScreen('home', 5000); // or expected screen
-await launcher.screenshot({ name: 'after-send' });
-```
+1. **Before action**: `mm_screenshot { "name": "before-X" }`
+2. **Perform action**: `mm_click` / `mm_type` with appropriate target
+3. **After action**: `mm_describe_screen` to verify state
+4. **Capture result**: `mm_screenshot { "name": "after-X" }`
+5. **On failure**: Check `mm_knowledge_last` and screenshot for diagnosis
