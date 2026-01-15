@@ -7,16 +7,13 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const getBalanceValue = async (
-  balance: string | { words: string } | Function,
-) => {
+const getBalanceValue = (balance: string | { words: string } | Function) => {
   let balanceStr: string;
   if (typeof balance === 'string') {
     balanceStr = parseInt(balance, 16).toString();
   } else if (balance && typeof balance === 'object' && 'words' in balance) {
     // Reconstruct from BN internal structure (Firefox case)
     // BN stores value in `words` array as base-2^26 limbs
-    const BN = (await import('bn.js')).default;
     balanceStr = new BN(balance.words, 'le').toString(10);
   } else {
     balanceStr = '0';
@@ -42,9 +39,7 @@ export const useERC1155BalanceChecker = () => {
         networkClientId,
       );
 
-      const balanceValue = await getBalanceValue(balance);
-
-      return { nft, balance: balanceValue };
+      return { nft, balance: getBalanceValue(balance) };
     } catch (error) {
       console.error('Error fetching ERC1155 balance:', error);
       return null;
