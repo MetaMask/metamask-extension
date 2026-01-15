@@ -16,20 +16,9 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
-  ERC_4337_ACCOUNT,
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
   DAPP_PATHS,
+  ERC_4337_ACCOUNT,
+  WALLET_PASSWORD,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -578,6 +567,7 @@ const clickNestedButton = async (driver, tabName) => {
  * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
+ * @deprecated Use {@link loginWithBalanceValidation} or {@link loginWithoutBalanceValidation} instead.
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
@@ -797,16 +787,6 @@ async function isSidePanelEnabled() {
 }
 
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
   convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
@@ -815,8 +795,6 @@ module.exports = {
   withFixtures,
   createDownloadFolder,
   unlockWallet,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,

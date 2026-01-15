@@ -1,274 +1,617 @@
-import { jest } from '@jest/globals';
-import browser from 'webextension-polyfill';
-import { migrate, version } from './186';
+import { RpcEndpointType } from '@metamask/network-controller';
+import { cloneDeep } from 'lodash';
+import { KnownCaipNamespace } from '@metamask/utils';
+import {
+  migrate,
+  version,
+  MEGAETH_TESTNET_V2_CONFIG,
+  MEGAETH_TESTNET_V1_CHAIN_ID,
+  type VersionedData,
+} from './186';
 
-// Mock browser.storage.local
-jest.mock('webextension-polyfill', () => ({
-  storage: {
-    local: {
-      get: jest.fn(),
-      set: jest.fn(),
-    },
-  },
+// Mock uuid
+jest.mock('uuid', () => ({
+  v4: jest.fn(() => 'mocked-uuid-123'),
 }));
 
-const mockBrowser = jest.mocked(browser);
+const VERSION = version;
+const oldVersion = VERSION - 1;
+const mainnetConfiguration = {
+  '0x1': {
+    chainId: '0x1',
+    name: 'Ethereum',
+    nativeCurrency: 'ETH',
+    blockExplorerUrls: ['https://explorer.com'],
+    defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'mainnet',
+        type: 'custom',
+        url: 'https://mainnet.com',
+      },
+    ],
+  },
+};
 
-describe(`migration #${version}`, () => {
+const lineaSepoliaConfiguration = {
+  '0xe705': {
+    chainId: '0xe705',
+    name: 'Linea Sepolia',
+    nativeCurrency: 'LineaETH',
+    blockExplorerUrls: ['https://sepolia.lineascan.build'],
+    defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'linea-sepolia',
+        type: 'custom',
+        url: 'https://mainnet.com',
+      },
+    ],
+  },
+};
+
+const megaEthTestnetV1Configuration = {
+  [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+    chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+    name: 'Mega Testnet',
+    nativeCurrency: 'MegaETH',
+    blockExplorerUrls: ['https://explorer.com'],
+    defaultRpcEndpointIndex: 0,
+    defaultBlockExplorerUrlIndex: 0,
+    rpcEndpoints: [
+      {
+        networkClientId: 'megaeth-testnet',
+        type: 'custom',
+        url: 'https://rpc.com',
+      },
+    ],
+  },
+};
+
+describe(`migration #${VERSION}`, () => {
+  let mockedCaptureException: jest.Mock;
   beforeEach(() => {
-    jest.clearAllMocks();
-    mockBrowser.storage.local.get.mockResolvedValue({});
-    mockBrowser.storage.local.set.mockResolvedValue(undefined);
+    mockedCaptureException = jest.fn();
+    global.sentry = { captureException: mockedCaptureException };
+  });
+
+  afterEach(() => {
+    global.sentry = undefined;
   });
 
   it('updates the version metadata', async () => {
     const oldStorage = {
-      meta: { version: 185 },
-      data: {},
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.meta).toStrictEqual({ version });
-  });
-
-  it('does nothing if TokenListController state does not exist', async () => {
-    const oldStorage = {
-      meta: { version: 185 },
-      data: {},
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    expect(newStorage.data).toStrictEqual({});
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
-  });
-
-  it('does nothing if tokensChainsCache is empty', async () => {
-    const oldStorage = {
-      meta: { version: 185 },
+      meta: { version: oldVersion },
       data: {
-        TokenListController: {
-          tokensChainsCache: {},
-          preventPollingOnNetworkRestart: false,
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+          selectedNetworkClientId: 'mainnet',
         },
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const localChangedControllers = new Set<string>();
+    await migrate(oldStorage, localChangedControllers);
 
-    expect(newStorage.data.TokenListController).toStrictEqual({
-      tokensChainsCache: {},
-      preventPollingOnNetworkRestart: false,
-    });
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    expect(oldStorage.meta).toStrictEqual({ version: VERSION });
   });
 
-  it('migrates tokensChainsCache to browser.storage.local', async () => {
-    const chainCache = {
-      timestamp: 1234567890,
-      data: {
-        '0xToken1': { name: 'Token1', symbol: 'TK1' },
-        '0xToken2': { name: 'Token2', symbol: 'TK2' },
-      },
-    };
-
-    const oldStorage = {
-      meta: { version: 185 },
-      data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': chainCache,
-          },
-          preventPollingOnNetworkRestart: false,
-        },
-      },
-    };
-
-    const newStorage = await migrate(oldStorage);
-
-    // Should save to storage
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x1': chainCache,
-    });
-
-    // Should clear state
-    expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
-        .tokensChainsCache,
-    ).toStrictEqual({});
-
-    // Should preserve other state
-    expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
-        .preventPollingOnNetworkRestart,
-    ).toBe(false);
-  });
-
-  it('migrates multiple chains in a single storage call', async () => {
-    const chain1Cache = {
-      timestamp: 1234567890,
-      data: { '0xToken1': { name: 'Token1' } },
-    };
-    const chain2Cache = {
-      timestamp: 1234567891,
-      data: { '0xToken2': { name: 'Token2' } },
-    };
-    const chain3Cache = {
-      timestamp: 1234567892,
-      data: { '0xToken3': { name: 'Token3' } },
-    };
-
-    const oldStorage = {
-      meta: { version: 185 },
-      data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': chain1Cache,
-            '0x89': chain2Cache,
-            '0xa86a': chain3Cache,
-          },
-        },
-      },
-    };
-
-    await migrate(oldStorage);
-
-    // Should save all chains in a single call
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledTimes(1);
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x1': chain1Cache,
-      'storageService:TokenListController:tokensChainsCache:0x89': chain2Cache,
-      'storageService:TokenListController:tokensChainsCache:0xa86a':
-        chain3Cache,
-    });
-  });
-
-  it('does not overwrite chains that already exist in storage', async () => {
-    const existingCache = {
-      timestamp: 9999999999,
-      data: { '0xExisting': { name: 'Existing' } },
-    };
-    const newCache = {
-      timestamp: 1234567890,
-      data: { '0xNew': { name: 'New' } },
-    };
-
-    // Mock that chain 0x1 already exists in storage
-    mockBrowser.storage.local.get.mockResolvedValue({
-      'storageService:TokenListController:tokensChainsCache:0x1': existingCache,
-    });
-
-    const oldStorage = {
-      meta: { version: 185 },
-      data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': { timestamp: 1111111111, data: {} }, // Should be skipped
-            '0x89': newCache, // Should be migrated
-          },
-        },
-      },
-    };
-
-    await migrate(oldStorage);
-
-    // Should only save the new chain, not overwrite existing
-    expect(mockBrowser.storage.local.set).toHaveBeenCalledWith({
-      'storageService:TokenListController:tokensChainsCache:0x89': newCache,
-    });
-  });
-
-  it('skips storage.set if all chains already exist in storage', async () => {
-    // Mock that all chains already exist in storage
-    mockBrowser.storage.local.get.mockResolvedValue({
-      'storageService:TokenListController:tokensChainsCache:0x1': {
-        timestamp: 1,
+  const invalidStates = [
+    {
+      state: {
+        meta: { version: VERSION },
         data: {},
       },
-      'storageService:TokenListController:tokensChainsCache:0x89': {
-        timestamp: 2,
-        data: {},
+      scenario: 'NetworkController not found',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: 'invalid',
+        },
       },
-    });
+      scenario: 'invalid NetworkController state',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {},
+        },
+      },
+      scenario: 'missing networkConfigurationsByChainId property',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: 'invalid',
+          },
+        },
+      },
+      scenario: 'invalid networkConfigurationsByChainId state',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {},
+          },
+        },
+      },
+      scenario: 'missing selectedNetworkClientId property',
+    },
+    {
+      state: {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {},
+            selectedNetworkClientId: 123,
+          },
+        },
+      },
+      scenario: 'invalid selectedNetworkClientId type',
+    },
+  ];
 
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(invalidStates)(
+    'should capture exception if $scenario',
+    async ({ state }: { errorMessage: string; state: VersionedData }) => {
+      const orgState = cloneDeep(state);
+      const localChangedControllers = new Set<string>();
+
+      await migrate(state, localChangedControllers);
+
+      // State should be unchanged
+      expect(state).toStrictEqual(orgState);
+      expect(localChangedControllers.has('NetworkController')).toBe(false);
+      expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+        false,
+      );
+      expect(mockedCaptureException).toHaveBeenCalledWith(expect.any(Error));
+    },
+  );
+
+  it('removes the megaeth testnet v1 network configuration and adds the megaeth testnet v2 network configuration', async () => {
     const oldStorage = {
-      meta: { version: 185 },
+      meta: { version: oldVersion },
       data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': { timestamp: 1234567890, data: {} },
-            '0x89': { timestamp: 1234567891, data: {} },
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            ...mainnetConfiguration,
+            [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+              chainId: MEGAETH_TESTNET_V1_CHAIN_ID,
+              name: 'Mega Testnet',
+              nativeCurrency: 'MegaETH',
+              blockExplorerUrls: ['https://explorer.com'],
+              defaultRpcEndpointIndex: 0,
+              defaultBlockExplorerUrlIndex: 0,
+              rpcEndpoints: [
+                {
+                  networkClientId: 'megaeth-testnet',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://rpc.com',
+                },
+              ],
+            },
+          },
+          selectedNetworkClientId: 'megaeth-testnet',
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              [MEGAETH_TESTNET_V1_CHAIN_ID]: true,
+            },
           },
         },
       },
     };
 
-    const newStorage = await migrate(oldStorage);
+    const expectedStorage = {
+      meta: { version: VERSION },
+      data: {
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            ...mainnetConfiguration,
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
+            },
+          },
+        },
+      },
+    };
 
-    // Should not call set since all chains already exist
-    expect(mockBrowser.storage.local.set).not.toHaveBeenCalled();
+    const localChangedControllers = new Set<string>();
+    await migrate(oldStorage, localChangedControllers);
 
-    // Should still clear state
-    expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
-        .tokensChainsCache,
-    ).toStrictEqual({});
+    expect(oldStorage).toStrictEqual(expectedStorage);
+    expect(localChangedControllers.has('NetworkController')).toBe(true);
+    expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+      true,
+    );
   });
 
-  it('handles storage errors gracefully and clears state', async () => {
-    mockBrowser.storage.local.set.mockRejectedValue(
-      new Error('Storage quota exceeded'),
-    );
+  const invalidNetworkEnablementControllerStates = [
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+        },
+      },
+      scenario: 'missing NetworkEnablementController',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+          NetworkEnablementController: 'invalid',
+        },
+      },
+      scenario: 'invalid NetworkEnablementController state',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+          NetworkEnablementController: {},
+        },
+      },
+      scenario: 'missing enabledNetworkMap',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+          NetworkEnablementController: { enabledNetworkMap: 'invalid' },
+        },
+      },
+      scenario: 'invalid enabledNetworkMap state',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+          NetworkEnablementController: { enabledNetworkMap: {} },
+        },
+      },
+      scenario: 'missing Eip155 in enabledNetworkMap',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'megaeth-testnet',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: { [KnownCaipNamespace.Eip155]: 'invalid' },
+          },
+        },
+      },
+      scenario: 'invalid enabledNetworkMap Eip155 state',
+    },
+  ];
 
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(invalidNetworkEnablementControllerStates)(
+    'does not update the enablement map and adds the megaeth testnet v2 network configuration and remove the megaeth testnet v1 network configuration if $scenario',
+    async ({ state }: { state: VersionedData; scenario: string }) => {
+      const localChangedControllers = new Set<string>();
+
+      await migrate(state, localChangedControllers);
+
+      // Should still add v2 and remove v1, but not update enablement map
+      const networkController = state.data.NetworkController as {
+        networkConfigurationsByChainId: Record<string, unknown>;
+        selectedNetworkClientId: string;
+      };
+      expect(
+        networkController.networkConfigurationsByChainId[
+          MEGAETH_TESTNET_V2_CONFIG.chainId
+        ],
+      ).toBeDefined();
+      expect(
+        networkController.networkConfigurationsByChainId[
+          MEGAETH_TESTNET_V1_CHAIN_ID
+        ],
+      ).toBeUndefined();
+      expect(networkController.selectedNetworkClientId).toBe('mainnet');
+      expect(localChangedControllers.has('NetworkController')).toBe(true);
+      expect(localChangedControllers.has('NetworkEnablementController')).toBe(
+        false,
+      );
+    },
+  );
+
+  const switchToMainnetScenarios = [
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...megaEthTestnetV1Configuration,
+            },
+            selectedNetworkClientId: 'mainnet',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                '0x1': false,
+                [MEGAETH_TESTNET_V1_CHAIN_ID]: true,
+              },
+            },
+          },
+        },
+      },
+      scenario: 'the megaeth testnet v1 is enabled',
+    },
+  ];
+
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(switchToMainnetScenarios)(
+    'switchs to mainnet if $scenario',
+    async ({ state }: { state: VersionedData; scenario: string }) => {
+      const oldStorage = cloneDeep(state);
+      const localChangedControllers = new Set<string>();
+
+      const expectedStorage = {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+            },
+            selectedNetworkClientId: 'mainnet',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                '0x1': true,
+                [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
+              },
+            },
+          },
+        },
+      };
+
+      await migrate(oldStorage, localChangedControllers);
+
+      expect(oldStorage).toStrictEqual(expectedStorage);
+    },
+  );
+
+  const invalidSwitchToMainnetScenarios = [
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...lineaSepoliaConfiguration,
+              [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+                ...megaEthTestnetV1Configuration[MEGAETH_TESTNET_V1_CHAIN_ID],
+              },
+            },
+            selectedNetworkClientId: 'uuid',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                '0x1': false,
+                '0xe705': true,
+              },
+            },
+          },
+        },
+      },
+      scenario: 'the megaeth testnet v1 is not enabled',
+    },
+    {
+      state: {
+        meta: { version: oldVersion },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...lineaSepoliaConfiguration,
+              [MEGAETH_TESTNET_V1_CHAIN_ID]: {
+                ...megaEthTestnetV1Configuration[MEGAETH_TESTNET_V1_CHAIN_ID],
+              },
+            },
+            selectedNetworkClientId: 'uuid',
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: {
+                '0x1': false,
+                '0xe705': true,
+                [MEGAETH_TESTNET_V1_CHAIN_ID]: true,
+              },
+            },
+          },
+        },
+      },
+      scenario: 'the megaeth testnet v1 is not enabled exclusively',
+    },
+  ];
+
+  // @ts-expect-error 'each' function is not recognized by TypeScript types
+  it.each(invalidSwitchToMainnetScenarios)(
+    'does not switch to mainnet if $scenario',
+    async ({ state }: { state: VersionedData; scenario: string }) => {
+      const oldStorage = cloneDeep(state);
+      const localChangedControllers = new Set<string>();
+      const networkController = oldStorage.data.NetworkController as {
+        selectedNetworkClientId: string;
+      };
+      const originalSelectedNetworkClientId =
+        networkController.selectedNetworkClientId;
+
+      const expectedStorage = {
+        meta: { version: VERSION },
+        data: {
+          NetworkController: {
+            networkConfigurationsByChainId: {
+              ...mainnetConfiguration,
+              ...lineaSepoliaConfiguration,
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: MEGAETH_TESTNET_V2_CONFIG,
+            },
+            selectedNetworkClientId: originalSelectedNetworkClientId,
+          },
+          NetworkEnablementController: {
+            enabledNetworkMap: {
+              [KnownCaipNamespace.Eip155]: expect.objectContaining({
+                '0x1': false,
+                [MEGAETH_TESTNET_V2_CONFIG.chainId]: false,
+              }),
+            },
+          },
+        },
+      };
+
+      await migrate(oldStorage, localChangedControllers);
+
+      expect(oldStorage).toStrictEqual(expectedStorage);
+    },
+  );
+
+  it('adds MegaETH Testnet v2 to enabled network map if it does not exist', async () => {
     const oldStorage = {
-      meta: { version: 185 },
+      meta: { version: oldVersion },
       data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': { timestamp: 1234567890, data: {} },
+        NetworkController: {
+          networkConfigurationsByChainId: {},
+          selectedNetworkClientId: 'mainnet',
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+            },
           },
         },
       },
     };
 
-    // Should not throw
-    const newStorage = await migrate(oldStorage);
+    const localChangedControllers = new Set<string>();
+    await migrate(oldStorage, localChangedControllers);
 
-    expect(newStorage.meta.version).toBe(version);
-
-    // Should still clear state even on error
-    expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
-        .tokensChainsCache,
-    ).toStrictEqual({});
+    const eip155Map = oldStorage.data.NetworkEnablementController
+      .enabledNetworkMap[KnownCaipNamespace.Eip155] as Record<string, boolean>;
+    expect(eip155Map[MEGAETH_TESTNET_V2_CONFIG.chainId]).toBe(false);
   });
 
-  it('handles storage.get errors gracefully', async () => {
-    mockBrowser.storage.local.get.mockRejectedValue(
-      new Error('Storage not available'),
-    );
-
+  it('merges the megaeth testnet v2 network configuration if user already has it', async () => {
     const oldStorage = {
-      meta: { version: 185 },
+      meta: { version: oldVersion },
       data: {
-        TokenListController: {
-          tokensChainsCache: {
-            '0x1': { timestamp: 1234567890, data: {} },
+        NetworkController: {
+          networkConfigurationsByChainId: {
+            [MEGAETH_TESTNET_V2_CONFIG.chainId]: {
+              ...MEGAETH_TESTNET_V2_CONFIG,
+              name: 'MegaETH Testnet custom',
+              rpcEndpoints: [
+                {
+                  networkClientId: 'some-network-client-id',
+                  type: RpcEndpointType.Custom,
+                  url: 'https://timothy.megaeth.com/rpc',
+                  failoverUrls: [],
+                },
+              ],
+            },
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+        NetworkEnablementController: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              [MEGAETH_TESTNET_V2_CONFIG.chainId]: true,
+            },
           },
         },
       },
     };
 
-    // Should not throw
-    const newStorage = await migrate(oldStorage);
+    const localChangedControllers = new Set<string>();
+    await migrate(oldStorage, localChangedControllers);
 
-    expect(newStorage.meta.version).toBe(version);
-
-    // Should clear state even on error
-    expect(
-      (newStorage.data.TokenListController as Record<string, unknown>)
-        .tokensChainsCache,
-    ).toStrictEqual({});
+    // After migration, the name and nativeCurrency should be updated
+    // and the new RPC endpoint should be added
+    const migratedConfig =
+      oldStorage.data.NetworkController.networkConfigurationsByChainId[
+        MEGAETH_TESTNET_V2_CONFIG.chainId
+      ];
+    expect(migratedConfig.name).toBe(MEGAETH_TESTNET_V2_CONFIG.name);
+    expect(migratedConfig.nativeCurrency).toBe(
+      MEGAETH_TESTNET_V2_CONFIG.nativeCurrency,
+    );
+    expect(migratedConfig.rpcEndpoints).toHaveLength(2);
+    expect(migratedConfig.rpcEndpoints[0].url).toBe(
+      'https://timothy.megaeth.com/rpc',
+    );
+    expect(migratedConfig.rpcEndpoints[1].url).toBe(
+      'https://carrot.megaeth.com/rpc',
+    );
+    expect(migratedConfig.defaultRpcEndpointIndex).toBe(1);
+    expect(migratedConfig.blockExplorerUrls).toContain(
+      MEGAETH_TESTNET_V2_CONFIG.blockExplorerUrls[0],
+    );
   });
 });
