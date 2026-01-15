@@ -7,7 +7,7 @@ import {
 } from '../../../../store/actions';
 import { Asset, AssetStandard } from '../../types/send';
 
-const getBalanceValue = (balance: string | { words: string } | Function) => {
+const getBalanceValue = (balance: string | { words: string }) => {
   let balanceStr: string;
   if (typeof balance === 'string') {
     balanceStr = parseInt(balance, 16).toString();
