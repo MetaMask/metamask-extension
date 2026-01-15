@@ -1,13 +1,8 @@
 import { strict as assert } from 'assert';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  unlockWallet,
-  DAPP_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, unlockWallet, regularDelayMs } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';

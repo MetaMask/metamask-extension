@@ -1,11 +1,4 @@
 import {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
-import {
   BUNDLER_URL,
   DAPP_PATH,
   DAPP_URL,
@@ -17,7 +10,10 @@ import {
   LOCAL_NODE_PRIVATE_KEY,
   SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
+  WINDOW_TITLES,
 } from '../constants';
+import { withFixtures, unlockWallet, convertETHToHexGwei } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';

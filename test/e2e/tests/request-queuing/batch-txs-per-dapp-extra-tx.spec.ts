@@ -1,12 +1,8 @@
 import { Suite } from 'mocha';
 import { isManifestV3 } from '../../../../shared/modules/mv3.utils';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  DAPP_ONE_URL,
-  DAPP_URL,
-  WINDOW_TITLES,
-  withFixtures,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';

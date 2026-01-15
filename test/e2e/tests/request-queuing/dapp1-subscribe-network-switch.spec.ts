@@ -1,6 +1,7 @@
 import { strict as assert } from 'assert';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { switchToNetworkFromNetworkSelect } from '../../page-objects/flows/network.flow';
