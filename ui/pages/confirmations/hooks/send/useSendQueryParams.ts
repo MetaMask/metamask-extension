@@ -150,12 +150,5 @@ export const useSendQueryParams = () => {
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [
-    asset,
-    allAssets,
-    paramAsset,
-    paramChainId,
-    paramTokenId,
-    updateAsset,
-  ]);
+  }, [asset, allAssets, paramAsset, paramChainId, paramTokenId, updateAsset]);
 };
