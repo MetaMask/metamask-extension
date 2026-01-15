@@ -7,6 +7,7 @@ import {
 } from './types';
 import { ConnectionState } from './connectionState';
 import * as webConnectionUtils from './webConnectionUtils';
+import { resetwebConnectionUtilsMocks } from './__mocks__/webConnectionUtils';
 
 jest.mock('./webConnectionUtils');
 
@@ -27,6 +28,7 @@ describe('useHardwareWalletPermissions', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetwebConnectionUtilsMocks();
 
     mockSetHardwareConnectionPermissionState = jest.fn();
 
@@ -104,7 +106,9 @@ describe('useHardwareWalletPermissions', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+      expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
+        HardwareConnectionPermissionState.Unknown,
+      );
     });
 
     it('aborts when AbortController is aborted', async () => {

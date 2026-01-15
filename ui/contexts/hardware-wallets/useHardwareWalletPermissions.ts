@@ -32,11 +32,21 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
-    checkHardwareWalletPermission(walletType).then((permissionState) => {
-      if (!refs.abortControllerRef.current?.signal.aborted) {
-        setHardwareConnectionPermissionState(permissionState);
-      }
-    });
+    if (refs.abortControllerRef.current?.signal.aborted) {
+      return;
+    }
+
+    checkHardwareWalletPermission(walletType)
+      .then((permissionState) => {
+        if (!refs.abortControllerRef.current?.signal.aborted) {
+          setHardwareConnectionPermissionState(permissionState);
+        }
+      })
+      .catch(() => {
+        setHardwareConnectionPermissionState(
+          HardwareConnectionPermissionState.Unknown,
+        );
+      });
   }, [
     isHardwareWalletAccount,
     walletType,
