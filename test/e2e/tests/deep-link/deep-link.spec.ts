@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
