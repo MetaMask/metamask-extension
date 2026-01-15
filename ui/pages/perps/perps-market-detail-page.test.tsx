@@ -25,18 +25,6 @@ jest.mock('loglevel', () => ({
   trace: jest.fn(),
 }));
 
-// Mock useI18nContext to handle missing translation keys
-jest.mock('../../hooks/useI18nContext', () => ({
-  useI18nContext: () => (key: string) => {
-    const translations: Record<string, string> = {
-      back: 'Back',
-      perpsDisclaimer:
-        'Trading perpetuals involves significant risk. You could lose your entire investment.',
-    };
-    return translations[key] || key;
-  },
-}));
-
 const mockUseParams = jest.fn().mockReturnValue({ symbol: 'ETH' });
 const mockUseNavigate = jest.fn();
 const mockNavigateComponent = jest.fn();

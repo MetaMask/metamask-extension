@@ -609,7 +609,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                 }
               >
                 {market.fundingRate >= 0 ? '+' : ''}
-                {market.fundingRate}%
+                {(market.fundingRate * 100).toFixed(4)}%
               </Text>
             </Box>
           )}
