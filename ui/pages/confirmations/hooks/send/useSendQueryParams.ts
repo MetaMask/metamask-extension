@@ -132,7 +132,8 @@ export const useSendQueryParams = () => {
         // For tokens (no tokenId), match by assetId or check if native
         if (!paramTokenId) {
           return (
-            (paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
+            (paramAsset &&
+              assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
             (!paramAsset && isNative)
           );
         }

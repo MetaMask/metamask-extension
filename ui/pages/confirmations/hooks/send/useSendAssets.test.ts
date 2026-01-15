@@ -206,7 +206,11 @@ describe('useSendAssets', () => {
         name: 'Solana Token',
         chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
       } as Asset,
-      { id: 'token4', name: 'Disabled Network Token', chainId: '0x999' } as Asset, // Not enabled
+      {
+        id: 'token4',
+        name: 'Disabled Network Token',
+        chainId: '0x999',
+      } as Asset, // Not enabled
     ];
 
     const mockNfts: Asset[] = [
