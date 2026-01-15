@@ -46,6 +46,14 @@ export const useHardwareWalletAutoConnect = ({
       return undefined;
     }
 
+    const {
+      abortControllerRef,
+      adapterRef,
+      isConnectingRef,
+      deviceIdRef,
+      connectRef,
+    } = refs;
+
     const isLedger = walletType === HardwareWalletType.Ledger;
     const isTrezor = walletType === HardwareWalletType.Trezor;
 
@@ -53,7 +61,7 @@ export const useHardwareWalletAutoConnect = ({
       return undefined;
     }
 
-    const abortSignal = refs.abortControllerRef.current?.signal;
+    const abortSignal = abortControllerRef.current?.signal;
 
     const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
       if (abortSignal?.aborted) {
@@ -69,11 +77,11 @@ export const useHardwareWalletAutoConnect = ({
 
       if (
         currentPermissionState === HardwareConnectionPermissionState.Granted &&
-        !refs.adapterRef.current?.isConnected() &&
-        !refs.isConnectingRef.current
+        !adapterRef.current?.isConnected() &&
+        !isConnectingRef.current
       ) {
-        refs.deviceIdRef.current = newDeviceId;
-        refs.connectRef.current?.();
+        deviceIdRef.current = newDeviceId;
+        connectRef.current?.();
       }
     };
 
@@ -111,21 +119,30 @@ export const useHardwareWalletAutoConnect = ({
 
   // Auto-connection effect
   useEffect(() => {
+    const {
+      abortControllerRef,
+      hasAutoConnectedRef,
+      lastConnectedAccountRef,
+      adapterRef,
+      isConnectingRef,
+      deviceIdRef,
+      connectRef,
+    } = refs;
     if (
       !isHardwareWalletAccount ||
       hardwareConnectionPermissionState !==
         HardwareConnectionPermissionState.Granted
     ) {
-      refs.hasAutoConnectedRef.current = false;
-      refs.lastConnectedAccountRef.current = null;
+      hasAutoConnectedRef.current = false;
+      lastConnectedAccountRef.current = null;
       return;
     }
 
-    const abortSignal = refs.abortControllerRef.current?.signal;
+    const abortSignal = abortControllerRef.current?.signal;
 
     const shouldSkipAutoConnect =
-      refs.hasAutoConnectedRef.current &&
-      refs.lastConnectedAccountRef.current === accountAddress;
+      hasAutoConnectedRef.current &&
+      lastConnectedAccountRef.current === accountAddress;
     if (shouldSkipAutoConnect) {
       return;
     }
@@ -141,16 +158,16 @@ export const useHardwareWalletAutoConnect = ({
         if (
           walletType &&
           id &&
-          !refs.adapterRef.current?.isConnected() &&
-          !refs.isConnectingRef.current &&
-          !refs.hasAutoConnectedRef.current &&
+          !adapterRef.current?.isConnected() &&
+          !isConnectingRef.current &&
+          !hasAutoConnectedRef.current &&
           hardwareConnectionPermissionState ===
             HardwareConnectionPermissionState.Granted
         ) {
-          refs.hasAutoConnectedRef.current = true;
-          refs.lastConnectedAccountRef.current = accountAddress ?? null;
-          refs.deviceIdRef.current = id;
-          await refs.connectRef.current?.();
+          hasAutoConnectedRef.current = true;
+          lastConnectedAccountRef.current = accountAddress ?? null;
+          deviceIdRef.current = id;
+          await connectRef.current?.();
         }
       })
       .catch(() => {

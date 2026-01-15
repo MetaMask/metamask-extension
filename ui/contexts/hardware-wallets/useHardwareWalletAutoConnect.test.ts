@@ -1,4 +1,3 @@
-import React from 'react';
 import { renderHook } from '@testing-library/react-hooks';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
