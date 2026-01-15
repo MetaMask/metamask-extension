@@ -36,20 +36,10 @@ export const DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS = {
  *
  * @param driver
  * @param testDapp
- * @param options
- * @param options.selectAllAccounts
- * @param options.includeTestnet
- * @param options.onboard
- * @param options.includeDevnet
  */
 export const connectTronTestDapp = async (
   driver: Driver,
   testDapp: TestDappTron,
-  options: {
-    onboard?: boolean;
-    selectAllAccounts?: boolean;
-    includeDevnet?: boolean;
-  } = {},
 ): Promise<void> => {
   await testDapp.checkPageIsLoaded();
   await driver.delay(largeDelayMs);
@@ -128,28 +118,21 @@ export const clickConfirmButton = async (driver: Driver): Promise<void> => {
  * @returns void
  */
 export const assertSignedMessageIsValid = async (signature: string) => {
-  assert.equal(
-    signature,
-    DEFAULT_MESSAGE_SIGNATURE
-  );
+  assert.equal(signature, DEFAULT_MESSAGE_SIGNATURE);
 };
 
 /**
  * Asserts that the required properties for a signed transaction are present.
  *
- * @param transaction.transaction
  * @param transaction - The transaction to verify.
- * @returns void
  */
-export const assertSignedTransactionIsValid = ({
-  transaction,
-}: {
-  transaction: any;
-}) => {
+export const assertSignedTransactionIsValid = (
+  transaction: Record<string, unknown>,
+) => {
   assert.ok(transaction.txID);
   assert.ok(transaction.raw_data_hex);
   assert.ok(transaction.raw_data);
   assert.ok(transaction.signature);
-  assert.ok(transaction.signature[0]);
-  assert.equal(transaction.signature[0].length, 132);
+  assert.ok((transaction.signature as string[])[0]);
+  assert.equal((transaction.signature as string[])[0].length, 132);
 };

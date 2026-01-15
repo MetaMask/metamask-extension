@@ -45,9 +45,7 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
 
           const transaction = await signUsdtTest.getSignedTransaction();
 
-          assertSignedTransactionIsValid({
-            transaction: JSON.parse(transaction),
-          });
+          assertSignedTransactionIsValid(JSON.parse(transaction));
         },
       );
     });

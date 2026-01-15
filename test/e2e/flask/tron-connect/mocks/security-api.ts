@@ -7,5 +7,6 @@ export const mockScanTransaction = (mockServer: Mockttp) =>
     status: 'SUCCESS',
     block: '78465629',
     chain: 'tron',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     account_address: 'TJ3QZbBREK1Xybe1jf4nR9Attb8i54vGS3',
   });

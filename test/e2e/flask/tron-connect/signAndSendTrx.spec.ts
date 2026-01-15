@@ -45,9 +45,7 @@ describe('Tron Connect - Sign/Send TRX - e2e tests', function () {
 
           const transaction = await signTrxTest.getSignedTransaction();
 
-          assertSignedTransactionIsValid({
-            transaction: JSON.parse(transaction),
-          });
+          assertSignedTransactionIsValid(JSON.parse(transaction));
         },
       );
     });
