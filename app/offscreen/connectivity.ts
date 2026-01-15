@@ -23,7 +23,7 @@ function sendConnectivityStatus(isOnline: boolean): void {
  * events, which work reliably here unlike in the service worker context.
  * This sends connectivity updates to the background script.
  */
-export default function initConnectivity(): void {
+export default function initConnectivityDetection(): void {
   const handleOnline = () => sendConnectivityStatus(true);
   const handleOffline = () => sendConnectivityStatus(false);
 

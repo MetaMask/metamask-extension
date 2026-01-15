@@ -76,10 +76,7 @@ import MetamaskController, {
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
-import {
-  createOffscreen,
-  setupOffscreenConnectivityListener,
-} from './offscreen';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -680,13 +677,10 @@ async function initialize(backup) {
   let connectivityReady = false;
 
   if (isManifestV3) {
-    setupOffscreenConnectivityListener((isOnline) => {
-      if (
-        connectivityReady &&
-        controller.controllerApi?.setDeviceConnectivityStatus
-      ) {
+    addOffscreenConnectivityListener((isOnline) => {
+      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
         const status = isOnline ? 'online' : 'offline';
-        controller.controllerApi.setDeviceConnectivityStatus(status);
+        controller.controllerApi.setConnectivityStatus(status);
       } else {
         // Queue until controller is ready
         pendingConnectivityStatus = isOnline;
@@ -769,24 +763,22 @@ async function initialize(backup) {
   maybeDetectPhishing(controller);
 
   // Set up connectivity detection
-  if (controller.controllerApi?.setDeviceConnectivityStatus) {
-    if (isManifestV3) {
-      // MV3: Listener was set up earlier, now apply any pending status and mark ready
-      connectivityReady = true;
-      if (pendingConnectivityStatus !== null) {
-        const status = pendingConnectivityStatus ? 'online' : 'offline';
-        controller.controllerApi.setDeviceConnectivityStatus(status);
-      }
-    } else {
-      // MV2: Background page has access to window events
-      const updateConnectivity = (isOnline) => {
-        const status = isOnline ? 'online' : 'offline';
-        controller.controllerApi.setDeviceConnectivityStatus(status);
-      };
-      updateConnectivity(globalThis.navigator.onLine);
-      globalThis.addEventListener('online', () => updateConnectivity(true));
-      globalThis.addEventListener('offline', () => updateConnectivity(false));
+  if (isManifestV3) {
+    // MV3: Listener was set up earlier, now apply any pending status and mark ready
+    connectivityReady = true;
+    if (pendingConnectivityStatus !== null) {
+      const status = pendingConnectivityStatus ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
     }
+  } else {
+    // MV2: Background page has access to window events
+    const updateConnectivity = (isOnline) => {
+      const status = isOnline ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    };
+    updateConnectivity(globalThis.navigator.onLine);
+    globalThis.addEventListener('online', () => updateConnectivity(true));
+    globalThis.addEventListener('offline', () => updateConnectivity(false));
   }
 
   if (!isManifestV3) {

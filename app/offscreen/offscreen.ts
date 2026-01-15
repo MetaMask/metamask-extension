@@ -13,7 +13,7 @@ import { runKernel } from './ocap-kernel';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
-import initConnectivity from './connectivity';
+import initConnectivityDetection from './connectivity';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -81,7 +81,7 @@ init().then(() => {
   });
 
   // Initialize connectivity detection AFTER isBooted is sent.
-  // This ensures the background listener (setupOffscreenConnectivityListener)
+  // This ensures the background listener (addOffscreenConnectivityListener)
   // is set up before we send the initial connectivity status.
-  initConnectivity();
+  initConnectivityDetection();
 });

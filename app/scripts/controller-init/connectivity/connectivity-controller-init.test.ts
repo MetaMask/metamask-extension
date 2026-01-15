@@ -67,35 +67,35 @@ describe('ConnectivityControllerInit', () => {
     expect(result.persistedStateKey).toBeNull();
   });
 
-  it('exposes setDeviceConnectivityStatus API', () => {
+  it('exposes setConnectivityStatus API', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
 
-    expect(result.api?.setDeviceConnectivityStatus).toBeDefined();
-    expect(typeof result.api?.setDeviceConnectivityStatus).toBe('function');
+    expect(result.api?.setConnectivityStatus).toBeDefined();
+    expect(typeof result.api?.setConnectivityStatus).toBe('function');
   });
 
-  it('API setDeviceConnectivityStatus updates controller state via service', () => {
+  it('API setConnectivityStatus updates controller state via service', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
     const { controller } = result;
 
     expect(controller.state.connectivityStatus).toBe('online');
 
-    result.api?.setDeviceConnectivityStatus('offline');
+    result.api?.setConnectivityStatus('offline');
 
     expect(controller.state.connectivityStatus).toBe('offline');
   });
 
-  it('API setDeviceConnectivityStatus handles online status', () => {
+  it('API setConnectivityStatus handles online status', () => {
     const requestMock = buildInitRequestMock();
     const result = ConnectivityControllerInit(requestMock);
     const { controller } = result;
 
-    result.api?.setDeviceConnectivityStatus('offline');
+    result.api?.setConnectivityStatus('offline');
     expect(controller.state.connectivityStatus).toBe('offline');
 
-    result.api?.setDeviceConnectivityStatus('online');
+    result.api?.setConnectivityStatus('online');
     expect(controller.state.connectivityStatus).toBe('online');
   });
 });

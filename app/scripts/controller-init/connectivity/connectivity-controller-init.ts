@@ -13,7 +13,7 @@ import { ExtensionConnectivityAdapter } from '../../controllers/connectivity';
  * - MV3: Offscreen document (app/offscreen/connectivity.ts)
  * - MV2: Background page (app/scripts/background.js)
  *
- * The status is synced to this controller via the setDeviceConnectivityStatus API.
+ * The status is synced to this controller via the setConnectivityStatus API.
  *
  * @param request - The controller init request.
  * @param request.controllerMessenger - The messenger for the controller.
@@ -38,7 +38,7 @@ export const ConnectivityControllerInit: ControllerInitFunction<
   return {
     controller,
     api: {
-      setDeviceConnectivityStatus: (status: 'online' | 'offline') =>
+      setConnectivityStatus: (status: 'online' | 'offline') =>
         connectivityAdapter.setStatus(status),
     },
     persistedStateKey: null,
