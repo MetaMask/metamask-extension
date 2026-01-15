@@ -567,6 +567,7 @@ const clickNestedButton = async (driver, tabName) => {
  * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
+ * @deprecated Use {@link loginWithBalanceValidation} or {@link loginWithoutBalanceValidation} instead.
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true

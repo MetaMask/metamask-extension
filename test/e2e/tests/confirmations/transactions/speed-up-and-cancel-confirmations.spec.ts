@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
-import { unlockWallet, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
@@ -29,7 +30,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -85,7 +86,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {

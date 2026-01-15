@@ -2,11 +2,12 @@ import { Driver } from '../webdriver/driver';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import { DAPP_PATH, WINDOW_TITLES } from '../constants';
-import { withFixtures, unlockWallet } from '../helpers';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import NotificationsListPage from '../page-objects/pages/notifications-list-page';
 import { mockCronjobDurationSnap } from '../mock-response-data/snaps/snap-binary-mocks';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 
 describe('Test Snap Cronjob Duration', function () {
   it('runs a cronjob every 10 seconds that sends a notification', async function () {
@@ -20,7 +21,7 @@ describe('Test Snap Cronjob Duration', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         const headerNavbar = new HeaderNavbar(driver);

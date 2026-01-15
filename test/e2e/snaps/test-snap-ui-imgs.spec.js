@@ -1,5 +1,8 @@
+const { withFixtures } = require('../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../page-objects/flows/login.flow');
 const { DAPP_PATH, DAPP_URL, WINDOW_TITLES } = require('../constants');
-const { withFixtures, unlockWallet } = require('../helpers');
 const FixtureBuilder = require('../fixtures/fixture-builder');
 const {
   mockImagesSnap,
@@ -17,7 +20,7 @@ describe('Test Snap Images', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // navigate to test snaps page and connect
         await driver.driver.get(DAPP_URL);

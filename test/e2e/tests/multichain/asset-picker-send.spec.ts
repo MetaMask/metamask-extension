@@ -2,7 +2,8 @@ import { Context } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
@@ -43,7 +44,7 @@ describe('AssetPickerSendFlow', function () {
         },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Disable token auto detection
         const settingsPage = new SettingsPage(driver);
