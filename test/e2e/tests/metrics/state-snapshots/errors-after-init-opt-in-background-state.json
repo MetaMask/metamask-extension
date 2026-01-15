@@ -199,6 +199,7 @@
   },
   "NetworkEnablementController": {
     "enabledNetworkMap": {
+      "bip122": "object",
       "eip155": "object",
       "solana": "object",
       "tron": "object"
