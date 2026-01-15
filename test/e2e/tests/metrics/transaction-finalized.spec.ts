@@ -316,15 +316,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
 
         const [event1, event2, event3, event4] = events;
 
-        // Log which events have transaction_hash property
-        events.forEach((event, index) => {
-          const hasTransactionHash = 'transaction_hash' in (event?.properties || {});
-          console.log(`Event ${index + 1} has transaction_hash: ${hasTransactionHash}`);
-          if (hasTransactionHash) {
-            console.log(`  transaction_hash value: ${event?.properties?.transaction_hash}`);
-          }
-        });
-
         // Find the finalized events (they have transaction_hash)
         const eventsWithHash = events.filter(
           (event) => event?.properties?.transaction_hash,
