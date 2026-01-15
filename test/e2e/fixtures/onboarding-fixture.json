@@ -2143,6 +2143,7 @@
     }
   },
   "meta": {
-    "version": 184
+    "version": 184,
+    "storageKind": "split"
   }
 }

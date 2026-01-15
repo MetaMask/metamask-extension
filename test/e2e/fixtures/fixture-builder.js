@@ -1947,7 +1947,10 @@ class FixtureBuilder {
     if (!this.fixture.meta) {
       this.fixture.meta = {
         version: FIXTURE_STATE_METADATA_VERSION,
+        storageKind: 'split',
       };
+    } else if (!this.fixture.meta.storageKind) {
+      this.fixture.meta.storageKind = 'split';
     }
     return this.fixture;
   }
