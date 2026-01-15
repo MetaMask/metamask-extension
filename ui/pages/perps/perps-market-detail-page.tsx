@@ -300,6 +300,7 @@ const PerpsMarketDetailPage: React.FC = () => {
                       : TextColor.ErrorDefault
                   }
                 >
+                  {parseFloat(position.unrealizedPnl) >= 0 ? '+' : '-'}
                   {formatCurrencyWithMinThreshold(
                     Math.abs(parseFloat(position.unrealizedPnl)),
                     'USD',
@@ -527,6 +528,7 @@ const PerpsMarketDetailPage: React.FC = () => {
               <OrderCard
                 key={order.orderId}
                 order={order}
+                variant="muted"
                 onClick={handleOrderClick}
               />
             ))}
