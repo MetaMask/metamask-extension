@@ -50,6 +50,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { setupSidepanelMessageHandler } from './sidepanel-helper';
 import {
   CorruptionHandler,
   hasVault,
@@ -112,6 +113,7 @@ const BADGE_COLOR_APPROVAL = '#0376C9';
 const BADGE_MAX_COUNT = 9;
 
 const inTest = process.env.IN_TEST;
+const isSidepanelEnabled = process.env.IS_SIDEPANEL === 'true';
 const useFixtureStore =
   inTest && getManifestFlags().testing?.forceExtensionStore !== true;
 const localStore = useFixtureStore
@@ -1706,12 +1708,19 @@ async function triggerUi() {
     tabs.length > 0 &&
     tabs[0].extData &&
     tabs[0].extData.indexOf('vivaldi_tab') > -1;
+
+  const sidepanelPreferred =
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? false;
+  const sidepanelSupported = Boolean(browser?.sidePanel?.open);
+
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
     !currentlyActiveMetamaskTab &&
     !sidePanelIsOpen &&
-    true
+    // Skip notification window if user prefers sidepanel (handled by setupSidepanelMessageHandler)
+    !(sidepanelPreferred && sidepanelSupported)
   ) {
     uiIsTriggering = true;
     try {
@@ -1835,7 +1844,7 @@ function onNavigateToTab() {
 const initSidePanelBehavior = async () => {
   // Only initialize sidepanel behavior if the feature flag is enabled
   // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  if (!isSidepanelEnabled || !browser?.sidePanel) {
     return;
   }
 
@@ -1861,11 +1870,18 @@ const initSidePanelBehavior = async () => {
 
 initSidePanelBehavior();
 
+// Listen for requests from setupSidepanelListener
+setupSidepanelMessageHandler({
+  isSidepanelPreferred: () =>
+    controller?.preferencesController?.state?.preferences
+      ?.useSidePanelAsDefault ?? false,
+});
+
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
   // Only setup preference listener if the feature flag is enabled
   // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  if (!isSidepanelEnabled || !browser?.sidePanel) {
     return;
   }
 
