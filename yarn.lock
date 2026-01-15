@@ -8853,7 +8853,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/transaction-controller@npm:^62.9.1":
+"@metamask/transaction-controller@npm:^62.8.0, @metamask/transaction-controller@npm:^62.9.1":
   version: 62.9.1
   resolution: "@metamask/transaction-controller@npm:62.9.1"
   dependencies:
