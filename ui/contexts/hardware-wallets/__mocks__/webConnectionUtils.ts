@@ -4,7 +4,7 @@ import {
 } from '../types';
 
 /**
- * Mock implementation of webHIDUtils for testing
+ * Mock implementation of webConnectionUtils for testing
  */
 
 // Mock functions
@@ -63,7 +63,7 @@ subscribeToWebUSBEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
 
 // Reset all mocks to defaults
-export const resetWebHIDUtilsMocks = () => {
+export const resetwebConnectionUtilsMocks = () => {
   isWebHIDAvailable.mockReturnValue(true);
   isWebUSBAvailable.mockReturnValue(true);
   checkWebHIDPermission.mockResolvedValue(
@@ -105,8 +105,8 @@ export const resetWebHIDUtilsMocks = () => {
 };
 
 // Helper to setup common test scenarios
-export const setupWebHIDUtilsMocks = () => {
-  resetWebHIDUtilsMocks();
+export const setupWebConnectionUtilsMocks = () => {
+  resetwebConnectionUtilsMocks();
 };
 
 // Helper to mock permission denied scenarios

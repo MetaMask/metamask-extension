@@ -6,9 +6,9 @@ import {
   type HardwareWalletConnectionState,
 } from './types';
 import { ConnectionState } from './connectionState';
-import * as webHIDUtils from './webHIDUtils';
+import * as webConnectionUtils from './webConnectionUtils';
 
-jest.mock('./webHIDUtils');
+jest.mock('./webConnectionUtils');
 
 describe('useHardwareWalletPermissions', () => {
   let mockState: {
@@ -66,7 +66,7 @@ describe('useHardwareWalletPermissions', () => {
   describe('initial permission check effect', () => {
     it('checks permissions for hardware wallet accounts', async () => {
       (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
 
       setupHook();
@@ -74,9 +74,9 @@ describe('useHardwareWalletPermissions', () => {
       // Wait for useEffect to run
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(webHIDUtils.checkHardwareWalletPermission).toHaveBeenCalledWith(
-        HardwareWalletType.Ledger,
-      );
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
         HardwareConnectionPermissionState.Granted,
       );
@@ -90,12 +90,14 @@ describe('useHardwareWalletPermissions', () => {
 
       await new Promise((resolve) => setTimeout(resolve, 0));
 
-      expect(webHIDUtils.checkHardwareWalletPermission).not.toHaveBeenCalled();
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).not.toHaveBeenCalled();
     });
 
     it('handles permission check errors gracefully', async () => {
       (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockRejectedValue(new Error('Permission check failed'));
 
       setupHook();
@@ -119,7 +121,7 @@ describe('useHardwareWalletPermissions', () => {
   describe('checkHardwareWalletPermissionAction', () => {
     it('checks and returns permission state for Ledger', async () => {
       (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
 
       const { result } = setupHook();
@@ -133,14 +135,14 @@ describe('useHardwareWalletPermissions', () => {
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
         HardwareConnectionPermissionState.Granted,
       );
-      expect(webHIDUtils.checkHardwareWalletPermission).toHaveBeenCalledWith(
-        HardwareWalletType.Ledger,
-      );
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
     });
 
     it('checks and returns permission state for Trezor', async () => {
       (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Denied);
 
       const { result } = setupHook(false, true);
@@ -166,7 +168,7 @@ describe('useHardwareWalletPermissions', () => {
 
       for (const state of testCases) {
         (
-          webHIDUtils.checkHardwareWalletPermission as jest.Mock
+          webConnectionUtils.checkHardwareWalletPermission as jest.Mock
         ).mockResolvedValue(state);
 
         const { result } = setupHook();
@@ -189,7 +191,7 @@ describe('useHardwareWalletPermissions', () => {
   describe('requestHardwareWalletPermissionAction', () => {
     it('requests and grants permission for Ledger when WebHID is available', async () => {
       (
-        webHIDUtils.requestHardwareWalletPermission as jest.Mock
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(true);
 
       const { result } = setupHook(true, false);
@@ -203,14 +205,14 @@ describe('useHardwareWalletPermissions', () => {
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
         HardwareConnectionPermissionState.Granted,
       );
-      expect(webHIDUtils.requestHardwareWalletPermission).toHaveBeenCalledWith(
-        HardwareWalletType.Ledger,
-      );
+      expect(
+        webConnectionUtils.requestHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
     });
 
     it('requests and grants permission for Trezor when WebUSB is available', async () => {
       (
-        webHIDUtils.requestHardwareWalletPermission as jest.Mock
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(true);
 
       const { result } = setupHook(false, true);
@@ -224,9 +226,9 @@ describe('useHardwareWalletPermissions', () => {
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
         HardwareConnectionPermissionState.Granted,
       );
-      expect(webHIDUtils.requestHardwareWalletPermission).toHaveBeenCalledWith(
-        HardwareWalletType.Trezor,
-      );
+      expect(
+        webConnectionUtils.requestHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
     });
 
     it('denies permission when WebHID is not available for Ledger', async () => {
@@ -243,7 +245,7 @@ describe('useHardwareWalletPermissions', () => {
       expect(granted).toBe(false);
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
       expect(
-        webHIDUtils.requestHardwareWalletPermission,
+        webConnectionUtils.requestHardwareWalletPermission,
       ).not.toHaveBeenCalled();
     });
 
@@ -261,13 +263,13 @@ describe('useHardwareWalletPermissions', () => {
       expect(granted).toBe(false);
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
       expect(
-        webHIDUtils.requestHardwareWalletPermission,
+        webConnectionUtils.requestHardwareWalletPermission,
       ).not.toHaveBeenCalled();
     });
 
     it('handles denied permission request', async () => {
       (
-        webHIDUtils.requestHardwareWalletPermission as jest.Mock
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(false);
 
       const { result } = setupHook(true, false);
@@ -285,10 +287,10 @@ describe('useHardwareWalletPermissions', () => {
 
     it('handles permission request errors', async () => {
       (
-        webHIDUtils.checkHardwareWalletPermission as jest.Mock
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
       (
-        webHIDUtils.requestHardwareWalletPermission as jest.Mock
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockRejectedValue(new Error('Request failed'));
 
       const { result } = setupHook(true, false);

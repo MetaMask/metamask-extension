@@ -12,7 +12,7 @@ import {
   type HardwareWalletAdapterOptions,
   type DeviceEventPayload,
 } from './types';
-import { getHardwareWalletDeviceId } from './webHIDUtils';
+import { getHardwareWalletDeviceId } from './webConnectionUtils';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
 
 type IsLatestAttempt = () => boolean;

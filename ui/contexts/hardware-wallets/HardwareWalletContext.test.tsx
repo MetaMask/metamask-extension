@@ -11,8 +11,8 @@ import {
   useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
-import * as webHIDUtils from './webHIDUtils';
-import { setupWebHIDUtilsMocks } from './__mocks__/webHIDUtils';
+import * as webConnectionUtils from './webConnectionUtils';
+import { setupWebConnectionUtilsMocks } from './__mocks__/webConnectionUtils';
 
 const mockStore = configureStore([]);
 
@@ -46,18 +46,18 @@ const createWrapper =
     </Provider>
   );
 
-jest.mock('./webHIDUtils');
+jest.mock('./webConnectionUtils');
 
 describe('HardwareWalletContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    setupWebHIDUtilsMocks();
+    setupWebConnectionUtilsMocks();
     // Default to unavailable APIs
-    (webHIDUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(false);
-    (webHIDUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(false);
-    (webHIDUtils.checkHardwareWalletPermission as jest.Mock).mockResolvedValue(
-      HardwareConnectionPermissionState.Unknown,
-    );
+    (webConnectionUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(false);
+    (webConnectionUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(false);
+    (
+      webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+    ).mockResolvedValue(HardwareConnectionPermissionState.Unknown);
   });
 
   describe('useHardwareWallet', () => {
@@ -168,8 +168,10 @@ describe('HardwareWalletContext', () => {
     });
 
     it('exposes API availability', () => {
-      (webHIDUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(true);
-      (webHIDUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(false);
+      (webConnectionUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(true);
+      (webConnectionUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(
+        false,
+      );
 
       const store = mockStore(createMockState(KeyringTypes.ledger));
 

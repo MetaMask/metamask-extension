@@ -4,7 +4,7 @@ import {
   getHardwareWalletDeviceId,
   subscribeToWebHIDEvents,
   subscribeToWebUSBEvents,
-} from './webHIDUtils';
+} from './webConnectionUtils';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
   type HardwareWalletState,

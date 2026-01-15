@@ -17,7 +17,7 @@ import {
   HardwareConnectionPermissionState,
   type HardwareWalletConnectionState,
 } from './types';
-import { isWebHIDAvailable, isWebUSBAvailable } from './webHIDUtils';
+import { isWebHIDAvailable, isWebUSBAvailable } from './webConnectionUtils';
 
 // Type definitions for separate contexts
 export type HardwareWalletConfigContextType = {

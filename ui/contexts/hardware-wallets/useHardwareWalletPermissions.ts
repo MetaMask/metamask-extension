@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import {
   checkHardwareWalletPermission,
   requestHardwareWalletPermission,
-} from './webHIDUtils';
+} from './webConnectionUtils';
 import { HardwareConnectionPermissionState, HardwareWalletType } from './types';
 import { type HardwareWalletState } from './HardwareWalletStateManager';
 

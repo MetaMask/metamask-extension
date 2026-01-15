@@ -13,4 +13,4 @@ export {
 export { ConnectionState } from './connectionState';
 export * from './errors';
 export * from './types';
-export * from './webHIDUtils';
+export * from './webConnectionUtils';
