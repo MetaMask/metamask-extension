@@ -45,14 +45,37 @@ describe('useGasSponsorshipWarningAlerts', () => {
   it('returns no alerts if the transaction is sponsored', () => {
     expect(
       runHook(
-        getMockConfirmStateForTransaction({
-          ...CONFIRMATION_MOCK,
-          isGasFeeSponsored: true,
-          simulationData: {
-            callTraceErrors: ['reserve balance violation'],
-            tokenBalanceChanges: [],
+        getMockConfirmStateForTransaction(
+          {
+            ...CONFIRMATION_MOCK,
+            isGasFeeSponsored: true,
+            simulationData: {
+              callTraceErrors: ['reserve balance violation'],
+              tokenBalanceChanges: [],
+            },
           },
-        }),
+          {
+            metamask: {
+              networkConfigurationsByChainId: {
+                [CHAIN_IDS.MONAD]: {
+                  chainId: CHAIN_IDS.MONAD,
+                  name: 'Monad',
+                  nativeCurrency: 'MON',
+                  defaultRpcEndpointIndex: 0,
+                  ticker: 'MON',
+                  rpcEndpoints: [
+                    {
+                      type: 'custom',
+                      url: 'https://testnet-rpc.monad.xyz',
+                      networkClientId: 'monad',
+                    },
+                  ],
+                  blockExplorerUrls: [],
+                },
+              },
+            },
+          },
+        ),
       ),
     ).toEqual([]);
   });
