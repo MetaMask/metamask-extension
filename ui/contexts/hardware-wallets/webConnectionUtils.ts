@@ -167,14 +167,7 @@ export async function requestWebHIDPermission(): Promise<boolean> {
     );
 
     return hasLedgerDevice;
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    // User cancelled the dialog
-    if (errorMessage.includes('cancelled') || errorMessage.includes('denied')) {
-      return false;
-    }
-
+  } catch {
     return false;
   }
 }
@@ -199,14 +192,7 @@ export async function requestWebUSBPermission(): Promise<boolean> {
     );
 
     return hasTrezorDevice;
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-
-    // User cancelled the dialog
-    if (errorMessage.includes('cancelled') || errorMessage.includes('denied')) {
-      return false;
-    }
-
+  } catch {
     return false;
   }
 }
