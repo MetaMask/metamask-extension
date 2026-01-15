@@ -329,6 +329,7 @@ export default function RecoveryPhraseChips({
                 onClick={() => {
                   removeQuizWord(quizWord.word);
                 }}
+                backgroundColor={BackgroundColor.backgroundSubsection}
               >
                 {secretRecoveryPhrase[actualIdxInSrp]}
               </ButtonBase>

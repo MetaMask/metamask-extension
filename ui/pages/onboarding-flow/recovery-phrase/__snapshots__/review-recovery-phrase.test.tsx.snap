@@ -39,10 +39,10 @@ exports[`Review Recovery Phrase Component renders match snapshot when isFromRemi
         </button>
       </div>
       <div
-        class="mm-box mm-box--margin-bottom-6"
+        class="mm-box"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           <span>
              
@@ -325,10 +325,10 @@ exports[`Review Recovery Phrase Component should match snapshot 1`] = `
         </h2>
       </div>
       <div
-        class="mm-box mm-box--margin-bottom-6"
+        class="mm-box"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           <span>
              
@@ -618,10 +618,10 @@ exports[`Review Recovery Phrase Component should match snapshot after reveal rec
         </h2>
       </div>
       <div
-        class="mm-box mm-box--margin-bottom-6"
+        class="mm-box"
       >
         <p
-          class="mm-box mm-text mm-text--body-md mm-box--margin-bottom-6 mm-box--color-text-alternative"
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
         >
           <span>
              
