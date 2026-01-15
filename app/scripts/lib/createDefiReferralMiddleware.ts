@@ -9,14 +9,20 @@ import type {
   PendingJsonRpcResponse,
 } from '@metamask/utils';
 import log from 'loglevel';
-import { HYPERLIQUID_ORIGIN } from '../../../shared/constants/referrals';
+import {
+  getPartnerByOrigin,
+  type DefiReferralPartnerConfig,
+} from '../../../shared/constants/defi-referrals';
 
 export type ExtendedJSONRPCRequest = JsonRpcRequest & {
   origin: string;
   tabId: number;
 };
 
-export enum HyperliquidPermissionTriggerType {
+/**
+ * Trigger types for referral flows
+ */
+export enum ReferralTriggerType {
   NewConnection = 'new_connection',
   OnNavigateConnectedTab = 'on_navigate_connected_tab',
 }
@@ -31,16 +37,17 @@ function isExtendedJSONRPCRequest(
 }
 
 /**
- * Creates middleware that monitors permission requests for Hyperliquid.
- * When a permission is granted to Hyperliquid, it triggers the referral flow.
+ * Creates middleware that monitors permission requests for DeFi referral partners.
+ * When a permission is granted to a supported partner, it triggers the referral flow.
  *
- * @param handleHyperliquidReferral - Function to handle the referral flow
+ * @param handleDefiReferral - Function to handle the referral flow for a partner
  * @returns Middleware function
  */
-export function createHyperliquidReferralMiddleware(
-  handleHyperliquidReferral: (
+export function createDefiReferralMiddleware(
+  handleDefiReferral: (
+    partner: DefiReferralPartnerConfig,
     tabId: number,
-    triggerType: HyperliquidPermissionTriggerType,
+    triggerType: ReferralTriggerType,
   ) => Promise<void>,
 ) {
   return createAsyncMiddleware(
@@ -58,23 +65,28 @@ export function createHyperliquidReferralMiddleware(
         return;
       }
 
-      // After the request is processed, check if it was a successful permission grant for Hyperliquid
-      const isHyperliquidConnectionRequest =
-        req.method === 'wallet_requestPermissions' &&
-        req.origin === HYPERLIQUID_ORIGIN;
+      // Check if the origin matches a referral partner
+      const partner = getPartnerByOrigin(req.origin);
+      if (!partner) {
+        return;
+      }
+
+      // After the request is processed, check if it was a successful permission grant
+      const isConnectionRequest = req.method === 'wallet_requestPermissions';
       const arePermissionsGranted =
         Array.isArray(res.result) &&
         res.result.some(
           (permission) => permission?.parentCapability === 'eth_accounts',
         );
 
-      if (isHyperliquidConnectionRequest && arePermissionsGranted) {
-        handleHyperliquidReferral(
+      if (isConnectionRequest && arePermissionsGranted) {
+        handleDefiReferral(
+          partner,
           req.tabId,
-          HyperliquidPermissionTriggerType.NewConnection,
+          ReferralTriggerType.NewConnection,
         ).catch((error) => {
           log.error(
-            'Failed to handle Hyperliquid referral after wallet_requestPermissions grant: ',
+            `Failed to handle ${partner.name} referral after wallet_requestPermissions grant: `,
             error,
           );
         });
