@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES, withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -10,6 +10,7 @@ import {
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
@@ -113,7 +114,7 @@ describe('Confirmation Signature - Personal Sign', function (this: Suite) {
       async ({ driver }) => {
         const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
         const confirmation = new PersonalSignConfirmation(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();

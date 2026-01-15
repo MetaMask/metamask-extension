@@ -2,7 +2,8 @@ import { Mockttp } from 'mockttp';
 
 import { E2E_SRP } from '../../../fixtures/default-fixture';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { withFixtures, unlockWallet, WALLET_PASSWORD } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { withFixtures, WALLET_PASSWORD } from '../../../helpers';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -49,7 +50,7 @@ describe('Account syncing - Accounts with Balances', function () {
         testSpecificMock: phase1MockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();

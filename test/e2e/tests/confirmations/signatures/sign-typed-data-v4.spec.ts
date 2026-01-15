@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -27,6 +27,7 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const signatureMessageWithoutVerifyingContract = [
   DEFAULT_FIXTURE_ACCOUNT,
@@ -168,7 +169,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
         await testDappIndividualRequest.request(

@@ -1,10 +1,6 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import {
-  WINDOW_TITLES,
-  getEventPayloads,
-  unlockWallet,
-} from '../../../helpers';
+import { WINDOW_TITLES, getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { DAPP_URL } from '../../../constants';
@@ -502,7 +498,7 @@ export async function openDappAndTriggerSignature(
 }
 
 export async function openDappAndTriggerDeploy(driver: Driver) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
   await driver.clickElement('#deployNFTsButton');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
