@@ -1608,6 +1608,7 @@ authorized by the user.` error until the user fully revoked dapp
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...HEAD
 [13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
 [13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...HEAD
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
 [13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
