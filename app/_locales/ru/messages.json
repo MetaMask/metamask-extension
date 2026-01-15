@@ -6230,41 +6230,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Ваш план неактивен, пока он приостановлен. Если вы отмените его, его действие будет прекращено немедленно."
   },
-  "shieldTxDetails1Description": {
-    "message": "Обеспечивает безопасность активов по покрываемым транзакциям"
-  },
   "shieldTxDetails1Title": {
     "message": "Защита транзакций до $10 000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Получайте более быструю и специализированную поддержку в любое время"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Приоритетная поддержка"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Ссылка"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Зарегистрироваться"
-  },
   "shieldTxMembershipActive": {
     "message": "Активный план"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Сведения для биллинга"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Биллинговый счет"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Сборы"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Следующее выставление счетов"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Способ оплаты"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Управление выставлением счетов"
@@ -6279,9 +6249,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Срок действия вашего плана истекает за $1. Продлите сейчас, чтобы продолжить пользоваться преимуществами.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Повторить платеж"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Ваш план был приостановлен из-за неудачного платежа по карте."
@@ -6308,9 +6275,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Связаться с поддержкой"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Обновить реквизиты карты"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Бесплатная пробная версия"
   },
@@ -6331,9 +6295,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Отправить претензию"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Просмотреть все преимущества"
   },
   "show": {
     "message": "Показать"

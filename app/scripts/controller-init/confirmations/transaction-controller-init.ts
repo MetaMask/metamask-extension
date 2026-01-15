@@ -241,8 +241,6 @@ function getApi(
       controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
-    updateTransactionSendFlowHistory:
-      controller.updateTransactionSendFlowHistory.bind(controller),
   };
 }
 

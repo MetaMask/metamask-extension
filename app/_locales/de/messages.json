@@ -6227,41 +6227,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Ihr Plan ist nicht aktiv, solange er pausiert. Wenn Sie kündigen, wird Ihr Plan sofort beendet."
   },
-  "shieldTxDetails1Description": {
-    "message": "Sichert Assets bei gedeckten Transaktionen"
-  },
   "shieldTxDetails1Title": {
     "message": "Bis zu $10.000 Transaktionsschutz"
   },
-  "shieldTxDetails2Description": {
-    "message": "Nutzen Sie jederzeit einen schnelleren, engagierten Support"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Prioritärer Support"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Anmelden"
-  },
   "shieldTxMembershipActive": {
     "message": "Plan aktiv"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Abrechnungsdetails"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Abrechnungskonto"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Belastungen"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Nächste Abrechnung"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Zahlungsmethode"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Abrechnung verwalten"
@@ -6276,9 +6246,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Ihr Plan endet am $1. Erneuern Sie ihn jetzt, um weiterhin Ihre Vorteile zu nutzen.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Zahlung wiederholen"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Ihr Plan wurde aufgrund einer fehlgeschlagenen Kartenzahlung pausiert."
@@ -6305,9 +6272,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Support kontaktieren"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Kartendaten aktualisieren"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Kostenlose Testversion"
   },
@@ -6328,9 +6292,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Anspruch einreichen"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Gesamte Vorteile anzeigen"
   },
   "show": {
     "message": "Anzeigen"
