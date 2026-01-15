@@ -2829,6 +2829,10 @@
   "gasPriceFetchFailed": {
     "message": "Gas price estimation failed due to network error."
   },
+  "gasSponsorshipReserveBalanceWarning": {
+    "message": "Gas sponsorship isn’t available for this transaction. You’ll need to keep at least $1 $2 in your account.",
+    "description": "$1 is the minimum required balance and $2 is the native currency symbol."
+  },
   "gasTimingHoursShort": {
     "message": "$1 hrs",
     "description": "$1 represents a number of hours"
