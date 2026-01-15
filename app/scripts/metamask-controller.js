@@ -4600,7 +4600,12 @@ export default class MetamaskController extends EventEmitter {
       // FIXME: The `KeyringController` does not check yet for duplicated accounts with HD keyrings, see: https://github.com/MetaMask/core/issues/5411
       const { entropySource: id } = await this.controllerMessenger.call(
         'MultichainAccountService:createMultichainAccountWallet',
-        { type: 'import', mnemonic: this._convertMnemonicToWordlistIndices(Buffer.from(mnemonic, 'utf8')) },
+        {
+          type: 'import',
+          mnemonic: this._convertMnemonicToWordlistIndices(
+            Buffer.from(mnemonic, 'utf8'),
+          ),
+        },
       );
 
       const [newAccountAddress] = await this.keyringController.withKeyring(
@@ -4620,7 +4625,11 @@ export default class MetamaskController extends EventEmitter {
             shouldCreateSocialBackup,
           );
         } catch (err) {
-          await this.controllerMessenger.call('MultichainAccountService:removeMultichainAccountWallet', id, newAccountAddress);
+          await this.controllerMessenger.call(
+            'MultichainAccountService:removeMultichainAccountWallet',
+            id,
+            newAccountAddress,
+          );
           throw err;
         }
       }
