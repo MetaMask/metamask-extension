@@ -309,7 +309,10 @@ describe('PersistenceManager', () => {
 
       await manager.persist();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
