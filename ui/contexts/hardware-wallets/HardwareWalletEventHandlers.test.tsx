@@ -23,6 +23,9 @@ describe('useDeviceEventHandlers', () => {
   let mockSetters: {
     setConnectionState: jest.Mock;
     setCurrentAppName: jest.Mock;
+    cleanupAdapter: jest.Mock;
+    abortAndCleanupController: jest.Mock;
+    resetConnectionRefs: jest.Mock;
   };
 
   beforeEach(() => {
@@ -44,6 +47,9 @@ describe('useDeviceEventHandlers', () => {
     mockSetters = {
       setConnectionState: jest.fn(),
       setCurrentAppName: jest.fn(),
+      cleanupAdapter: jest.fn(),
+      abortAndCleanupController: jest.fn(),
+      resetConnectionRefs: jest.fn(),
     };
   });
 
@@ -400,17 +406,14 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
-    it('cleans up refs on disconnect', () => {
-      mockRefs.adapterRef = { current: null };
-      mockRefs.isConnectingRef.current = false;
-      mockRefs.currentConnectionIdRef.current = 123;
+    it('calls cleanup functions on disconnect', () => {
       const { result } = setupHook();
 
       result.current.handleDisconnect();
 
-      expect(mockRefs.adapterRef.current).toBeNull();
-      expect(mockRefs.isConnectingRef.current).toBe(false);
-      expect(mockRefs.currentConnectionIdRef.current).toBeNull();
+      expect(mockSetters.abortAndCleanupController).toHaveBeenCalledTimes(1);
+      expect(mockSetters.cleanupAdapter).toHaveBeenCalledTimes(1);
+      expect(mockSetters.resetConnectionRefs).toHaveBeenCalledTimes(1);
     });
   });
 });

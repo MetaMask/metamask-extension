@@ -24,6 +24,9 @@ export type DeviceEventHandlerProps = {
           ) => HardwareWalletConnectionState),
     ) => void;
     setCurrentAppName: (name: string | null) => void;
+    cleanupAdapter: () => void;
+    abortAndCleanupController: () => void;
+    resetConnectionRefs: () => void;
   };
   onDeviceEvent?: (payload: DeviceEventPayload) => void;
 };
@@ -193,27 +196,16 @@ export const useDeviceEventHandlers = ({
 
   const handleDisconnect = useCallback(
     (disconnectError?: unknown) => {
-      // Extract refs to local variables to satisfy React Compiler
-      const {
-        abortControllerRef,
-        adapterRef,
-        isConnectingRef,
-        currentConnectionIdRef,
-      } = refs;
+      const { abortControllerRef } = refs;
 
       if (abortControllerRef.current?.signal.aborted) {
         return;
       }
 
-      // Clean up existing adapter resources before nullifying reference
-      const adapter = adapterRef.current;
-      if (adapter) {
-        adapter.destroy();
-        adapterRef.current = null;
-      }
-
-      isConnectingRef.current = false;
-      currentConnectionIdRef.current = null;
+      // Abort any ongoing operations and cleanup all refs
+      setters.abortAndCleanupController();
+      setters.cleanupAdapter();
+      setters.resetConnectionRefs();
 
       if (disconnectError instanceof HardwareWalletError) {
         // Handle structured hardware wallet errors
@@ -226,7 +218,7 @@ export const useDeviceEventHandlers = ({
         updateConnectionState(ConnectionState.disconnected());
       }
     },
-    [refs, updateConnectionState],
+    [refs, setters, updateConnectionState],
   );
 
   return {
