@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MetaMask State Debugger</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'SF Mono', 'Monaco', 'Inconsolata', 'Fira Code', monospace;
+      background: #0f0f1a;
+      color: #e2e8f0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .header {
+      background: #1a1a2e;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #2d2d44;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .header h1 { font-size: 16px; font-weight: 600; }
+    .status { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+
+    .status-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: #ef4444; transition: background 0.3s;
+    }
+    .status-dot.connected { background: #4ade80; }
+
+    .update-indicator { font-size: 11px; color: #64748b; margin-left: 12px; }
+
+    .container { display: flex; height: calc(100vh - 49px - 200px); }
+
+    .panel {
+      flex: 1; overflow: auto; padding: 16px;
+      border-right: 1px solid #2d2d44;
+    }
+    .panel:last-child { border-right: none; }
+
+    .panel-header {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: #94a3b8; margin-bottom: 12px;
+      padding-bottom: 8px; border-bottom: 1px solid #2d2d44;
+      position: sticky; top: 0; background: #0f0f1a; z-index: 10;
+    }
+    .panel-header span { color: #60a5fa; }
+
+    .tree-item { margin: 2px 0; }
+
+    .tree-key {
+      cursor: pointer; padding: 4px 8px; border-radius: 4px;
+      display: flex; align-items: flex-start; gap: 6px;
+      transition: background 0.3s;
+    }
+    .tree-key:hover { background: #1e1e32; }
+
+    /* Highlight animation - auto fades */
+    .tree-key.changed {
+      animation: highlight-fade 3s ease-out forwards;
+    }
+    @keyframes highlight-fade {
+      0% { background: rgba(251, 191, 36, 0.6); }
+      70% { background: rgba(251, 191, 36, 0.3); }
+      100% { background: transparent; }
+    }
+
+    .tree-arrow { width: 16px; color: #64748b; flex-shrink: 0; user-select: none; }
+    .tree-arrow.expanded::before { content: '▼'; }
+    .tree-arrow.collapsed::before { content: '▶'; }
+    .tree-arrow.leaf::before { content: '•'; color: #475569; }
+
+    .key-name { color: #60a5fa; }
+    .key-colon { color: #64748b; }
+
+    .value { color: #e2e8f0; word-break: break-all; }
+    .value.string { color: #f472b6; }
+    .value.string::before, .value.string::after { content: '"'; color: #a78bfa; }
+    .value.number { color: #4ade80; }
+    .value.boolean { color: #fbbf24; }
+    .value.null { color: #94a3b8; font-style: italic; }
+    .value.preview { color: #64748b; font-style: italic; }
+
+    .tree-children { padding-left: 20px; display: none; }
+    .tree-children.expanded { display: block; }
+
+    .log-panel {
+      height: 200px; background: #1a1a2e;
+      border-top: 1px solid #2d2d44; overflow: auto; padding: 8px 16px;
+    }
+
+    .log-header {
+      font-size: 11px; font-weight: 600; text-transform: uppercase;
+      letter-spacing: 1px; color: #94a3b8; margin-bottom: 8px;
+      padding-bottom: 8px; border-bottom: 1px solid #2d2d44;
+      position: sticky; top: 0; background: #1a1a2e;
+    }
+
+    .log-entry {
+      font-size: 11px; padding: 4px 0;
+      border-bottom: 1px solid #1e1e32; display: flex; gap: 12px;
+    }
+    .log-time { color: #64748b; flex-shrink: 0; }
+    .log-path { color: #60a5fa; }
+    .log-value { color: #4ade80; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .empty-state { color: #64748b; text-align: center; padding: 40px; font-style: italic; }
+
+    .controls { display: flex; gap: 8px; }
+    .btn {
+      padding: 6px 12px; background: #2d2d44; border: none;
+      border-radius: 4px; color: #e2e8f0; cursor: pointer;
+      font-size: 12px; transition: background 0.15s;
+    }
+    .btn:hover { background: #3d3d54; }
+    .btn.active { background: #60a5fa; color: #0f0f1a; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔍 MetaMask State Debugger</h1>
+    <div class="status">
+      <div class="status-dot" id="statusDot"></div>
+      <span id="statusText">Disconnected</span>
+      <span class="update-indicator" id="updateIndicator"></span>
+      <div class="controls">
+        <button class="btn" id="pauseBtn" onclick="togglePause()">⏸ Pause</button>
+        <button class="btn" onclick="clearLog()">Clear Log</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="panel">
+      <div class="panel-header">Persisted State <span>(this.store)</span></div>
+      <div class="tree" id="persistedTree"><div class="empty-state">Waiting for extension...</div></div>
+    </div>
+    <div class="panel">
+      <div class="panel-header">Memory State <span>(this.memStore)</span></div>
+      <div class="tree" id="memoryTree"><div class="empty-state">Waiting for extension...</div></div>
+    </div>
+  </div>
+
+  <div class="log-panel">
+    <div class="log-header">Change Log</div>
+    <div id="changeLog"></div>
+  </div>
+
+  <script>
+    // State
+    let persistedState = {};
+    let memoryState = {};
+    let isPaused = false;
+    let pendingUpdates = [];
+    let ws, reconnectTimeout;
+
+    // Track expanded paths for each store
+    const expandedPaths = {
+      persisted: new Set(),
+      memory: new Set()
+    };
+
+    // DOM references
+    const persistedTree = document.getElementById('persistedTree');
+    const memoryTree = document.getElementById('memoryTree');
+
+    // Initialize
+    connect();
+    setupClickHandlers();
+
+    function connect() {
+      ws = new WebSocket('ws://localhost:3333?type=viewer');
+      ws.onopen = () => {
+        document.getElementById('statusDot').classList.add('connected');
+        document.getElementById('statusText').textContent = 'Connected';
+        // Request full state from extension
+        ws.send(JSON.stringify({ type: 'requestFullState' }));
+      };
+      ws.onclose = () => {
+        document.getElementById('statusDot').classList.remove('connected');
+        document.getElementById('statusText').textContent = 'Disconnected';
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = setTimeout(connect, 2000);
+      };
+      ws.onerror = () => {};
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (isPaused) {
+            pendingUpdates.push(msg);
+            document.getElementById('updateIndicator').textContent = `(${pendingUpdates.length} pending)`;
+          } else {
+            handleMessage(msg);
+          }
+        } catch (e) {}
+      };
+    }
+
+    function setupClickHandlers() {
+      // Event delegation - handle all clicks on tree items
+      persistedTree.addEventListener('click', (e) => handleTreeClick(e, 'persisted'));
+      memoryTree.addEventListener('click', (e) => handleTreeClick(e, 'memory'));
+    }
+
+    function handleTreeClick(e, storeType) {
+      const keyEl = e.target.closest('.tree-key');
+      if (!keyEl) return;
+
+      e.stopPropagation();
+
+      const path = keyEl.dataset.path;
+      const item = keyEl.parentElement;
+      const arrow = keyEl.querySelector('.tree-arrow');
+      let children = item.querySelector('.tree-children');
+
+      // If it's a leaf node, nothing to expand
+      if (arrow.classList.contains('leaf')) return;
+
+      if (arrow.classList.contains('expanded')) {
+        // Collapse - remove from expanded set
+        expandedPaths[storeType].delete(path);
+        arrow.classList.remove('expanded');
+        arrow.classList.add('collapsed');
+        if (children) children.classList.remove('expanded');
+      } else {
+        // Expand - add to expanded set
+        expandedPaths[storeType].add(path);
+        arrow.classList.remove('collapsed');
+        arrow.classList.add('expanded');
+
+        if (!children) {
+          // Lazy render children
+          const state = storeType === 'persisted' ? persistedState : memoryState;
+          const value = getValueAtPath(state, path);
+
+          if (value && typeof value === 'object') {
+            children = document.createElement('div');
+            children.className = 'tree-children expanded';
+            children.innerHTML = renderLevel(value, path, storeType);
+            item.appendChild(children);
+          }
+        } else {
+          children.classList.add('expanded');
+        }
+      }
+    }
+
+    function handleMessage(msg) {
+      document.getElementById('updateIndicator').textContent = `Last: ${new Date().toLocaleTimeString()}`;
+
+      switch (msg.type) {
+        case 'connection':
+          document.getElementById('statusText').textContent =
+            msg.status === 'connected' ? 'Extension Connected' : 'Extension Disconnected';
+          break;
+
+        case 'fullState':
+          persistedState = msg.persisted || {};
+          memoryState = msg.memory || {};
+          // Render only top-level keys
+          renderTopLevel();
+          break;
+
+        case 'stateChange':
+          const { storeType, controllerKey, newState, changedPaths } = msg;
+
+          // Update internal state
+          if (storeType === 'persisted') {
+            persistedState[controllerKey] = newState;
+          } else {
+            memoryState[controllerKey] = newState;
+          }
+
+          // Highlight the controller and log changes
+          highlightController(storeType, controllerKey);
+
+          if (changedPaths) {
+            changedPaths.forEach(({ path, op, value }) => {
+              addLogEntry(path, op, value);
+              highlightPath(storeType, path);
+            });
+          }
+
+          // If controller is expanded, update its children
+          updateExpandedController(storeType, controllerKey, newState);
+          break;
+      }
+    }
+
+    function renderTopLevel() {
+      // Use preserve expanded to maintain any open paths on full state refresh
+      persistedTree.innerHTML = renderLevelPreserveExpanded(persistedState, '', 'persisted');
+      memoryTree.innerHTML = renderLevelPreserveExpanded(memoryState, '', 'memory');
+    }
+
+    function renderLevel(obj, parentPath, storeType) {
+      if (!obj || typeof obj !== 'object') return '';
+
+      const keys = Object.keys(obj).sort();
+      if (!keys.length) return '<div class="empty-state">Empty</div>';
+
+      return keys.map(key => {
+        const value = obj[key];
+        const path = parentPath ? `${parentPath}.${key}` : key;
+        const isObj = value !== null && typeof value === 'object';
+
+        let valueHtml;
+        if (!isObj) {
+          valueHtml = formatValue(value);
+        } else {
+          const count = Array.isArray(value) ? value.length : Object.keys(value).length;
+          valueHtml = `<span class="value preview">${Array.isArray(value) ? 'Array' : 'Object'}(${count})</span>`;
+        }
+
+        return `
+          <div class="tree-item" data-path="${esc(path)}">
+            <div class="tree-key" data-path="${esc(path)}" data-store="${storeType}">
+              <span class="tree-arrow ${isObj ? 'collapsed' : 'leaf'}"></span>
+              <span class="key-name">${esc(key)}</span>
+              <span class="key-colon">:</span>
+              ${valueHtml}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function highlightController(storeType, controllerKey) {
+      const tree = storeType === 'persisted' ? persistedTree : memoryTree;
+      const item = tree.querySelector(`.tree-item[data-path="${controllerKey}"]`);
+      if (item) {
+        const keyEl = item.querySelector('.tree-key');
+        // Remove and re-add class to restart animation
+        keyEl.classList.remove('changed');
+        void keyEl.offsetWidth; // Force reflow
+        keyEl.classList.add('changed');
+      }
+    }
+
+    function highlightPath(storeType, path) {
+      const tree = storeType === 'persisted' ? persistedTree : memoryTree;
+
+      // Highlight the exact path if visible
+      const item = tree.querySelector(`.tree-item[data-path="${path}"]`);
+      if (item) {
+        const keyEl = item.querySelector('.tree-key');
+        keyEl.classList.remove('changed');
+        void keyEl.offsetWidth;
+        keyEl.classList.add('changed');
+      }
+
+      // Also highlight parent paths
+      const parts = path.split('.');
+      for (let i = 1; i < parts.length; i++) {
+        const parentPath = parts.slice(0, i).join('.');
+        const parentItem = tree.querySelector(`.tree-item[data-path="${parentPath}"]`);
+        if (parentItem) {
+          const keyEl = parentItem.querySelector('.tree-key');
+          keyEl.classList.remove('changed');
+          void keyEl.offsetWidth;
+          keyEl.classList.add('changed');
+        }
+      }
+    }
+
+    function updateExpandedController(storeType, controllerKey, newState) {
+      const tree = storeType === 'persisted' ? persistedTree : memoryTree;
+      const item = tree.querySelector(`.tree-item[data-path="${controllerKey}"]`);
+      if (!item) return;
+
+      const arrow = item.querySelector('.tree-arrow');
+      const children = item.querySelector('.tree-children');
+
+      // Only update if expanded
+      if (arrow.classList.contains('expanded') && children) {
+        // Re-render children with new state, preserving expanded paths
+        children.innerHTML = renderLevelPreserveExpanded(newState, controllerKey, storeType);
+      }
+
+      // Update the count in preview
+      const keyEl = item.querySelector('.tree-key');
+      const preview = keyEl.querySelector('.value.preview');
+      if (preview && newState && typeof newState === 'object') {
+        const count = Array.isArray(newState) ? newState.length : Object.keys(newState).length;
+        preview.textContent = `${Array.isArray(newState) ? 'Array' : 'Object'}(${count})`;
+      }
+    }
+
+    // Render a level but preserve and re-expand any paths that were previously expanded
+    function renderLevelPreserveExpanded(obj, parentPath, storeType) {
+      if (!obj || typeof obj !== 'object') return '';
+
+      const keys = Object.keys(obj).sort();
+      if (!keys.length) return '<div class="empty-state">Empty</div>';
+
+      const state = storeType === 'persisted' ? persistedState : memoryState;
+
+      return keys.map(key => {
+        const value = obj[key];
+        const path = parentPath ? `${parentPath}.${key}` : key;
+        const isObj = value !== null && typeof value === 'object';
+        const isExpanded = expandedPaths[storeType].has(path);
+
+        let valueHtml;
+        if (!isObj) {
+          valueHtml = formatValue(value);
+        } else {
+          const count = Array.isArray(value) ? value.length : Object.keys(value).length;
+          valueHtml = `<span class="value preview">${Array.isArray(value) ? 'Array' : 'Object'}(${count})</span>`;
+        }
+
+        // If this path was expanded, render it expanded with children
+        let childrenHtml = '';
+        if (isObj && isExpanded) {
+          childrenHtml = `<div class="tree-children expanded">${renderLevelPreserveExpanded(value, path, storeType)}</div>`;
+        }
+
+        return `
+          <div class="tree-item" data-path="${esc(path)}">
+            <div class="tree-key" data-path="${esc(path)}" data-store="${storeType}">
+              <span class="tree-arrow ${isObj ? (isExpanded ? 'expanded' : 'collapsed') : 'leaf'}"></span>
+              <span class="key-name">${esc(key)}</span>
+              <span class="key-colon">:</span>
+              ${valueHtml}
+            </div>
+            ${childrenHtml}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function getValueAtPath(obj, path) {
+      const parts = path.split('.');
+      let current = obj;
+      for (const part of parts) {
+        if (current === null || current === undefined) return undefined;
+        current = current[part];
+      }
+      return current;
+    }
+
+    function formatValue(v) {
+      if (v === null) return '<span class="value null">null</span>';
+      if (v === undefined) return '<span class="value null">undefined</span>';
+      if (typeof v === 'string') {
+        const s = v.length > 60 ? v.slice(0, 60) + '...' : v;
+        return `<span class="value string">${esc(s)}</span>`;
+      }
+      if (typeof v === 'number') return `<span class="value number">${v}</span>`;
+      if (typeof v === 'boolean') return `<span class="value boolean">${v}</span>`;
+      return `<span class="value">${esc(String(v))}</span>`;
+    }
+
+    function esc(s) {
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+    }
+
+    function addLogEntry(path, op, value) {
+      const log = document.getElementById('changeLog');
+      const time = new Date().toLocaleTimeString();
+      let valStr;
+      try {
+        valStr = value === null ? 'null' :
+                 value === undefined ? 'undefined' :
+                 typeof value === 'object' ? JSON.stringify(value).slice(0, 50) : String(value).slice(0, 50);
+      } catch { valStr = '[complex]'; }
+
+      const entry = document.createElement('div');
+      entry.className = 'log-entry';
+      entry.innerHTML = `
+        <span class="log-time">${time}</span>
+        <span class="log-path">${esc(path)}</span>
+        <span class="log-value">${esc(valStr)}</span>
+      `;
+      log.insertBefore(entry, log.firstChild);
+      while (log.children.length > 200) log.removeChild(log.lastChild);
+    }
+
+    function togglePause() {
+      isPaused = !isPaused;
+      const btn = document.getElementById('pauseBtn');
+      if (isPaused) {
+        btn.textContent = '▶ Resume';
+        btn.classList.add('active');
+      } else {
+        btn.textContent = '⏸ Pause';
+        btn.classList.remove('active');
+        pendingUpdates.forEach(handleMessage);
+        pendingUpdates = [];
+        document.getElementById('updateIndicator').textContent = '';
+      }
+    }
+
+    function clearLog() {
+      document.getElementById('changeLog').innerHTML = '';
+    }
+  </script>
+</body>
+</html>

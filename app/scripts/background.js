@@ -1686,6 +1686,20 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
+
+  // Initialize state debugger in development mode
+  // Start the debugger server with: yarn state-debugger
+  // Then open http://localhost:3333 in your browser
+  if (process.env.METAMASK_DEBUG) {
+    try {
+      // Dynamic import to avoid bundling in production
+      const { initializeStateDebugger } = require('../../development/state-debugger/state-debugger-hook');
+      initializeStateDebugger(controller);
+    } catch (e) {
+      // State debugger hook not available or failed to load - that's OK
+      log.debug('[StateDebugger] Could not initialize:', e.message);
+    }
+  }
 }
 
 //
