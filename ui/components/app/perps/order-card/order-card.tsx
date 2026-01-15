@@ -1,49 +1,41 @@
 import React, { useCallback } from 'react';
+import {
+  twMerge,
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
-import { AvatarTokenSize } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  getDisplayName,
+  formatOrderType,
+  formatStatus,
+  getStatusColor,
+} from '../utils';
 import type { Order } from '../types';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
-export interface OrderCardProps {
+export type OrderCardProps = {
   order: Order;
-  /** Optional click handler override. If not provided, navigates to market detail page. */
   onClick?: (order: Order) => void;
-  /** Visual variant - 'default' for perps tab, 'muted' for detail page */
   variant?: 'default' | 'muted';
-}
-
-/**
- * Formats the order type for display (capitalizes first letter)
- */
-const formatOrderType = (orderType: Order['orderType']): string => {
-  return orderType.charAt(0).toUpperCase() + orderType.slice(1);
-};
-
-/**
- * Formats the order status for display (capitalizes first letter)
- */
-const formatStatus = (status: Order['status']): string => {
-  return status.charAt(0).toUpperCase() + status.slice(1);
-};
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- */
-const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
 };
 
 /**
  * OrderCard component displays individual order information
  * Two rows: symbol/type/side + size on left, price + status on right
- * Clicking the card navigates to the market detail page for that symbol
+ *
+ * @param options0 - Component props
+ * @param options0.order - The order data to display
+ * @param options0.onClick - Optional click handler override. If not provided, navigates to market detail page.
+ * @param options0.variant - Visual variant - 'default' for perps tab, 'muted' for detail page
  */
 export const OrderCard: React.FC<OrderCardProps> = ({
   order,
@@ -51,6 +43,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
   variant = 'default',
 }) => {
   const navigate = useNavigate();
+  const t = useI18nContext();
   const isBuy = order.side === 'buy';
   const displayName = getDisplayName(order.symbol);
 
@@ -64,62 +57,68 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     }
   }, [navigate, order, onClick]);
 
+  const baseStyles = 'cursor-pointer px-4 py-3';
+  const variantStyles =
+    variant === 'muted'
+      ? 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
+      : 'bg-default hover:bg-hover active:bg-pressed';
+
   return (
-    <div
-      className={classnames('order-card order-card--clickable', {
-        'order-card--muted': variant === 'muted',
-      })}
+    <Box
+      className={twMerge(baseStyles, variantStyles)}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={3}
       data-testid={`order-card-${order.orderId}`}
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
-      role="button"
-      tabIndex={0}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={order.symbol}
         size={AvatarTokenSize.Md}
-        className="order-card__logo"
+        className="shrink-0"
       />
 
       {/* Left side: Symbol info and size */}
-      <div className="order-card__left">
-        <div className="order-card__header-row">
-          <span className="order-card__symbol">{displayName}</span>
-          <span className="order-card__type-side">
-            {formatOrderType(order.orderType)} {isBuy ? 'buy' : 'sell'}
-          </span>
-        </div>
-        <span className="order-card__size">
+      <Box
+        className="min-w-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        gap={1}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
+          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
+            {formatOrderType(order.orderType)}{' '}
+            {isBuy ? t('perpsBuy') : t('perpsSell')}
+          </Text>
+        </Box>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {order.size} {displayName}
-        </span>
-      </div>
+        </Text>
+      </Box>
 
       {/* Right side: Price and status */}
-      <div className="order-card__right">
-        <span className="order-card__price">
+      <Box
+        className="shrink-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        gap={1}
+      >
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           {order.orderType === 'limit' && order.price !== '0'
             ? `$${order.price}`
-            : 'Market'}
-        </span>
-        <span
-          className={classnames('order-card__status', {
-            'order-card__status--filled': order.status === 'filled',
-            'order-card__status--canceled': order.status === 'canceled',
-            'order-card__status--rejected': order.status === 'rejected',
-            'order-card__status--open': order.status === 'open',
-            'order-card__status--queued': order.status === 'queued',
-            'order-card__status--triggered': order.status === 'triggered',
-          })}
-        >
+            : t('perpsMarket')}
+        </Text>
+        <Text variant={TextVariant.BodySm} color={getStatusColor(order.status)}>
           {formatStatus(order.status)}
-        </span>
-      </div>
-    </div>
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

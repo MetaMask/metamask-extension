@@ -1,50 +1,48 @@
 import React, { useCallback } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Text,
+  TextVariant,
+  TextColor,
+  FontWeight,
+  AvatarTokenSize,
+} from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
-import classnames from 'classnames';
-import { AvatarTokenSize } from '../../../component-library';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { PerpsTokenLogo } from '../perps-token-logo';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
+import { getDisplayName, getPositionDirection } from '../utils';
 import type { Position } from '../types';
+import { PERPS_MARKET_DETAIL_ROUTE } from '../../../../helpers/constants/routes';
 
-export interface PositionCardProps {
+export type PositionCardProps = {
   position: Position;
-  /** Optional click handler override. If not provided, navigates to market detail page. */
   onClick?: (position: Position) => void;
-}
-
-/**
- * Determines if a position is long (positive size) or short (negative size)
- */
-const getPositionDirection = (size: string): 'long' | 'short' => {
-  return parseFloat(size) >= 0 ? 'long' : 'short';
-};
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- */
-const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
 };
 
 /**
  * PositionCard component displays individual position information
  * Two rows: coin/leverage/direction + size on left, entry price + P&L on right
  * Clicking the card navigates to the market detail page for that symbol
+ *
+ * @param options0 - Component props
+ * @param options0.position - The position data to display
+ * @param options0.onClick
  */
 export const PositionCard: React.FC<PositionCardProps> = ({
   position,
   onClick,
 }) => {
   const navigate = useNavigate();
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   const direction = getPositionDirection(position.size);
-  const isProfit = parseFloat(position.unrealizedPnl) >= 0;
+  const pnlNum = parseFloat(position.unrealizedPnl);
+  const isProfit = pnlNum >= 0;
   const absSize = Math.abs(parseFloat(position.size)).toString();
   const displayName = getDisplayName(position.coin);
+  const pnlPrefix = isProfit ? '+' : '-';
+  const formattedPnl = `${pnlPrefix}${formatCurrencyWithMinThreshold(Math.abs(pnlNum), 'USD')}`;
 
   const handleClick = useCallback(() => {
     if (onClick) {
@@ -57,53 +55,61 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   }, [navigate, position, onClick]);
 
   return (
-    <div
-      className="position-card position-card--clickable"
+    <Box
+      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={3}
       data-testid={`position-card-${position.coin}`}
       onClick={handleClick}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick();
-        }
-      }}
-      role="button"
-      tabIndex={0}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
         symbol={position.coin}
         size={AvatarTokenSize.Md}
-        className="position-card__logo"
+        className="shrink-0"
       />
 
       {/* Left side: Coin info and size */}
-      <div className="position-card__left">
-        <div className="position-card__header-row">
-          <span className="position-card__coin-symbol">{displayName}</span>
-          <span className="position-card__leverage-direction">
+      <Box
+        className="min-w-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        gap={1}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={1}
+        >
+          <Text fontWeight={FontWeight.Medium}>{displayName}</Text>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {position.leverage.value}x {direction}
-          </span>
-        </div>
-        <span className="position-card__size">
+          </Text>
+        </Box>
+        <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {absSize} {displayName}
-        </span>
-      </div>
+        </Text>
+      </Box>
 
       {/* Right side: Entry price and P&L */}
-      <div className="position-card__right">
-        <span className="position-card__entry-price">
+      <Box
+        className="shrink-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        gap={1}
+      >
+        <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
           ${position.entryPrice}
-        </span>
-        <span
-          className={classnames('position-card__pnl', {
-            'position-card__pnl--profit': isProfit,
-            'position-card__pnl--loss': !isProfit,
-          })}
+        </Text>
+        <Text
+          variant={TextVariant.BodySm}
+          color={isProfit ? TextColor.SuccessDefault : TextColor.ErrorDefault}
         >
-          {isProfit ? '+' : ''}${position.unrealizedPnl}
-        </span>
-      </div>
-    </div>
+          {formattedPnl}
+        </Text>
+      </Box>
+    </Box>
   );
 };
 

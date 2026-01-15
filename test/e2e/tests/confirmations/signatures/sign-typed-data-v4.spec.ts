@@ -1,6 +1,5 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -9,8 +8,9 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import TestDappIndividualRequest from '../../../page-objects/pages/test-dapp-individual-request';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
@@ -168,7 +168,7 @@ describe('Confirmation Signature - Sign Typed Data V4', function (this: Suite) {
     await withSignatureFixtures(
       this.test?.fullTitle(),
       async ({ driver }: TestSuiteArguments) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         const testDappIndividualRequest = new TestDappIndividualRequest(driver);
 
         await testDappIndividualRequest.request(

@@ -73,7 +73,7 @@ exports[`SnapUIAddressInput renders the matched address info in a disabled state
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
                 >
-                  Test Account
+                  Account 1
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
@@ -293,7 +293,7 @@ exports[`SnapUIAddressInput will render a matched address name 1`] = `
                 <p
                   class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-box--color-text-default"
                 >
-                  Test Account
+                  Account 1
                 </p>
                 <p
                   class="mm-box mm-text mm-text--body-xs mm-text--ellipsis mm-box--color-text-default"
