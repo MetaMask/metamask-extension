@@ -12,6 +12,8 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
+const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
+
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
@@ -24,7 +26,34 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
  *
  * @param mockServer
  */
-async function mockSegment(mockServer: Mockttp) {
+async function testSpecificMock(mockServer: Mockttp) {
+  // Mock feature flags - not included in returned array so getEventPayloads won't wait for it
+  // Important: Must include sendRedesign: { enabled: false } to keep the original send page UI
+  await mockServer
+    .forGet(FEATURE_FLAGS_URL)
+    .withQuery({
+      client: 'extension',
+      distribution: 'main',
+      environment: 'dev',
+    })
+    .thenCallback(() => {
+      return {
+        ok: true,
+        statusCode: 200,
+        json: [
+          {
+            extensionUxPna25: true,
+          },
+          {
+            sendRedesign: {
+              enabled: false,
+            },
+          },
+        ],
+      };
+    });
+
+  // Return only the segment mocks that getEventPayloads needs to track
   return [
     await mockServer
       .forPost('https://api.segment.io/v1/batch')
@@ -153,19 +182,19 @@ describe('Transaction Finalized Event', function (this: Suite) {
             metaMetricsId: MOCK_META_METRICS_ID,
             participateInMetaMetrics: true,
           })
-          .withSmartTransactionsController({
-            smartTransactionsEnabled: true,
+          .withAppStateController({
+            pna25Acknowledged: true,
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
+        testSpecificMock,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await loginWithBalanceValidation(driver);
 
 
         // TODO: Update Test when Multichain Send Flow is added
-        const txHash =await sendRedesignedTransactionToAddress({
+        await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
           amount: '2.0',
@@ -176,7 +205,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await activityList.checkCompletedTxNumberDisplayedInActivity(1);
         await activityList.clickOnActivity(1);
         await activityList.clickCopyTransactionHashButton();
-        // txHash = await driver.getClipboardContent();
+        const txHash = await driver.getClipboardContent();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
 
@@ -295,6 +324,23 @@ describe('Transaction Finalized Event', function (this: Suite) {
             console.log(`  transaction_hash value: ${event?.properties?.transaction_hash}`);
           }
         });
+
+        // Find the finalized events (they have transaction_hash)
+        const eventsWithHash = events.filter(
+          (event) => event?.properties?.transaction_hash,
+        );
+        assert.ok(
+          eventsWithHash.length === 2,
+          `Expected 2 events with transaction_hash, got ${eventsWithHash.length}`,
+        );
+
+        // Verify the transaction_hash matches the actual tx hash from the activity
+        assert.ok(
+          eventsWithHash.every(
+            (event) => event?.properties?.transaction_hash === txHash,
+          ),
+          `Transaction hash mismatch. Expected: ${txHash}, Got: ${eventsWithHash[0]?.properties?.transaction_hash}`,
+        );
 
         assert.ok(
           assertInAnyOrder(
