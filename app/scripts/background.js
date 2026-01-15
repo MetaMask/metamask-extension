@@ -2041,15 +2041,22 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   }
 
   try {
-    // Use tab from parameter if available, otherwise fetch it
+    // Use tab from parameter if available, otherwise fetch it.
+    // The tab parameter is usually provided by Chrome, but may be undefined
+    // in edge cases (e.g., when a tab is being removed), so we fall back to
+    // fetching it explicitly.
     const tabInfo = tab || (await browser.tabs.get(tabId));
     const { id, title, url, favIconUrl } = tabInfo;
 
+    // Only update if this is the currently active tab
+    // This prevents updating with stale data from background tabs
+    const currentAppActiveTab =
+      controller.appStateController.state.appActiveTab;
+    const isActiveTab = currentAppActiveTab?.id === id;
+
     if (!url) {
       // Only clear if this is the currently active tab
-      const currentAppActiveTab =
-        controller.appStateController.state.appActiveTab;
-      if (currentAppActiveTab?.id === id) {
+      if (isActiveTab) {
         controller.appStateController.clearAppActiveTab();
       }
       return {};
@@ -2065,21 +2072,16 @@ browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
       origin.startsWith('moz-extension://')
     ) {
       // Only clear if this is the currently active tab
-      const currentAppActiveTab =
-        controller.appStateController.state.appActiveTab;
-      if (currentAppActiveTab?.id === id) {
+      if (isActiveTab) {
         controller.appStateController.clearAppActiveTab();
       }
       return {};
     }
 
-    // Only update if this is the currently active tab
-    // This prevents updating with stale data from background tabs
-    const currentAppActiveTab =
-      controller.appStateController.state.appActiveTab;
-    const isActiveTab = currentAppActiveTab?.id === id;
-
-    // Also check if this tab is actually the active tab in the current window
+    // Also check if this tab is actually the active tab in the current window.
+    // This is needed because stored appActiveTab might be stale if the user
+    // switched tabs quickly, or if tabs were closed/reopened. Querying the
+    // browser ensures we only update for the truly active tab.
     let isActuallyActive = false;
     try {
       const activeTabs = await browser.tabs.query({
