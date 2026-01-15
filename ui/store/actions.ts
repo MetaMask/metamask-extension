@@ -110,6 +110,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
@@ -2946,7 +2947,7 @@ export function setSelectedAccount(
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
+    const activeTabOrigin = getOriginOfCurrentTab(state);
     const prevAccount = getSelectedInternalAccount(state);
     const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =

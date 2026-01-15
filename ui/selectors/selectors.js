@@ -3333,13 +3333,13 @@ export function getUnconnectedAccounts(state, activeTab) {
 }
 
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
-  (state) => state.activeTab,
+  getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrdered,
   getAllPermittedAccountsForCurrentTab,
-  (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+  (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
     const permissionHistoryByAccount =
-      permissionHistory[activeTab.origin]?.eth_accounts?.accounts || {};
+      permissionHistory[origin]?.eth_accounts?.accounts || {};
 
     const connectedAccountsAddresses = connectedAccounts.map(
       (caipAccountId) => {

@@ -49,7 +49,7 @@ const mapStateToProps = (state) => {
   return {
     accountToConnect: accountToConnectWithName,
     isActiveTabExtension,
-    activeTabOrigin: activeTab.origin,
+    activeTabOrigin: originOfActiveTab,
     connectedAccounts: connectedAccountsWithName,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     permissions,
