@@ -1,11 +1,11 @@
-# Filter rules for determining E2E test requirements
+# Filter rules for determining `main` workflow requirements
 # Used with dorny/paths-filter action
 #
 # Each filter creates two outputs:
 # - {filter_name}: 'true'/'false' if any changed files match any filter rules
 # - {filter_name}_count: number of matching files
 #
-# STRATEGY: Use separate filters to detect different file types non E2E related.
+# E2E STRATEGY: Use separate filters to detect different file types non E2E related.
 # Conservative approach - add only files that safely allow skipping E2E tests.
 
 # DOCUMENTATION FILES
@@ -52,3 +52,10 @@ non_e2e_related_files:
 # ALL CHANGED FILES
 all_changes:
   - '**'
+
+# To inform locales-only
+locales:
+  - 'app/_locales/**'
+
+non_locales:
+  - '!app/_locales/**'
