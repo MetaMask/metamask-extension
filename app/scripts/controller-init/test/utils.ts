@@ -35,6 +35,6 @@ export function buildControllerInitRequestMock(): jest.Mocked<
     showNotification: jest.fn(),
     showUserConfirmation: jest.fn(),
     preinstalledSnaps: [],
-    storageKind: 'data',
+    storageKind: 'split',
   };
 }

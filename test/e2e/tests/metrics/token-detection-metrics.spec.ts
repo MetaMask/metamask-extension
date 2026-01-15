@@ -79,7 +79,7 @@ describe('Token detection event', function () {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );

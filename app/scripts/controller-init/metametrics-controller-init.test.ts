@@ -42,7 +42,7 @@ describe('MetaMetricsControllerInit', () => {
       extension: expect.any(Object),
       segment: expect.any(Object),
       version: 'MOCK_VERSION',
-      storageKind: 'data',
+      storageKind: 'split',
     });
   });
 });

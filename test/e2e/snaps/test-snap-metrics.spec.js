@@ -267,7 +267,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Installed');
         assert.deepStrictEqual(events[1].properties, {
@@ -278,7 +278,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[2].event, 'Snap Export Used');
         assert.deepStrictEqual(events[2].properties, {
@@ -290,7 +290,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -372,7 +372,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Rejected');
         assert.deepStrictEqual(events[1].properties, {
@@ -382,7 +382,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -462,7 +462,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Install Failed');
         assert.deepStrictEqual(events[1].properties, {
@@ -472,7 +472,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -607,7 +607,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -759,7 +759,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Updated');
         assert.deepStrictEqual(events[1].properties, {
@@ -771,7 +771,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -915,7 +915,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Rejected');
         assert.deepStrictEqual(events[1].properties, {
@@ -925,7 +925,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );
@@ -1060,7 +1060,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
         assert.deepStrictEqual(events[1].event, 'Snap Update Failed');
         assert.deepStrictEqual(events[1].properties, {
@@ -1070,7 +1070,7 @@ describe('Test Snap Metrics', function () {
           locale: 'en',
           chain_id: '0x539',
           environment_type: 'background',
-          storage_kind: 'data',
+          storage_kind: 'split',
         });
       },
     );

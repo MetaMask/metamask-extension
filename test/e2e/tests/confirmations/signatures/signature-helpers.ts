@@ -165,7 +165,7 @@ function getSignatureEventProperty(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type: 'background',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    storage_kind: 'data',
+    storage_kind: 'split',
     locale: 'en',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -347,7 +347,7 @@ export async function assertAccountDetailsMetrics(
     // eslint-disable-next-line @typescript-eslint/naming-convention
     environment_type: 'notification',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    storage_kind: 'data',
+    storage_kind: 'split',
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
