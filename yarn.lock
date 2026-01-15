@@ -8689,20 +8689,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/test-dapp-tron@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@metamask/test-dapp-tron@npm:0.3.0"
-  dependencies:
-    "@metamask/connect-tron": "npm:0.3.0"
-    "@tronweb3/tronwallet-adapter-react-hooks": "npm:^1.0.14"
-    "@tronweb3/tronwallet-adapter-react-ui": "npm:^1.0.14"
-    "@tronweb3/tronwallet-adapters": "npm:^1.1.14"
-    buffer: "npm:^6.0.3"
-    react: "npm:^18.3.1"
-    react-dom: "npm:^18.3.1"
-    tronweb: "npm:^6.1.0"
-    vite-plugin-node-polyfills: "npm:^0.22.0"
-  checksum: 10/ff55e5004f1b30d004475203d92e3fcedd4fcb975d44a68b6596b19f6654a7083a75271682673e42569b30afa13efe1180b66f0d753a9d8f6300804c1d63fa71
+"@metamask/test-dapp-tron@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "@metamask/test-dapp-tron@npm:0.3.1"
+  checksum: 10/06697fcb5825fb0411888ee479c11b1959a7e31acab1222da9c3a1d0e50a5295cc8d79d875c93067d1e0ad597594717cf134715e9ed08dd266324ec8630fbd25
   languageName: node
   linkType: hard
 
@@ -33616,7 +33606,7 @@ __metadata:
     "@metamask/test-dapp": "npm:9.3.0"
     "@metamask/test-dapp-multichain": "npm:^0.17.0"
     "@metamask/test-dapp-solana": "npm:^0.3.1"
-    "@metamask/test-dapp-tron": "npm:^0.3.0"
+    "@metamask/test-dapp-tron": "npm:^0.3.1"
     "@metamask/test-snaps": "npm:^3.2.0"
     "@metamask/transaction-controller": "npm:^62.7.0"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
