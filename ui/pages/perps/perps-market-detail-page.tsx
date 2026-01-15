@@ -25,8 +25,8 @@ import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   getDisplayName,
   findMarketBySymbol,
-  formatPnl,
 } from '../../components/app/perps/utils';
+import { useFormatters } from '../../hooks/useFormatters';
 
 /**
  * PerpsMarketDetailPage component
@@ -38,7 +38,7 @@ const PerpsMarketDetailPage: React.FC = () => {
   const navigate = useNavigate();
   const { symbol } = useParams<{ symbol: string }>();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
-
+  const { formatCurrencyWithMinThreshold } = useFormatters();
   // Find market data for the given symbol
   const market = useMemo(() => {
     if (!symbol) {
@@ -275,7 +275,10 @@ const PerpsMarketDetailPage: React.FC = () => {
                       : TextColor.ErrorDefault
                   }
                 >
-                  {formatPnl(position.unrealizedPnl)}
+                  {formatCurrencyWithMinThreshold(
+                    Math.abs(parseFloat(position.unrealizedPnl)),
+                    'USD',
+                  )}
                 </Text>
               </Box>
 
