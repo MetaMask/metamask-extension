@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 import React, { useMemo, useCallback, useState, useRef } from 'react';
-=======
-import React, { useMemo, useCallback } from 'react';
 import { useSelector } from 'react-redux';
->>>>>>> perps/detail-page
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
   Box,
@@ -27,7 +23,6 @@ import { mockPositions, mockOrders } from '../../components/app/perps/mocks';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
-<<<<<<< HEAD
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
@@ -36,15 +31,12 @@ import {
   CandlePeriod,
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
-import { AvatarTokenSize } from '../../components/component-library';
-import type { PerpsMarketData } from '../../components/app/perps/types';
-import '../../components/app/perps/index.scss';
-=======
+import {
   getDisplayName,
   findMarketBySymbol,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
->>>>>>> perps/detail-page
+import '../../components/app/perps/index.scss';
 
 /**
  * Safely decode a URI component, returning undefined if decoding fails
@@ -281,7 +273,6 @@ const PerpsMarketDetailPage: React.FC = () => {
         paddingRight={4}
         data-testid="perps-market-detail-chart"
       >
-<<<<<<< HEAD
         <PerpsCandlestickChart
           ref={chartRef}
           height={250}
@@ -294,23 +285,6 @@ const PerpsMarketDetailPage: React.FC = () => {
         selectedPeriod={selectedPeriod}
         onPeriodChange={handlePeriodChange}
       />
-=======
-        <Box
-          justifyContent={BoxJustifyContent.Center}
-          alignItems={BoxAlignItems.Center}
-          className="h-[200px] bg-background-alternative rounded-lg"
-        >
-          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-            Chart coming soon
-          </Text>
-        </Box>
-      </Box>
-
-      {/* Divider */}
-      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box className="h-px bg-border-muted" />
-      </Box>
->>>>>>> perps/detail-page
 
       {/* Position Section */}
       {position && (

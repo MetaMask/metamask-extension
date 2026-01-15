@@ -5,20 +5,14 @@ import {
   Icon,
   IconName,
   IconSize,
-  Popover,
-  PopoverPosition,
-} from '../../../component-library';
-import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
   TextVariant,
   TextColor,
   IconColor,
-  BackgroundColor,
-  BorderRadius,
-} from '../../../../helpers/constants/design-system';
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+} from '@metamask/design-system-react';
+import { Popover, PopoverPosition } from '../../../component-library';
 import {
   CandlePeriod,
   CANDLE_PERIODS,
@@ -58,10 +52,9 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
 
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.center}
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Center}
       gap={1}
       paddingTop={3}
       paddingBottom={3}
@@ -85,9 +78,9 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
             data-testid={`perps-candle-period-${period.value}`}
           >
             <Text
-              variant={TextVariant.bodySm}
+              variant={TextVariant.BodySm}
               color={
-                isSelected ? TextColor.textDefault : TextColor.textAlternative
+                isSelected ? TextColor.TextDefault : TextColor.TextAlternative
               }
             >
               {period.label}
@@ -105,11 +98,11 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         data-testid="perps-candle-period-more"
       >
         <Text
-          variant={TextVariant.bodySm}
+          variant={TextVariant.BodySm}
           color={
             isMorePeriodSelected
-              ? TextColor.textDefault
-              : TextColor.textAlternative
+              ? TextColor.TextDefault
+              : TextColor.TextAlternative
           }
         >
           {isMorePeriodSelected ? getCandlePeriodLabel(selectedPeriod) : 'More'}
@@ -117,7 +110,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         <Icon
           name={isMoreOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
         />
       </button>
 
@@ -128,16 +121,9 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         onClickOutside={() => setIsMoreOpen(false)}
         onPressEscKey={() => setIsMoreOpen(false)}
         padding={0}
-        backgroundColor={BackgroundColor.backgroundDefault}
-        borderRadius={BorderRadius.LG}
-        className="perps-candle-period-popover"
+        className="perps-candle-period-popover rounded-lg bg-default"
       >
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          padding={2}
-          gap={1}
-        >
+        <Box flexDirection={BoxFlexDirection.Column} padding={2} gap={1}>
           {MORE_CANDLE_PERIODS.map((period) => {
             const isSelected =
               selectedPeriod?.toLowerCase() === period.value?.toLowerCase();
@@ -151,11 +137,11 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
                 data-testid={`perps-candle-period-more-${period.value}`}
               >
                 <Text
-                  variant={TextVariant.bodySm}
+                  variant={TextVariant.BodySm}
                   color={
                     isSelected
-                      ? TextColor.textDefault
-                      : TextColor.textAlternative
+                      ? TextColor.TextDefault
+                      : TextColor.TextAlternative
                   }
                 >
                   {period.label}

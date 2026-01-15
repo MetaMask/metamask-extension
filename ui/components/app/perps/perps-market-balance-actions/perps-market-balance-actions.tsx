@@ -1,21 +1,18 @@
 import React, { useCallback } from 'react';
 import {
-  Display,
-  FlexDirection,
-  AlignItems,
-  JustifyContent,
-  TextVariant,
-  TextColor,
-  FontWeight,
-  TextAlign,
-} from '../../../../helpers/constants/design-system';
-import {
   Box,
   Button,
   ButtonVariant,
   ButtonSize,
   Text,
-} from '../../../component-library';
+  TextVariant,
+  TextColor,
+  FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  TextAlign,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mockAccountState } from '../mocks';
 
@@ -77,18 +74,16 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   if (isBalanceEmpty) {
     return (
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Center}
         paddingTop={4}
         paddingBottom={4}
         data-testid="perps-balance-actions-empty"
       >
         {/* Empty state icon placeholder */}
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Center}
           marginBottom={4}
           style={{
             width: '96px',
@@ -97,11 +92,11 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             backgroundColor: 'var(--color-background-alternative)',
           }}
         >
-          <Text variant={TextVariant.headingLg}>📈</Text>
+          <Text variant={TextVariant.HeadingLg}>📈</Text>
         </Box>
 
         <Text
-          variant={TextVariant.headingMd}
+          variant={TextVariant.HeadingMd}
           fontWeight={FontWeight.Medium}
           textAlign={TextAlign.Center}
           marginBottom={2}
@@ -110,8 +105,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
         </Text>
 
         <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
           textAlign={TextAlign.Center}
           marginBottom={6}
         >
@@ -147,13 +142,12 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   // Balance state - has balance
   return (
     <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Column}
+      flexDirection={BoxFlexDirection.Column}
       data-testid="perps-balance-actions"
     >
       {/* Total Balance */}
       <Text
-        variant={TextVariant.displayMd}
+        variant={TextVariant.DisplayMd}
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
@@ -162,8 +156,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 
       {/* Available Balance */}
       <Text
-        variant={TextVariant.bodyMd}
-        color={TextColor.textAlternative}
+        variant={TextVariant.BodyMd}
+        color={TextColor.TextAlternative}
         marginTop={1}
         data-testid="perps-balance-actions-available"
       >
@@ -172,12 +166,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
 
       {/* Action Buttons */}
       {showActionButtons && (
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          gap={3}
-          marginTop={4}
-        >
+        <Box flexDirection={BoxFlexDirection.Row} gap={3} marginTop={4}>
           <Button
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}

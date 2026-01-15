@@ -1,16 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  Display,
-  FlexDirection,
-  IconColor,
-  AlignItems,
-  JustifyContent,
-  TextVariant,
-  FontWeight,
-  TextColor,
-} from '../../helpers/constants/design-system';
-import {
   AvatarTokenSize,
   Box,
   ButtonIcon,
@@ -19,7 +9,14 @@ import {
   IconName,
   IconSize,
   Text,
-} from '../../components/component-library';
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxJustifyContent,
+  IconColor,
+  TextVariant,
+  FontWeight,
+  TextColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -58,9 +55,7 @@ const PerpsHomePage: React.FC = () => {
 
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
-    return mockPositions
-      .filter((pos) => !pos.coin.includes(':'))
-      .slice(0, 3);
+    return mockPositions.filter((pos) => !pos.coin.includes(':')).slice(0, 3);
   }, []);
 
   // Filter open orders (limit to 5)
@@ -108,9 +103,8 @@ const PerpsHomePage: React.FC = () => {
     >
       {/* Header */}
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Row}
-        alignItems={AlignItems.center}
+        flexDirection={BoxFlexDirection.Row}
+        alignItems={BoxAlignItems.Center}
         paddingLeft={4}
         paddingRight={4}
         paddingTop={4}
@@ -120,7 +114,7 @@ const PerpsHomePage: React.FC = () => {
         {/* Back Button */}
         <ButtonIcon
           data-testid="perps-home-back-button"
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel={t('back')}
           iconName={IconName.ArrowLeft}
@@ -129,7 +123,7 @@ const PerpsHomePage: React.FC = () => {
 
         {/* Title */}
         <Text
-          variant={TextVariant.headingLg}
+          variant={TextVariant.HeadingLg}
           fontWeight={FontWeight.Bold}
           style={{ flex: 1 }}
         >
@@ -139,7 +133,7 @@ const PerpsHomePage: React.FC = () => {
         {/* Search Icon */}
         <ButtonIcon
           data-testid="perps-home-search-button"
-          color={IconColor.iconAlternative}
+          color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
           ariaLabel="Search"
           iconName={IconName.Search}
@@ -166,20 +160,19 @@ const PerpsHomePage: React.FC = () => {
       {positions.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
             paddingBottom={2}
           >
             <Text
-              variant={TextVariant.headingSm}
+              variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
             >
               Your positions
             </Text>
             <ButtonIcon
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
               size={ButtonIconSize.Sm}
               ariaLabel="Position options"
               iconName={IconName.MoreHorizontal}
@@ -188,11 +181,7 @@ const PerpsHomePage: React.FC = () => {
               }}
             />
           </Box>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            style={{ gap: '1px' }}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {positions.map((position, index) => {
               const displaySymbol = getDisplayName(position.coin);
               const isLong = parseFloat(position.size) >= 0;
@@ -252,20 +241,19 @@ const PerpsHomePage: React.FC = () => {
       {openOrders.length > 0 && (
         <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
           <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.spaceBetween}
+            flexDirection={BoxFlexDirection.Row}
+            alignItems={BoxAlignItems.Center}
+            justifyContent={BoxJustifyContent.SpaceBetween}
             paddingBottom={2}
           >
             <Text
-              variant={TextVariant.headingSm}
+              variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
             >
               Your orders
             </Text>
             <ButtonIcon
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
               size={ButtonIconSize.Sm}
               ariaLabel="Order options"
               iconName={IconName.MoreHorizontal}
@@ -274,11 +262,7 @@ const PerpsHomePage: React.FC = () => {
               }}
             />
           </Box>
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            style={{ gap: '1px' }}
-          >
+          <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
             {openOrders.map((order, index) => {
               const displaySymbol = getDisplayName(order.symbol);
               const orderTypeLabel =
@@ -317,7 +301,7 @@ const PerpsHomePage: React.FC = () => {
                     </span>
                   </div>
                   <Text
-                    variant={TextVariant.bodySm}
+                    variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
                     {orderValue}
@@ -332,29 +316,21 @@ const PerpsHomePage: React.FC = () => {
       {/* Section 3: Explore crypto */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
           paddingBottom={2}
         >
-          <Text
-            variant={TextVariant.headingSm}
-            fontWeight={FontWeight.Medium}
-          >
+          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             Explore crypto
           </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ gap: '1px' }}
-        >
+        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {cryptoMarkets.map((market, index) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
@@ -399,15 +375,18 @@ const PerpsHomePage: React.FC = () => {
                     alignItems: 'flex-end',
                   }}
                 >
-                  <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
                     {market.price}
                   </Text>
                   <Text
-                    variant={TextVariant.bodyXs}
+                    variant={TextVariant.BodyXs}
                     color={
                       isPositiveChange
-                        ? TextColor.successDefault
-                        : TextColor.errorDefault
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
                     }
                   >
                     {market.change24hPercent}
@@ -422,29 +401,21 @@ const PerpsHomePage: React.FC = () => {
       {/* Section 4: Explore stocks and commodities */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
           paddingBottom={2}
         >
-          <Text
-            variant={TextVariant.headingSm}
-            fontWeight={FontWeight.Medium}
-          >
+          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             Explore stocks and commodities
           </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ gap: '1px' }}
-        >
+        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {hip3Markets.map((market, index) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
@@ -489,15 +460,18 @@ const PerpsHomePage: React.FC = () => {
                     alignItems: 'flex-end',
                   }}
                 >
-                  <Text variant={TextVariant.bodySm} fontWeight={FontWeight.Medium}>
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
                     {market.price}
                   </Text>
                   <Text
-                    variant={TextVariant.bodyXs}
+                    variant={TextVariant.BodyXs}
                     color={
                       isPositiveChange
-                        ? TextColor.successDefault
-                        : TextColor.errorDefault
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
                     }
                   >
                     {market.change24hPercent}
@@ -512,29 +486,21 @@ const PerpsHomePage: React.FC = () => {
       {/* Section 5: Activity */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
         <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Row}
-          alignItems={AlignItems.center}
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
           gap={1}
           paddingBottom={2}
         >
-          <Text
-            variant={TextVariant.headingSm}
-            fontWeight={FontWeight.Medium}
-          >
+          <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             Activity
           </Text>
           <Icon
             name={IconName.ArrowRight}
             size={IconSize.Sm}
-            color={IconColor.iconAlternative}
+            color={IconColor.IconAlternative}
           />
         </Box>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ gap: '1px' }}
-        >
+        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Activity Item 1 - Opened long */}
           <div
             className="perps-activity-item perps-activity-item--first"
@@ -585,11 +551,7 @@ const PerpsHomePage: React.FC = () => {
 
       {/* Support & Learn Section */}
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
-        <Box
-          display={Display.Flex}
-          flexDirection={FlexDirection.Column}
-          style={{ gap: '1px' }}
-        >
+        <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Contact support */}
           <div
             className="perps-activity-item perps-activity-item--first"
@@ -605,13 +567,13 @@ const PerpsHomePage: React.FC = () => {
             }}
             style={{ justifyContent: 'space-between' }}
           >
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               Contact support
             </Text>
             <Icon
               name={IconName.ArrowRight}
               size={IconSize.Sm}
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
             />
           </div>
 
@@ -630,13 +592,13 @@ const PerpsHomePage: React.FC = () => {
             }}
             style={{ justifyContent: 'space-between' }}
           >
-            <Text variant={TextVariant.bodyMd} fontWeight={FontWeight.Medium}>
+            <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               Learn the basics of perps
             </Text>
             <Icon
               name={IconName.ArrowRight}
               size={IconSize.Sm}
-              color={IconColor.iconAlternative}
+              color={IconColor.IconAlternative}
             />
           </div>
         </Box>
@@ -646,4 +608,3 @@ const PerpsHomePage: React.FC = () => {
 };
 
 export default PerpsHomePage;
-
