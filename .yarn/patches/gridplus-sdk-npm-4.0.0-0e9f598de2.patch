@@ -32,7 +32,7 @@ diff --git a/package.json b/package.json
 index cbed44cee2237787346d0559522d56e479d474e6..581ff1417dd35005dae55eb9f9260d10462733d0 100644
 --- a/package.json
 +++ b/package.json
-@@ -24,7 +24,6 @@
+@@ -24,8 +24,7 @@
      "@ethereumjs/common": "^10.0.0",
      "@ethereumjs/rlp": "^10.0.0",
      "@ethereumjs/tx": "^10.0.0",

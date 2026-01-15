@@ -27268,7 +27268,7 @@ __metadata:
 
 "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch":
   version: 4.0.0
-  resolution: "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch::version=4.0.0&hash=87ec23"
+  resolution: "gridplus-sdk@patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch::version=4.0.0&hash=0695d7"
   dependencies:
     "@ethereumjs/common": "npm:^10.0.0"
     "@ethereumjs/rlp": "npm:^10.0.0"
@@ -27293,7 +27293,7 @@ __metadata:
     uuid: "npm:^13.0.0"
     viem: "npm:^2.37.8"
     zod: "npm:^4.1.11"
-  checksum: 10/e64411cd1ceac7a459cc52dd8fcc7e8c80fb34a39f85c38225c3d3b06e687a70c6be49894875aa45eb8bc9cfb96406566f7fbec984711fe82a30dfae95e3095c
+  checksum: 10/a40b5836426a34a6c543b3c6aeee3f561bc84ba9f39d00b5e5b6842b0ed0aa8bc6beece23f4c5c3880dbb9d2d4c390ef81a473e8e44e543e97bce8f01cba6c73
   languageName: node
   linkType: hard
 
