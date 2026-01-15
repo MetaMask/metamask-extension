@@ -48,6 +48,9 @@ describe('useHardwareWalletAutoConnect', () => {
   let mockSetHardwareConnectionPermissionState: jest.Mock;
   let mockHandleDisconnect: jest.Mock;
   let mockConnectRef: jest.Mock;
+  let mockResetAutoConnectState: jest.Mock;
+  let mockSetAutoConnected: jest.Mock;
+  let mockSetDeviceIdRef: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -56,6 +59,9 @@ describe('useHardwareWalletAutoConnect', () => {
     mockSetHardwareConnectionPermissionState = jest.fn();
     mockHandleDisconnect = jest.fn();
     mockConnectRef = jest.fn();
+    mockResetAutoConnectState = jest.fn();
+    mockSetAutoConnected = jest.fn();
+    mockSetDeviceIdRef = jest.fn();
   });
 
   const setupHook = (
@@ -74,6 +80,9 @@ describe('useHardwareWalletAutoConnect', () => {
         isWebHidAvailable: true,
         isWebUsbAvailable: false,
         handleDisconnect: mockHandleDisconnect,
+        resetAutoConnectState: mockResetAutoConnectState,
+        setAutoConnected: mockSetAutoConnected,
+        setDeviceIdRef: mockSetDeviceIdRef,
       }),
     );
   };
@@ -102,6 +111,9 @@ describe('useHardwareWalletAutoConnect', () => {
           isWebHidAvailable: false,
           isWebUsbAvailable: true,
           handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+          setDeviceIdRef: mockSetDeviceIdRef,
         }),
       );
 
@@ -132,6 +144,9 @@ describe('useHardwareWalletAutoConnect', () => {
           isWebHidAvailable: true,
           isWebUsbAvailable: false,
           handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+          setDeviceIdRef: mockSetDeviceIdRef,
         }),
       );
 
@@ -151,6 +166,9 @@ describe('useHardwareWalletAutoConnect', () => {
           isWebHidAvailable: false,
           isWebUsbAvailable: false,
           handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+          setDeviceIdRef: mockSetDeviceIdRef,
         }),
       );
 
@@ -264,6 +282,9 @@ describe('useHardwareWalletAutoConnect', () => {
           isWebHidAvailable: true,
           isWebUsbAvailable: false,
           handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+          setDeviceIdRef: mockSetDeviceIdRef,
         }),
       );
       return { hook, refs };
@@ -274,7 +295,7 @@ describe('useHardwareWalletAutoConnect', () => {
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
 
-      const { refs } = setupAutoConnectHook();
+      setupAutoConnectHook();
 
       // Wait for useEffect to run
       await new Promise((resolve) => setTimeout(resolve, 0));
@@ -284,8 +305,7 @@ describe('useHardwareWalletAutoConnect', () => {
       );
       expect(mockSetDeviceId).toHaveBeenCalledWith(expect.any(Function));
       expect(mockConnectRef).toHaveBeenCalled();
-      expect(refs.hasAutoConnectedRef.current).toBe(true);
-      expect(refs.lastConnectedAccountRef.current).toBe('0x123');
+      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123', 'device-123');
     });
 
     it('does not auto-connect when permissions are not granted', () => {
@@ -301,6 +321,9 @@ describe('useHardwareWalletAutoConnect', () => {
           isWebHidAvailable: true,
           isWebUsbAvailable: false,
           handleDisconnect: mockHandleDisconnect,
+          resetAutoConnectState: mockResetAutoConnectState,
+          setAutoConnected: mockSetAutoConnected,
+          setDeviceIdRef: mockSetDeviceIdRef,
         }),
       );
 
@@ -330,7 +353,7 @@ describe('useHardwareWalletAutoConnect', () => {
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
 
-      const { refs } = setupAutoConnectHook(
+      setupAutoConnectHook(
         {},
         {
           lastConnectedAccountRef: { current: '0x456' }, // Different account
@@ -340,7 +363,7 @@ describe('useHardwareWalletAutoConnect', () => {
       await new Promise((resolve) => setTimeout(resolve, 0));
 
       expect(mockConnectRef).toHaveBeenCalled();
-      expect(refs.lastConnectedAccountRef.current).toBe('0x123');
+      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123', 'device-123');
     });
 
     it('does not auto-connect when already connected', async () => {

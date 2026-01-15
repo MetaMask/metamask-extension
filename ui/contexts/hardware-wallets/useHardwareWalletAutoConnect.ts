@@ -22,6 +22,9 @@ type UseHardwareWalletAutoConnectParams = {
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
   handleDisconnect: (error?: unknown) => void;
+  resetAutoConnectState: () => void;
+  setAutoConnected: (accountAddress: string | null, deviceId: string) => void;
+  setDeviceIdRef: (deviceId: string) => void;
 };
 
 export const useHardwareWalletAutoConnect = ({
@@ -33,6 +36,9 @@ export const useHardwareWalletAutoConnect = ({
   isWebHidAvailable,
   isWebUsbAvailable,
   handleDisconnect,
+  resetAutoConnectState,
+  setAutoConnected,
+  setDeviceIdRef,
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
 
@@ -80,7 +86,7 @@ export const useHardwareWalletAutoConnect = ({
         !adapterRef.current?.isConnected() &&
         !isConnectingRef.current
       ) {
-        deviceIdRef.current = newDeviceId;
+        setDeviceIdRef(newDeviceId);
         connectRef.current?.();
       }
     };
@@ -114,6 +120,7 @@ export const useHardwareWalletAutoConnect = ({
     handleDisconnect,
     setDeviceId,
     setHardwareConnectionPermissionState,
+    setDeviceIdRef,
     refs,
   ]);
 
@@ -125,7 +132,6 @@ export const useHardwareWalletAutoConnect = ({
       lastConnectedAccountRef,
       adapterRef,
       isConnectingRef,
-      deviceIdRef,
       connectRef,
     } = refs;
     if (
@@ -133,8 +139,7 @@ export const useHardwareWalletAutoConnect = ({
       hardwareConnectionPermissionState !==
         HardwareConnectionPermissionState.Granted
     ) {
-      hasAutoConnectedRef.current = false;
-      lastConnectedAccountRef.current = null;
+      resetAutoConnectState();
       return;
     }
 
@@ -164,9 +169,7 @@ export const useHardwareWalletAutoConnect = ({
           hardwareConnectionPermissionState ===
             HardwareConnectionPermissionState.Granted
         ) {
-          hasAutoConnectedRef.current = true;
-          lastConnectedAccountRef.current = accountAddress ?? null;
-          deviceIdRef.current = id;
+          setAutoConnected(accountAddress ?? null, id);
           await connectRef.current?.();
         }
       })
@@ -180,5 +183,7 @@ export const useHardwareWalletAutoConnect = ({
     hardwareConnectionPermissionState,
     refs,
     setDeviceId,
+    resetAutoConnectState,
+    setAutoConnected,
   ]);
 };
