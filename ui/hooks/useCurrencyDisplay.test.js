@@ -287,5 +287,40 @@ describe('useCurrencyDisplay', () => {
       expect(parts.value).toStrictEqual('$3,000.00');
       expect(displayValue).toStrictEqual('$3,000.00');
     });
+
+    it('should fall back to account conversion rate when chain is not in predefined map (custom networks)', () => {
+      const state = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          completedOnboarding: true,
+          currentCurrency: 'usd',
+          // Only ETH rate available, custom network not in map
+          currencyRates: {
+            ETH: { conversionRate: 3000 },
+          },
+        },
+      };
+
+      const wrapper = ({ children }) => (
+        <Provider store={configureStore(state)}>{children}</Provider>
+      );
+
+      // Custom network chainId not in CHAIN_ID_TO_CURRENCY_SYMBOL_MAP
+      const { result } = renderHook(
+        () =>
+          useCurrencyDisplay(
+            '0xde0b6b3a7640000', // 1 in Wei
+            { currency: 'usd', numberOfDecimals: 2 },
+            '0x12345', // Custom/unknown chainId
+          ),
+        { wrapper },
+      );
+
+      const [displayValue, parts] = result.current;
+      // Should fall back to account's ETH rate instead of failing silently
+      expect(parts.value).toStrictEqual('$3,000.00');
+      expect(displayValue).toStrictEqual('$3,000.00');
+    });
   });
 });
