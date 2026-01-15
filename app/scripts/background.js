@@ -1194,12 +1194,16 @@ const refreshAppActiveTab = async () => {
     const { id, title, url, favIconUrl } = activeTab;
 
     if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
       return;
     }
 
     const { origin, protocol, host, href } = new URL(url);
 
     if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
       return;
     }
 
