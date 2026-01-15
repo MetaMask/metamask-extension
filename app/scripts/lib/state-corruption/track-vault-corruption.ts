@@ -99,7 +99,7 @@ export function trackVaultCorruptionEvent(
     event: eventName,
     properties: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      vault_corruption_type: corruptionType,
+      error_type: corruptionType,
       category: MetaMetricsEventCategory.Error,
     },
     context: {

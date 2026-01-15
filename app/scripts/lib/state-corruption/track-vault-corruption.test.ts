@@ -42,7 +42,7 @@ describe('trackVaultCorruptionEvent', () => {
       event: MetaMetricsEventName.VaultCorruptionDetected,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        vault_corruption_type: VaultCorruptionType.UnaccessibleDatabase,
+        error_type: VaultCorruptionType.UnaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
