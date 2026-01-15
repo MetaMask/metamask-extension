@@ -3988,10 +3988,11 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 }
 
 export function getPermissionsForActiveTab(state) {
-  const { activeTab, metamask } = state;
+  const { metamask } = state;
   const { subjects = {} } = metamask;
+  const origin = getOriginOfCurrentTab(state);
 
-  const permissions = subjects[activeTab.origin]?.permissions ?? {};
+  const permissions = subjects[origin]?.permissions ?? {};
 
   return Object.keys(permissions).map((parentCapability) => {
     return {

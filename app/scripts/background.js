@@ -1172,6 +1172,62 @@ function trackAppOpened(environment) {
 }
 
 /**
+ * Helper function to refresh appActiveTab by querying the current active tab
+ * This is used when the sidepanel opens to ensure it has the current tab info
+ */
+const refreshAppActiveTab = async () => {
+  await isInitialized;
+  if (!controller) {
+    return;
+  }
+
+  try {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tabs || tabs.length === 0) {
+      return;
+    }
+
+    const activeTab = tabs[0];
+    const { id, title, url, favIconUrl } = activeTab;
+
+    if (!url) {
+      return;
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    if (!isWebOrigin(origin)) {
+      return;
+    }
+
+    // Update appActiveTab with current active tab info
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    console.log('Error refreshing appActiveTab:', error.message);
+  }
+};
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -1431,6 +1487,9 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
+        // This handles the case where user connected to dapp while sidepanel was closed
+        refreshAppActiveTab();
         finished(portStream, () => {
           sidePanelIsOpen = false;
           const isClientOpen = isClientOpenStatus();
@@ -1901,6 +1960,13 @@ const setupPreferenceListener = async () => {
 
 setupPreferenceListener();
 
+// Initialize appActiveTab by querying the current active tab on startup
+const initializeAppActiveTab = async () => {
+  await refreshAppActiveTab();
+};
+
+initializeAppActiveTab();
+
 // Tab listeners to populate appActiveTab
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
   // Wait for controller to be initialized
@@ -1954,46 +2020,96 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   return {};
 });
 
-browser.tabs.onUpdated.addListener(async (tabId) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // Wait for controller to be initialized
   await isInitialized;
   if (!controller) {
     return {};
   }
 
+  // Only update when URL changes or when page finishes loading
+  // This prevents flickering from multiple updates during page load
+  const urlChanged = changeInfo.url !== undefined;
+  const statusComplete = changeInfo.status === 'complete';
+
+  if (!urlChanged && !statusComplete) {
+    return {};
+  }
+
   try {
-    const tabInfo = await browser.tabs.get(tabId);
+    // Use tab from parameter if available, otherwise fetch it
+    const tabInfo = tab || (await browser.tabs.get(tabId));
     const { id, title, url, favIconUrl } = tabInfo;
 
     if (!url) {
+      // Only clear if this is the currently active tab
+      const currentAppActiveTab =
+        controller.appStateController.state.appActiveTab;
+      if (currentAppActiveTab?.id === id) {
+        controller.appStateController.clearAppActiveTab();
+      }
       return {};
     }
 
     const { origin, protocol, host, href } = new URL(url);
 
-    if (!isWebOrigin(origin)) {
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      // Only clear if this is the currently active tab
+      const currentAppActiveTab =
+        controller.appStateController.state.appActiveTab;
+      if (currentAppActiveTab?.id === id) {
+        controller.appStateController.clearAppActiveTab();
+      }
       return {};
     }
 
-    // Update the app active tab state
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
+    // Only update if this is the currently active tab
+    // This prevents updating with stale data from background tabs
+    const currentAppActiveTab =
+      controller.appStateController.state.appActiveTab;
+    const isActiveTab = currentAppActiveTab?.id === id;
 
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
+    // Also check if this tab is actually the active tab in the current window
+    let isActuallyActive = false;
+    try {
+      const activeTabs = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
+    } catch (error) {
+      // Fallback to checking against stored active tab
+      isActuallyActive = isActiveTab;
+    }
+
+    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
+    if ((urlChanged || statusComplete) && isActuallyActive) {
+      // Update the app active tab state
+      controller.appStateController.setAppActiveTab({
+        id,
+        title,
+        origin,
+        protocol,
+        url,
+        host,
+        href,
+        favIconUrl,
+      });
+
+      // Update subject metadata for permission system
+      controller.subjectMetadataController.addSubjectMetadata({
+        origin,
+        name: title || host || origin,
+        iconUrl: favIconUrl || null,
+        subjectType: 'website',
+      });
+    }
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
     console.log('Error in tabs.onUpdated listener:', error.message);
