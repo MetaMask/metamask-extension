@@ -16,20 +16,9 @@ const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
 const {
-  ERC_4337_ACCOUNT,
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
   DAPP_PATHS,
+  ERC_4337_ACCOUNT,
+  WALLET_PASSWORD,
 } = require('./constants');
 const {
   getServerMochaToBackground,
@@ -564,26 +553,6 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const openDapp = async (driver, contract = null, dappURL = DAPP_URL) => {
-  return contract
-    ? await driver.openNewPage(`${dappURL}/?contract=${contract}`)
-    : await driver.openNewPage(dappURL);
-};
-
-const switchToOrOpenDapp = async (
-  driver,
-  contract = null,
-  dappURL = DAPP_URL,
-) => {
-  const handle = await driver.windowHandles.switchToWindowIfKnown(
-    WINDOW_TITLES.TestDApp,
-  );
-
-  if (!handle) {
-    await openDapp(driver, contract, dappURL);
-  }
-};
-
 const clickNestedButton = async (driver, tabName) => {
   try {
     await driver.clickElement({ text: tabName, tag: 'button' });
@@ -817,16 +786,6 @@ async function isSidePanelEnabled() {
 }
 
 module.exports = {
-  DAPP_HOST_ADDRESS,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  DAPP_TWO_URL,
-  TEST_SEED_PHRASE,
-  TEST_SEED_PHRASE_TWO,
-  PRIVATE_KEY,
-  PRIVATE_KEY_TWO,
-  ACCOUNT_1,
-  ACCOUNT_2,
   convertToHexValue,
   tinyDelayMs,
   regularDelayMs,
@@ -834,11 +793,7 @@ module.exports = {
   veryLargeDelayMs,
   withFixtures,
   createDownloadFolder,
-  openDapp,
-  switchToOrOpenDapp,
   unlockWallet,
-  WALLET_PASSWORD,
-  WINDOW_TITLES,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,
