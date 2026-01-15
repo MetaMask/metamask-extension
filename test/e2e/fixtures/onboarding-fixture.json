@@ -93,10 +93,7 @@
     "ClaimsController": {
       "claims": [],
       "claimsConfigurations": {
-        "supportedNetworks": [
-          "0x1",
-          "0xe708"
-        ],
+        "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
       }
     },
@@ -296,10 +293,7 @@
       "selectedMultichainNetworkChainId": "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
     },
     "MultichainRatesController": {
-      "cryptocurrencies": [
-        "btc",
-        "sol"
-      ],
+      "cryptocurrencies": ["btc", "sol"],
       "fiatCurrency": "usd",
       "rates": {
         "btc": {
@@ -324,9 +318,7 @@
     "NetworkController": {
       "networkConfigurationsByChainId": {
         "0x1": {
-          "blockExplorerUrls": [
-            "https://etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://etherscan.io"],
           "chainId": "0x1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -344,9 +336,7 @@
           ]
         },
         "0x18c7": {
-          "blockExplorerUrls": [
-            "https://megaeth-testnet-v2.blockscout.com"
-          ],
+          "blockExplorerUrls": ["https://megaeth-testnet-v2.blockscout.com"],
           "chainId": "0x18c7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -362,9 +352,7 @@
           ]
         },
         "0x2105": {
-          "blockExplorerUrls": [
-            "https://basescan.org"
-          ],
+          "blockExplorerUrls": ["https://basescan.org"],
           "chainId": "0x2105",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -382,9 +370,7 @@
           ]
         },
         "0x279f": {
-          "blockExplorerUrls": [
-            "https://testnet.monadexplorer.com"
-          ],
+          "blockExplorerUrls": ["https://testnet.monadexplorer.com"],
           "chainId": "0x279f",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -400,9 +386,7 @@
           ]
         },
         "0x38": {
-          "blockExplorerUrls": [
-            "https://bscscan.com"
-          ],
+          "blockExplorerUrls": ["https://bscscan.com"],
           "chainId": "0x38",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -418,9 +402,7 @@
           ]
         },
         "0x89": {
-          "blockExplorerUrls": [
-            "https://polygonscan.com"
-          ],
+          "blockExplorerUrls": ["https://polygonscan.com"],
           "chainId": "0x89",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -438,9 +420,7 @@
           ]
         },
         "0xa": {
-          "blockExplorerUrls": [
-            "https://optimistic.etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://optimistic.etherscan.io"],
           "chainId": "0xa",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -458,9 +438,7 @@
           ]
         },
         "0xa4b1": {
-          "blockExplorerUrls": [
-            "https://arbiscan.io"
-          ],
+          "blockExplorerUrls": ["https://arbiscan.io"],
           "chainId": "0xa4b1",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -478,9 +456,7 @@
           ]
         },
         "0xaa36a7": {
-          "blockExplorerUrls": [
-            "https://sepolia.etherscan.io"
-          ],
+          "blockExplorerUrls": ["https://sepolia.etherscan.io"],
           "chainId": "0xaa36a7",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -496,9 +472,7 @@
           ]
         },
         "0xe705": {
-          "blockExplorerUrls": [
-            "https://sepolia.lineascan.build"
-          ],
+          "blockExplorerUrls": ["https://sepolia.lineascan.build"],
           "chainId": "0xe705",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -514,9 +488,7 @@
           ]
         },
         "0xe708": {
-          "blockExplorerUrls": [
-            "https://lineascan.build"
-          ],
+          "blockExplorerUrls": ["https://lineascan.build"],
           "chainId": "0xe708",
           "defaultBlockExplorerUrlIndex": 0,
           "defaultRpcEndpointIndex": 0,
@@ -1340,67 +1312,35 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "0'"
-                      ]
+                      "path": ["m", "44'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "1'"
-                      ]
+                      "path": ["m", "44'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "49'",
-                        "0'"
-                      ]
+                      "path": ["m", "49'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "49'",
-                        "1'"
-                      ]
+                      "path": ["m", "49'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "84'",
-                        "0'"
-                      ]
+                      "path": ["m", "84'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "84'",
-                        "1'"
-                      ]
+                      "path": ["m", "84'", "1'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "86'",
-                        "0'"
-                      ]
+                      "path": ["m", "86'", "0'"]
                     },
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "86'",
-                        "1'"
-                      ]
+                      "path": ["m", "86'", "1'"]
                     }
                   ]
                 }
@@ -1692,9 +1632,7 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": [
-                      "https://portfolio.metamask.io"
-                    ]
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
                   }
                 }
               ],
@@ -1788,11 +1726,7 @@
                   "value": [
                     {
                       "curve": "ed25519",
-                      "path": [
-                        "m",
-                        "44'",
-                        "501'"
-                      ]
+                      "path": ["m", "44'", "501'"]
                     }
                   ]
                 }
@@ -1832,9 +1766,7 @@
               "caveats": [
                 {
                   "type": "chainIds",
-                  "value": [
-                    "tron:728126428"
-                  ]
+                  "value": ["tron:728126428"]
                 }
               ],
               "date": 1764061389898,
@@ -1854,9 +1786,7 @@
                 {
                   "type": "keyringOrigin",
                   "value": {
-                    "allowedOrigins": [
-                      "https://portfolio.metamask.io"
-                    ]
+                    "allowedOrigins": ["https://portfolio.metamask.io"]
                   }
                 }
               ],
@@ -1901,11 +1831,7 @@
                   "value": [
                     {
                       "curve": "secp256k1",
-                      "path": [
-                        "m",
-                        "44'",
-                        "195'"
-                      ]
+                      "path": ["m", "44'", "195'"]
                     }
                   ]
                 }
