@@ -177,6 +177,7 @@ const DappSwapComparisonInner = ({
           padding={3}
           role="button"
           onClick={updateSwapToSelectedQuote}
+          data-testid="dapp-swap-banner"
         >
           {dappTypeSelected && (
             <>
