@@ -123,5 +123,3 @@ export async function migrate(
 
   return versionedData;
 }
-
-export default { version, migrate };
