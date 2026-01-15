@@ -165,6 +165,7 @@ export const Amount = ({
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
         placeholder="0"
+        data-testid="send-amount-input"
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>

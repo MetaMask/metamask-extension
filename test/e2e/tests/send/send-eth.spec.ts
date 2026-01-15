@@ -8,7 +8,7 @@ import SendPage from '../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { Driver } from '../../webdriver/driver';
 import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
-import { veryLargeDelayMs, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
@@ -75,7 +75,6 @@ describe('Send ETH', function () {
         await sendTokenConfirmationPage.checkPageIsLoaded();
         await sendTokenConfirmationPage.clickOnConfirm();
 
-        await driver.delay(veryLargeDelayMs);
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },

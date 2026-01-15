@@ -10,7 +10,7 @@ class SendPage {
     tag: 'button',
   };
 
-  private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
+  private readonly hexDataInput = '[data-testid="send-amount-input"]';
 
   private readonly inputRecipient =
     'input[placeholder="Enter or paste an address or name"]';
