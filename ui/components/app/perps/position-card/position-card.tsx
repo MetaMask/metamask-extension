@@ -62,8 +62,6 @@ export const PositionCard: React.FC<PositionCardProps> = ({
       gap={3}
       data-testid={`position-card-${position.coin}`}
       onClick={handleClick}
-      role="button"
-      tabIndex={0}
     >
       {/* Token Logo */}
       <PerpsTokenLogo

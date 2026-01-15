@@ -76,6 +76,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
+  // No-op handler for order cards - orders on detail page are already
+  // filtered to current market, so clicking should not navigate anywhere
+  const handleOrderClick = useCallback(() => undefined, []);
+
   // Guard: redirect if perps feature is disabled
   if (!isPerpsEnabled) {
     return <Navigate to={DEFAULT_ROUTE} replace />;
@@ -495,7 +499,11 @@ const PerpsMarketDetailPage: React.FC = () => {
                 className="overflow-hidden rounded-xl"
               >
                 {orders.map((order) => (
-                  <OrderCard key={order.orderId} order={order} />
+                  <OrderCard
+                    key={order.orderId}
+                    order={order}
+                    onClick={handleOrderClick}
+                  />
                 ))}
               </Box>
             </>
