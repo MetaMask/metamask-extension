@@ -140,9 +140,9 @@ export enum MarketingActionNames {
 export const LEDGER_USB_VENDOR_ID = '0x2c97';
 
 export const TREZOR_USB_VENDOR_IDS = [
-  { vendorId: 0x534c, productId: 0x0001 }, // Trezor One
-  { vendorId: 0x1209, productId: 0x53c0 }, // Trezor Model T
-  { vendorId: 0x1209, productId: 0x53c1 }, // Trezor Safe 5
+  { vendorId: 0x534c, productId: 0x0001 },
+  { vendorId: 0x1209, productId: 0x53c0 },
+  { vendorId: 0x1209, productId: 0x53c1 },
 ];
 
 export const DEVICE_KEYRING_MAP = {
