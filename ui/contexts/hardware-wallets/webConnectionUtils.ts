@@ -355,11 +355,13 @@ export async function getHardwareWalletDeviceId(
 /**
  * Subscribe to native WebHID connect/disconnect events
  *
+ * @param walletType - The hardware wallet type to filter events for
  * @param onConnect - Callback when a device is connected
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */
 export function subscribeToWebHidEvents(
+  walletType: HardwareWalletType,
   onConnect: (device: HIDDevice) => void,
   onDisconnect: (device: HIDDevice) => void,
 ): () => void {
@@ -370,15 +372,15 @@ export function subscribeToWebHidEvents(
   }
 
   const handleConnect = (event: HIDConnectionEvent) => {
-    // Only notify for Ledger devices
-    if (isHardwareWalletDevice(event.device, HardwareWalletType.Ledger)) {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
       onConnect(event.device);
     }
   };
 
   const handleDisconnect = (event: HIDConnectionEvent) => {
-    // Only notify for Ledger devices
-    if (isHardwareWalletDevice(event.device, HardwareWalletType.Ledger)) {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
       onDisconnect(event.device);
     }
   };
@@ -396,11 +398,13 @@ export function subscribeToWebHidEvents(
 /**
  * Subscribe to native WebUSB connect/disconnect events
  *
+ * @param walletType - The hardware wallet type to filter events for
  * @param onConnect - Callback when a device is connected
  * @param onDisconnect - Callback when a device is disconnected
  * @returns Unsubscribe function to clean up event listeners
  */
 export function subscribeToWebUsbEvents(
+  walletType: HardwareWalletType,
   onConnect: (device: USBDevice) => void,
   onDisconnect: (device: USBDevice) => void,
 ): () => void {
@@ -411,15 +415,15 @@ export function subscribeToWebUsbEvents(
   }
 
   const handleConnect = (event: USBConnectionEvent) => {
-    // Only notify for Trezor devices
-    if (isHardwareWalletDevice(event.device, HardwareWalletType.Trezor)) {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
       onConnect(event.device);
     }
   };
 
   const handleDisconnect = (event: USBConnectionEvent) => {
-    // Only notify for Trezor devices
-    if (isHardwareWalletDevice(event.device, HardwareWalletType.Trezor)) {
+    // Only notify for devices matching the wallet type
+    if (isHardwareWalletDevice(event.device, walletType)) {
       onDisconnect(event.device);
     }
   };
@@ -449,9 +453,9 @@ export function subscribeToHardwareWalletEvents(
 ): () => void {
   switch (walletType) {
     case HardwareWalletType.Ledger:
-      return subscribeToWebHidEvents(onConnect, onDisconnect);
+      return subscribeToWebHidEvents(walletType, onConnect, onDisconnect);
     case HardwareWalletType.Trezor:
-      return subscribeToWebUsbEvents(onConnect, onDisconnect);
+      return subscribeToWebUsbEvents(walletType, onConnect, onDisconnect);
     default:
       return () => {
         // No-op cleanup
