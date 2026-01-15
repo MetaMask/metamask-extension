@@ -59,7 +59,8 @@ export const useHardwareWalletAutoConnect = ({
     const isTrezor = walletType === HardwareWalletType.Trezor;
 
     const isSupportedWalletType = isLedger || isTrezor;
-    const hasRequiredWebAPI = (isLedger && isWebHidAvailable) || (isTrezor && isWebUsbAvailable);
+    const hasRequiredWebAPI =
+      (isLedger && isWebHidAvailable) || (isTrezor && isWebUsbAvailable);
 
     if (!isSupportedWalletType || !hasRequiredWebAPI) {
       return undefined;
@@ -138,7 +139,7 @@ export const useHardwareWalletAutoConnect = ({
         HardwareConnectionPermissionState.Granted
     ) {
       resetAutoConnectState();
-      return;
+      return undefined;
     }
 
     const abortSignal = abortControllerRef.current?.signal;
@@ -147,12 +148,18 @@ export const useHardwareWalletAutoConnect = ({
       hasAutoConnectedRef.current &&
       lastConnectedAccountRef.current === accountAddress;
     if (shouldSkipAutoConnect) {
-      return;
+      return undefined;
     }
+
+    let isCancelled = false;
+
+    // Capture the account address at the time this effect starts
+    // so we only mark auto-connected for the correct account
+    const effectAccountAddress = accountAddress;
 
     (walletType ? getHardwareWalletDeviceId(walletType) : Promise.resolve(null))
       .then(async (id) => {
-        if (abortSignal?.aborted) {
+        if (abortSignal?.aborted || isCancelled) {
           return;
         }
 
@@ -167,13 +174,26 @@ export const useHardwareWalletAutoConnect = ({
           hardwareConnectionPermissionState ===
             HardwareConnectionPermissionState.Granted
         ) {
-          setAutoConnected(accountAddress ?? null, id);
-          await connectRef.current?.();
+          setDeviceIdRef(id);
+          try {
+            await connectRef.current?.();
+            // Check cancellation again after async connect completes
+            if (!isCancelled) {
+              setAutoConnected(effectAccountAddress ?? null, id);
+            }
+          } catch (error) {
+            // Connection failed, don't mark as auto-connected
+            // Error is already handled by connectRef implementation
+          }
         }
       })
       .catch(() => {
         // Swallow errors; auto-connect best-effort only.
       });
+
+    return () => {
+      isCancelled = true;
+    };
   }, [
     isHardwareWalletAccount,
     accountAddress,
@@ -183,5 +203,6 @@ export const useHardwareWalletAutoConnect = ({
     setDeviceId,
     resetAutoConnectState,
     setAutoConnected,
+    setDeviceIdRef,
   ]);
 };
