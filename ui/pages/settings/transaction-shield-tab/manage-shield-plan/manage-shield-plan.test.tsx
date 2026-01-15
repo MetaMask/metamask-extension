@@ -1,4 +1,5 @@
 import React from 'react';
+import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -8,10 +9,10 @@ import {
   Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
-import mockState from '../../../../test/data/mock-state.json';
-import { initialState as rewardsInitialState } from '../../../ducks/rewards';
-import TransactionShield from './transaction-shield';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../../test/data/mock-state.json';
+import { initialState as rewardsInitialState } from '../../../../ducks/rewards';
+import ManageShieldPlan from './manage-shield-plan';
 
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
@@ -23,13 +24,7 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-jest.mock('./shield-banner-animation', () => ({
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  __esModule: true,
-  default: () => <div data-testid="shield-banner-animation" />,
-}));
-
-describe('Transaction Shield Page', () => {
+describe('Manage Shield Plan Page', () => {
   const STATE_MOCK = {
     ...mockState,
     rewards: rewardsInitialState,
@@ -68,9 +63,24 @@ describe('Transaction Shield Page', () => {
   const store = configureMockStore([thunk])(STATE_MOCK);
 
   it('should render', () => {
-    const { getByTestId } = renderWithProvider(<TransactionShield />, store);
+    const { getByTestId } = renderWithProvider(<ManageShieldPlan />, store);
 
-    const transactionShieldPage = getByTestId('transaction-shield-page');
-    expect(transactionShieldPage).toBeInTheDocument();
+    const manageShieldPlanPage = getByTestId('manage-plan-page');
+    expect(manageShieldPlanPage).toBeInTheDocument();
+  });
+
+  it('should call onCancelMembership when the cancel membership button is clicked', async () => {
+    const { getByTestId } = renderWithProvider(<ManageShieldPlan />, store);
+
+    const cancelMembershipButton = getByTestId(
+      'shield-tx-membership-cancel-button',
+    );
+    fireEvent.click(cancelMembershipButton);
+
+    const cancelMembershipModal = await screen.findByTestId(
+      'cancel-membership-modal',
+    );
+
+    expect(cancelMembershipModal).toBeInTheDocument();
   });
 });
