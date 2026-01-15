@@ -5055,6 +5055,39 @@
   "perps": {
     "message": "Perps"
   },
+  "perpsBuy": {
+    "message": "buy"
+  },
+  "perpsCloseAll": {
+    "message": "Close all"
+  },
+  "perpsEmptyDescription": {
+    "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsMarket": {
+    "message": "Market"
+  },
+  "perpsOpenOrders": {
+    "message": "Open Orders"
+  },
+  "perpsPositions": {
+    "message": "Positions"
+  },
+  "perpsSell": {
+    "message": "sell"
+  },
+  "perpsStartNewTrade": {
+    "message": "Start a new trade"
+  },
+  "perpsStartTrading": {
+    "message": "Start trading"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
+  },
+  "perpsUnrealizedPnl": {
+    "message": "Unrealized P&L"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
