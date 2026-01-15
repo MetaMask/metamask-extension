@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
