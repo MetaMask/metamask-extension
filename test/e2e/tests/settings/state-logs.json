@@ -883,6 +883,7 @@
     "showNetworkBanner": "boolean",
     "showPermissionsTour": "boolean",
     "showShieldEntryModalOnce": "boolean",
+    "showStorageErrorToast": "boolean",
     "showTestnetMessageInDropdown": "boolean",
     "sidePanelGasPollTokens": [],
     "signature": "string",
