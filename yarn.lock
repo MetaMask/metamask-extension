@@ -6953,6 +6953,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/hw-wallet-sdk@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/hw-wallet-sdk@npm:0.1.0"
+  checksum: 10/0a0dde762349bcf7af596f6884174671d420da7a42f83acbc7b4d22bd4b2bd1ba67762fdcbe5d01d22e66414ebbe2b045001cb8f4c9db34989b6aeb378121b13
+  languageName: node
+  linkType: hard
+
 "@metamask/institutional-wallet-snap@npm:1.3.4":
   version: 1.3.4
   resolution: "@metamask/institutional-wallet-snap@npm:1.3.4"
@@ -33528,6 +33535,7 @@ __metadata:
     "@metamask/gas-fee-controller": "npm:^25.0.0"
     "@metamask/gator-permissions-controller": "npm:^0.8.0"
     "@metamask/gator-permissions-snap": "npm:^0.9.0"
+    "@metamask/hw-wallet-sdk": "npm:^0.1.0"
     "@metamask/institutional-wallet-snap": "npm:1.3.4"
     "@metamask/jazzicon": "patch:@metamask/jazzicon@npm%3A2.0.0#~/.yarn/patches/@metamask-jazzicon-npm-2.0.0-36957be38d.patch"
     "@metamask/json-rpc-engine": "npm:^10.2.0"
