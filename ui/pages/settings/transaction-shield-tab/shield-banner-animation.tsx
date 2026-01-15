@@ -135,6 +135,7 @@ const ShieldBannerAnimation = ({
       if (rive) {
         rive.cleanup();
       }
+      isInitializedRef.current = false;
     };
   }, [rive]);
 

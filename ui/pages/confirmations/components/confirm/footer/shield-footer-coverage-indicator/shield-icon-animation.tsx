@@ -235,6 +235,7 @@ const ShieldIconAnimation = ({
       if (rive) {
         rive.cleanup();
       }
+      isInitializedRef.current = false;
     };
   }, [rive]);
 
