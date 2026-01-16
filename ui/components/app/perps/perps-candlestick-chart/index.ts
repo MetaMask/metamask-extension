@@ -6,4 +6,3 @@ export {
   formatCandleDataForChart,
   formatVolumeDataForChart,
 } from './mock-candle-data';
-

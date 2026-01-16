@@ -28,10 +28,10 @@ const getCandlePeriodLabel = (period: CandlePeriod | string): string => {
   return candlePeriod?.label || period;
 };
 
-interface PerpsCandlePeriodSelectorProps {
+type PerpsCandlePeriodSelectorProps = {
   selectedPeriod: CandlePeriod | string;
   onPeriodChange?: (period: CandlePeriod) => void;
-}
+};
 
 const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
   selectedPeriod,
