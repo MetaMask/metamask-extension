@@ -234,12 +234,8 @@ export default function RecoveryPhrase({
             </Text>
           </Box>
         )}
-        <Box marginBottom={6}>
-          <Text
-            variant={TextVariant.bodyMd}
-            color={TextColor.textAlternative}
-            marginBottom={6}
-          >
+        <Box>
+          <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {t('seedPhraseReviewDetails', [
               <ButtonLink
                 key="seedPhraseReviewDetails"

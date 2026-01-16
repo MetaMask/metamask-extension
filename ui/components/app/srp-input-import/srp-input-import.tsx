@@ -328,7 +328,7 @@ export default function SrpInputImport({
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundSection}
+          backgroundColor={BackgroundColor.backgroundMuted}
           borderRadius={BorderRadius.LG}
           className="srp-input-import__container"
         >
