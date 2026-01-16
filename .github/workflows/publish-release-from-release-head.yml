@@ -179,6 +179,14 @@ jobs:
     outputs:
       tag-created: ${{ steps.create-tag.outputs.tag_created }}
     steps:
+      - name: Verify release-team membership
+        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
+        with:
+          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
+          team: release-team
+          organization: MetaMask
+          exit: true
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -221,10 +229,16 @@ jobs:
       - build-flask-browserify
       - build-flask-mv2-browserify
     runs-on: ubuntu-latest
-    # Grant access to `stable` environment secrets
-    environment: stable
     timeout-minutes: 30
     steps:
+      - name: Verify release-team membership
+        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
+        with:
+          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
+          team: release-team
+          organization: MetaMask
+          exit: true
+
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:

@@ -82,7 +82,9 @@ create_tag_if_needed() {
     fi
 
     echo "Pushing tag to origin..."
-    if ! git push "https://${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}" "${tag_name}"; then
+    auth_header="$(printf 'x-access-token:%s' "${GITHUB_TOKEN}" | base64)"
+    if ! git -c http.extraheader="AUTHORIZATION: basic ${auth_header}" \
+      push "https://github.com/${GITHUB_REPOSITORY}.git" "${tag_name}"; then
         echo "::error::Failed to push tag ${tag_name} to origin"
         return 1
     fi
