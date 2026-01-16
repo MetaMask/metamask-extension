@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Uncategorized
 
+- Null (#39233)
 - Migrate megaETH Testnet v1 to megaETH Testnet v2 Update megaETH Testnet RPC (#39118)
 - Setup perps codeowners on extension (#39138)
 - Fixed a memory leak that would cause increased memory usage over time (#39171)
@@ -52,6 +53,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix shield reward signup button showing unexpectedly (#39091)
 - Added network specific smart transactions liveness check before submitting bridge quotes. (#38877)
 - Optimized network polling requests for tokens, rates, currencies, gas fees etc. (#38339)
+
+### Fixed
+
+- Updated asset list for send flow (#39218)
+- We prevent the back route once the user navigates to `Wallet Ready UI` in Firefox. (#39243)
+- Fixed sentence case violations in locale strings for improved consistency (#39196)
+- Null (#38726)
+- fix: keep sidepanel open for hardware wallet connections (#39185)
+- Fix gas station gas transfer transaction details in Activity list (#39172)
+- Experimental builds should work (#39124)
+- Fixed sentry error capture for Social Login onboarding. (#39089)
+- Optimized `getMetaMaskAccounts` and related selectors that were causing performance slowdowns in accounts flows. (#38871)
+- Fixed critical bug in `getUpdatedAndSortedAccounts` that caused cache corruption and suboptimal performance. (#38830)
+- Fixed a bug in the `getInternalAccounts` selector that was causing significant slowdowns across all accounts flows. (#37147)
+- Fix multichain account syncing segment event formatting for extended event properties (#39213)
+- Always reset transaction state on transaction submit (#39179)
+- Do not throw an error when switching between queued dapp transactions (#39128)
+- Fixed gator permissions displaying "No expiration" when expiry timestamp exists (#37874)
+- Wait for the Snap platform to be ready before processing any non-EVM account operations (avoiding hitting (#39051)
+  `TimeoutError` during onboarding with Snaps)
+- Makes sure UI filters out non-evm chains and tokens when BFT is OFF. (#38914)
+- Show correct spending cap (#39098)
+- Token 2022 send (#39123)
+- Fix long ens name representation in send flow (#39035)
+- Fix permission modal to show entire origin when it's too long (#39030)
+- fix: show notice that the account isn't connected when switching accounts - in side panel view (#39063)
+- Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
 
 ## [13.14.0]
 
