@@ -260,8 +260,7 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs@npm:6.13.0": "^6.14.1",
-    "@metamask/profile-metrics-controller": "npm:@metamask-previews/profile-metrics-controller@2.0.0-preview-c72fc191"
+    "qs@npm:6.13.0": "^6.14.1"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -364,7 +363,7 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.39.0",
     "@metamask/preinstalled-example-snap": "^0.7.2",
-    "@metamask/profile-metrics-controller": "^2.0.0",
+    "@metamask/profile-metrics-controller": "^3.0.0",
     "@metamask/profile-sync-controller": "^27.0.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^7.0.0",
