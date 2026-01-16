@@ -2429,14 +2429,23 @@ export const getSnapInsights = createDeepEqualSelector(
   (insights, id) => insights?.[id],
 );
 
+// Constant empty object to avoid creating new references
+const EMPTY_ALLOWED_ANNOUNCEMENT_IDS = {};
+
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
  * @returns {object}
  */
-function getAllowedAnnouncementIds() {
-  return {};
-}
+const getAllowedAnnouncementIds = () => EMPTY_ALLOWED_ANNOUNCEMENT_IDS;
+
+/**
+ * Get the announcements object from state
+ *
+ * @param {object} state - the redux state object
+ * @returns {object} The announcements object
+ */
+const getAnnouncementsObject = (state) => state.metamask.announcements;
 
 /**
  * @typedef {object} Announcement
@@ -2456,18 +2465,14 @@ function getAllowedAnnouncementIds() {
  * @returns {Announcement[]} An array of announcements that can be shown to the user
  */
 
-export function getSortedAnnouncementsToShow(state) {
-  const announcements = Object.values(state.metamask.announcements);
-  const allowedAnnouncementIds = getAllowedAnnouncementIds(state);
-  const announcementsToShow = announcements.filter(
-    (announcement) =>
-      !announcement.isShown && allowedAnnouncementIds[announcement.id],
-  );
-  const announcementsSortedByDate = announcementsToShow.sort(
-    (a, b) => new Date(b.date) - new Date(a.date),
-  );
-  return announcementsSortedByDate;
-}
+export const getSortedAnnouncementsToShow = createSelector(
+  getAnnouncementsObject,
+  getAllowedAnnouncementIds,
+  (announcements, allowedIds) =>
+    Object.values(announcements)
+      .filter((a) => !a.isShown && allowedIds[a.id])
+      .sort((a, b) => new Date(b.date) - new Date(a.date)),
+);
 
 /**
  * @param state

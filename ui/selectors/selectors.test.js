@@ -4170,3 +4170,111 @@ describe('getPermissionsForActiveTab', () => {
     expect(result).toStrictEqual([]);
   });
 });
+
+describe('getSortedAnnouncementsToShow', () => {
+  it('memoizes and returns the same reference when state unchanged', () => {
+    const state = {
+      metamask: {
+        announcements: {
+          1: { id: 1, date: '2021-01-01', isShown: false },
+          2: { id: 2, date: '2021-01-02', isShown: true },
+          3: { id: 3, date: '2021-01-03', isShown: false },
+        },
+      },
+    };
+
+    const result1 = selectors.getSortedAnnouncementsToShow(state);
+    const result2 = selectors.getSortedAnnouncementsToShow(state);
+
+    // Should return the same reference when state unchanged (memoization)
+    expect(result1).toBe(result2);
+  });
+
+  it('returns different reference when announcements object changes', () => {
+    const state1 = {
+      metamask: {
+        announcements: {
+          1: { id: 1, date: '2021-01-01', isShown: false },
+        },
+      },
+    };
+
+    const result1 = selectors.getSortedAnnouncementsToShow(state1);
+
+    const state2 = {
+      metamask: {
+        announcements: {
+          1: { id: 1, date: '2021-01-01', isShown: false },
+          2: { id: 2, date: '2021-01-02', isShown: false },
+        },
+      },
+    };
+
+    const result2 = selectors.getSortedAnnouncementsToShow(state2);
+
+    // Should return different reference when announcements change
+    expect(result1).not.toBe(result2);
+  });
+
+  it('filters out shown announcements and sorts by date descending', () => {
+    const state = {
+      metamask: {
+        announcements: {
+          1: { id: 1, date: '2021-01-01', isShown: false },
+          2: { id: 2, date: '2021-01-03', isShown: true },
+          3: { id: 3, date: '2021-01-02', isShown: false },
+        },
+      },
+    };
+
+    const result = selectors.getSortedAnnouncementsToShow(state);
+
+    // Currently getAllowedAnnouncementIds returns {}, so all announcements are filtered out
+    expect(result).toStrictEqual([]);
+  });
+
+  it('returns empty array when no announcements exist', () => {
+    const state = {
+      metamask: {
+        announcements: {},
+      },
+    };
+
+    const result = selectors.getSortedAnnouncementsToShow(state);
+    expect(result).toStrictEqual([]);
+  });
+
+  it('returns empty array when all announcements are shown', () => {
+    const state = {
+      metamask: {
+        announcements: {
+          1: { id: 1, date: '2021-01-01', isShown: true },
+          2: { id: 2, date: '2021-01-02', isShown: true },
+        },
+      },
+    };
+
+    const result = selectors.getSortedAnnouncementsToShow(state);
+    expect(result).toStrictEqual([]);
+  });
+
+  it('maintains memoization with same announcements object reference', () => {
+    const announcements = {
+      1: { id: 1, date: '2021-01-01', isShown: false },
+    };
+
+    const state1 = {
+      metamask: { announcements },
+    };
+
+    const state2 = {
+      metamask: { announcements },
+    };
+
+    const result1 = selectors.getSortedAnnouncementsToShow(state1);
+    const result2 = selectors.getSortedAnnouncementsToShow(state2);
+
+    // Should be memoized since announcements object is the same reference
+    expect(result1).toBe(result2);
+  });
+});
