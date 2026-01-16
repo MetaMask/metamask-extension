@@ -1,4 +1,5 @@
 import { renderHook } from '@testing-library/react-hooks';
+import { waitFor } from '@testing-library/react';
 import { useHardwareWalletAutoConnect } from './useHardwareWalletAutoConnect';
 import {
   HardwareWalletType,
@@ -91,11 +92,12 @@ describe('useHardwareWalletAutoConnect', () => {
     it('subscribes to WebHID events for Ledger wallet with granted permissions', () => {
       setupHook();
 
-      expect(webConnectionUtils.subscribeToWebHIDEvents).toHaveBeenCalledWith(
+      expect(webConnectionUtils.subscribeToWebHidEvents).toHaveBeenCalledWith(
+        HardwareWalletType.Ledger,
         expect.any(Function),
         expect.any(Function),
       );
-      expect(webConnectionUtils.subscribeToWebUSBEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebUsbEvents).not.toHaveBeenCalled();
     });
 
     it('subscribes to WebUSB events for Trezor wallet with granted permissions', () => {
@@ -117,18 +119,19 @@ describe('useHardwareWalletAutoConnect', () => {
         }),
       );
 
-      expect(webConnectionUtils.subscribeToWebUSBEvents).toHaveBeenCalledWith(
+      expect(webConnectionUtils.subscribeToWebUsbEvents).toHaveBeenCalledWith(
+        HardwareWalletType.Trezor,
         expect.any(Function),
         expect.any(Function),
       );
-      expect(webConnectionUtils.subscribeToWebHIDEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
     });
 
     it('does not subscribe when not a hardware wallet account', () => {
       setupHook({ isHardwareWalletAccount: false });
 
-      expect(webConnectionUtils.subscribeToWebHIDEvents).not.toHaveBeenCalled();
-      expect(webConnectionUtils.subscribeToWebUSBEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebUsbEvents).not.toHaveBeenCalled();
     });
 
     it('does not subscribe when permissions are not granted', () => {
@@ -150,7 +153,7 @@ describe('useHardwareWalletAutoConnect', () => {
         }),
       );
 
-      expect(webConnectionUtils.subscribeToWebHIDEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
     });
 
     it('does not subscribe when WebHID is not available for Ledger', () => {
@@ -172,7 +175,7 @@ describe('useHardwareWalletAutoConnect', () => {
         }),
       );
 
-      expect(webConnectionUtils.subscribeToWebHIDEvents).not.toHaveBeenCalled();
+      expect(webConnectionUtils.subscribeToWebHidEvents).not.toHaveBeenCalled();
     });
 
     it('handles native device connect event', async () => {
@@ -191,11 +194,11 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
-      // Get the connect callback from the subscription
+      // Get the connect callback from the subscription (index 1 since index 0 is walletType)
       const subscribeCall = (
-        webConnectionUtils.subscribeToWebHIDEvents as jest.Mock
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
       ).mock.calls[0];
-      const connectCallback = subscribeCall[0];
+      const connectCallback = subscribeCall[1];
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
@@ -211,11 +214,11 @@ describe('useHardwareWalletAutoConnect', () => {
     it('handles native device disconnect event', async () => {
       setupHook({}, { deviceIdRef: { current: '123' } });
 
-      // Get the disconnect callback from the subscription
+      // Get the disconnect callback from the subscription (index 2 since index 0 is walletType)
       const subscribeCall = (
-        webConnectionUtils.subscribeToWebHIDEvents as jest.Mock
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
       ).mock.calls[0];
-      const disconnectCallback = subscribeCall[1];
+      const disconnectCallback = subscribeCall[2];
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
@@ -231,9 +234,9 @@ describe('useHardwareWalletAutoConnect', () => {
       setupHook({}, { deviceIdRef: { current: '999' } }); // Different device ID
 
       const subscribeCall = (
-        webConnectionUtils.subscribeToWebHIDEvents as jest.Mock
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
       ).mock.calls[0];
-      const disconnectCallback = subscribeCall[1];
+      const disconnectCallback = subscribeCall[2];
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
@@ -249,9 +252,9 @@ describe('useHardwareWalletAutoConnect', () => {
       setupHook({}, { abortControllerRef: { current: abortController } });
 
       const subscribeCall = (
-        webConnectionUtils.subscribeToWebHIDEvents as jest.Mock
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
       ).mock.calls[0];
-      const connectCallback = subscribeCall[0];
+      const connectCallback = subscribeCall[1];
 
       const mockDevice = { productId: 123 } as HIDDevice;
 
@@ -299,15 +302,18 @@ describe('useHardwareWalletAutoConnect', () => {
 
       setupAutoConnectHook();
 
-      // Wait for useEffect to run
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockSetAutoConnected).toHaveBeenCalledWith(
+          '0x123',
+          'device-123',
+        );
+      });
 
       expect(webConnectionUtils.getHardwareWalletDeviceId).toHaveBeenCalledWith(
         HardwareWalletType.Ledger,
       );
       expect(mockSetDeviceId).toHaveBeenCalledWith(expect.any(Function));
       expect(mockConnectRef).toHaveBeenCalled();
-      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123', 'device-123');
     });
 
     it('does not auto-connect when permissions are not granted', () => {
@@ -362,10 +368,14 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockSetAutoConnected).toHaveBeenCalledWith(
+          '0x123',
+          'device-123',
+        );
+      });
 
       expect(mockConnectRef).toHaveBeenCalled();
-      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x123', 'device-123');
     });
 
     it('does not auto-connect when already connected', async () => {
@@ -387,7 +397,9 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockSetDeviceId).toHaveBeenCalled();
+      });
 
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
@@ -404,7 +416,9 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockSetDeviceId).toHaveBeenCalled();
+      });
 
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
@@ -417,7 +431,9 @@ describe('useHardwareWalletAutoConnect', () => {
       setupHook();
 
       // Should not throw, just log error
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(webConnectionUtils.getHardwareWalletDeviceId).toHaveBeenCalled();
+      });
 
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
@@ -437,8 +453,12 @@ describe('useHardwareWalletAutoConnect', () => {
         },
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(webConnectionUtils.getHardwareWalletDeviceId).toHaveBeenCalled();
+      });
 
+      // When aborted, setDeviceId and connectRef should not be called
+      expect(mockSetDeviceId).not.toHaveBeenCalled();
       expect(mockConnectRef).not.toHaveBeenCalled();
     });
 
@@ -451,13 +471,14 @@ describe('useHardwareWalletAutoConnect', () => {
 
       setupAutoConnectHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      await waitFor(() => {
+        expect(mockConnectRef).toHaveBeenCalled();
+      });
 
       expect(webConnectionUtils.getHardwareWalletDeviceId).toHaveBeenCalledWith(
         HardwareWalletType.Ledger,
       );
       expect(mockSetDeviceId).toHaveBeenCalledWith(expect.any(Function));
-      expect(mockConnectRef).toHaveBeenCalled();
       expect(mockSetAutoConnected).not.toHaveBeenCalled();
     });
 
@@ -498,11 +519,6 @@ describe('useHardwareWalletAutoConnect', () => {
         { initialProps: { accountAddress: '0x111' } },
       );
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
-      mockSetAutoConnected.mockClear();
-      mockConnectRef.mockClear();
-
       // Immediately switch to second account (0x222) before first resolves
       // The second device discovery resolves immediately
       (
@@ -511,18 +527,23 @@ describe('useHardwareWalletAutoConnect', () => {
 
       rerender({ accountAddress: '0x222' });
 
-      // Allow second effect to complete
-      await new Promise((resolve) => setTimeout(resolve, 0));
-
       // Second account should auto-connect
-      expect(mockSetAutoConnected).toHaveBeenCalledWith('0x222', 'device-222');
+      await waitFor(() => {
+        expect(mockSetAutoConnected).toHaveBeenCalledWith(
+          '0x222',
+          'device-222',
+        );
+      });
+
       mockSetAutoConnected.mockClear();
       mockConnectRef.mockClear();
 
       resolveFirstDeviceId('device-111');
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+      // Wait a tick to ensure the first promise resolution is processed
+      await waitFor(() => {
+        expect(mockSetAutoConnected).not.toHaveBeenCalled();
+      });
     });
   });
 });

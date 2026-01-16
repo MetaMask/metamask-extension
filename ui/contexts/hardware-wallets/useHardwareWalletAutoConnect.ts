@@ -2,8 +2,8 @@ import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import {
   checkHardwareWalletPermission,
   getHardwareWalletDeviceId,
-  subscribeToWebHIDEvents,
-  subscribeToWebUSBEvents,
+  subscribeToWebHidEvents,
+  subscribeToWebUsbEvents,
 } from './webConnectionUtils';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
@@ -105,9 +105,26 @@ export const useHardwareWalletAutoConnect = ({
       }
     };
 
-    const unsubscribe = isLedger
-      ? subscribeToWebHIDEvents(handleNativeConnect, handleNativeDisconnect)
-      : subscribeToWebUSBEvents(handleNativeConnect, handleNativeDisconnect);
+    const getSubscriptionFunction = (type: HardwareWalletType) => {
+      switch (type) {
+        case HardwareWalletType.Ledger:
+          return subscribeToWebHidEvents;
+        case HardwareWalletType.Trezor:
+          return subscribeToWebUsbEvents;
+        default:
+          return () => {
+            // return noop for unsupported
+          };
+      }
+    };
+
+    const subscribeToEvents = getSubscriptionFunction(walletType);
+
+    const unsubscribe = subscribeToEvents(
+      walletType,
+      handleNativeConnect,
+      handleNativeDisconnect,
+    );
 
     return unsubscribe;
   }, [
