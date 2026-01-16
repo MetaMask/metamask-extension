@@ -11,4 +11,3 @@ export function isWebOrigin(origin: string | undefined | null): boolean {
   }
   return origin.startsWith('http://') || origin.startsWith('https://');
 }
-

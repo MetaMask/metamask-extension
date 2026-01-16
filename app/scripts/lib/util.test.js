@@ -16,6 +16,7 @@ import {
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
 import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
+import { isWebOrigin } from '../../../shared/lib/origin-utils';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
@@ -30,7 +31,6 @@ import {
   isKnownDomain,
   initializeRpcProviderDomains,
 } from './util';
-import { isWebOrigin } from '../../../shared/lib/origin-utils';
 
 // Mock the module
 jest.mock('./util', () => ({
