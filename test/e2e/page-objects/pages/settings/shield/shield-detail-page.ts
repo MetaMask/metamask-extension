@@ -14,6 +14,9 @@ export default class ShieldDetailPage {
     text,
   });
 
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
+
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
 
@@ -164,6 +167,14 @@ export default class ShieldDetailPage {
   }
 
   /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
+  }
+
+  /**
    * Click the Submit Case button
    */
   async clickSubmitCaseButton(): Promise<void> {
@@ -291,7 +302,7 @@ export default class ShieldDetailPage {
       membershipStatus = 'Active plan',
       nextBillingDate = 'Nov 3',
       charges = '$80',
-      paymentMethod = 'Visa',
+      paymentMethod = 'Card',
       expectTrialTag = true,
     } = options || {};
 
