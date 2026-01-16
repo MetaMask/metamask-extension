@@ -39,6 +39,7 @@ import {
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
 import { getIsWalletResetInProgress } from '../../../ducks/metamask/metamask';
 import { CreatePasswordForm } from '../../create-password-form';
+import { BlockSize } from '../../../helpers/constants/design-system';
 
 type CreatePasswordProps = {
   createNewAccount: (password: string) => void;
@@ -330,7 +331,7 @@ export default function CreatePassword({
   };
 
   return (
-    <Box>
+    <Box height={BlockSize.Full} width={BlockSize.Full}>
       <CreatePasswordForm
         isSocialLoginFlow={isSocialLoginFlow}
         onSubmit={handleCreatePassword}

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Subscription } from '@metamask/subscription-controller';
+import { FontWeight, Text, TextVariant } from '@metamask/design-system-react';
 import {
   Modal,
   ModalBody,
@@ -7,15 +8,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
-} from '../../../components/component-library';
-import {
-  AlignItems,
-  TextVariant,
-} from '../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getShortDateFormatterV2 } from '../../asset/util';
-import { getIsShieldSubscriptionPaused } from '../../../../shared/lib/shield';
+} from '../../../../components/component-library';
+import { AlignItems } from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { getShortDateFormatterV2 } from '../../../asset/util';
+import { getIsShieldSubscriptionPaused } from '../../../../../shared/lib/shield';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -42,18 +39,21 @@ export default function CancelMembershipModal({
       <ModalContent alignItems={AlignItems.flexStart}>
         <ModalHeader onClose={onClose}>{t('areYouSure')}</ModalHeader>
         <ModalBody>
-          <Text variant={TextVariant.bodyMd}>
+          <Text variant={TextVariant.BodyMd}>
             {isPaused
               ? t('shieldTxCancelWhenPausedDetails')
               : t('shieldTxCancelDetails', [
                   <Text
+                    asChild
                     key="cancel-date"
-                    variant={TextVariant.bodyMdMedium}
-                    as="span"
+                    variant={TextVariant.BodyMd}
+                    fontWeight={FontWeight.Medium}
                   >
-                    {getShortDateFormatterV2().format(
-                      new Date(subscription.currentPeriodEnd),
-                    )}
+                    <span>
+                      {getShortDateFormatterV2().format(
+                        new Date(subscription.currentPeriodEnd),
+                      )}
+                    </span>
                   </Text>,
                 ])}
           </Text>

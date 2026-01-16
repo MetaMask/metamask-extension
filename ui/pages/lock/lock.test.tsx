@@ -14,6 +14,7 @@ describe('Lock', () => {
     const props = {
       isUnlocked: false,
       navigate: mockUseNavigate,
+      lockMetamask: jest.fn().mockResolvedValue(undefined),
     };
 
     renderWithProvider(<Lock {...props} />);
