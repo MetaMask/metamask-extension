@@ -152,11 +152,7 @@ export async function onboardThenTriggerCorruption(
   // we do -- and that will close the whole browser 😱
   await driver.openNewPage('about:blank');
 
-  await completeCreateNewWalletOnboardingFlow({
-    driver,
-    password: WALLET_PASSWORD,
-    skipSRPBackup: true,
-  });
+  await onboard(driver);
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
