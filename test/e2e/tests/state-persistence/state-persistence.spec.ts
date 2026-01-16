@@ -370,9 +370,7 @@ describe('State Persistence', function () {
       });
     });
 
-    // Temporarily disabled
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should update from data state to split state', async function () {
+    it('should update from data state to split state', async function () {
       const accountName = 'Account 2';
 
       await withFixtures(
