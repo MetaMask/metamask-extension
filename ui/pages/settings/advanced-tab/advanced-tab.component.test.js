@@ -193,7 +193,7 @@ describe('AdvancedTab Component', () => {
   });
 
   describe('renderToggleDismissSmartAccountSuggestion', () => {
-    it('should render the toggle button for Dismiss Smart Account Suggestion', () => {
+    it('should render the toggle button for Dismiss Smart account Suggestion', () => {
       const { queryByTestId } = renderWithProvider(<AdvancedTab />, mockStore);
       const toggleButton = queryByTestId(
         'advanced-setting-dismiss-smart-account-suggestion-enabled',
