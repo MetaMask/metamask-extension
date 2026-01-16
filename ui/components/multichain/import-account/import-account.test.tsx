@@ -5,12 +5,12 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import * as actions from '../../../store/actions';
+// eslint-disable-next-line import/no-restricted-paths
+import { importAccountErrorIsSRP } from '../../../../app/_locales/en/messages.json';
 import { ImportAccount } from './import-account';
 
 jest.mock('../../../store/actions', () => ({
   importNewAccount: jest.fn(),
-  displayWarning: jest.fn(() => ({ type: 'DISPLAY_WARNING' })),
-  hideWarning: jest.fn(() => ({ type: 'HIDE_WARNING' })),
   checkIsSeedlessPasswordOutdated: jest.fn(),
 }));
 
@@ -79,17 +79,35 @@ describe('ImportAccount', () => {
         ).not.toBeInTheDocument();
         expect(getByTestId('file-input')).toBeInTheDocument();
       });
-
-      expect(mockedActions.hideWarning).toHaveBeenCalled();
     });
 
-    it('hides warning when switching import types', () => {
-      const { getByRole } = renderImportAccount();
+    it('hides warning when switching import types', async () => {
+      // Trigger error by entering private key and attempting import
+      const testError = new Error('Test error');
+      mockedActions.importNewAccount.mockReturnValue(() =>
+        Promise.reject(testError),
+      );
+      const { getByLabelText, getByText, getByRole, queryByText } =
+        renderImportAccount();
+      const privateKeyInput = getByLabelText(
+        'Enter your private key string here:',
+      );
+      fireEvent.change(privateKeyInput, {
+        target: { value: '0xabcdef1234567890' },
+      });
+      const importButton = getByText('Import');
+      fireEvent.click(importButton);
+      // Ensure error is shown
+      await waitFor(() => {
+        expect(queryByText('Test error')).toBeInTheDocument();
+      });
 
       const dropdown = getByRole('combobox');
       fireEvent.change(dropdown, { target: { value: 'JSON File' } });
 
-      expect(mockedActions.hideWarning).toHaveBeenCalled();
+      await waitFor(() => {
+        expect(queryByText('Test error')).not.toBeInTheDocument();
+      });
     });
   });
 
@@ -152,7 +170,7 @@ describe('ImportAccount', () => {
           selectedAddress: null,
         })) as unknown as ReturnType<typeof actions.importNewAccount>);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
         'Enter your private key string here:',
@@ -165,7 +183,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(queryByText('Error importing account.')).toBeInTheDocument();
       });
     });
 
@@ -175,7 +193,7 @@ describe('ImportAccount', () => {
           new Error('Invalid private key'),
         )) as unknown as ReturnType<typeof actions.importNewAccount>);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
         'Enter your private key string here:',
@@ -188,7 +206,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(queryByText('Invalid private key')).toBeInTheDocument();
       });
     });
 
@@ -235,7 +253,7 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
         'Enter your private key string here:',
@@ -248,9 +266,9 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
-          'The account you are trying to import is a duplicate',
-        );
+        expect(
+          queryByText('The account you are trying to import is a duplicate'),
+        ).toBeInTheDocument();
       });
     });
 
@@ -261,7 +279,7 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
         'Enter your private key string here:',
@@ -274,9 +292,7 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        expect(mockedActions.displayWarning).toHaveBeenCalledWith(
-          'Some other error',
-        );
+        expect(queryByText('Some other error')).toBeInTheDocument();
       });
     });
 
@@ -289,7 +305,7 @@ describe('ImportAccount', () => {
         typeof actions.importNewAccount
       >);
 
-      const { getByLabelText, getByText } = renderImportAccount();
+      const { getByLabelText, getByText, queryByText } = renderImportAccount();
 
       const privateKeyInput = getByLabelText(
         'Enter your private key string here:',
@@ -302,8 +318,10 @@ describe('ImportAccount', () => {
       fireEvent.click(importButton);
 
       await waitFor(() => {
-        // The translateWarning function should process the i18n key
-        expect(mockedActions.displayWarning).toHaveBeenCalled();
+        expect(
+          // The translateWarning function should process the i18n key
+          queryByText(importAccountErrorIsSRP.message),
+        ).toBeInTheDocument();
       });
     });
   });

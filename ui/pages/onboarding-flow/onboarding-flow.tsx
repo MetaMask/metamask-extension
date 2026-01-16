@@ -53,9 +53,7 @@ import {
   AlignItems,
   BackgroundColor,
   BlockSize,
-  BorderColor,
   BorderRadius,
-  BorderStyle,
   Display,
   FlexDirection,
   JustifyContent,
@@ -298,11 +296,6 @@ export default function OnboardingFlow() {
           'onboarding-flow__container--sidepanel': isSidepanel,
         })}
         width={BlockSize.Full}
-        borderStyle={
-          isFullPage || isPopup || isSidepanel
-            ? BorderStyle.none
-            : BorderStyle.solid
-        }
         borderRadius={BorderRadius.LG}
         marginTop={
           pathname === ONBOARDING_WELCOME_ROUTE || isPopup || isSidepanel
@@ -313,7 +306,14 @@ export default function OnboardingFlow() {
         marginBottom={pathname === ONBOARDING_EXPERIMENTAL_AREA ? 6 : 0}
         ///: END:ONLY_INCLUDE_IF
         marginInline="auto"
-        borderColor={BorderColor.borderMuted}
+        style={{
+          backgroundColor:
+            [ONBOARDING_WELCOME_ROUTE, ONBOARDING_UNLOCK_ROUTE].includes(
+              pathname,
+            ) || isPopup
+              ? 'transparent'
+              : 'var(--color-background-muted)',
+        }}
       >
         <Routes>
           <Route
