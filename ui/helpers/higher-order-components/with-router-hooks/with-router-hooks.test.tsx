@@ -120,4 +120,112 @@ describe('withRouterHooks HOC', () => {
       </MemoryRouter>,
     );
   });
+
+  describe('memoization behavior', () => {
+    it('maintains stable params reference when values are unchanged', () => {
+      const paramsReferences: ReturnType<typeof useParams>[] = [];
+
+      const TestComponentForMemo: React.FC<
+        TestComponentProps & { renderCount?: number }
+      > = ({ params }) => {
+        paramsReferences.push(params);
+        return <div>Memoization test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      const { rerender } = render(
+        <MemoryRouter>
+          <WrappedComponent renderCount={1} />
+        </MemoryRouter>,
+      );
+
+      // Force re-render with different prop
+      rerender(
+        <MemoryRouter>
+          <WrappedComponent renderCount={2} />
+        </MemoryRouter>,
+      );
+
+      // Params should be the same reference on both renders
+      expect(paramsReferences).toHaveLength(2);
+      expect(paramsReferences[0]).toBe(paramsReferences[1]);
+    });
+
+    it('maintains stable location reference when values are unchanged', () => {
+      const locationReferences: ReturnType<typeof useLocation>[] = [];
+
+      const TestComponentForMemo: React.FC<
+        TestComponentProps & { renderCount?: number }
+      > = ({ location }) => {
+        locationReferences.push(location);
+        return <div>Memoization test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      const { rerender } = render(
+        <MemoryRouter>
+          <WrappedComponent renderCount={1} />
+        </MemoryRouter>,
+      );
+
+      // Force re-render with different prop
+      rerender(
+        <MemoryRouter>
+          <WrappedComponent renderCount={2} />
+        </MemoryRouter>,
+      );
+
+      // Location should be the same reference on both renders
+      expect(locationReferences).toHaveLength(2);
+      expect(locationReferences[0]).toBe(locationReferences[1]);
+    });
+
+    it('respects passed-in params prop over hook value', () => {
+      const customParams = { customId: 'custom-value' };
+      const paramsReceived: ReturnType<typeof useParams>[] = [];
+
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        params,
+      }) => {
+        paramsReceived.push(params);
+        return <div>Custom params test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      render(
+        <MemoryRouter>
+          <WrappedComponent params={customParams} />
+        </MemoryRouter>,
+      );
+
+      expect(paramsReceived[0]).toBe(customParams);
+    });
+
+    it('respects passed-in location prop over hook value', () => {
+      const customLocation = {
+        pathname: '/custom',
+        search: '?custom=true',
+        hash: '#custom',
+        state: { custom: true },
+        key: 'custom-key',
+      };
+      const locationsReceived: ReturnType<typeof useLocation>[] = [];
+
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        location,
+      }) => {
+        locationsReceived.push(location);
+        return <div>Custom location test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      render(
+        <MemoryRouter>
+          <WrappedComponent location={customLocation} />
+        </MemoryRouter>,
+      );
+
+      expect(locationsReceived[0]).toBe(customLocation);
+    });
+  });
 });

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 // Types for the router hooks
@@ -18,17 +18,49 @@ function withRouterHooks<Props extends object>(
     const hookLocation = useLocation();
     const hookParams = useParams();
 
+    // Stabilize params object by tracking param values
+    // Extract keys and values separately to avoid JSON.stringify
+    const paramKeys = hookParams
+      ? Object.keys(hookParams).sort().join(',')
+      : '';
+    const paramValues = hookParams
+      ? Object.keys(hookParams)
+          .sort()
+          .map((key) => hookParams[key])
+          .join(',')
+      : '';
+
+    // We intentionally don't include hookParams in dependencies because
+    // we want to memoize based on VALUES (paramKeys/paramValues), not object reference
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const stableParams = useMemo(
+      () => props.params ?? hookParams,
+      [props.params, paramKeys, paramValues],
+    );
+
+    // We intentionally don't include hookLocation in dependencies because
+    // we want to memoize based on individual properties, not object reference
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const stableLocation = useMemo(
+      () => props.location ?? hookLocation,
+      [
+        props.location,
+        hookLocation.pathname,
+        hookLocation.search,
+        hookLocation.hash,
+        hookLocation.state,
+      ],
+    );
+
     // Use passed props if they exist, otherwise fall back to hooks
     const navigate = props.navigate ?? hookNavigate;
-    const location = props.location ?? hookLocation;
-    const params = props.params ?? hookParams;
 
     return (
       <WrappedComponent
         {...props}
         navigate={navigate}
-        location={location}
-        params={params}
+        location={stableLocation}
+        params={stableParams}
       />
     );
   };
