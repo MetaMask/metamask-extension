@@ -35,7 +35,6 @@ const mockSnapId = 'local:http://localhost:8080' as SnapId;
 const mockSnapName = 'mock-snap';
 const mockPersistKeyringHelper = jest.fn();
 const mockSetSelectedAccount = jest.fn();
-const mockSetAccountName = jest.fn();
 const mockRemoveAccountHelper = jest.fn();
 const mockTrackEvent = jest.fn();
 const mockGetAccountByAddress = jest.fn();
@@ -72,18 +71,6 @@ const mockInternalAccount = {
     importTime: 0,
   },
 };
-
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () => false,
-  }),
-);
 
 jest.mock('../../../../shared/lib/snaps/snaps', () => ({
   ...jest.requireActual('../../../../shared/lib/snaps/snaps'),
@@ -166,9 +153,6 @@ const createControllerMessenger = ({
 
       case 'AccountsController:setSelectedAccount':
         return mockSetSelectedAccount(params);
-
-      case 'AccountsController:setAccountName':
-        return mockSetAccountName.mockReturnValue(null)(params);
 
       case 'PreferencesController:getState':
         return mockPreferencesControllerGetState.mockReturnValue({
@@ -377,7 +361,6 @@ describe('Snap Keyring Methods', () => {
         },
       });
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
-      expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
@@ -427,7 +410,6 @@ describe('Snap Keyring Methods', () => {
           is_suggested_name: false,
         },
       });
-      expect(mockSetAccountName).not.toHaveBeenCalled();
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
@@ -520,10 +502,6 @@ describe('Snap Keyring Methods', () => {
           is_suggested_name: true,
         },
       });
-      expect(mockSetAccountName).toHaveBeenCalledWith([
-        mockAccount.id,
-        mockNameSuggestion,
-      ]);
       expect(mockShowSuccess).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
@@ -578,11 +556,6 @@ describe('Snap Keyring Methods', () => {
           is_suggested_name: true,
         },
       });
-      expect(mockSetAccountName).toHaveBeenCalledTimes(1);
-      expect(mockSetAccountName).toHaveBeenCalledWith([
-        mockAccount.id,
-        mockNameSuggestion,
-      ]);
       expect(mockEndFlow).toHaveBeenCalledTimes(2);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
       expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);

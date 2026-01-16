@@ -324,7 +324,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep,
     skipApprovalFlow,
     onceSaved,
-    accountName,
     defaultAccountNameChosen,
   }: {
     address: string;
@@ -380,21 +379,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
             'AccountsController:setSelectedAccount',
             accountId,
           );
-        }
-
-        // HACK: In state 2, account creations can run in parallel, thus, `accountName`
-        // sometimes conflict with other concurrent renaming. Since we don't rely on those
-        // account names anymore, we just omit this part and make this race-free.
-        // FIXME: We still rely on the old behavior in some e2e, so we cannot remove this
-        // entirely.
-        if (!this.#isMultichainAccountsFeatureState2Enabled()) {
-          if (accountName) {
-            this.#messenger.call(
-              'AccountsController:setAccountName',
-              accountId,
-              accountName,
-            );
-          }
         }
 
         if (!skipConfirmationDialog) {
