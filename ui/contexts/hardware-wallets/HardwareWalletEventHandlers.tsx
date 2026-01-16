@@ -28,7 +28,6 @@ export type DeviceEventHandlerProps = {
             prev: HardwareWalletConnectionState,
           ) => HardwareWalletConnectionState),
     ) => void;
-    setCurrentAppName: (name: string | null) => void;
     cleanupAdapter: () => void;
     abortAndCleanupController: () => void;
     resetConnectionRefs: () => void;
@@ -157,7 +156,6 @@ export const useDeviceEventHandlers = ({
           break;
 
         case DeviceEvent.AppChanged:
-          setters.setCurrentAppName(payload?.currentAppName || '');
           if (payload.currentAppName) {
             // Check if the app is correct for this wallet type
             if (
@@ -207,7 +205,10 @@ export const useDeviceEventHandlers = ({
       // Forward event to adapter if callback provided
       onDeviceEvent?.(payload);
     },
-    [refs, updateConnectionState, setters, onDeviceEvent],
+    // Adding ignore to exclude refs.
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateConnectionState, onDeviceEvent],
   );
 
   const handleDisconnect = useCallback(
@@ -235,7 +236,10 @@ export const useDeviceEventHandlers = ({
         updateConnectionState(ConnectionState.disconnected());
       }
     },
-    [refs, setters, updateConnectionState],
+    // Adding ignore to exclude refs.
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setters, updateConnectionState],
   );
 
   return {

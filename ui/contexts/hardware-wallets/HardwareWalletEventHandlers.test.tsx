@@ -28,7 +28,6 @@ describe('useDeviceEventHandlers', () => {
   };
   let mockSetters: {
     setConnectionState: jest.Mock;
-    setCurrentAppName: jest.Mock;
     cleanupAdapter: jest.Mock;
     abortAndCleanupController: jest.Mock;
     resetConnectionRefs: jest.Mock;
@@ -52,7 +51,6 @@ describe('useDeviceEventHandlers', () => {
 
     mockSetters = {
       setConnectionState: jest.fn(),
-      setCurrentAppName: jest.fn(),
       cleanupAdapter: jest.fn(),
       abortAndCleanupController: jest.fn(),
       resetConnectionRefs: jest.fn(),
@@ -248,7 +246,6 @@ describe('useDeviceEventHandlers', () => {
         currentAppName: 'Bitcoin',
       });
 
-      expect(mockSetters.setCurrentAppName).toHaveBeenCalledWith('Bitcoin');
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
@@ -272,7 +269,6 @@ describe('useDeviceEventHandlers', () => {
         currentAppName: 'Ethereum',
       });
 
-      expect(mockSetters.setCurrentAppName).toHaveBeenCalledWith('Ethereum');
       expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
         expect.any(Function),
       );
@@ -369,7 +365,6 @@ describe('useDeviceEventHandlers', () => {
       });
 
       expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
-      expect(mockSetters.setCurrentAppName).not.toHaveBeenCalled();
     });
 
     it('aborts when AbortController is aborted', () => {
