@@ -8353,6 +8353,13 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  /**
+   * Updates the pinned accounts list
+   *
+   * @deprecated This method is deprecated and will be removed in the future.
+   * use AccountTreeController.setAccountGroupPinned instead
+   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
+   */
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
@@ -8384,6 +8391,13 @@ export default class MetamaskController extends EventEmitter {
     await this.lookupSelectedNetworks();
   };
 
+  /**
+   * Updates the hidden accounts list
+   *
+   * @deprecated This method is deprecated and will be removed in the future.
+   * use AccountTreeController.setAccountGroupHidden instead
+   * @param {AccountAddress[]} hiddenAccountList - The list of accounts to update in the state.
+   */
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);

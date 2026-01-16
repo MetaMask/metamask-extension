@@ -2,6 +2,11 @@ import React from 'react';
 import { fireEvent, act } from '@testing-library/react';
 import { renderWithProvider } from '../../../../test/lib/render-helpers';
 import configureStore from '../../../store/store';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MultichainAccountMenu } from './multichain-account-menu';
 import type { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
@@ -56,6 +61,8 @@ const mockSetAccountGroupHidden = jest.requireMock(
   '../../../store/actions',
 ).setAccountGroupHidden;
 
+const mockTrackEvent = jest.fn();
+
 describe('MultichainAccountMenu', () => {
   const renderComponent = (
     props: MultichainAccountMenuProps = {
@@ -64,13 +71,20 @@ describe('MultichainAccountMenu', () => {
       isOpen: false,
       onToggle: jest.fn(),
     },
+    state = mockState,
   ) => {
-    const store = configureStore(mockState);
-    return renderWithProvider(<MultichainAccountMenu {...props} />, store);
+    const store = configureStore(state);
+    return renderWithProvider(
+      <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MultichainAccountMenu {...props} />
+      </MetaMetricsContext.Provider>,
+      store,
+    );
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockTrackEvent.mockClear();
   });
 
   it('renders the menu button and popover is initially closed', () => {
@@ -411,5 +425,202 @@ describe('MultichainAccountMenu', () => {
       accountGroupId,
       true,
     );
+  });
+
+  describe('Pin/Unpin account tracking', () => {
+    it('tracks AccountPinned event when pinning an account', async () => {
+      const mockOnToggle = jest.fn();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+      renderComponent({
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
+      });
+
+      const menuItems = document.querySelectorAll(menuItemSelector);
+      const pinOption = menuItems[3];
+
+      if (pinOption) {
+        await act(async () => {
+          fireEvent.click(pinOption);
+        });
+      }
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.AccountPinned,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          pinned: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          pinned_count_after: 1,
+        },
+      });
+    });
+
+    it('tracks AccountPinned event when unpinning an account', async () => {
+      const mockOnToggle = jest.fn();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+      const stateWithPinnedAccount = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            wallets: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+                ...mockState.metamask.accountTree.wallets[
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                ],
+                groups: {
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
+                    ...mockState.metamask.accountTree.wallets[
+                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
+                    metadata: {
+                      ...mockState.metamask.accountTree.wallets[
+                        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                      ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
+                        .metadata,
+                      pinned: true,
+                      hidden: false,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        {
+          accountGroupId,
+          isRemovable: false,
+          isOpen: true,
+          onToggle: mockOnToggle,
+        },
+        stateWithPinnedAccount,
+      );
+
+      const menuItems = document.querySelectorAll(menuItemSelector);
+      const pinOption = menuItems[3];
+
+      if (pinOption) {
+        await act(async () => {
+          fireEvent.click(pinOption);
+        });
+      }
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.AccountPinned,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          pinned: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          pinned_count_after: 0,
+        },
+      });
+    });
+  });
+
+  describe('Hide/Unhide account tracking', () => {
+    it('tracks AccountHidden event when hiding an account', async () => {
+      const mockOnToggle = jest.fn();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+      renderComponent({
+        accountGroupId,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
+      });
+
+      const menuItems = document.querySelectorAll(menuItemSelector);
+      const hideOption = menuItems[4];
+
+      if (hideOption) {
+        await act(async () => {
+          fireEvent.click(hideOption);
+        });
+      }
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.AccountHidden,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          hidden: true,
+          hidden_count_after: 1,
+        },
+      });
+    });
+
+    it('tracks AccountHidden event when unhiding an account', async () => {
+      const mockOnToggle = jest.fn();
+      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+
+      const stateWithHiddenAccount = {
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          accountTree: {
+            ...mockState.metamask.accountTree,
+            wallets: {
+              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+                ...mockState.metamask.accountTree.wallets[
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                ],
+                groups: {
+                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
+                    ...mockState.metamask.accountTree.wallets[
+                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
+                    metadata: {
+                      ...mockState.metamask.accountTree.wallets[
+                        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
+                      ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
+                        .metadata,
+                      pinned: false,
+                      hidden: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      };
+
+      renderComponent(
+        {
+          accountGroupId,
+          isRemovable: false,
+          isOpen: true,
+          onToggle: mockOnToggle,
+        },
+        stateWithHiddenAccount,
+      );
+
+      const menuItems = document.querySelectorAll(menuItemSelector);
+      const hideOption = menuItems[4];
+
+      if (hideOption) {
+        await act(async () => {
+          fireEvent.click(hideOption);
+        });
+      }
+
+      expect(mockTrackEvent).toHaveBeenCalledWith({
+        event: MetaMetricsEventName.AccountHidden,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          hidden: false,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hidden_count_after: 0,
+        },
+      });
+    });
   });
 });
