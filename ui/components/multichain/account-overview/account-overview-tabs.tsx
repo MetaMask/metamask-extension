@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -15,15 +15,18 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
-import { useBrowserStorage } from '../../../hooks/useBrowserStorage';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
+  getDefaultHomeActiveTabName,
   getEnabledChainIds,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
-import { detectNfts } from '../../../store/actions';
+import {
+  detectNfts,
+  setDefaultHomeActiveTabName,
+} from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
 import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
@@ -34,8 +37,6 @@ import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
-
-const ACTIVE_TAB_KEY = 'activeTab';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
@@ -52,14 +53,19 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const { value, setValue } =
-    useBrowserStorage<AccountOverviewTab>(ACTIVE_TAB_KEY);
-  const [activeTabKey, setActiveTabKey] = useTabState(value || 'tokens');
+  const persistedTab = useSelector(getDefaultHomeActiveTabName);
+  const [urlTab, setActiveTabKey] = useTabState();
+  const activeTabKey = urlTab || persistedTab || 'tokens';
+
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+
+  useEffect(() => {
+    dispatch(setDefaultHomeActiveTabName(activeTabKey));
+  }, [activeTabKey, dispatch]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
@@ -80,18 +86,13 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
-      // End trace for the previous active tab before switching
-      if (
-        activeTabKey &&
-        activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-      ) {
+      if (activeTabKey) {
         endTrace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
         });
       }
 
       setActiveTabKey(tabName);
-      setValue(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
@@ -117,7 +118,6 @@ export const AccountOverviewTabs = ({
       activeTabKey,
       networkFilterForMetrics,
       setActiveTabKey,
-      setValue,
       dispatch,
       selectedChainIds,
       trackEvent,
