@@ -92,13 +92,12 @@ jobs:
       - name: Compute locales-only flag
         id: set-locales-only
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: echo "locales-only=true" >> "$GITHUB_OUTPUT"
-        # run: |
-        #   if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
-        #     echo "locales-only=true" >> "$GITHUB_OUTPUT"
-        #   else
-        #     echo "locales-only=false" >> "$GITHUB_OUTPUT"
-        #   fi
+        run: |
+          if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
+            echo "locales-only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "locales-only=false" >> "$GITHUB_OUTPUT"
+          fi
 
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-lint flag
