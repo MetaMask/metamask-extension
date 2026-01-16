@@ -67,18 +67,22 @@ PriorityFeeTooltip.propTypes = {
 
 export const NetworkStabilityTooltip = ({ children, color, tooltipLabel }) => {
   const t = useI18nContext();
+  const shouldEmphasizeTooltipLabel = tooltipLabel !== 'stableLowercase';
+  const tooltipLabelNode = shouldEmphasizeTooltipLabel ? (
+    <strong
+      key="network-status__tooltip"
+      className="network-status__tooltip-label"
+      style={{ color }}
+    >
+      {t(tooltipLabel)}
+    </strong>
+  ) : (
+    <span key="network-status__tooltip">{t(tooltipLabel)}</span>
+  );
 
   return (
     <NetworkStatusTooltip
-      html={t('networkStatusStabilityFeeTooltip', [
-        <strong
-          key="network-status__tooltip"
-          className="network-status__tooltip-label"
-          style={{ color }}
-        >
-          {t(tooltipLabel)}
-        </strong>,
-      ])}
+      html={t('networkStatusStabilityFeeTooltip', [tooltipLabelNode])}
     >
       {children}
     </NetworkStatusTooltip>
