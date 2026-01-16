@@ -151,7 +151,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.center}
+          justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.flexStart}
           color={color ?? TextColor.textAlternative}
           paddingRight={contentPaddingRight || null}
