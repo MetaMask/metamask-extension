@@ -19,9 +19,10 @@ import { type PreferencesState } from '@metamask/preferences-controller';
 import { IPFS_DEFAULT_GATEWAY_URL } from '../../../shared/constants/network';
 import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import { ThemeType } from '../../../shared/constants/preferences';
+import { DefiReferralPartner } from '../../../shared/constants/defi-referrals';
 
 /**
- * Referral status for an account (currently used for Hyperliquid referrals)
+ * Referral status for an account
  */
 export enum ReferralStatus {
   Approved = 'approved',
@@ -160,9 +161,7 @@ export type PreferencesControllerState = Omit<
   isMultiAccountBalancesEnabled: boolean;
   useMultiAccountBalanceChecker: boolean;
   usePhishDetect: boolean;
-  referrals: {
-    hyperliquid: Record<Hex, ReferralStatus>;
-  };
+  referrals: Record<DefiReferralPartner, Record<Hex, ReferralStatus>>;
 
   ///: BEGIN:ONLY_INCLUDE_IF(build-flask,build-experimental)
   watchEthereumAccountEnabled: boolean;
@@ -252,7 +251,7 @@ export const getDefaultPreferencesControllerState =
     useTransactionSimulations: true,
     watchEthereumAccountEnabled: false,
     referrals: {
-      hyperliquid: {},
+      [DefiReferralPartner.Hyperliquid]: {},
     },
   });
 
@@ -516,6 +515,10 @@ export class PreferencesController extends BaseController<
       preferences: {
         ...defaultState.preferences,
         ...state?.preferences,
+      },
+      referrals: {
+        ...defaultState.referrals,
+        ...state?.referrals,
       },
       // TODO - These two properties are the same, we only need isMultiAccountBalancesEnabled to keep it compatible with core PreferencesController
       // At some point we should completely remove all references and methods for useMultiAccountBalanceChecker and use isMultiAccountBalancesEnabled instead.
@@ -1071,34 +1074,47 @@ export class PreferencesController extends BaseController<
     });
   }
 
-  addReferralApprovedAccount(accountAddress: Hex) {
+  // Defi Referral methods
+  addReferralApprovedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Approved;
+      state.referrals[partner][accountAddress] = ReferralStatus.Approved;
     });
   }
 
-  addReferralPassedAccount(accountAddress: Hex) {
+  addReferralPassedAccount(partner: DefiReferralPartner, accountAddress: Hex) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Passed;
+      state.referrals[partner][accountAddress] = ReferralStatus.Passed;
     });
   }
 
-  addReferralDeclinedAccount(accountAddress: Hex) {
+  addReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      state.referrals.hyperliquid[accountAddress] = ReferralStatus.Declined;
+      state.referrals[partner][accountAddress] = ReferralStatus.Declined;
     });
   }
 
-  removeReferralDeclinedAccount(accountAddress: Hex) {
+  removeReferralDeclinedAccount(
+    partner: DefiReferralPartner,
+    accountAddress: Hex,
+  ) {
     this.update((state) => {
-      delete state.referrals.hyperliquid[accountAddress];
+      delete state.referrals[partner][accountAddress];
     });
   }
 
-  setAccountsReferralApproved(accountAddresses: Hex[]) {
+  setAccountsReferralApproved(
+    partner: DefiReferralPartner,
+    accountAddresses: Hex[],
+  ) {
     this.update((state) => {
       accountAddresses.forEach((address) => {
-        state.referrals.hyperliquid[address] = ReferralStatus.Approved;
+        state.referrals[partner][address] = ReferralStatus.Approved;
       });
     });
   }

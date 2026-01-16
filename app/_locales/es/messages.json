@@ -1272,9 +1272,6 @@
   "close": {
     "message": "Cerrar"
   },
-  "closeExtension": {
-    "message": "Cerrar extensión"
-  },
   "closeSlide": {
     "message": "Cerrar $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -6227,41 +6224,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Tu plan no está activo mientras está en pausa. Si lo cancelas, tu plan finalizará de inmediato."
   },
-  "shieldTxDetails1Description": {
-    "message": "Protege los activos en transacciones cubiertas"
-  },
   "shieldTxDetails1Title": {
     "message": "Protección de transacciones de hasta $10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Accede a soporte más rápido y dedicado en cualquier momento"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Soporte prioritario"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Enlace"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Inscribirse"
-  },
   "shieldTxMembershipActive": {
     "message": "Plan activo"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detalles de facturación"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Cuenta de facturación"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Cargos"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Próxima facturación"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Método de pago"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Administrar facturación"
@@ -6276,9 +6243,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Tu plan finaliza el $1. Renueva ahora para continuar con tus beneficios.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Reintentar el pago"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Tu plan se ha puesto en pausa debido a un pago fallido con tarjeta."
@@ -6305,9 +6269,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contactar a soporte"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Actualizar los datos de la tarjeta"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Prueba gratuita"
   },
@@ -6328,9 +6289,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Presentar una reclamación"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Ver todos los beneficios"
   },
   "show": {
     "message": "Mostrar"
