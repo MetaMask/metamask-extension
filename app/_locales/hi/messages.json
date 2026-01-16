@@ -1272,9 +1272,6 @@
   "close": {
     "message": "बंद करें"
   },
-  "closeExtension": {
-    "message": "एक्सटेंशन को बंद करें"
-  },
   "closeSlide": {
     "message": "$1 बंद करें",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
