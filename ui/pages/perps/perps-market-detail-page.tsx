@@ -34,23 +34,10 @@ import {
 import {
   getDisplayName,
   findMarketBySymbol,
+  safeDecodeURIComponent,
+  getChangeColor,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
-
-/**
- * Safely decode a URI component, returning undefined if decoding fails
- * Handles malformed percent-encoding sequences that would throw URIError
- *
- * @param value - The URI-encoded string to decode
- * @returns The decoded string, or undefined if decoding fails
- */
-const safeDecodeURIComponent = (value: string): string | undefined => {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return undefined;
-  }
-};
 
 /**
  * PerpsMarketDetailPage component
@@ -178,7 +165,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
-  const isPositiveChange = market.change24hPercent.startsWith('+');
 
   return (
     <Box
@@ -234,11 +220,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Text>
             <Text
               variant={TextVariant.BodyXs}
-              color={
-                isPositiveChange
-                  ? TextColor.SuccessDefault
-                  : TextColor.ErrorDefault
-              }
+              color={getChangeColor(market.change24hPercent)}
               data-testid="perps-market-detail-change"
             >
               {market.change24h} ({market.change24hPercent})

@@ -51,6 +51,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
     if (onClick) {
       onClick(order);
     } else {
+      // TODO: Add Metrics tracking
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(order.symbol)}`,
       );
