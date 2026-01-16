@@ -6,6 +6,7 @@ import {
   ButtonIcon,
   ButtonIconSize,
   ButtonVariant,
+  Box,
   IconName,
   Text,
   TextVariant,
@@ -59,13 +60,15 @@ export const AddMpcWalletPage = () => {
         {t('addMpcWallet')}
       </Header>
       <Content>
-        <Text variant={TextVariant.BodyLg} marginBottom={4}>
+        <Box marginBottom={4}>
+          <Text variant={TextVariant.BodyLg}>
             {t('mpcWalletDescription')}
-        </Text>
+          </Text>
+        </Box>
         <Button
             variant={ButtonVariant.Primary}
             onClick={handleClose}
-            width="100%"
+            style={{ width: '100%' }}
         >
             {t('close')}
         </Button>
