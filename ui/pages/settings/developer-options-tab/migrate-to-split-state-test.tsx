@@ -45,7 +45,8 @@ const MigrateToSplitStateTest = () => {
 
       setEnabled(toEnabledString(splitStateMigrationEnabled));
       setStorageKind(
-        typeof meta?.storageKind === 'string' ? meta.storageKind : 'split',
+        // older installs used `data` by default
+        typeof meta?.storageKind === 'string' ? meta.storageKind : 'data',
       );
       setMaxAccounts(
         splitStateMigrationMaxAccounts === undefined
