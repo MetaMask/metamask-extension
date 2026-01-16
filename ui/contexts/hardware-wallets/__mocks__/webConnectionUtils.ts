@@ -21,11 +21,6 @@ export const getHardwareWalletDeviceId = jest.fn();
 export const subscribeToWebHidEvents = jest.fn();
 export const subscribeToWebUsbEvents = jest.fn();
 export const subscribeToHardwareWalletEvents = jest.fn();
-export const getConnectedLedgerDevices = jest.fn();
-export const getConnectedTrezorDevices = jest.fn();
-export const getConnectedDevices = jest.fn();
-export const isDeviceConnected = jest.fn();
-export const isHardwareWalletConnected = jest.fn();
 
 // Default mock implementations
 isWebHidAvailable.mockReturnValue(true);
@@ -66,11 +61,6 @@ getHardwareWalletDeviceId.mockResolvedValue('test-device-id');
 subscribeToWebHidEvents.mockReturnValue(jest.fn());
 subscribeToWebUsbEvents.mockReturnValue(jest.fn());
 subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
-getConnectedLedgerDevices.mockResolvedValue([]);
-getConnectedTrezorDevices.mockResolvedValue([]);
-getConnectedDevices.mockResolvedValue([]);
-isDeviceConnected.mockResolvedValue(false);
-isHardwareWalletConnected.mockResolvedValue(false);
 
 // Reset all mocks to defaults
 export const resetwebConnectionUtilsMocks = () => {
@@ -112,11 +102,6 @@ export const resetwebConnectionUtilsMocks = () => {
   subscribeToWebHidEvents.mockReturnValue(jest.fn());
   subscribeToWebUsbEvents.mockReturnValue(jest.fn());
   subscribeToHardwareWalletEvents.mockReturnValue(jest.fn());
-  getConnectedLedgerDevices.mockResolvedValue([]);
-  getConnectedTrezorDevices.mockResolvedValue([]);
-  getConnectedDevices.mockResolvedValue([]);
-  isDeviceConnected.mockResolvedValue(false);
-  isHardwareWalletConnected.mockResolvedValue(false);
 };
 
 // Helper to setup common test scenarios
