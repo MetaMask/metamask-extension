@@ -1,6 +1,6 @@
 ---
 description: Front-End Performance Rules - Rendering Performance
-globs: *.tsx,*.jsx,*.ts,*.js
+globs: "*.tsx,*.jsx,*.ts,*.js"
 alwaysApply: false
 ---
 

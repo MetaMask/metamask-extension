@@ -1,6 +1,6 @@
 ---
 description: Front-End Performance Rules - Hooks & Effects
-globs: use*.ts,use*.tsx,use*.js,use*.jsx,*.tsx,*.jsx
+globs: "use*.ts,use*.tsx,use*.js,use*.jsx,*.tsx,*.jsx"
 alwaysApply: false
 ---
 

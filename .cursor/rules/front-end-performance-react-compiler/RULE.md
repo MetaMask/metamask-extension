@@ -1,6 +1,6 @@
 ---
 description: Front-End Performance Rules - React Compiler & Anti-Patterns
-globs: *.tsx,*.jsx,*.ts,*.js
+globs: "*.tsx,*.jsx,*.ts,*.js"
 alwaysApply: false
 ---
 

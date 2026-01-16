@@ -1,6 +1,6 @@
 ---
 description: Project Guidelines for Unit Testing
-globs: *.test.*
+globs: "*.test.*"
 alwaysApply: false
 ---
 
