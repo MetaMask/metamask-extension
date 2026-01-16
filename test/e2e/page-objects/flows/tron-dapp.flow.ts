@@ -2,6 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { TestDappTron } from '../pages/test-dapp-tron';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
+import { regularDelayMs } from '../../helpers';
 
 /**
  * Connects the Tron test dapp to the wallet.
@@ -15,6 +16,7 @@ export const connectTronTestDapp = async (
 ): Promise<void> => {
   await testDapp.switchTo();
   await testDapp.checkPageIsLoaded();
+  await driver.delay(regularDelayMs);
   const header = await testDapp.getHeader();
   await header.connect();
 
