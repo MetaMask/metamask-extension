@@ -78,15 +78,15 @@ describe('Storage Operations Failure Recovery', function () {
             'Simulated storage.local.set failure for testing',
           ],
           additionalManifestFlags: {
-            // Enable set failure - will trigger after first successful write
+            // Enable set failure - will trigger immediately
             simulateStorageSetFailure: true,
           },
         }),
         async ({ driver }: { driver: Driver }) => {
-          // Complete onboarding - writes will start failing after first successful write
+          // Complete onboarding - writes fail immediately but onboarding still completes
           await onboard(driver);
 
-          // The toast should appear because subsequent writes are failing
+          // The toast should appear because writes are failing
           await driver.waitForSelector('[data-testid="storage-error-toast"]');
 
           // Click the toast action button to navigate to reveal SRP page

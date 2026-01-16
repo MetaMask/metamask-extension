@@ -304,8 +304,7 @@ export class PersistenceManager {
 
   /**
    * Checks if storage set operations should be simulated as failing.
-   * Only simulates failure after extension has initialized (first successful write),
-   * allowing onboarding to complete normally.
+   * When enabled, all set operations will fail immediately.
    *
    * @throws Error if simulating storage failure for testing
    */
@@ -320,8 +319,8 @@ export class PersistenceManager {
 
   /**
    * Sets state in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, simulates a storage
-   * failure after the extension has initialized (after first successful write).
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
    *
    * @param data - The data to set in the local store
    * @throws Error if simulating storage failure for testing
@@ -335,8 +334,8 @@ export class PersistenceManager {
 
   /**
    * Sets key-value pairs in the local store, with optional test simulation.
-   * In test mode with simulateStorageSetFailure flag, simulates a storage
-   * failure after the extension has initialized (after first successful write).
+   * In test mode with simulateStorageSetFailure flag, all set operations
+   * will fail immediately.
    *
    * @param pairs - The key-value pairs to set in the local store
    * @throws Error if simulating storage failure for testing

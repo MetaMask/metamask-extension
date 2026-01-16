@@ -125,8 +125,7 @@ export type ManifestFlags = {
      * Simulate browser.storage.local.set() failure for testing the storage
      * error toast when write operations fail (e.g., Firefox database corruption).
      * When enabled, PersistenceManager.set() and persist() will throw an error
-     * after the extension has initialized (after first successful write),
-     * triggering the storage error toast notification.
+     * immediately, triggering the storage error toast notification.
      */
     simulateStorageSetFailure?: boolean;
   };
