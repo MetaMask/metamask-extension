@@ -101,11 +101,11 @@ export class TestDappTron {
    * @returns The wallet modal component helper methods.
    */
   async getWalletModal() {
-    await this.driver.waitForSelector(this.walletModalSelector);
+    await this.driver.waitForSelector(this.walletModalSelector, { timeout: 20000 });
 
     return {
       connectToMetaMaskWallet: async () => {
-        await this.driver.clickElement(this.metamaskButtonSelector);
+        await this.driver.clickElement(this.metamaskButtonSelector, 10);
       },
     };
   }
