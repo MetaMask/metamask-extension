@@ -7,6 +7,7 @@ import {
   getStatusColor,
   getDisplaySymbol,
   getAssetIconUrl,
+  safeDecodeURIComponent,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
 
@@ -118,6 +119,36 @@ describe('Perps Utils', () => {
 
     it('returns empty string for empty input', () => {
       expect(getAssetIconUrl('')).toBe('');
+    });
+  });
+
+  describe('safeDecodeURIComponent', () => {
+    it('decodes valid URI-encoded strings', () => {
+      expect(safeDecodeURIComponent('hello%20world')).toBe('hello world');
+      expect(safeDecodeURIComponent('xyz%3ATSLA')).toBe('xyz:TSLA');
+      expect(safeDecodeURIComponent('BTC')).toBe('BTC');
+    });
+
+    it('decodes special characters correctly', () => {
+      expect(safeDecodeURIComponent('%2F')).toBe('/');
+      expect(safeDecodeURIComponent('%3F')).toBe('?');
+      expect(safeDecodeURIComponent('%26')).toBe('&');
+      expect(safeDecodeURIComponent('%3D')).toBe('=');
+    });
+
+    it('returns undefined for malformed percent-encoding sequences', () => {
+      expect(safeDecodeURIComponent('%E0%A4%A')).toBeUndefined();
+      expect(safeDecodeURIComponent('%')).toBeUndefined();
+      expect(safeDecodeURIComponent('%ZZ')).toBeUndefined();
+    });
+
+    it('returns the original string when no encoding is present', () => {
+      expect(safeDecodeURIComponent('simple')).toBe('simple');
+      expect(safeDecodeURIComponent('ETH')).toBe('ETH');
+    });
+
+    it('handles empty string', () => {
+      expect(safeDecodeURIComponent('')).toBe('');
     });
   });
 });

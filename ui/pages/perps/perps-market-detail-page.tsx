@@ -25,23 +25,9 @@ import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
   getDisplayName,
   findMarketBySymbol,
+  safeDecodeURIComponent,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
-
-/**
- * Safely decode a URI component, returning undefined if decoding fails
- * Handles malformed percent-encoding sequences that would throw URIError
- *
- * @param value - The URI-encoded string to decode
- * @returns The decoded string, or undefined if decoding fails
- */
-const safeDecodeURIComponent = (value: string): string | undefined => {
-  try {
-    return decodeURIComponent(value);
-  } catch {
-    return undefined;
-  }
-};
 
 /**
  * PerpsMarketDetailPage component

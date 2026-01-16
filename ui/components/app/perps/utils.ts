@@ -157,3 +157,21 @@ export const findMarketBySymbol = (
     (market) => market.symbol.toLowerCase() === symbol.toLowerCase(),
   );
 };
+
+/**
+ * Safely decode a URI component, returning undefined if decoding fails
+ * Handles malformed percent-encoding sequences that would throw URIError
+ *
+ * @param value - The URI-encoded string to decode
+ * @returns The decoded string, or undefined if decoding fails
+ * @example
+ * safeDecodeURIComponent('hello%20world') => 'hello world'
+ * safeDecodeURIComponent('%E0%A4%A') => undefined (malformed)
+ */
+export const safeDecodeURIComponent = (value: string): string | undefined => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
+};
