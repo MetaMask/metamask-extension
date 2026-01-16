@@ -25,6 +25,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -65,7 +66,6 @@ import type {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
-import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 export type DappSwapComparisonData = {
   quotes?: QuoteResponse[];
