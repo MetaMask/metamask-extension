@@ -6,6 +6,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import Homepage from '../../page-objects/pages/home/homepage';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
+import { DAPP_PATH } from '../../constants';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
 import {
   mockExchangeRates,
@@ -35,11 +36,14 @@ export const withTronAccountSnap = async (
   {
     title,
     numberOfAccounts = 1,
-    dappPaths,
+    dappOptions,
   }: {
     title?: string;
     numberOfAccounts?: number;
-    dappPaths?: string[];
+    dappOptions?: {
+      numberOfTestDapps?: number;
+      customDappPaths?: string[];
+    };
   },
   test: (driver: Driver) => Promise<void>,
 ) => {
@@ -60,7 +64,10 @@ export const withTronAccountSnap = async (
         .build(),
       title,
       dapp: true,
-      dappOptions: { numberOfTestDapps: 0, customDappPaths: dappPaths },
+      dappOptions: dappOptions ?? {
+        numberOfTestDapps: 1,
+        customDappPaths: [DAPP_PATH.TEST_SNAPS],
+      },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockTronFeatureFlag(mockServer),
         await mockExchangeRates(mockServer),
