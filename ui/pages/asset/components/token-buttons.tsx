@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { CaipAssetType } from '@metamask/utils';
 ///: END:ONLY_INCLUDE_IF
-import { InternalAccount } from '@metamask/keyring-internal-api';
 import { I18nContext } from '../../../contexts/i18n';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import {
