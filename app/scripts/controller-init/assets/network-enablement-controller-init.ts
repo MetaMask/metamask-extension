@@ -98,6 +98,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   } else if (
     process.env.METAMASK_DEBUG ||
@@ -113,6 +114,7 @@ const generateDefaultNetworkEnablementControllerState = (
           [],
         ),
       },
+      nativeAssetIdentifiers: {},
     };
   }
 
@@ -137,6 +139,7 @@ const generateDefaultNetworkEnablementControllerState = (
         enabledMultichainNetworks,
       ),
     },
+    nativeAssetIdentifiers: {},
   };
 };
 
@@ -235,6 +238,29 @@ export const NetworkEnablementControllerInit: ControllerInitFunction<
       }
     },
   );
+
+  // Initialize native asset identifiers from network configurations
+  const evmNetworks = Object.values(
+    networkControllerState.networkConfigurationsByChainId,
+  ).map((network) => ({
+    chainId: `eip155:${parseInt(network.chainId, 16)}` as CaipChainId,
+    nativeCurrency: network.nativeCurrency,
+  }));
+
+  const multichainNetworks = Object.values(
+    multichainNetworkControllerState.multichainNetworkConfigurationsByChainId,
+  ).map((network) => {
+    const mapped = {
+      chainId: network.chainId,
+      nativeCurrency: network.nativeCurrency,
+    };
+    return mapped;
+  });
+
+  controller.initNativeAssetIdentifiers([
+    ...evmNetworks,
+    ...multichainNetworks,
+  ]);
 
   return {
     controller,

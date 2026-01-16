@@ -68,6 +68,7 @@ const withMetamaskConnectedToMainnet = {
       '0xe708': true,
     },
   },
+  nativeAssetIdentifiers: {},
   remoteFeatureFlags: {
     assetsDefiPositionsEnabled: true,
   },
@@ -284,6 +285,7 @@ describe('Defi positions list', () => {
           '0x1': true,
         },
       },
+      nativeAssetIdentifiers: {},
     };
     await act(async () => {
       await integrationTestRender({

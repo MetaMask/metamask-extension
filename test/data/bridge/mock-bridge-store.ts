@@ -209,6 +209,7 @@ export const createBridgeMockStore = ({
           '0xe708': true,
         },
       },
+      nativeAssetIdentifiers: {},
       multichainNetworkConfigurationsByChainId:
         AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS,
       selectedMultichainNetworkChainId: 'eip155:1',

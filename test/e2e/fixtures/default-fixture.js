@@ -97,6 +97,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
           },
         },
+        nativeAssetIdentifiers: {},
       },
       AccountOrderController: {
         pinnedAccountList: [],

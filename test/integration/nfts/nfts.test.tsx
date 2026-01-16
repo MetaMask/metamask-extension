@@ -60,6 +60,7 @@ describe('NFTs list', () => {
           '0xaa36a7': true,
         },
       },
+      nativeAssetIdentifiers: {},
       participateInMetaMetrics: true,
       dataCollectionForMarketing: false,
     };
@@ -101,6 +102,7 @@ describe('NFTs list', () => {
           '0x1': true,
         },
       },
+      nativeAssetIdentifiers: {},
     };
 
     await act(async () => {

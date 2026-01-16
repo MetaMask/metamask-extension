@@ -158,6 +158,7 @@ export const createSwapsMockStore = () => {
         showMultiRpcModal: false,
       },
       enabledNetworkMap: {},
+      nativeAssetIdentifiers: {},
       transactions: [
         {
           id: 6571648590592143,

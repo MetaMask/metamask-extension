@@ -80,6 +80,7 @@ class FixtureBuilder {
     });
     // Replace instead of merge for enabledNetworkMap
     this.fixture.data.NetworkEnablementController.enabledNetworkMap = data;
+    this.fixture.data.NetworkEnablementController.nativeAssetIdentifiers = {};
     return this;
   }
 

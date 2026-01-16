@@ -140,6 +140,7 @@
       "tokenNetworkFilter": {}
     },
     "enabledNetworkMap": {},
+    "nativeAssetIdentifiers": {},
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
     "isAccountMenuOpen": false,

@@ -1658,6 +1658,11 @@
         "@metamask/utils": true
       }
     },
+    "@metamask/network-enablement-controller>@metamask/multichain-network-controller": {
+      "packages": {
+        "@metamask/utils": true
+      }
+    },
     "@metamask/multichain-transactions-controller": {
       "globals": {
         "console.error": true
@@ -1718,7 +1723,8 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/keyring-api": true,
-        "@metamask/multichain-network-controller": true,
+        "@metamask/network-enablement-controller>@metamask/multichain-network-controller": true,
+        "@metamask/snaps-utils>@metamask/slip44": true,
         "@metamask/utils": true
       }
     },

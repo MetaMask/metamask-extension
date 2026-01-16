@@ -124,6 +124,7 @@
       "0xaa36a7": true
     }
   },
+  "nativeAssetIdentifiers": {},
   "enforcedSimulationsSlippage": "number",
   "enforcedSimulationsSlippageForTransactions": "object",
   "ensEntries": {},
