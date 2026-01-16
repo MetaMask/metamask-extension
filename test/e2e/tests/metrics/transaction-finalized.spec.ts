@@ -172,7 +172,6 @@ const eventHasUserIdWithoutAnonymousId = (payload: EventPayload): boolean =>
 const eventHasZeroAddressAnonymousId = (payload: EventPayload): boolean =>
   payload.anonymousId === '0x0000000000000000';
 
-// TODO: add smart transactions to this test in order to check the txHash
 describe('Transaction Finalized Event', function (this: Suite) {
   it('Successfully tracked when sending a transaction', async function () {
     await withFixtures(
