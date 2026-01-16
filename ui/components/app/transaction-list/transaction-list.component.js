@@ -42,6 +42,7 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 import {
   useEarliestNonceByChain,
   isTransactionEarliestNonce,
@@ -117,8 +118,16 @@ import { TransactionActivityEmptyState } from '../transaction-activity-empty-sta
 
 const PAGE_INCREMENT = 10;
 
-const normalizeHex = (hex) => (hex || '').toLowerCase();
-const stripHexPrefix = (hex) => normalizeHex(hex).replace(/^0x/u, '');
+const doesDataIncludeTokenAddress = (data, tokenAddress) => {
+  if (!data || !tokenAddress) {
+    return false;
+  }
+  const normalizedTokenAddress = stripHexPrefix(tokenAddress).toLowerCase();
+  if (!normalizedTokenAddress) {
+    return false;
+  }
+  return data.toLowerCase().includes(normalizedTokenAddress);
+};
 
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
@@ -133,13 +142,14 @@ const getTransactionGroupRecipientAddressFilter = (
 ) => {
   return ({ initialTransaction: { txParams } }) => {
     const swapContractAddress = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
-    const dataMatchesToken = normalizeHex(txParams?.data).includes(
-      stripHexPrefix(recipientAddress),
+    const dataMatchesToken = doesDataIncludeTokenAddress(
+      txParams?.data,
+      recipientAddress,
     );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (swapContractAddress &&
-        normalizeHex(txParams?.to) === normalizeHex(swapContractAddress) &&
+        isEqualCaseInsensitive(txParams?.to, swapContractAddress) &&
         dataMatchesToken)
     );
   };
@@ -151,13 +161,14 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
   return ({ initialTransaction: { txParams } }) => {
     const swapContractAddress =
       SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[txParams?.chainId];
-    const dataMatchesToken = normalizeHex(txParams?.data).includes(
-      stripHexPrefix(recipientAddress),
+    const dataMatchesToken = doesDataIncludeTokenAddress(
+      txParams?.data,
+      recipientAddress,
     );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (swapContractAddress &&
-        normalizeHex(txParams?.to) === normalizeHex(swapContractAddress) &&
+        isEqualCaseInsensitive(txParams?.to, swapContractAddress) &&
         dataMatchesToken)
     );
   };

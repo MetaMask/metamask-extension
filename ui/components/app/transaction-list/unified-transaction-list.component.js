@@ -105,9 +105,18 @@ import {
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 import { useScrollContainer } from '../../../contexts/scroll-container';
+import { stripHexPrefix } from '../../../../shared/modules/hexstring-utils';
 
-const normalizeHex = (hex) => (hex || '').toLowerCase();
-const stripHexPrefix = (hex) => normalizeHex(hex).replace(/^0x/u, '');
+const doesDataIncludeTokenAddress = (data, tokenAddress) => {
+  if (!data || !tokenAddress) {
+    return false;
+  }
+  const normalizedTokenAddress = stripHexPrefix(tokenAddress).toLowerCase();
+  if (!normalizedTokenAddress) {
+    return false;
+  }
+  return data.toLowerCase().includes(normalizedTokenAddress);
+};
 
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
@@ -121,15 +130,18 @@ const getTransactionGroupRecipientAddressFilter = (
   chainIds,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
-    const dataMatchesToken = normalizeHex(txParams?.data).includes(
-      stripHexPrefix(recipientAddress),
+    const dataMatchesToken = doesDataIncludeTokenAddress(
+      txParams?.data,
+      recipientAddress,
     );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some(
         (chainId) =>
-          normalizeHex(txParams?.to) ===
-          normalizeHex(SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId]),
+          isEqualCaseInsensitive(
+            txParams?.to,
+            SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+          ),
       ) &&
         dataMatchesToken)
     );
@@ -152,15 +164,18 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
-    const dataMatchesToken = normalizeHex(txParams?.data).includes(
-      stripHexPrefix(recipientAddress),
+    const dataMatchesToken = doesDataIncludeTokenAddress(
+      txParams?.data,
+      recipientAddress,
     );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some(
         (chainId) =>
-          normalizeHex(txParams?.to) ===
-          normalizeHex(SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId]),
+          isEqualCaseInsensitive(
+            txParams?.to,
+            SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+          ),
       ) &&
         dataMatchesToken)
     );
