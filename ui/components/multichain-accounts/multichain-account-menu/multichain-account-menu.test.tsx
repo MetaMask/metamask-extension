@@ -33,6 +33,8 @@ const mockState = {
         },
       },
     },
+    pinnedAccountList: [],
+    hiddenAccountList: [],
   },
 };
 
