@@ -299,6 +299,32 @@ async function main() {
   } else {
     log.info('Verifying all locales:\n');
     let failed = await verifyEnglishLocale(fix);
+
+    // `en_GB` is a special case, added for compliance reasons
+    // Not used in-app. Should be identical to `en`.
+    try {
+      const englishLocale = await getLocale('en');
+      const englishGbLocale = await getLocale('en_GB');
+      deepStrictEqual(
+        englishLocale,
+        englishGbLocale,
+        'en_GB should be identical to en',
+      );
+    } catch (error) {
+      if (!(error instanceof AssertionError)) {
+        throw error;
+      }
+
+      if (fix) {
+        console.info('Differences detected in `en_GB` locale; overwriting');
+        const englishLocale = await getLocale('en');
+        await writeLocale('en_GB', englishLocale);
+      } else {
+        console.error(error);
+      }
+      failed = true;
+    }
+
     const localeCodes = localeIndex
       .filter((localeMeta) => localeMeta.code !== 'en')
       .map((localeMeta) => localeMeta.code);
@@ -338,29 +364,6 @@ async function writeLocale(code, locale) {
 async function verifyLocale(code) {
   const englishLocale = await getLocale('en');
   let failed = false;
-
-  try {
-    // `en_GB` is a special case, added for compliance reasons
-    // Not used in-app. Should be identical to `en`.
-    const englishGbLocale = await getLocale('en_GB');
-    deepStrictEqual(
-      englishLocale,
-      englishGbLocale,
-      'en_GB should be identical to en',
-    );
-  } catch (error) {
-    if (!(error instanceof AssertionError)) {
-      throw error;
-    }
-
-    if (fix) {
-      console.info('Differences detected in `en_GB` local; overwriting');
-      await writeLocale('en_GB', englishLocale);
-    } else {
-      console.error(error);
-    }
-    failed = true;
-  }
 
   const targetLocale = await getLocale(code);
 
