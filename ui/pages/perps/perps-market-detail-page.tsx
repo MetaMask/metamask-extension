@@ -26,6 +26,7 @@ import {
   getDisplayName,
   findMarketBySymbol,
   safeDecodeURIComponent,
+  getChangeColor,
 } from '../../components/app/perps/utils';
 import { useFormatters } from '../../hooks/useFormatters';
 
@@ -140,7 +141,6 @@ const PerpsMarketDetailPage: React.FC = () => {
   }
 
   const displayName = getDisplayName(market.symbol);
-  const isPositiveChange = market.change24hPercent.startsWith('+');
 
   return (
     <Box
@@ -196,11 +196,7 @@ const PerpsMarketDetailPage: React.FC = () => {
             </Text>
             <Text
               variant={TextVariant.BodyXs}
-              color={
-                isPositiveChange
-                  ? TextColor.SuccessDefault
-                  : TextColor.ErrorDefault
-              }
+              color={getChangeColor(market.change24hPercent)}
               data-testid="perps-market-detail-change"
             >
               {market.change24h} ({market.change24hPercent})

@@ -5,6 +5,7 @@ import {
   formatOrderType,
   formatStatus,
   getStatusColor,
+  getChangeColor,
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
@@ -78,6 +79,30 @@ describe('Perps Utils', () => {
       expect(getStatusColor('open')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('queued')).toBe(TextColor.TextAlternative);
       expect(getStatusColor('triggered')).toBe(TextColor.TextAlternative);
+    });
+  });
+
+  describe('getChangeColor', () => {
+    it('returns SuccessDefault for positive percentages with + prefix', () => {
+      expect(getChangeColor('+2.84%')).toBe(TextColor.SuccessDefault);
+      expect(getChangeColor('+0.01%')).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns SuccessDefault for positive percentages without + prefix', () => {
+      expect(getChangeColor('2.84%')).toBe(TextColor.SuccessDefault);
+      expect(getChangeColor('100%')).toBe(TextColor.SuccessDefault);
+    });
+
+    it('returns ErrorDefault for negative percentages', () => {
+      expect(getChangeColor('-1.23%')).toBe(TextColor.ErrorDefault);
+      expect(getChangeColor('-50%')).toBe(TextColor.ErrorDefault);
+    });
+
+    it('returns SuccessDefault for zero percentages', () => {
+      expect(getChangeColor('0%')).toBe(TextColor.SuccessDefault);
+      expect(getChangeColor('0.00%')).toBe(TextColor.SuccessDefault);
+      expect(getChangeColor('+0%')).toBe(TextColor.SuccessDefault);
+      expect(getChangeColor('-0%')).toBe(TextColor.SuccessDefault);
     });
   });
 
