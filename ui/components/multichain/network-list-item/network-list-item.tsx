@@ -88,7 +88,6 @@ export const NetworkListItem = ({
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
-  const menuButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -99,12 +98,8 @@ export const NetworkListItem = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const setNetworkListItemMenuRef = useCallback((ref: any) => {
     setNetworkListItemMenuElement(ref);
-    // Store ref for finalFocusRef
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (menuButtonRef as any).current = ref;
   }, []);
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
-  const [isMenuClosing, setIsMenuClosing] = useState(false);
 
   // This selector provides the indication if the "Gas sponsored" label
   // is enabled based on the remote feature flag.
@@ -152,18 +147,6 @@ export const NetworkListItem = ({
         ref={setNetworkListItemMenuRef}
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
-        onMouseDown={(e: React.MouseEvent) => {
-          // Prevent button from losing focus when clicked to close menu
-          if (networkOptionsMenuOpen) {
-            e.preventDefault();
-            // Focus the button before closing to ensure it has focus
-            if (menuButtonRef.current) {
-              menuButtonRef.current.focus();
-            }
-            // Set closing state before toggling
-            setIsMenuClosing(true);
-          }
-        }}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
           setNetworkOptionsMenuOpen((prev) => !prev);
@@ -179,16 +162,8 @@ export const NetworkListItem = ({
     t,
     setNetworkListItemMenuRef,
     setNetworkOptionsMenuOpen,
-    networkOptionsMenuOpen,
-    menuButtonRef,
   ]);
 
-  // Reset closing state when menu opens
-  useEffect(() => {
-    if (networkOptionsMenuOpen) {
-      setIsMenuClosing(false);
-    }
-  }, [networkOptionsMenuOpen]);
   useEffect(() => {
     if (networkRef.current && focus) {
       networkRef.current.focus();
@@ -322,18 +297,7 @@ export const NetworkListItem = ({
               onDeleteClick={onDeleteClick}
               onEditClick={onEditClick}
               onDiscoverClick={onDiscoverClick}
-              onClose={() => {
-                // Ensure button has focus before closing to prevent focus jump
-                if (menuButtonRef.current) {
-                  menuButtonRef.current.focus();
-                }
-                setIsMenuClosing(true);
-                setNetworkOptionsMenuOpen(false);
-                // Reset closing state after a brief delay
-                setTimeout(() => setIsMenuClosing(false), 0);
-              }}
-              finalFocusRef={menuButtonRef}
-              isClosing={isMenuClosing}
+              onClose={() => setNetworkOptionsMenuOpen(false)}
             />
           ))
         : null}
