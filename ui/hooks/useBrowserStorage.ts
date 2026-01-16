@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import browser from 'webextension-polyfill';
 
-export function useBrowserStorage<T = string>(key: string) {
+export function useBrowserStorage<TValue = string>(key: string) {
   const hasStorage = Boolean(browser?.storage?.local);
 
-  const [value, setValue] = useState<T | undefined>(undefined);
+  const [value, setValue] = useState<TValue | undefined>(undefined);
   const [loading, setLoading] = useState(() => hasStorage);
 
   useEffect(() => {
@@ -33,7 +33,7 @@ export function useBrowserStorage<T = string>(key: string) {
     };
   }, [key]);
 
-  const setStoredValue = (newValue: T) => {
+  const setStoredValue = (newValue: TValue) => {
     setValue(newValue);
     if (browser?.storage?.local) {
       browser.storage.local.set({ [key]: newValue }).catch(() => {
