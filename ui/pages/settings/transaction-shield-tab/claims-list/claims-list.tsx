@@ -77,6 +77,10 @@ const ClaimsList = () => {
       const id = isDraft
         ? (claimData as ClaimDraft).draftId
         : (claimData as Claim).id;
+
+      const displayId = isDraft
+        ? (claimData as ClaimDraft).draftId
+        : (claimData as Claim).shortId;
       return (
         <Box
           asChild
@@ -105,7 +109,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [id])}
+                {t('shieldClaimsNumber', [displayId])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
