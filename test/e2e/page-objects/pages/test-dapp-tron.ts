@@ -50,12 +50,12 @@ export class TestDappTron {
   private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
 
   private readonly trxTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendTRX.transactionHash}"]`;
-  
+
   private readonly usdtTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendUSDT.transactionHash}"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
-  };
+  }
 
   /**
    * Open the tron test dapp page.
@@ -100,7 +100,7 @@ export class TestDappTron {
    */
   async getWalletModal() {
     await this.driver.waitForSelector(this.walletModalSelector);
-    
+
     return {
       connectToMetaMaskWallet: async () => {
         await this.driver.clickElement(this.metamaskButtonSelector);
@@ -121,14 +121,18 @@ export class TestDappTron {
         await this.driver.findElement(this.headerConnectionStateSelector);
       },
       findHeaderNotConnectedState: async () => {
-        await this.driver.findElement(this.headerConnectionNotConnectedStateSelector);
+        await this.driver.findElement(
+          this.headerConnectionNotConnectedStateSelector,
+        );
       },
       connect: async () =>
         await this.driver.clickElement(this.connectButtonSelector),
       disconnect: async () => {
         await this.driver.clickElement(this.disconnectButtonSelector);
 
-        await this.driver.clickElement(this.disconnectButtonDropdownItemSelector);
+        await this.driver.clickElement(
+          this.disconnectButtonDropdownItemSelector,
+        );
       },
       findConnectedAccount: async (account: string) => {
         await this.driver.findElement({
@@ -151,7 +155,9 @@ export class TestDappTron {
       setMessage: (message: string) =>
         this.setInputValue(dataTestIds.testPage.signMessage.message, message),
       signMessage: async () =>
-        await this.driver.clickElement({testId: dataTestIds.testPage.signMessage.signMessage}),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.signMessage.signMessage,
+        }),
       findSignedMessage: async (signedMessage: string) =>
         await this.driver.findElement({
           css: this.signedMessageSelectorTestId,
@@ -174,9 +180,13 @@ export class TestDappTron {
       setAmount: (amount: string) =>
         this.setInputValue(dataTestIds.testPage.sendTRX.amount, amount),
       signTransaction: async () =>
-        await this.driver.clickElement({testId: dataTestIds.testPage.sendTRX.signTransaction}),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.sendTRX.signTransaction,
+        }),
       sendTransaction: async () =>
-        await this.driver.clickElement({testId: dataTestIds.testPage.sendTRX.sendTransaction}),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.sendTRX.sendTransaction,
+        }),
       findTransactionHash: async (transactionHash: string) =>
         await this.driver.findElement({
           css: this.trxTransactionHashSelectorTestId,
@@ -185,7 +195,7 @@ export class TestDappTron {
       findSignedTransaction: async () =>
         await this.driver.findElement({
           testId: dataTestIds.testPage.sendTRX.signedTransaction,
-        })
+        }),
     };
   }
 
@@ -203,9 +213,13 @@ export class TestDappTron {
       setAmount: (amount: string) =>
         this.setInputValue(dataTestIds.testPage.sendUSDT.amount, amount),
       signTransaction: async () =>
-        await this.driver.clickElement({testId:dataTestIds.testPage.sendUSDT.signTransaction}),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.sendUSDT.signTransaction,
+        }),
       sendTransaction: async () =>
-        await this.driver.clickElement({testId:dataTestIds.testPage.sendUSDT.sendTransaction}),
+        await this.driver.clickElement({
+          testId: dataTestIds.testPage.sendUSDT.sendTransaction,
+        }),
       findTransactionHash: async (transactionHash: string) =>
         await this.driver.findElement({
           css: this.usdtTransactionHashSelectorTestId,
@@ -214,7 +228,7 @@ export class TestDappTron {
       findSignedTransaction: async () =>
         await this.driver.findElement({
           testId: dataTestIds.testPage.sendUSDT.signedTransaction,
-        })
+        }),
     };
   }
 

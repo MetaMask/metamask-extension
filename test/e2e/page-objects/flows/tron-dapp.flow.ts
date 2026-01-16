@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
-import { TestDappTron } from '../../page-objects/pages/test-dapp-tron';
+import { TestDappTron } from '../pages/test-dapp-tron';
 import { WINDOW_TITLES } from '../../constants';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
 
 /**
  * Connects the Tron test dapp to the wallet.
