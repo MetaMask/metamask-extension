@@ -77,6 +77,69 @@ describe('approval selectors', () => {
         Object.values(mockedState.metamask.pendingApprovals),
       );
     });
+
+    it('should return same reference when state has not changed (memoization)', () => {
+      const result1 = getPendingApprovals(mockedState);
+      const result2 = getPendingApprovals(mockedState);
+
+      expect(result1).toBe(result2);
+    });
+
+    it('should return new reference when pendingApprovals change', () => {
+      const result1 = getPendingApprovals(mockedState);
+
+      const modifiedState = {
+        ...mockedState,
+        metamask: {
+          ...mockedState.metamask,
+          pendingApprovals: {
+            ...mockedState.metamask.pendingApprovals,
+            '3': {
+              id: '3',
+              origin: 'origin',
+              time: Date.now(),
+              type: ApprovalType.EthSignTypedData,
+              requestData: {},
+              requestState: null,
+              expectsResult: false,
+            },
+          },
+        },
+      };
+
+      const result2 = getPendingApprovals(modifiedState);
+
+      expect(result1).not.toBe(result2);
+      expect(result2.length).toBe(3);
+    });
+
+    it('should handle empty pendingApprovals', () => {
+      const emptyState = {
+        metamask: {
+          pendingApprovals: {},
+          approvalFlows: [],
+        },
+      };
+
+      const result = getPendingApprovals(emptyState);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('should handle null/undefined pendingApprovals', () => {
+      const nullState = {
+        metamask: {
+          pendingApprovals: null,
+          approvalFlows: [],
+        },
+      };
+
+      const result = getPendingApprovals(
+        nullState as unknown as ApprovalsMetaMaskState,
+      );
+
+      expect(result).toStrictEqual([]);
+    });
   });
 
   describe('pendingApprovalsSortedSelector', () => {
