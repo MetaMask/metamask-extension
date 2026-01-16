@@ -1834,18 +1834,6 @@
         "uuid": true
       }
     },
-    "@metamask/profile-metrics-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
     "@metamask/smart-transactions-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
@@ -1905,8 +1893,9 @@
       },
       "packages": {
         "@metamask/controller-utils": true,
-        "@metamask/profile-metrics-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -2246,7 +2235,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
