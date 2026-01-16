@@ -50,6 +50,12 @@ export type FeatureFlagsMetaMaskState = {
   };
 };
 
+/**
+ * @param state
+ * @param chainId
+ * @deprecated Use selectSmartTransactionsFeatureFlagsForChain instead
+ * Will be removed in a future release.
+ */
 export function getFeatureFlagsByChainId(
   state: ProviderConfigState & FeatureFlagsMetaMaskState,
   chainId?: string,
