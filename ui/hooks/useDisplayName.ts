@@ -8,10 +8,7 @@ import {
 } from '../../shared/constants/first-party-contracts';
 import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { getDomainResolutions } from '../ducks/domains';
-import {
-  getIsMultichainAccountsState2Enabled,
-  selectERC20TokensByChain,
-} from '../selectors';
+import { selectERC20TokensByChain } from '../selectors';
 import { getNftContractsByAddressByChain } from '../selectors/nft';
 import { getTrustSignalIcon, IconProps } from '../helpers/utils/trust-signals';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
@@ -299,10 +296,6 @@ function useAccountGroupNames(
   requests: UseAccountGroupNamesRequest[],
   nameEntries: ReturnType<typeof useNames>,
 ): UseAccountGroupNamesResponse[] {
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const accountTree = useSelector(getAccountTree);
   const { wallets } = accountTree ?? {};
   const haveMoreThanOneWallet = useMemo(
@@ -350,7 +343,6 @@ function useAccountGroupNames(
 
       if (
         type !== NameType.ETHEREUM_ADDRESS ||
-        !isMultichainAccountsState2Enabled ||
         nameEntry?.origin === NameOrigin.API
       ) {
         return { accountGroupName: null, walletName: null };
@@ -361,11 +353,5 @@ function useAccountGroupNames(
         walletName: haveMoreThanOneWallet ? names.walletName : null,
       };
     });
-  }, [
-    requests,
-    namesByAddress,
-    isMultichainAccountsState2Enabled,
-    nameEntries,
-    haveMoreThanOneWallet,
-  ]);
+  }, [requests, namesByAddress, nameEntries, haveMoreThanOneWallet]);
 }
