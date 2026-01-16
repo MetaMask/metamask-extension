@@ -861,7 +861,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Headers": true,
         "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
@@ -1619,7 +1618,8 @@
         "@metamask/keyring-snap-client": true,
         "@metamask/snaps-utils": true,
         "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true
+        "@metamask/eth-qr-keyring>async-mutex": true,
+        "lodash": true
       }
     },
     "@metamask/multichain-api-middleware": {
@@ -2050,9 +2050,12 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "lodash": true
+        "lodash": true,
+        "reselect": true
       }
     },
     "@metamask/snaps-controllers": {
@@ -2152,7 +2155,6 @@
         "console.error": true,
         "console.log": true,
         "console.warn": true,
-        "crypto": true,
         "document.body.appendChild": true,
         "document.createElement": true,
         "fetch": true,
@@ -2166,7 +2168,6 @@
         "@metamask/snaps-sdk": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@noble/hashes": true,
         "@scure/base": true,
         "@swc/helpers": true,
         "chalk": true,
@@ -2246,7 +2247,6 @@
         "buffer": true,
         "eth-method-registry": true,
         "webpack>events": true,
-        "fast-json-patch": true,
         "lodash": true,
         "uuid": true
       }

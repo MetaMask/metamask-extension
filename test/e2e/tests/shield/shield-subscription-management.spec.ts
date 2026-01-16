@@ -621,14 +621,13 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldDetailPage.checkPageIsLoaded();
 
         // Cancel the subscription
+        await shieldDetailPage.clickManagePlanButton();
         await shieldDetailPage.cancelSubscription();
-
-        await shieldDetailPage.checkNotificationShieldBanner(
-          'Your plan will be cancelled on Nov 3, 2025.',
-        );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
+
+        await settingsPage.goToTransactionShieldPage();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active plan');
@@ -687,7 +686,9 @@ describe('Shield Plan Stripe Integration', function () {
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
 
-        await shieldDetailPage.checkPaymentMethod('USDC');
+        await shieldDetailPage.clickManagePlanButton();
+
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDC)');
         await shieldDetailPage.clickPaymentMethod();
 
         await shieldDetailPage.selectPaymentMethodInModal('Pay with USDT');
@@ -702,7 +703,9 @@ describe('Shield Plan Stripe Integration', function () {
 
         await shieldSubscriptionApprovePage.clickFooterConfirmButton();
         await shieldDetailPage.checkPageIsLoaded();
-        await shieldDetailPage.checkPaymentMethod('USDT');
+
+        await shieldDetailPage.clickManagePlanButton();
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDT)');
       },
     );
   });

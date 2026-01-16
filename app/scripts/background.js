@@ -49,7 +49,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -95,7 +95,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -131,7 +131,7 @@ global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
- * purposes, to, in the case of database corruption, an possible way for an end
+ * purposes, to, in the case of storage errors, a possible way for an end
  * user to recover their vault. Hopefully this is never needed.
  */
 global.logEncryptedVault = () => {
@@ -985,8 +985,14 @@ export async function loadStateFromPersistence(backup) {
   if (persistenceManager.storageKind === 'data') {
     const alreadyTried =
       versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
-    const shouldUseSplitStateStorage =
-      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // const shouldUseSplitStateStorage =
+    //   !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
+    const disableSplitStateMigration = true;
+    const shouldUseSplitStateStorage = disableSplitStateMigration
+      ? false
+      : !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
     log.debug(
       '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
       shouldUseSplitStateStorage,
@@ -1221,6 +1227,11 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+  });
+
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed(() => {
+    controller.appStateController.setShowStorageErrorToast(true);
   });
 
   /**
@@ -1801,21 +1812,23 @@ function onNavigateToTab() {
         }
       }
 
-      // If the connected dApp is Hyperliquid, trigger the referral flow
-      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+      // If the connected dApp is a referral partner, trigger the referral flow
+      const partner = getPartnerByOrigin(currentTabOrigin);
+      if (partner) {
         const connectSitePermissions =
           controller.permissionController.state.subjects[currentTabOrigin];
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           controller
-            .handleHyperliquidReferral(
+            .handleDefiReferral(
+              partner,
               tabId,
-              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+              ReferralTriggerType.OnNavigateConnectedTab,
             )
             .catch((error) => {
               log.error(
-                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
                 error,
               );
             });

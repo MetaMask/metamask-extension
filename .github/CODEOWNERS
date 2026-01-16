@@ -87,6 +87,17 @@ app/scripts/controllers/swaps                         @MetaMask/swaps-engineers
 # Ramps team to own code for the ramps folder
 **/ramps/**                                           @MetaMask/ramp
 
+# Perps Team
+ui/pages/perps/ @MetaMask/perps
+ui/components/app/perps/ @MetaMask/perps
+ui/ducks/perps/ @MetaMask/perps
+ui/hooks/perps/ @MetaMask/perps
+ui/selectors/perps/ @MetaMask/perps
+shared/lib/deep-links/routes/perps.ts @MetaMask/perps
+test/e2e/tests/perps/ @MetaMask/perps
+docs/perps/ @MetaMask/perps
+**/perps/** @MetaMask/perps
+
 # Snaps
 **/snaps/**                          @MetaMask/core-platform
 shared/constants/permissions.ts      @MetaMask/core-platform
@@ -190,7 +201,7 @@ app/scripts/lib/createMetamaskMiddleware.ts                           @MetaMask/
 app/scripts/lib/createOnboardingMiddleware.js                         @MetaMask/wallet-integrations
 app/scripts/lib/createMetaRPCHandler.js                               @MetaMask/wallet-integrations
 app/scripts/lib/createEvmMethodsToNonEvmAccountReqFilterMiddleware.ts @MetaMask/wallet-integrations
-app/scripts/lib/createHyperliquidReferralMiddleware.ts                @MetaMask/wallet-integrations
+app/scripts/lib/createDefiReferralMiddleware.ts                @MetaMask/wallet-integrations
 app/scripts/lib/metaRPCClientFactory.ts                               @MetaMask/wallet-integrations
 app/scripts/lib/middleware/                                           @MetaMask/wallet-integrations
 app/scripts/lib/createOriginThrottlingMiddleware.ts                   @MetaMask/wallet-integrations

@@ -6233,41 +6233,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Paket Anda tidak aktif saat dihentikan sementara. Jika Anda membatalkannya, paket akan langsung berakhir."
   },
-  "shieldTxDetails1Description": {
-    "message": "Mengamankan aset pada transaksi yang dilindungi"
-  },
   "shieldTxDetails1Title": {
     "message": "Perlindungan transaksi hingga $10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Dapatkan dukungan khusus yang lebih cepat setiap saat"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Dukungan prioritas"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Tautan"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Daftar"
-  },
   "shieldTxMembershipActive": {
     "message": "Paket aktif"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detail penagihan"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Akun penagihan"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Biaya"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Penagihan berikutnya"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Metode pembayaran"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Kelola penagihan"
@@ -6282,9 +6252,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Paket Anda berakhir pada $1. Perpanjang sekarang untuk melanjutkan manfaat Anda.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Coba lagi pembayaran"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Paket Anda telah dihentikan sementara karena pembayaran kartu gagal."
@@ -6311,9 +6278,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Hubungi dukungan"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Perbarui detail kartu"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Uji coba gratis"
   },
@@ -6334,9 +6298,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Ajukan klaim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Lihat manfaat lengkapnya"
   },
   "show": {
     "message": "Tampilkan"
