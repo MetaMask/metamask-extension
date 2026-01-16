@@ -996,6 +996,26 @@ yarn test:e2e:single test/e2e/tests/TEST_NAME.spec.js \
 
 **Deprecated Patterns:** See `.cursor/BUGBOT.md` for a list of deprecated E2E testing patterns to avoid.
 
+### Visual Verification (MetaMask MCP / Playwright)
+
+When the user explicitly asks for visual verification of UI behavior (e.g., "verify this works", "confirm visually", "take screenshots", "click through onboarding/unlock/send flow"), you **MUST** use the MetaMask visual testing skill and MCP tools instead of only reasoning about code.
+
+**Load the skill:** `/metamask-visual-testing`
+
+**Workflow:**
+
+1. Start with `mm_build` (if extension not built) then `mm_launch`
+2. Always call `mm_describe_screen` before acting to discover targets
+3. Use `mm_click`/`mm_type`/`mm_wait_for` to drive the flow
+4. Provide evidence via `mm_screenshot` and/or final `mm_describe_screen` output
+5. Always end with `mm_cleanup` (even on failure)
+
+**If MCP tools are unavailable or denied:** Say so explicitly and explain what's missing. Do not claim you verified without actual tool output as evidence.
+
+**Skill location:** `.claude/skills/metamask-visual-testing/SKILL.md`
+
+**MCP Server docs:** `test/e2e/playwright/llm-workflow/mcp-server/README.md`
+
 ### Integration Tests
 
 **Location:** `test/integration/`

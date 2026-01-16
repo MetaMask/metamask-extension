@@ -1,5 +1,5 @@
 ---
-name: metamask-extension-testing
+name: metamask-visual-testing
 description: Launch and test MetaMask Chrome extension with Playwright. Use for visual validation of UI changes, testing onboarding/unlock flows, and capturing screenshots.
 compatibility: opencode
 metadata:
