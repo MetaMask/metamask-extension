@@ -207,7 +207,7 @@ class SendTokenConfirmPage {
 
   async clickOnConfirm(): Promise<void> {
     console.log('Clicking on Confirm button');
-    await this.driver.clickElementAndWaitToDisappear(this.confirmButton);
+    await this.driver.clickElementAndWaitToDisappear(this.confirmButton, 10000);
     console.log('Confirm button clicked');
   }
 
