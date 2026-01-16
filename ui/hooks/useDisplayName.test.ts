@@ -12,7 +12,6 @@ import { getDomainResolutions } from '../ducks/domains';
 import { IconName } from '../components/component-library';
 import { IconColor } from '../helpers/constants/design-system';
 import { selectAccountGroupNameByInternalAccount } from '../pages/confirmations/selectors/accounts';
-import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { useDisplayName } from './useDisplayName';
 import { useNames } from './useName';
 import { useNftCollectionsMetadata } from './useNftCollectionsMetadata';
@@ -26,9 +25,6 @@ jest.mock('../ducks/domains', () => ({
 }));
 jest.mock('../pages/confirmations/selectors/accounts', () => ({
   selectAccountGroupNameByInternalAccount: jest.fn(),
-}));
-jest.mock('../selectors/multichain-accounts/feature-flags', () => ({
-  getIsMultichainAccountsState2Enabled: jest.fn(),
 }));
 
 const VALUE_MOCK = 'testvalue';
@@ -874,10 +870,6 @@ describe('useDisplayName', () => {
       mockPetname(PETNAME_MOCK);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
 
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
-
       const { result } = renderHookWithProvider(
         () =>
           useDisplayName({
@@ -907,9 +899,6 @@ describe('useDisplayName', () => {
     it(`does not use group name when overridden by user's custom name`, () => {
       mockPetname(PETNAME_MOCK, NameOrigin.API);
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue({
-        multichainAccountsState2: true,
-      });
 
       const { result } = renderHookWithProvider(
         () =>
@@ -1008,7 +997,6 @@ describe('useDisplayName', () => {
 
     it('returns null when type is not ethereum address', () => {
       mockAccountGroupName(VALUE_MOCK, GROUP_NAME_MOCK);
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>
@@ -1037,8 +1025,6 @@ describe('useDisplayName', () => {
 
     it('handles empty group name', () => {
       mockAccountGroupName(VALUE_MOCK, '');
-
-      (getIsMultichainAccountsState2Enabled as jest.Mock).mockReturnValue(true);
 
       const { result } = renderHookWithProvider(
         () =>

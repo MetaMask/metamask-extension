@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { lt as semverLt, parse as semverParse } from 'semver';
 import { useAppSelector } from '../store/store';
-import { getIsMultichainAccountsState2Enabled } from '../selectors/multichain-accounts/feature-flags';
 import { DEFAULT_ROUTE } from '../helpers/constants/routes';
 
 // Version threshold for BIP-44 multichain accounts introduction
@@ -22,10 +21,6 @@ export function useMultichainAccountsIntroModal(
 ) {
   const [showMultichainIntroModal, setShowMultichainIntroModal] =
     useState(false);
-
-  const isMultichainAccountsState2Enabled = useAppSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const hasShownMultichainAccountsIntroModal = useAppSelector(
     (state) => state.metamask.hasShownMultichainAccountsIntroModal,
@@ -55,7 +50,6 @@ export function useMultichainAccountsIntroModal(
     // Show modal only for upgrades from versions < BIP-44 introduction version
     const shouldShowModal =
       isUnlocked &&
-      isMultichainAccountsState2Enabled &&
       !hasShownMultichainAccountsIntroModal &&
       lastUpdatedAt !== null && // null = fresh install, timestamp = upgrade
       isUpgradeFromLowerThanBip44Version &&
@@ -64,7 +58,6 @@ export function useMultichainAccountsIntroModal(
     setShowMultichainIntroModal(shouldShowModal);
   }, [
     isUnlocked,
-    isMultichainAccountsState2Enabled,
     hasShownMultichainAccountsIntroModal,
     lastUpdatedAt,
     lastUpdatedFromVersion,
