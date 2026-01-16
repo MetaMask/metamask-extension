@@ -104,10 +104,6 @@ export async function withImportedAccount(
     const accountListPage = new AccountListPage(driver);
     await accountListPage.addNewImportedAccount(
       options.privateKey ?? DUMMY_PRIVATE_KEY,
-      undefined,
-      {
-        isMultichainAccountsState2Enabled: true,
-      },
     );
     await test(driver);
   });

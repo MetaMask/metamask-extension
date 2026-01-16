@@ -146,9 +146,7 @@ describe('Add account', function () {
         await accountDetailsPage.navigateBack();
 
         // Create 3rd account with private key
-        await accountListPage.addNewImportedAccount(testPrivateKey, undefined, {
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.addNewImportedAccount(testPrivateKey);
 
         await accountListPage.checkAccountDisplayedInAccountList(
           IMPORTED_ACCOUNT_NAME,

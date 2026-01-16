@@ -108,10 +108,6 @@ describe('Account syncing - Unsupported Account types', function () {
         // Import a private key account (this should NOT sync)
         await accountListPage.addNewImportedAccount(
           IMPORTED_PRIVATE_KEY,
-          undefined,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Verify imported account is visible in current session

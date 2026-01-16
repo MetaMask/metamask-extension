@@ -284,36 +284,16 @@ class AccountListPage {
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
    * @param options - Additional options
-   * @param options.isMultichainAccountsState2Enabled - Whether the multichain accounts state 2 feature is enabled
    */
   async addNewImportedAccount(
     privateKey: string,
     expectedErrorMessage?: string,
-    options?: { isMultichainAccountsState2Enabled?: boolean },
   ): Promise<void> {
     console.log(`Adding new imported account`);
-    if (options?.isMultichainAccountsState2Enabled) {
-      await this.driver.clickElement(this.addMultichainWalletButton);
-      await this.driver.clickElement(
-        this.importAccountFromMultichainWalletModalButton,
-      );
-      await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
-      if (expectedErrorMessage) {
-        await this.driver.clickElement(this.importAccountConfirmButton);
-        await this.driver.waitForSelector({
-          css: '.mm-help-text',
-          text: expectedErrorMessage,
-        });
-      } else {
-        await this.driver.clickElementAndWaitToDisappear(
-          this.importAccountConfirmButton,
-        );
-      }
-      return;
-    }
-
-    await this.driver.clickElement(this.createAccountButton);
-    await this.driver.clickElement(this.addImportedAccountButton);
+    await this.driver.clickElement(this.addMultichainWalletButton);
+    await this.driver.clickElement(
+      this.importAccountFromMultichainWalletModalButton,
+    );
     await this.driver.fill(this.importAccountPrivateKeyInput, privateKey);
     if (expectedErrorMessage) {
       await this.driver.clickElement(this.importAccountConfirmButton);
