@@ -184,6 +184,7 @@ export const createTypeMapFromDefinition = (
 // 1. To avoid failing for frequent state changes, which are low risk
 // 2. To mitigate flakiness for properties which appear intermittently on state, right after login in
 // 3. To handle properties that depend on browser environment (e.g., appActiveTab requires active tabs)
+//    Firefox doesn't support sidepanel and tabs may not be available at startup in E2E tests
 const getIgnoredKeys = (): string[] => [
   'localeMessages',
   'metamask.currentBlockGasLimitByChainId',
@@ -195,6 +196,7 @@ const getIgnoredKeys = (): string[] => [
   'metamask.subjects',
   'metamask.verifiedSnaps',
   'metamask.networksMetadata',
+  'metamask.appActiveTab', // Firefox doesn't support sidepanel and tabs may not be available at startup in E2E tests
 ];
 
 const shouldIgnoreKey = (key: string, ignoredKeys: string[]): boolean => {
