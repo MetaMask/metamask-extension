@@ -195,3 +195,34 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
     return undefined;
   }
 };
+
+/**
+ * Filter markets by search query
+ * Searches through both symbol and name fields (case-insensitive)
+ *
+ * @param markets - Array of markets to filter
+ * @param searchQuery - Search query string
+ * @returns Filtered array of markets matching the query
+ *
+ * @example
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'btc') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'coin') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], '') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
+ */
+export const filterMarketsByQuery = (
+  markets: PerpsMarketData[],
+  searchQuery: string,
+): PerpsMarketData[] => {
+  // Return all markets if query is empty
+  if (!searchQuery?.trim()) {
+    return markets;
+  }
+
+  const lowerQuery = searchQuery.toLowerCase().trim();
+
+  return markets.filter(
+    (market) =>
+      market.symbol?.toLowerCase().includes(lowerQuery) ||
+      market.name?.toLowerCase().includes(lowerQuery),
+  );
+};

@@ -6,4 +6,14 @@
  * @see {@link https://github.com/MetaMask/metamask-extension} for more info
  */
 
-export {};
+export { usePerpsMarkets, parseVolume } from './usePerpsMarkets';
+export type {
+  UsePerpsMarketsResult,
+  UsePerpsMarketsOptions,
+} from './usePerpsMarkets';
+
+export { usePerpsSearch } from './usePerpsSearch';
+
+export { usePerpsSorting } from './usePerpsSorting';
+
+export { usePerpsMarketListView } from './usePerpsMarketListView';

@@ -7,6 +7,15 @@ export type OrderType = 'market' | 'limit';
 // Market asset type classification (reusable across components)
 export type MarketType = 'crypto' | 'equity' | 'commodity' | 'forex';
 
+// Market type filter for UI filtering (includes combined options)
+export type MarketTypeFilter =
+  | 'all'
+  | 'crypto'
+  | 'stocks_and_commodities'
+  | 'equity'
+  | 'commodity'
+  | 'forex';
+
 export type Position = {
   coin: string; // Asset symbol (e.g., 'ETH', 'BTC')
   size: string; // Signed position size (+ = LONG, - = SHORT)
