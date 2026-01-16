@@ -20,6 +20,11 @@ import {
   DEFAULT_NUM_PAGE_LOADS,
   WITH_STATE_POWER_USER,
 } from '../../utils/constants';
+import {
+  calculateMean,
+  calculateStdDev,
+  calculatePercentile,
+} from '../../utils/statistics';
 
 async function measurePagePowerUser(
   pageName: string,
@@ -77,7 +82,7 @@ async function measurePagePowerUser(
   return { metrics, title, persona };
 }
 
-// Statistical calculations
+// Helper to apply a calculation across all metrics
 function calculateResult(calc: (array: number[]) => number) {
   return (result: Record<string, number[]>): StatisticalResult => {
     const calculatedResult: StatisticalResult = {};
@@ -90,24 +95,15 @@ function calculateResult(calc: (array: number[]) => number) {
   };
 }
 
-const calculateSum = (array: number[]): number =>
-  array.reduce((sum, val) => sum + val, 0);
-const calculateMean = (array: number[]): number =>
-  array.length > 0 ? calculateSum(array) / array.length : 0;
 const minResult = calculateResult((array: number[]) => Math.min(...array));
 const maxResult = calculateResult((array: number[]) => Math.max(...array));
 const meanResult = calculateResult((array: number[]) => calculateMean(array));
-const standardDeviationResult = calculateResult((array: number[]) => {
-  if (array.length <= 1) return 0;
-  const average = calculateMean(array);
-  const squareDiffs = array.map((value) => Math.pow(value - average, 2));
-  return Math.sqrt(calculateMean(squareDiffs));
-});
+const stdDevResult = calculateResult((array: number[]) => calculateStdDev(array));
 
 function pResult(array: Record<string, number[]>, p: number): StatisticalResult {
   return calculateResult((arr: number[]) => {
-    const index = Math.floor((p / 100.0) * arr.length);
-    return arr[index];
+    const sorted = [...arr].sort((a, b) => a - b);
+    return calculatePercentile(sorted, p);
   })(array);
 }
 
@@ -156,7 +152,7 @@ export async function run(options: {
     mean: meanResult(result),
     min: minResult(result),
     max: maxResult(result),
-    stdDev: standardDeviationResult(result),
+    stdDev: stdDevResult(result),
     p75: pResult(result, 75),
     p95: pResult(result, 95),
   };
