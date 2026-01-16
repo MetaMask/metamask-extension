@@ -1841,9 +1841,8 @@ function onNavigateToTab() {
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
-  // Only initialize sidepanel behavior if the feature flag is enabled
-  // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
     return;
   }
 
@@ -1871,9 +1870,8 @@ initSidePanelBehavior();
 
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
-  // Only setup preference listener if the feature flag is enabled
-  // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
     return;
   }
 
