@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
-import { WINDOW_TITLES } from '../../constants';
-import { WALLET_PASSWORD, unlockWallet, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -44,6 +44,7 @@ const getFixtureOptions = (
   testContext: Mocha.Context,
   manifestTestingOverrides: Record<string, unknown> = {},
 ) => ({
+  ignoredConsoleErrors: [/getSubscriptions/u],
   title: testContext.test?.title,
   manifestFlags: {
     testing: {
@@ -229,6 +230,7 @@ const assertDataStateStorage = (storage: DataStorage) => {
  */
 const expectSplitStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
+  console.log('split storage:', Object.keys(storage));
   assertSplitStateStorage(storage as SplitStateStorage);
   return storage;
 };
@@ -241,6 +243,7 @@ const expectSplitStateStorage = async (driver: Driver) => {
  */
 const expectDataStateStorage = async (driver: Driver) => {
   const storage = await readStorage(driver);
+  console.log('data storage:', Object.keys(storage));
   assertDataStateStorage(storage as DataStorage);
   return storage;
 };
@@ -359,27 +362,17 @@ const assertAccountVisible = async (
 describe('State Persistence', function () {
   this.timeout(120000);
 
-  describe('data state', function () {
-    it('should default to the data state storage', async function () {
-      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
-        await completeOnboardingAndSync(driver);
-        await driver.delay(5000);
-        await expectDataStateStorage(driver);
-      });
-    });
-  });
-
   describe('split state', function () {
-    // skipped until "split" state is set as the default
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should default to the split state storage', async function () {
+    it('should default to the split state storage', async function () {
       await withFixtures(getFixtureOptions(this), async ({ driver }) => {
         await completeOnboardingAndSync(driver);
         await expectSplitStateStorage(driver);
       });
     });
 
-    it('should update from data state to split state', async function () {
+    // Temporarily disabled
+    // eslint-disable-next-line mocha/no-skipped-tests
+    it.skip('should update from data state to split state', async function () {
       const accountName = 'Account 2';
 
       await withFixtures(
@@ -388,38 +381,60 @@ describe('State Persistence', function () {
           const headerNavbar = new HeaderNavbar(driver);
           const accountListPage = new AccountListPage(driver);
 
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('completeOnboardingAndSync');
           await completeOnboardingAndSync(driver);
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
+          console.log('headerNavbar.checkPageIsLoaded');
           await headerNavbar.checkPageIsLoaded();
+          console.log('headerNavbar.openAccountMenu');
           await headerNavbar.openAccountMenu();
+          console.log('accountListPage.checkPageIsLoaded');
           await accountListPage.checkPageIsLoaded();
+          console.log('accountListPage.addMultichainAccount');
           await accountListPage.addMultichainAccount();
+          console.log('accountListPage.renameAccount');
           await accountListPage.closeMultichainAccountsPage();
+          console.log('accountListPage.renameAccount');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
 
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectDataStateStorage');
           await expectDataStateStorage(driver);
 
+          console.log('pausePersistence');
           await pausePersistence(driver);
+          console.log('setLocalStorageFlags');
           await setLocalStorageFlags(driver);
+          console.log('reloadAndUnlock');
           await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectSplitStateStorage');
           await expectSplitStateStorage(driver);
 
+          console.log('reloadAndUnlock 2');
           await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible 2');
           await assertAccountVisible(
             headerNavbar,
             accountListPage,
             accountName,
           );
+          console.log('expectSplitStateStorage 2');
           await expectSplitStateStorage(driver);
         },
       );

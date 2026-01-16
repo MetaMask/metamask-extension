@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { until } from 'selenium-webdriver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -28,8 +29,8 @@ describe('Vault Corruption', function () {
     // to access the storage API here
     const browser = globalThis.browser ?? globalThis.chrome;
 
-    // corrupt the primary database by deleting the data key
-    browser.storage.local.set({ data: null }, () => {
+    // corrupt the primary database by deleting the KeyringController key
+    browser.storage.local.set({ KeyringController: null }, () => {
       ${code}
     });
 `;
