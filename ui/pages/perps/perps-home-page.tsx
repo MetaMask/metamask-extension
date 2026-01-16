@@ -34,6 +34,9 @@ import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-mark
 /**
  * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
  * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
+ *
+ * @param symbol - The symbol to extract display name from
+ * @returns The display name without DEX prefix
  */
 const getDisplayName = (symbol: string): string => {
   const colonIndex = symbol.indexOf(':');
@@ -41,6 +44,52 @@ const getDisplayName = (symbol: string): string => {
     return symbol.substring(colonIndex + 1);
   }
   return symbol;
+};
+
+/**
+ * Get CSS class modifier for list item based on position in list
+ *
+ * @param index - Current item index
+ * @param totalLength - Total number of items in list
+ * @returns CSS class modifier string
+ */
+const getListItemPositionClass = (
+  index: number,
+  totalLength: number,
+): string => {
+  if (totalLength === 1) {
+    return 'perps-activity-item--first perps-activity-item--last';
+  }
+  if (index === 0) {
+    return 'perps-activity-item--first';
+  }
+  if (index === totalLength - 1) {
+    return 'perps-activity-item--last';
+  }
+  return '';
+};
+
+/**
+ * Get border radius style for list item based on position in list
+ *
+ * @param index - Current item index
+ * @param totalLength - Total number of items in list
+ * @returns Border radius CSS value
+ */
+const getListItemBorderRadius = (
+  index: number,
+  totalLength: number,
+): string => {
+  if (totalLength === 1) {
+    return '12px';
+  }
+  if (index === 0) {
+    return '12px 12px 0 0';
+  }
+  if (index === totalLength - 1) {
+    return '0 0 12px 12px';
+  }
+  return '0';
 };
 
 /**
@@ -188,17 +237,9 @@ const PerpsHomePage: React.FC = () => {
               const isProfit = pnlValue >= 0;
 
               return (
-                <div
+                <Box
                   key={position.coin}
-                  className={`perps-activity-item ${
-                    positions.length === 1
-                      ? 'perps-activity-item--first perps-activity-item--last'
-                      : index === 0
-                        ? 'perps-activity-item--first'
-                        : index === positions.length - 1
-                          ? 'perps-activity-item--last'
-                          : ''
-                  }`}
+                  className={`perps-activity-item ${getListItemPositionClass(index, positions.length)}`}
                   role="button"
                   tabIndex={0}
                   onClick={() => handlePositionClick(position.coin)}
@@ -212,15 +253,15 @@ const PerpsHomePage: React.FC = () => {
                     symbol={position.coin}
                     size={AvatarTokenSize.Md}
                   />
-                  <div className="perps-activity-item__left">
-                    <span className="perps-activity-item__action">
+                  <Box className="perps-activity-item__left">
+                    <Text className="perps-activity-item__action">
                       {displaySymbol} | {isLong ? 'Long' : 'Short'}
-                    </span>
-                    <span className="perps-activity-item__amount">
+                    </Text>
+                    <Text className="perps-activity-item__amount">
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
-                    </span>
-                  </div>
-                  <span
+                    </Text>
+                  </Box>
+                  <Text
                     className={`perps-activity-item__pnl ${
                       isProfit
                         ? 'perps-activity-item__pnl--profit'
@@ -228,8 +269,8 @@ const PerpsHomePage: React.FC = () => {
                     }`}
                   >
                     {isProfit ? '+' : ''}${position.unrealizedPnl}
-                  </span>
-                </div>
+                  </Text>
+                </Box>
               );
             })}
           </Box>
@@ -273,17 +314,9 @@ const PerpsHomePage: React.FC = () => {
                   : '-';
 
               return (
-                <div
+                <Box
                   key={order.orderId}
-                  className={`perps-activity-item ${
-                    openOrders.length === 1
-                      ? 'perps-activity-item--first perps-activity-item--last'
-                      : index === 0
-                        ? 'perps-activity-item--first'
-                        : index === openOrders.length - 1
-                          ? 'perps-activity-item--last'
-                          : ''
-                  }`}
+                  className={`perps-activity-item ${getListItemPositionClass(index, openOrders.length)}`}
                   role="button"
                   tabIndex={0}
                 >
@@ -291,21 +324,21 @@ const PerpsHomePage: React.FC = () => {
                     symbol={order.symbol}
                     size={AvatarTokenSize.Md}
                   />
-                  <div className="perps-activity-item__left">
-                    <span className="perps-activity-item__action">
+                  <Box className="perps-activity-item__left">
+                    <Text className="perps-activity-item__action">
                       {displaySymbol} | {orderTypeLabel} {sideLabel}
-                    </span>
-                    <span className="perps-activity-item__amount">
+                    </Text>
+                    <Text className="perps-activity-item__amount">
                       {order.size} {displaySymbol}
-                    </span>
-                  </div>
+                    </Text>
+                  </Box>
                   <Text
                     variant={TextVariant.BodySm}
                     fontWeight={FontWeight.Medium}
                   >
                     {orderValue}
                   </Text>
-                </div>
+                </Box>
               );
             })}
           </Box>
@@ -333,18 +366,14 @@ const PerpsHomePage: React.FC = () => {
           {cryptoMarkets.map((market, index) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
-              <div
+              <Box
                 key={market.symbol}
                 className="perps-activity-item"
                 style={{
-                  borderRadius:
-                    cryptoMarkets.length === 1
-                      ? '12px'
-                      : index === 0
-                        ? '12px 12px 0 0'
-                        : index === cryptoMarkets.length - 1
-                          ? '0 0 12px 12px'
-                          : '0',
+                  borderRadius: getListItemBorderRadius(
+                    index,
+                    cryptoMarkets.length,
+                  ),
                 }}
                 role="button"
                 tabIndex={0}
@@ -359,20 +388,17 @@ const PerpsHomePage: React.FC = () => {
                   symbol={market.symbol}
                   size={AvatarTokenSize.Md}
                 />
-                <div className="perps-activity-item__left">
-                  <span className="perps-activity-item__action">
+                <Box className="perps-activity-item__left">
+                  <Text className="perps-activity-item__action">
                     {market.name}
-                  </span>
-                  <span className="perps-activity-item__amount">
+                  </Text>
+                  <Text className="perps-activity-item__amount">
                     {getDisplayName(market.symbol)}-USD
-                  </span>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-end',
-                  }}
+                  </Text>
+                </Box>
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.End}
                 >
                   <Text
                     variant={TextVariant.BodySm}
@@ -390,8 +416,8 @@ const PerpsHomePage: React.FC = () => {
                   >
                     {market.change24hPercent}
                   </Text>
-                </div>
-              </div>
+                </Box>
+              </Box>
             );
           })}
         </Box>
@@ -418,18 +444,14 @@ const PerpsHomePage: React.FC = () => {
           {hip3Markets.map((market, index) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
-              <div
+              <Box
                 key={market.symbol}
                 className="perps-activity-item"
                 style={{
-                  borderRadius:
-                    hip3Markets.length === 1
-                      ? '12px'
-                      : index === 0
-                        ? '12px 12px 0 0'
-                        : index === hip3Markets.length - 1
-                          ? '0 0 12px 12px'
-                          : '0',
+                  borderRadius: getListItemBorderRadius(
+                    index,
+                    hip3Markets.length,
+                  ),
                 }}
                 role="button"
                 tabIndex={0}
@@ -444,20 +466,17 @@ const PerpsHomePage: React.FC = () => {
                   symbol={market.symbol}
                   size={AvatarTokenSize.Md}
                 />
-                <div className="perps-activity-item__left">
-                  <span className="perps-activity-item__action">
+                <Box className="perps-activity-item__left">
+                  <Text className="perps-activity-item__action">
                     {market.name}
-                  </span>
-                  <span className="perps-activity-item__amount">
+                  </Text>
+                  <Text className="perps-activity-item__amount">
                     {getDisplayName(market.symbol)}-USD
-                  </span>
-                </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-end',
-                  }}
+                  </Text>
+                </Box>
+                <Box
+                  flexDirection={BoxFlexDirection.Column}
+                  alignItems={BoxAlignItems.End}
                 >
                   <Text
                     variant={TextVariant.BodySm}
@@ -475,8 +494,8 @@ const PerpsHomePage: React.FC = () => {
                   >
                     {market.change24hPercent}
                   </Text>
-                </div>
-              </div>
+                </Box>
+              </Box>
             );
           })}
         </Box>
@@ -501,50 +520,50 @@ const PerpsHomePage: React.FC = () => {
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Activity Item 1 - Opened long */}
-          <div
+          <Box
             className="perps-activity-item perps-activity-item--first"
             role="button"
             tabIndex={0}
           >
             <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
-            <div className="perps-activity-item__left">
-              <span className="perps-activity-item__action">Opened long</span>
-              <span className="perps-activity-item__amount">2.5 ETH</span>
-            </div>
-            <span className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+            <Box className="perps-activity-item__left">
+              <Text className="perps-activity-item__action">Opened long</Text>
+              <Text className="perps-activity-item__amount">2.5 ETH</Text>
+            </Box>
+            <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
               +$125.00
-            </span>
-          </div>
+            </Text>
+          </Box>
 
           {/* Activity Item 2 - Closed short */}
-          <div className="perps-activity-item" role="button" tabIndex={0}>
+          <Box className="perps-activity-item" role="button" tabIndex={0}>
             <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
-            <div className="perps-activity-item__left">
-              <span className="perps-activity-item__action">Closed short</span>
-              <span className="perps-activity-item__amount">0.5 BTC</span>
-            </div>
-            <span className="perps-activity-item__pnl perps-activity-item__pnl--loss">
+            <Box className="perps-activity-item__left">
+              <Text className="perps-activity-item__action">Closed short</Text>
+              <Text className="perps-activity-item__amount">0.5 BTC</Text>
+            </Box>
+            <Text className="perps-activity-item__pnl perps-activity-item__pnl--loss">
               -$32.50
-            </span>
-          </div>
+            </Text>
+          </Box>
 
           {/* Activity Item 3 - Increased position */}
-          <div
+          <Box
             className="perps-activity-item perps-activity-item--last"
             role="button"
             tabIndex={0}
           >
             <PerpsTokenLogo symbol="SOL" size={AvatarTokenSize.Md} />
-            <div className="perps-activity-item__left">
-              <span className="perps-activity-item__action">
+            <Box className="perps-activity-item__left">
+              <Text className="perps-activity-item__action">
                 Increased position
-              </span>
-              <span className="perps-activity-item__amount">50 SOL</span>
-            </div>
-            <span className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+              </Text>
+              <Text className="perps-activity-item__amount">50 SOL</Text>
+            </Box>
+            <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
               +$45.20
-            </span>
-          </div>
+            </Text>
+          </Box>
         </Box>
       </Box>
 
@@ -552,7 +571,7 @@ const PerpsHomePage: React.FC = () => {
       <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Contact support */}
-          <div
+          <Box
             className="perps-activity-item perps-activity-item--first"
             role="button"
             tabIndex={0}
@@ -564,7 +583,7 @@ const PerpsHomePage: React.FC = () => {
                 // TODO: Navigate to support
               }
             }}
-            style={{ justifyContent: 'space-between' }}
+            justifyContent={BoxJustifyContent.Between}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               Contact support
@@ -574,10 +593,10 @@ const PerpsHomePage: React.FC = () => {
               size={IconSize.Sm}
               color={IconColor.IconAlternative}
             />
-          </div>
+          </Box>
 
           {/* Learn the basics of perps */}
-          <div
+          <Box
             className="perps-activity-item perps-activity-item--last"
             role="button"
             tabIndex={0}
@@ -589,7 +608,7 @@ const PerpsHomePage: React.FC = () => {
                 // TODO: Navigate to learn page
               }
             }}
-            style={{ justifyContent: 'space-between' }}
+            justifyContent={BoxJustifyContent.Between}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
               Learn the basics of perps
@@ -599,7 +618,7 @@ const PerpsHomePage: React.FC = () => {
               size={IconSize.Sm}
               color={IconColor.IconAlternative}
             />
-          </div>
+          </Box>
         </Box>
       </Box>
     </Box>
