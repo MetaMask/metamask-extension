@@ -95,31 +95,36 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           <Text variant={TextVariant.HeadingLg}>📈</Text>
         </Box>
 
-        <Text
-          variant={TextVariant.HeadingMd}
-          fontWeight={FontWeight.Medium}
-          textAlign={TextAlign.Center}
-          marginBottom={2}
-        >
-          Trade perps
-        </Text>
+        <Box marginBottom={2}>
+          <Text
+            variant={TextVariant.HeadingMd}
+            fontWeight={FontWeight.Medium}
+            textAlign={TextAlign.Center}
+          >
+            Trade perps
+          </Text>
+        </Box>
 
-        <Text
-          variant={TextVariant.BodyMd}
-          color={TextColor.TextAlternative}
-          textAlign={TextAlign.Center}
-          marginBottom={6}
-        >
-          Add funds to start trading perpetual contracts with leverage
-        </Text>
+        <Box marginBottom={6}>
+          <Text
+            variant={TextVariant.BodyMd}
+            color={TextColor.TextAlternative}
+            textAlign={TextAlign.Center}
+          >
+            Add funds to start trading perpetual contracts with leverage
+          </Text>
+        </Box>
 
-        <Box style={{ width: '100%' }}>
+        <Box
+          flexDirection={BoxFlexDirection.Column}
+          gap={3}
+          style={{ width: '100%' }}
+        >
           <Button
             variant={ButtonVariant.Primary}
             size={ButtonSize.Lg}
             onClick={handleAddFunds}
-            block
-            marginBottom={3}
+            style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
             Add funds
@@ -129,7 +134,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             variant={ButtonVariant.Secondary}
             size={ButtonSize.Lg}
             onClick={handleLearnMore}
-            block
+            style={{ width: '100%' }}
             data-testid="perps-balance-actions-learn-more"
           >
             Learn more
@@ -155,14 +160,15 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
       </Text>
 
       {/* Available Balance */}
-      <Text
-        variant={TextVariant.BodyMd}
-        color={TextColor.TextAlternative}
-        marginTop={1}
-        data-testid="perps-balance-actions-available"
-      >
-        {formatBalance(availableBalance)} available
-      </Text>
+      <Box marginTop={1}>
+        <Text
+          variant={TextVariant.BodyMd}
+          color={TextColor.TextAlternative}
+          data-testid="perps-balance-actions-available"
+        >
+          {formatBalance(availableBalance)} available
+        </Text>
+      </Box>
 
       {/* Action Buttons */}
       {showActionButtons && (
