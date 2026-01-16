@@ -567,6 +567,7 @@ const clickNestedButton = async (driver, tabName) => {
  * Unlocks the wallet using the provided password.
  * This method is intended to replace driver.navigate and should not be called after driver.navigate.
  *
+ * @deprecated Use {@link loginWithBalanceValidation} or {@link loginWithoutBalanceValidation} instead.
  * @param {WebDriver} driver - The webdriver instance
  * @param {object} [options] - Options for unlocking the wallet
  * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
@@ -770,9 +771,8 @@ const sentryRegEx = /^https:\/\/sentry\.io\/api\/\d+\/envelope/gu;
  */
 async function isSidePanelEnabled() {
   try {
-    const hasSidepanel =
-      process.env.SELENIUM_BROWSER === 'chrome' &&
-      process.env.IS_SIDEPANEL === 'true';
+    // Check if browser is Chrome (sidepanel is only supported in Chrome)
+    const hasSidepanel = process.env.SELENIUM_BROWSER === 'chrome';
 
     // Log for debugging
     console.log(`Sidepanel check: ${hasSidepanel ? 'enabled' : 'disabled'}`);

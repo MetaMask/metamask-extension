@@ -41,9 +41,10 @@ type MockHIDDevice = Partial<HIDDevice> & {
 type MockEventHandler = (event: { device: HIDDevice | USBDevice }) => void;
 
 describe('webConnectionUtils', () => {
-  // Save original navigator properties
+  // Save original navigator and window properties
   let originalNavigatorHid: HID | undefined;
   let originalNavigatorUsb: USB | undefined;
+  let originalWindow: Window | undefined;
 
   // Helper functions for creating mock devices
   const createMockHIDDevice = (
@@ -144,6 +145,27 @@ describe('webConnectionUtils', () => {
     }
   };
 
+  // Helper functions for window manipulation in tests
+  const setupUndefinedWindow = () => {
+    originalWindow = global.window;
+    delete (globalThis as { window?: Window }).window;
+  };
+
+  const restoreWindow = () => {
+    if (typeof originalWindow !== 'undefined') {
+      (globalThis as { window?: Window }).window = originalWindow;
+    }
+  };
+
+  // Helper functions to get properly typed mocked navigator objects
+  const getMockedHid = (): jest.Mocked<HID> => {
+    return window.navigator.hid as jest.Mocked<HID>;
+  };
+
+  const getMockedUsb = (): jest.Mocked<USB> => {
+    return window.navigator.usb as jest.Mocked<USB>;
+  };
+
   beforeEach(() => {
     jest.clearAllMocks();
     setupDefaultNavigator();
@@ -157,7 +179,7 @@ describe('webConnectionUtils', () => {
     restoreNavigator();
   });
 
-  describe('isWebHIDAvailable', () => {
+  describe('isWebHidAvailable', () => {
     it('returns true when WebHID is available', () => {
       const result = isWebHidAvailable();
 
@@ -165,14 +187,13 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns false when window is undefined', () => {
-      const originalWindow = global.window;
-      delete (globalThis as { window?: Window }).window;
+      setupUndefinedWindow();
 
       const result = isWebHidAvailable();
 
       expect(result).toBe(false);
 
-      global.window = originalWindow;
+      restoreWindow();
     });
 
     it('returns false when navigator is undefined', () => {
@@ -204,7 +225,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('isWebUSBAvailable', () => {
+  describe('isWebUsbAvailable', () => {
     it('returns true when WebUSB is available', () => {
       const result = isWebUsbAvailable();
 
@@ -212,14 +233,13 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns false when window is undefined', () => {
-      const originalWindow = global.window;
-      delete (globalThis as { window?: Window }).window;
+      setupUndefinedWindow();
 
       const result = isWebUsbAvailable();
 
       expect(result).toBe(false);
 
-      global.window = originalWindow;
+      restoreWindow();
     });
 
     it('returns false when navigator is undefined', () => {
@@ -285,7 +305,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('checkWebHIDPermission', () => {
+  describe('checkWebHidPermission', () => {
     it('returns Granted when paired Ledger devices exist', async () => {
       (window.navigator.hid.getDevices as jest.Mock).mockResolvedValue([
         createMockHIDDevice(),
@@ -307,16 +327,14 @@ describe('webConnectionUtils', () => {
     });
 
     it('returns Prompt when paired devices exist but are not Ledger', async () => {
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue([
+      getMockedHid().getDevices.mockResolvedValue([
         createMockHIDDevice(0x1234) as HIDDevice, // Wrong vendor ID
       ]);
 
       const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedHid().getDevices).toHaveBeenCalled();
     });
 
     it('returns Denied when WebHID is not available', async () => {
@@ -337,9 +355,7 @@ describe('webConnectionUtils', () => {
 
     it('returns Unknown when getDevices throws error', async () => {
       const error = new Error('Permission denied');
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockRejectedValue(
-        error,
-      );
+      getMockedHid().getDevices.mockRejectedValue(error);
 
       const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
@@ -347,44 +363,34 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('checkWebUSBPermission', () => {
+  describe('checkWebUsbPermission', () => {
     it('returns Granted when paired Trezor devices exist', async () => {
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
-        createMockUSBDevice(),
-      ]);
+      getMockedUsb().getDevices.mockResolvedValue([createMockUSBDevice()]);
 
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Granted);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('returns Prompt when no paired Trezor devices exist', async () => {
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue(
-        [],
-      );
+      getMockedUsb().getDevices.mockResolvedValue([]);
 
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('returns Prompt when paired devices exist but are not Trezor', async () => {
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
+      getMockedUsb().getDevices.mockResolvedValue([
         createMockUSBDevice(0x1234), // Wrong vendor ID
       ]);
 
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('returns Denied when WebUSB is not available', async () => {
@@ -405,9 +411,7 @@ describe('webConnectionUtils', () => {
 
     it('returns Unknown when getDevices throws error', async () => {
       const error = new Error('Permission denied');
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockRejectedValue(
-        error,
-      );
+      getMockedUsb().getDevices.mockRejectedValue(error);
 
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -451,44 +455,34 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebHIDPermission', () => {
+  describe('requestWebHidPermission', () => {
     it('returns true when user selects Ledger device', async () => {
       const mockDevice = createMockHIDDevice() as HIDDevice;
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockResolvedValue([mockDevice]);
+      getMockedHid().requestDevice.mockResolvedValue([mockDevice]);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(true);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).requestDevice,
-      ).toHaveBeenCalledWith({
+      expect(getMockedHid().requestDevice).toHaveBeenCalledWith({
         filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
       });
     });
 
     it('returns false when user selects non-Ledger device', async () => {
       const mockDevice = createMockHIDDevice(0x1234) as HIDDevice; // Wrong vendor ID
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockResolvedValue([mockDevice]);
+      getMockedHid().requestDevice.mockResolvedValue([mockDevice]);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(false);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).requestDevice,
-      ).toHaveBeenCalledWith({
+      expect(getMockedHid().requestDevice).toHaveBeenCalledWith({
         filters: [{ vendorId: Number(LEDGER_USB_VENDOR_ID) }],
       });
     });
 
     it('returns false when user cancels dialog', async () => {
       const error = new Error('User cancelled the requestDevice() chooser.');
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedHid().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
@@ -497,9 +491,7 @@ describe('webConnectionUtils', () => {
 
     it('returns false when user denies permission', async () => {
       const error = new Error('Permission denied');
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedHid().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
@@ -508,9 +500,7 @@ describe('webConnectionUtils', () => {
 
     it('returns false and logs error when requestDevice throws non-user-cancellation error', async () => {
       const error = new Error('Unexpected error');
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedHid().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
@@ -530,44 +520,34 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebUSBPermission', () => {
+  describe('requestWebUsbPermission', () => {
     it('returns true when user selects Trezor device', async () => {
       const mockDevice = createMockUSBDevice();
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockResolvedValue(mockDevice);
+      getMockedUsb().requestDevice.mockResolvedValue(mockDevice);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(true);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).requestDevice,
-      ).toHaveBeenCalledWith({
+      expect(getMockedUsb().requestDevice).toHaveBeenCalledWith({
         filters: TREZOR_USB_VENDOR_IDS,
       });
     });
 
     it('returns false when user selects non-Trezor device', async () => {
       const mockDevice = createMockUSBDevice(0x1234); // Wrong vendor ID
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockResolvedValue(mockDevice);
+      getMockedUsb().requestDevice.mockResolvedValue(mockDevice);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
       expect(result).toBe(false);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).requestDevice,
-      ).toHaveBeenCalledWith({
+      expect(getMockedUsb().requestDevice).toHaveBeenCalledWith({
         filters: TREZOR_USB_VENDOR_IDS,
       });
     });
 
     it('returns false when user cancels dialog', async () => {
       const error = new Error('User cancelled the requestDevice() chooser.');
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedUsb().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -576,9 +556,7 @@ describe('webConnectionUtils', () => {
 
     it('returns false when user denies permission', async () => {
       const error = new Error('Permission denied');
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedUsb().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -587,9 +565,7 @@ describe('webConnectionUtils', () => {
 
     it('returns false and logs error when requestDevice throws non-user-cancellation error', async () => {
       const error = new Error('Unexpected error');
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedUsb().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -613,30 +589,21 @@ describe('webConnectionUtils', () => {
     it('returns filtered Ledger devices from getDevices', async () => {
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
       const otherDevice = createMockHIDDevice(0x1234) as HIDDevice;
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue([
-        ledgerDevice,
-        otherDevice,
-      ]);
+      getMockedHid().getDevices.mockResolvedValue([ledgerDevice, otherDevice]);
 
       const result = await getConnectedLedgerDevices();
 
       expect(result).toEqual([ledgerDevice]);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedHid().getDevices).toHaveBeenCalled();
     });
 
     it('returns empty array when no Ledger devices are connected', async () => {
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue(
-        [],
-      );
+      getMockedHid().getDevices.mockResolvedValue([]);
 
       const result = await getConnectedLedgerDevices();
 
       expect(result).toEqual([]);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedHid().getDevices).toHaveBeenCalled();
     });
 
     it('returns empty array when WebHID is not available', async () => {
@@ -653,9 +620,7 @@ describe('webConnectionUtils', () => {
 
     it('returns empty array and logs error when getDevices throws', async () => {
       const error = new Error('Device access error');
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockRejectedValue(
-        error,
-      );
+      getMockedHid().getDevices.mockRejectedValue(error);
 
       const result = await getConnectedLedgerDevices();
 
@@ -667,30 +632,21 @@ describe('webConnectionUtils', () => {
     it('returns filtered Trezor devices from getDevices', async () => {
       const trezorDevice = createMockUSBDevice();
       const otherDevice = createMockUSBDevice(0x1234);
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
-        trezorDevice,
-        otherDevice,
-      ]);
+      getMockedUsb().getDevices.mockResolvedValue([trezorDevice, otherDevice]);
 
       const result = await getConnectedTrezorDevices();
 
       expect(result).toEqual([trezorDevice]);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('returns empty array when no Trezor devices are connected', async () => {
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue(
-        [],
-      );
+      getMockedUsb().getDevices.mockResolvedValue([]);
 
       const result = await getConnectedTrezorDevices();
 
       expect(result).toEqual([]);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('returns empty array when WebUSB is not available', async () => {
@@ -707,9 +663,7 @@ describe('webConnectionUtils', () => {
 
     it('returns empty array and logs error when getDevices throws', async () => {
       const error = new Error('Device access error');
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockRejectedValue(
-        error,
-      );
+      getMockedUsb().getDevices.mockRejectedValue(error);
 
       const result = await getConnectedTrezorDevices();
 
@@ -891,7 +845,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('subscribeToWebHIDEvents', () => {
+  describe('subscribeToWebHidEvents', () => {
     let mockOnConnect: jest.Mock;
     let mockOnDisconnect: jest.Mock;
     let unsubscribe: () => void;
@@ -915,12 +869,14 @@ describe('webConnectionUtils', () => {
       );
 
       expect(typeof unsubscribe).toBe('function');
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener,
-      ).toHaveBeenCalledWith('connect', expect.any(Function));
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener,
-      ).toHaveBeenCalledWith('disconnect', expect.any(Function));
+      expect(getMockedHid().addEventListener).toHaveBeenCalledWith(
+        'connect',
+        expect.any(Function),
+      );
+      expect(getMockedHid().addEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        expect.any(Function),
+      );
     });
 
     it('calls onConnect callback when Ledger device connects', () => {
@@ -933,7 +889,7 @@ describe('webConnectionUtils', () => {
 
       // Get the connect event handler that was registered
       const connectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'connect',
       );
 
@@ -953,7 +909,7 @@ describe('webConnectionUtils', () => {
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'connect',
       );
 
@@ -971,7 +927,7 @@ describe('webConnectionUtils', () => {
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
 
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'disconnect',
       );
 
@@ -990,7 +946,7 @@ describe('webConnectionUtils', () => {
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
 
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'disconnect',
       );
 
@@ -1015,7 +971,7 @@ describe('webConnectionUtils', () => {
       ) as HIDDevice;
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'connect',
       );
 
@@ -1061,12 +1017,14 @@ describe('webConnectionUtils', () => {
 
       unsubscribe();
 
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).removeEventListener,
-      ).toHaveBeenCalledWith('connect', expect.any(Function));
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).removeEventListener,
-      ).toHaveBeenCalledWith('disconnect', expect.any(Function));
+      expect(getMockedHid().removeEventListener).toHaveBeenCalledWith(
+        'connect',
+        expect.any(Function),
+      );
+      expect(getMockedHid().removeEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        expect.any(Function),
+      );
     });
 
     it('unsubscribe removes the correct event listeners', () => {
@@ -1078,27 +1036,29 @@ describe('webConnectionUtils', () => {
 
       // Get the handlers that were added
       const connectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'connect',
       );
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.hid as jest.Mocked<HID>).addEventListener.mock.calls,
+        getMockedHid().addEventListener.mock.calls,
         'disconnect',
       );
 
       unsubscribe();
 
       // Verify that removeEventListener was called with the same handlers
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).removeEventListener,
-      ).toHaveBeenCalledWith('connect', connectHandler);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).removeEventListener,
-      ).toHaveBeenCalledWith('disconnect', disconnectHandler);
+      expect(getMockedHid().removeEventListener).toHaveBeenCalledWith(
+        'connect',
+        connectHandler,
+      );
+      expect(getMockedHid().removeEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        disconnectHandler,
+      );
     });
   });
 
-  describe('subscribeToWebUSBEvents', () => {
+  describe('subscribeToWebUsbEvents', () => {
     let mockOnConnect: jest.Mock;
     let mockOnDisconnect: jest.Mock;
     let unsubscribe: () => void;
@@ -1122,12 +1082,14 @@ describe('webConnectionUtils', () => {
       );
 
       expect(typeof unsubscribe).toBe('function');
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener,
-      ).toHaveBeenCalledWith('connect', expect.any(Function));
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener,
-      ).toHaveBeenCalledWith('disconnect', expect.any(Function));
+      expect(getMockedUsb().addEventListener).toHaveBeenCalledWith(
+        'connect',
+        expect.any(Function),
+      );
+      expect(getMockedUsb().addEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        expect.any(Function),
+      );
     });
 
     it('calls onConnect callback when Trezor device connects', () => {
@@ -1139,7 +1101,7 @@ describe('webConnectionUtils', () => {
       const trezorDevice = createMockUSBDevice() as USBDevice;
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'connect',
       );
 
@@ -1158,7 +1120,7 @@ describe('webConnectionUtils', () => {
       const nonTrezorDevice = createMockUSBDevice(0x1234);
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'connect',
       );
 
@@ -1176,7 +1138,7 @@ describe('webConnectionUtils', () => {
       const trezorDevice = createMockUSBDevice() as USBDevice;
 
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'disconnect',
       );
 
@@ -1195,7 +1157,7 @@ describe('webConnectionUtils', () => {
       const nonTrezorDevice = createMockUSBDevice(0x1234);
 
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'disconnect',
       );
 
@@ -1217,7 +1179,7 @@ describe('webConnectionUtils', () => {
       );
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'connect',
       );
 
@@ -1263,12 +1225,14 @@ describe('webConnectionUtils', () => {
 
       unsubscribe();
 
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).removeEventListener,
-      ).toHaveBeenCalledWith('connect', expect.any(Function));
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).removeEventListener,
-      ).toHaveBeenCalledWith('disconnect', expect.any(Function));
+      expect(getMockedUsb().removeEventListener).toHaveBeenCalledWith(
+        'connect',
+        expect.any(Function),
+      );
+      expect(getMockedUsb().removeEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        expect.any(Function),
+      );
     });
 
     it('unsubscribe removes the correct event listeners', () => {
@@ -1279,26 +1243,28 @@ describe('webConnectionUtils', () => {
       );
 
       const connectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'connect',
       );
       const disconnectHandler = getMockEventHandler(
-        (window.navigator.usb as jest.Mocked<USB>).addEventListener.mock.calls,
+        getMockedUsb().addEventListener.mock.calls,
         'disconnect',
       );
 
       unsubscribe();
 
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).removeEventListener,
-      ).toHaveBeenCalledWith('connect', connectHandler);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).removeEventListener,
-      ).toHaveBeenCalledWith('disconnect', disconnectHandler);
+      expect(getMockedUsb().removeEventListener).toHaveBeenCalledWith(
+        'connect',
+        connectHandler,
+      );
+      expect(getMockedUsb().removeEventListener).toHaveBeenCalledWith(
+        'disconnect',
+        disconnectHandler,
+      );
     });
   });
 
-  describe('matchesDeviceFilters', () => {
+  describe('getConnectedLedgerDevices', () => {
     it('filters Ledger devices correctly in getConnectedLedgerDevices', async () => {
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
@@ -1306,7 +1272,7 @@ describe('webConnectionUtils', () => {
         Number(LEDGER_USB_VENDOR_ID),
         0x0002,
       ) as HIDDevice;
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue([
+      getMockedHid().getDevices.mockResolvedValue([
         ledgerDevice,
         nonLedgerDevice,
         anotherLedgerDevice,
@@ -1315,9 +1281,7 @@ describe('webConnectionUtils', () => {
       const result = await getConnectedLedgerDevices();
 
       expect(result).toEqual([ledgerDevice, anotherLedgerDevice]);
-      expect(
-        (window.navigator.hid as jest.Mocked<HID>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedHid().getDevices).toHaveBeenCalled();
     });
 
     it('filters Trezor devices correctly in getConnectedTrezorDevices', async () => {
@@ -1327,7 +1291,7 @@ describe('webConnectionUtils', () => {
         TREZOR_USB_VENDOR_IDS[1].productId,
       );
       const nonTrezorDevice = createMockUSBDevice(0x1234);
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
+      getMockedUsb().getDevices.mockResolvedValue([
         trezorDevice1,
         nonTrezorDevice,
         trezorDevice2,
@@ -1336,9 +1300,7 @@ describe('webConnectionUtils', () => {
       const result = await getConnectedTrezorDevices();
 
       expect(result).toEqual([trezorDevice1, trezorDevice2]);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('matches Trezor devices with correct vendor and product IDs', async () => {
@@ -1349,17 +1311,12 @@ describe('webConnectionUtils', () => {
         TREZOR_USB_VENDOR_IDS[1].productId,
       );
 
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
-        trezorOne,
-        trezorT,
-      ]);
+      getMockedUsb().getDevices.mockResolvedValue([trezorOne, trezorT]);
 
       const result = await getConnectedTrezorDevices();
 
       expect(result).toEqual([trezorOne, trezorT]);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
 
     it('rejects Trezor devices with matching vendor but wrong product ID', async () => {
@@ -1367,25 +1324,19 @@ describe('webConnectionUtils', () => {
         TREZOR_USB_VENDOR_IDS[0].vendorId,
         0x9999, // Wrong product ID
       );
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue([
-        fakeTrezorDevice,
-      ]);
+      getMockedUsb().getDevices.mockResolvedValue([fakeTrezorDevice]);
 
       const result = await getConnectedTrezorDevices();
 
       expect(result).toEqual([]);
-      expect(
-        (window.navigator.usb as jest.Mocked<USB>).getDevices,
-      ).toHaveBeenCalled();
+      expect(getMockedUsb().getDevices).toHaveBeenCalled();
     });
   });
 
-  describe('requestWebHIDPermission - additional error handling', () => {
+  describe('requestWebHidPermission - additional error handling', () => {
     it('handles error message with "denied" substring', async () => {
       const error = new Error('Permission request was denied by user');
-      (
-        window.navigator.hid as jest.Mocked<HID>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedHid().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
@@ -1402,9 +1353,7 @@ describe('webConnectionUtils', () => {
 
       for (const message of cancellationMessages) {
         const error = new Error(message);
-        (
-          window.navigator.hid as jest.Mocked<HID>
-        ).requestDevice.mockRejectedValue(error);
+        getMockedHid().requestDevice.mockRejectedValue(error);
 
         const result = await requestWebHidPermission(HardwareWalletType.Ledger);
 
@@ -1413,12 +1362,10 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebUSBPermission - additional error handling', () => {
+  describe('requestWebUsbPermission - additional error handling', () => {
     it('handles error message with "denied" substring', async () => {
       const error = new Error('Permission request was denied by user');
-      (
-        window.navigator.usb as jest.Mocked<USB>
-      ).requestDevice.mockRejectedValue(error);
+      getMockedUsb().requestDevice.mockRejectedValue(error);
 
       const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -1435,9 +1382,7 @@ describe('webConnectionUtils', () => {
 
       for (const message of cancellationMessages) {
         const error = new Error(message);
-        (
-          window.navigator.usb as jest.Mocked<USB>
-        ).requestDevice.mockRejectedValue(error);
+        getMockedUsb().requestDevice.mockRejectedValue(error);
 
         const result = await requestWebUsbPermission(HardwareWalletType.Trezor);
 
@@ -1451,7 +1396,7 @@ describe('webConnectionUtils', () => {
       const ledgerDevice1 = createMockHIDDevice(undefined, 0x0001) as HIDDevice;
       const ledgerDevice2 = createMockHIDDevice(undefined, 0x0002) as HIDDevice;
       const ledgerDevice3 = createMockHIDDevice(undefined, 0x0003) as HIDDevice;
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue([
+      getMockedHid().getDevices.mockResolvedValue([
         ledgerDevice1,
         ledgerDevice2,
         ledgerDevice3,
@@ -1464,12 +1409,8 @@ describe('webConnectionUtils', () => {
     });
 
     it('handles empty device arrays gracefully', async () => {
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue(
-        [],
-      );
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue(
-        [],
-      );
+      getMockedHid().getDevices.mockResolvedValue([]);
+      getMockedUsb().getDevices.mockResolvedValue([]);
 
       const ledgerResult = await getConnectedLedgerDevices();
       const trezorResult = await getConnectedTrezorDevices();
@@ -1485,9 +1426,7 @@ describe('webConnectionUtils', () => {
         createMockHIDDevice(0x04b8) as HIDDevice, // invalid vendor ID
         createMockHIDDevice(0x046d) as HIDDevice, // invalid vendor ID
       ];
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue(
-        devices,
-      );
+      getMockedHid().getDevices.mockResolvedValue(devices);
 
       const result = await getConnectedLedgerDevices();
 
@@ -1495,28 +1434,24 @@ describe('webConnectionUtils', () => {
       expect(result[0].vendorId).toBe(Number(LEDGER_USB_VENDOR_ID));
     });
 
-    it('checkWebHIDPermission returns Prompt when mixed devices exist but no Ledger', async () => {
+    it('checkWebHidPermission returns Prompt when mixed devices exist but no Ledger', async () => {
       const nonLedgerDevices = [
         createMockHIDDevice(0x05ac) as HIDDevice, // invalid vendor ID
         createMockHIDDevice(0x04b8) as HIDDevice, // invalid vendor ID
       ];
-      (window.navigator.hid as jest.Mocked<HID>).getDevices.mockResolvedValue(
-        nonLedgerDevices,
-      );
+      getMockedHid().getDevices.mockResolvedValue(nonLedgerDevices);
 
       const result = await checkWebHidPermission(HardwareWalletType.Ledger);
 
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
     });
 
-    it('checkWebUSBPermission returns Prompt when mixed devices exist but no Trezor', async () => {
+    it('checkWebUsbPermission returns Prompt when mixed devices exist but no Trezor', async () => {
       const nonTrezorDevices = [
         createMockUSBDevice(0x05ac), // invalid vendor ID
         createMockUSBDevice(0x04b8), // invalid vendor ID
       ];
-      (window.navigator.usb as jest.Mocked<USB>).getDevices.mockResolvedValue(
-        nonTrezorDevices,
-      );
+      getMockedUsb().getDevices.mockResolvedValue(nonTrezorDevices);
 
       const result = await checkWebUsbPermission(HardwareWalletType.Trezor);
 
