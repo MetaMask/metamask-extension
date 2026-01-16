@@ -567,15 +567,15 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
-  async validateSendFees(): Promise<void> {
+  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
     // Wait for both fields to be present and have the expected values
     await this.driver.waitForSelector({
       css: this.gasFeeField,
-      text: '0.0004',
+      text: gasFee,
     });
     await this.driver.waitForSelector({
       css: this.fiatFeeField,
-      text: '$0.75',
+      text: fiatFee,
     });
     console.log('Send fees validation successful');
   }

@@ -1,15 +1,15 @@
 import { Driver } from '../../webdriver/driver';
-
-const networksToggle = '[data-testid="sort-by-networks"]';
+import NetworkManager from '../pages/network-manager';
 
 export const switchToNetworkFromNetworkSelect = async (
   driver: Driver,
   networkCategory: string,
   networkName: string,
 ) => {
-  await driver.clickElement(networksToggle);
-  await driver.clickElement({ text: networkCategory });
-  await driver.clickElement(`[data-testid="${networkName}"]`);
+  const networkManager = new NetworkManager(driver);
+  await networkManager.openNetworkManager();
+  await networkManager.selectTab(networkCategory);
+  await networkManager.selectNetworkByNameWithWait(networkName);
 };
 
 export const switchToEditRPCViaGlobalMenuNetworks = async (driver: Driver) => {
