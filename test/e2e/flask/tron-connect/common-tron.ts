@@ -10,8 +10,6 @@ import { DAPP_PATH } from '../../constants';
 import { mockTronFeatureFlag } from './mocks/feature-flag';
 import {
   mockExchangeRates,
-  mockPriceMulti,
-  mockPriceMultiTrxAndSol,
   mockHistoricalPrices1d,
   mockHistoricalPrices7d,
   mockAccountRequest,
@@ -72,8 +70,6 @@ export const withTronAccountSnap = async (
         await mockTronFeatureFlag(mockServer),
         await mockExchangeRates(mockServer),
         await mockExchangeRatesV1(mockServer),
-        await mockPriceMulti(mockServer),
-        await mockPriceMultiTrxAndSol(mockServer),
         await mockHistoricalPrices1d(mockServer),
         await mockHistoricalPrices7d(mockServer),
         await mockAccountRequest(mockServer),
