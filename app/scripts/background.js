@@ -76,7 +76,11 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
+import {
+  getPlatform,
+  isWebOrigin,
+  shouldEmitDappViewedEvent,
+} from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
@@ -1169,6 +1173,66 @@ function trackAppOpened(environment) {
 }
 
 /**
+ * Helper function to refresh appActiveTab by querying the current active tab
+ * This is used when the sidepanel opens to ensure it has the current tab info
+ */
+const refreshAppActiveTab = async () => {
+  await isInitialized;
+  if (!controller) {
+    return;
+  }
+
+  try {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tabs || tabs.length === 0) {
+      return;
+    }
+
+    const activeTab = tabs[0];
+    const { id, title, url, favIconUrl } = activeTab;
+
+    if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
+      return;
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
+      return;
+    }
+
+    // Update appActiveTab with current active tab info
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    console.log('Error refreshing appActiveTab:', error.message);
+  }
+};
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -1445,6 +1509,9 @@ export function setupController(
 
       if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
         sidePanelIsOpen = true;
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
+        // This handles the case where user connected to dapp while sidepanel was closed
+        refreshAppActiveTab();
         finished(portStream, () => {
           sidePanelIsOpen = false;
           const isClientOpen = isClientOpenStatus();
@@ -1915,6 +1982,13 @@ const setupPreferenceListener = async () => {
 
 setupPreferenceListener();
 
+// Initialize appActiveTab by querying the current active tab on startup
+const initializeAppActiveTab = async () => {
+  await refreshAppActiveTab();
+};
+
+initializeAppActiveTab();
+
 // Tab listeners to populate appActiveTab
 browser.tabs.onActivated.addListener(async ({ tabId }) => {
   // Wait for controller to be initialized
@@ -1928,18 +2002,16 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     const { id, title, url, favIconUrl } = tabInfo;
 
     if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
     const { origin, protocol, host, href } = new URL(url);
 
-    // Skip if no origin, null origin, or extension pages
-    if (
-      !origin ||
-      origin === 'null' ||
-      origin.startsWith('chrome-extension://') ||
-      origin.startsWith('moz-extension://')
-    ) {
+    if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
       return {};
     }
 
@@ -1970,18 +2042,41 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
   return {};
 });
 
-browser.tabs.onUpdated.addListener(async (tabId) => {
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
   // Wait for controller to be initialized
   await isInitialized;
   if (!controller) {
     return {};
   }
 
+  // Only update when URL changes or when page finishes loading
+  // This prevents flickering from multiple updates during page load
+  const urlChanged = changeInfo.url !== undefined;
+  const statusComplete = changeInfo.status === 'complete';
+
+  if (!urlChanged && !statusComplete) {
+    return {};
+  }
+
   try {
-    const tabInfo = await browser.tabs.get(tabId);
+    // Use tab from parameter if available, otherwise fetch it.
+    // The tab parameter is usually provided by Chrome, but may be undefined
+    // in edge cases (e.g., when a tab is being removed), so we fall back to
+    // fetching it explicitly.
+    const tabInfo = tab || (await browser.tabs.get(tabId));
     const { id, title, url, favIconUrl } = tabInfo;
 
+    // Only update if this is the currently active tab
+    // This prevents updating with stale data from background tabs
+    const currentAppActiveTab =
+      controller.appStateController.state.appActiveTab;
+    const isActiveTab = currentAppActiveTab?.id === id;
+
     if (!url) {
+      // Only clear if this is the currently active tab
+      if (isActiveTab) {
+        controller.appStateController.clearAppActiveTab();
+      }
       return {};
     }
 
@@ -1994,28 +2089,51 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
       origin.startsWith('chrome-extension://') ||
       origin.startsWith('moz-extension://')
     ) {
+      // Only clear if this is the currently active tab
+      if (isActiveTab) {
+        controller.appStateController.clearAppActiveTab();
+      }
       return {};
     }
 
-    // Update the app active tab state
-    controller.appStateController.setAppActiveTab({
-      id,
-      title,
-      origin,
-      protocol,
-      url,
-      host,
-      href,
-      favIconUrl,
-    });
+    // Also check if this tab is actually the active tab in the current window.
+    // This is needed because stored appActiveTab might be stale if the user
+    // switched tabs quickly, or if tabs were closed/reopened. Querying the
+    // browser ensures we only update for the truly active tab.
+    let isActuallyActive = false;
+    try {
+      const activeTabs = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
+    } catch (error) {
+      // Fallback to checking against stored active tab
+      isActuallyActive = isActiveTab;
+    }
 
-    // Update subject metadata for permission system
-    controller.subjectMetadataController.addSubjectMetadata({
-      origin,
-      name: title || host || origin,
-      iconUrl: favIconUrl || null,
-      subjectType: 'website',
-    });
+    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
+    if ((urlChanged || statusComplete) && isActuallyActive) {
+      // Update the app active tab state
+      controller.appStateController.setAppActiveTab({
+        id,
+        title,
+        origin,
+        protocol,
+        url,
+        host,
+        href,
+        favIconUrl,
+      });
+
+      // Update subject metadata for permission system
+      controller.subjectMetadataController.addSubjectMetadata({
+        origin,
+        name: title || host || origin,
+        iconUrl: favIconUrl || null,
+        subjectType: 'website',
+      });
+    }
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
     console.log('Error in tabs.onUpdated listener:', error.message);

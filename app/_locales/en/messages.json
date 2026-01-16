@@ -8514,6 +8514,9 @@
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
   },
+  "urlUnknown": {
+    "message": "URL unknown"
+  },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
   },
