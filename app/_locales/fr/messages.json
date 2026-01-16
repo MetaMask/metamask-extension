@@ -1272,9 +1272,6 @@
   "close": {
     "message": "Fermer"
   },
-  "closeExtension": {
-    "message": "Fermer l’extension"
-  },
   "closeSlide": {
     "message": "Fermer $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -6224,41 +6221,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Votre police d’assurance ne couvre pas les risques lorsqu’elle est suspendue. Si vous la résiliez, votre couverture prendra fin immédiatement."
   },
-  "shieldTxDetails1Description": {
-    "message": "Sécurise les actifs sur les transactions couvertes"
-  },
   "shieldTxDetails1Title": {
     "message": "Couvre les transactions à hauteur de $10 000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Bénéficiez d’une assistance dédiée plus rapide à tout moment"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Assistance prioritaire"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Lien"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Inscription"
-  },
   "shieldTxMembershipActive": {
     "message": "Police d’assurance active"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Informations de facturation"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Compte de facturation"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Frais"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Prochaine facturation"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Mode de paiement"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Gérer la facturation"
@@ -6273,9 +6240,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Votre police d’assurance prend fin le $1. Renouvelez-la dès maintenant pour continuer à bénéficier de la couverture.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Réessayer d’effectuer un paiement"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Votre police d’assurance a été suspendue en raison d’un échec du paiement par carte."
@@ -6302,9 +6266,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contacter le service d’assistance"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Mettre à jour les informations de la carte"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Essai gratuit"
   },
@@ -6325,9 +6286,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Soumettre une réclamation"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Voir tous les avantages"
   },
   "show": {
     "message": "Afficher"

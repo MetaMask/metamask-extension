@@ -36,6 +36,7 @@ export enum ShieldMetricsSourceEnum {
   Settings = 'settings',
   Marketing = 'marketing', // from marketing campaign
   PostTransaction = 'post_transaction', // after a transaction
+  ShieldSettings = 'shield_settings', // from shield settings page
 }
 
 export enum ShieldUserAccountCategoryEnum {
