@@ -528,6 +528,9 @@ async function verifyEnglishLocale() {
         `  - [ ] ${violation.key}: "${violation.current}" → "${violation.suggested}"`,
       );
     });
+    log.info(
+      `\nIf any of these capitalizations are correct (e.g., product names, proper nouns), add them to app/_locales/sentence-case-exceptions.json`,
+    );
   }
 
   if (
