@@ -32,7 +32,6 @@ function withRouterHooks<Props extends object>(
 
     // We intentionally don't include hookParams in dependencies because
     // we want to memoize based on VALUES (paramKeys/paramValues), not object reference
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const stableParams = useMemo(
       () => props.params ?? hookParams,
       [props.params, paramKeys, paramValues],
@@ -40,7 +39,6 @@ function withRouterHooks<Props extends object>(
 
     // We intentionally don't include hookLocation in dependencies because
     // we want to memoize based on individual properties, not object reference
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     const stableLocation = useMemo(
       () => props.location ?? hookLocation,
       [
