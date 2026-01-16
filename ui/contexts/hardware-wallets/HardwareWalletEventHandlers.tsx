@@ -125,18 +125,23 @@ export const useDeviceEventHandlers = ({
           break;
 
         case DeviceEvent.DeviceLocked:
-          updateConnectionState(
-            ConnectionState.error(
-              DeviceEvent.DeviceLocked,
-              payload.error ||
+          if (payload.error) {
+            updateConnectionState(
+              ConnectionState.error(DeviceEvent.DeviceLocked, payload.error),
+            );
+          } else {
+            updateConnectionState(
+              ConnectionState.error(
+                DeviceEvent.DeviceLocked,
                 new HardwareWalletError('Device is locked', {
                   code: ErrorCode.AuthenticationDeviceLocked,
                   severity: Severity.Err,
                   category: Category.Authentication,
                   userMessage: 'Device is locked',
                 }),
-            ),
-          );
+              ),
+            );
+          }
           break;
 
         case DeviceEvent.AppNotOpen:
@@ -152,7 +157,7 @@ export const useDeviceEventHandlers = ({
           break;
 
         case DeviceEvent.AppChanged:
-          setters.setCurrentAppName(payload.currentAppName || null);
+          setters.setCurrentAppName(payload?.currentAppName || '');
           if (payload.currentAppName) {
             // Check if the app is correct for this wallet type
             if (
@@ -163,15 +168,15 @@ export const useDeviceEventHandlers = ({
             ) {
               // If correct app, clear any awaiting state since device is ready
               updateConnectionState(ConnectionState.ready());
-            } else {
-              // If wrong app, set awaiting state with wrong_app reason
-              updateConnectionState(
-                ConnectionState.awaitingApp(
-                  DeviceEvent.AppNotOpen,
-                  payload.currentAppName,
-                ),
-              );
+              return;
             }
+            // If wrong app, set awaiting state with wrong_app reason
+            updateConnectionState(
+              ConnectionState.awaitingApp(
+                DeviceEvent.AppNotOpen,
+                payload?.currentAppName || '',
+              ),
+            );
           }
           break;
 
