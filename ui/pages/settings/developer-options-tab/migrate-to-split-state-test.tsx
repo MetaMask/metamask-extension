@@ -80,7 +80,8 @@ const MigrateToSplitStateTest = () => {
         setStorageKind(
           typeof newValue?.storageKind === 'string'
             ? newValue.storageKind
-            : 'split',
+            : // older installs used `data` by default
+              'data',
         );
       }
 
