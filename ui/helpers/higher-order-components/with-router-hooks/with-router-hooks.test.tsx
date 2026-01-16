@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, useLocation, useParams } from 'react-router-dom';
 import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
 // Mock the react-router-dom hooks
