@@ -10,20 +10,6 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AppHeader } from '.';
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
@@ -59,9 +45,6 @@ const render = ({
 };
 
 describe('App Header', () => {
-  beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -81,15 +64,6 @@ describe('App Header', () => {
         stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
       });
       expect(getByTestId('account-menu-icon')).toBeEnabled();
-    });
-
-    it('should show the copy button for multichain', () => {
-      mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
-
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
-      expect(getByTestId('app-header-copy-button')).toBeEnabled();
     });
   });
 
@@ -129,6 +103,22 @@ describe('App Header', () => {
         '[data-testid="connection-menu"]',
       );
       expect(connectionPickerButton).toBeInTheDocument();
+    });
+
+    it('shows network list when hovering networks row', async () => {
+      const { getByTestId } = render({
+        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
+      });
+
+      const networksSubtitle = getByTestId('networks-subtitle-popover-test-id');
+      expect(networksSubtitle).toBeInTheDocument();
+
+      fireEvent.mouseEnter(networksSubtitle);
+
+      const multichainAddressRowsList = getByTestId(
+        'multichain-address-rows-list',
+      );
+      expect(multichainAddressRowsList).toBeInTheDocument();
     });
 
     describe('Global menu support button', () => {

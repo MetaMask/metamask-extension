@@ -140,6 +140,7 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
           >
             <div
               class=""
+              data-testid="networks-subtitle-popover-test-id"
             >
               <div
                 class="flex flex-row items-center"

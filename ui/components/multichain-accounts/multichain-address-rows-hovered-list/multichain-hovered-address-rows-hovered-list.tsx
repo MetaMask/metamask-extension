@@ -69,6 +69,10 @@ export type MultichainAddressRowsListProps = {
    * before navigation occurs. Useful for analytics or tracing.
    */
   onViewAllClick?: () => void;
+  /**
+   * Optional data-testid for the hover trigger element.
+   */
+  'data-testid'?: string;
 };
 
 export const MultichainHoveredAddressRowsList = ({
@@ -77,6 +81,7 @@ export const MultichainHoveredAddressRowsList = ({
   showAccountHeaderAndBalance = true,
   hoverCloseDelay = 50,
   onViewAllClick,
+  'data-testid': dataTestId,
 }: MultichainAddressRowsListProps) => {
   const t = useI18nContext();
   const [, handleCopy] = useCopyToClipboard();
@@ -290,6 +295,7 @@ export const MultichainHoveredAddressRowsList = ({
         ref={setReferenceElement}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
+        data-testid={dataTestId}
       >
         {children}
       </Box>

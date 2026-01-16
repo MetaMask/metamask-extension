@@ -153,6 +153,7 @@ export const AppHeaderUnlockedContent = ({
                   op: TraceOperation.AccountUi,
                 });
               }}
+              data-testid="networks-subtitle-popover-test-id"
             >
               <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
