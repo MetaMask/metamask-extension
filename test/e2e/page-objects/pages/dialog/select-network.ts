@@ -54,6 +54,9 @@ class SelectNetwork {
 
   private readonly toggleButton = '.toggle-button > div';
 
+  private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -99,9 +102,10 @@ class SelectNetwork {
    */
   async clickAddButtonForPopularNetwork(chainId: string): Promise<void> {
     console.log('Click Add Button for Popular Network');
-    await this.driver.clickElementAndWaitToDisappear(
-      `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"]`,
-    );
+
+    const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
+
+    await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
   async clickCloseButton(): Promise<void> {
