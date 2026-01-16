@@ -5,6 +5,7 @@ const { promisify } = require('util');
 const log = require('loglevel');
 
 const readFile = promisify(fs.readFile);
+const writeFile = promisify(fs.writeFile);
 
 function getLocalePath(code) {
   return path.resolve(
@@ -47,9 +48,29 @@ function compareLocalesForMissingDescriptions({ englishLocale, targetLocale }) {
   );
 }
 
+// eslint-disable-next-line consistent-return
+async function writeLocale(code, locale) {
+  try {
+    const localeFilePath = getLocalePath(code);
+    return writeFile(
+      localeFilePath,
+      `${JSON.stringify(locale, null, 2)}\n`,
+      'utf8',
+    );
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      log.error('Locale file not found');
+    } else {
+      log.error(`Error writing your locale ("${code}") file: `, e);
+    }
+    process.exit(1);
+  }
+}
+
 module.exports = {
   compareLocalesForMissingDescriptions,
   compareLocalesForMissingItems,
   getLocale,
   getLocalePath,
+  writeLocale,
 };
