@@ -59,7 +59,6 @@ export const AssetListItem = ({
         selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
       }
       className={`bridge-asset${selected ? '--selected' : ''}`}
-      style={{ position: 'relative' }}
       height={BlockSize.Max}
       width={BlockSize.Full}
       data-testid="multichain-token-list-item"

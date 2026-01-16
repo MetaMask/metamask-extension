@@ -1110,6 +1110,9 @@
   "bridgeTokenCannotVerifyTitle": {
     "message": "We can't verify this token."
   },
+  "bridgeTokenNotFound": {
+    "message": "No tokens match \"$1\""
+  },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
   },

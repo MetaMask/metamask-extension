@@ -110,7 +110,7 @@ export const BridgeAssetPicker = ({
           return matchesChainIdFilter;
         }),
         (a) => a.assetId?.toLowerCase(),
-      ).map((token)=>toBridgeToken(token)),
+      ).map((token) => toBridgeToken(token)),
     // Ignore warnings about assetsWithBalance to prevent re-fetching token list excessively
     [chainIdsSet, selectedAsset],
   );
@@ -186,9 +186,6 @@ export const BridgeAssetPicker = ({
           gap={4}
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          style={{
-            overflow: 'scroll',
-          }}
         >
           <PickerNetwork
             label={selectedNetworkName}
@@ -273,7 +270,7 @@ export const BridgeAssetPicker = ({
               assetsToInclude={assetsToInclude}
               chainIds={chainIdsSet}
               accountAddress={accountAddress}
-              searchQuery={searchQuery}
+              searchQuery={searchQuery.trim()}
               selectedAssetId={selectedAsset.assetId}
               popularTokensList={popularTokensList}
               isPopularTokensLoading={isPopularTokensLoading}
