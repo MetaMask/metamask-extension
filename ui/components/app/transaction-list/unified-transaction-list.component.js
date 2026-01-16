@@ -106,6 +106,9 @@ import { getSelectedAccountGroupMultichainTransactions } from '../../../selector
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 
+const normalizeHex = (hex) => (hex || '').toLowerCase();
+const stripHexPrefix = (hex) => normalizeHex(hex).replace(/^0x/u, '');
+
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
 // token contract. In the case of swaps, these will be transactions sent to the swaps contract
@@ -118,13 +121,17 @@ const getTransactionGroupRecipientAddressFilter = (
   chainIds,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
+    const dataMatchesToken = normalizeHex(txParams?.data).includes(
+      stripHexPrefix(recipientAddress),
+    );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some(
         (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+          normalizeHex(txParams?.to) ===
+          normalizeHex(SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId]),
       ) &&
-        txParams.data.match(recipientAddress.slice(2)))
+        dataMatchesToken)
     );
   };
 };
@@ -145,13 +152,17 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
+    const dataMatchesToken = normalizeHex(txParams?.data).includes(
+      stripHexPrefix(recipientAddress),
+    );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
       (chainIds.some(
         (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
+          normalizeHex(txParams?.to) ===
+          normalizeHex(SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId]),
       ) &&
-        txParams.data.match(recipientAddress.slice(2)))
+        dataMatchesToken)
     );
   };
 };

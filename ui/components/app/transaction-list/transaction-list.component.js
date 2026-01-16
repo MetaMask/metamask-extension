@@ -117,6 +117,9 @@ import { TransactionActivityEmptyState } from '../transaction-activity-empty-sta
 
 const PAGE_INCREMENT = 10;
 
+const normalizeHex = (hex) => (hex || '').toLowerCase();
+const stripHexPrefix = (hex) => normalizeHex(hex).replace(/^0x/u, '');
+
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
 // token contract. In the case of swaps, these will be transactions sent to the swaps contract
@@ -129,10 +132,15 @@ const getTransactionGroupRecipientAddressFilter = (
   chainId,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
+    const swapContractAddress = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
+    const dataMatchesToken = normalizeHex(txParams?.data).includes(
+      stripHexPrefix(recipientAddress),
+    );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId] &&
-        txParams.data.match(recipientAddress.slice(2)))
+      (swapContractAddress &&
+        normalizeHex(txParams?.to) === normalizeHex(swapContractAddress) &&
+        dataMatchesToken)
     );
   };
 };
@@ -141,10 +149,16 @@ const getTransactionGroupRecipientAddressFilterAllChain = (
   recipientAddress,
 ) => {
   return ({ initialTransaction: { txParams } }) => {
+    const swapContractAddress =
+      SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[txParams?.chainId];
+    const dataMatchesToken = normalizeHex(txParams?.data).includes(
+      stripHexPrefix(recipientAddress),
+    );
     return (
       isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP &&
-        txParams.data.match(recipientAddress.slice(2)))
+      (swapContractAddress &&
+        normalizeHex(txParams?.to) === normalizeHex(swapContractAddress) &&
+        dataMatchesToken)
     );
   };
 };
