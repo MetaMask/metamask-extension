@@ -1,19 +1,17 @@
 import { useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { AccountOverviewTab } from '../../shared/constants/app-state';
+import type { AccountOverviewTab } from '../../shared/constants/app-state';
 
-export function useTabState(defaultTab: AccountOverviewTab = 'tokens') {
+export function useTabState<TTab extends string = AccountOverviewTab>(
+  defaultTab: TTab,
+) {
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get('tab');
+  const tab = (searchParams.get('tab') as TTab) || defaultTab;
 
-  const activeTab = (tab as AccountOverviewTab) || defaultTab;
-
-  const setActiveTab = useCallback(
-    (value: AccountOverviewTab) => {
-      setSearchParams({ tab: value }, { replace: true });
-    },
+  const setTab = useCallback(
+    (value: TTab) => setSearchParams({ tab: value }),
     [setSearchParams],
   );
 
-  return [activeTab, setActiveTab] as const;
+  return [tab, setTab] as const;
 }
