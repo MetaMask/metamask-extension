@@ -19,12 +19,20 @@ import {
 import { TextVariant as LegacyTextVariant } from '../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { ACCOUNT_LIST_PAGE_ROUTE, DEFAULT_ROUTE } from '../../../helpers/constants/routes';
+import { createMpcWallet } from '../../../store/controller-actions/mpc-controller';
+import { useDispatch } from 'react-redux';
+import { MetaMaskReduxDispatch } from '../../../store/store';
 
 export const AddMpcWalletPage = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
 
-  const handleClose = useCallback(() => {
+  const handleContinue = useCallback(async () => {
+    await dispatch(createMpcWallet());
+  }, [navigate]);
+
+  const handleClose = useCallback(async () => {
     navigate(DEFAULT_ROUTE);
   }, [navigate]);
 
@@ -67,10 +75,10 @@ export const AddMpcWalletPage = () => {
         </Box>
         <Button
             variant={ButtonVariant.Primary}
-            onClick={handleClose}
+            onClick={handleContinue}
             style={{ width: '100%' }}
         >
-            {t('close')}
+            {t('continue')}
         </Button>
       </Content>
     </Page>
