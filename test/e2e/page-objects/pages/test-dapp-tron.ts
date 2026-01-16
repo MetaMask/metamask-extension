@@ -28,34 +28,34 @@ export class TestDappTron {
   private readonly headerConnectionNotConnectedStateSelector = {
     css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
     text: 'Not connected',
-  }
+  };
 
   private readonly connectButtonSelector = {
     testId: dataTestIds.testPage.header.connect,
     tag: 'button',
-  }
+  };
 
   private readonly disconnectButtonSelector = {
     testId: dataTestIds.testPage.header.disconnect,
     tag: 'button',
-  }
+  };
 
   private readonly disconnectButtonDropdownItemSelector = {
     css: '.adapter-dropdown-list-item',
     text: 'Disconnect',
-  }
+  };
 
-  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`
+  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`;
 
-  private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`
+  private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`;
 
-  private readonly trxTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendTRX.transactionHash}"]`
+  private readonly trxTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendTRX.transactionHash}"]`;
   
-  private readonly usdtTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendUSDT.transactionHash}"]`
+  private readonly usdtTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendUSDT.transactionHash}"]`;
 
   constructor(driver: Driver) {
     this.driver = driver;
-  }
+  };
 
   /**
    * Open the tron test dapp page.
@@ -101,11 +101,9 @@ export class TestDappTron {
   async getWalletModal() {
     await this.driver.waitForSelector(this.walletModalSelector);
     
-    const metaMaskButton = await this.driver.findElement(this.metamaskButtonSelector);
-
     return {
       connectToMetaMaskWallet: async () => {
-        await metaMaskButton.click();
+        await this.driver.clickElement(this.metamaskButtonSelector);
       },
     };
   }
