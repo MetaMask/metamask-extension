@@ -11,6 +11,7 @@ import {
   CandlestickSeries,
   HistogramSeries,
   ISeriesApi,
+  // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import {
   mockCandleData,
@@ -244,13 +245,15 @@ const PerpsCandlestickChart = forwardRef<
       const formattedData = formatCandleDataForChart(dataToUse);
 
       if (formattedData.length > 0) {
-        seriesRef.current.setData(formattedData);
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        seriesRef.current.setData(formattedData as any);
         dataLengthRef.current = formattedData.length;
 
         // Update volume data
         if (volumeSeriesRef.current) {
           const volumeData = formatVolumeDataForChart(dataToUse);
-          volumeSeriesRef.current.setData(volumeData);
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          volumeSeriesRef.current.setData(volumeData as any);
         }
 
         // Check if period changed
