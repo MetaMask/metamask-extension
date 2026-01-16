@@ -35,13 +35,15 @@ class Index extends PureComponent {
     if (error) {
       return (
         <Provider store={store}>
-          <MetaMetricsProvider>
-            <I18nProvider>
-              <LegacyI18nProvider>
-                <ErrorPage error={error} />
-              </LegacyI18nProvider>
-            </I18nProvider>
-          </MetaMetricsProvider>
+          <HashRouter>
+            <MetaMetricsProvider>
+              <I18nProvider>
+                <LegacyI18nProvider>
+                  <ErrorPage error={error} />
+                </LegacyI18nProvider>
+              </I18nProvider>
+            </MetaMetricsProvider>
+          </HashRouter>
         </Provider>
       );
     }
