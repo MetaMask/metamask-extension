@@ -25,9 +25,7 @@ import {
 } from '../../../component-library';
 import { getURLHost } from '../../../../helpers/utils/util';
 import { SnapIcon } from '../../../app/snaps/snap-icon';
-import {
-  getAllPermittedChainsForSelectedTab,
-} from '../../../../selectors';
+import { getAllPermittedChainsForSelectedTab } from '../../../../selectors';
 import { getAccountGroupWithInternalAccounts } from '../../../../selectors/multichain-accounts/account-tree';
 
 export const ConnectionListItem = ({ connection, onClick }) => {

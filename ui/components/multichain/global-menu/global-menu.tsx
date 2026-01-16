@@ -83,10 +83,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AccountDetailsMenuItem,
-  DiscoverMenuItem,
-} from '../menu-items';
+import { AccountDetailsMenuItem, DiscoverMenuItem } from '../menu-items';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import {
   getIsShieldSubscriptionActive,

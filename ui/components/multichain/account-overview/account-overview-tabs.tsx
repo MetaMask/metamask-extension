@@ -20,9 +20,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  getEnabledChainIds,
-} from '../../../selectors';
+import { getEnabledChainIds } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';

@@ -283,7 +283,6 @@ class AccountListPage {
    *
    * @param privateKey - Private key of the account
    * @param expectedErrorMessage - Expected error message if the import should fail
-   * @param options - Additional options
    */
   async addNewImportedAccount(
     privateKey: string,

@@ -12,9 +12,7 @@ import {
 } from '../../../helpers/constants/connected-sites';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { BadgeStatus } from '../badge-status';
-import {
-  getAllPermittedAccountsForCurrentTab,
-} from '../../../selectors';
+import { getAllPermittedAccountsForCurrentTab } from '../../../selectors';
 import { getAccountGroupsByAddress } from '../../../selectors/multichain-accounts/account-tree';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
 

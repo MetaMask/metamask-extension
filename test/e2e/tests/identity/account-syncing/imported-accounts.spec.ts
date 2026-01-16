@@ -106,9 +106,7 @@ describe('Account syncing - Unsupported Account types', function () {
         );
 
         // Import a private key account (this should NOT sync)
-        await accountListPage.addNewImportedAccount(
-          IMPORTED_PRIVATE_KEY,
-        );
+        await accountListPage.addNewImportedAccount(IMPORTED_PRIVATE_KEY);
 
         // Verify imported account is visible in current session
         // TODO: uncomment this when the naming issue is fixed

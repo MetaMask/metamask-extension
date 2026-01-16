@@ -7,9 +7,7 @@ import {
 } from '../../../../helpers/constants/design-system';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
-import {
-  selectAnyEnabledNetworksAreAvailable,
-} from '../../../../selectors';
+import { selectAnyEnabledNetworksAreAvailable } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
 import { isZeroAmount } from '../../../../helpers/utils/number-utils';
 import { Skeleton } from '../../../component-library/skeleton';

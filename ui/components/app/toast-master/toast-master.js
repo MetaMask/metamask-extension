@@ -161,59 +161,6 @@ export function ToastMaster() {
   return null;
 }
 
-function ConnectAccountToast() {
-  const t = useI18nContext();
-  const dispatch = useDispatch();
-
-  const [hideConnectAccountToast, setHideConnectAccountToast] = useState(false);
-  const account = useSelector(getSelectedAccount);
-
-  // If the account has changed, allow the connect account toast again
-  const prevAccountAddress = usePrevious(account?.address);
-  if (account?.address !== prevAccountAddress && hideConnectAccountToast) {
-    setHideConnectAccountToast(false);
-  }
-
-  const showConnectAccountToast = useSelector((state) =>
-    selectShowConnectAccountToast(state, account),
-  );
-
-  const activeTabOrigin = useSelector(getOriginOfCurrentTab);
-
-  return (
-    Boolean(!hideConnectAccountToast && showConnectAccountToast) && (
-      <Toast
-        dataTestId="connect-account-toast"
-        key="connect-account-toast"
-        startAdornment={
-          <PreferredAvatar address={account.address} className="self-center" />
-        }
-        text={t('accountIsntConnectedToastText', [
-          account?.metadata?.name,
-          getURLHost(activeTabOrigin),
-        ])}
-        actionText={t('connectAccount')}
-        onActionClick={() => {
-          // Connect this account
-          dispatch(addPermittedAccount(activeTabOrigin, account.address));
-          // Use setTimeout to prevent React re-render from
-          // hiding the tooltip
-          setTimeout(() => {
-            // Trigger a mouseenter on the header's connection icon
-            // to display the informative connection tooltip
-            document
-              .querySelector(
-                '[data-testid="connection-menu"] [data-tooltipped]',
-              )
-              ?.dispatchEvent(new CustomEvent('mouseenter', {}));
-          }, 250 * MILLISECOND);
-        }}
-        onClose={() => setHideConnectAccountToast(true)}
-      />
-    )
-  );
-}
-
 function ConnectAccountGroupToast() {
   const t = useI18nContext();
   const dispatch = useDispatch();
