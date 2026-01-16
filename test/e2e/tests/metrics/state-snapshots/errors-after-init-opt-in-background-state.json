@@ -29,7 +29,7 @@
   },
   "AppStateController": {
     "activeQrCodeScanRequest": null,
-    "appActiveTab": "object",
+    "appActiveTab": "undefined",
     "browserEnvironment": { "os": "string", "browser": "string" },
     "connectedStatusPopoverHasBeenShown": true,
     "defaultHomeActiveTabName": null,
@@ -61,7 +61,6 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": true,
     "showPermissionsTour": true,
-    "showStorageErrorToast": false,
     "showTestnetMessageInDropdown": true,
     "slides": "object",
     "surveyLinkLastClickedOrClosed": "object",
@@ -76,6 +75,7 @@
     "pendingShieldCohortTxType": null,
     "isWalletResetInProgress": "boolean",
     "dappSwapComparisonData": "object",
+    "showStorageErrorToast": false,
     "addressSecurityAlertResponses": "object",
     "currentExtensionPopupId": "number",
     "nftsDropdownState": {},
@@ -354,18 +354,18 @@
     }
   },
   "SnapController": {
-    "isReady": "boolean",
     "snaps": "object",
     "snapStates": "object",
-    "unencryptedSnapStates": "object"
+    "unencryptedSnapStates": "object",
+    "isReady": "boolean"
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
     "database": "object",
+    "signature": "string",
     "lastUpdated": "number",
-    "databaseUnavailable": "boolean",
-    "signature": "string"
+    "databaseUnavailable": "boolean"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
