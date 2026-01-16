@@ -6,9 +6,11 @@ import {
   EnvironmentType,
   RemoteFeatureFlagController,
 } from '@metamask/remote-feature-flag-controller';
+import merge from 'lodash/merge';
 import { ENVIRONMENT } from '../../../development/build/constants';
 import { previousValueComparator } from '../lib/util';
 import { getBaseSemVerVersion } from '../../../shared/lib/feature-flags/version-gating';
+import { getManifestFlags } from '../../../shared/lib/manifestFlags';
 import { ControllerInitFunction } from './types';
 import {
   RemoteFeatureFlagControllerInitMessenger,
@@ -83,8 +85,23 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
   const getIsDisabled = () =>
     !hasCompletedOnboarding || !canUseExternalServices;
 
+  // Merge manifest flags into persisted state so they're available to controllers
+  // that check RemoteFeatureFlagController state (like ConfigRegistryController)
+  const manifestFlags = getManifestFlags();
+  const baseState = persistedState.RemoteFeatureFlagController || {};
+  const mergedState = manifestFlags?.remoteFeatureFlags
+    ? {
+        ...baseState,
+        remoteFeatureFlags: merge(
+          {},
+          baseState.remoteFeatureFlags || {},
+          manifestFlags.remoteFeatureFlags,
+        ),
+      }
+    : baseState;
+
   const controller = new RemoteFeatureFlagController({
-    state: persistedState.RemoteFeatureFlagController,
+    state: mergedState,
     messenger: controllerMessenger,
     fetchInterval: 15 * 60 * 1000, // 15 minutes in milliseconds
     disabled: getIsDisabled(),

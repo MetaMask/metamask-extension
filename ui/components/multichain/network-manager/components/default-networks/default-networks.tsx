@@ -13,6 +13,12 @@ import {
   getRpcDataByChainId,
   sortNetworks,
 } from '../../../../../../shared/modules/network.utils';
+import { getFeaturedNetworksToAdd } from '../../../../../../shared/modules/config-registry-utils';
+import {
+  getConfigRegistryNetworks,
+  isConfigRegistryNetworksLoading,
+} from '../../../../../selectors/config-registry';
+import { getNetworkConfigurationsByChainId } from '../../../../../../shared/modules/selectors/networks';
 import {
   AlignItems,
   BlockSize,
@@ -152,6 +158,13 @@ const DefaultNetworks = memo(() => {
     [isGasFeesSponsoredNetworkEnabled],
   );
 
+  // Get Config Registry networks
+  const configRegistryNetworks = useSelector(getConfigRegistryNetworks);
+  const isConfigRegistryLoading = useSelector(isConfigRegistryNetworksLoading);
+
+  // Get existing networks for comparison
+  const existingNetworks = useSelector(getNetworkConfigurationsByChainId);
+
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
@@ -179,10 +192,22 @@ const DefaultNetworks = memo(() => {
 
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {
-    // Filter out networks that are already enabled
-    const availableNetworks = FEATURED_RPCS.filter(
-      ({ chainId }) => !evmNetworks[chainId],
-    );
+    let availableNetworks: typeof FEATURED_RPCS = [];
+
+    // Use Config Registry networks if available and loaded
+    if (configRegistryNetworks.length > 0 && !isConfigRegistryLoading) {
+      // Process featured networks from Config Registry
+      // This filters by isFeatured=true and excludes already-added networks
+      availableNetworks = getFeaturedNetworksToAdd(
+        configRegistryNetworks,
+        existingNetworks,
+      );
+    } else {
+      // Fallback to static FEATURED_RPCS during transition or if Config Registry is not available
+      availableNetworks = FEATURED_RPCS.filter(
+        ({ chainId }) => !evmNetworks[chainId],
+      );
+    }
 
     // Apply basic functionality toggle filter to exclude non-EVM networks when BFT is OFF
     const bftFilteredNetworks = useExternalServices
@@ -199,7 +224,14 @@ const DefaultNetworks = memo(() => {
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds, useExternalServices]);
+  }, [
+    configRegistryNetworks,
+    isConfigRegistryLoading,
+    existingNetworks,
+    evmNetworks,
+    blacklistedChainIds,
+    useExternalServices,
+  ]);
 
   const isAllPopularNetworksSelected = useMemo(
     () => allEnabledNetworksForAllNamespaces.length > 1,

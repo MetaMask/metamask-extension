@@ -32,6 +32,7 @@ import type {
   SubjectMetadataControllerState,
 } from '@metamask/permission-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
+import type { ConfigRegistryState } from '@metamask/config-registry-controller';
 import type { SelectedNetworkControllerState } from '@metamask/selected-network-controller';
 import type { LoggingControllerState } from '@metamask/logging-controller';
 import type { PermissionLogControllerState } from '@metamask/permission-log-controller';
@@ -375,6 +376,7 @@ type ControllerStateTypesMerged = AccountsControllerState &
   PPOMState &
   PreferencesControllerState &
   RemoteFeatureFlagControllerState &
+  ConfigRegistryState &
   RatesControllerState &
   SelectedNetworkControllerState &
   SignatureControllerState &

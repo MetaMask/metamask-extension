@@ -719,6 +719,7 @@ export default class MetamaskController extends EventEmitter {
     this.gasFeeController = controllersByName.GasFeeController;
     this.userOperationController = controllersByName.UserOperationController;
     this.cronjobController = controllersByName.CronjobController;
+    this.configRegistryController = controllersByName.ConfigRegistryController;
     this.rateLimitController = controllersByName.RateLimitController;
     this.selectedNetworkController =
       controllersByName.SelectedNetworkController;
@@ -2357,6 +2358,7 @@ export default class MetamaskController extends EventEmitter {
   getState() {
     const { vault } = this.keyringController.state;
     const isInitialized = Boolean(vault);
+
     const flatState = this.memStore.getFlatState();
 
     return {
@@ -7364,7 +7366,6 @@ export default class MetamaskController extends EventEmitter {
             // return `null` if the permissions were not
             // successfully revoked or if the permissions
             // for the origin do not exist
-            console.log(e);
           }
         },
 
@@ -8407,6 +8408,7 @@ export default class MetamaskController extends EventEmitter {
       this.accountTrackerController.stopAllPolling();
       this.deFiPositionsController.stopAllPolling();
       this.subscriptionController.stopAllPolling();
+      this.configRegistryController?.stopPolling();
     } catch (error) {
       console.error(error);
     }

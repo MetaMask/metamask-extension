@@ -68,18 +68,16 @@ export default class ComposableObservableStore extends ObservableStore {
           this.#onStateChange(key, state);
         });
       } else if (this.persist) {
-        this.controllerMessenger.subscribe(
-          `${store.name}:stateChange`,
-          (state, patches) => {
-            if (this.#changedPersistedProperty(config[key].metadata, patches)) {
-              this.#onStateChange(
-                key,
-                getPersistentState(state, config[key].metadata),
-                patches,
-              );
-            }
-          },
-        );
+        const eventName = `${store.name}:stateChange`;
+        this.controllerMessenger.subscribe(eventName, (state, patches) => {
+          if (this.#changedPersistedProperty(config[key].metadata, patches)) {
+            this.#onStateChange(
+              key,
+              getPersistentState(state, config[key].metadata),
+              patches,
+            );
+          }
+        });
       } else {
         this.controllerMessenger.subscribe(
           `${store.name}:stateChange`,
@@ -98,8 +96,9 @@ export default class ComposableObservableStore extends ObservableStore {
   }
 
   /**
-   * Merges all child store state into a single object rather than
-   * returning an object keyed by child store class name
+   * Merges all child store state into a single object.
+   * Most controllers have their state properties flattened to the top level.
+   * ConfigRegistryController is kept as a keyed object for UI selector compatibility.
    *
    * @returns {object} Object containing merged child store state
    */
@@ -113,16 +112,19 @@ export default class ComposableObservableStore extends ObservableStore {
       const state = controller.getState
         ? controller.getState()
         : controller.state;
-      Object.assign(flatState, state);
+
+      if (key === 'ConfigRegistryController') {
+        flatState[key] = state;
+      } else {
+        Object.assign(flatState, state);
+      }
     }
     return flatState;
   }
 
   #onStateChange(controllerKey, newState, patches) {
     const oldState = this.getState()[controllerKey];
-
     this.updateState({ [controllerKey]: newState });
-
     this.emit('stateChange', { controllerKey, newState, oldState, patches });
   }
 
@@ -137,7 +139,7 @@ export default class ComposableObservableStore extends ObservableStore {
    * @returns True if the patches contain a change to persisted state, false otherwise.
    */
   #changedPersistedProperty(metadata, patches) {
-    return patches.some((patch) => {
+    const hasPersistedChange = patches.some((patch) => {
       // Complete state replacement
       if (patch.path.length === 0) {
         return true;
@@ -149,5 +151,7 @@ export default class ComposableObservableStore extends ObservableStore {
       }
       return metadata[topLevelProperty].persist;
     });
+
+    return hasPersistedChange;
   }
 }

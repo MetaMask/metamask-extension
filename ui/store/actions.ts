@@ -2620,7 +2620,53 @@ export function updateMetamaskState(
       return currentState;
     }
 
-    const newState = applyPatches(currentState, patches);
+    const configRegistryPatches = patches.filter(
+      (patch) => patch.path[0] === 'ConfigRegistryController',
+    );
+
+    let stateToPatch = currentState;
+    if (
+      configRegistryPatches.length > 0 &&
+      !('ConfigRegistryController' in currentState)
+    ) {
+      stateToPatch = {
+        ...currentState,
+        ConfigRegistryController: {
+          configs: {},
+          version: null,
+          lastFetched: null,
+          fetchError: null,
+          etag: null,
+        },
+      };
+    }
+
+    let newState;
+    try {
+      newState = applyPatches(stateToPatch, patches);
+    } catch (error) {
+      console.error('[updateMetamaskState] Error applying patches:', error);
+      // If patch application fails, try to initialize ConfigRegistryController and retry
+      if (
+        configRegistryPatches.length > 0 &&
+        !('ConfigRegistryController' in stateToPatch)
+      ) {
+        stateToPatch = {
+          ...stateToPatch,
+          ConfigRegistryController: {
+            configs: {},
+            version: null,
+            lastFetched: null,
+            fetchError: null,
+            etag: null,
+          },
+        };
+        newState = applyPatches(stateToPatch, patches);
+      } else {
+        throw error;
+      }
+    }
+
     const { currentLocale } = currentState;
     const currentInternalAccount = getSelectedInternalAccount(state);
     const selectedAddress = currentInternalAccount?.address;

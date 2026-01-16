@@ -1,6 +1,7 @@
 import { Messenger } from '@metamask/messenger';
 import {
   RemoteFeatureFlagControllerGetStateAction,
+  RemoteFeatureFlagControllerStateChangeEvent,
 } from '@metamask/remote-feature-flag-controller';
 import { RootMessenger } from '../../lib/messenger';
 
@@ -34,4 +35,42 @@ export function getConfigRegistryControllerMessenger(
     actions: ['RemoteFeatureFlagController:getState'],
   });
   return controllerMessenger;
+}
+
+type AllowedInitializationActions = RemoteFeatureFlagControllerGetStateAction;
+
+type AllowedInitializationEvents = RemoteFeatureFlagControllerStateChangeEvent;
+
+export type ConfigRegistryControllerInitMessenger = ReturnType<
+  typeof getConfigRegistryControllerInitMessenger
+>;
+
+/**
+ * Create a messenger restricted to the allowed actions and events needed to
+ * initialize the Config Registry controller.
+ *
+ * @param messenger - The base messenger used to create the restricted
+ * messenger.
+ */
+export function getConfigRegistryControllerInitMessenger(
+  messenger: RootMessenger<
+    AllowedInitializationActions,
+    AllowedInitializationEvents
+  >,
+) {
+  const controllerInitMessenger = new Messenger<
+    'ConfigRegistryControllerInit',
+    AllowedInitializationActions,
+    AllowedInitializationEvents,
+    typeof messenger
+  >({
+    namespace: 'ConfigRegistryControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['RemoteFeatureFlagController:getState'],
+    events: ['RemoteFeatureFlagController:stateChange'],
+  });
+  return controllerInitMessenger;
 }

@@ -60,6 +60,13 @@ const initialState = {
   },
   throttledOrigins: {},
   isSeedlessOnboardingUserAuthenticated: false,
+  ConfigRegistryController: {
+    configs: {},
+    version: null,
+    lastFetched: null,
+    fetchError: null,
+    etag: null,
+  },
 };
 
 /**

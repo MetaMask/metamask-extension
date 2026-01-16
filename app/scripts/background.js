@@ -1311,6 +1311,33 @@ export function setupController(
         sentry?.captureException(error);
       });
     }
+
+    // Also listen to stateChange events for per-controller updates
+    // (ComposableObservableStore emits 'stateChange', not 'update')
+    controller.store.on(
+      'stateChange',
+      async ({
+        controllerKey: _controllerKey,
+        _newState,
+        _oldState,
+        _patches,
+      }) => {
+        // For 'data' storage, we need to persist the full state, not individual keys
+        // Get the full state from the store (organized by controller keys) and persist it
+        try {
+          const fullState = controller.store.getState();
+
+          // Use safePersist instead of persistenceManager.set() directly
+          // This provides debouncing (1000ms) and proper error handling
+          await safePersist(fullState);
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
+      },
+    );
+
+    // Keep the update listener for backward compatibility
     controller.store.on('update', safePersist);
   }
   controller.store.on('error', (error) => {
@@ -1946,7 +1973,6 @@ browser.tabs.onActivated.addListener(async ({ tabId }) => {
     });
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onActivated listener:', error.message);
   }
 
   return {};
@@ -2000,7 +2026,6 @@ browser.tabs.onUpdated.addListener(async (tabId) => {
     });
   } catch (error) {
     // Ignore errors from tabs that don't exist or can't be accessed
-    console.log('Error in tabs.onUpdated listener:', error.message);
   }
 
   return {};

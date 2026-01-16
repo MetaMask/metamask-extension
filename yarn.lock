@@ -6212,14 +6212,14 @@ __metadata:
 
 "@metamask/config-registry-controller@file:.yalc/@metamask/config-registry-controller::locator=metamask-crx%40workspace%3A.":
   version: 0.0.1
-  resolution: "@metamask/config-registry-controller@file:.yalc/@metamask/config-registry-controller#.yalc/@metamask/config-registry-controller::hash=c9f1e6&locator=metamask-crx%40workspace%3A."
+  resolution: "@metamask/config-registry-controller@file:.yalc/@metamask/config-registry-controller#.yalc/@metamask/config-registry-controller::hash=3f1e17&locator=metamask-crx%40workspace%3A."
   dependencies:
     "@metamask/base-controller": "npm:^9.0.0"
     "@metamask/controller-utils": "npm:^11.16.0"
     "@metamask/messenger": "npm:^0.3.0"
     "@metamask/polling-controller": "npm:^16.0.0"
     "@metamask/remote-feature-flag-controller": "npm:2.0.1"
-  checksum: 10/f8837a0ee6d16646f6f39da2411f2cb315727e5f9e605e8cc39767e7fe7926a4c350248218c76d41f1cdac9f737caa6a269924434ad0ebeebf657b9b5dcc83e9
+  checksum: 10/086e9073bb27862d7f9fa92a802cadcee193192c3e8ed5ece5ff3bf81cfa3d81f181605b30cb2af8f03f89313432d14439d6a0261753a0c5870c0e6dbf8bb0bd
   languageName: node
   linkType: hard
 
