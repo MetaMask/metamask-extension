@@ -15,6 +15,8 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
         const testDappTron = new TestDappTron(driver);
 
         await testDappTron.openTestDappPage();
+        await testDappTron.checkPageIsLoaded();
+        await testDappTron.switchTo();
 
         await connectTronTestDapp(driver, testDappTron);
 

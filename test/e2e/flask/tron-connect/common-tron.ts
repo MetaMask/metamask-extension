@@ -64,7 +64,7 @@ export const withTronAccountSnap = async (
       dapp: true,
       dappOptions: dappOptions ?? {
         numberOfTestDapps: 1,
-        customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        customDappPaths: [DAPP_PATH.TEST_DAPP_TRON],
       },
       testSpecificMock: async (mockServer: Mockttp) => [
         await mockTronFeatureFlag(mockServer),
