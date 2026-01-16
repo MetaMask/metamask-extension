@@ -6,6 +6,7 @@ import type {
   DescribeScreenInput,
   DescribeScreenResult,
   McpResponse,
+  PriorKnowledgeContext,
 } from '../types';
 import {
   createSuccessResponse,
@@ -181,12 +182,27 @@ export async function handleDescribeScreen(
       screenshotDimensions,
     });
 
+    const sessionMetadata = sessionManager.getSessionMetadata();
+    const priorKnowledgeContext: PriorKnowledgeContext = {
+      currentScreen: state.currentScreen,
+      currentUrl: state.currentUrl,
+      visibleTestIds: testIds,
+      a11yNodes: nodes,
+      currentSessionFlowTags: sessionMetadata?.flowTags,
+    };
+
+    const priorKnowledge = await knowledgeStore.generatePriorKnowledge(
+      priorKnowledgeContext,
+      sessionId,
+    );
+
     return createSuccessResponse<DescribeScreenResult>(
       {
         state,
         testIds: { items: testIds },
         a11y: { nodes },
         screenshot,
+        priorKnowledge,
       },
       sessionId,
       startTime,

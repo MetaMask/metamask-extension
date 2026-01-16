@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
+import type { ExtensionState } from '../types';
 import type {
   StepRecord,
   StepRecordTool,
@@ -15,17 +16,64 @@ import type {
   KnowledgeFilters,
   SessionSummary,
   StepRecordGit,
-  StepRecordBuild,
+  PriorKnowledgeV1,
+  PriorKnowledgeContext,
+  PriorKnowledgeSimilarStep,
+  PriorKnowledgeSuggestedAction,
+  PriorKnowledgeAvoid,
+  PriorKnowledgeRelatedSession,
+  PriorKnowledgeTarget,
 } from './types';
 import {
   generateFilesafeTimestamp,
   isSensitiveField,
   SENSITIVE_FIELD_PATTERNS,
 } from './types';
-import type { ExtensionState } from '../types';
 
 const KNOWLEDGE_ROOT = 'test-artifacts/llm-knowledge';
 const SCHEMA_VERSION = 1;
+
+const PRIOR_KNOWLEDGE_CONFIG = {
+  windowHours: 48,
+  maxRelatedSessions: 5,
+  maxSimilarSteps: 10,
+  maxSuggestedActions: 5,
+  maxAvoid: 5,
+} as const;
+
+const SIMILARITY_WEIGHTS = {
+  sameScreen: 8,
+  urlPathOverlap: 6,
+  testIdOverlap: 3,
+  a11yOverlap: 2,
+  actionableTool: 2,
+} as const;
+
+const ACTIONABLE_TOOLS = [
+  'mm_click',
+  'mm_type',
+  'mm_wait_for',
+  'mm_navigate',
+  'mm_wait_for_notification',
+];
+
+const DISCOVERY_TOOLS = [
+  'mm_describe_screen',
+  'mm_list_testids',
+  'mm_accessibility_snapshot',
+  'mm_get_state',
+];
+
+function extractPathTokens(url: string): string[] {
+  try {
+    const hashPart = url.split('#')[1] ?? '';
+    return hashPart
+      .split('/')
+      .filter((t) => t.length > 0 && !t.startsWith('0x'));
+  } catch {
+    return [];
+  }
+}
 
 export class KnowledgeStore {
   private knowledgeRoot: string;
@@ -77,9 +125,13 @@ export class KnowledgeStore {
 
     for (const sid of sessionIds) {
       const metadata = await this.readSessionMetadata(sid);
-      if (!metadata) continue;
+      if (!metadata) {
+        continue;
+      }
 
-      if (!this.matchesFilters(metadata, filters)) continue;
+      if (!this.matchesFilters(metadata, filters)) {
+        continue;
+      }
 
       sessions.push({
         metadata,
@@ -105,7 +157,9 @@ export class KnowledgeStore {
     metadata: SessionMetadata,
     filters?: KnowledgeFilters,
   ): boolean {
-    if (!filters) return true;
+    if (!filters) {
+      return true;
+    }
 
     if (filters.flowTag && !metadata.flowTags.includes(filters.flowTag)) {
       return false;
@@ -145,7 +199,9 @@ export class KnowledgeStore {
 
     const allIds = await this.getAllSessionIds();
 
-    if (!filters) return allIds;
+    if (!filters) {
+      return allIds;
+    }
 
     const filtered: string[] = [];
     for (const sid of allIds) {
@@ -316,7 +372,9 @@ export class KnowledgeStore {
       const steps = await this.loadSessionSteps(sid);
 
       for (const { step } of steps) {
-        if (!this.stepMatchesFilters(step, filters)) continue;
+        if (!this.stepMatchesFilters(step, filters)) {
+          continue;
+        }
 
         const score = this.computeSearchScore(step, queryLower);
         if (score > 0) {
@@ -334,7 +392,9 @@ export class KnowledgeStore {
     step: StepRecord,
     filters?: KnowledgeFilters,
   ): boolean {
-    if (!filters) return true;
+    if (!filters) {
+      return true;
+    }
 
     if (
       filters.screen &&
@@ -611,6 +671,455 @@ export class KnowledgeStore {
     }
 
     return score;
+  }
+
+  async generatePriorKnowledge(
+    context: PriorKnowledgeContext,
+    currentSessionId?: string,
+  ): Promise<PriorKnowledgeV1 | undefined> {
+    const { windowHours } = PRIOR_KNOWLEDGE_CONFIG;
+
+    const filters: KnowledgeFilters = {
+      sinceHours: windowHours,
+    };
+
+    if (context.currentSessionFlowTags?.length) {
+      filters.flowTag = context.currentSessionFlowTags[0];
+    }
+
+    const sessionIds = await this.resolveSessionIds('all', undefined, filters);
+    const candidateSessionIds = sessionIds.filter(
+      (sid) => sid !== currentSessionId,
+    );
+
+    if (candidateSessionIds.length === 0) {
+      return undefined;
+    }
+
+    const relatedSessions = await this.getRelatedSessions(
+      candidateSessionIds,
+      filters,
+      PRIOR_KNOWLEDGE_CONFIG.maxRelatedSessions,
+    );
+
+    const { similarSteps, candidateStepCount } = await this.getSimilarSteps(
+      context,
+      candidateSessionIds,
+      filters,
+    );
+
+    const suggestedNextActions = this.buildSuggestedActions(
+      similarSteps,
+      context,
+    );
+
+    const avoidList = await this.buildAvoidList(
+      context,
+      candidateSessionIds,
+      filters,
+    );
+
+    if (
+      relatedSessions.length === 0 &&
+      similarSteps.length === 0 &&
+      suggestedNextActions.length === 0
+    ) {
+      return undefined;
+    }
+
+    return {
+      schemaVersion: 1,
+      generatedAt: new Date().toISOString(),
+      query: {
+        windowHours,
+        usedFlowTags: context.currentSessionFlowTags ?? [],
+        usedFilters: filters,
+        candidateSessions: candidateSessionIds.length,
+        candidateSteps: candidateStepCount,
+      },
+      relatedSessions,
+      similarSteps: similarSteps.slice(
+        0,
+        PRIOR_KNOWLEDGE_CONFIG.maxSimilarSteps,
+      ),
+      suggestedNextActions: suggestedNextActions.slice(
+        0,
+        PRIOR_KNOWLEDGE_CONFIG.maxSuggestedActions,
+      ),
+      avoid:
+        avoidList.length > 0
+          ? avoidList.slice(0, PRIOR_KNOWLEDGE_CONFIG.maxAvoid)
+          : undefined,
+    };
+  }
+
+  private async getRelatedSessions(
+    sessionIds: string[],
+    filters: KnowledgeFilters,
+    limit: number,
+  ): Promise<PriorKnowledgeRelatedSession[]> {
+    const sessions: PriorKnowledgeRelatedSession[] = [];
+
+    for (const sid of sessionIds) {
+      if (sessions.length >= limit) {
+        break;
+      }
+
+      const metadata = await this.readSessionMetadata(sid);
+      if (!metadata) {
+        continue;
+      }
+
+      if (!this.matchesFilters(metadata, filters)) {
+        continue;
+      }
+
+      sessions.push({
+        sessionId: metadata.sessionId,
+        createdAt: metadata.createdAt,
+        goal: metadata.goal,
+        flowTags: metadata.flowTags,
+        tags: metadata.tags,
+        git: metadata.git
+          ? { branch: metadata.git.branch, commit: metadata.git.commit }
+          : undefined,
+      });
+    }
+
+    return sessions;
+  }
+
+  private async getSimilarSteps(
+    context: PriorKnowledgeContext,
+    sessionIds: string[],
+    filters: KnowledgeFilters,
+  ): Promise<{
+    similarSteps: PriorKnowledgeSimilarStep[];
+    candidateStepCount: number;
+  }> {
+    const scoredSteps: { step: StepRecord; score: number }[] = [];
+    let candidateStepCount = 0;
+
+    const visibleTestIdSet = new Set(
+      context.visibleTestIds.map((t) => t.testId),
+    );
+    const visibleA11yNames = new Set(
+      context.a11yNodes.map((n) => n.name.toLowerCase()),
+    );
+
+    for (const sid of sessionIds) {
+      const steps = await this.loadSessionSteps(sid);
+
+      for (const { step } of steps) {
+        candidateStepCount += 1;
+
+        if (!this.stepMatchesFilters(step, filters)) {
+          continue;
+        }
+
+        if (DISCOVERY_TOOLS.includes(step.tool.name)) {
+          continue;
+        }
+
+        const score = this.computeSimilarityScore(
+          step,
+          context,
+          visibleTestIdSet,
+          visibleA11yNames,
+        );
+
+        if (score > 0) {
+          scoredSteps.push({ step, score });
+        }
+      }
+    }
+
+    scoredSteps.sort((a, b) => b.score - a.score);
+
+    const similarSteps: PriorKnowledgeSimilarStep[] = scoredSteps
+      .slice(0, PRIOR_KNOWLEDGE_CONFIG.maxSimilarSteps)
+      .map(({ step, score }) => ({
+        sessionId: step.sessionId,
+        timestamp: step.timestamp,
+        tool: step.tool.name,
+        screen: step.observation?.state?.currentScreen ?? 'unknown',
+        snippet: this.generateSnippet(step),
+        labels: step.labels,
+        target: step.tool.target
+          ? {
+              testId: step.tool.target.testId,
+              selector: step.tool.target.selector,
+            }
+          : undefined,
+        confidence: Math.min(score / 20, 1),
+      }));
+
+    return { similarSteps, candidateStepCount };
+  }
+
+  private computeSimilarityScore(
+    step: StepRecord,
+    context: PriorKnowledgeContext,
+    visibleTestIdSet: Set<string>,
+    visibleA11yNames: Set<string>,
+  ): number {
+    let score = 0;
+
+    if (step.observation?.state?.currentScreen === context.currentScreen) {
+      score += SIMILARITY_WEIGHTS.sameScreen;
+    }
+
+    if (context.currentUrl && step.observation?.state) {
+      const currentPathTokens = extractPathTokens(context.currentUrl);
+      const stepUrl = step.observation.state.currentUrl ?? '';
+      const stepPathTokens = extractPathTokens(stepUrl);
+
+      for (const token of currentPathTokens) {
+        if (stepPathTokens.includes(token)) {
+          score += SIMILARITY_WEIGHTS.urlPathOverlap;
+          break;
+        }
+      }
+    }
+
+    let testIdOverlapCount = 0;
+    for (const testId of step.observation?.testIds ?? []) {
+      if (visibleTestIdSet.has(testId.testId)) {
+        testIdOverlapCount += 1;
+        if (testIdOverlapCount >= 3) {
+          break;
+        }
+      }
+    }
+    score += Math.min(testIdOverlapCount, 3) * SIMILARITY_WEIGHTS.testIdOverlap;
+
+    let a11yOverlapCount = 0;
+    for (const node of step.observation?.a11y?.nodes ?? []) {
+      if (visibleA11yNames.has(node.name.toLowerCase())) {
+        a11yOverlapCount += 1;
+        if (a11yOverlapCount >= 2) {
+          break;
+        }
+      }
+    }
+    score += Math.min(a11yOverlapCount, 2) * SIMILARITY_WEIGHTS.a11yOverlap;
+
+    if (ACTIONABLE_TOOLS.includes(step.tool.name)) {
+      score += SIMILARITY_WEIGHTS.actionableTool;
+    }
+
+    return score;
+  }
+
+  private buildSuggestedActions(
+    similarSteps: PriorKnowledgeSimilarStep[],
+    context: PriorKnowledgeContext,
+  ): PriorKnowledgeSuggestedAction[] {
+    const visibleTestIdSet = new Set(
+      context.visibleTestIds.map((t) => t.testId),
+    );
+    const visibleA11yMap = new Map(
+      context.a11yNodes.map((n) => [n.name.toLowerCase(), n]),
+    );
+
+    const actionCounts = new Map<
+      string,
+      {
+        step: PriorKnowledgeSimilarStep;
+        count: number;
+        confidenceSum: number;
+      }
+    >();
+
+    for (const step of similarSteps) {
+      if (!step.target?.testId && !step.target?.selector) {
+        continue;
+      }
+
+      const key = step.target.testId ?? step.target.selector ?? '';
+
+      const existing = actionCounts.get(key);
+      if (existing) {
+        existing.count += 1;
+        existing.confidenceSum += step.confidence;
+      } else {
+        actionCounts.set(key, {
+          step,
+          count: 1,
+          confidenceSum: step.confidence,
+        });
+      }
+    }
+
+    const suggestions: PriorKnowledgeSuggestedAction[] = [];
+
+    const sortedActions = Array.from(actionCounts.entries()).sort(
+      ([, a], [, b]) => b.confidenceSum - a.confidenceSum,
+    );
+
+    for (const [, { step, count, confidenceSum }] of sortedActions) {
+      if (suggestions.length >= PRIOR_KNOWLEDGE_CONFIG.maxSuggestedActions) {
+        break;
+      }
+
+      const preferredTarget = this.buildPreferredTarget(step, visibleTestIdSet);
+      if (!preferredTarget) {
+        continue;
+      }
+
+      const fallbackTargets = this.buildFallbackTargets(
+        preferredTarget,
+        visibleA11yMap,
+      );
+
+      const action = this.toolToAction(step.tool);
+      if (!action) {
+        continue;
+      }
+
+      suggestions.push({
+        rank: suggestions.length + 1,
+        action,
+        rationale:
+          count > 1
+            ? `Used ${count} times successfully on this screen`
+            : 'Most common next successful step on this screen',
+        confidence: Math.min(confidenceSum / count, 1),
+        preferredTarget,
+        fallbackTargets:
+          fallbackTargets.length > 0 ? fallbackTargets : undefined,
+      });
+    }
+
+    return suggestions;
+  }
+
+  private buildPreferredTarget(
+    priorStep: PriorKnowledgeSimilarStep,
+    visibleTestIdSet: Set<string>,
+  ): PriorKnowledgeTarget | null {
+    if (
+      priorStep.target?.testId &&
+      visibleTestIdSet.has(priorStep.target.testId)
+    ) {
+      return { type: 'testId', value: priorStep.target.testId };
+    }
+
+    if (priorStep.target?.selector) {
+      return { type: 'selector', value: priorStep.target.selector };
+    }
+
+    return null;
+  }
+
+  private buildFallbackTargets(
+    preferredTarget: PriorKnowledgeTarget,
+    visibleA11yMap: Map<string, A11yNodeTrimmed>,
+  ): PriorKnowledgeTarget[] {
+    const fallbacks: PriorKnowledgeTarget[] = [];
+
+    if (preferredTarget.type === 'testId') {
+      const testId = preferredTarget.value;
+
+      const entries = Array.from(visibleA11yMap.entries());
+      for (const [name, node] of entries) {
+        if (
+          name.includes(testId.replace(/-/gu, ' ').toLowerCase()) ||
+          testId.toLowerCase().includes(name)
+        ) {
+          fallbacks.push({
+            type: 'a11yHint',
+            value: { role: node.role, name: node.name },
+          });
+          break;
+        }
+      }
+    }
+
+    return fallbacks;
+  }
+
+  private toolToAction(
+    toolName: string,
+  ): PriorKnowledgeSuggestedAction['action'] | null {
+    if (toolName === 'mm_click') {
+      return 'click';
+    }
+    if (toolName === 'mm_type') {
+      return 'type';
+    }
+    if (toolName === 'mm_wait_for') {
+      return 'wait_for';
+    }
+    if (toolName === 'mm_navigate') {
+      return 'navigate';
+    }
+    if (toolName === 'mm_wait_for_notification') {
+      return 'wait_for_notification';
+    }
+    return null;
+  }
+
+  private async buildAvoidList(
+    context: PriorKnowledgeContext,
+    sessionIds: string[],
+    _filters: KnowledgeFilters,
+  ): Promise<PriorKnowledgeAvoid[]> {
+    const failureCounts = new Map<
+      string,
+      { errorCode?: string; selector?: string; testId?: string; count: number }
+    >();
+
+    for (const sid of sessionIds) {
+      const steps = await this.loadSessionSteps(sid);
+
+      for (const { step } of steps) {
+        if (step.outcome.ok) {
+          continue;
+        }
+        if (step.observation?.state?.currentScreen !== context.currentScreen) {
+          continue;
+        }
+
+        const targetKey =
+          step.tool.target?.testId ?? step.tool.target?.selector ?? 'unknown';
+
+        const existing = failureCounts.get(targetKey);
+        if (existing) {
+          existing.count += 1;
+        } else {
+          failureCounts.set(targetKey, {
+            errorCode: step.outcome.error?.code,
+            testId: step.tool.target?.testId,
+            selector: step.tool.target?.selector,
+            count: 1,
+          });
+        }
+      }
+    }
+
+    const avoidList: PriorKnowledgeAvoid[] = [];
+
+    const failureEntries = Array.from(failureCounts.values());
+    for (const failure of failureEntries) {
+      if (failure.count < 2) {
+        continue;
+      }
+
+      avoidList.push({
+        rationale: 'Frequently fails due to UI churn',
+        target: {
+          testId: failure.testId,
+          selector: failure.selector,
+        },
+        errorCode: failure.errorCode,
+        frequency: failure.count,
+      });
+    }
+
+    avoidList.sort((a, b) => b.frequency - a.frequency);
+
+    return avoidList;
   }
 }
 

@@ -34,28 +34,51 @@ lsof -ti:8545,12345,8000 | xargs kill -9
 
 ## MCP Tools Overview
 
-The MetaMask MCP server provides 16 tools for browser automation:
+The MetaMask MCP server provides tools for browser automation:
 
-| Tool                        | Description                                   |
-| --------------------------- | --------------------------------------------- |
-| `mm_build`                  | Build extension using `yarn build:test`       |
-| `mm_launch`                 | Launch MetaMask in headed Chrome              |
-| `mm_cleanup`                | Stop browser and all services                 |
-| `mm_get_state`              | Get current extension state                   |
-| `mm_navigate`               | Navigate to home, settings, or URL            |
-| `mm_wait_for_notification`  | Wait for notification popup                   |
-| `mm_list_testids`           | List visible data-testid attributes           |
-| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)           |
-| `mm_describe_screen`        | Combined state + testIds + a11y snapshot      |
-| `mm_screenshot`             | Take and save screenshot                      |
-| `mm_click`                  | Click element by a11yRef, testId, or selector |
-| `mm_type`                   | Type text into element                        |
-| `mm_wait_for`               | Wait for element to be visible                |
-| `mm_knowledge_last`         | Get last N step records                       |
-| `mm_knowledge_search`       | Search step records                           |
-| `mm_knowledge_summarize`    | Generate session recipe                       |
+| Tool                        | Description                                                 |
+| --------------------------- | ----------------------------------------------------------- |
+| `mm_build`                  | Build extension using `yarn build:test`                     |
+| `mm_launch`                 | Launch MetaMask in headed Chrome                            |
+| `mm_cleanup`                | Stop browser and all services                               |
+| `mm_get_state`              | Get current extension state                                 |
+| `mm_navigate`               | Navigate to home, settings, or URL                          |
+| `mm_wait_for_notification`  | Wait for notification popup                                 |
+| `mm_list_testids`           | List visible data-testid attributes                         |
+| `mm_accessibility_snapshot` | Get trimmed a11y tree with refs (e1, e2...)                 |
+| `mm_describe_screen`        | Combined state + testIds + a11y snapshot (+ priorKnowledge) |
+| `mm_screenshot`             | Take and save screenshot                                    |
+| `mm_click`                  | Click element by a11yRef, testId, or selector               |
+| `mm_type`                   | Type text into element                                      |
+| `mm_wait_for`               | Wait for element to be visible                              |
+| `mm_knowledge_last`         | Get last N recorded steps                                   |
+| `mm_knowledge_search`       | Search recorded steps (cross-session supported)             |
+| `mm_knowledge_summarize`    | Generate session recipe                                     |
+| `mm_knowledge_sessions`     | List recent sessions and their metadata (tags/flowTags)     |
 
 ## Core Workflow
+
+### 0. Reuse Existing Knowledge (REQUIRED)
+
+Before attempting any non-trivial flow (send/swap/connect/sign), query what worked previously.
+
+Recommended pattern:
+
+```
+mm_knowledge_search { "query": "send flow", "scope": "all", "filters": { "flowTag": "send", "sinceHours": 48 } }
+```
+
+If you’re not sure which `flowTag` applies yet:
+
+```
+mm_knowledge_search { "query": "send", "scope": "all" }
+```
+
+If you need to discover which sessions exist:
+
+```
+mm_knowledge_sessions { "limit": 10, "filters": { "sinceHours": 48 } }
+```
 
 ### 1. Build Extension (if needed)
 
@@ -65,7 +88,7 @@ mm_build
 
 Builds the extension using `yarn build:test`. Skip if already built.
 
-### 2. Launch Extension
+### 2. Launch Extension (ALWAYS TAG THE SESSION)
 
 ```
 mm_launch
@@ -77,18 +100,37 @@ Options:
 - `fixturePreset`: Name of preset fixture (e.g., `"withMultipleAccounts"`)
 - `fixture`: Custom fixture object
 - `ports`: `{ anvil: 8545, fixtureServer: 12345 }`
+- `goal`: Short description of what you’re doing
+- `flowTags`: Flow categorization (e.g., `send`, `swap`, `connect`, `sign`, `onboarding`)
+- `tags`: Free-form tags (e.g., `smoke`, `regression`)
 
 Examples:
 
 ```json
 // Pre-onboarded wallet (default)
-{ "stateMode": "default" }
+{
+  "stateMode": "default",
+  "goal": "Send flow smoke",
+  "flowTags": ["send"],
+  "tags": ["smoke"]
+}
 
 // Fresh wallet requiring onboarding
-{ "stateMode": "onboarding" }
+{
+  "stateMode": "onboarding",
+  "goal": "Onboarding flow",
+  "flowTags": ["onboarding"],
+  "tags": ["smoke"]
+}
 
 // Custom fixture
-{ "stateMode": "custom", "fixturePreset": "withMultipleAccounts" }
+{
+  "stateMode": "custom",
+  "fixturePreset": "withMultipleAccounts",
+  "goal": "Send flow with multiple accounts",
+  "flowTags": ["send"],
+  "tags": ["regression"]
+}
 ```
 
 ### 3. Describe Current Screen
@@ -185,30 +227,50 @@ mm_cleanup
 
 Stops browser and all background services.
 
-## Typical Workflow Example
+## Typical Workflow Example (Knowledge-First)
 
 ```
-1. mm_build                                              → Build extension
-2. mm_launch { "stateMode": "default" }                  → Start browser
-3. mm_describe_screen                                    → See unlock screen
+0. mm_knowledge_search { "query": "unlock", "scope": "all", "sinceHours": 48 }
+1. mm_build
+2. mm_launch { "stateMode": "default", "goal": "Unlock smoke", "flowTags": ["unlock"], "tags": ["smoke"] }
+3. mm_describe_screen
 4. mm_type { "testId": "unlock-password", "text": "correct horse battery staple" }
-5. mm_click { "testId": "unlock-submit" }                → Submit password
-6. mm_describe_screen                                    → Verify home screen
-7. mm_screenshot { "name": "home-validated" }            → Capture result
-8. mm_cleanup                                            → End session
+5. mm_click { "testId": "unlock-submit" }
+6. mm_describe_screen
+7. mm_screenshot { "name": "home-validated" }
+8. mm_cleanup
 ```
+
+Notes:
+
+- Prefer `mm_describe_screen` as your main feedback loop tool.
+- Prefer `mm_knowledge_search` early, before exploring.
+- Prefer `flowTags` on launch so future searches can filter.
 
 ## Error Recovery
 
 ### On Failure
 
 1. Call `mm_describe_screen` to see current state
-2. Check the `state.currentScreen` value:
+2. Use the built-in `result.priorKnowledge` (when present) to guide next action
+3. If still stuck, query prior runs:
+
+```
+mm_knowledge_search { "query": "send", "scope": "all", "filters": { "sinceHours": 48 } }
+mm_knowledge_sessions { "limit": 10, "filters": { "sinceHours": 48 } }
+```
+
+4. Check the `state.currentScreen` value:
    - `unlock` → Type password and click submit
    - `home` → Already ready, check for modals
    - `onboarding-*` → Complete onboarding flow
    - `unknown` → Take screenshot, investigate
-3. Use `mm_knowledge_last` to review recent steps
+
+5. Use `mm_knowledge_last { "n": 10 }` to review immediate history (current session)
+
+### IMPORTANT: Restart MCP server after code changes
+
+The MCP server is a long-lived process. If you update the MCP server code (including knowledge tagging/metadata), restart the MCP server so new sessions write the new record format.
 
 ### Error Codes
 
@@ -225,17 +287,43 @@ Stops browser and all background services.
 | `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
 | `MM_SCREENSHOT_FAILED`       | Screenshot capture failed             |
 
-## Knowledge Store
+## Knowledge Store (How to Actually Reuse It)
 
 Every tool invocation is recorded to `test-artifacts/llm-knowledge/<sessionId>/steps/`.
 
-Query past steps:
+Sessions can also include `session.json` metadata (goal/tags/flowTags) when `mm_launch` is called with `goal`, `flowTags`, and `tags`.
+
+### Recommended usage patterns
+
+**Before starting a flow (cross-session search):**
 
 ```
-mm_knowledge_last { "n": 5 }           → Get last 5 steps
-mm_knowledge_search { "query": "click" } → Search for click actions
-mm_knowledge_summarize                  → Generate session recipe
+mm_knowledge_search { "query": "send flow", "scope": "all", "filters": { "flowTag": "send", "sinceHours": 48 } }
 ```
+
+**Find recent sessions for a flow:**
+
+```
+mm_knowledge_sessions { "limit": 10, "filters": { "flowTag": "send", "sinceHours": 48 } }
+```
+
+**Summarize a specific prior session:**
+
+```
+mm_knowledge_summarize { "scope": { "sessionId": "mm-..." } }
+```
+
+**Review current-session history (debugging):**
+
+```
+mm_knowledge_last { "n": 10 }
+```
+
+### Practical guidance
+
+- Use `mm_knowledge_search` early (before exploring UI) to reduce rediscovery.
+- Always pass `flowTags` on `mm_launch` so filters work.
+- Prefer selectors that were successful in recent sessions.
 
 ## Default Credentials
 

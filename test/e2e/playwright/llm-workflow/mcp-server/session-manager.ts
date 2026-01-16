@@ -1,9 +1,5 @@
 import type { Page, BrowserContext } from '@playwright/test';
-import {
-  MetaMaskExtensionLauncher,
-  launchMetaMask,
-  FixturePresets,
-} from '../index';
+import { MetaMaskExtensionLauncher, launchMetaMask, FixturePresets } from '..';
 import type { FixtureData, LaunchOptions, ExtensionState } from '../types';
 import {
   type SessionState,
@@ -35,6 +31,12 @@ export class SessionManager {
 
   getSessionState(): SessionState | undefined {
     return this.activeSession?.state;
+  }
+
+  private sessionMetadata: SessionMetadata | undefined;
+
+  getSessionMetadata(): SessionMetadata | undefined {
+    return this.sessionMetadata;
   }
 
   getLauncher(): MetaMaskExtensionLauncher | undefined {
@@ -158,6 +160,8 @@ export class SessionManager {
 
     await knowledgeStore.writeSessionMetadata(sessionMetadata);
 
+    this.sessionMetadata = sessionMetadata;
+
     return {
       sessionId,
       extensionId: extensionState.extensionId,
@@ -172,6 +176,7 @@ export class SessionManager {
 
     await this.activeSession.launcher.cleanup();
     this.activeSession = null;
+    this.sessionMetadata = undefined;
     this.clearRefMap();
     return true;
   }

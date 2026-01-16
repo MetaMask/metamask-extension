@@ -375,6 +375,105 @@ export type DescribeScreenResult = {
     nodes: A11yNodeTrimmed[];
   };
   screenshot: ScreenshotInfo;
+  priorKnowledge?: PriorKnowledgeV1;
+};
+
+// =============================================================================
+// Prior Knowledge Types (SPEC-02)
+// =============================================================================
+
+/**
+ * Target reference for prior knowledge suggestions.
+ * - testId: stable, preferred
+ * - selector: fallback CSS selector
+ * - a11yHint: role+name hint (never a stale a11yRef)
+ */
+export type PriorKnowledgeTarget =
+  | { type: 'testId'; value: string }
+  | { type: 'selector'; value: string }
+  | { type: 'a11yHint'; value: { role: string; name: string } };
+
+/**
+ * Suggested next action derived from prior knowledge
+ */
+export type PriorKnowledgeSuggestedAction = {
+  rank: number;
+  action: 'click' | 'type' | 'wait_for' | 'navigate' | 'wait_for_notification';
+  rationale: string;
+  confidence: number;
+  preferredTarget: PriorKnowledgeTarget;
+  fallbackTargets?: PriorKnowledgeTarget[];
+};
+
+/**
+ * A similar step from prior sessions
+ */
+export type PriorKnowledgeSimilarStep = {
+  sessionId: string;
+  timestamp: string;
+  tool: string;
+  screen: string;
+  snippet: string;
+  labels?: string[];
+  target?: { testId?: string; selector?: string };
+  confidence: number;
+};
+
+/**
+ * An action to avoid based on prior failures
+ */
+export type PriorKnowledgeAvoid = {
+  rationale: string;
+  target: { selector?: string; testId?: string };
+  errorCode?: string;
+  frequency: number;
+};
+
+/**
+ * Related session summary for priorKnowledge
+ */
+export type PriorKnowledgeRelatedSession = {
+  sessionId: string;
+  createdAt: string;
+  goal?: string;
+  flowTags: string[];
+  tags: string[];
+  git?: { branch?: string; commit?: string };
+};
+
+/**
+ * Query metadata for priorKnowledge transparency
+ */
+export type PriorKnowledgeQuery = {
+  windowHours: number;
+  usedFlowTags: string[];
+  usedFilters: Record<string, unknown>;
+  candidateSessions: number;
+  candidateSteps: number;
+};
+
+/**
+ * Prior Knowledge V1 schema - injected into mm_describe_screen response
+ */
+export type PriorKnowledgeV1 = {
+  schemaVersion: 1;
+  generatedAt: string;
+  query: PriorKnowledgeQuery;
+  relatedSessions: PriorKnowledgeRelatedSession[];
+  similarSteps: PriorKnowledgeSimilarStep[];
+  suggestedNextActions: PriorKnowledgeSuggestedAction[];
+  avoid?: PriorKnowledgeAvoid[];
+};
+
+/**
+ * Context for generating prior knowledge (current screen state)
+ */
+export type PriorKnowledgeContext = {
+  currentScreen: string;
+  currentUrl?: string;
+  visibleTestIds: TestIdItem[];
+  a11yNodes: A11yNodeTrimmed[];
+  currentSessionFlowTags?: string[];
 };
 
 /**
@@ -705,6 +804,8 @@ export const SENSITIVE_FIELD_PATTERNS = [
 
 /**
  * Check if a field name matches sensitive patterns
+ *
+ * @param fieldName
  */
 export function isSensitiveField(fieldName: string): boolean {
   return SENSITIVE_FIELD_PATTERNS.some((pattern) => pattern.test(fieldName));
@@ -716,6 +817,10 @@ export function isSensitiveField(fieldName: string): boolean {
 
 /**
  * Helper to create a success response
+ *
+ * @param result
+ * @param sessionId
+ * @param startTime
  */
 export function createSuccessResponse<T>(
   result: T,
@@ -735,6 +840,12 @@ export function createSuccessResponse<T>(
 
 /**
  * Helper to create an error response
+ *
+ * @param code
+ * @param message
+ * @param details
+ * @param sessionId
+ * @param startTime
  */
 export function createErrorResponse(
   code: ErrorCode,
@@ -760,6 +871,8 @@ export function createErrorResponse(
 
 /**
  * Validate target selection - exactly one must be provided
+ *
+ * @param target
  */
 export function validateTargetSelection(
   target: TargetSelection,
@@ -795,6 +908,8 @@ export function validateTargetSelection(
 /**
  * Generate filesystem-safe timestamp
  * Format: 20260115T123456.789Z
+ *
+ * @param date
  */
 export function generateFilesafeTimestamp(date: Date = new Date()): string {
   return date
