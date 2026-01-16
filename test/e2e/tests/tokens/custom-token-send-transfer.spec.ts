@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { mockedSourcifyTokenSend } from '../confirmations/helpers';
-import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -9,7 +10,8 @@ import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
+import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 
 const recipientAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 
@@ -45,6 +47,7 @@ describe('Transfer custom tokens', function () {
           const sendTokenPage = new SendTokenPage(driver);
           const tokenTransferRedesignedConfirmPage =
             new TokenTransferTransactionConfirmation(driver);
+          const gasFeeModal = new GasFeeModal(driver);
           const activityListPage = new ActivityListPage(driver);
 
           await homePage.checkPageIsLoaded();
@@ -69,11 +72,12 @@ describe('Transfer custom tokens', function () {
             expectedNetworkFee,
           );
 
-          // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
-            GAS_LIMIT,
-            GAS_PRICE,
-          );
+          // edit gas fee using the new gas fee modal
+          await tokenTransferRedesignedConfirmPage.openGasFeeModal();
+          await gasFeeModal.setCustomLegacyGasFee({
+            gasPrice: GAS_PRICE,
+            gasLimit: GAS_LIMIT,
+          });
 
           await tokenTransferRedesignedConfirmPage.checkGasFee('0.0004');
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
@@ -112,6 +116,7 @@ describe('Transfer custom tokens', function () {
           const assetListPage = new AssetListPage(driver);
           const tokenTransferRedesignedConfirmPage =
             new TokenTransferTransactionConfirmation(driver);
+          const gasFeeModal = new GasFeeModal(driver);
           const activityListPage = new ActivityListPage(driver);
 
           await homePage.checkPageIsLoaded();
@@ -134,11 +139,12 @@ describe('Transfer custom tokens', function () {
             expectedNetworkFee,
           );
 
-          // edit gas fee
-          await tokenTransferRedesignedConfirmPage.editGasFeeLegacy(
-            GAS_LIMIT,
-            GAS_PRICE,
-          );
+          // edit gas fee using the new gas fee modal
+          await tokenTransferRedesignedConfirmPage.openGasFeeModal();
+          await gasFeeModal.setCustomLegacyGasFee({
+            gasPrice: GAS_PRICE,
+            gasLimit: GAS_LIMIT,
+          });
           await tokenTransferRedesignedConfirmPage.clickConfirmButton();
 
           // in extension, check that transaction has completed correctly and is displayed in the activity list

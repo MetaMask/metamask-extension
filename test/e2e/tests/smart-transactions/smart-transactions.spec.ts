@@ -1,17 +1,18 @@
 /* eslint-disable mocha/no-skipped-tests */
 import { MockttpServer } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockSmartTransactionsRemoteFlags } from './remote-flags';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -45,7 +46,10 @@ async function withFixturesForSmartTransactions(
         hardfork: 'london',
         chainId: '1',
       },
-      testSpecificMock,
+      testSpecificMock: async (mockServer: MockttpServer) => {
+        await mockSmartTransactionsRemoteFlags(mockServer);
+        await testSpecificMock(mockServer);
+      },
     },
     async ({ driver }) => {
       await unlockWallet(driver);
@@ -60,8 +64,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -90,15 +94,12 @@ describe('Smart Transactions', function () {
 
         const activityList = new ActivityListPage(driver);
         await activityList.checkNoFailedTransactions();
-        // At the moment, there is 1 Sent and 1 Unnamed transaction (issue #35565)
-        // The fix will consolidate the 2 into 1 tx
         await activityList.checkTxAction({
           action: 'Sent',
-          txIndex: 2,
-          confirmedTx: 2,
+          txIndex: 1,
+          confirmedTx: 1,
         });
-        await activityList.checkTxAmountInActivity(`-0 ETH`, 1);
-        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 2);
+        await activityList.checkTxAmountInActivity(`-0.01 ETH`, 1);
       },
     );
   });
@@ -108,8 +109,8 @@ describe('Smart Transactions', function () {
       {
         title: this.test?.fullTitle(),
         testSpecificMock: async (mockServer: MockttpServer) => {
-          await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-            '0x0000000000000000000000000000000000000000': {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,

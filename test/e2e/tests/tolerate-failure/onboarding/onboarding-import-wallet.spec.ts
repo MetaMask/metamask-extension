@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WALLET_PASSWORD, withFixtures } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../../page-objects/pages/onboarding/onboarding-complete-page';
@@ -43,6 +44,7 @@ describe('MetaMask onboarding', function () {
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
+        extendedTimeoutMultiplier: 3,
         fixtures: new FixtureBuilder({ onboarding: true })
           .withEnabledNetworks(ALL_POPULAR_NETWORKS)
           .build(),
@@ -115,7 +117,7 @@ describe('MetaMask onboarding', function () {
         await handleSidepanelPostOnboarding(driver);
         timer6.startTimer();
         const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded({ timeout: 30000 }); // Since here the requests are not mocked, let's wait longer
+        await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);
         await assetListPage.checkTokenListIsDisplayed();
         await assetListPage.checkConversionRateDisplayed();

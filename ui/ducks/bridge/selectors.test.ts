@@ -282,7 +282,8 @@ describe('Bridge selectors', () => {
         assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        image: './images/eth_logo.svg',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
         balance: '0',
@@ -300,7 +301,8 @@ describe('Bridge selectors', () => {
         assetId: 'eip155:1/slip44:60',
         chainId: 'eip155:1',
         decimals: 18,
-        image: './images/eth_logo.svg',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
         balance: '0',
@@ -349,7 +351,7 @@ describe('Bridge selectors', () => {
 
       expect(result).toStrictEqual({
         address: '0xaca92e438df0b2401ff60da7e4337b687a2435da',
-        assetId: 'eip155:1/erc20:0xaca92e438df0b2401ff60da7e4337b687a2435da',
+        assetId: 'eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA',
         balance: '0',
         chainId: 'eip155:1',
         decimals: 6,
@@ -443,7 +445,8 @@ describe('Bridge selectors', () => {
         chainId: 'eip155:1',
         decimals: 18,
         iconUrl: '',
-        image: './images/eth_logo.svg',
+        image:
+          'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png',
         name: 'Ether',
         symbol: 'ETH',
       });
@@ -1893,6 +1896,14 @@ describe('Bridge selectors', () => {
   describe('getIsGasIncluded', () => {
     it('returns true when both smart transactions are enabled and chain supports gas-included swaps', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          smartTransactionsNetworks: {
+            [CHAIN_IDS.MAINNET]: {
+              extensionActive: true,
+            },
+          },
+        },
         metamaskStateOverrides: {
           ...mockNetworkState({
             id: 'network-configuration-id-1',
@@ -1910,25 +1921,8 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
-          },
-          swapsState: {
-            swapsFeatureFlags: {
-              ethereum: {
-                extensionActive: true,
-                mobileActive: true,
-                smartTransactions: {
-                  expectedDeadline: 45,
-                  maxDeadline: 150,
-                  returnTxHashAsap: false,
-                  extensionActive: true,
-                },
-              },
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                returnTxHashAsap: false,
-                extensionActive: true,
-              },
+            livenessByChainId: {
+              '0x1': true,
             },
           },
         },
@@ -1947,6 +1941,9 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
+            livenessByChainId: {
+              '0x1': true,
+            },
           },
           swapsState: {
             swapsFeatureFlags: {

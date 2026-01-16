@@ -28,6 +28,15 @@ function createShieldFixture() {
         '0x1': true,
       },
     })
+    .withAccountTracker({
+      accountsByChainId: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            balance: '0x15af1d78b58c40000', // 25 ETH
+          },
+        },
+      },
+    })
     .withTokensController({
       allTokens: {
         '0x1': {
@@ -87,6 +96,15 @@ function createShieldFixtureCrypto() {
     .withEnabledNetworks({
       eip155: {
         '0x1': true,
+      },
+    })
+    .withAccountTracker({
+      accountsByChainId: {
+        '0x1': {
+          '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+            balance: '0x15af1d78b58c40000', // 25 ETH
+          },
+        },
       },
     })
     .withTokensController({
@@ -476,14 +494,13 @@ describe('Shield Plan Stripe Integration', function () {
         await shieldDetailPage.checkPageIsLoaded();
 
         // Cancel the subscription
+        await shieldDetailPage.clickManagePlanButton();
         await shieldDetailPage.cancelSubscription();
-
-        await shieldDetailPage.checkNotificationShieldBanner(
-          'Your plan will be cancelled on Nov 3, 2025.',
-        );
 
         // Renew the subscription
         await shieldDetailPage.clickRenewButton();
+
+        await settingsPage.goToTransactionShieldPage();
 
         await shieldDetailPage.checkNotificationShieldBannerRemoved();
         await shieldDetailPage.checkMembershipStatus('Active plan');
@@ -494,7 +511,20 @@ describe('Shield Plan Stripe Integration', function () {
   it('should be able to change payment method from crypto to crypto (USDC -> USDT)', async function () {
     await withFixtures(
       {
-        fixtures: createShieldFixtureCrypto().build(),
+        fixtures: createShieldFixtureCrypto()
+          .withTokenBalancesController({
+            tokenBalances: {
+              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                '0x1': {
+                  // 1000 USDT (6 decimals)
+                  '0xdac17f958d2ee523a2206206994597c13d831ec7': '0x3B9ACA00',
+                  // 1000 USDC (6 decimals)
+                  '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48': '0x3B9ACA00',
+                },
+              },
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           const shieldMockttpService = new ShieldMockttpService();
@@ -529,7 +559,9 @@ describe('Shield Plan Stripe Integration', function () {
         const shieldDetailPage = new ShieldDetailPage(driver);
         await shieldDetailPage.checkPageIsLoaded();
 
-        await shieldDetailPage.checkPaymentMethod('USDC');
+        await shieldDetailPage.clickManagePlanButton();
+
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDC)');
         await shieldDetailPage.clickPaymentMethod();
 
         await shieldDetailPage.selectPaymentMethodInModal('Pay with USDT');
@@ -544,7 +576,9 @@ describe('Shield Plan Stripe Integration', function () {
 
         await shieldSubscriptionApprovePage.clickFooterConfirmButton();
         await shieldDetailPage.checkPageIsLoaded();
-        await shieldDetailPage.checkPaymentMethod('USDT');
+
+        await shieldDetailPage.clickManagePlanButton();
+        await shieldDetailPage.checkPaymentMethod('Crypto (USDT)');
       },
     );
   });

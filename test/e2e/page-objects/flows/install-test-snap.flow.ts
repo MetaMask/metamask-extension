@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
 import { TestSnaps, buttonLocator } from '../pages/test-snaps';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Open test snaps page in a new window tab, click on the button.

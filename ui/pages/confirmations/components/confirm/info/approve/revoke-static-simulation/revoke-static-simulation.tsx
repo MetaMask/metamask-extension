@@ -8,6 +8,7 @@ import { Display } from '../../../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../../../context/confirm';
 import StaticSimulation from '../../shared/static-simulation/static-simulation';
+import { useTokenTransactionData } from '../../hooks/useTokenTransactionData';
 
 export const RevokeStaticSimulation = () => {
   const t = useI18nContext();
@@ -15,7 +16,14 @@ export const RevokeStaticSimulation = () => {
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
+  const parsedTransactionData = useTokenTransactionData();
+
   const { chainId } = transactionMeta;
+
+  const spender =
+    parsedTransactionData?.args?._spender ??
+    parsedTransactionData?.args?.spender ??
+    '';
 
   const TokenContractRow = (
     <ConfirmInfoRow label={t('spendingCap')}>
@@ -37,7 +45,7 @@ export const RevokeStaticSimulation = () => {
       <Box style={{ marginLeft: 'auto', maxWidth: '100%' }}>
         <Box display={Display.Flex}>
           <Name
-            value={transactionMeta.txParams.from as string}
+            value={spender}
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}

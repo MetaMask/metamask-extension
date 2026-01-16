@@ -9,13 +9,14 @@ import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,
   nonceSortedPendingTransactionsSelectorAllChains,
-  getAllNetworkTransactions,
+  getTransactions,
   groupAndSortTransactionsByNonce,
   smartTransactionsListSelector,
 } from '../../../selectors/transactions';
@@ -36,6 +37,7 @@ import {
   TOKEN_CATEGORY_HASH,
   TransactionKind,
   PENDING_STATUS_HASH,
+  EXCLUDED_TRANSACTION_TYPES,
 } from '../../../helpers/constants/transactions';
 import {
   SmartTransactionStatus,
@@ -43,6 +45,10 @@ import {
 } from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  useEarliestNonceByChain,
+  isTransactionEarliestNonce,
+} from '../../../hooks/useEarliestNonceByChain';
 import {
   getAllEnabledNetworksForAllNamespaces,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
@@ -52,8 +58,6 @@ import {
 
 import {
   Box,
-  Button,
-  ButtonVariant,
   Text,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   BadgeWrapper,
@@ -68,11 +72,9 @@ import { MultichainTransactionDetailsModal } from '../multichain-transaction-det
 import { formatTimestamp } from '../multichain-transaction-details-modal/helpers';
 ///: END:ONLY_INCLUDE_IF
 import {
-  AlignItems,
   ///: BEGIN:ONLY_INCLUDE_IF(multichain)
   BackgroundColor,
   Display,
-  JustifyContent,
   ///: END:ONLY_INCLUDE_IF
   TextColor,
   TextVariant,
@@ -102,8 +104,7 @@ import {
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
-
-const PAGE_DAYS_INCREMENT = 10;
+import { useScrollContainer } from '../../../contexts/scroll-container';
 
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
@@ -390,7 +391,9 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
     };
   }
 
-  const filteredUniqueEVMChainIds = Object.keys(enabledNetworks?.eip155) ?? [];
+  const filteredUniqueEVMChainIds = enabledNetworks?.eip155
+    ? Object.keys(enabledNetworks?.eip155)
+    : [];
   const filteredUniqueNonEvmChainIds = [
     ...new Set(
       Object.keys(enabledNetworks)
@@ -407,6 +410,9 @@ function getFilteredChainIds(enabledNetworks, tokenChainIdOverride) {
   };
 }
 
+const ITEM_HEIGHT = 70;
+const HEADER_HEIGHT = 36;
+
 export default function UnifiedTransactionList({
   hideTokenTransactions,
   tokenAddress,
@@ -414,8 +420,7 @@ export default function UnifiedTransactionList({
   hideNetworkFilter,
   tokenChainIdOverride,
 }) {
-  const [daysLimit, setDaysLimit] = useState(PAGE_DAYS_INCREMENT);
-  const t = useI18nContext();
+  const scrollContainerRef = useScrollContainer();
   const selectedAccount = useSelector(getSelectedAccount);
   const enabledNetworks = useSelector(getEnabledNetworks);
 
@@ -455,7 +460,7 @@ export default function UnifiedTransactionList({
     groupEvmAddress &&
     groupEvmAddress !== selectedAccount?.address?.toLowerCase();
 
-  const allTransactions = useSelector(getAllNetworkTransactions);
+  const allTransactions = useSelector(getTransactions);
 
   const allSmartTransactionsState = useSelector(
     (state) => state.metamask.smartTransactionsState?.smartTransactions,
@@ -503,7 +508,7 @@ export default function UnifiedTransactionList({
     if (needsGroupEvmTransactions) {
       const evmTxs = [...allTransactions, ...(smartTransactions ?? [])]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => tx.status in PENDING_STATUS_HASH);
 
       return groupAndSortTransactionsByNonce(evmTxs);
@@ -527,7 +532,7 @@ export default function UnifiedTransactionList({
 
       const evmTxs = [...allTransactions, ...smartTxs]
         .filter((tx) => tx.txParams?.from?.toLowerCase() === groupEvmAddress)
-        .filter((tx) => tx.type !== TransactionType.incoming)
+        .filter((tx) => !EXCLUDED_TRANSACTION_TYPES.has(tx.type))
         .filter((tx) => !(tx.status in PENDING_STATUS_HASH))
         .filter(
           (tx) =>
@@ -633,6 +638,24 @@ export default function UnifiedTransactionList({
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
 
+  // Extract pending EVM transaction groups for earliest nonce calculation
+  const pendingEvmTransactionGroups = useMemo(() => {
+    return unifiedActivityItems
+      .filter((item) => item.kind === TransactionKind.EVM)
+      .filter(
+        (item) =>
+          item.transactionGroup.primaryTransaction?.status in
+          PENDING_STATUS_HASH,
+      )
+      .map((item) => item.transactionGroup);
+  }, [unifiedActivityItems]);
+
+  // Calculate the earliest nonce for each chainId to properly determine which
+  // transaction can be sped up (only the transaction with the lowest nonce can unblock the queue)
+  const earliestNonceByChain = useEarliestNonceByChain(
+    pendingEvmTransactionGroups,
+  );
+
   useEffect(() => {
     stopIncomingTransactionPolling();
     startIncomingTransactionPolling();
@@ -644,11 +667,6 @@ export default function UnifiedTransactionList({
     // Required to restart polling on new account
     selectedAccount,
   ]);
-
-  const viewMore = useCallback(
-    () => setDaysLimit((prev) => prev + PAGE_DAYS_INCREMENT),
-    [],
-  );
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountOverviewActivityTab });
@@ -702,11 +720,19 @@ export default function UnifiedTransactionList({
 
       // evm transaction
       const { transactionGroup } = item;
+      const { nonce, initialTransaction } = transactionGroup;
+      const chainId = initialTransaction?.chainId;
+      const isEarliestNonce = isTransactionEarliestNonce(
+        nonce,
+        chainId,
+        earliestNonceByChain,
+      );
+
       if (transactionGroup.initialTransaction?.isSmartTransaction) {
         return (
           <SmartTransactionListItem
             key={`${transactionGroup.nonce}:${index}`}
-            isEarliestNonce={index === 0}
+            isEarliestNonce={isEarliestNonce}
             smartTransaction={transactionGroup.initialTransaction}
             transactionGroup={transactionGroup}
             chainId={transactionGroup.initialTransaction.chainId}
@@ -716,13 +742,18 @@ export default function UnifiedTransactionList({
       return (
         <TransactionListItem
           key={`${transactionGroup.nonce}:${index}`}
-          isEarliestNonce={index === 0}
+          isEarliestNonce={isEarliestNonce}
           transactionGroup={transactionGroup}
           chainId={transactionGroup.initialTransaction.chainId}
         />
       );
     },
-    [bridgeHistoryItems, multichainNetworkConfig, toggleShowDetails],
+    [
+      bridgeHistoryItems,
+      multichainNetworkConfig,
+      toggleShowDetails,
+      earliestNonceByChain,
+    ],
   );
 
   // Remove transactions within each date group that are incoming transactions
@@ -776,6 +807,37 @@ export default function UnifiedTransactionList({
     ],
   );
 
+  // Flatten date groups into individual items for virtualization
+  const items = useMemo(() => {
+    const flattened = [];
+
+    processedUnifiedActivityItems.forEach((dateGroup) => {
+      flattened.push({
+        type: 'date-header',
+        date: dateGroup.date,
+      });
+
+      dateGroup.transactionGroups.forEach((item, index) => {
+        flattened.push({
+          type: 'transaction',
+          data: item,
+          id: item.id ?? `${dateGroup.date}-${index}`,
+        });
+      });
+    });
+
+    return flattened;
+  }, [processedUnifiedActivityItems]);
+
+  const virtualizer = useVirtualizer({
+    count: items.length,
+    getScrollElement: () => scrollContainerRef?.current || null,
+    estimateSize: (index) =>
+      items[index]?.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT,
+    overscan: 10,
+    initialOffset: scrollContainerRef?.current?.scrollTop,
+  });
+
   return (
     <>
       {selectedTransaction &&
@@ -812,44 +874,49 @@ export default function UnifiedTransactionList({
             account={selectedAccount}
           />
         ) : (
-          <Box className="transaction-list__transactions">
-            {processedUnifiedActivityItems
-              .slice(0, daysLimit)
-              .map((dateGroup) => (
-                <Fragment key={dateGroup.date}>
-                  <Text
-                    paddingTop={3}
-                    paddingInline={4}
-                    variant={TextVariant.bodyMdMedium}
-                    color={TextColor.textAlternative}
+          <div
+            className="transaction-list__transactions relative w-full"
+            style={{
+              height: `${virtualizer.getTotalSize()}px`,
+            }}
+          >
+            {virtualizer.getVirtualItems().map((virtualItem) => {
+              const item = items[virtualItem.index];
+
+              if (item.type === 'date-header') {
+                return (
+                  <div
+                    key={`date-${item.date}`}
+                    className="absolute top-0 left-0 w-full"
+                    style={{
+                      transform: `translateY(${virtualItem.start}px)`,
+                    }}
                   >
-                    {dateGroup.date}
-                  </Text>
-                  {dateGroup.transactionGroups.map((item, index) => (
-                    <Fragment key={item.id ?? index}>
-                      {renderTransaction(item, index)}
-                    </Fragment>
-                  ))}
-                </Fragment>
-              ))}
-            {processedUnifiedActivityItems.length > daysLimit && (
-              <Box
-                display={Display.Flex}
-                justifyContent={JustifyContent.center}
-                alignItems={AlignItems.center}
-                paddingInline={4}
-                paddingBottom={4}
-              >
-                <Button
-                  className="transaction-list__view-more"
-                  variant={ButtonVariant.Secondary}
-                  onClick={viewMore}
+                    <Text
+                      paddingTop={3}
+                      paddingInline={4}
+                      variant={TextVariant.bodyMdMedium}
+                      color={TextColor.textAlternative}
+                    >
+                      {item.date}
+                    </Text>
+                  </div>
+                );
+              }
+
+              return (
+                <div
+                  key={item.id}
+                  className="absolute top-0 left-0 w-full"
+                  style={{
+                    transform: `translateY(${virtualItem.start}px)`,
+                  }}
                 >
-                  {t('viewMore')}
-                </Button>
-              </Box>
-            )}
-          </Box>
+                  {renderTransaction(item.data, virtualItem.index)}
+                </div>
+              );
+            })}
+          </div>
         )}
       </Box>
     </>

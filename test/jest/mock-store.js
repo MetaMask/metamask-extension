@@ -139,6 +139,17 @@ export const createSwapsMockStore = () => {
         bridgeConfig: {
           support: false,
         },
+        smartTransactionsNetworks: {
+          default: {
+            extensionActive: false,
+          },
+          [CHAIN_IDS.MAINNET]: {
+            extensionActive: true,
+          },
+          [CHAIN_IDS.BSC]: {
+            extensionActive: true,
+          },
+        },
       },
       preferences: {
         showFiatInTestnets: true,
@@ -661,6 +672,12 @@ export const createSwapsMockStore = () => {
         userOptIn: true,
         userOptInV2: true,
         liveness: true,
+        livenessByChainId: {
+          [CHAIN_IDS.MAINNET]: true,
+          [CHAIN_IDS.BSC]: true,
+          [CHAIN_IDS.SEPOLIA]: true,
+          [CHAIN_IDS.LINEA_MAINNET]: true,
+        },
         fees: createGetSmartTransactionFeesApiResponse(),
         smartTransactions: {
           [CHAIN_IDS.MAINNET]: [

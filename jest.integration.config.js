@@ -1,3 +1,5 @@
+const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/shared/**/*.(js|ts|tsx)',
@@ -11,7 +13,13 @@ module.exports = {
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    'summary',
     [
       'jest-junit',
       {
@@ -43,7 +51,10 @@ module.exports = {
     // Use babel-jest to transpile tests with the next/babel preset
     // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-    '^.+\\.(css|scss|sass|less)$': 'jest-preview/transforms/css',
+    // Use custom transform for pre-bundled CSS to avoid jest-preview's CSS inlining
+    // which truncates large CSS files and loses design-token variables
+    'test/integration/config/assets/index\\.css$':
+      '<rootDir>/test/integration/config/transforms/css-link.js',
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
