@@ -30,7 +30,6 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { usePrevious } from '../../../hooks/usePrevious';
 import {
   getCurrentNetwork,
-  getIsMultichainAccountsState2Enabled,
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
@@ -112,9 +111,6 @@ import {
 
 export function ToastMaster() {
   const location = useLocation();
-  const isMultichainAccountsFeatureState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   // Check if storage error toast should be shown (needed for conditional rendering on other screens)
   // The selector includes all conditions: flag is true, onboarding complete, and unlocked
@@ -133,11 +129,7 @@ export function ToastMaster() {
       <ToastContainer>
         {storageErrorToast}
         <SurveyToast />
-        {isMultichainAccountsFeatureState2Enabled ? (
-          <ConnectAccountGroupToast />
-        ) : (
-          <ConnectAccountToast />
-        )}
+        <ConnectAccountGroupToast />
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
         <NftEnablementToast />

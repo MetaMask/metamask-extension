@@ -8,7 +8,6 @@ import {
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
-  getIsMultichainAccountsState2Enabled,
   selectAnyEnabledNetworksAreAvailable,
 } from '../../../../selectors';
 import { Box, SensitiveText } from '../../../component-library';
@@ -69,13 +68,5 @@ const AccountGroupBalanceChangeComponent: React.FC<
 export const AccountGroupBalanceChange: React.FC<
   AccountGroupBalanceChangeProps
 > = (props) => {
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
-  if (!isMultichainAccountsState2Enabled) {
-    return null;
-  }
-
   return <AccountGroupBalanceChangeComponent {...props} />;
 };
