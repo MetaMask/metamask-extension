@@ -15,6 +15,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useTabState } from '../../../hooks/useTabState';
+import { useBrowserStorage } from '../../../hooks/useBrowserStorage';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
 import {
   getEnabledChainIds,
@@ -34,6 +35,8 @@ import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
 import { AssetListTokenDetection } from './asset-list-token-detection';
 
+const ACTIVE_TAB_KEY = 'activeTab';
+
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
   showTokensLinks?: boolean;
@@ -49,7 +52,9 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
-  const [activeTabKey, setActiveTabKey] = useTabState('tokens');
+  const { value, setValue } =
+    useBrowserStorage<AccountOverviewTab>(ACTIVE_TAB_KEY);
+  const [activeTabKey, setActiveTabKey] = useTabState(value || 'tokens');
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -86,6 +91,7 @@ export const AccountOverviewTabs = ({
       }
 
       setActiveTabKey(tabName);
+      setValue(tabName);
 
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
@@ -111,6 +117,7 @@ export const AccountOverviewTabs = ({
       activeTabKey,
       networkFilterForMetrics,
       setActiveTabKey,
+      setValue,
       dispatch,
       selectedChainIds,
       trackEvent,
