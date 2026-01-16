@@ -16,17 +16,30 @@ const menuIconSelector = '.multichain-account-cell-popover-menu-button-icon';
 const menuItemSelector = '.multichain-account-cell-menu-item';
 const errorColorSelector = '.mm-box--color-error-default';
 
-const mockState = {
+const DEFAULT_ACCOUNT_GROUP_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
+const DEFAULT_WALLET_ID = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ';
+
+type MockStateOptions = {
+  pinned?: boolean;
+  hidden?: boolean;
+  accountName?: string;
+};
+
+const createMockState = ({
+  pinned = false,
+  hidden = false,
+  accountName = 'Test Account',
+}: MockStateOptions = {}) => ({
   metamask: {
     accountTree: {
       wallets: {
-        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
+        [DEFAULT_WALLET_ID]: {
           groups: {
-            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
+            [DEFAULT_ACCOUNT_GROUP_ID]: {
               metadata: {
-                name: 'Test Account',
-                pinned: false,
-                hidden: false,
+                name: accountName,
+                pinned,
+                hidden,
               },
             },
           },
@@ -36,7 +49,9 @@ const mockState = {
     pinnedAccountList: [],
     hiddenAccountList: [],
   },
-};
+});
+
+const mockState = createMockState();
 
 jest.mock('../../../store/actions', () => {
   const actualActions = jest.requireActual('../../../store/actions');
@@ -293,50 +308,15 @@ describe('MultichainAccountMenu', () => {
 
   it('unpins account before hiding when clicking hide on a pinned account', async () => {
     const mockOnToggle = jest.fn();
-    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    // Create state with pinned account
-    const stateWithPinnedAccount = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        accountTree: {
-          ...mockState.metamask.accountTree,
-          wallets: {
-            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-              ...mockState.metamask.accountTree.wallets[
-                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-              ],
-              groups: {
-                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
-                  ...mockState.metamask.accountTree.wallets[
-                    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                  ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
-                  metadata: {
-                    ...mockState.metamask.accountTree.wallets[
-                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
-                      .metadata,
-                    pinned: true,
-                    hidden: false,
-                  },
-                },
-              },
-            },
-          },
-        },
+    renderComponent(
+      {
+        accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
       },
-    };
-
-    const store = configureStore(stateWithPinnedAccount);
-    renderWithProvider(
-      <MultichainAccountMenu
-        accountGroupId={accountGroupId}
-        isRemovable={false}
-        isOpen={true}
-        onToggle={mockOnToggle}
-      />,
-      store,
+      createMockState({ pinned: true }),
     );
 
     // Hide option should be the fifth menu item
@@ -351,61 +331,26 @@ describe('MultichainAccountMenu', () => {
 
     // Should unpin first, then hide
     expect(mockSetAccountGroupPinned).toHaveBeenCalledWith(
-      accountGroupId,
+      DEFAULT_ACCOUNT_GROUP_ID,
       false,
     );
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
-      accountGroupId,
+      DEFAULT_ACCOUNT_GROUP_ID,
       true,
     );
   });
 
   it('unhides account before pinning when clicking pin on a hidden account', async () => {
     const mockOnToggle = jest.fn();
-    const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
-    // Create state with hidden account
-    const stateWithHiddenAccount = {
-      ...mockState,
-      metamask: {
-        ...mockState.metamask,
-        accountTree: {
-          ...mockState.metamask.accountTree,
-          wallets: {
-            'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-              ...mockState.metamask.accountTree.wallets[
-                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-              ],
-              groups: {
-                'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
-                  ...mockState.metamask.accountTree.wallets[
-                    'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                  ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
-                  metadata: {
-                    ...mockState.metamask.accountTree.wallets[
-                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
-                      .metadata,
-                    pinned: false,
-                    hidden: true,
-                  },
-                },
-              },
-            },
-          },
-        },
+    renderComponent(
+      {
+        accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
+        isRemovable: false,
+        isOpen: true,
+        onToggle: mockOnToggle,
       },
-    };
-
-    const store = configureStore(stateWithHiddenAccount);
-    renderWithProvider(
-      <MultichainAccountMenu
-        accountGroupId={accountGroupId}
-        isRemovable={false}
-        isOpen={true}
-        onToggle={mockOnToggle}
-      />,
-      store,
+      createMockState({ hidden: true }),
     );
 
     // Pin option should be the fourth menu item
@@ -420,11 +365,11 @@ describe('MultichainAccountMenu', () => {
 
     // Should unhide first, then pin
     expect(mockSetAccountGroupHidden).toHaveBeenCalledWith(
-      accountGroupId,
+      DEFAULT_ACCOUNT_GROUP_ID,
       false,
     );
     expect(mockSetAccountGroupPinned).toHaveBeenCalledWith(
-      accountGroupId,
+      DEFAULT_ACCOUNT_GROUP_ID,
       true,
     );
   });
@@ -432,10 +377,9 @@ describe('MultichainAccountMenu', () => {
   describe('Pin/Unpin account tracking', () => {
     it('tracks AccountPinned event when pinning an account', async () => {
       const mockOnToggle = jest.fn();
-      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
       renderComponent({
-        accountGroupId,
+        accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
         isRemovable: false,
         isOpen: true,
         onToggle: mockOnToggle,
@@ -463,48 +407,15 @@ describe('MultichainAccountMenu', () => {
 
     it('tracks AccountPinned event when unpinning an account', async () => {
       const mockOnToggle = jest.fn();
-      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
-
-      const stateWithPinnedAccount = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          accountTree: {
-            ...mockState.metamask.accountTree,
-            wallets: {
-              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-                ...mockState.metamask.accountTree.wallets[
-                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                ],
-                groups: {
-                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
-                    ...mockState.metamask.accountTree.wallets[
-                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
-                    metadata: {
-                      ...mockState.metamask.accountTree.wallets[
-                        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                      ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
-                        .metadata,
-                      pinned: true,
-                      hidden: false,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
 
       renderComponent(
         {
-          accountGroupId,
+          accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
           isRemovable: false,
           isOpen: true,
           onToggle: mockOnToggle,
         },
-        stateWithPinnedAccount,
+        createMockState({ pinned: true }),
       );
 
       const menuItems = document.querySelectorAll(menuItemSelector);
@@ -531,10 +442,9 @@ describe('MultichainAccountMenu', () => {
   describe('Hide/Unhide account tracking', () => {
     it('tracks AccountHidden event when hiding an account', async () => {
       const mockOnToggle = jest.fn();
-      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
 
       renderComponent({
-        accountGroupId,
+        accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
         isRemovable: false,
         isOpen: true,
         onToggle: mockOnToggle,
@@ -554,6 +464,7 @@ describe('MultichainAccountMenu', () => {
         category: MetaMetricsEventCategory.Accounts,
         properties: {
           hidden: true,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hidden_count_after: 1,
         },
       });
@@ -561,48 +472,15 @@ describe('MultichainAccountMenu', () => {
 
     it('tracks AccountHidden event when unhiding an account', async () => {
       const mockOnToggle = jest.fn();
-      const accountGroupId = 'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default';
-
-      const stateWithHiddenAccount = {
-        ...mockState,
-        metamask: {
-          ...mockState.metamask,
-          accountTree: {
-            ...mockState.metamask.accountTree,
-            wallets: {
-              'entropy:01JKAF3DSGM3AB87EM9N0K41AJ': {
-                ...mockState.metamask.accountTree.wallets[
-                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                ],
-                groups: {
-                  'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default': {
-                    ...mockState.metamask.accountTree.wallets[
-                      'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                    ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default'],
-                    metadata: {
-                      ...mockState.metamask.accountTree.wallets[
-                        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ'
-                      ].groups['entropy:01JKAF3DSGM3AB87EM9N0K41AJ/default']
-                        .metadata,
-                      pinned: false,
-                      hidden: true,
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      };
 
       renderComponent(
         {
-          accountGroupId,
+          accountGroupId: DEFAULT_ACCOUNT_GROUP_ID,
           isRemovable: false,
           isOpen: true,
           onToggle: mockOnToggle,
         },
-        stateWithHiddenAccount,
+        createMockState({ hidden: true }),
       );
 
       const menuItems = document.querySelectorAll(menuItemSelector);
