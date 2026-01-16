@@ -7593,7 +7593,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/network-controller@npm:^27.0.0, @metamask/network-controller@npm:^27.1.0, @metamask/network-controller@npm:^27.2.0":
+"@metamask/network-controller@npm:^27.0.0, @metamask/network-controller@npm:^27.1.0":
   version: 27.2.0
   resolution: "@metamask/network-controller@npm:27.2.0"
   dependencies:
