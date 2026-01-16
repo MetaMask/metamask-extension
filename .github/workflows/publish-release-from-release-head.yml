@@ -9,19 +9,43 @@ name: Publish Release from Release HEAD
 #   3. Select the release/X.Y.Z branch from the dropdown
 #
 # Prerequisites:
-#   - CI checks (run-tests, e2e-chrome, e2e-firefox) must have passed on the branch HEAD
+#   - Release-team membership is verified before any job runs
 #   - The workflow must be run from a release/X.Y.Z branch
 
 on:
   workflow_dispatch:
+    inputs:
+      ci_confirmed:
+        description: 'Confirm required CI checks have passed on the release HEAD SHA'
+        required: true
+        type: boolean
 
 permissions:
   contents: write # Required to push tags and create releases
-  checks: read # Required to verify CI check-runs on the SHA
 
 jobs:
+  verify-release-team:
+    name: Verify release-team membership
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm release-team membership
+        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
+        with:
+          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
+          team: release-team
+          organization: MetaMask
+          exit: true
+
+      - name: Require CI confirmation
+        if: ${{ inputs.ci_confirmed != 'true' }}
+        run: |
+          echo "::error::You must confirm required CI checks have passed on the release HEAD SHA."
+          exit 1
+
   validate-branch:
     name: Validate release branch
+    needs: verify-release-team
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -73,63 +97,61 @@ jobs:
             echo "| SHA | \`${RELEASE_SHA}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
-  verify-ci-checks:
-    name: Verify CI checks passed
-    needs: validate-branch
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.validate-branch.outputs.release-sha }}
-          sparse-checkout: .github/scripts
-          sparse-checkout-cone-mode: false
-
-      - name: Verify required CI checks
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
-        run: .github/scripts/verify-ci-checks.sh
-
-      - name: Summary
-        if: always()
-        env:
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
-        run: |
-          {
-            echo "## CI Check Verification"
-            echo ""
-            echo "Verified checks on SHA: \`${RELEASE_SHA}\`"
-            echo ""
-            echo "Required checks:"
-            echo "- \`run-tests\` - Unit tests"
-            echo "- \`all-jobs-pass\` - All CI jobs completed"
-            echo "- \`e2e-chrome\` - E2E tests (Chrome)"
-            echo "- \`e2e-firefox\` - E2E tests (Firefox)"
-          } >> "${GITHUB_STEP_SUMMARY}"
-
   # Production builds - 4 variants required for release
   # These use 'yarn build prod' (not 'yarn build dist') to match stable branch builds
 
   build-dist-browserify:
     name: Build prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - verify-ci-checks
+    needs: validate-branch
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
       build-command: yarn build prod
       builds-from-run: ${{ github.run_id }}
-    secrets: inherit
+    secrets: &build-secrets
+      APPLE_BETA_CLIENT_ID: ${{ secrets.APPLE_BETA_CLIENT_ID }}
+      APPLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.APPLE_EXPERIMENTAL_CLIENT_ID }}
+      APPLE_FLASK_CLIENT_ID: ${{ secrets.APPLE_FLASK_CLIENT_ID }}
+      APPLE_PROD_CLIENT_ID: ${{ secrets.APPLE_PROD_CLIENT_ID }}
+      CONTENTFUL_ACCESS_SPACE_ID: ${{ secrets.CONTENTFUL_ACCESS_SPACE_ID }}
+      CONTENTFUL_ACCESS_TOKEN: ${{ secrets.CONTENTFUL_ACCESS_TOKEN }}
+      ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
+      FIREBASE_API_KEY: ${{ secrets.FIREBASE_API_KEY }}
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }}
+      FIREBASE_AUTH_DOMAIN: ${{ secrets.FIREBASE_AUTH_DOMAIN }}
+      FIREBASE_MEASUREMENT_ID: ${{ secrets.FIREBASE_MEASUREMENT_ID }}
+      FIREBASE_MESSAGING_SENDER_ID: ${{ secrets.FIREBASE_MESSAGING_SENDER_ID }}
+      FIREBASE_PROJECT_ID: ${{ secrets.FIREBASE_PROJECT_ID }}
+      FIREBASE_STORAGE_BUCKET: ${{ secrets.FIREBASE_STORAGE_BUCKET }}
+      GOOGLE_BETA_CLIENT_ID: ${{ secrets.GOOGLE_BETA_CLIENT_ID }}
+      GOOGLE_EXPERIMENTAL_CLIENT_ID: ${{ secrets.GOOGLE_EXPERIMENTAL_CLIENT_ID }}
+      GOOGLE_FLASK_CLIENT_ID: ${{ secrets.GOOGLE_FLASK_CLIENT_ID }}
+      GOOGLE_PROD_CLIENT_ID: ${{ secrets.GOOGLE_PROD_CLIENT_ID }}
+      INFURA_BETA_PROJECT_ID: ${{ secrets.INFURA_BETA_PROJECT_ID }}
+      INFURA_EXPERIMENTAL_PROJECT_ID: ${{ secrets.INFURA_EXPERIMENTAL_PROJECT_ID }}
+      INFURA_FLASK_PROJECT_ID: ${{ secrets.INFURA_FLASK_PROJECT_ID }}
+      INFURA_PROD_PROJECT_ID: ${{ secrets.INFURA_PROD_PROJECT_ID }}
+      QUICKNODE_ARBITRUM_URL: ${{ secrets.QUICKNODE_ARBITRUM_URL }}
+      QUICKNODE_AVALANCHE_URL: ${{ secrets.QUICKNODE_AVALANCHE_URL }}
+      QUICKNODE_BASE_URL: ${{ secrets.QUICKNODE_BASE_URL }}
+      QUICKNODE_LINEA_MAINNET_URL: ${{ secrets.QUICKNODE_LINEA_MAINNET_URL }}
+      QUICKNODE_MAINNET_URL: ${{ secrets.QUICKNODE_MAINNET_URL }}
+      QUICKNODE_OPTIMISM_URL: ${{ secrets.QUICKNODE_OPTIMISM_URL }}
+      QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
+      QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
+      SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
+      SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
+      SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
+      SEGMENT_PROD_WRITE_KEY: ${{ secrets.SEGMENT_PROD_WRITE_KEY }}
+      ANALYTICS_DATA_DELETION_SOURCE_ID: ${{ secrets.ANALYTICS_DATA_DELETION_SOURCE_ID }}
+      ANALYTICS_DATA_DELETION_ENDPOINT: ${{ secrets.ANALYTICS_DATA_DELETION_ENDPOINT }}
+      SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+      SENTRY_DSN_DEV: ${{ secrets.SENTRY_DSN_DEV }}
+      VAPID_KEY: ${{ secrets.VAPID_KEY }}
 
   build-dist-mv2-browserify:
     name: Build prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - verify-ci-checks
+    needs: validate-branch
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
@@ -137,25 +159,21 @@ jobs:
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ github.run_id }}
-    secrets: inherit
+    secrets: *build-secrets
 
   build-flask-browserify:
     name: Build Flask prod (Chrome MV3)
-    needs:
-      - validate-branch
-      - verify-ci-checks
+    needs: validate-branch
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
       build-command: yarn build --build-type flask prod
       builds-from-run: ${{ github.run_id }}
-    secrets: inherit
+    secrets: *build-secrets
 
   build-flask-mv2-browserify:
     name: Build Flask prod (Firefox MV2)
-    needs:
-      - validate-branch
-      - verify-ci-checks
+    needs: validate-branch
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
@@ -163,13 +181,12 @@ jobs:
       mozilla-lint: true
       enable-mv3: false
       builds-from-run: ${{ github.run_id }}
-    secrets: inherit
+    secrets: *build-secrets
 
   create-release-tag:
     name: Create release tag
     needs:
       - validate-branch
-      - verify-ci-checks
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-flask-browserify
@@ -179,14 +196,6 @@ jobs:
     outputs:
       tag-created: ${{ steps.create-tag.outputs.tag_created }}
     steps:
-      - name: Verify release-team membership
-        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
-        with:
-          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
-          team: release-team
-          organization: MetaMask
-          exit: true
-
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
@@ -222,7 +231,6 @@ jobs:
     name: Publish release
     needs:
       - validate-branch
-      - verify-ci-checks
       - create-release-tag
       - build-dist-browserify
       - build-dist-mv2-browserify
@@ -231,14 +239,6 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - name: Verify release-team membership
-        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
-        with:
-          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
-          team: release-team
-          organization: MetaMask
-          exit: true
-
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
         with:
@@ -304,6 +304,8 @@ jobs:
         run: .github/scripts/push-firefox-bundle-script.sh
         env:
           FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
+          RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
+          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
           # Environment variables used in Firefox bundle script
           # Keep this list synchronized with:
           # * The environment variables exported by `.github/scripts/bundle.sh`

@@ -9,12 +9,20 @@ fi
 
 git config --global user.name "MetaMask Bot"
 git config --global user.email metamaskbot@users.noreply.github.com
-rawVersion=$(git show -s --format='%s' HEAD | grep -Eo 'release/[0-9]+\.[0-9]+\.[0-9]+' | sed 's|release/||')
+
+rawVersion=""
+if [[ -n "${RELEASE_TAG:-}" ]]; then
+    rawVersion="${RELEASE_TAG#v}"
+else
+    target_sha="${RELEASE_SHA:-HEAD}"
+    rawVersion=$(git show -s --format='%s' "${target_sha}" | grep -Eo 'release/[0-9]+\.[0-9]+\.[0-9]+' | sed 's|release/||')
+fi
+
 version="v${rawVersion}"
 
 # Validate that the version was successfully extracted
 if [[ -z "${rawVersion}" ]]; then
-    echo "::error:: Failed to extract version from commit message. Ensure it follows the 'release/x.y.z' format."
+    echo "::error:: Failed to extract version. Provide RELEASE_TAG or ensure commit message follows 'release/x.y.z'."
     exit 1
 fi
 
