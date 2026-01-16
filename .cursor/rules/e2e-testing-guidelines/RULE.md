@@ -1,6 +1,6 @@
 ---
 description: Guidelines for Writing E2E Tests
-globs: "test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts"
+globs: 'test/e2e/**/*.spec.ts,test/e2e/**/*.spec.js,test/e2e/page-objects/**/*.ts'
 alwaysApply: false
 ---
 

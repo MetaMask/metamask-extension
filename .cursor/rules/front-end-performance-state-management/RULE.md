@@ -1,6 +1,6 @@
 ---
 description: Front-End Performance Rules - State Management
-globs: "*selector*.ts,*selector*.js,*reducer*.ts,*reducer*.js,*ducks*.ts,*ducks*.js,*slice*.ts,*slice*.js"
+globs: '*selector*.ts,*selector*.js,*reducer*.ts,*reducer*.js,*ducks*.ts,*ducks*.js,*slice*.ts,*slice*.js'
 alwaysApply: false
 ---
 

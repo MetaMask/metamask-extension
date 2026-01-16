@@ -1,4 +1,4 @@
-  # BUGBOT Rules
+# BUGBOT Rules
 
 ## Core Mission
 
