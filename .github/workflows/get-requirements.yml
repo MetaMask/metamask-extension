@@ -53,9 +53,8 @@ jobs:
     steps:
       - name: Check pull request merge queue status
         id: check-skip-merge-queue
-        # if: ${{ github.event_name == 'merge_group' }}
-        # uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
-        run: echo "up-to-date=true" >> "$GITHUB_OUTPUT"
+        if: ${{ github.event_name == 'merge_group' }}
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
 
       - uses: actions/checkout@v6
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
@@ -93,12 +92,13 @@ jobs:
       - name: Compute locales-only flag
         id: set-locales-only
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
-        run: |
-          if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
-            echo "locales-only=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "locales-only=false" >> "$GITHUB_OUTPUT"
-          fi
+        run: echo "locales-only=true" >> "$GITHUB_OUTPUT"
+        # run: |
+        #   if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
+        #     echo "locales-only=true" >> "$GITHUB_OUTPUT"
+        #   else
+        #     echo "locales-only=false" >> "$GITHUB_OUTPUT"
+        #   fi
 
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-lint flag
