@@ -8,6 +8,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { AccountOverviewTabKey } from '../../../../shared/constants/app-state';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
@@ -71,6 +72,7 @@ describe('AccountOverviewTabs - event metrics', () => {
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <AccountOverviewTabs
           onTabClick={jest.fn()}
+          defaultHomeActiveTabName={AccountOverviewTabKey.Activity}
           showTokens={true}
           showNfts={false}
           showActivity={true}
