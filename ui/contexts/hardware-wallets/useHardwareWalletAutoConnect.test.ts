@@ -211,6 +211,44 @@ describe('useHardwareWalletAutoConnect', () => {
       expect(mockConnectRef).toHaveBeenCalled();
     });
 
+    it('handles native device connect event when connect function throws', async () => {
+      const mockAdapter = {
+        connect: jest.fn().mockResolvedValue(undefined),
+        disconnect: jest.fn().mockResolvedValue(undefined),
+        isConnected: jest.fn().mockReturnValue(false),
+        destroy: jest.fn(),
+      };
+
+      const mockConnectRefWithError = jest
+        .fn()
+        .mockRejectedValue(new Error('Connection failed'));
+
+      setupHook(
+        {},
+        {
+          adapterRef: { current: mockAdapter },
+          connectRef: { current: mockConnectRefWithError },
+        },
+      );
+
+      // Get the connect callback from the subscription (index 1 since index 0 is walletType)
+      const subscribeCall = (
+        webConnectionUtils.subscribeToWebHidEvents as jest.Mock
+      ).mock.calls[0];
+      const connectCallback = subscribeCall[1];
+
+      const mockDevice = { productId: 123 } as HIDDevice;
+
+      // Should not throw - error should be handled gracefully
+      await expect(connectCallback(mockDevice)).resolves.not.toThrow();
+
+      expect(mockSetDeviceId).toHaveBeenCalledWith(expect.any(Function));
+      expect(
+        webConnectionUtils.checkHardwareWalletPermission,
+      ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      expect(mockConnectRefWithError).toHaveBeenCalled();
+    });
+
     it('handles native device disconnect event', async () => {
       setupHook({}, { deviceIdRef: { current: '123' } });
 

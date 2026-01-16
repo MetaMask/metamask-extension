@@ -86,7 +86,15 @@ export const useHardwareWalletAutoConnect = ({
         !isConnectingRef.current
       ) {
         setDeviceIdRef(newDeviceId);
-        connectRef.current?.();
+        const connect = connectRef.current;
+        if (connect) {
+          try {
+            await connect();
+          } catch (error) {
+            // Connection failed, don't mark as connected
+            // Error is already handled by connectRef implementation
+          }
+        }
       }
     };
 
