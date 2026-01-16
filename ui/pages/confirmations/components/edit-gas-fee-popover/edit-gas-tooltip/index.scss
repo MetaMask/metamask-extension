@@ -32,6 +32,7 @@
     &__value {
       min-width: 0;
       text-align: right;
+      justify-self: end;
     }
 
     p {
@@ -39,15 +40,14 @@
     }
 
     &__values {
-      width: 100%;
       margin-top: 8px;
+      display: inline-grid;
+      grid-template-columns: max-content max-content;
+      column-gap: 8px;
+      align-self: flex-start;
 
       div {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        align-items: center;
-        column-gap: 8px;
-        text-align: left;
+        display: contents;
       }
     }
   }
