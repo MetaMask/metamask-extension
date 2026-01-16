@@ -9,76 +9,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.15.0]
 
-### Uncategorized
+### Added
 
-- Null (#39233)
-- Migrate megaETH Testnet v1 to megaETH Testnet v2 Update megaETH Testnet RPC (#39118)
-- Setup perps codeowners on extension (#39138)
-- Fixed a memory leak that would cause increased memory usage over time (#39171)
-- Bump assets controllers to v95 (#39095)
-- Portfolio network filter no longer changes when dapp permission network is changed (#39181)
 - Add MSU network and native token logos. Add Etherlink network and native token logos. (#38938)
 - Asset details sticky header (#39101)
 - Add BOB network and native token logos. Add Rootstock network and native token logos. (#39017)
-- Adds 'erc20-token-revocation' Advanced Permission type in Flask build only (#39008)
-- Fixed gas fees sponsored tooltip message (#39099)
-- Improve reference stability for `getMultichainNetworkConfigurationsByChainId` selector (#38766)
-- Updated network fee tooltip for gas fees sponsored case (#39021)
-- Bump `@metamask/notification-services-controller` to `^21.0.0` (#38965)
-- Add account cell gap (#38981)
-- Remove duplicated calls to account api v2 (#38841)
-- Added support for `erc20-token-revocation` permission (#38888)
-- Added recipient when signing a 7715 permission. (#38934)
-- Update ENS snap protocol display name (#38709)
-- Adds a migration to cleanup user historical prices and removes cache for historical price fetching. (#38892)
-- Added the discover button for Tron network (#38636)
-- Fixes minor issues relates to locales removed Fox logo and locale dropdown in Onboarding app (#38839)
-  header (Sidepanel view)
-- Remove migration 171 error logging (#38739)
-- Update styling of accounts address popover (#38687)
-- Improve Snaps registry verification speed. (#38628)
-- Bump assets controllers to v93.1.0 (#38554)
-- Add `DateTimePicker` Snaps UI component and force fetching the registry without cache (#38354)
-- Added the network and token icons for X Layer (#38473)
-- Improve responsiveness of network connection banner to connection issues (#37966)
-
-### Added
-
 - Update Shield management UI (#38664)
 - Initialize static perps tab UI (#39199)
 - Virtualize send flow asset list (#39230)
 - Adds MetaMetrics tracking events to the Update Modal feature (#39221)
 - Add `perpsEnabledVersion` feature flag (#39145)
 - Fixes Firefox database corruption causing "An unexpected error occurred" by redirecting to vault recovery when possible, or displaying guidance to reinstall when recovery is not possible (#39010)
-- Fix shield reward signup button showing unexpectedly (#39091)
-- Added network specific smart transactions liveness check before submitting bridge quotes. (#38877)
-- Optimized network polling requests for tokens, rates, currencies, gas fees etc. (#38339)
+
+### Changed
+
+- Improve responsiveness of network connection banner to connection issues (#37966)
+- Improve Snaps registry verification speed (#38628)
+- Migrate megaETH Testnet v1 to megaETH Testnet v2 Update megaETH Testnet RPC (#39118)
+- Portfolio network filter no longer changes when dapp permission network is changed (#39181)
 
 ### Fixed
 
+- Remove migration 171 error logging (#38739)
+- Fixed a memory leak that would cause increased memory usage over time (#39171)
 - Updated asset list for send flow (#39218)
-- We prevent the back route once the user navigates to `Wallet Ready UI` in Firefox. (#39243)
+- We prevent the back route once the user navigates to `Wallet Ready UI` in Firefox (#39243)
 - Fixed sentence case violations in locale strings for improved consistency (#39196)
-- Null (#38726)
-- fix: keep sidepanel open for hardware wallet connections (#39185)
+- Keep sidepanel open for hardware wallet connections (#39185)
 - Fix gas station gas transfer transaction details in Activity list (#39172)
 - Experimental builds should work (#39124)
-- Fixed sentry error capture for Social Login onboarding. (#39089)
-- Optimized `getMetaMaskAccounts` and related selectors that were causing performance slowdowns in accounts flows. (#38871)
-- Fixed critical bug in `getUpdatedAndSortedAccounts` that caused cache corruption and suboptimal performance. (#38830)
-- Fixed a bug in the `getInternalAccounts` selector that was causing significant slowdowns across all accounts flows. (#37147)
+- Fixed sentry error capture for Social Login onboarding (#39089)
+- Optimized `getMetaMaskAccounts` and related selectors that were causing performance slowdowns in accounts flows (#38871)
+- Fixed critical bug in `getUpdatedAndSortedAccounts` that caused cache corruption and suboptimal performance (#38830)
+- Fixed a bug in the `getInternalAccounts` selector that was causing significant slowdowns across all accounts flows (#37147)
 - Fix multichain account syncing segment event formatting for extended event properties (#39213)
 - Always reset transaction state on transaction submit (#39179)
 - Do not throw an error when switching between queued dapp transactions (#39128)
 - Fixed gator permissions displaying "No expiration" when expiry timestamp exists (#37874)
-- Wait for the Snap platform to be ready before processing any non-EVM account operations (avoiding hitting (#39051)
-  `TimeoutError` during onboarding with Snaps)
-- Makes sure UI filters out non-evm chains and tokens when BFT is OFF. (#38914)
+- Wait for the Snap platform to be ready before processing any non-EVM account operations (avoiding hitting `TimeoutError` during onboarding with Snaps) (#39051)
+- Makes sure UI filters out non-evm chains and tokens when BFT is OFF (#38914)
 - Show correct spending cap (#39098)
 - Token 2022 send (#39123)
 - Fix long ens name representation in send flow (#39035)
 - Fix permission modal to show entire origin when it's too long (#39030)
-- fix: show notice that the account isn't connected when switching accounts - in side panel view (#39063)
+- Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
 - Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
 
 ## [13.14.0]
@@ -130,12 +104,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated network fee tooltip for gas fees sponsored case (#39021)
 - Add account cell gap (#38981)
 - Remove duplicated calls to account api v2 (#38841)
-- Add account cell gap (#38981)
-- Remove duplicated calls to account api v2 (#38841)
 - Fixes minor issues relates to locales removed Fox logo and locale dropdown in Onboarding app header (sidepanel view) (#38839)
 - Update styling of accounts address popover (#38687)
-- Improve Snaps registry verification speed (#38628)
-- Improve responsiveness of network connection banner to connection issues (#37966)
 - Fixes issue when switching networks from the dapp permissions networks button (#39173)
 - Network list when switching to hardware wallet (#39080)
 - Removed manifest for experimental build (#39070)
@@ -1021,8 +991,6 @@ authorized by the user.` error until the user fully revoked dapp
 
 ### Fixed
 
-- fix: fixes a bug that was causing to show spam Solana transactions in the activity list (#35695)
-- fix: fixes an issue that was causing to show an empty symbol instead of UNKNOWN in activity list for Solana tokens with no metadata (#35695)
 - fix: adds UI adjustments for multichain accounts features (#35839)
 - fix: fixes a bug with opening multiple block explorer URLs from multichain QR code modal (#35822)
 - fix: adds token detail name to destination account picker (#35810)
