@@ -13,6 +13,7 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { mockAccountState } from '../mocks';
 
 type PerpsMarketBalanceActionsProps = {
@@ -26,33 +27,14 @@ type PerpsMarketBalanceActionsProps = {
   onLearnMore?: () => void;
 };
 
-/**
- * Formats a balance string to USD currency format
- *
- * @param balance - The balance string to format
- * @returns Formatted USD currency string
- */
-const formatBalance = (balance: string): string => {
-  const num = parseFloat(balance);
-  return new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD',
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(num);
-};
-
-/**
- * PerpsMarketBalanceActions component
- * Displays the perps account balance and action buttons (Add funds, Withdraw)
- * Shows an empty state with CTA when balance is zero
- */
 const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   showActionButtons = true,
   onAddFunds,
   onWithdraw,
   onLearnMore,
 }) => {
+  const { formatCurrency } = useFormatters();
+
   // Use mock data for now
   const { totalBalance, availableBalance } = mockAccountState;
   const isBalanceEmpty = parseFloat(totalBalance) === 0;
@@ -155,7 +137,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
         fontWeight={FontWeight.Medium}
         data-testid="perps-balance-actions-total"
       >
-        {formatBalance(totalBalance)}
+        {formatCurrency(parseFloat(totalBalance), 'USD')}
       </Text>
 
       {/* Available Balance */}
@@ -165,7 +147,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {formatBalance(availableBalance)} available
+          {formatCurrency(parseFloat(availableBalance), 'USD')} available
         </Text>
       </Box>
 
