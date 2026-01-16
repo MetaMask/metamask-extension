@@ -1,6 +1,5 @@
 import { dataTestIds } from '@metamask/test-dapp-tron';
 import { Driver } from '../../webdriver/driver';
-import { regularDelayMs } from '../../helpers';
 import { WINDOW_TITLES } from '../../constants';
 
 const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -15,6 +14,44 @@ export class TestDappTron {
   };
 
   private readonly walletModalSelector = '.adapter-modal-wrapper';
+
+  private readonly metamaskButtonSelector = {
+    css: '.adapter-react-button',
+    text: 'MetaMask',
+  };
+
+  private readonly headerConnectionStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Connected',
+  };
+
+  private readonly headerConnectionNotConnectedStateSelector = {
+    css: `[data-testid="${dataTestIds.testPage.header.connectionStatus}"]`,
+    text: 'Not connected',
+  }
+
+  private readonly connectButtonSelector = {
+    testId: dataTestIds.testPage.header.connect,
+    tag: 'button',
+  }
+
+  private readonly disconnectButtonSelector = {
+    testId: dataTestIds.testPage.header.disconnect,
+    tag: 'button',
+  }
+
+  private readonly disconnectButtonDropdownItemSelector = {
+    css: '.adapter-dropdown-list-item',
+    text: 'Disconnect',
+  }
+
+  private readonly connectedAccountSelectorTestId = `[data-testid="${dataTestIds.testPage.header.account}"]`
+
+  private readonly signedMessageSelectorTestId = `[data-testid="${dataTestIds.testPage.signMessage.signedMessage}"]`
+
+  private readonly trxTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendTRX.transactionHash}"]`
+  
+  private readonly usdtTransactionHashSelectorTestId = `[data-testid="${dataTestIds.testPage.sendUSDT.transactionHash}"]`
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -56,13 +93,6 @@ export class TestDappTron {
     await this.checkPageIsLoaded();
   }
 
-  async clickUpdateEndpointButton() {
-    await this.driver.clickElement({
-      testId: dataTestIds.testPage.header.updateEndpoint,
-      tag: 'button',
-    });
-  }
-
   /**
    * Get wallet modal.
    *
@@ -70,11 +100,8 @@ export class TestDappTron {
    */
   async getWalletModal() {
     await this.driver.waitForSelector(this.walletModalSelector);
-
-    const metaMaskButton = await this.driver.findElement({
-      css: '.adapter-react-button',
-      text: 'MetaMask',
-    });
+    
+    const metaMaskButton = await this.driver.findElement(this.metamaskButtonSelector);
 
     return {
       connectToMetaMaskWallet: async () => {
@@ -92,39 +119,24 @@ export class TestDappTron {
     await this.waitSelectorTestId(dataTestIds.testPage.header.id);
 
     return {
-      getConnectionStatus: async () => {
-        const element = await this.driver.findElement(
-          this.getElementSelectorTestId(
-            dataTestIds.testPage.header.connectionStatus,
-          ),
-        );
-        return element.getText();
+      findHeaderConnectedState: async () => {
+        await this.driver.findElement(this.headerConnectionStateSelector);
+      },
+      findHeaderNotConnectedState: async () => {
+        await this.driver.findElement(this.headerConnectionNotConnectedStateSelector);
       },
       connect: async () =>
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.header.connect,
-          tag: 'button',
-        }),
+        await this.driver.clickElement(this.connectButtonSelector),
       disconnect: async () => {
-        await this.driver.clickElement({
-          testId: dataTestIds.testPage.header.disconnect,
-          tag: 'button',
-        });
+        await this.driver.clickElement(this.disconnectButtonSelector);
 
-        await this.driver.delay(regularDelayMs);
-
-        const disconnectButton = await this.driver.findElement({
-          css: '.adapter-dropdown-list-item',
-          text: 'Disconnect',
-        });
-
-        await disconnectButton.click();
+        await this.driver.clickElement(this.disconnectButtonDropdownItemSelector);
       },
-      getAccount: async () => {
-        const account = await this.getElementText(
-          dataTestIds.testPage.header.account,
-        );
-        return account.split('\n')[0].trim();
+      findConnectedAccount: async (account: string) => {
+        await this.driver.findElement({
+          css: this.connectedAccountSelectorTestId,
+          text: account,
+        });
       },
     };
   }
@@ -141,33 +153,12 @@ export class TestDappTron {
       setMessage: (message: string) =>
         this.setInputValue(dataTestIds.testPage.signMessage.message, message),
       signMessage: async () =>
-        await this.clickElement(dataTestIds.testPage.signMessage.signMessage),
-      getSignedMessage: async () =>
-        await this.getSignedMessages(
-          dataTestIds.testPage.signMessage.signedMessage,
-        ),
-    };
-  }
-
-  /**
-   * Get Sign TRX tests.
-   *
-   * @returns The Sign TRX component helper methods.
-   */
-  async getSignTrxTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.sendTRX.id);
-
-    return {
-      setRecipientAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendTRX.address, address),
-      setAmount: (amount: string) =>
-        this.setInputValue(dataTestIds.testPage.sendTRX.amount, amount),
-      signTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendTRX.signTransaction),
-      getSignedTransaction: async () =>
-        await this.getSignedTransaction(
-          dataTestIds.testPage.sendTRX.signedTransaction,
-        ),
+        await this.driver.clickElement({testId: dataTestIds.testPage.signMessage.signMessage}),
+      findSignedMessage: async (signedMessage: string) =>
+        await this.driver.findElement({
+          css: this.signedMessageSelectorTestId,
+          text: signedMessage,
+        }),
     };
   }
 
@@ -184,34 +175,19 @@ export class TestDappTron {
         this.setInputValue(dataTestIds.testPage.sendTRX.address, address),
       setAmount: (amount: string) =>
         this.setInputValue(dataTestIds.testPage.sendTRX.amount, amount),
-      signAndSendTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendTRX.sendTransaction),
-      getTransactionHash: async () =>
-        await this.getSignedTransaction(
-          dataTestIds.testPage.sendTRX.transactionHash,
-        ),
-    };
-  }
-
-  /**
-   * Get Sign USDT tests.
-   *
-   * @returns The Sign USDT component helper methods.
-   */
-  async getSignUsdtTest() {
-    await this.waitSelectorTestId(dataTestIds.testPage.sendUSDT.id);
-
-    return {
-      setRecipientAddress: (address: string) =>
-        this.setInputValue(dataTestIds.testPage.sendUSDT.address, address),
-      setAmount: (amount: string) =>
-        this.setInputValue(dataTestIds.testPage.sendUSDT.amount, amount),
       signTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendUSDT.signTransaction),
-      getSignedTransaction: async () =>
-        await this.getSignedTransaction(
-          dataTestIds.testPage.sendUSDT.signedTransaction,
-        ),
+        await this.driver.clickElement({testId: dataTestIds.testPage.sendTRX.signTransaction}),
+      sendTransaction: async () =>
+        await this.driver.clickElement({testId: dataTestIds.testPage.sendTRX.sendTransaction}),
+      findTransactionHash: async (transactionHash: string) =>
+        await this.driver.findElement({
+          css: this.trxTransactionHashSelectorTestId,
+          text: transactionHash,
+        }),
+      findSignedTransaction: async () =>
+        await this.driver.findElement({
+          testId: dataTestIds.testPage.sendTRX.signedTransaction,
+        })
     };
   }
 
@@ -229,11 +205,18 @@ export class TestDappTron {
       setAmount: (amount: string) =>
         this.setInputValue(dataTestIds.testPage.sendUSDT.amount, amount),
       signTransaction: async () =>
-        await this.clickElement(dataTestIds.testPage.sendUSDT.sendTransaction),
-      getTransactionHash: async () =>
-        await this.getSignedTransaction(
-          dataTestIds.testPage.sendUSDT.transactionHash,
-        ),
+        await this.driver.clickElement({testId:dataTestIds.testPage.sendUSDT.signTransaction}),
+      sendTransaction: async () =>
+        await this.driver.clickElement({testId:dataTestIds.testPage.sendUSDT.sendTransaction}),
+      findTransactionHash: async (transactionHash: string) =>
+        await this.driver.findElement({
+          css: this.usdtTransactionHashSelectorTestId,
+          text: transactionHash,
+        }),
+      findSignedTransaction: async () =>
+        await this.driver.findElement({
+          testId: dataTestIds.testPage.sendUSDT.signedTransaction,
+        })
     };
   }
 
@@ -244,30 +227,7 @@ export class TestDappTron {
    * @returns
    */
   private async waitSelectorTestId(id: string) {
-    await this.driver.findElement(this.getElementSelectorTestId(id));
-  }
-
-  /**
-   * Get the selector for an element by its data-testid.
-   *
-   * @param testId - The data-testid of the element.
-   * @returns The CSS selector for the element.
-   */
-  private getElementSelectorTestId(testId: string) {
-    return { testId };
-  }
-
-  /**
-   * Get the text of an element by its data-testid.
-   *
-   * @param testId - The data-testid of the element.
-   * @returns The text of the element.
-   */
-  private async getElementText(testId: string) {
-    const element = await this.driver.findElement(
-      this.getElementSelectorTestId(testId),
-    );
-    return element.getText();
+    await this.driver.findElement({ testId: id });
   }
 
   /**
@@ -277,43 +237,6 @@ export class TestDappTron {
    * @param value - The value to set in the input element.
    */
   private async setInputValue(id: string, value: string) {
-    await this.driver.fill(this.getElementSelectorTestId(id), value);
-  }
-
-  /**
-   * Click an element by its data-testid.
-   *
-   * @param id - The data-testid of the element to click.
-   */
-  private async clickElement(id: string) {
-    await this.driver.clickElement(this.getElementSelectorTestId(id));
-  }
-
-  /**
-   * Get signed messages from an element by its data-testid.
-   *
-   * @param id - The data-testid of the element containing signed messages.
-   * @returns An array of signed messages.
-   */
-  private async getSignedMessages(id: string) {
-    const element = await this.driver.findElement(
-      this.getElementSelectorTestId(id),
-    );
-    const value = await element.getText();
-
-    return value.split('\n').map((hash) => hash.trim());
-  }
-
-  /**
-   * Get signed transaction from an element by its data-testid.
-   *
-   * @param id - The data-testid of the element containing signed transaction.
-   * @returns The signed transaction.
-   */
-  private async getSignedTransaction(id: string) {
-    const element = await this.driver.findElement(
-      this.getElementSelectorTestId(id),
-    );
-    return await element.getText();
+    await this.driver.fill({ testId: id }, value);
   }
 }
