@@ -1,5 +1,4 @@
 import React, { useCallback, useState, useMemo } from 'react';
-import classnames from 'classnames';
 import { PAYMENT_TYPES, PaymentType } from '@metamask/subscription-controller';
 import {
   BadgeWrapper,
@@ -12,6 +11,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  twMerge,
 } from '@metamask/design-system-react';
 import {
   AvatarNetwork,
@@ -154,12 +154,10 @@ export const ShieldPaymentModal = ({
           <Box
             asChild
             data-testid="shield-payment-method-token-button"
-            className={classnames(
+            className={twMerge(
               'payment-method-item flex items-center justify-between w-full gap-4 p-4',
-              {
-                'payment-method-item--selected':
-                  selectedPaymentMethod === PAYMENT_TYPES.byCrypto,
-              },
+              selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                'payment-method-item--selected',
             )}
             backgroundColor={
               selectedPaymentMethod === PAYMENT_TYPES.byCrypto
@@ -236,12 +234,10 @@ export const ShieldPaymentModal = ({
             <Box
               asChild
               data-testid="shield-payment-method-card-button"
-              className={classnames(
+              className={twMerge(
                 'payment-method-item flex items-center justify-between w-full gap-4 p-4',
-                {
-                  'payment-method-item--selected':
-                    selectedPaymentMethod === PAYMENT_TYPES.byCard,
-                },
+                selectedPaymentMethod === PAYMENT_TYPES.byCard &&
+                  'payment-method-item--selected',
               )}
               backgroundColor={
                 selectedPaymentMethod === PAYMENT_TYPES.byCard

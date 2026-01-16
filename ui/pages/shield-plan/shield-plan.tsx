@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -26,6 +25,7 @@ import {
   Text,
   TextColor,
   TextVariant,
+  twMerge,
 } from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
@@ -435,13 +435,11 @@ const ShieldPlan = () => {
                   <Box
                     asChild
                     key={plan.id}
-                    className={classnames(
+                    className={twMerge(
                       boxRowClassName,
                       'shield-plan-page__plan rounded-lg',
-                      {
-                        'shield-plan-page__plan--selected':
-                          plan.id === selectedPlan,
-                      },
+                      plan.id === selectedPlan &&
+                        'shield-plan-page__plan--selected',
                     )}
                     data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                     onClick={() => setSelectedPlan(plan.id)}
@@ -475,7 +473,7 @@ const ShieldPlan = () => {
               <Box className="shield-plan-page__group" marginBottom={4}>
                 <Box
                   asChild
-                  className={classnames(
+                  className={twMerge(
                     boxRowClassName,
                     'shield-plan-page__row w-full',
                   )}
@@ -536,7 +534,7 @@ const ShieldPlan = () => {
               </Box>
               <Box className="shield-plan-page__group">
                 <Box
-                  className={classnames(
+                  className={twMerge(
                     boxRowClassName,
                     'shield-plan-page__row block',
                   )}
