@@ -1023,7 +1023,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/transaction-controller>@metamask/network-controller>@metamask/connectivity-controller": {
+    "@metamask/assets-controllers>@metamask/network-controller>@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -1740,7 +1740,7 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/transaction-controller>@metamask/network-controller>@metamask/connectivity-controller": true,
+        "@metamask/assets-controllers>@metamask/network-controller>@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -2129,9 +2129,12 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "lodash": true
+        "lodash": true,
+        "reselect": true
       }
     },
     "@metamask/snaps-controllers": {
