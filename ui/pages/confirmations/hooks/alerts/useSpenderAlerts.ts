@@ -64,7 +64,8 @@ function getRevokeStatus(
       if (isPermit) {
         const isDaiRevoke =
           message?.allowed === false &&
-          domain?.verifyingContract === DAI_CONTRACT_ADDRESS;
+          domain?.verifyingContract?.toLowerCase() ===
+            DAI_CONTRACT_ADDRESS.toLowerCase();
         const isZeroValuePermit =
           message?.value === '0' || message?.value === 0;
 
