@@ -494,6 +494,7 @@ describe('Bridge selectors', () => {
         name: 'Ether',
         symbol: 'ETH',
         tokenFiatAmount: undefined,
+        rwaData: undefined,
       });
     });
   });
@@ -503,16 +504,12 @@ describe('Bridge selectors', () => {
       const state = createBridgeMockStore({
         bridgeSliceOverrides: {
           fromToken: toBridgeToken({
-            address: '0x123',
             symbol: 'TEST',
-            chainId: '0x1',
             assetId: 'eip155:1/erc20:0x123',
             name: 'TEST',
             decimals: 18,
           }),
           toToken: toBridgeToken({
-            chainId: 1,
-            address: '0x567',
             symbol: 'DEST',
             assetId: 'eip155:1/erc20:0x567',
             name: 'DEST',
@@ -531,6 +528,7 @@ describe('Bridge selectors', () => {
           "decimals": 18,
           "image": "https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x567.png",
           "name": "DEST",
+          "rwaData": undefined,
           "symbol": "DEST",
           "tokenFiatAmount": undefined,
         }
@@ -542,7 +540,6 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           fromToken: toBridgeToken({
             symbol: 'TEST',
-            chainId: 'eip155:1',
             assetId: 'eip155:1/erc20:0x123',
             name: 'TEST',
             decimals: 18,
@@ -563,6 +560,7 @@ describe('Bridge selectors', () => {
         name: 'MetaMask USD',
         symbol: 'mUSD',
         tokenFiatAmount: undefined,
+        rwaData: undefined,
       });
     });
 
@@ -629,6 +627,7 @@ describe('Bridge selectors', () => {
         name: 'Ether',
         symbol: 'ETH',
         tokenFiatAmount: undefined,
+        rwaData: undefined,
       });
     });
   });
@@ -1815,9 +1814,7 @@ describe('Bridge selectors', () => {
         },
         bridgeSliceOverrides: {
           fromToken: toBridgeToken({
-            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
             decimals: 6,
-            chainId: formatChainIdToCaip(ChainId.ETH),
             symbol: 'USDC',
             name: 'USD',
             assetId:
@@ -1897,11 +1894,9 @@ describe('Bridge selectors', () => {
         bridgeSliceOverrides: {
           fromTokenExchangeRate: 2.0,
           fromToken: toBridgeToken({
-            address: 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
             decimals: 6,
             assetId:
               'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-            chainId: MultichainNetworks.SOLANA,
             symbol: 'USDC',
             name: 'USD',
           }),

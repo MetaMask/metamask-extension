@@ -82,7 +82,7 @@ const DestinationAccountListItem: React.FC<DestinationAccountListItemProps> = ({
     getAccountGroupsByAddress(state, [account.address]),
   );
   const balanceByChainId = useSelector((state: BridgeAppState) =>
-    getBridgeBalancesByChainId(state, accountGroup.id),
+    getBridgeBalancesByChainId(state, accountGroup?.id),
   );
   const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
     account,

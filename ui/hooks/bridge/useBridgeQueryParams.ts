@@ -152,13 +152,7 @@ export const useBridgeQueryParams = () => {
 
   const setToChainAndToken = useCallback(
     async (toTokenMetadata: AssetMetadata) => {
-      const { chainId } = parseCaipAssetType(toTokenMetadata.assetId);
-      dispatch(
-        setToToken({
-          ...toTokenMetadata,
-          chainId,
-        }),
-      );
+      dispatch(setToToken(toTokenMetadata));
       // Clear parsed to asset ID after successful processing
       setParsedToAssetId(null);
     },
@@ -179,12 +173,7 @@ export const useBridgeQueryParams = () => {
 
     // Process from chain/token first
     if (fromTokenMetadata) {
-      const { chainId } = parseCaipAssetType(fromTokenMetadata.assetId);
-      const token = {
-        ...fromTokenMetadata,
-        chainId,
-      };
-      dispatch(setFromToken(token));
+      dispatch(setFromToken(fromTokenMetadata));
     }
   }, [assetMetadataByAssetId, parsedFromAssetId]);
 
