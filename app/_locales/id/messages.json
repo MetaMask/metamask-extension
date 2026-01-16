@@ -1278,9 +1278,6 @@
   "close": {
     "message": "Tutup"
   },
-  "closeExtension": {
-    "message": "Tutup ekstensi"
-  },
   "closeSlide": {
     "message": "Tutup $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"

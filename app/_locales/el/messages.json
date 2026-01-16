@@ -1278,9 +1278,6 @@
   "close": {
     "message": "Κλείσιμο"
   },
-  "closeExtension": {
-    "message": "Κλείσιμο επέκτασης"
-  },
   "closeSlide": {
     "message": "Κλείσιμο του $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"

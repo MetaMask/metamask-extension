@@ -1275,9 +1275,6 @@
   "close": {
     "message": "닫기"
   },
-  "closeExtension": {
-    "message": "확장 닫기"
-  },
   "closeSlide": {
     "message": "$1 닫기",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
