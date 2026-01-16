@@ -18,6 +18,7 @@ import useBridging from '../../../hooks/bridge/useBridging';
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
 import { showModal, setActiveNetworkWithError } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { AssetType } from '../../../../shared/constants/transaction';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -51,7 +52,6 @@ const TokenButtons = ({
   disableSendForNonEvm = false,
 }: {
   token: Asset & { type: AssetType.token };
-  account: InternalAccount;
   /** When true, disables the send button for non-EVM chains (used on asset page) */
   disableSendForNonEvm?: boolean;
 }) => {

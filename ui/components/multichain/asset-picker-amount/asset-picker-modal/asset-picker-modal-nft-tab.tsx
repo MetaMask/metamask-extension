@@ -94,7 +94,7 @@ export function AssetPickerModalNftTab({
     navigateToSendRoute(navigate, {
       address: nft.address,
       chainId: nft.chainId,
-      tokenId: nft.tokenId,
+      tokenId: nft.tokenId.toString(),
     });
     onClose && onClose();
   };
