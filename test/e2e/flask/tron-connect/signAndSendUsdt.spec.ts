@@ -6,7 +6,7 @@ import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, TRANSACTION_HASH_MOCK } from './common-tron';
 
 describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
-  it('Should be able to Sign a USDT transaction', async function () {
+  it('Signs a USDT transaction', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
@@ -45,7 +45,7 @@ describe('Tron Connect - Sign/Send USDT - e2e tests', function () {
     );
   });
 
-  it('Should be able to Sign and Send a USDT transaction', async function () {
+  it('Sends a USDT transaction', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,

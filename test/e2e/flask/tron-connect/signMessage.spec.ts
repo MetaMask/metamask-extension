@@ -6,7 +6,7 @@ import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap, DEFAULT_MESSAGE_SIGNATURE } from './common-tron';
 
 describe('Tron Connect - Sign Message - e2e tests', function () {
-  it('Should be able to sign a message', async function () {
+  it('Signs a message', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,

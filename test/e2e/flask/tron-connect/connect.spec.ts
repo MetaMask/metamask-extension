@@ -5,7 +5,7 @@ import { DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS } from './testHelpers';
 import { withTronAccountSnap } from './common-tron';
 
 describe('Tron Connect - Connect & disconnect - e2e tests', function () {
-  it('Should be able to connect', async function () {
+  it('Connects', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
@@ -27,7 +27,7 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
     );
   });
 
-  it('Should be able to disconnect and connect again', async function () {
+  it('Connects, disconnects, connects again', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
@@ -62,7 +62,7 @@ describe('Tron Connect - Connect & disconnect - e2e tests', function () {
     );
   });
 
-  it('Should not disconnect the dapp after refreshing the page', async function () {
+  it('Auto connects after refreshing the page', async function () {
     await withTronAccountSnap(
       {
         ...DEFAULT_TRON_TEST_DAPP_FIXTURE_OPTIONS,
