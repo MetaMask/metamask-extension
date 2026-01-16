@@ -1,5 +1,6 @@
 import { ApprovalType } from '@metamask/controller-utils';
 import {
+  type ApprovalsMetaMaskState,
   getApprovalFlows,
   getApprovalsByOrigin,
   getPendingApprovals,
