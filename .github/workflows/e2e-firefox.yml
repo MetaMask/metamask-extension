@@ -73,6 +73,7 @@ jobs:
       test-suite-name: test-e2e-firefox-dist
       build-artifact: build-dist-mv2-browserify
       test-command: yarn test:e2e:firefox:dist
+      builds-from-run: ${{ inputs.builds-from-run }}
 
   test-e2e-firefox-report:
     needs:
