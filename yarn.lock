@@ -8035,9 +8035,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@2.0.0-preview-2d6574b9":
-  version: 2.0.0-preview-2d6574b9
-  resolution: "@metamask-previews/profile-metrics-controller@npm:2.0.0-preview-2d6574b9"
+"@metamask/profile-metrics-controller@npm:@metamask-previews/profile-metrics-controller@2.0.0-preview-c72fc191":
+  version: 2.0.0-preview-c72fc191
+  resolution: "@metamask-previews/profile-metrics-controller@npm:2.0.0-preview-c72fc191"
   dependencies:
     "@metamask/accounts-controller": "npm:^35.0.1"
     "@metamask/base-controller": "npm:^9.0.0"
@@ -8049,7 +8049,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.9.1"
     "@metamask/utils": "npm:^11.9.0"
     async-mutex: "npm:^0.5.0"
-  checksum: 10/651d28c9ebbc0790a06f86af38883fc5aae468f69d9820b579b4202b9d858d77ddccdf35bcd6057285bc2612fbcc38d5b674b6a36696b376865dc0a0ec3a5c78
+  checksum: 10/dba018398790c3ddeb9d20b5f687895192d1ce2e0c6c7e56638aabb755f2dadcc5ae5d467c6b4f93c005038079ebb531bbbcc75670a4401317dec69dc3d74c65
   languageName: node
   linkType: hard
 
