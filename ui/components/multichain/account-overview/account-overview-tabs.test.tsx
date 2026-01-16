@@ -70,6 +70,7 @@ describe('AccountOverviewTabs - event metrics', () => {
     const { getByText } = renderWithProvider(
       <MetaMetricsContext.Provider value={mockTrackEvent}>
         <AccountOverviewTabs
+          onTabClick={jest.fn()}
           showTokens={true}
           showNfts={false}
           showActivity={true}
