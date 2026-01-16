@@ -48,6 +48,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
     if (onClick) {
       onClick(position);
     } else {
+      // TODO: Add Metrics tracking
       navigate(
         `${PERPS_MARKET_DETAIL_ROUTE}/${encodeURIComponent(position.coin)}`,
       );
