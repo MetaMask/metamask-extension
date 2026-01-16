@@ -80,8 +80,5 @@ init().then(() => {
     webdriverPresent: navigator.webdriver === true,
   });
 
-  // Initialize connectivity detection AFTER isBooted is sent.
-  // This ensures the background listener (addOffscreenConnectivityListener)
-  // is set up before we send the initial connectivity status.
   initConnectivityDetection();
 });
