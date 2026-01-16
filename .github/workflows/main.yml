@@ -100,7 +100,7 @@ jobs:
     needs:
       - prep-deps
       - get-requirements
-    if: ${{ needs.get-requirements.outputs.lint == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
     uses: ./.github/workflows/test-lint.yml
 
   test-circular-deps:
@@ -108,7 +108,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.lint == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -290,7 +290,7 @@ jobs:
 
   run-benchmarks:
     # If not a fork, run benchmarks
-    if: ${{ needs.get-requirements.outputs.benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
       - get-requirements
@@ -309,7 +309,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.unit-and-integration == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
 
   bundle-size:
@@ -356,7 +356,7 @@ jobs:
     needs:
       - get-requirements
       - build-test-browserify
-    if: ${{ needs.get-requirements.outputs.benchmarks == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
@@ -369,7 +369,7 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.e2e == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
@@ -380,7 +380,7 @@ jobs:
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-    if: ${{ needs.get-requirements.outputs.e2e == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -396,7 +396,7 @@ jobs:
       - build-test-mv2-browserify
       - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
-    if: ${{ needs.get-requirements.outputs.e2e == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     with:
       builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
@@ -539,7 +539,7 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.releases == 'true' }} # Skip this job for the Merge Queue
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.needs-releases == 'true' }} # Skip this job for the Merge Queue
     needs:
       - get-requirements
       - build-dist-browserify
@@ -568,7 +568,7 @@ jobs:
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.releases == 'true' }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
     needs:
       - get-requirements
       - build-dist-browserify
@@ -710,7 +710,7 @@ jobs:
           fi
 
           # Check E2E jobs only if they should have run
-          if [[ "${{ needs.get-requirements.outputs.e2e }}" == "true" ]]; then
+          if [[ "${{ needs.get-requirements.outputs.needs-e2e }}" == "true" ]]; then
             if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
               echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
