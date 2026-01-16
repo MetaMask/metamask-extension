@@ -151,12 +151,10 @@ export const DEFI_ROUTE = '/defi';
 // Perps routes
 export const PERPS_ROUTE = '/perps';
 export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
-
-export const PERPS_ROUTE = '/perps';
-export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
 
 export const ROUTES = [
   { path: DEFAULT_ROUTE, label: 'Home', trackInAnalytics: true },

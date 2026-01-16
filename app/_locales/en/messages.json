@@ -5072,6 +5072,15 @@
   "perpsFundingRate": {
     "message": "Funding Rate"
   },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
   "perpsIncreasedPosition": {
     "message": "Increased position"
   },
@@ -5097,6 +5106,15 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
+<<<<<<< HEAD
+=======
+  "perpsMarkets": {
+    "message": "Markets"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
+  },
+>>>>>>> 3a5896c4f8 (feat: layout changes to follow mobile design)
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
@@ -5123,6 +5141,9 @@
   },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
   },
   "perpsSell": {
     "message": "sell"

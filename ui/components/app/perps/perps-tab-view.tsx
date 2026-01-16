@@ -1,5 +1,4 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useCallback } from 'react';
 import {
   Box,
   BoxFlexDirection,
@@ -13,8 +12,8 @@ import {
   IconName,
   IconSize,
   IconColor,
-  ButtonBase,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PERPS_MARKET_LIST_ROUTE } from '../../../helpers/constants/routes';
@@ -46,9 +45,9 @@ export const PerpsTabView: React.FC = () => {
     log.info('handleNewTrade');
   };
 
-  const handleSearchPress = () => {
+  const handleSearchPress = useCallback(() => {
     navigate(PERPS_MARKET_LIST_ROUTE);
-  };
+  }, [navigate]);
 
   return (
     <Box
@@ -56,23 +55,28 @@ export const PerpsTabView: React.FC = () => {
       gap={4}
       data-testid="perps-tab-view"
     >
-      {/* Search Icon Button */}
+      {/* Header with Search Icon */}
       <Box
         flexDirection={BoxFlexDirection.Row}
-        justifyContent={BoxJustifyContent.FlexEnd}
+        justifyContent={BoxJustifyContent.End}
+        alignItems={BoxAlignItems.Center}
+        paddingLeft={4}
         paddingRight={4}
         paddingTop={2}
       >
-        <ButtonBase
+        <button
+          type="button"
           onClick={handleSearchPress}
+          className="flex items-center justify-center rounded-full p-2 hover:bg-hover active:bg-pressed"
           data-testid="perps-search-button"
+          aria-label={t('perpsSearchMarkets')}
         >
           <Icon
             name={IconName.Search}
             size={IconSize.Md}
             color={IconColor.IconDefault}
           />
-        </ButtonBase>
+        </button>
       </Box>
 
       {/* Control Bar with Balance and P&L */}

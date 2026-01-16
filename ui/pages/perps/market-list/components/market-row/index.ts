@@ -1,2 +1,2 @@
-export { MarketRow, default } from './market-row';
-export type { MarketRowProps } from './market-row';
+export { MarketRow } from './market-row';
+export type { MarketRowProps, SortField } from './market-row';

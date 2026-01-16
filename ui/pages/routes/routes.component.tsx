@@ -101,7 +101,6 @@ import {
 } from '../../ducks/metamask/metamask';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import RewardsPage from '../rewards';
-import { MarketListView } from '../perps/market-list';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -333,6 +332,10 @@ const PerpsMarketDetailPage = mmLazy(
     import(
       '../perps/perps-market-detail-page.tsx'
     )) as unknown as DynamicImportType,
+);
+const MarketListView = mmLazy(
+  (() =>
+    import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 

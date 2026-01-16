@@ -1,54 +1,55 @@
 import React from 'react';
-
-export type MarketRowSkeletonProps = {
-  className?: string;
-};
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+} from '@metamask/design-system-react';
 
 /**
- * MarketRowSkeleton - Loading skeleton for market rows
- *
- * Displays placeholder content while market data is loading.
- * Matches the layout of MarketRow component.
- *
- * @param options0 - Component props
- * @param options0.className - Additional CSS class
+ * MarketRowSkeleton component displays a loading skeleton for market rows
+ * Matches the layout of MarketRow for smooth loading transitions
  */
-export const MarketRowSkeleton: React.FC<MarketRowSkeletonProps> = ({
-  className,
-}) => {
+export const MarketRowSkeleton: React.FC = () => {
   return (
-    <div
-      className={`
-        flex justify-between items-center px-4 py-4 min-h-[72px]
-        ${className ?? ''}
-      `}
+    <Box
+      className="animate-pulse bg-default px-4 py-3"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={3}
+      data-testid="market-row-skeleton"
     >
-      {/* Left section */}
-      <div className="flex items-center flex-1">
-        {/* Avatar skeleton */}
-        <div className="w-10 h-10 rounded-full bg-background-alternative animate-pulse mr-4" />
+      {/* Token Logo Skeleton */}
+      <div className="h-10 w-10 shrink-0 rounded-full bg-muted" />
 
-        <div className="flex-1">
-          {/* Token header row */}
-          <div className="flex items-center gap-2 mb-1.5">
-            {/* Symbol skeleton */}
-            <div className="w-[60px] h-4 rounded bg-background-alternative animate-pulse" />
-            {/* Leverage skeleton */}
-            <div className="w-[30px] h-3.5 rounded bg-background-alternative animate-pulse" />
-          </div>
-          {/* Metric skeleton */}
-          <div className="w-[80px] h-3 rounded bg-background-alternative animate-pulse" />
-        </div>
-      </div>
+      {/* Left side: Symbol and metric */}
+      <Box
+        className="min-w-0 flex-1"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        gap={1}
+      >
+        <Box
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          gap={2}
+        >
+          <div className="h-4 w-12 rounded bg-muted" />
+          <div className="h-3 w-8 rounded bg-muted" />
+        </Box>
+        <div className="h-3 w-16 rounded bg-muted" />
+      </Box>
 
-      {/* Right section */}
-      <div className="flex flex-col items-end flex-1">
-        {/* Price skeleton */}
-        <div className="w-[90px] h-4 rounded bg-background-alternative animate-pulse mb-1.5" />
-        {/* Change skeleton */}
-        <div className="w-[70px] h-3.5 rounded bg-background-alternative animate-pulse" />
-      </div>
-    </div>
+      {/* Right side: Price and change */}
+      <Box
+        className="shrink-0"
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.End}
+        gap={1}
+      >
+        <div className="h-4 w-20 rounded bg-muted" />
+        <div className="h-3 w-12 rounded bg-muted" />
+      </Box>
+    </Box>
   );
 };
 

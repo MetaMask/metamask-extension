@@ -1,203 +1,115 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useCallback, useRef, useEffect } from 'react';
+import {
+  Box,
+  BoxFlexDirection,
+  BoxAlignItems,
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type SearchInputProps = {
   /** Current search value */
   value: string;
-  /** Callback when value changes */
+  /** Callback when search value changes */
   onChange: (value: string) => void;
-  /** Whether the search input is expanded */
-  isExpanded: boolean;
-  /** Toggle expanded state */
-  onToggle: () => void;
-  /** Clear the search value */
+  /** Callback when clear button is pressed */
   onClear: () => void;
-  /** Placeholder text */
-  placeholder?: string;
-  /** Additional CSS class */
-  className?: string;
+  /** Auto-focus the input when mounted */
+  autoFocus?: boolean;
 };
 
 /**
- * SearchInput - Expandable search input for filtering markets
- *
- * Displays as an icon button when collapsed, expands to full input with clear button.
+ * SearchInput component provides a search input field for filtering markets
+ * Includes a search icon and clear button
  *
  * @param options0 - Component props
  * @param options0.value - Current search value
- * @param options0.onChange - Callback when value changes
- * @param options0.isExpanded - Whether the search input is expanded
- * @param options0.onToggle - Toggle expanded state
- * @param options0.onClear - Clear the search value
- * @param options0.placeholder - Placeholder text
- * @param options0.className - Additional CSS class
+ * @param options0.onChange - Callback when search value changes
+ * @param options0.onClear - Callback when clear button is pressed
+ * @param options0.autoFocus - Auto-focus the input when mounted
  */
 export const SearchInput: React.FC<SearchInputProps> = ({
   value,
   onChange,
-  isExpanded,
-  onToggle,
   onClear,
-  placeholder,
-  className,
+  autoFocus = false,
 }) => {
   const t = useI18nContext();
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Focus input when expanded
   useEffect(() => {
-    if (isExpanded && inputRef.current) {
+    if (autoFocus && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [isExpanded]);
+  }, [autoFocus]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    onChange(e.target.value);
-  };
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onChange(event.target.value);
+    },
+    [onChange],
+  );
 
-  const handleClear = () => {
+  const handleClear = useCallback(() => {
     onClear();
-    inputRef.current?.focus();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      if (value) {
-        onClear();
-      } else {
-        onToggle();
-      }
+    if (inputRef.current) {
+      inputRef.current.focus();
     }
-  };
+  }, [onClear]);
 
-  const placeholderText =
-    placeholder || t('searchMarkets') || 'Search markets...';
-
-  // Search icon SVG
-  const SearchIcon = () => (
-    <svg
-      className="w-5 h-5"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-      />
-    </svg>
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent<HTMLInputElement>) => {
+      if (event.key === 'Escape') {
+        onClear();
+      }
+    },
+    [onClear],
   );
 
-  // Close icon SVG
-  const CloseIcon = () => (
-    <svg
-      className="w-4 h-4"
-      fill="none"
-      stroke="currentColor"
-      viewBox="0 0 24 24"
-      aria-hidden="true"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M6 18L18 6M6 6l12 12"
-      />
-    </svg>
-  );
-
-  // Collapsed state - just search icon button
-  if (!isExpanded) {
-    return (
-      <button
-        type="button"
-        onClick={onToggle}
-        className={`
-          p-2 rounded-full
-          text-text-alternative
-          hover:bg-background-hover hover:text-text-default
-          transition-colors duration-150
-          ${className ?? ''}
-        `}
-        aria-label={t('searchMarkets') || 'Search markets'}
-        data-testid="search-toggle-button"
-      >
-        <SearchIcon />
-      </button>
-    );
-  }
-
-  // Expanded state - full input
   return (
-    <div
-      className={`
-        flex items-center gap-2
-        bg-background-default
-        border border-border-muted rounded-lg
-        px-3 py-2
-        transition-all duration-150
-        focus-within:border-primary-default
-        ${className ?? ''}
-      `}
+    <Box
+      className="flex-1 rounded-full border border-border-muted bg-background-default"
+      flexDirection={BoxFlexDirection.Row}
+      alignItems={BoxAlignItems.Center}
+      gap={2}
+      paddingLeft={3}
+      paddingRight={2}
       data-testid="search-input-container"
     >
-      <span className="text-text-alternative flex-shrink-0">
-        <SearchIcon />
-      </span>
-
+      <Icon
+        name={IconName.Search}
+        size={IconSize.Sm}
+        color={IconColor.IconAlternative}
+      />
       <input
         ref={inputRef}
         type="text"
         value={value}
-        onChange={handleInputChange}
+        onChange={handleChange}
         onKeyDown={handleKeyDown}
-        placeholder={placeholderText}
-        className={`
-          flex-1 min-w-0
-          bg-transparent
-          text-sm text-text-default
-          placeholder:text-text-alternative
-          outline-none
-        `}
-        aria-label={placeholderText}
+        placeholder={t('perpsSearchMarkets')}
+        className="min-w-0 flex-1 border-none bg-transparent py-2 text-sm text-text-default outline-none placeholder:text-text-alternative"
         data-testid="search-input"
       />
-
-      {value ? (
+      {value && (
         <button
           type="button"
           onClick={handleClear}
-          className={`
-            p-1 rounded-full flex-shrink-0
-            text-text-alternative
-            hover:bg-background-hover hover:text-text-default
-            transition-colors duration-150
-          `}
-          aria-label={t('clear') || 'Clear'}
+          className="flex items-center justify-center rounded-full p-1 hover:bg-hover active:bg-pressed"
           data-testid="search-clear-button"
+          aria-label={t('clear')}
         >
-          <CloseIcon />
-        </button>
-      ) : (
-        <button
-          type="button"
-          onClick={onToggle}
-          className={`
-            p-1 rounded-full flex-shrink-0
-            text-text-alternative
-            hover:bg-background-hover hover:text-text-default
-            transition-colors duration-150
-          `}
-          aria-label={t('close') || 'Close'}
-          data-testid="search-close-button"
-        >
-          <CloseIcon />
+          <Icon
+            name={IconName.Close}
+            size={IconSize.Xs}
+            color={IconColor.IconAlternative}
+          />
         </button>
       )}
-    </div>
+    </Box>
   );
 };
 
