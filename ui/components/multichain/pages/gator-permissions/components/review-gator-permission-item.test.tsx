@@ -109,6 +109,8 @@ describe('Permission List Item', () => {
     const mockStartTime = 1736271776; // January 7, 2025;
 
     describe('NATIVE token permissions', () => {
+      const mockExpiryTimestamp = 1767225600; // January 1, 2026 00:00:00 UTC
+
       const mockNativeTokenStreamPermission: StoredGatorPermissionSanitized<NativeTokenStreamPermission> =
         {
           permissionResponse: {
@@ -128,6 +130,12 @@ describe('Permission List Item', () => {
             },
             context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestamp },
+              },
+            ],
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -150,6 +158,12 @@ describe('Permission List Item', () => {
             },
             context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestamp },
+              },
+            ],
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -349,6 +363,7 @@ describe('Permission List Item', () => {
        */
       const mockTokenAddress: Hex =
         '0x2260fac5e5542a773aa44fbcfedf7c193bc2c599';
+      const mockExpiryTimestampErc20 = 1767225600; // January 1, 2026 00:00:00 UTC
 
       const mockErc20TokenPeriodicPermission: StoredGatorPermissionSanitized<Erc20TokenPeriodicPermission> =
         {
@@ -369,6 +384,12 @@ describe('Permission List Item', () => {
             },
             context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestampErc20 },
+              },
+            ],
           },
           siteOrigin: 'http://localhost:8000',
         };
@@ -393,6 +414,12 @@ describe('Permission List Item', () => {
             },
             context: '0x00000000',
             delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
+            rules: [
+              {
+                type: 'expiry',
+                data: { timestamp: mockExpiryTimestampErc20 },
+              },
+            ],
           },
           siteOrigin: 'http://localhost:8000',
         };
