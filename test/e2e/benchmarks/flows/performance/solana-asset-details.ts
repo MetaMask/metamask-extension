@@ -68,3 +68,5 @@ export async function runSolanaAssetDetailsBenchmark(): Promise<BenchmarkRunResu
     };
   }
 }
+
+export const run = runSolanaAssetDetailsBenchmark;

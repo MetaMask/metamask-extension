@@ -145,3 +145,5 @@ export async function runOnboardingImportWalletBenchmark(): Promise<BenchmarkRun
     };
   }
 }
+
+export const run = runOnboardingImportWalletBenchmark;

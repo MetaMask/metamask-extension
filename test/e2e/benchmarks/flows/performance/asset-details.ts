@@ -92,3 +92,5 @@ export async function runAssetDetailsBenchmark(): Promise<BenchmarkRunResult> {
     };
   }
 }
+
+export const run = runAssetDetailsBenchmark;

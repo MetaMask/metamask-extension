@@ -12,11 +12,11 @@ on:
 env:
   COMMANDS: |
     {
-      standardHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-standardHome.json --retries 2',
-      powerUserHome: 'yarn tsx test/e2e/benchmarks/benchmark.ts --persona powerUser --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-powerUserHome.json --retries 2',
-      userActions: 'yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts --out test-artifacts/benchmarks/benchmark-{0}-{1}-userActions.json --retries 2',
-      performanceOnboarding: 'IS_SIDEPANEL=true yarn tsx test/e2e/benchmarks/performance-benchmark.ts --benchmarks onboardingImportWallet onboardingNewWallet --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceOnboarding.json --retries 2',
-      performanceAssets: 'yarn tsx test/e2e/benchmarks/performance-benchmark.ts --benchmarks powerUserAssetDetails powerUserSolanaAssetDetails --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performanceAssets.json --retries 2',
+      standard-home: 'yarn test:e2e:benchmark --preset standard-home --out test-artifacts/benchmarks/benchmark-{0}-{1}-standard-home.json --retries 2',
+      power-user-home: 'yarn test:e2e:benchmark --preset power-user-home --browserLoads 10 --pageLoads 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-power-user-home.json --retries 2',
+      user-actions: 'yarn test:e2e:benchmark --preset user-actions --out test-artifacts/benchmarks/benchmark-{0}-{1}-user-actions.json --retries 2',
+      performance-onboarding: 'IS_SIDEPANEL=true yarn test:e2e:benchmark --preset performance-onboarding --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performance-onboarding.json --retries 2',
+      performance-assets: 'yarn test:e2e:benchmark --preset performance-assets --iterations 10 --out test-artifacts/benchmarks/benchmark-{0}-{1}-performance-assets.json --retries 2',
     }
 
 jobs:
@@ -35,15 +35,15 @@ jobs:
         # PowerUser + UserActions benchmarks run on all 4 browser/buildType combinations
         browser: [chrome, firefox]
         buildType: [browserify, webpack]
-        pageType: [standardHome, powerUserHome, userActions]
+        pageType: [standard-home, power-user-home, user-actions]
         # New added benchmarks only run on Chrome + Browserify to reduce CI runtime
         include:
           - browser: chrome
             buildType: browserify
-            pageType: performanceOnboarding
+            pageType: performance-onboarding
           - browser: chrome
             buildType: browserify
-            pageType: performanceAssets
+            pageType: performance-assets
     name: ${{ matrix.browser }}-${{ matrix.buildType }}-${{ matrix.pageType }}
     env:
       SELENIUM_BROWSER: ${{ matrix.browser }}
