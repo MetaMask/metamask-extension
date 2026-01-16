@@ -25,6 +25,7 @@ import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/se
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
+import { isWebOrigin } from '../../../../shared/lib/origin-utils';
 import Tooltip from '../../ui/tooltip';
 
 type ConnectedSitePopoverProps = {
@@ -46,10 +47,9 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
 
   // Only show the host for valid web URLs (http/https), otherwise show "URL unknown"
-  const isWebOrigin =
-    activeTabOrigin?.startsWith('http://') ||
-    activeTabOrigin?.startsWith('https://');
-  const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
+  const siteHost = isWebOrigin(activeTabOrigin)
+    ? getURLHost(activeTabOrigin)
+    : '';
   const siteName = siteHost || t('urlUnknown');
 
   const allDomains = useSelector(getAllDomains);

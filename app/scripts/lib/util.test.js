@@ -24,13 +24,13 @@ import {
   getPlatform,
   getValidUrl,
   isWebUrl,
-  isWebOrigin,
   getMethodDataName,
   getBooleanFlag,
   extractRpcDomain,
   isKnownDomain,
   initializeRpcProviderDomains,
 } from './util';
+import { isWebOrigin } from '../../../shared/lib/origin-utils';
 
 // Mock the module
 jest.mock('./util', () => ({

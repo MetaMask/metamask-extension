@@ -51,6 +51,7 @@ import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
 import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import { isWebOrigin } from '../../shared/lib/origin-utils';
 import {
   CorruptionHandler,
   hasVault,
@@ -76,11 +77,7 @@ import MetamaskController, {
 } from './metamask-controller';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
-import {
-  getPlatform,
-  isWebOrigin,
-  shouldEmitDappViewedEvent,
-} from './lib/util';
+import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
 import { createOffscreen } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
