@@ -120,12 +120,12 @@ When implementing UI changes, follow this cycle:
 
 ### State & Discovery
 
-| Tool                        | Description                                |
-| --------------------------- | ------------------------------------------ |
-| `mm_get_state`              | Get current extension state (screen, URL)  |
-| `mm_list_testids`           | List all visible `data-testid` attributes  |
-| `mm_accessibility_snapshot` | Get accessibility tree with refs (e1, e2…) |
-| `mm_describe_screen`        | Combined: state + testIds + a11y snapshot  |
+| Tool                        | Description                                                           |
+| --------------------------- | --------------------------------------------------------------------- |
+| `mm_get_state`              | Get current extension state (screen, URL)                             |
+| `mm_list_testids`           | List all visible `data-testid` attributes                             |
+| `mm_accessibility_snapshot` | Get accessibility tree with refs (e1, e2…)                            |
+| `mm_describe_screen`        | Combined: state + testIds + a11y + priorKnowledge from prior sessions |
 
 ### Interaction
 
@@ -166,9 +166,10 @@ For `mm_click`, `mm_type`, and `mm_wait_for`, specify exactly **ONE** of:
 
 ### Discovery Flow
 
-1. Call `mm_describe_screen` to see available testIds and a11y refs
-2. Choose the most stable identifier (prefer testId > a11yRef > selector)
-3. Use that identifier in interaction tools
+1. Call `mm_describe_screen` to see available testIds, a11y refs, and prior knowledge
+2. Check `priorKnowledge.suggestedNextActions` for recommended interactions from prior sessions
+3. Choose the most stable identifier (prefer testId > a11yRef > selector)
+4. Use that identifier in interaction tools
 
 ---
 
@@ -257,6 +258,20 @@ Summarize a past session:
 ```json
 mm_knowledge_summarize({ "scope": { "sessionId": "mm-abc123" } })
 ```
+
+### Automatic Prior Knowledge Injection
+
+When you call `mm_describe_screen`, the server automatically searches prior sessions and injects relevant knowledge into the response:
+
+| Field                  | Description                                                               |
+| ---------------------- | ------------------------------------------------------------------------- |
+| `suggestedNextActions` | Ranked list of recommended actions based on successful prior interactions |
+| `similarSteps`         | Relevant steps from prior sessions on the same/similar screens            |
+| `relatedSessions`      | Sessions that match the current flow context                              |
+| `avoid`                | Actions that failed in prior sessions (with error codes)                  |
+| `query`                | Transparency metadata showing search parameters used                      |
+
+This eliminates the need to manually call `mm_knowledge_search` before each interaction—the most relevant knowledge is delivered automatically.
 
 ### Storage Location
 
@@ -385,6 +400,30 @@ mm_knowledge_search({ "query": "unlock flow" })
 
 This helps avoid rediscovering what was already learned.
 
+### 6. Leverage Prior Knowledge
+
+`mm_describe_screen` automatically injects `priorKnowledge` from prior sessions:
+
+```json
+{
+  "priorKnowledge": {
+    "suggestedNextActions": [
+      {
+        "rank": 1,
+        "action": "click",
+        "rationale": "Previously successful: clicked unlock button",
+        "confidence": 0.85,
+        "preferredTarget": { "type": "testId", "value": "unlock-button" }
+      }
+    ],
+    "similarSteps": [...],
+    "avoid": [...]
+  }
+}
+```
+
+Use `suggestedNextActions` to skip trial-and-error and repeat successful patterns.
+
 ---
 
 ## Directory Structure
@@ -443,7 +482,44 @@ All tool responses follow this structure:
 }
 ```
 
-Error responses:
+### mm_describe_screen Response (with priorKnowledge)
+
+```json
+{
+  "ok": true,
+  "result": {
+    "state": { "currentScreen": "unlock", "isUnlocked": false, ... },
+    "testIds": { "items": [...] },
+    "a11y": { "nodes": [...] },
+    "screenshot": null,
+    "priorKnowledge": {
+      "schemaVersion": 1,
+      "generatedAt": "2026-01-15T15:30:00.000Z",
+      "query": {
+        "windowHours": 48,
+        "usedFlowTags": ["send"],
+        "candidateSessions": 5,
+        "candidateSteps": 42
+      },
+      "relatedSessions": [...],
+      "similarSteps": [...],
+      "suggestedNextActions": [
+        {
+          "rank": 1,
+          "action": "click",
+          "rationale": "Previously successful on unlock screen",
+          "confidence": 0.85,
+          "preferredTarget": { "type": "testId", "value": "unlock-button" }
+        }
+      ],
+      "avoid": [...]
+    }
+  },
+  "meta": { ... }
+}
+```
+
+### Error Response
 
 ```json
 {
