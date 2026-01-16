@@ -4470,6 +4470,7 @@
         "viem>@scure/bip39": true,
         "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
         "viem>ox>abitype": true,
+        "viem>abitype": true,
         "viem>ox>eventemitter3": true
       }
     },
@@ -4482,7 +4483,7 @@
       "packages": {
         "viem>ox>@noble/curves": true,
         "@noble/hashes": true,
-        "viem>ox>abitype": true
+        "viem>abitype": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
