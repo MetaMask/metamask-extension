@@ -117,15 +117,6 @@ import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../shared/modules/selectors/networks';
-<<<<<<< HEAD
-import {
-  computeEstimatedGasLimit,
-  initializeSendState,
-  resetSendState,
-  SEND_STAGES,
-} from '../ducks/send';
-=======
->>>>>>> 6e9ff4ce34 (cleanup: delete old send flow related code)
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
   getUnconnectedAccountAlertEnabledness,
@@ -1807,45 +1798,6 @@ export function updateEditableParams(
   };
 }
 
-<<<<<<< HEAD
-=======
-/**
- * Appends new send flow history to a transaction
- * TODO: Not a thunk, but rather a wrapper around a background call
- *
- * @param txId - the id of the transaction to update
- * @param currentSendFlowHistoryLength - sendFlowHistory entries currently
- * @param sendFlowHistory - the new send flow history to append to the
- * transaction
- * @returns
- */
-export function updateTransactionSendFlowHistory(
-  txId: string,
-  currentSendFlowHistoryLength: number,
-  sendFlowHistory: { entry: string; timestamp: number }[],
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionSendFlowHistory',
-        [txId, currentSendFlowHistoryLength, sendFlowHistory],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
->>>>>>> 6e9ff4ce34 (cleanup: delete old send flow related code)
 export async function backupUserData(): Promise<{
   filename: string;
   data: string;
