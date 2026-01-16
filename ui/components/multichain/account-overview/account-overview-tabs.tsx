@@ -162,8 +162,8 @@ export const AccountOverviewTabs = ({
           >
             <Box marginBottom={2}>
               <AssetList
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                showTokensLinks={showTokensLinks}
                 safeChains={safeChains}
               />
             </Box>
@@ -188,8 +188,8 @@ export const AccountOverviewTabs = ({
           >
             <Box>
               <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
+                showTokensLinks={showTokensLinks}
                 safeChains={safeChains}
               />
             </Box>

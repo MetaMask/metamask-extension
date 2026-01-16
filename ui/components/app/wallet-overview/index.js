@@ -1,2 +1,4 @@
-export { default as EthOverview } from './eth-overview';
-export { default as NonEvmOverview } from './non-evm-overview';
+// This file previously exported EthOverview and NonEvmOverview which have been removed
+// as part of the AccountOverview unification.
+
+export { default } from './wallet-overview';
