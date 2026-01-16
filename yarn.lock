@@ -7879,13 +7879,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/permissions-kernel-snap@npm:^0.6.0":
-  version: 0.6.0
-  resolution: "@metamask/permissions-kernel-snap@npm:0.6.0"
+"@metamask/permissions-kernel-snap@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "@metamask/permissions-kernel-snap@npm:1.0.0"
   dependencies:
     "@metamask/snaps-sdk": "npm:10.2.0"
     zod: "npm:3.25.76"
-  checksum: 10/b5ea37180407f83e6bd4b500f3416ebaf6350eb3f5fd3c82475ef43fc13faef1039bef6547e19bf241aac6dcf9644ad4f990fcd8e76fcc2eb1716c7e1885ad7f
+  checksum: 10/a9c545316c91794ef3482b60bfb110f7414de01c6d5735abfe54d65526b77802a842bc1dfe78852147dbd437ab469f74f24255c57aef0d921e04ad646fabcb1c
   languageName: node
   linkType: hard
 
@@ -33738,7 +33738,7 @@ __metadata:
     "@metamask/obs-store": "npm:^9.0.0"
     "@metamask/permission-controller": "npm:^12.1.0"
     "@metamask/permission-log-controller": "npm:^5.0.0"
-    "@metamask/permissions-kernel-snap": "npm:^0.6.0"
+    "@metamask/permissions-kernel-snap": "npm:^1.0.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
     "@metamask/post-message-stream": "npm:^10.0.0"

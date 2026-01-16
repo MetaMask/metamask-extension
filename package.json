@@ -358,7 +358,7 @@
     "@metamask/obs-store": "^9.0.0",
     "@metamask/permission-controller": "^12.1.0",
     "@metamask/permission-log-controller": "^5.0.0",
-    "@metamask/permissions-kernel-snap": "^0.6.0",
+    "@metamask/permissions-kernel-snap": "^1.0.0",
     "@metamask/phishing-controller": "^15.0.0",
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.39.0",
