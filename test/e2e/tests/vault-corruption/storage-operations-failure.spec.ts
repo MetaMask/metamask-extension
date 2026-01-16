@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import { withFixtures } from '../../helpers';
 import { type Driver } from '../../webdriver/driver';
+import HomePage from '../../page-objects/pages/home/homepage';
 import {
   onboardThenTriggerCorruption,
   clickRecover,
@@ -85,6 +86,10 @@ describe('Storage Operations Failure Recovery', function () {
         async ({ driver }: { driver: Driver }) => {
           // Complete onboarding - writes fail immediately but onboarding still completes
           await onboard(driver);
+
+          // Wait for homepage to be ready
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
 
           // The toast should appear because writes are failing
           await driver.waitForSelector('[data-testid="storage-error-toast"]');
