@@ -13,10 +13,9 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { mockAccountState } from '../mocks';
 
-interface PerpsMarketBalanceActionsProps {
+type PerpsMarketBalanceActionsProps = {
   /** Whether to show the action buttons (Add funds, Withdraw) */
   showActionButtons?: boolean;
   /** Callback when Add funds button is pressed */
@@ -25,10 +24,13 @@ interface PerpsMarketBalanceActionsProps {
   onWithdraw?: () => void;
   /** Callback when Learn more button is pressed */
   onLearnMore?: () => void;
-}
+};
 
 /**
  * Formats a balance string to USD currency format
+ *
+ * @param balance - The balance string to format
+ * @returns Formatted USD currency string
  */
 const formatBalance = (balance: string): string => {
   const num = parseFloat(balance);
@@ -51,11 +53,8 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   onWithdraw,
   onLearnMore,
 }) => {
-  const t = useI18nContext();
-
   // Use mock data for now
-  const totalBalance = mockAccountState.totalBalance;
-  const availableBalance = mockAccountState.availableBalance;
+  const { totalBalance, availableBalance } = mockAccountState;
   const isBalanceEmpty = parseFloat(totalBalance) === 0;
 
   const handleAddFunds = useCallback(() => {

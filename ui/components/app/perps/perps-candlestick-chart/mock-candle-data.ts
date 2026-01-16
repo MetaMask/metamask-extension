@@ -9,8 +9,8 @@ type Time = number & { readonly brand: unique symbol };
 /**
  * Candlestick data structure compatible with lightweight-charts
  */
-type CandlestickData<T> = {
-  time: T;
+type CandlestickData<TTime> = {
+  time: TTime;
   open: number;
   high: number;
   low: number;
@@ -20,8 +20,8 @@ type CandlestickData<T> = {
 /**
  * Histogram data structure compatible with lightweight-charts
  */
-type HistogramData<T> = {
-  time: T;
+type HistogramData<TTime> = {
+  time: TTime;
   value: number;
   color: string;
 };
@@ -621,6 +621,9 @@ export const mockCandleData: CandleData = {
 /**
  * Formats raw candle data for use with lightweight-charts
  * Converts timestamps from milliseconds to seconds and parses OHLC values
+ *
+ * @param data - The candle data to format
+ * @returns Formatted candlestick data array
  */
 export function formatCandleDataForChart(
   data: CandleData,
@@ -667,6 +670,9 @@ export function formatCandleDataForChart(
  * Formats raw candle data into volume histogram data for lightweight-charts
  * Transforms volume to USD notional value (volume × close price)
  * Colors bars based on candle direction (green = bullish, red = bearish)
+ *
+ * @param data - The candle data to format
+ * @returns Formatted histogram data array for volume display
  */
 export function formatVolumeDataForChart(
   data: CandleData,

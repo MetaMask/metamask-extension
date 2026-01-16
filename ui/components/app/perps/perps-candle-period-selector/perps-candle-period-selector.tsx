@@ -28,7 +28,7 @@ const getCandlePeriodLabel = (period: CandlePeriod | string): string => {
   return candlePeriod?.label || period;
 };
 
-type PerpsCandlePeriodSelectorProps = {
+export type PerpsCandlePeriodSelectorProps = {
   selectedPeriod: CandlePeriod | string;
   onPeriodChange?: (period: CandlePeriod) => void;
 };

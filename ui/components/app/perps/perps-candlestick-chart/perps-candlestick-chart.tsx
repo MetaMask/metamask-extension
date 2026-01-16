@@ -13,19 +13,20 @@ import {
   ISeriesApi,
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
+import { brandColor } from '@metamask/design-tokens';
+import {
+  CandlePeriod,
+  ZOOM_CONFIG,
+  getVisibleRange,
+} from '../constants/chartConfig';
 import {
   mockCandleData,
   formatCandleDataForChart,
   formatVolumeDataForChart,
   CandleData,
 } from './mock-candle-data';
-import {
-  CandlePeriod,
-  ZOOM_CONFIG,
-  getVisibleRange,
-} from '../constants/chartConfig';
 
-interface PerpsCandlestickChartProps {
+type PerpsCandlestickChartProps = {
   /** Height of the chart in pixels */
   height?: number;
   /** Selected candle period */
@@ -34,16 +35,16 @@ interface PerpsCandlestickChartProps {
   candleData?: CandleData;
   /** Callback when data needs to be fetched for a new period */
   onPeriodDataRequest?: (period: CandlePeriod) => void;
-}
+};
 
-export interface PerpsCandlestickChartRef {
+export type PerpsCandlestickChartRef = {
   /** Apply zoom to show a specific number of candles */
   applyZoom: (candleCount: number, forceReset?: boolean) => void;
   /** Scroll to the most recent candles */
   scrollToRealTime: () => void;
   /** Get current chart instance */
   getChart: () => IChartApi | null;
-}
+};
 
 /**
  * PerpsCandlestickChart component
@@ -176,11 +177,11 @@ const PerpsCandlestickChart = forwardRef<
 
       // Create candlestick series (pane 0 - top)
       const candlestickSeries = chart.addSeries(CandlestickSeries, {
-        upColor: '#BAF24A',
-        downColor: '#FF7584',
+        upColor: brandColor.lime100,
+        downColor: brandColor.red300,
         borderVisible: false,
-        wickUpColor: '#BAF24A',
-        wickDownColor: '#FF7584',
+        wickUpColor: brandColor.lime100,
+        wickDownColor: brandColor.red300,
         priceLineVisible: false,
         lastValueVisible: false,
       });
@@ -191,7 +192,7 @@ const PerpsCandlestickChart = forwardRef<
       const volumeSeries = chart.addSeries(
         HistogramSeries,
         {
-          color: '#BAF24A', // Default green
+          color: brandColor.lime100, // Default green
           priceFormat: { type: 'volume' },
           priceScaleId: '', // Independent price scale
           lastValueVisible: false,
