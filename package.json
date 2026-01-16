@@ -493,7 +493,7 @@
     "@jest/globals": "^29.7.0",
     "@lavamoat/allow-scripts": "^3.4.0",
     "@lavamoat/lavadome-core": "0.0.20",
-    "@lavamoat/lavapack": "^7.0.17",
+    "@lavamoat/lavapack": "^7.0.21",
     "@lydell/node-pty": "^1.1.0",
     "@metamask/api-specs": "^0.13.0",
     "@metamask/auto-changelog": "^5.3.0",

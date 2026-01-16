@@ -5011,7 +5011,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lavamoat/lavapack@npm:^7.0.17, @lavamoat/lavapack@npm:^7.0.18":
+"@lavamoat/lavapack@npm:^7.0.18":
   version: 7.0.18
   resolution: "@lavamoat/lavapack@npm:7.0.18"
   dependencies:
@@ -5024,6 +5024,22 @@ __metadata:
     through2: "npm:4.0.2"
     umd: "npm:3.0.3"
   checksum: 10/5df2793eab0cf5bea74dcf2bf1b65f3ce3b541d746ffb262ac0bfb613ace6561f259adfdacaf706ddcd28b8bbce3afd5b87e5c0940d386c80ca8d6b0528029d5
+  languageName: node
+  linkType: hard
+
+"@lavamoat/lavapack@npm:^7.0.21":
+  version: 7.0.21
+  resolution: "@lavamoat/lavapack@npm:7.0.21"
+  dependencies:
+    JSONStream: "npm:1.3.5"
+    combine-source-map: "npm:0.8.0"
+    espree: "npm:9.6.1"
+    json-stable-stringify: "npm:1.3.0"
+    lavamoat-core: "npm:^17.1.2"
+    readable-stream: "npm:4.7.0"
+    through2: "npm:4.0.2"
+    umd: "npm:3.0.3"
+  checksum: 10/0262e5ce920c06906a694c761abbc511fc4c2fcec5ecde4458ca425c02ff3812071a1d27c5c1138539090aa1749bff76ab15f9b7089b1bbd72d20e8c129b18cd
   languageName: node
   linkType: hard
 
@@ -33470,7 +33486,7 @@ __metadata:
     "@lavamoat/allow-scripts": "npm:^3.4.0"
     "@lavamoat/lavadome-core": "npm:0.0.20"
     "@lavamoat/lavadome-react": "npm:0.0.20"
-    "@lavamoat/lavapack": "npm:^7.0.17"
+    "@lavamoat/lavapack": "npm:^7.0.21"
     "@lavamoat/snow": "npm:^2.0.4"
     "@lavamoat/webpack": "npm:1.5.6"
     "@ledgerhq/errors": "npm:^6.21.0"

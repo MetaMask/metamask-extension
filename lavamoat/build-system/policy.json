@@ -1025,6 +1025,36 @@
         "@lavamoat/lavapack>umd": true
       }
     },
+    "lavamoat-browserify>@lavamoat/lavapack": {
+      "builtin": {
+        "node:assert": true,
+        "node:buffer.Buffer.from": true,
+        "node:fs": true,
+        "node:fs.promises.readFile": true,
+        "node:fs.promises.writeFile": true,
+        "node:fs.readFileSync": true,
+        "node:path.join": true,
+        "node:path.relative": true
+      },
+      "globals": {
+        "__dirname": true,
+        "__filename.slice": true,
+        "console.error": true,
+        "console.warn": true,
+        "process.cwd": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "browserify>JSONStream": true,
+        "@lavamoat/lavapack>combine-source-map": true,
+        "eslint>espree": true,
+        "@lavamoat/webpack>json-stable-stringify": true,
+        "lavamoat>lavamoat-core": true,
+        "readable-stream": true,
+        "through2": true,
+        "@lavamoat/lavapack>umd": true
+      }
+    },
     "@metamask/build-utils": {
       "packages": {
         "@metamask/build-utils>@metamask/utils": true
@@ -4279,7 +4309,7 @@
       },
       "packages": {
         "lavamoat>@lavamoat/aa": true,
-        "@lavamoat/lavapack": true,
+        "lavamoat-browserify>@lavamoat/lavapack": true,
         "browserify>browser-resolve": true,
         "lavamoat-browserify>concat-stream": true,
         "duplexify": true,
