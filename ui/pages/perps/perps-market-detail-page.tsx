@@ -103,7 +103,7 @@ const PerpsMarketDetailPage: React.FC = () => {
 
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
-    CandlePeriod.FIVE_MINUTES,
+    CandlePeriod.FiveMinutes,
   );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 

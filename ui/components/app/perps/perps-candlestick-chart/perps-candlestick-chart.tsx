@@ -1,7 +1,28 @@
-import React, { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react';
-import { createChart, IChartApi, CandlestickSeries, HistogramSeries, ISeriesApi } from 'lightweight-charts';
-import { mockCandleData, formatCandleDataForChart, formatVolumeDataForChart, CandleData } from './mock-candle-data';
-import { CandlePeriod, ZOOM_CONFIG, getVisibleRange } from '../constants/chartConfig';
+import React, {
+  useEffect,
+  useRef,
+  useCallback,
+  useImperativeHandle,
+  forwardRef,
+} from 'react';
+import {
+  createChart,
+  IChartApi,
+  CandlestickSeries,
+  HistogramSeries,
+  ISeriesApi,
+} from 'lightweight-charts';
+import {
+  mockCandleData,
+  formatCandleDataForChart,
+  formatVolumeDataForChart,
+  CandleData,
+} from './mock-candle-data';
+import {
+  CandlePeriod,
+  ZOOM_CONFIG,
+  getVisibleRange,
+} from '../constants/chartConfig';
 
 interface PerpsCandlestickChartProps {
   /** Height of the chart in pixels */
@@ -31,11 +52,14 @@ export interface PerpsCandlestickChartRef {
  * TradingView Lightweight Charts™
  * Copyright (c) 2025 TradingView, Inc. https://www.tradingview.com/
  */
-const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlestickChartProps>(
+const PerpsCandlestickChart = forwardRef<
+  PerpsCandlestickChartRef,
+  PerpsCandlestickChartProps
+>(
   (
     {
       height = 250,
-      selectedPeriod = CandlePeriod.FIVE_MINUTES,
+      selectedPeriod = CandlePeriod.FiveMinutes,
       candleData,
       onPeriodDataRequest,
     },
@@ -234,7 +258,10 @@ const PerpsCandlestickChart = forwardRef<PerpsCandlestickChartRef, PerpsCandlest
         previousPeriodRef.current = selectedPeriod;
 
         // Apply default zoom when period changes or on initial load
-        const visibleCandles = Math.min(ZOOM_CONFIG.DEFAULT_CANDLES, formattedData.length);
+        const visibleCandles = Math.min(
+          ZOOM_CONFIG.DEFAULT_CANDLES,
+          formattedData.length,
+        );
         const range = getVisibleRange(formattedData.length, visibleCandles);
 
         chartRef.current.timeScale().setVisibleLogicalRange(range);

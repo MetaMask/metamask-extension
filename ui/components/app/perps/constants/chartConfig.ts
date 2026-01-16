@@ -1,57 +1,57 @@
 export enum CandlePeriod {
-  ONE_MINUTE = '1m',
-  THREE_MINUTES = '3m',
-  FIVE_MINUTES = '5m',
-  FIFTEEN_MINUTES = '15m',
-  THIRTY_MINUTES = '30m',
-  ONE_HOUR = '1h',
-  TWO_HOURS = '2h',
-  FOUR_HOURS = '4h',
-  EIGHT_HOURS = '8h',
-  TWELVE_HOURS = '12h',
-  ONE_DAY = '1d',
-  THREE_DAYS = '3d',
-  ONE_WEEK = '1w',
-  ONE_MONTH = '1M',
+  OneMinute = '1m',
+  ThreeMinutes = '3m',
+  FiveMinutes = '5m',
+  FifteenMinutes = '15m',
+  ThirtyMinutes = '30m',
+  OneHour = '1h',
+  TwoHours = '2h',
+  FourHours = '4h',
+  EightHours = '8h',
+  TwelveHours = '12h',
+  OneDay = '1d',
+  ThreeDays = '3d',
+  OneWeek = '1w',
+  OneMonth = '1M',
 }
 
 export const CANDLE_PERIODS = [
-  { label: '1min', value: CandlePeriod.ONE_MINUTE },
-  { label: '3min', value: CandlePeriod.THREE_MINUTES },
-  { label: '5min', value: CandlePeriod.FIVE_MINUTES },
-  { label: '15min', value: CandlePeriod.FIFTEEN_MINUTES },
-  { label: '30min', value: CandlePeriod.THIRTY_MINUTES },
-  { label: '1h', value: CandlePeriod.ONE_HOUR },
-  { label: '2h', value: CandlePeriod.TWO_HOURS },
-  { label: '4h', value: CandlePeriod.FOUR_HOURS },
-  { label: '8h', value: CandlePeriod.EIGHT_HOURS },
-  { label: '12h', value: CandlePeriod.TWELVE_HOURS },
-  { label: '1D', value: CandlePeriod.ONE_DAY },
-  { label: '3D', value: CandlePeriod.THREE_DAYS },
-  { label: '1W', value: CandlePeriod.ONE_WEEK },
-  { label: '1M', value: CandlePeriod.ONE_MONTH },
+  { label: '1min', value: CandlePeriod.OneMinute },
+  { label: '3min', value: CandlePeriod.ThreeMinutes },
+  { label: '5min', value: CandlePeriod.FiveMinutes },
+  { label: '15min', value: CandlePeriod.FifteenMinutes },
+  { label: '30min', value: CandlePeriod.ThirtyMinutes },
+  { label: '1h', value: CandlePeriod.OneHour },
+  { label: '2h', value: CandlePeriod.TwoHours },
+  { label: '4h', value: CandlePeriod.FourHours },
+  { label: '8h', value: CandlePeriod.EightHours },
+  { label: '12h', value: CandlePeriod.TwelveHours },
+  { label: '1D', value: CandlePeriod.OneDay },
+  { label: '3D', value: CandlePeriod.ThreeDays },
+  { label: '1W', value: CandlePeriod.OneWeek },
+  { label: '1M', value: CandlePeriod.OneMonth },
 ] as const;
 
 // Default periods shown in the selector (others available via "More")
 export const DEFAULT_CANDLE_PERIODS = [
-  { label: '1min', value: CandlePeriod.ONE_MINUTE },
-  { label: '3min', value: CandlePeriod.THREE_MINUTES },
-  { label: '5min', value: CandlePeriod.FIVE_MINUTES },
-  { label: '15min', value: CandlePeriod.FIFTEEN_MINUTES },
+  { label: '1min', value: CandlePeriod.OneMinute },
+  { label: '3min', value: CandlePeriod.ThreeMinutes },
+  { label: '5min', value: CandlePeriod.FiveMinutes },
+  { label: '15min', value: CandlePeriod.FifteenMinutes },
 ] as const;
 
 // More periods shown in the dropdown (not in default row)
 export const MORE_CANDLE_PERIODS = [
-  { label: '30min', value: CandlePeriod.THIRTY_MINUTES },
-  { label: '1h', value: CandlePeriod.ONE_HOUR },
-  { label: '2h', value: CandlePeriod.TWO_HOURS },
-  { label: '4h', value: CandlePeriod.FOUR_HOURS },
-  { label: '8h', value: CandlePeriod.EIGHT_HOURS },
-  { label: '12h', value: CandlePeriod.TWELVE_HOURS },
-  { label: '1D', value: CandlePeriod.ONE_DAY },
-  { label: '3D', value: CandlePeriod.THREE_DAYS },
-  { label: '1W', value: CandlePeriod.ONE_WEEK },
-  { label: '1M', value: CandlePeriod.ONE_MONTH },
+  { label: '30min', value: CandlePeriod.ThirtyMinutes },
+  { label: '1h', value: CandlePeriod.OneHour },
+  { label: '2h', value: CandlePeriod.TwoHours },
+  { label: '4h', value: CandlePeriod.FourHours },
+  { label: '8h', value: CandlePeriod.EightHours },
+  { label: '12h', value: CandlePeriod.TwelveHours },
+  { label: '1D', value: CandlePeriod.OneDay },
+  { label: '3D', value: CandlePeriod.ThreeDays },
+  { label: '1W', value: CandlePeriod.OneWeek },
+  { label: '1M', value: CandlePeriod.OneMonth },
 ] as const;
 
 // Candle count configuration
@@ -72,40 +72,40 @@ export const ZOOM_CONFIG = {
 
 // Period to minutes mapping for candle count calculations
 export const PERIOD_TO_MINUTES: Record<CandlePeriod, number> = {
-  [CandlePeriod.ONE_MINUTE]: 1,
-  [CandlePeriod.THREE_MINUTES]: 3,
-  [CandlePeriod.FIVE_MINUTES]: 5,
-  [CandlePeriod.FIFTEEN_MINUTES]: 15,
-  [CandlePeriod.THIRTY_MINUTES]: 30,
-  [CandlePeriod.ONE_HOUR]: 60,
-  [CandlePeriod.TWO_HOURS]: 120,
-  [CandlePeriod.FOUR_HOURS]: 240,
-  [CandlePeriod.EIGHT_HOURS]: 480,
-  [CandlePeriod.TWELVE_HOURS]: 720,
-  [CandlePeriod.ONE_DAY]: 1440,
-  [CandlePeriod.THREE_DAYS]: 4320,
-  [CandlePeriod.ONE_WEEK]: 10080,
-  [CandlePeriod.ONE_MONTH]: 43200,
+  [CandlePeriod.OneMinute]: 1,
+  [CandlePeriod.ThreeMinutes]: 3,
+  [CandlePeriod.FiveMinutes]: 5,
+  [CandlePeriod.FifteenMinutes]: 15,
+  [CandlePeriod.ThirtyMinutes]: 30,
+  [CandlePeriod.OneHour]: 60,
+  [CandlePeriod.TwoHours]: 120,
+  [CandlePeriod.FourHours]: 240,
+  [CandlePeriod.EightHours]: 480,
+  [CandlePeriod.TwelveHours]: 720,
+  [CandlePeriod.OneDay]: 1440,
+  [CandlePeriod.ThreeDays]: 4320,
+  [CandlePeriod.OneWeek]: 10080,
+  [CandlePeriod.OneMonth]: 43200,
 } as const;
 
 // Duration options for chart time range
 export enum ChartDuration {
-  ONE_HOUR = '1hr',
-  ONE_DAY = '1d',
-  ONE_WEEK = '1w',
-  ONE_MONTH = '1m',
-  YTD = 'ytd',
-  MAX = 'max',
+  OneHour = '1hr',
+  OneDay = '1d',
+  OneWeek = '1w',
+  OneMonth = '1m',
+  Ytd = 'ytd',
+  Max = 'max',
 }
 
 // Duration to minutes mapping
 export const DURATION_TO_MINUTES: Record<ChartDuration, number> = {
-  [ChartDuration.ONE_HOUR]: 60,
-  [ChartDuration.ONE_DAY]: 1440,
-  [ChartDuration.ONE_WEEK]: 10080,
-  [ChartDuration.ONE_MONTH]: 43200,
-  [ChartDuration.YTD]: 525600,
-  [ChartDuration.MAX]: 1051200,
+  [ChartDuration.OneHour]: 60,
+  [ChartDuration.OneDay]: 1440,
+  [ChartDuration.OneWeek]: 10080,
+  [ChartDuration.OneMonth]: 43200,
+  [ChartDuration.Ytd]: 525600,
+  [ChartDuration.Max]: 1051200,
 } as const;
 
 // Recommended candle periods for each duration
@@ -113,55 +113,56 @@ export const DURATION_CANDLE_PERIODS: Record<
   ChartDuration,
   { periods: CandlePeriod[]; default: CandlePeriod }
 > = {
-  [ChartDuration.ONE_HOUR]: {
+  [ChartDuration.OneHour]: {
     periods: [
-      CandlePeriod.ONE_MINUTE,
-      CandlePeriod.THREE_MINUTES,
-      CandlePeriod.FIVE_MINUTES,
-      CandlePeriod.FIFTEEN_MINUTES,
+      CandlePeriod.OneMinute,
+      CandlePeriod.ThreeMinutes,
+      CandlePeriod.FiveMinutes,
+      CandlePeriod.FifteenMinutes,
     ],
-    default: CandlePeriod.ONE_MINUTE,
+    default: CandlePeriod.OneMinute,
   },
-  [ChartDuration.ONE_DAY]: {
+  [ChartDuration.OneDay]: {
     periods: [
-      CandlePeriod.FIFTEEN_MINUTES,
-      CandlePeriod.ONE_HOUR,
-      CandlePeriod.TWO_HOURS,
-      CandlePeriod.FOUR_HOURS,
+      CandlePeriod.FifteenMinutes,
+      CandlePeriod.OneHour,
+      CandlePeriod.TwoHours,
+      CandlePeriod.FourHours,
     ],
-    default: CandlePeriod.ONE_HOUR,
+    default: CandlePeriod.OneHour,
   },
-  [ChartDuration.ONE_WEEK]: {
+  [ChartDuration.OneWeek]: {
     periods: [
-      CandlePeriod.ONE_HOUR,
-      CandlePeriod.TWO_HOURS,
-      CandlePeriod.FOUR_HOURS,
-      CandlePeriod.EIGHT_HOURS,
-      CandlePeriod.ONE_DAY,
+      CandlePeriod.OneHour,
+      CandlePeriod.TwoHours,
+      CandlePeriod.FourHours,
+      CandlePeriod.EightHours,
+      CandlePeriod.OneDay,
     ],
-    default: CandlePeriod.FOUR_HOURS,
+    default: CandlePeriod.FourHours,
   },
-  [ChartDuration.ONE_MONTH]: {
+  [ChartDuration.OneMonth]: {
     periods: [
-      CandlePeriod.EIGHT_HOURS,
-      CandlePeriod.TWELVE_HOURS,
-      CandlePeriod.ONE_DAY,
-      CandlePeriod.ONE_WEEK,
+      CandlePeriod.EightHours,
+      CandlePeriod.TwelveHours,
+      CandlePeriod.OneDay,
+      CandlePeriod.OneWeek,
     ],
-    default: CandlePeriod.ONE_DAY,
+    default: CandlePeriod.OneDay,
   },
-  [ChartDuration.YTD]: {
-    periods: [CandlePeriod.ONE_DAY, CandlePeriod.ONE_WEEK],
-    default: CandlePeriod.ONE_WEEK,
+  [ChartDuration.Ytd]: {
+    periods: [CandlePeriod.OneDay, CandlePeriod.OneWeek],
+    default: CandlePeriod.OneWeek,
   },
-  [ChartDuration.MAX]: {
-    periods: [CandlePeriod.ONE_WEEK],
-    default: CandlePeriod.ONE_WEEK,
+  [ChartDuration.Max]: {
+    periods: [CandlePeriod.OneWeek],
+    default: CandlePeriod.OneWeek,
   },
 } as const;
 
 /**
  * Calculate the number of candles to fetch based on duration and period
+ *
  * @param durationMinutes - Duration in minutes
  * @param periodMinutes - Candle period in minutes
  * @returns Number of candles (clamped between MIN and TOTAL)
@@ -176,6 +177,7 @@ export function calculateCandleCount(
 
 /**
  * Get visible range for chart zoom
+ *
  * @param dataLength - Total number of candles in data
  * @param visibleCount - Number of candles to show
  * @returns Object with from and to indices for setVisibleLogicalRange
