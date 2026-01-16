@@ -84,6 +84,7 @@ const mockStartShieldSubscriptionWithCard = jest.fn();
 const mockGetSubscriptions = jest.fn();
 const mockGetSwapsControllerState = jest.fn();
 const mockGetNetworkControllerState = jest.fn();
+const mockGetRemoteFeatureFlagState = jest.fn();
 const mockGetAppStateControllerState = jest.fn();
 const mockGetMetaMetricsControllerState = jest.fn();
 const mockGetSubscriptionControllerState = jest.fn();
@@ -131,6 +132,10 @@ rootMessenger.registerActionHandler(
 rootMessenger.registerActionHandler(
   'NetworkController:getState',
   mockGetNetworkControllerState,
+);
+rootMessenger.registerActionHandler(
+  'RemoteFeatureFlagController:getState',
+  mockGetRemoteFeatureFlagState,
 );
 rootMessenger.registerActionHandler(
   'AppStateController:getState',
@@ -183,6 +188,7 @@ rootMessenger.delegate({
     'SmartTransactionsController:getState',
     'SwapsController:getState',
     'NetworkController:getState',
+    'RemoteFeatureFlagController:getState',
     'AppStateController:getState',
     'MetaMetricsController:trackEvent',
     'SubscriptionController:getState',
@@ -200,10 +206,12 @@ const mockWebAuthenticator: WebAuthenticator = {
   generateNonce: jest.fn(),
 };
 const mockPlatform = new ExtensionPlatform();
+const mockCaptureException = jest.fn();
 const subscriptionService = new SubscriptionService({
   messenger,
   platform: mockPlatform,
   webAuthenticator: mockWebAuthenticator,
+  captureException: mockCaptureException,
 });
 // Mock environment variables
 const originalEnv = process.env;
@@ -497,6 +505,9 @@ describe('SubscriptionService - handlePostTransaction', () => {
       networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
       networksMetadata: MOCK_STATE.networksMetadata,
     });
+    mockGetRemoteFeatureFlagState.mockReturnValueOnce({
+      remoteFeatureFlags: MOCK_STATE.remoteFeatureFlags,
+    });
     mockGetKeyringControllerState.mockReturnValue({
       keyrings: MOCK_STATE.keyrings,
     });
@@ -690,6 +701,9 @@ describe('SubscriptionService - submitSubscriptionSponsorshipIntent', () => {
     mockGetNetworkControllerState.mockReturnValueOnce({
       networkConfigurationsByChainId: MOCK_STATE.networkConfigurationsByChainId,
       networksMetadata: MOCK_STATE.networksMetadata,
+    });
+    mockGetRemoteFeatureFlagState.mockReturnValueOnce({
+      remoteFeatureFlags: MOCK_STATE.remoteFeatureFlags,
     });
   });
 

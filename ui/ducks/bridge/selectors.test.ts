@@ -1896,6 +1896,14 @@ describe('Bridge selectors', () => {
   describe('getIsGasIncluded', () => {
     it('returns true when both smart transactions are enabled and chain supports gas-included swaps', () => {
       const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {},
+          smartTransactionsNetworks: {
+            [CHAIN_IDS.MAINNET]: {
+              extensionActive: true,
+            },
+          },
+        },
         metamaskStateOverrides: {
           ...mockNetworkState({
             id: 'network-configuration-id-1',
@@ -1913,25 +1921,8 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
-          },
-          swapsState: {
-            swapsFeatureFlags: {
-              ethereum: {
-                extensionActive: true,
-                mobileActive: true,
-                smartTransactions: {
-                  expectedDeadline: 45,
-                  maxDeadline: 150,
-                  returnTxHashAsap: false,
-                  extensionActive: true,
-                },
-              },
-              smartTransactions: {
-                expectedDeadline: 45,
-                maxDeadline: 150,
-                returnTxHashAsap: false,
-                extensionActive: true,
-              },
+            livenessByChainId: {
+              '0x1': true,
             },
           },
         },
@@ -1950,6 +1941,9 @@ describe('Bridge selectors', () => {
           },
           smartTransactionsState: {
             liveness: true,
+            livenessByChainId: {
+              '0x1': true,
+            },
           },
           swapsState: {
             swapsFeatureFlags: {

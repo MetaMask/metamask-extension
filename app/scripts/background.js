@@ -49,7 +49,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -95,7 +95,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -119,7 +119,7 @@ const localStore = useFixtureStore
   : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
 
-const { safePersist, requestSafeReload } =
+const { safePersist, requestSafeReload, evacuate } =
   getRequestSafeReload(persistenceManager);
 
 // Setup global hook for improved Sentry state snapshots during initialization
@@ -131,7 +131,7 @@ global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
- * purposes, to, in the case of database corruption, an possible way for an end
+ * purposes, to, in the case of storage errors, a possible way for an end
  * user to recover their vault. Hopefully this is never needed.
  */
 global.logEncryptedVault = () => {
@@ -893,6 +893,20 @@ export async function loadStateFromPersistence(backup) {
     // migrations will behave correctly.
     if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
       preMigrationVersionedData.meta = backup.meta;
+      // old versions of meta used "data" as the storage kind, without
+      // explicitly setting the "storageKind" to data. If it is missing, we just
+      // always default to "data" ("data" was the default before "split"
+      // existed).
+      // We need to set it properly here so that the persistence manager uses
+      // the correct storage kind when restoring from the `backup`.
+      if (
+        backup.meta.storageKind === 'split' ||
+        backup.meta.storageKind === 'data'
+      ) {
+        persistenceManager.storageKind = backup.meta.storageKind;
+      } else {
+        persistenceManager.storageKind = 'data';
+      }
     }
     // sanity check on the meta property
     if (typeof preMigrationVersionedData.meta.version !== 'number') {
@@ -971,8 +985,14 @@ export async function loadStateFromPersistence(backup) {
   if (persistenceManager.storageKind === 'data') {
     const alreadyTried =
       versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
-    const shouldUseSplitStateStorage =
-      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // const shouldUseSplitStateStorage =
+    //   !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
+    const disableSplitStateMigration = true;
+    const shouldUseSplitStateStorage = disableSplitStateMigration
+      ? false
+      : !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    // disabling split state rollout for now
     log.debug(
       '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
       shouldUseSplitStateStorage,
@@ -1207,6 +1227,11 @@ export function setupController(
     preinstalledSnaps,
     requestSafeReload,
     cronjobControllerStorageManager,
+  });
+
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed(() => {
+    controller.appStateController.setShowStorageErrorToast(true);
   });
 
   /**
@@ -1787,21 +1812,23 @@ function onNavigateToTab() {
         }
       }
 
-      // If the connected dApp is Hyperliquid, trigger the referral flow
-      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+      // If the connected dApp is a referral partner, trigger the referral flow
+      const partner = getPartnerByOrigin(currentTabOrigin);
+      if (partner) {
         const connectSitePermissions =
           controller.permissionController.state.subjects[currentTabOrigin];
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           controller
-            .handleHyperliquidReferral(
+            .handleDefiReferral(
+              partner,
               tabId,
-              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+              ReferralTriggerType.OnNavigateConnectedTab,
             )
             .catch((error) => {
               log.error(
-                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
                 error,
               );
             });
@@ -1814,9 +1841,8 @@ function onNavigateToTab() {
 // Sidepanel-specific functionality
 // Set initial side panel behavior based on user preference
 const initSidePanelBehavior = async () => {
-  // Only initialize sidepanel behavior if the feature flag is enabled
-  // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
     return;
   }
 
@@ -1844,9 +1870,8 @@ initSidePanelBehavior();
 
 // Listen for preference changes to update side panel behavior dynamically
 const setupPreferenceListener = async () => {
-  // Only setup preference listener if the feature flag is enabled
-  // and the browser supports the sidePanel API (not Firefox)
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true' || !browser?.sidePanel) {
+  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
     return;
   }
 
@@ -2024,4 +2049,17 @@ async function initBackground(backup) {
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
   initBackground(null);
+}
+
+if (inTest) {
+  // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  browser.runtime.onMessage.addListener(async (message, _sender) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      await evacuate();
+      return { status: 'PERSISTENCE_STOPPED' };
+    }
+    return Promise.resolve();
+  });
 }
