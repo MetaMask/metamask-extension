@@ -87,12 +87,16 @@ export const withTronAccountSnap = async (
       await loginWithBalanceValidation(driver);
 
       const accountListPage = new AccountListPage(driver);
+      const homepage = new Homepage(driver);
+      await homepage.checkExpectedBalanceIsDisplayed();
 
       for (let i = 0; i < numberOfAccounts; i++) {
-        const homepage = new Homepage(driver);
-        await homepage.checkExpectedBalanceIsDisplayed();
-        // create account
-        await homepage.headerNavbar.openAccountMenu();
+
+        // For the first iteration open the account menu
+        if (i === 0 ) {
+          await homepage.headerNavbar.openAccountMenu();
+        }
+
         await accountListPage.checkPageIsLoaded();
         await accountListPage.addMultichainAccount();
       }
