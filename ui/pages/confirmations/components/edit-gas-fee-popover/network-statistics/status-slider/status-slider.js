@@ -71,10 +71,18 @@ const getCssVariableValue = (variableName, fallback) => {
   if (typeof window === 'undefined' || !window.getComputedStyle) {
     return fallback;
   }
-  const value = window
-    .getComputedStyle(document.documentElement)
-    .getPropertyValue(variableName)
-    .trim();
+  const style = window.getComputedStyle(document.documentElement);
+  let value = style.getPropertyValue(variableName).trim();
+  let depth = 0;
+  while (value.startsWith('var(') && depth < 5) {
+    const match = value.match(/^var\((--[^,)\s]+)\s*(?:,([^)]+))?\)$/u);
+    if (!match) {
+      break;
+    }
+    const nextValue = style.getPropertyValue(match[1]).trim();
+    value = nextValue || (match[2] ? match[2].trim() : '');
+    depth += 1;
+  }
   return value || fallback;
 };
 
