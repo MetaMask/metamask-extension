@@ -26,11 +26,12 @@
 
     &__label {
       white-space: nowrap;
-      min-width: 50%;
+      min-width: 0;
     }
 
     &__value {
-      min-width: 50%;
+      min-width: 0;
+      text-align: right;
     }
 
     p {
@@ -42,9 +43,10 @@
       margin-top: 8px;
 
       div {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        column-gap: 8px;
         text-align: left;
       }
     }
