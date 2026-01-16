@@ -17,8 +17,6 @@ describe('Tron Connect - Sign Message - e2e tests', function () {
         const testDappTron = new TestDappTron(driver);
 
         await testDappTron.openTestDappPage();
-        await testDappTron.checkPageIsLoaded();
-        await testDappTron.switchTo();
 
         // 1. Connect
         await connectTronTestDapp(driver, testDappTron);

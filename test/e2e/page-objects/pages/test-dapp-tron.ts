@@ -70,6 +70,8 @@ export class TestDappTron {
     url?: string;
   } = {}): Promise<void> {
     await this.driver.openNewPage(url);
+    await this.checkPageIsLoaded();
+    await this.switchTo();
   }
 
   async checkPageIsLoaded(): Promise<void> {
