@@ -1,6 +1,15 @@
 import { EventEmitter } from 'events';
-import React, { Component, lazy, Suspense } from 'react';
+import React, {
+  Component,
+  ComponentType,
+  lazy,
+  Suspense,
+  FormEvent,
+  ChangeEvent,
+  MutableRefObject,
+} from 'react';
 import PropTypes from 'prop-types';
+import { Location as RouterLocation, NavigateFunction } from 'react-router-dom';
 import { SeedlessOnboardingControllerErrorMessage } from '@metamask/seedless-onboarding-controller';
 import {
   Text,
@@ -50,11 +59,63 @@ import ResetPasswordModal from './reset-password-modal';
 import FormattedCounter from './formatted-counter';
 import { MetamaskWordmarkLogo } from './metamask-wordmark-logo';
 
+type UnlockPageProps = {
+  navigate: NavigateFunction;
+  location: RouterLocation;
+  isUnlocked: boolean;
+  isOnboardingCompleted: boolean;
+  onRestore: () => void;
+  onSubmit: (password: string) => Promise<void>;
+  checkIsSeedlessPasswordOutdated: () => Promise<void>;
+  getIsSeedlessOnboardingUserAuthenticated: () => Promise<boolean>;
+  forceUpdateMetamaskState: () => Promise<void>;
+  isSocialLoginFlow: boolean;
+  onboardingParentContext: MutableRefObject<unknown>;
+  loginWithDifferentMethod: () => Promise<void>;
+  firstTimeFlowType: string | null;
+  resetWallet: () => Promise<void>;
+  isPopup: boolean;
+  isWalletResetInProgress: boolean;
+};
+
+type UnlockPageState = {
+  password: string;
+  error: string | null;
+  showResetPasswordModal: boolean;
+  isLocked: boolean;
+  isSubmitting: boolean;
+  unlockDelayPeriod: number;
+  showLoginErrorModal: boolean;
+  showConnectionsRemovedModal: boolean;
+};
+
+type UnlockPageContext = {
+  trackEvent: (event: object, options?: object) => void;
+  bufferedTrace: (trace: object) => void;
+  bufferedEndTrace: (trace: object) => void;
+  t: (key: string, args?: unknown[]) => string;
+};
+
+type LoginError = {
+  message: string;
+  data?: {
+    numberOfAttempts?: number;
+    remainingTime?: number;
+  };
+};
+
 const FoxAppearAnimation = lazy(
-  () => import('../onboarding-flow/welcome/fox-appear-animation'),
+  () =>
+    // @ts-expect-error - Build system resolves without extension, but TS wants .js
+    import('../onboarding-flow/welcome/fox-appear-animation') as Promise<{
+      default: ComponentType<{
+        isLoader?: boolean;
+        skipTransition?: boolean;
+      }>;
+    }>,
 );
 
-class UnlockPage extends Component {
+class UnlockPage extends Component<UnlockPageProps, UnlockPageState> {
   static contextTypes = {
     trackEvent: PropTypes.func,
     bufferedTrace: PropTypes.func,
@@ -130,7 +191,7 @@ class UnlockPage extends Component {
     isWalletResetInProgress: PropTypes.bool,
   };
 
-  state = {
+  state: UnlockPageState = {
     password: '',
     error: null,
     showResetPasswordModal: false,
@@ -141,6 +202,8 @@ class UnlockPage extends Component {
     showConnectionsRemovedModal: false,
   };
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   failed_attempts = 0;
 
   animationEventEmitter = new EventEmitter();
@@ -148,7 +211,7 @@ class UnlockPage extends Component {
   /**
    * Determines if the current user is in the social import rehydration phase
    *
-   * @returns {boolean} True if user is importing social wallet during onboarding
+   * @returns True if user is importing social wallet during onboarding
    */
   isSocialImportRehydration() {
     return (
@@ -157,6 +220,8 @@ class UnlockPage extends Component {
     );
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   UNSAFE_componentWillMount() {
     const { isUnlocked, navigate, location } = this.props;
 
@@ -194,7 +259,7 @@ class UnlockPage extends Component {
     }
   }
 
-  handleSubmit = async (event) => {
+  handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -216,12 +281,14 @@ class UnlockPage extends Component {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.RehydrationPasswordAttempted,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'social',
           biometrics: false,
         },
       });
     } else if (!isOnboardingCompleted) {
-      this.context.bufferedTrace?.({
+      this.context.bufferedTrace({
         name: TraceName.OnboardingPasswordLoginAttempt,
         op: TraceOperation.OnboardingUserJourney,
         parentContext: this.props.onboardingParentContext?.current,
@@ -237,21 +304,27 @@ class UnlockPage extends Component {
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationCompleted,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             biometrics: false,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
           },
         });
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingExistingSocialLogin,
         });
       }
 
       if (!isOnboardingCompleted) {
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingPasswordLoginAttempt,
         });
-        this.context.bufferedEndTrace?.({
+        this.context.bufferedEndTrace({
           name: TraceName.OnboardingJourneyOverall,
         });
       }
@@ -261,6 +334,8 @@ class UnlockPage extends Component {
           category: MetaMetricsEventCategory.Navigation,
           event: MetaMetricsEventName.AppUnlocked,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
           },
         },
@@ -269,14 +344,14 @@ class UnlockPage extends Component {
         },
       );
     } catch (error) {
-      await this.handleLoginError(error, isRehydrationFlow);
+      await this.handleLoginError(error as LoginError, isRehydrationFlow);
     } finally {
       this.setState({ isSubmitting: false });
     }
   };
 
-  handleLoginError = async (error, isRehydrationFlow = false) => {
-    const { t } = this.context;
+  handleLoginError = async (error: LoginError, isRehydrationFlow = false) => {
+    const { t } = this.context as UnlockPageContext;
     const { message, data } = error;
     const { isOnboardingCompleted } = this.props;
 
@@ -302,7 +377,7 @@ class UnlockPage extends Component {
 
         finalErrorMessage = t('unlockPageTooManyFailedAttempts');
         errorReason = 'too_many_login_attempts';
-        finalUnlockDelayPeriod = data.remainingTime;
+        finalUnlockDelayPeriod = data?.remainingTime ?? 0;
         break;
       case SeedlessOnboardingControllerErrorMessage.OutdatedPassword:
         finalErrorMessage = t('passwordChangedRecently');
@@ -330,14 +405,21 @@ class UnlockPage extends Component {
 
     if (errorReason) {
       await this.props.forceUpdateMetamaskState();
+
       // Track wallet rehydration failed for social import users (only during rehydration)
       if (isRehydrationFlow) {
         this.context.trackEvent({
           category: MetaMetricsEventCategory.Onboarding,
           event: MetaMetricsEventName.RehydrationPasswordFailed,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             account_type: 'social',
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             failed_attempts: this.failed_attempts,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             error_type: errorReason,
           },
         });
@@ -347,6 +429,8 @@ class UnlockPage extends Component {
         event: MetaMetricsEventName.AppUnlockedFailed,
         properties: {
           reason: errorReason,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           failed_attempts: this.failed_attempts,
         },
       });
@@ -359,7 +443,7 @@ class UnlockPage extends Component {
     });
   };
 
-  handleInputChange(event) {
+  handleInputChange(event: ChangeEvent<HTMLInputElement>) {
     const { target } = event;
     this.setState({ password: target.value, error: null });
 
@@ -442,6 +526,8 @@ class UnlockPage extends Component {
         category: MetaMetricsEventCategory.Onboarding,
         event: MetaMetricsEventName.UseDifferentLoginMethodClicked,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           account_type: 'social',
         },
       });
@@ -456,6 +542,8 @@ class UnlockPage extends Component {
       category: MetaMetricsEventCategory.Onboarding,
       event: MetaMetricsEventName.ForgotPasswordClicked,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
     });
@@ -470,6 +558,8 @@ class UnlockPage extends Component {
       category: MetaMetricsEventCategory.Accounts,
       event: MetaMetricsEventName.ResetWallet,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         account_type: isSocialLoginFlow ? 'social' : 'metamask',
       },
     });
@@ -497,7 +587,7 @@ class UnlockPage extends Component {
       showConnectionsRemovedModal,
     } = this.state;
     const { isOnboardingCompleted, isSocialLoginFlow } = this.props;
-    const { t } = this.context;
+    const { t } = this.context as UnlockPageContext;
 
     const needHelpText = t('needHelpLinkText');
     const isRehydrationFlow = isSocialLoginFlow && !isOnboardingCompleted;
@@ -552,7 +642,7 @@ class UnlockPage extends Component {
               {isRehydrationFlow ? (
                 this.renderMascot()
               ) : (
-                <MetamaskWordmarkLogo isPopup={this.props.isPopup} />
+                <MetamaskWordmarkLogo isPopup={this.props.isPopup ?? false} />
               )}
               {isBeta() ? (
                 <Text
@@ -589,7 +679,6 @@ class UnlockPage extends Component {
                   : t('enterYourPassword')
               }
               size={FormTextFieldSize.Lg}
-              placeholderColor={TextColor.textDefault}
               inputProps={{
                 'data-testid': 'unlock-password',
                 'aria-label': t('password'),
@@ -597,7 +686,9 @@ class UnlockPage extends Component {
               textFieldProps={{
                 disabled: isLocked,
               }}
-              onChange={(event) => this.handleInputChange(event)}
+              onChange={(event) =>
+                this.handleInputChange(event as ChangeEvent<HTMLInputElement>)
+              }
               type={TextFieldType.Password}
               value={password}
               error={Boolean(error)}
@@ -682,4 +773,6 @@ class UnlockPage extends Component {
   }
 }
 
-export default withMetaMetrics(UnlockPage);
+export default withMetaMetrics(
+  UnlockPage as unknown as React.ComponentType<Record<string, unknown>>,
+);
