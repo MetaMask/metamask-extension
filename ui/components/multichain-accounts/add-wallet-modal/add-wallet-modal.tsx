@@ -31,6 +31,7 @@ import {
   CONNECT_HARDWARE_ROUTE,
   IMPORT_SRP_ROUTE,
   ADD_WALLET_PAGE_ROUTE,
+  ADD_MPC_WALLET_ROUTE,
 } from '../../../helpers/constants/routes';
 import {
   ENVIRONMENT_TYPE_POPUP,
@@ -108,6 +109,12 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
       titleKey: 'importAnAccount',
       iconName: IconName.Download,
       route: ADD_WALLET_PAGE_ROUTE,
+    },
+    {
+      id: 'mpc-wallet',
+      titleKey: 'addMpcWallet',
+      iconName: IconName.ShieldLock,
+      route: ADD_MPC_WALLET_ROUTE,
     },
     {
       id: 'hardware-wallet',

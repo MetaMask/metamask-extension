@@ -298,6 +298,9 @@
   "addNewAccount": {
     "message": "Add a new Ethereum account"
   },
+  "addMpcWallet": {
+    "message": "Add an MPC wallet"
+  },
   "addNewEthereumAccountLabel": {
     "message": "Ethereum account"
   },
