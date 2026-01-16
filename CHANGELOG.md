@@ -71,7 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Block concurrent RPCs while serving `wallet_requestExecutionPermissions`. (#37407)
 - Fix shield details icon shrinking on very small screen (#38797)
 - MUSD will not be transform to uppercase (MUSD) now on shield settings page (#38793)
-- Add Tron Account Change detection support for multichain Api (#38536) (#38536)
+- Add Tron Account Change detection support for multichain Api (#38536)
 - Add skeleton loader for dapp Confirmations (#38656)
 - Enhanced the UI for the 'Forgot Password Modal' and the wallet import section and create new password in the Forgot Password (#37727)
   process.
