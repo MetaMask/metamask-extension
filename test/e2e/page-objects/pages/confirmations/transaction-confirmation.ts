@@ -74,7 +74,6 @@ class TransactionConfirmation extends Confirmation {
     '[data-testid="header-account-name"]';
 
   private readonly inlineAlert: RawLocator = {
-    tag: 'div',
     testId: 'inline-alert',
   };
 
