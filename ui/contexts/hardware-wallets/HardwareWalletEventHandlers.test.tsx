@@ -1,4 +1,10 @@
 import { renderHook } from '@testing-library/react-hooks';
+import {
+  HardwareWalletError,
+  ErrorCode,
+  Severity,
+  Category,
+} from '@metamask/hw-wallet-sdk';
 import { useDeviceEventHandlers } from './HardwareWalletEventHandlers';
 import {
   DeviceEvent,
@@ -145,6 +151,34 @@ describe('useDeviceEventHandlers', () => {
 
       expect(resultState).toEqual(
         ConnectionState.error(DeviceEvent.DeviceLocked, error),
+      );
+    });
+
+    it('handles DEVICE_LOCKED event without error payload', () => {
+      const { result } = setupHook();
+
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.DeviceLocked,
+      });
+
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.error(
+          DeviceEvent.DeviceLocked,
+          new HardwareWalletError('Device is locked', {
+            code: ErrorCode.AuthenticationDeviceLocked,
+            severity: Severity.Err,
+            category: Category.Authentication,
+            userMessage: 'Device is locked',
+          }),
+        ),
       );
     });
 

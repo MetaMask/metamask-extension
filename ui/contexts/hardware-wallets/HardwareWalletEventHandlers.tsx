@@ -1,5 +1,10 @@
 import { useCallback } from 'react';
-import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import {
   DeviceEvent,
   ConnectionStatus,
@@ -123,7 +128,13 @@ export const useDeviceEventHandlers = ({
           updateConnectionState(
             ConnectionState.error(
               DeviceEvent.DeviceLocked,
-              payload.error as Error,
+              payload.error ||
+                new HardwareWalletError('Device is locked', {
+                  code: ErrorCode.AuthenticationDeviceLocked,
+                  severity: Severity.Err,
+                  category: Category.Authentication,
+                  userMessage: 'Device is locked',
+                }),
             ),
           );
           break;
@@ -215,6 +226,7 @@ export const useDeviceEventHandlers = ({
           error: disconnectError,
         });
       } else {
+        // Error provider will handle all the other error cases
         updateConnectionState(ConnectionState.disconnected());
       }
     },
