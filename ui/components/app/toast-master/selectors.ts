@@ -51,6 +51,8 @@ type State = {
       | 'remoteFeatureFlags'
       | 'pna25Acknowledged'
       | 'completedOnboarding'
+      | 'showStorageErrorToast'
+      | 'isUnlocked'
     >
   >;
 };
@@ -116,6 +118,7 @@ export function selectShowConnectAccountToast(
   account: InternalAccount,
 ): boolean {
   const allowShowAccountSetting = getAlertEnabledness(state).unconnectedAccount;
+  const activeTabOrigin = getOriginOfCurrentTab(state);
   const connectedAccounts = getAllPermittedAccountsForCurrentTab(state);
 
   // We only support connection with EVM or Solana accounts
@@ -127,12 +130,12 @@ export function selectShowConnectAccountToast(
   const showConnectAccountToast =
     allowShowAccountSetting &&
     account &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     isConnectableAccount &&
     connectedAccounts.length > 0 &&
     !isInternalAccountInPermittedAccountIds(account, connectedAccounts);
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 // If there is more than one connected account to activeTabOrigin,
@@ -162,11 +165,11 @@ export function selectShowConnectAccountGroupToast(
     allowShowAccountSetting &&
     accountGroup &&
     isAccountSupported &&
-    state.activeTab.origin &&
+    activeTabOrigin &&
     connectedAccounts.length > 0 &&
     !isConnected;
 
-  return showConnectAccountToast;
+  return Boolean(showConnectAccountToast);
 }
 
 /**
@@ -237,6 +240,24 @@ export function selectShowShieldEndingToast(
   state: Pick<State, 'metamask'>,
 ): boolean {
   return !state.metamask.shieldEndingToastLastClickedOrClosed;
+}
+
+/**
+ * Determines if the storage error toast should be shown based on:
+ * - showStorageErrorToast flag is true
+ * - User has completed onboarding
+ * - Wallet is unlocked
+ *
+ * @param state - Redux state object.
+ * @returns Boolean indicating whether to show the toast
+ */
+export function selectShowStorageErrorToast(
+  state: Pick<State, 'metamask'>,
+): boolean {
+  const { showStorageErrorToast, completedOnboarding, isUnlocked } =
+    state.metamask || {};
+
+  return Boolean(showStorageErrorToast && completedOnboarding && isUnlocked);
 }
 
 /**
