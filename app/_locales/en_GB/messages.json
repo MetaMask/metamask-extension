@@ -6366,7 +6366,7 @@
     "message": "This transaction is covered"
   },
   "shieldCoverageAlertMessageTitlePaused": {
-    "message": "Transaction shield paused"
+    "message": "Transaction Shield paused"
   },
   "shieldCoverageAlertMessageTitleSignatureRequest": {
     "message": "This signature request isn't covered"
@@ -6400,7 +6400,7 @@
     "message": "Start 14-day free trial"
   },
   "shieldEntryModalSubtitleA": {
-    "message": "Transaction shield provides protection up to $1 and 24/7 priority support.",
+    "message": "Transaction Shield provides protection up to $1 and 24/7 priority support.",
     "description": "The $1 is the amount of transaction protection"
   },
   "shieldEntryModalSubtitleB": {
@@ -6411,13 +6411,13 @@
     "message": "Transact with added confidence"
   },
   "shieldEntryModalTitleB": {
-    "message": "Introducing transaction shield"
+    "message": "Introducing Transaction Shield"
   },
   "shieldEstimatedChangesMonthlyTooltipText": {
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, i agree to transaction shield $1"
+    "message": "By continuing, i agree to Transaction Shield $1"
   },
   "shieldManagePlan": {
     "message": "Manage plan"
@@ -6432,7 +6432,7 @@
     "message": "Paused"
   },
   "shieldPaymentPaused": {
-    "message": "Transaction shield paused"
+    "message": "Transaction Shield paused"
   },
   "shieldPaymentPausedActionCardPayment": {
     "message": "Update"
@@ -6493,7 +6493,7 @@
     "message": "Rewards"
   },
   "shieldPlanErrorText": {
-    "message": "Couldn’t connect to transaction shield"
+    "message": "Couldn’t connect to Transaction Shield"
   },
   "shieldPlanFooterNoteMonthly": {
     "message": "Billed monthly, cancel anytime"
@@ -6540,7 +6540,7 @@
     "message": "Start free trial"
   },
   "shieldTx": {
-    "message": "Transaction shield"
+    "message": "Transaction Shield"
   },
   "shieldTxBillingAccount": {
     "message": "Billing account"
@@ -8268,7 +8268,7 @@
     "message": "Transaction settings"
   },
   "transactionShield": {
-    "message": "Transaction shield"
+    "message": "Transaction Shield"
   },
   "transactionSubmitted": {
     "message": "Transaction submitted with estimated gas fee of $1 at $2."
