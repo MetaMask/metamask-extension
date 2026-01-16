@@ -5,6 +5,7 @@ This directory contains all benchmark implementations organized by category.
 ## Summary of Changes
 
 Previously, benchmarks had multiple entry points:
+
 - `yarn tsx test/e2e/benchmarks/benchmark.ts` (page load)
 - `yarn tsx test/e2e/benchmarks/user-actions-benchmark.ts` (user actions)
 - `yarn tsx test/e2e/benchmarks/performance-benchmark.ts` (performance flows)
@@ -13,6 +14,7 @@ Previously, benchmarks had multiple entry points:
 This structure made sense when the list was short, but as more teams add flow benchmarks, having multiple entry points becomes confusing and hard to maintain.
 
 **What changed:**
+
 - ✅ **Single entry point**: All benchmarks now run through `run-benchmark.ts`
 - ✅ **File-based execution**: Run any benchmark by specifying its file path
 - ✅ **Presets for CI**: Groups of benchmarks defined in code, not scattered across scripts
@@ -20,6 +22,7 @@ This structure made sense when the list was short, but as more teams add flow be
 - ✅ **Simplified CLI**: One command (`yarn test:e2e:benchmark`) to rule them all
 
 **Deleted files:**
+
 - `benchmark.ts` → logic moved to `flows/page-load/*.ts`
 - `user-actions-benchmark.ts` → logic moved to `flows/user-actions/*.ts`
 - `performance-benchmark.ts` → logic moved to `flows/performance/*.ts`
@@ -46,21 +49,22 @@ yarn test:e2e:benchmark --preset user-actions --iterations 5 --retries 3
 
 ### Available Presets
 
-| Preset | Description | Benchmarks |
-|--------|-------------|------------|
-| `standard-home` | Standard user page load | `standard-home.ts` |
-| `power-user-home` | Power user page load | `power-user-home.ts` |
-| `user-actions` | User interaction timings | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
-| `performance-onboarding` | Onboarding flows | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts` |
-| `performance-assets` | Asset page loads | `asset-details.ts`, `solana-asset-details.ts` |
-| `playwright-page-load` | Playwright benchmarks | `page-load-benchmark.spec.ts` |
-| `all` | All benchmarks | Everything above |
+| Preset                   | Description              | Benchmarks                                                       |
+| ------------------------ | ------------------------ | ---------------------------------------------------------------- |
+| `standard-home`          | Standard user page load  | `standard-home.ts`                                               |
+| `power-user-home`        | Power user page load     | `power-user-home.ts`                                             |
+| `user-actions`           | User interaction timings | `load-new-account.ts`, `confirm-tx.ts`, `bridge-user-actions.ts` |
+| `performance-onboarding` | Onboarding flows         | `onboarding-import-wallet.ts`, `onboarding-new-wallet.ts`        |
+| `performance-assets`     | Asset page loads         | `asset-details.ts`, `solana-asset-details.ts`                    |
+| `playwright-page-load`   | Playwright benchmarks    | `page-load-benchmark.spec.ts`                                    |
+| `all`                    | All benchmarks           | Everything above                                                 |
 
 ## Writing New Benchmarks
 
 ### 1. Create a new file in the appropriate subdirectory
 
 Choose the category that best fits your benchmark:
+
 - `page-load/` - For measuring page load times
 - `user-actions/` - For measuring user interaction timings
 - `performance/` - For E2E performance flows with multiple timers
@@ -70,6 +74,7 @@ Choose the category that best fits your benchmark:
 Every benchmark must export a `run` function. The signature depends on the benchmark type:
 
 **Performance benchmarks** (return `BenchmarkRunResult`):
+
 ```typescript
 import type { BenchmarkRunResult } from '../../utils/types';
 
@@ -85,6 +90,7 @@ export async function run(): Promise<BenchmarkRunResult> {
 ```
 
 **Page load benchmarks** (accept options, return results):
+
 ```typescript
 export async function run(options: {
   browserLoads: number;
@@ -96,6 +102,7 @@ export async function run(options: {
 ```
 
 **User action benchmarks** (return `UserActionResult`):
+
 ```typescript
 import type { UserActionResult } from '../../utils/types';
 
