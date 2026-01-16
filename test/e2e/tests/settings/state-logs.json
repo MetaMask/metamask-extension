@@ -298,6 +298,7 @@
       }
     },
     "appActiveTab": {
+      "favIconUrl": "null",
       "host": "string",
       "href": "string",
       "id": "number",
@@ -383,12 +384,18 @@
     "domains": {},
     "drafts": [],
     "enabledNetworkMap": {
+      "bip122": {
+        "bip122:000000000019d6689c085ae165831e93": "boolean"
+      },
       "eip155": {
         "0x539": "boolean",
         "0x18c7": "boolean"
       },
       "solana": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean"
+      },
+      "tron": {
+        "tron:728126428": "boolean"
       }
     },
     "enableEnforcedSimulations": "boolean",

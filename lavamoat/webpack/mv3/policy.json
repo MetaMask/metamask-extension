@@ -1149,6 +1149,13 @@
         "@metamask/scure-bip39>@scure/base": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "globals": {
         "document.getElementById": true

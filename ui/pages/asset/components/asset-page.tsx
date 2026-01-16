@@ -339,7 +339,7 @@ const AssetPage = ({
       >
         <Box display={Display.Flex}>
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             marginRight={1}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}

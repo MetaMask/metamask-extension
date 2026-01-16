@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1298,9 +1301,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -8513,6 +8513,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
