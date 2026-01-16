@@ -24,7 +24,7 @@ import {
   encodeDisableDelegation,
   getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   checkDelegationDisabled,
   submitDirectRevocation,
@@ -59,7 +59,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
-  getMemoizedInternalAccountByAddress: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
 }));
 
 jest.mock(
@@ -101,8 +101,8 @@ const mockGetDelegationHashOffchain =
     typeof getDelegationHashOffchain
   >;
 const mockGetMemoizedInternalAccountByAddress =
-  getMemoizedInternalAccountByAddress as jest.MockedFunction<
-    typeof getMemoizedInternalAccountByAddress
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
   >;
 const mockCheckDelegationDisabled =
   checkDelegationDisabled as jest.MockedFunction<
