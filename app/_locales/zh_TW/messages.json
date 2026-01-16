@@ -712,9 +712,6 @@
   "networkNameDefinition": {
     "message": "對應這個網路的名稱。"
   },
-  "networkNameTestnet": {
-    "message": "測試網路"
-  },
   "networkURL": {
     "message": "網路 URL"
   },
@@ -1101,9 +1098,6 @@
   },
   "tokenSymbol": {
     "message": "代幣代號"
-  },
-  "tooltipApproveButton": {
-    "message": "我了解了"
   },
   "total": {
     "message": "總量"

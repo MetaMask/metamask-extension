@@ -651,14 +651,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Ní raibh muid in ann aon sonraí stairiúla a fháil"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "NFTanna $1"
-  },
   "assetOptions": {
     "message": "Roghanna sócmhainní"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Sócmhainní"
@@ -2944,9 +2938,6 @@
   "insufficientFunds": {
     "message": "Cistí neamhleor."
   },
-  "insufficientFundsForGas": {
-    "message": "Easpa cistí le haghaidh gáis"
-  },
   "insufficientFundsSend": {
     "message": "Cistí neamhleor"
   },
@@ -3695,18 +3686,6 @@
   "networkName": {
     "message": "Ainm an líonra"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3719,23 +3698,11 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Roghanna líonra"
@@ -4279,9 +4246,6 @@
   },
   "openInBlockExplorer": {
     "message": "Oscail i mbloc-iniúchóir"
-  },
-  "optional": {
-    "message": "Roghnach"
   },
   "options": {
     "message": "Roghanna"
@@ -5386,24 +5350,11 @@
   "sendBugReport": {
     "message": "Seol tuairisc fabht chugainn."
   },
-  "sendNoContactsConversionText": {
-    "message": "cliceáil anseo"
-  },
-  "sendNoContactsDescription": {
-    "message": "Ligeann teagmhálaithe duit idirbhearta a sheoladh go sábháilte chuig cuntas eile arís agus arís eile. Chun teagmhálaí a chruthú, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Níl aon teagmhálaithe agat fós"
-  },
   "sendSelectReceiveAsset": {
     "message": "Roghnaigh sócmhainn le fáil"
   },
   "sendSelectSendAsset": {
     "message": "Roghnaigh sócmhainn le seoladh"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Trí chliceáil ar an gcnaipe seo, cuirfear tús láithreach le d’idirbheart malartaithe. Athbhreithnigh sonraí d’idirbhearta le do thoil sula leanann tú ar aghaidh."
   },
   "sendingAsset": {
     "message": "Ag seoladh $1"
@@ -5414,10 +5365,6 @@
   "sendingNativeAsset": {
     "message": "Ag seoladh $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Rabhadh: tá tú ar tí airgead a sheoladh chuig conradh comharthaíochta a d’fhéadfadh caillteanas cistí a bheith mar thoradh air. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Seolta"
@@ -6609,9 +6556,6 @@
     "message": "An malartú ó $1 go $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Is meastachán iad táillí gáis agus beidh siad ag athrú bunaithe ar thrácht líonra agus ar chastacht idirbhirt."
-  },
   "swapGasFeesExplanation": {
     "message": "Ní dhéanann MetaMask aon airgead ó tháillí gáis. Is meastacháin iad na táillí seo agus féadfaidh siad athrú bunaithe ar cé chomh gnóthach is atá an líonra agus cé chomh casta is atá idirbheart. Foghlaim tuilleadh $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -6623,15 +6567,8 @@
   "swapGasFeesIncluded": {
     "message": " San áireamh"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Foghlaim tuilleadh faoi tháillí gáis"
-  },
   "swapGasFeesSplit": {
     "message": "Tá táillí gáis ar an scáileán roimhe seo roinnte idir an dá idirbheart seo."
-  },
-  "swapGasFeesSummary": {
-    "message": "Íoctar táillí gáis le mianadóirí cripte a phróiseálann idirbhearta ar an líonra $1. Ní dhéanann MetaMask brabús as táillí gáis.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Cuimsíonn an luachan seo táillí gáis tríd an méid comharthaí a seoladh nó a fuarthas a choigeartú. Féadfaidh tú ETH a fháil in idirbheart ar leith ar do liosta gníomhaíochta."
@@ -6649,10 +6586,6 @@
   "swapIncludesMMFee": {
     "message": "Áirítear táille $1% le haghaidh MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Léiríonn an luachan táille $1% do MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Áirítear táille $1% ar MetaMask – $2",
@@ -6905,9 +6838,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Ceadaigh don suíomh seo an líonra a athrú?"
   },
-  "switchInputCurrency": {
-    "message": "Lasc airgeadra ionchuir"
-  },
   "switchNetwork": {
     "message": "Athraigh líonra"
   },
@@ -7043,9 +6973,6 @@
   },
   "tokensInCollection": {
     "message": "Comharthaí sa bhailiúchán"
-  },
-  "tooltipApproveButton": {
-    "message": "Tuigim"
   },
   "tooltipSatusConnected": {
     "message": "ceangailte"
@@ -7582,9 +7509,6 @@
   "youSent": {
     "message": "Chuir tú",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Do chuntais"
   },
   "yourActivity": {
     "message": "Do ghníomhaíocht"
