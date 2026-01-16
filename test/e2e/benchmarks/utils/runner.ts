@@ -2,6 +2,7 @@
  * Benchmark runner utilities
  */
 
+import { retry } from '../../../../.github/scripts/shared/utils';
 import {
   calculateTimerStatistics,
   checkExclusionRate,
@@ -16,7 +17,8 @@ import type {
 
 /**
  * Run a benchmark function with retries
- * Handles the case where benchmark functions return { success: false } instead of throwing
+ * Wraps the shared retry utility to handle benchmark functions that return
+ * { success: false } instead of throwing errors.
  *
  * @param benchmarkFn - The benchmark function to execute
  * @param retries - Number of retries if the benchmark fails
@@ -25,48 +27,28 @@ async function runWithRetries(
   benchmarkFn: BenchmarkFunction,
   retries: number,
 ): Promise<BenchmarkRunResult> {
-  let lastResult: BenchmarkRunResult | null = null;
-  let attempts = 0;
-  const maxAttempts = retries + 1; // Initial attempt + retries
+  let lastResult: BenchmarkRunResult = {
+    timers: [],
+    success: false,
+    error: 'Unknown error',
+  };
 
-  while (attempts < maxAttempts) {
-    attempts += 1;
-    try {
-      const result = await benchmarkFn();
-      lastResult = result;
+  try {
+    return await retry(
+      async () => {
+        const result = await benchmarkFn();
+        lastResult = result;
 
-      // If successful, return immediately
-      if (result.success) {
+        if (!result.success) {
+          throw new Error(result.error ?? 'Benchmark failed');
+        }
         return result;
-      }
-
-      // If failed but we have retries left, continue
-      if (attempts < maxAttempts) {
-        continue;
-      }
-    } catch (error) {
-      // Unexpected error (benchmark functions should catch their own errors)
-      lastResult = {
-        timers: [],
-        success: false,
-        error: error instanceof Error ? error.message : String(error),
-      };
-
-      // If we have retries left, continue
-      if (attempts < maxAttempts) {
-        continue;
-      }
-    }
+      },
+      { retries, delay: 0 },
+    );
+  } catch {
+    return lastResult;
   }
-
-  // Return the last result (failed after all retries)
-  return (
-    lastResult ?? {
-      timers: [],
-      success: false,
-      error: 'Unknown error',
-    }
-  );
 }
 
 export async function runBenchmarkWithIterations(
