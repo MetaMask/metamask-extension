@@ -545,5 +545,29 @@ describe('useHardwareWalletAutoConnect', () => {
         expect(mockSetAutoConnected).not.toHaveBeenCalled();
       });
     });
+
+    it('does not auto-connect when connectRef.current is null', async () => {
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockResolvedValue('device-123');
+
+      setupAutoConnectHook(
+        {},
+        {
+          connectRef: { current: null },
+        },
+      );
+
+      // Wait for potential auto-connect to complete
+      await waitFor(() => {
+        expect(
+          webConnectionUtils.getHardwareWalletDeviceId,
+        ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
+      });
+
+      // Verify no connection attempt was made and no auto-connected state was set
+      expect(mockConnectRef).not.toHaveBeenCalled();
+      expect(mockSetAutoConnected).not.toHaveBeenCalled();
+    });
   });
 });

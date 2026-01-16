@@ -185,15 +185,15 @@ export const useHardwareWalletAutoConnect = ({
         if (
           walletType &&
           id &&
+          connectRef.current &&
           !adapterRef.current?.isConnected() &&
           !isConnectingRef.current &&
-          !hasAutoConnectedRef.current &&
-          hardwareConnectionPermissionState ===
-            HardwareConnectionPermissionState.Granted
+          !hasAutoConnectedRef.current
         ) {
           setDeviceIdRef(id);
+          const connect = connectRef.current;
           try {
-            await connectRef.current?.();
+            await connect();
             // Check cancellation again after async connect completes
             if (!isCancelled) {
               setAutoConnected(effectAccountAddress ?? null, id);
