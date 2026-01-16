@@ -1,5 +1,6 @@
 import { strict as assert } from 'assert';
 import { keccak256 } from 'ethereum-cryptography/keccak';
+import { bytesToHex } from '@metamask/utils';
 import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
@@ -38,9 +39,9 @@ describe('eth_call', function () {
 
         // eth_call
         await driver.openNewPage(`http://127.0.0.1:8080`);
-        const balanceOf = `0x${Buffer.from(
+        const balanceOf = bytesToHex(
           keccak256(Buffer.from('balanceOf(address)')),
-        ).toString('hex')}`;
+        );
         const walletAddress = '0x5cfe73b6021e818b776b421b1c4db2474086a7e1';
         const request = JSON.stringify({
           jsonrpc: '2.0',

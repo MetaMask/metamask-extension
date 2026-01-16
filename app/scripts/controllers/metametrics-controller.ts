@@ -12,7 +12,7 @@ import { keccak256 } from 'ethereum-cryptography/keccak';
 import { v4 as uuidv4 } from 'uuid';
 import { NameType } from '@metamask/name-controller';
 import {
-  add0x,
+  bytesToHex,
   getErrorMessage,
   type Hex,
   isErrorWithMessage,
@@ -628,15 +628,13 @@ export default class MetaMetricsController extends BaseController<
   }
 
   generateMetaMetricsId(): string {
-    return add0x(
-      Buffer.from(
-        keccak256(
-          Buffer.from(
-            String(Date.now()) +
-              String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
-          ),
+    return bytesToHex(
+      keccak256(
+        Buffer.from(
+          String(Date.now()) +
+            String(Math.round(Math.random() * Number.MAX_SAFE_INTEGER)),
         ),
-      ).toString('hex'),
+      ),
     );
   }
 
