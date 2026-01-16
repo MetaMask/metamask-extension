@@ -520,7 +520,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebUSBPermission', () => {
+  describe('requestWebUsbPermission', () => {
     it('returns true when user selects Trezor device', async () => {
       const mockDevice = createMockUSBDevice();
       getMockedUsb().requestDevice.mockResolvedValue(mockDevice);
@@ -845,7 +845,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('subscribeToWebHIDEvents', () => {
+  describe('subscribeToWebHidEvents', () => {
     let mockOnConnect: jest.Mock;
     let mockOnDisconnect: jest.Mock;
     let unsubscribe: () => void;
@@ -1058,7 +1058,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('subscribeToWebUSBEvents', () => {
+  describe('subscribeToWebUsbEvents', () => {
     let mockOnConnect: jest.Mock;
     let mockOnDisconnect: jest.Mock;
     let unsubscribe: () => void;
@@ -1264,7 +1264,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('matchesDeviceFilters', () => {
+  describe('getConnectedLedgerDevices', () => {
     it('filters Ledger devices correctly in getConnectedLedgerDevices', async () => {
       const ledgerDevice = createMockHIDDevice() as HIDDevice;
       const nonLedgerDevice = createMockHIDDevice(0x1234) as HIDDevice;
@@ -1333,7 +1333,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebHIDPermission - additional error handling', () => {
+  describe('requestWebHidPermission - additional error handling', () => {
     it('handles error message with "denied" substring', async () => {
       const error = new Error('Permission request was denied by user');
       getMockedHid().requestDevice.mockRejectedValue(error);
@@ -1362,7 +1362,7 @@ describe('webConnectionUtils', () => {
     });
   });
 
-  describe('requestWebUSBPermission - additional error handling', () => {
+  describe('requestWebUsbPermission - additional error handling', () => {
     it('handles error message with "denied" substring', async () => {
       const error = new Error('Permission request was denied by user');
       getMockedUsb().requestDevice.mockRejectedValue(error);
@@ -1434,7 +1434,7 @@ describe('webConnectionUtils', () => {
       expect(result[0].vendorId).toBe(Number(LEDGER_USB_VENDOR_ID));
     });
 
-    it('checkWebHIDPermission returns Prompt when mixed devices exist but no Ledger', async () => {
+    it('checkWebHidPermission returns Prompt when mixed devices exist but no Ledger', async () => {
       const nonLedgerDevices = [
         createMockHIDDevice(0x05ac) as HIDDevice, // invalid vendor ID
         createMockHIDDevice(0x04b8) as HIDDevice, // invalid vendor ID
@@ -1446,7 +1446,7 @@ describe('webConnectionUtils', () => {
       expect(result).toBe(HardwareConnectionPermissionState.Prompt);
     });
 
-    it('checkWebUSBPermission returns Prompt when mixed devices exist but no Trezor', async () => {
+    it('checkWebUsbPermission returns Prompt when mixed devices exist but no Trezor', async () => {
       const nonTrezorDevices = [
         createMockUSBDevice(0x05ac), // invalid vendor ID
         createMockUSBDevice(0x04b8), // invalid vendor ID
