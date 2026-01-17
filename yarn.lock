@@ -34207,6 +34207,7 @@ __metadata:
     yaml: "npm:^2.4.1"
     yargs: "npm:^17.7.2"
     yargs-parser: "npm:^21.1.1"
+    zod: "npm:^4.3.5"
   languageName: unknown
   linkType: soft
 
@@ -46410,7 +46411,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.25 || ^4.0":
+"zod@npm:^3.25 || ^4.0, zod@npm:^4.3.5":
   version: 4.3.5
   resolution: "zod@npm:4.3.5"
   checksum: 10/3148bd52e56ab7c1641ec397e6be6eddbb1d8f5db71e95baab9bb9622a0ea49d8a385885fc1c22b90fa6d8c5234e051f4ef5d469cfe3fb90198d5a91402fd89c
