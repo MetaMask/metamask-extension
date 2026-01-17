@@ -1504,6 +1504,10 @@
       "warn: ⚠️ React Router Future Flag": 2,
       "MetaMask: Background connection not initialized": 1
     },
+    "ui/pages/unlock-page/unlock-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2,
+      "MetaMask: Background connection not initialized": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-toast/gas-fee-token-toast.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 6,
@@ -2170,7 +2174,8 @@
       "warn: newState.NftController must be present": 1,
       "error: Error: No INFURA_PROJECT_ID set!": 1,
       "MetaMask: Migration skipped warnings": 2,
-      "warn: Migration 183.1: currencyRates not found": 1
+      "warn: Migration 183.1: currencyRates not found": 1,
+      "warn: Migration 186: Missing or invalid": 1
     },
     "ui/components/app/modals/visit-support-data-consent-modal/visit-support-data.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2,
@@ -2267,6 +2272,14 @@
       "warn: ⚠️ React Router Future Flag": 2,
       "React: Act warnings (component updates not wrapped)": 14,
       "React: DOM nesting violations": 1
+    },
+    "ui/pages/settings/transaction-shield-tab/manage-shield-plan/manage-shield-plan.test.tsx": {
+      "MetaMask: Background connection not initialized": 2,
+      "warn: ⚠️ React Router Future Flag": 2,
+      "React: Act warnings (component updates not wrapped)": 12
+    },
+    "ui/pages/settings/transaction-shield-tab/components/cancel-membership-modal.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/bridge/hooks/useSubmitBridgeTransaction.test.tsx": {
       "Reselect: Identity function warnings": 2,
@@ -2494,6 +2507,9 @@
     "app/scripts/migrations/185.test.ts": {
       "warn: Migration #185: Could not access": 2
     },
+    "app/scripts/migrations/186.test.ts": {
+      "warn: Migration 186: Missing or invalid": 13
+    },
     "app/scripts/migrations/153.test.ts": {
       "MetaMask: Migration state warnings": 3
     },
@@ -2598,7 +2614,7 @@
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2,
-      "React: Act warnings (component updates not wrapped)": 2
+      "React: Act warnings (component updates not wrapped)": 3
     },
     "ui/pages/confirmations/components/modals/advanced-gas-price-modal/advanced-gas-price-modal.test.tsx": {
       "Reselect: Input stability warnings": 2,
@@ -2655,6 +2671,9 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/lock/lock.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/lock/lock.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/multichain-accounts/add-wallet-page/add-wallet-page.test.tsx": {
@@ -3103,6 +3122,10 @@
     "ui/components/app/user-preferenced-currency-input/user-preferenced-currency-input.test.js": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/components/app/update-modal/update-modal.test.tsx": {
+      "MetaMask: Background connection not initialized": 2,
+      "React: Act warnings (component updates not wrapped)": 1
+    },
     "ui/components/multichain-accounts/account-show-srp-row/account-show-srp-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
@@ -3273,6 +3296,27 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/permission-connect-header/permission-connect-header.test.js": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/order-card/order-card.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/perps-tab-control-bar/perps-tab-control-bar.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/perps-tab-view.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/perps-token-logo/perps-token-logo.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/perps-empty-state/perps-empty-state.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/start-trade-cta/start-trade-cta.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/components/app/perps/position-card/position-card.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/UI/asset/asset.test.tsx": {
