@@ -65,7 +65,6 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null
     },
-    "ApprovalController": {},
     "AuthenticationController": { "isSignedIn": "boolean" },
     "BridgeController": {},
     "BridgeStatusController": { "txHistory": "object" },
@@ -85,10 +84,7 @@
       },
       "currentCurrency": "usd"
     },
-    "DeFiPositionsController": "object",
-    "DecryptMessageController": {},
     "DelegationController": "object",
-    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": "object",
       "ensResolutionsByAddress": "object"
@@ -143,7 +139,12 @@
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
-      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+      "enabledNetworkMap": {
+        "bip122": "object",
+        "eip155": "object",
+        "solana": "object",
+        "tron": "object"
+      }
     },
     "NetworkOrderController": {
       "orderedNetworkList": {
@@ -266,14 +267,12 @@
     "SeedlessOnboardingController": "object",
     "SelectedNetworkController": { "domains": "object" },
     "ShieldController": "object",
-    "SignatureController": {},
     "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": "object",
       "snaps": "object",
       "unencryptedSnapStates": "object"
     },
-    "SnapInsightsController": {},
     "SnapInterfaceController": { "interfaces": "object" },
     "SnapsRegistry": {
       "database": "object",
@@ -283,7 +282,6 @@
     },
     "SubjectMetadataController": { "subjectMetadata": "object" },
     "SubscriptionController": "object",
-    "SwapsController": {},
     "TokenBalancesController": { "tokenBalances": "object" },
     "TokenListController": {
       "preventPollingOnNetworkRestart": false,
@@ -302,7 +300,6 @@
       "transactionBatches": "object",
       "transactions": "object"
     },
-    "TransactionPayController": {},
     "UserOperationController": { "userOperations": "object" },
     "UserStorageController": {
       "isAccountSyncingEnabled": true,
