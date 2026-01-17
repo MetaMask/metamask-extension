@@ -112,9 +112,9 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
         browserEnvironment: {},
         nftsDropdownState: {},
         connectedStatusPopoverHasBeenShown: true,
-        defaultHomeActiveTabName: null,
         termsOfUseLastAgreed:
           '__FIXTURE_SUBSTITUTION__currentDateInMilliseconds',
+        defaultHomeActiveTabName: null,
         fullScreenGasPollTokens: [],
         notificationGasPollTokens: [],
         popupGasPollTokens: [],
