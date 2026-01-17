@@ -95,9 +95,21 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
+  const initializedState = {
+    accountsByChainId: {},
+    allTokens: {},
+    networkConfigurationsByChainId: {},
+    allIgnoredTokens: {},
+    tokenBalances: {},
+    marketData: {},
+    currencyRates: {},
+    currentCurrency: 'usd',
+    ...preloadedState,
+  };
+
   connectToBackground(backgroundConnection, noop);
 
-  const store = await setupInitialStore(preloadedState, activeTab);
+  const store = await setupInitialStore(initializedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
