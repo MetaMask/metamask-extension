@@ -3861,16 +3861,16 @@
         "readable-stream": true
       }
     },
-    "lightweight-charts>fancy-canvas": {
-      "globals": {
-        "ResizeObserver": true,
-        "document.body": true
-      }
-    },
     "@metamask/providers>extension-port-stream": {
       "packages": {
         "browserify>buffer": true,
         "@metamask/providers>extension-port-stream>readable-stream": true
+      }
+    },
+    "lightweight-charts>fancy-canvas": {
+      "globals": {
+        "ResizeObserver": true,
+        "document.body": true
       }
     },
     "fast-json-patch": {
@@ -4307,6 +4307,7 @@
         "document.documentElement": true,
         "document.getElementById": true,
         "document.getSelection": true,
+        "fetch": false,
         "getComputedStyle": true,
         "location.href": true,
         "navigator": true,
