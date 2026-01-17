@@ -1,4 +1,3 @@
-
 export type AccountOverviewCommonProps = {
   setBasicFunctionalityModalOpen: () => void;
   ///: BEGIN:ONLY_INCLUDE_IF(build-main)
