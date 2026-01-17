@@ -6,6 +6,7 @@ import type {
   WaitForInput,
   WaitForResult,
   McpResponse,
+  HandlerOptions,
 } from '../types';
 import {
   createSuccessResponse,
@@ -18,12 +19,12 @@ import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
 import {
   collectTestIds,
   collectTrimmedA11ySnapshot,
-  resolveTarget,
   waitForTarget,
 } from '../discovery';
 
 export async function handleClick(
   input: ClickInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<ClickResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -77,7 +78,7 @@ export async function handleClick(
     sessionManager.setRefMap(newRefMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_click',
       input: { timeoutMs },
       target: {
@@ -121,6 +122,7 @@ export async function handleClick(
 
 export async function handleType(
   input: TypeInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<TypeResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -174,7 +176,7 @@ export async function handleType(
     sessionManager.setRefMap(newRefMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_type',
       input: {
         timeoutMs,
@@ -225,6 +227,7 @@ export async function handleType(
 
 export async function handleWaitFor(
   input: WaitForInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<WaitForResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -270,7 +273,7 @@ export async function handleWaitFor(
     sessionManager.setRefMap(newRefMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_wait_for',
       input: { timeoutMs },
       target: {

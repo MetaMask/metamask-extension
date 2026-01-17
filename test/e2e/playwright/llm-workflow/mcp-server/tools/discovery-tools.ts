@@ -7,6 +7,7 @@ import type {
   DescribeScreenResult,
   McpResponse,
   PriorKnowledgeContext,
+  HandlerOptions,
 } from '../types';
 import {
   createSuccessResponse,
@@ -19,6 +20,7 @@ import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
 export async function handleListTestIds(
   input: ListTestIdsInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<ListTestIdsResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -43,7 +45,7 @@ export async function handleListTestIds(
     sessionManager.setRefMap(refMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_list_testids',
       input: { limit },
       outcome: { ok: true },
@@ -70,6 +72,7 @@ export async function handleListTestIds(
 
 export async function handleAccessibilitySnapshot(
   input: AccessibilitySnapshotInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<AccessibilitySnapshotResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -97,7 +100,7 @@ export async function handleAccessibilitySnapshot(
     const testIds = await collectTestIds(page, 50);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_accessibility_snapshot',
       input: { rootSelector: input.rootSelector },
       outcome: { ok: true },
@@ -124,6 +127,7 @@ export async function handleAccessibilitySnapshot(
 
 export async function handleDescribeScreen(
   input: DescribeScreenInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<DescribeScreenResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -169,7 +173,7 @@ export async function handleDescribeScreen(
     }
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_describe_screen',
       input: {
         includeScreenshot: input.includeScreenshot,

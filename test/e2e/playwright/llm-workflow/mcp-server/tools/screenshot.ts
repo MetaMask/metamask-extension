@@ -1,4 +1,9 @@
-import type { ScreenshotInput, ScreenshotResult, McpResponse } from '../types';
+import type {
+  ScreenshotInput,
+  ScreenshotResult,
+  McpResponse,
+  HandlerOptions,
+} from '../types';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -10,6 +15,7 @@ import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
 export async function handleScreenshot(
   input: ScreenshotInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<ScreenshotResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -39,7 +45,7 @@ export async function handleScreenshot(
     sessionManager.setRefMap(refMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_screenshot',
       input: {
         name: input.name,

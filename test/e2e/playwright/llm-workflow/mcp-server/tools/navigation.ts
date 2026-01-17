@@ -4,6 +4,7 @@ import type {
   WaitForNotificationInput,
   WaitForNotificationResult,
   McpResponse,
+  HandlerOptions,
 } from '../types';
 import {
   createSuccessResponse,
@@ -16,6 +17,7 @@ import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
 export async function handleNavigate(
   input: NavigateInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<NavigateResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -56,7 +58,7 @@ export async function handleNavigate(
       default:
         return createErrorResponse(
           ErrorCodes.MM_INVALID_INPUT,
-          `Unknown screen: ${input.screen}`,
+          `Unknown screen: ${String(input.screen)}`,
           { input },
           sessionId,
           startTime,
@@ -71,7 +73,7 @@ export async function handleNavigate(
     sessionManager.setRefMap(refMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_navigate',
       input: { screen: input.screen, url: input.url },
       outcome: { ok: true },
@@ -101,6 +103,7 @@ export async function handleNavigate(
 
 export async function handleWaitForNotification(
   input: WaitForNotificationInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<WaitForNotificationResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -129,7 +132,7 @@ export async function handleWaitForNotification(
     sessionManager.setRefMap(refMap);
 
     await knowledgeStore.recordStep({
-      sessionId: sessionId!,
+      sessionId: sessionId ?? '',
       toolName: 'mm_wait_for_notification',
       input: { timeoutMs },
       outcome: { ok: true },

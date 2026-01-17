@@ -6,9 +6,19 @@
  * - Tool input/output schemas
  * - StepRecord schema for knowledge store
  * - Discovery types for accessibility and testId inventory
+ *
+ * Note: Zod schemas with validation are defined in ./schemas.ts
+ * The types here are kept for backward compatibility.
  */
 
 import type { ExtensionState, ScreenName } from '../types';
+
+export {
+  toolSchemas,
+  validateToolInput,
+  safeValidateToolInput,
+  type ToolName,
+} from './schemas';
 
 // =============================================================================
 // Response Envelopes
@@ -26,10 +36,10 @@ export type ResponseMeta = {
 /**
  * Success response envelope
  */
-export type SuccessResponse<T = unknown> = {
+export type SuccessResponse<Result = unknown> = {
   meta: ResponseMeta;
   ok: true;
-  result: T;
+  result: Result;
 };
 
 /**
@@ -53,7 +63,9 @@ export type ErrorResponse = {
 /**
  * Union type for all MCP responses
  */
-export type McpResponse<T = unknown> = SuccessResponse<T> | ErrorResponse;
+export type McpResponse<Result = unknown> =
+  | SuccessResponse<Result>
+  | ErrorResponse;
 
 // =============================================================================
 // Error Codes
@@ -92,6 +104,22 @@ export const ErrorCodes = {
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
+
+// =============================================================================
+// Handler Options
+// =============================================================================
+
+/**
+ * Options passed to tool handlers from the MCP server
+ */
+export type HandlerOptions = {
+  /**
+   * AbortSignal for request cancellation.
+   * Handlers should check signal.aborted before long operations
+   * and pass the signal to cancellable APIs (e.g., Playwright).
+   */
+  signal?: AbortSignal;
+};
 
 // =============================================================================
 // Tool Input Types
@@ -793,13 +821,13 @@ export type SessionState = {
  * Sensitive field patterns for text sanitization
  */
 export const SENSITIVE_FIELD_PATTERNS = [
-  /password/i,
-  /seed/i,
-  /srp/i,
-  /phrase/i,
-  /mnemonic/i,
-  /private.*key/i,
-  /secret/i,
+  /password/iu,
+  /seed/iu,
+  /srp/iu,
+  /phrase/iu,
+  /mnemonic/iu,
+  /private.*key/iu,
+  /secret/iu,
 ] as const;
 
 /**
@@ -822,11 +850,11 @@ export function isSensitiveField(fieldName: string): boolean {
  * @param sessionId
  * @param startTime
  */
-export function createSuccessResponse<T>(
-  result: T,
+export function createSuccessResponse<Result>(
+  result: Result,
   sessionId?: string,
   startTime?: number,
-): SuccessResponse<T> {
+): SuccessResponse<Result> {
   return {
     meta: {
       timestamp: new Date().toISOString(),

@@ -52,7 +52,7 @@ describe('KnowledgeStore', () => {
 
     const createMockStepRecord = (
       sessionId: string,
-      screen: string,
+      screen: 'home' | 'unlock' | 'settings' | 'unknown',
       toolName: string,
       testId?: string,
       ok = true,
@@ -77,7 +77,10 @@ describe('KnowledgeStore', () => {
           extensionId: 'abc123',
           balance: '25 ETH',
           networkName: 'Localhost 8545',
-          selectedAccountAddress: '0x1234567890123456789012345678901234567890',
+          accountAddress: '0x1234567890123456789012345678901234567890',
+          isLoaded: true,
+          isUnlocked: true,
+          chainId: 1337,
         },
         testIds: [
           { testId: 'coin-overview-send', tag: 'button', visible: true },

@@ -9,6 +9,7 @@ import type {
   KnowledgeSessionsResult,
   KnowledgeScope,
   McpResponse,
+  HandlerOptions,
 } from '../types';
 import {
   createSuccessResponse,
@@ -20,6 +21,7 @@ import { knowledgeStore } from '../knowledge-store';
 
 export async function handleKnowledgeLast(
   input: KnowledgeLastInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<KnowledgeLastResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -53,6 +55,7 @@ export async function handleKnowledgeLast(
 
 export async function handleKnowledgeSearch(
   input: KnowledgeSearchInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<KnowledgeSearchResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -90,6 +93,7 @@ export async function handleKnowledgeSearch(
 
 export async function handleKnowledgeSummarize(
   input: KnowledgeSummarizeInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<KnowledgeSummarizeResult>> {
   const startTime = Date.now();
   const currentSessionId = sessionManager.getSessionId();
@@ -148,6 +152,7 @@ export async function handleKnowledgeSummarize(
 
 export async function handleKnowledgeSessions(
   input: KnowledgeSessionsInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<KnowledgeSessionsResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();

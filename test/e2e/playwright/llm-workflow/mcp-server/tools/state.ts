@@ -1,4 +1,4 @@
-import type { GetStateResult, McpResponse } from '../types';
+import type { GetStateResult, McpResponse, HandlerOptions } from '../types';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -8,7 +8,9 @@ import { sessionManager } from '../session-manager';
 import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
 import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
-export async function handleGetState(): Promise<McpResponse<GetStateResult>> {
+export async function handleGetState(
+  _options?: HandlerOptions,
+): Promise<McpResponse<GetStateResult>> {
   const startTime = Date.now();
 
   try {
@@ -23,7 +25,7 @@ export async function handleGetState(): Promise<McpResponse<GetStateResult>> {
     }
 
     const state = await sessionManager.getExtensionState();
-    const sessionId = sessionManager.getSessionId()!;
+    const sessionId = sessionManager.getSessionId() ?? '';
     const page = sessionManager.getPage();
 
     const testIds = await collectTestIds(page, 50);

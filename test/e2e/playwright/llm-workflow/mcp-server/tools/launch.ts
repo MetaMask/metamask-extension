@@ -1,4 +1,9 @@
-import type { LaunchInput, LaunchResult, McpResponse } from '../types';
+import type {
+  LaunchInput,
+  LaunchResult,
+  McpResponse,
+  HandlerOptions,
+} from '../types';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -8,6 +13,7 @@ import { sessionManager } from '../session-manager';
 
 export async function handleLaunch(
   input: LaunchInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<LaunchResult>> {
   const startTime = Date.now();
 

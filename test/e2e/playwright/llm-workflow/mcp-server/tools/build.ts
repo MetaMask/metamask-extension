@@ -1,7 +1,12 @@
 import * as path from 'path';
 import { execSync } from 'child_process';
 import { existsSync } from 'fs';
-import type { BuildInput, BuildResult, McpResponse } from '../types';
+import type {
+  BuildInput,
+  BuildResult,
+  McpResponse,
+  HandlerOptions,
+} from '../types';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -10,6 +15,7 @@ import {
 
 export async function handleBuild(
   input: BuildInput,
+  _options?: HandlerOptions,
 ): Promise<McpResponse<BuildResult>> {
   const startTime = Date.now();
   const buildType = input.buildType ?? 'build:test';

@@ -1,10 +1,13 @@
 #!/usr/bin/env node
+/* eslint-disable import/extensions */
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+/* eslint-enable import/extensions */
+import type { ZodError, ZodIssue } from 'zod';
 
 import type {
   BuildInput,
@@ -23,7 +26,10 @@ import type {
   KnowledgeSearchInput,
   KnowledgeSummarizeInput,
   KnowledgeSessionsInput,
+  HandlerOptions,
 } from './types';
+import { createErrorResponse, ErrorCodes } from './types';
+import { toolSchemas, type ToolName } from './schemas';
 
 import { handleBuild } from './tools/build';
 import { handleLaunch } from './tools/launch';
@@ -44,6 +50,29 @@ import {
   handleKnowledgeSessions,
 } from './tools/knowledge';
 import { sessionManager } from './session-manager';
+
+function formatZodError(error: ZodError<unknown>): string {
+  return (error.issues as ZodIssue[])
+    .map((issue: ZodIssue) => `${issue.path.join('.')}: ${issue.message}`)
+    .join('; ');
+}
+
+function validateInput<Name extends ToolName>(
+  toolName: Name,
+  args: unknown,
+): { success: true; data: unknown } | { success: false; error: string } {
+  const schema = toolSchemas[toolName];
+  if (!schema) {
+    return { success: false, error: `Unknown tool: ${toolName}` };
+  }
+
+  const result = schema.safeParse(args ?? {});
+  if (!result.success) {
+    return { success: false, error: formatZodError(result.error) };
+  }
+
+  return { success: true, data: result.data };
+}
 
 const TOOL_DEFINITIONS = [
   {
@@ -541,69 +570,140 @@ async function main() {
     tools: TOOL_DEFINITIONS,
   }));
 
-  server.setRequestHandler(CallToolRequestSchema, async (request) => {
+  server.setRequestHandler(CallToolRequestSchema, async (request, extra) => {
     const { name, arguments: args } = request.params;
+    const startTime = Date.now();
+    const signal = extra?.signal;
 
+    if (!(name in toolSchemas)) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              createErrorResponse(
+                ErrorCodes.MM_INVALID_INPUT,
+                `Unknown tool: ${name}`,
+                undefined,
+                sessionManager.getSessionId(),
+                startTime,
+              ),
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    }
+
+    const validation = validateInput(name as ToolName, args);
+    if (!validation.success) {
+      const errorMessage =
+        'error' in validation ? validation.error : 'Unknown validation error';
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              createErrorResponse(
+                ErrorCodes.MM_INVALID_INPUT,
+                `Invalid input: ${errorMessage}`,
+                { providedArgs: args },
+                sessionManager.getSessionId(),
+                startTime,
+              ),
+              null,
+              2,
+            ),
+          },
+        ],
+      };
+    }
+
+    const validatedArgs = validation.data;
+    const options: HandlerOptions = { signal };
     let response;
 
     switch (name) {
       case 'mm_build':
-        response = await handleBuild(args as BuildInput);
+        response = await handleBuild(validatedArgs as BuildInput, options);
         break;
       case 'mm_launch':
-        response = await handleLaunch(args as LaunchInput);
+        response = await handleLaunch(validatedArgs as LaunchInput, options);
         break;
       case 'mm_cleanup':
-        response = await handleCleanup(args as CleanupInput);
+        response = await handleCleanup(validatedArgs as CleanupInput, options);
         break;
       case 'mm_get_state':
-        response = await handleGetState();
+        response = await handleGetState(options);
         break;
       case 'mm_navigate':
-        response = await handleNavigate(args as NavigateInput);
+        response = await handleNavigate(
+          validatedArgs as NavigateInput,
+          options,
+        );
         break;
       case 'mm_wait_for_notification':
         response = await handleWaitForNotification(
-          args as WaitForNotificationInput,
+          validatedArgs as WaitForNotificationInput,
+          options,
         );
         break;
       case 'mm_list_testids':
-        response = await handleListTestIds(args as ListTestIdsInput);
+        response = await handleListTestIds(
+          validatedArgs as ListTestIdsInput,
+          options,
+        );
         break;
       case 'mm_accessibility_snapshot':
         response = await handleAccessibilitySnapshot(
-          args as AccessibilitySnapshotInput,
+          validatedArgs as AccessibilitySnapshotInput,
+          options,
         );
         break;
       case 'mm_describe_screen':
-        response = await handleDescribeScreen(args as DescribeScreenInput);
+        response = await handleDescribeScreen(
+          validatedArgs as DescribeScreenInput,
+          options,
+        );
         break;
       case 'mm_screenshot':
-        response = await handleScreenshot(args as ScreenshotInput);
+        response = await handleScreenshot(
+          validatedArgs as ScreenshotInput,
+          options,
+        );
         break;
       case 'mm_click':
-        response = await handleClick(args as ClickInput);
+        response = await handleClick(validatedArgs as ClickInput, options);
         break;
       case 'mm_type':
-        response = await handleType(args as TypeInput);
+        response = await handleType(validatedArgs as TypeInput, options);
         break;
       case 'mm_wait_for':
-        response = await handleWaitFor(args as WaitForInput);
+        response = await handleWaitFor(validatedArgs as WaitForInput, options);
         break;
       case 'mm_knowledge_last':
-        response = await handleKnowledgeLast(args as KnowledgeLastInput);
+        response = await handleKnowledgeLast(
+          validatedArgs as KnowledgeLastInput,
+          options,
+        );
         break;
       case 'mm_knowledge_search':
-        response = await handleKnowledgeSearch(args as KnowledgeSearchInput);
+        response = await handleKnowledgeSearch(
+          validatedArgs as KnowledgeSearchInput,
+          options,
+        );
         break;
       case 'mm_knowledge_summarize':
         response = await handleKnowledgeSummarize(
-          args as KnowledgeSummarizeInput,
+          validatedArgs as KnowledgeSummarizeInput,
+          options,
         );
         break;
       case 'mm_knowledge_sessions':
         response = await handleKnowledgeSessions(
-          args as KnowledgeSessionsInput,
+          validatedArgs as KnowledgeSessionsInput,
+          options,
         );
         break;
       default:
@@ -611,13 +711,17 @@ async function main() {
           content: [
             {
               type: 'text',
-              text: JSON.stringify({
-                ok: false,
-                error: {
-                  code: 'MM_UNKNOWN_TOOL',
-                  message: `Unknown tool: ${name}`,
-                },
-              }),
+              text: JSON.stringify(
+                createErrorResponse(
+                  ErrorCodes.MM_INVALID_INPUT,
+                  `Unknown tool: ${name}`,
+                  undefined,
+                  sessionManager.getSessionId(),
+                  startTime,
+                ),
+                null,
+                2,
+              ),
             },
           ],
         };
