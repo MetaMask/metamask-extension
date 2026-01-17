@@ -44,16 +44,28 @@ function matchesSearchQuery(recipient: Recipient, query: string): boolean {
 
   const searchTerm = query.toLowerCase().trim();
 
-  if (recipient.contactName?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof recipient.contactName === 'string' &&
+    recipient.contactName.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
-  if (recipient.accountGroupName?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof recipient.accountGroupName === 'string' &&
+    recipient.accountGroupName.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
-  if (recipient.walletName?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof recipient.walletName === 'string' &&
+    recipient.walletName.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
-  if (recipient.address?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof recipient.address === 'string' &&
+    recipient.address.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
 

@@ -195,4 +195,38 @@ describe('useSendRecipientFilter', () => {
       mockAccountRecipients,
     );
   });
+
+  it('handles recipients with non-string property values', () => {
+    const recipientsWithNonStringProps: Recipient[] = [
+      {
+        address: '0x1111111111111111111111111111111111111111',
+        // @ts-expect-error Testing runtime type mismatch
+        contactName: 123,
+      },
+      {
+        address: '0x2222222222222222222222222222222222222222',
+        // @ts-expect-error Testing runtime type mismatch
+        walletName: { name: 'Wallet' },
+      },
+      {
+        address: '0x3333333333333333333333333333333333333333',
+        contactName: 'Valid Name',
+      },
+    ];
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendRecipientFilter({
+          contactRecipients: recipientsWithNonStringProps,
+          accountRecipients: [],
+          searchQuery: 'valid',
+        }),
+      mockState,
+    );
+
+    // Should only match recipients with valid string properties
+    expect(result.current.filteredContactRecipients).toEqual([
+      recipientsWithNonStringProps[2],
+    ]);
+  });
 });

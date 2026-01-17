@@ -288,7 +288,8 @@ export class RewardsDataService {
   ): void {
     if (
       response.status === 409 &&
-      errorData?.message?.toLowerCase().includes('already registered')
+      typeof errorData?.message === 'string' &&
+      errorData.message.toLowerCase().includes('already registered')
     ) {
       throw new AccountAlreadyRegisteredError(
         errorData.message || 'Account is already registered',
