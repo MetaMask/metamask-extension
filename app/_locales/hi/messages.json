@@ -1272,9 +1272,6 @@
   "close": {
     "message": "बंद करें"
   },
-  "closeExtension": {
-    "message": "एक्सटेंशन को बंद करें"
-  },
   "closeSlide": {
     "message": "$1 बंद करें",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -6218,41 +6215,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "रोके जाने के दौरान आपका प्लान एक्टिव नहीं होता है। अगर आप कैंसिल करते हैं, तो आपका प्लान तुरंत खत्म हो जाएगा।"
   },
-  "shieldTxDetails1Description": {
-    "message": "कवर किए गए ट्रांसेक्शन पर एसेट्स को सुरक्षित करता है"
-  },
   "shieldTxDetails1Title": {
     "message": "$10,000 तक के ट्रांसेक्शन पर सुरक्षा"
   },
-  "shieldTxDetails2Description": {
-    "message": "कभी भी तेज़ और समर्पित सपोर्ट प्राप्त करें"
-  },
-  "shieldTxDetails2Title": {
-    "message": "प्राथमिक सपोर्ट"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "लिंक"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "साइन अप करें"
-  },
   "shieldTxMembershipActive": {
     "message": "एक्टिव प्लान"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "बिलिंग विवरण"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "बिलिंग अकाउंट"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "शुल्क"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "अगला बिलिंग"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "भुगतान का तरीका"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "बिलिंग को मैनेज करें"
@@ -6267,9 +6234,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "आपका प्लान $1 को खत्म हो रहा है। अपने फ़ायदे जारी रखने के लिए अभी रिन्यू करें।",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "पेमेंट फिर से करने की कोशिश करें"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "कार्ड पेमेंट न हो पाने की वजह से आपका प्लान रोक दिया गया है।"
@@ -6296,9 +6260,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "सपोर्ट टीम से कॉन्टेक्ट करें"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "कार्ड विवरण अपडेट करें"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "मुफ्त ट्रायल"
   },
@@ -6319,9 +6280,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "क्लेम सबमिट करें"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "संपूर्ण लाभ देखें"
   },
   "show": {
     "message": "दिखाएं"
