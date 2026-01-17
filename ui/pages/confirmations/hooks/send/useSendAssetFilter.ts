@@ -55,13 +55,22 @@ function matchesSearchQuery(asset: Asset, query: string): boolean {
 
   const searchTerm = query.toLowerCase().trim();
 
-  if (asset.name?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof asset.name === 'string' &&
+    asset.name.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
-  if (asset.symbol?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof asset.symbol === 'string' &&
+    asset.symbol.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
-  if (asset.collection?.name?.toLowerCase().includes(searchTerm)) {
+  if (
+    typeof asset.collection?.name === 'string' &&
+    asset.collection.name.toLowerCase().includes(searchTerm)
+  ) {
     return true;
   }
 

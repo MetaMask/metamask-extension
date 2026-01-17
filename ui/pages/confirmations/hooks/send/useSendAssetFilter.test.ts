@@ -307,4 +307,68 @@ describe('useSendAssetFilter', () => {
     expect(result.current.filteredTokens).toEqual(mockTokens);
     expect(result.current.filteredNfts).toEqual(mockNfts);
   });
+
+  it('handles assets with non-string name and symbol properties', () => {
+    const assetsWithNonStringProps: Asset[] = [
+      // @ts-expect-error Testing runtime type mismatch
+      { name: 123, symbol: 'VALID', chainId: '1' },
+      // @ts-expect-error Testing runtime type mismatch
+      { name: 'Test Token', symbol: { value: 'TEST' }, chainId: '1' },
+      // @ts-expect-error Testing runtime type mismatch
+      { name: null, symbol: null, chainId: '1' },
+      { name: 'Valid Token', symbol: 'VALID', chainId: '1' },
+    ];
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendAssetFilter({
+          tokens: assetsWithNonStringProps,
+          nfts: [],
+          selectedChainId: null,
+          searchQuery: 'valid',
+        }),
+      mockState,
+    );
+
+    // Should match tokens where EITHER name OR symbol is a valid string containing 'valid'
+    // Token 0: name=123 (not string, ignored), symbol='VALID' (matches) - INCLUDED
+    // Token 1: name='Test Token' (no match), symbol={object} (not string, ignored) - EXCLUDED
+    // Token 2: name=null (ignored), symbol=null (ignored) - EXCLUDED
+    // Token 3: name='Valid Token' (matches), symbol='VALID' (matches) - INCLUDED
+    expect(result.current.filteredTokens).toEqual([
+      assetsWithNonStringProps[0],
+      assetsWithNonStringProps[3],
+    ]);
+    expect(result.current.filteredNfts).toEqual([]);
+  });
+
+  it('handles NFTs with non-string collection name properties', () => {
+    const nftsWithNonStringCollectionName: Asset[] = [
+      // @ts-expect-error Testing runtime type mismatch
+      { name: 'NFT 1', collection: { name: 123 }, chainId: '1' },
+      // @ts-expect-error Testing runtime type mismatch
+      { name: 'NFT 2', collection: { name: null }, chainId: '1' },
+      {
+        name: 'Valid NFT',
+        collection: { name: 'Test Collection' },
+        chainId: '1',
+      },
+    ];
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useSendAssetFilter({
+          tokens: [],
+          nfts: nftsWithNonStringCollectionName,
+          selectedChainId: null,
+          searchQuery: 'test',
+        }),
+      mockState,
+    );
+
+    // Should only match the valid NFT with string collection name
+    expect(result.current.filteredNfts).toEqual([
+      nftsWithNonStringCollectionName[2],
+    ]);
+  });
 });
