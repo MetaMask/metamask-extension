@@ -93,6 +93,26 @@ export const getStatusColor = (status: Order['status']): TextColor => {
 };
 
 /**
+ * Get the appropriate text color for a percentage change value
+ * Non-negative values (≥ 0) → green, negative → red
+ *
+ * @param percentString - The percentage string (e.g., "+2.84%", "-1.23%", "0.00%", "2.84%")
+ * @returns The appropriate text color
+ * @example
+ * getChangeColor('+2.84%') => TextColor.SuccessDefault
+ * getChangeColor('2.84%') => TextColor.SuccessDefault
+ * getChangeColor('0.00%') => TextColor.SuccessDefault
+ * getChangeColor('-1.23%') => TextColor.ErrorDefault
+ */
+export const getChangeColor = (percentString: string): TextColor => {
+  const value = parseFloat(percentString.replace('%', ''));
+  if (value < 0) {
+    return TextColor.ErrorDefault;
+  }
+  return TextColor.SuccessDefault;
+};
+
+/**
  * Extract the display symbol from a full symbol string
  * Strips DEX prefix for HIP-3 markets (e.g., "xyz:TSLA" -> "TSLA")
  * Includes null/type safety checks
@@ -156,4 +176,22 @@ export const findMarketBySymbol = (
   return allMarkets.find(
     (market) => market.symbol.toLowerCase() === symbol.toLowerCase(),
   );
+};
+
+/**
+ * Safely decode a URI component, returning undefined if decoding fails
+ * Handles malformed percent-encoding sequences that would throw URIError
+ *
+ * @param value - The URI-encoded string to decode
+ * @returns The decoded string, or undefined if decoding fails
+ * @example
+ * safeDecodeURIComponent('hello%20world') => 'hello world'
+ * safeDecodeURIComponent('%E0%A4%A') => undefined (malformed)
+ */
+export const safeDecodeURIComponent = (value: string): string | undefined => {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
 };
