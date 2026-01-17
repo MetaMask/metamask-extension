@@ -3,7 +3,10 @@
 import 'navigator.locks';
 import log from 'loglevel';
 
-import { captureException } from '../../../../shared/lib/sentry';
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
 import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
@@ -32,8 +35,10 @@ jest.mock('loglevel', () => ({
 }));
 jest.mock('../../../../shared/lib/sentry', () => ({
   captureException: jest.fn(),
+  captureMessage: jest.fn(),
 }));
 const mockedCaptureException = jest.mocked(captureException);
+const mockedCaptureMessage = jest.mocked(captureMessage);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -78,7 +83,10 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(mockedCaptureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -115,6 +123,43 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { broken: true } });
 
       expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+
+    it('tracks recovery with captureMessage when store.set fails then succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('store.set error');
+      mockStoreSet.mockRejectedValueOnce(error);
+
+      // First set fails
+      await manager.set({ appState: { broken: true } });
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      // Second set succeeds - should trigger recovery tracking
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { fixed: true } });
+
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'set-recovered' },
+          fingerprint: ['persistence-event', 'set-recovered'],
+        },
+      );
+    });
+
+    it('does not track recovery if set never failed', async () => {
+      manager.setMetadata({ version: 17 });
+
+      // Set succeeds without prior failure
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { working: true } });
+
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
     });
   });
 
@@ -264,7 +309,10 @@ describe('PersistenceManager', () => {
 
       await manager.persist();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -423,7 +471,10 @@ describe('PersistenceManager', () => {
       // returns `undefined`
       expect(await brokenManager.getBackup()).toBeUndefined();
 
-      expect(mockedCaptureException).toHaveBeenCalledWith(domException);
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException, {
+        tags: { 'persistence.error': 'backup-db-open-failed' },
+        fingerprint: ['persistence-error', 'backup-db-open-failed'],
+      });
       expect(consoleWarnSpy).toHaveBeenCalledWith(
         'Could not open backup database; automatic vault recovery will not be available.',
       );

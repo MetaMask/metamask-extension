@@ -387,7 +387,7 @@ export function NftDetailsComponent({
           justifyContent={JustifyContent.spaceBetween}
         >
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
