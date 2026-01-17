@@ -28,7 +28,7 @@ export async function handleClick(
 ): Promise<McpResponse<ClickResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
-  const timeoutMs = input.timeoutMs ?? 30000;
+  const timeoutMs = input.timeoutMs ?? 15000;
 
   try {
     if (!sessionManager.hasActiveSession()) {
@@ -126,7 +126,7 @@ export async function handleType(
 ): Promise<McpResponse<TypeResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
-  const timeoutMs = input.timeoutMs ?? 30000;
+  const timeoutMs = input.timeoutMs ?? 15000;
 
   try {
     if (!sessionManager.hasActiveSession()) {
@@ -231,7 +231,7 @@ export async function handleWaitFor(
 ): Promise<McpResponse<WaitForResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
-  const timeoutMs = input.timeoutMs ?? 30000;
+  const timeoutMs = input.timeoutMs ?? 15000;
 
   try {
     if (!sessionManager.hasActiveSession()) {

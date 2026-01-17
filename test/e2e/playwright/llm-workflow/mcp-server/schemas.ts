@@ -322,7 +322,7 @@ export const clickInputSchema = targetSelectionSchema.and(
       .int()
       .min(0)
       .max(60000)
-      .default(30000)
+      .default(15000)
       .describe('Timeout to wait for element to become visible'),
   }),
 );
@@ -338,7 +338,7 @@ export const typeInputSchema = targetSelectionSchema.and(
       .int()
       .min(0)
       .max(60000)
-      .default(30000)
+      .default(15000)
       .describe('Timeout to wait for element to become visible'),
   }),
 );
@@ -353,7 +353,7 @@ export const waitForInputSchema = targetSelectionSchema.and(
       .int()
       .min(100)
       .max(120000)
-      .default(30000)
+      .default(15000)
       .describe('Timeout to wait for element'),
   }),
 );

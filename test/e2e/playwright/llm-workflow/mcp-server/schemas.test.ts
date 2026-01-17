@@ -270,7 +270,7 @@ describe('Zod Schemas', () => {
       const result = clickInputSchema.safeParse({ testId: 'button' });
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.timeoutMs).toBe(30000);
+        expect(result.data.timeoutMs).toBe(15000);
       }
     });
 
@@ -339,7 +339,7 @@ describe('Zod Schemas', () => {
       const result = waitForInputSchema.safeParse({ testId: 'element' });
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.data.timeoutMs).toBe(30000);
+        expect(result.data.timeoutMs).toBe(15000);
       }
     });
 
