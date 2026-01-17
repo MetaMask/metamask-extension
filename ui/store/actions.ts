@@ -4502,11 +4502,21 @@ export function setPreference(
 export function setDefaultHomeActiveTabName(
   value: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+  return async (
+    dispatch: MetaMaskReduxDispatch,
+    getState: () => MetaMaskReduxState,
+  ) => {
+    const currentValue = getState().metamask.defaultHomeActiveTabName;
+
+    if (currentValue === value) {
+      return;
+    }
+
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
+    dispatch({
+      type: actionConstants.UPDATE_METAMASK_STATE,
+      value: { defaultHomeActiveTabName: value },
+    });
   };
 }
 

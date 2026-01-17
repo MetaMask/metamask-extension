@@ -55,7 +55,7 @@ export const AccountOverviewTabs = ({
 }: AccountOverviewTabsProps) => {
   const persistedTab = useSelector(getDefaultHomeActiveTabName);
   const [urlTab, setActiveTabKey] = useTabState();
-  const activeTabKey = urlTab || persistedTab || 'tokens';
+  const activeTabKey = urlTab || persistedTab;
 
   const navigate = useNavigate();
   const t = useI18nContext();
@@ -86,7 +86,7 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTab) => {
-      if (activeTabKey) {
+      if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
         endTrace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[activeTabKey],
         });
@@ -110,9 +110,11 @@ export const AccountOverviewTabs = ({
           },
         });
       }
-      trace({
-        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
-      });
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+        trace({
+          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
+        });
+      }
     },
     [
       activeTabKey,
