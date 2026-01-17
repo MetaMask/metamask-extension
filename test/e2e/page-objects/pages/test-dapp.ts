@@ -242,6 +242,11 @@ class TestDapp {
 
   private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
+  private readonly sendEip1559WithoutGasButton = {
+    text: 'Send EIP 1559 Without Gas',
+    tag: 'button',
+  };
+
   private readonly userRejectedRequestMessage = {
     tag: 'span',
     text: 'Error: User rejected the request.',
@@ -922,6 +927,13 @@ class TestDapp {
     });
     await this.driver.clickElement(this.simpleSendButton);
     await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+  }
+
+  async clickSendEip1559WithoutGasButton() {
+    await this.driver.waitForSelector(this.sendEip1559WithoutGasButton, {
+      state: 'enabled',
+    });
+    await this.driver.clickElement(this.sendEip1559WithoutGasButton);
   }
 
   async clickSiwe() {

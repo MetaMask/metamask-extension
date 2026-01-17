@@ -32,6 +32,9 @@ class ActivityListPage {
     css: '.transaction-status-label--confirmed',
   };
 
+  private readonly confirmedTransactionFirst =
+    '.transaction-status-label--confirmed:nth-of-type(1)';
+
   private readonly confirmTransactionReplacementButton = {
     text: 'Submit',
     tag: 'button',
@@ -218,6 +221,10 @@ class ActivityListPage {
 
   async checkNoTxInActivity(): Promise<void> {
     await this.driver.assertElementNotPresent(this.completedTransactions);
+  }
+
+  async checkNoConfirmedTransactions(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.confirmedTransactionFirst);
   }
 
   async checkSpeedUpInlineButtonIsPresent(): Promise<void> {

@@ -25,6 +25,8 @@ class Confirmation {
 
   private inlineAlertButton = '[data-testid="inline-alert"]';
 
+  private loadingOverlaySpinner: RawLocator;
+
   private nameSelector = '.name';
 
   private navigationTitle: RawLocator;
@@ -34,6 +36,10 @@ class Confirmation {
   private previousPageButton: RawLocator;
 
   private rejectAllButton: RawLocator;
+
+  private rejectAllButtonTextLocator: RawLocator;
+
+  private rejectAllTransactionsLink: RawLocator;
 
   private saveButtonSelector = { text: 'Save', tag: 'button' };
 
@@ -49,11 +55,17 @@ class Confirmation {
     this.footerConfirmButton = '[data-testid="confirm-footer-button"]';
     this.headerAccountDetailsButton =
       '[data-testid="header-info__account-details-button"]';
+    this.loadingOverlaySpinner = '.loading-overlay__spinner';
     this.navigationTitle = '[data-testid="confirm-page-nav-position"]';
     this.nextPageButton = '[data-testid="confirm-nav__next-confirmation"]';
     this.previousPageButton =
       '[data-testid="confirm-nav__previous-confirmation"]';
     this.rejectAllButton = '[data-testid="confirm-nav__reject-all"]';
+    this.rejectAllButtonTextLocator = {
+      text: 'Reject all',
+      tag: 'button',
+    };
+    this.rejectAllTransactionsLink = '.page-container__footer-secondary a';
     this.scrollToBottomButton = '.confirm-scroll-to-bottom__button';
   }
 
@@ -163,6 +175,18 @@ class Confirmation {
     await this.driver.assertElementNotPresent(this.rejectAllButton, {
       timeout: 5000,
     });
+  }
+
+  async waitForRejectAllButton(): Promise<void> {
+    await this.driver.waitForSelector(this.rejectAllButtonTextLocator);
+  }
+
+  async checkRejectAllTransactionsLinkNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.rejectAllTransactionsLink);
+  }
+
+  async checkLoadingOverlaySpinnerNotPresent(): Promise<void> {
+    await this.driver.assertElementNotPresent(this.loadingOverlaySpinner);
   }
 
   async checkNameIsDisplayed(
