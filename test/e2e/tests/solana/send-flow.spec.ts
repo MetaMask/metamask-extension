@@ -182,8 +182,6 @@ describe('Send flow', function (this: Suite) {
         await confirmation.checkPageIsLoaded();
         await confirmation.checkAccountIsDisplayed('Account 1');
         await confirmation.clickFooterConfirmButton();
-
-        await homePage.goToActivityList();
         const activityList = new ActivityListPage(driver);
         await activityList.checkFailedTxNumberDisplayedInActivity();
         await activityList.checkTxAction({

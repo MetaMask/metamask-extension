@@ -76,8 +76,6 @@ describe('Import NFT', function () {
         await accountListPage.switchToAccount('Account 1');
         await headerNavbar.checkAccountLabel('Account 1');
         await homepage.checkLocalNodeBalanceIsDisplayed(localNodes[0]);
-
-        await homepage.goToNftTab();
         await nftList.checkNftImageIsDisplayed();
       },
     );
