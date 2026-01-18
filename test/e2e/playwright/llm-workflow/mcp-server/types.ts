@@ -540,13 +540,16 @@ export type WaitForResult = {
 };
 
 /**
- * Knowledge step summary for mm_knowledge_last
+ * Knowledge step summary for mm_knowledge_last and mm_knowledge_search
  */
 export type KnowledgeStepSummary = {
   timestamp: string;
   tool: string;
   screen: ScreenName;
   snippet: string;
+  sessionId?: string;
+  matchedFields?: string[];
+  sessionGoal?: string;
 };
 
 /**

@@ -33,6 +33,184 @@ import {
 const KNOWLEDGE_ROOT = 'test-artifacts/llm-knowledge';
 const SCHEMA_VERSION = 1;
 
+// =============================================================================
+// Tokenization Utilities (SPEC-03)
+// =============================================================================
+
+/**
+ * Stopwords to remove from queries.
+ * Includes common English stopwords and test-specific terms.
+ */
+const STOPWORDS = new Set([
+  'a',
+  'an',
+  'the',
+  'to',
+  'from',
+  'in',
+  'on',
+  'at',
+  'for',
+  'with',
+  'and',
+  'or',
+  'but',
+  'is',
+  'are',
+  'was',
+  'were',
+  'be',
+  'been',
+  'flow',
+  'test',
+  'should',
+  'can',
+  'will',
+  'do',
+  'does',
+  'did',
+  'have',
+  'has',
+  'had',
+  'this',
+  'that',
+  'these',
+  'those',
+  'it',
+  // Tool-specific stopwords - too generic and match everything
+  'mm',
+  'mcp',
+]);
+
+const MIN_TOKEN_LENGTH = 2;
+
+/**
+ * Tokenizes a string into searchable tokens.
+ * - Lowercases all text
+ * - Splits on non-alphanumeric characters
+ * - Removes stopwords and short tokens
+ * - Deduplicates tokens
+ *
+ * @param text - The text to tokenize
+ * @returns Array of unique, meaningful tokens
+ * @example
+ * tokenize('send flow ETH to another account')
+ * // Returns: ['send', 'eth', 'another', 'account']
+ */
+function tokenize(text: string): string[] {
+  if (!text) {
+    return [];
+  }
+
+  const tokens = text
+    .toLowerCase()
+    .split(/[^a-z0-9]+/iu)
+    .filter(
+      (token) => token.length >= MIN_TOKEN_LENGTH && !STOPWORDS.has(token),
+    );
+
+  return [...new Set(tokens)];
+}
+
+/**
+ * Tokenizes an identifier (testId, CSS class, etc.) into words.
+ * Handles kebab-case, camelCase, snake_case, and mixed formats.
+ *
+ * @param identifier - The identifier to tokenize
+ * @returns Array of tokens
+ * @example
+ * tokenizeIdentifier('coin-overview-send-button')
+ * // Returns: ['coin', 'overview', 'send', 'button']
+ * @example
+ * tokenizeIdentifier('sendTokenButton')
+ * // Returns: ['send', 'token', 'button']
+ * @example
+ * tokenizeIdentifier('send_token_btn')
+ * // Returns: ['send', 'token', 'btn']
+ */
+function tokenizeIdentifier(identifier: string): string[] {
+  if (!identifier) {
+    return [];
+  }
+
+  // Split camelCase: 'sendToken' → 'send Token'
+  const withSpaces = identifier
+    .replace(/([a-z])([A-Z])/gu, '$1 $2')
+    .replace(/([A-Z]+)([A-Z][a-z])/gu, '$1 $2');
+
+  // Split on non-alphanumeric (handles kebab-case, snake_case)
+  const tokens = withSpaces
+    .toLowerCase()
+    .split(/[^a-z0-9]+/iu)
+    .filter((token) => token.length >= MIN_TOKEN_LENGTH);
+
+  return [...new Set(tokens)];
+}
+
+/**
+ * Synonyms for common MetaMask actions.
+ * Maps user terms to related terms found in testIds/a11y names.
+ *
+ * Keep this minimal - only add proven high-value mappings.
+ * Adding too many synonyms increases noise in search results.
+ */
+const ACTION_SYNONYMS: Record<string, string[]> = {
+  // Transaction actions
+  send: ['transfer', 'pay'],
+  receive: ['deposit'],
+
+  // Confirmation actions
+  approve: ['confirm', 'accept', 'allow'],
+  reject: ['deny', 'cancel', 'decline'],
+
+  // Authentication
+  unlock: ['login', 'signin'],
+
+  // Connection
+  connect: ['link', 'authorize'],
+
+  // Trading
+  swap: ['exchange', 'trade'],
+
+  // Signing
+  sign: ['signature'],
+};
+
+/**
+ * Expands query tokens with synonyms.
+ * Returns original tokens plus any synonyms for bidirectional matching.
+ *
+ * @param tokens - Array of query tokens
+ * @returns Expanded array including synonyms
+ * @example
+ * expandWithSynonyms(['transfer'])
+ * // Returns: ['transfer', 'send', 'pay']
+ */
+function expandWithSynonyms(tokens: string[]): string[] {
+  const expanded = new Set(tokens);
+
+  for (const token of tokens) {
+    // Check if token is a canonical term (key)
+    if (ACTION_SYNONYMS[token]) {
+      for (const synonym of ACTION_SYNONYMS[token]) {
+        expanded.add(synonym);
+      }
+    }
+
+    // Check if token is a synonym value
+    for (const [canonical, synonyms] of Object.entries(ACTION_SYNONYMS)) {
+      if (synonyms.includes(token)) {
+        expanded.add(canonical);
+        for (const synonym of synonyms) {
+          expanded.add(synonym);
+        }
+      }
+    }
+  }
+
+  return [...expanded];
+}
+
 const PRIOR_KNOWLEDGE_CONFIG = {
   windowHours: 48,
   maxRelatedSessions: 5,
@@ -359,16 +537,73 @@ export class KnowledgeStore {
     currentSessionId: string | undefined,
     filters?: KnowledgeFilters,
   ): Promise<KnowledgeStepSummary[]> {
+    const queryTokens = tokenize(query);
+    if (queryTokens.length === 0) {
+      return [];
+    }
+
+    const expandedTokens = expandWithSynonyms(queryTokens);
+
     const sessionIds = await this.resolveSessionIds(
       scope,
       currentSessionId,
       filters,
     );
 
-    const matches: { step: StepRecord; score: number }[] = [];
-    const queryLower = query.toLowerCase();
+    type ScoredSession = {
+      sessionId: string;
+      score: number;
+      metadata?: SessionMetadata;
+    };
+    const scoredSessions: ScoredSession[] = [];
 
     for (const sid of sessionIds) {
+      const metadata = await this.readSessionMetadata(sid);
+      const sessionScore = metadata
+        ? this.computeSessionScore(metadata, expandedTokens)
+        : 0;
+      scoredSessions.push({
+        sessionId: sid,
+        score: sessionScore,
+        metadata: metadata ?? undefined,
+      });
+    }
+
+    scoredSessions.sort((a, b) => {
+      if (b.score !== a.score) {
+        return b.score - a.score;
+      }
+      const aTime = a.metadata?.createdAt
+        ? new Date(a.metadata.createdAt).getTime()
+        : 0;
+      const bTime = b.metadata?.createdAt
+        ? new Date(b.metadata.createdAt).getTime()
+        : 0;
+      if (bTime !== aTime) {
+        return bTime - aTime;
+      }
+      return a.sessionId.localeCompare(b.sessionId);
+    });
+    const maxCandidateSessions = 20;
+    const topSessions = scoredSessions.slice(
+      0,
+      Math.min(maxCandidateSessions, scoredSessions.length),
+    );
+
+    type StepMatch = {
+      step: StepRecord;
+      score: number;
+      sessionScore: number;
+      sessionGoal?: string;
+      matchedFields: string[];
+    };
+    const matches: StepMatch[] = [];
+
+    for (const {
+      sessionId: sid,
+      score: sessionScore,
+      metadata,
+    } of topSessions) {
       const steps = await this.loadSessionSteps(sid);
 
       for (const { step } of steps) {
@@ -376,16 +611,30 @@ export class KnowledgeStore {
           continue;
         }
 
-        const score = this.computeSearchScore(step, queryLower);
-        if (score > 0) {
-          matches.push({ step, score });
+        const { score: stepScore, matchedFields } = this.computeSearchScore(
+          step,
+          expandedTokens,
+        );
+
+        const combinedScore = sessionScore + stepScore;
+
+        if (combinedScore > 0) {
+          matches.push({
+            step,
+            score: combinedScore,
+            sessionScore,
+            sessionGoal: metadata?.goal,
+            matchedFields,
+          });
         }
       }
     }
 
     matches.sort((a, b) => b.score - a.score);
 
-    return matches.slice(0, limit).map((m) => this.summarizeStep(m.step));
+    return matches
+      .slice(0, limit)
+      .map((m) => this.summarizeStep(m.step, m.matchedFields, m.sessionGoal));
   }
 
   private stepMatchesFilters(
@@ -580,35 +829,52 @@ export class KnowledgeStore {
     }
   }
 
-  private summarizeStep(step: StepRecord): KnowledgeStepSummary {
+  private summarizeStep(
+    step: StepRecord,
+    matchedFields?: string[],
+    sessionGoal?: string,
+  ): KnowledgeStepSummary {
     const screen = step.observation?.state?.currentScreen ?? 'unknown';
-    const snippet = this.generateSnippet(step);
+    const snippet = this.generateSnippet(step, matchedFields);
 
     return {
       timestamp: step.timestamp,
       tool: step.tool.name,
       screen,
       snippet,
+      sessionId: step.sessionId,
+      matchedFields: matchedFields?.length ? matchedFields : undefined,
+      sessionGoal,
     };
   }
 
-  private generateSnippet(step: StepRecord): string {
+  private generateSnippet(step: StepRecord, matchedFields?: string[]): string {
     const parts: string[] = [];
+
+    if (matchedFields && matchedFields.length > 0) {
+      const topMatches = matchedFields.slice(0, 3).join(', ');
+      parts.push(`match: ${topMatches}`);
+    }
 
     if (step.tool.target?.testId) {
       parts.push(`testId: ${step.tool.target.testId}`);
     } else if (step.tool.target?.a11yRef) {
       parts.push(`ref: ${step.tool.target.a11yRef}`);
     } else if (step.tool.target?.selector) {
-      parts.push(`selector: ${step.tool.target.selector.substring(0, 30)}`);
+      const shortSelector = step.tool.target.selector.substring(0, 30);
+      parts.push(`selector: ${shortSelector}`);
     }
 
-    if (!step.outcome.ok && step.outcome.error) {
-      parts.push(`error: ${step.outcome.error.code}`);
+    if (step.labels && step.labels.length > 0) {
+      parts.push(`labels: ${step.labels.join(', ')}`);
     }
 
     if (step.observation?.state?.currentScreen) {
       parts.push(`screen: ${step.observation.state.currentScreen}`);
+    }
+
+    if (!step.outcome.ok && step.outcome.error) {
+      parts.push(`error: ${step.outcome.error.code}`);
     }
 
     return parts.join(', ') || step.tool.name;
@@ -638,39 +904,144 @@ export class KnowledgeStore {
     return notes.join('; ') || 'executed';
   }
 
-  private computeSearchScore(step: StepRecord, query: string): number {
+  private computeSessionScore(
+    metadata: SessionMetadata,
+    queryTokens: string[],
+  ): number {
     let score = 0;
 
-    if (step.tool.name.toLowerCase().includes(query)) {
-      score += 10;
-    }
-
-    if (step.observation?.state?.currentScreen?.toLowerCase().includes(query)) {
-      score += 8;
-    }
-
-    if (step.tool.target?.testId?.toLowerCase().includes(query)) {
-      score += 6;
-    }
-
-    for (const testId of step.observation?.testIds ?? []) {
-      if (testId.testId.toLowerCase().includes(query)) {
-        score += 3;
-        break;
+    for (const token of queryTokens) {
+      for (const flowTag of metadata.flowTags) {
+        if (flowTag.toLowerCase().includes(token)) {
+          score += 12;
+          break;
+        }
       }
     }
 
-    for (const node of step.observation?.a11y?.nodes ?? []) {
-      if (
-        node.name.toLowerCase().includes(query) ||
-        node.role.toLowerCase().includes(query)
-      ) {
-        score += 2;
-        break;
+    const goalTokens = tokenize(metadata.goal ?? '');
+    for (const token of queryTokens) {
+      if (goalTokens.includes(token)) {
+        score += 6;
       }
+    }
+
+    for (const token of queryTokens) {
+      for (const tag of metadata.tags) {
+        if (tag.toLowerCase().includes(token)) {
+          score += 4;
+          break;
+        }
+      }
+    }
+
+    if (metadata.git?.branch) {
+      const branchTokens = tokenize(metadata.git.branch);
+      for (const token of queryTokens) {
+        if (branchTokens.includes(token)) {
+          score += 2;
+          break;
+        }
+      }
+    }
+
+    const ageHours =
+      (Date.now() - new Date(metadata.createdAt).getTime()) / (1000 * 60 * 60);
+    if (ageHours < 24) {
+      score += 3;
+    } else if (ageHours < 72) {
+      score += 1;
     }
 
     return score;
+  }
+
+  private computeSearchScore(
+    step: StepRecord,
+    queryTokens: string[],
+  ): { score: number; matchedFields: string[] } {
+    let score = 0;
+    const matchedFieldsSet = new Set<string>();
+    let matchedTokens = 0;
+
+    const targetTestIdTokens = step.tool.target?.testId
+      ? tokenizeIdentifier(step.tool.target.testId)
+      : [];
+
+    const observedTestIdTokensMap = new Map<string, string[]>();
+    for (const testIdItem of step.observation?.testIds ?? []) {
+      observedTestIdTokensMap.set(
+        testIdItem.testId,
+        tokenizeIdentifier(testIdItem.testId),
+      );
+    }
+
+    for (const token of queryTokens) {
+      let tokenMatched = false;
+
+      if (step.tool.name.toLowerCase().includes(token)) {
+        score += 10;
+        matchedFieldsSet.add(`tool:${step.tool.name}`);
+        tokenMatched = true;
+      }
+
+      const screen = step.observation?.state?.currentScreen;
+      if (screen?.toLowerCase().includes(token)) {
+        score += 8;
+        matchedFieldsSet.add(`screen:${screen}`);
+        tokenMatched = true;
+      }
+
+      if (step.tool.target?.testId && targetTestIdTokens.includes(token)) {
+        score += 6;
+        matchedFieldsSet.add(`testId:${step.tool.target.testId}`);
+        tokenMatched = true;
+      }
+
+      for (const label of step.labels ?? []) {
+        if (label.toLowerCase().includes(token)) {
+          score += 5;
+          matchedFieldsSet.add(`label:${label}`);
+          tokenMatched = true;
+          break;
+        }
+      }
+
+      for (const [testId, tokens] of observedTestIdTokensMap) {
+        if (tokens.includes(token)) {
+          score += 3;
+          matchedFieldsSet.add(`testId:${testId}`);
+          tokenMatched = true;
+          break;
+        }
+      }
+
+      for (const node of step.observation?.a11y?.nodes ?? []) {
+        if (node.name.toLowerCase().includes(token)) {
+          score += 2;
+          matchedFieldsSet.add(`a11y:${node.role}:"${node.name}"`);
+          tokenMatched = true;
+          break;
+        }
+        if (node.role.toLowerCase().includes(token)) {
+          score += 2;
+          matchedFieldsSet.add(`a11y:${node.role}`);
+          tokenMatched = true;
+          break;
+        }
+      }
+
+      if (tokenMatched) {
+        matchedTokens += 1;
+      }
+    }
+
+    if (queryTokens.length > 0) {
+      const coverageRatio = matchedTokens / queryTokens.length;
+      score += Math.floor(coverageRatio * 5);
+    }
+
+    return { score, matchedFields: [...matchedFieldsSet] };
   }
 
   async generatePriorKnowledge(
@@ -1136,3 +1507,5 @@ export function createDefaultObservation(
 }
 
 export const knowledgeStore = new KnowledgeStore();
+
+export { tokenize, tokenizeIdentifier, expandWithSynonyms };

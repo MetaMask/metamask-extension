@@ -1,7 +1,13 @@
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import type { ExtensionState } from '../types';
-import { KnowledgeStore, createDefaultObservation } from './knowledge-store';
+import {
+  KnowledgeStore,
+  createDefaultObservation,
+  tokenize,
+  tokenizeIdentifier,
+  expandWithSynonyms,
+} from './knowledge-store';
 
 const TEST_KNOWLEDGE_ROOT = path.join(
   process.cwd(),
@@ -519,6 +525,667 @@ describe('KnowledgeStore', () => {
 
       expect(observation.testIds).toEqual([]);
       expect(observation.a11y.nodes).toEqual([]);
+    });
+  });
+
+  describe('tokenize', () => {
+    it('splits query into individual words', () => {
+      const tokens = tokenize('send flow ETH to another account');
+      expect(tokens).toContain('send');
+      expect(tokens).toContain('eth');
+      expect(tokens).toContain('another');
+      expect(tokens).toContain('account');
+    });
+
+    it('removes stopwords', () => {
+      const tokens = tokenize('send to the account');
+      expect(tokens).not.toContain('to');
+      expect(tokens).not.toContain('the');
+    });
+
+    it('removes short tokens', () => {
+      const tokens = tokenize('a b cd efg');
+      expect(tokens).not.toContain('a');
+      expect(tokens).not.toContain('b');
+      expect(tokens).toContain('cd');
+      expect(tokens).toContain('efg');
+    });
+
+    it('handles empty and whitespace strings', () => {
+      expect(tokenize('')).toEqual([]);
+      expect(tokenize('   ')).toEqual([]);
+    });
+
+    it('deduplicates tokens', () => {
+      const tokens = tokenize('send send SEND');
+      expect(tokens).toEqual(['send']);
+    });
+
+    it('removes flow and test stopwords', () => {
+      const tokens = tokenize('send flow test');
+      expect(tokens).toContain('send');
+      expect(tokens).not.toContain('flow');
+      expect(tokens).not.toContain('test');
+    });
+  });
+
+  describe('tokenizeIdentifier', () => {
+    it('splits kebab-case', () => {
+      const tokens = tokenizeIdentifier('coin-overview-send-button');
+      expect(tokens).toEqual(['coin', 'overview', 'send', 'button']);
+    });
+
+    it('splits camelCase', () => {
+      const tokens = tokenizeIdentifier('sendTokenButton');
+      expect(tokens).toEqual(['send', 'token', 'button']);
+    });
+
+    it('splits snake_case', () => {
+      const tokens = tokenizeIdentifier('send_token_btn');
+      expect(tokens).toEqual(['send', 'token', 'btn']);
+    });
+
+    it('handles mixed formats', () => {
+      const tokens = tokenizeIdentifier('coin-overview_sendButton');
+      expect(tokens).toContain('coin');
+      expect(tokens).toContain('overview');
+      expect(tokens).toContain('send');
+      expect(tokens).toContain('button');
+    });
+
+    it('handles uppercase abbreviations', () => {
+      const tokens = tokenizeIdentifier('sendETHButton');
+      expect(tokens).toContain('send');
+      expect(tokens).toContain('eth');
+      expect(tokens).toContain('button');
+    });
+
+    it('returns empty array for empty input', () => {
+      expect(tokenizeIdentifier('')).toEqual([]);
+    });
+  });
+
+  describe('expandWithSynonyms', () => {
+    it('expands canonical terms to synonyms', () => {
+      const expanded = expandWithSynonyms(['send']);
+      expect(expanded).toContain('send');
+      expect(expanded).toContain('transfer');
+      expect(expanded).toContain('pay');
+    });
+
+    it('expands synonym terms to canonical and other synonyms', () => {
+      const expanded = expandWithSynonyms(['transfer']);
+      expect(expanded).toContain('send');
+      expect(expanded).toContain('transfer');
+      expect(expanded).toContain('pay');
+    });
+
+    it('does not expand non-action terms', () => {
+      const expanded = expandWithSynonyms(['eth', 'account', 'balance']);
+      expect(expanded).toEqual(['eth', 'account', 'balance']);
+    });
+
+    it('handles multiple tokens with some having synonyms', () => {
+      const expanded = expandWithSynonyms(['send', 'eth']);
+      expect(expanded).toContain('send');
+      expect(expanded).toContain('transfer');
+      expect(expanded).toContain('eth');
+      expect(expanded).not.toContain('ethereum');
+    });
+
+    it('deduplicates results', () => {
+      const expanded = expandWithSynonyms(['send', 'transfer']);
+      const unique = [...new Set(expanded)];
+      expect(expanded.length).toBe(unique.length);
+    });
+  });
+
+  describe('searchSteps with tokenized queries', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('finds steps when any token matches', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(
+          { ...mockState, currentScreen: 'home' },
+          [],
+          [{ ref: 'e1', role: 'button', name: 'Send', path: [] }],
+        ),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send flow ETH to account',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+    });
+
+    it('ranks results by token coverage', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-to-account' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send account',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].snippet).toContain('send-to-account');
+    });
+
+    it('returns empty array for only stopwords', async () => {
+      const results = await knowledgeStore.searchSteps(
+        'to the a',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results).toEqual([]);
+    });
+
+    it('includes matchedFields in results', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(
+          mockState,
+          [],
+          [{ ref: 'e1', role: 'button', name: 'Send', path: [] }],
+        ),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].matchedFields).toBeDefined();
+    });
+  });
+
+  describe('searchSteps with session metadata', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('matches session goal tokens', async () => {
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: testSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Send 0.1 ETH to another account',
+        flowTags: ['send'],
+        tags: ['visual-test'],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send ETH account',
+        10,
+        'all',
+        undefined,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+    });
+
+    it('prioritizes sessions with matching flowTags', async () => {
+      const sendSessionId = 'mm-send-session';
+      const swapSessionId = 'mm-swap-session';
+
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: sendSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Test send functionality',
+        flowTags: ['send'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: swapSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Test swap functionality',
+        flowTags: ['swap'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: sendSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'action-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: swapSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'action-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'all',
+        undefined,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].sessionId).toBe(sendSessionId);
+    });
+
+    it('applies recency bonus to recent sessions', async () => {
+      const oldSessionId = 'mm-old-session';
+      const recentSessionId = 'mm-recent-session';
+
+      const oldDate = new Date(Date.now() - 100 * 60 * 60 * 1000);
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: oldSessionId,
+        createdAt: oldDate.toISOString(),
+        goal: 'Send tokens',
+        flowTags: ['send'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: recentSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Send tokens',
+        flowTags: ['send'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: oldSessionId,
+        toolName: 'mm_click',
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: recentSessionId,
+        toolName: 'mm_click',
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'all',
+        undefined,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].sessionId).toBe(recentSessionId);
+    });
+
+    it('includes sessionGoal in results when available', async () => {
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: testSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Test send flow',
+        flowTags: ['send'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'all',
+        undefined,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].sessionGoal).toBe('Test send flow');
+    });
+  });
+
+  describe('searchSteps with synonyms', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('matches when using synonym', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(
+          mockState,
+          [],
+          [{ ref: 'e1', role: 'button', name: 'Send', path: [] }],
+        ),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'transfer ETH',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+    });
+
+    it('matches session goals via synonyms', async () => {
+      await knowledgeStore.writeSessionMetadata({
+        schemaVersion: 1,
+        sessionId: testSessionId,
+        createdAt: new Date().toISOString(),
+        goal: 'Send 0.1 ETH to another account',
+        flowTags: ['send'],
+        tags: [],
+        launch: { stateMode: 'default' },
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'transfer tokens',
+        10,
+        'all',
+        undefined,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('searchSteps with tokenized testIds', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('matches tokenized testId components', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'coin-overview-send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].matchedFields).toContain(
+        'testId:coin-overview-send-button',
+      );
+    });
+
+    it('matches camelCase testId components', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'sendTokenButton' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'token',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+    });
+  });
+
+  describe('snippet generation with match info', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('includes match evidence in snippet', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(
+          mockState,
+          [],
+          [{ ref: 'e1', role: 'button', name: 'Send', path: [] }],
+        ),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+      expect(results[0].snippet).toContain('match:');
+    });
+  });
+
+  describe('tokenize stopwords', () => {
+    it('filters out mm and mcp as tool-specific stopwords', () => {
+      const tokens = tokenize('mm_click mcp server');
+      expect(tokens).not.toContain('mm');
+      expect(tokens).not.toContain('mcp');
+      expect(tokens).toContain('click');
+      expect(tokens).toContain('server');
+    });
+
+    it('prevents mm_click query from matching everything', async () => {
+      const mockState: ExtensionState = {
+        isLoaded: true,
+        currentUrl: 'chrome-extension://test/home.html',
+        extensionId: 'test-ext',
+        isUnlocked: true,
+        currentScreen: 'home',
+        accountAddress: null,
+        networkName: null,
+        chainId: null,
+        balance: null,
+      };
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_type',
+        target: { testId: 'amount-input' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const clickResults = await knowledgeStore.searchSteps(
+        'click',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(clickResults.length).toBe(1);
+      expect(clickResults[0].tool).toBe('mm_click');
+    });
+  });
+
+  describe('matchedFields deduplication', () => {
+    const mockState: ExtensionState = {
+      isLoaded: true,
+      currentUrl: 'chrome-extension://test/home.html',
+      extensionId: 'test-ext',
+      isUnlocked: true,
+      currentScreen: 'home',
+      accountAddress: null,
+      networkName: null,
+      chainId: null,
+      balance: null,
+    };
+
+    it('deduplicates testId matches across multiple tokens', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'send-token-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(mockState),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send token button',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+
+      const testIdMatches = results[0].matchedFields?.filter((f) =>
+        f.startsWith('testId:'),
+      );
+      expect(testIdMatches?.length).toBe(1);
+      expect(testIdMatches?.[0]).toBe('testId:send-token-button');
+    });
+
+    it('deduplicates a11y matches across multiple tokens', async () => {
+      await knowledgeStore.recordStep({
+        sessionId: testSessionId,
+        toolName: 'mm_click',
+        target: { testId: 'action-button' },
+        outcome: { ok: true },
+        observation: createDefaultObservation(
+          mockState,
+          [],
+          [{ ref: 'e1', role: 'button', name: 'Send Token', path: [] }],
+        ),
+      });
+
+      const results = await knowledgeStore.searchSteps(
+        'send token',
+        10,
+        'current',
+        testSessionId,
+      );
+
+      expect(results.length).toBeGreaterThan(0);
+
+      const a11yMatches = results[0].matchedFields?.filter((f) =>
+        f.startsWith('a11y:'),
+      );
+      expect(a11yMatches?.length).toBe(1);
     });
   });
 });
