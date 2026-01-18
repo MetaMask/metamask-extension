@@ -368,6 +368,9 @@ export default function ConfirmationPage({
     }
   }, [pendingConfirmation?.type]);
 
+  // send-tron.spec expects Activity tab
+  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
+
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -378,8 +381,6 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      // send-tron.spec expects Activity tab
-      const shouldShowActivity = lastConfirmationType === 'snap_dialog';
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
@@ -388,11 +389,11 @@ export default function ConfirmationPage({
     }
   }, [
     pendingConfirmations,
-    lastConfirmationType,
     approvalFlows,
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
+    shouldShowActivity,
   ]);
 
   useEffect(() => {
