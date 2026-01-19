@@ -1,5 +1,6 @@
 import { Suite } from 'mocha';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { Driver } from '../../webdriver/driver';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
@@ -15,7 +16,7 @@ import {
   FAILED_DEST_TRANSACTION,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
-
+x
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
 
 describe('Bridge functionality', function (this: Suite) {
@@ -28,7 +29,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -63,7 +64,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -90,7 +91,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -117,7 +118,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -145,7 +146,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -177,7 +178,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -210,7 +211,7 @@ describe('Bridge functionality', function (this: Suite) {
         ),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(

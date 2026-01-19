@@ -53,7 +53,7 @@ async function withFixturesForSmartTransactions(
       },
     },
     async ({ driver }) => {
-      await loginWithBalanceValidation(driver);
+      await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
       await runTestWithFixtures({ driver });
     },
   );
