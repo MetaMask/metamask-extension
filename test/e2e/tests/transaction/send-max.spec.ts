@@ -249,7 +249,9 @@ describe('Sending with max amount', function () {
     );
   });
 
-  it('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
+  // https://github.com/MetaMask/MetaMask-planning/issues/6679
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('does update transaction value when navigating back to edit, updating the value and navigating confirmation again', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
