@@ -13,6 +13,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockSmartTransactionsRemoteFlags } from './remote-flags';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -46,7 +47,10 @@ async function withFixturesForSmartTransactions(
         hardfork: 'london',
         chainId: '1',
       },
-      testSpecificMock,
+      testSpecificMock: async (mockServer: MockttpServer) => {
+        await mockSmartTransactionsRemoteFlags(mockServer);
+        await testSpecificMock(mockServer);
+      },
     },
     async ({ driver }) => {
       await loginWithBalanceValidation(driver);

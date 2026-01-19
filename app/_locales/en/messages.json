@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1298,9 +1301,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -5055,6 +5055,39 @@
   "perps": {
     "message": "Perps"
   },
+  "perpsBuy": {
+    "message": "buy"
+  },
+  "perpsCloseAll": {
+    "message": "Close all"
+  },
+  "perpsEmptyDescription": {
+    "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsMarket": {
+    "message": "Market"
+  },
+  "perpsOpenOrders": {
+    "message": "Open Orders"
+  },
+  "perpsPositions": {
+    "message": "Positions"
+  },
+  "perpsSell": {
+    "message": "sell"
+  },
+  "perpsStartNewTrade": {
+    "message": "Start a new trade"
+  },
+  "perpsStartTrading": {
+    "message": "Start trading"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
+  },
+  "perpsUnrealizedPnl": {
+    "message": "Unrealized P&L"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -6386,8 +6419,14 @@
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1"
   },
+  "shieldManagePlan": {
+    "message": "Manage plan"
+  },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPastPlansTitle": {
+    "message": "Past details"
   },
   "shieldPaused": {
     "message": "Paused"
@@ -6491,6 +6530,9 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldPlanYearly": {
+    "message": "Yearly"
+  },
   "shieldStartNowCTA": {
     "message": "Start now"
   },
@@ -6500,6 +6542,9 @@
   "shieldTx": {
     "message": "Transaction Shield"
   },
+  "shieldTxBillingAccount": {
+    "message": "Billing account"
+  },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
@@ -6507,48 +6552,78 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
-  "shieldTxDetails1Description": {
-    "message": "Secures assets on covered transactions"
+  "shieldTxDetails1DescriptionTrial": {
+    "message": "Free for $1 days, then $2",
+    "description": "The $1 is the number of days and the $2 is the price of the plan"
   },
   "shieldTxDetails1Title": {
-    "message": "Up to $10,000 transaction protection"
+    "message": "MetaMask Transaction Shield"
   },
   "shieldTxDetails2Description": {
-    "message": "Get faster, dedicated support anytime"
+    "message": "$1, next billing on $2",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
-    "message": "Priority support"
+    "message": "Billing cycle"
   },
-  "shieldTxDetails3Description": {
-    "message": "Get $1 points/$2",
-    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  "shieldTxDetails3DescriptionCrypto": {
+    "message": "Crypto ($1)",
+    "description": "The $1 is the token symbol"
   },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Sign up"
+  "shieldTxDetails3DescriptionCryptoWithAccount": {
+    "message": "Crypto ($1), $2",
+    "description": "The $1 is the token symbol and the $2 is the account"
   },
   "shieldTxDetails3Title": {
-    "message": "Earn during rewards season"
+    "message": "Payment method"
+  },
+  "shieldTxDetailsManage": {
+    "message": "Manage"
+  },
+  "shieldTxDetailsTitle": {
+    "message": "Plan details"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Billing details"
+  "shieldTxMembershipBenefits": {
+    "message": "Your benefits"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
+  "shieldTxMembershipBenefits1Description": {
+    "message": "Secures assets on covered transactions"
   },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Charges"
+  "shieldTxMembershipBenefits1Title": {
+    "message": "Up to $1 protection",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Next billing"
+  "shieldTxMembershipBenefits2Description": {
+    "message": "Get faster, dedicated support anytime"
   },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Payment method"
+  "shieldTxMembershipBenefits2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipBenefits3Description": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3DescriptionInactive": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3LinkRewards": {
+    "message": "Link"
+  },
+  "shieldTxMembershipBenefits3SignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxMembershipBenefits3Title": {
+    "message": "Earn season rewards"
+  },
+  "shieldTxMembershipBenefitsInactive": {
+    "message": "What you get"
+  },
+  "shieldTxMembershipBenefitsViewAll": {
+    "message": "View all"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Manage billing"
@@ -6560,12 +6635,13 @@
     "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
   },
+  "shieldTxMembershipCancelledDate": {
+    "message": "You cancelled your plan on $1",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Your plan ends on $1. Renew now to continue your benefits.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Retry payment"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Your plan has been paused due to a failed card payment."
@@ -6592,17 +6668,21 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contact support"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Update card details"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
+  "shieldTxMembershipFreeTrialDaysLeft": {
+    "message": "You have $1 days left on your trial",
+    "description": "The $1 is the number of days left"
+  },
   "shieldTxMembershipId": {
-    "message": "Plan ID"
+    "message": "Member ID"
   },
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
+  },
+  "shieldTxMembershipMakeClaim": {
+    "message": "Make a claim"
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
@@ -6610,14 +6690,27 @@
   "shieldTxMembershipRenew": {
     "message": "Renew plan"
   },
+  "shieldTxMembershipRenewDescription": {
+    "message": "Reactivate for $1",
+    "description": "The $1 is the price of the plan"
+  },
   "shieldTxMembershipResubscribe": {
     "message": "Restart plan"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "View full benefits"
+  "shieldTxPastPlans": {
+    "message": "Past plans"
+  },
+  "shieldTxPastPlansMonthly": {
+    "message": "Monthly plan"
+  },
+  "shieldTxPastPlansYearly": {
+    "message": "Yearly plan"
+  },
+  "shieldTxViewPastInvoice": {
+    "message": "View past invoice"
   },
   "show": {
     "message": "Show"
@@ -8420,6 +8513,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

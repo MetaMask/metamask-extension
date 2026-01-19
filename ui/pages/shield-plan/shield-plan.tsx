@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import classnames from 'classnames';
 import {
   PAYMENT_TYPES,
   PaymentType,
@@ -9,7 +8,25 @@ import {
 } from '@metamask/subscription-controller';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Checkbox, TextVariant } from '@metamask/design-system-react';
+import {
+  BadgeWrapper,
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonIconSize,
+  ButtonSize,
+  ButtonVariant,
+  Checkbox,
+  FontWeight,
+  Icon,
+  IconColor,
+  IconName,
+  IconSize,
+  Text,
+  TextColor,
+  TextVariant,
+  twMerge,
+} from '@metamask/design-system-react';
 import { Hex } from '@metamask/utils';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
@@ -19,18 +36,6 @@ import {
   AvatarNetwork,
   AvatarNetworkSize,
   AvatarToken,
-  BadgeWrapper,
-  Box,
-  BoxProps,
-  Button,
-  ButtonIcon,
-  ButtonIconSize,
-  ButtonSize,
-  ButtonVariant,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
 } from '../../components/component-library';
 import {
   Content,
@@ -42,16 +47,10 @@ import LoadingScreen from '../../components/ui/loading-screen';
 import {
   AlignItems,
   BackgroundColor,
-  BlockSize,
   BorderColor,
-  BorderRadius,
-  Display,
   FlexDirection,
-  IconColor,
   JustifyContent,
-  TextAlign,
-  TextColor,
-  TextVariant as DSTextVariant,
+  TextVariant as OldTextVariant,
 } from '../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
@@ -386,25 +385,22 @@ const ShieldPlan = () => {
     if (source === ShieldMetricsSourceEnum.Settings) {
       // this happens when user is from settings or transaction shield page
       navigate(SETTINGS_ROUTE, { replace: true });
+    } else if (source === ShieldMetricsSourceEnum.ShieldSettings) {
+      // this happens when user is from shield management page
+      navigate(TRANSACTION_SHIELD_ROUTE, { replace: true });
     } else {
       // this happens when user is from homepage or post transaction page
       navigate(DEFAULT_ROUTE, { replace: true });
     }
   };
 
-  const rowsStyleProps: BoxProps<'div'> = {
-    display: Display.Flex,
-    justifyContent: JustifyContent.spaceBetween,
-    alignItems: AlignItems.center,
-    backgroundColor: BackgroundColor.backgroundSection,
-    padding: 4,
-  };
+  const boxRowClassName = 'flex justify-between items-center p-4 bg-section';
 
   return (
     <Page className="shield-plan-page" data-testid="shield-plan-page">
       <Header
         textProps={{
-          variant: DSTextVariant.headingSm,
+          variant: OldTextVariant.headingSm,
         }}
         startAccessory={
           <ButtonIcon
@@ -434,142 +430,136 @@ const ShieldPlan = () => {
         subscriptionPricing && (
           <>
             <Content>
-              <Box
-                display={Display.Grid}
-                gap={2}
-                marginBottom={4}
-                paddingTop={2}
-                className="shield-plan-page__plans"
-              >
+              <Box className="shield-plan-page__plans grid gap-2 mb-4 pt-2">
                 {plans.map((plan) => (
                   <Box
-                    as="button"
+                    asChild
                     key={plan.id}
-                    {...rowsStyleProps}
-                    borderRadius={BorderRadius.LG}
-                    className={classnames('shield-plan-page__plan', {
-                      'shield-plan-page__plan--selected':
-                        plan.id === selectedPlan,
-                    })}
+                    className={twMerge(
+                      boxRowClassName,
+                      'shield-plan-page__plan rounded-lg',
+                      plan.id === selectedPlan &&
+                        'shield-plan-page__plan--selected',
+                    )}
                     data-testid={`shield-plan-${plan.label.toLowerCase()}-button`}
                     onClick={() => setSelectedPlan(plan.id)}
                   >
-                    <div className="shield-plan-page__radio" />
-                    <Box
-                      textAlign={TextAlign.Left}
-                      className="shield-plan-page__radio-label"
-                    >
-                      <Text variant={DSTextVariant.bodySm}>{plan.label}</Text>
-                      <Text
-                        variant={DSTextVariant.headingMd}
-                        className="shield-plan-page__plan-price"
-                      >
-                        {plan.price}
-                      </Text>
-                    </Box>
-                    {plan.id === RECURRING_INTERVALS.year && (
-                      <Box
-                        display={Display.Flex}
-                        alignItems={AlignItems.center}
-                        justifyContent={JustifyContent.center}
-                        paddingInline={2}
-                        borderRadius={BorderRadius.SM}
-                        className="shield-plan-page__save-badge"
-                      >
+                    <button>
+                      <div className="shield-plan-page__radio" />
+                      <Box className="shield-plan-page__radio-label text-left">
+                        <Text variant={TextVariant.BodySm}>{plan.label}</Text>
                         <Text
-                          variant={DSTextVariant.bodyXsMedium}
-                          color={TextColor.iconInverse}
+                          variant={TextVariant.HeadingMd}
+                          className="shield-plan-page__plan-price"
                         >
-                          {t('shieldPlanSave')}
+                          {plan.price}
                         </Text>
                       </Box>
-                    )}
+                      {plan.id === RECURRING_INTERVALS.year && (
+                        <Box className="shield-plan-page__save-badge flex items-center justify-center px-2">
+                          <Text
+                            variant={TextVariant.BodyXs}
+                            fontWeight={FontWeight.Medium}
+                            color={TextColor.InfoInverse}
+                          >
+                            {t('shieldPlanSave')}
+                          </Text>
+                        </Box>
+                      )}
+                    </button>
                   </Box>
                 ))}
               </Box>
               <Box className="shield-plan-page__group" marginBottom={4}>
                 <Box
-                  as="button"
-                  className="shield-plan-page__row"
-                  {...rowsStyleProps}
+                  asChild
+                  className={twMerge(
+                    boxRowClassName,
+                    'shield-plan-page__row w-full',
+                  )}
                   onClick={() => setShowPaymentModal(true)}
-                  width={BlockSize.Full}
                 >
-                  <Text variant={DSTextVariant.bodyLgMedium}>
-                    {t('shieldPlanPayWith')}
-                  </Text>
-
-                  <Box
-                    display={Display.Flex}
-                    gap={2}
-                    alignItems={AlignItems.center}
-                  >
-                    {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
-                    selectedToken ? (
-                      <BadgeWrapper
-                        badge={
-                          <AvatarNetwork
-                            size={AvatarNetworkSize.Xs}
-                            name={
-                              NETWORK_TO_NAME_MAP[
-                                selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
-                              ]
-                            }
-                            src={
-                              CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
-                                selectedToken.chainId
-                              ]
-                            }
-                            borderColor={BorderColor.borderMuted}
-                          />
-                        }
-                      >
-                        <AvatarToken
-                          name={selectedToken?.symbol || ''}
-                          src={selectedToken?.image || ''}
-                          borderColor={BorderColor.borderMuted}
-                        />
-                      </BadgeWrapper>
-                    ) : (
-                      <Icon size={IconSize.Xl} name={IconName.Card} />
-                    )}
-                    <Text variant={DSTextVariant.bodyLgMedium}>
-                      {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
-                        ? selectedToken?.symbol || ''
-                        : t('shieldPlanCard')}
+                  <button>
+                    <Text
+                      variant={TextVariant.BodyLg}
+                      fontWeight={FontWeight.Medium}
+                    >
+                      {t('shieldPlanPayWith')}
                     </Text>
-                    <Icon size={IconSize.Md} name={IconName.ArrowDown} />
-                  </Box>
+
+                    <Box className="flex items-center gap-2">
+                      {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
+                      selectedToken ? (
+                        <Box className="flex items-center gap-2">
+                          <BadgeWrapper
+                            badge={
+                              <AvatarNetwork
+                                size={AvatarNetworkSize.Xs}
+                                name={
+                                  NETWORK_TO_NAME_MAP[
+                                    selectedToken.chainId as keyof typeof NETWORK_TO_NAME_MAP
+                                  ]
+                                }
+                                src={
+                                  CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[
+                                    selectedToken.chainId
+                                  ]
+                                }
+                                borderColor={BorderColor.borderMuted}
+                              />
+                            }
+                          >
+                            <AvatarToken
+                              name={selectedToken?.symbol || ''}
+                              src={selectedToken?.image || ''}
+                              borderColor={BorderColor.borderMuted}
+                            />
+                          </BadgeWrapper>
+                        </Box>
+                      ) : (
+                        <Icon size={IconSize.Xl} name={IconName.Card} />
+                      )}
+                      <Text
+                        variant={TextVariant.BodyLg}
+                        fontWeight={FontWeight.Medium}
+                      >
+                        {selectedPaymentMethod === PAYMENT_TYPES.byCrypto
+                          ? selectedToken?.symbol || ''
+                          : t('shieldPlanCard')}
+                      </Text>
+                      <Icon size={IconSize.Md} name={IconName.ArrowDown} />
+                    </Box>
+                  </button>
                 </Box>
               </Box>
               <Box className="shield-plan-page__group">
                 <Box
-                  className="shield-plan-page__row"
-                  {...rowsStyleProps}
-                  display={Display.Block}
+                  className={twMerge(
+                    boxRowClassName,
+                    'shield-plan-page__row block',
+                  )}
                 >
-                  <Text variant={DSTextVariant.bodyLgMedium} marginBottom={4}>
+                  <Text
+                    variant={TextVariant.BodyLg}
+                    fontWeight={FontWeight.Medium}
+                    className="mb-4"
+                  >
                     {t('shieldPlanDetails')}
                   </Text>
-                  <Box
-                    display={Display.Flex}
-                    flexDirection={FlexDirection.Column}
-                    gap={2}
-                  >
+                  <Box className="flex flex-col gap-2">
                     {planDetails.map((detail, index) => (
-                      <Box key={index} display={Display.Flex} gap={2}>
+                      <Box key={index} className="flex gap-2">
                         <Box
-                          display={Display.Flex}
-                          alignItems={AlignItems.center}
+                          className="flex items-center"
                           style={{ height: '1lh' }}
                         >
                           <Icon
                             size={IconSize.Sm}
                             name={IconName.Check}
-                            color={IconColor.primaryDefault}
+                            color={IconColor.PrimaryDefault}
                           />
                         </Box>
-                        <Text variant={DSTextVariant.bodyMd}>{detail}</Text>
+                        <Text variant={TextVariant.BodyMd}>{detail}</Text>
                       </Box>
                     ))}
                     {isRewardsSeason && planDetailsRewardsText && (
@@ -590,9 +580,9 @@ const ShieldPlan = () => {
                 {selectedPaymentMethod === PAYMENT_TYPES.byCrypto &&
                   selectedPlan === RECURRING_INTERVALS.month && (
                     <Text
-                      variant={DSTextVariant.bodySm}
-                      color={TextColor.textAlternative}
-                      marginTop={4}
+                      variant={TextVariant.BodySm}
+                      color={TextColor.TextAlternative}
+                      className="mt-4"
                     >
                       * {t('shieldPlanCryptoMonthlyNote')}
                     </Text>
@@ -637,16 +627,16 @@ const ShieldPlan = () => {
               <Button
                 size={ButtonSize.Lg}
                 variant={ButtonVariant.Primary}
-                block
+                isFullWidth
                 onClick={handleSubscription}
                 data-testid="shield-plan-continue-button"
               >
                 {t('continue')}
               </Button>
               <Text
-                variant={DSTextVariant.bodySm}
-                color={TextColor.textAlternative}
-                textAlign={TextAlign.Center}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
+                className="text-center"
               >
                 {selectedPlan === RECURRING_INTERVALS.year
                   ? t('shieldPlanFooterNoteYearly')
