@@ -9,7 +9,8 @@ name: Publish Release from Release HEAD
 #   3. Select the release/X.Y.Z branch from the dropdown
 #
 # Prerequisites:
-#   - Release-team membership is verified before any job runs
+#   - The 'release-branch' environment must have required reviewers configured
+#     (Settings > Environments > release-branch > Required reviewers: @MetaMask/release-team)
 #   - CI checks must have passed on the release branch HEAD
 #   - The workflow must be run from a release/X.Y.Z branch
 
@@ -22,22 +23,8 @@ permissions:
   actions: read # Required to download artifacts from build jobs
 
 jobs:
-  verify-release-team:
-    name: Verify release-team membership
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    steps:
-      - name: Confirm release-team membership
-        uses: TheModdingInquisition/actions-team-membership@057d91bb80f2976a1bc6dfab5b4ae1da9aebbd89
-        with:
-          token: ${{ secrets.METAMASK_EXTENSION_ORG_READ_TOKEN }}
-          team: release-team
-          organization: MetaMask
-          exit: true
-
   validate-branch:
     name: Validate release branch
-    needs: verify-release-team
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -160,7 +147,7 @@ jobs:
       - build-flask-browserify
       - build-flask-mv2-browserify
     runs-on: ubuntu-latest
-    # Grant access to release-branch environment secrets (includes EXTENSION_PUBLISH_TOKEN)
+    # Environment provides: (1) required reviewer approval gate, (2) scoped secrets
     environment: release-branch
     # Elevated permissions for this job only (least-privilege)
     permissions:
