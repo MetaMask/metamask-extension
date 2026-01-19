@@ -87,7 +87,7 @@ export const useHandleSendNonEvm = (caipAssetType?: CaipAssetType) => {
         assetType: assetTypeToUse,
       });
     } catch {
-      // Navigation is handled by ConfirmContextProvider when confirmation disappears.
+      // Navigation is handled by confirmation.js
     }
   };
 };

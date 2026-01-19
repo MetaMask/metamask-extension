@@ -142,7 +142,7 @@ describe('useHandleSendNonEvm', () => {
     );
     const handleSendNonEvm = result.current;
 
-    await expect(handleSendNonEvm()).resolves.not.toThrow();
+    await handleSendNonEvm();
 
     expect(sendMultichainTransaction).toHaveBeenCalled();
   });

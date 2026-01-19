@@ -7,7 +7,11 @@ export function useTabState<TTab extends string = AccountOverviewTab>() {
   const tab = searchParams.get('tab') as TTab;
 
   const setTab = useCallback(
-    (value: TTab) => setSearchParams({ tab: value }),
+    (value: TTab) =>
+      setSearchParams((prev) => {
+        prev.set('tab', value);
+        return prev;
+      }),
     [setSearchParams],
   );
 

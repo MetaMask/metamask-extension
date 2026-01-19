@@ -78,14 +78,10 @@ describe('AccountOverviewTabs - event metrics', () => {
         />
       </MetaMetricsContext.Provider>,
       store,
+      '/?tab=activity',
     );
 
-    // Click Activity tab first to change from default Tokens tab
-    fireEvent.click(getByText('Activity'));
-    // Clear the mock to ignore the Activity tab click
-    mockTrackEvent.mockClear();
-
-    // Click Tokens tab to trigger the event we want to test
+    // Click a tab to trigger event
     fireEvent.click(getByText('Tokens'));
 
     // Verify network_filter property is included in correct format
