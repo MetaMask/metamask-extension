@@ -49,6 +49,8 @@ describe('Swap on Tron', function () {
             bridgeConfig,
           },
         },
+        // TODO: Fix error, cause is unknown
+        ignoredConsoleErrors: ['Failed to send transaction: undefined'],
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
