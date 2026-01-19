@@ -11,15 +11,12 @@ import { CaipChainId } from '@metamask/utils';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   Box,
-  BoxAlignItems,
   BoxFlexDirection,
   BoxJustifyContent,
   Button,
+  ButtonSize,
   ButtonVariant,
   FontWeight,
-  Icon,
-  IconName,
-  IconSize,
   Text,
   TextColor,
   TextVariant,
@@ -307,10 +304,13 @@ export const MultichainHoveredAddressRowsList = ({
         preventOverflow
         isPortal={true}
         offset={[0, 3]}
+        paddingInline={1}
+        paddingBottom={1}
+        paddingTop={1}
         style={{
           zIndex: 99999,
           maxHeight: '400px',
-          minWidth: '320px',
+          minWidth: '340px',
         }}
       >
         <Box
@@ -323,7 +323,7 @@ export const MultichainHoveredAddressRowsList = ({
               flexDirection={BoxFlexDirection.Row}
               justifyContent={BoxJustifyContent.Between}
             >
-              <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Bold}>
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {accountGroup?.metadata.name}
               </Text>
               <Text
@@ -336,21 +336,26 @@ export const MultichainHoveredAddressRowsList = ({
             </Box>
           )}
           <Box marginBottom={2}>{renderedRows}</Box>
-          <Button
-            variant={ButtonVariant.Secondary}
-            onClick={handleViewAllClick}
-          >
-            <Box
-              flexDirection={BoxFlexDirection.Row}
-              alignItems={BoxAlignItems.Center}
-              gap={4}
+          <Box
+            paddingBottom={1}
+            className="multichain-address-rows-border"
+            style={{
+              borderTop: '1px solid var(--color-border-muted)',
+            }}
+          />
+          <Box>
+            <Button
+              size={ButtonSize.Sm}
+              variant={ButtonVariant.Tertiary}
+              onClick={handleViewAllClick}
+              style={{ width: '100%' }}
+              className="multichain-address-rows-view-all-button"
             >
               <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {t('multichainAddressViewAll')}
               </Text>
-              <Icon name={IconName.Arrow2Right} size={IconSize.Sm} />
-            </Box>
-          </Button>
+            </Button>
+          </Box>
         </Box>
       </Popover>
     </>

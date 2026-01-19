@@ -63,6 +63,7 @@ const TOKEN_TRANSFER_PERMISSION_TYPES: SupportedGatorPermissionType[] = [
   'erc20-token-stream',
   'native-token-periodic',
   'erc20-token-periodic',
+  'erc20-token-revocation',
 ];
 
 const getMetamask = (state: AppState) => state.metamask;

@@ -1,3 +1,5 @@
+/* eslint-disable jest/no-commented-out-tests -- quality-sprint-dec-2025 */
+
 import { BigNumber } from '@ethersproject/bignumber';
 import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ChainId, InfuraNetworkType } from '@metamask/controller-utils';

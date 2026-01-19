@@ -7,6 +7,9 @@ jobs:
   publish-release:
     name: Publish release
     runs-on: ubuntu-latest
+    # Grant access to `stable` branch environment secrets
+    # This will only work on `stable` branch
+    environment: stable
     timeout-minutes: 30
     env:
       # Publishing tokens
@@ -104,6 +107,8 @@ jobs:
 
       - name: Create GitHub release
         run: .github/scripts/release-create-gh-release.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.EXTENSION_PUBLISH_TOKEN }}
 
       - name: Push Firefox bundle script
         run: .github/scripts/push-firefox-bundle-script.sh

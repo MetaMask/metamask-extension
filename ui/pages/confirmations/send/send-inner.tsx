@@ -10,6 +10,7 @@ import {
   BorderRadius,
 } from '../../../helpers/constants/design-system';
 import { Box } from '../../../components/component-library';
+import { ScrollContainer } from '../../../contexts/scroll-container';
 import { AmountRecipient } from '../components/send/amount-recipient';
 import { Header } from '../components/send/header';
 import { Asset } from '../components/send/asset';
@@ -50,7 +51,9 @@ const SendContainer = ({ children }: { children: React.ReactNode }) => {
           <Box className="redesigned__send__sticky-header">
             <Header />
           </Box>
-          <Box className="redesigned__send__content-wrapper">{children}</Box>
+          <ScrollContainer className="redesigned__send__content-wrapper">
+            {children}
+          </ScrollContainer>
         </Box>
       </Box>
     </Box>

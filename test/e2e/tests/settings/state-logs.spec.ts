@@ -94,6 +94,16 @@ describe('State logs', function () {
               showNativeTokenAsMainBalance: false,
             },
           })
+          .withTokenBalancesController({
+            tokenBalances: {
+              '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                '0x539': {
+                  '0x0000000000000000000000000000000000000000':
+                    '0x15af1d78b58c40000', // 25 ETH
+                },
+              },
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockPriceApi,

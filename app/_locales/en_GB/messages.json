@@ -72,6 +72,9 @@
   "accept": {
     "message": "Accept"
   },
+  "acceptAndClose": {
+    "message": "Accept and close"
+  },
   "acceptTermsOfUse": {
     "message": "I have read and agree to the $1",
     "description": "$1 is the `terms` message"
@@ -411,12 +414,18 @@
   "advancedDetailsNonceTooltip": {
     "message": "This is the transaction number of an account. Nonce for the first transaction is 0 and it increases in sequential order."
   },
+  "advancedEIP1559ModalTitle": {
+    "message": "Advanced network fee"
+  },
   "advancedGasFeeDefaultOptIn": {
     "message": "Save these values as my default for the $1 network.",
     "description": "$1 is the current network name."
   },
   "advancedGasFeeModalTitle": {
     "message": "Advanced gas fee"
+  },
+  "advancedGasPriceModalTitle": {
+    "message": "Advanced network fee"
   },
   "advancedGasPriceTitle": {
     "message": "Gas price"
@@ -434,7 +443,7 @@
     "message": "The token's on-chain history reveals prior instances of suspicious airdrop activities."
   },
   "airDropPatternTitle": {
-    "message": "Airdrop Pattern"
+    "message": "Airdrop pattern"
   },
   "airgapVault": {
     "message": "AirGap Vault"
@@ -443,13 +452,13 @@
     "message": "Alert"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1."
+    "message": "You're updating your account to a smart account. You'll keep the same account address while unlocking faster transactions and lower network fees. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Account type"
   },
   "alertActionBurnAddress": {
-    "message": "Sending Assets to Burn Address"
+    "message": "Sending assets to burn address"
   },
   "alertActionBuyWithNativeCurrency": {
     "message": "Buy $1"
@@ -524,7 +533,7 @@
     "message": "I have acknowledged the risk and still want to proceed"
   },
   "alertModalDetails": {
-    "message": "Alert Details"
+    "message": "Alert details"
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
@@ -601,6 +610,9 @@
   "allTimeLow": {
     "message": "All-time low"
   },
+  "allTokens": {
+    "message": "All tokens"
+  },
   "allowAddRpc": {
     "message": "Add RPC"
   },
@@ -619,10 +631,10 @@
     "message": "Amount"
   },
   "amountReceived": {
-    "message": "Amount Received"
+    "message": "Amount received"
   },
   "amountSent": {
-    "message": "Amount Sent"
+    "message": "Amount sent"
   },
   "andForListItems": {
     "message": "$1, and $2",
@@ -737,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -848,7 +863,7 @@
     "message": "MetaMask Beta Version"
   },
   "betaTerms": {
-    "message": "Beta Terms of use"
+    "message": "Beta Terms of Use"
   },
   "blockExplorerAccountAction": {
     "message": "Account",
@@ -977,9 +992,6 @@
   "bridgeEnterAmount": {
     "message": "Select amount"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Enter amount and select destination account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
@@ -1037,13 +1049,13 @@
     "message": "Price impact"
   },
   "bridgePriceImpactWarningTitle": {
-    "message": "Price Impact Warning"
+    "message": "Price impact warning"
   },
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
   "bridgeSelectDestinationAccount": {
-    "message": "Select destination account"
+    "message": "Select a destination account"
   },
   "bridgeSelectDifferentQuote": {
     "message": "Please select a different quote."
@@ -1069,7 +1081,7 @@
     "description": "Status text indicating a bridge transaction has failed."
   },
   "bridgeStatusInProgress": {
-    "message": "In Progress",
+    "message": "In progress",
     "description": "Status text indicating a bridge transaction is currently processing."
   },
   "bridgeStepActionBridgeComplete": {
@@ -1186,7 +1198,7 @@
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "buyNow": {
-    "message": "Buy Now"
+    "message": "Buy now"
   },
   "bytes": {
     "message": "Bytes"
@@ -1226,6 +1238,9 @@
   },
   "chainListReturnedDifferentTickerSymbol": {
     "message": "This token symbol doesn't match the network name or chain ID entered. Many popular tokens use similar symbols, which scammers can use to trick you into sending them a more valuable token in return. Verify everything before you continue."
+  },
+  "changePasswordDetailsSocial": {
+    "message": "Losing this password means losing wallet access on all devices."
   },
   "changePasswordLoading": {
     "message": "Changing password..."
@@ -1287,9 +1302,6 @@
   "close": {
     "message": "Close"
   },
-  "closeExtension": {
-    "message": "Close extension"
-  },
   "closeSlide": {
     "message": "Close $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -1314,7 +1326,7 @@
     "message": "The majority of the token's supply is held by the top token holders, posing a risk of centralized price manipulation"
   },
   "concentratedSupplyDistributionTitle": {
-    "message": "Concentrated Supply Distribution"
+    "message": "Concentrated supply distribution"
   },
   "configureSnapPopupDescription": {
     "message": "You're now leaving MetaMask to configure this snap."
@@ -1435,7 +1447,7 @@
     "message": "Now"
   },
   "confirmInfoSwitchingTo": {
-    "message": "Switching To"
+    "message": "Switching to"
   },
   "confirmNestedTransactionTitle": {
     "message": "Transaction $1"
@@ -1493,6 +1505,9 @@
   },
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "This site wants permission to withdraw your tokens"
+  },
+  "confirmTitleDescERC20Revocation": {
+    "message": "This site wants permissions to revoke your ERC-20 token approvals."
   },
   "confirmTitleDescPermission": {
     "message": "This site wants permissions to spend your tokens."
@@ -1576,9 +1591,6 @@
   "connectWithMetaMask": {
     "message": "Connect with MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Connected accounts"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "You have $1 accounts connected to this site.",
     "description": "$1 is the number of accounts"
@@ -1592,9 +1604,6 @@
   "connectedAccountsListTooltip": {
     "message": "$1 can see the account balance, address, activity, and suggest transactions to approve for connected accounts.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "Connected accounts updated"
   },
   "connectedSites": {
     "message": "Connected sites"
@@ -1808,8 +1817,20 @@
   "currentAccountNotConnected": {
     "message": "Your current account is not connected"
   },
+  "currentEstimatedBaseFee": {
+    "message": "Current: $1 GWEI"
+  },
+  "currentEstimatedPriorityFeeRange": {
+    "message": "Current: $1 - $2 GWEI"
+  },
   "currentExtension": {
     "message": "Current extension page"
+  },
+  "currentHistoricalBaseFeeRange": {
+    "message": "12 hr: $1 - $2 GWEI"
+  },
+  "currentHistoricalPriorityFeeRange": {
+    "message": "12 hr: $1 - $2 GWEI"
   },
   "currentLanguage": {
     "message": "Current language"
@@ -2013,6 +2034,9 @@
   "deepLink_theNotificationsPage": {
     "message": "the notifications page"
   },
+  "deepLink_theOnboardingPage": {
+    "message": "the onboarding page"
+  },
   "deepLink_thePerpsPage": {
     "message": "the perps page"
   },
@@ -2130,7 +2154,7 @@
     "message": "Details"
   },
   "developerOptions": {
-    "message": "Developer Options"
+    "message": "Developer options"
   },
   "disabledGasOptionToolTipMessage": {
     "message": "“$1” is disabled because it does not meet the minimum of a 10% increase from the original gas fee.",
@@ -2162,14 +2186,6 @@
   },
   "disconnectThisAccount": {
     "message": "Disconnect this account"
-  },
-  "disconnectedAllAccountsToast": {
-    "message": "All accounts disconnected from $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "$1 disconnected from $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
   },
   "discover": {
     "message": "Discover"
@@ -2233,7 +2249,7 @@
     "message": "Get our mobile app"
   },
   "downloadNow": {
-    "message": "Download Now"
+    "message": "Download now"
   },
   "downloadStateLogs": {
     "message": "Download state logs"
@@ -2503,7 +2519,7 @@
     "message": "Enter password to continue"
   },
   "enterYourPasswordSocialLoginFlow": {
-    "message": "Enter MetaMask Password"
+    "message": "Enter MetaMask password"
   },
   "errorCode": {
     "message": "Code: $1",
@@ -2602,9 +2618,6 @@
     "message": "Grant Ethereum provider access to $1",
     "description": "The parameter is the name of the requesting origin"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum public address"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -2637,7 +2650,7 @@
     "description": "Banner description displayed on Snaps list page in Settings when less than 6 Snaps is installed."
   },
   "externalAccount": {
-    "message": "External Account"
+    "message": "External account"
   },
   "externalExtension": {
     "message": "External extension"
@@ -2668,6 +2681,9 @@
   },
   "feeDetails": {
     "message": "Fee details"
+  },
+  "fieldRequired": {
+    "message": "$1 is required"
   },
   "fileImportFail": {
     "message": "File import not working? Click here!",
@@ -2720,29 +2736,40 @@
     "message": "Forgot password?"
   },
   "forgotPasswordModalButton": {
-    "message": "Reset wallet"
+    "message": "Import wallet"
+  },
+  "forgotPasswordModalButtonLink": {
+    "message": "I don’t know my Phrase"
+  },
+  "forgotPasswordModalContactSupport": {
+    "message": "$1 if you need help.",
+    "description": "$1 is the support link"
+  },
+  "forgotPasswordModalContactSupportLink": {
+    "message": "Contact support"
   },
   "forgotPasswordModalDescription1": {
-    "message": "MetaMask can’t recover your password for you."
+    "message": "We can’t recover your password for you."
   },
   "forgotPasswordModalDescription2": {
-    "message": "You can reset your wallet by entering the Secret Recovery Phrase you used when you set up your wallet."
+    "message": "Add your wallet back to MetaMask by entering the Secret Recovery Phrase associated with it."
   },
   "forgotPasswordModalTitle": {
     "message": "Forgot your password?"
   },
   "forgotPasswordSocialDescription": {
-    "message": "MetaMask can’t recover your password for you."
+    "message": "We can’t recover your password, but there are ways you can regain access to your wallet. $1 if you need help.",
+    "description": "$1 is the support link"
   },
   "forgotPasswordSocialStep1": {
-    "message": "If you’re logged into MetaMask on a device with $1 (like Face ID), you can reset your password there.",
-    "description": "$1 is bold biometrics turned on"
+    "message": "$1 If you’re logged in on a device with Touch or Face ID, reset your password there.",
+    "description": "$1 is bold heading"
   },
   "forgotPasswordSocialStep1Biometrics": {
-    "message": "biometrics turned on"
+    "message": "Touch/Face ID:"
   },
   "forgotPasswordSocialStep2": {
-    "message": "If you have your $1, you can reset your current wallet and reimport using Secret Recovery Phrase.",
+    "message": "$1: If you have your Secret Recovery Phrase, you can use it to import your wallet to this device.",
     "description": "$1 is bold Secret Recovery Phrase"
   },
   "form": {
@@ -2793,6 +2820,9 @@
   "gasOption": {
     "message": "Gas option"
   },
+  "gasPrice": {
+    "message": "Gas price"
+  },
   "gasPriceExcessive": {
     "message": "Your gas fee is set unnecessarily high. Consider lowering the amount."
   },
@@ -2842,16 +2872,12 @@
     "description": "Label for a permission with no expiration"
   },
   "gatorPermissionTokenPeriodicFrequencyLabel": {
-    "message": "Transfer Window",
+    "message": "Transfer window",
     "description": "Label for the transfer window of a token periodic permission"
   },
   "gatorPermissionTokenStreamFrequencyLabel": {
     "message": "Period",
     "description": "Label for the period of a token stream permission"
-  },
-  "gatorPermissionUnknownTokenAmount": {
-    "message": "Unknown amount",
-    "description": "Text for an unknown amount with no decimals"
   },
   "gatorPermissionWeeklyFrequency": {
     "message": "Weekly",
@@ -2861,9 +2887,17 @@
     "message": "Expiration date",
     "description": "Label for the expiration date of a permission"
   },
+  "gatorPermissionsHideDetails": {
+    "message": "Hide details",
+    "description": "Button text to hide permission details"
+  },
   "gatorPermissionsInitialAllowance": {
     "message": "Initial allowance",
     "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsJustification": {
+    "message": "Justification",
+    "description": "Label for the justification"
   },
   "gatorPermissionsMaxAllowance": {
     "message": "Max allowance",
@@ -2876,6 +2910,10 @@
   "gatorPermissionsRevoke": {
     "message": "Revoke",
     "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsShowDetails": {
+    "message": "Show details",
+    "description": "Button text to show permission details"
   },
   "gatorPermissionsStartDate": {
     "message": "Start date",
@@ -3067,7 +3105,7 @@
     "message": "This token might pose a honeypot risk. It is advised to conduct due diligence before interacting to prevent any potential financial loss."
   },
   "honeypotTitle": {
-    "message": "Honey Pot"
+    "message": "Honey pot"
   },
   "hyperliquidReferralCheckboxLabel": {
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
@@ -3218,6 +3256,9 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
+  "insufficientBalanceToCoverFees": {
+    "message": "Insufficient balance to cover fees"
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -3231,7 +3272,7 @@
     "message": "The lack of adequately locked or burned liquidity leaves the token vulnerable to sudden liquidity withdrawals, potentially causing market instability."
   },
   "insufficientLockedLiquidityTitle": {
-    "message": "Insufficient Locked Liquidity"
+    "message": "Insufficient locked liquidity"
   },
   "insufficientTokens": {
     "message": "Insufficient tokens."
@@ -3337,7 +3378,7 @@
     "message": "Account name"
   },
   "keyringAccountPublicAddress": {
-    "message": "Public Address"
+    "message": "Public address"
   },
   "keyringSnapRemovalResult1": {
     "message": "$1 $2removed",
@@ -3401,7 +3442,7 @@
     "message": "Learn more about privacy best practices."
   },
   "learnMoreKeystone": {
-    "message": "Learn More"
+    "message": "Learn more"
   },
   "learnMoreUpperCase": {
     "message": "Learn more"
@@ -3559,7 +3600,7 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "MetaMask Support"
+    "message": "MetaMask support"
   },
   "loginErrorGenericTitle": {
     "message": "Something went wrong"
@@ -3614,7 +3655,7 @@
     "message": "Manage default settings"
   },
   "manageInstitutionalWallets": {
-    "message": "Manage Institutional Wallets"
+    "message": "Manage institutional wallets"
   },
   "manageInstitutionalWalletsDescription": {
     "message": "Turn this on to enable institutional wallets."
@@ -3645,6 +3686,9 @@
   },
   "maxBaseFee": {
     "message": "Max base fee"
+  },
+  "maxBaseFeeMustBeGreaterThanPriorityFee": {
+    "message": "Max base fee must be greater than priority fee"
   },
   "maxFee": {
     "message": "Max fee"
@@ -3712,7 +3756,7 @@
     "message": "The minimum you'll get if the price changes while your transaction processes, based on your slippage setting. The estimate comes from liquidity providers, so the final amount may differ."
   },
   "minimumReceivedExplanationTitle": {
-    "message": "Minimum Amount Received"
+    "message": "Minimum amount received"
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
@@ -3885,7 +3929,7 @@
     "description": "Title of the modal created by the name component when address is verified."
   },
   "nameModalTitleWarning": {
-    "message": "Address Needs Review",
+    "message": "Address needs review",
     "description": "Title of the modal created by the name component when address has warning trust signals."
   },
   "nameProviderProposedBy": {
@@ -3931,7 +3975,7 @@
     "description": "graceful fallback for when token symbol isn't found"
   },
   "nativeTokenScamWarningTitle": {
-    "message": "Unexpected Native Token Symbol",
+    "message": "Unexpected native token symbol",
     "description": "Title for nativeTokenScamWarningDescription"
   },
   "needHelp": {
@@ -3957,6 +4001,9 @@
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
   },
+  "negativeValuesNotAllowed": {
+    "message": "Negative values are not allowed"
+  },
   "network": {
     "message": "Network"
   },
@@ -3977,13 +4024,13 @@
     "message": "Network fees depend on how busy the network is and how complex your transaction is."
   },
   "networkFeeExplanationTitle": {
-    "message": "Network Fee"
+    "message": "Network fee"
   },
   "networkIsBusy": {
     "message": "Network is busy. Gas prices are high and estimates are less accurate."
   },
   "networkMenu": {
-    "message": "Network Menu"
+    "message": "Network menu"
   },
   "networkMenuHeading": {
     "message": "Select a network"
@@ -4061,6 +4108,9 @@
   "networkStatusStabilityFeeTooltip": {
     "message": "Gas fees are $1 relative to the past 72 hours.",
     "description": "$1 is networks stability value - stable, low, high"
+  },
+  "networkSuggested": {
+    "message": "Network suggested"
   },
   "networkTabCustom": {
     "message": "Custom"
@@ -4170,9 +4220,6 @@
   "nftAutoDetectionEnabled": {
     "message": "NFT autodetection enabled"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: MetaMask pulls the media file from the source URL. This URL sometimes gets changed by the marketplace on which the NFT was minted."
-  },
   "nftEmptyDescription": {
     "message": "There's a world of NFTs out there. Start your collection today."
   },
@@ -4197,7 +4244,7 @@
     "message": "NFTs"
   },
   "nftsPreviouslyOwned": {
-    "message": "Previously Owned"
+    "message": "Previously owned"
   },
   "nickname": {
     "message": "Nickname"
@@ -4205,11 +4252,8 @@
   "noAccountsFound": {
     "message": "No accounts found for the given search query"
   },
-  "noConnectedAccountTitle": {
-    "message": "MetaMask isn’t connected to this site"
-  },
   "noConnectionDescription": {
-    "message": "To connect to a site, find and select the \"connect\" button. Remember MetaMask can only connect to sites on web3"
+    "message": "MetaMask isn't connected to this site. To get started, select the site's Connect button."
   },
   "noConversionRateAvailable": {
     "message": "No conversion rate available"
@@ -4249,6 +4293,9 @@
   },
   "noWebcamFoundTitle": {
     "message": "Webcam not found"
+  },
+  "noZeroValue": {
+    "message": "$1 must be greater than 0"
   },
   "nonContractAddressAlertDesc": {
     "message": "You're sending call data to an address that isn't a contract. This could cause you to lose funds. Make sure you're using the correct address and network before continuing."
@@ -4299,7 +4346,7 @@
     "message": "Priority fee (GWEI)"
   },
   "notificationItemCheckBlockExplorer": {
-    "message": "Check on the Block Explorer"
+    "message": "Check on the block explorer"
   },
   "notificationItemCollection": {
     "message": "Collection"
@@ -4314,7 +4361,7 @@
     "message": "From"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
-    "message": "Withdrawal Ready"
+    "message": "Withdrawal ready"
   },
   "notificationItemLidoStakeReadyToBeWithdrawnMessage": {
     "message": "You can now withdraw your unstaked $1"
@@ -4353,7 +4400,7 @@
     "message": "Staked"
   },
   "notificationItemStakingProvider": {
-    "message": "Staking Provider"
+    "message": "Staking provider"
   },
   "notificationItemStatus": {
     "message": "Status"
@@ -4403,7 +4450,7 @@
     "message": "Notifications"
   },
   "notificationsFeatureToggle": {
-    "message": "Enable Wallet Notifications",
+    "message": "Enable wallet notifications",
     "description": "Experimental feature title"
   },
   "notificationsFeatureToggleDescription": {
@@ -4525,7 +4572,7 @@
     "message": "By continuing, I agree to MetaMask’s $1 and $2"
   },
   "onboardingLoginFooterPrivacyNotice": {
-    "message": "Privacy notice."
+    "message": "Privacy notice"
   },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Terms of Use"
@@ -4587,6 +4634,12 @@
     "message": "Only connect with sites you trust. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
+  "onlyIntegersAllowed": {
+    "message": "Only whole numbers are allowed"
+  },
+  "onlyNumbersAllowed": {
+    "message": "Only numbers are allowed"
+  },
   "openFullScreen": {
     "message": "Open full screen"
   },
@@ -4596,6 +4649,9 @@
   },
   "openInBlockExplorer": {
     "message": "Open in block explorer"
+  },
+  "openSettings": {
+    "message": "Open settings"
   },
   "openWallet": {
     "message": "Open wallet"
@@ -4678,10 +4734,10 @@
     "message": "If I forget this password, I’ll lose access to my wallet permanently. MetaMask can’t reset it for me."
   },
   "passwordToggleHide": {
-    "message": "Hide Password"
+    "message": "Hide password"
   },
   "passwordToggleShow": {
-    "message": "Show Password"
+    "message": "Show password"
   },
   "passwordsDontMatch": {
     "message": "Passwords don't match"
@@ -4717,9 +4773,6 @@
   },
   "percentChange": {
     "message": "Percent change"
-  },
-  "permissionDetails": {
-    "message": "Permission details"
   },
   "permissionFor": {
     "message": "Permission for"
@@ -4972,11 +5025,8 @@
   "permissions": {
     "message": "Permissions"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Nothing to see here"
-  },
-  "permissionsPageEmptySubContent": {
-    "message": "This is where you can see the permissions you've given to installed Snaps or connected sites."
+  "permissionsPageEmptyDescription": {
+    "message": "No permissions detected. Once you grant permissions to a site or install a Snap, the details will appear here."
   },
   "permitSimulationChange_approve": {
     "message": "Spending cap"
@@ -5005,6 +5055,42 @@
   "permittedChainToastUpdate": {
     "message": "$1 has access to $2."
   },
+  "perps": {
+    "message": "Perps"
+  },
+  "perpsBuy": {
+    "message": "buy"
+  },
+  "perpsCloseAll": {
+    "message": "Close all"
+  },
+  "perpsEmptyDescription": {
+    "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsMarket": {
+    "message": "Market"
+  },
+  "perpsOpenOrders": {
+    "message": "Open Orders"
+  },
+  "perpsPositions": {
+    "message": "Positions"
+  },
+  "perpsSell": {
+    "message": "sell"
+  },
+  "perpsStartNewTrade": {
+    "message": "Start a new trade"
+  },
+  "perpsStartTrading": {
+    "message": "Start trading"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
+  },
+  "perpsUnrealizedPnl": {
+    "message": "Unrealized P&L"
+  },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
   },
@@ -5027,16 +5113,24 @@
   "pleaseConfirm": {
     "message": "Please confirm"
   },
-  "plusMore": {
-    "message": "+ $1 more",
-    "description": "$1 is the number of additional items"
-  },
   "plusXMore": {
     "message": "+ $1 more",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
-  "pna25BannerTitle": {
-    "message": "We’re updating MetaMetrics. We'll associate some in-app activity to on-chain data to better understand usage. You can opt out via Settings."
+  "pna25ModalBlogPostLink": {
+    "message": "blog post."
+  },
+  "pna25ModalBody1": {
+    "message": "To better serve you, we’re updating our analytics so publicly available data like wallet addresses and related on-chain activity can be associated with actions you take in MetaMask. This helps us improve MetaMask's performance, security, and features in order to make a better, safer wallet."
+  },
+  "pna25ModalBody2": {
+    "message": "We take privacy seriously.  We do not use this information for advertising or sell your data to third parties.  You can opt out anytime in Settings."
+  },
+  "pna25ModalBody3": {
+    "message": "You can read more about what we collect, how we protect it, and why we’re making this change in our latest"
+  },
+  "pna25ModalTitle": {
+    "message": "Privacy and product updates"
   },
   "popularNetworkAddToolTip": {
     "message": "Some of these networks rely on third parties. The connections may be less reliable or enable third-parties to track activity.",
@@ -5067,13 +5161,16 @@
     "message": "Priority fee"
   },
   "priorityFeeProperCase": {
-    "message": "Priority Fee"
+    "message": "Priority fee"
+  },
+  "priorityFeeTooHigh": {
+    "message": "Priority fee must be less than max base fee"
   },
   "privacy": {
     "message": "Privacy"
   },
   "privacyMsg": {
-    "message": "Privacy policy"
+    "message": "Privacy Policy"
   },
   "privateKey": {
     "message": "Private key",
@@ -5281,12 +5378,6 @@
   "rateIncludesMMFee": {
     "message": "Includes $1% MM fee."
   },
-  "reAddAccounts": {
-    "message": "re-add any other accounts"
-  },
-  "reAdded": {
-    "message": "re-added"
-  },
   "readdToken": {
     "message": "You can add this token back in the future by going to “Import token” in your accounts options menu."
   },
@@ -5450,32 +5541,24 @@
   "resetWallet": {
     "message": "Reset your wallet"
   },
-  "resetWalletSubHeader": {
-    "message": "MetaMask does not keep a copy of your password. If you’re having trouble unlocking your account, you will need to reset your wallet. You can do this by providing the Secret Recovery Phrase you used when you set up your wallet."
+  "resetWalletBoldTextOne": {
+    "message": "permanently"
   },
-  "resetWalletSubHeaderSocial": {
-    "message": "MetaMask doesn’t keep a copy of your password. If you’re having trouble unlocking your account, you’ll need to reset your wallet. If you have a Secret Recovery Phrase, you can use it to erase your current wallet from this device, along with the list of your accounts."
+  "resetWalletBoldTextTwo": {
+    "message": "It will not impact the assets within your wallet."
   },
-  "resetWalletUsingSRP": {
-    "message": "This action will delete your current wallet and Secret Recovery Phrase from this device, along with the list of accounts you’ve curated. After resetting with a Secret Recovery Phrase, you’ll see a list of accounts based on the Secret Recovery Phrase you use to reset. This new list will automatically include accounts that have a balance. You’ll also be able to $1 created previously. Custom accounts that you’ve imported will need to be $2, and any custom tokens you’ve added to an account will need to be $3 as well."
+  "resetWalletButton": {
+    "message": "Yes, reset wallet"
   },
-  "resetWalletUsingSRPSocial": {
-    "message": "After resetting with a Secret Recovery Phrase, you’ll see a new list of accounts. This list will include accounts that have a balance. You can $1 you made before. But you’ll need to add back any $2 and $3 you imported. "
+  "resetWalletDescriptionOne": {
+    "message": "We can’t recover your Secret Recovery Phrase. You can reset the wallet to create a new one and import your accounts using private keys."
   },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "add back any other accounts"
+  "resetWalletDescriptionTwo": {
+    "message": "Resetting will $1 delete all wallet data in MetaMask on this device. $2",
+    "description": "$1 is the bolded text 'permanently' and $2 is the bolded text 'It will not impact the assets within your wallet.'"
   },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "custom accounts"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "custom tokens"
-  },
-  "resetWalletWarning": {
-    "message": "Make sure you’re using the correct Secret Recovery Phrase before proceeding. You will not be able to undo this."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Make sure you use the right Secret Recovery Phrase before you reset. This can’t be undone."
+  "resetWalletTitle": {
+    "message": "Don’t have your Secret Recovery Phrase?"
   },
   "resolutionProtocol": {
     "message": "Address resolved via $1",
@@ -5489,6 +5572,10 @@
   },
   "restoreUserData": {
     "message": "Restore user data"
+  },
+  "restoreWalletDescription": {
+    "message": "Enter your $1. By importing the wallet, you will erase your current wallet data from this device. This can’t be undone.",
+    "description": "$1 is the Secret Recovery Phrase"
   },
   "resultPageError": {
     "message": "Error"
@@ -5581,6 +5668,9 @@
   "revokeSimulationDetailsDesc": {
     "message": "You're removing someone's permission to spend tokens from your account."
   },
+  "revokeTokenApprovals": {
+    "message": "Revoke token approvals"
+  },
   "reward": {
     "message": "Reward"
   },
@@ -5588,7 +5678,7 @@
     "message": "An unknown error occurred while authenticating this account with the rewards program. Please try again later."
   },
   "rewardsAuthFailTitle": {
-    "message": "Unknown Error."
+    "message": "Unknown error."
   },
   "rewardsErrorMessagesAccountAlreadyRegistered": {
     "message": "This account is already registered with another Rewards profile. Please switch account to continue."
@@ -5724,7 +5814,7 @@
     "description": "Text shown when points balance couldn't be loaded"
   },
   "rewardsPointsIcon": {
-    "message": "Rewards Points",
+    "message": "Rewards points",
     "description": "Alt text for the rewards points icon"
   },
   "rewardsQRCodeDescription": {
@@ -6034,6 +6124,15 @@
   "shieldClaimChainNotSupported": {
     "message": "This chain is not supported."
   },
+  "shieldClaimDeleteDraft": {
+    "message": "Delete draft"
+  },
+  "shieldClaimDeleteDraftDescription": {
+    "message": "Your claim draft has been deleted."
+  },
+  "shieldClaimDeletedDraft": {
+    "message": "Draft deleted"
+  },
   "shieldClaimDescription": {
     "message": "Description of case"
   },
@@ -6047,6 +6146,24 @@
   "shieldClaimDetailsViewClaims": {
     "message": "This claim is being reviewed by our team. We will notify you when it has been approved by email. View the full coverage policy $1.",
     "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDraftDeleteFailed": {
+    "message": "Deleting draft failed"
+  },
+  "shieldClaimDraftDeleteFailedDescription": {
+    "message": "Unable to delete your claim draft. Please try again."
+  },
+  "shieldClaimDraftSaveFailed": {
+    "message": "Saving draft failed"
+  },
+  "shieldClaimDraftSaveFailedDescription": {
+    "message": "Unable to save your claim draft. Please try again."
+  },
+  "shieldClaimDraftSaved": {
+    "message": "Draft saved"
+  },
+  "shieldClaimDraftSavedDescription": {
+    "message": "Your claim draft has been saved."
   },
   "shieldClaimDuplicateClaimExists": {
     "message": "A claim has already been submitted for this transaction hash."
@@ -6080,11 +6197,14 @@
     "message": "Active claims"
   },
   "shieldClaimGroupActiveNote": {
-    "message": "Note: You can have a maximum of $1 active claims at a single time.",
-    "description": "The $1 is the maximum number of active claims"
+    "message": "Note: You can have a maximum of $1 drafts and $2 active claims at a single time.",
+    "description": "The $1 is the maximum number of drafts and $2 is the maximum number of active claims"
   },
   "shieldClaimGroupCompleted": {
     "message": "Completed claims"
+  },
+  "shieldClaimGroupDrafts": {
+    "message": "Drafts"
   },
   "shieldClaimGroupNoCompletedClaims": {
     "message": "No completed claims"
@@ -6137,6 +6257,9 @@
   "shieldClaimMaxClaimsLimitExceeded": {
     "message": "You have reached the maximum limit of open claims. Please contact support if you need to submit additional claims."
   },
+  "shieldClaimMaxDraftsReached": {
+    "message": "You have reached the maximum number of drafts. Please delete a draft to save a new one."
+  },
   "shieldClaimNetwork": {
     "message": "Select network"
   },
@@ -6151,6 +6274,9 @@
   },
   "shieldClaimSameWalletAddressesError": {
     "message": "Impacted wallet address and reimbursement wallet address must be different."
+  },
+  "shieldClaimSaveAsDraft": {
+    "message": "Save as draft"
   },
   "shieldClaimSelectAccount": {
     "message": "Select an account"
@@ -6191,6 +6317,10 @@
   },
   "shieldClaimWalletOwnershipValidationFailed": {
     "message": "Wallet ownership validation failed."
+  },
+  "shieldClaimsLastEdited": {
+    "message": "Last edited: $1",
+    "description": "The $1 is the date"
   },
   "shieldClaimsListTitle": {
     "message": "Claims"
@@ -6290,10 +6420,16 @@
     "message": "Authorize $1/month for 12 months ($2 total). You'll be billed monthly, not the full amount now."
   },
   "shieldFooterAgreement": {
-    "message": "By continuing, I agree to Transaction Shield $1."
+    "message": "By continuing, I agree to Transaction Shield $1"
+  },
+  "shieldManagePlan": {
+    "message": "Manage plan"
   },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPastPlansTitle": {
+    "message": "Past details"
   },
   "shieldPaused": {
     "message": "Paused"
@@ -6397,6 +6533,9 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldPlanYearly": {
+    "message": "Yearly"
+  },
   "shieldStartNowCTA": {
     "message": "Start now"
   },
@@ -6406,6 +6545,9 @@
   "shieldTx": {
     "message": "Transaction Shield"
   },
+  "shieldTxBillingAccount": {
+    "message": "Billing account"
+  },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
@@ -6413,48 +6555,78 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
-  "shieldTxDetails1Description": {
-    "message": "Secures assets on covered transactions"
+  "shieldTxDetails1DescriptionTrial": {
+    "message": "Free for $1 days, then $2",
+    "description": "The $1 is the number of days and the $2 is the price of the plan"
   },
   "shieldTxDetails1Title": {
-    "message": "Up to $10,000 transaction protection"
+    "message": "MetaMask Transaction Shield"
   },
   "shieldTxDetails2Description": {
-    "message": "Get faster, dedicated support anytime"
+    "message": "$1, next billing on $2",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
-    "message": "Priority support"
+    "message": "Billing cycle"
   },
-  "shieldTxDetails3Description": {
-    "message": "Get $1 points/$2.",
-    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  "shieldTxDetails3DescriptionCrypto": {
+    "message": "Crypto ($1)",
+    "description": "The $1 is the token symbol"
   },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link Rewards"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Sign up"
+  "shieldTxDetails3DescriptionCryptoWithAccount": {
+    "message": "Crypto ($1), $2",
+    "description": "The $1 is the token symbol and the $2 is the account"
   },
   "shieldTxDetails3Title": {
-    "message": "Earn during rewards season"
+    "message": "Payment method"
+  },
+  "shieldTxDetailsManage": {
+    "message": "Manage"
+  },
+  "shieldTxDetailsTitle": {
+    "message": "Plan details"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Billing details"
+  "shieldTxMembershipBenefits": {
+    "message": "Your benefits"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
+  "shieldTxMembershipBenefits1Description": {
+    "message": "Secures assets on covered transactions"
   },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Charges"
+  "shieldTxMembershipBenefits1Title": {
+    "message": "Up to $1 protection",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Next billing"
+  "shieldTxMembershipBenefits2Description": {
+    "message": "Get faster, dedicated support anytime"
   },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Payment method"
+  "shieldTxMembershipBenefits2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipBenefits3Description": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3DescriptionInactive": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3LinkRewards": {
+    "message": "Link"
+  },
+  "shieldTxMembershipBenefits3SignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxMembershipBenefits3Title": {
+    "message": "Earn season rewards"
+  },
+  "shieldTxMembershipBenefitsInactive": {
+    "message": "What you get"
+  },
+  "shieldTxMembershipBenefitsViewAll": {
+    "message": "View all"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Manage billing"
@@ -6466,12 +6638,13 @@
     "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
   },
+  "shieldTxMembershipCancelledDate": {
+    "message": "You cancelled your plan on $1",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Your plan ends on $1. Renew now to continue your benefits.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Retry payment"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Your plan has been paused due to a failed card payment."
@@ -6498,17 +6671,21 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contact support"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Update card details"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
+  "shieldTxMembershipFreeTrialDaysLeft": {
+    "message": "You have $1 days left on your trial",
+    "description": "The $1 is the number of days left"
+  },
   "shieldTxMembershipId": {
-    "message": "Plan ID"
+    "message": "Member ID"
   },
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
+  },
+  "shieldTxMembershipMakeClaim": {
+    "message": "Make a claim"
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
@@ -6516,14 +6693,27 @@
   "shieldTxMembershipRenew": {
     "message": "Renew plan"
   },
+  "shieldTxMembershipRenewDescription": {
+    "message": "Reactivate for $1",
+    "description": "The $1 is the price of the plan"
+  },
   "shieldTxMembershipResubscribe": {
     "message": "Restart plan"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "View full benefits"
+  "shieldTxPastPlans": {
+    "message": "Past plans"
+  },
+  "shieldTxPastPlansMonthly": {
+    "message": "Monthly plan"
+  },
+  "shieldTxPastPlansYearly": {
+    "message": "Yearly plan"
+  },
+  "shieldTxViewPastInvoice": {
+    "message": "View past invoice"
   },
   "show": {
     "message": "Show"
@@ -6613,7 +6803,7 @@
     "message": "You're giving someone else permission to spend this amount from your account."
   },
   "simulationDetailsFiatNotAvailable": {
-    "message": "Not Available"
+    "message": "Not available"
   },
   "simulationDetailsIncomingHeading": {
     "message": "You receive"
@@ -7219,8 +7409,14 @@
   "staked": {
     "message": "Staked"
   },
+  "stakingDeposit": {
+    "message": "Staking deposit"
+  },
+  "stakingWithdrawal": {
+    "message": "Staking withdrawal"
+  },
   "standardAccountLabel": {
-    "message": "Standard Account"
+    "message": "Standard account"
   },
   "stateCorruptionAreYouSure": {
     "message": "Are you sure you want to proceed?"
@@ -7240,7 +7436,7 @@
     "message": "Your vault can be recovered from an automated backup. Automatic recovery will delete your current settings and preferences, and restore only your vault."
   },
   "stateCorruptionMetamaskDatabaseCannotBeAccessed": {
-    "message": "Internal Error: Database cannot be accessed"
+    "message": "Internal error: database cannot be accessed"
   },
   "stateCorruptionResetMetaMaskState": {
     "message": "Reset MetaMask State"
@@ -7249,7 +7445,7 @@
     "message": "Resetting database…"
   },
   "stateCorruptionRestoreAccountsFromBackup": {
-    "message": "Restore Accounts"
+    "message": "Restore accounts"
   },
   "stateCorruptionRestoringDatabase": {
     "message": "Restoring database…"
@@ -7313,6 +7509,15 @@
   },
   "stillGettingMessage": {
     "message": "Still getting this message?"
+  },
+  "storageErrorAction": {
+    "message": "Back up Secret Recovery Phrase"
+  },
+  "storageErrorDescription": {
+    "message": "Back up your Secret Recovery Phrase and reinstall MetaMask if the problem continues."
+  },
+  "storageErrorTitle": {
+    "message": "We couldn't save your data"
   },
   "strong": {
     "message": "Strong"
@@ -7537,7 +7742,7 @@
     "message": "Paid by MetaMask"
   },
   "swapGasFeesSponsoredExplanation": {
-    "message": "This network fee is paid by MetaMask, so you can swap without $1 in your account."
+    "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
   },
   "swapGasFeesSummary": {
     "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
@@ -7852,7 +8057,7 @@
     "message": "10% increase"
   },
   "terms": {
-    "message": "Terms of use"
+    "message": "Terms of Use"
   },
   "termsOfService": {
     "message": "Terms of service"
@@ -7949,10 +8154,10 @@
     "message": "Token standard"
   },
   "tokenStream": {
-    "message": "Token Stream"
+    "message": "Token stream"
   },
   "tokenSubscription": {
-    "message": "Token Subscription"
+    "message": "Token subscription"
   },
   "tokenSymbol": {
     "message": "Token symbol"
@@ -8269,7 +8474,7 @@
     "message": "The price of this token in USD is highly volatile, indicating a high risk of losing significant value by interacting with it."
   },
   "unstableTokenPriceTitle": {
-    "message": "Unstable Token Price"
+    "message": "Unstable token price"
   },
   "upArrow": {
     "message": "up arrow"
@@ -8311,6 +8516,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

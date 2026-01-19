@@ -3,28 +3,28 @@
 exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=2 1`] = `
 {
   "adjustedReturn": {
-    "usd": "39.080515131939180597564",
-    "valueInCurrency": "13.843437128589739081572",
+    "usd": "39.080515271575980597564",
+    "valueInCurrency": "13.843437135571579081572",
   },
   "cost": {
-    "usd": "240.919484868060819402436",
-    "valueInCurrency": "0.156562871410260918428",
+    "usd": "240.919484728424019402436",
+    "valueInCurrency": "0.156562864428420918428",
   },
   "gasFee": {
     "effective": {
-      "amount": "7.141025952e-8",
-      "usd": "0.0000014282051904",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
     "max": {
-      "amount": "9.933761952e-8",
-      "usd": "0.0000019867523904",
-      "valueInCurrency": "9.933761952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
     "total": {
-      "amount": "7.141025952e-8",
-      "usd": "0.0000014282051904",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
   },
   "includedTxFees": null,
@@ -45,14 +45,14 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "13.844437199999998601572",
   },
   "totalMaxNetworkFee": {
-    "amount": "0.00100009933761952",
-    "usd": "0.0200019867523904",
-    "valueInCurrency": "0.00100009933761952",
+    "amount": "0.00100006442841952",
+    "usd": "0.0200012885683904",
+    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
-    "amount": "0.00100007141025952",
-    "usd": "0.0200014282051904",
-    "valueInCurrency": "0.00100007141025952",
+    "amount": "0.00100006442841952",
+    "usd": "0.0200012885683904",
+    "valueInCurrency": "0.00100006442841952",
   },
 }
 `;
@@ -60,28 +60,28 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
 exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, insufficientBal=false,quotesRefreshCount=5 1`] = `
 {
   "adjustedReturn": {
-    "usd": "13.84343712858974048",
-    "valueInCurrency": "13.84343712858974048",
+    "usd": "13.84343713557158048",
+    "valueInCurrency": "13.84343713557158048",
   },
   "cost": {
-    "usd": "0.15656287141025952",
-    "valueInCurrency": "0.15656287141025952",
+    "usd": "0.15656286442841952",
+    "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
     "effective": {
-      "amount": "7.141025952e-8",
-      "usd": "7.141025952e-8",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "6.442841952e-8",
+      "valueInCurrency": "6.442841952e-8",
     },
     "max": {
-      "amount": "9.933761952e-8",
-      "usd": "9.933761952e-8",
-      "valueInCurrency": "9.933761952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "6.442841952e-8",
+      "valueInCurrency": "6.442841952e-8",
     },
     "total": {
-      "amount": "7.141025952e-8",
-      "usd": "7.141025952e-8",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "6.442841952e-8",
+      "valueInCurrency": "6.442841952e-8",
     },
   },
   "includedTxFees": null,
@@ -102,14 +102,14 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "13.8444372",
   },
   "totalMaxNetworkFee": {
-    "amount": "0.00100009933761952",
-    "usd": "0.00100009933761952",
-    "valueInCurrency": "0.00100009933761952",
+    "amount": "0.00100006442841952",
+    "usd": "0.00100006442841952",
+    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
-    "amount": "0.00100007141025952",
-    "usd": "0.00100007141025952",
-    "valueInCurrency": "0.00100007141025952",
+    "amount": "0.00100006442841952",
+    "usd": "0.00100006442841952",
+    "valueInCurrency": "0.00100006442841952",
   },
 }
 `;
@@ -117,28 +117,28 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
 exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, insufficientBal=true 1`] = `
 {
   "adjustedReturn": {
-    "usd": "13.8244357717948096",
-    "valueInCurrency": "13.84343712858974048",
+    "usd": "13.8244359114316096",
+    "valueInCurrency": "13.84343713557158048",
   },
   "cost": {
-    "usd": "266.1755642282051904",
-    "valueInCurrency": "0.15656287141025952",
+    "usd": "266.1755640885683904",
+    "valueInCurrency": "0.15656286442841952",
   },
   "gasFee": {
     "effective": {
-      "amount": "7.141025952e-8",
-      "usd": "0.0000014282051904",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
     "max": {
-      "amount": "9.933761952e-8",
-      "usd": "0.0000019867523904",
-      "valueInCurrency": "9.933761952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
     "total": {
-      "amount": "7.141025952e-8",
-      "usd": "0.0000014282051904",
-      "valueInCurrency": "7.141025952e-8",
+      "amount": "6.442841952e-8",
+      "usd": "0.0000012885683904",
+      "valueInCurrency": "6.442841952e-8",
     },
   },
   "includedTxFees": null,
@@ -159,14 +159,14 @@ exports[`Bridge selectors getBridgeQuotes returns quote list and fetch data, ins
     "valueInCurrency": "13.8444372",
   },
   "totalMaxNetworkFee": {
-    "amount": "0.00100009933761952",
-    "usd": "0.0200019867523904",
-    "valueInCurrency": "0.00100009933761952",
+    "amount": "0.00100006442841952",
+    "usd": "0.0200012885683904",
+    "valueInCurrency": "0.00100006442841952",
   },
   "totalNetworkFee": {
-    "amount": "0.00100007141025952",
-    "usd": "0.0200014282051904",
-    "valueInCurrency": "0.00100007141025952",
+    "amount": "0.00100006442841952",
+    "usd": "0.0200012885683904",
+    "valueInCurrency": "0.00100006442841952",
   },
 }
 `;

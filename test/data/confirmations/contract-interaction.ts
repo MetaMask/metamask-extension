@@ -23,7 +23,7 @@ export const PAYMASTER_AND_DATA =
   '0x9d6ac51b972544251fcc0f2902e633e3f9bd3f2900000000000000000000000000000000000000000000000000000000666bfd410000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003498a76eb88b702e5e52b00fbc16a36baf89ebe3e0dd23170949cffc0a623011383cced660ff67930308c22e5aa746a2d586629ddbd87046a146225bf80e9d6f1b';
 
 export const CONTRACT_INTERACTION_SENDER_ADDRESS =
-  '0x2e0d7e8c45221fca00d74a3609a0f7097035d09b';
+  '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc'; // "Account 1" (account group name) or "Test account" (internal account) from `mock-state.json`.
 
 export const DEPOSIT_METHOD_DATA = '0xd0e30db0';
 
@@ -93,7 +93,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
           // eslint-disable-next-line @typescript-eslint/naming-convention
           result_type: 'validation_in_progress',
         },
-        sendFlowHistory: [],
         status: TransactionStatus.unapproved,
         time: 1713534772044,
         txParams: {
@@ -174,7 +173,6 @@ export const genUnapprovedContractInteractionConfirmation = ({
       result_type: 'Benign',
     },
     selectedGasFeeToken,
-    sendFlowHistory: [],
     simulationData: {
       nativeBalanceChange: {
         difference: '0x3782dace9d900000',
@@ -214,6 +212,7 @@ export const genUnapprovedContractInteractionConfirmation = ({
 
 export const mockSwapConfirmation = {
   chainId: '0x2105',
+  requestId: '1234567',
   id: 'f8172040-b3d0-11f0-a882-3f99aa2e9f0c',
   networkClientId: 'base-mainnet',
   origin: 'https://app.uniswap.org',
@@ -232,7 +231,6 @@ export const mockSwapConfirmation = {
   type: 'contractInteraction',
   gasLimitNoBuffer: '0x58e25',
   layer1GasFee: '0x61077a1f',
-  sendFlowHistory: [],
   gasUsed: '0x4674f',
   simulationData: {
     tokenBalanceChanges: [

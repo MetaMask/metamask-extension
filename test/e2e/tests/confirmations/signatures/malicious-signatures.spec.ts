@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import {
   BlockaidReason,
@@ -72,10 +72,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
           expectedProps: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -138,10 +135,7 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'alert_friction_modal',
           expectedProps: {
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

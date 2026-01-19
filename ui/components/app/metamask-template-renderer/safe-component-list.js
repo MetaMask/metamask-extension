@@ -6,7 +6,7 @@ import {
   FormTextField,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../../multichain';
+import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';

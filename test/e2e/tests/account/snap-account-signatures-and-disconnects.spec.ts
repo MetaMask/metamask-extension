@@ -1,8 +1,8 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import { DAPP_PATH } from '../../constants';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';

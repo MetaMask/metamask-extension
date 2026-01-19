@@ -4,7 +4,7 @@ exports[`SnapUIDateTimePicker can show an error 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -58,7 +58,7 @@ exports[`SnapUIDateTimePicker renders a date picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -101,7 +101,7 @@ exports[`SnapUIDateTimePicker renders a date time picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -144,7 +144,7 @@ exports[`SnapUIDateTimePicker renders a time picker 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"
@@ -187,7 +187,7 @@ exports[`SnapUIDateTimePicker renders inside a field 1`] = `
 <div>
   <div
     class="mm-box snap-ui-renderer__content mm-box--height-full mm-box--background-color-background-alternative"
-    style="overflow-y: auto; margin-bottom: 0px;"
+    style="overflow-y: auto;"
   >
     <div
       class="box snap-ui-renderer__container box--display-flex box--flex-direction-column"

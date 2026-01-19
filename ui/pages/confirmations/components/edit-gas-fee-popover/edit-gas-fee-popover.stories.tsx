@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { ComponentType } from 'react';
 import { Provider } from 'react-redux';
 import { Meta, StoryObj } from '@storybook/react';
+import { TransactionMeta } from '@metamask/transaction-controller';
+
 import mockState from '../../../../../test/data/mock-state.json';
 import configureStore from '../../../../store/store';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
@@ -45,28 +47,30 @@ const MockTransactionModalProvider: React.FC<
   );
 };
 
-const createTransaction = (editGasMode = EditGasModes.modifyInPlace) => ({
-  userFeeLevel: PriorityLevels.medium,
-  txParams: {
-    maxFeePerGas: decGWEIToHexWEI('70'),
-    maxPriorityFeePerGas: decGWEIToHexWEI('7'),
-    gas: '0x5208',
-    gasPrice: decGWEIToHexWEI('50'),
-    type: '0x2',
-    from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
-    to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
-  },
-  chainId: '0x5', // Use Goerli from mock state
-  editGasMode,
-});
+const createTransaction = (editGasMode = EditGasModes.modifyInPlace) =>
+  ({
+    userFeeLevel: PriorityLevels.medium,
+    txParams: {
+      maxFeePerGas: decGWEIToHexWEI('70'),
+      maxPriorityFeePerGas: decGWEIToHexWEI('7'),
+      gas: '0x5208',
+      gasPrice: decGWEIToHexWEI('50'),
+      type: '0x2',
+      from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+      to: '0xc42edfcc21ed14dda456aa0756c153f7985d8813',
+    },
+    chainId: '0x5', // Use Goerli from mock state
+    editGasMode,
+  }) as unknown as TransactionMeta;
 
 interface StoryArgs {
   editGasMode: EditGasModes;
+  transaction: TransactionMeta;
 }
 
 const meta: Meta<StoryArgs> = {
   title: 'Pages/Confirmations/Components/EditGasFeePopover',
-  component: EditGasFeePopover,
+  component: EditGasFeePopover as unknown as ComponentType<StoryArgs>,
   decorators: [
     (Story, context) => (
       <Provider store={store}>
@@ -90,5 +94,6 @@ type Story = StoryObj<StoryArgs>;
 export const Default: Story = {
   args: {
     editGasMode: EditGasModes.modifyInPlace,
+    transaction: createTransaction(EditGasModes.modifyInPlace),
   },
 };

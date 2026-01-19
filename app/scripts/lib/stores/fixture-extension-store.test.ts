@@ -64,9 +64,24 @@ describe('FixtureExtensionStore', () => {
   });
 
   describe('constructor', () => {
+    it('skips initialization if initialize is not true', async () => {
+      const interceptor =
+        mockFixtureServerInterceptor().replyWithError('error!');
+      const logDebugSpy = jest
+        .spyOn(log, 'debug')
+        .mockImplementation(() => undefined);
+      const store = new FixtureExtensionStore();
+
+      const result = await store.get();
+
+      expect(result).toBe(null);
+      expect(logDebugSpy).not.toHaveBeenCalled();
+      expect(interceptor.isDone()).toBe(false);
+    });
+
     it('loads state from the network if fetch is successful and response is ok', async () => {
       setMockFixtureServerReply(MOCK_STATE);
-      const store = new FixtureExtensionStore();
+      const store = new FixtureExtensionStore({ initialize: true });
 
       const result = await store.get();
 
@@ -78,7 +93,7 @@ describe('FixtureExtensionStore', () => {
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
       mockFixtureServerInterceptor().reply(400);
-      const store = new FixtureExtensionStore();
+      const store = new FixtureExtensionStore({ initialize: true });
 
       const result = await store.get();
 
@@ -93,7 +108,7 @@ describe('FixtureExtensionStore', () => {
       const logDebugSpy = jest
         .spyOn(log, 'debug')
         .mockImplementation(() => undefined);
-      const store = new FixtureExtensionStore();
+      const store = new FixtureExtensionStore({ initialize: true });
 
       const result = await store.get();
 
@@ -107,7 +122,7 @@ describe('FixtureExtensionStore', () => {
   describe('get', () => {
     it('returns fixture state after waiting for init', async () => {
       setMockFixtureServerReply(MOCK_STATE);
-      const store = new FixtureExtensionStore();
+      const store = new FixtureExtensionStore({ initialize: true });
 
       const result = await store.get();
 
@@ -117,7 +132,7 @@ describe('FixtureExtensionStore', () => {
 
   describe('set', () => {
     it('sets the state', async () => {
-      const store = new FixtureExtensionStore();
+      const store = new FixtureExtensionStore({ initialize: true });
 
       await store.set({
         data: { appState: { test: true } },

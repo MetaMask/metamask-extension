@@ -37,7 +37,7 @@ describe('AddContact component', () => {
     const { getByText } = renderWithProvider(<EditContact {...props} />, store);
 
     expect(getByText('Username')).toBeInTheDocument();
-    expect(getByText('Ethereum public address')).toBeInTheDocument();
+    expect(getByText('Public address')).toBeInTheDocument();
   });
 
   it('should validate the address correctly', () => {

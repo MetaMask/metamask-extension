@@ -151,17 +151,26 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.center}
+          justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.flexStart}
           color={color ?? TextColor.textAlternative}
           paddingRight={contentPaddingRight || null}
           onClick={onClick}
           className={onClick && 'hoverable'}
+          style={{
+            flexShrink: 0,
+            flexBasis: 'auto',
+            width: 'fit-content',
+            maxWidth: '100%',
+          }}
         >
           <Box
             display={Display.Flex}
             alignItems={AlignItems.center}
-            style={labelChildrenStyleOverride}
+            style={{
+              flexShrink: 0,
+              ...labelChildrenStyleOverride,
+            }}
           >
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}

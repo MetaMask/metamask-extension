@@ -5,6 +5,7 @@ import {
   BridgeBackgroundAction,
   BridgeUserAction,
   formatChainIdToCaip,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
 import { CHAIN_IDS } from '../../../shared/constants/network';
@@ -142,6 +143,7 @@ describe('Ducks - Bridge', () => {
         fromTokenExchangeRate: null,
         wasTxDeclined: false,
         txAlert: null,
+        txAlertStatus: RequestStatus.FETCHED,
         fromTokenBalance: null,
         fromNativeBalance: null,
       });
@@ -244,6 +246,7 @@ describe('Ducks - Bridge', () => {
         toChainId: null,
         toToken: null,
         txAlert: null,
+        txAlertStatus: RequestStatus.FETCHED,
         wasTxDeclined: false,
         fromTokenBalance: null,
         fromNativeBalance: null,

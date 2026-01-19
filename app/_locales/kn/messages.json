@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "ಮುಂದುವರೆಯಲು ಪಾಸ್‌ವರ್ಡ್ ನಮೂದಿಸಿ"
   },
-  "ethereumPublicAddress": {
-    "message": "ಎಥೆರಿಯಮ್ ಸಾರ್ವಜನಿಕ ವಿಳಾಸ"
-  },
   "etherscanView": {
     "message": "ಎಥರ್‌ಸ್ಕ್ಯಾನ್‌ನಲ್ಲಿ ಖಾತೆಯನ್ನು ವೀಕ್ಷಿಸಿ"
   },

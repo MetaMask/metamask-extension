@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
   },
-  "ethereumPublicAddress": {
-    "message": "Adresa publică Ethereum"
-  },
   "etherscanView": {
     "message": "Vizualizare cont pe Etherscan"
   },

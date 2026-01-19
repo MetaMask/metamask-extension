@@ -1,15 +1,20 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import { unlockWallet, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import { DAPP_ONE_URL, DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
+import SignTypedData from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import {
+  DAPP_ONE_URL,
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';

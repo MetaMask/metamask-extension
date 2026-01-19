@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Fuse from 'fuse.js';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { Box, Text } from '../../../../component-library';
 import { I18nContext } from '../../../../../contexts/i18n';
 import ContactList from '../../../../app/contact-list';
@@ -39,7 +40,9 @@ export const SendPageAddressBook = () => {
   const addressBook = useSelector(getCompleteAddressBook);
   const internalAccounts = useSelector(getInternalAccounts);
   const contacts = addressBook.filter(({ name }) => Boolean(name));
-  const currentNetworkTransactions = useSelector(getCurrentNetworkTransactions);
+  const currentNetworkTransactions = useSelector(
+    getCurrentNetworkTransactions,
+  ) as TransactionMeta[];
 
   const globalChainId = useSelector(getCurrentChainId);
   const networkClientIdsByChainId = useSelector(

@@ -4,8 +4,9 @@ import {
   withSolanaAccountSnap,
 } from '../../tests/solana/common-solana';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { regularDelayMs, WINDOW_TITLES } from '../../helpers';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { WINDOW_TITLES } from '../../constants';
+import { regularDelayMs } from '../../helpers';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import NetworkPermissionSelectModal from '../../page-objects/pages/dialog/network-permission-select-modal';
 import {
   account1Short,

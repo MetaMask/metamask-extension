@@ -2,11 +2,12 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { SolScope } from '@metamask/keyring-api';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
+  WINDOW_TITLES,
 } from '../../constants';
+import { withFixtures } from '../../helpers';
 import {
   BASE_DISPLAY_NAME,
   LINEA_MAINNET_DISPLAY_NAME,
@@ -21,7 +22,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -305,7 +306,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -320,8 +321,6 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_ONE, EVM_ACCOUNT_LABEL_TWO],
         );
@@ -358,7 +357,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(1);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -374,8 +373,6 @@ describe('Multiple Standard Dapp Connections', function () {
             SEI_DISPLAY_NAME,
             'Bitcoin',
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_ONE],
         );
@@ -433,7 +430,7 @@ describe('Multiple Standard Dapp Connections', function () {
         );
 
         await sitePermissionPage.checkConnectedAccountsNumber(2);
-        await sitePermissionPage.checkConnectedNetworksNumber(11);
+        await sitePermissionPage.checkConnectedNetworksNumber(9);
 
         await checkAccountsAndNetworksDisplayed(
           driver,
@@ -448,8 +445,6 @@ describe('Multiple Standard Dapp Connections', function () {
             OPTIMISM_DISPLAY_NAME,
             SEI_DISPLAY_NAME,
             'Solana',
-            'Solana Testnet',
-            'Solana Devnet',
           ],
           [EVM_ACCOUNT_LABEL_TWO],
         );

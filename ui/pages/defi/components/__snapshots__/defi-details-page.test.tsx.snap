@@ -6,11 +6,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
     class="mm-box main-container asset__container"
   >
     <div
-      class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
     >
       <button
         aria-label="Back"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="defi-details-page-back-button"
       >
         <span

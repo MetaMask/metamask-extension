@@ -106,7 +106,7 @@ describe('SmartTransactionStatusPage', () => {
   });
 
   describe('Action Buttons', () => {
-    it('calls onCloseExtension when Close extension button is clicked', () => {
+    it('calls onCloseExtension when Back to home button is clicked', () => {
       const onCloseExtension = jest.fn();
       const store = mockStore(createSwapsMockStore());
 
@@ -118,8 +118,8 @@ describe('SmartTransactionStatusPage', () => {
         store,
       );
 
-      const closeButton = getByText('Close extension');
-      fireEvent.click(closeButton);
+      const backToHomeButton = getByText('Back to home');
+      fireEvent.click(backToHomeButton);
       expect(onCloseExtension).toHaveBeenCalled();
     });
 

@@ -7,8 +7,8 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { Driver } from '../../webdriver/driver';
-import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
@@ -18,7 +18,6 @@ describe('Send ETH', function () {
   it('it should be possible to send ETH', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -55,7 +54,6 @@ describe('Send ETH', function () {
   it('it should be possible to send Max ETH', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockSendRedesignFeatureFlag,
@@ -86,7 +84,6 @@ describe('Send ETH', function () {
   it('it should be possible to send to address book entry', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
@@ -134,7 +131,6 @@ describe('Send ETH', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        forceBip44Version: false,
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),

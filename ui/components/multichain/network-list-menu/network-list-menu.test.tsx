@@ -612,7 +612,7 @@ describe('NetworkListMenu', () => {
     });
   });
 
-  describe('NetworkListMenu with REMOVE_GNS enabled', () => {
+  describe('NetworkListMenu network switching behavior', () => {
     it('should not switch networks when clicking network items', () => {
       const { getByText } = render({ selectedTabOriginInDomainsState: false });
       fireEvent.click(getByText(MAINNET_DISPLAY_NAME));

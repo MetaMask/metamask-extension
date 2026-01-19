@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
-  "ethereumPublicAddress": {
-    "message": "„Ethereum“ viešasis adresas"
-  },
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
   },

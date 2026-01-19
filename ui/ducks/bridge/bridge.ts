@@ -10,6 +10,7 @@ import {
   type GenericQuoteRequest,
   type QuoteResponse,
   isBitcoinChainId,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
@@ -31,6 +32,7 @@ const initialState: BridgeState = {
   wasTxDeclined: false,
   slippage: SlippageValue.BridgeDefault,
   txAlert: null,
+  txAlertStatus: RequestStatus.FETCHED,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
@@ -94,6 +96,10 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      state.fromTokenInputValue = initialState.fromTokenInputValue;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.txAlertStatus = initialState.txAlertStatus;
+      state.txAlert = initialState.txAlert;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
@@ -173,13 +179,21 @@ const bridgeSlice = createSlice({
       state.fromTokenExchangeRate = action.payload ?? null;
     });
     builder.addCase(setTxAlerts.pending, (state) => {
-      state.txAlert = null;
+      // Update status but persist the previous alert
+      // The txAlert is only reset the src token changes or if a new response is fetched
+      state.txAlertStatus = RequestStatus.LOADING;
     });
     builder.addCase(setTxAlerts.fulfilled, (state, action) => {
       state.txAlert = action.payload;
+      state.txAlertStatus = RequestStatus.FETCHED;
     });
-    builder.addCase(setTxAlerts.rejected, (state) => {
-      state.txAlert = null;
+    builder.addCase(setTxAlerts.rejected, (state, action) => {
+      // Ignore abort errors because they are expected when streaming quotes
+      if (action.error.name === 'AbortError') {
+        return;
+      }
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = RequestStatus.ERROR;
     });
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
       const isTokenInChain = !isCrossChain(

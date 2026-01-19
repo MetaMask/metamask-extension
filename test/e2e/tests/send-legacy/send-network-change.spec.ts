@@ -1,11 +1,12 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import HomePage from '../../page-objects/pages/home/homepage';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Send Flow - Network Change', function (this: Suite) {
   it('should not preserve recipient address when network is changed in send flow', async function () {
@@ -21,7 +22,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const sendTokenPage = new SendTokenPage(driver);
@@ -71,7 +72,7 @@ describe('Send Flow - Network Change', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const homePage = new HomePage(driver);
         const sendTokenPage = new SendTokenPage(driver);

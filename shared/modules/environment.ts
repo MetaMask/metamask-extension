@@ -40,11 +40,6 @@ export const isGatorPermissionsRevocationFeatureEnabled = (): boolean => {
 };
 
 export const getIsSidePanelFeatureEnabled = (): boolean => {
-  // First check if build supports sidepanel
-  if (process.env.IS_SIDEPANEL?.toString() !== 'true') {
-    return false;
-  }
-
   // In browser context, check if the API exists (Firefox doesn't have it)
   if (
     typeof window !== 'undefined' &&
@@ -52,6 +47,21 @@ export const getIsSidePanelFeatureEnabled = (): boolean => {
     !chrome.sidePanel
   ) {
     return false;
+  }
+
+  // Arc browser doesn't support sidepanel properly.
+  // Arc uses a Chrome-identical user agent, so we detect it via its unique CSS variable.
+  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+    try {
+      const arcPaletteTitle = getComputedStyle(
+        document.documentElement,
+      ).getPropertyValue('--arc-palette-title');
+      if (arcPaletteTitle) {
+        return false;
+      }
+    } catch (error) {
+      console.warn('Arc browser detection failed:', error);
+    }
   }
 
   return true;

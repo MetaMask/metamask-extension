@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext, useCallback } from 'react';
 import {
   Modal,
   ModalContent,
@@ -23,17 +23,54 @@ import {
   openUpdateTabAndReload,
   setUpdateModalLastDismissedAt,
 } from '../../../store/actions';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function UpdateModal() {
   const t = useI18nContext();
   const [isLoading, setIsLoading] = useState(false);
+  const trackEvent = useContext(MetaMetricsContext);
+
+  // Track when modal is viewed
+  useEffect(() => {
+    trackEvent({
+      event: MetaMetricsEventName.ForceUpgradeUpdateNeededPromptViewed,
+      category: MetaMetricsEventCategory.App,
+    });
+  }, [trackEvent]);
+
+  const handleClose = useCallback(async () => {
+    trackEvent({
+      event: MetaMetricsEventName.ForceUpgradeSkipped,
+      category: MetaMetricsEventCategory.App,
+    });
+    await setUpdateModalLastDismissedAt(Date.now());
+  }, [trackEvent]);
+
+  const handleUpdate = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      trackEvent({
+        event: MetaMetricsEventName.ForceUpgradeClickedUpdateToLatestVersion,
+        category: MetaMetricsEventCategory.App,
+      });
+      await openUpdateTabAndReload();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [trackEvent]);
 
   return (
     <Modal
       isOpen={true}
-      onClose={async () => await setUpdateModalLastDismissedAt(Date.now())}
+      onClose={handleClose}
       isClosedOnOutsideClick={false}
       isClosedOnEscapeKey={false}
       data-testid="update-modal"
@@ -42,7 +79,7 @@ function UpdateModal() {
       <ModalOverlay />
       <ModalContent>
         <ModalHeader
-          onClose={async () => await setUpdateModalLastDismissedAt(Date.now())}
+          onClose={handleClose}
           startAccessory={true}
           closeButtonProps={{ 'data-testid': 'update-modal-close-button' }}
         />
@@ -69,16 +106,7 @@ function UpdateModal() {
           </Text>
         </ModalBody>
         <ModalFooter
-          onSubmit={async () => {
-            try {
-              setIsLoading(true);
-              await openUpdateTabAndReload();
-            } catch (error) {
-              console.error(error);
-            } finally {
-              setIsLoading(false);
-            }
-          }}
+          onSubmit={handleUpdate}
           submitButtonProps={{
             children: t('updateToTheLatestVersion'),
             loading: isLoading,

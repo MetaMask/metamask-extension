@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { Driver } from '../../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../../helpers';
+import { WALLET_PASSWORD } from '../../../constants';
 
 class OnboardingPasswordPage {
   private driver: Driver;

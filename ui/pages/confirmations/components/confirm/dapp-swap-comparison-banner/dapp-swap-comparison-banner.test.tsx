@@ -193,6 +193,15 @@ describe('<DappSwapComparisonBanner />', () => {
     });
   });
 
+  it('does not render component if dappSwapUi is not enabled', () => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapMetrics: { enabled: true },
+      dappSwapUi: { enabled: false, threshold: 0.01 },
+    });
+    const { container } = render();
+    expect(container.firstChild).toBeNull();
+  });
+
   it('call function to update quote swap clicks on Market rate button', () => {
     const mockSetQuotedSwapDisplayedInInfo = jest.fn();
     jest.spyOn(DappSwapContext, 'useDappSwapContext').mockReturnValue({

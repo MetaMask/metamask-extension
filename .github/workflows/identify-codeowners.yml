@@ -16,6 +16,7 @@ jobs:
   identify-codeowners:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    environment: pr-comment
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1

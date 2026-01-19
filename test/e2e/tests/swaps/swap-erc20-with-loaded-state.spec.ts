@@ -18,7 +18,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
 
   return [
     await mockEmptyHistoricalPrices(mockServer, ETH_ADDRESS, '0x1'),
-    await mockEmptyPrices(mockServer, '1'),
+    await mockEmptyPrices(mockServer),
     await mockServer
       .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({

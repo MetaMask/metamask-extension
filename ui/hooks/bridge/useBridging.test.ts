@@ -86,7 +86,7 @@ describe('useBridging', () => {
         false,
       ],
       [
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',
@@ -177,7 +177,7 @@ describe('useBridging', () => {
       ],
       [
         '/asset/0xa/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+        '/cross-chain/swaps/prepare-swap-page?from=eip155:10/erc20:0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
         {
           iconUrl: 'https://icon.url',
           symbol: 'TEST',

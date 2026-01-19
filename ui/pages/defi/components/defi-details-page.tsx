@@ -92,11 +92,11 @@ const DeFiPage = () => {
         paddingLeft={2}
         display={Display.Flex}
         paddingBottom={4}
-        paddingTop={4}
+        className="pt-4 sticky top-0 z-10 bg-background-default"
       >
         <ButtonIcon
           data-testid="defi-details-page-back-button"
-          color={IconColor.iconAlternative}
+          color={IconColor.iconDefault}
           marginRight={1}
           size={ButtonIconSize.Sm}
           ariaLabel={t('back')}

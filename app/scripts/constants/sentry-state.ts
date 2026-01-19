@@ -81,6 +81,7 @@ export const SENTRY_BACKGROUND_STATE = {
     showNetworkBanner: true,
     showAccountBanner: true,
     showTestnetMessageInDropdown: true,
+    sidePanelGasPollTokens: true,
     surveyLinkLastClickedOrClosed: true,
     snapsInstallPrivacyWarningShown: true,
     termsOfUseLastAgreed: true,
@@ -92,6 +93,7 @@ export const SENTRY_BACKGROUND_STATE = {
     lastUpdatedAt: true,
     shieldEndingToastLastClickedOrClosed: true,
     shieldPausedToastLastClickedOrClosed: true,
+    showStorageErrorToast: true,
     isWalletResetInProgress: false,
     pna25Acknowledged: false,
   },
@@ -127,6 +129,9 @@ export const SENTRY_BACKGROUND_STATE = {
   },
   BridgeStatusController: {
     txHistory: false,
+  },
+  ConnectivityController: {
+    connectivityStatus: true,
   },
   CronjobController: {
     events: false,

@@ -5,15 +5,16 @@ import {
 } from '@metamask/permission-controller';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { PermissionNames } from '../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../shared/constants/permissions';
 import { switchToEditRPCViaGlobalMenuNetworks } from '../page-objects/flows/network.flow';
-import AddNetworkConfirmation from '../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
-import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import AddNetworkConfirmation from '../page-objects/pages/confirmations/add-network-confirmations';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
+import ReviewPermissionsConfirmation from '../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
-import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/redesign/update-network-confirmation';
+import UpdateNetworkConfirmation from '../page-objects/pages/confirmations/update-network-confirmation';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 
 const getPermittedChains = async (driver: Driver) => {

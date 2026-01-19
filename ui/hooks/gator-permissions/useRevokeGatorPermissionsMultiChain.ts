@@ -14,9 +14,16 @@ import {
   addTransaction,
   findNetworkClientIdByChainId,
 } from '../../store/actions';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
-import { encodeDisableDelegation } from '../../../shared/lib/delegation/delegation';
-import { addPendingRevocation } from '../../store/controller-actions/gator-permissions-controller';
+import { getInternalAccountByAddress } from '../../selectors';
+import {
+  encodeDisableDelegation,
+  getDelegationHashOffchain,
+} from '../../../shared/lib/delegation/delegation';
+import {
+  addPendingRevocation,
+  submitDirectRevocation,
+  checkDelegationDisabled,
+} from '../../store/controller-actions/gator-permissions-controller';
 import { extractDelegationFromGatorPermissionContext } from './utils';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
 
@@ -99,7 +106,7 @@ export function useRevokeGatorPermissionsMultiChain({
         for (const permission of permissions) {
           try {
             const { permissionResponse } = permission;
-            const internalAccount = getMemoizedInternalAccountByAddress(
+            const internalAccount = getInternalAccountByAddress(
               store.getState(),
               permissionResponse.address as Hex,
             );
@@ -113,6 +120,25 @@ export function useRevokeGatorPermissionsMultiChain({
             const delegation = extractDelegationFromGatorPermissionContext(
               permissionResponse.context,
             );
+
+            const delegationHash = getDelegationHashOffchain(delegation);
+
+            // Check if delegation is already disabled on-chain
+            const isDisabled = await checkDelegationDisabled(
+              permissionResponse.signerMeta.delegationManager,
+              delegationHash,
+              networkClientId,
+            );
+
+            if (isDisabled) {
+              // Delegation is already disabled, submit direct revocation without transaction
+              await submitDirectRevocation({
+                permissionContext: permissionResponse.context,
+              });
+              results[currentChainId as Hex].skipped.push(permission);
+              // Continue to next permission - no transaction needed
+              continue;
+            }
 
             // Encode disable delegation call
             const encodedCallData = encodeDisableDelegation({ delegation });

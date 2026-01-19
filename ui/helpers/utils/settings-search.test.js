@@ -95,7 +95,7 @@ const t = (key) => {
     case 'localhost':
       return 'Localhost 8545';
     case 'developerOptions':
-      return 'Developer Options';
+      return 'Developer options';
     case 'experimental':
       return 'Experimental';
     case 'autoDetectTokens':
@@ -119,9 +119,9 @@ const t = (key) => {
     case 'links':
       return 'Links';
     case 'privacyMsg':
-      return 'Privacy policy';
+      return 'Privacy Policy';
     case 'terms':
-      return 'Terms of use';
+      return 'Terms of Use';
     case 'attributions':
       return 'Attributions';
     case 'supportCenter':
@@ -196,7 +196,7 @@ describe('Settings Search Utils', () => {
       );
     });
 
-    it('returns 0 "Developer Options" section count when env flag is disabled', () => {
+    it('returns 0 "Developer options" section count when env flag is disabled', () => {
       expect(
         getNumberOfSettingRoutesInTab(t, t('developerOptions')),
       ).toStrictEqual(0);

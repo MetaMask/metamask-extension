@@ -1,5 +1,3 @@
-// This entire file is AI-generated types
-
 type NavigationMetric = {
   load: number;
   domContentLoaded: number;
@@ -25,12 +23,21 @@ export type StatisticalResult = {
 };
 
 export type BenchmarkResults = {
+  testTitle?: string;
+  persona?: string;
   mean: StatisticalResult;
   min: StatisticalResult;
   max: StatisticalResult;
   stdDev: StatisticalResult;
   p75: StatisticalResult;
   p95: StatisticalResult;
+};
+
+/** User action result with testTitle, persona and numeric timing metrics. */
+export type UserActionResult = {
+  testTitle: string;
+  persona?: string;
+  [key: string]: string | number | undefined;
 };
 
 export type BenchmarkArguments = {

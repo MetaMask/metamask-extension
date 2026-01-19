@@ -44,8 +44,8 @@ describe('ClearMetaMetricsData', () => {
   it('should call createMetaMetricsDataDeletionTask when Clear button is clicked', () => {
     const store = configureStore({});
     const { getByText } = renderWithProvider(<ClearMetaMetricsData />, store);
-    expect(getByText('Clear')).toBeEnabled();
-    fireEvent.click(getByText('Clear'));
+    expect(getByText('Delete')).toBeEnabled();
+    fireEvent.click(getByText('Delete'));
     expect(Actions.createMetaMetricsDataDeletionTask).toHaveBeenCalledTimes(1);
   });
 

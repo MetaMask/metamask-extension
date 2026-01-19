@@ -14,6 +14,7 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedMultichainAccountAction,
 } from '@metamask/accounts-controller';
+import { HasPermission } from '@metamask/permission-controller';
 import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
@@ -25,7 +26,8 @@ type Actions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerListMultichainAccountsAction;
+  | AccountsControllerListMultichainAccountsAction
+  | HasPermission;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -65,6 +67,7 @@ export function getSnapInterfaceControllerMessenger(
       `AccountsController:getSelectedMultichainAccount`,
       `AccountsController:getAccountByAddress`,
       `AccountsController:listMultichainAccounts`,
+      `PermissionController:hasPermission`,
     ],
     events: ['NotificationServicesController:notificationsListUpdated'],
   });

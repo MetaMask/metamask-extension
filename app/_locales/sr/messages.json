@@ -226,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum javna adresa"
-  },
   "etherscanView": {
     "message": "Pogledajte račun na Etherscan-u"
   },

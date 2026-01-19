@@ -1,6 +1,5 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountList from '../../page-objects/pages/account-list-page';
@@ -40,8 +39,8 @@ async function mockApis(mockServer: Mockttp): Promise<MockedEndpoint[]> {
           json: [{ fakedata: true }],
         };
       }),
-    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-      '0x0000000000000000000000000000000000000000': {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
         price: 1700,
         marketCap: 382623505141,
         pricePercentChange1d: 0,

@@ -1,16 +1,12 @@
 import { Suite } from 'mocha';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures } from '../../helpers';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 // BUG #38149 - Request Queuing multiple Dapps and txs on different networks fails with unapproved transaction

@@ -57,7 +57,7 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
@@ -132,7 +132,7 @@ export const ReviewPermissions = () => {
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,

@@ -3,10 +3,10 @@ import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { WINDOW_TITLES } from '../../constants';
-import PersonalSignConfirmation from '../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import PersonalSignConfirmation from '../../page-objects/pages/confirmations/personal-sign-confirmation';
 import { ShieldMockttpService } from '../../helpers/shield/mocks';
 
 function createShieldFixture() {

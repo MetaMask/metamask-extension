@@ -3,7 +3,11 @@ import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
 } from '../../../../shared/constants/state-corruption';
-import { type Backup, PersistenceManager } from '../stores/persistence-manager';
+import {
+  type Backup,
+  PersistenceError,
+  PersistenceManager,
+} from '../stores/persistence-manager';
 import { ErrorLike } from '../../../../shared/constants/errors';
 import { tryPostMessage } from '../start-up-errors/start-up-errors';
 import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
@@ -103,6 +107,25 @@ function maybeGetCurrentLocale(backup: Backup | null): string | null {
 }
 
 /**
+ * Attempts to get the cause message from a PersistenceError.
+ * This provides additional context about the original error that caused
+ * the persistence failure (e.g., Firefox's "Error: An unexpected error occurred").
+ *
+ * @param error - The error to extract the cause message from.
+ * @returns The cause message if available, otherwise null.
+ */
+function maybeGetCauseMessage(error: ErrorLike): string | null {
+  if (
+    error instanceof PersistenceError &&
+    error.cause instanceof Error &&
+    error.cause.message
+  ) {
+    return error.cause.message;
+  }
+  return null;
+}
+
+/**
  * Checks if the backup object has a vault.
  *
  * @param backup - The backup object to check for a vault.
@@ -156,6 +179,9 @@ export class CorruptionHandler {
     // it is not worth claiming we have a backup if the vault doesn't actually
     // exist
     const hasBackup = Boolean(hasVault(backup));
+    // Extract cause message if available (e.g., Firefox's "Error: An unexpected error occurred")
+    // This helps users and customer support debug issues
+    const causeMessage = maybeGetCauseMessage(error);
 
     // send the `error` to the UI for this port
     const sent = tryPostMessage(port, METHOD_DISPLAY_STATE_CORRUPTION_ERROR, {
@@ -163,6 +189,7 @@ export class CorruptionHandler {
         message: error.message,
         name: error.name,
         stack: error.stack,
+        causeMessage,
       },
       currentLocale,
       hasBackup,

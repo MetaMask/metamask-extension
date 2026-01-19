@@ -51,6 +51,11 @@ const mockMetamaskStore = {
       [mockNonEvmAccount.id]: mockNonEvmAccount,
     },
   },
+  enabledNetworkMap: {
+    solana: {
+      [SolScope.Mainnet]: true,
+    },
+  },
   preferences: {
     showNativeTokenAsMainBalance: false,
     tokenNetworkFilter: {},

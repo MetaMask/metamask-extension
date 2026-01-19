@@ -51,6 +51,7 @@ export function getSubscriptionServiceMessenger(
       'SmartTransactionsController:getState',
       'NetworkController:getState',
       'SwapsController:getState',
+      'RemoteFeatureFlagController:getState',
       'MetaMetricsController:trackEvent',
       'KeyringController:getState',
       // Rewards Integration

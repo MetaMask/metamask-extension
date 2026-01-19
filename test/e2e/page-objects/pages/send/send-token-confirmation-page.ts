@@ -1,7 +1,7 @@
 import { Driver } from '../../../webdriver/driver';
 
 class SendTokenConfirmPage {
-  private driver: Driver;
+  private readonly driver: Driver;
 
   private readonly cancelButton = '[data-testid="cancel-footer-button"]';
 
@@ -15,35 +15,14 @@ class SendTokenConfirmPage {
 
   private readonly editGasFeeIcon = '[data-testid="edit-gas-fee-icon"]';
 
-  private readonly maxBaseFeeInput = '[data-testid="base-fee-input"]';
-
-  private readonly maxPriorityFeeInput = '[data-testid="priority-fee-input"]';
-
-  private readonly editGasFeeItem = (
-    gasFeeType: 'low' | 'medium' | 'high' | 'custom' | 'dappSuggested',
-  ) => `[data-testid="edit-gas-fee-item-${gasFeeType}"] > span:first-child`;
-
-  private readonly editGasFeeSeconds = {
-    text: 'sec',
-    tag: 'span',
-  };
-
-  private readonly saveDefaultValuesCheckbox = 'input[type="checkbox"]';
-
-  private readonly advancedGasFeeEdit = '[data-testid="advanced-gas-fee-edit"]';
-
-  private readonly gasLimitInput = '[data-testid="gas-limit-input"]';
-
-  private readonly saveButton = {
-    text: 'Save',
-    tag: 'button',
-  };
-
   private readonly firstGasField = '[data-testid="first-gas-field"]';
 
   private readonly nativeCurrency = '[data-testid="native-currency"]';
 
   private readonly inlineGasFeeAlert = '[data-testid="inline-alert"]';
+
+  private readonly gasFeeEstimatesModal =
+    '[data-testid="gas-fee-estimates-modal"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -132,44 +111,47 @@ class SendTokenConfirmPage {
     console.log('Token amount transfer details are correct');
   }
 
-  async clickEditGasFeeIcon(): Promise<void> {
-    await this.driver.clickElement(this.editGasFeeIcon);
-    await this.driver.waitForSelector(this.editGasFeeSeconds);
-  }
-
-  async selectGasFeeItem(
-    gasFeeType: 'low' | 'medium' | 'high' | 'custom' | 'dappSuggested',
+  /**
+   * Checks that the recipient address is displayed the expected number of times.
+   * Uses driver.wait() to retry and avoid race conditions.
+   *
+   * @param address - The recipient address text to search for.
+   * @param expectedCount - The expected number of times the address should appear.
+   */
+  async checkRecipientAddressDisplayedCount(
+    address: string,
+    expectedCount: number,
   ): Promise<void> {
-    console.log(`Selecting gas fee item ${gasFeeType}`);
-    await this.driver.clickElement(this.editGasFeeItem(gasFeeType));
+    console.log(
+      `Checking recipient address ${address} is displayed ${expectedCount} times on confirmation screen`,
+    );
+    await this.driver.wait(async () => {
+      const recipientAddresses = await this.driver.findElements({
+        text: address,
+      });
+      return recipientAddresses.length === expectedCount;
+    }, 10000);
+    console.log(
+      `Recipient address displayed ${expectedCount} times as expected`,
+    );
   }
 
-  async enterMaxBaseFee(maxBaseFee: string): Promise<void> {
-    console.log(`Entering max base fee ${maxBaseFee}`);
-    await this.driver.fill(this.maxBaseFeeInput, maxBaseFee);
+  async checkTransactionAmount(amount: string): Promise<void> {
+    console.log(`Checking transaction amount is ${amount}`);
+    await this.driver.waitForSelector({
+      css: 'h2',
+      text: amount,
+    });
   }
 
-  async enterMaxPriorityFee(maxPriorityFee: string): Promise<void> {
-    console.log(`Entering max priority fee ${maxPriorityFee}`);
-    await this.driver.fill(this.maxPriorityFeeInput, maxPriorityFee);
-  }
-
-  async saveDefaultValues(): Promise<void> {
-    console.log('Saving default values');
-    await this.driver.clickElement(this.saveDefaultValuesCheckbox);
-  }
-
-  async enterGasLimit(gasLimit: string): Promise<void> {
-    console.log(`Entering gas limit ${gasLimit}`);
-    await this.driver.clickElement(this.advancedGasFeeEdit);
-    await this.driver.fill(this.gasLimitInput, gasLimit);
-  }
-
-  async updateGasFee(gasFeeType: 'low' | 'medium' | 'high'): Promise<void> {
-    console.log(`Updating gas fee to ${gasFeeType}`);
-    await this.clickEditGasFeeIcon();
-    await this.selectGasFeeItem(gasFeeType);
-    console.log(`Gas fee updated to ${gasFeeType}`);
+  /**
+   * Clicks the edit gas fee icon to open the gas fee modal.
+   */
+  async clickEditGasFeeIcon(): Promise<void> {
+    console.log('Clicking edit gas fee icon');
+    await this.driver.clickElement(this.editGasFeeIcon);
+    await this.driver.waitForSelector(this.gasFeeEstimatesModal);
+    console.log('Gas fee modal opened');
   }
 
   async checkGasFee(gasFeeType: string): Promise<void> {
@@ -234,9 +216,10 @@ class SendTokenConfirmPage {
     await this.driver.clickElement(this.confirmButton);
   }
 
-  async clickOnSave(): Promise<void> {
-    console.log('Clicking on Save button');
-    await this.driver.clickElementAndWaitToDisappear(this.saveButton);
+  async confirmAndWaitForWindowToClose(): Promise<void> {
+    console.log('Clicking Confirm and waiting for window to close');
+    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+    console.log('Confirmation window closed');
   }
 }
 

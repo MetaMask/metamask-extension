@@ -2,20 +2,15 @@ import { Driver } from '../webdriver/driver';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  DAPP_URL,
-  withFixtures,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-} from '../helpers';
+import { DAPP_ONE_URL, DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../constants';
+import { withFixtures, veryLargeDelayMs } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
-import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_ONE_URL, DAPP_PATH } from '../constants';
 
 describe('Test Snap TxInsights', function () {
   it('shows insight for ERC20 transactions', async function () {

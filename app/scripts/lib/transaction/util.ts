@@ -38,6 +38,7 @@ import {
   GetAddressSecurityAlertResponse,
   ScanAddressResponse,
 } from '../../../../shared/lib/trust-signals';
+import { getTransactionDataRecipient } from '../../../../shared/modules/transaction.utils';
 
 export type AddTransactionOptions = NonNullable<
   Parameters<TransactionController['addTransaction']>[1]
@@ -72,6 +73,12 @@ export type AddDappTransactionRequest = BaseAddTransactionRequest & {
   requestContext: MiddlewareContext;
 };
 
+const TRANSFER_TYPES = [
+  TransactionType.tokenMethodTransfer,
+  TransactionType.tokenMethodTransferFrom,
+  TransactionType.tokenMethodSafeTransferFrom,
+];
+
 export async function addDappTransaction(
   request: AddDappTransactionRequest,
 ): Promise<string> {
@@ -88,6 +95,7 @@ export async function addDappTransaction(
 
   const transactionOptions: Partial<AddTransactionOptions> = {
     actionId,
+    requestId: String(id),
     method,
     origin,
     // This is the default behaviour but specified here for clarity
@@ -306,6 +314,7 @@ async function validateSecurity(request: AddTransactionRequest) {
 
   scanAddressForTrustSignals(request);
   const { type } = transactionOptions;
+  const { data, value, to } = transactionParams;
 
   const typeIsExcludedFromPPOM =
     SECURITY_PROVIDER_EXCLUDED_TRANSACTION_TYPES.includes(
@@ -316,17 +325,21 @@ async function validateSecurity(request: AddTransactionRequest) {
     return;
   }
 
+  const isTransfer =
+    value === '0x0' && TRANSFER_TYPES.includes(type as TransactionType);
+
+  const recipient =
+    isTransfer && data ? getTransactionDataRecipient(data) : undefined;
+
   if (
-    internalAccounts.some(
-      ({ address }) =>
-        address.toLowerCase() === transactionParams.to?.toLowerCase(),
-    )
+    isInternalAccount(internalAccounts, to) ||
+    isInternalAccount(internalAccounts, recipient)
   ) {
     return;
   }
 
   try {
-    const { from, to, value, data } = transactionParams;
+    const { from } = transactionParams;
     const { actionId, origin } = transactionOptions;
 
     const ppomRequest = {
@@ -373,4 +386,24 @@ export function stripSingleLeadingZero(hex: string): string {
     return hex;
   }
   return `0x${hex.slice(3)}`;
+}
+
+function normalizeAddress(address?: string): string | undefined {
+  return address?.toLowerCase();
+}
+
+function isInternalAccount(
+  internalAccounts: { address: string }[],
+  address?: string,
+): boolean {
+  const normalized = normalizeAddress(address);
+  if (!normalized) {
+    return false;
+  }
+
+  const internalSet = new Set(
+    internalAccounts.map((acc) => normalizeAddress(acc.address)),
+  );
+
+  return internalSet.has(normalized);
 }

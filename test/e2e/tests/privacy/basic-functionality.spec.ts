@@ -54,8 +54,8 @@ async function mockApis(
           json: [{ fakedata: true }],
         };
       }),
-    await mockSpotPrices(mockServer, CHAIN_IDS.MAINNET, {
-      '0x0000000000000000000000000000000000000000': {
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
         price: 1700,
         marketCap: 382623505141,
         pricePercentChange1d: 0,
@@ -79,7 +79,7 @@ async function mockApis(
           },
         };
       }),
-    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
+    await mockEmptyPrices(mockServer),
   ];
 }
 

@@ -27,11 +27,11 @@ import {
 } from '../../../shared/lib/delegation/delegation';
 import {
   getInternalAccounts,
+  getInternalAccountByAddress,
   selectDefaultRpcEndpointByChainId,
 } from '../../selectors';
 import {
   addPendingRevocation,
-  submitRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useRevokeGatorPermissions } from './useRevokeGatorPermissions';
@@ -51,7 +51,6 @@ jest.mock(
   '../../store/controller-actions/gator-permissions-controller',
   () => ({
     addPendingRevocation: jest.fn(),
-    submitRevocation: jest.fn(),
     checkDelegationDisabled: jest.fn(),
   }),
 );
@@ -74,6 +73,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors', () => ({
   getInternalAccounts: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
   selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
@@ -110,9 +110,6 @@ const mockGetDelegationHashOffchain =
 const mockAddPendingRevocation = addPendingRevocation as jest.MockedFunction<
   typeof addPendingRevocation
 >;
-const mockSubmitRevocation = submitRevocation as jest.MockedFunction<
-  typeof submitRevocation
->;
 const mockCheckDelegationDisabled =
   checkDelegationDisabled as jest.MockedFunction<
     typeof checkDelegationDisabled
@@ -121,6 +118,10 @@ const mockCheckDelegationDisabled =
 const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
   typeof getInternalAccounts
 >;
+const mockGetInternalAccountByAddress =
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
+  >;
 const mockSelectDefaultRpcEndpointByChainId =
   selectDefaultRpcEndpointByChainId as jest.MockedFunction<
     typeof selectDefaultRpcEndpointByChainId
@@ -273,28 +274,27 @@ describe('useRevokeGatorPermissions', () => {
       '0xfd165b374563126931d2be865bbec75623dca111840d148cf88492c0bb997f96' as `0x${string}`,
     );
     mockCheckDelegationDisabled.mockResolvedValue(false);
-    mockSubmitRevocation.mockResolvedValue(undefined);
     mockAddPendingRevocation.mockResolvedValue(undefined);
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 
     // Setup selector mocks
-    mockGetInternalAccounts.mockReturnValue([
-      {
-        id: 'mock-account-id',
-        address: mockSelectedAccountAddress,
-        type: 'eip155:eoa',
-        options: {},
-        metadata: {
-          name: 'Mock Account',
-          importTime: Date.now(),
-          keyring: {
-            type: 'hd',
-          },
+    const mockAccount = {
+      id: 'mock-account-id',
+      address: mockSelectedAccountAddress,
+      type: 'eip155:eoa' as const,
+      options: {},
+      metadata: {
+        name: 'Mock Account',
+        importTime: Date.now(),
+        keyring: {
+          type: 'hd',
         },
-        scopes: ['eip155:1'],
-        methods: ['eth_sendTransaction'],
       },
-    ]);
+      scopes: ['eip155:1' as const],
+      methods: ['eth_sendTransaction'],
+    };
+    mockGetInternalAccounts.mockReturnValue([mockAccount]);
+    mockGetInternalAccountByAddress.mockReturnValue(mockAccount);
     mockSelectDefaultRpcEndpointByChainId.mockReturnValue({
       url: 'https://mainnet.infura.io/v3/test',
       networkClientId: mockNetworkClientId,
@@ -408,6 +408,9 @@ describe('useRevokeGatorPermissions', () => {
           address: differentAccountAddress as `0x${string}`,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(undefined);
 
       const { result } = renderHook(
         () =>
@@ -771,6 +774,9 @@ describe('useRevokeGatorPermissions', () => {
           address: differentAccountAddress as `0x${string}`,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(undefined);
 
       const { result } = renderHook(
         () =>

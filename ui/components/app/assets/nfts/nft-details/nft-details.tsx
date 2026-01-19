@@ -387,7 +387,7 @@ export function NftDetailsComponent({
           justifyContent={JustifyContent.spaceBetween}
         >
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
             iconName={IconName.ArrowLeft}
@@ -929,14 +929,6 @@ export function NftDetailsComponent({
                 />
               );
             })}
-          </Box>
-          <Box>
-            <Text
-              color={TextColor.textAlternative}
-              variant={TextVariant.bodyXs}
-            >
-              {t('nftDisclaimer')}
-            </Text>
           </Box>
         </Box>
       </Content>

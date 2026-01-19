@@ -21,6 +21,7 @@ export const useIsTxSubmittable = () => {
     isInsufficientGasBalance,
     isInsufficientGasForQuote,
     isTxAlertPresent,
+    isTxAlertLoading,
   } = useSelector(getValidationErrors);
 
   return Boolean(
@@ -32,6 +33,6 @@ export const useIsTxSubmittable = () => {
       !isInsufficientBalance &&
       !isInsufficientGasBalance &&
       !isInsufficientGasForQuote &&
-      !isTxAlertPresent,
+      !(isTxAlertLoading || isTxAlertPresent),
   );
 };

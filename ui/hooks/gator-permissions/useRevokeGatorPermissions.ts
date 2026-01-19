@@ -10,7 +10,7 @@ import {
   Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   addTransaction,
   findNetworkClientIdByChainId,
@@ -21,7 +21,7 @@ import {
 } from '../../../shared/lib/delegation/delegation';
 import {
   addPendingRevocation,
-  submitRevocation,
+  submitDirectRevocation,
   checkDelegationDisabled,
 } from '../../store/controller-actions/gator-permissions-controller';
 import { useGatorPermissionRedirect } from './useGatorPermissionRedirect';
@@ -115,7 +115,7 @@ export function useRevokeGatorPermissions({
       >,
     ): RevokeGatorPermissionArgs => {
       const { permissionResponse } = gatorPermission;
-      const internalAccount = getMemoizedInternalAccountByAddress(
+      const internalAccount = getInternalAccountByAddress(
         store.getState(),
         permissionResponse.address as Hex,
       );
@@ -172,9 +172,10 @@ export function useRevokeGatorPermissions({
         delegationHash,
         networkClientId,
       );
+
       if (isDisabled) {
-        await submitRevocation({ permissionContext });
         // Return null since no actual transaction is needed when already disabled
+        await submitDirectRevocation({ permissionContext });
         return null;
       }
 

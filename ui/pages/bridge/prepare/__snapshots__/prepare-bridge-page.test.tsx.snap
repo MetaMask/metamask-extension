@@ -40,7 +40,7 @@ exports[`PrepareBridgePage should render the component, with initial state 1`] =
               <img
                 alt="ETH logo"
                 class="mm-avatar-token__token-image"
-                src="./images/eth_logo.svg"
+                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
               />
             </div>
             <div
@@ -265,7 +265,7 @@ exports[`PrepareBridgePage should render the component, with inputs set 1`] = `
               <img
                 alt="ETH logo"
                 class="mm-avatar-token__token-image"
-                src="./images/eth_logo.svg"
+                src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png"
               />
             </div>
             <div

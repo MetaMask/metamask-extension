@@ -1,10 +1,20 @@
 .multichain-aggregated-address-row {
   transition: background-color 0.3s ease-in-out;
   cursor: pointer;
-  margin-left: -16px;
-  margin-right: -16px;
-  padding-left: 16px;
-  padding-right: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+  border-radius: 6px;
   height: 32px;
+}
+
+.multichain-address-rows-border {
+  margin-left: -4px;
+  margin-right: -4px;
+}
+
+.multichain-address-rows-view-all-button {
+  &:hover {
+    border-radius: 6px !important;
+  }
 }
 

@@ -27,7 +27,6 @@ import {
 } from '../../../selectors/transactions';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
-  getCurrentNetwork,
   getIsTokenNetworkFilterEqualCurrentNetwork,
   getSelectedAccount,
   getEnabledNetworksByNamespace,
@@ -43,6 +42,10 @@ import SmartTransactionListItem from '../transaction-list-item/smart-transaction
 import { TOKEN_CATEGORY_HASH } from '../../../helpers/constants/transactions';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
+import {
+  useEarliestNonceByChain,
+  isTransactionEarliestNonce,
+} from '../../../hooks/useEarliestNonceByChain';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
@@ -98,19 +101,10 @@ import { TransactionGroupCategory } from '../../../../shared/constants/transacti
 ///: END:ONLY_INCLUDE_IF
 
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
-import { TEST_CHAINS } from '../../../../shared/constants/network';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../../shared/constants/multichain/networks';
 ///: END:ONLY_INCLUDE_IF
-// eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import {
-  ENVIRONMENT_TYPE_NOTIFICATION,
-  ENVIRONMENT_TYPE_POPUP,
-} from '../../../../shared/constants/app';
-import { NetworkFilterComponent } from '../../multichain/network-filter-menu';
 import AssetListControlBar from '../assets/asset-list/asset-list-control-bar';
-import { isGlobalNetworkSelectorRemoved } from '../../../selectors/selectors';
 import {
   startIncomingTransactionPolling,
   stopIncomingTransactionPolling,
@@ -310,7 +304,6 @@ export default function TransactionList({
 }) {
   const [limit, setLimit] = useState(PAGE_INCREMENT);
   const t = useI18nContext();
-  const currentNetworkConfig = useSelector(getCurrentNetwork);
   const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
     getIsTokenNetworkFilterEqualCurrentNetwork,
   );
@@ -349,10 +342,6 @@ export default function TransactionList({
     overrideFilterForCurrentChain,
   ]);
 
-  const isTestNetwork = useMemo(() => {
-    return TEST_CHAINS.includes(currentNetworkConfig.chainId);
-  }, [currentNetworkConfig.chainId]);
-
   const unfilteredCompletedTransactionsCurrentChain = useSelector(
     nonceSortedCompletedTransactionsSelector,
   );
@@ -369,18 +358,6 @@ export default function TransactionList({
   const currentMultichainChainId = useSelector(
     getSelectedMultichainNetworkChainId,
   );
-
-  const unfilteredCompletedTransactions = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overrideFilterForCurrentChain
-      ? unfilteredCompletedTransactionsCurrentChain
-      : unfilteredCompletedTransactionsAllChains;
-  }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
-    unfilteredCompletedTransactionsAllChains,
-    unfilteredCompletedTransactionsCurrentChain,
-    overrideFilterForCurrentChain,
-  ]);
 
   const enabledNetworksFilteredCompletedTransactions = useMemo(() => {
     if (!enabledNetworksByNamespace || !currentMultichainChainId) {
@@ -419,14 +396,6 @@ export default function TransactionList({
     unfilteredCompletedTransactionsAllChains,
   ]);
 
-  const [isNetworkFilterPopoverOpen, setIsNetworkFilterPopoverOpen] =
-    useState(false);
-
-  const windowType = getEnvironmentType();
-  const isFullScreen =
-    windowType !== ENVIRONMENT_TYPE_NOTIFICATION &&
-    windowType !== ENVIRONMENT_TYPE_POPUP;
-
   useEffect(() => {
     stopIncomingTransactionPolling();
     startIncomingTransactionPolling();
@@ -455,13 +424,11 @@ export default function TransactionList({
 
   const pendingTransactions = useMemo(
     () =>
-      groupEvmTransactionsByDate(
-        getFilteredTransactionGroups(
-          unfilteredPendingTransactions,
-          hideTokenTransactions,
-          tokenAddress,
-          chainId,
-        ),
+      getFilteredTransactionGroups(
+        unfilteredPendingTransactions,
+        hideTokenTransactions,
+        tokenAddress,
+        chainId,
       ),
     [
       unfilteredPendingTransactions,
@@ -471,13 +438,16 @@ export default function TransactionList({
     ],
   );
 
+  const groupedPendingTransactions = useMemo(
+    () => groupEvmTransactionsByDate(pendingTransactions),
+    [pendingTransactions],
+  );
+
   const completedTransactions = useMemo(
     () =>
       groupEvmTransactionsByDate(
         getFilteredTransactionGroupsAllChains(
-          isGlobalNetworkSelectorRemoved
-            ? enabledNetworksFilteredCompletedTransactions
-            : unfilteredCompletedTransactions,
+          enabledNetworksFilteredCompletedTransactions,
           hideTokenTransactions,
           tokenAddress,
         ),
@@ -486,7 +456,6 @@ export default function TransactionList({
       hideTokenTransactions,
       tokenAddress,
       enabledNetworksFilteredCompletedTransactions,
-      unfilteredCompletedTransactions,
     ],
   );
 
@@ -494,14 +463,6 @@ export default function TransactionList({
     () => setLimit((prev) => prev + PAGE_INCREMENT),
     [],
   );
-
-  const toggleNetworkFilterPopover = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(!isNetworkFilterPopoverOpen);
-  }, [isNetworkFilterPopoverOpen]);
-
-  const closePopover = useCallback(() => {
-    setIsNetworkFilterPopoverOpen(false);
-  }, []);
 
   // Remove transactions within each date group that are incoming transactions
   // to a user that not the current one.
@@ -528,7 +489,7 @@ export default function TransactionList({
     if (hideNetworkFilter) {
       return null;
     }
-    if (isGlobalNetworkSelectorRemoved && isEvmNetwork) {
+    if (isEvmNetwork) {
       return (
         <AssetListControlBar
           showSortControl={false}
@@ -537,34 +498,16 @@ export default function TransactionList({
         />
       );
     }
-    return isEvmNetwork ? (
-      <NetworkFilterComponent
-        isFullScreen={isFullScreen}
-        toggleNetworkFilterPopover={toggleNetworkFilterPopover}
-        isTestNetwork={isTestNetwork}
-        currentNetworkConfig={currentNetworkConfig}
-        isNetworkFilterPopoverOpen={isNetworkFilterPopoverOpen}
-        closePopover={closePopover}
-        isTokenNetworkFilterEqualCurrentNetwork={
-          isTokenNetworkFilterEqualCurrentNetwork
-        }
-      />
-    ) : null;
-  }, [
-    hideNetworkFilter,
-    isEvmNetwork,
-    isFullScreen,
-    isNetworkFilterPopoverOpen,
-    currentNetworkConfig,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    toggleNetworkFilterPopover,
-    closePopover,
-    isTestNetwork,
-  ]);
+    return null;
+  }, [hideNetworkFilter, isEvmNetwork]);
 
   // Remove date groups with no transaction groups
   const dateGroupsWithTransactionGroups = (dateGroup) =>
     dateGroup.transactionGroups.length > 0;
+
+  // Calculate the earliest nonce for each chainId to properly determine which
+  // transaction can be sped up (only the transaction with the lowest nonce can unblock the queue)
+  const earliestNonceByChain = useEarliestNonceByChain(pendingTransactions);
 
   useEffect(() => {
     endTrace({ name: TraceName.AccountOverviewActivityTab });
@@ -715,7 +658,7 @@ export default function TransactionList({
     <>
       <Box className="transaction-list" {...boxProps}>
         {renderFilterButton()}
-        {pendingTransactions.length === 0 &&
+        {groupedPendingTransactions.length === 0 &&
         completedTransactions.length === 0 ? (
           <TransactionActivityEmptyState
             className="mx-auto mt-5 mb-6"
@@ -723,11 +666,19 @@ export default function TransactionList({
           />
         ) : (
           <Box className="transaction-list__transactions">
-            {pendingTransactions.length > 0 && (
+            {groupedPendingTransactions.length > 0 && (
               <Box className="transaction-list__pending-transactions">
-                {pendingTransactions.map((dateGroup) => {
+                {groupedPendingTransactions.map((dateGroup) => {
                   return dateGroup.transactionGroups.map(
                     (transactionGroup, index) => {
+                      const { nonce, initialTransaction } = transactionGroup;
+                      const txChainId = initialTransaction?.chainId;
+                      const isEarliestNonce = isTransactionEarliestNonce(
+                        nonce,
+                        txChainId,
+                        earliestNonceByChain,
+                      );
+
                       if (
                         transactionGroup.initialTransaction?.isSmartTransaction
                       ) {
@@ -735,7 +686,7 @@ export default function TransactionList({
                           <Fragment key={`${transactionGroup.nonce}:${index}`}>
                             {renderDateStamp(index, dateGroup)}
                             <SmartTransactionListItem
-                              isEarliestNonce={index === 0}
+                              isEarliestNonce={isEarliestNonce}
                               smartTransaction={
                                 transactionGroup.initialTransaction
                               }
@@ -751,7 +702,7 @@ export default function TransactionList({
                         <Fragment key={`${transactionGroup.nonce}:${index}`}>
                           {renderDateStamp(index, dateGroup)}
                           <TransactionListItem
-                            isEarliestNonce={index === 0}
+                            isEarliestNonce={isEarliestNonce}
                             transactionGroup={transactionGroup}
                             chainId={
                               transactionGroup.initialTransaction.chainId

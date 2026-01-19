@@ -206,6 +206,7 @@ export const SHIELD_USER_EVENTS_RESPONSE = {
 
 const MOCK_CLAIM_ID_1 = 'test_claim_id_00001';
 const MOCK_CLAIM_ID_2 = 'test_claim_id_00002';
+const MOCK_CLAIM_ID_3 = 'test_claim_id_00003';
 
 export const SUBMIT_CLAIMS_RESPONSE = {
   status: 'success',
@@ -264,6 +265,56 @@ export const MOCK_CLAIM_2 = {
 };
 
 export const MOCK_CLAIMS_RESPONSE = [MOCK_CLAIM_1];
+
+// Mock claim with approved status for history tab
+export const MOCK_CLAIM_APPROVED = {
+  ...MOCK_CLAIM_1,
+  id: 'test_claim_id_approved',
+  shortId: '00003',
+  status: 'approved',
+  intercomId: 'intercom_test_claim_id_approved',
+};
+
+// Mock claim with rejected status for history tab
+export const MOCK_CLAIM_REJECTED = {
+  ...MOCK_CLAIM_2,
+  id: 'test_claim_id_rejected',
+  shortId: '00004',
+  status: 'rejected',
+  intercomId: 'intercom_test_claim_id_rejected',
+};
+
+// Mock claim 3 with created status (pending)
+export const MOCK_CLAIM_3 = {
+  id: MOCK_CLAIM_ID_3,
+  shortId: '00005',
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
+  chainId: '1',
+  email: 'e2e@metamask.io',
+  impactedWalletAddress: '0x5cfe73b6021e818b776b421b1c4db2474086a7e3',
+  impactedTxHash:
+    '0xabcdef1234567890abcdef1234567890abcdef1234567890abcdef1234567890',
+  reimbursementWalletAddress: '0x88069b650422308bf8b472beaf790189f3f28309',
+  description: 'I got scammed. Please help me get my money back. T_T @_@',
+  attachments: [],
+  intercomId: `intercom_${MOCK_CLAIM_ID_3}`,
+  status: 'created',
+};
+
+// Mock claims response with 3 pending claims (maximum limit)
+export const MOCK_CLAIMS_3_PENDING = [
+  MOCK_CLAIM_1, // pending (created status)
+  MOCK_CLAIM_2, // pending (created status)
+  MOCK_CLAIM_3, // pending (created status)
+];
+
+// Mock claims response with pending, approved, and rejected claims
+export const MOCK_CLAIMS_WITH_HISTORY = [
+  MOCK_CLAIM_1, // pending (created status)
+  MOCK_CLAIM_APPROVED, // completed
+  MOCK_CLAIM_REJECTED, // rejected
+];
 
 export const MOCK_CLAIM_GENERATE_MESSAGE_RESPONSE = {
   message:

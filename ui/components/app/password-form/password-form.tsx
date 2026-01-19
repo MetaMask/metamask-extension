@@ -15,6 +15,7 @@ type PasswordFormProps = {
   onChange: (password: string) => void;
   pwdInputTestId?: string;
   confirmPwdInputTestId?: string;
+  disabled?: boolean;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -23,6 +24,7 @@ export default function PasswordForm({
   onChange,
   pwdInputTestId,
   confirmPwdInputTestId,
+  disabled = false,
 }: PasswordFormProps) {
   const t = useI18nContext();
 
@@ -92,6 +94,7 @@ export default function PasswordForm({
         autoComplete
         size={FormTextFieldSize.Lg}
         value={password}
+        disabled={disabled}
         inputProps={{
           'data-testid': pwdInputTestId || 'create-password-new-input',
           type: showPassword ? InputType.Text : InputType.Password,
@@ -129,6 +132,7 @@ export default function PasswordForm({
         marginTop={4}
         size={FormTextFieldSize.Lg}
         error={Boolean(confirmPasswordError)}
+        disabled={disabled}
         helpTextProps={{
           'data-testid': 'confirm-password-error',
         }}

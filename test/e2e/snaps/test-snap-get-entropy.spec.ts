@@ -1,6 +1,7 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
@@ -8,7 +9,6 @@ import SnapInstall from '../page-objects/pages/dialog/snap-install';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockGetEntropySnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 
 const publicKeyGenerated =
   '"0x9341785782b512c86235612365f1076b16731ed9473beb4d0804c30b7fcc3a055aa7103b02dc64014d923220712dfbef023ddcf6327b313ea2dfd4d83dc5a53e1c5e7f4e10bce49830eded302294054df8a7a46e5b6cb3e50eec564ecba17941"';

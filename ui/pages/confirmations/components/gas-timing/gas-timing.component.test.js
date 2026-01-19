@@ -48,7 +48,7 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('🦊 Market')).toBeTruthy();
+      expect(screen.queryByText('Market')).toBeTruthy();
       expect(screen.getByTestId('gas-timing-time')).toBeInTheDocument();
     });
   });
@@ -66,7 +66,7 @@ describe('Gas timing', () => {
     const screen = renderWithProvider(<GasTiming {...props} />, mockStore);
 
     await waitFor(() => {
-      expect(screen.queryByText('⬆ 10% increase')).toBeTruthy();
+      expect(screen.queryByText('10% increase')).toBeTruthy();
     });
   });
 });

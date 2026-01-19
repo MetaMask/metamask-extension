@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
@@ -9,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/redesign/personal-sign-confirmation';
+import PersonalSignConfirmation from '../../../page-objects/pages/confirmations/personal-sign-confirmation';
 import {
   BlockaidReason,
   BlockaidResultType,
@@ -66,10 +66,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           securityAlertReason: BlockaidReason.notApplicable,
           securityAlertResponse: BlockaidResultType.NotApplicable,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -99,10 +96,7 @@ describe('Confirmation Signature - SIWE', function (this: Suite) {
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
           securityAlertReason: BlockaidReason.notApplicable,

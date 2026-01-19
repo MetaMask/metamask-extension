@@ -37,10 +37,6 @@
   z-index: design-system.$main-container-z-index;
 }
 
-.main-container::-webkit-scrollbar {
-  display: none;
-}
-
 .main-container-wrapper {
   display: flex;
   justify-content: center;

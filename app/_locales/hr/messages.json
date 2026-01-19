@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
-  "ethereumPublicAddress": {
-    "message": "Javna adresa Ethereum"
-  },
   "etherscanView": {
     "message": "Prikaži račun na Etherscanu"
   },

@@ -22,7 +22,6 @@ import {
   setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
-  fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
@@ -59,7 +58,6 @@ import {
   getCurrentChainId,
   getSelectedNetworkClientId,
 } from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -74,6 +72,7 @@ import {
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
@@ -599,11 +598,6 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(setCurrentSmartTransactionsError(undefined));
-        await dispatch(
-          fetchSmartTransactionsLiveness({
-            networkClientId: getSelectedNetworkClientId(state),
-          }),
-        );
         const transactions = await getTransactions({
           searchCriteria: {
             chainId,
@@ -958,11 +952,15 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const selectedNetwork = getSelectedNetwork(state);
-    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
+    const chainId = getCurrentChainId(state);
+    const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+      state,
+      chainId,
+    );
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        featureFlags?.batchStatusPollingInterval,
       ),
     );
 

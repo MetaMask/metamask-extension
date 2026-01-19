@@ -160,6 +160,13 @@ export function useCurrencyDisplay(
   // Check if the transaction's chain is EVM, not just the account
   const isTransactionOnEvmChain = chainId ? isEvmChainId(chainId) : isEvm;
 
+  // When chainId is provided, use the chain-specific native currency and conversion rate
+  // Fall back to account defaults if the chain is not in the predefined map (custom networks)
+  const chainNativeCurrency =
+    (chainId && CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]) || nativeCurrency;
+  const chainConversionRate =
+    currencyRates?.[chainNativeCurrency]?.conversionRate ?? conversionRate;
+
   const value = useMemo(() => {
     if (displayValue) {
       return displayValue;
@@ -167,17 +174,14 @@ export function useCurrencyDisplay(
 
     if (!isTransactionOnEvmChain && !isAggregatedFiatOverviewBalance) {
       return formatNonEvmAssetCurrencyDisplay({
-        tokenSymbol: nativeCurrency,
+        tokenSymbol: chainNativeCurrency,
         isNativeCurrency,
         isUserPreferredCurrency,
         currency,
         currentCurrency,
-        nativeCurrency,
+        nativeCurrency: chainNativeCurrency,
         inputValue,
-        conversionRate: chainId
-          ? currencyRates?.[CHAIN_ID_TO_CURRENCY_SYMBOL_MAP[chainId]]
-              ?.conversionRate
-          : conversionRate,
+        conversionRate: chainConversionRate,
       });
     }
 
@@ -185,12 +189,12 @@ export function useCurrencyDisplay(
       return formatCurrency(inputValue, currency);
     }
 
-    if (!isNativeCurrency && isUserPreferredCurrency && conversionRate) {
+    if (!isNativeCurrency && isUserPreferredCurrency && chainConversionRate) {
       const valueFromHex = getValueFromWeiHex({
         value: inputValue,
-        fromCurrency: nativeCurrency,
+        fromCurrency: chainNativeCurrency,
         toCurrency: currency,
-        conversionRate,
+        conversionRate: chainConversionRate,
         numberOfDecimals: numberOfDecimals || 2,
         toDenomination: denomination,
       });
@@ -200,7 +204,7 @@ export function useCurrencyDisplay(
     return formatEthCurrencyDisplay({
       isNativeCurrency,
       isUserPreferredCurrency,
-      nativeCurrency,
+      nativeCurrency: chainNativeCurrency,
       inputValue,
       denomination,
       numberOfDecimals,
@@ -211,15 +215,13 @@ export function useCurrencyDisplay(
     isNativeCurrency,
     isUserPreferredCurrency,
     currency,
-    nativeCurrency,
+    chainNativeCurrency,
     inputValue,
-    conversionRate,
+    chainConversionRate,
     denomination,
     numberOfDecimals,
     currentCurrency,
     isAggregatedFiatOverviewBalance,
-    chainId,
-    currencyRates,
     formatCurrency,
   ]);
 

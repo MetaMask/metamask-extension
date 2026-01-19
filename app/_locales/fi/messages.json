@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereumin julkinen osoite"
-  },
   "etherscanView": {
     "message": "Tarkastele tiliä Etherscanissa"
   },

@@ -1,4 +1,10 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Hex, isStrictHexString } from '@metamask/utils';
@@ -18,6 +24,7 @@ import {
   getEnabledChainIds,
   getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
+import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';
 import AssetList from '../../app/assets/asset-list';
@@ -25,6 +32,7 @@ import DeFiTab from '../../app/assets/defi-list/defi-tab';
 import NftsTab from '../../app/assets/nfts/nfts-tab';
 import TransactionList from '../../app/transaction-list';
 import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
+import { PerpsTabView } from '../../app/perps';
 import { Box } from '../../component-library';
 import { Tab, Tabs } from '../../ui/tabs';
 import { useTokenBalances } from '../../../hooks/useTokenBalances';
@@ -48,11 +56,20 @@ export const AccountOverviewTabs = ({
   showActivity,
   showDefi,
 }: AccountOverviewTabsProps) => {
+  const [activeTabKey, setActiveTabKey] = useState<
+    AccountOverviewTabKey | undefined
+  >(defaultHomeActiveTabName ?? undefined);
   const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
+
+  useEffect(() => {
+    if (defaultHomeActiveTabName) {
+      setActiveTabKey(defaultHomeActiveTabName);
+    }
+  }, [defaultHomeActiveTabName]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
@@ -73,6 +90,7 @@ export const AccountOverviewTabs = ({
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
+      setActiveTabKey(tabName);
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
         dispatch(detectNfts(selectedChainIds));
@@ -122,12 +140,15 @@ export const AccountOverviewTabs = ({
   );
   const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+
   return (
     <>
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTabKey>
         defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+        activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',
@@ -148,6 +169,17 @@ export const AccountOverviewTabs = ({
             </Box>
           </Tab>
         )}
+
+        {isPerpsEnabled && (
+          <Tab
+            name={t('perps')}
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <PerpsTabView />
+          </Tab>
+        )}
+
         {showDefi && (
           <Tab
             name={t('defi')}

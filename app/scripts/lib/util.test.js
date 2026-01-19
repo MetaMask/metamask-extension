@@ -24,6 +24,7 @@ import {
   getPlatform,
   getValidUrl,
   isWebUrl,
+  isWebOrigin,
   getMethodDataName,
   getBooleanFlag,
   extractRpcDomain,
@@ -120,6 +121,31 @@ describe('app utils', () => {
       );
       expect(getValidUrl('https://exa%20mple.com')).toStrictEqual(null);
       expect(getValidUrl('')).toStrictEqual(null);
+    });
+
+    it('should test isWebOrigin', () => {
+      // Valid web origins
+      expect(isWebOrigin('http://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('https://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('http://localhost:8545')).toStrictEqual(true);
+      expect(isWebOrigin('https://metamask.io')).toStrictEqual(true);
+
+      // Non-web origins (browser internal pages)
+      expect(isWebOrigin('chrome://newtab')).toStrictEqual(false);
+      expect(isWebOrigin('chrome://settings')).toStrictEqual(false);
+      expect(isWebOrigin('about:blank')).toStrictEqual(false);
+      expect(isWebOrigin('about:debugging')).toStrictEqual(false);
+
+      // Extension pages
+      expect(isWebOrigin('chrome-extension://abc123')).toStrictEqual(false);
+      expect(isWebOrigin('moz-extension://abc123')).toStrictEqual(false);
+
+      // Edge cases
+      expect(isWebOrigin(null)).toStrictEqual(false);
+      expect(isWebOrigin(undefined)).toStrictEqual(false);
+      expect(isWebOrigin('')).toStrictEqual(false);
+      expect(isWebOrigin('file:///path/to/file')).toStrictEqual(false);
+      expect(isWebOrigin('ftp://example.com')).toStrictEqual(false);
     });
   });
 

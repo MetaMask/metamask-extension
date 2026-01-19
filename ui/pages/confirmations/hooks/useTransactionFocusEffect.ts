@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
+
+import { ENVIRONMENT_TYPE_SIDEPANEL } from '../../../../shared/constants/app';
+// eslint-disable-next-line import/no-restricted-paths
+import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { setTransactionActive } from '../../../store/actions';
 import { useWindowFocus } from '../../../hooks/useWindowFocus';
 import { useConfirmContext } from '../context/confirm';
@@ -24,6 +28,7 @@ export const useTransactionFocusEffect = () => {
   const [focusedConfirmationId, setFocusedConfirmationId] = useState<
     string | null
   >(null);
+  const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   const setTransactionFocus = useCallback(
     async (transactionId: string, isFocused: boolean) => {
@@ -45,8 +50,11 @@ export const useTransactionFocusEffect = () => {
       return;
     }
 
-    if (isWindowFocused && focusedConfirmationId !== id) {
-      // If the window is focused and the focused confirmation is not the current one,
+    // Sidepanel is always considered focused since it's always visible alongside the dapp
+    const isFocused = isWindowFocused || isSidepanel;
+
+    if (isFocused && focusedConfirmationId !== id) {
+      // If the window is focused (or sidepanel) and the focused confirmation is not the current one,
       // we need to unfocus the previous focused confirmation and focus the current one
       if (focusedConfirmationId) {
         setTransactionFocus(focusedConfirmationId, false);
@@ -54,11 +62,18 @@ export const useTransactionFocusEffect = () => {
       // Set the focused confirmation to the current one
       setFocusedConfirmationId(id);
       setTransactionFocus(id, true);
-    } else if (!isWindowFocused && focusedConfirmationId) {
-      // If the window is not focused and there is a focused confirmation,
+    } else if (!isFocused && focusedConfirmationId) {
+      // If the window is not focused (and not sidepanel) and there is a focused confirmation,
       // we need to unfocus the focused confirmation
       setTransactionFocus(focusedConfirmationId, false);
       setFocusedConfirmationId(null);
     }
-  }, [focusedConfirmationId, id, isWindowFocused, setTransactionFocus, type]);
+  }, [
+    focusedConfirmationId,
+    id,
+    isSidepanel,
+    isWindowFocused,
+    setTransactionFocus,
+    type,
+  ]);
 };

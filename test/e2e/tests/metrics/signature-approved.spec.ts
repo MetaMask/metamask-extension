@@ -2,10 +2,15 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { MOCK_META_METRICS_ID } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import {
+  signTypedDataV3,
+  signTypedDataV4,
+  signTypedData,
+} from '../../page-objects/flows/sign.flow';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -45,6 +50,9 @@ const expectedEventPropertiesBase = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   account_type: 'MetaMask',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response: 'loading',
   category: 'inpage_provider',
   locale: 'en',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -59,9 +67,6 @@ const expectedEventPropertiesBase = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   security_alert_response: 'loading',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ui_customizations: ['redesigned_confirmation'],
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source: MetaMetricsRequestedThrough.EthereumProvider,
@@ -88,8 +93,8 @@ describe('Signature Approved Event', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data V4 signature request
-        await testDapp.signTypedDataV4();
+        // creates and approves a sign typed data V4 signature request
+        await signTypedDataV4(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -147,8 +152,8 @@ describe('Signature Approved Event', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data V3 signature request
-        await testDapp.signTypedDataV3Redesign();
+        // creates and approves a sign typed data V3 signature request
+        await signTypedDataV3(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {
@@ -200,8 +205,8 @@ describe('Signature Approved Event', function () {
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
 
-        // creates a sign typed data signature request
-        await testDapp.signTypedData();
+        // creates and approves a sign typed data signature request
+        await signTypedData(driver, DEFAULT_FIXTURE_ACCOUNT);
         const events = await getEventPayloads(driver, mockedEndpoints);
 
         assert.deepStrictEqual(events[0].properties, {

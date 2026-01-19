@@ -158,7 +158,14 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
       ) {
-        global.platform.openExtensionInBrowser?.(option.route);
+        // Keep sidepanel open when opening hardware wallet in expanded view
+        const keepWindowOpen =
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+        global.platform.openExtensionInBrowser?.(
+          option.route,
+          null,
+          keepWindowOpen,
+        );
       } else {
         navigate(option.route);
       }

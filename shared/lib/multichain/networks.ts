@@ -17,6 +17,11 @@ export type MultichainBlockExplorerFormatUrl<Tag extends string> =
  */
 export type MultichainBlockExplorerFormatUrls = {
   /**
+   * Human-readable name of the block explorer.
+   */
+  name: string;
+
+  /**
    * Base URL of the block explorer.
    */
   url: MultichainBlockExplorerUrl;

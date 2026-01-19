@@ -1,6 +1,6 @@
 const {
   default: Confirmation,
-} = require('../../page-objects/pages/confirmations/redesign/confirmation');
+} = require('../../page-objects/pages/confirmations/confirmation');
 const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');

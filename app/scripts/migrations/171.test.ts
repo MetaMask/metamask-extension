@@ -143,7 +143,7 @@ describe(`migration #${newVersion}`, () => {
   });
 
   describe('when tokenNetworkFilter is empty', () => {
-    it('should return state unchanged and capture exception', async () => {
+    it('should return state unchanged', async () => {
       const oldState = {
         meta: {
           version: oldVersion,
@@ -162,20 +162,9 @@ describe(`migration #${newVersion}`, () => {
         },
       };
 
-      const sentrySpy = jest
-        .spyOn(global.sentry, 'captureException')
-        .mockImplementation();
-
       const newState = await migrate(oldState);
 
-      expect(sentrySpy).toHaveBeenCalledWith(
-        new Error(
-          `Migration ${newVersion}: tokenNetworkFilter is empty, expected at least one network configuration.`,
-        ),
-      );
       expect(newState.data).toStrictEqual(oldState.data);
-
-      sentrySpy.mockRestore();
     });
   });
 

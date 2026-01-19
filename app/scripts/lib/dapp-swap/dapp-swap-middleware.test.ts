@@ -8,7 +8,7 @@ import { DappSwapMiddlewareRequest } from './dapp-swap-util';
 
 const REQUEST_MOCK = {
   params: [],
-  id: '',
+  id: '1234567',
   jsonrpc: '2.0' as const,
   origin: 'test.com',
   networkClientId: 'networkClientId',
@@ -81,7 +81,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -118,7 +118,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -164,7 +164,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -184,13 +184,13 @@ describe('DappSwapMiddleware', () => {
 
     await flushPromises();
 
-    expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
+    expect(setDappSwapComparisonData).toHaveBeenCalledWith('1234567', {
       commands: '0x100604',
       error: 'Error fetching bridge quotes: fail',
     });
   });
 
-  it('capture error if request if not valid batch request', async () => {
+  it('capture error if request is not valid batch request', async () => {
     fetchQuotes = jest.fn().mockRejectedValue(new Error('fail'));
     getNetworkConfigurationByNetworkClientId.mockReturnValueOnce({
       chainId: '0x1',
@@ -203,7 +203,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://metamask.github.io',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {
@@ -228,7 +228,7 @@ describe('DappSwapMiddleware', () => {
 
     await flushPromises();
 
-    expect(setDappSwapComparisonData).toHaveBeenCalledWith('123', {
+    expect(setDappSwapComparisonData).toHaveBeenCalledWith('1234567', {
       commands: '0x100604',
       error:
         'Error fetching bridge quotes: Error getting data from swap: invalid batch transaction, invalid command',
@@ -251,7 +251,7 @@ describe('DappSwapMiddleware', () => {
       method: 'eth_sendTransaction',
       origin: 'https://test.com',
       securityAlertResponse: {
-        securityAlertId: '123',
+        securityAlertId: '1234567',
       },
       params: [
         {

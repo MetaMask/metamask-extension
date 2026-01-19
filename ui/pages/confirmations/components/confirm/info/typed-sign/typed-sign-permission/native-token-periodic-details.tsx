@@ -3,24 +3,21 @@ import { NativeTokenPeriodicPermission } from '@metamask/gator-permissions-contr
 import type { Hex } from '@metamask/utils';
 import React from 'react';
 
-import { DefaultRootState, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   ConfirmInfoRow,
   ConfirmInfoRowDivider,
 } from '../../../../../../../components/app/confirm/info/row';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
-import { getNativeTokenInfo } from '../../../../../../../selectors';
+import {
+  getNativeTokenInfo,
+  MetaMaskReduxState,
+} from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { formatPeriodDuration } from './typed-sign-permission-util';
 import { DateAndTimeRow } from './date-and-time-row';
 import { NativeAmountRow } from './native-amount-row';
-
-type NativeTokenInfo = {
-  symbol: string;
-  decimals: number;
-  name: string;
-};
 
 /**
  * Component for displaying native token periodic permission details.
@@ -47,8 +44,8 @@ export const NativeTokenPeriodicDetails: React.FC<{
 
   const { startTime, periodAmount, periodDuration } = permission.data;
 
-  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
-    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];

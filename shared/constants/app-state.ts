@@ -8,12 +8,14 @@ export enum AccountOverviewTabKey {
   Nfts = 'nfts',
   Activity = 'activity',
   DeFi = 'defi',
+  Perps = 'perps',
 }
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
+  [AccountOverviewTabKey.Perps]: MetaMetricsEventName.PerpsScreenOpened,
 } as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
@@ -21,6 +23,7 @@ export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
   [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
   [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
+  [AccountOverviewTabKey.Perps]: TraceName.AccountOverviewPerpsTab,
 } as const;
 
 export type CarouselSlide = {
@@ -46,6 +49,10 @@ export enum PasswordChangeToastType {
 export enum ClaimSubmitToastType {
   Success = 'success',
   Errored = 'errored',
+  DraftSaved = 'draft-saved',
+  DraftSaveFailed = 'draft-save-failed',
+  DraftDeleted = 'draft-deleted',
+  DraftDeleteFailed = 'draft-delete-failed',
 }
 
 export type NetworkConnectionBanner =

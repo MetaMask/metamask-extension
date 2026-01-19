@@ -2,22 +2,19 @@ import { BigNumber } from 'bignumber.js';
 import { NativeTokenStreamPermission } from '@metamask/gator-permissions-controller';
 import type { Hex } from '@metamask/utils';
 import React from 'react';
-import { DefaultRootState, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { DAY } from '../../../../../../../../shared/constants/time';
 import { ConfirmInfoSection } from '../../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowDivider } from '../../../../../../../components/app/confirm/info/row';
-import { getNativeTokenInfo } from '../../../../../../../selectors';
+import {
+  getNativeTokenInfo,
+  MetaMaskReduxState,
+} from '../../../../../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../../../shared/constants/network';
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { NativeAmountRow } from './native-amount-row';
 import { DateAndTimeRow } from './date-and-time-row';
-
-type NativeTokenInfo = {
-  symbol: string;
-  decimals: number;
-  name: string;
-};
 
 /**
  * Component for displaying native token stream permission details.
@@ -47,8 +44,8 @@ export const NativeTokenStreamDetails: React.FC<{
   // DAY is in milliseconds, so we divide by 1000 to get seconds
   const amountPerDay = new BigNumber(amountPerSecond).mul(DAY / 1000);
 
-  const { symbol, decimals } = useSelector<DefaultRootState, NativeTokenInfo>(
-    (state) => getNativeTokenInfo(state, chainId) as NativeTokenInfo,
+  const { symbol, decimals } = useSelector((state: MetaMaskReduxState) =>
+    getNativeTokenInfo(state.metamask.networkConfigurationsByChainId, chainId),
   );
 
   const tokenImageUrl = CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId];

@@ -32,8 +32,15 @@ async function mockTokensEthereum(mockServer: Mockttp) {
     });
 }
 
-async function loadNewAccount(): Promise<number> {
+const USER_ACTIONS_PERSONA = 'standard';
+
+async function loadNewAccount(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-loadNewAccount';
 
   await withFixtures(
     {
@@ -42,7 +49,7 @@ async function loadNewAccount(): Promise<number> {
       localNodeOptions: {
         accounts: 1,
       },
-      title: 'benchmark-userActions-loadNewAccount',
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await unlockWallet(driver);
@@ -59,16 +66,22 @@ async function loadNewAccount(): Promise<number> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
-async function confirmTx(): Promise<number> {
+async function confirmTx(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
   let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-confirmTx';
+
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'benchmark-userActions-confirmTx',
+      title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
@@ -106,17 +119,20 @@ async function confirmTx(): Promise<number> {
         timestampAfterAction.getTime() - timestampBeforeAction.getTime();
     },
   );
-  return loadingTimes;
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
 }
 
 async function bridgeUserActions(): Promise<{
   loadPage: number;
   loadAssetPicker: number;
   searchToken: number;
+  testTitle: string;
+  persona: string;
 }> {
   let loadPage: number = 0;
   let loadAssetPicker: number = 0;
   let searchToken: number = 0;
+  const testTitle = 'benchmark-userActions-bridgeUserActions';
 
   const fixtureBuilder = new FixtureBuilder()
     .withNetworkControllerOnMainnet()
@@ -127,7 +143,7 @@ async function bridgeUserActions(): Promise<{
       fixtures: fixtureBuilder.build(),
       disableServerMochaToBackground: true,
       testSpecificMock: mockTokensEthereum,
-      title: 'benchmark-userActions-bridgeUserActions',
+      title: testTitle,
       manifestFlags: {
         remoteFeatureFlags: {
           bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
@@ -168,7 +184,13 @@ async function bridgeUserActions(): Promise<{
         timestampBeforeTokenSearch.getTime();
     },
   );
-  return { loadPage, loadAssetPicker, searchToken };
+  return {
+    loadPage,
+    loadAssetPicker,
+    searchToken,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
 }
 
 async function main(): Promise<void> {
@@ -184,14 +206,11 @@ async function main(): Promise<void> {
       }),
   );
 
-  const results: Record<
-    string,
-    number | { loadPage: number; loadAssetPicker: number; searchToken: number }
-  > = {};
+  const results: Record<string, Record<string, string | number>> = {};
+
   results.loadNewAccount = await loadNewAccount();
   results.confirmTx = await confirmTx();
-  const bridgeResults = await bridgeUserActions();
-  results.bridge = bridgeResults;
+  results.bridge = await bridgeUserActions();
   const { out } = argv as { out?: string };
 
   if (out) {

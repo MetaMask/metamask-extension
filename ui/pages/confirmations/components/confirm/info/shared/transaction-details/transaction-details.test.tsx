@@ -313,34 +313,6 @@ describe('Transaction Details', () => {
         },
       },
     };
-    it('displays SmartContractWithLogo when to and from are equal and there are nested transactions', () => {
-      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
-
-      const contractInteraction = genUnapprovedContractInteractionConfirmation({
-        address: ADDRESS_MOCK,
-        nestedTransactions: [
-          {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-          },
-        ],
-      });
-      const state = getMockConfirmStateForTransaction(
-        contractInteraction,
-        useAdvanceDetails,
-      );
-      const mockStore = configureMockStore(middleware)(state);
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <RecipientRow />,
-        mockStore,
-      );
-      expect(
-        getByTestId('transaction-details-recipient-row'),
-      ).toBeInTheDocument();
-      expect(getByTestId('transaction-details-recipient-row')).toContainElement(
-        document.querySelector('img[src="images/logo/metamask-fox.svg"]'),
-      );
-    });
 
     it('does not display SmartContractWithLogo when to and from are not equal or there are no nested transactions', () => {
       const contractInteraction = genUnapprovedContractInteractionConfirmation({

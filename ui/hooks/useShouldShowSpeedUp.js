@@ -21,12 +21,10 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
 
   const { submittedTime } = earliestTransaction;
   const [speedUpEnabled, setSpeedUpEnabled] = useState(() => {
-    return (
-      Date.now() - submittedTime > 5000 &&
-      isEarliestNonce &&
-      !hasRetried &&
-      matchCurrentChainId
-    );
+    const timeDelta = Date.now() - submittedTime;
+    const shouldEnable =
+      timeDelta > 5000 && isEarliestNonce && !hasRetried && matchCurrentChainId;
+    return shouldEnable;
   });
   useEffect(() => {
     // because this hook is optimized to only run on changes we have to
@@ -37,7 +35,20 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
     // condition is already met. This effect will run anytime the variables
     // for determining enabled status change
     let timeoutId;
-    if (!hasRetried && isEarliestNonce && !speedUpEnabled) {
+
+    // Disable speed up if conditions are no longer met
+    if (
+      (hasRetried || !isEarliestNonce || !matchCurrentChainId) &&
+      speedUpEnabled
+    ) {
+      setSpeedUpEnabled(false);
+    } else if (
+      !hasRetried &&
+      isEarliestNonce &&
+      matchCurrentChainId &&
+      !speedUpEnabled
+    ) {
+      // Enable speed up after 5 seconds if conditions are met
       if (Date.now() - submittedTime > SECOND * 5) {
         setSpeedUpEnabled(true);
       } else {
@@ -57,7 +68,13 @@ export function useShouldShowSpeedUp(transactionGroup, isEarliestNonce) {
         clearTimeout(timeoutId);
       }
     };
-  }, [submittedTime, speedUpEnabled, hasRetried, isEarliestNonce]);
+  }, [
+    submittedTime,
+    speedUpEnabled,
+    hasRetried,
+    isEarliestNonce,
+    matchCurrentChainId,
+  ]);
 
   return speedUpEnabled;
 }

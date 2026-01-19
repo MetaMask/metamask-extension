@@ -8,15 +8,10 @@ import {
   Display,
   BlockSize,
   TextVariant,
-  IconColor,
+  BorderRadius,
+  BackgroundColor,
 } from '../../../../helpers/constants/design-system';
-import {
-  Text,
-  Box,
-  IconName,
-  IconSize,
-  Icon,
-} from '../../../component-library';
+import { Text, Box } from '../../../component-library';
 import { SnapIcon } from '../snap-icon';
 
 const SnapListItem = ({
@@ -72,13 +67,12 @@ const SnapListItem = ({
         </Box>
       </Box>
       {showUpdateDot && (
-        <Box display={Display.Flex}>
-          <Icon
-            name={IconName.FullCircle}
-            size={IconSize.Xs}
-            color={IconColor.primaryDefault}
-          />
-        </Box>
+        <Box
+          display={Display.Flex}
+          style={{ width: '10px', height: '10px', content: '' }}
+          borderRadius={BorderRadius.full}
+          backgroundColor={BackgroundColor.primaryDefault}
+        />
       )}
     </Box>
   );

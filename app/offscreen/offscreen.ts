@@ -13,6 +13,7 @@ import { runKernel } from './ocap-kernel';
 import initLedger from './ledger';
 import initTrezor from './trezor';
 import initLattice from './lattice';
+import initConnectivityDetection from './connectivity';
 
 /**
  * Initialize a post message stream with the parent window that is initialized
@@ -78,4 +79,6 @@ init().then(() => {
     // The Service Worker has no way to query `navigator.webdriver`, so we send it here.
     webdriverPresent: navigator.webdriver === true,
   });
+
+  initConnectivityDetection();
 });

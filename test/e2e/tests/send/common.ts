@@ -3,6 +3,12 @@ import { Mockttp } from 'mockttp';
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
+export const LEGACY_SEND_FEATURE_FLAG = {
+  sendRedesign: {
+    enabled: false,
+  },
+};
+
 const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
   mockServer
     .forGet(FEATURE_FLAGS_URL)
@@ -17,11 +23,6 @@ const mockSendFeatureFlag = (mockServer: Mockttp, enabled: boolean) =>
         statusCode: 200,
         json: [
           {
-            enableMultichainAccountsState2: {
-              enabled: true,
-              featureVersion: '2',
-              minimumVersion: '12.19.0',
-            },
             sendRedesign: {
               enabled,
             },

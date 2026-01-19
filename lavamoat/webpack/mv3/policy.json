@@ -718,7 +718,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/eth-json-rpc-middleware": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1027,10 +1027,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1148,6 +1149,13 @@
         "@metamask/scure-bip39>@scure/base": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "globals": {
         "document.getElementById": true
@@ -1170,6 +1178,9 @@
       }
     },
     "@metamask/snaps-sdk": {
+      "globals": {
+        "URL": true
+      },
       "packages": {
         "@metamask/superstruct": true,
         "@metamask/utils": true,
@@ -1201,7 +1212,7 @@
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "luxon": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -1217,7 +1228,8 @@
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
@@ -2747,6 +2759,11 @@
         "browserify>url": true
       }
     },
+    "humanize-duration": {
+      "globals": {
+        "define": true
+      }
+    },
     "eth-ens-namehash>idna-uts46-hx": {
       "globals": {
         "define": true
@@ -3286,7 +3303,7 @@
         "react": true
       }
     },
-    "browserify>url>qs": {
+    "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
       }
@@ -3365,6 +3382,14 @@
     "react-focus-lock>react-clientside-effect": {
       "packages": {
         "@babel/runtime": true,
+        "react": true
+      }
+    },
+    "react-compiler-runtime": {
+      "globals": {
+        "console.error": true
+      },
+      "packages": {
         "react": true
       }
     },
@@ -4229,7 +4254,7 @@
     "browserify>url": {
       "packages": {
         "browserify>url>punycode": true,
-        "browserify>url>qs": true
+        "mockttp>express>qs": true
       }
     },
     "react-focus-lock>use-callback-ref": {

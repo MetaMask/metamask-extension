@@ -20,8 +20,19 @@ import {
   AccountTrackerControllerGetStateAction,
   TokensControllerState,
   type TokenDetectionControllerAddDetectedTokensViaWsAction,
+  TokenDetectionControllerAddDetectedTokensViaPollingAction,
+  TokenDetectionControllerDetectTokensAction,
 } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  TransactionControllerIncomingTransactionsReceivedEvent,
+  TransactionControllerTransactionConfirmedEvent,
+} from '@metamask/transaction-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   AccountActivityServiceStatusChangedEvent,
@@ -31,6 +42,7 @@ import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
 import { RootMessenger } from '../../lib/messenger';
 
 // Not exported from `@metamask/assets-controllers`.
@@ -45,26 +57,33 @@ type TokensControllerStateChangeEvent = ControllerStateChangeEvent<
 >;
 
 type AllowedActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaPollingAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | TokenDetectionControllerDetectTokensAction
+  | PreferencesControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | AccountTrackerControllerGetStateAction
   | AccountTrackerUpdateNativeBalancesAction
   | AccountTrackerUpdateStakedBalancesAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | KeyringControllerGetStateAction
   | AuthenticationController.AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
-  | KeyringControllerAccountRemovedEvent
-  | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
-  | AccountActivityServiceStatusChangedEvent
+  | PreferencesControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent
+  | KeyringControllerAccountRemovedEvent
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
   | AccountActivityServiceBalanceUpdatedEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent;
+  | AccountActivityServiceStatusChangedEvent
+  | AccountsControllerSelectedEvmAccountChangeEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerIncomingTransactionsReceivedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -94,24 +113,31 @@ export function getTokenBalancesControllerMessenger(
     actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      'TokensController:getState',
       'PreferencesController:getState',
+      'TokensController:getState',
+      'TokenDetectionController:addDetectedTokensViaPolling',
+      'TokenDetectionController:addDetectedTokensViaWs',
+      'TokenDetectionController:detectTokens',
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',
       'AccountTrackerController:getState',
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
-      'TokenDetectionController:addDetectedTokensViaWs',
+      'KeyringController:getState',
       'AuthenticationController:getBearerToken',
     ],
     events: [
+      'NetworkController:stateChange',
       'PreferencesController:stateChange',
       'TokensController:stateChange',
-      'NetworkController:stateChange',
       'KeyringController:accountRemoved',
-      'AccountActivityService:statusChanged',
+      'KeyringController:lock',
+      'KeyringController:unlock',
       'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
       'AccountsController:selectedEvmAccountChange',
+      'TransactionController:transactionConfirmed',
+      'TransactionController:incomingTransactionsReceived',
     ],
   });
   return controllerMessenger;
@@ -119,7 +145,8 @@ export function getTokenBalancesControllerMessenger(
 
 type AllowedInitializationActions =
   | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
 export type TokenBalancesControllerInitMessenger = ReturnType<
   typeof getTokenBalancesControllerInitMessenger
@@ -148,6 +175,7 @@ export function getTokenBalancesControllerInitMessenger(
     actions: [
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'OnboardingController:getState',
     ],
   });
   return controllerInitMessenger;

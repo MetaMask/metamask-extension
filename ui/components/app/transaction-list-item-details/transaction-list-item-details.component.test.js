@@ -141,8 +141,9 @@ describe('TransactionListItemDetails for swaps', () => {
     });
 
     expect(queryByText('View on block explorer')).toBeInTheDocument();
+    // Sender shows account name ("Test Account") since it matches an internal account
     expect(queryByTestId('sender-to-recipient')).toHaveTextContent(
-      '0x0DCD5...3E7bc0x00000...00000',
+      'Test Account0x00000...00000',
     );
     const expectedRows = [
       'Nonce1',
@@ -153,7 +154,7 @@ describe('TransactionListItemDetails for swaps', () => {
       'Priority fee (GWEI)30',
       'Total gas fee0.010716ETH',
       'Max fee per gas0.00000003ETH',
-      'Total0.01071636ETH',
+      'Total0.01071636POL',
     ];
 
     queryAllByTestId('transaction-breakdown-row').forEach((row, i) => {

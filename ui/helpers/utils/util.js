@@ -722,11 +722,18 @@ export const sanitizeString = (value) => {
  * @param keyringType - The type of the keyring.
  * @returns {boolean} `false` if the keyring type includes 'Hardware' or 'Snap', `true` otherwise.
  */
-export const isAbleToExportAccount = (keyringType = '') => {
+export const isAbleToExportAccount = (keyringType) => {
+  if (typeof keyringType !== 'string') {
+    return false;
+  }
   return !keyringType.includes('Hardware') && !keyringType.includes('Snap');
 };
 
-export const isAbleToRevealSrp = (accountToExport, keyrings) => {
+export const isAbleToRevealSrp = (accountToExport, keyrings = []) => {
+  if (!isObject(accountToExport)) {
+    return false;
+  }
+
   const {
     metadata: {
       keyring: { type },

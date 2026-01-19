@@ -245,18 +245,22 @@ const Footer = () => {
       return;
     }
 
-    if (isAddEthereumChain) {
-      await onAddEthereumChain();
-      navigate(DEFAULT_ROUTE);
-    } else if (isTransactionConfirmation) {
-      await onTransactionConfirm();
-      navigateNext(currentConfirmation.id);
-    } else {
-      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
-      navigateNext(currentConfirmation.id);
+    try {
+      if (isAddEthereumChain) {
+        await onAddEthereumChain();
+        navigate(DEFAULT_ROUTE);
+      } else if (isTransactionConfirmation) {
+        await onTransactionConfirm();
+        navigateNext(currentConfirmation.id);
+      } else {
+        await dispatch(
+          resolvePendingApproval(currentConfirmation.id, undefined),
+        );
+        navigateNext(currentConfirmation.id);
+      }
+    } finally {
+      resetTransactionState();
     }
-
-    resetTransactionState();
   }, [
     currentConfirmation,
     dispatch,
@@ -293,8 +297,11 @@ const Footer = () => {
     onDappSwapCompleted,
   ]);
 
-  const { isEnabled, isPaused } = useEnableShieldCoverageChecks();
-  const isShowShieldFooterCoverageIndicator = isEnabled || isPaused;
+  const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();
+
+  if (!currentConfirmation) {
+    return null;
+  }
 
   return (
     <>
@@ -306,7 +313,7 @@ const Footer = () => {
         // but only applied to the bottom of the box, so it doesn't overlap with
         // the shield footer coverage indicator
         style={
-          isShowShieldFooterCoverageIndicator
+          isShowCoverageIndicator
             ? { boxShadow: '0 4px 16px -8px var(--color-shadow-default)' }
             : undefined
         }

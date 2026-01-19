@@ -14,6 +14,8 @@ import { MockttpNotificationTriggerServer } from '../../helpers/notifications/mo
 import { mockNotificationServices, notificationsMockAccounts } from './mocks';
 
 describe('Enable Notifications - Without Accounts Syncing', function () {
+  this.timeout(120000); // Notifications tests can take longer due to identity/sync operations
+
   describe('from inside MetaMask', function () {
     /**
      * Test notification settings persistence across sessions.

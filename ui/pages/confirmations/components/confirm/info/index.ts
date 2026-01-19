@@ -1,1 +1,1 @@
-export { default as Info } from './info';
+export { default as Info, InfoSkeleton } from './info';

@@ -76,7 +76,7 @@ function ViewContact({
         </div>
         <div className="address-book__view-contact__group">
           <div className="address-book__view-contact__group__label">
-            {t('ethereumPublicAddress')}
+            {t('publicAddress')}
           </div>
           <div className="address-book__view-contact__group__value">
             <div

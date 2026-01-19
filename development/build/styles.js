@@ -1,7 +1,6 @@
 const pify = require('pify');
 const gulp = require('gulp');
 const autoprefixer = require('autoprefixer');
-const gulpStylelint = require('gulp-stylelint');
 const watch = require('gulp-watch');
 const sourcemaps = require('gulp-sourcemaps');
 const rtlcss = require('postcss-rtlcss');
@@ -38,16 +37,7 @@ function createStyleTasks({ livereload }) {
     }),
   );
 
-  const lint = createTask(TASKS.LINT_SCSS, function () {
-    return gulp.src('ui/css/itcss/**/*.scss').pipe(
-      gulpStylelint({
-        reporters: [{ formatter: 'string', console: true }],
-        fix: true,
-      }),
-    );
-  });
-
-  return { prod, dev, lint };
+  return { prod, dev };
 
   function createScssBuildTask({ src, dest, devMode, pattern }) {
     return async function () {

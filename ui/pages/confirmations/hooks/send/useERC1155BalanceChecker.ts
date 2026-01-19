@@ -24,7 +24,7 @@ export const useERC1155BalanceChecker = () => {
         networkClientId,
       );
 
-      return { nft, balance: Number(balance) };
+      return { nft, balance: parseInt(balance, 16) };
     } catch (error) {
       console.error('Error fetching ERC1155 balance:', error);
       return null;

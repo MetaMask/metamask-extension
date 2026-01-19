@@ -1,4 +1,5 @@
 import { Controller as UserStorageController } from '@metamask/profile-sync-controller/user-storage';
+import { Env } from '@metamask/profile-sync-controller/sdk';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -65,6 +66,7 @@ describe('UserStorageControllerInit', () => {
           onContactDeleted: expect.any(Function),
           onContactSyncErroneousSituation: expect.any(Function),
         },
+        env: Env.PRD,
       },
     });
   });

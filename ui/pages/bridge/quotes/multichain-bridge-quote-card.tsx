@@ -209,8 +209,9 @@ export const MultichainBridgeQuoteCard = ({
               <Text
                 variant={TextVariant.bodySm}
                 color={getTimerColor(secondsUntilNextRefresh)}
+                style={{ width: 32 }}
               >
-                {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+                {`0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh}`}
               </Text>
             )}
 
@@ -305,7 +306,9 @@ export const MultichainBridgeQuoteCard = ({
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
               >
-                {t('networkFeeExplanation')}
+                {shouldShowGasSponsored
+                  ? t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])
+                  : t('networkFeeExplanation')}
               </Tooltip>
             </Row>
             {shouldShowGasSponsored && (
@@ -316,13 +319,6 @@ export const MultichainBridgeQuoteCard = ({
                 >
                   {t('swapGasFeesSponsored')}
                 </Text>
-                <Tooltip
-                  title={t('swapGasFeesSponsored')}
-                  position={PopoverPosition.TopStart}
-                  offset={[-16, 16]}
-                >
-                  {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
-                </Tooltip>
               </Row>
             )}
             {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
@@ -342,7 +338,7 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        activeQuote.gasFee.effective?.valueInCurrency,
                         currency,
                       )}
                 </Text>
@@ -369,7 +365,7 @@ export const MultichainBridgeQuoteCard = ({
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.gasFee.effective?.valueInCurrency,
                   currency,
                 )}
               </Text>

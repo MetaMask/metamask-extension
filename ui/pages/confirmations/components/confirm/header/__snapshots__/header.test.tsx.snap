@@ -55,11 +55,6 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
             </div>
           </div>
         </div>
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-        >
-          G
-        </div>
       </div>
       <div
         class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -68,13 +63,13 @@ exports[`Header should match snapshot with signature confirmation 1`] = `
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
         >
-          Test Account
+          Account 1
         </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
         >
-          Goerli
+          Wallet 1
         </p>
       </div>
     </div>
@@ -226,7 +221,7 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
             class="flex [&>div]:!rounded-none"
           >
             <div
-              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(24, 100, 242);"
+              style="border-radius: 50px; overflow: hidden; padding: 0px; margin: 0px; width: 32px; height: 32px; display: inline-block; background: rgb(250, 58, 0);"
             >
               <svg
                 height="32"
@@ -235,25 +230,25 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
                 y="0"
               >
                 <rect
-                  fill="#C81420"
+                  fill="#18CDF2"
                   height="32"
-                  transform="translate(-5.50523690490468 -5.26512336373754) rotate(385.9 16.00000000000000 16.00000000000000)"
+                  transform="translate(-1.04839350379394 -3.30428406946050) rotate(328.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#E9F500"
+                  fill="#035E56"
                   height="32"
-                  transform="translate(10.67446940672640 12.42992815919339) rotate(184.5 16.00000000000000 16.00000000000000)"
+                  transform="translate(-18.29846170883204 10.59246187174860) rotate(176.2 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
                 />
                 <rect
-                  fill="#FAB300"
+                  fill="#F26602"
                   height="32"
-                  transform="translate(1.81545519923623 -26.03028190637629) rotate(431.3 16.00000000000000 16.00000000000000)"
+                  transform="translate(16.66784201822392 -14.20513972299708) rotate(468.9 16.00000000000000 16.00000000000000)"
                   width="32"
                   x="0"
                   y="0"
@@ -262,11 +257,6 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
             </div>
           </div>
         </div>
-        <div
-          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network confirm_header__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-goerli mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
-        >
-          G
-        </div>
       </div>
       <div
         class="mm-box mm-box--margin-top-0 mm-box--margin-inline-start-4"
@@ -274,12 +264,14 @@ exports[`Header should match snapshot with transaction confirmation 1`] = `
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-default"
           data-testid="header-account-name"
-        />
+        >
+          Account 1
+        </p>
         <p
           class="mm-box mm-text mm-text--body-md mm-box--color-text-alternative"
           data-testid="header-network-display-name"
         >
-          Goerli
+          Wallet 1
         </p>
       </div>
     </div>

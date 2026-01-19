@@ -264,7 +264,7 @@ export default function PrivacySettings() {
                 display={Display.Flex}
                 alignItems={AlignItems.center}
                 flexDirection={FlexDirection.Row}
-                justifyContent={JustifyContent.flexStart}
+                justifyContent={JustifyContent.spaceBetween}
               >
                 <ButtonIcon
                   iconName={IconName.ArrowLeft}
@@ -279,10 +279,11 @@ export default function PrivacySettings() {
                   justifyContent={JustifyContent.center}
                   width={BlockSize.Full}
                 >
-                  <Text variant={TextVariant.headingLg} as="h2">
+                  <Text variant={TextVariant.headingMd} as="h3">
                     {t('defaultSettingsTitle')}
                   </Text>
                 </Box>
+                <Box className="privacy-settings__empty-space" />
               </Box>
               <Text variant={TextVariant.bodyLgMedium} marginTop={5}>
                 {t('defaultSettingsSubTitle')}
@@ -356,7 +357,7 @@ export default function PrivacySettings() {
               marginBottom={5}
               display={Display.Flex}
               flexDirection={FlexDirection.Row}
-              justifyContent={JustifyContent.flexStart}
+              justifyContent={JustifyContent.spaceBetween}
             >
               <ButtonIcon
                 data-testid="category-back-button"
@@ -375,6 +376,7 @@ export default function PrivacySettings() {
                   {selectedItem?.title}
                 </Text>
               </Box>
+              <Box className="privacy-settings__empty-space" />
             </Box>
 
             <div
@@ -427,6 +429,7 @@ export default function PrivacySettings() {
                   <Setting
                     title={t('onboardingAdvancedPrivacyNetworkTitle')}
                     showToggle={false}
+                    enableMarginBottom={false}
                     description={
                       <>
                         {t('onboardingAdvancedPrivacyNetworkDescription', [

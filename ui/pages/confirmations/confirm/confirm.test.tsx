@@ -94,6 +94,10 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
     let container;
@@ -135,6 +139,10 @@ describe('Confirm', () => {
     );
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
       decimals: '2',
       standard: 'ERC20',
     });
@@ -181,6 +189,10 @@ describe('Confirm', () => {
       decimals: '2',
       standard: 'ERC20',
     });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
 
     await act(async () => {
       const { container } = await renderWithConfirmContextProvider(
@@ -202,6 +214,10 @@ describe('Confirm', () => {
     const mockStore = configureMockStore(middleware)(mockStateTypedSign);
 
     jest.spyOn(actions, 'getTokenStandardAndDetails').mockResolvedValue({
+      decimals: '2',
+      standard: 'ERC20',
+    });
+    jest.spyOn(actions, 'getTokenStandardAndDetailsByChain').mockResolvedValue({
       decimals: '2',
       standard: 'ERC20',
     });

@@ -1,6 +1,5 @@
 import PropTypes from 'prop-types';
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import FileInput from 'react-simple-file-input';
 import {
   ButtonLink,
@@ -16,17 +15,17 @@ import {
 import { FormTextField } from '../../component-library/form-text-field/deprecated';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { displayWarning } from '../../../store/actions';
 import BottomButtons from './bottom-buttons';
 
 export default function JsonImportSubview({
   importAccountFunc,
   onActionComplete,
+  importErrorMessage,
 }) {
   const t = useI18nContext();
-  const warning = useSelector((state) => state.appState.warning);
   const [password, setPassword] = useState('');
   const [fileContents, setFileContents] = useState('');
+  const [errorMessage, setErrorMessage] = useState();
 
   const isPrimaryDisabled = fileContents === '';
 
@@ -39,7 +38,7 @@ export default function JsonImportSubview({
 
   function _importAccountFunc() {
     if (isPrimaryDisabled) {
-      displayWarning(t('needImportFile'));
+      setErrorMessage(t('needImportFile'));
     } else {
       importAccountFunc('json', [fileContents, password]);
     }
@@ -63,7 +62,10 @@ export default function JsonImportSubview({
         id="file-input"
         data-testid="file-input"
         readAs="text"
-        onLoad={(event) => setFileContents(event.target.result)}
+        onLoad={(event) => {
+          setErrorMessage();
+          setFileContents(event.target.result);
+        }}
         style={{
           padding: '20px 0px 12px 15%',
           fontSize: '16px',
@@ -78,7 +80,7 @@ export default function JsonImportSubview({
         size={TextFieldSize.Lg}
         autoFocus
         type={TextFieldType.Password}
-        helpText={warning}
+        helpText={errorMessage ?? importErrorMessage}
         error
         placeholder={t('enterOptionalPassword')}
         value={password}
@@ -94,7 +96,10 @@ export default function JsonImportSubview({
       <BottomButtons
         importAccountFunc={_importAccountFunc}
         isPrimaryDisabled={isPrimaryDisabled}
-        onActionComplete={onActionComplete}
+        onActionComplete={(confirmed) => {
+          setErrorMessage();
+          onActionComplete(confirmed);
+        }}
       />
     </>
   );
@@ -109,4 +114,8 @@ JsonImportSubview.propTypes = {
    * Executes when the key is imported
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Import error message
+   */
+  importErrorMessage: PropTypes.string,
 };

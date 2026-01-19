@@ -84,12 +84,12 @@ describe('useERC1155BalanceChecker', () => {
   });
 
   it('converts string balance to number', async () => {
-    mockGetERC1155BalanceOf.mockResolvedValue('123');
+    mockGetERC1155BalanceOf.mockResolvedValue('06'); // 6 in hex
 
     const { result } = renderHook(() => useERC1155BalanceChecker());
     const response = await result.current.fetchBalanceForNft(mockERC1155Asset);
 
-    expect(response?.balance).toBe(123);
+    expect(response?.balance).toBe(6);
     expect(typeof response?.balance).toBe('number');
   });
 

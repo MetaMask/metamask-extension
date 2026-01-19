@@ -3,8 +3,6 @@ import { GitHub } from '@actions/github/lib/utils';
 import { retrieveRepo } from './repo';
 
 export enum RegressionStage {
-  DevelopmentFeature,
-  DevelopmentMain,
   Testing,
   Beta,
   Production,
@@ -63,20 +61,6 @@ export function craftRegressionLabel(
   releaseVersion: string | undefined,
 ): Label {
   switch (regressionStage) {
-    case RegressionStage.DevelopmentFeature:
-      return {
-        name: `feature-branch-bug`,
-        color: '5319E7', // violet
-        description: `bug that was found on a feature branch, but not yet merged in main branch`,
-      };
-
-    case RegressionStage.DevelopmentMain:
-      return {
-        name: `regression-main`,
-        color: '5319E7', // violet
-        description: `Regression bug that was found on main branch, but not yet present in production`,
-      };
-
     case RegressionStage.Testing:
       return {
         name: `regression-RC-${releaseVersion || '*'}`,

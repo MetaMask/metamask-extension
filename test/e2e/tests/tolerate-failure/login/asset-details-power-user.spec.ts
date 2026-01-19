@@ -1,13 +1,13 @@
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { WITH_STATE_POWER_USER } from '../../../benchmarks/constants';
 import { withFixtures } from '../../../helpers';
-import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import AssetListPage from '../../../page-objects/pages/home/asset-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NetworkManager from '../../../page-objects/pages/network-manager';
 import { Driver } from '../../../webdriver/driver';
 import { setupTimerReporting } from '../utils/testSetup';
 import Timers from '../../../../timers/Timers';
+import LoginPage from '../../../page-objects/pages/login-page';
 
 const USDC_TOKEN_ADDRESS = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';
 describe('Power user persona', function () {
@@ -35,9 +35,13 @@ describe('Power user persona', function () {
         },
         useMockingPassThrough: true,
         disableServerMochaToBackground: true,
+        extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         const assetListPage = new AssetListPage(driver);

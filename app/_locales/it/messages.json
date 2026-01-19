@@ -638,9 +638,6 @@
     "message": "MetaMask ha riscontrato un errore",
     "description": "Title of generic error page"
   },
-  "ethereumPublicAddress": {
-    "message": "Indirizzo pubblico Ethereum "
-  },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
   },

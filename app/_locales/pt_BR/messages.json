@@ -685,9 +685,6 @@
   "ethGasPriceFetchWarning": {
     "message": "O preço de backup do gás é fornecido porque a estimativa de gás principal está indisponível no momento."
   },
-  "ethereumPublicAddress": {
-    "message": "Endereço público do Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },

@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Jätkamiseks sisestage parool"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereumi avalik aadress"
-  },
   "etherscanView": {
     "message": "Vaadake kontot Etherscanil"
   },

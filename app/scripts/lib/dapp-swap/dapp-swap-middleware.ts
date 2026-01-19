@@ -43,17 +43,16 @@ export function createDappSwapMiddleware<
     _res: JsonRpcResponse<Result>,
     next: () => void,
   ) => {
-    const { securityAlertResponse } = req;
-    const { securityAlertId } = securityAlertResponse ?? {};
-
-    if (securityAlertId && req.method === 'eth_sendTransaction') {
+    if (
+      req.method === 'eth_sendTransaction' ||
+      req.method === 'wallet_sendCalls'
+    ) {
       getQuotesForConfirmation({
         req,
         fetchQuotes,
         setDappSwapComparisonData,
         getNetworkConfigurationByNetworkClientId,
         dappSwapMetricsFlag,
-        securityAlertId,
       });
     }
 

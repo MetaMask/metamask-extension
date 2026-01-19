@@ -20,7 +20,7 @@ export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 /**
  * Target browsers
  */
-export const Browsers = ['brave', 'chrome', 'firefox'] as const;
+export const Browsers = ['chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
 const slash = `\\${sep}`;
@@ -50,6 +50,16 @@ export const SNOW_MODULE_RE = new RegExp(
  */
 export const TREZOR_MODULE_RE = new RegExp(
   `^.*${slash}node_modules${slash}@trezor${slash}.*$`,
+  'u',
+);
+
+/**
+ * Regular expression to match React files in the top-level `ui/` directory
+ * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
+ * Windows.
+ */
+export const UI_DIR_RE = new RegExp(
+  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
   'u',
 );
 

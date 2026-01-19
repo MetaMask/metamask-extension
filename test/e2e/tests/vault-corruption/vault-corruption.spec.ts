@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { until } from 'selenium-webdriver';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -12,11 +14,7 @@ import AccountAddressModal from '../../page-objects/pages/multichain/account-add
 import LoginPage from '../../page-objects/pages/login-page';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
-// Skipping these tests temporarily until BIP44 is turned on using FF
-// if mock the FF response to turn on BIP44 then when the extension is reset the mocks will be lost
-// BUG #38080 - Reactivate vault corruption test after BIP44 is turned on with FF
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Vault Corruption', function () {
+describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
   /**
    * Script template to simulate a broken database.
@@ -31,8 +29,8 @@ describe.skip('Vault Corruption', function () {
     // to access the storage API here
     const browser = globalThis.browser ?? globalThis.chrome;
 
-    // corrupt the primary database by deleting the data key
-    browser.storage.local.set({ data: null }, () => {
+    // corrupt the primary database by deleting the KeyringController key
+    browser.storage.local.set({ KeyringController: null }, () => {
       ${code}
     });
 `;
@@ -199,14 +197,16 @@ describe.skip('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
+    await driver.waitForSelector('#critical-error-button');
     await driver.clickElement('#critical-error-button');
 
-    // Confirm we want to recover/reset.
-    const prompt = await driver.driver.switchTo().alert();
+    // Wait for the confirmation alert to appear and handle it immediately
+    await driver.driver.wait(until.alertIsPresent(), 20000);
+    const alert = await driver.driver.switchTo().alert();
     if (confirm) {
-      await prompt.accept();
+      await alert.accept();
     } else {
-      await prompt.dismiss();
+      await alert.dismiss();
     }
 
     if (confirm) {
@@ -226,7 +226,8 @@ describe.skip('Vault Corruption', function () {
       await driver.assertElementNotPresent('#critical-error-button');
     } else {
       // the button should be enabled if the user dismissed the prompt
-      await driver.findClickableElement('#critical-error-button');
+      // Wait for UI to settle after dismissing the alert
+      await driver.waitForSelector('#critical-error-button');
     }
   }
 

@@ -226,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "অবিরত রাখতে পাসওয়ার্ড লিখুন"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum পাবলিক অ্যাড্রেস"
-  },
   "etherscanView": {
     "message": "Etherscan এ অ্যাকাউন্ট দেখুন"
   },

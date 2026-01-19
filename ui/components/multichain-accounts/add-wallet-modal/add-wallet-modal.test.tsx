@@ -91,8 +91,11 @@ describe('AddWalletModal', () => {
     fireEvent.click(screen.getByText('addAHardwareWallet'));
 
     expect(mockOnClose).toHaveBeenCalledTimes(1);
+    // In popup environment, keepWindowOpen is false
     expect(mockOpenExtensionInBrowser).toHaveBeenCalledWith(
       CONNECT_HARDWARE_ROUTE,
+      null,
+      false,
     );
     expect(mockUseNavigate).not.toHaveBeenCalled();
   });

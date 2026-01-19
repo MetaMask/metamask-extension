@@ -54,10 +54,7 @@ class SwapPage {
   private readonly fromToText =
     '[data-testid="multichain-token-list-button"] p';
 
-  private readonly moreQuotesButton = {
-    tag: 'button',
-    text: 'More quotes',
-  };
+  private readonly moreQuotesButton = '[aria-label="More quotes"]';
 
   private readonly noQuotesAvailableMessage = {
     text: "This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option",
@@ -70,7 +67,7 @@ class SwapPage {
   };
 
   private readonly rateMessage = {
-    text: `Rate includes 0.875% fee`,
+    text: `Includes 0.875% MM fee.`,
     tag: 'p',
   };
 
@@ -252,7 +249,7 @@ class SwapPage {
     await this.driver.fill(this.reviewFromAmount, options.amount.toString());
   }
 
-  async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
+  async reviewQuote(options: SwapSolanaReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');

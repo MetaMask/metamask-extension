@@ -27,7 +27,7 @@ import {
   IconName,
   IconSize,
 } from '../../component-library';
-import { NetworkListItem } from '..';
+import { NetworkListItem } from '../network-list-item';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   MetaMetricsEventCategory,

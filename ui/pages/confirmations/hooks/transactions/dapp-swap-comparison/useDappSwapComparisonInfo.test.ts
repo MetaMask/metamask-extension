@@ -8,6 +8,7 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { TokenStandAndDetails } from '../../../../../store/actions';
+import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
@@ -29,6 +30,8 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   fetchQuotes: jest.fn(),
 }));
 
+jest.mock('../../../../../selectors/remote-feature-flags');
+
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
   updateRequestDetectionLatency: jest.fn(),
@@ -40,13 +43,15 @@ jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
     mockUseDappSwapComparisonLatencyMetricsResponse,
 }));
 
+const mockGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
+
 async function runHook(args: Record<string, unknown> = {}) {
   const response = renderHookWithConfirmContextProvider(
     () => useDappSwapComparisonInfo(),
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation, {
       metamask: {
         dappSwapComparisonData: {
-          'f8172040-b3d0-11f0-a882-3f99aa2e9f0c': {
+          '1234567': {
             quotes: mockBridgeQuotes,
             latency: 3600,
             commands: '0x0a100604',
@@ -71,6 +76,13 @@ async function runHook(args: Record<string, unknown> = {}) {
 }
 
 describe('useDappSwapComparisonInfo', () => {
+  beforeEach(() => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapQa: { enabled: true },
+      dappSwapUi: { enabled: true, threshold: 0.01 },
+    });
+  });
+
   it('initially call updateTransactionEventFragment with loading', async () => {
     await runHook();
     expect(mockUpdateTransactionEventFragment).toHaveBeenNthCalledWith(
@@ -184,5 +196,43 @@ describe('useDappSwapComparisonInfo', () => {
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
       '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
     });
+  });
+
+  it('return quote calculation values as zero if dappSwapUi is not enabled', async () => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapQa: { enabled: true },
+      dappSwapUi: { enabled: false, threshold: 0.01 },
+    });
+    jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
+      '0x0000000000000000000000000000000000000000': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+      '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
+    });
+    jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+        symbol: 'USDC',
+        decimals: '6',
+      } as TokenStandAndDetails,
+      '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': {
+        symbol: 'USDT',
+        decimals: '6',
+      } as TokenStandAndDetails,
+    });
+
+    const {
+      selectedQuote,
+      selectedQuoteValueDifference,
+      tokenAmountDifference,
+    } = await runHook({
+      swapInfo: {
+        srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+        destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        srcTokenAmount: '0x0de0b6b3a7640000',
+        destTokenAmountMin: '0x0',
+      },
+    });
+    expect(selectedQuote).toEqual(mockBridgeQuotes[3]);
+    expect(selectedQuoteValueDifference).toBe(0);
+    expect(tokenAmountDifference).toBe(0);
   });
 });

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL } from '../../../constants';
-import { veryLargeDelayMs, WINDOW_TITLES } from '../../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { veryLargeDelayMs } from '../../../helpers';
 import { Mockttp } from '../../../mock-e2e';
 import { Anvil } from '../../../seeder/anvil';
-import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/legacy/watch-asset-confirmation';
+import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
+import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
@@ -146,7 +146,6 @@ async function createWalletInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkWalletInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();
@@ -184,7 +183,6 @@ async function createDAppInitiatedTransactionAndAssertDetails(
     new TokenTransferTransactionConfirmation(driver);
   await tokenTransferTransactionConfirmation.checkDappInitiatedHeadingTitle();
   await tokenTransferTransactionConfirmation.checkNetworkParagraph();
-  await tokenTransferTransactionConfirmation.checkInteractingWithParagraph();
   await tokenTransferTransactionConfirmation.checkNetworkFeeParagraph();
 
   await tokenTransferTransactionConfirmation.clickFooterConfirmButton();

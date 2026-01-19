@@ -9,18 +9,37 @@ import {
   unMarkPasswordForgotten,
 } from '../../store/actions';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
-import CreateNewVault from '../../components/app/create-new-vault';
-import Button from '../../components/ui/button';
-import Box from '../../components/ui/box';
-import { Text } from '../../components/component-library';
-import { TextVariant, TextColor } from '../../helpers/constants/design-system';
-import ZENDESK_URLS from '../../helpers/constants/zendesk-url';
+import {
+  Box,
+  Text,
+  ButtonIcon,
+  ButtonIconSize,
+  IconName,
+  ButtonSize,
+  Button,
+} from '../../components/component-library';
+import {
+  TextVariant,
+  TextColor,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  BlockSize,
+  IconColor,
+  AlignItems,
+  TextAlign,
+  BorderColor,
+  BorderRadius,
+  BackgroundColor,
+} from '../../helpers/constants/design-system';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../shared/constants/metametrics';
 import { getIsSocialLoginFlow } from '../../selectors';
 import { FirstTimeFlowType } from '../../../shared/constants/onboarding';
+import SrpInputForm from '../srp-input-form';
+import { CreatePasswordForm } from '../create-password-form';
 import withRouterHooks from '../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 
 class RestoreVaultPage extends Component {
@@ -35,145 +54,171 @@ class RestoreVaultPage extends Component {
     setFirstTimeFlowType: PropTypes.func,
     resetOAuthLoginState: PropTypes.func,
     navigate: PropTypes.func,
-    isLoading: PropTypes.bool,
     isSocialLoginFlow: PropTypes.bool,
   };
 
-  handleImport = async (password, seedPhrase) => {
+  state = {
+    srpError: '',
+    secretRecoveryPhrase: '',
+    toggleSrpDetailsModal: false,
+    showPasswordInput: false,
+    loading: false,
+  };
+
+  handleImport = async (password, termsChecked) => {
     const {
       createNewVaultAndRestore: propsCreateNewVaultAndRestore,
       setFirstTimeFlowType: propsSetFirstTimeFlowType,
       resetOAuthLoginState: propsResetOAuthLoginState,
-      leaveImportSeedScreenState,
       navigate,
       isSocialLoginFlow: propsIsSocialLoginFlow,
     } = this.props;
 
-    leaveImportSeedScreenState();
-
-    if (propsIsSocialLoginFlow) {
-      // reset oauth and onboarding state
-      await propsResetOAuthLoginState();
+    if (!propsIsSocialLoginFlow && !termsChecked) {
+      return;
     }
 
-    // update the first time flow type to restore
-    await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
+    const { secretRecoveryPhrase } = this.state;
 
-    // import the seed phrase and create a new vault
-    await propsCreateNewVaultAndRestore(password, seedPhrase);
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Retention,
-      event: MetaMetricsEventName.WalletRestored,
-    });
-    navigate(DEFAULT_ROUTE);
+    this.setState({ loading: true });
+
+    try {
+      if (propsIsSocialLoginFlow) {
+        await propsResetOAuthLoginState();
+      }
+
+      await propsSetFirstTimeFlowType(FirstTimeFlowType.restore);
+
+      await propsCreateNewVaultAndRestore(password, secretRecoveryPhrase);
+
+      this.context.trackEvent({
+        category: MetaMetricsEventCategory.Retention,
+        event: MetaMetricsEventName.WalletRestored,
+      });
+
+      navigate(DEFAULT_ROUTE, { replace: true });
+    } catch (error) {
+      this.setState({ loading: false, showPasswordInput: false });
+      console.error('[RestoreVault] Error during import:', error);
+    }
+  };
+
+  handleContinue = () => {
+    this.setState((prevState) => ({ ...prevState, showPasswordInput: true }));
+  };
+
+  handleBack = () => {
+    if (this.state.loading) {
+      return;
+    }
+    this.setState((prevState) => ({ ...prevState, showPasswordInput: false }));
   };
 
   render() {
     const { t } = this.context;
-    const { isLoading, isSocialLoginFlow } = this.props;
+
+    const shouldShowPasswordForm =
+      this.state.showPasswordInput || this.state.loading;
 
     return (
-      <Box className="first-view-main-wrapper">
-        <Box className="first-view-main">
-          <Box className="import-account">
-            <a
-              className="import-account__back-button"
-              onClick={(e) => {
-                e.preventDefault();
-                this.props.leaveImportSeedScreenState();
-                this.props.navigate(DEFAULT_ROUTE);
-              }}
-              href="#"
-            >
-              {`< ${t('back')}`}
-            </a>
-            <Text variant={TextVariant.displayMd} color={TextColor.textDefault}>
-              {t('resetWallet')}
-            </Text>
-            <Text color={TextColor.textDefault}>
-              {isSocialLoginFlow
-                ? t('resetWalletSubHeaderSocial')
-                : t('resetWalletSubHeader')}
-            </Text>
-            <Text color={TextColor.textDefault} marginTop={4} marginBottom={4}>
-              {isSocialLoginFlow
-                ? t('resetWalletUsingSRPSocial', [
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.RESET_IMPORT_AN_ACCOUNT}
-                      key="import-an-account"
-                      className="import-account__link"
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        justifyContent={JustifyContent.spaceBetween}
+        height={BlockSize.Full}
+        gap={4}
+        className="import-srp-restore-vault"
+        data-testid="import-srp-restore-vault"
+        borderRadius={BorderRadius.LG}
+        borderColor={BorderColor.borderMuted}
+        backgroundColor={BackgroundColor.backgroundDefault}
+      >
+        {shouldShowPasswordForm ? (
+          <CreatePasswordForm
+            isSocialLoginFlow={false}
+            onSubmit={this.handleImport}
+            onBack={this.handleBack}
+            loading={this.state.loading}
+          />
+        ) : (
+          <>
+            <Box>
+              <Box marginBottom={4}>
+                <ButtonIcon
+                  iconName={IconName.ArrowLeft}
+                  color={IconColor.iconDefault}
+                  size={ButtonIconSize.Md}
+                  data-testid="import-srp-back-button"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    this.props.leaveImportSeedScreenState();
+                    this.props.navigate(DEFAULT_ROUTE, { replace: true });
+                  }}
+                  ariaLabel={t('back')}
+                />
+              </Box>
+              <Box textAlign={TextAlign.Left} marginBottom={2}>
+                <Text variant={TextVariant.headingLg}>
+                  {t('importAWallet')}
+                </Text>
+              </Box>
+              <Box textAlign={TextAlign.Left} marginBottom={4}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  color={TextColor.textAlternative}
+                >
+                  {t('restoreWalletDescription', [
+                    <Text
+                      key="secret-recovery-phrase"
+                      variant={TextVariant.bodyMd}
+                      color={TextColor.primaryDefault}
+                      onClick={() =>
+                        this.setState({ toggleSrpDetailsModal: true })
+                      }
+                      as="button"
                     >
-                      {t('resetWalletUsingSRPSocialAccounts')}
-                    </Button>,
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.RESET_ADD_MISSING_ACCOUNT}
-                      key="add-missing-account"
-                      className="import-account__link"
-                    >
-                      {t('resetWalletUsingSRPSocialCustomAccounts')}
-                    </Button>,
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.RESET_DISPLAY_TOKENS}
-                      key="display-tokens"
-                      className="import-account__link"
-                    >
-                      {t('resetWalletUsingSRPSocialCustomTokens')}
-                    </Button>,
-                  ])
-                : t('resetWalletUsingSRP', [
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.ADD_MISSING_ACCOUNTS}
-                      key="import-account-secretphase"
-                      className="import-account__link"
-                    >
-                      {t('reAddAccounts')}
-                    </Button>,
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.IMPORT_ACCOUNTS}
-                      key="import-account-reimport-accounts"
-                      className="import-account__link"
-                    >
-                      {t('reAdded')}
-                    </Button>,
-                    <Button
-                      type="link"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      href={ZENDESK_URLS.ADD_CUSTOM_TOKENS}
-                      key="import-account-readd-tokens"
-                      className="import-account__link"
-                    >
-                      {t('reAdded')}
-                    </Button>,
+                      {t('secretRecoveryPhrase')}
+                    </Text>,
                   ])}
-            </Text>
-            <Text color={TextColor.textDefault} margin={0} marginBottom={4}>
-              {isSocialLoginFlow
-                ? t('resetWalletWarningSocial')
-                : t('resetWalletWarning')}
-            </Text>
-            <CreateNewVault
-              disabled={isLoading}
-              onSubmit={this.handleImport}
-              submitText={t('restore')}
-            />
-          </Box>
-        </Box>
+                </Text>
+              </Box>
+              <SrpInputForm
+                error={this.state.srpError}
+                setSecretRecoveryPhrase={(secretRecoveryPhrase) =>
+                  this.setState({ secretRecoveryPhrase })
+                }
+                onClearCallback={() => this.setState({ srpError: '' })}
+                showDescription={false}
+                toggleSrpDetailsModal={this.state.toggleSrpDetailsModal}
+                onSrpDetailsModalClose={() =>
+                  this.setState({ toggleSrpDetailsModal: false })
+                }
+              />
+            </Box>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              justifyContent={JustifyContent.center}
+              alignItems={AlignItems.center}
+              width={BlockSize.Full}
+              textAlign={TextAlign.Left}
+            >
+              <Button
+                width={BlockSize.Full}
+                size={ButtonSize.Lg}
+                data-testid="import-srp-confirm"
+                onClick={this.handleContinue}
+                disabled={
+                  !this.state.secretRecoveryPhrase.trim() ||
+                  Boolean(this.state.srpError)
+                }
+                className="import-srp__continue-button"
+              >
+                {t('continue')}
+              </Button>
+            </Box>
+          </>
+        )}
       </Box>
     );
   }
@@ -184,7 +229,6 @@ export default compose(
   connect(
     (state) => {
       return {
-        isLoading: state.appState.isLoading,
         isSocialLoginFlow: getIsSocialLoginFlow(state),
       };
     },

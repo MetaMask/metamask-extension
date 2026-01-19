@@ -226,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "Skriv inn passord for å fortsette"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adresse"
-  },
   "etherscanView": {
     "message": "Vis konto på Etherscan "
   },

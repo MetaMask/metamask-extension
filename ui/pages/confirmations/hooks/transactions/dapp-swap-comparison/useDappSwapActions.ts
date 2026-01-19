@@ -60,11 +60,11 @@ export function useDappSwapActions() {
   );
 
   const onDappSwapCompleted = useCallback(() => {
-    const uniqueId = currentConfirmation.securityAlertResponse?.securityAlertId;
+    const uniqueId = currentConfirmation?.requestId;
     if (uniqueId) {
       deleteDappSwapComparisonData(uniqueId);
     }
-  }, [currentConfirmation?.securityAlertResponse?.securityAlertId]);
+  }, [currentConfirmation?.requestId]);
 
   return {
     updateSwapWithQuoteDetailsIfRequired,

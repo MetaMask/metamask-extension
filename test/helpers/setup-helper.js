@@ -134,7 +134,24 @@ window.localStorage = {
 };
 
 // used for native dark/light mode detection
-window.matchMedia = () => true;
+window.matchMedia = (query) => ({
+  matches: false,
+  media: query,
+  onchange: null,
+  addListener: () => {
+    // deprecated - no-op
+  },
+  removeListener: () => {
+    // deprecated - no-op
+  },
+  addEventListener: () => {
+    // no-op for tests
+  },
+  removeEventListener: () => {
+    // no-op for tests
+  },
+  dispatchEvent: () => true,
+});
 
 // override @metamask/logo
 window.requestAnimationFrame = () => undefined;

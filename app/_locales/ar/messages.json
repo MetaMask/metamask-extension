@@ -233,9 +233,6 @@
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
-  "ethereumPublicAddress": {
-    "message": "عنوان الإيثيريوم العمومي"
-  },
   "etherscanView": {
     "message": "عرض الحساب على Etherscan"
   },

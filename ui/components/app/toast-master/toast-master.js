@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types -- TODO: upgrade to TypeScript */
 
-import React, { useContext, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
@@ -11,7 +11,6 @@ import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
   SURVEY_LINK,
-  METAMETRICS_SETTINGS_LINK,
 } from '../../../../shared/lib/ui-utils';
 import {
   BorderColor,
@@ -21,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -37,13 +37,10 @@ import {
   getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
-  setPna25Acknowledged,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -98,7 +95,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
-  selectShowPna25Banner,
+  selectShowStorageErrorToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -119,14 +116,22 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // Storage error toast should show on ALL screens
+  const storageErrorToast = <StorageErrorToast />;
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -135,7 +140,6 @@ export function ToastMaster() {
         )}
         <SurveyToastMayDelete />
         <PrivacyPolicyToast />
-        <Pna25Banner />
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
@@ -149,10 +153,17 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
+  }
+
+  // On other screens, only render ToastContainer if storage error toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -574,40 +585,114 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
+  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
+  const isDraftSaveFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
+  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+  const isDraftDeleted =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
+  const isDraftDeleteFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
+
   const description = useMemo(() => {
-    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+    if (isSuccess) {
       return t('shieldClaimSubmitSuccessDescription');
     }
-    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSavedDescription');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailedDescription');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeleteDraftDescription');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailedDescription');
+    }
+    if (isErrored) {
       return '';
     }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isErrored,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    showClaimSubmitToast,
+    t,
+  ]);
+
+  const toastText = useMemo(() => {
+    if (isSuccess) {
+      return t('shieldClaimSubmitSuccess');
+    }
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSaved');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailed');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeletedDraft');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailed');
+    }
+    return t('shieldClaimSubmitError');
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    t,
+  ]);
+
+  const dataTestId = useMemo(() => {
+    if (isSuccess) {
+      return 'claim-submit-toast-success';
+    }
+    if (isDraftSaved) {
+      return 'claim-draft-saved-toast';
+    }
+    if (isDraftSaveFailed) {
+      return 'claim-draft-save-failed-toast';
+    }
+    if (isDraftDeleted) {
+      return 'claim-draft-deleted-toast';
+    }
+    if (isDraftDeleteFailed) {
+      return 'claim-draft-delete-failed-toast';
+    }
+    return 'claim-submit-toast-error';
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+  ]);
 
   return (
     showClaimSubmitToast !== null && (
       <Toast
-        dataTestId={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? 'claim-submit-toast-success'
-            : 'claim-submit-toast-error'
-        }
+        dataTestId={dataTestId}
         key="claim-submit-toast"
-        text={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccess')
-            : t('shieldClaimSubmitError')
-        }
+        text={toastText}
         description={description}
         startAdornment={
           <Icon
             name={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconName.CheckBold
                 : IconName.CircleX
             }
             color={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }
@@ -757,56 +842,43 @@ function ShieldEndingToast() {
   );
 }
 
-function Pna25Banner() {
+function StorageErrorToast() {
   const t = useI18nContext();
-  const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const navigate = useNavigate();
+  const [isDismissed, setIsDismissed] = useState(false);
 
-  const showPna25Banner = useSelector(selectShowPna25Banner);
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
 
-  useEffect(() => {
-    if (showPna25Banner) {
-      trackEvent({
-        event: MetaMetricsEventName.ToastDisplayed,
-        properties: {
-          toast_name: 'pna25',
-          closed: false,
-        },
-      });
-    }
-  }, [showPna25Banner, trackEvent]);
-
-  const handleLearnMore = () => {
-    // Open MetaMetrics settings help page and acknowledge
-    global.platform.openTab({
-      url: METAMETRICS_SETTINGS_LINK,
-    });
+  const handleRevealSrpClick = () => {
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
   };
 
   const handleClose = () => {
-    trackEvent({
-      event: MetaMetricsEventName.ToastDisplayed,
-      properties: {
-        toast_name: 'pna25',
-        closed: true,
-      },
-    });
-    // Just acknowledge without opening link
-    dispatch(setPna25Acknowledged(true));
+    setIsDismissed(true);
   };
 
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
   return (
-    showPna25Banner && (
+    shouldShow && (
       <Toast
-        key="pna25-banner"
-        dataTestId="pna25-banner"
+        key="database-corruption-toast"
         startAdornment={
-          <Icon name={IconName.Info} color={IconColor.infoDefault} />
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
         }
-        text={t('pna25BannerTitle')}
-        textVariant={TextVariant.bodySm}
-        actionText={t('learnMoreUpperCase')}
-        onActionClick={handleLearnMore}
+        text={t('storageErrorTitle')}
+        description={t('storageErrorDescription')}
+        actionText={t('storageErrorAction')}
+        onActionClick={handleRevealSrpClick}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
         onClose={handleClose}
       />
     )

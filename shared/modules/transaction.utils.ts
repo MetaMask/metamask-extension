@@ -391,3 +391,20 @@ export function parseApprovalTransactionData(data: Hex):
     spender,
   };
 }
+
+/**
+ * Extracts the recipient address from a transaction's data field.
+ * This function parses standard token transaction data and attempts to retrieve
+ * the recipient address from the transaction arguments. It checks for both `_to`
+ * and `to` argument patterns commonly found in token transfer transactions.
+ *
+ * @param data - The hexadecimal string representation of the transaction data to parse
+ * @returns The recipient address as a string if found in the transaction data, or undefined if not present
+ */
+export function getTransactionDataRecipient(data: string): string | undefined {
+  const transactionData = parseStandardTokenTransactionData(data);
+
+  const transferTo = transactionData?.args?._to || transactionData?.args?.to;
+
+  return transferTo;
+}

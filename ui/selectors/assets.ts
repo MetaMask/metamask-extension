@@ -8,7 +8,7 @@ import {
   calculateBalanceChangeForAccountGroup,
   selectAssetsBySelectedAccountGroup,
 } from '@metamask/assets-controllers';
-import { CaipAssetId } from '@metamask/keyring-api';
+import { CaipAssetId, isEvmAccountType } from '@metamask/keyring-api';
 import { toHex } from '@metamask/controller-utils';
 import {
   CaipAssetType,
@@ -63,7 +63,10 @@ import {
   getTokensAcrossChainsByAccountAddressSelector,
   getEnabledNetworks,
 } from './selectors';
-import { getSelectedMultichainNetworkConfiguration } from './multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getSelectedMultichainNetworkConfiguration,
+} from './multichain/networks';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from './multichain-accounts/account-tree';
 
 export type AssetsState = {
@@ -159,6 +162,9 @@ export function getHistoricalPrices(state: AssetsRatesState) {
   return state.metamask.historicalPrices;
 }
 
+/**
+ * @deprecated use selectBalanceByAccountGroup instead
+ */
 export const getTokenBalancesEvm = createDeepEqualSelector(
   getTokensAcrossChainsByAccountAddressSelector,
   getNativeTokenCachedBalanceByChainIdSelector,
@@ -263,6 +269,9 @@ export const getTokenBalancesEvm = createDeepEqualSelector(
   },
 );
 
+/**
+ * @deprecated use getAllAssets instead
+ */
 export const getMultiChainAssets = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
@@ -327,6 +336,7 @@ export const getMultiChainAssets = createDeepEqualSelector(
 /**
  * Gets a {@link Token} (EVM or Multichain) owned by the passed account by address and chainId.
  *
+ * @deprecated use getAllAssets instead
  * @param state - Redux state object
  * @param tokenAddress - Token address (Hex for EVM, or CaipAssetType for non-EVM)
  * @param chainId - Chain ID (Hex for EVM, or CaipChainId for non-EVM)
@@ -385,6 +395,9 @@ export const getTokenByAccountAndAddressAndChainId = createDeepEqualSelector(
 
 const zeroBalanceAssetFallback = { amount: 0, unit: '' };
 
+/**
+ * @deprecated use selectBalanceByAccountGroup instead
+ */
 export const getMultichainAggregatedBalance = createDeepEqualSelector(
   (_state, selectedAccount) => selectedAccount,
   getMultichainBalances,
@@ -558,6 +571,7 @@ export const getMultichainNativeAssetType = createDeepEqualSelector(
 /**
  * Gets the balance of the native token of the current network for the selected account.
  *
+ * @deprecated use selectBalanceByAccountGroup instead
  * @param state - Redux state object
  * @param selectedAccount - Selected account
  * @returns Balance of the native token, or fallbacks to { amount: 0, unit: '' } if no native token is found
@@ -1295,6 +1309,26 @@ export const getAssetsBySelectedAccountGroup = createDeepEqualSelector(
   getStateForAssetSelector,
   (assetListState: AssetListState) =>
     selectAssetsBySelectedAccountGroup(assetListState),
+);
+
+export const selectAccountSupportsEnabledNetworks = createSelector(
+  [getSelectedInternalAccount, getAllEnabledNetworksForAllNamespaces],
+  (selectedAccount, enabledNetworks) => {
+    if (!selectedAccount || enabledNetworks.length === 0) {
+      return true;
+    }
+
+    if (isEvmAccountType(selectedAccount.type)) {
+      return enabledNetworks.some((chainId) =>
+        isEvmChainId(chainId as Hex | CaipChainId),
+      );
+    }
+
+    const accountScopes = selectedAccount.scopes || [];
+    return enabledNetworks.some((chainId) =>
+      accountScopes.includes(chainId as CaipChainId),
+    );
+  },
 );
 
 export const getAssetsBySelectedAccountGroupWithTronResources =

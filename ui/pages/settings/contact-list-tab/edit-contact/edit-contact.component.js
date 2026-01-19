@@ -145,7 +145,7 @@ export default function EditContact({
           data-testid="edit-contact-address"
         >
           <div className="address-book__view-contact__group__label">
-            {t('ethereumPublicAddress')}
+            {t('publicAddress')}
           </div>
           <TextField
             id="address"

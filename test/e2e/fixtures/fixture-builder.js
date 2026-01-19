@@ -300,7 +300,7 @@ class FixtureBuilder {
         'megaeth-testnet-v2': {
           chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
           nickname: 'MegaETH Testnet',
-          rpcUrl: 'https://timothy.megaeth.com/rpc',
+          rpcUrl: 'https://carrot.megaeth.com/rpc',
           ticker: 'MegaETH',
           rpcPrefs: {
             blockExplorerUrl: 'https://megaeth-testnet-v2.blockscout.com',
@@ -1185,6 +1185,16 @@ class FixtureBuilder {
 
   withTokensController(data) {
     merge(this.fixture.data.TokensController, data);
+    return this;
+  }
+
+  withTokenBalancesController(data) {
+    merge(
+      this.fixture.data.TokenBalancesController
+        ? this.fixture.data.TokenBalancesController
+        : (this.fixture.data.TokenBalancesController = {}),
+      data,
+    );
     return this;
   }
 

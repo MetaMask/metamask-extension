@@ -226,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "Introdueix la contrasenya per continuar"
   },
-  "ethereumPublicAddress": {
-    "message": "Adreça Pública d'Ethereum"
-  },
   "etherscanView": {
     "message": "Veure compte a Etherscan"
   },

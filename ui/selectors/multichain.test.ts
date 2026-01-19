@@ -1,6 +1,5 @@
 import { Cryptocurrency } from '@metamask/assets-controllers';
 import { Hex } from '@metamask/utils';
-import { NetworkConfiguration } from '@metamask/network-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
@@ -33,6 +32,7 @@ import {
 import { MultichainNativeAssets } from '../../shared/constants/multichain/assets';
 import { mockNetworkState } from '../../test/stub/networks';
 import { getProviderConfig } from '../../shared/modules/selectors/networks';
+import type { MetaMaskReduxState } from '../store/store';
 import { AccountsState } from './accounts';
 import {
   MultichainState,
@@ -57,15 +57,17 @@ import { getSelectedAccountCachedBalance, getShouldShowFiat } from '.';
 
 type TestState = MultichainState &
   AccountsState & {
-    metamask: {
-      preferences: { showFiatInTestnets: boolean };
-      accountsByChainId: Record<string, Record<string, { balance: string }>>;
-      networkConfigurationsByChainId: Record<Hex, NetworkConfiguration>;
-      currentCurrency: string;
-      currencyRates: Record<string, { conversionRate: string }>;
-      completedOnboarding: boolean;
-      selectedNetworkClientId?: string;
-    };
+    metamask: Pick<
+      MetaMaskReduxState['metamask'],
+      | 'preferences'
+      | 'accountsByChainId'
+      | 'networkConfigurationsByChainId'
+      | 'currentCurrency'
+      | 'currencyRates'
+      | 'completedOnboarding'
+      | 'selectedNetworkClientId'
+      | 'remoteFeatureFlags'
+    >;
   };
 
 function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
@@ -73,12 +75,14 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
     metamask: {
       preferences: {
         showFiatInTestnets: false,
-      },
+      } as MetaMaskReduxState['metamask']['preferences'],
       ...mockNetworkState({ chainId }),
       currentCurrency: 'ETH',
       currencyRates: {
         ETH: {
-          conversionRate: 'usd',
+          conversionRate: null,
+          conversionDate: null,
+          usdConversionRate: null,
         },
       },
       completedOnboarding: true,
@@ -157,6 +161,7 @@ function getEvmState(chainId: Hex = CHAIN_IDS.MAINNET): TestState {
       },
       selectedMultichainNetworkChainId: BtcScope.Mainnet,
       networksWithTransactionActivity: {},
+      remoteFeatureFlags: {},
     },
   };
 }

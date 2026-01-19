@@ -24,6 +24,9 @@ import {
   AlignItems,
 } from '../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   DEFAULT_ROUTE,
   PERMISSIONS,
@@ -39,6 +42,7 @@ import { PermissionListItem } from './components/permission-list-item';
 
 export const GatorPermissionsPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
   const navigate = useNavigate();
   const headerRef = useRef<HTMLSpanElement>(null);
   const totalGatorPermissions = useSelector((state: AppState) =>
@@ -159,24 +163,24 @@ export const GatorPermissionsPage = () => {
         flexDirection={FlexDirection.Column}
         justifyContent={JustifyContent.center}
         height={BlockSize.Full}
-        gap={2}
         padding={4}
       >
-        <Text
-          variant={TextVariant.bodyMdMedium}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptyContent')}
-        </Text>
-        <Text
-          variant={TextVariant.bodyMd}
-          color={TextColor.textAlternative}
-          backgroundColor={BackgroundColor.backgroundDefault}
-          textAlign={TextAlign.Center}
-        >
-          {t('permissionsPageEmptySubContent')}
-        </Text>
+        <TabEmptyState
+          icon={
+            <img
+              src={
+                theme === ThemeType.dark
+                  ? '/images/empty-state-permissions-dark.png'
+                  : '/images/empty-state-permissions-light.png'
+              }
+              alt={t('permissionsPageEmptyDescription')}
+              width={72}
+              height={72}
+            />
+          }
+          description={t('permissionsPageEmptyDescription')}
+          className="mx-auto"
+        />
       </Box>
     );
   };

@@ -22,10 +22,8 @@ class SitePermissionPage {
 
   private readonly disconnectButton = '[data-test-id="disconnect-all"]';
 
-  private readonly disconnectConfirmMessage = {
-    text: 'MetaMask isn’t connected to this site',
-    tag: 'p',
-  };
+  private readonly disconnectConfirmMessage =
+    '[data-testid="no-connection-description"]';
 
   private readonly disconnectModalTitle = {
     text: 'Disconnect',

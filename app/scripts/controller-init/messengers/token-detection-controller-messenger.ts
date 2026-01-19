@@ -1,7 +1,3 @@
-import type {
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-} from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
@@ -9,7 +5,6 @@ import type {
   NetworkControllerGetNetworkConfigurationByNetworkClientId,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
-  NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
 import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
@@ -23,11 +18,12 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import {
-  TokenListController,
   TokensControllerAddDetectedTokensAction,
   TokensControllerAddTokensAction,
   TokensControllerGetStateAction,
   AssetsContractControllerGetBalancesInSingleCallAction,
+  TokenListStateChange,
+  GetTokenListState,
 } from '@metamask/assets-controllers';
 import { TransactionControllerTransactionConfirmedEvent } from '@metamask/transaction-controller';
 import {
@@ -37,40 +33,28 @@ import {
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
 import { RootMessenger } from '../../lib/messenger';
 
-// Not exported from `@metamask/assets-controllers`.
-type TokenListControllerGetStateAction = ControllerGetStateAction<
-  'TokenListController',
-  TokenListController['state']
->;
-
-type TokenListControllerStateChangeEvent = ControllerStateChangeEvent<
-  'TokenListController',
-  TokenListController['state']
->;
-
 type AllowedActions =
-  | AccountsControllerGetAccountAction
   | AccountsControllerGetSelectedAccountAction
-  | KeyringControllerGetStateAction
-  | NetworkControllerFindNetworkClientIdByChainIdAction
+  | AccountsControllerGetAccountAction
   | NetworkControllerGetNetworkClientByIdAction
   | NetworkControllerGetNetworkConfigurationByNetworkClientId
   | NetworkControllerGetStateAction
+  | GetTokenListState
+  | KeyringControllerGetStateAction
   | PreferencesControllerGetStateAction
-  | TokenListControllerGetStateAction
+  | TokensControllerGetStateAction
   | TokensControllerAddDetectedTokensAction
   | TokensControllerAddTokensAction
-  | TokensControllerGetStateAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
   | AuthenticationController.AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
+  | NetworkControllerNetworkDidChangeEvent
+  | TokenListStateChange
   | KeyringControllerLockEvent
   | KeyringControllerUnlockEvent
-  | NetworkControllerNetworkDidChangeEvent
-  | NetworkControllerStateChangeEvent
   | PreferencesControllerStateChangeEvent
-  | TokenListControllerStateChangeEvent
   | TransactionControllerTransactionConfirmedEvent;
 
 export type TokenDetectionControllerMessenger = ReturnType<
@@ -105,10 +89,10 @@ export function getTokenDetectionControllerMessenger(
       'NetworkController:getNetworkClientById',
       'NetworkController:getNetworkConfigurationByNetworkClientId',
       'NetworkController:getState',
-      'PreferencesController:getState',
-      'TokenListController:getState',
       'TokensController:getState',
       'TokensController:addDetectedTokens',
+      'TokenListController:getState',
+      'PreferencesController:getState',
       'TokensController:addTokens',
       'NetworkController:findNetworkClientIdByChainId',
       'AuthenticationController:getBearerToken',
@@ -118,8 +102,8 @@ export function getTokenDetectionControllerMessenger(
       'KeyringController:lock',
       'KeyringController:unlock',
       'NetworkController:networkDidChange',
-      'PreferencesController:stateChange',
       'TokenListController:stateChange',
+      'PreferencesController:stateChange',
       'TransactionController:transactionConfirmed',
     ],
   });

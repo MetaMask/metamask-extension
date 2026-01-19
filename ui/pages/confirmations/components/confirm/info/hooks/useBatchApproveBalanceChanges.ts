@@ -7,6 +7,7 @@ import {
 import { add0x } from '@metamask/utils';
 import { useMemo } from 'react';
 
+import { useDeepMemo } from '../../../../hooks/useDeepMemo';
 import { useConfirmContext } from '../../../../context/confirm';
 import { useAsyncResult } from '../../../../../../hooks/useAsync';
 import { getTokenStandardAndDetails } from '../../../../../../store/actions';
@@ -68,9 +69,17 @@ function useBatchApproveSimulationBalanceChanges({
 }: {
   nestedTransactions?: BatchTransactionParams[];
 }) {
+  const stableNestedTransactions = useDeepMemo(
+    () => nestedTransactions,
+    [nestedTransactions],
+  );
+
   return useAsyncResult(
-    async () => buildSimulationTokenBalanceChanges({ nestedTransactions }),
-    [JSON.stringify(nestedTransactions)],
+    async () =>
+      buildSimulationTokenBalanceChanges({
+        nestedTransactions: stableNestedTransactions,
+      }),
+    [stableNestedTransactions],
   );
 }
 

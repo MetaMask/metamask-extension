@@ -29,3 +29,9 @@ export const TOKEN_CATEGORY_HASH = {
   [TransactionType.tokenMethodTransferFrom]: true,
   [TransactionType.tokenMethodIncreaseAllowance]: true,
 };
+
+// Transaction types excluded in unified transaction lists
+export const EXCLUDED_TRANSACTION_TYPES = new Set([
+  TransactionType.incoming,
+  TransactionType.gasPayment,
+]);

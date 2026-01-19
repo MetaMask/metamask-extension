@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum nyilvános címe"
-  },
   "etherscanView": {
     "message": "Fiók megtekintése Etherscanen"
   },

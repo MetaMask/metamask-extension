@@ -15,6 +15,43 @@ jest.mock(
 );
 
 describe('TypedSignPermissionInfo', () => {
+  describe('permission section fields', () => {
+    const permission = {
+      expiry: 123456789,
+      origin: 'https://metamask.github.io',
+      permission: {
+        type: 'native-token-stream',
+        data: {
+          initialAmount: '0x1234',
+          maxAmount: '0x1234',
+          amountPerSecond: '0x1234',
+          startTime: 123456789,
+        },
+        justification: 'The reason for the permission',
+      },
+      chainId: '0x1',
+      signer: {
+        type: 'account',
+        data: { address: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829' },
+      },
+    } as const;
+
+    it('renders the Recipient field with the delegate address', () => {
+      const state = getMockTypedSignPermissionConfirmState(
+        permission as DecodedPermission,
+      );
+      const mockStore = configureMockStore([])(state);
+      const { getByTestId, getByText } = renderWithConfirmContextProvider(
+        <TypedSignPermissionInfo />,
+        mockStore,
+      );
+
+      const permissionSection = getByTestId('confirmation_permission-section');
+      expect(permissionSection).toBeInTheDocument();
+      expect(getByText('Recipient')).toBeInTheDocument();
+    });
+  });
+
   describe('invalid permission type', () => {
     it('throws an error when an invalid permission type is provided', () => {
       const state = getMockTypedSignPermissionConfirmState({

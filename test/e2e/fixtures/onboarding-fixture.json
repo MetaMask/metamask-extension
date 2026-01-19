@@ -66,7 +66,6 @@
       "pendingShieldCohortTxType": null,
       "productTour": "accountIcon",
       "recoveryPhraseReminderHasBeenShown": false,
-      "recoveryPhraseReminderLastShown": 1764061389868,
       "shieldEndingToastLastClickedOrClosed": null,
       "shieldPausedToastLastClickedOrClosed": null,
       "showAccountBanner": true,
@@ -75,6 +74,7 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
+      "showStorageErrorToast": false,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
@@ -347,7 +347,7 @@
               "failoverUrls": [],
               "networkClientId": "megaeth-testnet-v2",
               "type": "custom",
-              "url": "https://timothy.megaeth.com/rpc"
+              "url": "https://carrot.megaeth.com/rpc"
             }
           ]
         },
@@ -2143,6 +2143,6 @@
     }
   },
   "meta": {
-    "version": 184
+    "version": 185
   }
 }

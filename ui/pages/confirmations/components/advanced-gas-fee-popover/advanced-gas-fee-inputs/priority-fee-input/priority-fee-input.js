@@ -93,6 +93,7 @@ const PriorityFeeInput = () => {
   const [priorityFeeInPrimaryCurrency] = useCurrencyDisplay(
     decGWEIToHexWEI(priorityFee * gasLimit),
     { currency, numberOfDecimals },
+    chainId,
   );
 
   const updatePriorityFee = (value) => {
