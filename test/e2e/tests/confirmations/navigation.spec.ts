@@ -2,7 +2,7 @@ import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { unlockWallet, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
@@ -26,7 +26,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
@@ -60,7 +60,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new TransactionConfirmation(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -98,7 +98,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
 
@@ -131,7 +131,7 @@ describe('Confirmation Navigation', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(

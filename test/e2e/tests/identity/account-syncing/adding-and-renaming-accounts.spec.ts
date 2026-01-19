@@ -116,7 +116,7 @@ describe('Account syncing - Adding and Renaming Accounts', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the initial account sync to complete before interacting with accounts
         const homePage = new HomePage(driver);
