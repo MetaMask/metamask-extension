@@ -32,7 +32,7 @@ export const NetworkListItemMenu = ({
       return null;
     }
     const menuItems =
-      popoverDialogRef.current.querySelectorAll('[role="menuitem"]');
+      popoverDialogRef.current.querySelectorAll('button.menu-item');
     return menuItems.length > 0 ? menuItems[menuItems.length - 1] : null;
   }, []);
 
