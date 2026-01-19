@@ -1275,9 +1275,6 @@
   "close": {
     "message": "닫기"
   },
-  "closeExtension": {
-    "message": "확장 닫기"
-  },
   "closeSlide": {
     "message": "$1 닫기",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -6230,41 +6227,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "일시 중지된 동안 플랜은 비활성화됩니다. 취소하면 플랜은 즉시 종료됩니다."
   },
-  "shieldTxDetails1Description": {
-    "message": "보장 대상 트랜잭션에서 자산을 보호합니다"
-  },
   "shieldTxDetails1Title": {
     "message": "최대 $10,000까지 트랜잭션 보호"
   },
-  "shieldTxDetails2Description": {
-    "message": "언제든지 신속히 전담 지원을 받으세요"
-  },
-  "shieldTxDetails2Title": {
-    "message": "우선 지원"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "링크"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "가입"
-  },
   "shieldTxMembershipActive": {
     "message": "활성화된 플랜"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "청구 세부 정보"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "청구 계정"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "요금"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "다음 청구"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "결제 수단"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "결제 관리"
@@ -6279,9 +6246,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "플랜이 $1에 종료됩니다. 계속 혜택을 받으려면 지금 갱신하세요.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "결제 다시 시도"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "카드 결제 실패로 플랜이 일시 중지되었습니다."
@@ -6308,9 +6272,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "지원팀에 문의"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "카드 세부 정보 업데이트"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "무료 체험"
   },
@@ -6331,9 +6292,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "청구하기"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "전체 혜택 보기"
   },
   "show": {
     "message": "표시"
