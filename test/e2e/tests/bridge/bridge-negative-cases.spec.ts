@@ -28,8 +28,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -63,8 +63,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -90,8 +90,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -117,8 +117,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
           DEFAULT_LOCAL_NODE_USD_BALANCE,
@@ -145,8 +145,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -177,8 +177,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(
@@ -210,8 +210,8 @@ describe('Bridge functionality', function (this: Suite) {
           this.test?.fullTitle(),
         ),
       },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver, undefined, undefined, '$0');
+      async ({ driver, localNodes }) => {
+        await loginWithBalanceValidation(driver, localNodes[0]);
 
         const homePage = new HomePage(driver);
         await homePage.checkExpectedBalanceIsDisplayed(

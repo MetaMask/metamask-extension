@@ -15,11 +15,7 @@ const { PAGES } = require('./webdriver/driver');
 const { Bundler } = require('./bundler');
 const { SMART_CONTRACTS } = require('./seeder/smart-contracts');
 const { setManifestFlags } = require('./set-manifest-flags');
-const {
-  DAPP_PATHS,
-  ERC_4337_ACCOUNT,
-  WALLET_PASSWORD,
-} = require('./constants');
+const { DAPP_PATHS, ERC_4337_ACCOUNT } = require('./constants');
 const {
   getServerMochaToBackground,
 } = require('./background-socket/server-mocha-to-background');

@@ -14,12 +14,9 @@ import { Ganache } from '../../seeder/ganache';
 export const loginWithoutBalanceValidation = async (
   driver: Driver,
   password?: string,
-  navigate: boolean = true,
 ) => {
   console.log('Navigate to unlock page and try to login with password');
-  if (navigate) {
-    await driver.navigate();
-  }
+  await driver.navigate();
   const loginPage = new LoginPage(driver);
   await loginPage.checkPageIsLoaded();
   await loginPage.loginToHomepage(password);
@@ -43,9 +40,8 @@ export const loginWithBalanceValidation = async (
   localNode?: Ganache | Anvil,
   password?: string,
   value?: string,
-  navigate: boolean = true,
 ) => {
-  await loginWithoutBalanceValidation(driver, password, navigate);
+  await loginWithoutBalanceValidation(driver, password);
   const homePage = new HomePage(driver);
   // Verify the expected balance on the homepage
   if (localNode) {

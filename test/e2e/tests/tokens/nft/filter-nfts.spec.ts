@@ -95,14 +95,8 @@ describe('View NFT details', function () {
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithoutBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
 
         const networkManager = new NetworkManager(driver);
 
