@@ -151,39 +151,48 @@ export const useDeviceEventHandlers = ({
               ConnectionState.error(DeviceEvent.AppNotOpen, payload.error),
             );
           } else {
-            updateConnectionState(ConnectionState.awaitingApp('not_open'));
-          }
-          break;
-
-        case DeviceEvent.AppChanged:
-          if (payload.currentAppName) {
-            // Check if the app is correct for this wallet type
-            if (
-              isCorrectAppForWallet(
-                payload.currentAppName,
-                refs.walletTypeRef.current,
-              )
-            ) {
-              // If correct app, clear any awaiting state since device is ready
-              updateConnectionState(ConnectionState.ready());
-              break;
-            }
-            // If wrong app, set awaiting state with wrong_app reason
             updateConnectionState(
-              ConnectionState.awaitingApp(
-                DeviceEvent.AppNotOpen,
-                payload?.currentAppName || '',
-              ),
+              ConnectionState.awaitingApp(DeviceEvent.AppNotOpen),
             );
           }
           break;
+
+        case DeviceEvent.AppChanged: {
+          // BOLOS is the Ledger OS dashboard - means no app is open
+          const currentAppName = payload.currentAppName ?? 'BOLOS';
+          // Check if the app is correct for this wallet type
+          if (
+            isCorrectAppForWallet(currentAppName, refs.walletTypeRef.current)
+          ) {
+            // If correct app, clear any awaiting state since device is ready
+            updateConnectionState(ConnectionState.ready());
+            break;
+          }
+          // If wrong app, set awaiting state with wrong_app reason
+          updateConnectionState(
+            ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, currentAppName),
+          );
+          break;
+        }
 
         case DeviceEvent.ConnectionFailed:
           if (payload.error) {
             updateConnectionState(
               ConnectionState.error(
                 DeviceEvent.ConnectionFailed,
-                payload.error || new Error('Hardware wallet connection failed'),
+                payload.error,
+              ),
+            );
+          } else {
+            updateConnectionState(
+              ConnectionState.error(
+                DeviceEvent.ConnectionFailed,
+                new HardwareWalletError('Hardware wallet connection failed', {
+                  code: ErrorCode.ConnectionTransportMissing,
+                  severity: Severity.Err,
+                  category: Category.Connection,
+                  userMessage: 'Hardware wallet connection failed',
+                }),
               ),
             );
           }
@@ -193,7 +202,13 @@ export const useDeviceEventHandlers = ({
           updateConnectionState(
             ConnectionState.error(
               DeviceEvent.OperationTimeout,
-              payload.error || new Error('Operation timed out'),
+              payload.error ??
+                new HardwareWalletError('Operation timed out', {
+                  code: ErrorCode.ConnectionTimeout,
+                  severity: Severity.Err,
+                  category: Category.Protocol,
+                  userMessage: 'Operation timed out',
+                }),
             ),
           );
           break;

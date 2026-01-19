@@ -215,7 +215,9 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(ConnectionState.awaitingApp('not_open'));
+      expect(resultState).toEqual(
+        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen),
+      );
     });
 
     it('handles DISCONNECTED event when not connecting', () => {
@@ -278,6 +280,30 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState).toEqual(ConnectionState.ready());
+    });
+
+    it('handles APP_CHANGED event with undefined app name defaulting to BOLOS', () => {
+      // Set up Ledger wallet type for this test
+      mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
+      const { result } = setupHook();
+
+      result.current.handleDeviceEvent({
+        event: DeviceEvent.AppChanged,
+        // currentAppName is undefined - should default to 'BOLOS'
+      });
+
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      // BOLOS is not the correct app for Ledger, so it should await app
+      expect(resultState).toEqual(
+        ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, 'BOLOS'),
+      );
     });
 
     it('handles CONNECTION_FAILED event', () => {
@@ -378,21 +404,53 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
-    it('calls onDeviceEvent callback when provided', () => {
-      const onDeviceEvent = jest.fn();
-      const { result } = renderHook(() =>
-        useDeviceEventHandlers({
-          refs: mockRefs,
-          setters: mockSetters,
-          onDeviceEvent,
-        }),
-      );
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      { event: DeviceEvent.Disconnected, additionalPayload: {} },
+      {
+        event: DeviceEvent.DeviceLocked,
+        additionalPayload: { error: new Error('Device locked') },
+      },
+      {
+        event: DeviceEvent.AppNotOpen,
+        additionalPayload: { error: new Error('App not open') },
+      },
+      {
+        event: DeviceEvent.AppChanged,
+        additionalPayload: { currentAppName: 'Ethereum' },
+      },
+      {
+        event: DeviceEvent.ConnectionFailed,
+        additionalPayload: { error: new Error('Connection failed') },
+      },
+      {
+        event: DeviceEvent.OperationTimeout,
+        additionalPayload: { error: new Error('Timeout') },
+      },
+    ])(
+      'calls onDeviceEvent callback for $event event',
+      ({
+        event,
+        additionalPayload,
+      }: {
+        event: DeviceEvent;
+        additionalPayload: Record<string, unknown>;
+      }) => {
+        const onDeviceEvent = jest.fn();
+        const { result } = renderHook(() =>
+          useDeviceEventHandlers({
+            refs: mockRefs,
+            setters: mockSetters,
+            onDeviceEvent,
+          }),
+        );
 
-      const payload = { event: DeviceEvent.DeviceLocked };
-      result.current.handleDeviceEvent(payload);
+        const payload = { event, ...additionalPayload };
+        result.current.handleDeviceEvent(payload);
 
-      expect(onDeviceEvent).toHaveBeenCalledWith(payload);
-    });
+        expect(onDeviceEvent).toHaveBeenCalledWith(payload);
+      },
+    );
   });
 
   describe('handleDisconnect', () => {
@@ -409,11 +467,23 @@ describe('useDeviceEventHandlers', () => {
     it('handles structured hardware wallet errors', () => {
       const { result } = setupHook();
 
-      const error = { code: 'DEVICE_LOCKED_001' };
+      const error = new HardwareWalletError('Device locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Err,
+        category: Category.Authentication,
+        userMessage: 'Device is locked',
+      });
       result.current.handleDisconnect(error);
 
       expect(mockSetters.setConnectionState).toHaveBeenCalled();
-      // Note: The actual error conversion is tested in connectionState tests
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState.status).toBe('error');
+      expect(resultState.reason).toBe('Device locked');
+      expect(resultState.error).toBe(error);
     });
 
     it('handles generic errors', () => {
