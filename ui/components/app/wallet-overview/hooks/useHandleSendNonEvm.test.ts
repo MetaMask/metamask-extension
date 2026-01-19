@@ -72,11 +72,6 @@ const mockState = {
 };
 
 describe('useHandleSendNonEvm', () => {
-  beforeEach(() => {
-    jest.clearAllMocks();
-    (sendMultichainTransaction as jest.Mock).mockResolvedValue(undefined);
-  });
-
   it('throws an error if the selected account has no snap metadata', async () => {
     const mockStateWithoutSnapMetadata = {
       metamask: {
@@ -135,6 +130,21 @@ describe('useHandleSendNonEvm', () => {
     await expect(handleSendNonEvm()).rejects.toThrow(
       'Non-EVM Snap is not whitelisted: some-wrong-id',
     );
+  });
+
+  it('restores the previous tab in case of error with the snap', async () => {
+    (sendMultichainTransaction as jest.Mock).mockRejectedValue(
+      new Error('Error'),
+    );
+    const { result } = renderHookWithProvider(
+      () => useHandleSendNonEvm(),
+      mockState,
+    );
+    const handleSendNonEvm = result.current;
+
+    await expect(handleSendNonEvm()).resolves.not.toThrow();
+
+    expect(sendMultichainTransaction).toHaveBeenCalled();
   });
 
   describe('when a caipAssetType is provided', () => {

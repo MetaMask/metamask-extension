@@ -152,25 +152,16 @@ export const AccountListMenu = ({
           hd_entropy_index: hdEntropyIndex,
         },
       });
-      if (
-        defaultHomeActiveTabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-      ) {
-        endTrace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-      }
-
-      if (
-        defaultHomeActiveTabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP
-      ) {
-        trace({
-          name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
-            defaultHomeActiveTabName
-          ],
-        });
-      }
+      endTrace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
+          defaultHomeActiveTabName
+        ],
+      });
       dispatch(setSelectedAccount(account.address));
       dispatch(detectNfts(allChainIds));
     },
