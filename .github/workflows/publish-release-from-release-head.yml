@@ -10,18 +10,15 @@ name: Publish Release from Release HEAD
 #
 # Prerequisites:
 #   - Release-team membership is verified before any job runs
+#   - CI checks must have passed on the release branch HEAD
 #   - The workflow must be run from a release/X.Y.Z branch
 
 on:
   workflow_dispatch:
-    inputs:
-      ci_confirmed:
-        description: 'Confirm required CI checks have passed on the release HEAD SHA'
-        required: true
-        type: boolean
 
 permissions:
   contents: write # Required to push tags and create releases
+  checks: read # Required to verify CI check-runs on the SHA
 
 jobs:
   verify-release-team:
@@ -36,12 +33,6 @@ jobs:
           team: release-team
           organization: MetaMask
           exit: true
-
-      - name: Require CI confirmation
-        if: ${{ inputs.ci_confirmed != 'true' }}
-        run: |
-          echo "::error::You must confirm required CI checks have passed on the release HEAD SHA."
-          exit 1
 
   validate-branch:
     name: Validate release branch
@@ -97,12 +88,50 @@ jobs:
             echo "| SHA | \`${RELEASE_SHA}\` |"
           } >> "${GITHUB_STEP_SUMMARY}"
 
+  verify-ci-checks:
+    name: Verify CI checks passed
+    needs: validate-branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.validate-branch.outputs.release-sha }}
+          sparse-checkout: .github/scripts
+          sparse-checkout-cone-mode: false
+
+      - name: Verify required CI checks
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
+        run: .github/scripts/verify-ci-checks.sh
+
+      - name: Summary
+        if: always()
+        env:
+          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
+        run: |
+          {
+            echo "## CI Check Verification"
+            echo ""
+            echo "Verified \`all-jobs-pass\` on SHA: \`${RELEASE_SHA}\`"
+            echo ""
+            echo "This check gates all CI jobs including:"
+            echo "- Unit tests, linting, builds"
+            echo "- E2E tests (Chrome & Firefox)"
+            echo "- All other required checks"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
   # Production builds - 4 variants required for release
   # These use 'yarn build prod' (not 'yarn build dist') to match stable branch builds
 
   build-dist-browserify:
     name: Build prod (Chrome MV3)
-    needs: validate-branch
+    needs:
+      - validate-branch
+      - verify-ci-checks
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
@@ -112,7 +141,9 @@ jobs:
 
   build-dist-mv2-browserify:
     name: Build prod (Firefox MV2)
-    needs: validate-branch
+    needs:
+      - validate-branch
+      - verify-ci-checks
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
@@ -124,7 +155,9 @@ jobs:
 
   build-flask-browserify:
     name: Build Flask prod (Chrome MV3)
-    needs: validate-branch
+    needs:
+      - validate-branch
+      - verify-ci-checks
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
@@ -134,7 +167,9 @@ jobs:
 
   build-flask-mv2-browserify:
     name: Build Flask prod (Firefox MV2)
-    needs: validate-branch
+    needs:
+      - validate-branch
+      - verify-ci-checks
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
@@ -198,6 +233,8 @@ jobs:
       - build-flask-browserify
       - build-flask-mv2-browserify
     runs-on: ubuntu-latest
+    # Grant access to release-branch environment secrets (includes EXTENSION_PUBLISH_TOKEN)
+    environment: release-branch
     timeout-minutes: 30
     env:
       # Release identifiers (from validate-branch job)
