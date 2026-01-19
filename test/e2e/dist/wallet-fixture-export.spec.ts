@@ -1,6 +1,7 @@
 import path from 'path';
 import fs from 'fs-extra';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
@@ -89,10 +90,9 @@ describe('Wallet State', function () {
             );
             finalState = existingFixture;
           }
-        } catch {
-          // No existing fixture, use the new state as-is
-          console.log('📝 No existing fixture found - creating new fixture');
-          finalState = persistedState;
+        } catch (error) {
+          console.error('❌ Failed to read existing fixture file:', error);
+          throw error;
         }
 
         console.log(`\n📂 Output: ${outPath}`);

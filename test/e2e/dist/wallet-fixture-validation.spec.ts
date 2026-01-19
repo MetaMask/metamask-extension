@@ -1,5 +1,6 @@
 import path from 'path';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
 import {
   computeSchemaDiff,
