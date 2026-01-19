@@ -4142,7 +4142,7 @@
         "lodash": true,
         "eth-lattice-keyring>gridplus-sdk>ox": true,
         "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
-        "eth-lattice-keyring>gridplus-sdk>uuid": true,
+        "uuid": true,
         "viem": true,
         "eth-lattice-keyring>gridplus-sdk>zod": true
       }
@@ -6009,11 +6009,6 @@
       }
     },
     "@metamask/keyring-snap-client>uuid": {
-      "globals": {
-        "crypto": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>uuid": {
       "globals": {
         "crypto": true
       }

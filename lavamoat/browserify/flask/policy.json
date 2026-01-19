@@ -5804,6 +5804,7 @@
         "Request": true,
         "TextDecoder": true,
         "TextEncoder": true,
+        "URL": true,
         "atob": true,
         "btoa": true,
         "clearInterval": true,
