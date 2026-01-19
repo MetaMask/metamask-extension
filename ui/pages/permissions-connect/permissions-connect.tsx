@@ -25,10 +25,13 @@ import {
   Caip25EndowmentPermissionName,
   getAllNamespacesFromCaip25CaveatValue,
   getAllScopesFromCaip25CaveatValue,
+  getCaipAccountIdsFromCaip25CaveatValue,
   getEthAccounts,
   getPermittedEthChainIds,
 } from '@metamask/chain-agnostic-permission';
 import {
+  CaipChainId,
+  CaipNamespace,
   KnownCaipNamespace,
   parseCaipAccountId,
   parseCaipChainId,
@@ -99,18 +102,40 @@ function getDefaultSelectedAccounts(
 ) {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
-  const requestedAccounts = getEthAccounts(requestedCaip25CaveatValue);
 
-  if (requestedAccounts.length > 0) {
+  // First, try to get all CAIP account IDs from the permission request (chain-agnostic)
+  const requestedCaipAccountIds = getCaipAccountIdsFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  );
+
+  if (requestedCaipAccountIds.length > 0) {
+    // Extract addresses from all CAIP account IDs (supports all chain types)
+    const addresses = requestedCaipAccountIds
+      .map((caipAccountId) => {
+        try {
+          return parseCaipAccountId(caipAccountId).address.toLowerCase();
+        } catch {
+          return null;
+        }
+      })
+      .filter((address): address is string => address !== null);
+
+    if (addresses.length > 0) {
+      return new Set(addresses);
+    }
+  }
+
+  // Fallback: try EVM-specific accounts (for backward compatibility with eth_requestAccounts)
+  const requestedEthAccounts = getEthAccounts(requestedCaip25CaveatValue);
+  if (requestedEthAccounts.length > 0) {
     return new Set(
-      requestedAccounts
+      requestedEthAccounts
         .map((address) => address.toLowerCase())
-        // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
         .filter(isEthAddress),
     );
   }
 
-  // We only consider EVM accounts here (used for `eth_requestAccounts` or `eth_accounts`)
+  // Final fallback: use current address if it's an EVM address
   return new Set(isEthAddress(currentAddress) ? [currentAddress] : []);
 }
 
@@ -118,6 +143,24 @@ function getRequestedChainIds(permissions: PermissionsRequest | undefined) {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
   return getPermittedEthChainIds(requestedCaip25CaveatValue);
+}
+
+/**
+ * Gets all requested namespaces from permissions (excluding wallet namespace).
+ *
+ * @param permissions - The permissions request object
+ * @returns Array of CAIP namespaces (e.g., 'eip155', 'bip122', 'solana')
+ */
+function getRequestedNamespaces(
+  permissions: PermissionsRequest | undefined,
+): CaipNamespace[] {
+  const requestedCaip25CaveatValue =
+    getCaip25CaveatValueFromPermissions(permissions);
+  return getAllNamespacesFromCaip25CaveatValue(
+    requestedCaip25CaveatValue,
+  ).filter(
+    (namespace) => namespace !== KnownCaipNamespace.Wallet,
+  ) as CaipNamespace[];
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -196,12 +239,50 @@ function PermissionsConnect() {
   const requestState =
     useSelector((state) => getRequestState(state, permissionsRequestId)) || {};
 
-  // We only consider EVM accounts.
-  // Connections with non-EVM accounts (Bitcoin only for now) are used implicitly and handled by the Bitcoin Snap itself.
-  const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
-    (account: { type: string }) =>
-      isEvmAccountType(account.type as KeyringAccountType),
+  // Get all accounts with labels (unfiltered)
+  const allAccountsWithLabels = useSelector(getAccountsWithLabels);
+
+  // Get requested namespaces from the permission request
+  const requestedNamespacesForRequest = useMemo(
+    () => getRequestedNamespaces(permissions as PermissionsRequest | undefined),
+    [permissions],
   );
+
+  // Filter accounts based on requested namespaces (chain-agnostic)
+  // If no specific namespaces requested, default to EVM-only for backward compatibility
+  const accountsWithLabels = useMemo(() => {
+    // For backward compatibility: if no namespaces requested or only EVM requested,
+    // filter to EVM accounts only
+    if (
+      requestedNamespacesForRequest.length === 0 ||
+      (requestedNamespacesForRequest.length === 1 &&
+        requestedNamespacesForRequest[0] === KnownCaipNamespace.Eip155)
+    ) {
+      return allAccountsWithLabels.filter((account: { type: string }) =>
+        isEvmAccountType(account.type as KeyringAccountType),
+      );
+    }
+
+    // For multichain requests, filter accounts that have scopes matching requested namespaces
+    return allAccountsWithLabels.filter(
+      (account: { scopes?: string[]; type: string }) => {
+        // Check if account has scopes that match any requested namespace
+        if (account.scopes && Array.isArray(account.scopes)) {
+          return account.scopes.some((scope) => {
+            const [namespace] = scope.split(':');
+            return requestedNamespacesForRequest.includes(
+              namespace as CaipNamespace,
+            );
+          });
+        }
+        // Fallback: check if it's an EVM account and EVM is requested
+        if (requestedNamespacesForRequest.includes(KnownCaipNamespace.Eip155)) {
+          return isEvmAccountType(account.type as KeyringAccountType);
+        }
+        return false;
+      },
+    );
+  }, [allAccountsWithLabels, requestedNamespacesForRequest]);
 
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
   const lastConnectedInfoRaw = useSelector(getLastConnectedInfo);
@@ -502,27 +583,36 @@ function PermissionsConnect() {
       permissions as PermissionsRequest | undefined,
     );
 
-    const caipChainIdsToUse: `${string}:${string}`[] = [];
-
+    // Get all requested scopes (chain IDs), excluding wallet namespace
     const requestedCaipChainIds = getAllScopesFromCaip25CaveatValue(
       requestedCaip25CaveatValue,
     ).filter((chainId) => {
-      const { namespace } = parseCaipChainId(chainId);
-      return namespace !== KnownCaipNamespace.Wallet;
-    });
+      try {
+        const { namespace } = parseCaipChainId(chainId);
+        return namespace !== KnownCaipNamespace.Wallet;
+      } catch {
+        return false;
+      }
+    }) as CaipChainId[];
+
+    // Get all requested namespaces, excluding wallet namespace
     const requestedNamespaces = getAllNamespacesFromCaip25CaveatValue(
       requestedCaip25CaveatValue,
-    );
+    ).filter(
+      (namespace) => namespace !== KnownCaipNamespace.Wallet,
+    ) as CaipNamespace[];
 
-    if (requestedCaipChainIds.length > 0) {
-      requestedCaipChainIds.forEach((chainId) => {
-        caipChainIdsToUse.push(chainId);
-      });
-    }
+    // Build scopes to use: include all requested chain IDs
+    const caipChainIdsToUse: CaipChainId[] = [...requestedCaipChainIds];
 
-    if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
-      caipChainIdsToUse.push(`${KnownCaipNamespace.Eip155}:0`);
-    }
+    // Add wildcard scope for each requested namespace to ensure all compatible accounts are included
+    // This is chain-agnostic - it adds wildcards for eip155, bip122, solana, etc.
+    requestedNamespaces.forEach((namespace) => {
+      const wildcardScope = `${namespace}:0` as CaipChainId;
+      if (!caipChainIdsToUse.includes(wildcardScope)) {
+        caipChainIdsToUse.push(wildcardScope);
+      }
+    });
 
     return (
       <MultichainEditAccountsPageWrapper
@@ -534,10 +624,12 @@ function PermissionsConnect() {
               accountGroupIds.includes(group.id) &&
               supportsChainIds(group, caipChainIdsToUse),
           );
-          const addresses = getCaip25AccountIdsFromAccountGroupAndScope(
+          const caipAccountIds = getCaip25AccountIdsFromAccountGroupAndScope(
             filteredAccountGroups,
             caipChainIdsToUse,
-          ).map(
+          );
+          // Extract addresses from CAIP account IDs
+          const addresses = caipAccountIds.map(
             (caip25AccountId) => parseCaipAccountId(caip25AccountId).address,
           );
           selectAccounts(new Set(addresses));
