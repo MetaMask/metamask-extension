@@ -11,6 +11,10 @@ import {
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { AccountOverviewTabs } from './account-overview-tabs';
 
+jest.mock('../../../store/actions', () => ({
+  setDefaultHomeActiveTabName: jest.fn(),
+}));
+
 jest.mock('../../app/assets/asset-list', () => ({
   // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,

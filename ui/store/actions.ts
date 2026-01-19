@@ -4461,21 +4461,8 @@ export function setPreference(
 export function setDefaultHomeActiveTabName(
   value: string,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const currentValue = getState().metamask.defaultHomeActiveTabName;
-
-    if (currentValue === value) {
-      return;
-    }
-
+  return async () => {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: { defaultHomeActiveTabName: value },
-    });
   };
 }
 
