@@ -230,7 +230,9 @@ export const mergeFixtureChanges = (
   }
 
   // Remove missing keys - only delete the specific property that was removed
-  processedPaths.clear();
+  // Note: We intentionally do NOT clear processedPaths here. When an array has both
+  // new and removed properties, both map to the same leafPath via getLeafKeyPath.
+  // If we cleared processedPaths, we would delete the array we just set from newState.
   for (const keyPath of schemaDiff.missingKeys) {
     // Skip if this is an ignored key
     if (shouldIgnoreKey(keyPath, ignoredKeys)) {
