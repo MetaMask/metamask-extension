@@ -76,7 +76,7 @@ import {
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
-  getAccountTree,
+  getAccountListStats,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
@@ -106,30 +106,7 @@ export const AppHeaderUnlockedContent = ({
   const selectedMultichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
-  const accountTree = useSelector(getAccountTree);
-
-  // Calculate account list stats for analytics
-  const accountListStats = useMemo(() => {
-    let pinnedCount = 0;
-    let hiddenCount = 0;
-    let totalAccounts = 0;
-
-    if (accountTree?.wallets) {
-      for (const wallet of Object.values(accountTree.wallets)) {
-        for (const group of Object.values(wallet.groups || {})) {
-          totalAccounts += 1;
-          if (group.metadata?.pinned) {
-            pinnedCount += 1;
-          }
-          if (group.metadata?.hidden) {
-            hiddenCount += 1;
-          }
-        }
-      }
-    }
-
-    return { pinnedCount, hiddenCount, totalAccounts };
-  }, [accountTree]);
+  const accountListStats = useSelector(getAccountListStats);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
