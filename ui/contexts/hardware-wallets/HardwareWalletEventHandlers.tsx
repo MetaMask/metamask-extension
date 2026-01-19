@@ -75,18 +75,18 @@ export const useDeviceEventHandlers = ({
 }: Omit<DeviceEventHandlerProps, 'state'>) => {
   const updateConnectionState = useCallback(
     (newState: HardwareWalletConnectionState) => {
-      setters.setConnectionState((prev) => {
-        if (prev.status !== newState.status) {
+      setters.setConnectionState((oldState) => {
+        if (oldState.status !== newState.status) {
           return newState;
         }
 
         if (
           newState.status === ConnectionStatus.ErrorState &&
-          prev.status === ConnectionStatus.ErrorState
+          oldState.status === ConnectionStatus.ErrorState
         ) {
           if (
-            prev.reason !== newState.reason ||
-            prev.error?.message !== newState.error?.message
+            oldState.reason !== newState.reason ||
+            oldState.error?.message !== newState.error?.message
           ) {
             return newState;
           }
@@ -94,17 +94,18 @@ export const useDeviceEventHandlers = ({
 
         if (
           newState.status === ConnectionStatus.AwaitingApp &&
-          prev.status === ConnectionStatus.AwaitingApp
+          oldState.status === ConnectionStatus.AwaitingApp
         ) {
           if (
-            prev.reason !== newState.reason ||
-            prev.appName !== newState.appName
+            oldState.reason !== newState.reason ||
+            oldState.appName !== newState.appName
           ) {
             return newState;
           }
         }
 
-        return prev;
+        // Nothing changed, keep using the same ref
+        return oldState;
       });
     },
     [setters],
