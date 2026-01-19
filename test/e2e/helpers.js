@@ -564,30 +564,6 @@ const clickNestedButton = async (driver, tabName) => {
 };
 
 /**
- * Unlocks the wallet using the provided password.
- * This method is intended to replace driver.navigate and should not be called after driver.navigate.
- *
- * @deprecated Use {@link loginWithBalanceValidation} or {@link loginWithoutBalanceValidation} instead.
- * @param {WebDriver} driver - The webdriver instance
- * @param {object} [options] - Options for unlocking the wallet
- * @param {boolean} [options.navigate] - Whether to navigate to the root page prior to unlocking - defaults to true
- * @param {string} [options.password] - Password to unlock wallet - defaults to shared WALLET_PASSWORD
- */
-async function unlockWallet(
-  driver,
-  { navigate = true, password = WALLET_PASSWORD } = {},
-) {
-  if (navigate) {
-    await driver.navigate();
-  }
-
-  await driver.waitForSelector('#password', { state: 'enabled' });
-  await driver.fill('#password', password);
-  await driver.press('#password', driver.Key.ENTER);
-  await driver.assertElementNotPresent('[data-testid="unlock-page"]');
-}
-
-/**
  * Simulates a WebSocket connection by executing a script in the browser context.
  *
  * @param {WebDriver} driver - The WebDriver instance.
@@ -793,7 +769,6 @@ module.exports = {
   veryLargeDelayMs,
   withFixtures,
   createDownloadFolder,
-  unlockWallet,
   convertETHToHexGwei,
   roundToXDecimalPlaces,
   generateRandNumBetween,

@@ -9,7 +9,7 @@ import NftListPage from '../../../page-objects/pages/home/nft-list';
 import NetworkManager, {
   NetworkId,
 } from '../../../page-objects/pages/network-manager';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -102,7 +102,7 @@ describe('View NFT details', function () {
         driver: Driver;
         localNodes: Anvil[];
       }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+        await loginWithoutBalanceValidation(driver, localNodes[0]);
 
         const networkManager = new NetworkManager(driver);
 

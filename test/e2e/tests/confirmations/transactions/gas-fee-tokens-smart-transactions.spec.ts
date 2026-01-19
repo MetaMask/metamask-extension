@@ -66,7 +66,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await loginWithBalanceValidation(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '20 ETH',
+        );
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

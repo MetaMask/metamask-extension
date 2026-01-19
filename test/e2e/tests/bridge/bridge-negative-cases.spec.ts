@@ -16,7 +16,7 @@ import {
   FAILED_DEST_TRANSACTION,
   DEFAULT_BRIDGE_FEATURE_FLAGS,
 } from './constants';
-x
+
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '24.998';
 
 describe('Bridge functionality', function (this: Suite) {
