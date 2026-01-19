@@ -57,7 +57,7 @@ describe('Wallet State', function () {
             '🤖 Automatic update: comment @metamaskbot update-e2e-fixture',
           );
           console.log(
-            '\n🛠️  Manual update steps:\n  yarn dist\n  yarn test:e2e:single test/e2e/fixtures/wallet-fixture-export.spec.ts --browser chrome',
+            '\n🛠️  Manual update steps:\n  yarn dist\n  yarn test:e2e:single test/e2e/dist/wallet-fixture-export.spec.ts --browser chrome',
           );
           console.log(
             '\n=============================================================================\n',
