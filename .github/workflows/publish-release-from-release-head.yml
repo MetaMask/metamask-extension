@@ -17,7 +17,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Required to push tags and create releases
+  contents: read # Default read-only; publish-release job elevates to write
   checks: read # Required to verify CI check-runs on the SHA
   actions: read # Required to download artifacts from build jobs
 
@@ -162,6 +162,10 @@ jobs:
     runs-on: ubuntu-latest
     # Grant access to release-branch environment secrets (includes EXTENSION_PUBLISH_TOKEN)
     environment: release-branch
+    # Elevated permissions for this job only (least-privilege)
+    permissions:
+      contents: write # Required to push tags and create releases
+      actions: read # Required to download artifacts
     timeout-minutes: 30
     env:
       # Release identifiers (from validate-branch job)
