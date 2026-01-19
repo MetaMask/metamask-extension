@@ -131,6 +131,7 @@
         "usdConversionRate": 0.2
       }
     },
+    "connectivityStatus": "online",
     "throttledOrigins": "object",
     "isSeedlessOnboardingUserAuthenticated": "boolean",
     "activeQrCodeScanRequest": null,
