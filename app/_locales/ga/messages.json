@@ -1853,6 +1853,14 @@
   "defiEmptyDescription": {
     "message": "Iasachtaigh, faigh iasacht, agus trádáil, díreach i do sparán."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Lig do MetaMask cód atreoraithe a chur leis. Tá sé seo buan. Cuireann an suíomh lascainí ar fáil de réir a dtéarmaí féin. Gearrtar táille ar MetaMask.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralSubtitle": {
+    "message": "Sábháil suas le 4% ar thrádálacha le cód atreoraithe MetaMask.",
+    "description": "The subtitle of the DeFi referral confirmation screen"
+  },
   "defiTabErrorContent": {
     "message": "Déan iarracht cuairt a thabhairt arís níos déanaí."
   },
@@ -2776,14 +2784,6 @@
   },
   "honeypotTitle": {
     "message": "Pota Meala"
-  },
-  "defiReferralCheckboxLabel": {
-    "message": "Lig do MetaMask cód atreoraithe a chur leis. Tá sé seo buan. Cuireann an suíomh lascainí ar fáil de réir a dtéarmaí féin. Gearrtar táille ar MetaMask.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
-  "defiReferralSubtitle": {
-    "message": "Sábháil suas le 4% ar thrádálacha le cód atreoraithe MetaMask.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "MetaMask x Hyperliquid",

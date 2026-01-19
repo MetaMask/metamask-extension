@@ -2007,6 +2007,14 @@
   "defiEmptyDescription": {
     "message": "Pinjamkan, pinjam, dan berdagang, langsung di dompet Anda."
   },
+  "defiReferralCheckboxLabel": {
+    "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
+  },
+  "defiReferralSubtitle": {
+    "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
+    "description": "The subtitle of the DeFi referral confirmation screen"
+  },
   "defiTabErrorContent": {
     "message": "Coba kunjungi lagi nanti."
   },
@@ -2994,14 +3002,6 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
-  },
-  "defiReferralCheckboxLabel": {
-    "message": "Izinkan MetaMask menambahkan kode rujukan. Kode ini bersifat permanen. Situs ini menawarkan diskon sesuai ketentuan mereka. MetaMask mendapatkan komisi.",
-    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
-  },
-  "defiReferralSubtitle": {
-    "message": "Hemat hingga 4% untuk perdagangan dengan kode rujukan MetaMask.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "MetaMask x Hyperliquid",
