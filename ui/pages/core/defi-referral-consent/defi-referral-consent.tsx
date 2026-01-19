@@ -14,26 +14,25 @@ import {
   TextVariant,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  DEFI_REFERRAL_PARTNERS,
-  DefiReferralPartner,
-} from '../../../../shared/constants/defi-referrals';
 
-const HYPERLIQUID_REFERRAL_LEARN_MORE_URL =
-  DEFI_REFERRAL_PARTNERS[DefiReferralPartner.Hyperliquid].learnMoreUrl;
-
-export type HyperliquidReferralConsentProps = {
+export type DefiReferralConsentProps = {
   onActionComplete: (result: {
     approved: boolean;
     selectedAddress: string;
   }) => void;
   selectedAddress: string;
+  partnerId: string;
+  partnerName: string;
+  learnMoreUrl: string;
 };
 
-const HyperliquidLink: React.FC<{ text: string }> = ({ text }) => {
+const PartnerLink: React.FC<{ text: string; url: string }> = ({
+  text,
+  url,
+}) => {
   return (
     <a
-      href={HYPERLIQUID_REFERRAL_LEARN_MORE_URL}
+      href={url}
       target="_blank"
       rel="noopener noreferrer"
       style={{
@@ -46,19 +45,26 @@ const HyperliquidLink: React.FC<{ text: string }> = ({ text }) => {
   );
 };
 
-const HyperliquidImage: React.FC = () => {
+const PartnerImage: React.FC<{ partnerId: string; partnerName: string }> = ({
+  partnerId,
+  partnerName,
+}) => {
   return (
     <img
-      src="./images/hyperliquid-referral.png"
-      alt="Hyperliquid referral"
+      src={`./images/${partnerId}-referral.png`}
+      alt={`${partnerName} referral`}
       width="full"
     />
   );
 };
 
-export const HyperliquidReferralConsent: React.FC<
-  HyperliquidReferralConsentProps
-> = ({ onActionComplete, selectedAddress }) => {
+export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
+  onActionComplete,
+  selectedAddress,
+  partnerId,
+  partnerName,
+  learnMoreUrl,
+}) => {
   const t = useI18nContext();
   const [isChecked, setIsChecked] = useState(true);
 
@@ -86,11 +92,11 @@ export const HyperliquidReferralConsent: React.FC<
           variant={TextVariant.HeadingMd}
           fontWeight={FontWeight.Bold}
         >
-          {t('hyperliquidReferralTitle')}
+          {t('defiReferralTitle', [partnerName])}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('hyperliquidReferralSubtitle')}{' '}
-          <HyperliquidLink text={t('learnMoreUpperCase')} />
+          {t('defiReferralSubtitle')}{' '}
+          <PartnerLink text={t('learnMoreUpperCase')} url={learnMoreUrl} />
         </Text>
       </Box>
       <Box
@@ -100,7 +106,7 @@ export const HyperliquidReferralConsent: React.FC<
         className="h-full"
       >
         <Box paddingBottom={6} paddingHorizontal={4}>
-          <HyperliquidImage />
+          <PartnerImage partnerId={partnerId} partnerName={partnerName} />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} gap={4}>
           <Box
@@ -109,10 +115,10 @@ export const HyperliquidReferralConsent: React.FC<
             className="rounded-lg"
           >
             <Checkbox
-              id="hyperliquid-referral-consent-checkbox"
+              id="defi-referral-consent-checkbox"
               isSelected={isChecked}
               onChange={handleCheckboxClick}
-              label={t('hyperliquidReferralCheckboxLabel')}
+              label={t('defiReferralCheckboxLabel')}
               labelProps={{
                 variant: TextVariant.BodySm,
                 color: TextColor.TextAlternative,

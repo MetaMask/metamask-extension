@@ -2995,13 +2995,13 @@
   "honeypotTitle": {
     "message": "Honeypot"
   },
-  "hyperliquidReferralCheckboxLabel": {
+  "defiReferralCheckboxLabel": {
     "message": "Erlauben Sie MetaMask, einen Empfehlungscode hinzuzufügen. Dieser ist dauerhaft. Die Website gewährt Rabatte gemäß ihren Bedingungen. MetaMask erhält eine Gebühr.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "hyperliquidReferralSubtitle": {
+  "defiReferralSubtitle": {
     "message": "Sparen Sie bis zu 4 % auf Trades mit einem MetaMask-Empfehlungscode.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+    "description": "The subtitle of the DeFi referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "MetaMask x Hyperliquid",

@@ -1,7 +1,7 @@
 import { ApprovalRequest } from '@metamask/approval-controller';
 import { Json } from '@metamask/utils';
 
-type HyperliquidReferralConsentActions = {
+type DefiReferralConsentActions = {
   resolvePendingApproval: (
     id: string,
     value: {
@@ -11,13 +11,14 @@ type HyperliquidReferralConsentActions = {
   ) => void;
 };
 
-type HyperliquidReferralConsentResult = {
+type DefiReferralConsentResult = {
   approved: boolean;
   selectedAddress: string;
 };
 
 /**
  * Returns the templated values to be consumed in the confirmation page.
+ * This is a generic template for all DeFi referral partners.
  *
  * @param pendingApproval - The pending confirmation object.
  * @param _t - Translation function.
@@ -27,12 +28,12 @@ type HyperliquidReferralConsentResult = {
 function getValues(
   pendingApproval: ApprovalRequest<Record<string, Json>>,
   _t: (key: string) => string,
-  actions: HyperliquidReferralConsentActions,
+  actions: DefiReferralConsentActions,
 ) {
   const { requestData } = pendingApproval;
-  const { selectedAddress } = requestData;
+  const { selectedAddress, partnerId, partnerName, learnMoreUrl } = requestData;
 
-  const onActionComplete = (result: HyperliquidReferralConsentResult) => {
+  const onActionComplete = (result: DefiReferralConsentResult) => {
     actions.resolvePendingApproval(pendingApproval.id, {
       approved: result.approved,
       selectedAddress: result.selectedAddress,
@@ -42,11 +43,14 @@ function getValues(
   return {
     content: [
       {
-        element: 'HyperliquidReferralConsent',
-        key: 'hyperliquid-referral-consent',
+        element: 'DefiReferralConsent',
+        key: 'defi-referral-consent',
         props: {
           onActionComplete,
           selectedAddress,
+          partnerId,
+          partnerName,
+          learnMoreUrl,
         },
       },
     ],
@@ -54,8 +58,8 @@ function getValues(
   };
 }
 
-const hyperliquidReferralConsent = {
+const defiReferralConsent = {
   getValues,
 };
 
-export default hyperliquidReferralConsent;
+export default defiReferralConsent;

@@ -64,7 +64,7 @@ import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
-import { HyperliquidReferralConsent } from '../../../pages/core/hyperliquid-referral-consent';
+import { DefiReferralConsent } from '../../../pages/core/defi-referral-consent';
 
 export const safeComponentList = {
   a: 'a',
@@ -81,10 +81,10 @@ export const safeComponentList = {
   ConfirmInfoRowAddress,
   ConfirmInfoRowValueDouble,
   Copyable,
+  DefiReferralConsent,
   DefinitionList,
   div: 'div',
   FormTextField,
-  HyperliquidReferralConsent,
   i: 'i',
   MetaMaskTranslation,
   OriginPill,

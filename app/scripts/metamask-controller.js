@@ -5999,7 +5999,12 @@ export default class MetamaskController extends EventEmitter {
         const approvalResponse = await this.approvalController.add({
           origin: partner.origin,
           type: partner.approvalType,
-          requestData: { selectedAddress: activePermittedAccount },
+          requestData: {
+            selectedAddress: activePermittedAccount,
+            partnerId: partner.id,
+            partnerName: partner.name,
+            learnMoreUrl: partner.learnMoreUrl,
+          },
           shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
         });
 

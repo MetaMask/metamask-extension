@@ -2989,13 +2989,13 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "hyperliquidReferralCheckboxLabel": {
+  "defiReferralCheckboxLabel": {
     "message": "允许 MetaMask 添加推荐码。此设置为永久有效。相关网站将根据其条款提供折扣。MetaMask 将从中收取费用。",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "hyperliquidReferralSubtitle": {
+  "defiReferralSubtitle": {
     "message": "使用 MetaMask 推荐码交易费用最高可节省 4%。",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+    "description": "The subtitle of the DeFi referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "MetaMask x Hyperliquid",

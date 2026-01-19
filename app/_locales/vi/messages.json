@@ -2995,13 +2995,13 @@
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
   },
-  "hyperliquidReferralCheckboxLabel": {
+  "defiReferralCheckboxLabel": {
     "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
-    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+    "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "hyperliquidReferralSubtitle": {
+  "defiReferralSubtitle": {
     "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
-    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+    "description": "The subtitle of the DeFi referral confirmation screen"
   },
   "hyperliquidReferralTitle": {
     "message": "MetaMask x Hyperliquid",
