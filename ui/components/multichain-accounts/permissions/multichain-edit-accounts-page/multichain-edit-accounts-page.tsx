@@ -1,6 +1,7 @@
 import React, { useCallback, useContext, useMemo, useState } from 'react';
 import { AccountGroupId, AccountWalletId } from '@metamask/account-api';
 import { useSelector } from 'react-redux';
+import classnames from 'classnames';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   Box,
@@ -127,7 +128,14 @@ export const MultichainEditAccountsPage: React.FC<
   return (
     <Page
       data-testid="modal-page"
-      className={`main-container connect-page multichain-edit-accounts-page${isSnapsPermissionsRequest ? ' multichain-edit-accounts-page--snap' : ''}`}
+      className={classnames(
+        'main-container',
+        'connect-page',
+        'multichain-edit-accounts-page',
+        ...(isSnapsPermissionsRequest
+          ? ['multichain-edit-accounts-page--snap']
+          : []),
+      )}
       backgroundColor={BackgroundColor.backgroundDefault}
     >
       {!isSnapsPermissionsRequest && (
@@ -167,6 +175,8 @@ export const MultichainEditAccountsPage: React.FC<
           data-testid="connect-more-accounts-button"
           onClick={handleConnect}
           size={ButtonSecondarySize.Lg}
+          // Allow 0 accounts selected for revoke flow (editing existing permissions),
+          // but require at least 1 account for new sessions
           disabled={
             selectedAccountGroups.length === 0 &&
             defaultSelectedAccountGroups.length === 0

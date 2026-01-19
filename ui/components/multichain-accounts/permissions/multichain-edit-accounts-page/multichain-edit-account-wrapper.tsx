@@ -72,8 +72,10 @@ export const MultichainEditAccountsPageWrapper = ({
       (group) => !selectedIds.has(group.id),
     );
     return [
-      ...selectedAndRequestedAccountGroups.map((group) => group.id),
-      ...additionalConnectedGroups.map((group) => group.id),
+      ...new Set([
+        ...selectedAndRequestedAccountGroups.map((group) => group.id),
+        ...additionalConnectedGroups.map((group) => group.id),
+      ]),
     ];
   }, [selectedAndRequestedAccountGroups, connectedAccountGroups]);
 
@@ -84,7 +86,7 @@ export const MultichainEditAccountsPageWrapper = ({
       supportedAccountGroups={supportedAccountGroups}
       onSubmit={onSubmit}
       onClose={onClose}
-      isSnapsPermissionsRequest={Boolean(isSnapsPermissionsRequest)}
+      isSnapsPermissionsRequest={isSnapsPermissionsRequest}
     />
   );
 };

@@ -13,6 +13,7 @@ import {
   getTokenTransferPermissionsByOrigin,
   getPermissionMetaDataByOrigin,
 } from '../../../../selectors/gator-permissions/gator-permissions';
+import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../../../shared/lib/multichain/scope-utils';
 import { MultichainReviewPermissions } from './multichain-review-permissions-page';
 
 const mockUseNavigate = jest.fn();
@@ -57,6 +58,11 @@ jest.mock('../../../../../shared/modules/environment');
 jest.mock('../../../../selectors/gator-permissions/gator-permissions', () => ({
   getPermissionMetaDataByOrigin: jest.fn(),
   getTokenTransferPermissionsByOrigin: jest.fn(),
+}));
+
+jest.mock('../../../../../shared/lib/multichain/scope-utils', () => ({
+  ...jest.requireActual('../../../../../shared/lib/multichain/scope-utils'),
+  getCaip25AccountIdsFromAccountGroupAndScope: jest.fn(),
 }));
 
 const mockAccountGroups = [
@@ -278,6 +284,16 @@ describe('MultichainReviewPermissions', () => {
         selectedAndRequestedAccountGroups: mockAccountGroups,
       });
 
+      const remainingCaipAccountIds = generateCaipAccountIds([
+        mockAccountGroups[0],
+      ]);
+
+      const mockGetCaip25AccountIds =
+        getCaip25AccountIdsFromAccountGroupAndScope as jest.MockedFunction<
+          typeof getCaip25AccountIdsFromAccountGroupAndScope
+        >;
+      mockGetCaip25AccountIds.mockReturnValue(remainingCaipAccountIds);
+
       const { getAllByTestId, getByTestId } = render();
       const setPermittedAccountsSpy = jest.spyOn(
         actions,
@@ -301,7 +317,10 @@ describe('MultichainReviewPermissions', () => {
       fireEvent.click(submitButton);
 
       await waitFor(() => {
-        expect(setPermittedAccountsSpy).toHaveBeenCalled();
+        expect(setPermittedAccountsSpy).toHaveBeenCalledWith(
+          'https://test.dapp',
+          remainingCaipAccountIds,
+        );
         expect(getByTestId(TEST_IDS.CONNECTIONS_PAGE)).toBeInTheDocument();
       });
     });
@@ -336,6 +355,7 @@ describe('MultichainReviewPermissions', () => {
 
       expect(firstCheckbox).toBeChecked();
 
+      // To deselect all accounts.
       fireEvent.change(firstCheckbox, { target: { checked: false } });
 
       await waitFor(() => {
