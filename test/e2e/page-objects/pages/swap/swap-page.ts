@@ -67,7 +67,7 @@ class SwapPage {
   };
 
   private readonly rateMessage = {
-    text: `Rate includes 0.875% fee`,
+    text: `Includes 0.875% MM fee.`,
     tag: 'p',
   };
 
@@ -249,7 +249,7 @@ class SwapPage {
     await this.driver.fill(this.reviewFromAmount, options.amount.toString());
   }
 
-  async reviewSolanaQuote(options: SwapSolanaReviewOptions) {
+  async reviewQuote(options: SwapSolanaReviewOptions) {
     await this.driver.waitForSelector(this.submitSwapButton);
     const fromAmount = await this.driver.findElement(this.reviewFromAmount);
     const fromAmountText = await fromAmount.getAttribute('value');

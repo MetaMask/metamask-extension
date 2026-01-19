@@ -1,11 +1,4 @@
 import {
-  withFixtures,
-  unlockWallet,
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-} from '../helpers';
-import FixtureBuilder from '../fixtures/fixture-builder';
-import {
   BUNDLER_URL,
   DAPP_PATH,
   DAPP_URL,
@@ -17,7 +10,10 @@ import {
   LOCAL_NODE_PRIVATE_KEY,
   SIMPLE_ACCOUNT_FACTORY,
   VERIFYING_PAYMASTER,
+  WINDOW_TITLES,
 } from '../constants';
+import { withFixtures, convertETHToHexGwei } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
@@ -26,6 +22,7 @@ import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import SendTokenPage from '../page-objects/pages/send/send-token-page';
 import HomePage from '../page-objects/pages/home/homepage';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -222,7 +219,8 @@ async function withAccountSnap(
       driver: Driver;
       bundlerServer: Bundler;
     }) => {
-      await unlockWallet(driver);
+      // Todo: use POM and consolidate balance check when balance is 0 ('fund your wallet' is displayed)
+      await loginWithoutBalanceValidation(driver);
       await installExampleSnap(driver);
 
       await setSnapConfig(driver, {

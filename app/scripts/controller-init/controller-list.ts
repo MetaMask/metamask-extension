@@ -71,6 +71,7 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
 import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   DecryptMessageManager,
@@ -83,6 +84,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -134,6 +136,7 @@ export type Controller =
   | EncryptionPublicKeyManager
   | EnsController
   | ErrorReportingService
+  | StorageService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
@@ -203,7 +206,8 @@ export type Controller =
   | NetworkEnablementController
   | ClaimsService
   | ProfileMetricsController
-  | ProfileMetricsService;
+  | ProfileMetricsService
+  | ConnectivityController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.

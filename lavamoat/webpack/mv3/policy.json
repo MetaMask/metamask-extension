@@ -718,7 +718,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/eth-json-rpc-middleware": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1027,10 +1027,11 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1146,6 +1147,13 @@
       "packages": {
         "@metamask/scure-bip39>@noble/hashes": true,
         "@metamask/scure-bip39>@scure/base": true
+      }
+    },
+    "@metamask/smart-transactions-controller": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "reselect": true
       }
     },
     "@metamask/snaps-execution-environments": {
