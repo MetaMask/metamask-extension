@@ -23,7 +23,7 @@ version="v${rawVersion}"
 
 # Validate that the version was successfully extracted
 if [[ -z "${rawVersion}" ]]; then
-    echo "::error:: Failed to extract version. Provide RELEASE_TAG or ensure commit message follows 'release/x.y.z'."
+    echo "::error::Failed to extract version. Provide RELEASE_TAG or ensure commit message follows 'release/x.y.z'."
     exit 1
 fi
 
