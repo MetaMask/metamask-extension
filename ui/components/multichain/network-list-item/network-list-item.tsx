@@ -264,19 +264,20 @@ export const NetworkListItem = ({
             wrapperClassName="multichain-network-list-item__tooltip"
             disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            <Box
-              ref={networkRef}
-              onKeyDown={handleKeyPress}
-              tabIndex={0} // Enable keyboard focus
+            <Text
+              color={TextColor.TextDefault}
+              variant={variant ?? TextVariant.BodyMd}
+              className="truncate"
+              asChild
             >
-              <Text
-                color={TextColor.TextDefault}
-                variant={variant ?? TextVariant.BodyMd}
-                ellipsis
+              <div
+                ref={networkRef}
+                onKeyDown={handleKeyPress}
+                tabIndex={0} // Enable keyboard focus
               >
                 {name}
-              </Text>
-            </Box>
+              </div>
+            </Text>
           </Tooltip>
         </Box>
         {isNetworkGasSponsored(chainId) && (
@@ -297,7 +298,7 @@ export const NetworkListItem = ({
             <Text
               variant={TextVariant.BodySm}
               color={TextColor.TextAlternative}
-              ellipsis
+              className="truncate"
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>

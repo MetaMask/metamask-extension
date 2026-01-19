@@ -327,6 +327,7 @@ const DefaultNetworks = memo(() => {
           iconSrc={iconSrc}
           iconSize={AvatarNetworkSize.Md}
           focus={false}
+          variant={TextVariant.bodyMdMedium}
           rpcEndpoint={
             hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
