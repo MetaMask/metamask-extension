@@ -55,6 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
 - Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
 
+## [13.14.1]
+
+### Changed
+
+- Set 10-minute delay on first profile metrics collection after acknowledgement, rather than delaying until 2nd unlock (#39270)
+
 ## [13.14.0]
 
 ### Added
@@ -1590,7 +1596,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
-[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.15.0
+[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.15.0
+[13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
 [13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
