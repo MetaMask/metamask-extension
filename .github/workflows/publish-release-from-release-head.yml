@@ -79,7 +79,6 @@ jobs:
       - validate-branch
       - verify-ci-checks
     runs-on: ubuntu-latest
-    timeout-minutes: 5
     environment: release-branch
     steps:
       - run: echo "Release approval granted."

@@ -96,10 +96,19 @@ fi
 echo ""
 echo "=== Creating GitHub Release ==="
 
-# Check if release already exists (idempotency)
-if gh release view "${tag}" >/dev/null 2>&1; then
-    printf '%s\n' "✅ Release ${tag} already exists. Skipping GitHub Release creation."
-    exit 0
+# Check if release already exists (idempotency + SHA verification)
+existing_target=$(gh release view "${tag}" --json targetCommitish --jq .targetCommitish 2>/dev/null || true)
+if [[ -n "${existing_target}" ]]; then
+    if [[ "${existing_target}" == "${RELEASE_SHA}" ]]; then
+        printf '%s\n' "✅ Release ${tag} already exists at correct SHA (${RELEASE_SHA:0:7}). Skipping."
+        exit 0
+    else
+        echo "::error::Release ${tag} exists at different SHA!"
+        echo "::error::  Expected: ${RELEASE_SHA:0:7}"
+        echo "::error::  Actual:   ${existing_target:0:7}"
+        echo "::error::This indicates a version conflict. Cannot proceed."
+        exit 1
+    fi
 fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."

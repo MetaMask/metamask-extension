@@ -50,7 +50,7 @@ CHECK_RESULT=$(
     '
 )
 
-if [[ -z "${CHECK_RESULT}" || "${CHECK_RESULT}" == "null" ]]; then
+if [[ -z "${CHECK_RESULT}" ]]; then
     echo "::error::Required check 'all-jobs-pass' not found on SHA ${RELEASE_SHA}"
     echo "::error::Ensure CI has run on this SHA before publishing."
     print_check_run_names
