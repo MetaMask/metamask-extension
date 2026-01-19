@@ -1,12 +1,15 @@
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import type {
-  MetaMaskReduxDispatch,
-  MetaMaskReduxState,
-} from '../store';
-import { displayWarning, hideLoadingIndication, hideWarning, showLoadingIndication } from '../actions';
-import { setShowNewSrpAddedToast } from '../../components/app/toast-master/utils';
 import log from 'loglevel';
+import type { MetaMaskReduxDispatch, MetaMaskReduxState } from '../store';
+import {
+  displayWarning,
+  hideLoadingIndication,
+  hideWarning,
+  showLoadingIndication,
+} from '../actions';
+import { setShowNewSrpAddedToast } from '../../components/app/toast-master/utils';
+import { callBackgroundMethod } from '../background-connection';
 
 export function createMpcWallet(): ThunkAction<
   Promise<void>,
@@ -18,10 +21,14 @@ export function createMpcWallet(): ThunkAction<
     dispatch(showLoadingIndication());
     log.debug(`actions.createMpcWallet`);
 
-    return new Promise<void>((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 1000);
+    return new Promise<void>((resolve, reject) => {
+      callBackgroundMethod<void>('createMpcWallet', [], (err, result) => {
+        if (err) {
+          reject(err);
+          return;
+        }
+        resolve(result);
+      });
     })
       .then(async (result) => {
         dispatch(hideLoadingIndication());
