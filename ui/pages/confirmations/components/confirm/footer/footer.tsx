@@ -26,7 +26,10 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { doesAddressRequireLedgerHidConnection } from '../../../../../selectors';
+import {
+  doesAddressRequireLedgerHidConnection,
+  getPendingHardwareSigning,
+} from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -213,6 +216,8 @@ const Footer = () => {
   const { currentConfirmation, isScrollToBottomCompleted } =
     useConfirmContext<TransactionMeta>();
 
+  console.log('current confirmation', currentConfirmation);
+
   const { isGaslessLoading } = useIsGaslessLoading();
 
   const { from } = getConfirmationSender(currentConfirmation);
@@ -228,6 +233,8 @@ const Footer = () => {
     }
     return false;
   });
+
+  const isHardwareWalletSigning = useSelector(getPendingHardwareSigning);
 
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
@@ -327,7 +334,7 @@ const Footer = () => {
           <ConfirmButton
             alertOwnerId={currentConfirmation?.id}
             onSubmit={onSubmit}
-            disabled={isConfirmDisabled}
+            disabled={isConfirmDisabled || isHardwareWalletSigning}
             onCancel={onCancel}
           />
         </Box>

@@ -59,7 +59,9 @@ export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
 }
 
 export function getPendingApprovals(state: ApprovalsMetaMaskState) {
-  return Object.values(state.metamask.pendingApprovals ?? {});
+  const result = Object.values(state.metamask.pendingApprovals ?? {});
+  console.log('getPendingApprovals', result);
+  return result;
 }
 
 export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
