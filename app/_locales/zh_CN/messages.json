@@ -2997,10 +2997,6 @@
   "honeypotTitle": {
     "message": "蜜罐"
   },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
-  },
   "id": {
     "message": "ID"
   },

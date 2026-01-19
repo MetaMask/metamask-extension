@@ -3000,10 +3000,6 @@
   "honeypotTitle": {
     "message": "허니팟"
   },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
-  },
   "id": {
     "message": "ID"
   },

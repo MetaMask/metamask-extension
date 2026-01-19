@@ -2099,6 +2099,10 @@
     "message": "Save up to 4% on trades with a MetaMask referral code.",
     "description": "The subtitle of the DeFi referral confirmation screen"
   },
+  "defiReferralTitle": {
+    "message": "MetaMask x $1",
+    "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
+  },
   "defiTabErrorContent": {
     "message": "Try visiting again later."
   },
@@ -3138,10 +3142,6 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
-  },
-  "hyperliquidReferralTitle": {
-    "message": "MetaMask x Hyperliquid",
-    "description": "The title of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"
