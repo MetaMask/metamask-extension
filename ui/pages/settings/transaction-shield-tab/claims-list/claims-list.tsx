@@ -145,10 +145,18 @@ const ClaimsList = () => {
             variant={TextVariant.HeadingSm}
             fontWeight={FontWeight.Medium}
             className="mb-3"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-heading' : undefined
+            }
           >
             {groupDetails.title}
           </Text>
-          <Box className="flex flex-col gap-2">
+          <Box
+            className="flex flex-col gap-2"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-list' : undefined
+            }
+          >
             {groupDetails.claims.map((claim) =>
               claimItem(
                 claim,
