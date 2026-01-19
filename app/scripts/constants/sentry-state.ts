@@ -130,6 +130,9 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeStatusController: {
     txHistory: false,
   },
+  ConnectivityController: {
+    connectivityStatus: true,
+  },
   CronjobController: {
     events: false,
   },

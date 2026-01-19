@@ -115,6 +115,7 @@
     "claimsConfigurations": "object",
     "completedOnboarding": true,
     "connectedStatusPopoverHasBeenShown": true,
+    "connectivityStatus": "online",
     "conversionRates": "object",
     "coverageResults": "object",
     "cryptocurrencies": ["btc", "sol"],
