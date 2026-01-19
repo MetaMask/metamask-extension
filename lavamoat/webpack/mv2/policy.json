@@ -2231,7 +2231,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/network-controller": true,
+        "@metamask/transaction-controller>@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
@@ -2241,7 +2241,6 @@
         "buffer": true,
         "eth-method-registry": true,
         "webpack>events": true,
-        "fast-json-patch": true,
         "lodash": true,
         "uuid": true
       }
