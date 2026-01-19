@@ -9,7 +9,6 @@ import { Ganache } from '../../seeder/ganache';
  *
  * @param driver - The webdriver instance.
  * @param password - The password used to unlock the wallet.
- * @param navigate - Whether to navigate to the unlock page first. Defaults to true.
  */
 export const loginWithoutBalanceValidation = async (
   driver: Driver,
@@ -33,7 +32,6 @@ export const loginWithoutBalanceValidation = async (
  * @param localNode - The local node server instance
  * @param password - The password used to unlock the wallet.
  * @param value - The balance value to be checked
- * @param navigate - Whether to navigate to the unlock page first. Defaults to true.
  */
 export const loginWithBalanceValidation = async (
   driver: Driver,

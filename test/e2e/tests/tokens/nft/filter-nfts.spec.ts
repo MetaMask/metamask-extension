@@ -1,5 +1,4 @@
 import { toHex } from '@metamask/controller-utils';
-import { Anvil } from '../../../seeder/anvil';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
