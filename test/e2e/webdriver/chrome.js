@@ -71,33 +71,34 @@ class ChromeDriver {
       args.push('--no-sandbox');
     }
 
-    const options = new chrome.Options().addArguments(args);
-    options.setAcceptInsecureCerts(true);
-    options.setUserPreferences({
-      'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
-    });
-    options.setBrowserVersion('140');
-
-    // Allow disabling DoT local testing
-    if (process.env.SELENIUM_USE_SYSTEM_DN) {
-      options.setLocalState({
-        'dns_over_https.mode': 'off',
-        'dns_over_https.templates': '',
-      });
-    }
-
-    // To to make Chrome extension target pages available, that would otherwise be hidden by default from Chrome 136 onward
-    const chromeOptionsCaps = {
+    // Build complete goog:chromeOptions object to avoid conflicts between
+    // setChromeOptions and withCapabilities overwriting each other.
+    // When both are used, withCapabilities overwrites goog:chromeOptions entirely,
+    // losing prefs, localState, etc. set by setChromeOptions.
+    const chromeOptions = {
       args,
+      prefs: {
+        'download.default_directory': `${process.cwd()}/test-artifacts/downloads`,
+      },
+      // Chrome 136+ hides extension windows from window_handles by default.
+      // This flag makes extension target pages (like dialogs) available again.
       enableExtensionTargets: true,
     };
 
-    const builder = new Builder()
-      .forBrowser('chrome')
-      .setChromeOptions(options)
-      .withCapabilities({
-        'goog:chromeOptions': chromeOptionsCaps,
-      });
+    // Allow disabling DoT local testing
+    if (process.env.SELENIUM_USE_SYSTEM_DN) {
+      chromeOptions.localState = {
+        'dns_over_https.mode': 'off',
+        'dns_over_https.templates': '',
+      };
+    }
+
+    const builder = new Builder().forBrowser('chrome').withCapabilities({
+      browserName: 'chrome',
+      browserVersion: '140',
+      acceptInsecureCerts: true,
+      'goog:chromeOptions': chromeOptions,
+    });
     const service = new chrome.ServiceBuilder();
 
     // Enables Chrome logging. Default: enabled
