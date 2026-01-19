@@ -2,7 +2,7 @@ import { Driver } from '../../webdriver/driver';
 import { TestDappTron } from '../pages/test-dapp-tron';
 import { WINDOW_TITLES } from '../../constants';
 import ConnectAccountConfirmation from '../pages/confirmations/connect-account-confirmation';
-import { regularDelayMs } from '../../helpers';
+import { largeDelayMs } from '../../helpers';
 
 /**
  * Tries opening the wallet seleciton modal and selecting the MetaMask option
@@ -18,7 +18,6 @@ const tryConnectWithRetry = async (
 ) => {
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
-      await testDapp.checkPageIsLoaded();
       const header = await testDapp.getHeader();
       await header.connect();
 
@@ -27,11 +26,15 @@ const tryConnectWithRetry = async (
 
       return;
     } catch (error) {
+      console.warn(
+        `Retrying clicking on tron dapp wallet modal (attempt ${attempt + 1}/${retries})`,
+      );
+
       if (attempt === retries - 1) {
         throw error;
       }
 
-      await driver.delay(regularDelayMs);
+      await driver.delay(largeDelayMs);
     }
   }
 };
@@ -46,6 +49,7 @@ export const connectTronTestDapp = async (
   driver: Driver,
   testDapp: TestDappTron,
 ): Promise<void> => {
+  await testDapp.checkPageIsLoaded();
   await tryConnectWithRetry(driver, testDapp, 3);
 
   // Get to extension modal, and click on the "Connect" button
