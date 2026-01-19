@@ -73,6 +73,12 @@ export type ScreenName =
   | 'onboarding-complete'
   | 'onboarding-metametrics'
   | 'settings'
+  | 'send'
+  | 'swap'
+  | 'bridge'
+  | 'confirm-transaction'
+  | 'confirm-signature'
+  | 'notification'
   | 'unknown';
 
 export type ExtensionState = {

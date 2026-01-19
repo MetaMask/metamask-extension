@@ -1209,23 +1209,45 @@ export class KnowledgeStore {
 
     const similarSteps: PriorKnowledgeSimilarStep[] = scoredSteps
       .slice(0, PRIOR_KNOWLEDGE_CONFIG.maxSimilarSteps)
-      .map(({ step, score }) => ({
-        sessionId: step.sessionId,
-        timestamp: step.timestamp,
-        tool: step.tool.name,
-        screen: step.observation?.state?.currentScreen ?? 'unknown',
-        snippet: this.generateSnippet(step),
-        labels: step.labels,
-        target: step.tool.target
-          ? {
-              testId: step.tool.target.testId,
-              selector: step.tool.target.selector,
-            }
-          : undefined,
-        confidence: Math.min(score / 20, 1),
-      }));
+      .map(({ step, score }) => {
+        const a11yHint = this.lookupA11yHint(step);
+
+        return {
+          sessionId: step.sessionId,
+          timestamp: step.timestamp,
+          tool: step.tool.name,
+          screen: step.observation?.state?.currentScreen ?? 'unknown',
+          snippet: this.generateSnippet(step),
+          labels: step.labels,
+          target: step.tool.target
+            ? {
+                testId: step.tool.target.testId,
+                selector: step.tool.target.selector,
+              }
+            : undefined,
+          a11yHint,
+          confidence: Math.min(score / 20, 1),
+        };
+      });
 
     return { similarSteps, candidateStepCount };
+  }
+
+  private lookupA11yHint(
+    step: StepRecord,
+  ): { role: string; name: string } | undefined {
+    const a11yRef = step.tool.target?.a11yRef;
+    if (!a11yRef) {
+      return undefined;
+    }
+
+    const nodes = step.observation?.a11y?.nodes ?? [];
+    const matchingNode = nodes.find((node) => node.ref === a11yRef);
+    if (!matchingNode?.name) {
+      return undefined;
+    }
+
+    return { role: matchingNode.role, name: matchingNode.name };
   }
 
   private computeSimilarityScore(
@@ -1236,7 +1258,10 @@ export class KnowledgeStore {
   ): number {
     let score = 0;
 
-    if (step.observation?.state?.currentScreen === context.currentScreen) {
+    const stepScreen = step.observation?.state?.currentScreen;
+    const contextScreen = context.currentScreen;
+
+    if (stepScreen === contextScreen && stepScreen !== 'unknown') {
       score += SIMILARITY_WEIGHTS.sameScreen;
     }
 
@@ -1380,6 +1405,10 @@ export class KnowledgeStore {
       return { type: 'selector', value: priorStep.target.selector };
     }
 
+    if (priorStep.a11yHint) {
+      return { type: 'a11yHint', value: priorStep.a11yHint };
+    }
+
     return null;
   }
 
@@ -1498,12 +1527,19 @@ export function createDefaultObservation(
   state: ExtensionState,
   testIds: TestIdItem[] = [],
   a11yNodes: A11yNodeTrimmed[] = [],
+  priorKnowledge?: PriorKnowledgeV1,
 ): StepRecordObservation {
-  return {
+  const observation: StepRecordObservation = {
     state,
     testIds,
     a11y: { nodes: a11yNodes },
   };
+
+  if (priorKnowledge) {
+    observation.priorKnowledge = priorKnowledge;
+  }
+
+  return observation;
 }
 
 export const knowledgeStore = new KnowledgeStore();

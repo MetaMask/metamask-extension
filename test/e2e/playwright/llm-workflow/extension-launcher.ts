@@ -1008,6 +1008,12 @@ export class MetaMaskExtensionLauncher {
       return 'unknown';
     }
 
+    const currentUrl = this.extensionPage.url();
+    const urlScreenMatch = this.detectScreenFromUrl(currentUrl);
+    if (urlScreenMatch !== 'unknown') {
+      return urlScreenMatch;
+    }
+
     const screenSelectors: {
       screen: ExtensionState['currentScreen'];
       selector: string;
@@ -1048,6 +1054,32 @@ export class MetaMaskExtensionLauncher {
         .isVisible({ timeout: 500 })
         .catch(() => false);
       if (isVisible) {
+        return screen;
+      }
+    }
+
+    return 'unknown';
+  }
+
+  private detectScreenFromUrl(url: string): ExtensionState['currentScreen'] {
+    const hash = url.split('#')[1] ?? '';
+
+    const urlPatterns: {
+      pattern: RegExp;
+      screen: ExtensionState['currentScreen'];
+    }[] = [
+      { pattern: /^\/send/u, screen: 'send' },
+      { pattern: /^\/swap/u, screen: 'swap' },
+      { pattern: /^\/bridge/u, screen: 'bridge' },
+      { pattern: /^\/confirm-transaction/u, screen: 'confirm-transaction' },
+      { pattern: /^\/confirm-signature/u, screen: 'confirm-signature' },
+      { pattern: /^\/settings/u, screen: 'settings' },
+      { pattern: /^\/unlock/u, screen: 'unlock' },
+      { pattern: /notification\.html/u, screen: 'notification' },
+    ];
+
+    for (const { pattern, screen } of urlPatterns) {
+      if (pattern.test(hash) || pattern.test(url)) {
         return screen;
       }
     }

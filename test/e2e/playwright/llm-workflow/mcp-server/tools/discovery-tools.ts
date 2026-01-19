@@ -172,20 +172,6 @@ export async function handleDescribeScreen(
       screenshotDimensions = { width: result.width, height: result.height };
     }
 
-    await knowledgeStore.recordStep({
-      sessionId: sessionId ?? '',
-      toolName: 'mm_describe_screen',
-      input: {
-        includeScreenshot: input.includeScreenshot,
-        screenshotName: input.screenshotName,
-      },
-      outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
-      durationMs: Date.now() - startTime,
-      screenshotPath,
-      screenshotDimensions,
-    });
-
     const sessionMetadata = sessionManager.getSessionMetadata();
     const priorKnowledgeContext: PriorKnowledgeContext = {
       currentScreen: state.currentScreen,
@@ -199,6 +185,25 @@ export async function handleDescribeScreen(
       priorKnowledgeContext,
       sessionId,
     );
+
+    await knowledgeStore.recordStep({
+      sessionId: sessionId ?? '',
+      toolName: 'mm_describe_screen',
+      input: {
+        includeScreenshot: input.includeScreenshot,
+        screenshotName: input.screenshotName,
+      },
+      outcome: { ok: true },
+      observation: createDefaultObservation(
+        state,
+        testIds,
+        nodes,
+        priorKnowledge,
+      ),
+      durationMs: Date.now() - startTime,
+      screenshotPath,
+      screenshotDimensions,
+    });
 
     return createSuccessResponse<DescribeScreenResult>(
       {

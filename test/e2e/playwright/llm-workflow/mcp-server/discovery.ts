@@ -1,4 +1,4 @@
-import type { Page, Locator, ElementHandle } from '@playwright/test';
+import type { Page, Locator } from '@playwright/test';
 import type {
   TestIdItem,
   A11yNodeTrimmed,
@@ -13,37 +13,47 @@ export async function collectTestIds(
   page: Page,
   limit: number = 150,
 ): Promise<TestIdItem[]> {
-  const elements = await page.locator('[data-testid]').all();
+  await page.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-  const items: TestIdItem[] = [];
+  const testIdData = await page.evaluate((maxItems: number) => {
+    const elements = document.querySelectorAll('[data-testid]');
+    const results: {
+      testId: string;
+      tag: string;
+      text: string | undefined;
+      visible: boolean;
+    }[] = [];
 
-  for (const element of elements.slice(0, limit * 2)) {
-    try {
-      const testId = await element.getAttribute('data-testid');
+    for (const el of elements) {
+      if (results.length >= maxItems) {
+        break;
+      }
+
+      const testId = el.getAttribute('data-testid');
       if (!testId) {
         continue;
       }
 
-      const tagName = await element.evaluate((el) => el.tagName.toLowerCase());
-      const text = await element.textContent({ timeout: 500 }).catch(() => '');
-      const visible = await element.isVisible().catch(() => false);
+      const rect = el.getBoundingClientRect();
+      const isVisible =
+        rect.width > 0 &&
+        rect.height > 0 &&
+        window.getComputedStyle(el).visibility !== 'hidden';
 
-      items.push({
+      const textContent = el.textContent?.trim().substring(0, 100) || undefined;
+
+      results.push({
         testId,
-        tag: tagName,
-        text: text?.trim().substring(0, 100) || undefined,
-        visible,
+        tag: el.tagName.toLowerCase(),
+        text: textContent,
+        visible: isVisible,
       });
-
-      if (items.length >= limit) {
-        break;
-      }
-    } catch {
-      continue;
     }
-  }
 
-  return items;
+    return results;
+  }, limit);
+
+  return testIdData;
 }
 
 export async function collectTrimmedA11ySnapshot(
@@ -73,7 +83,8 @@ export async function collectTrimmedA11ySnapshot(
     const name = node.name ?? '';
 
     if (INCLUDED_ROLES_SET.has(role)) {
-      const ref = `e${refCounter++}`;
+      const ref = `e${refCounter}`;
+      refCounter += 1;
       const currentPath = [...ancestorPath];
 
       if (role === 'dialog' || role === 'heading') {
@@ -146,8 +157,10 @@ export async function resolveTarget(
       return page.locator(`[data-testid="${targetValue}"]`);
     case 'selector':
       return page.locator(targetValue);
-    default:
-      throw new Error(`Unknown target type: ${targetType}`);
+    default: {
+      const exhaustiveCheck: never = targetType;
+      throw new Error(`Unknown target type: ${exhaustiveCheck as string}`);
+    }
   }
 }
 

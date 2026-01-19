@@ -444,6 +444,11 @@ export type PriorKnowledgeSimilarStep = {
   snippet: string;
   labels?: string[];
   target?: { testId?: string; selector?: string };
+  /**
+   * Accessibility hint (role + name) derived from a11yRef lookup.
+   * Used as fallback when testId and selector are unavailable.
+   */
+  a11yHint?: { role: string; name: string };
   confidence: number;
 };
 
@@ -680,6 +685,7 @@ export type StepRecordObservation = {
   a11y: {
     nodes: A11yNodeTrimmed[];
   };
+  priorKnowledge?: PriorKnowledgeV1;
 };
 
 /**
