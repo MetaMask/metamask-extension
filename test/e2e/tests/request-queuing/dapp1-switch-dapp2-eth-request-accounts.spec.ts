@@ -1,7 +1,8 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import { withFixtures, DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
