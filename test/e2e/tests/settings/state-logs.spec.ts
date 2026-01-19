@@ -23,7 +23,7 @@ import {
   StateLogsTypeMap,
 } from './state-logs-helpers';
 
-const downloadsFolder = join(process.cwd(), "test-artifacts", "downloads");
+const downloadsFolder = join(process.cwd(), 'test-artifacts', 'downloads');
 
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
