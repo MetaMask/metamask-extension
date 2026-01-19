@@ -2,7 +2,8 @@
  * Collection of variable declarations required for the production build.
  * Grouped by build type.
  *
- * **/
+ * *
+ */
 export const VARIABLES_REQUIRED_IN_PRODUCTION = {
   main: [
     'INFURA_PROD_PROJECT_ID',
