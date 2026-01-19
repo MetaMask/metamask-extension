@@ -166,7 +166,7 @@ export const useDeviceEventHandlers = ({
             ) {
               // If correct app, clear any awaiting state since device is ready
               updateConnectionState(ConnectionState.ready());
-              return;
+              break;
             }
             // If wrong app, set awaiting state with wrong_app reason
             updateConnectionState(
