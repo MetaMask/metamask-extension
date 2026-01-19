@@ -195,6 +195,7 @@ jobs:
       # Release identifiers (from validate-branch job)
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
       RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
+      FLASK_TAG: ${{ needs.validate-branch.outputs.tag }}-flask.0
       # Publishing tokens
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       # Override default GITHUB_TOKEN with EXTENSION_PUBLISH_TOKEN for release creation
