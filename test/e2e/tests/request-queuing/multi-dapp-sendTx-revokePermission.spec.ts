@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import { DAPP_URL, DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queuing for Multiple Dapps and Txs on different networks revokePermissions', function (this: Suite) {
   it('should close transaction for revoked permission of eth_accounts but show queued tx from second dapp on a different network.', async function () {
@@ -35,7 +36,7 @@ describe('Request Queuing for Multiple Dapps and Txs on different networks revok
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Create TestDapp instances for both dapps
         const testDapp1 = new TestDapp(driver);

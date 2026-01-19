@@ -1,5 +1,8 @@
 const assert = require('assert');
-const { withFixtures, regularDelayMs, unlockWallet } = require('../../helpers');
+const { withFixtures, regularDelayMs } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
 
@@ -15,7 +18,7 @@ describe('Multiple transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // initiates a transaction from the dapp
         await driver.openNewPage(DAPP_URL);
@@ -73,7 +76,7 @@ describe('Multiple transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // initiates a transaction from the dapp
         await driver.openNewPage(DAPP_URL);

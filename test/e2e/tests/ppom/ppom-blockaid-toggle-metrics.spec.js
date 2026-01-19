@@ -1,11 +1,9 @@
 const { strict: assert } = require('assert');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
-
 const {
-  unlockWallet,
-  withFixtures,
-  getEventPayloads,
-} = require('../../helpers');
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const { withFixtures, getEventPayloads } = require('../../helpers');
 const { MOCK_META_METRICS_ID } = require('../../constants');
 
 async function mockServerCalls(mockServer) {
@@ -69,7 +67,7 @@ describe('PPOM Blockaid Alert - Metrics', function () {
         testSpecificMock: mockServerCalls,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // toggle on
         await driver.clickElement(

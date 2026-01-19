@@ -4,7 +4,6 @@ import { toChecksumHexAddress } from '@metamask/controller-utils';
 import {
   assertInAnyOrder,
   getEventPayloads,
-  unlockWallet,
   withFixtures,
 } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
@@ -16,6 +15,7 @@ import {
   EXPECTED_EVENT_TYPES,
 } from '../bridge/bridge-test-utils';
 import BridgeQuotePage from '../../page-objects/pages/bridge/quote-page';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 const quote = {
   amount: '25',
@@ -36,7 +36,7 @@ describe('Bridge tests', function (this: Suite) {
         true,
       ),
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver, undefined, undefined, '0');
 
         const homePage = new HomePage(driver);
 
