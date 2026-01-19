@@ -16965,15 +16965,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/uuid@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@types/uuid@npm:11.0.0"
-  dependencies:
-    uuid: "npm:*"
-  checksum: 10/9f94bd34e5d220c53cc58ea9f48a0061d3bc343e29bc33a17edc705f5e21fedda21553318151f2bc227c2b2b03727bbb536da2b82a61f84d2e1ca38abc5e5c3f
-  languageName: node
-  linkType: hard
-
 "@types/uuid@npm:^9.0.1, @types/uuid@npm:^9.0.8":
   version: 9.0.8
   resolution: "@types/uuid@npm:9.0.8"
@@ -44501,15 +44492,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:*, uuid@npm:^13.0.0":
-  version: 13.0.0
-  resolution: "uuid@npm:13.0.0"
-  bin:
-    uuid: dist-node/bin/uuid
-  checksum: 10/2742b24d1e00257e60612572e4d28679423469998cafbaf1fe9f1482e3edf9c40754b31bfdb3d08d71b29239f227a304588f75210b3b48f2609f0673f1feccef
-  languageName: node
-  linkType: hard
-
 "uuid@npm:3.2.1":
   version: 3.2.1
   resolution: "uuid@npm:3.2.1"
@@ -44738,8 +44720,8 @@ __metadata:
   linkType: hard
 
 "viem@npm:>=2.23.11, viem@npm:^2.21.8, viem@npm:^2.37.8":
-  version: 2.44.1
-  resolution: "viem@npm:2.44.1"
+  version: 2.44.4
+  resolution: "viem@npm:2.44.4"
   dependencies:
     "@noble/curves": "npm:1.9.1"
     "@noble/hashes": "npm:1.8.0"
@@ -44754,7 +44736,7 @@ __metadata:
   peerDependenciesMeta:
     typescript:
       optional: true
-  checksum: 10/14640479063e76dde3a7ecf68f3191c5a8973b3b3fbc9892fb1f5201844ff40e5d1a58729f1b7f6d23fc473944e1e992df691c269d0b5dc149656266b15de7c6
+  checksum: 10/1af511dcd8b995a5a9914723ade0b6a65b0cf0a8bc7059bd6114cb2d5c3aae662cf62739d06cc1f210bfa14fcdab1ec78986836cdc6fc4b770e0cce676b4914f
   languageName: node
   linkType: hard
 
