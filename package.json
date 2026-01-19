@@ -360,7 +360,7 @@
     "@metamask/post-message-stream": "^10.0.0",
     "@metamask/ppom-validator": "0.39.0",
     "@metamask/preinstalled-example-snap": "^0.7.2",
-    "@metamask/profile-metrics-controller": "^2.0.0",
+    "@metamask/profile-metrics-controller": "^3.0.0",
     "@metamask/profile-sync-controller": "^27.0.0",
     "@metamask/providers": "^22.1.1",
     "@metamask/rate-limit-controller": "^7.0.0",
