@@ -429,7 +429,7 @@ export default class MetaMetricsController extends BaseController<
 
   version: MetaMetricsControllerOptions['version'];
 
-  storageKind: MetaMetricsControllerOptions['storageKind'];
+  #storageKind: MetaMetricsControllerOptions['storageKind'];
 
   #extension: MetaMetricsControllerOptions['extension'];
 
@@ -486,7 +486,7 @@ export default class MetaMetricsController extends BaseController<
       environment === 'production' ? version : `${version}-${environment}`;
     this.#extension = extension;
     this.#environment = environment;
-    this.storageKind = storageKind;
+    this.#storageKind = storageKind;
     this.messenger.registerActionHandler(
       'MetaMetricsController:trackEvent',
       this.trackEvent.bind(this),
@@ -1016,7 +1016,7 @@ export default class MetaMetricsController extends BaseController<
           // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: environmentType,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          storage_kind: this.storageKind,
+          storage_kind: this.#storageKind,
         },
         context: this.#buildContext(referrer, page),
       });
@@ -1351,7 +1351,7 @@ export default class MetaMetricsController extends BaseController<
         // eslint-disable-next-line @typescript-eslint/naming-convention
         environment_type: environmentType,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        storage_kind: this.storageKind,
+        storage_kind: this.#storageKind,
       },
       context: this.#buildContext(referrer, page),
       timestamp,
