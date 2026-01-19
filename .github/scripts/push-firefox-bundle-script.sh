@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+set -o pipefail
 
 if [[ -z "${FIREFOX_BUNDLE_SCRIPT_TOKEN}" ]]; then
     echo "::error::FIREFOX_BUNDLE_SCRIPT_TOKEN not provided. Set the 'FIREFOX_BUNDLE_SCRIPT_TOKEN' environment variable."
