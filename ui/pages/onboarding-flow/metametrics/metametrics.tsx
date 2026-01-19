@@ -121,7 +121,7 @@ export default function OnboardingMetametrics() {
       // Only set if feature flag is enabled, as the banner only shows when flag is enabled
       if (isPna25Enabled) {
         try {
-          await dispatch(setPna25Acknowledged(true));
+          await dispatch(setPna25Acknowledged(true, true));
         } catch (error) {
           // Log error but don't block onboarding if state update fails
           log.error('Error setting pna25Acknowledged:', error);
