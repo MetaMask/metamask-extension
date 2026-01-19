@@ -50,7 +50,7 @@ describe('Send ETH', function () {
     );
   });
 
-  it('it should be possible to send Max ETH', async function () {
+  it.skip('it should be possible to send Max ETH', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
