@@ -72,7 +72,6 @@ export function AccountOverview(props: AccountOverviewProps) {
         balance={balance}
         balanceIsCached={balanceIsCached}
         chainId={chainId}
-        classPrefix="eth" // TODO: Update for multichain accounts.
         isSigningEnabled={isSigningEnabled}
         isSwapsChain={isSwapsChain}
         isBridgeChain={isBridgeChain}

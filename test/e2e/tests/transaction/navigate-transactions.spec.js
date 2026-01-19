@@ -162,7 +162,7 @@ describe('Navigate transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         await driver.waitForSelector(
-          '[data-testid="eth-overview__primary-currency"]',
+          '[data-testid="coin-overview__primary-currency"]',
         );
       },
     );

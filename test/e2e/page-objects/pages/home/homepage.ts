@@ -35,7 +35,7 @@ class HomePage {
   };
 
   protected readonly balance: string =
-    '[data-testid="eth-overview__primary-currency"]';
+    '[data-testid="coin-overview__primary-currency"]';
 
   private readonly basicFunctionalityOffWarningMessage = {
     text: 'Basic functionality is off',
@@ -43,7 +43,7 @@ class HomePage {
   };
 
   protected readonly bridgeButton: string =
-    '[data-testid="eth-overview-bridge"]';
+    '[data-testid="coin-overview-bridge"]';
 
   private readonly closeUseNetworkNotificationModalButton = {
     text: 'Got it',
@@ -78,9 +78,9 @@ class HomePage {
     testId: 'account-value-and-suffix',
   };
 
-  protected readonly sendButton: string = '[data-testid="eth-overview-send"]';
+  protected readonly sendButton: string = '[data-testid="coin-overview-send"]';
 
-  protected readonly swapButton: string = '[data-testid="eth-overview-swap"]';
+  protected readonly swapButton: string = '[data-testid="coin-overview-swap"]';
 
   private readonly refreshErc20Tokens = {
     testId: 'refreshList',

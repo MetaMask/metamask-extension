@@ -20,7 +20,7 @@ describe('Carousel component e2e tests', function () {
         await loginWithBalanceValidation(driver);
 
         await driver.waitForSelector(
-          '[data-testid="eth-overview__primary-currency"]',
+          '[data-testid="coin-overview__primary-currency"]',
         );
         const hasCarousel = await driver.isElementPresent('.mm-carousel');
         if (!hasCarousel) {
