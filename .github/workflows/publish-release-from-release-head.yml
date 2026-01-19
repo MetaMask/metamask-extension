@@ -19,6 +19,7 @@ on:
 permissions:
   contents: write # Required to push tags and create releases
   checks: read # Required to verify CI check-runs on the SHA
+  actions: read # Required to download artifacts from build jobs
 
 jobs:
   verify-release-team:
