@@ -179,55 +179,10 @@ jobs:
       builds-from-run: ${{ github.run_id }}
     secrets: inherit
 
-  create-release-tag:
-    name: Create release tag
-    needs:
-      - validate-branch
-      - build-dist-browserify
-      - build-dist-mv2-browserify
-      - build-flask-browserify
-      - build-flask-mv2-browserify
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      tag-created: ${{ steps.create-tag.outputs.tag_created }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ needs.validate-branch.outputs.release-sha }}
-          fetch-depth: 0
-
-      - name: Create release tags
-        id: create-tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
-          FLASK_TAG: ${{ needs.validate-branch.outputs.tag }}-flask.0
-        run: |
-          .github/scripts/create-release-tag.sh
-
-      - name: Summary
-        env:
-          RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
-          FLASK_TAG: ${{ needs.validate-branch.outputs.tag }}-flask.0
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
-        run: |
-          {
-            echo "## Release Tags"
-            echo ""
-            echo "| Tag | SHA | Status |"
-            echo "|-----|-----|--------|"
-            echo "| \`${RELEASE_TAG}\` | \`${RELEASE_SHA:0:7}\` | ✅ Created/verified |"
-            echo "| \`${FLASK_TAG}\` | \`${RELEASE_SHA:0:7}\` | ✅ Created/verified |"
-          } >> "${GITHUB_STEP_SUMMARY}"
-
   publish-release:
     name: Publish release
     needs:
       - validate-branch
-      - create-release-tag
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-flask-browserify
