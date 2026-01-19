@@ -1,18 +1,8 @@
 name: Publish Release from Release HEAD
 
-# This workflow publishes a production release from the HEAD of a release/X.Y.Z branch.
-# It ensures the invariant: Tag SHA == Build SHA == GitHub Release target SHA == release branch HEAD.
-#
-# Usage:
-#   1. Navigate to Actions > "Publish Release from Release HEAD"
-#   2. Click "Run workflow"
-#   3. Select the release/X.Y.Z branch from the dropdown
-#
-# Prerequisites:
-#   - The 'release-branch' environment must have required reviewers configured
-#     (Settings > Environments > release-branch > Required reviewers: @MetaMask/release-team)
-#   - CI checks must have passed on the release branch HEAD
-#   - The workflow must be run from a release/X.Y.Z branch
+# Publishes a production release from release/X.Y.Z HEAD.
+# Invariant: Tag SHA == Build SHA == GitHub Release target SHA == branch HEAD.
+# Requires release-branch approval and CI pass on release SHA.
 
 on:
   workflow_dispatch:
@@ -79,19 +69,28 @@ jobs:
 
       - name: Verify required CI checks
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
         run: .github/scripts/verify-ci-checks.sh
 
-  # Production builds - 4 variants required for release
-  # These use 'yarn build prod' (not 'yarn build dist') to match stable branch builds
+  approve-release:
+    name: Approve release
+    needs:
+      - validate-branch
+      - verify-ci-checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: release-branch
+    steps:
+      - run: echo "Release approval granted."
 
+  # Production builds (4 variants) using yarn build prod.
   build-dist-browserify:
     name: Build prod (Chrome MV3)
     needs:
       - validate-branch
       - verify-ci-checks
+      - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
@@ -104,6 +103,7 @@ jobs:
     needs:
       - validate-branch
       - verify-ci-checks
+      - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
@@ -118,6 +118,7 @@ jobs:
     needs:
       - validate-branch
       - verify-ci-checks
+      - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
@@ -130,6 +131,7 @@ jobs:
     needs:
       - validate-branch
       - verify-ci-checks
+      - approve-release
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
@@ -148,21 +150,16 @@ jobs:
       - build-flask-browserify
       - build-flask-mv2-browserify
     runs-on: ubuntu-latest
-    # Environment provides: (1) required reviewer approval gate, (2) scoped secrets
     environment: release-branch
-    # Elevated permissions for this job only (least-privilege)
     permissions:
       contents: write # Required to push tags and create releases
       actions: read # Required to download artifacts
     timeout-minutes: 30
     env:
-      # Release identifiers (from validate-branch job)
       RELEASE_TAG: ${{ needs.validate-branch.outputs.tag }}
       RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
       FLASK_TAG: ${{ needs.validate-branch.outputs.tag }}-flask.0
-      # Publishing tokens
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      # Override default GITHUB_TOKEN with EXTENSION_PUBLISH_TOKEN for release creation
       GITHUB_TOKEN: ${{ secrets.EXTENSION_PUBLISH_TOKEN }}
       FIREFOX_BUNDLE_SCRIPT_TOKEN: ${{ secrets.FIREFOX_BUNDLE_SCRIPT_TOKEN }}
       # Environment variables used in Firefox bundle script
@@ -256,7 +253,6 @@ jobs:
       - name: Publish Flask MV2 release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
-      # Creates release tags (vX.Y.Z and vX.Y.Z-flask.0) and GitHub Release with artifacts
       - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
 
