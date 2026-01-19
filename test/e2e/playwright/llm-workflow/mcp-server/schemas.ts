@@ -1,13 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-/**
- * Zod Schemas for MCP Server Tool Inputs
- *
- * This file defines Zod schemas with rich `.describe()` annotations
- * to provide context for AI agents. All tool inputs are validated
- * against these schemas before being passed to handlers.
- */
-
 import { z } from 'zod';
+import { SMART_CONTRACT_NAMES, HARDFORKS } from './types/seeding';
 
 // =============================================================================
 // Common Schemas
@@ -68,37 +61,8 @@ export const knowledgeScopeSchema = z.union([
     .describe('Query a specific prior session by ID'),
 ]);
 
-const smartContractNames = [
-  'hst',
-  'nfts',
-  'erc1155',
-  'piggybank',
-  'failing',
-  'multisig',
-  'entrypoint',
-  'simpleAccountFactory',
-  'verifyingPaymaster',
-] as const;
-
-const hardforks = [
-  'frontier',
-  'homestead',
-  'dao',
-  'tangerine',
-  'spuriousDragon',
-  'byzantium',
-  'constantinople',
-  'petersburg',
-  'istanbul',
-  'muirGlacier',
-  'berlin',
-  'london',
-  'arrowGlacier',
-  'grayGlacier',
-  'paris',
-  'shanghai',
-  'prague',
-] as const;
+const smartContractNames = SMART_CONTRACT_NAMES;
+const hardforks = HARDFORKS;
 
 export const knowledgeFiltersSchema = z
   .object({

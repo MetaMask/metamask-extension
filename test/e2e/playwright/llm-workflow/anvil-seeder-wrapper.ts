@@ -1,42 +1,12 @@
 import type { Anvil } from '../../seeder/anvil';
+import type { SmartContractName, Hardfork } from './mcp-server/types';
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const AnvilSeeder = require('../../seeder/anvil-seeder');
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 
-export const SMART_CONTRACT_NAMES = [
-  'hst',
-  'nfts',
-  'erc1155',
-  'piggybank',
-  'failing',
-  'multisig',
-  'entrypoint',
-  'simpleAccountFactory',
-  'verifyingPaymaster',
-] as const;
-
-export type SmartContractName = (typeof SMART_CONTRACT_NAMES)[number];
-
-export type Hardfork =
-  | 'frontier'
-  | 'homestead'
-  | 'dao'
-  | 'tangerine'
-  | 'spuriousDragon'
-  | 'byzantium'
-  | 'constantinople'
-  | 'petersburg'
-  | 'istanbul'
-  | 'muirGlacier'
-  | 'berlin'
-  | 'london'
-  | 'arrowGlacier'
-  | 'grayGlacier'
-  | 'paris'
-  | 'shanghai'
-  | 'prague';
+export type { SmartContractName, Hardfork };
 
 export type DeployerOptions = {
   fromAddress?: string;

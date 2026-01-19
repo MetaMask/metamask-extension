@@ -9,56 +9,10 @@ import {
 /* eslint-enable import/extensions */
 import type { ZodError, ZodIssue } from 'zod';
 
-import type {
-  BuildInput,
-  LaunchInput,
-  CleanupInput,
-  NavigateInput,
-  WaitForNotificationInput,
-  ListTestIdsInput,
-  AccessibilitySnapshotInput,
-  DescribeScreenInput,
-  ScreenshotInput,
-  ClickInput,
-  TypeInput,
-  WaitForInput,
-  KnowledgeLastInput,
-  KnowledgeSearchInput,
-  KnowledgeSummarizeInput,
-  KnowledgeSessionsInput,
-  SeedContractInput,
-  SeedContractsInput,
-  GetContractAddressInput,
-  ListDeployedContractsInput,
-  HandlerOptions,
-} from './types';
+import type { HandlerOptions } from './types';
 import { createErrorResponse, ErrorCodes } from './types';
 import { toolSchemas, type ToolName } from './schemas';
-
-import { handleBuild } from './tools/build';
-import { handleLaunch } from './tools/launch';
-import { handleCleanup } from './tools/cleanup';
-import { handleGetState } from './tools/state';
-import { handleNavigate, handleWaitForNotification } from './tools/navigation';
-import {
-  handleListTestIds,
-  handleAccessibilitySnapshot,
-  handleDescribeScreen,
-} from './tools/discovery-tools';
-import { handleClick, handleType, handleWaitFor } from './tools/interaction';
-import { handleScreenshot } from './tools/screenshot';
-import {
-  handleKnowledgeLast,
-  handleKnowledgeSearch,
-  handleKnowledgeSummarize,
-  handleKnowledgeSessions,
-} from './tools/knowledge';
-import {
-  handleSeedContract,
-  handleSeedContracts,
-  handleGetContractAddress,
-  handleListDeployedContracts,
-} from './tools/seeding';
+import { getToolHandler, hasToolHandler } from './tools/registry';
 import { sessionManager } from './session-manager';
 
 function formatZodError(error: ZodError<unknown>): string {
@@ -760,7 +714,7 @@ async function main() {
     const startTime = Date.now();
     const signal = extra?.signal;
 
-    if (!(name in toolSchemas)) {
+    if (!hasToolHandler(name)) {
       return {
         content: [
           {
@@ -807,134 +761,30 @@ async function main() {
 
     const validatedArgs = validation.data;
     const options: HandlerOptions = { signal };
-    let response;
 
-    switch (name) {
-      case 'mm_build':
-        response = await handleBuild(validatedArgs as BuildInput, options);
-        break;
-      case 'mm_launch':
-        response = await handleLaunch(validatedArgs as LaunchInput, options);
-        break;
-      case 'mm_cleanup':
-        response = await handleCleanup(validatedArgs as CleanupInput, options);
-        break;
-      case 'mm_get_state':
-        response = await handleGetState(options);
-        break;
-      case 'mm_navigate':
-        response = await handleNavigate(
-          validatedArgs as NavigateInput,
-          options,
-        );
-        break;
-      case 'mm_wait_for_notification':
-        response = await handleWaitForNotification(
-          validatedArgs as WaitForNotificationInput,
-          options,
-        );
-        break;
-      case 'mm_list_testids':
-        response = await handleListTestIds(
-          validatedArgs as ListTestIdsInput,
-          options,
-        );
-        break;
-      case 'mm_accessibility_snapshot':
-        response = await handleAccessibilitySnapshot(
-          validatedArgs as AccessibilitySnapshotInput,
-          options,
-        );
-        break;
-      case 'mm_describe_screen':
-        response = await handleDescribeScreen(
-          validatedArgs as DescribeScreenInput,
-          options,
-        );
-        break;
-      case 'mm_screenshot':
-        response = await handleScreenshot(
-          validatedArgs as ScreenshotInput,
-          options,
-        );
-        break;
-      case 'mm_click':
-        response = await handleClick(validatedArgs as ClickInput, options);
-        break;
-      case 'mm_type':
-        response = await handleType(validatedArgs as TypeInput, options);
-        break;
-      case 'mm_wait_for':
-        response = await handleWaitFor(validatedArgs as WaitForInput, options);
-        break;
-      case 'mm_knowledge_last':
-        response = await handleKnowledgeLast(
-          validatedArgs as KnowledgeLastInput,
-          options,
-        );
-        break;
-      case 'mm_knowledge_search':
-        response = await handleKnowledgeSearch(
-          validatedArgs as KnowledgeSearchInput,
-          options,
-        );
-        break;
-      case 'mm_knowledge_summarize':
-        response = await handleKnowledgeSummarize(
-          validatedArgs as KnowledgeSummarizeInput,
-          options,
-        );
-        break;
-      case 'mm_knowledge_sessions':
-        response = await handleKnowledgeSessions(
-          validatedArgs as KnowledgeSessionsInput,
-          options,
-        );
-        break;
-      case 'mm_seed_contract':
-        response = await handleSeedContract(
-          validatedArgs as SeedContractInput,
-          options,
-        );
-        break;
-      case 'mm_seed_contracts':
-        response = await handleSeedContracts(
-          validatedArgs as SeedContractsInput,
-          options,
-        );
-        break;
-      case 'mm_get_contract_address':
-        response = await handleGetContractAddress(
-          validatedArgs as GetContractAddressInput,
-          options,
-        );
-        break;
-      case 'mm_list_contracts':
-        response = await handleListDeployedContracts(
-          validatedArgs as ListDeployedContractsInput,
-          options,
-        );
-        break;
-      default:
-        return {
-          content: [
-            {
-              type: 'text',
-              text: JSON.stringify(
-                createErrorResponse(
-                  ErrorCodes.MM_INVALID_INPUT,
-                  `Unknown tool: ${name}`,
-                  undefined,
-                  sessionManager.getSessionId(),
-                  startTime,
-                ),
-                null,
-                2,
+    const handler = getToolHandler(name);
+    if (!handler) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify(
+              createErrorResponse(
+                ErrorCodes.MM_INVALID_INPUT,
+                `Unknown tool: ${name}`,
+                undefined,
+                sessionManager.getSessionId(),
+                startTime,
               ),
-            },
-          ],
-        };
+              null,
+              2,
+            ),
+          },
+        ],
+      };
     }
+
+    const response = await handler(validatedArgs, options);
 
     return {
       content: [
