@@ -15,45 +15,41 @@ export async function collectTestIds(
 ): Promise<TestIdItem[]> {
   await page.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-  const testIdData = await page.evaluate((maxItems: number) => {
-    const elements = document.querySelectorAll('[data-testid]');
-    const results: {
-      testId: string;
-      tag: string;
-      text: string | undefined;
-      visible: boolean;
-    }[] = [];
+  // Use Playwright's locator API instead of page.evaluate()
+  // because LavaMoat's scuttling mode blocks JavaScript execution in page context
+  const locators = await page.locator('[data-testid]').all();
+  const results: TestIdItem[] = [];
 
-    for (const el of elements) {
-      if (results.length >= maxItems) {
-        break;
-      }
+  for (const locator of locators) {
+    if (results.length >= limit) {
+      break;
+    }
 
-      const testId = el.getAttribute('data-testid');
+    try {
+      const testId = await locator.getAttribute('data-testid');
       if (!testId) {
         continue;
       }
 
-      const rect = el.getBoundingClientRect();
-      const isVisible =
-        rect.width > 0 &&
-        rect.height > 0 &&
-        window.getComputedStyle(el).visibility !== 'hidden';
-
-      const textContent = el.textContent?.trim().substring(0, 100) || undefined;
+      const isVisible = await locator.isVisible().catch(() => false);
+      const textContent = await locator
+        .textContent()
+        .then((text) => text?.trim().substring(0, 100) || undefined)
+        .catch(() => undefined);
 
       results.push({
         testId,
-        tag: el.tagName.toLowerCase(),
+        tag: 'element',
         text: textContent,
         visible: isVisible,
       });
+    } catch {
+      // Element may have been detached from DOM during iteration (React re-render)
+      continue;
     }
+  }
 
-    return results;
-  }, limit);
-
-  return testIdData;
+  return results;
 }
 
 export async function collectTrimmedA11ySnapshot(

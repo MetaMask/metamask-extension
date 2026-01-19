@@ -24,13 +24,25 @@ Analysis of test execution sessions in `test-artifacts/llm-knowledge/` revealed 
 
 ## 2) Implemented Fixes
 
-### 2.1 Fix: collectTestIds Reliability
+### 2.1 Fix: collectTestIds Reliability (REVERTED)
 
 **File:** `mcp-server/discovery.ts`
 
-**Problem:** `page.locator('[data-testid]').all()` followed by individual attribute queries was returning empty arrays due to element detachment in React's dynamic DOM.
+**Original Problem:** `page.locator('[data-testid]').all()` followed by individual attribute queries was returning empty arrays due to element detachment in React's dynamic DOM.
 
-**Solution:** Rewrote to use `page.evaluate()` which executes JavaScript directly in the browser context, providing reliable DOM queries regardless of React's rendering state.
+**Original Solution:** Rewrote to use `page.evaluate()` which executes JavaScript directly in the browser context.
+
+**Why It Was Reverted:** `page.evaluate()` injects JavaScript into the page context, which is blocked by LavaMoat's scuttling mode. LavaMoat restricts access to certain globals (like `setInterval`) in the page context for security, causing errors like:
+
+```
+LavaMoat - property "setInterval" of globalThis is inaccessible under scuttling mode
+```
+
+**Current Solution:** Use Playwright's locator API (`page.locator().all()`) which uses the Chrome DevTools Protocol instead of injecting JavaScript. This approach:
+
+1. Works with LavaMoat's security restrictions
+2. Handles element detachment gracefully with try/catch
+3. Uses only Playwright's built-in methods (`getAttribute`, `isVisible`, `textContent`)
 
 ```typescript
 export async function collectTestIds(
@@ -39,38 +51,45 @@ export async function collectTestIds(
 ): Promise<TestIdItem[]> {
   await page.waitForLoadState('domcontentloaded').catch(() => undefined);
 
-  const testIdData = await page.evaluate((maxItems: number) => {
-    const elements = document.querySelectorAll('[data-testid]');
-    const results: Array<{
-      testId: string;
-      tag: string;
-      text: string | undefined;
-      visible: boolean;
-    }> = [];
+  // Use Playwright's locator API instead of page.evaluate()
+  // because LavaMoat's scuttling mode blocks JavaScript execution in page context
+  const locators = await page.locator('[data-testid]').all();
+  const results: TestIdItem[] = [];
 
-    for (const el of elements) {
-      if (results.length >= maxItems) break;
+  for (const locator of locators) {
+    if (results.length >= limit) break;
 
-      const testId = el.getAttribute('data-testid');
+    try {
+      const testId = await locator.getAttribute('data-testid');
       if (!testId) continue;
 
-      const rect = el.getBoundingClientRect();
-      const visible = rect.width > 0 && rect.height > 0;
+      const isVisible = await locator.isVisible().catch(() => false);
+      const textContent = await locator
+        .textContent()
+        .then((text) => text?.trim().substring(0, 100) || undefined)
+        .catch(() => undefined);
 
       results.push({
         testId,
-        tag: el.tagName.toLowerCase(),
-        text: el.textContent?.trim().slice(0, 50) || undefined,
-        visible,
+        tag: 'element', // Can't get tagName without evaluate()
+        text: textContent,
+        visible: isVisible,
       });
+    } catch {
+      // Element detached from DOM during iteration (React re-render)
+      continue;
     }
+  }
 
-    return results;
-  }, limit);
-
-  return testIdData;
+  return results;
 }
 ```
+
+**Trade-off:** The `tag` field now returns a generic `'element'` instead of the actual HTML tag name, since getting the tag name requires `evaluate()` which is blocked by LavaMoat. This is acceptable because:
+
+1. The `testId` is the primary identifier used for interactions
+2. The `tag` field was primarily for debugging/display purposes
+3. LavaMoat compatibility is more important than tag name accuracy
 
 ### 2.2 Fix: URL-Based Screen Detection
 
