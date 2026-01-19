@@ -24,6 +24,8 @@ const tryConnectWithRetry = async (
       const modal = await testDapp.getWalletModal();
       await modal.connectToMetaMaskWallet();
 
+      await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
       return;
     } catch (error) {
       console.warn(
@@ -51,9 +53,6 @@ export const connectTronTestDapp = async (
 ): Promise<void> => {
   await testDapp.checkPageIsLoaded();
   await tryConnectWithRetry(driver, testDapp, 3);
-
-  // Get to extension modal, and click on the "Connect" button
-  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
   const connectAccountConfirmation = new ConnectAccountConfirmation(driver);
   await connectAccountConfirmation.checkPageIsLoaded();
