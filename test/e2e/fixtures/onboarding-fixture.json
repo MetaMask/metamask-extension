@@ -6,7 +6,7 @@
     },
     "AccountTracker": {
       "accountsByChainId": {
-        "0x1": {}
+        "0xaa36a7": {}
       }
     },
     "AccountTreeController": {
@@ -74,20 +74,18 @@
       "showNetworkBanner": true,
       "showPermissionsTour": true,
       "showShieldEntryModalOnce": null,
-      "showStorageErrorToast": false,
       "showTestnetMessageInDropdown": true,
       "slides": [],
       "surveyLinkLastClickedOrClosed": null,
       "timeoutMinutes": 0,
       "trezorModel": null,
       "updateModalLastDismissedAt": null,
-      "pna25Acknowledged": false
+      "pna25Acknowledged": false,
+      "recoveryPhraseReminderLastShown": 1768838265839
     },
-    "ApprovalController": {},
     "AuthenticationController": {
       "isSignedIn": false
     },
-    "BridgeController": {},
     "BridgeStatusController": {
       "txHistory": {}
     },
@@ -96,7 +94,8 @@
       "claimsConfigurations": {
         "supportedNetworks": ["0x1", "0xe708"],
         "validSubmissionWindowDays": 21
-      }
+      },
+      "drafts": []
     },
     "CurrencyController": {
       "currencyRates": {
@@ -108,12 +107,9 @@
       },
       "currentCurrency": "usd"
     },
-    "DeFiPositionsController": {},
-    "DecryptMessageController": {},
     "DelegationController": {
       "delegations": {}
     },
-    "EncryptionPublicKeyController": {},
     "EnsController": {
       "ensEntries": {
         "0x1": {
@@ -172,7 +168,6 @@
       "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
       "isGatorPermissionsEnabled": false
     },
-    "KeyringController": {},
     "LoggingController": {
       "logs": {}
     },
@@ -496,7 +491,7 @@
         }
       },
       "networksMetadata": {
-        "mainnet": {
+        "sepolia": {
           "EIPS": {},
           "status": "unknown"
         }
@@ -1995,28 +1990,27 @@
         "npm:@metamask/institutional-wallet-snap": "mainnet",
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
-        "npm:@metamask/tron-wallet-snap": "mainnet"
+        "npm:@metamask/tron-wallet-snap": "mainnet",
+        "npm:@metamask/permissions-kernel-snap": "sepolia"
       }
     },
     "ShieldController": {
       "coverageResults": {},
       "orderedTransactionHistory": []
     },
-    "SignatureController": {},
-    "SmartTransactionsController": {},
     "SnapController": {
       "snapStates": {},
       "snaps": {},
       "unencryptedSnapStates": {}
     },
-    "SnapInsightsController": {},
     "SnapInterfaceController": {
       "interfaces": {}
     },
     "SnapsRegistry": {
       "database": null,
       "databaseUnavailable": false,
-      "lastUpdated": null
+      "lastUpdated": null,
+      "signature": null
     },
     "SubjectMetadataController": {
       "subjectMetadata": {
@@ -2094,7 +2088,6 @@
       "subscriptions": [],
       "trialedProducts": []
     },
-    "SwapsController": {},
     "TokenBalancesController": {
       "tokenBalances": {}
     },
@@ -2125,13 +2118,10 @@
       "isBackupAndSyncEnabled": true,
       "isContactSyncingEnabled": true
     },
-    "config": {},
-    "firstTimeInfo": {
-      "date": 1764061389865,
-      "version": "13.12.0"
-    }
+    "config": {}
   },
   "meta": {
-    "version": 184
+    "version": 184,
+    "storageKind": "split"
   }
 }
