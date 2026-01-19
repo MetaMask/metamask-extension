@@ -3,6 +3,22 @@ import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
+  AvatarIconSize,
+  AvatarNetwork,
+  AvatarNetworkSize,
+  Box,
+  BoxAlignItems,
+  BoxFlexDirection,
+  BoxJustifyContent,
+  ButtonIcon,
+  ButtonIconSize,
+  IconColor,
+  IconName,
+  Text,
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
+import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
 } from '../../../../../../shared/constants/network';
@@ -14,31 +30,10 @@ import {
   sortNetworks,
 } from '../../../../../../shared/modules/network.utils';
 import {
-  AlignItems,
-  BlockSize,
-  BorderRadius,
-  Display,
-  FlexDirection,
-  IconColor,
-  JustifyContent,
-  TextColor,
-  TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import {
   setEnabledAllPopularNetworks,
   hideModal,
   setActiveNetwork,
 } from '../../../../../store/actions';
-import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  Box,
-  ButtonIcon,
-  ButtonIconSize,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../component-library';
 import { NetworkListItem } from '../../../network-list-item';
 import { useAdditionalNetworkHandlers } from '../../hooks/useAdditionalNetworkHandlers';
 import { useNetworkChangeHandlers } from '../../hooks/useNetworkChangeHandlers';
@@ -384,10 +379,9 @@ const DefaultNetworks = memo(() => {
 
       return (
         <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.flexStart}
-          width={BlockSize.Full}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Start}
+          className="w-full network-manager__additional-network-item flex"
           onClick={() => handleAdditionalNetworkClick(network)}
           paddingLeft={4}
           paddingRight={4}
@@ -395,26 +389,21 @@ const DefaultNetworks = memo(() => {
           paddingBottom={4}
           gap={4}
           data-testid="additional-network-item"
-          className="network-manager__additional-network-item"
           key={network.chainId}
         >
           <AvatarNetwork
             name={network.name}
             size={AvatarNetworkSize.Md}
             src={networkImageUrl}
-            borderRadius={BorderRadius.LG}
           />
-          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              color={TextColor.textDefault}
-            >
+          <Box flexDirection={BoxFlexDirection.Column} className="flex">
+            <Text variant={TextVariant.BodyMd} color={TextColor.TextDefault}>
               {network.name}
             </Text>
             {isNetworkGasSponsored(network.chainId) && (
               <Text
-                variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                variant={TextVariant.BodySm}
+                color={TextColor.TextAlternative}
               >
                 {t('noNetworkFee')}
               </Text>
@@ -422,11 +411,9 @@ const DefaultNetworks = memo(() => {
           </Box>
           <ButtonIcon
             size={ButtonIconSize.Md}
-            color={IconColor.iconDefault}
             iconName={IconName.Add}
-            padding={0}
-            marginLeft={'auto'}
             ariaLabel={t('addNetwork')}
+            style={{ marginLeft: 'auto' }}
           />
         </Box>
       );
@@ -440,7 +427,7 @@ const DefaultNetworks = memo(() => {
 
   return (
     <>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+      <Box flexDirection={BoxFlexDirection.Column} className="flex">
         {isEvmNetworkSelected || isMultichainAccountsState2Enabled ? (
           <Box
             className="network-manager__all-popular-networks"
@@ -450,7 +437,8 @@ const DefaultNetworks = memo(() => {
               name={t('allPopularNetworks')}
               onClick={selectAllDefaultNetworks}
               iconSrc={IconName.Global}
-              iconSize={IconSize.Xl}
+              iconSize={AvatarIconSize.Md}
+              iconColor={IconColor.PrimaryDefault}
               selected={isAllPopularNetworksSelected}
               focus={false}
             />

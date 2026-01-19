@@ -10,38 +10,65 @@ import PropTypes from 'prop-types';
 import { CaipChainId } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import {
-  AlignItems,
-  BackgroundColor,
-  BlockSize,
-  BorderRadius,
-  Display,
-  JustifyContent,
-  TextColor,
-  IconColor,
-  FlexDirection,
-  TextVariant,
-  BorderColor,
-} from '../../../helpers/constants/design-system';
-import {
+  AvatarIcon,
+  AvatarIconSize,
   AvatarNetwork,
   AvatarNetworkSize,
   Box,
+  BoxAlignItems,
+  BoxBackgroundColor,
+  BoxFlexDirection,
+  BoxJustifyContent,
   ButtonIcon,
   ButtonIconSize,
   Icon,
+  IconColor,
   IconName,
   IconSize,
   Text,
-} from '../../component-library';
+  TextColor,
+  TextVariant,
+} from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
 import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
 import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 
-const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
-  Object.values(IconName).includes(iconSrc as IconName);
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName => {
+  if (!iconSrc) {
+    return false;
+  }
+  // If it's not a string, it can't be an IconName
+  if (typeof iconSrc !== 'string') {
+    return false;
+  }
+  // If it's a URL (starts with http://, https://, or data:), it's not an IconName
+  if (
+    iconSrc.startsWith('http://') ||
+    iconSrc.startsWith('https://') ||
+    iconSrc.startsWith('data:')
+  ) {
+    return false;
+  }
+  // If it contains a file path separator or file extension, it's an image path, not an IconName
+  if (
+    iconSrc.includes('/') ||
+    iconSrc.includes('\\') ||
+    iconSrc.includes('.')
+  ) {
+    return false;
+  }
+  // Check if it's a known IconName by checking if it exists as a property
+  // This is a safe check that won't cause runtime errors
+  try {
+    return iconSrc in IconName;
+  } catch {
+    // Fallback: if it's a simple PascalCase identifier, assume it might be an IconName
+    // The AvatarIcon component will handle validation
+    return /^[A-Z][a-zA-Z0-9]*$/u.test(iconSrc);
+  }
+};
 
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
@@ -51,6 +78,7 @@ export const NetworkListItem = ({
   name,
   iconSrc,
   iconSize = AvatarNetworkSize.Md,
+  iconColor,
   rpcEndpoint,
   chainId,
   selected = false,
@@ -68,8 +96,9 @@ export const NetworkListItem = ({
   notSelectable = false,
 }: {
   name: string;
-  iconSrc?: string;
-  iconSize?: AvatarNetworkSize | IconSize;
+  iconSrc?: string | IconName;
+  iconSize?: AvatarNetworkSize | AvatarIconSize;
+  iconColor?: IconColor | TextColor;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -87,7 +116,7 @@ export const NetworkListItem = ({
   notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
-  const networkRef = useRef<HTMLInputElement>(null);
+  const networkRef = useRef<HTMLDivElement>(null);
 
   const [networkListItemMenuElement, setNetworkListItemMenuElement] =
     useState();
@@ -185,51 +214,48 @@ export const NetworkListItem = ({
       paddingBottom={rpcEndpoint ? 2 : 4}
       gap={4}
       backgroundColor={
-        selected ? BackgroundColor.primaryMuted : BackgroundColor.transparent
+        selected
+          ? BoxBackgroundColor.PrimaryMuted
+          : BoxBackgroundColor.Transparent
       }
-      className={classnames('multichain-network-list-item', {
+      className={classnames('multichain-network-list-item', 'w-full', 'flex', {
         'multichain-network-list-item--selected': selected,
         'multichain-network-list-item--deselected': !selected,
         'multichain-network-list-item--disabled': disabled,
         'multichain-network-list-item--not-selectable': notSelectable,
       })}
-      display={Display.Flex}
-      alignItems={AlignItems.center}
-      justifyContent={JustifyContent.spaceBetween}
-      width={BlockSize.Full}
+      alignItems={BoxAlignItems.Center}
+      justifyContent={BoxJustifyContent.Between}
       onClick={disabled ? undefined : onClick}
     >
       {startAccessory ? <Box marginTop={1}>{startAccessory}</Box> : null}
-      {selected && (
-        <Box
-          className="multichain-network-list-item__selected-indicator"
-          borderRadius={BorderRadius.pill}
-          backgroundColor={BackgroundColor.primaryDefault}
-        />
-      )}
       {isIconSrc(iconSrc) ? (
-        <Icon name={iconSrc} size={iconSize as IconSize} />
+        <AvatarIcon
+          iconName={iconSrc}
+          size={(iconSize as AvatarIconSize) || AvatarIconSize.Md}
+          iconProps={{
+            color:
+              iconColor && iconColor in IconColor
+                ? (iconColor as IconColor)
+                : IconColor.PrimaryDefault,
+          }}
+        />
       ) : (
         <AvatarNetwork
-          borderColor={BorderColor.backgroundDefault}
-          backgroundColor={getAvatarNetworkColor(name)}
           name={name}
           src={iconSrc}
           size={iconSize as AvatarNetworkSize}
         />
       )}
       <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        alignItems={AlignItems.flexStart}
-        justifyContent={JustifyContent.flexStart}
-        width={BlockSize.Full}
-        style={{ overflow: 'hidden' }}
+        flexDirection={BoxFlexDirection.Column}
+        alignItems={BoxAlignItems.Start}
+        justifyContent={BoxJustifyContent.Start}
+        className="w-full overflow-hidden flex"
       >
         <Box
-          width={BlockSize.Full}
-          display={Display.Flex}
-          alignItems={AlignItems.center}
+          className="w-full flex"
+          alignItems={BoxAlignItems.Center}
           data-testid={name}
         >
           <Tooltip
@@ -238,29 +264,30 @@ export const NetworkListItem = ({
             wrapperClassName="multichain-network-list-item__tooltip"
             disabled={name?.length <= MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP}
           >
-            <Text
+            <Box
               ref={networkRef}
-              color={TextColor.textDefault}
-              backgroundColor={BackgroundColor.transparent}
-              variant={variant ?? TextVariant.bodyMd}
-              ellipsis
               onKeyDown={handleKeyPress}
               tabIndex={0} // Enable keyboard focus
             >
-              {name}
-            </Text>
+              <Text
+                color={TextColor.TextDefault}
+                variant={variant ?? TextVariant.BodyMd}
+                ellipsis
+              >
+                {name}
+              </Text>
+            </Box>
           </Tooltip>
         </Box>
         {isNetworkGasSponsored(chainId) && (
-          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
             {t('noNetworkFee')}
           </Text>
         )}
         {rpcEndpoint && (
           <Box
-            className="multichain-network-list-item__rpc-endpoint"
-            display={Display.Flex}
-            alignItems={AlignItems.center}
+            className="multichain-network-list-item__rpc-endpoint flex"
+            alignItems={BoxAlignItems.Center}
             data-testid={`network-rpc-name-button-${chainId}`}
             onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
@@ -268,21 +295,19 @@ export const NetworkListItem = ({
             }}
           >
             <Text
-              padding={0}
-              backgroundColor={BackgroundColor.transparent}
-              as="button"
-              variant={TextVariant.bodySmMedium}
-              color={TextColor.textAlternative}
+              variant={TextVariant.BodySm}
+              color={TextColor.TextAlternative}
               ellipsis
             >
               {rpcEndpoint.name ?? new URL(rpcEndpoint.url).host}
             </Text>
-            <Icon
-              marginLeft={1}
-              color={IconColor.iconAlternative}
-              name={IconName.ArrowDown}
-              size={IconSize.Xs}
-            />
+            <Box style={{ marginLeft: '4px' }}>
+              <Icon
+                color={IconColor.IconAlternative}
+                name={IconName.ArrowDown}
+                size={IconSize.Xs}
+              />
+            </Box>
           </Box>
         )}
       </Box>
