@@ -705,6 +705,8 @@ export enum MetaMetricsEventName {
   AccountImportFailed = 'Account Import Failed',
   AccountDetailsOpened = 'Account Details Opened',
   AccountPasswordCreated = 'Account Password Created',
+  AccountPinned = 'Account Pinned',
+  AccountHidden = 'Account Hidden',
   AccountReset = 'Account Reset',
   AccountRenamed = 'Account Renamed',
   AccountsSyncAdded = 'Accounts Sync Added',
