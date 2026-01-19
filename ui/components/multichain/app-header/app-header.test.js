@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, waitFor } from '@testing-library/react';
+import { act, fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
@@ -106,14 +106,18 @@ describe('App Header', () => {
     });
 
     it('shows network list when hovering networks row', async () => {
-      const { getByTestId } = render({
-        stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
-      });
+      const { getByTestId } = await act(async () =>
+        render({
+          stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
+        }),
+      );
 
       const networksSubtitle = getByTestId('networks-subtitle-popover-test-id');
       expect(networksSubtitle).toBeInTheDocument();
 
-      fireEvent.mouseEnter(networksSubtitle);
+      await act(async () => {
+        fireEvent.mouseEnter(networksSubtitle);
+      });
 
       const multichainAddressRowsList = getByTestId(
         'multichain-address-rows-list',
