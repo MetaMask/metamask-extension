@@ -25,6 +25,14 @@ export function useIsOriginalNativeTokenSymbol(
   const providerConfig = useSelector(getMultichainCurrentNetwork);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const setIfMounted = (value: boolean) => {
+      if (isMounted) {
+        setIsOriginalNativeSymbol(value);
+      }
+    };
+
     const isLocalhost = (urlString: string) => {
       const url = getValidUrl(urlString);
 
@@ -36,14 +44,14 @@ export function useIsOriginalNativeTokenSymbol(
 
     async function getNativeTokenSymbol(networkId: Hex | CaipChainId) {
       if (!isEvm) {
-        setIsOriginalNativeSymbol(ticker === providerConfig?.ticker);
+        setIfMounted(ticker === providerConfig?.ticker);
         return;
       }
 
       try {
         // exclude local dev network
         if (isLocalhost(rpcUrl)) {
-          setIsOriginalNativeSymbol(true);
+          setIfMounted(true);
           return;
         }
 
@@ -53,15 +61,18 @@ export function useIsOriginalNativeTokenSymbol(
           useAPICall: useSafeChainsListValidation,
         });
 
-        setIsOriginalNativeSymbol(isOriginalNativeToken);
+        setIfMounted(isOriginalNativeToken);
       } catch (err) {
-        setIsOriginalNativeSymbol(false);
+        setIfMounted(false);
       }
     }
 
-    getNativeTokenSymbol(chainId);
+    getNativeTokenSymbol(chainId).catch(() => undefined);
+
+    return () => {
+      isMounted = false;
+    };
   }, [
-    isOriginalNativeSymbol,
     chainId,
     ticker,
     type,
