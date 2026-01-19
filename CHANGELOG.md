@@ -9,12 +9,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.15.0]
 
-### Uncategorized
-
-- Null (#39233)
-- Setup perps codeowners on extension (#39138)
-- Bump assets controllers to v95 (#39095)
-
 ### Added
 
 - Add MSU network and native token logos. Add Etherlink network and native token logos. (#38938)
@@ -33,10 +27,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improve Snaps registry verification speed (#38628)
 - Migrate megaETH Testnet v1 to megaETH Testnet v2 Update megaETH Testnet RPC (#39118)
 - Portfolio network filter no longer changes when dapp permission network is changed (#39181)
+- Bump assets controllers to v95 (#39095)
 
 ### Fixed
 
-- Null (#38726)
 - Remove migration 171 error logging (#38739)
 - Fixed a memory leak that would cause increased memory usage over time (#39171)
 - Updated asset list for send flow (#39218)
@@ -61,6 +55,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix permission modal to show entire origin when it's too long (#39030)
 - Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
 - Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
+
+## [13.14.1]
+
+### Changed
+
+- Set 10-minute delay on first profile metrics collection after acknowledgement, rather than delaying until 2nd unlock (#39270)
 
 ## [13.14.0]
 
@@ -1597,7 +1597,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
 [Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.15.0...HEAD
-[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.15.0
+[13.15.0]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.15.0
+[13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
 [13.13.1]: https://github.com/MetaMask/metamask-extension/compare/v13.13.0...v13.13.1
