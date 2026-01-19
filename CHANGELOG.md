@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.14.1]
 
+### Uncategorized
+
+- Bump version to 13.14.1 (#39345)
+
 ### Changed
 
 - Set 10-minute delay on first profile metrics collection after acknowledgement, rather than delaying until 2nd unlock (#39270)
