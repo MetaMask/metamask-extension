@@ -38,6 +38,7 @@ export const ImportAccount = ({ onActionComplete }) => {
   const menuItems = [t('privateKey'), t('jsonFile')];
 
   const [type, setType] = useState(menuItems[0]);
+  const [importErrorMessage, setImportErrorMessage] = useState();
 
   async function importAccount(strategy, importArgs) {
     const loadingMessage = getLoadingMessage(strategy);
@@ -57,10 +58,10 @@ export const ImportAccount = ({ onActionComplete }) => {
       );
       if (selectedAddress) {
         trackImportEvent(strategy, true);
-        dispatch(actions.hideWarning());
+        setImportErrorMessage();
         onActionComplete(true);
       } else {
-        dispatch(actions.displayWarning(t('importAccountError')));
+        setImportErrorMessage(t('importAccountError'));
         return false;
       }
     } catch (error) {
@@ -128,12 +129,12 @@ export const ImportAccount = ({ onActionComplete }) => {
   function translateWarning(message) {
     if (message && !message.startsWith('t(')) {
       // This is just a normal error message
-      dispatch(actions.displayWarning(message));
+      setImportErrorMessage(message);
     } else {
       // This is an error message in a form like
       // `t('importAccountErrorNotHexadecimal')`
       // so slice off the first 3 chars and last 2 chars, and feed to i18n
-      dispatch(actions.displayWarning(t(message.slice(3, -2))));
+      setImportErrorMessage(t(message.slice(3, -2)));
     }
   }
 
@@ -198,7 +199,7 @@ export const ImportAccount = ({ onActionComplete }) => {
             options={menuItems.map((text) => ({ value: text }))}
             selectedOption={type}
             onChange={(value) => {
-              dispatch(actions.hideWarning());
+              setImportErrorMessage();
               setType(value);
             }}
           />
@@ -206,12 +207,20 @@ export const ImportAccount = ({ onActionComplete }) => {
         {type === menuItems[0] ? (
           <PrivateKeyImportView
             importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
+            onActionComplete={(confirmed) => {
+              setImportErrorMessage();
+              onActionComplete(confirmed);
+            }}
+            importErrorMessage={importErrorMessage}
           />
         ) : (
           <JsonImportView
             importAccountFunc={importAccount}
-            onActionComplete={onActionComplete}
+            onActionComplete={(confirmed) => {
+              setImportErrorMessage();
+              onActionComplete(confirmed);
+            }}
+            importErrorMessage={importErrorMessage}
           />
         )}
       </Box>
