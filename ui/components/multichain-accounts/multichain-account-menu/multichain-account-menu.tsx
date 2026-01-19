@@ -71,7 +71,7 @@ export const MultichainAccountMenu = ({
       let count = 0;
       const { wallets } = accountTree;
       for (const wallet of Object.values(wallets)) {
-        for (const [groupId, group] of Object.entries(wallet.groups || {})) {
+        for (const [groupId, group] of Object.entries(wallet.groups)) {
           if (groupId === accountGroupId) {
             // Use the new value for the current account
             if (newValue) {
