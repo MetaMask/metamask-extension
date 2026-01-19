@@ -104,7 +104,18 @@ export const NetworkListItem = ({
     (menuButtonRef as any).current = ref;
   }, []);
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+  // Tracks when menu is transitioning from open to closed.
+  // When true, menu renders without ModalFocus to prevent focus management
+  // from briefly focusing the first menu item during the closing animation.
   const [isMenuClosing, setIsMenuClosing] = useState(false);
+
+  // Prepares menu for closing: focuses button and marks menu as closing
+  const prepareMenuClose = useCallback(() => {
+    if (menuButtonRef.current) {
+      menuButtonRef.current.focus();
+    }
+    setIsMenuClosing(true);
+  }, []);
 
   // This selector provides the indication if the "Gas sponsored" label
   // is enabled based on the remote feature flag.
@@ -153,20 +164,21 @@ export const NetworkListItem = ({
         data-testid={`network-list-item-options-button-${chainId}`}
         ariaLabel={t('networkOptions')}
         onMouseDown={(e: React.MouseEvent) => {
-          // Prevent button from losing focus when clicked to close menu
+          // When closing: prevent button from losing focus and mark menu as closing
+          // This must happen before onClick toggles the state
           if (networkOptionsMenuOpen) {
             e.preventDefault();
-            // Focus the button before closing to ensure it has focus
-            if (menuButtonRef.current) {
-              menuButtonRef.current.focus();
-            }
-            // Set closing state before toggling
-            setIsMenuClosing(true);
+            prepareMenuClose();
           }
         }}
         onClick={(e: React.MouseEvent) => {
           e.stopPropagation();
-          setNetworkOptionsMenuOpen((prev) => !prev);
+          const willBeOpen = !networkOptionsMenuOpen;
+          setNetworkOptionsMenuOpen(willBeOpen);
+          // When opening, ensure closing flag is reset
+          if (willBeOpen) {
+            setIsMenuClosing(false);
+          }
         }}
         size={ButtonIconSize.Sm}
       />
@@ -180,10 +192,11 @@ export const NetworkListItem = ({
     setNetworkListItemMenuRef,
     setNetworkOptionsMenuOpen,
     networkOptionsMenuOpen,
-    menuButtonRef,
+    prepareMenuClose,
   ]);
 
-  // Reset closing state when menu opens
+  // Safety: Reset closing flag whenever menu opens
+  // (handles edge cases like rapid toggling)
   useEffect(() => {
     if (networkOptionsMenuOpen) {
       setIsMenuClosing(false);
@@ -323,13 +336,10 @@ export const NetworkListItem = ({
               onEditClick={onEditClick}
               onDiscoverClick={onDiscoverClick}
               onClose={() => {
-                // Ensure button has focus before closing to prevent focus jump
-                if (menuButtonRef.current) {
-                  menuButtonRef.current.focus();
-                }
-                setIsMenuClosing(true);
+                // When closing via click-outside: prepare close and update state
+                prepareMenuClose();
                 setNetworkOptionsMenuOpen(false);
-                // Reset closing state after a brief delay
+                // Reset flag after menu closes (prevents stale state if menu doesn't reopen)
                 setTimeout(() => setIsMenuClosing(false), 0);
               }}
               finalFocusRef={menuButtonRef}

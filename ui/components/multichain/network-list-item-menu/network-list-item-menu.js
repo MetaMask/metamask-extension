@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -25,33 +25,29 @@ export const NetworkListItemMenu = ({
 }) => {
   const t = useI18nContext();
 
-  // Track refs for menu items to handle keyboard navigation
-  const discoverItemRef = useRef(null);
-  const editItemRef = useRef(null);
-  const deleteItemRef = useRef(null);
-  const lastItemRef = useRef(null);
   const popoverDialogRef = useRef(null);
 
-  // Determine the last menu item that is not disabled
-  useEffect(() => {
-    if (deleteItemRef.current) {
-      lastItemRef.current = deleteItemRef.current;
-    } else if (editItemRef.current) {
-      lastItemRef.current = editItemRef.current;
-    } else if (discoverItemRef.current) {
-      lastItemRef.current = discoverItemRef.current;
+  const getLastMenuItem = useCallback(() => {
+    if (!popoverDialogRef.current) {
+      return null;
     }
-  });
+    const menuItems =
+      popoverDialogRef.current.querySelectorAll('[role="menuitem"]');
+    return menuItems.length > 0 ? menuItems[menuItems.length - 1] : null;
+  }, []);
 
   // Handle Tab key press for accessibility - close popover on last MenuItem
   const handleKeyDown = useCallback(
     (event) => {
-      if (event.key === 'Tab' && event.target === lastItemRef.current) {
-        // If Tab is pressed at the last item, close popover and focus to next element in DOM
-        onClose();
+      if (event.key === 'Tab') {
+        const lastMenuItem = getLastMenuItem();
+        if (event.target === lastMenuItem) {
+          // If Tab is pressed at the last item, close popover and focus to next element in DOM
+          onClose();
+        }
       }
     },
-    [onClose],
+    [onClose, getLastMenuItem],
   );
 
   const menuContent = (
@@ -59,7 +55,6 @@ export const NetworkListItemMenu = ({
       <Box>
         {onDiscoverClick ? (
           <MenuItem
-            ref={discoverItemRef}
             iconName={IconName.Eye}
             onClick={(e) => {
               e.stopPropagation();
@@ -72,7 +67,6 @@ export const NetworkListItemMenu = ({
         ) : null}
         {onEditClick ? (
           <MenuItem
-            ref={editItemRef}
             iconName={IconName.Edit}
             onClick={(e) => {
               e.stopPropagation();
@@ -85,7 +79,6 @@ export const NetworkListItemMenu = ({
         ) : null}
         {onDeleteClick ? (
           <MenuItem
-            ref={deleteItemRef}
             iconName={IconName.Trash}
             iconColor={IconColor.errorDefault}
             onClick={(e) => {
