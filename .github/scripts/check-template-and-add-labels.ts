@@ -33,6 +33,7 @@ const knownBots = [
   'sentry-io',
   'devin-ai-integration',
   'runway-github',
+  'copilot',
 ];
 
 main().catch((error: Error): void => {
