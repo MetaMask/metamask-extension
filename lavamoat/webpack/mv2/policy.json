@@ -1895,6 +1895,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
