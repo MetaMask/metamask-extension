@@ -52,13 +52,13 @@ print_check_run_names() {
 # Look for 'all-jobs-pass' or 'All jobs pass' (the check that gates all CI)
 # Prefer the most recent check-run (reruns can create multiple).
 CHECK_RESULT=$(
-    echo "${CHECK_RUNS}" | jq -r '
+    echo "${CHECK_RUNS}" | jq -c '
       [.check_runs[] | select(.name == "all-jobs-pass" or .name == "All jobs pass")]
       | sort_by(.completed_at // .started_at // "")
       | reverse
       | .[0]
       | if . == null then empty else {name: .name, status: .status, conclusion: .conclusion} end
-    ' | head -1
+    '
 )
 
 if [[ -z "${CHECK_RESULT}" || "${CHECK_RESULT}" == "null" ]]; then
