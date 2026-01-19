@@ -19,6 +19,9 @@ import {
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];
 
+// This test  only be run manually or via specific workflow update-onboarding-fixutre.yml
+const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
+
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {
   const testFilenames = await fs.promises.readdir(testDir, {
     withFileTypes: true,
@@ -221,7 +224,10 @@ async function main(): Promise<void> {
     ];
   } else if (dist) {
     const testDir = path.join(__dirname, 'dist');
-    testPaths = await getTestPathsForTestDir(testDir);
+    const allDistTests = await getTestPathsForTestDir(testDir);
+    testPaths = allDistTests.filter((p) =>
+      DIST_EXCLUDED_TESTS.every((excludedTest) => !p.endsWith(excludedTest)),
+    );
   } else if (rpc) {
     const testDir = path.join(__dirname, 'json-rpc');
     testPaths = await getTestPathsForTestDir(testDir);
