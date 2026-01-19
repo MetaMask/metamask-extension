@@ -11,6 +11,7 @@ import {
 import { DeferredDeepLinkRouteType } from '../../../../shared/lib/deep-links/types';
 import * as deepLinkUtils from '../../../../shared/lib/deep-links/utils';
 import * as useSidePanelEnabledHook from '../../../hooks/useSidePanelEnabled';
+import { setBackgroundConnection } from '../../../store/background-connection';
 import CreationSuccessful from './creation-successful';
 
 const mockUseNavigate = jest.fn();
@@ -35,11 +36,23 @@ jest.mock('webextension-polyfill', () => ({
   },
   sidePanel: {
     open: jest.fn(),
+    onClosed: {
+      addListener: jest.fn(),
+      removeListener: jest.fn(),
+    },
   },
 }));
 
 jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
+
+// Mock background connection to prevent "Background connection not initialized" warnings
+const backgroundConnectionMock = new Proxy(
+  {},
+  {
+    get: () => jest.fn().mockResolvedValue(undefined),
+  },
+);
 
 describe('Wallet Ready Page', () => {
   const mockState = {
@@ -76,6 +89,7 @@ describe('Wallet Ready Page', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseNavigate.mockClear();
+    setBackgroundConnection(backgroundConnectionMock as never);
   });
 
   it('should render the wallet ready content if the seed phrase is backed up', () => {
