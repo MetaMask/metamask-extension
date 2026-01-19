@@ -214,7 +214,6 @@ export async function integrationTestRender(extendedRenderOptions) {
       protocol: 'https:',
       url: 'https://metamask.github.io/test-dapp/',
     },
-    initialRoute = '/?tab=activity',
     ...renderOptions
   } = extendedRenderOptions;
 
@@ -225,9 +224,6 @@ export async function integrationTestRender(extendedRenderOptions) {
   connectToBackground(backgroundConnection, noop);
 
   const store = await setupInitialStore(preloadedState, activeTab);
-
-  // Set the URL hash route (e.g., '/?tab=activity')
-  window.location.hash = `#${initialRoute}`;
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),
