@@ -1,4 +1,5 @@
 import { strict as assert } from 'assert';
+import { join } from 'path';
 import { CHAIN_IDS } from '@metamask/transaction-controller';
 import { createDownloadFolder, withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -22,7 +23,7 @@ import {
   StateLogsTypeMap,
 } from './state-logs-helpers';
 
-const downloadsFolder = `${process.cwd()}/test-artifacts/downloads`;
+const downloadsFolder = join(process.cwd(), "test-artifacts", "downloads");
 
 describe('State logs', function () {
   it('should download state logs for the account', async function () {
