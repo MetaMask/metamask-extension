@@ -16,8 +16,6 @@ name: Publish Release from Release HEAD
 
 on:
   workflow_dispatch:
-    branches:
-      - 'release/*'
 
 permissions:
   contents: read # Default read-only; publish-release job elevates to write
