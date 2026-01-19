@@ -19,7 +19,6 @@ const tryConnectWithRetry = async (
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
       await testDapp.checkPageIsLoaded();
-      await driver.delay(regularDelayMs);
       const header = await testDapp.getHeader();
       await header.connect();
 
