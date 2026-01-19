@@ -94,22 +94,28 @@ export function trackVaultCorruptionEvent(
     return;
   }
 
-  segment.track({
-    userId: metaMetrics.metaMetricsId,
-    event: eventName,
-    properties: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      error_type: corruptionType,
-      category: MetaMetricsEventCategory.Error,
-    },
-    context: {
-      app: {
-        name: 'MetaMask Extension',
-        version: process.env.METAMASK_VERSION,
+  try {
+    segment.track({
+      userId: metaMetrics.metaMetricsId,
+      event: eventName,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_type: corruptionType,
+        category: MetaMetricsEventCategory.Error,
       },
-    },
-  });
+      context: {
+        app: {
+          name: 'MetaMask Extension',
+          version: process.env.METAMASK_VERSION,
+        },
+      },
+    });
 
-  // Flush immediately to ensure the event is sent before the page might reload
-  segment.flush();
+    // Flush immediately to ensure the event is sent before the page might reload
+    segment.flush();
+  } catch (error) {
+    // Log but don't propagate analytics errors to ensure they never break the
+    // vault recovery flow. This matches MetaMetricsController's behavior.
+    console.error('Failed to track vault corruption event:', error);
+  }
 }
