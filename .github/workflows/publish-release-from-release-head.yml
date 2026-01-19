@@ -73,20 +73,7 @@ jobs:
           } >> "${GITHUB_OUTPUT}"
 
       - name: Summary
-        env:
-          VERSION: ${{ steps.extract-semver.outputs.semver }}
-          TAG: ${{ steps.compute-tag.outputs.tag }}
-          RELEASE_SHA: ${{ steps.compute-tag.outputs.release_sha }}
-        run: |
-          {
-            echo "## Release Branch Validation"
-            echo ""
-            echo "| Property | Value |"
-            echo "|----------|-------|"
-            echo "| Version | \`${VERSION}\` |"
-            echo "| Tag | \`${TAG}\` |"
-            echo "| SHA | \`${RELEASE_SHA}\` |"
-          } >> "${GITHUB_STEP_SUMMARY}"
+        run: echo "Release ${{ steps.compute-tag.outputs.tag }} @ ${{ steps.compute-tag.outputs.release_sha }}" >> "${GITHUB_STEP_SUMMARY}"
 
   verify-ci-checks:
     name: Verify CI checks passed
@@ -107,22 +94,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
         run: .github/scripts/verify-ci-checks.sh
-
-      - name: Summary
-        if: always()
-        env:
-          RELEASE_SHA: ${{ needs.validate-branch.outputs.release-sha }}
-        run: |
-          {
-            echo "## CI Check Verification"
-            echo ""
-            echo "Verified \`all-jobs-pass\` on SHA: \`${RELEASE_SHA}\`"
-            echo ""
-            echo "This check gates all CI jobs including:"
-            echo "- Unit tests, linting, builds"
-            echo "- E2E tests (Chrome & Firefox)"
-            echo "- All other required checks"
-          } >> "${GITHUB_STEP_SUMMARY}"
 
   # Production builds - 4 variants required for release
   # These use 'yarn build prod' (not 'yarn build dist') to match stable branch builds
