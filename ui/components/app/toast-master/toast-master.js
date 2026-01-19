@@ -33,7 +33,6 @@ import {
   getMetaMaskHdKeyrings,
   getOriginOfCurrentTab,
   getPermissions,
-  getSelectedAccount,
   getUseNftDetection,
 } from '../../../selectors';
 import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/network';
@@ -84,7 +83,6 @@ import {
 } from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
-  selectShowConnectAccountToast,
   selectShowPrivacyPolicyToast,
   selectShowSurveyToast,
   selectNewSrpAdded,
