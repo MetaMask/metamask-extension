@@ -6,6 +6,7 @@ import mockMetaMaskState from '../data/integration-init-state.json';
 import {
   clickElementById,
   createMockImplementation,
+  getSelectedAccountGroupName,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
@@ -16,11 +17,6 @@ jest.mock('../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../ui/store/background-connection'),
   submitRequestToBackground: jest.fn(),
   callBackgroundMethod: jest.fn(),
-}));
-
-jest.mock('../../../ui/selectors/selectors', () => ({
-  ...jest.requireActual('../../../ui/selectors/selectors'),
-  isGlobalNetworkSelectorRemoved: true,
 }));
 
 const mockedBackgroundConnection = jest.mocked(backgroundConnection);
@@ -51,13 +47,7 @@ describe('NFTs list', () => {
   });
 
   it('displays the nfts list for popular networks and tracks the event', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -95,11 +85,7 @@ describe('NFTs list', () => {
   });
 
   it('filters the nfts list for the current network', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     const withMetamaskConnectedToMainnet = {
       ...mockMetaMaskState,
@@ -116,8 +102,6 @@ describe('NFTs list', () => {
         },
       },
     };
-
-    const accountName = account.metadata.name;
 
     await act(async () => {
       await integrationTestRender({
@@ -140,13 +124,7 @@ describe('NFTs list', () => {
   });
 
   it('disables the filter list for the test networks', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
     // Use EVM network to match enabledNetworkMap structure
     const withEvmNetwork = {

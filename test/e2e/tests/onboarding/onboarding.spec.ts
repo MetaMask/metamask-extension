@@ -1,9 +1,8 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../constants';
 import {
   convertToHexValue,
-  TEST_SEED_PHRASE,
-  WALLET_PASSWORD,
   withFixtures,
   unlockWallet,
   isSidePanelEnabled,
@@ -314,9 +313,7 @@ describe('MetaMask onboarding', function () {
     );
   });
 
-  // But #38077 - After estoring account from state persistence failure Metamask unlock is not working
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
+  it('Provides an onboarding path for a user who has restored their account from state persistence failure', async function () {
     // We don't use onboarding: true here because we want there to be a vault,
     // simulating what will happen when a user eventually restores their vault
     // during a state persistence failure. Instead, we set the

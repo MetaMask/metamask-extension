@@ -1148,6 +1148,13 @@
         "@metamask/scure-bip39>@scure/base": true
       }
     },
+    "@metamask/smart-transactions-controller": {
+      "packages": {
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "reselect": true
+      }
+    },
     "@metamask/snaps-execution-environments": {
       "globals": {
         "document.getElementById": true
@@ -1204,7 +1211,7 @@
         "@swc/helpers": true,
         "chalk": true,
         "cron-parser": true,
-        "@metamask/snaps-utils>fast-json-stable-stringify": true,
+        "fast-json-stable-stringify": true,
         "luxon": true,
         "@metamask/snaps-utils>marked": true,
         "@metamask/snaps-utils>rfdc": true,
@@ -1220,7 +1227,8 @@
       "globals": {
         "Buffer": true,
         "TextDecoder": true,
-        "TextEncoder": true
+        "TextEncoder": true,
+        "crypto": true
       },
       "packages": {
         "@metamask/superstruct": true,
