@@ -61,24 +61,31 @@ export const PermissionCellStatus = ({
           display={Display.InlineFlex}
         >
           <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-            {networks?.map((network, index) => (
-              <Box
-                key={`${network.name}_${index}`}
-                display={Display.Flex}
-                justifyContent={JustifyContent.flexStart}
-                alignItems={AlignItems.center}
-                marginTop={2}
-              >
-                <AvatarNetwork
-                  size={AvatarNetworkSize.Xs}
-                  src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId]}
-                  name={network.name}
-                />
-                <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
-                  {network.name}
-                </Text>
-              </Box>
-            ))}
+            {networks?.map((network, index) => {
+              // Get network icon: try EVM chain ID map first, then rpcPrefs.imageUrl for non-EVM
+              const networkImageUrl =
+                CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[network.chainId] ||
+                network.rpcPrefs?.imageUrl ||
+                network.nativeTokenIconUrl;
+              return (
+                <Box
+                  key={`${network.name}_${index}`}
+                  display={Display.Flex}
+                  justifyContent={JustifyContent.flexStart}
+                  alignItems={AlignItems.center}
+                  marginTop={2}
+                >
+                  <AvatarNetwork
+                    size={AvatarNetworkSize.Xs}
+                    src={networkImageUrl}
+                    name={network.name}
+                  />
+                  <Text variant={TextVariant.bodyMdMedium} marginLeft={2}>
+                    {network.name}
+                  </Text>
+                </Box>
+              );
+            })}
           </Box>
         </Box>
       ) : (

@@ -146,21 +146,48 @@ function getRequestedChainIds(permissions: PermissionsRequest | undefined) {
 }
 
 /**
- * Gets all requested namespaces from permissions (excluding wallet namespace).
+ * Gets all requested CAIP chain IDs from the permission request.
+ * This includes all chains (EVM, Solana, Bitcoin, etc.), not just EVM.
  *
- * @param permissions - The permissions request object
- * @returns Array of CAIP namespaces (e.g., 'eip155', 'bip122', 'solana')
+ * @param permissions
+ * @param includeEvm - Whether to include EVM chains (default: true)
  */
-function getRequestedNamespaces(
+function getRequestedCaipChainIds(
   permissions: PermissionsRequest | undefined,
-): CaipNamespace[] {
+  includeEvm = true,
+): CaipChainId[] {
   const requestedCaip25CaveatValue =
     getCaip25CaveatValueFromPermissions(permissions);
-  return getAllNamespacesFromCaip25CaveatValue(
-    requestedCaip25CaveatValue,
-  ).filter(
-    (namespace) => namespace !== KnownCaipNamespace.Wallet,
-  ) as CaipNamespace[];
+  return getAllScopesFromCaip25CaveatValue(requestedCaip25CaveatValue).filter(
+    (chainId) => {
+      try {
+        const { namespace } = parseCaipChainId(chainId);
+        // Exclude wallet namespace as it's not a chain
+        if (namespace === KnownCaipNamespace.Wallet) {
+          return false;
+        }
+        // Optionally exclude EVM chains (eip155 namespace)
+        if (!includeEvm && namespace === KnownCaipNamespace.Eip155) {
+          return false;
+        }
+        return true;
+      } catch {
+        return false;
+      }
+    },
+  ) as CaipChainId[];
+}
+
+/**
+ * Gets only non-EVM CAIP chain IDs from the permission request.
+ * This excludes EVM chains (eip155 namespace).
+ *
+ * @param permissions
+ */
+function getNonEvmRequestedCaipChainIds(
+  permissions: PermissionsRequest | undefined,
+): CaipChainId[] {
+  return getRequestedCaipChainIds(permissions, false);
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -239,50 +266,12 @@ function PermissionsConnect() {
   const requestState =
     useSelector((state) => getRequestState(state, permissionsRequestId)) || {};
 
-  // Get all accounts with labels (unfiltered)
-  const allAccountsWithLabels = useSelector(getAccountsWithLabels);
-
-  // Get requested namespaces from the permission request
-  const requestedNamespacesForRequest = useMemo(
-    () => getRequestedNamespaces(permissions as PermissionsRequest | undefined),
-    [permissions],
+  // We only consider EVM accounts for the legacy permission review flow.
+  // Multichain accounts are handled separately via the MultichainEditAccountsPageWrapper.
+  const accountsWithLabels = useSelector(getAccountsWithLabels).filter(
+    (account: { type: string }) =>
+      isEvmAccountType(account.type as KeyringAccountType),
   );
-
-  // Filter accounts based on requested namespaces (chain-agnostic)
-  // If no specific namespaces requested, default to EVM-only for backward compatibility
-  const accountsWithLabels = useMemo(() => {
-    // For backward compatibility: if no namespaces requested or only EVM requested,
-    // filter to EVM accounts only
-    if (
-      requestedNamespacesForRequest.length === 0 ||
-      (requestedNamespacesForRequest.length === 1 &&
-        requestedNamespacesForRequest[0] === KnownCaipNamespace.Eip155)
-    ) {
-      return allAccountsWithLabels.filter((account: { type: string }) =>
-        isEvmAccountType(account.type as KeyringAccountType),
-      );
-    }
-
-    // For multichain requests, filter accounts that have scopes matching requested namespaces
-    return allAccountsWithLabels.filter(
-      (account: { scopes?: string[]; type: string }) => {
-        // Check if account has scopes that match any requested namespace
-        if (account.scopes && Array.isArray(account.scopes)) {
-          return account.scopes.some((scope) => {
-            const [namespace] = scope.split(':');
-            return requestedNamespacesForRequest.includes(
-              namespace as CaipNamespace,
-            );
-          });
-        }
-        // Fallback: check if it's an EVM account and EVM is requested
-        if (requestedNamespacesForRequest.includes(KnownCaipNamespace.Eip155)) {
-          return isEvmAccountType(account.type as KeyringAccountType);
-        }
-        return false;
-      },
-    );
-  }, [allAccountsWithLabels, requestedNamespacesForRequest]);
 
   const accountGroups = useSelector(getAccountGroupWithInternalAccounts);
   const lastConnectedInfoRaw = useSelector(getLastConnectedInfo);
@@ -338,6 +327,15 @@ function PermissionsConnect() {
   const [snapsInstallPrivacyWarningShown] = useState(
     snapsInstallPrivacyWarningShownProp,
   );
+
+  // State for chain-agnostic CAIP account IDs and chain IDs
+  // These are set when accounts are selected in the multichain account selection UI
+  const [selectedCaipAccountIds, setSelectedCaipAccountIds] = useState<
+    string[] | null
+  >(null);
+  const [selectedCaipChainIds, setSelectedCaipChainIds] = useState<
+    CaipChainId[] | null
+  >(null);
 
   const prevPermissionsRequestRef = useRef<typeof permissionsRequest | null>(
     null,
@@ -605,14 +603,15 @@ function PermissionsConnect() {
     // Build scopes to use: include all requested chain IDs
     const caipChainIdsToUse: CaipChainId[] = [...requestedCaipChainIds];
 
-    // Add wildcard scope for each requested namespace to ensure all compatible accounts are included
-    // This is chain-agnostic - it adds wildcards for eip155, bip122, solana, etc.
-    requestedNamespaces.forEach((namespace) => {
-      const wildcardScope = `${namespace}:0` as CaipChainId;
-      if (!caipChainIdsToUse.includes(wildcardScope)) {
-        caipChainIdsToUse.push(wildcardScope);
+    // Only add wildcard scope for EIP-155 (EVM) namespace because
+    // getCaip25AccountIdsFromAccountGroupAndScope only handles wildcard matching for EVM.
+    // Non-EVM chains require exact scope matching.
+    if (requestedNamespaces.includes(KnownCaipNamespace.Eip155)) {
+      const evmWildcard = `${KnownCaipNamespace.Eip155}:0` as CaipChainId;
+      if (!caipChainIdsToUse.includes(evmWildcard)) {
+        caipChainIdsToUse.push(evmWildcard);
       }
-    });
+    }
 
     return (
       <MultichainEditAccountsPageWrapper
@@ -628,6 +627,20 @@ function PermissionsConnect() {
             filteredAccountGroups,
             caipChainIdsToUse,
           );
+
+          // Store CAIP account IDs and chain IDs for chain-agnostic permission approval
+          setSelectedCaipAccountIds(caipAccountIds);
+          // Only store non-EVM chain IDs for display - EVM chains are handled separately
+          const nonEvmCaipChainIds = requestedCaipChainIds.filter((chainId) => {
+            try {
+              const { namespace } = parseCaipChainId(chainId);
+              return namespace !== KnownCaipNamespace.Eip155;
+            } catch {
+              return false;
+            }
+          });
+          setSelectedCaipChainIds(nonEvmCaipChainIds);
+
           // Extract addresses from CAIP account IDs
           const addresses = caipAccountIds.map(
             (caip25AccountId) => parseCaipAccountId(caip25AccountId).address,
@@ -771,6 +784,16 @@ function PermissionsConnect() {
                 requestedChainIds={getRequestedChainIds(
                   permissions as PermissionsRequest | undefined,
                 )}
+                // Chain-agnostic data for multichain permission approval
+                selectedCaipAccountIds={selectedCaipAccountIds}
+                // Use selectedCaipChainIds if set (from account selection), otherwise use non-EVM CAIP chain IDs
+                // EVM chains are already displayed via requestedChainIds, so we only pass non-EVM chains here
+                selectedCaipChainIds={
+                  selectedCaipChainIds ||
+                  getNonEvmRequestedCaipChainIds(
+                    permissions as PermissionsRequest | undefined,
+                  )
+                }
                 targetSubjectMetadata={targetSubjectMetadata}
                 navigate={navigate}
                 connectPath={connectPath}
