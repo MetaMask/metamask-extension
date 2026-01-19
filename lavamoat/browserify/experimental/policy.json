@@ -1002,7 +1002,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/assets-controllers>@metamask/network-controller>@metamask/connectivity-controller": {
+    "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -1174,7 +1174,7 @@
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
       }
     },
-    "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1614,7 +1614,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
+        "@metamask/bridge-controller>@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1663,6 +1663,35 @@
       },
       "packages": {
         "@metamask/base-controller": true,
+        "@metamask/connectivity-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-provider": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/utils": true,
+        "cockatiel": true,
+        "addons-linter>deepmerge": true,
+        "eslint>fast-deep-equal": true,
+        "immer": true,
+        "lodash": true,
+        "reselect": true,
+        "uri-js": true,
+        "uuid": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/network-controller": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "URL": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
@@ -1695,35 +1724,6 @@
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
         "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/assets-controllers>@metamask/network-controller>@metamask/connectivity-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/transaction-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1944,6 +1944,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -2289,7 +2290,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
