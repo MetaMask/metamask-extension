@@ -256,7 +256,8 @@ jobs:
       - name: Publish Flask MV2 release to Sentry
         run: yarn sentry:publish --build-type flask --dist mv2 --dist-directory build-flask-mv2-browserify/dist
 
-      - name: Create GitHub release
+      # Creates release tags (vX.Y.Z and vX.Y.Z-flask.0) and GitHub Release with artifacts
+      - name: Create tags and GitHub release
         run: .github/scripts/release-create-gh-release.sh
 
       - name: Push Firefox bundle script
