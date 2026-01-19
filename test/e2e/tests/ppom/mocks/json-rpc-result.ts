@@ -1,3 +1,4 @@
+const MOCK_TRANSACTION_COUNT = '0x0';
 const MOCK_BLOCK_NUMBER = '0x1';
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -333,7 +334,10 @@ export const mockJsonRpcResult: mockJsonRpcResultType = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_getTransactionCount: {
-    default: MOCK_BLOCK_NUMBER,
+    // NOTE: This method is used by the EVM account discovery. We cannot set
+    // a count that is not-zero for every call, otherwise the discovery will
+    // never stops!
+    default: MOCK_TRANSACTION_COUNT,
   },
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

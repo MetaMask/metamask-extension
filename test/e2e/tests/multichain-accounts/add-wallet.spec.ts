@@ -2,7 +2,7 @@ import path from 'path';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { Driver } from '../../webdriver/driver';
-import { withFixtures } from '../../helpers';
+import { TEST_SEED_PHRASE, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -17,6 +17,7 @@ import {
 import { mockPriceApi } from '../tokens/utils/mocks';
 import { mockIdentityServices } from '../identity/mocks';
 import { withMultichainAccountsDesignEnabled } from './common';
+import { MockedDiscoveryBuilder } from './discovery';
 
 const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,025.00';
 
@@ -116,6 +117,10 @@ describe('Add wallet', function () {
           .withPreferencesControllerImportedAccountIdentities()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
+          // This is the seed phrase used in the JSON file being imported below.
+          await MockedDiscoveryBuilder.from(TEST_SEED_PHRASE)
+            .skipDefaultGroupIndex()
+            .mock(server);
           await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,
@@ -173,6 +178,10 @@ describe('Add wallet', function () {
           .withKeyringControllerImportedAccountVault()
           .build(),
         testSpecificMock: async (server: Mockttp) => {
+          // This is the seed phrase used in the JSON file being imported below.
+          await MockedDiscoveryBuilder.from(TEST_SEED_PHRASE)
+            .skipDefaultGroupIndex()
+            .mock(server);
           await mockPriceApi(server);
           userStorageMockttpController.setupPath(
             USER_STORAGE_FEATURE_NAMES.accounts,

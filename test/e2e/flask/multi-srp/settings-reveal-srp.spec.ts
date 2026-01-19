@@ -3,10 +3,10 @@ import { Driver } from '../../webdriver/driver';
 import { E2E_SRP as FIRST_TEST_E2E_SRP } from '../../fixtures/default-fixture';
 import {
   mockActiveNetworks,
-  SECOND_TEST_E2E_SRP,
   withMultiSrp,
   verifySrp,
 } from './common-multi-srp';
+import { SECOND_TEST_E2E_SRP } from './constants';
 
 describe('Multi SRP - Reveal Imported SRP', function (this: Suite) {
   const firstSrpIndex = 1;

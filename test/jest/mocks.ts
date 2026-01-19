@@ -15,6 +15,8 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import { Json } from '@metamask/utils';
+import { parseAccountGroupId } from '@metamask/account-api';
+import { AccountTreeControllerState } from '@metamask/account-tree-controller';
 import {
   DraftTransaction,
   draftTransactionInitialState,
@@ -295,6 +297,21 @@ export const getSelectedInternalAccountFromMockState = (
   return state.metamask.internalAccounts.accounts[
     state.metamask.internalAccounts.selectedAccount
   ];
+};
+
+export const getSelectedAccountGroupFromAccountTree = (
+  accountTree: AccountTreeControllerState['accountTree'],
+) => {
+  const groupId = accountTree.selectedAccountGroup;
+  if (!groupId) {
+    throw new Error('No account group is selected');
+  }
+
+  const {
+    wallet: { id: walletId },
+  } = parseAccountGroupId(groupId);
+
+  return accountTree.wallets[walletId].groups[groupId];
 };
 
 export function overrideAccountsFromMockState<

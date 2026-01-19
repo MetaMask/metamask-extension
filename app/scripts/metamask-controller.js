@@ -4535,6 +4535,9 @@ export default class MetamaskController extends EventEmitter {
       // Ensure the snap keyring is initialized
       await this.getSnapKeyring();
 
+      // Ensure the account tree is synced with user storage before discovering accounts.
+      await this.accountTreeController.syncWithUserStorageAtLeastOnce();
+
       const wallet = this.controllerMessenger.call(
         'MultichainAccountService:getMultichainAccountWallet',
         { entropySource: keyringIdToDiscover },
@@ -5317,7 +5320,7 @@ export default class MetamaskController extends EventEmitter {
     );
 
     if (this.isMultichainAccountsFeatureState2Enabled()) {
-      const resyncAndAlignAccounts = async () => {
+      const resyncAndDiscoverAndAlignAccounts = async () => {
         // READ THIS CAREFULLY:
         // There is/was a bug with Snap accounts that can be desynchronized (Solana). To
         // automatically "fix" this corrupted state, we run this method which will re-sync
@@ -5325,15 +5328,23 @@ export default class MetamaskController extends EventEmitter {
         // BUG: https://github.com/MetaMask/metamask-extension/issues/37228
         await this.multichainAccountService.resyncAccounts();
 
-        // This allows to create missing accounts if new account providers have been added.
-        await this.multichainAccountService.alignWallets();
+        // We just run discovery every time we unlock to check if new accounts have
+        // been created on some other external wallets.
+        // This also allows to create missing accounts if new account providers
+        // have been added.
+        await Promise.allSettled(
+          this.getHDEntropySources().map(
+            async (entropySource) =>
+              await this.discoverAndCreateAccounts(entropySource),
+          ),
+        );
       };
 
-      // FIXME: We might wanna run discovery + alignment asynchronously here, like we do
-      // for mobile.
-      // NOTE: We run this asynchronously on purpose, see FIXME^.
+      // NOTE: We run this asynchronously on purpose. The UI will show each wallet status
+      // accordingly and will let the user interact with the extension while those
+      // operations are running in the background.
       // eslint-disable-next-line no-void
-      void resyncAndAlignAccounts();
+      void resyncAndDiscoverAndAlignAccounts();
     }
   }
 
@@ -6523,6 +6534,17 @@ export default class MetamaskController extends EventEmitter {
       signatureController: this.signatureController,
       transactionController: this.txController,
     });
+  }
+
+  /**
+   * Returns the list of known entropy sources.
+   *
+   * @returns {string[]} The list of entropy sources.
+   */
+  getHDEntropySources() {
+    return this.keyringController.state.keyrings
+      .filter((keyring) => keyring.type === KeyringTypes.hd)
+      .map((keyring) => keyring.metadata.id);
   }
 
   /**

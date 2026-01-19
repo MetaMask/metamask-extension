@@ -3,7 +3,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import configureStore, { MetaMaskReduxDispatch } from '../../../store/store';
 import { createNextMultichainAccountGroup } from '../../../store/actions';
-import { useAccountsOperationsLoadingStates } from '../../../hooks/accounts/useAccountsOperationsLoadingStates';
+import { useAccountsWalletOperationsLoadingStates } from '../../../hooks/accounts/useAccountsWalletOperationsLoadingStates';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { AddMultichainAccount } from './add-multichain-account';
 
@@ -30,12 +30,15 @@ jest.mock('../../../store/actions', () => ({
   ),
 }));
 
-jest.mock('../../../hooks/accounts/useAccountsOperationsLoadingStates', () => ({
-  useAccountsOperationsLoadingStates: jest.fn(),
-}));
-const mockUseAccountsOperationsLoadingStates =
-  useAccountsOperationsLoadingStates as jest.MockedFunction<
-    typeof useAccountsOperationsLoadingStates
+jest.mock(
+  '../../../hooks/accounts/useAccountsWalletOperationsLoadingStates',
+  () => ({
+    useAccountsWalletOperationsLoadingStates: jest.fn(),
+  }),
+);
+const mockUseAccountsWalletOperationsLoadingStates =
+  useAccountsWalletOperationsLoadingStates as jest.MockedFunction<
+    typeof useAccountsWalletOperationsLoadingStates
   >;
 
 describe('AddMultichainAccount', () => {
@@ -53,8 +56,7 @@ describe('AddMultichainAccount', () => {
     },
   };
 
-  mockUseAccountsOperationsLoadingStates.mockReturnValue({
-    isAccountTreeSyncingInProgress: false,
+  mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
     areAnyOperationsLoading: false,
     loadingMessage: undefined,
   });
@@ -189,8 +191,7 @@ describe('AddMultichainAccount', () => {
   describe('Loading States Integration', () => {
     it('shows syncing message when account syncing is in progress', () => {
       const store = configureStore(initialState);
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -205,8 +206,7 @@ describe('AddMultichainAccount', () => {
 
     it('shows creating account message when local loading is active', async () => {
       const store = configureStore(initialState);
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: false,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
@@ -225,8 +225,7 @@ describe('AddMultichainAccount', () => {
 
     it('prioritizes syncing message over local loading', async () => {
       const store = configureStore(initialState);
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -244,8 +243,7 @@ describe('AddMultichainAccount', () => {
 
     it('shows spinner when any loading state is active', async () => {
       const store = configureStore(initialState);
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: true,
         loadingMessage: 'Syncing...',
       });
@@ -260,8 +258,7 @@ describe('AddMultichainAccount', () => {
     });
 
     it('shows default Add account text when no loading states are active', () => {
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: false,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: false,
         loadingMessage: '',
       });
@@ -277,8 +274,7 @@ describe('AddMultichainAccount', () => {
     it('handles loading state transitions correctly', () => {
       const store = configureStore(initialState);
       // Start with no loading
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: false,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });
@@ -291,19 +287,17 @@ describe('AddMultichainAccount', () => {
       expect(getByText('Add account')).toBeInTheDocument();
 
       // Simulate account syncing starting
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: true,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: true,
-        loadingMessage: 'Syncing...',
+        loadingMessage: 'Discovering accounts...',
       });
 
       rerender(<AddMultichainAccount walletId={mockWalletId} />);
 
-      expect(getByText('Syncing...')).toBeInTheDocument();
+      expect(getByText('Discovering accounts...')).toBeInTheDocument();
 
       // Simulate syncing completing
-      mockUseAccountsOperationsLoadingStates.mockReturnValue({
-        isAccountTreeSyncingInProgress: false,
+      mockUseAccountsWalletOperationsLoadingStates.mockReturnValue({
         areAnyOperationsLoading: false,
         loadingMessage: undefined,
       });

@@ -15,6 +15,7 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
@@ -36,7 +37,7 @@ describe('Account syncing - Multiple SRPs', function () {
 
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const sharedMockSetup = (server: Mockttp) => {
+    const sharedMockSetup = async (server: Mockttp) => {
       userStorageMockttpController.setupPath(
         USER_STORAGE_GROUPS_FEATURE_KEY,
         server,
@@ -45,7 +46,14 @@ describe('Account syncing - Multiple SRPs', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      return mockIdentityServices(server, userStorageMockttpController);
+      mockIdentityServices(server, userStorageMockttpController);
+
+      await MockedDiscoveryBuilder.fromDefaultSrp()
+        .doNotDiscoverAnyAccounts()
+        .mock(server);
+      await MockedDiscoveryBuilder.from(IDENTITY_TEAM_SEED_PHRASE_2)
+        .doNotDiscoverAnyAccounts()
+        .mock(server);
     };
 
     // Phase 1: Add a second account to the first SRP

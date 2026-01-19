@@ -111,6 +111,7 @@ const createConsolidatedWallets = (
         id: walletId as AccountWalletId,
         type: wallet.type,
         metadata: wallet.metadata,
+        status: wallet.status,
         groups: {},
       };
 
@@ -939,5 +940,28 @@ export const getWalletIdsByType = createSelector(
     return Object.entries(wallets)
       .filter(([, wallet]) => wallet.type === walletType)
       .map(([walletId]) => walletId) as AccountWalletId[];
+  },
+);
+
+/**
+ * Get the wallet status for a given wallet ID.
+ *
+ * @param walletId - The ID of the wallet to use.
+ * @returns Wallet status if available.
+ */
+export const getWalletStatus = createDeepEqualSelector(
+  getAccountTree,
+  (_, walletId: AccountWalletId) => walletId,
+  (
+    accountTree: AccountTreeState,
+    walletId: AccountWalletId,
+  ): AccountWalletObject['status'] | null => {
+    const { wallets } = accountTree;
+
+    if (!wallets) {
+      return null;
+    }
+
+    return wallets[walletId]?.status ?? null;
   },
 );

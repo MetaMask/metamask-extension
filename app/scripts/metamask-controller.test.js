@@ -141,7 +141,7 @@ async function waitForAllPromises() {
   // Wait for next tick to flush all pending promises. It's requires since
   // we are testing some asynchronous execution flows that are started by
   // synchronous calls.
-  await new Promise(process.nextTick);
+  await new Promise((resolve) => setTimeout(() => resolve()));
 }
 
 /**
@@ -764,19 +764,97 @@ describe('MetaMaskController', () => {
         // + 1 in `submitPassword`
         expect(accountsControllerSpy).toHaveBeenCalledTimes(2);
       });
-    });
 
-    describe('#submitPasswordOrEncryptionKey', () => {
-      const password = 'a-fake-password';
+      it('runs discovery and alignment asynchronously after submitting password', async () => {
+        const localMetaMaskController = new MetaMaskController({
+          showUserConfirmation: noop,
+          encryptor: mockEncryptor,
+          initState: {
+            ...cloneDeep(firstTimeState),
+          },
+          initLangCode: 'en_US',
+          platform: {
+            showTransactionNotification: () => undefined,
+            getVersion: () => 'foo',
+          },
+          browser: browserPolyfillMock,
+          infuraProjectId: 'foo',
+          isFirstMetaMaskControllerSetup: true,
+          cronjobControllerStorageManager:
+            createMockCronjobControllerStorageManager(),
+          controllerMessenger: new Messenger({
+            namespace: MOCK_ANY_NAMESPACE,
+          }),
+        });
 
-      it('should call resyncAccounts and alignWallets asynchronously when submitPasswordOrEncryptionKey is called', async () => {
-        const mockAlignWallets = jest.fn();
+        // We only run this behavior for state 2.
+        jest
+          .spyOn(
+            localMetaMaskController,
+            'isMultichainAccountsFeatureState2Enabled',
+          )
+          .mockReturnValue(true);
+
+        const discoverAndCreateAccountsSpy = jest.spyOn(
+          localMetaMaskController,
+          'discoverAndCreateAccounts',
+        );
+        discoverAndCreateAccountsSpy.mockImplementation(() => undefined);
+
+        localMetaMaskController.multichainAccountService = {
+          init: jest.fn(),
+          resyncAccounts: jest.fn(),
+        };
+
+        const password = 'password';
+        // Primary HD keyring.
+        await localMetaMaskController.createNewVaultAndKeychain(password);
+        // Second HD keyring.
+        await localMetaMaskController.importMnemonicToVault(TEST_SEED_ALT);
+
+        // Wait for async call to discover accounts.
+        await waitForAllPromises();
+
+        const keyrings =
+          localMetaMaskController.keyringController.state.keyrings.filter(
+            (keyring) => keyring.type === KeyringTypes.hd,
+          );
+        expect(keyrings).toHaveLength(2);
+
+        // Run discovery right after importing SRP.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledTimes(1);
+        // 1: During importMnemonicToVault (hence, `keyrings[1]` here).
+        expect(discoverAndCreateAccountsSpy).toHaveBeenCalledWith(
+          keyrings[1].metadata.id,
+        );
+        discoverAndCreateAccountsSpy.mockReset();
+
+        // Unlocking will trigger some async works!
+        await localMetaMaskController.submitPassword(password);
+
+        // Wait for async call to discover accounts.
+        await waitForAllPromises();
+
+        // We should have run discovery + alignment on every HD keyrings:
+        // 1: After unlock, with the primary HD keyring.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
+          1,
+          keyrings[0].metadata.id,
+        );
+        // 2: After unlock, with the second HD keyring.
+        expect(discoverAndCreateAccountsSpy).toHaveBeenNthCalledWith(
+          2,
+          keyrings[1].metadata.id,
+        );
+      });
+
+      it('runs resyncAccounts asynchronously after submitting password', async () => {
+        const password = 'a-fake-password';
         const mockResyncAccounts = jest.fn();
 
         metamaskController.multichainAccountService = {
           init: jest.fn(),
           resyncAccounts: mockResyncAccounts,
-          alignWallets: mockAlignWallets,
         };
 
         await metamaskController.createNewVaultAndRestore(password, TEST_SEED);
@@ -785,7 +863,6 @@ describe('MetaMaskController', () => {
         await waitForAllPromises();
 
         expect(mockResyncAccounts).toHaveBeenCalled();
-        expect(mockAlignWallets).toHaveBeenCalled();
       });
     });
 

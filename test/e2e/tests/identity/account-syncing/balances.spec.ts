@@ -13,19 +13,13 @@ import { completeImportSRPOnboardingFlow } from '../../../page-objects/flows/onb
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
+import { mockAccountSync } from '../mocks';
+import { MockedDiscoveryBuilder } from '../../multichain-accounts/discovery';
 import { skipOnFirefox } from '../helpers';
-import { mockInfuraAndAccountSync } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Accounts with Balances', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
-
-  // Accounts that will have balances and be discovered during onboarding
-  const balancesAccounts = [
-    '0x5cfe73b6021e818b776b421b1c4db2474086a7e1', // Account 1 (synced)
-    '0x09781764c08de8ca82e156bbf156a3ca217c7950', // Account 2 (synced)
-    '0x7de4768c33db8785f75075a054aeeed7e01c4497', // Account 3 (discovered via balance)
-  ];
 
   /**
    * This test verifies that account syncing gracefully handles accounts with pre-existing balances:
@@ -37,10 +31,12 @@ describe('Account syncing - Accounts with Balances', function () {
 
     const userStorageMockttpController = new UserStorageMockttpController();
 
-    const phase1MockSetup = (server: Mockttp) => {
-      return mockInfuraAndAccountSync(server, userStorageMockttpController, {
-        accountsToMockBalances: balancesAccounts,
-      });
+    const phase1MockSetup = async (server: Mockttp) => {
+      await MockedDiscoveryBuilder.from(E2E_SRP)
+        .skipDefaultGroupIndex()
+        .untilGroupIndex(1)
+        .mock(server);
+      return mockAccountSync(server, userStorageMockttpController);
     };
 
     // Phase 1: Create and sync accounts
@@ -89,10 +85,12 @@ describe('Account syncing - Accounts with Balances', function () {
     );
 
     // Phase 2: Fresh onboarding with balance mocking to discover additional accounts
-    const phase2MockSetup = (server: Mockttp) => {
-      return mockInfuraAndAccountSync(server, userStorageMockttpController, {
-        accountsToMockBalances: balancesAccounts,
-      });
+    const phase2MockSetup = async (server: Mockttp) => {
+      await MockedDiscoveryBuilder.from(E2E_SRP)
+        .fromGroupIndex(2)
+        .untilGroupIndex(3)
+        .mock(server);
+      return mockAccountSync(server, userStorageMockttpController);
     };
 
     await withFixtures(

@@ -241,7 +241,7 @@ class AccountListPage {
       throw e;
     }
 
-    await this.waitUntilSyncingIsCompleted();
+    await this.waitUntilWalletIsReady();
     console.log('Account list is loaded');
   }
 
@@ -385,13 +385,13 @@ class AccountListPage {
   }
 
   /**
-   * Waiting until syncing is completed.
+   * Waiting until wallet is ready to process any new operation.
    */
-  async waitUntilSyncingIsCompleted(): Promise<void> {
-    console.log(`Check that account syncing not displayed in account list`);
-    await this.driver.assertElementNotPresent({
-      css: this.addMultichainAccountButton,
-      text: 'Syncing',
+  async waitUntilWalletIsReady(): Promise<void> {
+    console.log(`Wait for the wallet to be ready to process any new operation`);
+    await this.driver.waitForSelector({
+      css: '[data-testid="add-multichain-account-button"]',
+      text: 'Add account',
     });
   }
 
@@ -403,7 +403,7 @@ class AccountListPage {
    */
   async addMultichainAccount(options?: { srpIndex?: number }): Promise<void> {
     console.log(`Adding new multichain account`);
-    await this.waitUntilSyncingIsCompleted();
+    await this.waitUntilWalletIsReady();
     const createMultichainAccountButtons = await this.driver.findElements(
       this.addMultichainAccountButton,
     );

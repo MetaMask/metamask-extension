@@ -12,6 +12,10 @@ import {
 import { MockedEndpoint } from '../../mock-e2e';
 import { mockPriceApi } from '../tokens/utils/mocks';
 
+import { E2E_SRP } from '../../fixtures/default-fixture';
+import { SECOND_TEST_E2E_SRP } from '../../flask/multi-srp/constants';
+import { MockedDiscoveryBuilder } from './discovery';
+
 export enum AccountType {
   MultiSRP = 'multi-srp',
   SSK = 'ssk',
@@ -24,44 +28,62 @@ export async function withMultichainAccountsDesignEnabled(
     testSpecificMock,
     accountType = AccountType.MultiSRP,
     dappOptions,
+    shouldMockDiscovery = true,
+    withFixtures: withMoreFixtures,
   }: {
     title?: string;
     testSpecificMock?: (
       mockServer: Mockttp,
-    ) => Promise<MockedEndpoint | MockedEndpoint[]>;
+    ) => Promise<MockedEndpoint | MockedEndpoint[] | void>;
     accountType?: AccountType;
     dappOptions?: { numberOfTestDapps?: number; customDappPaths?: string[] };
+    shouldMockDiscovery?: boolean;
+    withFixtures?: (builder: FixtureBuilder) => FixtureBuilder;
   },
   test: (driver: Driver) => Promise<void>,
 ) {
-  let fixture;
+  let fixtureBuilder = new FixtureBuilder();
+  let srps: string[] = [];
 
   switch (accountType) {
     case AccountType.HardwareWallet:
-      fixture = new FixtureBuilder()
+      fixtureBuilder = fixtureBuilder
         .withLedgerAccount()
         .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-        .withEnabledNetworks({ eip155: { '0x1': true } })
-        .build();
+        .withEnabledNetworks({ eip155: { '0x1': true } });
+      srps = [E2E_SRP];
       break;
     default:
-      fixture = new FixtureBuilder()
+      fixtureBuilder = fixtureBuilder
         .withKeyringControllerMultiSRP()
         .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-        .withEnabledNetworks({ eip155: { '0x1': true } })
-        .build();
+        .withEnabledNetworks({ eip155: { '0x1': true } });
+      srps = [E2E_SRP, SECOND_TEST_E2E_SRP];
       break;
   }
 
+  if (withMoreFixtures) {
+    fixtureBuilder = withMoreFixtures(fixtureBuilder);
+  }
+
+  const mockNetworkCalls = async (mockServer: Mockttp) => {
+    await testSpecificMock?.(mockServer);
+
+    if (shouldMockDiscovery) {
+      for (const srp of srps) {
+        await MockedDiscoveryBuilder.from(srp)
+          .doNotDiscoverAnyAccounts()
+          .mock(mockServer);
+      }
+    }
+
+    await mockPriceApi(mockServer);
+  };
+
   await withFixtures(
     {
-      fixtures: fixture,
-      testSpecificMock: async (mockServer: Mockttp) => {
-        const additionalMocks = testSpecificMock
-          ? await testSpecificMock(mockServer)
-          : [];
-        return [await mockPriceApi(mockServer), [additionalMocks]];
-      },
+      fixtures: fixtureBuilder.build(),
+      testSpecificMock: mockNetworkCalls,
       title,
       dappOptions,
     },

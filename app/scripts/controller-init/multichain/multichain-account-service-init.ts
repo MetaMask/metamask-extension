@@ -45,6 +45,9 @@ export const MultichainAccountServiceInit: ControllerInitFunction<
     maxConcurrency: 1,
     // Re-use the default config for the rest:
     discovery: {
+      // NOTE: We disable discovery for E2E since the discovery now runs asynchronously
+      // and mocking those requests could interfere with actual test requests.
+      enabled: Boolean(!process.env.IN_TEST),
       timeoutMs: 2000,
       maxAttempts: 3,
       backOffMs: 1000,
