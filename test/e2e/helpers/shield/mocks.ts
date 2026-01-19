@@ -501,35 +501,29 @@ export class ShieldMockttpService {
     await server
       .forGet(SUBSCRIPTION_API.ELIGIBILITY)
       .always()
-      .thenCallback(() => {
-        console.log('Mocking subscription eligibility. overrides:', overrides);
-        return {
-          statusCode: 200,
-          json: [
+      .thenJson(200, [
+        {
+          canSubscribe: !overrides?.mockNotEligible,
+          canViewEntryModal: true,
+          minBalanceUSD: 1000,
+          product: 'shield',
+          modalType: 'A',
+          cohorts: [
             {
-              canSubscribe: !overrides?.mockNotEligible,
-              canViewEntryModal: true,
-              minBalanceUSD: 1000,
-              product: 'shield',
-              modalType: 'A',
-              cohorts: [
-                {
-                  cohort: 'wallet_home',
-                  eligible: true,
-                  eligibilityRate: 1.0,
-                },
-                {
-                  cohort: 'post_tx',
-                  eligible: true,
-                  eligibilityRate: 1.0,
-                },
-              ],
-              assignedCohort: null,
-              hasAssignedCohortExpired: null,
+              cohort: 'wallet_home',
+              eligible: true,
+              eligibilityRate: 1.0,
+            },
+            {
+              cohort: 'post_tx',
+              eligible: true,
+              eligibilityRate: 1.0,
             },
           ],
-        };
-      });
+          assignedCohort: null,
+          hasAssignedCohortExpired: null,
+        },
+      ]);
   }
 
   async #handleCreateSubscriptionByCard(server: Mockttp) {
