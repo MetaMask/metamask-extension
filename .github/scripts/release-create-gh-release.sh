@@ -103,6 +103,19 @@ if gh release view "${tag}" >/dev/null 2>&1; then
 fi
 
 printf '%s\n' "Creating GitHub Release for ${tag}..."
+
+# Validate artifacts exist (fail fast with clear error)
+for artifact in build-dist-browserify/builds/metamask-chrome-*.zip \
+                build-dist-mv2-browserify/builds/metamask-firefox-*.zip \
+                build-flask-browserify/builds/metamask-flask-chrome-*.zip \
+                build-flask-mv2-browserify/builds/metamask-flask-firefox-*.zip; do
+    # shellcheck disable=SC2086
+    if ! ls $artifact >/dev/null 2>&1; then
+        echo "::error::Required artifact not found: ${artifact}"
+        exit 1
+    fi
+done
+
 release_body="$(awk -v version="[${VERSION}]" -f .github/scripts/show-changelog.awk CHANGELOG.md)"
 gh release create "${tag}" \
     build-dist-browserify/builds/metamask-chrome-*.zip \

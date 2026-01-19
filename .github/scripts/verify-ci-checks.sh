@@ -1,18 +1,6 @@
 #!/usr/bin/env bash
-
-# Verifies that required CI checks have passed on a given commit SHA.
-#
-# We only check 'all-jobs-pass' since it already gates on all other required
-# checks (run-tests, e2e-chrome, e2e-firefox, builds, linting, etc.)
-#
-# Required environment variables:
-#   GITHUB_TOKEN - GitHub token for API authentication
-#   GITHUB_REPOSITORY - Repository in format owner/repo
-#   RELEASE_SHA - The commit SHA to verify checks for
-#
-# Exit codes:
-#   0 - All required checks passed
-#   1 - Missing or failed checks
+# Verifies 'all-jobs-pass' CI check has passed on RELEASE_SHA.
+# Required env: GITHUB_TOKEN, GITHUB_REPOSITORY, RELEASE_SHA
 
 set -e
 set -o pipefail
@@ -34,12 +22,13 @@ fi
 
 echo "Verifying CI checks on SHA: ${RELEASE_SHA}"
 
-# Fetch all check runs for the commit
+# Fetch all check runs for the commit (30s timeout per request)
 CHECK_RUNS=$(
   gh api \
     -H "Accept: application/vnd.github+json" \
     "/repos/${GITHUB_REPOSITORY}/commits/${RELEASE_SHA}/check-runs" \
-    --paginate |
+    --paginate \
+    --timeout 30s |
     jq -s '{check_runs: [.[].check_runs[]]}'
 )
 
