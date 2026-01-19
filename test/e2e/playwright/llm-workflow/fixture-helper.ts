@@ -100,6 +100,11 @@ export const FixturePresets = {
     const builder = createFixtureBuilder();
     return builder.withConversionRateDisabled().build();
   },
+
+  withHSTToken: (): FixtureData => {
+    const builder = createFixtureBuilder();
+    return builder.withTokensControllerERC20({ chainId: 1337 }).build();
+  },
 };
 
 export { FIXTURE_STATE_METADATA_VERSION };

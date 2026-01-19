@@ -17,6 +17,10 @@ import type {
 import { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
 import { MockServer } from './mock-server';
 import { HomePage } from './page-objects/home-page';
+import {
+  AnvilSeederWrapper,
+  type SmartContractName,
+} from './anvil-seeder-wrapper';
 // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
 const FixtureServer = require('../../fixtures/fixture-server');
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
@@ -47,6 +51,7 @@ type ResolvedOptions = {
   network: NetworkConfig;
   anvilPort: number;
   fixtureServerPort: number;
+  seedContracts?: SmartContractName[];
 };
 
 export class MetaMaskExtensionLauncher {
@@ -61,6 +66,8 @@ export class MetaMaskExtensionLauncher {
   private fixtureServer: typeof FixtureServer | undefined;
 
   private mockServer: MockServer | undefined;
+
+  private seeder: AnvilSeederWrapper | undefined;
 
   private options: ResolvedOptions;
 
@@ -95,6 +102,8 @@ export class MetaMaskExtensionLauncher {
       },
       anvilPort: options.ports?.anvil ?? DEFAULT_ANVIL_PORT,
       fixtureServerPort: options.ports?.fixtureServer ?? FIXTURE_SERVER_PORT,
+      seedContracts: (options as { seedContracts?: SmartContractName[] })
+        .seedContracts,
     };
     this.userDataDir = '';
 
@@ -182,6 +191,7 @@ export class MetaMaskExtensionLauncher {
 
     try {
       await this.startAnvil();
+      await this.deploySeedContracts();
       await this.startFixtureServer();
       await this.startMockServer();
 
@@ -253,7 +263,37 @@ export class MetaMaskExtensionLauncher {
 
     await this.anvil.start(anvilOptions);
     await this.waitForAnvilReady();
+
+    this.seeder = new AnvilSeederWrapper(this.anvil.getProvider());
+    console.log('AnvilSeeder initialized');
+
     console.log(`Anvil started on port ${port} with chainId ${chainId}`);
+  }
+
+  private async deploySeedContracts(): Promise<void> {
+    const { seedContracts } = this.options;
+
+    if (!seedContracts || seedContracts.length === 0) {
+      return;
+    }
+
+    if (!this.seeder) {
+      throw new Error('Seeder not initialized');
+    }
+
+    console.log(`Deploying ${seedContracts.length} seed contracts...`);
+
+    for (const contractName of seedContracts) {
+      try {
+        const deployed = await this.seeder.deployContract(contractName);
+        console.log(`  Deployed ${contractName} at ${deployed.address}`);
+      } catch (error) {
+        console.error(`  Failed to deploy ${contractName}:`, error);
+        throw error;
+      }
+    }
+
+    console.log('Seed contract deployment complete');
   }
 
   private async fetchWithTimeout(
@@ -1156,6 +1196,13 @@ export class MetaMaskExtensionLauncher {
     return this.anvil;
   }
 
+  getSeeder(): AnvilSeederWrapper {
+    if (!this.seeder) {
+      throw new Error('Seeder not initialized. Ensure Anvil has started.');
+    }
+    return this.seeder;
+  }
+
   async openNewDappPage(url: string): Promise<Page> {
     if (!this.context) {
       throw new Error('Browser context not initialized');
@@ -1307,6 +1354,11 @@ export class MetaMaskExtensionLauncher {
         errors.push(msg);
       }
       this.fixtureServer = undefined;
+    }
+
+    if (this.seeder) {
+      this.seeder.clearRegistry();
+      this.seeder = undefined;
     }
 
     const anvilPort = this.getAnvilPort();

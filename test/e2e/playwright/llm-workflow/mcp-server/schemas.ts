@@ -68,9 +68,38 @@ export const knowledgeScopeSchema = z.union([
     .describe('Query a specific prior session by ID'),
 ]);
 
-/**
- * Filters for knowledge queries
- */
+const smartContractNames = [
+  'hst',
+  'nfts',
+  'erc1155',
+  'piggybank',
+  'failing',
+  'multisig',
+  'entrypoint',
+  'simpleAccountFactory',
+  'verifyingPaymaster',
+] as const;
+
+const hardforks = [
+  'frontier',
+  'homestead',
+  'dao',
+  'tangerine',
+  'spuriousDragon',
+  'byzantium',
+  'constantinople',
+  'petersburg',
+  'istanbul',
+  'muirGlacier',
+  'berlin',
+  'london',
+  'arrowGlacier',
+  'grayGlacier',
+  'paris',
+  'shanghai',
+  'prague',
+] as const;
+
 export const knowledgeFiltersSchema = z
   .object({
     flowTag: z
@@ -189,6 +218,10 @@ export const launchInputSchema = z.object({
   tags: z
     .array(z.string())
     .describe('Free-form tags for ad-hoc filtering')
+    .optional(),
+  seedContracts: z
+    .array(z.enum(smartContractNames))
+    .describe('Smart contracts to deploy on launch (before extension loads)')
     .optional(),
 });
 
@@ -436,6 +469,28 @@ export const knowledgeSessionsInputSchema = z.object({
   filters: knowledgeFiltersSchema,
 });
 
+export const seedContractInputSchema = z.object({
+  contractName: z.enum(smartContractNames),
+  hardfork: z.enum(hardforks).optional(),
+  deployerOptions: z
+    .object({
+      fromAddress: z.string().optional(),
+      fromPrivateKey: z.string().optional(),
+    })
+    .optional(),
+});
+
+export const seedContractsInputSchema = z.object({
+  contracts: z.array(z.enum(smartContractNames)).min(1).max(9),
+  hardfork: z.enum(hardforks).optional(),
+});
+
+export const getContractAddressInputSchema = z.object({
+  contractName: z.enum(smartContractNames),
+});
+
+export const listDeployedContractsInputSchema = z.object({});
+
 // =============================================================================
 // Schema Map for Tool Lookup
 // =============================================================================
@@ -461,6 +516,10 @@ export const toolSchemas = {
   mm_knowledge_search: knowledgeSearchInputSchema,
   mm_knowledge_summarize: knowledgeSummarizeInputSchema,
   mm_knowledge_sessions: knowledgeSessionsInputSchema,
+  mm_seed_contract: seedContractInputSchema,
+  mm_seed_contracts: seedContractsInputSchema,
+  mm_get_contract_address: getContractAddressInputSchema,
+  mm_list_contracts: listDeployedContractsInputSchema,
 } as const;
 
 export type ToolName = keyof typeof toolSchemas;

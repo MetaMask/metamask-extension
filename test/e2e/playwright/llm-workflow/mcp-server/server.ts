@@ -26,6 +26,10 @@ import type {
   KnowledgeSearchInput,
   KnowledgeSummarizeInput,
   KnowledgeSessionsInput,
+  SeedContractInput,
+  SeedContractsInput,
+  GetContractAddressInput,
+  ListDeployedContractsInput,
   HandlerOptions,
 } from './types';
 import { createErrorResponse, ErrorCodes } from './types';
@@ -49,6 +53,12 @@ import {
   handleKnowledgeSummarize,
   handleKnowledgeSessions,
 } from './tools/knowledge';
+import {
+  handleSeedContract,
+  handleSeedContracts,
+  handleGetContractAddress,
+  handleListDeployedContracts,
+} from './tools/seeding';
 import { sessionManager } from './session-manager';
 
 function formatZodError(error: ZodError<unknown>): string {
@@ -158,6 +168,25 @@ const TOOL_DEFINITIONS = [
           type: 'array',
           items: { type: 'string' },
           description: 'Free-form tags for ad-hoc filtering',
+        },
+        seedContracts: {
+          type: 'array',
+          items: {
+            type: 'string',
+            enum: [
+              'hst',
+              'nfts',
+              'erc1155',
+              'piggybank',
+              'failing',
+              'multisig',
+              'entrypoint',
+              'simpleAccountFactory',
+              'verifyingPaymaster',
+            ],
+          },
+          description:
+            'Smart contracts to deploy on launch (before extension loads)',
         },
       },
       additionalProperties: false,
@@ -551,6 +580,162 @@ const TOOL_DEFINITIONS = [
       additionalProperties: false,
     },
   },
+  {
+    name: 'mm_seed_contract',
+    description:
+      'Deploy a smart contract to the local Anvil node. Available: hst (ERC20 TST token), nfts (ERC721), erc1155, piggybank, failing (reverts), multisig, entrypoint (ERC-4337), simpleAccountFactory, verifyingPaymaster.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        contractName: {
+          type: 'string',
+          enum: [
+            'hst',
+            'nfts',
+            'erc1155',
+            'piggybank',
+            'failing',
+            'multisig',
+            'entrypoint',
+            'simpleAccountFactory',
+            'verifyingPaymaster',
+          ],
+          description: 'Smart contract to deploy',
+        },
+        hardfork: {
+          type: 'string',
+          enum: [
+            'frontier',
+            'homestead',
+            'dao',
+            'tangerine',
+            'spuriousDragon',
+            'byzantium',
+            'constantinople',
+            'petersburg',
+            'istanbul',
+            'muirGlacier',
+            'berlin',
+            'london',
+            'arrowGlacier',
+            'grayGlacier',
+            'paris',
+            'shanghai',
+            'prague',
+          ],
+          default: 'prague',
+          description: 'EVM hardfork to use for deployment (default: prague)',
+        },
+        deployerOptions: {
+          type: 'object',
+          properties: {
+            fromAddress: {
+              type: 'string',
+              description: 'Deploy from impersonated address',
+            },
+            fromPrivateKey: {
+              type: 'string',
+              description:
+                'Deploy from private key (account seeded with 1 ETH)',
+            },
+          },
+          additionalProperties: false,
+        },
+      },
+      required: ['contractName'],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_seed_contracts',
+    description: 'Deploy multiple smart contracts in sequence.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        contracts: {
+          type: 'array',
+          items: {
+            type: 'string',
+            enum: [
+              'hst',
+              'nfts',
+              'erc1155',
+              'piggybank',
+              'failing',
+              'multisig',
+              'entrypoint',
+              'simpleAccountFactory',
+              'verifyingPaymaster',
+            ],
+          },
+          minItems: 1,
+          maxItems: 9,
+          description: 'List of contracts to deploy',
+        },
+        hardfork: {
+          type: 'string',
+          enum: [
+            'frontier',
+            'homestead',
+            'dao',
+            'tangerine',
+            'spuriousDragon',
+            'byzantium',
+            'constantinople',
+            'petersburg',
+            'istanbul',
+            'muirGlacier',
+            'berlin',
+            'london',
+            'arrowGlacier',
+            'grayGlacier',
+            'paris',
+            'shanghai',
+            'prague',
+          ],
+          default: 'prague',
+          description: 'EVM hardfork to use for deployment (default: prague)',
+        },
+      },
+      required: ['contracts'],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_get_contract_address',
+    description: 'Get the deployed address of a smart contract.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        contractName: {
+          type: 'string',
+          enum: [
+            'hst',
+            'nfts',
+            'erc1155',
+            'piggybank',
+            'failing',
+            'multisig',
+            'entrypoint',
+            'simpleAccountFactory',
+            'verifyingPaymaster',
+          ],
+          description: 'Contract name to look up',
+        },
+      },
+      required: ['contractName'],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_list_contracts',
+    description: 'List all smart contracts deployed in this session.',
+    inputSchema: {
+      type: 'object',
+      properties: {},
+      additionalProperties: false,
+    },
+  },
 ];
 
 async function main() {
@@ -703,6 +888,30 @@ async function main() {
       case 'mm_knowledge_sessions':
         response = await handleKnowledgeSessions(
           validatedArgs as KnowledgeSessionsInput,
+          options,
+        );
+        break;
+      case 'mm_seed_contract':
+        response = await handleSeedContract(
+          validatedArgs as SeedContractInput,
+          options,
+        );
+        break;
+      case 'mm_seed_contracts':
+        response = await handleSeedContracts(
+          validatedArgs as SeedContractsInput,
+          options,
+        );
+        break;
+      case 'mm_get_contract_address':
+        response = await handleGetContractAddress(
+          validatedArgs as GetContractAddressInput,
+          options,
+        );
+        break;
+      case 'mm_list_contracts':
+        response = await handleListDeployedContracts(
+          validatedArgs as ListDeployedContractsInput,
           options,
         );
         break;

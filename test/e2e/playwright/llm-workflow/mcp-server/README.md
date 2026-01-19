@@ -62,6 +62,85 @@ Set the working directory to the MetaMask extension repository root.
 | `mm_knowledge_search`       | Search step records (cross-session by default) |
 | `mm_knowledge_summarize`    | Generate session recipe                        |
 | `mm_knowledge_sessions`     | List recent sessions with metadata             |
+| `mm_seed_contract`          | Deploy a single smart contract to Anvil        |
+| `mm_seed_contracts`         | Deploy multiple smart contracts                |
+| `mm_get_contract_address`   | Get deployed address of a contract             |
+| `mm_list_contracts`         | List all deployed contracts in session         |
+
+## Smart Contract Seeding
+
+Deploy predetermined smart contracts to the local Anvil node for testing token operations, NFTs, and other DeFi flows.
+
+### Available Contracts
+
+| Contract             | Key                    | Description                                                              |
+| -------------------- | ---------------------- | ------------------------------------------------------------------------ |
+| HST                  | `hst`                  | ERC-20 test token (TST symbol, 4 decimals, 10 tokens minted to deployer) |
+| NFTs                 | `nfts`                 | ERC-721 NFT collection (1 NFT minted on deployment)                      |
+| ERC1155              | `erc1155`              | ERC-1155 multi-token standard (batch minted on deployment)               |
+| Piggybank            | `piggybank`            | Simple savings contract                                                  |
+| Failing              | `failing`              | Contract that always reverts (for error testing)                         |
+| Multisig             | `multisig`             | Multi-signature wallet                                                   |
+| Entrypoint           | `entrypoint`           | ERC-4337 entry point for account abstraction                             |
+| SimpleAccountFactory | `simpleAccountFactory` | ERC-4337 smart account factory                                           |
+| VerifyingPaymaster   | `verifyingPaymaster`   | ERC-4337 paymaster for gas sponsorship                                   |
+
+### Seeding Tools
+
+| Tool                      | Description                                |
+| ------------------------- | ------------------------------------------ |
+| `mm_seed_contract`        | Deploy a single smart contract             |
+| `mm_seed_contracts`       | Deploy multiple contracts in sequence      |
+| `mm_get_contract_address` | Get the deployed address of a contract     |
+| `mm_list_contracts`       | List all deployed contracts in the session |
+
+### Hardfork Configuration
+
+All seeding tools default to the `prague` hardfork but support configuring any EVM hardfork:
+
+```json
+{
+  "contractName": "hst",
+  "hardfork": "london"
+}
+```
+
+### Example Workflows
+
+#### Deploy ERC-20 Token for Testing
+
+```
+1. mm_launch { "stateMode": "default" }
+2. mm_seed_contract { "contractName": "hst" }
+   → Returns: { "contractAddress": "0x..." }
+3. mm_describe_screen
+4. [Import token using address, or wait for auto-detection]
+5. [Test send/approve flows]
+6. mm_cleanup
+```
+
+#### Launch with Pre-deployed Contracts
+
+```json
+mm_launch {
+  "stateMode": "default",
+  "seedContracts": ["hst", "nfts"]
+}
+```
+
+Contracts are deployed before the extension loads, making them immediately available.
+
+#### Query Deployed Contracts
+
+```
+mm_list_contracts
+→ Returns: {
+    "contracts": [
+      { "contractName": "hst", "contractAddress": "0x...", "deployedAt": "..." },
+      { "contractName": "nfts", "contractAddress": "0x...", "deployedAt": "..." }
+    ]
+  }
+```
 
 ## Typical Workflow
 
@@ -200,6 +279,8 @@ mm_knowledge_summarize({ "scope": { "sessionId": "mm-..." } })
 | `MM_TYPE_FAILED`             | Type operation failed                 |
 | `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
 | `MM_SCREENSHOT_FAILED`       | Screenshot capture failed             |
+| `MM_SEED_FAILED`             | Contract deployment failed            |
+| `MM_CONTRACT_NOT_FOUND`      | Contract not deployed in session      |
 
 ## Response Format
 

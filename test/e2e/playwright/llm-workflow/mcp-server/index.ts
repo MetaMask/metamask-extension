@@ -83,6 +83,17 @@ export type {
   SessionState,
   // Error types
   ErrorCode,
+  // Seeding types
+  SmartContractName,
+  Hardfork,
+  SeedContractInput,
+  SeedContractsInput,
+  GetContractAddressInput,
+  ListDeployedContractsInput,
+  SeedContractResult,
+  SeedContractsResult,
+  GetContractAddressResult,
+  ListDeployedContractsResult,
 } from './types';
 
 // =============================================================================
@@ -96,6 +107,7 @@ export {
   SENSITIVE_FIELD_PATTERNS,
   FLOW_TAGS,
   STEP_LABELS,
+  SMART_CONTRACT_NAMES,
 } from './types';
 
 // =============================================================================
@@ -151,3 +163,9 @@ export {
   handleKnowledgeSummarize,
   handleKnowledgeSessions,
 } from './tools/knowledge';
+export {
+  handleSeedContract,
+  handleSeedContracts,
+  handleGetContractAddress,
+  handleListDeployedContracts,
+} from './tools/seeding';

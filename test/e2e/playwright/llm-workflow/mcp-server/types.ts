@@ -101,9 +101,90 @@ export const ErrorCodes = {
 
   // Knowledge store errors
   MM_KNOWLEDGE_ERROR: 'MM_KNOWLEDGE_ERROR',
+
+  // Seeding errors
+  MM_SEED_FAILED: 'MM_SEED_FAILED',
+  MM_CONTRACT_NOT_FOUND: 'MM_CONTRACT_NOT_FOUND',
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];
+
+// =============================================================================
+// Smart Contract Seeding Types
+// =============================================================================
+
+export const SMART_CONTRACT_NAMES = [
+  'hst',
+  'nfts',
+  'erc1155',
+  'piggybank',
+  'failing',
+  'multisig',
+  'entrypoint',
+  'simpleAccountFactory',
+  'verifyingPaymaster',
+] as const;
+
+export type SmartContractName = (typeof SMART_CONTRACT_NAMES)[number];
+
+export type Hardfork =
+  | 'frontier'
+  | 'homestead'
+  | 'dao'
+  | 'tangerine'
+  | 'spuriousDragon'
+  | 'byzantium'
+  | 'constantinople'
+  | 'petersburg'
+  | 'istanbul'
+  | 'muirGlacier'
+  | 'berlin'
+  | 'london'
+  | 'arrowGlacier'
+  | 'grayGlacier'
+  | 'paris'
+  | 'shanghai'
+  | 'prague';
+
+export type SeedContractInput = {
+  contractName: SmartContractName;
+  hardfork?: Hardfork;
+  deployerOptions?: {
+    fromAddress?: string;
+    fromPrivateKey?: string;
+  };
+};
+
+export type SeedContractsInput = {
+  contracts: SmartContractName[];
+  hardfork?: Hardfork;
+};
+
+export type GetContractAddressInput = {
+  contractName: SmartContractName;
+};
+
+export type ListDeployedContractsInput = Record<string, never>;
+
+export type SeedContractResult = {
+  contractName: string;
+  contractAddress: string;
+  deployedAt: string;
+};
+
+export type SeedContractsResult = {
+  deployed: SeedContractResult[];
+  failed: { contractName: string; error: string }[];
+};
+
+export type GetContractAddressResult = {
+  contractName: string;
+  contractAddress: string | null;
+};
+
+export type ListDeployedContractsResult = {
+  contracts: SeedContractResult[];
+};
 
 // =============================================================================
 // Handler Options
@@ -150,6 +231,7 @@ export type LaunchInput = {
   goal?: string;
   flowTags?: string[];
   tags?: string[];
+  seedContracts?: SmartContractName[];
 };
 
 /**

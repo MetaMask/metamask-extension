@@ -1,6 +1,7 @@
 import type { Page, BrowserContext } from '@playwright/test';
 import { MetaMaskExtensionLauncher, launchMetaMask, FixturePresets } from '..';
 import type { FixtureData, LaunchOptions, ExtensionState } from '../types';
+import type { AnvilSeederWrapper } from '../anvil-seeder-wrapper';
 import {
   type SessionState,
   type LaunchInput,
@@ -41,6 +42,13 @@ export class SessionManager {
 
   getLauncher(): MetaMaskExtensionLauncher | undefined {
     return this.activeSession?.launcher;
+  }
+
+  getSeeder(): AnvilSeederWrapper {
+    if (!this.activeSession) {
+      throw new Error('No active session. Call launch() first.');
+    }
+    return this.activeSession.launcher.getSeeder();
   }
 
   getPage(): Page {
@@ -233,6 +241,7 @@ export class SessionManager {
       withMainnet: FixturePresets.withMainnet,
       withNFTs: FixturePresets.withNFTs,
       withFiatDisabled: FixturePresets.withFiatDisabled,
+      withHSTToken: FixturePresets.withHSTToken,
     };
 
     const presetFn = presetMap[presetName];
