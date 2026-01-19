@@ -7,7 +7,6 @@ import {
   BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY,
   BASE_SUBSCRIPTION_API_URL,
   CLAIMS_API,
-  MOCK_CHECKOUT_SESSION_URL,
   MOCK_CLAIM_2,
   MOCK_CLAIMS_CONFIGURATION_RESPONSE,
   MOCK_CLAIMS_RESPONSE,
@@ -502,29 +501,35 @@ export class ShieldMockttpService {
     await server
       .forGet(SUBSCRIPTION_API.ELIGIBILITY)
       .always()
-      .thenJson(200, [
-        {
-          canSubscribe: !overrides?.mockNotEligible,
-          canViewEntryModal: true,
-          minBalanceUSD: 1000,
-          product: 'shield',
-          modalType: 'A',
-          cohorts: [
+      .thenCallback(() => {
+        console.log('Mocking subscription eligibility. overrides:', overrides);
+        return {
+          statusCode: 200,
+          json: [
             {
-              cohort: 'wallet_home',
-              eligible: true,
-              eligibilityRate: 1.0,
-            },
-            {
-              cohort: 'post_tx',
-              eligible: true,
-              eligibilityRate: 1.0,
+              canSubscribe: !overrides?.mockNotEligible,
+              canViewEntryModal: true,
+              minBalanceUSD: 1000,
+              product: 'shield',
+              modalType: 'A',
+              cohorts: [
+                {
+                  cohort: 'wallet_home',
+                  eligible: true,
+                  eligibilityRate: 1.0,
+                },
+                {
+                  cohort: 'post_tx',
+                  eligible: true,
+                  eligibilityRate: 1.0,
+                },
+              ],
+              assignedCohort: null,
+              hasAssignedCohortExpired: null,
             },
           ],
-          assignedCohort: null,
-          hasAssignedCohortExpired: null,
-        },
-      ]);
+        };
+      });
   }
 
   async #handleCreateSubscriptionByCard(server: Mockttp) {
@@ -536,7 +541,7 @@ export class ShieldMockttpService {
         return {
           statusCode: 200,
           json: {
-            checkoutSessionUrl: MOCK_CHECKOUT_SESSION_URL,
+            checkoutSessionUrl: SUBSCRIPTION_API.CHECKOUT_SESSION,
           },
         };
       });
@@ -669,7 +674,7 @@ export class ShieldMockttpService {
   }
 
   async #handleCheckoutSession(server: Mockttp) {
-    await server.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
+    await server.forGet(SUBSCRIPTION_API.CHECKOUT_SESSION).thenCallback(() => ({
       statusCode: 302,
       headers: { Location: 'https://mock-redirect-url.com' },
     }));
