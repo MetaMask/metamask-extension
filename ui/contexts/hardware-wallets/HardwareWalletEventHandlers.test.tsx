@@ -130,7 +130,7 @@ describe('useDeviceEventHandlers', () => {
   });
 
   describe('handleDeviceEvent', () => {
-    it('handles DEVICE_LOCKED event', () => {
+    it('handles DeviceLocked event', () => {
       const { result } = setupHook();
 
       const error = new Error('Device locked');
@@ -152,7 +152,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles DEVICE_LOCKED event without error payload', () => {
+    it('handles DeviceLocked event without error payload', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
@@ -180,7 +180,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles APP_NOT_OPEN event with error', () => {
+    it('handles AppNotOpen event with error', () => {
       const { result } = setupHook();
 
       const error = new Error('App not open');
@@ -197,10 +197,12 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(ConnectionState.error('app_not_open', error));
+      expect(resultState).toEqual(
+        ConnectionState.error(DeviceEvent.AppNotOpen, error),
+      );
     });
 
-    it('handles APP_NOT_OPEN event without error', () => {
+    it('handles AppNotOpen event without error', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
@@ -220,7 +222,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles DISCONNECTED event when not connecting', () => {
+    it('handles Disconnected event when not connecting', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
@@ -238,7 +240,7 @@ describe('useDeviceEventHandlers', () => {
       expect(resultState).toEqual(ConnectionState.disconnected());
     });
 
-    it('handles APP_CHANGED event with wrong app', () => {
+    it('handles AppChanged event with wrong app', () => {
       // Set up Ledger wallet type for this test
       mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
       const { result } = setupHook();
@@ -261,7 +263,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles APP_CHANGED event with correct app', () => {
+    it('handles AppChanged event with correct app', () => {
       // Set up Ledger wallet type for this test
       mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
       const { result } = setupHook();
@@ -282,7 +284,7 @@ describe('useDeviceEventHandlers', () => {
       expect(resultState).toEqual(ConnectionState.ready());
     });
 
-    it('handles APP_CHANGED event with undefined app name defaulting to BOLOS', () => {
+    it('handles AppChanged event with undefined app name defaulting to BOLOS', () => {
       // Set up Ledger wallet type for this test
       mockRefs.walletTypeRef.current = HardwareWalletType.Ledger;
       const { result } = setupHook();
@@ -328,7 +330,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('ignores CONNECTION_FAILED event without error', () => {
+    it('ignores ConnectionFailed event without error', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
@@ -338,7 +340,7 @@ describe('useDeviceEventHandlers', () => {
       expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
     });
 
-    it('handles OPERATION_TIMEOUT event with error', () => {
+    it('handles OperationTimeout event with error', () => {
       const { result } = setupHook();
 
       const error = new Error('Operation timed out');
@@ -360,7 +362,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles OPERATION_TIMEOUT event without error', () => {
+    it('handles OperationTimeout event without error', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
