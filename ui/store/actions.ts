@@ -4458,25 +4458,8 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
-  value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (
-    dispatch: MetaMaskReduxDispatch,
-    getState: () => MetaMaskReduxState,
-  ) => {
-    const currentValue = getState().metamask.defaultHomeActiveTabName;
-
-    if (currentValue === value) {
-      return;
-    }
-
-    await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    dispatch({
-      type: actionConstants.UPDATE_METAMASK_STATE,
-      value: { defaultHomeActiveTabName: value },
-    });
-  };
+export function setDefaultHomeActiveTabName(value: string): Promise<void> {
+  return submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {

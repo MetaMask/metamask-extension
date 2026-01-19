@@ -65,8 +65,10 @@ export const AccountOverviewTabs = ({
   const selectedChainIds = useSelector(getEnabledChainIds);
 
   useEffect(() => {
-    dispatch(setDefaultHomeActiveTabName(activeTabKey));
-  }, [activeTabKey, dispatch]);
+    if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+      setDefaultHomeActiveTabName(activeTabKey);
+    }
+  }, [activeTabKey]);
 
   // Get all enabled networks (what the user has actually selected)
   const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
