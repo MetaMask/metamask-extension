@@ -463,6 +463,12 @@ describe('NetworkForm Component', () => {
 
   it('should track RPC update event when trackRpcUpdateFromBanner is true', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -530,6 +536,12 @@ describe('NetworkForm Component', () => {
 
   it('should not track RPC update event when trackRpcUpdateFromBanner is not set', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -546,7 +558,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           existingNetwork={{
@@ -582,6 +594,12 @@ describe('NetworkForm Component', () => {
 
   it('should track custom RPC URL when endpoint is not public', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),
@@ -598,7 +616,7 @@ describe('NetworkForm Component', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <NetworksForm
           {...propNetworkDisplay}
           networkFormState={{
@@ -649,6 +667,12 @@ describe('NetworkForm Component', () => {
 
   it('should handle corrupted state with missing rpcEndpoints gracefully', async () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const store = configureMockStore([thunk])({
       metamask: {
         ...mockNetworkState({ chainId: CHAIN_IDS.MAINNET }),

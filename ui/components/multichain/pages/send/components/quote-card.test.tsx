@@ -36,6 +36,12 @@ describe('QuoteCard', () => {
   const scrollRef = { current: document.createElement('div') };
   const mockDispatch = jest.fn();
   const trackEventMock = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: trackEventMock,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   beforeEach(() => {
     useDispatchMock.mockReturnValue(mockDispatch);
@@ -67,7 +73,7 @@ describe('QuoteCard', () => {
 
   it('renders quote card with correct data', () => {
     render(
-      <MetaMetricsContext.Provider value={trackEventMock}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );
@@ -85,7 +91,7 @@ describe('QuoteCard', () => {
 
   it('do not fetch quote on render', () => {
     render(
-      <MetaMetricsContext.Provider value={trackEventMock}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );
@@ -105,7 +111,7 @@ describe('QuoteCard', () => {
     });
 
     render(
-      <MetaMetricsContext.Provider value={trackEventMock}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <QuoteCard scrollRef={scrollRef} />
       </MetaMetricsContext.Provider>,
     );

@@ -47,6 +47,12 @@ jest.mock('../../app/assets/defi-list/defi-tab', () => ({
 
 describe('AccountOverviewTabs - event metrics', () => {
   const mockTrackEvent = jest.fn();
+  const mockMetaMetricsContext = {
+    trackEvent: mockTrackEvent,
+    bufferedTrace: jest.fn(),
+    bufferedEndTrace: jest.fn(),
+    onboardingParentContext: { current: null },
+  };
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -69,7 +75,7 @@ describe('AccountOverviewTabs - event metrics', () => {
     });
 
     const { getByText } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <AccountOverviewTabs
           onTabClick={jest.fn()}
           defaultHomeActiveTabName={AccountOverviewTabKey.Activity}
