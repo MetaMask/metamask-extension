@@ -303,6 +303,23 @@ jest.mock('@metamask/chain-agnostic-permission', () => ({
   getEthAccounts: jest.fn(),
 }));
 
+/**
+ * Mock the BrowserStorageAdapter to use an InMemoryStorageAdapter.
+ * This is necessary because the BrowserStorageAdapter uses the browser.storage.local API,
+ * which is not available in the test environment.
+ * The InMemoryStorageAdapter is a simple in-memory storage adapter that can be used in the test environment.
+ */
+jest.mock('./lib/stores/browser-storage-adapter', () => {
+  const { InMemoryStorageAdapter } = jest.requireActual(
+    '@metamask/storage-service',
+  );
+
+  // Return InMemoryStorageAdapter as the BrowserStorageAdapter
+  return {
+    BrowserStorageAdapter: InMemoryStorageAdapter,
+  };
+});
+
 const DEFAULT_LABEL = 'Account 1';
 const TEST_SEED =
   'debris dizzy just program just float decrease vacant alarm reduce speak stadium';
