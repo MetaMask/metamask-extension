@@ -15,7 +15,6 @@ import {
 } from '@metamask/messenger';
 import { AccountsControllerActions } from '@metamask/accounts-controller';
 import { SnapControllerActions } from '@metamask/snaps-controllers';
-import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getNextAvailableSnapAccountName,
   MultichainWalletSnapClient,
