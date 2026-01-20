@@ -476,17 +476,20 @@ describe('LedgerAdapter', () => {
       const unknownError = createMockError('Unknown error');
       mockGetAppNameAndVersion.mockRejectedValue(unknownError);
 
+      // When error code cannot be extracted, no device event is emitted
+      // and the original error is re-thrown
       await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
-        HardwareWalletError,
+        'Unknown error',
       );
 
-      // When error code cannot be extracted, no device event is emitted
-      // The error is still reconstructed and thrown
-      try {
-        await adapter.ensureDeviceReady(deviceId);
-      } catch (error) {
-        expect(error).toBeInstanceOf(HardwareWalletError);
-      }
+      // No device event should be emitted for errors without code
+      const deviceEventCalls = (mockOptions.onDeviceEvent as jest.Mock).mock
+        .calls;
+      // Filter out any calls that don't have an error (like successful events)
+      const errorEventCalls = deviceEventCalls.filter(
+        (call) => call[0]?.error,
+      );
+      expect(errorEventCalls.length).toBe(0);
     });
 
     it('throws error when connection fails during verification', async () => {
@@ -506,7 +509,7 @@ describe('LedgerAdapter', () => {
       }
     });
 
-    it('reconstructs hardware wallet error when verification fails', async () => {
+    it('re-throws original error when verification fails with generic error', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -516,16 +519,17 @@ describe('LedgerAdapter', () => {
       const verificationError = createMockError('Verification failed');
       mockGetAppNameAndVersion.mockRejectedValue(verificationError);
 
+      // Original error is re-thrown without modification
       await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
-        HardwareWalletError,
+        'Verification failed',
       );
 
       try {
         await adapter.ensureDeviceReady(deviceId);
       } catch (error) {
-        expect(error).toBeInstanceOf(HardwareWalletError);
-        // Error should be reconstructed from the verification error
-        expect((error as HardwareWalletError).code).toBeDefined();
+        // Original error is re-thrown, not a HardwareWalletError
+        expect(error).toBeInstanceOf(Error);
+        expect((error as Error).message).toBe('Verification failed');
       }
     });
   });
