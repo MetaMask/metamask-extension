@@ -1,15 +1,5 @@
-import React, { useState, useCallback, useRef, useEffect } from 'react';
-import {
-  Box,
-  BoxFlexDirection,
-  Text,
-  TextVariant,
-  TextColor,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
+import React, { useMemo, useCallback } from 'react';
+import { Dropdown, type DropdownOption } from '../dropdown';
 import type { SortField } from '../market-row';
 
 export type SortDirection = 'asc' | 'desc';
@@ -68,110 +58,38 @@ export type SortDropdownProps = {
 };
 
 /**
- * SortDropdown component displays a dropdown button with sort options
- * Allows users to select how markets should be sorted
+ * SortDropdown component displays a dropdown for selecting sort options
  *
- * @param options0 - Component props
- * @param options0.selectedOptionId - Currently selected sort option ID
- * @param options0.onOptionChange - Callback when sort option changes
+ * @param props - Component props
+ * @param props.selectedOptionId - Currently selected sort option ID
+ * @param props.onOptionChange - Callback when sort option changes
  */
 export const SortDropdown: React.FC<SortDropdownProps> = ({
   selectedOptionId,
   onOptionChange,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const selectedOption = SORT_OPTIONS.find(
-    (option) => option.id === selectedOptionId,
+  const options: DropdownOption<SortOptionId>[] = useMemo(
+    () => SORT_OPTIONS.map((opt) => ({ id: opt.id, label: opt.label })),
+    [],
   );
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+  const handleChange = useCallback(
+    (id: SortOptionId) => {
+      const option = SORT_OPTIONS.find((opt) => opt.id === id);
+      if (option) {
+        onOptionChange(option.id, option.field, option.direction);
       }
-    };
-
-    if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [isOpen]);
-
-  const handleToggle = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-
-  const handleOptionSelect = useCallback(
-    (option: SortOption) => {
-      onOptionChange(option.id, option.field, option.direction);
-      setIsOpen(false);
     },
     [onOptionChange],
   );
 
   return (
-    <div ref={dropdownRef} className="relative">
-      {/* Dropdown trigger button */}
-      <button
-        type="button"
-        onClick={handleToggle}
-        className="flex items-center gap-1 rounded-lg border border-border-muted bg-background-default px-3 py-2 hover:bg-hover active:bg-pressed"
-        data-testid="sort-dropdown-button"
-      >
-        <Text variant={TextVariant.BodySm}>{selectedOption?.label}</Text>
-        <Icon
-          name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
-          size={IconSize.Xs}
-          color={IconColor.IconAlternative}
-        />
-      </button>
-
-      {/* Dropdown menu */}
-      {isOpen && (
-        <Box
-          className="absolute left-0 top-full z-10 mt-1 min-w-[160px] overflow-hidden rounded-lg border border-border-muted bg-background-default shadow-lg"
-          flexDirection={BoxFlexDirection.Column}
-          data-testid="sort-dropdown-menu"
-        >
-          {SORT_OPTIONS.map((option) => (
-            <button
-              key={option.id}
-              type="button"
-              onClick={() => handleOptionSelect(option)}
-              className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-hover active:bg-pressed"
-              data-testid={`sort-option-${option.id}`}
-            >
-              <Text
-                variant={TextVariant.BodySm}
-                color={
-                  option.id === selectedOptionId
-                    ? TextColor.TextDefault
-                    : TextColor.TextAlternative
-                }
-              >
-                {option.label}
-              </Text>
-              {option.id === selectedOptionId && (
-                <Icon
-                  name={IconName.Check}
-                  size={IconSize.Sm}
-                  color={IconColor.PrimaryDefault}
-                />
-              )}
-            </button>
-          ))}
-        </Box>
-      )}
-    </div>
+    <Dropdown
+      options={options}
+      selectedId={selectedOptionId}
+      onChange={handleChange}
+      testId="sort-dropdown"
+    />
   );
 };
 
