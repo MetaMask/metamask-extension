@@ -111,7 +111,7 @@ export function Dropdown<T extends string>({
             <ButtonBase
               key={option.id}
               onClick={() => handleSelect(option)}
-              className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-hover active:bg-pressed"
+              className="w-full justify-between text-left rounded-none px-3 py-2 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
               data-testid={`${testId}-option-${option.id}`}
             >
               <Text

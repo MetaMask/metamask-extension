@@ -67,7 +67,7 @@ export const PerpsTabView: React.FC = () => {
       >
         <ButtonBase
           onClick={handleSearchPress}
-          className="rounded-full p-2"
+          className="rounded-full p-2 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="perps-search-button"
           aria-label={t('perpsSearchMarkets')}
         >
