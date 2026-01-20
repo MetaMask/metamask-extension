@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import {
   checkHardwareWalletPermission,
   requestHardwareWalletPermission,
@@ -14,79 +14,146 @@ type UseHardwareWalletPermissionsParams = {
   setHardwareConnectionPermissionState: (
     state: HardwareConnectionPermissionState,
   ) => void;
-  isWebHidAvailable: boolean;
-  isWebUsbAvailable: boolean;
 };
 
 export const useHardwareWalletPermissions = ({
   state,
   refs,
   setHardwareConnectionPermissionState,
-  isWebHidAvailable,
-  isWebUsbAvailable,
 }: UseHardwareWalletPermissionsParams) => {
   const { isHardwareWalletAccount, walletType } = state;
+
+  // AbortControllers to prevent race conditions in permission actions
+  const checkAbortControllerRef = useRef<AbortController | null>(null);
+  const requestAbortControllerRef = useRef<AbortController | null>(null);
+
+  const withHardwareWalletPermissions = useCallback(
+    <ReturnType>(
+      abortControllerRef: React.MutableRefObject<AbortController | null>,
+      operation: (params: {
+        abortController: AbortController;
+        isAborted: () => boolean;
+      }) => ReturnType,
+    ): ReturnType => {
+      // Abort any previous request (from effect re-runs or manual actions)
+      // to prevent race conditions between initial check and manual actions
+      abortControllerRef.current?.abort();
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
+      // Check if the current (or previous) permission request has been aborted
+      const isAborted = () =>
+        abortController.signal.aborted ||
+        Boolean(refs.abortControllerRef.current?.signal.aborted);
+
+      // Run the operation. The operation must check if it's been aborted using
+      // `isAborted` at any time before performing state updates.
+      return operation({
+        abortController,
+        isAborted,
+      });
+    },
+    [refs],
+  );
+
+  // Cleanup: abort any pending requests on unmount
+  useEffect(() => {
+    return () => {
+      // We intentionally want the current ref values at cleanup time
+      // to abort whatever is currently running
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      checkAbortControllerRef.current?.abort();
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      requestAbortControllerRef.current?.abort();
+    };
+  }, []);
 
   useEffect(() => {
     if (!isHardwareWalletAccount || !walletType) {
       return;
     }
 
-    checkHardwareWalletPermission(walletType)
-      .then((permissionState) => {
-        if (!refs.abortControllerRef.current?.signal.aborted) {
-          setHardwareConnectionPermissionState(permissionState);
+    if (refs.abortControllerRef.current?.signal.aborted) {
+      return;
+    }
+
+    withHardwareWalletPermissions(
+      checkAbortControllerRef,
+      async ({ abortController: _abortController, isAborted }) => {
+        try {
+          const permissionState =
+            await checkHardwareWalletPermission(walletType);
+
+          if (!isAborted()) {
+            setHardwareConnectionPermissionState(permissionState);
+          }
+        } catch {
+          if (!isAborted()) {
+            setHardwareConnectionPermissionState(
+              HardwareConnectionPermissionState.Unknown,
+            );
+          }
         }
-      })
-      .catch((error: unknown) => {
-        // Preserve existing behavior: log and keep current permission state.
-        // eslint-disable-next-line no-console
-        console.error('[HardwareWalletPermissions]', error);
-      });
+      },
+    );
+
+    return () => {
+      // We intentionally want the current ref value at cleanup time
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      checkAbortControllerRef.current?.abort();
+    };
+    // Adding eslint ignore to exclude ref from dependencies
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     isHardwareWalletAccount,
     walletType,
-    refs.abortControllerRef,
     setHardwareConnectionPermissionState,
+    withHardwareWalletPermissions,
   ]);
 
   const checkHardwareWalletPermissionAction = useCallback(
     async (
       targetWalletType: HardwareWalletType,
     ): Promise<HardwareConnectionPermissionState> => {
-      const permissionState =
-        await checkHardwareWalletPermission(targetWalletType);
-      setHardwareConnectionPermissionState(permissionState);
-      return permissionState;
+      return withHardwareWalletPermissions(
+        checkAbortControllerRef,
+        async ({ isAborted }) => {
+          const permissionState =
+            await checkHardwareWalletPermission(targetWalletType);
+
+          if (!isAborted()) {
+            setHardwareConnectionPermissionState(permissionState);
+          }
+
+          return permissionState;
+        },
+      );
     },
-    [setHardwareConnectionPermissionState],
+    [setHardwareConnectionPermissionState, withHardwareWalletPermissions],
   );
 
   const requestHardwareWalletPermissionAction = useCallback(
     async (targetWalletType: HardwareWalletType): Promise<boolean> => {
-      const isLedger = targetWalletType === HardwareWalletType.Ledger;
-      const isTrezor = targetWalletType === HardwareWalletType.Trezor;
+      return withHardwareWalletPermissions(
+        requestAbortControllerRef,
+        async ({ isAborted }) => {
+          const granted =
+            await requestHardwareWalletPermission(targetWalletType);
 
-      if (
-        (isLedger && !isWebHidAvailable) ||
-        (isTrezor && !isWebUsbAvailable)
-      ) {
-        return false;
-      }
+          if (!isAborted()) {
+            setHardwareConnectionPermissionState(
+              granted
+                ? HardwareConnectionPermissionState.Granted
+                : HardwareConnectionPermissionState.Denied,
+            );
+          }
 
-      const granted = await requestHardwareWalletPermission(targetWalletType);
-      setHardwareConnectionPermissionState(
-        granted
-          ? HardwareConnectionPermissionState.Granted
-          : HardwareConnectionPermissionState.Denied,
+          return granted;
+        },
       );
-      return granted;
     },
-    [
-      isWebHidAvailable,
-      isWebUsbAvailable,
-      setHardwareConnectionPermissionState,
-    ],
+    [setHardwareConnectionPermissionState, withHardwareWalletPermissions],
   );
 
   return {

@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react-hooks';
 import { useHardwareWalletPermissions } from './useHardwareWalletPermissions';
 import {
   HardwareWalletType,
@@ -7,6 +7,7 @@ import {
 } from './types';
 import { ConnectionState } from './connectionState';
 import * as webConnectionUtils from './webConnectionUtils';
+import { resetwebConnectionUtilsMocks } from './__mocks__/webConnectionUtils';
 
 jest.mock('./webConnectionUtils');
 
@@ -21,12 +22,13 @@ describe('useHardwareWalletPermissions', () => {
     accountAddress: string | null;
   };
   let mockRefs: {
-    abortControllerRef: { current: AbortController };
+    abortControllerRef: { current: AbortController | null };
   };
   let mockSetHardwareConnectionPermissionState: jest.Mock;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    resetwebConnectionUtilsMocks();
 
     mockSetHardwareConnectionPermissionState = jest.fn();
 
@@ -50,29 +52,35 @@ describe('useHardwareWalletPermissions', () => {
     jest.restoreAllMocks();
   });
 
-  const setupHook = (isWebHidAvailable = true, isWebUsbAvailable = false) => {
+  const setupHook = () => {
     return renderHook(() =>
       useHardwareWalletPermissions({
         state: mockState,
         refs: mockRefs,
         setHardwareConnectionPermissionState:
           mockSetHardwareConnectionPermissionState,
-        isWebHidAvailable,
-        isWebUsbAvailable,
       }),
     );
   };
 
   describe('initial permission check effect', () => {
     it('checks permissions for hardware wallet accounts', async () => {
+      let resolvePermission: (value: HardwareConnectionPermissionState) => void;
       (
         webConnectionUtils.checkHardwareWalletPermission as jest.Mock
-      ).mockResolvedValue(HardwareConnectionPermissionState.Granted);
+      ).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvePermission = resolve;
+          }),
+      );
 
       setupHook();
 
-      // Wait for useEffect to run
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Resolve the permission check
+      await act(async () => {
+        resolvePermission(HardwareConnectionPermissionState.Granted);
+      });
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -88,7 +96,10 @@ describe('useHardwareWalletPermissions', () => {
 
       setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Give effect time to run (or not run)
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      });
 
       expect(
         webConnectionUtils.checkHardwareWalletPermission,
@@ -96,23 +107,63 @@ describe('useHardwareWalletPermissions', () => {
     });
 
     it('handles permission check errors gracefully', async () => {
+      let rejectPermission: (error: Error) => void;
       (
         webConnectionUtils.checkHardwareWalletPermission as jest.Mock
-      ).mockRejectedValue(new Error('Permission check failed'));
+      ).mockImplementation(
+        () =>
+          new Promise((_, reject) => {
+            rejectPermission = reject;
+          }),
+      );
 
       setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Reject the permission check
+      await act(async () => {
+        rejectPermission(new Error('Permission check failed'));
+      });
+
+      expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
+        HardwareConnectionPermissionState.Unknown,
+      );
+    });
+
+    it('does not update state when AbortController is aborted before effect runs', async () => {
+      mockRefs.abortControllerRef.current?.abort();
+
+      setupHook();
+
+      // Give effect time to check abort status
+      await act(async () => {
+        await new Promise((resolve) => setTimeout(resolve, 10));
+      });
 
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
 
-    it('aborts when AbortController is aborted', async () => {
-      mockRefs.abortControllerRef.current.abort();
+    it('does not update state when component unmounts during permission check', async () => {
+      let resolvePermissionCheck: (
+        value: HardwareConnectionPermissionState,
+      ) => void;
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolvePermissionCheck = resolve;
+          }),
+      );
 
-      setupHook();
+      const { unmount } = setupHook();
 
-      await new Promise((resolve) => setTimeout(resolve, 0));
+      // Unmount before the permission check resolves
+      unmount();
+
+      // Resolve the permission check after unmount
+      await act(async () => {
+        resolvePermissionCheck(HardwareConnectionPermissionState.Granted);
+      });
 
       expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
@@ -145,7 +196,7 @@ describe('useHardwareWalletPermissions', () => {
         webConnectionUtils.checkHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(HardwareConnectionPermissionState.Denied);
 
-      const { result } = setupHook(false, true);
+      const { result } = setupHook();
 
       const permissionState =
         await result.current.checkHardwareWalletPermissionAction(
@@ -158,15 +209,16 @@ describe('useHardwareWalletPermissions', () => {
       );
     });
 
-    it('handles different permission states', async () => {
-      const testCases = [
-        HardwareConnectionPermissionState.Granted,
-        HardwareConnectionPermissionState.Denied,
-        HardwareConnectionPermissionState.Prompt,
-        HardwareConnectionPermissionState.Unknown,
-      ];
-
-      for (const state of testCases) {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      HardwareConnectionPermissionState.Granted,
+      HardwareConnectionPermissionState.Denied,
+      HardwareConnectionPermissionState.Prompt,
+      HardwareConnectionPermissionState.Unknown,
+    ])(
+      'handles %s permission state',
+      async (state: HardwareConnectionPermissionState) => {
+        jest.clearAllMocks();
         (
           webConnectionUtils.checkHardwareWalletPermission as jest.Mock
         ).mockResolvedValue(state);
@@ -182,19 +234,77 @@ describe('useHardwareWalletPermissions', () => {
         expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
           state,
         );
+      },
+    );
 
-        jest.clearAllMocks();
-      }
+    it('prevents race conditions when called successively', async () => {
+      // Disable the initial effect to isolate this test
+      mockState.isHardwareWalletAccount = false;
+      mockState.walletType = null;
+
+      let firstResolve: (value: HardwareConnectionPermissionState) => void;
+      let secondResolve: (value: HardwareConnectionPermissionState) => void;
+
+      const mockCheckPermission =
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock;
+
+      // First call returns a promise we control
+      mockCheckPermission.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            firstResolve = resolve;
+          }),
+      );
+
+      // Second call returns a promise we control
+      mockCheckPermission.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            secondResolve = resolve;
+          }),
+      );
+
+      const { result } = setupHook();
+
+      // Start first request (Ledger)
+      const firstPromise = result.current.checkHardwareWalletPermissionAction(
+        HardwareWalletType.Ledger,
+      );
+
+      // Start second request (Trezor) - this should abort the first
+      const secondPromise = result.current.checkHardwareWalletPermissionAction(
+        HardwareWalletType.Trezor,
+      );
+
+      // Resolve second request first
+      await act(async () => {
+        secondResolve(HardwareConnectionPermissionState.Prompt);
+      });
+
+      // Resolve first request after (stale)
+      await act(async () => {
+        firstResolve(HardwareConnectionPermissionState.Granted);
+      });
+
+      await act(async () => {
+        await Promise.all([firstPromise, secondPromise]);
+      });
+
+      // Only the second (most recent) request should have updated state
+      expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledTimes(1);
+      expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
+        HardwareConnectionPermissionState.Prompt,
+      );
     });
   });
 
   describe('requestHardwareWalletPermissionAction', () => {
-    it('requests and grants permission for Ledger when WebHID is available', async () => {
+    it('requests and grants permission for Ledger', async () => {
       (
         webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(true);
 
-      const { result } = setupHook(true, false);
+      const { result } = setupHook();
 
       const granted =
         await result.current.requestHardwareWalletPermissionAction(
@@ -210,12 +320,12 @@ describe('useHardwareWalletPermissions', () => {
       ).toHaveBeenCalledWith(HardwareWalletType.Ledger);
     });
 
-    it('requests and grants permission for Trezor when WebUSB is available', async () => {
+    it('requests and grants permission for Trezor', async () => {
       (
         webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(true);
 
-      const { result } = setupHook(false, true);
+      const { result } = setupHook();
 
       const granted =
         await result.current.requestHardwareWalletPermissionAction(
@@ -231,48 +341,12 @@ describe('useHardwareWalletPermissions', () => {
       ).toHaveBeenCalledWith(HardwareWalletType.Trezor);
     });
 
-    it('denies permission when WebHID is not available for Ledger', async () => {
-      mockState.isHardwareWalletAccount = false;
-      mockState.walletType = null;
-
-      const { result } = setupHook(false, false);
-
-      const granted =
-        await result.current.requestHardwareWalletPermissionAction(
-          HardwareWalletType.Ledger,
-        );
-
-      expect(granted).toBe(false);
-      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
-      expect(
-        webConnectionUtils.requestHardwareWalletPermission,
-      ).not.toHaveBeenCalled();
-    });
-
-    it('denies permission when WebUSB is not available for Trezor', async () => {
-      mockState.isHardwareWalletAccount = false;
-      mockState.walletType = null;
-
-      const { result } = setupHook(false, false);
-
-      const granted =
-        await result.current.requestHardwareWalletPermissionAction(
-          HardwareWalletType.Trezor,
-        );
-
-      expect(granted).toBe(false);
-      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
-      expect(
-        webConnectionUtils.requestHardwareWalletPermission,
-      ).not.toHaveBeenCalled();
-    });
-
     it('handles denied permission request', async () => {
       (
         webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockResolvedValue(false);
 
-      const { result } = setupHook(true, false);
+      const { result } = setupHook();
 
       const granted =
         await result.current.requestHardwareWalletPermissionAction(
@@ -293,19 +367,139 @@ describe('useHardwareWalletPermissions', () => {
         webConnectionUtils.requestHardwareWalletPermission as jest.Mock
       ).mockRejectedValue(new Error('Request failed'));
 
-      const { result } = setupHook(true, false);
+      const { result } = setupHook();
 
       await expect(
         result.current.requestHardwareWalletPermissionAction(
           HardwareWalletType.Ledger,
         ),
       ).rejects.toThrow('Request failed');
+    });
 
-      // Permission state should only be updated by the initial check, not by the failed request
+    it('prevents race conditions when called successively', async () => {
+      // Disable the initial effect to isolate this test
+      mockState.isHardwareWalletAccount = false;
+      mockState.walletType = null;
+
+      let firstResolve: (value: boolean) => void;
+      let secondResolve: (value: boolean) => void;
+
+      const mockRequestPermission =
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock;
+
+      // First call returns a promise we control
+      mockRequestPermission.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            firstResolve = resolve;
+          }),
+      );
+
+      // Second call returns a promise we control
+      mockRequestPermission.mockImplementationOnce(
+        () =>
+          new Promise((resolve) => {
+            secondResolve = resolve;
+          }),
+      );
+
+      const { result } = setupHook();
+
+      // Start first request
+      const firstPromise = result.current.requestHardwareWalletPermissionAction(
+        HardwareWalletType.Ledger,
+      );
+
+      // Start second request - this should abort the first
+      const secondPromise =
+        result.current.requestHardwareWalletPermissionAction(
+          HardwareWalletType.Trezor,
+        );
+
+      // Resolve second request first with denied
+      await act(async () => {
+        secondResolve(false);
+      });
+
+      // Resolve first request after with granted (stale)
+      await act(async () => {
+        firstResolve(true);
+      });
+
+      await act(async () => {
+        await Promise.all([firstPromise, secondPromise]);
+      });
+
+      // Only the second (most recent) request should have updated state
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledTimes(1);
       expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
-        HardwareConnectionPermissionState.Granted,
+        HardwareConnectionPermissionState.Denied,
       );
+    });
+  });
+
+  describe('cleanup on unmount', () => {
+    it('aborts pending check requests on unmount', async () => {
+      let resolveCheck: (value: HardwareConnectionPermissionState) => void;
+      (
+        webConnectionUtils.checkHardwareWalletPermission as jest.Mock
+      ).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveCheck = resolve;
+          }),
+      );
+
+      const { result, unmount } = setupHook();
+
+      // Start a check request
+      const checkPromise = result.current.checkHardwareWalletPermissionAction(
+        HardwareWalletType.Ledger,
+      );
+
+      // Unmount the component
+      unmount();
+
+      // Resolve the request after unmount
+      await act(async () => {
+        resolveCheck(HardwareConnectionPermissionState.Granted);
+        await checkPromise;
+      });
+
+      // State should not be updated since component unmounted
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
+    });
+
+    it('aborts pending request actions on unmount', async () => {
+      let resolveRequest: (value: boolean) => void;
+      (
+        webConnectionUtils.requestHardwareWalletPermission as jest.Mock
+      ).mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            resolveRequest = resolve;
+          }),
+      );
+
+      const { result, unmount } = setupHook();
+
+      // Start a request
+      const requestPromise =
+        result.current.requestHardwareWalletPermissionAction(
+          HardwareWalletType.Ledger,
+        );
+
+      // Unmount the component
+      unmount();
+
+      // Resolve the request after unmount
+      await act(async () => {
+        resolveRequest(true);
+        await requestPromise;
+      });
+
+      // State should not be updated since component unmounted
+      expect(mockSetHardwareConnectionPermissionState).not.toHaveBeenCalled();
     });
   });
 });
