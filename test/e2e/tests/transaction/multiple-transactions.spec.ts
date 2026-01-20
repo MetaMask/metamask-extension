@@ -1,10 +1,11 @@
-import { withFixtures, regularDelayMs, unlockWallet } from '../../helpers';
+import { withFixtures, regularDelayMs } from '../../helpers';
 import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
@@ -18,7 +19,7 @@ describe('Multiple transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Open test dapp and initialize page objects
         await driver.openNewPage(DAPP_URL);
@@ -74,7 +75,7 @@ describe('Multiple transactions', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
 
         // Open test dapp and initialize page objects
         await driver.openNewPage(DAPP_URL);
