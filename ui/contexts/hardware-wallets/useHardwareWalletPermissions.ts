@@ -27,10 +27,43 @@ export const useHardwareWalletPermissions = ({
   const checkAbortControllerRef = useRef<AbortController | null>(null);
   const requestAbortControllerRef = useRef<AbortController | null>(null);
 
+  const withHardwareWalletPermissions = useCallback(
+    <ReturnType>(
+      abortControllerRef: React.MutableRefObject<AbortController | null>,
+      operation: (params: {
+        abortController: AbortController;
+        isAborted: () => boolean;
+      }) => ReturnType,
+    ): ReturnType => {
+      // Abort any previous request (from effect re-runs or manual actions)
+      // to prevent race conditions between initial check and manual actions
+      abortControllerRef.current?.abort();
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
+      // Check if the current (or previous) permission request is getting aborted
+      const isAborted = () =>
+        !abortController.signal.aborted &&
+        !refs.abortControllerRef.current?.signal.aborted;
+
+      // Run the operation. The operation must check if its getting aborted using
+      // `isAborted` at any time.
+      return operation({
+        abortController,
+        isAborted,
+      });
+    },
+    [refs],
+  );
+
   // Cleanup: abort any pending requests on unmount
   useEffect(() => {
     return () => {
+      // We intentionally want the current ref values at cleanup time
+      // to abort whatever is currently running
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
       checkAbortControllerRef.current?.abort();
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
       requestAbortControllerRef.current?.abort();
     };
   }, []);
@@ -44,36 +77,30 @@ export const useHardwareWalletPermissions = ({
       return;
     }
 
-    // Abort any previous check request (from effect re-runs or manual actions)
-    // to prevent race conditions between initial check and manual actions
-    checkAbortControllerRef.current?.abort();
-    const abortController = new AbortController();
-    checkAbortControllerRef.current = abortController;
+    withHardwareWalletPermissions(
+      checkAbortControllerRef,
+      async ({ abortController: _abortController, isAborted }) => {
+        try {
+          const permissionState =
+            await checkHardwareWalletPermission(walletType);
 
-    checkHardwareWalletPermission(walletType)
-      .then((permissionState) => {
-        // Only update state if this request wasn't aborted and not externally aborted
-        if (
-          !abortController.signal.aborted &&
-          !refs.abortControllerRef.current?.signal.aborted
-        ) {
-          setHardwareConnectionPermissionState(permissionState);
+          if (isAborted()) {
+            setHardwareConnectionPermissionState(permissionState);
+          }
+        } catch {
+          if (isAborted()) {
+            setHardwareConnectionPermissionState(
+              HardwareConnectionPermissionState.Unknown,
+            );
+          }
         }
-      })
-      .catch(() => {
-        // Only update state if this request wasn't aborted and not externally aborted
-        if (
-          !abortController.signal.aborted &&
-          !refs.abortControllerRef.current?.signal.aborted
-        ) {
-          setHardwareConnectionPermissionState(
-            HardwareConnectionPermissionState.Unknown,
-          );
-        }
-      });
+      },
+    );
 
     return () => {
-      abortController.abort();
+      // We intentionally want the current ref value at cleanup time
+      // eslint-disable-next-line react-compiler/react-compiler, react-hooks/exhaustive-deps
+      checkAbortControllerRef.current?.abort();
     };
     // Adding eslint ignore to exclude ref from dependencies
     // eslint-disable-next-line react-compiler/react-compiler
@@ -82,57 +109,51 @@ export const useHardwareWalletPermissions = ({
     isHardwareWalletAccount,
     walletType,
     setHardwareConnectionPermissionState,
+    withHardwareWalletPermissions,
   ]);
 
   const checkHardwareWalletPermissionAction = useCallback(
     async (
       targetWalletType: HardwareWalletType,
     ): Promise<HardwareConnectionPermissionState> => {
-      // Abort any previous check request to prevent race conditions
-      checkAbortControllerRef.current?.abort();
-      const abortController = new AbortController();
-      checkAbortControllerRef.current = abortController;
+      return withHardwareWalletPermissions(
+        checkAbortControllerRef,
+        async ({ isAborted }) => {
+          const permissionState =
+            await checkHardwareWalletPermission(targetWalletType);
 
-      const permissionState =
-        await checkHardwareWalletPermission(targetWalletType);
+          if (isAborted()) {
+            setHardwareConnectionPermissionState(permissionState);
+          }
 
-      // Only update state if this request wasn't aborted and not externally aborted
-      if (
-        !abortController.signal.aborted &&
-        !refs.abortControllerRef.current?.signal.aborted
-      ) {
-        setHardwareConnectionPermissionState(permissionState);
-      }
-
-      return permissionState;
+          return permissionState;
+        },
+      );
     },
-    [refs, setHardwareConnectionPermissionState],
+    [setHardwareConnectionPermissionState, withHardwareWalletPermissions],
   );
 
   const requestHardwareWalletPermissionAction = useCallback(
     async (targetWalletType: HardwareWalletType): Promise<boolean> => {
-      // Abort any previous request to prevent race conditions
-      requestAbortControllerRef.current?.abort();
-      const abortController = new AbortController();
-      requestAbortControllerRef.current = abortController;
+      return withHardwareWalletPermissions(
+        requestAbortControllerRef,
+        async ({ isAborted }) => {
+          const granted =
+            await requestHardwareWalletPermission(targetWalletType);
 
-      const granted = await requestHardwareWalletPermission(targetWalletType);
+          if (isAborted()) {
+            setHardwareConnectionPermissionState(
+              granted
+                ? HardwareConnectionPermissionState.Granted
+                : HardwareConnectionPermissionState.Denied,
+            );
+          }
 
-      // Only update state if this request wasn't aborted and not externally aborted
-      if (
-        !abortController.signal.aborted &&
-        !refs.abortControllerRef.current?.signal.aborted
-      ) {
-        setHardwareConnectionPermissionState(
-          granted
-            ? HardwareConnectionPermissionState.Granted
-            : HardwareConnectionPermissionState.Denied,
-        );
-      }
-
-      return granted;
+          return granted;
+        },
+      );
     },
-    [refs, setHardwareConnectionPermissionState],
+    [setHardwareConnectionPermissionState, withHardwareWalletPermissions],
   );
 
   return {
