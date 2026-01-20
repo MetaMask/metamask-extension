@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Driver } from '../../webdriver/driver';
 
 export type StateLogsPrimitiveType =
@@ -443,7 +444,7 @@ const readStateLogsFile = async (
   downloadsFolder: string,
 ): Promise<MinimalStateLogsJson | null> => {
   try {
-    const stateLogs = `${downloadsFolder}/MetaMask state logs.json`;
+    const stateLogs = join(downloadsFolder, 'MetaMask state logs.json');
     const { promises: fs } = await import('fs');
     const contents = await fs.readFile(stateLogs);
     const parsedContents = JSON.parse(contents.toString());
