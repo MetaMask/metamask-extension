@@ -6,7 +6,7 @@ export type VersionedData = {
   meta: { version: number };
   data: Record<string, unknown>;
 };
-export const version = 188;
+export const version = 189;
 
 export async function migrate(
   originalVersionedData: VersionedData,
