@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "tài khoản"
   },
-  "accountTypeNotSupported": {
-    "message": "Loại tài khoản không được hỗ trợ"
-  },
   "accounts": {
     "message": "Tài khoản"
   },

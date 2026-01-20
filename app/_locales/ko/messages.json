@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "계정"
   },
-  "accountTypeNotSupported": {
-    "message": "지원되지 않는 계정 유형입니다"
-  },
   "accounts": {
     "message": "계정"
   },

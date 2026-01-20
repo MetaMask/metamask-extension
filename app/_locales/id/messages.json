@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "akun"
   },
-  "accountTypeNotSupported": {
-    "message": "Jenis akun tidak didukung"
-  },
   "accounts": {
     "message": "Akun"
   },

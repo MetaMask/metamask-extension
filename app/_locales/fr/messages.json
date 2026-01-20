@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "compte"
   },
-  "accountTypeNotSupported": {
-    "message": "Type de compte non pris en charge"
-  },
   "accounts": {
     "message": "Comptes"
   },

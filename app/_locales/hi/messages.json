@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "अकाउंट"
   },
-  "accountTypeNotSupported": {
-    "message": "अकाउंट प्रकार सपोर्टेड नहीं है"
-  },
   "accounts": {
     "message": "एकाउंट्स"
   },

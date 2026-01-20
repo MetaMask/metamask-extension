@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "account"
   },
-  "accountTypeNotSupported": {
-    "message": "Hindi sinusuportahan ang uri ng account"
-  },
   "accounts": {
     "message": "Mga Account"
   },
