@@ -38,6 +38,32 @@ function validateInput<Name extends ToolName>(
   return { success: true, data: result.data };
 }
 
+function createToolErrorResponse(
+  code: (typeof ErrorCodes)[keyof typeof ErrorCodes],
+  message: string,
+  details: Record<string, unknown> | undefined,
+  startTime: number,
+) {
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(
+          createErrorResponse(
+            code,
+            message,
+            details,
+            sessionManager.getSessionId(),
+            startTime,
+          ),
+          null,
+          2,
+        ),
+      },
+    ],
+  };
+}
+
 const TOOL_DEFINITIONS = [
   {
     name: 'mm_build',
@@ -715,48 +741,24 @@ async function main() {
     const signal = extra?.signal;
 
     if (!hasToolHandler(name)) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(
-              createErrorResponse(
-                ErrorCodes.MM_INVALID_INPUT,
-                `Unknown tool: ${name}`,
-                undefined,
-                sessionManager.getSessionId(),
-                startTime,
-              ),
-              null,
-              2,
-            ),
-          },
-        ],
-      };
+      return createToolErrorResponse(
+        ErrorCodes.MM_INVALID_INPUT,
+        `Unknown tool: ${name}`,
+        undefined,
+        startTime,
+      );
     }
 
     const validation = validateInput(name as ToolName, args);
     if (!validation.success) {
       const errorMessage =
         'error' in validation ? validation.error : 'Unknown validation error';
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(
-              createErrorResponse(
-                ErrorCodes.MM_INVALID_INPUT,
-                `Invalid input: ${errorMessage}`,
-                { providedArgs: args },
-                sessionManager.getSessionId(),
-                startTime,
-              ),
-              null,
-              2,
-            ),
-          },
-        ],
-      };
+      return createToolErrorResponse(
+        ErrorCodes.MM_INVALID_INPUT,
+        `Invalid input: ${errorMessage}`,
+        { providedArgs: args },
+        startTime,
+      );
     }
 
     const validatedArgs = validation.data;
@@ -764,24 +766,12 @@ async function main() {
 
     const handler = getToolHandler(name);
     if (!handler) {
-      return {
-        content: [
-          {
-            type: 'text',
-            text: JSON.stringify(
-              createErrorResponse(
-                ErrorCodes.MM_INVALID_INPUT,
-                `Unknown tool: ${name}`,
-                undefined,
-                sessionManager.getSessionId(),
-                startTime,
-              ),
-              null,
-              2,
-            ),
-          },
-        ],
-      };
+      return createToolErrorResponse(
+        ErrorCodes.MM_INVALID_INPUT,
+        `Unknown tool: ${name}`,
+        undefined,
+        startTime,
+      );
     }
 
     const response = await handler(validatedArgs, options);
