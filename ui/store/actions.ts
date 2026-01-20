@@ -4834,6 +4834,18 @@ export function setPna25Acknowledged(
   };
 }
 
+export function skipPna25TimeDelay(): ThunkAction<
+  Promise<void>,
+  MetaMaskReduxState,
+  unknown,
+  AnyAction
+> {
+  return async () => {
+    log.debug(`background.skipPna25TimeDelay`);
+    await submitRequestToBackground('skipPna25TimeDelay');
+  };
+}
+
 /**
  * Sets marketing consent with OAuth service for social login users.
  *
