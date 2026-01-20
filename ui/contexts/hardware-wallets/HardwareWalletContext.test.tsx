@@ -11,8 +11,6 @@ import {
   useHardwareWalletActions,
 } from './HardwareWalletContext';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
-import * as webConnectionUtils from './webConnectionUtils';
-import { setupWebConnectionUtilsMocks } from './__mocks__/webConnectionUtils';
 
 const mockStore = configureStore([]);
 
@@ -46,18 +44,50 @@ const createWrapper =
     </Provider>
   );
 
-jest.mock('./webConnectionUtils');
+// Mock webConnectionUtils
+jest.mock('./webConnectionUtils', () => ({
+  isWebHidAvailable: jest.fn().mockReturnValue(false),
+  isWebUsbAvailable: jest.fn().mockReturnValue(false),
+  checkHardwareWalletPermission: jest.fn().mockResolvedValue('unknown'),
+  requestHardwareWalletPermission: jest.fn().mockResolvedValue(false),
+  checkWebHidPermission: jest.fn().mockResolvedValue('unknown'),
+  checkWebUsbPermission: jest.fn().mockResolvedValue('unknown'),
+  getHardwareWalletDeviceId: jest.fn().mockResolvedValue(null),
+  subscribeToHardwareWalletEvents: jest.fn().mockReturnValue(jest.fn()),
+}));
+
+// Mock the hooks used by HardwareWalletProvider
+jest.mock('./HardwareWalletEventHandlers', () => ({
+  useDeviceEventHandlers: jest.fn().mockReturnValue({
+    updateConnectionState: jest.fn(),
+    handleDeviceEvent: jest.fn(),
+    handleDisconnect: jest.fn(),
+  }),
+}));
+
+jest.mock('./useHardwareWalletPermissions', () => ({
+  useHardwareWalletPermissions: jest.fn().mockReturnValue({
+    checkHardwareWalletPermissionAction: jest.fn().mockResolvedValue('unknown'),
+    requestHardwareWalletPermissionAction: jest.fn().mockResolvedValue(false),
+  }),
+}));
+
+jest.mock('./useHardwareWalletConnection', () => ({
+  useHardwareWalletConnection: jest.fn().mockReturnValue({
+    connect: jest.fn().mockResolvedValue(undefined),
+    disconnect: jest.fn().mockResolvedValue(undefined),
+    clearError: jest.fn(),
+    ensureDeviceReady: jest.fn().mockResolvedValue(true),
+  }),
+}));
+
+jest.mock('./useHardwareWalletAutoConnect', () => ({
+  useHardwareWalletAutoConnect: jest.fn(),
+}));
 
 describe('HardwareWalletContext', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    setupWebConnectionUtilsMocks();
-    // Default to unavailable APIs
-    (webConnectionUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(false);
-    (webConnectionUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(false);
-    (
-      webConnectionUtils.checkHardwareWalletPermission as jest.Mock
-    ).mockResolvedValue(HardwareConnectionPermissionState.Unknown);
   });
 
   describe('useHardwareWallet', () => {
@@ -66,6 +96,36 @@ describe('HardwareWalletContext', () => {
 
       expect(result.error?.message).toContain(
         'useHardwareWallet must be used within HardwareWalletProvider',
+      );
+    });
+  });
+
+  describe('useHardwareWalletConfig', () => {
+    it('throws error when used outside provider', () => {
+      const { result } = renderHook(() => useHardwareWalletConfig());
+
+      expect(result.error?.message).toContain(
+        'useHardwareWalletConfig must be used within HardwareWalletProvider',
+      );
+    });
+  });
+
+  describe('useHardwareWalletState', () => {
+    it('throws error when used outside provider', () => {
+      const { result } = renderHook(() => useHardwareWalletState());
+
+      expect(result.error?.message).toContain(
+        'useHardwareWalletState must be used within HardwareWalletProvider',
+      );
+    });
+  });
+
+  describe('useHardwareWalletActions', () => {
+    it('throws error when used outside provider', () => {
+      const { result } = renderHook(() => useHardwareWalletActions());
+
+      expect(result.error?.message).toContain(
+        'useHardwareWalletActions must be used within HardwareWalletProvider',
       );
     });
   });
@@ -168,10 +228,10 @@ describe('HardwareWalletContext', () => {
     });
 
     it('exposes API availability', () => {
-      (webConnectionUtils.isWebHIDAvailable as jest.Mock).mockReturnValue(true);
-      (webConnectionUtils.isWebUSBAvailable as jest.Mock).mockReturnValue(
-        false,
-      );
+      // Override the mock for this specific test
+      const webConnectionUtils = jest.requireMock('./webConnectionUtils');
+      webConnectionUtils.isWebHidAvailable.mockReturnValue(true);
+      webConnectionUtils.isWebUsbAvailable.mockReturnValue(false);
 
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
@@ -184,7 +244,7 @@ describe('HardwareWalletContext', () => {
     });
   });
 
-  describe('useHardwareWalletConfig', () => {
+  describe('useHardwareWalletConfig hook', () => {
     it('provides config context with correct values', () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
@@ -200,9 +260,19 @@ describe('HardwareWalletContext', () => {
       expect(typeof result.current.isWebHidAvailable).toBe('boolean');
       expect(typeof result.current.isWebUsbAvailable).toBe('boolean');
     });
+
+    it('includes device ID in config', () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const { result } = renderHook(() => useHardwareWalletConfig(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.deviceId).toBe(null);
+    });
   });
 
-  describe('useHardwareWalletState', () => {
+  describe('useHardwareWalletState hook', () => {
     it('provides state context with connection state', () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
@@ -216,9 +286,19 @@ describe('HardwareWalletContext', () => {
         }),
       );
     });
+
+    it('provides disconnected status by default', () => {
+      const store = mockStore(createMockState(KeyringTypes.hd));
+
+      const { result } = renderHook(() => useHardwareWalletState(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.connectionState.status).toBe('disconnected');
+    });
   });
 
-  describe('useHardwareWalletActions', () => {
+  describe('useHardwareWalletActions hook', () => {
     it('provides actions context with stable functions', () => {
       const store = mockStore(createMockState(KeyringTypes.ledger));
 
@@ -236,6 +316,21 @@ describe('HardwareWalletContext', () => {
         'function',
       );
       expect(typeof result.current.ensureDeviceReady).toBe('function');
+    });
+
+    it('provides all required action methods', () => {
+      const store = mockStore(createMockState(KeyringTypes.trezor));
+
+      const { result } = renderHook(() => useHardwareWalletActions(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current).toHaveProperty('connect');
+      expect(result.current).toHaveProperty('disconnect');
+      expect(result.current).toHaveProperty('clearError');
+      expect(result.current).toHaveProperty('checkHardwareWalletPermission');
+      expect(result.current).toHaveProperty('requestHardwareWalletPermission');
+      expect(result.current).toHaveProperty('ensureDeviceReady');
     });
   });
 
@@ -259,6 +354,89 @@ describe('HardwareWalletContext', () => {
       expect(result.current.connect).toBe(initialActions.connect);
       expect(result.current.disconnect).toBe(initialActions.disconnect);
       expect(result.current.clearError).toBe(initialActions.clearError);
+    });
+
+    it('maintains stable actions context references across rerenders', () => {
+      const store = mockStore(createMockState(KeyringTypes.ledger));
+
+      const { result, rerender } = renderHook(
+        () => useHardwareWalletActions(),
+        {
+          wrapper: createWrapper(store),
+        },
+      );
+
+      const initialActions = {
+        connect: result.current.connect,
+        disconnect: result.current.disconnect,
+        clearError: result.current.clearError,
+        checkHardwareWalletPermission:
+          result.current.checkHardwareWalletPermission,
+        requestHardwareWalletPermission:
+          result.current.requestHardwareWalletPermission,
+        ensureDeviceReady: result.current.ensureDeviceReady,
+      };
+
+      rerender();
+
+      expect(result.current.connect).toBe(initialActions.connect);
+      expect(result.current.disconnect).toBe(initialActions.disconnect);
+      expect(result.current.clearError).toBe(initialActions.clearError);
+      expect(result.current.checkHardwareWalletPermission).toBe(
+        initialActions.checkHardwareWalletPermission,
+      );
+      expect(result.current.requestHardwareWalletPermission).toBe(
+        initialActions.requestHardwareWalletPermission,
+      );
+      expect(result.current.ensureDeviceReady).toBe(
+        initialActions.ensureDeviceReady,
+      );
+    });
+  });
+
+  describe('Hardware Wallet Type Detection', () => {
+    it('detects OneKey hardware wallet account', () => {
+      const store = mockStore(createMockState(KeyringTypes.oneKey));
+
+      const { result } = renderHook(() => useHardwareWallet(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.isHardwareWalletAccount).toBe(true);
+      expect(result.current.walletType).toBe(HardwareWalletType.OneKey);
+    });
+
+    it('detects Lattice hardware wallet account', () => {
+      const store = mockStore(createMockState(KeyringTypes.lattice));
+
+      const { result } = renderHook(() => useHardwareWallet(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.isHardwareWalletAccount).toBe(true);
+      expect(result.current.walletType).toBe(HardwareWalletType.Lattice);
+    });
+
+    it('detects QR hardware wallet account', () => {
+      const store = mockStore(createMockState(KeyringTypes.qr));
+
+      const { result } = renderHook(() => useHardwareWallet(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.isHardwareWalletAccount).toBe(true);
+      expect(result.current.walletType).toBe(HardwareWalletType.Qr);
+    });
+
+    it('returns null wallet type for unknown keyring', () => {
+      const store = mockStore(createMockState('unknown-keyring'));
+
+      const { result } = renderHook(() => useHardwareWallet(), {
+        wrapper: createWrapper(store),
+      });
+
+      expect(result.current.isHardwareWalletAccount).toBe(false);
+      expect(result.current.walletType).toBe(null);
     });
   });
 });

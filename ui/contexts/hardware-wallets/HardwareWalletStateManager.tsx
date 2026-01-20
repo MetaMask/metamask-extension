@@ -154,6 +154,35 @@ export const useHardwareWalletStateManager = () => {
         isConnectingRef.current = false;
         currentConnectionIdRef.current = null;
       },
+      /**
+       * Resets auto-connect state refs
+       */
+      resetAutoConnectState: () => {
+        hasAutoConnectedRef.current = false;
+        lastConnectedAccountRef.current = null;
+      },
+      /**
+       * Sets the auto-connected state for a specific account
+       *
+       * @param connectedAccountAddress - The account address that was auto-connected
+       * @param newDeviceId - The device ID that was connected
+       */
+      setAutoConnected: (
+        connectedAccountAddress: string | null,
+        newDeviceId: string,
+      ) => {
+        hasAutoConnectedRef.current = true;
+        lastConnectedAccountRef.current = connectedAccountAddress;
+        deviceIdRef.current = newDeviceId;
+      },
+      /**
+       * Sets the device ID ref directly
+       *
+       * @param newDeviceId - The device ID to set
+       */
+      setDeviceIdRef: (newDeviceId: string) => {
+        deviceIdRef.current = newDeviceId;
+      },
     }),
     [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
   );

@@ -17,7 +17,7 @@ import {
   HardwareConnectionPermissionState,
   type HardwareWalletConnectionState,
 } from './types';
-import { isWebHIDAvailable, isWebUSBAvailable } from './webConnectionUtils';
+import { isWebHidAvailable, isWebUsbAvailable } from './webConnectionUtils';
 
 // Type definitions for separate contexts
 export type HardwareWalletConfigContextType = {
@@ -166,17 +166,18 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     setDeviceId,
     setHardwareConnectionPermissionState,
     setConnectionState,
+    resetAutoConnectState,
+    setAutoConnected,
+    setDeviceIdRef,
   } = setters;
 
-  const isWebHidAvailableState = useMemo(() => isWebHIDAvailable(), []);
-  const isWebUsbAvailableState = useMemo(() => isWebUSBAvailable(), []);
+  const isWebHidAvailableState = useMemo(() => isWebHidAvailable(), []);
+  const isWebUsbAvailableState = useMemo(() => isWebUsbAvailable(), []);
 
   const { updateConnectionState, handleDeviceEvent, handleDisconnect } =
     useDeviceEventHandlers({
       refs,
-      setters: {
-        setConnectionState,
-      },
+      setters,
     });
 
   const {
@@ -186,8 +187,6 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     state,
     refs: { abortControllerRef: refs.abortControllerRef },
     setHardwareConnectionPermissionState,
-    isWebHidAvailable: isWebHidAvailableState,
-    isWebUsbAvailable: isWebUsbAvailableState,
   });
 
   const { connect, disconnect, clearError, ensureDeviceReady } =
@@ -230,6 +229,9 @@ export const HardwareWalletProvider: React.FC<{ children: ReactNode }> = ({
     isWebHidAvailable: isWebHidAvailableState,
     isWebUsbAvailable: isWebUsbAvailableState,
     handleDisconnect,
+    resetAutoConnectState,
+    setAutoConnected,
+    setDeviceIdRef,
   });
 
   // Abort controller lifecycle
