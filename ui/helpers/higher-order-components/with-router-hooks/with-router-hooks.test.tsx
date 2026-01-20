@@ -227,5 +227,40 @@ describe('withRouterHooks HOC', () => {
 
       expect(locationsReceived[0]).toBe(customLocation);
     });
+
+    it('correctly distinguishes params with comma-containing values (no memoization collision)', () => {
+      // This test verifies the fix for the memoization collision bug where
+      // { a: 'x,y', b: 'z' } and { a: 'x', b: 'y,z' } would both produce
+      // the same comma-joined string 'x,y,z'
+      const paramsSet1 = { a: 'x,y', b: 'z' };
+      const paramsSet2 = { a: 'x', b: 'y,z' };
+      const paramsReceived: ReturnType<typeof useParams>[] = [];
+
+      const TestComponentForMemo: React.FC<TestComponentProps> = ({
+        params,
+      }) => {
+        paramsReceived.push(params);
+        return <div>Comma collision test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      const { rerender } = render(
+        <MemoryRouter>
+          <WrappedComponent params={paramsSet1} />
+        </MemoryRouter>,
+      );
+
+      rerender(
+        <MemoryRouter>
+          <WrappedComponent params={paramsSet2} />
+        </MemoryRouter>,
+      );
+
+      // Verify that the params are different references (not stale)
+      expect(paramsReceived).toHaveLength(2);
+      expect(paramsReceived[0]).toBe(paramsSet1);
+      expect(paramsReceived[1]).toBe(paramsSet2);
+      expect(paramsReceived[0]).not.toBe(paramsReceived[1]);
+    });
   });
 });
