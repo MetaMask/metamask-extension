@@ -13,6 +13,7 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
+import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -174,7 +175,10 @@ export const createBridgeMockStore = ({
   metamaskStateOverrides = {},
   stateOverrides = {},
 }: {
-  featureFlagOverrides?: { bridgeConfig: Partial<FeatureFlagResponse> };
+  featureFlagOverrides?: {
+    bridgeConfig: Partial<FeatureFlagResponse>;
+    smartTransactionsNetworks?: SmartTransactionsNetworks;
+  };
   bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
@@ -618,10 +622,18 @@ export const createBridgeMockStore = ({
           },
         },
       ],
+      smartTransactionsState: {
+        liveness: false,
+        livenessByChainId: { '0x1': true },
+      },
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
           ...featureFlagOverrides,
+          smartTransactionsNetworks: {
+            '0x1': { extensionActive: true },
+            ...featureFlagOverrides?.smartTransactionsNetworks,
+          },
           bridgeConfig: {
             minimumVersion: '0.0.0',
             support: false,
