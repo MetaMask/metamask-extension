@@ -63,10 +63,7 @@ import {
   REWARDS_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
-<<<<<<< HEAD
   PERPS_HOME_ROUTE,
-=======
->>>>>>> main
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
@@ -798,15 +795,12 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
-<<<<<<< HEAD
         path: PERPS_HOME_ROUTE,
         component: PerpsHomePage,
         layout: RootLayout,
         authenticated: true,
       }),
       createRouteWithLayout({
-=======
->>>>>>> main
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: PerpsMarketDetailPage,
         layout: RootLayout,
