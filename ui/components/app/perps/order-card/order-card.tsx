@@ -4,6 +4,7 @@ import {
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
@@ -65,13 +66,18 @@ export const OrderCard: React.FC<OrderCardProps> = ({
       : 'bg-default hover:bg-hover active:bg-pressed';
 
   return (
-    <Box
-      className={twMerge(baseStyles, variantStyles)}
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
-      data-testid={`order-card-${order.orderId}`}
+    <ButtonBase
+      className={twMerge(
+        // Reset ButtonBase defaults for card layout
+        'justify-start rounded-none min-w-0 h-auto',
+        // Card styles
+        'gap-3 text-left',
+        baseStyles,
+        variantStyles,
+      )}
+      isFullWidth
       onClick={handleClick}
+      data-testid={`order-card-${order.orderId}`}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
@@ -119,7 +125,7 @@ export const OrderCard: React.FC<OrderCardProps> = ({
           {formatStatus(order.status)}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 

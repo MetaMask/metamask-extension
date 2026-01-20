@@ -1,8 +1,10 @@
 import React, { useCallback } from 'react';
 import {
+  twMerge,
   Box,
   BoxFlexDirection,
   BoxAlignItems,
+  ButtonBase,
   Text,
   TextVariant,
   TextColor,
@@ -56,13 +58,18 @@ export const PositionCard: React.FC<PositionCardProps> = ({
   }, [navigate, position, onClick]);
 
   return (
-    <Box
-      className="cursor-pointer bg-default px-4 py-3 hover:bg-hover active:bg-pressed"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={3}
-      data-testid={`position-card-${position.coin}`}
+    <ButtonBase
+      className={twMerge(
+        // Reset ButtonBase defaults for card layout
+        'justify-start rounded-none min-w-0 h-auto',
+        // Card styles
+        'gap-3 text-left cursor-pointer',
+        'bg-default px-4 py-3',
+        'hover:bg-hover active:bg-pressed',
+      )}
+      isFullWidth
       onClick={handleClick}
+      data-testid={`position-card-${position.coin}`}
     >
       {/* Token Logo */}
       <PerpsTokenLogo
@@ -110,7 +117,7 @@ export const PositionCard: React.FC<PositionCardProps> = ({
           {formattedPnl}
         </Text>
       </Box>
-    </Box>
+    </ButtonBase>
   );
 };
 
