@@ -1,7 +1,9 @@
+import { Browser } from 'selenium-webdriver';
 import { hasProperty, isObject } from '@metamask/utils';
 import { withFixtures } from '../helpers';
 import { errorMessages } from '../webdriver/driver';
 import StartOnboardingPage from '../page-objects/pages/onboarding/start-onboarding-page';
+import OnboardingMetricsPage from '../page-objects/pages/onboarding/onboarding-metrics-page';
 
 describe('First install', function () {
   it('opens new window upon install, but not on subsequent reloads', async function () {
@@ -13,8 +15,13 @@ describe('First install', function () {
       async ({ driver }) => {
         // Wait for MetaMask to automatically open a new tab
         await driver.waitAndSwitchToWindowWithTitle(2, 'MetaMask');
-        const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkLoginPageIsLoaded();
+        if (process.env.SELENIUM_BROWSER === Browser.FIREFOX) {
+          const onboardingMetricsPage = new OnboardingMetricsPage(driver);
+          await onboardingMetricsPage.checkPageIsLoaded();
+        } else {
+          const startOnboardingPage = new StartOnboardingPage(driver);
+          await startOnboardingPage.checkLoginPageIsLoaded();
+        }
 
         await driver.executeScript('window.stateHooks.reloadExtension()');
 
