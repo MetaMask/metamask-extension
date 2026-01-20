@@ -984,7 +984,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/bridge-status-controller>bignumber.js": true,
         "uuid": true
@@ -1097,7 +1097,7 @@
         "@metamask/keyring-controller": true,
         "@metamask/rpc-errors": true,
         "@metamask/superstruct": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "lodash": true,
         "uuid": true
@@ -1436,77 +1436,7 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "bn.js": true,
-        "uuid": true
-      }
-    },
     "@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/subscription-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": {
-      "globals": {
-        "clearInterval": true,
-        "console.error": true,
-        "setInterval": true
-      },
-      "packages": {
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "bn.js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/gas-fee-controller": {
       "globals": {
         "clearInterval": true,
         "console.error": true,
@@ -1861,146 +1791,6 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/subscription-controller>@metamask/transaction-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/network-controller": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "URL": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/network-controller>@metamask/eth-block-tracker": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/eth-json-rpc-middleware": true,
-        "@metamask/eth-json-rpc-provider": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
-        "@metamask/utils": true,
-        "cockatiel": true,
-        "addons-linter>deepmerge": true,
-        "eslint>fast-deep-equal": true,
-        "immer": true,
-        "lodash": true,
-        "reselect": true,
-        "uri-js": true,
-        "uuid": true
-      }
-    },
     "@metamask/network-enablement-controller": {
       "packages": {
         "@metamask/base-controller": true,
@@ -2329,7 +2119,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/signature-controller": true,
-        "@metamask/shield-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "cockatiel": true,
         "lodash": true
@@ -2510,7 +2300,7 @@
       "packages": {
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/subscription-controller>bignumber.js": true
       }
     },
@@ -2565,171 +2355,6 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-status-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/bridge-status-controller>@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/bridge-status-controller>@metamask/transaction-controller>@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/bridge-status-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller>@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/shield-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/shield-controller>@metamask/transaction-controller>@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/subscription-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller>@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/subscription-controller>@metamask/transaction-controller>@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/subscription-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/transaction-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "fetch": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "ethers>@ethersproject/wallet": true,
-        "@metamask/base-controller": true,
-        "@metamask/controller-utils": true,
-        "@metamask/controller-utils>@metamask/eth-query": true,
-        "@metamask/transaction-pay-controller>@metamask/gas-fee-controller": true,
-        "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/network-controller": true,
-        "@metamask/transaction-controller>@metamask/nonce-tracker": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/utils": true,
-        "@metamask/eth-qr-keyring>async-mutex": true,
-        "@metamask/transaction-pay-controller>bignumber.js": true,
-        "bn.js": true,
-        "browserify>buffer": true,
-        "eth-method-registry": true,
-        "webpack>events": true,
-        "lodash": true,
-        "uuid": true
-      }
-    },
     "@metamask/transaction-pay-controller": {
       "globals": {
         "clearTimeout": true,
@@ -2741,7 +2366,7 @@
         "@metamask/transaction-pay-controller>@metamask/bridge-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-pay-controller>@metamask/transaction-controller": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
         "lodash": true
@@ -3548,18 +3173,6 @@
       }
     },
     "@metamask/transaction-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/eip-5792-middleware>@metamask/transaction-controller>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
-    "@metamask/shield-controller>@metamask/transaction-controller>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
