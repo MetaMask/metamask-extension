@@ -590,5 +590,278 @@ describe('useSpenderAlerts', () => {
       expect(result.current).toHaveLength(1);
       expect(result.current[0]).toEqual(expectedMaliciousAlert);
     });
+
+    it('returns empty array for PermitSingle revocation (amount=0) with malicious spender', () => {
+      const mockPermitSingleData = JSON.stringify({
+        primaryType: 'PermitSingle',
+        domain: { name: 'Permit2', chainId: '1' },
+        message: {
+          details: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '0',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        types: {},
+      });
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitSingleData,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'PermitSingle',
+        message: {
+          details: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '0',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        domain: { name: 'Permit2', chainId: '1' },
+        types: {},
+      });
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('returns empty array for PermitBatch revocation (all amounts=0) with malicious spender', () => {
+      const mockPermitBatchData = JSON.stringify({
+        primaryType: 'PermitBatch',
+        domain: { name: 'Permit2', chainId: '1' },
+        message: {
+          details: [
+            {
+              token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '0',
+            },
+            {
+              token: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              amount: '0',
+            },
+          ],
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        types: {},
+      });
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitBatchData,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'PermitBatch',
+        message: {
+          details: [
+            {
+              token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '0',
+            },
+            {
+              token: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              amount: '0',
+            },
+          ],
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        domain: { name: 'Permit2', chainId: '1' },
+        types: {},
+      });
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
+
+    it('returns alert for PermitSingle with non-zero amount', () => {
+      const mockPermitSingleData = JSON.stringify({
+        primaryType: 'PermitSingle',
+        domain: { name: 'Permit2', chainId: '1' },
+        message: {
+          details: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '1000000',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        types: {},
+      });
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitSingleData,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'PermitSingle',
+        message: {
+          details: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '1000000',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        domain: { name: 'Permit2', chainId: '1' },
+        types: {},
+      });
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('returns alert for PermitBatch with mixed amounts (not all zero)', () => {
+      const mockPermitBatchData = JSON.stringify({
+        primaryType: 'PermitBatch',
+        domain: { name: 'Permit2', chainId: '1' },
+        message: {
+          details: [
+            {
+              token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '0',
+            },
+            {
+              token: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              amount: '1000',
+            },
+          ],
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        types: {},
+      });
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitBatchData,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'PermitBatch',
+        message: {
+          details: [
+            {
+              token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+              amount: '0',
+            },
+            {
+              token: '0x6b175474e89094c44da98b954eedeac495271d0f',
+              amount: '1000',
+            },
+          ],
+          spender: MOCK_SPENDER_ADDRESS,
+          sigDeadline: '1720297342',
+        },
+        domain: { name: 'Permit2', chainId: '1' },
+        types: {},
+      });
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(1);
+      expect(result.current[0]).toEqual(expectedMaliciousAlert);
+    });
+
+    it('returns empty array for PermitTransferFrom revocation (amount=0) with malicious spender', () => {
+      const mockPermitTransferFromData = JSON.stringify({
+        primaryType: 'PermitTransferFrom',
+        domain: { name: 'Permit2', chainId: '1' },
+        message: {
+          permitted: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '0',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          nonce: '0',
+          deadline: '1720297342',
+        },
+        types: {},
+      });
+      const mockSignatureRequest = {
+        id: MOCK_TRANSACTION_ID,
+        type: 'eth_signTypedData',
+        msgParams: {
+          data: mockPermitTransferFromData,
+        },
+      };
+      mockUseConfirmContext.mockReturnValue({
+        currentConfirmation: mockSignatureRequest,
+        isScrollToBottomCompleted: false,
+        setIsScrollToBottomCompleted: jest.fn(),
+      } as unknown as ReturnType<typeof useConfirmContext>);
+      mockParseTypedDataMessage.mockReturnValue({
+        primaryType: 'PermitTransferFrom',
+        message: {
+          permitted: {
+            token: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            amount: '0',
+          },
+          spender: MOCK_SPENDER_ADDRESS,
+          nonce: '0',
+          deadline: '1720297342',
+        },
+        domain: { name: 'Permit2', chainId: '1' },
+        types: {},
+      });
+      mockUseTrustSignal.mockReturnValue({
+        state: TrustSignalDisplayState.Malicious,
+        label: 'Known malicious address',
+      });
+
+      const { result } = renderHook(() => useSpenderAlerts());
+
+      expect(result.current).toHaveLength(0);
+    });
   });
 });
