@@ -1,10 +1,9 @@
+jest.unmock('../lib/stores/browser-storage-adapter');
 import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
 import { migrate, version } from './189';
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
-
-jest.mock('../lib/stores/browser-storage-adapter');
 
 describe(`migration #${VERSION}`, () => {
   let mockedCaptureException: jest.Mock;
@@ -119,14 +118,11 @@ describe(`migration #${VERSION}`, () => {
       },
     };
 
-    const setItemMock = jest.fn().mockResolvedValue(undefined);
+    const mockSetItem = jest.fn().mockResolvedValue(undefined);
 
-    jest.mocked(BrowserStorageAdapter).mockImplementation(
-      () =>
-        ({
-          setItem: setItemMock,
-        }) as unknown as BrowserStorageAdapter,
-    );
+    jest
+      .spyOn(BrowserStorageAdapter.prototype, 'setItem')
+      .mockImplementation(mockSetItem);
 
     await migrate(oldState, new Set());
 
@@ -134,7 +130,7 @@ describe(`migration #${VERSION}`, () => {
       SnapController: { snaps: { 'mock-snap-id': { id: 'mock-snap-id' } } },
     });
 
-    expect(setItemMock).toHaveBeenCalledWith('SnapController', 'mock-snap-id', {
+    expect(mockSetItem).toHaveBeenCalledWith('SnapController', 'mock-snap-id', {
       sourceCode: 'sourceCode',
     });
   });
