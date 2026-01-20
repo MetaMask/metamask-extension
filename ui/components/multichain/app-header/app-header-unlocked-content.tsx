@@ -76,6 +76,7 @@ import {
 import { PreferredAvatar } from '../../app/preferred-avatar';
 import { AccountIconTour } from '../../app/account-icon-tour/account-icon-tour';
 import {
+  getAccountListStats,
   getMultichainAccountGroupById,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
@@ -105,6 +106,7 @@ export const AppHeaderUnlockedContent = ({
   const selectedMultichainAccount = useSelector((state) =>
     getMultichainAccountGroupById(state, selectedMultichainAccountId),
   );
+  const accountListStats = useSelector(getAccountListStats);
 
   // Used for account picker
   const internalAccount = useSelector(getSelectedInternalAccount);
@@ -146,7 +148,6 @@ export const AppHeaderUnlockedContent = ({
   const showConnectedStatus =
     (getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
       getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL) &&
-    origin &&
     origin !== browser.runtime.id;
 
   const handleMainMenuToggle = () => {
@@ -237,6 +238,15 @@ export const AppHeaderUnlockedContent = ({
                 category: MetaMetricsEventCategory.Navigation,
                 properties: {
                   location: 'Home',
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  pinned_count: accountListStats.pinnedCount,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  hidden_count: accountListStats.hiddenCount,
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  total_accounts: accountListStats.totalAccounts,
                 },
               });
             }}
@@ -281,6 +291,7 @@ export const AppHeaderUnlockedContent = ({
     navigate,
     isMultichainAccountsState2Enabled,
     trackEvent,
+    accountListStats,
   ]);
 
   // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
@@ -325,6 +336,15 @@ export const AppHeaderUnlockedContent = ({
                   category: MetaMetricsEventCategory.Navigation,
                   properties: {
                     location: 'Home',
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    pinned_count: accountListStats.pinnedCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    hidden_count: accountListStats.hiddenCount,
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    total_accounts: accountListStats.totalAccounts,
                   },
                 });
               }}
@@ -346,6 +366,7 @@ export const AppHeaderUnlockedContent = ({
     navigate,
     dispatch,
     trackEvent,
+    accountListStats,
   ]);
 
   return (
