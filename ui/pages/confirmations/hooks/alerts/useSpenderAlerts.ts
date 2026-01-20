@@ -10,7 +10,10 @@ import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
 } from '../../../../../shared/modules/transaction.utils';
-import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
+import {
+  PRIMARY_TYPES_PERMIT,
+  PrimaryType,
+} from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -18,20 +21,61 @@ import {
   useTrustSignal,
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
-import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
+import { getIsRevokeDAIPermit } from '../../components/confirm/utils';
+import { useAsyncResult } from '../../../../hooks/useAsync';
+import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
+import { TokenStandard } from '../../../../../shared/constants/transaction';
 
-enum RevokeStatus {
-  NotRevoke = 'not-revoke',
-  Revoke = 'revoke',
-  RevokeUnlessNFT = 'revoke-unless-nft',
+type PermitDetails = {
+  amount?: string | number;
+};
+
+function isZeroAmount(amount: string | number | undefined): boolean {
+  return amount === '0' || amount === 0;
 }
 
-function getRevokeStatus(
+function isPermit2ZeroAmount(
+  message: Record<string, unknown>,
+  primaryType: string,
+): boolean {
+  switch (primaryType) {
+    case PrimaryType.PermitSingle:
+    case PrimaryType.PermitBatch: {
+      const details = message?.details as PermitDetails | PermitDetails[];
+      if (Array.isArray(details)) {
+        return (
+          details.length > 0 && details.every((d) => isZeroAmount(d.amount))
+        );
+      }
+      return isZeroAmount(details?.amount);
+    }
+    case PrimaryType.PermitTransferFrom:
+    case PrimaryType.PermitBatchTransferFrom: {
+      const permitted = message?.permitted as PermitDetails | PermitDetails[];
+      if (Array.isArray(permitted)) {
+        return (
+          permitted.length > 0 && permitted.every((p) => isZeroAmount(p.amount))
+        );
+      }
+      return isZeroAmount(permitted?.amount);
+    }
+    default:
+      return false;
+  }
+}
+
+enum AlertSkipReason {
+  None = 'none',
+  ZeroValue = 'zero-value',
+  ZeroValueUnlessNFT = 'zero-value-unless-nft',
+}
+
+function getAlertSkipReason(
   currentConfirmation: TransactionMeta | SignatureRequestType | undefined,
-): RevokeStatus {
+): AlertSkipReason {
   if (!currentConfirmation) {
-    return RevokeStatus.NotRevoke;
+    return AlertSkipReason.None;
   }
 
   const transactionMeta = currentConfirmation as TransactionMeta;
@@ -40,12 +84,12 @@ function getRevokeStatus(
   if (txData) {
     const approvalData = parseApprovalTransactionData(txData as `0x${string}`);
     if (approvalData?.isRevokeAll) {
-      return RevokeStatus.Revoke;
+      return AlertSkipReason.ZeroValue;
     }
     if (approvalData?.amountOrTokenId?.isZero()) {
-      return RevokeStatus.RevokeUnlessNFT;
+      return AlertSkipReason.ZeroValueUnlessNFT;
     }
-    return RevokeStatus.NotRevoke;
+    return AlertSkipReason.None;
   }
 
   if (
@@ -56,33 +100,35 @@ function getRevokeStatus(
     const msgData = signatureRequest.msgParams?.data as string;
 
     if (msgData) {
-      const { primaryType, message, domain } = parseTypedDataMessage(msgData);
+      const { primaryType, message } = parseTypedDataMessage(msgData);
       const isPermit = PRIMARY_TYPES_PERMIT.some(
         (type) => type === primaryType,
       );
 
       if (isPermit) {
-        const isDaiRevoke =
-          message?.allowed === false &&
-          domain?.verifyingContract?.toLowerCase() ===
-            DAI_CONTRACT_ADDRESS.toLowerCase();
-        const isZeroValuePermit =
-          message?.value === '0' || message?.value === 0;
+        const isDaiRevoke = getIsRevokeDAIPermit(signatureRequest);
+        const isEIP2612ZeroValue = isZeroAmount(
+          message?.value as string | number | undefined,
+        );
+        const isPermit2ZeroValue = isPermit2ZeroAmount(
+          message as Record<string, unknown>,
+          primaryType,
+        );
 
-        if (isDaiRevoke || isZeroValuePermit) {
-          return RevokeStatus.Revoke;
+        if (isDaiRevoke || isEIP2612ZeroValue || isPermit2ZeroValue) {
+          return AlertSkipReason.ZeroValue;
         }
       }
     }
   }
 
-  return RevokeStatus.NotRevoke;
+  return AlertSkipReason.None;
 }
 
 /**
  * Hook to generate alerts for spender addresses in approval transactions and permit signatures.
  * Supports both warning and malicious states using the trust signals system.
- * Does not return alerts for revoke operations since revoking is the safe action.
+ * Skips alerts for zero-value operations (revocations or zero-amount permits) since they pose no risk.
  *
  * @returns Array of alerts for spender addresses
  */
@@ -90,24 +136,66 @@ export function useSpenderAlerts(): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext();
 
-  const revokeStatus = useMemo(
-    () => getRevokeStatus(currentConfirmation),
-    [currentConfirmation],
-  );
+  const { alertSkipReason, tokenAddressOverride } = useMemo(() => {
+    const reason = getAlertSkipReason(currentConfirmation);
 
-  const { isNFT, pending: isNFTPending } = useIsNFT(
+    if (reason === AlertSkipReason.ZeroValueUnlessNFT && currentConfirmation) {
+      const transactionMeta = currentConfirmation as TransactionMeta;
+      const txData = transactionMeta.txParams?.data;
+      if (txData) {
+        const approvalData = parseApprovalTransactionData(
+          txData as `0x${string}`,
+        );
+        if (approvalData?.tokenAddress) {
+          return {
+            alertSkipReason: reason,
+            tokenAddressOverride: approvalData.tokenAddress,
+          };
+        }
+      }
+    }
+
+    return { alertSkipReason: reason, tokenAddressOverride: undefined };
+  }, [currentConfirmation]);
+
+  const { isNFT: isNFTFromTxTo, pending: isNFTPendingFromTxTo } = useIsNFT(
     currentConfirmation as TransactionMeta,
   );
 
-  const isRevoke = useMemo(() => {
-    if (revokeStatus === RevokeStatus.Revoke) {
+  const transactionMeta = currentConfirmation as TransactionMeta;
+  const { value: tokenDetails, pending: isTokenDetailsPending } =
+    useAsyncResult(async () => {
+      if (!tokenAddressOverride) {
+        return null;
+      }
+      return await getTokenStandardAndDetailsByChain(
+        tokenAddressOverride,
+        transactionMeta?.txParams?.from as string,
+        undefined,
+        transactionMeta?.chainId as string,
+      );
+    }, [tokenAddressOverride]);
+
+  const isSafeToSkipAlert = useMemo(() => {
+    if (alertSkipReason === AlertSkipReason.ZeroValue) {
       return true;
     }
-    if (revokeStatus === RevokeStatus.RevokeUnlessNFT) {
-      return !isNFTPending && !isNFT;
+    if (alertSkipReason === AlertSkipReason.ZeroValueUnlessNFT) {
+      if (tokenAddressOverride) {
+        const isNFT = tokenDetails?.standard !== TokenStandard.ERC20;
+        return !isTokenDetailsPending && !isNFT;
+      }
+      return !isNFTPendingFromTxTo && !isNFTFromTxTo;
     }
     return false;
-  }, [revokeStatus, isNFT, isNFTPending]);
+  }, [
+    alertSkipReason,
+    tokenAddressOverride,
+    tokenDetails,
+    isTokenDetailsPending,
+    isNFTFromTxTo,
+    isNFTPendingFromTxTo,
+  ]);
 
   const spenderAddress = useMemo(() => {
     if (!currentConfirmation) {
@@ -154,7 +242,7 @@ export function useSpenderAlerts(): Alert[] {
   );
 
   return useMemo(() => {
-    if (!spenderAddress || isRevoke) {
+    if (!spenderAddress || isSafeToSkipAlert) {
       return [];
     }
 
@@ -183,5 +271,5 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     return alerts;
-  }, [spenderAddress, isRevoke, trustSignalDisplayState, t]);
+  }, [spenderAddress, isSafeToSkipAlert, trustSignalDisplayState, t]);
 }
