@@ -518,6 +518,12 @@ export type MetaMetricsUserTraits = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   install_date_ext?: string;
   /**
+   * The persistence storage kind currently in use.
+   */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  storage_kind?: 'data' | 'split';
+  /**
    * Whether the security provider feature has been enabled.
    */
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -578,6 +584,10 @@ export enum MetaMetricsUserTrait {
    * Identified when the user installed the extension.
    */
   InstallDateExt = 'install_date_ext',
+  /**
+   * Identifies which persistence storage kind is in use.
+   */
+  StorageKind = 'storage_kind',
   /**
    * Identified when the Ledger Live connection type is changed.
    */

@@ -742,6 +742,10 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
+  });
+
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
 
