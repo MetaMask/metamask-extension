@@ -187,7 +187,9 @@ export const AppHeaderUnlockedContent = ({
         size={ButtonBaseSize.Sm}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
-        endIconName={copied ? IconNameDeprecated.CopySuccess : IconNameDeprecated.Copy}
+        endIconName={
+          copied ? IconNameDeprecated.CopySuccess : IconNameDeprecated.Copy
+        }
         endIconProps={{
           color: IconColorDeprecated.iconAlternative,
           size: IconSizeDeprecated.Sm,
