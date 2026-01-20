@@ -1,4 +1,4 @@
-import { useEffect, useRef, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import {
   checkHardwareWalletPermission,
   getHardwareWalletDeviceId,
@@ -76,6 +76,10 @@ export const useHardwareWalletAutoConnect = ({
       const abortController = new AbortController();
       const abortSignal = abortController.signal;
 
+      // Capture the account address at the time this effect starts
+      // so we only mark auto-connected for the correct account
+      const effectAccountAddress = accountAddress;
+
       const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
         if (abortSignal.aborted) {
           return;
@@ -112,7 +116,7 @@ export const useHardwareWalletAutoConnect = ({
               await connect();
               if (!abortSignal.aborted) {
                 setDeviceIdRef(newDeviceId);
-                setAutoConnected(accountAddress, newDeviceId);
+                setAutoConnected(effectAccountAddress, newDeviceId);
               }
             } catch {
               // Connection failed, don't mark as connected
