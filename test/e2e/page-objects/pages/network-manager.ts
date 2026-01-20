@@ -24,10 +24,10 @@ class NetworkManager {
     '[data-testid="network-manager-select-all"]';
 
   private readonly selectedNetworkListItem = (selector: string) =>
-    `${selector}.multichain-network-list-item--selected`;
+    `:is(${selector}.multichain-network-list-item--selected, ${selector} .multichain-network-list-item--selected)`;
 
   private readonly deselectedNetworkListItem = (selector: string) =>
-    `${selector}.multichain-network-list-item--deselected`;
+    `:is(${selector}.multichain-network-list-item--deselected, ${selector} .multichain-network-list-item--deselected)`;
 
   private readonly networkListItem = (networkName: string) =>
     `[data-testid="network-list-item-${networkName}"]`;
