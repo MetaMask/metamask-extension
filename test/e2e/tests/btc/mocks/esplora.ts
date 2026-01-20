@@ -171,11 +171,11 @@ const mockAllScriptHashTxs = (mockServer: Mockttp) =>
 
       // Return funding transaction for the E2E test address
       if (scripthash === E2E_BTC_SCRIPTHASH) {
-        console.log(
-          `[BTC MOCK] ✓ Matched scripthash - returning FUNDING_TX`,
-        );
+        console.log(`[BTC MOCK] ✓ Matched scripthash - returning FUNDING_TX`);
         console.log(`[BTC MOCK] TX value: ${FUNDING_TX.vout[0].value} sats`);
-        console.log(`[BTC MOCK] TX addr: ${FUNDING_TX.vout[0].scriptpubkey_address}`);
+        console.log(
+          `[BTC MOCK] TX addr: ${FUNDING_TX.vout[0].scriptpubkey_address}`,
+        );
         return { statusCode: 200, json: [FUNDING_TX] };
       }
 

@@ -6,8 +6,10 @@ import NetworkManager from '../../page-objects/pages/network-manager';
 import {
   mockBitcoinFeatureFlag,
   mockExchangeRates,
+  mockCurrencyExchangeRates,
+  mockFiatExchangeRates,
   mockInitialFullScan,
-  mockRampsDynamicFeatureFlag,
+  mockSolanaSpotPrices,
 } from './mocks';
 import { mockPriceMulti, mockPriceMultiBtcAndSol } from './mocks/min-api';
 
@@ -19,6 +21,8 @@ export async function withBtcAccountSnap(
     {
       // Use onboarding flow to trigger fullScan (not sync)
       onboarding: true,
+      // Disable BIP44 stage 2 to use legacy BTC account derivation
+      forceBip44Version: false,
       title,
       dappOptions: { numberOfTestDapps: 1 },
       manifestFlags: {
@@ -36,11 +40,9 @@ export async function withBtcAccountSnap(
         await mockBitcoinFeatureFlag(mockServer),
         await mockInitialFullScan(mockServer),
         await mockExchangeRates(mockServer),
-
-        // See: PROD_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'api'),
-        // See: UAT_RAMP_API_BASE_URL
-        await mockRampsDynamicFeatureFlag(mockServer, 'uat-api'),
+        await mockCurrencyExchangeRates(mockServer),
+        await mockFiatExchangeRates(mockServer),
+        await mockSolanaSpotPrices(mockServer),
         await mockPriceMulti(mockServer),
         await mockPriceMultiBtcAndSol(mockServer),
       ],

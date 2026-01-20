@@ -52,7 +52,6 @@ describe('BTC Account - Send', function (this: Suite) {
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
     }, this.test?.fullTitle());
   });
-/*
   it('can complete the send flow', async function () {
     const sendAmount = '0.5';
     const expectedFee = '281';
@@ -124,5 +123,4 @@ describe('BTC Account - Send', function (this: Suite) {
       await homePage.checkPageIsLoaded();
     }, this.test?.fullTitle());
   });
-  */
 });

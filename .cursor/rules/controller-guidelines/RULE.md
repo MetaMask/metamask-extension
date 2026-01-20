@@ -1,6 +1,6 @@
 ---
 description: Project Guidelines for Writing Controllers
-globs: *Controller.ts,*Controller.js,*-controller.ts,*-controller.js
+globs: '*Controller.ts,*Controller.js,*-controller.ts,*-controller.js'
 alwaysApply: false
 ---
 
