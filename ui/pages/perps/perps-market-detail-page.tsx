@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { useMemo, useCallback, useState, useRef } from 'react';
+=======
+import React, { useMemo, useCallback } from 'react';
+>>>>>>> main
 import { useSelector } from 'react-redux';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import {
@@ -23,6 +27,7 @@ import { mockPositions, mockOrders } from '../../components/app/perps/mocks';
 import { OrderCard } from '../../components/app/perps/order-card';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import {
+<<<<<<< HEAD
   PerpsCandlestickChart,
   PerpsCandlestickChartRef,
 } from '../../components/app/perps/perps-candlestick-chart';
@@ -32,6 +37,8 @@ import {
   ZOOM_CONFIG,
 } from '../../components/app/perps/constants/chartConfig';
 import {
+=======
+>>>>>>> main
   getDisplayName,
   findMarketBySymbol,
   safeDecodeURIComponent,
@@ -88,6 +95,7 @@ const PerpsMarketDetailPage: React.FC = () => {
     );
   }, [decodedSymbol]);
 
+<<<<<<< HEAD
   // Candle period state and chart ref
   const [selectedPeriod, setSelectedPeriod] = useState<CandlePeriod>(
     CandlePeriod.FiveMinutes,
@@ -103,6 +111,8 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   }, []);
 
+=======
+>>>>>>> main
   // Navigation handlers
   const handleBackClick = useCallback(() => {
     navigate(DEFAULT_ROUTE);
@@ -248,6 +258,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         </Box>
       </Box>
 
+<<<<<<< HEAD
       {/* Candlestick Chart */}
       <Box
         paddingLeft={4}
@@ -266,6 +277,30 @@ const PerpsMarketDetailPage: React.FC = () => {
         selectedPeriod={selectedPeriod}
         onPeriodChange={handlePeriodChange}
       />
+=======
+      {/* Chart Placeholder */}
+      <Box
+        paddingLeft={4}
+        paddingRight={4}
+        paddingBottom={4}
+        data-testid="perps-market-detail-chart-placeholder"
+      >
+        <Box
+          justifyContent={BoxJustifyContent.Center}
+          alignItems={BoxAlignItems.Center}
+          className="h-[200px] bg-background-alternative rounded-lg"
+        >
+          <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
+            Chart coming soon
+          </Text>
+        </Box>
+      </Box>
+
+      {/* Divider */}
+      <Box paddingLeft={4} paddingRight={4} paddingBottom={4}>
+        <Box className="h-px bg-border-muted" />
+      </Box>
+>>>>>>> main
 
       {/* Position Section */}
       {position && (
