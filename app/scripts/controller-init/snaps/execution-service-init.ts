@@ -24,6 +24,8 @@ import {
  * offscreen document is ready.
  * @param request.setupUntrustedCommunicationEip1193 - The setup function for
  * EIP-1193 communication.
+ * @param request.setupUntrustedCommunicationCaip - The setup function for
+ * CAIP-25 communication.
  * @returns The initialized controller.
  */
 export const ExecutionServiceInit: ControllerInitFunction<

@@ -7689,7 +7689,13 @@ export default class MetamaskController extends EventEmitter {
 
     engine.push((req, _res, next, end) => {
       const isSnap = isSnapId(origin);
-      const hasPermission = !isSnap || (isSnap && this.permissionController.hasPermission(origin, SnapEndowments.MultichainProvider));
+      const hasPermission =
+        !isSnap ||
+        (isSnap &&
+          this.permissionController.hasPermission(
+            origin,
+            SnapEndowments.MultichainProvider,
+          ));
       if (
         !hasPermission ||
         ![
