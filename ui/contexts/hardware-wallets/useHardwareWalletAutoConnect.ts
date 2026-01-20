@@ -78,6 +78,11 @@ export const useHardwareWalletAutoConnect = ({
 
       const currentPermissionState =
         await checkHardwareWalletPermission(walletType);
+
+      if (abortSignal?.aborted) {
+        return;
+      }
+
       setHardwareConnectionPermissionState(currentPermissionState);
 
       if (
@@ -109,6 +114,11 @@ export const useHardwareWalletAutoConnect = ({
 
         const currentPermissionState =
           await checkHardwareWalletPermission(walletType);
+
+        if (abortSignal?.aborted) {
+          return;
+        }
+
         setHardwareConnectionPermissionState(currentPermissionState);
       }
     };
