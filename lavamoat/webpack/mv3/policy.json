@@ -3079,7 +3079,6 @@
         "document.documentElement": true,
         "document.getElementById": true,
         "document.getSelection": true,
-        "fetch": false,
         "getComputedStyle": true,
         "location.href": true,
         "navigator": true,
