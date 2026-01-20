@@ -415,7 +415,7 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
-    nock('https:///client-side-detection.api.cx.metamask.io')
+    nock('https://client-side-detection.api.cx.metamask.io')
       .persist()
       .get('/v1/request-blocklist')
       .reply(
