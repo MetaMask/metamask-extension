@@ -117,42 +117,36 @@ const getTransactionGroupRecipientAddressFilter = (
   recipientAddress,
   chainIds,
 ) => {
-  return ({ initialTransaction: { txParams } }) => {
-    return (
-      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (chainIds.some(
-        (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
-      ) &&
-        txParams.data.match(recipientAddress.slice(2)))
-    );
-  };
-};
+  return ({ initialTransaction }) => {
+    const { txParams = {}, chainId } = initialTransaction;
+    const { to, data } = txParams;
 
-const getTransactionGroupRecipientAddressFilterAllChain = (
-  recipientAddress,
-  chainIds,
-) => {
-  return ({ initialTransaction: { txParams } }) => {
     const isNativeAssetActivityFilter =
       recipientAddress === '0x0000000000000000000000000000000000000000';
     const isSimpleSendTx =
-      !txParams.data ||
-      txParams?.data === '' ||
-      txParams?.data === '0x' ||
-      txParams?.data === '0x0';
-    const isOnSameChain = chainIds.includes(txParams?.chainId);
+      !data || data === '' || data === '0x' || data === '0x0';
+    const isOnSameChain = chainIds.includes(chainId);
+
     if (isNativeAssetActivityFilter && isSimpleSendTx && isOnSameChain) {
       return true;
     }
-    return (
-      isEqualCaseInsensitive(txParams?.to, recipientAddress) ||
-      (chainIds.some(
-        (chainId) =>
-          txParams?.to === SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId],
-      ) &&
-        txParams.data.match(recipientAddress.slice(2)))
-    );
+
+    const isDirectMatch = isEqualCaseInsensitive(to, recipientAddress);
+    if (isDirectMatch) {
+      return true;
+    }
+
+    const swapContractForChain = SWAPS_CHAINID_CONTRACT_ADDRESS_MAP[chainId];
+    const isSwapContract =
+      swapContractForChain && isEqualCaseInsensitive(to, swapContractForChain);
+
+    if (isSwapContract && data) {
+      const normalizedRecipient = recipientAddress.slice(2).toLowerCase();
+      const normalizedData = data.toLowerCase();
+      return normalizedData.includes(normalizedRecipient);
+    }
+
+    return false;
   };
 };
 
@@ -195,10 +189,7 @@ const getFilteredTransactionGroupsAllChains = (
     return transactionGroups.filter(tokenTransactionFilter);
   } else if (tokenAddress) {
     return transactionGroups.filter(
-      getTransactionGroupRecipientAddressFilterAllChain(
-        tokenAddress,
-        tokenChainIds,
-      ),
+      getTransactionGroupRecipientAddressFilter(tokenAddress, tokenChainIds),
     );
   }
   return transactionGroups;
