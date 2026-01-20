@@ -46,7 +46,7 @@ export const submitBridgeTx = (
           boolean,
           RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
         ]
-      >(BridgeStatusAction.SUBMIT_TX, [
+      >(BridgeStatusAction.SubmitTx, [
         accountAddress,
         quote,
         isStxSupportedInClient,
