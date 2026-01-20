@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as path from 'path';
 import { promises as fs } from 'fs';
 import { execSync } from 'child_process';
@@ -62,6 +63,15 @@ const ACTIONABLE_TOOLS = [
   'mm_navigate',
   'mm_wait_for_notification',
 ];
+
+const TOOL_ACTION_MAP: Record<string, PriorKnowledgeSuggestedAction['action']> =
+  {
+    mm_click: 'click',
+    mm_type: 'type',
+    mm_wait_for: 'wait_for',
+    mm_navigate: 'navigate',
+    mm_wait_for_notification: 'wait_for_notification',
+  };
 
 const DISCOVERY_TOOLS = [
   'mm_describe_screen',
@@ -1270,22 +1280,7 @@ export class KnowledgeStore {
   private toolToAction(
     toolName: string,
   ): PriorKnowledgeSuggestedAction['action'] | null {
-    if (toolName === 'mm_click') {
-      return 'click';
-    }
-    if (toolName === 'mm_type') {
-      return 'type';
-    }
-    if (toolName === 'mm_wait_for') {
-      return 'wait_for';
-    }
-    if (toolName === 'mm_navigate') {
-      return 'navigate';
-    }
-    if (toolName === 'mm_wait_for_notification') {
-      return 'wait_for_notification';
-    }
-    return null;
+    return TOOL_ACTION_MAP[toolName] ?? null;
   }
 
   private async buildAvoidList(
