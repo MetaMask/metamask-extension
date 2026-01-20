@@ -1,6 +1,5 @@
-import { until } from 'selenium-webdriver';
-import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import { PAGES, type Driver } from '../../webdriver/driver';
+import { WALLET_PASSWORD } from '../../constants';
+import { type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
@@ -11,6 +10,7 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 import LoginPage from '../../page-objects/pages/login-page';
+import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
 
 /**
  * Returns the config for database/vault corruption tests.
@@ -118,18 +118,8 @@ export async function onboardAfterRecovery(driver: Driver): Promise<string> {
  * @param driver - The WebDriver instance.
  */
 async function waitForVaultRestorePage(driver: Driver): Promise<void> {
-  await driver.waitUntil(
-    async () => {
-      await driver.navigate(PAGES.HOME, { waitForControllers: false });
-      const title = await driver.driver.getTitle();
-      // the browser will return an error message for our UI's HOME page until
-      // the extension has restarted
-      return title === WINDOW_TITLES.ExtensionInFullScreenView;
-    },
-    // reload and check title as quickly a possible
-    { interval: 100, timeout: 10000 },
-  );
-  await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
+  const vaultRecoveryPage = new VaultRecoveryPage(driver);
+  await vaultRecoveryPage.waitForPageAfterExtensionReload();
 }
 
 /**
@@ -194,37 +184,6 @@ export async function clickRecover({
   driver: Driver;
   confirm: boolean;
 }): Promise<void> {
-  // click the Recovery/Reset button
-  await driver.waitForSelector('#critical-error-button');
-  await driver.clickElement('#critical-error-button');
-
-  // Wait for the confirmation alert to appear and handle it immediately
-  await driver.driver.wait(until.alertIsPresent(), 20000);
-  const alert = await driver.driver.switchTo().alert();
-  if (confirm) {
-    await alert.accept();
-  } else {
-    await alert.dismiss();
-  }
-
-  if (confirm) {
-    // delay needed to mitigate a race condition where the tab is closed and re-opened after confirming, causing to window to become stale
-    await driver.delay(3000);
-    try {
-      await driver.switchToWindowWithTitle(
-        WINDOW_TITLES.ExtensionInFullScreenView,
-      );
-    } catch {
-      // to mitigate a race condition where the tab is closed after confirming (issue #36916)
-      await driver.openNewPage('about:blank');
-      await driver.navigate();
-    }
-    // the button should be disabled if the user confirmed the prompt, but given this is a transient state that goes very fast
-    // it can cause a race condition where the element becomes stale, so we check directly that the element is not present as that's a stable state that occurs eventually
-    await driver.assertElementNotPresent('#critical-error-button');
-  } else {
-    // the button should be enabled if the user dismissed the prompt
-    // Wait for UI to settle after dismissing the alert
-    await driver.waitForSelector('#critical-error-button');
-  }
+  const vaultRecoveryPage = new VaultRecoveryPage(driver);
+  await vaultRecoveryPage.clickRecoveryButton({ confirm });
 }
