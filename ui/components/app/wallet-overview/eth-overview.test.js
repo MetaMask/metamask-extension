@@ -424,10 +424,16 @@ describe('EthOverview', () => {
 
   it('sends an event when clicking the Buy button: %s', () => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
 
     const mockedStore = configureMockStore([thunk])(mockStore);
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,
@@ -509,6 +515,12 @@ describe('EthOverview', () => {
     CHAIN_IDS.SEPOLIA,
   ])('sends an event when clicking the Send button: %s', (chainId) => {
     const mockTrackEvent = jest.fn();
+    const mockMetaMetricsContext = {
+      trackEvent: mockTrackEvent,
+      bufferedTrace: jest.fn(),
+      bufferedEndTrace: jest.fn(),
+      onboardingParentContext: { current: null },
+    };
     const mockedStoreWithSpecificChainId = {
       ...mockStore,
       metamask: {
@@ -521,7 +533,7 @@ describe('EthOverview', () => {
       mockedStoreWithSpecificChainId,
     );
     const { queryByTestId } = renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <EthOverview />
       </MetaMetricsContext.Provider>,
       mockedStore,
