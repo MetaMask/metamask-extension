@@ -564,13 +564,6 @@ export const ROUTES = [
   },
   // Additional routes
   { path: DEFI_ROUTE, label: 'DeFi', trackInAnalytics: false },
-  // Perps routes
-  { path: PERPS_ROUTE, label: 'Perps Home', trackInAnalytics: true },
-  {
-    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
-    label: 'Perps Market Detail',
-    trackInAnalytics: true,
-  },
   {
     path: REVIEW_PERMISSIONS,
     label: 'Review Permissions',
