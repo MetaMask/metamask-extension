@@ -4458,8 +4458,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(value: string): Promise<void> {
-  return submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
+export async function setDefaultHomeActiveTabName(
+  value: string,
+): Promise<void> {
+  try {
+    await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
