@@ -23,11 +23,6 @@ interface UsePerpsMarketListViewParams {
    */
   defaultSearchVisible?: boolean;
   /**
-   * Enable polling for markets data
-   * @default false
-   */
-  enablePolling?: boolean;
-  /**
    * Show only watchlist markets initially
    * @default false
    */
@@ -132,13 +127,11 @@ interface UsePerpsMarketListViewReturn {
  *   error,
  * } = usePerpsMarketListView({
  *   defaultSearchVisible: false,
- *   enablePolling: false,
  * });
  * ```
  */
 export const usePerpsMarketListView = ({
   defaultSearchVisible = false,
-  enablePolling = false,
   showWatchlistOnly = false,
   defaultMarketTypeFilter = 'all',
   showZeroVolume = false,
@@ -150,7 +143,6 @@ export const usePerpsMarketListView = ({
     isLoading: isLoadingMarkets,
     error,
   } = usePerpsMarkets({
-    enablePolling,
     showZeroVolume,
   });
 

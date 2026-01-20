@@ -23,27 +23,9 @@ export interface UsePerpsMarketsResult {
    * Error state with error message
    */
   error: string | null;
-  /**
-   * Refresh function to manually refetch data
-   */
-  refresh: () => Promise<void>;
-  /**
-   * Indicates if data is being refreshed
-   */
-  isRefreshing: boolean;
 }
 
 export interface UsePerpsMarketsOptions {
-  /**
-   * Enable automatic polling for live updates
-   * @default false
-   */
-  enablePolling?: boolean;
-  /**
-   * Polling interval in milliseconds
-   * @default 60000 (1 minute)
-   */
-  pollingInterval?: number;
   /**
    * Skip initial data fetch on mount
    * @default false
@@ -117,7 +99,6 @@ export const usePerpsMarkets = (
 
   const [markets, setMarkets] = useState<PerpsMarketDataWithVolumeNumber[]>([]);
   const [isLoading, setIsLoading] = useState(!skipInitialFetch);
-  const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   // Helper function to filter and sort markets by volume
@@ -179,30 +160,9 @@ export const usePerpsMarkets = (
     loadData();
   }, [skipInitialFetch, processMarkets]);
 
-  // Manual refresh function
-  const refresh = useCallback(async (): Promise<void> => {
-    try {
-      setIsRefreshing(true);
-      setError(null);
-
-      // Simulate refresh with mock data
-      const allMarkets = [...mockCryptoMarkets, ...mockHip3Markets];
-      const processedMarkets = processMarkets(allMarkets);
-      setMarkets(processedMarkets);
-    } catch (err) {
-      const errorMessage =
-        err instanceof Error ? err.message : 'Failed to refresh market data';
-      setError(errorMessage);
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [processMarkets]);
-
   return {
     markets,
     isLoading,
     error,
-    refresh,
-    isRefreshing,
   };
 };
