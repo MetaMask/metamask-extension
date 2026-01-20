@@ -32,12 +32,11 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isActiveDest: true,
     },
   },
-  // @ts-expect-error chainRanking is not a valid property in the FeatureFlagResponse type yet
   chainRanking: [
-    { chainId: formatChainIdToCaip(ChainId.ETH) },
-    { chainId: formatChainIdToCaip(ChainId.ARBITRUM) },
-    { chainId: formatChainIdToCaip(ChainId.LINEA) },
-    { chainId: formatChainIdToCaip(ChainId.BASE) },
+    { chainId: 'eip155:1', name: 'Ethereum' },
+    { chainId: 'eip155:42161', name: 'Arbitrum' },
+    { chainId: 'eip155:59144', name: 'Linea' },
+    { chainId: 'eip155:8453', name: 'Base' },
   ],
 };
 
