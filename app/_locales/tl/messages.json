@@ -3894,9 +3894,6 @@
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Hindi makakapagpadala ng mga negatibong halaga ng ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
