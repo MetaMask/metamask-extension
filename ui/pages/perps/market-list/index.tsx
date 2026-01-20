@@ -31,6 +31,10 @@ import {
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect, type MarketFilter } from './components/filter-select';
+import {
+  StockSubFilterSelect,
+  type StockSubFilter,
+} from './components/stock-sub-filter';
 
 // Combine all markets
 const allMarkets: PerpsMarketData[] = [
@@ -144,11 +148,13 @@ const filterMarkets = (
  *
  * @param markets - Array of markets to filter
  * @param filter - Market type filter
+ * @param stockSubFilter - Stock sub-filter (only used when filter is 'stocks')
  * @returns Filtered array of markets
  */
 const filterByType = (
   markets: PerpsMarketData[],
   filter: MarketFilter,
+  stockSubFilter: StockSubFilter,
 ): PerpsMarketData[] => {
   if (filter === 'all') {
     return markets;
@@ -157,9 +163,17 @@ const filterByType = (
     return markets.filter((m) => !m.marketType || m.marketType === 'crypto');
   }
   if (filter === 'stocks') {
-    return markets.filter(
-      (m) => m.marketType === 'equity' || m.marketType === 'commodity',
-    );
+    if (stockSubFilter === 'all') {
+      return markets.filter(
+        (m) => m.marketType === 'equity' || m.marketType === 'commodity',
+      );
+    }
+    if (stockSubFilter === 'stocks') {
+      return markets.filter((m) => m.marketType === 'equity');
+    }
+    if (stockSubFilter === 'commodities') {
+      return markets.filter((m) => m.marketType === 'commodity');
+    }
   }
   return markets;
 };
@@ -176,6 +190,7 @@ export const MarketListView: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSortId, setSelectedSortId] = useState<SortOptionId>('volume');
   const [selectedFilter, setSelectedFilter] = useState<MarketFilter>('all');
+  const [stockSubFilter, setStockSubFilter] = useState<StockSubFilter>('all');
 
   // Get current sort option
   const currentSortOption = SORT_OPTIONS.find(
@@ -192,7 +207,7 @@ export const MarketListView: React.FC = () => {
 
   // Filter and sort markets
   const displayedMarkets = useMemo(() => {
-    let markets = filterByType(allMarkets, selectedFilter);
+    let markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
     markets = filterMarkets(markets, searchQuery);
     if (currentSortOption) {
       markets = sortMarkets(
@@ -202,7 +217,7 @@ export const MarketListView: React.FC = () => {
       );
     }
     return markets;
-  }, [selectedFilter, searchQuery, currentSortOption]);
+  }, [selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
 
   // Handlers
   const handleBack = useCallback(() => {
@@ -226,6 +241,7 @@ export const MarketListView: React.FC = () => {
 
   const handleFilterChange = useCallback((filter: MarketFilter) => {
     setSelectedFilter(filter);
+    setStockSubFilter('all'); // Reset sub-filter when main filter changes
   }, []);
 
   const handleMarketSelect = useCallback(
@@ -282,16 +298,24 @@ export const MarketListView: React.FC = () => {
 
       {/* Filter and Sort Row */}
       <Box
-        className="border-b border-border-muted px-4 py-3"
+        className="border-b border-border-muted px-4 py-3 flex-wrap"
         flexDirection={BoxFlexDirection.Row}
         alignItems={BoxAlignItems.Center}
+        justifyContent={BoxJustifyContent.Start}
         gap={3}
+        data-testid="market-list-filter-sort-row"
       >
         <FilterSelect value={selectedFilter} onChange={handleFilterChange} />
         <SortDropdown
           selectedOptionId={selectedSortId}
           onOptionChange={handleSortChange}
         />
+        {selectedFilter === 'stocks' && (
+          <StockSubFilterSelect
+            value={stockSubFilter}
+            onChange={setStockSubFilter}
+          />
+        )}
       </Box>
 
       {/* Market List */}
