@@ -1,6 +1,7 @@
 const { strict: assert } = require('assert');
-const { withFixtures, DAPP_URL } = require('../helpers');
-const FixtureBuilder = require('../fixture-builder');
+const { DAPP_URL } = require('../constants');
+const { withFixtures } = require('../helpers');
+const FixtureBuilder = require('../fixtures/fixture-builder');
 
 const triggerBFCache = async (driver) => {
   await driver.executeScript(`
@@ -28,7 +29,7 @@ describe('BFCache', function () {
   it('has a working provider stream when a dapp is restored from BFCache', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test.fullTitle(),
       },

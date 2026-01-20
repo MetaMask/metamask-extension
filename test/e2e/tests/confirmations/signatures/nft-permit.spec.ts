@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
@@ -9,7 +9,7 @@ import {
   withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
@@ -69,7 +69,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
@@ -112,7 +112,7 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           location: 'confirmation',
           decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',

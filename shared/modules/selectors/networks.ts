@@ -14,11 +14,10 @@ import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import type { CaipChainId, Hex } from '@metamask/utils';
 import {
-  CAIP_FORMATTED_EVM_TEST_CHAINS,
+  CAIP_FORMATTED_TEST_CHAINS,
   NetworkStatus,
 } from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
-import { SOLANA_TEST_CHAINS } from '../../constants/multichain/networks';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -72,18 +71,18 @@ export const getNetworkConfigurationsByChainId = (
 export const selectDefaultNetworkClientIdsByChainId = createSelector(
   getNetworkConfigurationsByChainId,
   (networkConfigurationsByChainId) => {
-    return Object.entries(networkConfigurationsByChainId).reduce<
-      Record<Hex, NetworkClientId>
-    >(
-      (obj, [chainId, networkConfiguration]) => ({
-        ...obj,
-        [chainId]:
-          networkConfiguration.rpcEndpoints[
-            networkConfiguration.defaultRpcEndpointIndex
-          ].networkClientId,
-      }),
-      {},
-    );
+    const clientIdsByChain: Record<Hex, NetworkClientId> = {};
+
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      clientIdsByChain[chainId as Hex] =
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].networkClientId;
+    }
+
+    return clientIdsByChain;
   },
 );
 
@@ -328,10 +327,7 @@ export const getNonTestNetworks = createSelector(
     return Object.entries(networkConfigurationsByCaipChainId)
       .filter(([chainId]) => {
         const caipChainId = chainId as CaipChainId;
-        return (
-          !CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId) &&
-          !SOLANA_TEST_CHAINS.includes(caipChainId)
-        );
+        return !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
       })
       .map(([chainId, network]) => ({
         ...network,
@@ -366,7 +362,7 @@ export const getNetworksByScopes = createSelector(
               name: network.name,
             }));
 
-          return [...result, ...evmNetworks];
+          return result.concat(evmNetworks);
         }
 
         const matchingNetwork = nonTestNetworks.find(
@@ -374,13 +370,10 @@ export const getNetworksByScopes = createSelector(
         );
 
         if (matchingNetwork) {
-          return [
-            ...result,
-            {
-              chainId: matchingNetwork.chainId,
-              name: matchingNetwork.name,
-            },
-          ];
+          return result.concat({
+            chainId: matchingNetwork.chainId,
+            name: matchingNetwork.name,
+          });
         }
 
         return result;

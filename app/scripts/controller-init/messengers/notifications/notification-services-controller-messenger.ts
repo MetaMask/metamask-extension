@@ -1,18 +1,30 @@
-import { Messenger } from '@metamask/base-controller';
 import {
-  type NotificationServicesControllerMessenger,
-  type AllowedActions,
-  type AllowedEvents,
-} from '@metamask/notification-services-controller/notification-services';
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { type NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
+import { RootMessenger } from '../../../lib/messenger';
 
-export { type NotificationServicesControllerMessenger } from '@metamask/notification-services-controller/notification-services';
+type Actions = MessengerActions<NotificationServicesControllerMessenger>;
+
+type Events = MessengerEvents<NotificationServicesControllerMessenger>;
 
 export function getNotificationServicesControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<Actions, Events>,
 ): NotificationServicesControllerMessenger {
-  return messenger.getRestricted({
-    name: 'NotificationServicesController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'NotificationServicesController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NotificationServicesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       // Keyring Actions
       'KeyringController:getState',
       // Auth Actions
@@ -24,7 +36,7 @@ export function getNotificationServicesControllerMessenger(
       'NotificationServicesPushController:disablePushNotifications',
       'NotificationServicesPushController:subscribeToPushNotifications',
     ],
-    allowedEvents: [
+    events: [
       // Keyring Events
       'KeyringController:stateChange',
       'KeyringController:lock',
@@ -34,4 +46,5 @@ export function getNotificationServicesControllerMessenger(
       'NotificationServicesPushController:stateChange',
     ],
   });
+  return controllerMessenger;
 }

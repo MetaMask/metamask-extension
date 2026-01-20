@@ -4,10 +4,8 @@ import thunk from 'redux-thunk';
 
 import { NetworkType } from '@metamask/controller-utils';
 import { act } from '@testing-library/react';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { createSwapsMockStore } from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { getSwap1559GasFeeEstimates } from '../swaps.util';
 import { getNetworkConfigurationByNetworkClientId } from '../../../store/actions';

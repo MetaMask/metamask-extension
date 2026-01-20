@@ -1,13 +1,14 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
 import {
   DAPP_ONE_ADDRESS,
   DAPP_ONE_URL,
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
 } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import Homepage from '../../page-objects/pages/home/homepage';
 import LoginPage from '../../page-objects/pages/login-page';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
@@ -18,7 +19,7 @@ describe('Dapp interactions', function () {
   it('should trigger the add chain confirmation despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         localNodeOptions: [
           {
@@ -56,11 +57,10 @@ describe('Dapp interactions', function () {
   it('should connect a second Dapp despite MetaMask being locked', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -88,8 +88,8 @@ describe('Dapp interactions', function () {
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
+        await driver.navigate();
+
         const homepage = new Homepage(driver);
         await homepage.checkPageIsLoaded();
 
@@ -111,7 +111,7 @@ describe('Dapp interactions', function () {
     }
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

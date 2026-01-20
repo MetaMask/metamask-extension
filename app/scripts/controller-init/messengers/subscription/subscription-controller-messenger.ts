@@ -1,5 +1,6 @@
 import { AuthenticationController } from '@metamask/profile-sync-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AuthenticationController.AuthenticationControllerGetBearerToken
@@ -19,16 +20,26 @@ export type SubscriptionControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getSubscriptionControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'SubscriptionController',
-    allowedEvents: ['AuthenticationController:stateChange'],
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SubscriptionController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SubscriptionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: ['AuthenticationController:stateChange'],
+    actions: [
       'AuthenticationController:getBearerToken',
       'AuthenticationController:performSignOut',
     ],
   });
+  return controllerMessenger;
 }
 
 type InitActions =
@@ -41,11 +52,20 @@ export type SubscriptionControllerInitMessenger = ReturnType<
 >;
 
 export function getSubscriptionControllerInitMessenger(
-  messenger: Messenger<InitActions, InitEvents>,
+  messenger: RootMessenger<InitActions, InitEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'SubscriptionControllerInit',
-    allowedEvents: [],
-    allowedActions: ['AuthenticationController:getBearerToken'],
+  const controllerInitMessenger = new Messenger<
+    'SubscriptionControllerInit',
+    InitActions,
+    InitEvents,
+    typeof messenger
+  >({
+    namespace: 'SubscriptionControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['AuthenticationController:getBearerToken'],
+  });
+  return controllerInitMessenger;
 }

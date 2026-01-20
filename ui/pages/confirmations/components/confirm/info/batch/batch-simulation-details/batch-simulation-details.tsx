@@ -30,7 +30,7 @@ export function BatchSimulationDetails() {
 
   const { id, nestedTransactions } = transactionMeta;
 
-  const { value: approveBalanceChanges } =
+  const { value: approveBalanceChanges, pending: approvePending } =
     useBatchApproveBalanceChanges() ?? {};
 
   const [isEditApproveModalOpen, setIsEditApproveModalOpen] = useState(false);
@@ -58,13 +58,6 @@ export function BatchSimulationDetails() {
     [id, nestedTransactionIndexToEdit],
   );
 
-  if (
-    transactionMeta?.type === TransactionType.revokeDelegation ||
-    isUpgradeOnly
-  ) {
-    return null;
-  }
-
   const approveRows: StaticRow[] = useMemo(() => {
     const finalBalanceChanges = approveBalanceChanges?.map((change) => ({
       ...change,
@@ -82,6 +75,14 @@ export function BatchSimulationDetails() {
     ];
   }, [approveBalanceChanges, handleEdit]);
 
+  if (
+    transactionMeta?.type === TransactionType.revokeDelegation ||
+    isUpgradeOnly ||
+    !transactionMeta?.txParams
+  ) {
+    return null;
+  }
+
   const nestedTransactionToEdit =
     nestedTransactionIndexToEdit === undefined
       ? undefined
@@ -89,23 +90,27 @@ export function BatchSimulationDetails() {
 
   return (
     <>
-      {isEditApproveModalOpen && (
-        <EditSpendingCapModal
-          data={nestedTransactionToEdit?.data}
-          isOpenEditSpendingCapModal={true}
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-          // eslint-disable-next-line @typescript-eslint/no-misused-promises
-          onSubmit={handleEditSubmit}
-          setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
-          to={nestedTransactionToEdit?.to}
-        />
+      {!approvePending && (
+        <>
+          {isEditApproveModalOpen && (
+            <EditSpendingCapModal
+              data={nestedTransactionToEdit?.data}
+              isOpenEditSpendingCapModal={true}
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+              // eslint-disable-next-line @typescript-eslint/no-misused-promises
+              onSubmit={handleEditSubmit}
+              setIsOpenEditSpendingCapModal={setIsEditApproveModalOpen}
+              to={nestedTransactionToEdit?.to}
+            />
+          )}
+          <SimulationDetails
+            transaction={transactionMeta}
+            staticRows={approveRows}
+            isTransactionsRedesign
+            enableMetrics
+          />
+        </>
       )}
-      <SimulationDetails
-        transaction={transactionMeta}
-        staticRows={approveRows}
-        isTransactionsRedesign
-        enableMetrics
-      />
     </>
   );
 }

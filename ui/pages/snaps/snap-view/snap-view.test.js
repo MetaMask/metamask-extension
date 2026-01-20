@@ -2,7 +2,7 @@ import * as React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { waitFor, screen } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import SnapView from './snap-view';
 

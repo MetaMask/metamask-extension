@@ -1,56 +1,96 @@
 .transaction-shield-page {
-  &__membership {
-    background-size: 85px;
-    height: 85px;
+  @include design-system.screen-sm-min {
+    padding: 16px;
+  }
 
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
+  &__error-content {
+    margin-top: 120px;
+  }
+
+  &__divider {
+    padding-inline: 16px;
+
+    @include design-system.screen-sm-min {
+      padding-inline: 0;
     }
+  }
+
+  &__membership {
+    height: 128px;
+    position: relative;
+    overflow: hidden;
 
     &--active {
-      background: url('/images/shield-membership-active.png') no-repeat right -10px center;
       background-color: var(--color-accent03-dark);
     }
 
     &--loading {
-      background: var(--color-border-muted);
+      background-color: var(--color-border-muted);
     }
 
     &--inactive {
-      background: url('/images/shield-membership-inactive.png') no-repeat right -10px center;
       background-color: var(--color-background-subsection);
 
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
+      &-light {
+        background-color: var(--shield-membership-inactive-light);
       }
     }
   }
 
+  &__membership-text {
+    color: var(--color-accent04-light);
+  }
 
-  &__row {
-    margin-bottom: 1px;
+  &__membership--inactive &__membership-text {
+    color: var(--color-text-default);
+  }
 
-    &:first-child {
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
+  &-shield-banner {
+    &__container {
+      position: absolute;
+      top: -6px;
+      right: 0;
+      height: 140px;
+      width: 140px;
     }
 
-    &:last-child {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      margin-bottom: 0;
+    &__canvas {
+      height: 100%;
+      width: 100%;
     }
   }
 
-  .warning-button:hover {
-    color: var(--color-warning-default);
+  &-shield-icon {
+    &__container {
+      height: 32px;
+      width: 32px;
+    }
+
+    &__canvas {
+      height: 100%;
+      width: 100%;
+    }
+  }
+}
+
+.account-selector-modal {
+  .account-selector-modal__account {
+    &:hover {
+      background-color: var(--color-background-hover);
+    }
   }
 
-  &__notification-banner {
-    margin-inline: 0;
+  &__account--selected {
+    background-color: var(--color-primary-muted);
+  }
+}
 
-    @include design-system.screen-sm-max {
-      margin-inline: -16px;
-    }
+.button-row {
+  min-height: 60px;
+}
+
+.manage-plan-page {
+  @include design-system.screen-sm-min {
+    padding: 16px;
   }
 }

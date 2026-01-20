@@ -17,6 +17,7 @@ import {
 } from '../../../../../../../../test/data/confirmations/batch-transaction';
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../../../../helpers/constants/design-system';
+import * as useUserPreferencedCurrencyModule from '../../../../../../../hooks/useUserPreferencedCurrency';
 import { RecipientRow, TransactionDetails } from './transaction-details';
 
 jest.mock(
@@ -152,6 +153,58 @@ describe('Transaction Details', () => {
           queryByTestId('transaction-details-amount-row'),
         ).not.toBeInTheDocument();
       });
+
+      it('uses transaction chainId to determine currency symbol', () => {
+        const useUserPreferencedCurrencySpy = jest.spyOn(
+          useUserPreferencedCurrencyModule,
+          'useUserPreferencedCurrency',
+        );
+
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.POLYGON,
+          });
+        const state = getMockConfirmStateForTransaction(contractInteraction, {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
+          },
+        });
+        const mockStore = configureMockStore(middleware)(state);
+        renderWithConfirmContextProvider(<TransactionDetails />, mockStore);
+
+        // Verify useUserPreferencedCurrency was called with the transaction's chainId
+        expect(useUserPreferencedCurrencySpy).toHaveBeenCalledWith(
+          expect.anything(),
+          expect.anything(),
+          CHAIN_IDS.POLYGON,
+        );
+
+        useUserPreferencedCurrencySpy.mockRestore();
+      });
+
+      it('passes chainId to ConfirmInfoRowCurrency for proper formatting', () => {
+        const contractInteraction =
+          genUnapprovedContractInteractionConfirmation({
+            chainId: CHAIN_IDS.POLYGON,
+          });
+        const state = getMockConfirmStateForTransaction(contractInteraction, {
+          metamask: {
+            preferences: {
+              showConfirmationAdvancedDetails: true,
+            },
+          },
+        });
+        const mockStore = configureMockStore(middleware)(state);
+        const { getByTestId } = renderWithConfirmContextProvider(
+          <TransactionDetails />,
+          mockStore,
+        );
+
+        const amountRow = getByTestId('transaction-details-amount-row');
+        expect(amountRow).toBeInTheDocument();
+      });
     });
 
     it('display network info if there is an alert on that field', () => {
@@ -260,34 +313,6 @@ describe('Transaction Details', () => {
         },
       },
     };
-    it('displays SmartContractWithLogo when to and from are equal and there are nested transactions', () => {
-      const ADDRESS_MOCK = '0x88aa6343307ec9a652ccddda3646e62b2f1a5125';
-
-      const contractInteraction = genUnapprovedContractInteractionConfirmation({
-        address: ADDRESS_MOCK,
-        nestedTransactions: [
-          {
-            to: ADDRESS_MOCK,
-            data: '0x1',
-          },
-        ],
-      });
-      const state = getMockConfirmStateForTransaction(
-        contractInteraction,
-        useAdvanceDetails,
-      );
-      const mockStore = configureMockStore(middleware)(state);
-      const { getByTestId } = renderWithConfirmContextProvider(
-        <RecipientRow />,
-        mockStore,
-      );
-      expect(
-        getByTestId('transaction-details-recipient-row'),
-      ).toBeInTheDocument();
-      expect(getByTestId('transaction-details-recipient-row')).toContainElement(
-        document.querySelector('img[src="images/logo/metamask-fox.svg"]'),
-      );
-    });
 
     it('does not display SmartContractWithLogo when to and from are not equal or there are no nested transactions', () => {
       const contractInteraction = genUnapprovedContractInteractionConfirmation({

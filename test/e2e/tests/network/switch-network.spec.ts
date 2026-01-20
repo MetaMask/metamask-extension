@@ -2,13 +2,10 @@ import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
-import {
-  searchAndSwitchToNetworkFromGlobalMenuFlow,
-  switchToNetworkFromSendFlow,
-} from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import {
   mockGasPricesArbitrum,
   mockSwapTokensArbitrum,
@@ -54,7 +51,7 @@ describe('Switch network - ', function (this: Suite) {
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Add Arbitrum network and perform the switch network functionality
-        await searchAndSwitchToNetworkFromGlobalMenuFlow(driver, 'Arbitrum');
+        await switchToNetworkFromSendFlow(driver, 'Arbitrum');
         await homePage.checkLocalNodeBalanceIsDisplayed();
 
         // Validate the switch network functionality back to Ethereum

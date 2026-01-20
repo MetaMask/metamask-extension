@@ -1,6 +1,10 @@
-import { DEFAULT_FIXTURE_ACCOUNT, DAPP_HOST_ADDRESS } from '../../constants';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import {
+  DAPP_HOST_ADDRESS,
+  DEFAULT_FIXTURE_ACCOUNT,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import Homepage from '../../page-objects/pages/home/homepage';
@@ -13,7 +17,7 @@ describe('Permissions Page', function () {
   it('should show connected site permissions when a single dapp is connected', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
       },
@@ -44,7 +48,7 @@ describe('Permissions Page', function () {
   it('should show all permissions listed when experimental settings toggle is off', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

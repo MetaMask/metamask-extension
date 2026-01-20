@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
@@ -6,21 +7,21 @@ import {
 
 describe('getBackendWebSocketServiceMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new Messenger<never, never>();
+    const controllerMessenger = getRootMessenger<never, never>();
     const messenger = getBackendWebSocketServiceMessenger(controllerMessenger);
 
-    expect(messenger).toBeInstanceOf(RestrictedMessenger);
+    expect(messenger).toBeInstanceOf(Messenger);
     expect(messenger).toBeDefined();
   });
 });
 
 describe('getBackendWebSocketServiceInitMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new Messenger<never, never>();
+    const controllerMessenger = getRootMessenger<never, never>();
     const messenger =
       getBackendWebSocketServiceInitMessenger(controllerMessenger);
 
-    expect(messenger).toBeInstanceOf(RestrictedMessenger);
+    expect(messenger).toBeInstanceOf(Messenger);
     expect(messenger).toBeDefined();
   });
 });

@@ -10,45 +10,39 @@ import {
 } from 'lodash';
 import { bufferToHex, keccak } from 'ethereumjs-util';
 import { v4 as uuidv4 } from 'uuid';
-import { NameControllerState, NameType } from '@metamask/name-controller';
-import { AccountsControllerState } from '@metamask/accounts-controller';
+import { NameType } from '@metamask/name-controller';
 import {
   getErrorMessage,
-  Hex,
+  type Hex,
   isErrorWithMessage,
   isErrorWithStack,
 } from '@metamask/utils';
-import {
+import type {
   NetworkClientId,
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerNetworkDidChangeEvent,
-  NetworkState,
 } from '@metamask/network-controller';
-import { Browser } from 'webextension-polyfill';
-import {
-  Nft,
-  NftControllerState,
-  TokensControllerState,
-} from '@metamask/assets-controllers';
+import type { Browser } from 'webextension-polyfill';
+import type { Nft } from '@metamask/assets-controllers';
 import {
   BaseController,
-  ControllerGetStateAction,
-  ControllerStateChangeEvent,
-  RestrictedMessenger,
+  type ControllerGetStateAction,
+  type ControllerStateChangeEvent,
+  type StateMetadata,
 } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import type { Json } from '@metamask/utils';
-import { MultichainNetworkControllerState } from '@metamask/multichain-network-controller';
-import { AddressBookControllerState } from '@metamask/address-book-controller';
-import { AuthenticationControllerState } from '@metamask/profile-sync-controller/auth';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import {
   METAMETRICS_ANONYMOUS_ID,
   METAMETRICS_BACKGROUND_PAGE_OBJECT,
   MetaMetricsEventCategory,
   MetaMetricsEventName,
-  MetaMetricsEventFragment,
   MetaMetricsUserTrait,
+} from '../../../shared/constants/metametrics';
+import type {
+  MetaMetricsEventFragment,
   MetaMetricsUserTraits,
   SegmentEventPayload,
   MetaMetricsContext,
@@ -67,14 +61,13 @@ import {
   AnonymousTransactionMetaMetricsEvent,
   TransactionMetaMetricsEvent,
 } from '../../../shared/constants/transaction';
-import { LedgerTransportTypes } from '../../../shared/constants/hardware-wallets';
 import Analytics from '../lib/segment/analytics';
 import {
   trace,
   endTrace,
-  TraceRequest,
-  EndTraceRequest,
-  TraceCallback,
+  type TraceRequest,
+  type EndTraceRequest,
+  type TraceCallback,
 } from '../../../shared/lib/trace';
 
 ///: BEGIN:ONLY_INCLUDE_IF(build-main)
@@ -83,8 +76,8 @@ import { ENVIRONMENT } from '../../../development/build/constants';
 
 import { KeyringType } from '../../../shared/constants/keyring';
 import type { captureException } from '../../../shared/lib/sentry';
+import type { FlattenedBackgroundStateProxy } from '../../../shared/types';
 import type {
-  PreferencesControllerState,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
@@ -165,37 +158,36 @@ type BufferedTrace = {
   parentTraceName?: string;
 };
 
-// TODO: Complete MetaMaskState by adding the full state definition and relocate it after the background is converted to TypeScript.
-export type MetaMaskState = {
-  ledgerTransportType: LedgerTransportTypes;
-  networkConfigurationsByChainId: NetworkState['networkConfigurationsByChainId'];
-  internalAccounts: AccountsControllerState['internalAccounts'];
-  allNfts: NftControllerState['allNfts'];
-  allTokens: TokensControllerState['allTokens'];
-  theme: string;
-  participateInMetaMetrics: boolean;
-  dataCollectionForMarketing: boolean;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  ShowNativeTokenAsMainBalance: boolean;
-  useNftDetection: PreferencesControllerState['useNftDetection'];
-  openSeaEnabled: PreferencesControllerState['openSeaEnabled'];
-  securityAlertsEnabled: PreferencesControllerState['securityAlertsEnabled'];
-  useTokenDetection: PreferencesControllerState['useTokenDetection'];
-  tokenSortConfig: PreferencesControllerState['preferences']['tokenSortConfig'];
-  names: NameControllerState['names'];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  security_providers: string[];
-  addressBook: AddressBookControllerState['addressBook'];
-  currentCurrency: string;
-  preferences: {
-    privacyMode: PreferencesControllerState['preferences']['privacyMode'];
-    tokenNetworkFilter: string[];
-  };
-  srpSessionData: AuthenticationControllerState['srpSessionData'];
-  keyrings: { type: string; accounts: string[] }[];
-  multichainNetworkConfigurationsByChainId: MultichainNetworkControllerState['multichainNetworkConfigurationsByChainId'];
+export type MetaMaskState = Pick<
+  FlattenedBackgroundStateProxy,
+  | 'ledgerTransportType'
+  | 'networkConfigurationsByChainId'
+  | 'internalAccounts'
+  | 'allNfts'
+  | 'allTokens'
+  | 'theme'
+  | 'participateInMetaMetrics'
+  | 'dataCollectionForMarketing'
+  | 'useNftDetection'
+  | 'openSeaEnabled'
+  | 'securityAlertsEnabled'
+  | 'useTokenDetection'
+  | 'names'
+  | 'addressBook'
+  | 'currentCurrency'
+  | 'srpSessionData'
+  | 'keyrings'
+  | 'multichainNetworkConfigurationsByChainId'
+  // TODO: Remove as this is no longer a top-level property of the flattened background state object.
+  // | 'security_providers'
+> & {
+  preferences: Pick<
+    FlattenedBackgroundStateProxy['preferences'],
+    | 'privacyMode'
+    | 'tokenNetworkFilter'
+    | 'showNativeTokenAsMainBalance'
+    | 'tokenSortConfig'
+  >;
 };
 
 /**
@@ -205,65 +197,65 @@ export type MetaMaskState = {
  * using the `persist` flag; and if they can be sent to Sentry or not, using
  * the `anonymous` flag.
  */
-const controllerMetadata = {
+const controllerMetadata: StateMetadata<MetaMetricsControllerState> = {
   metaMetricsId: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   participateInMetaMetrics: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   latestNonAnonymousEventTimestamp: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: true,
   },
   fragments: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   eventsBeforeMetricsOptIn: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   tracesBeforeMetricsOptIn: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   traits: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
   dataCollectionForMarketing: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: true,
   },
   marketingCampaignCookieId: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
     usedInUi: false,
   },
   segmentApiCalls: {
     includeInStateLogs: true,
     persist: true,
-    anonymous: false,
+    includeInDebugSnapshot: false,
     usedInUi: false,
   },
 };
@@ -386,12 +378,10 @@ export type AllowedEvents =
 /**
  * Messenger type for the {@link MetaMetricsController}.
  */
-export type MetaMetricsControllerMessenger = RestrictedMessenger<
+export type MetaMetricsControllerMessenger = Messenger<
   typeof controllerName,
   MetaMetricsControllerActions | AllowedActions,
-  MetaMetricsControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  MetaMetricsControllerEvents | AllowedEvents
 >;
 
 type CaptureException = typeof captureException | ((err: unknown) => void);
@@ -483,7 +473,7 @@ export default class MetaMetricsController extends BaseController<
       }
     };
     this.chainId = this.#getCurrentChainId();
-    const preferencesControllerState = this.messagingSystem.call(
+    const preferencesControllerState = this.messenger.call(
       'PreferencesController:getState',
     );
     this.locale = preferencesControllerState.currentLocale.replace('_', '-');
@@ -492,51 +482,51 @@ export default class MetaMetricsController extends BaseController<
     this.#extension = extension;
     this.#environment = environment;
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:trackEvent',
       this.trackEvent.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:getMetaMetricsId',
       this.getMetaMetricsId.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:createEventFragment',
       this.createEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:getEventFragmentById',
       this.getEventFragmentById.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:updateEventFragment',
       this.updateEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:deleteEventFragment',
       this.deleteEventFragment.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       'MetaMetricsController:finalizeEventFragment',
       this.finalizeEventFragment.bind(this),
     );
 
     const abandonedFragments = omitBy(state.fragments, 'persist');
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'PreferencesController:stateChange',
       ({ currentLocale }) => {
         this.locale = currentLocale?.replace('_', '-');
       },
     );
 
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:networkDidChange',
       ({ selectedNetworkClientId }) => {
         this.chainId = this.#getCurrentChainId(selectedNetworkClientId);
@@ -614,11 +604,10 @@ export default class MetaMetricsController extends BaseController<
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
       // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       networkClientId ||
-      this.messagingSystem.call('NetworkController:getState')
-        .selectedNetworkClientId;
+      this.messenger.call('NetworkController:getState').selectedNetworkClientId;
     const {
       configuration: { chainId },
-    } = this.messagingSystem.call(
+    } = this.messenger.call(
       'NetworkController:getNetworkClientById',
       selectedNetworkClientId,
     );
@@ -887,6 +876,7 @@ export default class MetaMetricsController extends BaseController<
 
   // It sets an uninstall URL ("Sorry to see you go!" page),
   // which is opened if a user uninstalls the extension.
+  // This method should only be called after the user has made a decision about MetaMetrics participation.
   updateExtensionUninstallUrl(
     participateInMetaMetrics: boolean,
     metaMetricsId: string,
@@ -922,7 +912,7 @@ export default class MetaMetricsController extends BaseController<
    * @returns The string of the new metametrics id, or null
    */
   async setParticipateInMetaMetrics(
-    participateInMetaMetrics: boolean,
+    participateInMetaMetrics: boolean | null,
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
@@ -948,7 +938,8 @@ export default class MetaMetricsController extends BaseController<
     ///: BEGIN:ONLY_INCLUDE_IF(build-main)
     if (
       this.#environment !== ENVIRONMENT.DEVELOPMENT &&
-      metaMetricsId !== null
+      metaMetricsId !== null &&
+      participateInMetaMetrics !== null
     ) {
       this.updateExtensionUninstallUrl(participateInMetaMetrics, metaMetricsId);
     }
@@ -1310,6 +1301,7 @@ export default class MetaMetricsController extends BaseController<
       page,
       referrer,
       environmentType = ENVIRONMENT_TYPE_BACKGROUND,
+      timestamp,
     } = rawPayload;
 
     let chainId;
@@ -1353,6 +1345,7 @@ export default class MetaMetricsController extends BaseController<
         environment_type: environmentType,
       },
       context: this.#buildContext(referrer, page),
+      timestamp,
     };
   }
 
@@ -1391,7 +1384,9 @@ export default class MetaMetricsController extends BaseController<
         ...Object.keys(metamaskState.networkConfigurationsByChainId).map(
           (hexChainId) => `eip155:${parseInt(hexChainId, 16)}`,
         ),
-        ...Object.keys(metamaskState.multichainNetworkConfigurationsByChainId), // the state here is already caip-2 formatted
+        ...Object.keys(
+          metamaskState?.multichainNetworkConfigurationsByChainId || {},
+        ), // the state here is already caip-2 formatted
       ],
       [MetaMetricsUserTrait.NftAutodetectionEnabled]:
         metamaskState.useNftDetection,
@@ -1415,7 +1410,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.TokenDetectionEnabled]:
         metamaskState.useTokenDetection,
       [MetaMetricsUserTrait.ShowNativeTokenAsMainBalance]:
-        metamaskState.ShowNativeTokenAsMainBalance,
+        metamaskState.preferences.showNativeTokenAsMainBalance,
       [MetaMetricsUserTrait.CurrentCurrency]: metamaskState.currentCurrency,
       [MetaMetricsUserTrait.SecurityProviders]:
         metamaskState.securityAlertsEnabled ? ['blockaid'] : [],
@@ -1426,7 +1421,7 @@ export default class MetaMetricsController extends BaseController<
       [MetaMetricsUserTrait.HasMarketingConsent]:
         metamaskState.dataCollectionForMarketing,
       [MetaMetricsUserTrait.TokenSortPreference]:
-        metamaskState.tokenSortConfig?.key || '',
+        metamaskState.preferences.tokenSortConfig?.key || '',
       [MetaMetricsUserTrait.PrivacyModeEnabled]:
         metamaskState.preferences.privacyMode,
       [MetaMetricsUserTrait.NetworkFilterPreference]: Object.keys(
@@ -1471,27 +1466,21 @@ export default class MetaMetricsController extends BaseController<
   #buildValidTraits(
     userTraits: Partial<MetaMetricsUserTraits>,
   ): MetaMetricsUserTraits {
-    return Object.entries(userTraits).reduce(
-      (validTraits: MetaMetricsUserTraits, [key, value]) => {
-        if (this.#isValidTraitDate(value)) {
-          return {
-            ...validTraits,
-            [key]: value.toISOString(),
-          };
-        } else if (this.#isValidTrait(value)) {
-          return {
-            ...validTraits,
-            [key]: value,
-          };
-        }
+    const validTraits: Record<string, string> = {};
 
+    for (const [key, value] of Object.entries(userTraits)) {
+      if (this.#isValidTraitDate(value)) {
+        validTraits[key] = value.toISOString();
+      } else if (this.#isValidTrait(value)) {
+        (validTraits as Record<string, typeof value>)[key] = value;
+      } else {
         console.warn(
           `MetaMetricsController: "${key}" value is not a valid trait type`,
         );
-        return validTraits;
-      },
-      {},
-    );
+      }
+    }
+
+    return validTraits;
   }
 
   /**

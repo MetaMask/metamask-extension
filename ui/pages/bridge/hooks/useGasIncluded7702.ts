@@ -1,14 +1,11 @@
 import {
   formatChainIdToHex,
-  isSolanaChainId,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
-import { Hex } from '@metamask/utils';
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { isRelaySupported } from '../../../store/actions';
-import { isAtomicBatchSupported } from '../../../store/controller-actions/transaction-controller';
-import { getUseSmartAccount } from '../../confirmations/selectors/preferences';
 
 type Chain = {
   chainId: string;
@@ -47,15 +44,12 @@ export function useGasIncluded7702({
     getIsSmartTransaction(state as never, fromChain?.chainId),
   );
 
-  const smartAccountOptedIn = useSelector(getUseSmartAccount);
-
   useEffect(() => {
     let isCancelled = false;
 
     const checkGasIncluded7702Support = async () => {
       if (
         (isSendBundleSupportedForChain && isSmartTransaction) ||
-        !smartAccountOptedIn ||
         !isSwap ||
         !selectedAccount?.address ||
         !fromChain?.chainId
@@ -66,32 +60,14 @@ export function useGasIncluded7702({
         return;
       }
 
-      if (isSolanaChainId(fromChain.chainId)) {
+      if (isNonEvmChainId(fromChain.chainId)) {
         setIsGasIncluded7702Supported(false);
         return;
       }
 
       try {
         const chainIdInHex = formatChainIdToHex(fromChain.chainId);
-        const atomicBatchResult = await isAtomicBatchSupported({
-          address: selectedAccount.address as Hex,
-          chainIds: [chainIdInHex],
-        });
-
-        if (isCancelled) {
-          return;
-        }
-
-        const atomicBatchChainSupport = atomicBatchResult?.find(
-          (result) =>
-            result.chainId.toLowerCase() === fromChain.chainId.toLowerCase(),
-        );
-
-        const relaySupportsChain = await isRelaySupported(chainIdInHex);
-
-        const is7702Supported = Boolean(
-          atomicBatchChainSupport?.isSupported && relaySupportsChain,
-        );
+        const is7702Supported = await isRelaySupported(chainIdInHex);
 
         if (!isCancelled) {
           setIsGasIncluded7702Supported(is7702Supported);
@@ -110,7 +86,6 @@ export function useGasIncluded7702({
       isCancelled = true;
     };
   }, [
-    smartAccountOptedIn,
     fromChain?.chainId,
     isSendBundleSupportedForChain,
     isSmartTransaction,

@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import {
   getDeFiPositionsControllerInitMessenger,
   getDeFiPositionsControllerMessenger,
@@ -6,24 +7,20 @@ import {
 
 describe('getDefiPositionsControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const defiPositionsControllerMessenger =
       getDeFiPositionsControllerMessenger(messenger);
 
-    expect(defiPositionsControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(defiPositionsControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getDeFiPositionsControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger<never, never>();
     const defiPositionsControllerInitMessenger =
       getDeFiPositionsControllerInitMessenger(messenger);
 
-    expect(defiPositionsControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(defiPositionsControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

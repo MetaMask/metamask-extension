@@ -1,4 +1,5 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getAccountTrackerControllerInitMessenger,
   getAccountTrackerControllerMessenger,
@@ -6,24 +7,20 @@ import {
 
 describe('getAccountTrackerControllerMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger();
     const accountTrackerControllerMessenger =
       getAccountTrackerControllerMessenger(messenger);
 
-    expect(accountTrackerControllerMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(accountTrackerControllerMessenger).toBeInstanceOf(Messenger);
   });
 });
 
 describe('getAccountTrackerControllerInitMessenger', () => {
   it('returns a restricted messenger', () => {
-    const messenger = new Messenger<never, never>();
+    const messenger = getRootMessenger();
     const accountTrackerControllerInitMessenger =
       getAccountTrackerControllerInitMessenger(messenger);
 
-    expect(accountTrackerControllerInitMessenger).toBeInstanceOf(
-      RestrictedMessenger,
-    );
+    expect(accountTrackerControllerInitMessenger).toBeInstanceOf(Messenger);
   });
 });

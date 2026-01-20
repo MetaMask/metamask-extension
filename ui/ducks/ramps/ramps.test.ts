@@ -25,6 +25,7 @@ jest.mock('../../../shared/modules/selectors/networks', () => ({
   getSelectedNetworkClientId: jest.fn(),
   selectDefaultNetworkClientIdsByChainId: jest.fn(),
   getNetworksMetadata: jest.fn(),
+  getProviderConfig: jest.fn(() => ({ chainId: '0x1' })),
 }));
 
 jest.mock('../../selectors', () => ({
@@ -292,7 +293,19 @@ describe('rampsSlice', () => {
   });
 
   describe('getIsBitcoinBuyable', () => {
-    it('should return false when Bitcoin is not in buyableChains', () => {
+    it('should return true when Bitcoin is in defaultBuyableChains', () => {
+      const state = store.getState();
+      expect(getIsBitcoinBuyable(state)).toBe(true);
+    });
+
+    it('should return false when Bitcoin is explicitly set to inactive', () => {
+      const mockBuyableChains = [
+        { chainId: MultichainNetworks.BITCOIN, active: false },
+      ];
+      store.dispatch({
+        type: 'ramps/setBuyableChains',
+        payload: mockBuyableChains,
+      });
       const state = store.getState();
       expect(getIsBitcoinBuyable(state)).toBe(false);
     });

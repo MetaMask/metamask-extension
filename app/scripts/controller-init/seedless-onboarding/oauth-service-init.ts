@@ -22,15 +22,23 @@ export const OAuthServiceInit: ControllerInitFunction<
     },
     webAuthenticator: webAuthenticatorFactory(),
 
-    // @ts-expect-error: TODO: Investigate type mismatch.
     bufferedTrace: metaMetricsController.bufferedTrace.bind(
       metaMetricsController,
     ),
 
-    // @ts-expect-error: TODO: Investigate type mismatch.
     bufferedEndTrace: metaMetricsController.bufferedEndTrace.bind(
       metaMetricsController,
     ),
+
+    trackEvent: metaMetricsController.trackEvent.bind(metaMetricsController),
+
+    addEventBeforeMetricsOptIn:
+      metaMetricsController.addEventBeforeMetricsOptIn.bind(
+        metaMetricsController,
+      ),
+
+    getParticipateInMetaMetrics: () =>
+      metaMetricsController.state.participateInMetaMetrics,
   });
 
   return {

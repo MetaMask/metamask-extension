@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isStrictHexString } from '@metamask/utils';
 
-import { useSafeChainsListValidationSelector } from '../../../../selectors';
+import { getUseSafeChainsListValidation } from '../../../../selectors';
 import fetchWithCache from '../../../../../shared/lib/fetch-with-cache';
 import { CHAIN_SPEC_URL } from '../../../../../shared/constants/network';
 import { DAY } from '../../../../../shared/constants/time';
@@ -17,7 +17,7 @@ export type SafeChain = {
 
 export const useSafeChains = () => {
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
 
   const [safeChains, setSafeChains] = useState<{
@@ -26,6 +26,7 @@ export const useSafeChains = () => {
   }>({ safeChains: [] });
 
   useEffect(() => {
+    let isMounted = true;
     if (useSafeChainsListValidation) {
       fetchWithCache({
         url: CHAIN_SPEC_URL,
@@ -34,12 +35,20 @@ export const useSafeChains = () => {
         cacheOptions: { cacheRefreshTime: DAY },
       })
         .then((response) => {
-          setSafeChains({ safeChains: response });
+          if (isMounted) {
+            setSafeChains({ safeChains: response });
+          }
         })
         .catch((error) => {
-          setSafeChains({ error });
+          if (isMounted) {
+            setSafeChains({ error });
+          }
         });
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [useSafeChainsListValidation]);
 
   return safeChains;

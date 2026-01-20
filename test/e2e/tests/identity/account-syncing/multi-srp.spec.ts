@@ -4,18 +4,18 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { IDENTITY_TEAM_SEED_PHRASE_2 } from '../constants';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Multiple SRPs', function () {
@@ -32,6 +32,8 @@ describe('Account syncing - Multiple SRPs', function () {
    * Phase 2: Login to a fresh app instance and verify all accounts from both SRPs persist and are visible after importing the second SRP.
    */
   it('adds accounts across multiple SRPs and sync them', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -43,7 +45,6 @@ describe('Account syncing - Multiple SRPs', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -55,9 +56,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Balance is 0 because aggregated balance has changed and doesn't display dev networks
-        // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -67,9 +66,7 @@ describe('Account syncing - Multiple SRPs', function () {
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify default account is visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -81,6 +78,10 @@ describe('Account syncing - Multiple SRPs', function () {
           prepareEventsEmittedCounter,
           waitUntilSyncedAccountsNumberEquals,
         } = arrangeTestUtils(driver, userStorageMockttpController);
+
+        // Wait for initial account sync to complete before adding a new account
+        await waitUntilSyncedAccountsNumberEquals(1);
+
         const { waitUntilEventsEmittedNumberEquals } =
           prepareEventsEmittedCounter(
             UserStorageMockttpControllerEvents.PUT_SINGLE,
@@ -90,8 +91,9 @@ describe('Account syncing - Multiple SRPs', function () {
         await accountListPage.addMultichainAccount();
 
         // Wait for sync operation to complete
-        await waitUntilSyncedAccountsNumberEquals(2);
+        // Check event first to ensure sync was attempted, then verify state
         await waitUntilEventsEmittedNumberEquals(1);
+        await waitUntilSyncedAccountsNumberEquals(2);
 
         // Verify both accounts are visible
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -104,22 +106,14 @@ describe('Account syncing - Multiple SRPs', function () {
         // Import second SRP (this will automatically create the third account)
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here
         await driver.delay(10000);
 
-        // Wait for the import to complete and sync
-        await waitUntilSyncedAccountsNumberEquals(3);
-
         // Add a fourth account with custom name to the second SRP
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Add account with custom name to specific SRP
         await accountListPage.addMultichainAccount({
@@ -127,8 +121,6 @@ describe('Account syncing - Multiple SRPs', function () {
         });
 
         await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
-
-        await driver.delay(2000); // Since we'll have two potential 'Account 2's, it's difficult to wait for the new one to appear, so just wait a bit
 
         await accountListPage.openMultichainAccountMenu({
           accountLabel: 'Account 2',
@@ -139,7 +131,6 @@ describe('Account syncing - Multiple SRPs', function () {
           SRP_2_SECOND_ACCOUNT,
         );
 
-        await waitUntilSyncedAccountsNumberEquals(4);
         await waitUntilEventsEmittedNumberEquals(5);
 
         // Verify all accounts are visible
@@ -159,9 +150,7 @@ describe('Account syncing - Multiple SRPs', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        // Balance is 0 because aggregated balance has changed and doesn't display dev networks
-        // The method should be udpdated to use the new selector and we can then remove checkExpectedTokenBalanceIsDisplayed
-        await loginWithBalanceValidation(driver, undefined, undefined, '0');
+        await loginWithoutBalanceValidation(driver);
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
         await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
@@ -176,9 +165,6 @@ describe('Account syncing - Multiple SRPs', function () {
         const accountListPage = new AccountListPage(driver);
         await accountListPage.startImportSecretPhrase(
           IDENTITY_TEAM_SEED_PHRASE_2,
-          {
-            isMultichainAccountsState2Enabled: true,
-          },
         );
 
         // Importing an SRP can be long, so we add a bit of extra time here

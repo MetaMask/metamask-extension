@@ -1,4 +1,8 @@
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { DelegationControllerSignDelegationAction } from '@metamask/delegation-controller';
 import {
   KeyringControllerSignEip7702AuthorizationAction,
@@ -9,6 +13,8 @@ import {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { NetworkClientId } from '@metamask/network-controller';
+import { Hex } from '@metamask/utils';
 import { getDeleGatorEnvironment } from '../../../../../shared/lib/delegation';
 import { GAS_FEE_TOKEN_MOCK } from '../../../../../test/data/confirmations/gas';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
@@ -73,6 +79,10 @@ describe('Delegation 7702 Publish Hook', () => {
     TransactionController['isAtomicBatchSupported']
   > = jest.fn();
 
+  const getNextNonceMock: jest.MockedFn<
+    (address: string, networkClientId: NetworkClientId) => Promise<Hex>
+  > = jest.fn();
+
   const signDelegationControllerMock: jest.MockedFn<
     DelegationControllerSignDelegationAction['handler']
   > = jest.fn();
@@ -84,20 +94,33 @@ describe('Delegation 7702 Publish Hook', () => {
     process.env.GASLESS_7702_ENFORCER_ADDRESS = ENFORCE_ADDRESS_MOCK;
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       | DelegationControllerSignDelegationAction
       | KeyringControllerSignEip7702AuthorizationAction
       | KeyringControllerSignTypedMessageAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
-    messenger = baseMessenger.getRestricted({
-      name: 'TransactionController',
-      allowedActions: [
+    messenger = new Messenger<
+      'TransactionController',
+      | DelegationControllerSignDelegationAction
+      | KeyringControllerSignEip7702AuthorizationAction
+      | KeyringControllerSignTypedMessageAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'TransactionController',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: [
         'KeyringController:signEip7702Authorization',
         'KeyringController:signTypedMessage',
         'DelegationController:signDelegation',
       ],
-      allowedEvents: [],
     });
 
     baseMessenger.registerActionHandler(
@@ -118,6 +141,7 @@ describe('Delegation 7702 Publish Hook', () => {
     hookClass = new Delegation7702PublishHook({
       isAtomicBatchSupported: isAtomicBatchSupportedMock,
       messenger,
+      getNextNonce: getNextNonceMock,
     });
 
     isAtomicBatchSupportedMock.mockResolvedValue([]);

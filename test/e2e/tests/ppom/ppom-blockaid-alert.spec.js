@@ -1,7 +1,9 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-
-const { unlockWallet, withFixtures } = require('../../helpers');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const { withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -165,7 +167,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -178,7 +180,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         for (const config of testBenignConfigs) {
@@ -227,7 +229,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should show security alerts for malicious requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -240,7 +242,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         for (const config of testMaliciousConfigs) {
@@ -285,7 +287,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should show "Request may not be safe" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -298,7 +300,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button to send JSON-RPC request

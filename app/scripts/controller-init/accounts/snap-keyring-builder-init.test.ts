@@ -1,4 +1,3 @@
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -7,6 +6,7 @@ import {
   SnapKeyringBuilderMessenger,
   SnapKeyringBuilderInitMessenger,
 } from '../messengers/accounts';
+import { getRootMessenger } from '../../lib/messenger';
 import { snapKeyringBuilder } from '../../lib/snap-keyring';
 import { SnapKeyringBuilderInit } from './snap-keyring-builder-init';
 
@@ -18,7 +18,7 @@ function buildInitRequestMock(): jest.Mocked<
     SnapKeyringBuilderInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),

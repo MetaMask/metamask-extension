@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import {
   SortOrder,
-  BRIDGE_DEFAULT_SLIPPAGE,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   calcLatestSrcBalance,
@@ -10,10 +9,13 @@ import {
   formatChainIdToHex,
   type GenericQuoteRequest,
   type QuoteResponse,
+  isBitcoinChainId,
+  RequestStatus,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { fetchTxAlerts } from '../../../shared/modules/bridge-utils/security-alerts-api.util';
 import { endTrace, TraceName } from '../../../shared/lib/trace';
+import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
 import { getTokenExchangeRate, toBridgeToken } from './utils';
 import type { BridgeState, ChainIdPayload, TokenPayload } from './types';
 
@@ -23,29 +25,18 @@ const initialState: BridgeState = {
   toToken: null,
   fromTokenInputValue: null,
   fromTokenExchangeRate: null,
-  toTokenExchangeRate: null,
-  toTokenUsdExchangeRate: null,
   fromTokenBalance: null,
   fromNativeBalance: null,
   sortOrder: SortOrder.COST_ASC,
   selectedQuote: null,
   wasTxDeclined: false,
-  slippage: BRIDGE_DEFAULT_SLIPPAGE,
+  slippage: SlippageValue.BridgeDefault,
   txAlert: null,
+  txAlertStatus: RequestStatus.FETCHED,
 };
 
 export const setSrcTokenExchangeRates = createAsyncThunk(
   'bridge/setSrcTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenExchangeRates',
-  getTokenExchangeRate,
-);
-
-export const setDestTokenUsdExchangeRates = createAsyncThunk(
-  'bridge/setDestTokenUsdExchangeRates',
   getTokenExchangeRate,
 );
 
@@ -105,14 +96,27 @@ const bridgeSlice = createSlice({
     setFromToken: (state, { payload }: TokenPayload) => {
       state.fromToken = toBridgeToken(payload);
       state.fromTokenBalance = null;
+      state.fromTokenInputValue = initialState.fromTokenInputValue;
+      state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
+      state.txAlertStatus = initialState.txAlertStatus;
+      state.txAlert = initialState.txAlert;
       // Unset toToken if it's the same as the fromToken
       if (
         state.fromToken?.assetId &&
         state.toToken?.assetId &&
-        // TODO: determine if this is necessary.
         state.fromToken.assetId?.toLowerCase() ===
           state.toToken.assetId?.toLowerCase()
       ) {
+        state.toToken = null;
+      }
+      // if new fromToken is BTC, and toToken is BTC, unset toChain and toToken
+      if (
+        state.fromToken?.chainId &&
+        isBitcoinChainId(state.fromToken.chainId) &&
+        state.toChainId &&
+        isBitcoinChainId(state.toChainId)
+      ) {
+        state.toChainId = null;
         state.toToken = null;
       }
     },
@@ -168,32 +172,28 @@ const bridgeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setDestTokenExchangeRates.pending, (state) => {
-      state.toTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.pending, (state) => {
-      state.toTokenUsdExchangeRate = null;
-    });
     builder.addCase(setSrcTokenExchangeRates.pending, (state) => {
       state.fromTokenExchangeRate = null;
-    });
-    builder.addCase(setDestTokenExchangeRates.fulfilled, (state, action) => {
-      state.toTokenExchangeRate = action.payload ?? null;
-    });
-    builder.addCase(setDestTokenUsdExchangeRates.fulfilled, (state, action) => {
-      state.toTokenUsdExchangeRate = action.payload ?? null;
     });
     builder.addCase(setSrcTokenExchangeRates.fulfilled, (state, action) => {
       state.fromTokenExchangeRate = action.payload ?? null;
     });
     builder.addCase(setTxAlerts.pending, (state) => {
-      state.txAlert = null;
+      // Update status but persist the previous alert
+      // The txAlert is only reset the src token changes or if a new response is fetched
+      state.txAlertStatus = RequestStatus.LOADING;
     });
     builder.addCase(setTxAlerts.fulfilled, (state, action) => {
       state.txAlert = action.payload;
+      state.txAlertStatus = RequestStatus.FETCHED;
     });
-    builder.addCase(setTxAlerts.rejected, (state) => {
-      state.txAlert = null;
+    builder.addCase(setTxAlerts.rejected, (state, action) => {
+      // Ignore abort errors because they are expected when streaming quotes
+      if (action.error.name === 'AbortError') {
+        return;
+      }
+      state.txAlert = initialState.txAlert;
+      state.txAlertStatus = RequestStatus.ERROR;
     });
     builder.addCase(setEVMSrcTokenBalance.fulfilled, (state, action) => {
       const isTokenInChain = !isCrossChain(

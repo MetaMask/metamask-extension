@@ -3,19 +3,19 @@ import {
   CaveatConstraint,
   PermissionConstraint,
 } from '@metamask/permission-controller';
+import {
+  DAPP_ONE_URL,
+  DAPP_TWO_URL,
+  DAPP_URL,
+  DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
+  WINDOW_TITLES,
+} from '../../constants';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-  DAPP_TWO_URL,
-} from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures, veryLargeDelayMs } from '../../helpers';
 import { Driver, PAGES } from '../../webdriver/driver';
 import { PermissionNames } from '../../../../app/scripts/controllers/permissions';
 import { CaveatTypes } from '../../../../shared/constants/permissions';
@@ -24,11 +24,11 @@ import { Anvil } from '../../seeder/anvil';
 import HomePage from '../../page-objects/pages/home/homepage';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/token-transfer-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 
 // Window handle adjustments will need to be made for Non-MV3 Firefox
@@ -193,7 +193,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .build(),
@@ -209,7 +209,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -257,7 +257,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338; // 0x53a
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 3 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withPreferencesController({
@@ -289,7 +289,6 @@ describe('Request-queue UI changes', function () {
           },
         ],
 
-        dappOptions: { numberOfDapps: 3 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -376,7 +375,7 @@ describe('Request-queue UI changes', function () {
           await networkManager.selectTab('Custom');
 
           await networkManager.selectNetworkByNameWithWait('Localhost 7777');
-          await validateBalanceAndActivity(driver, '24.9998');
+          await validateBalanceAndActivity(driver, '25');
         }
 
         // Validate second network, where transaction was rejected
@@ -391,7 +390,7 @@ describe('Request-queue UI changes', function () {
         await networkManager.selectTab('Custom');
         await networkManager.selectNetworkByNameWithWait('Localhost 8545');
 
-        await validateBalanceAndActivity(driver, '24.9998');
+        await validateBalanceAndActivity(driver, '25');
       },
     );
   });
@@ -401,7 +400,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPreferencesController({
@@ -421,7 +420,7 @@ describe('Request-queue UI changes', function () {
             },
           },
         ],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -470,7 +469,7 @@ describe('Request-queue UI changes', function () {
   it('should signal from UI to dapp the network change', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
         driverOptions: { constrainWindowSize: true },
@@ -509,7 +508,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withEnabledNetworks({
@@ -533,7 +532,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({
@@ -588,7 +587,7 @@ describe('Request-queue UI changes', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         // Presently confirmations take up to 10 seconds to display on a dead network
         driverOptions: { timeOut: 30000 },
         fixtures: new FixtureBuilder()
@@ -597,8 +596,6 @@ describe('Request-queue UI changes', function () {
           .withEnabledNetworks({
             eip155: {
               '0x1': true,
-              '0x2105': true,
-              '0xe708': true,
             },
           })
           .build(),
@@ -617,7 +614,7 @@ describe('Request-queue UI changes', function () {
         // This test intentionally quits the local node server while the extension is using it, causing
         // PollingBlockTracker errors and others. These are expected.
         ignoredConsoleErrors: ['ignore-all'],
-        dappOptions: { numberOfDapps: 2 },
+
         title: this.test?.fullTitle(),
       },
       async ({ driver, localNodes }) => {
@@ -625,7 +622,7 @@ describe('Request-queue UI changes', function () {
           driver,
           undefined,
           undefined,
-          '85,000.00',
+          DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC,
         );
 
         // Open the first dapp

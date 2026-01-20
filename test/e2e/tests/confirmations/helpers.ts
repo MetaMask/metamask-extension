@@ -1,12 +1,13 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
+import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const DECODING_E2E_API_URL =
   'https://signature-insights.api.cx.metamask.io/v1';
@@ -37,7 +38,7 @@ export function withTransactionEnvelopeTypeFixtures(
   };
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -69,7 +70,7 @@ export function withSignatureFixtures(
 ) {
   return withFixtures(
     {
-      dapp: true,
+      dappOptions: { numberOfTestDapps: 1 },
       driverOptions: { timeOut: 20000 },
       fixtures: new FixtureBuilder()
         .withPermissionControllerConnectedToTestDapp()
@@ -258,6 +259,7 @@ export async function mockEip7702FeatureFlag(mockServer: Mockttp) {
                 supportedChains: ['0xaa36a7', '0x539', '0x1'],
               },
             },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -603,12 +605,22 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
+        };
+      }),
+    await mockServer
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          },
         };
       }),
   ];
@@ -636,11 +648,7 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),
@@ -669,6 +677,7 @@ export async function mockDefiPositionsFailure(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
+            LEGACY_SEND_FEATURE_FLAG,
           ],
         };
       }),

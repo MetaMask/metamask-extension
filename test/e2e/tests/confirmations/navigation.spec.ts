@@ -1,14 +1,22 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
-import { unlockWallet, WINDOW_TITLES } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import SignTypedData from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import SignTypedData from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import {
+  DAPP_ONE_URL,
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { withTransactionEnvelopeTypeFixtures } from './helpers';
 
 describe('Confirmation Navigation', function (this: Suite) {
@@ -18,7 +26,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
@@ -52,7 +60,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       TransactionEnvelopeType.legacy,
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new TransactionConfirmation(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
@@ -90,7 +98,7 @@ describe('Confirmation Navigation', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         const confirmation = new SignTypedData(driver);
         const testDapp = new TestDapp(driver);
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await testDapp.openTestDappPage();
         await queueSignatures(driver);
 
@@ -105,14 +113,32 @@ describe('Confirmation Navigation', function (this: Suite) {
   });
 
   it('navigates between transactions, signatures, and snap dialogs', async function () {
-    await withTransactionEnvelopeTypeFixtures(
-      this.test?.fullTitle(),
-      TransactionEnvelopeType.feeMarket,
+    await withFixtures(
+      {
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
+        driverOptions: { timeOut: 20000 },
+        fixtures: new FixtureBuilder()
+          .withPermissionControllerConnectedToTestDapp()
+          .withMetaMetricsController({
+            metaMetricsId: MOCK_META_METRICS_ID,
+            participateInMetaMetrics: true,
+          })
+          .build(),
+        testSpecificMock: mockDialogSnap,
+        title: this.test?.fullTitle(),
+      },
       async ({ driver }: { driver: Driver }) => {
-        await loginWithoutBalanceValidation(driver);
+        await loginWithBalanceValidation(driver);
 
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'connectDialogsButton',
+          { url: DAPP_ONE_URL },
+        );
         await testSnaps.scrollAndClickButton('confirmationButton');
 
         const testDapp = new TestDapp(driver);

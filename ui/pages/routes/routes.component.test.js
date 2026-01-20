@@ -33,6 +33,20 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+const mockIsMultichainAccountsFeatureEnabled = jest.fn();
+jest.mock(
+  '../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () =>
+      mockIsMultichainAccountsFeatureEnabled(),
+  }),
+);
+
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -96,6 +110,13 @@ jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
   useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
+jest.mock('../../contexts/shield/shield-subscription', () => ({
+  ...jest.requireActual('../../contexts/shield/shield-subscription'),
+  useShieldSubscriptionContext: () => ({
+    evaluateCohortEligibility: jest.fn(),
+  }),
+}));
+
 const mockIntersectionObserver = jest.fn();
 mockIntersectionObserver.mockReturnValue({
   observe: () => null,
@@ -117,6 +138,8 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
+
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -170,7 +193,12 @@ describe('Routes Component', () => {
             },
           },
           tokenBalances: {
-            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+              '0x1': {
+                '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+                '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+              },
+            },
           },
           permissionHistory: {
             'https://metamask.github.io': {
@@ -190,8 +218,8 @@ describe('Routes Component', () => {
           currentLocale: 'en',
         },
       };
-      const { getByTestId } = render(undefined, state);
-      expect(getByTestId('account-menu-icon')).not.toBeDisabled();
+      const { container } = render(undefined, state);
+      expect(container.querySelector('.app')).toBeInTheDocument();
     });
   });
 });
@@ -219,6 +247,9 @@ describe('toast display', () => {
 
   const getToastDisplayTestState = (date) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       allTokens: {},
@@ -238,9 +269,14 @@ describe('toast display', () => {
           [CHAIN_IDS.LINEA_MAINNET]: true,
         },
       },
-      tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
-      },
+      tokenBalances: {},
+      marketData: {},
+      balances: {},
+      currencyRates: {},
+      conversionRates: {},
+      accountsAssets: {},
+      assetsMetadata: {},
+      allIgnoredAssets: {},
       swapsState: { swapsFeatureIsLive: true },
       newPrivacyPolicyToastShownDate: date,
     },
@@ -248,6 +284,9 @@ describe('toast display', () => {
 
   const getToastConnectAccountDisplayTestState = (selectedAccountId) => ({
     ...mockState,
+    rewards: {
+      onboardingModalOpen: false,
+    },
     metamask: {
       ...mockState.metamask,
       announcements: {},
@@ -280,7 +319,12 @@ describe('toast display', () => {
       },
       termsOfUseLastAgreed: new Date(0).getTime(),
       tokenBalances: {
-        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': '0x176270e2b862e4ed3',
+        '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': {
+          '0x1': {
+            '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48': '0xbdbd',
+            '0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e': '0x501b4176a64d6',
+          },
+        },
       },
       accountTree: {
         wallets: {
@@ -435,7 +479,10 @@ describe('toast display', () => {
     expect(toastContainer).toBeInTheDocument();
   });
 
+  // Probably not applicable anymore since BIP-44 account groups?
   it('does render toastContainer if the unconnected selected account is Solana', () => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
+
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockSolanaAccount.id),

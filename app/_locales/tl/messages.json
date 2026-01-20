@@ -41,7 +41,7 @@
     "message": "Di-wastong QR code. Paki-scan ang sync QR code ng wallet na hardware."
   },
   "QRHardwareWalletImporterTitle": {
-    "message": "Mag-scan ng QR Code"
+    "message": "Mag-scan ng QR code"
   },
   "QRHardwareWalletSteps1Description": {
     "message": "Maaari kang pumili mula sa isang listahan ng mga opisyal na ka-partner sa pagsuporta sa QR-code sa ibaba."
@@ -96,7 +96,7 @@
     "description": "$1 is the account email"
   },
   "accountAlreadyExistsTitle": {
-    "message": "Mayroon ng wallet na umiiral"
+    "message": "Mayroon nang ganitong wallet"
   },
   "accountDetails": {
     "message": "Mga detalye ng account"
@@ -105,18 +105,24 @@
     "message": "Mag-back up",
     "description": "Text used to describe action for SRP backup. Used on multichain account details."
   },
+  "accountIdenticon": {
+    "message": "Icon ng account"
+  },
+  "accountIdenticonDescription": {
+    "message": "Pumili mula sa tatlong iba’t ibang estilo ng kakaibang mga icon na makakatulong para madaling makilala ang mga account sa isang tingin."
+  },
   "accountIsntConnectedToastText": {
     "message": "Hindi nakakoneka ang $1 sa $2"
   },
   "accountName": {
-    "message": "Pangalan ng Account"
+    "message": "Pangalan ng account"
   },
   "accountNameAlreadyInUse": {
     "message": "Ginagamit na ang pangalang ito.",
     "description": "Error help text used under the input field for renaming multichain account when user tries to use existing name."
   },
   "accountNameDuplicate": {
-    "message": "May gumagamit na ng pangalan ng account na ito",
+    "message": "May ganito nang pangalan ng account",
     "description": "This is an error message shown when the user enters a new account name that matches an existing account name"
   },
   "accountNameReserved": {
@@ -146,7 +152,7 @@
     "message": "account"
   },
   "accountTypeNotSupported": {
-    "message": "Hindi suportado ang uri ng account"
+    "message": "Hindi sinusuportahan ang uri ng account"
   },
   "accounts": {
     "message": "Mga Account"
@@ -161,16 +167,19 @@
     "message": "mga account"
   },
   "active": {
-    "message": "Aktibo"
+    "message": "Active"
   },
   "activity": {
     "message": "Aktibidad"
+  },
+  "activityEmptyDescription": {
+    "message": "Wala pang bago sa ngayon. I-swap na ang iyong unang token ngayon."
   },
   "activityLog": {
     "message": "Log ng aktibidad"
   },
   "add": {
-    "message": "Magdagdag"
+    "message": "Idagdag"
   },
   "addACustomNetwork": {
     "message": "Magdagdag ng custom na network"
@@ -249,6 +258,18 @@
   "addFriendsAndAddresses": {
     "message": "Magdagdag ng mga kaibigan at address na pinagkakatiwalaan mo"
   },
+  "addFunds": {
+    "message": "Magdagdag ng pondo"
+  },
+  "addFundsModalBuyCrypto": {
+    "message": "Bumili ng crypto"
+  },
+  "addFundsModalReceiveTokens": {
+    "message": "Tumanggap ng mga token"
+  },
+  "addFundsModalSwapTokens": {
+    "message": "Ipagpalit ang mga token"
+  },
   "addHardwareWalletLabel": {
     "message": "Hardware wallet"
   },
@@ -268,6 +289,9 @@
     "message": "Magdagdag ng $1",
     "description": "$1 represents network name"
   },
+  "addNetworkDescription": {
+    "message": "Nagmumungkahi ng dagdag na detalye ng network ang isang site."
+  },
   "addNewAccount": {
     "message": "Magdagdag ng bagong account sa Ethereum"
   },
@@ -276,6 +300,9 @@
   },
   "addNewSolanaAccountLabel": {
     "message": "Solana account"
+  },
+  "addNewTronAccountLabel": {
+    "message": "Account sa Tron"
   },
   "addNft": {
     "message": "Magdagdag ng NFT"
@@ -329,7 +356,7 @@
     "message": "Address"
   },
   "addressCopied": {
-    "message": "Nakopya ang address"
+    "message": "Kinopya ang address"
   },
   "addressLabel": {
     "message": "address",
@@ -346,6 +373,18 @@
     "message": "Bersyon ng Punycode: $1",
     "description": "$1 replaced by punycode version of the URL in confirmation request"
   },
+  "addressQrCodeModalDescription": {
+    "message": "Gamitin ang address na ito para makatanggap ng mga token at collectible sa $1",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalHeading": {
+    "message": "Address ng $1",
+    "description": "$1 is the network name"
+  },
+  "addressQrCodeModalTitle": {
+    "message": "$1 / $2",
+    "description": "$1 is account name, $2 is network name"
+  },
   "addresses": {
     "message": "Mga Address",
     "description": "Multichain account menu item for linking to addresses page"
@@ -355,7 +394,7 @@
     "description": "Label for address count (multiple addresses). Used on multichain account details page."
   },
   "advanced": {
-    "message": "Makabago"
+    "message": "Advanced"
   },
   "advancedBaseGasFeeToolTip": {
     "message": "Kapag nakasama ang iyong transaksyon sa block, ire-refund ang anumang difference sa pagitan ng iyong pinakamataas na batayang bayad at ang aktwal na batayang bayad. Ang kabuuang halaga ay kinakalkula bilang pinakamataas na batayang bayad (sa GWEI) * ng limitasyon ng gas."
@@ -370,7 +409,7 @@
     "message": "Nonce"
   },
   "advancedDetailsNonceTooltip": {
-    "message": "Ito ang numero ng transaksyon ng account. Ang nonce para sa unang transaksyon ay 0 at nadaragdagan ito sa sunod-sunod na pagkakaayos."
+    "message": "Ito ang numero ng transaksyon ng isang account. Ang nonce para sa unang transaksyon ay 0 at tumataas ito sa sunod-sunod na pagkakaayos."
   },
   "advancedGasFeeDefaultOptIn": {
     "message": "I-save ang mga value na ito bilang default ko para sa $1 network.",
@@ -381,6 +420,12 @@
   },
   "advancedGasPriceTitle": {
     "message": "Presyo ng gas"
+  },
+  "advancedPermissionSmallCase": {
+    "message": "advanced na pahintulot"
+  },
+  "advancedPermissionsSmallCase": {
+    "message": "mga advanced na pahintulot"
   },
   "advancedPriorityFeeToolTip": {
     "message": "Ang bayad sa priyoridad (kilala rin bilang “tip ng minero”) ay direktang napupunta sa mga minero at ginagawang insentibo ang mga ito upang unahin ang iyong mga transaksyon."
@@ -398,10 +443,13 @@
     "message": "Alerto"
   },
   "alertAccountTypeUpgradeMessage": {
-    "message": "Ina-update mo ang account mo para maging smart account. Hindi magbabago ang address ng account mo pero magiging mas mabilis ang mga transaksyon at mas mababa ang bayarin sa network. $1."
+    "message": "Ina-update mo ang account mo para maging smart account. Hindi magbabago ang address ng account mo pero magiging mas mabilis ang mga transaksyon at mas mababa ang bayarin sa network. $1"
   },
   "alertAccountTypeUpgradeTitle": {
     "message": "Uri ng account"
+  },
+  "alertActionBurnAddress": {
+    "message": "Ipapadala ang mga Asset sa Burn Address"
   },
   "alertActionBuyWithNativeCurrency": {
     "message": "Bumili ng $1"
@@ -416,13 +464,22 @@
     "message": "I-update ang mga opsyon sa gas"
   },
   "alertContentMultipleApprovals": {
-    "message": "Nagbibigay ka sa ibang tao ng pahintulot na i-withdraw ang mga token mo, kahit na hindi ito kinakailangan para sa transaksyong ito."
+    "message": "Binibigyan mo ang ibang tao ng pahintulot na magwithdraw ng iyong mga token, kahit na hindi ito kinakailangan para sa transaksyong ito."
   },
   "alertDisableTooltip": {
     "message": "Puwede itong baguhin sa \"Mga Setting > Mga Alerto\""
   },
   "alertMessageAddressMismatchWarning": {
     "message": "Minsan ginagaya ng mga umaatake ang mga site sa pamamagitan ng paggawa ng maliliit na pagbabago sa address ng site. Tiyaking nakikipag-ugnayan ka sa nilalayong site bago ka magpatuloy."
+  },
+  "alertMessageAddressTrustSignal": {
+    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magpatuloy lamang kung pinagkakatiwalaan mo ang pinagmulan nito."
+  },
+  "alertMessageAddressTrustSignalMalicious": {
+    "message": "Kapag kinumpirma mo ang kahilingang ito, malamang na makuha ang mga asset mo ng isang scammer."
+  },
+  "alertMessageBurnAddress": {
+    "message": "Ipapadala mo ang mga asset mo sa burn address. Kapag nagpatuloy ka, mawawala sa iyo ang mga asset mo."
   },
   "alertMessageChangeInSimulationResults": {
     "message": "Na-update na ang mga tinatayang pagbabago para sa transaksyong ito. Suriin ang mga ito nang mabuti bago magpatuloy."
@@ -452,13 +509,19 @@
     "message": "Natukoy ito bilang kahina-hinala. Inirerekomenda namin na huwag makipag-ugnayan sa site na ito."
   },
   "alertMessageSignInDomainMismatch": {
-    "message": "Ang site na humihiling ay hindi ang site kung saan ka nagsa-signin. Ito ay maaring isang pagtatangka para nakawin ang iyong mga kredensiyal sa pag-login."
+    "message": "Ang site na humihiling ay hindi ang site kung saan ka nagsa-sign in. Maaaring isa itong pagtatangkang nakawin ang iyong mga kredensyal sa pag-login."
   },
   "alertMessageSignInWrongAccount": {
     "message": "Hinihingi sa iyo ng site na ito na mag-sign in gamit ang maling account."
   },
+  "alertMessageTokenTrustSignalMalicious": {
+    "message": "Itinuturing na kahina-hinala ang token na ito. Maaaring magdulot ng pagkawala ng pondo ang interaksyon sa token na ito."
+  },
+  "alertMessageTokenTrustSignalWarning": {
+    "message": "Nagpapakita ng matibay na senyales ng panganib ang token na ito. Maaaring magdulot ng pagkawala ng pondo ang pagpapatuloy."
+  },
   "alertModalAcknowledge": {
-    "message": "Kinikilala ko ang panganib at nais ko pa rin magpatuloy"
+    "message": "Kinikilala ko ang panganib at gusto ko pa ring magpatuloy"
   },
   "alertModalDetails": {
     "message": "Mga Detalye ng Alerto"
@@ -467,7 +530,7 @@
     "message": "Suriin ang lahat ng alerto"
   },
   "alertReasonChangeInSimulationResults": {
-    "message": "Nabago ang mga resulta"
+    "message": "Nagbago ang mga resulta"
   },
   "alertReasonFirstTimeInteraction": {
     "message": "Unang interaksyon"
@@ -482,7 +545,7 @@
     "message": "Mababang gas limit"
   },
   "alertReasonInsufficientBalance": {
-    "message": "Hindi sapat ang pondo"
+    "message": "Hindi sapat ang mga pondo"
   },
   "alertReasonMultipleApprovals": {
     "message": "Hindi kinakailangang pahintulot"
@@ -493,14 +556,23 @@
   "alertReasonOriginTrustSignalMalicious": {
     "message": "Mapaminsalang site"
   },
+  "alertReasonOriginTrustSignalVerified": {
+    "message": "Beripikadong site"
+  },
   "alertReasonOriginTrustSignalWarning": {
     "message": "Kahina-hinalang site"
   },
   "alertReasonPendingTransactions": {
-    "message": "Nakabinbin na transaksyon"
+    "message": "Nakabinbing transaksyon"
   },
   "alertReasonSignIn": {
-    "message": "Kahina-hinalang hiling na pag-signin"
+    "message": "Kahina-hinalang kahilingan sa pag-sign in"
+  },
+  "alertReasonTokenTrustSignalMalicious": {
+    "message": "Mapaminsalang token"
+  },
+  "alertReasonTokenTrustSignalWarning": {
+    "message": "Kahina-hinalang token"
   },
   "alertReasonWrongAccount": {
     "message": "Maling account"
@@ -523,11 +595,12 @@
   "allPopularNetworks": {
     "message": "Lahat ng sikat na network"
   },
-  "allTimeHigh": {
-    "message": "All time high"
+  "allowAddRpc": {
+    "message": "Idagdag ang RPC"
   },
-  "allTimeLow": {
-    "message": "All time low"
+  "allowAddRpcDescription": {
+    "message": "Payagan ang site na magdagdag ng URL ng RPC sa halagang $1.\n\nItakda ang gusto mong RPC anumang oras sa pamamagitan ng pagpunta sa Mga Network sa Mga Setting",
+    "description": "$1 is the chain name"
   },
   "allowNotifications": {
     "message": "Payagan ang mga notipikasyon"
@@ -552,6 +625,9 @@
   "andForTwoItems": {
     "message": "$1 at $2",
     "description": "$1 is the first item, $2 is the second item. Used in Snap Install Warning modal."
+  },
+  "annual": {
+    "message": "Taunan"
   },
   "appDescription": {
     "message": "Ethereum Wallet sa iyong Browser",
@@ -616,7 +692,7 @@
     "message": "$1 NFT"
   },
   "assets": {
-    "message": "Mga asset"
+    "message": "Mga Asset"
   },
   "assetsDescription": {
     "message": "I-autodetect ang mga token sa wallet mo, ipakita ang mga NFT, at kumuha ng naka-batch na mga update sa balanse ng account"
@@ -630,14 +706,11 @@
   "attributions": {
     "message": "Mga Attribution"
   },
-  "auroraRpcDeprecationMessage": {
-    "message": "Ang Infura RPC URL ay hindi na sinusuportahan ang Aurora."
-  },
   "authorizedPermissions": {
     "message": "Inawtorisahan mo ang mga sumusunod na pahintulot"
   },
   "autoDetectTokens": {
-    "message": "Awtomatikong tuklasin ang mga token"
+    "message": "I-autodetect ang mga token"
   },
   "autoDetectTokensDescription": {
     "message": "Gumagamit kami ng mga third-party na API para tumuklas at magpakita ng mga bagong token na ipinadala sa iyong wallet. I-off kung ayaw mong awtomatikong kunin ng app ang datos mula sa mga serbisyong iyon. $1",
@@ -707,7 +780,7 @@
     "message": "I-back up ang iyong Lihim na Parirala sa Pagbawi para mapanatiling secure ang iyong wallet at mga pondo."
   },
   "backupKeyringSnapReminder": {
-    "message": "Siguraduhin na maaari mong maakses ang anumang account na nilikha ng Snap na ito sa sarili mo bago ito alisin"
+    "message": "Tiyakin na magagawa mong i-access ang anumang account na ginawa ng Snap na ito nang mag-isa bago ito alisin."
   },
   "backupNow": {
     "message": "I-back up na"
@@ -722,7 +795,7 @@
     "message": "Batayang bayad"
   },
   "basic": {
-    "message": "Panimula"
+    "message": "Basic"
   },
   "basicConfigurationDescription": {
     "message": "Nag-aalok ang MetaMask ng mga batayang tampok tulad ng mga detalye ng token at mga setting ng gas sa pamamagitan ng serbisyo sa internet. Kapag gumamit ka ng serbisyo sa internet, ibabahagi ang iyong IP address, sa kasong ito sa MetaMask. Tulad ito ng pagbisita mo sa anumang website. Ang MetaMask ay pansamantalang ginagamit ang datos na ito at hindi ibebenta ang iyong datos. Maaari kang gumamit ng VPN o i-off ang mga serbisyon ito, ngunit maaari itong makaapekto sa iyong karanasan sa MetaMask. Upang matuto pa basahin ang aming $1.",
@@ -756,6 +829,12 @@
   "basicConfigurationModalHeadingOn": {
     "message": "I-on ang batayang kapakinabangan"
   },
+  "bestQuote": {
+    "message": "Pinakamagandang quote"
+  },
+  "bestQuoteTooltip": {
+    "message": "Pinakamagandang quote na nahanap namin mula sa mga provider, kasama ang mga bayarin ng provider at bayad sa MetaMask na 0.25%. Ang pinakamababang matatanggap mo kapag nagbago ang presyo ay $1."
+  },
   "beta": {
     "message": "Beta"
   },
@@ -774,7 +853,7 @@
     "description": "This is used with viewOnEtherscan and viewInExplorer e.g View Asset in Explorer"
   },
   "blockExplorerSwapAction": {
-    "message": "I-swap",
+    "message": "Swap",
     "description": "This is used with viewOnEtherscan e.g View Swap on Etherscan"
   },
   "blockExplorerUrl": {
@@ -809,7 +888,7 @@
     "message": "Kapag kinumpirma mo ang kahilingang ito, pinapayagan mo ang scammer na i-withdraw at gastusin ang mga asset mo. Hindi mo na mababawi ang mga iyon."
   },
   "blockaidDescriptionApproveFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, posibleng kunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
+    "message": "Kung aaprubahan mo ang kahilingang ito, maaaring kunin ng third-party na kilala sa mga panloloko ang lahat asset mo."
   },
   "blockaidDescriptionBlurFarming": {
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa Blur."
@@ -827,19 +906,19 @@
     "message": "Kung aaprubahan mo ang kahilingang ito, posibleng nakawin ng ibang tao ang mga asset mo na nakalista sa OpenSea."
   },
   "blockaidDescriptionTransferFarming": {
-    "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third party na kilala sa mga panloloko ang lahat ng asset mo."
+    "message": "Kung aaprubahan mo ang kahilingang ito, kukunin ng third-party na kilala sa mga panloloko ang lahat ng asset mo."
   },
   "blockaidMessage": {
-    "message": "Pagpapanatili ng privacy - walang data na ibinabahagi sa mga third party. Available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
+    "message": "Pagpapanatili ng privacy - walang data na ibinabahagi sa mga third-party. Available sa Arbitrum, Avalanche, BNB chain, Ethereum Mainnet, Linea, Optimism, Polygon, Base at Sepolia."
   },
   "blockaidTitleDeceptive": {
-    "message": "Ito ay mapanlinlang na kahilingan"
+    "message": "Isa itong mapanlinlang na kahilingan"
   },
   "blockaidTitleMayNotBeSafe": {
     "message": "Maging maingat"
   },
   "blockaidTitleSuspicious": {
-    "message": "Ito ay kahina-hinalang kahilingan"
+    "message": "Isa itong kahina-hinalang kahilingan"
   },
   "blockies": {
     "message": "Mga Blocky"
@@ -851,7 +930,7 @@
     "message": "Binili para sa/kay"
   },
   "bridge": {
-    "message": "Bridge"
+    "message": "Mag-bridge"
   },
   "bridgeAllowSwappingOf": {
     "message": "Pahintulutan ang eksaktong access sa $1 $2 sa $3 para sa pag-bridge",
@@ -861,11 +940,17 @@
     "message": "Aprubahan ang $1 para sa bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
+  "bridgeApprovalWarning": {
+    "message": "Pinahihintulutan mo ang access sa $1 $2. Hindi gagamitin ng kontrata ang anumang karagdagang pondo."
+  },
+  "bridgeApprovalWarningForHardware": {
+    "message": "Kakailanganin mong pahintulutan ang access sa $1 $2 para sa pag-bridge, at pagkatapos, aprubahan ang pag-bridge sa $3. Mangangailangan ito ng dalawang magkahiwalay na kumpirmasyon."
+  },
   "bridgeBlockExplorerLinkCopied": {
-    "message": "Nakopya ang link ng block explorer!"
+    "message": "Nakopya ang link ng block explorer"
   },
   "bridgeCalculatingAmount": {
-    "message": "Nagkakalkula..."
+    "message": "Kinakalkula..."
   },
   "bridgeConfirmTwoTransactions": {
     "message": "Kakailanganin mong kumpirmahin ang 2 transaksyon sa iyong hardware wallet:"
@@ -886,9 +971,6 @@
   "bridgeEnterAmount": {
     "message": "Pumili ng halaga"
   },
-  "bridgeEnterAmountAndSelectAccount": {
-    "message": "Ilagay ang halaga at pumili ng destinasyong account"
-  },
   "bridgeExplorerLinkViewOn": {
     "message": "Tingnan sa $1"
   },
@@ -905,17 +987,51 @@
   "bridgeNetCost": {
     "message": "Net na gastos"
   },
+  "bridgeNoMMFee": {
+    "message": "Walang bayad sa MM"
+  },
+  "bridgePoints": {
+    "message": "Tinatayang mga point",
+    "description": "Label for estimated points that can be earned from a bridge or swap"
+  },
+  "bridgePoints_couldntLoad": {
+    "message": "Hindi mai-load",
+    "description": "Text shown in rewards badge when points couldn't be loaded"
+  },
+  "bridgePoints_error": {
+    "message": "Hindi makapag-load ng mga point",
+    "description": "Tooltip title when there's an error fetching estimated points"
+  },
+  "bridgePoints_error_content": {
+    "message": "Huwag mag-alala, nakakakuha ka pa rin ng mga point. Lalabas ang mga iyon sa account mo sa lalong madaling panahon, o puwede mong tingnan ang tab ng Mga Reward sa MetaMask Mobile.",
+    "description": "Error message when points estimation fails"
+  },
+  "bridgePoints_tooltip": {
+    "message": "Mga Point",
+    "description": "Tooltip title for points"
+  },
+  "bridgePoints_tooltip_content_1": {
+    "message": "Ang Mga Puntos ay kung paano ka nakakakuha ng mga Reward sa MetaMask para sa pagkumpleto ng mga transaksyon, gaya ng kapag nagsu-swap, nagbi-bridge, o nagti-trade ka ng perps.",
+    "description": "First part of tooltip content explaining rewards points"
+  },
+  "bridgePoints_tooltip_content_2": {
+    "message": "Tandaan na ang halagang ito ay isang pagtatantya lamang at magiging pinal lamang kapag natapos na ang transaksyon. Maaaring umabot ng hanggang 1 oras bago makumpirma ang mga point sa iyong balanse ng mga Reward.",
+    "description": "Second part of tooltip content explaining how points are calculated"
+  },
+  "bridgePriceImpact": {
+    "message": "Epekto ng presyo"
+  },
+  "bridgePriceImpactNormalWarning": {
+    "message": "Sinasalamin ng epekto ng presyo kung paanong naapektuhan ng iyong swap ang presyong merkado. Kung wala kang sapat para sa gas, gagamitin ang ilan sa iyong token para sa pagbabayad, na magpapataas ng price impact. Hindi ang MetaMask ang nagtatakda kumokontrol nito."
+  },
   "bridgePriceImpactTooltipTitle": {
-    "message": "Impact ng Presyo"
+    "message": "Epekto ng presyo"
   },
   "bridgePriceImpactWarningTitle": {
-    "message": "Babala sa Impact ng Presyo"
+    "message": "Babala sa Epekto sa Presyo"
   },
   "bridgeQuoteExpired": {
     "message": "Nag-time out ang quote mo."
-  },
-  "bridgeSelectDestinationAccount": {
-    "message": "Pumili ng destinasyong account"
   },
   "bridgeSelectDifferentQuote": {
     "message": "Mangyaring pumili ng ibang quote."
@@ -965,7 +1081,7 @@
     "description": "$1 is the ticker symbol of a an asset the user is being prompted to purchase"
   },
   "bridgeTo": {
-    "message": "I-bridge papunta sa"
+    "message": "I-bridge sa"
   },
   "bridgeTokenCannotVerifyDescription": {
     "message": "Kapag idinagdag mo ang token na ito nang mano-mano, tiyaking alam mo ang mga panganib nito sa mga pondo mo bago ka mag-bridge."
@@ -1083,6 +1199,10 @@
   "cancelled": {
     "message": "Nakansela"
   },
+  "carouselAllCaughtUp": {
+    "message": "Tapos mo nang makita lahat!",
+    "description": "Message shown in carousel when all promotional slides have been dismissed"
+  },
   "chainId": {
     "message": "ID ng Chain"
   },
@@ -1093,7 +1213,10 @@
     "message": "Ang ID ng Chain na ito ay kasalukuyang ginagamit ng $1 network."
   },
   "chainListReturnedDifferentTickerSymbol": {
-    "message": "Ang simbolo ng token na ito ay hindi tugma sa pangalan ng network o chaid ID na inilagay. Maraming popular na token ang gumagamit ng magkakatulad ng simbolo, na maaaring gamitin ng mga scammer para lokohin ka na magpadala ka ng mas mahalagang token bilang kapalit. Beripikahin ang lahat bago ka magpatuloy."
+    "message": "Ang simbolo ng token na ito ay hindi tugma sa pangalan ng network o chain ID na inilagay. Maraming popular na token ang gumagamit ng magkakatulad ng simbolo, na maaaring gamitin ng mga scammer para lokohin ka na magpadala ka ng mas mahalagang token bilang kapalit. Beripikahin ang lahat bago ka magpatuloy."
+  },
+  "changePasswordDetailsSocial": {
+    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device."
   },
   "changePasswordLoading": {
     "message": "Pinapalitan ang password..."
@@ -1105,7 +1228,14 @@
     "message": "Sigurado ka ba?"
   },
   "changePasswordWarningDescription": {
-    "message": "Kapag pinalitan mo ang password dito, mala-lock ang MetaMask sa ibang mga device na ginagamit mo. Kailangan mong mag-log in muli gamit ang iyong bagong password."
+    "message": "Kapag pinalitan mo iyong password dito, mala-lock ang MetaMask sa ibang mga device na ginagamit mo. Kailangan mong muling mag-log in gamit ang iyong bagong password."
+  },
+  "checkNetworkConnectivity": {
+    "message": "Suriin ang pagkakakonekta ng network."
+  },
+  "checkNetworkConnectivityOr": {
+    "message": "Suriin ang pagkakakonekta ng network, o $1.",
+    "description": "$1 is a link to update the network."
   },
   "chooseYourNetwork": {
     "message": "Piliin ang iyong network"
@@ -1148,8 +1278,9 @@
   "close": {
     "message": "Isara"
   },
-  "closeExtension": {
-    "message": "Isara ang extension"
+  "closeSlide": {
+    "message": "Isara ang $1",
+    "description": "Aria label for close button on carousel slides. $1 is the slide title"
   },
   "closeWindowAnytime": {
     "message": "Maaari mong isara ang window na ito anumang oras."
@@ -1163,6 +1294,9 @@
   "comboNoOptions": {
     "message": "Walang opsyon na nahanap",
     "description": "Default text shown in the combo field dropdown if no options."
+  },
+  "completed": {
+    "message": "Nakumpleto"
   },
   "concentratedSupplyDistributionDescription": {
     "message": "Karamihan ng supply ng token ay hawak ng mga nangungunang may-ari ng token, na nangangahulugang may panganib ng sentralisadong pagmamanipula sa presyo"
@@ -1198,10 +1332,59 @@
     "message": "Kinikilala ko ang mga alerto at nais ko pa ring magpatuloy"
   },
   "confirmAlertModalAcknowledgeSingle": {
-    "message": "Kinikilala ko ang mga alerto at nais ko pa rin magpatuloy"
+    "message": "Kinikilala ko ang alerto at gusto ko pa ring magpatuloy"
+  },
+  "confirmFieldAllowance": {
+    "message": "Palugit"
+  },
+  "confirmFieldAvailablePerDay": {
+    "message": "Available kada araw"
+  },
+  "confirmFieldExpiration": {
+    "message": "Pag-expire"
+  },
+  "confirmFieldFrequency": {
+    "message": "Dalas"
+  },
+  "confirmFieldInitialAllowance": {
+    "message": "Panimulang allowance"
+  },
+  "confirmFieldMaxAllowance": {
+    "message": "Max na allowance"
   },
   "confirmFieldPaymaster": {
     "message": "Ang bayarin ay binayaran ni"
+  },
+  "confirmFieldPeriodDurationBiWeekly": {
+    "message": "Tuwing dalawang linggo"
+  },
+  "confirmFieldPeriodDurationDaily": {
+    "message": "Araw-araw"
+  },
+  "confirmFieldPeriodDurationHourly": {
+    "message": "Oras-oras"
+  },
+  "confirmFieldPeriodDurationMonthly": {
+    "message": "Buwanan"
+  },
+  "confirmFieldPeriodDurationSeconds": {
+    "message": "(na) segundo",
+    "description": "Unit descriptor following the numeric value, e.g. '100 seconds'"
+  },
+  "confirmFieldPeriodDurationWeekly": {
+    "message": "Lingguhan"
+  },
+  "confirmFieldPeriodDurationYearly": {
+    "message": "Taunan"
+  },
+  "confirmFieldStartDate": {
+    "message": "Petsa ng pagsisimula"
+  },
+  "confirmFieldStreamRate": {
+    "message": "Rate ng pag-stream"
+  },
+  "confirmFieldTooltipJustification": {
+    "message": "Katwiran para sa kahilingan na ibinigay ng website"
   },
   "confirmFieldTooltipPaymaster": {
     "message": "Ang bayarin para sa transaksyong ito ay babayaran ng paymaster smart contract."
@@ -1216,16 +1399,16 @@
     "message": "Kasama ang bayad na $1"
   },
   "confirmGasFeeTokenModalNativeToggleMetaMask": {
-    "message": "Dinadagdagan ng MetaMask ang balanse para makumpleto ang transaksyong ito."
+    "message": "Dadagdagan ng MetaMask ang balanse para makumpleto ang transaksyong ito."
   },
   "confirmGasFeeTokenModalNativeToggleWallet": {
-    "message": "Bayaran ang bayad sa network gamit ang balanse sa iyong wallet."
+    "message": "Magbayad ng bayad sa network gamit ang balanse sa wallet mo."
   },
   "confirmGasFeeTokenModalPayETH": {
     "message": "Magbayad gamit ang ETH"
   },
   "confirmGasFeeTokenModalPayToken": {
-    "message": "Magbayad gamit ang iba pang mga token"
+    "message": "Magbayad gamit ang ibang mga token"
   },
   "confirmGasFeeTokenModalTitle": {
     "message": "Pumili ng token"
@@ -1252,16 +1435,19 @@
     "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi"
   },
   "confirmRecoveryPhraseDetails": {
-    "message": "Piliin ang mga nawawalang salita ayon sa tamang pagkakaayos."
+    "message": "Piliin ang mga nawawalang salita sa tamang pagkakaayos."
   },
   "confirmRecoveryPhraseTitle": {
     "message": "Kumpirmahin ang iyong Lihim na Parirala sa Pagbawi"
+  },
+  "confirmRecoveryPhraseTitleSettings": {
+    "message": "Kumpirmahin ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
   "confirmSimulationApprove": {
     "message": "Inaaprubahan mo ang"
   },
   "confirmSrpErrorDescription": {
-    "message": "Tingnan muli ang iyong Lihim na Parirala sa Pagbawi at subukan muli."
+    "message": "Suriing mabuti ang iyong Lihim na Parirala sa Pagbawi at subukan muli."
   },
   "confirmSrpErrorTitle": {
     "message": "Parang may mali"
@@ -1279,34 +1465,40 @@
     "message": "Kahilingan sa pag-withdraw"
   },
   "confirmTitleDeployContract": {
-    "message": "Mag-deploy ng kontrata"
+    "message": "Mag-deploy ng contract"
   },
   "confirmTitleDescApproveTransaction": {
-    "message": "Gusto ng site na ito ng pahintulot na i-withdraw ang iyong mga NFT"
+    "message": "Kailangan ng site na ito ng pahintulot para i-withdraw ang mga NFT mo"
   },
   "confirmTitleDescDelegationRevoke": {
     "message": "Babalik ka sa standard account (EOA)."
   },
   "confirmTitleDescDelegationUpgrade": {
-    "message": "Lilipat ka sa isang smart account"
+    "message": "Lilipat ka sa isang smart account."
   },
   "confirmTitleDescDeployContract": {
-    "message": "Gusto ng site na ito na mag-deploy ka ng kontrata"
+    "message": "Nais ng site na ito na mag-deploy ka ng contract"
   },
   "confirmTitleDescERC20ApproveTransaction": {
     "message": "Gusto ng site na ito ng pahintulot na i-withdraw ang iyong mga token"
   },
+  "confirmTitleDescPermission": {
+    "message": "Kailangan ng site na ito ng mga pahintulot para gastusin ang mga token mo."
+  },
   "confirmTitleDescPermitSignature": {
-    "message": "Ang site na ito ay nais ng permiso para gamitin ang iyong mga token."
+    "message": "Kailangan ng site na ito ng pahintulot para gastusin ang mga token mo."
   },
   "confirmTitleDescSIWESignature": {
-    "message": "Nais ng site na mag-sign in ka upang patunayan na pag-aari mo ang account na ito."
+    "message": "Hinihiling ng site na mag-sign in ka para patunayan na ikaw ang may-ari ng account na ito."
   },
   "confirmTitleDescSign": {
     "message": "Suriin ang mga detalye ng kahilingan bago mo kumpirmahin."
   },
+  "confirmTitlePermission": {
+    "message": "Kahilingan sa pahintulot"
+  },
   "confirmTitlePermitTokens": {
-    "message": "Kahilingan sa limitasyon ng paggastos"
+    "message": "Kahilingan sa limitasyon sa paggastos"
   },
   "confirmTitleRevokeApproveTransaction": {
     "message": "Alisin ang pahintulot"
@@ -1321,7 +1513,7 @@
     "message": "Kahilingan sa paglagda"
   },
   "confirmTitleTransaction": {
-    "message": "Hiling na Transaksyon"
+    "message": "Kahilingan sa transaksyon"
   },
   "confirmationAlertDetails": {
     "message": "Para protektahan ang iyong mga asset, iminumungkahi namin na tanggihan mo ang kahilingan."
@@ -1332,6 +1524,9 @@
   "confirmed": {
     "message": "Nakumpirma"
   },
+  "confusableCharacterTooltip": {
+    "message": "Siguraduhing tama ang address na ito. Madalas nagkakapalit ang $1 at $2."
+  },
   "confusableUnicode": {
     "message": "Ang '$1' ay katulad ng '$2'."
   },
@@ -1339,7 +1534,7 @@
     "message": "May nakitang karakter na zero ang luwang."
   },
   "confusingEnsDomain": {
-    "message": "May na-detect kami na nakakalitong character sa pangalan ng ENS. Suriin ang pangalan ng ENS para maiwasan ang potensyal na panloloko."
+    "message": "May na-detect kaming nakakalitong character sa ENS name. Tingnan ang ENS name para maiwasan ang potensyal na panloloko."
   },
   "connect": {
     "message": "Kumonekta"
@@ -1369,9 +1564,6 @@
   "connectWithMetaMask": {
     "message": "Kumonekta sa MetaMask"
   },
-  "connectedAccounts": {
-    "message": "Mga konektadong account"
-  },
   "connectedAccountsDescriptionPlural": {
     "message": "Mayroon kang $1 account na nakakonekta sa site na ito.",
     "description": "$1 is the number of accounts"
@@ -1385,9 +1577,6 @@
   "connectedAccountsListTooltip": {
     "message": "Maaaring makita ng $1 ang balanse ng account, address, aktibidad, at magmungkahi ng mga transaksyon na aprubahan para sa mga konektadong account.",
     "description": "$1 is the origin name"
-  },
-  "connectedAccountsToast": {
-    "message": "In-update ang mga konektadong account"
   },
   "connectedSites": {
     "message": "Mga konektadong site"
@@ -1414,19 +1603,19 @@
     "description": "$1 represents account length"
   },
   "connectedWithAccountName": {
-    "message": "Nakakonekta sa $1",
+    "message": "Konektado sa $1",
     "description": "$1 represents account name"
   },
   "connectedWithNetwork": {
-    "message": "$1 (na) network ang konektado",
+    "message": "$1 (na) network ang nakakonekta",
     "description": "$1 represents network length"
   },
   "connectedWithNetworkName": {
-    "message": "Konektado sa $1",
+    "message": "Nakakonekta sa $1",
     "description": "$1 represents network name"
   },
   "connecting": {
-    "message": "Kumokonekta"
+    "message": "Kumonekta"
   },
   "connectingTo": {
     "message": "Kumokonekta sa $1"
@@ -1436,6 +1625,9 @@
   },
   "connectingToLineaGoerli": {
     "message": "Kumokonekta sa Linea Goerli test network"
+  },
+  "connectingToLineaMainnet": {
+    "message": "Kumokonekta sa Linea"
   },
   "connectingToLineaSepolia": {
     "message": "Kumokonekta sa Linea Sepolia test network"
@@ -1463,10 +1655,10 @@
     "message": "Kahilingan sa koneksyon"
   },
   "connectionsRemovedModalDescription": {
-    "message": "Inalis ang ilang koneksyon (gaya ng mga hardware wallet at snap) dahil sa kawalan ng aktibidad sa device na ito. Maaari mong muling idagdag ang mga iyon anumang oras sa Mga Setting."
+    "message": "Inalis ang ilang koneksyon (tulad ng mga hardware wallet at snap) dahil sa kawalan ng aktibidad sa device na ito. Puwede mong idagdag uli ang mga ito anumang oras sa Mga Setting."
   },
   "connectionsRemovedModalTitle": {
-    "message": "Inalis ang mga koneksyon"
+    "message": "Naalis na ang mga koneksyon"
   },
   "contactUs": {
     "message": "Makipag-ugnayan sa amin"
@@ -1482,10 +1674,10 @@
     "message": "Magpatuloy"
   },
   "contract": {
-    "message": "Kontrata"
+    "message": "Contract"
   },
   "contractAddress": {
-    "message": "Address ng kontrata"
+    "message": "Contract address"
   },
   "contractAddressError": {
     "message": "Nagpapadala ka ng mga token sa address ng kontrata ng token. Ito ay maaaring magresulta sa pagkawala ng mga token na ito."
@@ -1527,11 +1719,11 @@
     "message": "Gumawa"
   },
   "createMultichainAccountButton": {
-    "message": "Gumawa ng account",
+    "message": "Magdagdag ng account",
     "description": "Name of a button used on multichain account related pages for triggering the account creation process."
   },
   "createMultichainAccountButtonLoading": {
-    "message": "Ginagawa ang account...",
+    "message": "Nagdadagdag ng account...",
     "description": "Name of a button in loading state, used on multichain account related pages for the account creation process."
   },
   "createNewAccountHeader": {
@@ -1545,6 +1737,15 @@
   },
   "createPasswordDetails": {
     "message": "I-unlock ang MetaMask sa device lang na ito."
+  },
+  "createPasswordDetailsSocial": {
+    "message": "Nangangahulugan ang pagkawala ng password ng pagkawala ng access sa lahat ng device, "
+  },
+  "createPasswordDetailsSocialReset": {
+    "message": "Hindi ito maire-reset ng MetaMask."
+  },
+  "createPasswordMarketing": {
+    "message": "Kumuha ng mga update ng produkto, tip at kabilang ang balita sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo upang mapahusay ang ibinabahagi namin."
   },
   "createSnapAccountDescription": {
     "message": "Ang $1 ay nais na magdagdag ng bagong account sa MetaMask."
@@ -1583,6 +1784,9 @@
   "currencySymbolDefinition": {
     "message": "Ang simbolo ng ticker na ipinapakita para sa currency ng network na ito."
   },
+  "current": {
+    "message": "Kasalukuyan"
+  },
   "currentAccountNotConnected": {
     "message": "Hindi nakakonekta ang kasalukuyan mong account"
   },
@@ -1612,7 +1816,7 @@
     "message": "Grap ng Merkado sa pagtantiya sa gas"
   },
   "custom": {
-    "message": "Makabago"
+    "message": "Advanced"
   },
   "customGasSettingToolTipMessage": {
     "message": "Gamitin ang $1 para i-customize ang presyo ng gas. Ito ay maaaring nakakalito kung hindi ka pamilyar. Harapin ang sarili mong panganib.",
@@ -1625,19 +1829,13 @@
     "message": "Custom"
   },
   "customSpendLimit": {
-    "message": "Custom na Limitasyon sa Paggastos"
+    "message": "Custom na limitasyon sa paggastos"
   },
   "customToken": {
     "message": "Custom na Token"
   },
-  "customTokenWarningInNonTokenDetectionNetwork": {
-    "message": "Ang pagtuklas ng token ay hindi pa magagamit sa network na ito. Mangyaring manu-manong mag-import ng token at tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1"
-  },
   "customTokenWarningInTokenDetectionNetwork": {
     "message": "Bago manu-manong mag-import ng token, tiyaking pinagkakatiwalaan mo ito. Matuto tungkol sa $1."
-  },
-  "customTokenWarningInTokenDetectionNetworkWithTDOFF": {
-    "message": "Siguraduhing pinagkakatiwalaan mo ang isang token bago mo ito i-import. Alamin kung paano maiwasan ang $1. Maaari mo ring paganahin ang pagtuklas ng token $2."
   },
   "customerSupport": {
     "message": "suporta sa kostumer"
@@ -1649,14 +1847,14 @@
     "message": "I-on ang mga uri ng notipikasyon na nais mong matanggap:"
   },
   "dappSuggested": {
-    "message": "Minungkahing site"
+    "message": "Iminungkahing site"
   },
   "dappSuggestedGasSettingToolTipMessage": {
     "message": "Minungkahi ng $1 ang presyong ito.",
     "description": "$1 is url for the dapp that has suggested gas settings"
   },
   "dappSuggestedHigh": {
-    "message": "Iminungkahi ang site"
+    "message": "Iminungkahing site"
   },
   "dappSuggestedHighShortLabel": {
     "message": "Site (mataas)"
@@ -1668,14 +1866,32 @@
     "message": "Nirekomenda ng $1 ang presyong ito.",
     "description": "$1 represents the Dapp's origin"
   },
+  "dappSwapAdvantage": {
+    "message": "Makatipid at kumita sa MetaMask Swaps"
+  },
+  "dappSwapBenefits": {
+    "message": "Mga bayarin sa network na na-refund mula sa mga nabigong swap"
+  },
+  "dappSwapQuoteDifference": {
+    "message": "Makatipid ng $1"
+  },
+  "dappSwapRewardText": {
+    "message": "Makakuha ng $1 (na) point"
+  },
   "darkTheme": {
     "message": "Madilim"
   },
   "data": {
-    "message": "Datos"
+    "message": "Data"
   },
   "dataCollectionForMarketing": {
     "message": "Koleksyon ng data para sa marketing"
+  },
+  "dataCollectionForMarketingDescription": {
+    "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
+  },
+  "dataCollectionForMarketingDescriptionSocialLogin": {
+    "message": "Tumanggap ng mga update ng produkto, tip at balita - kabilang sa pamamagitan ng email. Maaari naming gamitin ang mga interaksyon mo para mapahusay ang mga ibinabahagi namin."
   },
   "dataCollectionWarningPopoverButton": {
     "message": "Okay"
@@ -1740,6 +1956,14 @@
   "deepLink_Error404Title": {
     "message": "Hindi umiiral ang pahinang ito"
   },
+  "deepLink_Error404_CTA": {
+    "message": "$1 at dadalhin ka namin sa tamang lugar.",
+    "description": "$1 is a link with the text found in `deepLink_Error404_CTA_LinkText`"
+  },
+  "deepLink_Error404_CTA_LinkText": {
+    "message": "I-update ang pinakabagong bersyon ng MetaMask",
+    "description": "Part of `deepLink_Error404_CTA`. The text links to https://support.metamask.io/configure/wallet/how-to-update-the-version-of-metamask/"
+  },
   "deepLink_ErrorMissingUrl": {
     "message": "Walang ibinigay na url para sa pag-navigate."
   },
@@ -1756,7 +1980,7 @@
     "message": "Inire-redirect sa MetaMask"
   },
   "deepLink_ThirdPartyDescription": {
-    "message": "Ipinadala ka rito ng third party, hindi ng MetaMask.$1",
+    "message": "Ipinadala ka rito ng third-party, hindi ng MetaMask.$1",
     "description": "$1 is the message 'deepLink_ContinueDescription'"
   },
   "deepLink_theBuyPage": {
@@ -1768,8 +1992,23 @@
   "deepLink_theNotificationsPage": {
     "message": "ang pahina ng mga notipikasyon"
   },
+  "deepLink_thePerpsPage": {
+    "message": "pahina ng perps"
+  },
+  "deepLink_thePredictPage": {
+    "message": "ang page ng mga market ng prediksyon"
+  },
+  "deepLink_theRewardsPage": {
+    "message": "ang page ng Mga Reward sa MetaMask"
+  },
   "deepLink_theSwapsPage": {
     "message": "ang pahina ng mga swap"
+  },
+  "deepLink_theSwapsRampsPage": {
+    "message": "pahina ng mga Swap/Ramp"
+  },
+  "deepLink_theTransactionShieldPage": {
+    "message": "ang page ng transaction shield"
   },
   "defaultRpcUrl": {
     "message": "Default na RPC URL"
@@ -1783,8 +2022,11 @@
   "defi": {
     "message": "DeFi"
   },
+  "defiEmptyDescription": {
+    "message": "Magpahiram, humiram at mag-trade, sa mismong wallet mo."
+  },
   "defiTabErrorContent": {
-    "message": "Subukang bisitahin muli sa ibang pagkakataon."
+    "message": "Subukang bisitahin muli mamaya."
   },
   "defiTabErrorTitle": {
     "message": "Hindi namin mai-load ang page na ito."
@@ -1828,17 +2070,11 @@
   "depositCrypto": {
     "message": "Magdeposito ng crypto mula sa ibang account gamit ang wallet address o QR code."
   },
-  "deprecatedGoerliNtwrkMsg": {
-    "message": "Dahil sa mga update sa sistema ng Ethereum, ang Goerli test network malapit nang itigil."
-  },
   "deprecatedNetwork": {
     "message": "Ang network na ito ay hindi na suportado"
   },
   "deprecatedNetworkButtonMsg": {
     "message": "Nakuha ko"
-  },
-  "deprecatedNetworkDescription": {
-    "message": "Ang network na sinusubukan mong ikonekta ay hindi na suportado ng Metamask. $1"
   },
   "description": {
     "message": "Deskripsyon"
@@ -1848,7 +2084,7 @@
     "description": "$1 represents the name of the snap"
   },
   "deselectAll": {
-    "message": "Alisin ang pagkapili sa lahat"
+    "message": "Alisin ang pagkakapili sa lahat"
   },
   "destinationAccountPickerNoEligible": {
     "message": "Walang nahanap na kwalipikadong account"
@@ -1867,7 +2103,7 @@
     "description": "Label for the destination transaction ID field."
   },
   "details": {
-    "message": "Mga Detalye"
+    "message": "Mga detalye"
   },
   "developerOptions": {
     "message": "Mga Opsyon ng Developer"
@@ -1903,14 +2139,6 @@
   "disconnectThisAccount": {
     "message": "Idiskonekta ang account na ito"
   },
-  "disconnectedAllAccountsToast": {
-    "message": "Nadiskonekta ang lahat ng account mula sa $1",
-    "description": "$1 is name of the dapp`"
-  },
-  "disconnectedSingleAccountToast": {
-    "message": "Ang $1 ay nadiskonekta mula sa $2",
-    "description": "$1 is name of the name and $2 represents the dapp name`"
-  },
   "discover": {
     "message": "Tuklasin"
   },
@@ -1937,10 +2165,10 @@
     "message": "Ipakita ang NFT media"
   },
   "displayNftMediaDescription": {
-    "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
+    "message": "Ang pagpapakita ng NFT media at data ay naglalantad sa iyong IP address sa OpenSea o sa ibang mga third-party. Maaari nitong payagan ang mga umaatake na iugnay ang iyong IP address sa iyong Ethereum address. Umaasa ang awtomatikong pagtuklas ng NFT sa setting na ito, at hindi magagamit kapag naka-off ito."
   },
   "doNotShare": {
-    "message": "Huwag ibahagi ito sa sinuman"
+    "message": "Huwag itong ibahagi kahit kanino"
   },
   "domain": {
     "message": "Domain"
@@ -1953,6 +2181,9 @@
   },
   "downArrow": {
     "message": "arrow pababa"
+  },
+  "downloadAppDescription": {
+    "message": "Dalhin ang MetaMask saan ka man magpunta. Paganahin ang Face ID para lagi kang may access, kahit makalimutan mo ang iyong password."
   },
   "downloadAppTitle": {
     "message": "I-scan ang QR code at i-download ang app"
@@ -1979,7 +2210,7 @@
     "message": "Binitawan"
   },
   "duplicateContactTooltip": {
-    "message": "Ginagamit na ang pangalan ng contact na ito ng isang dati nang account o contact"
+    "message": "Ang pangalan ng contact na ito ay may kapareho nang account o contact"
   },
   "duplicateContactWarning": {
     "message": "Mayroon kang mga nadobleng contact"
@@ -2038,20 +2269,20 @@
     "message": "I-edit ang pagkansela ng bayad sa gas"
   },
   "editContact": {
-    "message": "I-edit ang contact"
+    "message": "I-edit ang kontak"
   },
   "editGasFeeModalTitle": {
     "message": "I-edit ang bayad sa gas"
   },
   "editGasLimitOutOfBounds": {
-    "message": "Ang limitasyon ng gas ay dapat na $1 man lang"
+    "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa $1"
   },
   "editGasLimitOutOfBoundsV2": {
     "message": "Ang limitasyon ng gas ay dapat na mas mataas sa $1 at hindi bababa sa $2",
     "description": "$1 is the minimum limit for gas and $2 is the maximum limit"
   },
   "editGasLimitTooltip": {
-    "message": "Ang limitasyon ng gas ay ang pinakamataas na yunit ng gas na handa mong gamitin. Ang mga yunit ng gas ay isang multiplier sa “Pinakamataas na bayad sa priyoridad” at “Pinakamataas na bayad”."
+    "message": "Ang limitasyon ng gas ay ang pinakamataas na yunit ng gas na handa mong gamitin. Ang mga yunit ng gas ay multiplier sa “Pinakamataas na bayad sa priyoridad” at “Pinakamataas na bayad”."
   },
   "editGasMaxBaseFeeGWEIImbalance": {
     "message": "Ang pinakamataas na batayang bayad ay hindi dapat na mas mababa sa bayad sa priyoridad"
@@ -2096,13 +2327,13 @@
     "message": "Ang network na ito ay nangangailangan ng field ng “Presyo ng gas” kapag nagsusumite ng transaksyon. Ang presyo ng gas ay ang halaga na babayaran mo kada yunit ng gas."
   },
   "editGasSubTextFeeLabel": {
-    "message": "Pinakamataas na bayad:"
+    "message": "Max fee:"
   },
   "editGasTitle": {
     "message": "I-edit ang priyoridad"
   },
   "editGasTooLow": {
-    "message": "Hindi kilalang oras ng pagproseso"
+    "message": "Hindi alam na oras ng pagproseso"
   },
   "editInPortfolio": {
     "message": "I-edit sa Portfolio"
@@ -2126,7 +2357,7 @@
     "message": "Pahintulot sa pag-edit"
   },
   "editPermissions": {
-    "message": "Mga pahintulot sa pag-edit"
+    "message": "Mag-edit ng mga pahintulot"
   },
   "editSpeedUpEditGasFeeModalTitle": {
     "message": "I-edit ang pagpapabilis ng bayad sa gas"
@@ -2138,7 +2369,7 @@
     "message": "Balanse ng account: $1 $2"
   },
   "editSpendingCapDesc": {
-    "message": "Ilagay ang halaga na sa tingin mo ay komportable kang gastusin sa ngalan mo."
+    "message": "Ilagay ang halagang komportable kang gastusin sa ngalan mo."
   },
   "editSpendingCapError": {
     "message": "Ang cap sa paggastos ay hindi maaaring lumampas sa $1 (na) decimal digit. Alisin ang mga decimal digit para magpatuloy."
@@ -2153,13 +2384,13 @@
     "message": " Paganahin ito mula sa Mga Setting."
   },
   "enableSmartContractAccount": {
-    "message": "Paganahin ang account ng smart contract"
+    "message": "Gumamit ng smart account"
   },
   "enableSmartContractAccountDescription": {
-    "message": "Maaari mong paganahin ang mga feature ng smart account sa mga sinusuportahang network."
+    "message": "I-unlock ang mas mabilis na transaksyon, mas mababang bayad sa network, at dagdag na seguridad sa mga suportadong network."
   },
   "enableSnap": {
-    "message": "Paganahin"
+    "message": "I-enable"
   },
   "enableToken": {
     "message": "paganahin ang $1",
@@ -2169,7 +2400,7 @@
     "message": "Pinagana"
   },
   "enabledNetworks": {
-    "message": "Mga pinapaganang network"
+    "message": "Naka-enable na mga network"
   },
   "encryptionPublicKeyNotice": {
     "message": "Kailangan ng $1 ang iyong pampublikong encryption key. Sa pamamagitan ng pagbibigay ng pahintulot, makakagawa ang site na ito ng mga naka-encrypt na mensahe para sa iyo.",
@@ -2189,7 +2420,7 @@
     "message": "Pinahihintulutan ng MetaMask na makita mo ang mga ENS mula mismo sa address bar ng iyong browser. Here's how it works:"
   },
   "ensDomainsSettingDescriptionOutroduction": {
-    "message": "Mangyaring tandaan na ang paggamit ng tampok na ito ay naglalantad sa iyong IP address sa serbisyong third party."
+    "message": "Mangyaring tandaan na ang paggamit ng tampok na ito ay naglalantad sa iyong IP address sa serbisyong third-party."
   },
   "ensDomainsSettingDescriptionPart1": {
     "message": "Sinusuri ng MetaMask ang kontrata ng ENS ng Ethereum para mahanap ang code na konektado sa pangalan ng ENS."
@@ -2222,7 +2453,7 @@
     "message": "Ilagay ang password para magpatuloy"
   },
   "enterPasswordCurrent": {
-    "message": "Ilagay ang iyong kasalukuyang password"
+    "message": "Ilagay ang iyong password sa kasalukuyan"
   },
   "enterRpcUrl": {
     "message": "Ilagay ang RPC URL"
@@ -2239,19 +2470,28 @@
   "enterYourPasswordContinue": {
     "message": "Ilagay ang password para magpatuloy"
   },
-  "enterYourPasswordSocialLoginFlow": {
-    "message": "Ilagay ang MetaMask Password"
-  },
   "errorCode": {
     "message": "Code: $1",
     "description": "Displayed error code for debugging purposes. $1 is the error code"
   },
   "errorDetails": {
-    "message": "Mga detalye ng error",
+    "message": "Mga Detalye ng Error",
     "description": "Label for the error details field in the error screen."
   },
   "errorGettingSafeChainList": {
     "message": "May error habang kinukuha ang ligtas na chain list, mangyaring magpatuloy nang may pag-iingat."
+  },
+  "errorLegalTextFirstInfo": {
+    "message": "Impormasyon sa teknikal na diagnostic."
+  },
+  "errorLegalTextNoPersonalInfo": {
+    "message": "Hindi kokolektahin ang anumang personal na impormasyon o impormasyon ng device."
+  },
+  "errorLegalTextSecondInfo": {
+    "message": "Ang iyong browser, operating system, at mga bersyon ng MetaMask."
+  },
+  "errorLegalTextSummary": {
+    "message": "Makakatanggap kami ng ulat ng isang error na naglalaman ng:"
   },
   "errorMessage": {
     "message": "Mensahe: $1",
@@ -2262,7 +2502,7 @@
     "description": "Displayed error name for debugging purposes. $1 is the error name"
   },
   "errorPageContactSupport": {
-    "message": "Makipag-ugnayan sa Suporta",
+    "message": "Kontakin ang suporta",
     "description": "Button for contact MM support"
   },
   "errorPageDescribeUsWhatHappened": {
@@ -2294,7 +2534,7 @@
     "description": "Title of generic error page"
   },
   "errorPageTryAgain": {
-    "message": "Subukan ulit",
+    "message": "Subukang muli",
     "description": "Button for try again"
   },
   "errorStack": {
@@ -2308,11 +2548,17 @@
     "message": "Error sa $1",
     "description": "$1 represents the name of the snap"
   },
+  "estimatedChanges": {
+    "message": "Tinantyang mga pagbabago"
+  },
   "estimatedFee": {
     "message": "Tinatayang singil"
   },
   "estimatedFeeTooltip": {
-    "message": "Halaga na binayaran para iproseso ang transaksyon sa network."
+    "message": "Halagang binayaran para maproseso ang transaksyon sa network."
+  },
+  "estimatedPointsRow": {
+    "message": "Tinatayang mga point"
   },
   "ethGasPriceFetchWarning": {
     "message": "Ang backup na presyo ng gas ay ibinigay dahil ang pangunahing serbisyo ng pagtantya ng gas ay hindi available sa ngayon."
@@ -2320,9 +2566,6 @@
   "ethereumProviderAccess": {
     "message": "Payagan ang pag-access sa Ethereum provider sa $1",
     "description": "The parameter is the name of the requesting origin"
-  },
-  "ethereumPublicAddress": {
-    "message": "Pampublikong address ng Ethereum"
   },
   "etherscan": {
     "message": "Etherscan"
@@ -2336,14 +2579,11 @@
   "existingChainId": {
     "message": "Ang impormasyon na iyong inilagay ay nauugnay sa isang umiiral na ID ng chain."
   },
-  "expandView": {
-    "message": "I-expand ang view"
-  },
   "experimental": {
-    "message": "Eksperimental"
+    "message": "Experimental"
   },
-  "exploreweb3": {
-    "message": "Tuklasin ang web3"
+  "exploreDefi": {
+    "message": "Suriin ang DeFi"
   },
   "exportYourData": {
     "message": "I-export ang data mo"
@@ -2368,13 +2608,13 @@
     "message": "Mga mungkahing palayaw"
   },
   "externalNameSourcesSettingDescription": {
-    "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third party."
+    "message": "Kami ay kukuha ng ilang mungkahing palayaw para sa mga address na nakikipag-ugnayan ka mula sa mga third-party source tulad ng Etherscan, Infura, at Lens Protocol. Ang mga source na ito ay maaaring makita ang mga address na ito at ang iyong iyong IP address. Ang iyong address ay hindi ilalantad sa mga third-party."
   },
   "failed": {
-    "message": "Nabigo"
+    "message": "Pumalya"
   },
   "failedToFetchChainId": {
-    "message": "Hindi makuha ang ID ng chain. Tama ba ang iyong RPC URL?"
+    "message": "Hindi makuha ang ID ng chain. Tama ba ang URL ng iyong RPC?"
   },
   "failover": {
     "message": "Failover"
@@ -2394,6 +2634,16 @@
   "fileImportFail": {
     "message": "Hindi gumagana ang pag-import ng file? Mag-click dito!",
     "description": "Helps user import their account from a JSON file"
+  },
+  "fileUploaderDescription": {
+    "message": "I-click para mag-upload o mag-drag and drop"
+  },
+  "fileUploaderInvalidFileTypeError": {
+    "message": "Di-wastong uri ng file. Mag-upload ng sinusuportahang format ng file."
+  },
+  "fileUploaderMaxFileSizeError": {
+    "message": "Lagpas $1MB ang size ng file. Mag-upload ng mas maliit na file.",
+    "description": "$1 is the maximum file size in MB"
   },
   "flaskWelcomeUninstall": {
     "message": "dapat mong i-uninstall ang extension na ito",
@@ -2432,40 +2682,23 @@
     "message": "Nakalimutan ang password?"
   },
   "forgotPasswordModalButton": {
-    "message": "I-reset ang wallet"
+    "message": "Mag-import ng wallet"
   },
-  "forgotPasswordModalDescription1": {
-    "message": "Hindi mababawi ng MetaMask ang password mo para sa iyo."
-  },
-  "forgotPasswordModalDescription2": {
-    "message": "Maaari mong i-reset ang iyong wallet sa pamamagitan ng paglalagay sa Lihim na Parirala sa Pagbawi na ginamit mo nang mag-set up ka ng iyong wallet."
+  "forgotPasswordModalContactSupportLink": {
+    "message": "Kontakin ang suporta"
   },
   "forgotPasswordModalTitle": {
     "message": "Nakalimutan ang iyong password?"
   },
-  "forgotPasswordSocialDescription": {
-    "message": "Hindi mababawi ng MetaMask ang password mo para sa iyo."
-  },
-  "forgotPasswordSocialStep1": {
-    "message": "Kung naka-log in ka sa MetaMask sa device na may $1 (tulad ng Face ID), maaari mong i-reset ang iyong password doon.",
-    "description": "$1 is bold biometrics turned on"
-  },
-  "forgotPasswordSocialStep1Biometrics": {
-    "message": "naka-on ang biometrics"
-  },
-  "forgotPasswordSocialStep2": {
-    "message": "Kung nasa iyo ang $1 mo, maaari mong i-reset ang kasalukuyan mong wallet at muli itong i-import gamit ang Lihim na Parirala sa Pagbawi.",
-    "description": "$1 is bold Secret Recovery Phrase"
-  },
   "form": {
     "message": "form"
   },
-  "from": {
-    "message": "Mula kay/sa"
+  "freeTrialDays": {
+    "message": "$1 araw na libreng trial",
+    "description": "The $1 is the number of days"
   },
-  "fromAddress": {
-    "message": "Mula kay/sa: $1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
+  "from": {
+    "message": "Mula sa/kay"
   },
   "fromTokenLists": {
     "message": "Mula sa mga listahan ng token: $1"
@@ -2473,8 +2706,9 @@
   "function": {
     "message": "Function: $1"
   },
-  "fundingMethod": {
-    "message": "Paraan ng pagpopondo"
+  "fundYourWallet": {
+    "message": "Pondohan ang wallet mo",
+    "description": "Title for the balance empty state component encouraging users to add funds"
   },
   "gas": {
     "message": "Gas"
@@ -2483,14 +2717,14 @@
     "message": "I-edit ang iminungkahing bayad sa gas"
   },
   "gasDisplayDappWarning": {
-    "message": "Ang bayad sa gas na ito ay iminungkahi ng $1. Ang pag-override dito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga tanong.",
+    "message": "Ang bayad sa gas na ito ay iminungkahi ng $1. Ang pag-override nito ay maaaring magdulot ng problema sa iyong transaksyon. Mangyaring makipag-ugnayan sa $1 kung mayroon kang mga katanungan.",
     "description": "$1 represents the Dapp's origin"
   },
   "gasFee": {
-    "message": "Bayad sa gas"
+    "message": "Bayarin sa Gas"
   },
   "gasLimit": {
-    "message": "Limitasyon ng gas"
+    "message": "Gas limit"
   },
   "gasLimitRecommended": {
     "message": "Ang inirerekomendang limitasyon ng gas ay $1. Kung mas mababa dito ang limitasyon ng gas, maaaring mabigo."
@@ -2499,10 +2733,13 @@
     "message": "Ang limitasyon ng gas ay dapat na hindi bababa sa 21000"
   },
   "gasLimitV2": {
-    "message": "Limitasyon ng gas"
+    "message": "Gas limit"
   },
   "gasOption": {
     "message": "Opsyon ng gas"
+  },
+  "gasPrice": {
+    "message": "Presyo ng gas"
   },
   "gasPriceExcessive": {
     "message": "Masyadong mataas ang iyong itinakdang bayad sa gas. Pag-isipang ibaba ang halaga."
@@ -2528,6 +2765,74 @@
   "gasUsed": {
     "message": "Nagamit na Gas"
   },
+  "gatorPermissionAnnualFrequency": {
+    "message": "Taunan",
+    "description": "Time period for annual recurring permissions redemption"
+  },
+  "gatorPermissionCustomFrequency": {
+    "message": "Custom",
+    "description": "Time period for custom recurring permissions redemption"
+  },
+  "gatorPermissionDailyFrequency": {
+    "message": "Araw-araw",
+    "description": "Time period for daily recurring permissions redemption"
+  },
+  "gatorPermissionFortnightlyFrequency": {
+    "message": "Tuwing dalawang linggo",
+    "description": "Time period for fortnightly recurring permissions redemption"
+  },
+  "gatorPermissionMonthlyFrequency": {
+    "message": "Buwanan",
+    "description": "Time period for monthly recurring permissions redemption"
+  },
+  "gatorPermissionNoExpiration": {
+    "message": "Walang pag-expire",
+    "description": "Label for a permission with no expiration"
+  },
+  "gatorPermissionTokenPeriodicFrequencyLabel": {
+    "message": "Palugit ng Pag-transfer",
+    "description": "Label for the transfer window of a token periodic permission"
+  },
+  "gatorPermissionTokenStreamFrequencyLabel": {
+    "message": "Panahon",
+    "description": "Label for the period of a token stream permission"
+  },
+  "gatorPermissionWeeklyFrequency": {
+    "message": "Lingguhan",
+    "description": "Time period for weekly recurring permissions redemption"
+  },
+  "gatorPermissionsExpirationDate": {
+    "message": "Petsa ng pag-expire",
+    "description": "Label for the expiration date of a permission"
+  },
+  "gatorPermissionsInitialAllowance": {
+    "message": "Panimulang allowance",
+    "description": "Label for the initial allowance of a permission"
+  },
+  "gatorPermissionsMaxAllowance": {
+    "message": "Max na allowance",
+    "description": "Label for the max allowance of a permission"
+  },
+  "gatorPermissionsRevocationPending": {
+    "message": "Nakabinbin ang revocation",
+    "description": "Label for a gator permission that is pending a revocation transaction"
+  },
+  "gatorPermissionsRevoke": {
+    "message": "Bawiin",
+    "description": "Label for the revoke button of a gator permission"
+  },
+  "gatorPermissionsStartDate": {
+    "message": "Petsa ng pagsisimula",
+    "description": "Label for the start date of a permission"
+  },
+  "gatorPermissionsStreamRate": {
+    "message": "Rate ng pag-stream",
+    "description": "Label for the stream rate of a permission"
+  },
+  "gatorPermissionsStreamingAmountLabel": {
+    "message": "Halaga ng pag-stream",
+    "description": "Label for the stream rate of a permission"
+  },
   "general": {
     "message": "Pangkalahatan"
   },
@@ -2535,7 +2840,7 @@
     "message": "Hindi namin ma-access ang iyong camera. Mangyaring subukan ulit."
   },
   "generalCameraErrorTitle": {
-    "message": "Nagkaproblema...."
+    "message": "Mayroong nang mali...."
   },
   "generalDescription": {
     "message": "I-sync ang mga setting sa lahat ng device, pumili ng mga kagustuhan sa network, at subaybayan ang data ng token"
@@ -2543,8 +2848,15 @@
   "genericExplorerView": {
     "message": "Tingnan ang account sa $1"
   },
+  "getDollarMore": {
+    "message": "Makakuha ng $1 pa"
+  },
   "getTheNewestFeatures": {
-    "message": "Kunin ang mga pinakabagong feature"
+    "message": "Magkaroon ng mga pinakabagong feature"
+  },
+  "getYourWalletReadyToUseWeb3": {
+    "message": "Ihanda ang wallet mo upang magamit ang web3.",
+    "description": "Subtitle text for the balance empty state component explaining the purpose of adding funds"
   },
   "goToSite": {
     "message": "Magpunta sa site"
@@ -2599,6 +2911,12 @@
   "hexData": {
     "message": "Hex na data"
   },
+  "hexDataPlaceholder": {
+    "message": "Ilagay ang hex data (opsyonal)"
+  },
+  "hidden": {
+    "message": "Nakatago"
+  },
   "hiddenAccounts": {
     "message": "Nakatagong mga account"
   },
@@ -2648,7 +2966,7 @@
     "description": "$1 is a bolded text with the message from 'holdToRevealContent2'"
   },
   "holdToRevealContent2": {
-    "message": "buong access sa iyong wallet at pondo.",
+    "message": "ganap na access sa iyong wallet at mga pondo.",
     "description": "Is the bolded text in 'holdToRevealContent1'"
   },
   "holdToRevealContent3": {
@@ -2660,7 +2978,7 @@
     "description": "Part of 'holdToRevealContent3'"
   },
   "holdToRevealContent5": {
-    "message": "ngunit maaring hingin ng mga phisher.",
+    "message": "pero pwedeng hingiin ng mga manloloko.",
     "description": "The text link in 'holdToRevealContent3'"
   },
   "holdToRevealContentPrivateKey1": {
@@ -2668,7 +2986,7 @@
     "description": "$1 is a bolded text with the message from 'holdToRevealContentPrivateKey2'"
   },
   "holdToRevealContentPrivateKey2": {
-    "message": "ganap na access sa iyong wallet at mga pondo.",
+    "message": "buong access sa iyong wallet at pondo.",
     "description": "Is the bolded text in 'holdToRevealContentPrivateKey2'"
   },
   "holdToRevealLockedLabel": {
@@ -2695,24 +3013,36 @@
   "honeypotTitle": {
     "message": "Honey Pot"
   },
+  "hyperliquidReferralCheckboxLabel": {
+    "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
+    "description": "The text for the checkbox label in the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
+  },
+  "hyperliquidReferralTitle": {
+    "message": "MetaMask x Hyperliquid",
+    "description": "The title of the Hyperliquid referral confirmation screen"
+  },
   "id": {
-    "message": "Id"
+    "message": "ID"
   },
   "ignoreAll": {
     "message": "Huwag pansinin ang lahat"
   },
   "ignoreTokenWarning": {
-    "message": "Kung itatago mo ang mga token, hindi ipapakita ang mga ito sa iyong wallet. Gayunpaman, maaari mo pa ring idagdag ang mga ito sa pamamagitan ng paghahanap sa kanila."
+    "message": "Kapag nagtago ka ng mga token, hindi iyon ipapakita sa iyong wallet. Gayunpaman, maaari mo pa ring idagdag ang mga ito sa pamamagitan ng paghahanap sa kanila."
   },
   "imToken": {
     "message": "imToken"
   },
   "import": {
-    "message": "Mag-import",
+    "message": "I-import",
     "description": "Button to import an account from a selected file"
   },
   "importAWallet": {
-    "message": "I-import ang wallet"
+    "message": "Mag-import ng wallet"
   },
   "importAccountError": {
     "message": "Error sa pag-import ng account."
@@ -2736,7 +3066,7 @@
     "message": "Ang mga na-import na account ay hindi mauugnay sa iyong Lihim na Parirala sa Pagbawi ng MetaMask. Matuto pa tungkol sa mga na-import na account"
   },
   "importAccountWithSocialMsg": {
-    "message": "Naka-back up ang mga na-import na pribadong key sa iyong account at awtomatikong nagsi-sync ang mga ito kapag nag-sign in ka gamit ang parehong Google o Apple login."
+    "message": "Naka-back up sa iyong account ang mga na-import na pribadong key at awtomatikong nagsi-sync ang mga ito kapag nag-sign in ka gamit ang parehong Google o Apple login."
   },
   "importAccountWithSocialMsgLearnMore": {
     "message": "$1 tungkol sa kung paano gumagana ang mga na-import na key",
@@ -2757,41 +3087,20 @@
   "importNFTTokenIdToolTip": {
     "message": "Ang ID ng NFT ay isang natatanging pagkakakilanlan dahil walang dalawang NFT ang magkatulad. Muli, sa OpenSea ang numerong ito ay nasa ilalim ng 'Mga Detalye'. Itala ito, o kopyahin ito sa iyong clipboard."
   },
-  "importNWordSRP": {
-    "message": "Mayroon akong $1 (na) word recovery phrase",
-    "description": "$1 is the number of words in the recovery phrase"
-  },
   "importPrivateKey": {
     "message": "Pribadong Key"
-  },
-  "importSRPDescription": {
-    "message": "Mag-import ng dati nang wallet gamit ang iyong 12 o 24 word secret recovery phrase."
-  },
-  "importSRPNumberOfWordsError": {
-    "message": "Naglalaman ang Secret Recovery Phrase ng 12 o 24 na salita"
-  },
-  "importSRPWordError": {
-    "message": "Mali ang salitang $1 o mali ang baybay nito.",
-    "description": "$1 is the word that is incorrect or misspelled"
-  },
-  "importSRPWordErrorAlternative": {
-    "message": "Mali ang salitang $1 at $2 o mali ang baybay ng mga ito.",
-    "description": "$1 and $2 are multiple words that are mispelled."
   },
   "importSecretRecoveryPhrase": {
     "message": "Mag-import ng Secret Recovery Phrase"
   },
-  "importSecretRecoveryPhraseUnknownError": {
-    "message": "Nagkaroon ng hindi matukoy na error."
-  },
   "importSelectedTokens": {
-    "message": "I-import ang mga napiling token?"
+    "message": "Mag-import ng napiling mga token?"
   },
   "importSelectedTokensDescription": {
-    "message": "Tanging ang mga token na iyong pinili ang lalabas sa iyong wallet. Maaari kang palaging mag-import ng mga nakatagong token sa ibang pagkakataon sa pamamagitan ng paghahanap sa mga ito."
+    "message": "Tanging ang mga token na iyong pinili ang lalabas sa iyong wallet. Maaari kang palaging mag-import ng mga nakatagong token sa ibang pagkakataon sa pamamagitan ng paghahanap sa kanila."
   },
   "importTokenQuestion": {
-    "message": "I-import ang token?"
+    "message": "Mag-import ng token?"
   },
   "importTokenWarning": {
     "message": "Sinumang ay maaaring gumawa ng token gamit ang alinmang pangalan, kabilang ang mga pekeng bersyon ng umiiral na mga token. Magdagdag at mag-trade sa sarili mong panganib!"
@@ -2802,11 +3111,12 @@
   "importTokensError": {
     "message": "Hindi namin ma-import ang mga token. Pakisubukan ulit mamaya."
   },
-  "importWallet": {
-    "message": "Mag-import ng wallet"
-  },
   "importWalletOrAccountHeader": {
     "message": "Mag-import ng wallet o account"
+  },
+  "importWalletSuccess": {
+    "message": "Na-import ang wallet na $1",
+    "description": "$1 is the index of the secret recovery phrase"
   },
   "importWithCount": {
     "message": "Mag-import ng $1",
@@ -2816,11 +3126,8 @@
     "message": "Na-import",
     "description": "status showing that an account has been fully loaded into the keyring"
   },
-  "inYourSettings": {
-    "message": "sa iyong Mga Setting"
-  },
   "included": {
-    "message": "kalakip"
+    "message": "kasama na"
   },
   "includesXTransactions": {
     "message": "Kabilang ang $1 (na) transaksyon"
@@ -2831,6 +3138,9 @@
   },
   "initialTransactionConfirmed": {
     "message": "Nakumpirma na ng network ang iyong inisyal na transaksyon. I-click ang OK para bumalik."
+  },
+  "insights": {
+    "message": "Mga pananaw"
   },
   "insightsFromSnap": {
     "message": "Mga kaalaman mula sa $1",
@@ -2853,7 +3163,7 @@
     "message": "Hindi sapat ang balanse."
   },
   "insufficientFunds": {
-    "message": "Hindi sapat ang pondo."
+    "message": "Hindi sapat ang mga pondo."
   },
   "insufficientFundsForGas": {
     "message": "Di sapat na pondo para sa gas"
@@ -2886,7 +3196,7 @@
     "message": "Di-wastong address"
   },
   "invalidAddressRecipient": {
-    "message": "Ang address ng tatanggap ay hindi wasto"
+    "message": "Di-wastong address ng tatanggap"
   },
   "invalidAssetType": {
     "message": "Ang asset na ito ay isang NFT at kailangang idagdag muli sa pahina ng Mag-import ng mga NFT na matatagpuan sa ilalim ng tab ng mga NFT"
@@ -2933,10 +3243,10 @@
     "message": "Di-wastong Lihim na Parirala sa Pagbawi"
   },
   "invalidSeedPhraseCaseSensitive": {
-    "message": "Di-wastong input! Ang Lihim na Parirala sa Pagbawi ay case sensitive."
+    "message": "Di-wastong input! Case sensitive ang Lihim na Parirala sa Pagbawi."
   },
   "invalidSeedPhraseNotFound": {
-    "message": "Hindi nahanap ang Lihim na Parirala sa Pagbawi."
+    "message": "Walang nahanap na Secret Recovery Phrase."
   },
   "invalidValue": {
     "message": "Di-wastong value"
@@ -2945,20 +3255,20 @@
     "message": "IPFS gateway"
   },
   "ipfsGatewayDescription": {
-    "message": "Ang MetaMask ay gumagamit ng mga serbisyo ng third-party para ipakita ang mga imahe ng iyong mga NFT na nakaimbak sa IPFS, nagpapakita ng impormasyong nauugnay sa mga ENS address na ipinakita sa address bar ng iyong browser, at kinukuha ang mga icon para sa iba't ibang token. Ang iyong IP address ay maaaring ipakita sa mga serbisyong ito kapag ginagamit mo ang mga iyon."
+    "message": "Ang MetaMask ay gumagamit ng mga serbisyo ng third-party para ipakita ang mga imahe sa iyong mga NFT na nakaimbak sa IPFS, nagpapakita ng impormasyong nauugnay sa mga ENS address na ipinakita sa address bar ng iyong browser, at kinukuha ang mga icon para sa iba't ibang token. Ang iyong IP address ay maaaring ipakita sa mga serbisyong ito kapag ginagamit mo ang mga iyon."
   },
   "ipfsToggleModalDescriptionOne": {
-    "message": "Gumagamit kami ng mga serbisyo ng third-party para ipakita ang imahe ng mga NFT na inimbak mo sa IPFS, nagpapakita ng impormasyong nauugnay sa mga ENS address na inilagay sa address bar ng browser mo, at kinukuha ang mga icon para sa iba't ibang token. Ang Iyong IP address ay maaaring makita ng iba sa mga serbisyong ito kapag ginagamit mo ang mga ito."
+    "message": "Gumagamit kami ng mga serbisyo ng third-party upang ipakita ang mga imahe ng iyong mga NFT na nakaimbak sa IPFS, nagpapakita ng impormasyon na nauugnay sa mga ENS address na inilagay sa address bar ng iyong browser, at fetch icon para sa iba't ibang token. Maaaring malantad ang iyong IP address sa mga serbisyong iyon kapag ginagamit mo ang mga iyon."
   },
   "ipfsToggleModalDescriptionTwo": {
     "message": "Ang pagpili sa Kumpirmahin ay nagbubukas sa IPFS resolution. Maaari mo itong isara sa loob ng $1 kahit anong oras.",
     "description": "$1 is the method to turn off ipfs"
   },
   "ipfsToggleModalSettings": {
-    "message": "Mga Setting > Seguridad at pagkapribado"
+    "message": "Settings > Seguridad at pagkapribado"
   },
   "isSigningOrSubmitting": {
-    "message": "Isang nakaraang transaksyon ay pinipirmahan o ipinapasa"
+    "message": "May nakaraang transaksyon na pinipirmahan o isinusumite pa"
   },
   "jazzicons": {
     "message": "Mga Jazzicon"
@@ -2968,10 +3278,10 @@
     "description": "format for importing an account"
   },
   "keyringAccountName": {
-    "message": "Pangalan ng Account"
+    "message": "Pangalan ng account"
   },
   "keyringAccountPublicAddress": {
-    "message": "Pampublikong Address"
+    "message": "Public Address"
   },
   "keyringSnapRemovalResult1": {
     "message": "Inalis ang $1 $2",
@@ -3016,7 +3326,7 @@
     "message": "Para sa iyong kaligtasan, ang pagpil ng tekstong ito ay hindi available ngayon."
   },
   "layer1Fees": {
-    "message": "Layer 1 na bayad"
+    "message": "Layer 1 fees"
   },
   "layer2Fees": {
     "message": "Layer 2 na bayad"
@@ -3032,16 +3342,16 @@
     "description": "$1 will be replaced by the learnMore translation key"
   },
   "learnMoreAboutPrivacy": {
-    "message": "Matuto pa tungkol sa pinakamahusay na mga kasanayan sa pagkapribado."
+    "message": "Matuto pa tungkol sa pinakamahusay na mga gawain sa pagkapribado."
   },
   "learnMoreKeystone": {
-    "message": "Matuto Pa"
+    "message": "Matuto pa"
   },
   "learnMoreUpperCase": {
     "message": "Matuto pa"
   },
   "learnMoreUpperCaseWithDot": {
-    "message": "Matuto pa."
+    "message": "Matuto pa"
   },
   "learnScamRisk": {
     "message": "mga panloloko at panganib sa seguridad."
@@ -3062,7 +3372,7 @@
     "message": "Bago ang pag-click ng kumpirmahin:"
   },
   "ledgerConnectionInstructionStepFour": {
-    "message": "Paganahin ang \"data ng smart na kontrata\" o \"blind signing\" sa iyong Ledger device."
+    "message": "Paganahin ang \"smart contract data\" o \"may takip na pagpirma\" sa iyong Ledger device."
   },
   "ledgerConnectionInstructionStepThree": {
     "message": "Tiyaking naka-plug in ang iyong Ledger at piliin ang Ethereum app."
@@ -3081,6 +3391,9 @@
   },
   "ledgerErrorTransactionDataNotPadded": {
     "message": "Ang input data ng transaksyon sa Ethereum ay hindi sapat na naka-pad."
+  },
+  "ledgerEthAppNftNotSupportedNotification": {
+    "message": "Hindi makapagpadala o makapamahala ang Ledger Nano S ng mga Ethereum NFT. Tingnan ang mga opsyon ng pag-upgrade sa https://shop.ledger.com/pages/ledger-nano-s-upgrade-program"
   },
   "ledgerFirefoxNotSupportedDescription1": {
     "message": "Nagkakaproblema kami sa pagkonekta sa Ledger. Basahin ang aming "
@@ -3129,7 +3442,10 @@
     "message": "Gusto mo bang i-import ang mga token na ito?"
   },
   "lineaGoerli": {
-    "message": "Linea Goerli test network"
+    "message": "Network ng pagsubok ng Linea Goerli"
+  },
+  "lineaMainnet": {
+    "message": "Linea"
   },
   "lineaSepolia": {
     "message": "Linea Sepolia test network"
@@ -3164,6 +3480,9 @@
   "lockMetaMask": {
     "message": "I-lock ang MetaMask"
   },
+  "lockMetaMaskLoadingMessage": {
+    "message": "Nila-lock ang MetaMask..."
+  },
   "lockTimeInvalid": {
     "message": "Ang lock time ay dapat na isang numero sa pagitan ng 0 at 10080"
   },
@@ -3171,7 +3490,7 @@
     "message": "Subukang muli"
   },
   "loginErrorConnectDescription": {
-    "message": "Hindi tuloy-tuloy ang iyong koneksyon sa internet. Suriin ang iyong koneksyon at subukang muli."
+    "message": "Hindi maganda ang iyong koneksyon sa internet. Suriin ang iyong koneksyon at subukang muli."
   },
   "loginErrorConnectTitle": {
     "message": "Hindi makakonekta"
@@ -3184,10 +3503,10 @@
     "description": "$1 is the key 'loginErrorGenericSupport'"
   },
   "loginErrorGenericSupport": {
-    "message": "Suporta sa Metamask"
+    "message": "Suporta ng MetaMask"
   },
   "loginErrorGenericTitle": {
-    "message": "Nagkaproblema"
+    "message": "Mayroong nang mali"
   },
   "loginErrorSessionExpiredButton": {
     "message": "Mag-log in"
@@ -3203,7 +3522,7 @@
     "description": "$1 is the name of the ticker"
   },
   "low": {
-    "message": "Mababa"
+    "message": "Low"
   },
   "lowEstimatedReturnTooltipMessage": {
     "message": "Magbabayad ka ng higit sa $1% ng iyong panimulang halaga sa mga bayad. Tingnan ang matatanggap mong halaga at ang mga bayad sa network."
@@ -3216,7 +3535,7 @@
     "description": "$1 is key 'low' separated here so that it can be passed in with bold font-weight"
   },
   "lowLowercase": {
-    "message": "mababa"
+    "message": "low"
   },
   "mainnet": {
     "message": "Ethereum Mainnet"
@@ -3249,8 +3568,17 @@
   "marketCap": {
     "message": "Market cap"
   },
+  "marketCapFDV": {
+    "message": "Market cap (FDV)"
+  },
   "marketDetails": {
     "message": "Mga detalye ng market"
+  },
+  "marketRate": {
+    "message": "Rate ng market"
+  },
+  "maskicons": {
+    "message": "Mga Polycon"
   },
   "max": {
     "message": "Max"
@@ -3258,14 +3586,17 @@
   "maxBaseFee": {
     "message": "Pinakamataas na batayang bayad"
   },
+  "maxBaseFeeMustBeGreaterThanPriorityFee": {
+    "message": "Ang pinakamataas na batayang babayaran o base fee ay mas malaki kaysa sa bayad sa priyoridad"
+  },
   "maxFee": {
-    "message": "Pinakamataas na bayad"
+    "message": "Max fee"
   },
   "maxFeeTooltip": {
     "message": "Ang pinakamalaking bayad na inilaan para bayaran ang transaksyon."
   },
   "maxPriorityFee": {
-    "message": "Pinakamataas na bayad sa priyoridad"
+    "message": "Max priority fee"
   },
   "medium": {
     "message": "Market"
@@ -3299,6 +3630,9 @@
   "metamaskNotificationsAreOff": {
     "message": "Hindi active sa kasalukuyan ang mga notipikasyon sa wallet."
   },
+  "metamaskSwap": {
+    "message": "Pag-swap sa MetaMask"
+  },
   "metamaskSwapsOfflineDescription": {
     "message": "Kasalukuyang minementina ang MetaMask Swaps. Bumalik sa ibang pagkakataon."
   },
@@ -3316,6 +3650,15 @@
   },
   "metrics": {
     "message": "Metrics"
+  },
+  "minimumReceivedExplanation": {
+    "message": "Ang pinakamababang halaga na iyong matatanggap kapag nagbago ang presyo habang pinoproseso ang iyong transaksyon, batay sa setting ng iyong slippage. Mula sa pagtatantiya ang mga liquidity provider, kaya psibleng mag-iba ang huling halaga."
+  },
+  "minimumReceivedExplanationTitle": {
+    "message": "Natanggap na ang Minimum na Halaga"
+  },
+  "minimumReceivedLabel": {
+    "message": "Natanggap na ang minimum"
   },
   "mismatchedChainLinkText": {
     "message": "i-verify ang mga detalye ng network",
@@ -3343,8 +3686,14 @@
   "missingSettingRequest": {
     "message": "Humiling dito"
   },
+  "month": {
+    "message": "buwan"
+  },
+  "monthly": {
+    "message": "Buwanan"
+  },
   "more": {
-    "message": "higit pa"
+    "message": "iba pa"
   },
   "moreAccounts": {
     "message": "+ $1 pang mga account",
@@ -3366,7 +3715,7 @@
     "description": "Button text to learn more about multichain accounts"
   },
   "multichainAccountIntroSameAddressDescription": {
-    "message": "Pinagsama-sama na namin ang iyong mga accout, kaya ipagpatuloy lang ang paggamit ng MetaMask gaya ng dati. Ligtas at hindi nagbabago ang iyong mga pondo.",
+    "message": "Pinaggrupo na namin ang iyong mga account, kaya magpatuloy lang gamitin ang MetaMask gaya ng dati. Ligtas at hindi nagbago ang iyong mga pondo.",
     "description": "Description explaining that accounts have been merged"
   },
   "multichainAccountIntroSameAddressTitle": {
@@ -3399,6 +3748,9 @@
   },
   "multichainAddEthereumChainConfirmationDescription": {
     "message": "Idinadagdag mo ang network na ito sa MetaMask at binibigyan ng pahintulot ang site na ito na gamitin ito."
+  },
+  "multichainAddressViewAll": {
+    "message": "Tingnan lahat"
   },
   "multichainQuoteCardRateExplanation": {
     "message": "Ang pinakamagandang rate na nakita namin mula sa mga provider, kabilang ang bayad sa provider at $1% bayad sa MetaMask."
@@ -3443,6 +3795,10 @@
     "message": "Nagdagdag ka ng palayaw para sa address na ito noon. Maaari mong i-edit o tingnan ang iba pang mungkahing palayaw.",
     "description": "Instruction text in name component modal when value is saved."
   },
+  "nameInstructionsWarning": {
+    "message": "Hindi namin maberipika ang address na ito. Maaring ito ay bago o hindi pa nabeberipika. Magtakda ng personal na display name para makilala ito sa susunod.",
+    "description": "Instruction text in name component modal when address has warning signals."
+  },
   "nameLabel": {
     "message": "Palayaw",
     "description": "Label above name input field in name component modal."
@@ -3471,6 +3827,10 @@
     "message": "Na-verify na address",
     "description": "Title of the modal created by the name component when address is verified."
   },
+  "nameModalTitleWarning": {
+    "message": "Kailangang Suriin ang Address",
+    "description": "Title of the modal created by the name component when address has warning trust signals."
+  },
   "nameProviderProposedBy": {
     "message": "Minungkahi ng $1",
     "description": "$1 is the name of the provider"
@@ -3486,6 +3846,9 @@
   },
   "nameProvider_token": {
     "message": "MetaMask"
+  },
+  "nameResolutionFailedError": {
+    "message": "Walang nahanap na resolusyon ng address para sa pangalang ito."
   },
   "nameSetPlaceholder": {
     "message": "Pumili ng palayaw...",
@@ -3522,7 +3885,7 @@
     "message": "Ibahagi ang iyong Feedback"
   },
   "needHelpLinkText": {
-    "message": "Suporta sa MetaMask"
+    "message": "suporta ng MetaMask"
   },
   "needHelpSubmitTicket": {
     "message": "Magsumite ng ticket"
@@ -3537,6 +3900,9 @@
   "negativeOrZeroAmountToken": {
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
+  "negativeValuesNotAllowed": {
+    "message": "Hindi pinapayagan ang mga negatibong halaga"
+  },
   "network": {
     "message": "Network"
   },
@@ -3548,10 +3914,16 @@
     "description": "$1 is the name of the network"
   },
   "networkDetails": {
-    "message": "Mga Detalye ng Network"
+    "message": "Mga detalye ng network"
   },
   "networkFee": {
     "message": "Bayad sa network"
+  },
+  "networkFeeExplanation": {
+    "message": "Nagbabago ang bayad sa network depende kung gaano karami ang gumagamit at kung gaano kahirap ang transaksyon mo."
+  },
+  "networkFeeExplanationTitle": {
+    "message": "Bayad sa Network"
   },
   "networkIsBusy": {
     "message": "Busy ang network. Ang presyo ng gas ay mataas at ang pagtantya ay hindi gaanong tumpak."
@@ -3580,6 +3952,9 @@
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
+  "networkNameBitcoinSegwit": {
+    "message": "Native SegWit ng Bitcoin"
+  },
   "networkNameDefinition": {
     "message": "Ang pangalan ay nauugnay sa network na ito."
   },
@@ -3592,6 +3967,9 @@
   "networkNameLinea": {
     "message": "Linea"
   },
+  "networkNameOpMainnet": {
+    "message": "OP"
+  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
@@ -3601,6 +3979,9 @@
   "networkNameTestnet": {
     "message": "Testnet"
   },
+  "networkNameTron": {
+    "message": "Tron"
+  },
   "networkNameZkSyncEra": {
     "message": "zkSync Era"
   },
@@ -3608,7 +3989,7 @@
     "message": "Mga pagpipilian na network"
   },
   "networkPermissionToast": {
-    "message": "In-update ang mga pahintulot ng network"
+    "message": "Na-update ang mga pahintulot sa network"
   },
   "networkProvider": {
     "message": "Network provider"
@@ -3627,6 +4008,9 @@
     "message": "Ang mga bayad sa gas na $1 ay nauugnay sa huling 72 oras.",
     "description": "$1 is networks stability value - stable, low, high"
   },
+  "networkSuggested": {
+    "message": "Iminungkahing network"
+  },
   "networkTabCustom": {
     "message": "Custom"
   },
@@ -3634,7 +4018,7 @@
     "message": "Sikat"
   },
   "networkURL": {
-    "message": "URL Network"
+    "message": "Network URL"
   },
   "networkURLDefinition": {
     "message": "Ang URL ay ginamit upang ma-access ang network na ito."
@@ -3656,7 +4040,14 @@
     "message": "Bago!"
   },
   "newAccount": {
-    "message": "Bagong Account"
+    "message": "Bagong account"
+  },
+  "newAccountIconMessage": {
+    "message": "Ni-refresh namin ang mga icon ng account para matulungan kang makilala nang mas madali ang iyong mga account. Maaari mong palitan ang estilo nito sa $1 > $2 > $3.",
+    "description": "$1, $2, and $3 are bold text for Settings, General, and Account icon respectively"
+  },
+  "newAccountIconTitle": {
+    "message": "Icon ng bagong account"
   },
   "newAccountNumberName": {
     "message": "Account $1",
@@ -3676,10 +4067,10 @@
     "description": "$1 is used for newNFTDetectedInImportNFTsMessageStrongText"
   },
   "newNFTDetectedInNFTsTabMessage": {
-    "message": "Hayaan ang MetaMask na awtomatikong i-detect at magpakita ng mga NFT sa iyong wallet."
+    "message": "Hayaan ang MetaMask na awtomatikong i-detect at ipakita ang mga NFT sa iyong wallet."
   },
   "newNFTsAutodetected": {
-    "message": "NFT autodetection"
+    "message": "Awtomatikong pagtuklas ng NFT"
   },
   "newNetworkAdded": {
     "message": "Ang “$1” matagumpay na naidagdag!"
@@ -3728,8 +4119,8 @@
   "nftAutoDetectionEnabled": {
     "message": "Pinagana ang autodetection ng NFT"
   },
-  "nftDisclaimer": {
-    "message": "Disclaimer: Kinukuha ng MetaMask ang media file mula sa pinagmulang url. Ang url na ito kung minsan ay pinapalitan ng marketplace kung saan nalikha ang NFT."
+  "nftEmptyDescription": {
+    "message": "Malawak ang mundo ng mga NFT. Simulan mo na ang iyong koleksyon ngayon."
   },
   "nftOptions": {
     "message": "Mga Pagpipilian sa NFT"
@@ -3760,12 +4151,6 @@
   "noAccountsFound": {
     "message": "Walang nakitang account para sa ibinigay na query sa paghahanap"
   },
-  "noConnectedAccountTitle": {
-    "message": "Ang MetaMask ay hindi nakakonekta sa site na ito"
-  },
-  "noConnectionDescription": {
-    "message": "Para kumonekta sa site, hanapin at piliin ang \"connect\" button. Tandaan na ang MetaMask ay maaari lamang kumonekta sa mga site sa web3"
-  },
   "noConversionRateAvailable": {
     "message": "Hindi available ang rate ng palitan"
   },
@@ -3775,8 +4160,14 @@
   "noHardwareWalletOrSnapsSupport": {
     "message": "Ang mga Snap, at karamihan sa mga hardware wallet, ay hindi gagana sa iyong kasalukuyang bersyon ng browser."
   },
+  "noMMFeeSwapping": {
+    "message": "Walang bayad sa MM sa pagsu-swap sa $1."
+  },
+  "noNetworkFee": {
+    "message": "Walanag bayad sa network"
+  },
   "noNetworksAvailable": {
-    "message": "Walang available na mga network"
+    "message": "Walang available na network"
   },
   "noNetworksFound": {
     "message": "Walang nakitang mga network para sa ibinigay na tanong ng paghahanap"
@@ -3789,6 +4180,9 @@
   },
   "noSnaps": {
     "message": "Wala kang naka-install na snaps."
+  },
+  "noTokensMatchingYourFilters": {
+    "message": "Walang token na tumutugma sa mga filter mo"
   },
   "noWebcamFound": {
     "message": "Hindi nakita ang webcam ng iyong computer. Pakisubukan ulit."
@@ -3857,7 +4251,7 @@
     "message": "Hindi mabawi ang mga bayarin sa kasalukuyan"
   },
   "notificationItemFrom": {
-    "message": "Mula kay/sa"
+    "message": "Mula sa/kay"
   },
   "notificationItemLidoStakeReadyToBeWithdrawn": {
     "message": "Handa na ang Pag-withdraw"
@@ -3896,19 +4290,19 @@
     "message": "Nakumpleto ang pag-stake"
   },
   "notificationItemStaked": {
-    "message": "Nai-stake"
+    "message": "Naka-stake"
   },
   "notificationItemStakingProvider": {
     "message": "Tagapagbigay ng Staking"
   },
   "notificationItemStatus": {
-    "message": "Katayuan"
+    "message": "Status"
   },
   "notificationItemSwapped": {
     "message": "Nai-swap"
   },
   "notificationItemSwappedFor": {
-    "message": "para kay/sa"
+    "message": "sa"
   },
   "notificationItemTo": {
     "message": "Sa/Kay"
@@ -3946,7 +4340,7 @@
     "description": "Additional content in a notification that appears when a transaction is confirmed and has a block explorer URL."
   },
   "notifications": {
-    "message": "Mga Abiso"
+    "message": "Mga notipikasyon"
   },
   "notificationsFeatureToggle": {
     "message": "Paganahin ang Mga Wallet Notification",
@@ -3972,16 +4366,16 @@
     "message": "Hindi ka pa nakatanggap ng anumang notipikasyon."
   },
   "notificationsSettingsBoxError": {
-    "message": "Nagkaproblema. Pakisubukan muli."
+    "message": "Nagkaproblema. Subukang muli."
   },
   "notificationsSettingsPageAllowNotifications": {
     "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notipikasyon. Para gamitin ang mga notipikasyon, gumagamit kami ng profile para i-sync ang ilang mga setting sa lahat ng iyong mga device. $1"
   },
   "notificationsSettingsPageAllowNotificationsLink": {
-    "message": "Matutunan kung paano namin protektahan ang iyong pagkapribado habang gamit ang tampok na ito."
+    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
   },
   "numberOfNewTokensDetectedPlural": {
-    "message": "$1 (na) bagong token ang nakita sa account na ito",
+    "message": "$1 bagong token ang nakita sa account na ito",
     "description": "$1 is the number of new tokens detected"
   },
   "numberOfNewTokensDetectedSingular": {
@@ -3994,7 +4388,7 @@
     "message": "ng"
   },
   "off": {
-    "message": "Naka-off"
+    "message": "I-off"
   },
   "offlineForMaintenance": {
     "message": "Offline para sa pagmamantini"
@@ -4009,7 +4403,7 @@
     "message": "Sumasang-ayon ako"
   },
   "onboardedMetametricsDisagree": {
-    "message": "Huwag na lang"
+    "message": "Salamat na lang"
   },
   "onboardedMetametricsKey1": {
     "message": "Pinakabagong mga pagpapaunlad"
@@ -4037,7 +4431,7 @@
     "message": "Tulungan kami na paghusayin ang iyong karanasan"
   },
   "onboardingAdvancedPrivacyIPFSDescription": {
-    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
+    "message": "Ginagawang posible ng IPFS gateway na ma-access at makita ang datos na pinangangasiwaan ng mga third-party. Maaari kang magdagdag ng custom na IPFS gateway o magpatuloy sa paggamit ng default."
   },
   "onboardingAdvancedPrivacyIPFSInvalid": {
     "message": "Maglagay ng wastong URL"
@@ -4067,44 +4461,46 @@
   "onboardingImportWallet": {
     "message": "Mayroon na akong umiiral na wallet"
   },
+  "onboardingLoginFooter": {
+    "message": "Sa pagpapatuloy, sumasang-ayon ako sa $1 and $2 ng MetaMask"
+  },
+  "onboardingLoginFooterPrivacyNotice": {
+    "message": "Patakaran sa pagkapribado"
+  },
   "onboardingLoginFooterTermsOfUse": {
     "message": "Mga Tuntunin ng Paggamit"
   },
+  "onboardingMetametricCheckboxDescriptionOne": {
+    "message": "Mangongolekta kami ng pangunahing data ng paggamit ng produkto tulad ng pangkalahatang lokasyon, mga pag-click, at mga pagtingin. Wala ng ibang impormasyon na kukuhanin."
+  },
+  "onboardingMetametricCheckboxDescriptionTwo": {
+    "message": "Gagamitin namin ang data na ito upang matutunan kung paano ka nakikipag-ugnayan sa aming mga komunikasyon sa marketing. Maaari kaming magbahagi ng kaugnay na balita (tulad ng mga tampok ng produkto)."
+  },
+  "onboardingMetametricCheckboxTitleOne": {
+    "message": "Mangalap ng pangunahing data ng paggamit"
+  },
+  "onboardingMetametricCheckboxTitleTwo": {
+    "message": "Mga update sa produkto"
+  },
+  "onboardingMetametricsContinue": {
+    "message": "Magpatuloy"
+  },
+  "onboardingMetametricsDescription": {
+    "message": "Nais naming humiling ng mga pahintulot na ito. Maaari kang tumangging pumayag o tanggalin ang iyong data ng paggamit anumang oras."
+  },
   "onboardingMetametricsTitle": {
-    "message": "Tulungan kaming mapahusay ang MetaMask"
+    "message": "Tumulong na mapahusay ang MetaMask"
   },
   "onboardingOptionIcon": {
     "message": "$1 icon",
     "description": "$1 is the icon name"
-  },
-  "onboardingOptionTitle": {
-    "message": "Pumili ng opsyon para magpatuloy"
-  },
-  "onboardingPinExtensionAltLaunch": {
-    "message": "Ilunsad ang extension"
-  },
-  "onboardingPinExtensionAltPin": {
-    "message": "I-pin ang extension"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "I-pin ang MetaMask sa iyong browser para madali itong ma-access at madaling makita ang mga kumpirmasyon ng transaksyon."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "I-access ang iyong MetaMask wallet sa 1 click sa pamamagitan ng pag-click sa extension."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "I-click ang $1 extension icon para ma-access ito kaagad",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "Tapos na ang pag-install!"
   },
   "onboardingSignInWith": {
     "message": "Mag-sign in gamit ang $1",
     "description": "$1 is the type of login used Google, Apple, etc"
   },
   "onboardingSrpCreate": {
-    "message": "Gumamit ng Lihim na Parirala sa Pagbawi"
+    "message": "Gamitin ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
   },
   "onboardingSrpImport": {
     "message": "I-import gamit ang Lihim na Parirala sa Pagbawi"
@@ -4116,7 +4512,7 @@
     "message": "I-clear lahat"
   },
   "onboardingSrpInputPlaceholder": {
-    "message": "Magdagdag ng espasyo sa bawat salita at tiyakin na walang nanonood."
+    "message": "Maglagay ng patlang sa pagitan ng bawat salita at tiyaking walang sinuman ang nakatingin."
   },
   "onekey": {
     "message": "OneKey"
@@ -4128,6 +4524,15 @@
     "message": "Kumonekta lang sa mga site na pinagkakatiwalaan mo. $1",
     "description": "Text displayed above the buttons for connection confirmation. $1 is the link to the learn more web page."
   },
+  "onlyIntegersAllowed": {
+    "message": "Mga buong numero lang ang pinapayagan"
+  },
+  "onlyNumbersAllowed": {
+    "message": "Mga numero lamang ang pinapayagan"
+  },
+  "openFullScreen": {
+    "message": "Buksan ang buong screen"
+  },
   "openFullScreenForLedgerWebHid": {
     "message": "Pumunta sa full screen para ikonekta ang iyong Ledger.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
@@ -4135,11 +4540,17 @@
   "openInBlockExplorer": {
     "message": "Buksan sa block explorer"
   },
+  "openSettings": {
+    "message": "Buksan ang mga setting"
+  },
+  "openWallet": {
+    "message": "Buksan ang wallet"
+  },
   "optional": {
     "message": "Opsyonal"
   },
   "options": {
-    "message": "Mga pagpipilian"
+    "message": "Mga Opsyon"
   },
   "or": {
     "message": "O"
@@ -4160,6 +4571,12 @@
   "other": {
     "message": "iba pa"
   },
+  "otherPermissionsOnSiteDescription": {
+    "message": "Nahanap rin ang mga sumusunod na pahintulot sa site na ito. Gusto mo bang alisin ang mga ito?"
+  },
+  "otherPermissionsOnSiteTitle": {
+    "message": "Iba pang mga pahintulot sa site na ito"
+  },
   "otherSnaps": {
     "message": "iba pang mga snap",
     "description": "Used in the 'permission_rpc' message."
@@ -4179,6 +4596,9 @@
   "padlock": {
     "message": "Padlock"
   },
+  "paidByMetaMask": {
+    "message": "Binayaran ng MetaMask"
+  },
   "participateInMetaMetrics": {
     "message": "Sumali sa MetaMetrics"
   },
@@ -4189,13 +4609,19 @@
     "message": "Password"
   },
   "passwordChangedRecently": {
-    "message": "Napalitan ang iyong password"
+    "message": "Binago ang iyong password"
   },
   "passwordChangedRecentlyDescription": {
     "message": "Ilagay ang iyong bagong password para manatiling naka-log in sa MetaMask."
   },
+  "passwordNotLongEnough": {
+    "message": "Hindi dapat bababa sa 8 karakter"
+  },
+  "passwordTermsWarning": {
+    "message": "Kapag naiwala ko ang password na ito, hindi ito maire-reset ng MetaMask."
+  },
   "passwordTermsWarningSocial": {
-    "message": "Kung makakalimutan ko ang password na ito, permanente akong mawawalan ng access sa aking wallet. Hindi ito mare-reset ng MetaMask para sa akin."
+    "message": "Kung makakalimutan ko ang password na ito, permanente akong mawawalan ng access sa aking wallet. Hindi ito maire-reset ng MetaMask para sa akin."
   },
   "passwordToggleHide": {
     "message": "Itago ang Password"
@@ -4204,7 +4630,7 @@
     "message": "Ipakita ang Password"
   },
   "passwordsDontMatch": {
-    "message": "Hindi Magkatugma ang Mga Password"
+    "message": "Hindi magkatugma ang mga password"
   },
   "paste": {
     "message": "I-paste"
@@ -4232,8 +4658,11 @@
     "message": "Alamin kung paano kanselahin o pabilisin ang transaksyon.",
     "description": "The text for the hyperlink in the pending transaction alert message"
   },
-  "permissionDetails": {
-    "message": "Mga detalye ng permiso"
+  "perSecond": {
+    "message": "bawat segundo"
+  },
+  "percentChange": {
+    "message": "Pagbabago ng porsiyento"
   },
   "permissionFor": {
     "message": "Pahintulot para sa"
@@ -4260,7 +4689,7 @@
     "description": "The description for the `wallet_snap` permission. $1 is the human-readable name of the snap."
   },
   "permission_accessNetwork": {
-    "message": "I-access ang Internet.",
+    "message": "I-access ang internet.",
     "description": "The description of the `endowment:network-access` permission."
   },
   "permission_accessNetworkDescription": {
@@ -4304,7 +4733,7 @@
     "description": "The description for the `eth_accounts` permission"
   },
   "permission_ethereumProvider": {
-    "message": "I-access ang provider ng Ethereum.",
+    "message": "I-access ang Ethereum provider.",
     "description": "The description for the `endowment:ethereum-provider` permission"
   },
   "permission_ethereumProviderDescription": {
@@ -4328,7 +4757,7 @@
     "description": "An extended description for the `snap_getLocale` permission. $1 is the snap name."
   },
   "permission_getPreferences": {
-    "message": "Tingnan ang impormasyon tulad ng gusto mong wika at fiat na salapi.",
+    "message": "Tingnan ang impormasyon gaya ng gusto mong wika at fiat currency.",
     "description": "The description for the `snap_getPreferences` permission"
   },
   "permission_getPreferencesDescription": {
@@ -4336,7 +4765,7 @@
     "description": "An extended description for the `snap_getPreferences` permission. $1 is the snap name."
   },
   "permission_homePage": {
-    "message": "Magpakita ng custom na screen",
+    "message": "Ipakita ang custom screen",
     "description": "The description for the `endowment:page-home` permission"
   },
   "permission_homePageDescription": {
@@ -4352,7 +4781,7 @@
     "description": "An extended description for the `endowment:keyring` permission. $1 is the snap name."
   },
   "permission_lifecycleHooks": {
-    "message": "Gumagamit ng mga lifecycle hook.",
+    "message": "Gamitin ang mga lifecycle hook.",
     "description": "The description for the `endowment:lifecycle-hooks` permission"
   },
   "permission_lifecycleHooksDescription": {
@@ -4388,7 +4817,7 @@
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
   },
   "permission_nameLookup": {
-    "message": "Magbigay ng mga domain at address lookup.",
+    "message": "Magbigay ng domain at mga address lookup.",
     "description": "The description for the `endowment:name-lookup` permission."
   },
   "permission_nameLookupDescription": {
@@ -4424,7 +4853,7 @@
     "description": "A list of allowed origins where $2 is the last origin of the list and $1 is the rest of the list separated by ','."
   },
   "permission_signatureInsight": {
-    "message": "I-display ang signature insights modal.",
+    "message": "Ipakita ang lagda ng insights modal.",
     "description": "The description for the `endowment:signature-insight` permission"
   },
   "permission_signatureInsightDescription": {
@@ -4448,7 +4877,7 @@
     "description": "An extended description for the `endowment:transaction-insight` permission. $1 is the snap name."
   },
   "permission_transactionInsightOrigin": {
-    "message": "Tingnan ang pinagmulan ng mga website na nagmumungkahi ng mga transaksyon",
+    "message": "Tingnan ang mga pinagmulan ng mga website na nagmumungkahi ng mga transaksyon",
     "description": "The description for the `transactionOrigin` caveat, to be used with the `endowment:transaction-insight` permission"
   },
   "permission_transactionInsightOriginDescription": {
@@ -4468,11 +4897,11 @@
     "description": "An extended description for the `snap_getBip32PublicKey` permission. $1 is a derivation path (name). $2 is the snap name."
   },
   "permission_viewNamedBip32PublicKeys": {
-    "message": "Tingnan ang iyong pampublikong key para sa $1.",
+    "message": "Tingnan ang pampublikong key para sa $1.",
     "description": "The description for the `snap_getBip32PublicKey` permission. $1 is a name for the derivation path, e.g., 'Ethereum accounts'."
   },
   "permission_walletSwitchEthereumChain": {
-    "message": "Gamitin ang iyong naka-enable na network",
+    "message": "Gamitin ang iyong mga naka-enable na network",
     "description": "The label for the `wallet_switchEthereumChain` permission"
   },
   "permission_webAssembly": {
@@ -4486,12 +4915,6 @@
   "permissions": {
     "message": "Mga Pahintulot"
   },
-  "permissionsPageEmptyContent": {
-    "message": "Walang makikita dito"
-  },
-  "permissionsPageEmptySubContent": {
-    "message": "Dito mo makikita ang mga pahintulot na iyong binigay sa mga naka-install na Snap o konektadong site."
-  },
   "permitSimulationChange_approve": {
     "message": "Limitasyon sa paggastos"
   },
@@ -4499,7 +4922,7 @@
     "message": "Nag-bid ka ng"
   },
   "permitSimulationChange_listing": {
-    "message": "Nag-list ka ng"
+    "message": "Naglista ka ng"
   },
   "permitSimulationChange_nft_listing": {
     "message": "Presyo ng listing"
@@ -4514,7 +4937,7 @@
     "message": "Nagpadala ka ng"
   },
   "permitSimulationDetailInfo": {
-    "message": "Binibigyan mo ang gumagastos ng permiso upang gumastos ng ganito karaming token mula sa iyong account."
+    "message": "Binibigyan mo ng pahintulot ang gumagastos na gastusin ang ganito karaming token mula sa account mo."
   },
   "permittedChainToastUpdate": {
     "message": "Ang $1 ay may access sa $2."
@@ -4526,22 +4949,27 @@
     "message": "I-pin",
     "description": "Pin label used in multichain account menu"
   },
+  "pinMetaMask": {
+    "message": "I-pin ang extension ng MetaMask"
+  },
+  "pinMetaMaskDescription": {
+    "message": "I-click ang $1 at pagkatapos ay ang $2 para i-pin ito."
+  },
   "pinToTop": {
     "message": "I-pin sa itaas"
   },
+  "pinned": {
+    "message": "Naka-pin"
+  },
   "pleaseConfirm": {
     "message": "Pakikumpirma"
-  },
-  "plusMore": {
-    "message": "+ $1 pa",
-    "description": "$1 is the number of additional items"
   },
   "plusXMore": {
     "message": "+ $1 pa",
     "description": "$1 is a number of additional but unshown items in a list- this message will be shown in place of those items"
   },
   "popularNetworkAddToolTip": {
-    "message": "Umaasa sa mga third party ang ilan sa mga network na ito. Ang mga koneksyong ito ay maaaring hindi gaanong maaasahan o nagbibigay-daan sa mga third-party na sumubaybay ng aktibidad.",
+    "message": "Umaasa sa mga third-party ang ilan sa mga network na ito. Ang mga koneksyong ito ay maaaring hindi gaanong maaasahan o nagbibigay-daan sa mga third-party na sumubaybay ng aktibidad.",
     "description": "Learn more link"
   },
   "popularNetworks": {
@@ -4562,11 +4990,17 @@
   "primaryType": {
     "message": "Pangunahing uri"
   },
+  "priority": {
+    "message": "Priority"
+  },
   "priorityFee": {
     "message": "Bayad sa priyoridad"
   },
   "priorityFeeProperCase": {
     "message": "Bayad sa Priyoridad"
+  },
+  "priorityFeeTooHigh": {
+    "message": "Ang bayad sa priyoridad ay mas mababa sa pinakamataas na batayang bayad o base fee"
   },
   "privacy": {
     "message": "Pagkapribado"
@@ -4611,7 +5045,7 @@
     "message": "Mga anunsiyo ng produkto"
   },
   "proposedApprovalLimit": {
-    "message": "Iminumungkahing Limitasyon sa Pag-apruba"
+    "message": "Iminumungkahing limitasyon sa pag-apruba"
   },
   "provide": {
     "message": "Ibigay"
@@ -4619,14 +5053,73 @@
   "publicAddress": {
     "message": "Pampublikong address"
   },
+  "pushNotificationLimitOrderFilledDescriptionLong": {
+    "message": "Bukas na ang long position mo na $1.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationLimitOrderFilledDescriptionShort": {
+    "message": "Bukas na ang short position mo na $1.",
+    "description": "$1 is the asset symbol"
+  },
   "pushNotificationLimitOrderFilledTitle": {
     "message": "Na-fill ang limit order"
+  },
+  "pushNotificationPositionLiquidatedDescriptionLong": {
+    "message": "Isinara na ang iyong long position sa $1.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationPositionLiquidatedDescriptionShort": {
+    "message": "Isinara na ang iyong short position sa $1.",
+    "description": "$1 is the asset symbol"
   },
   "pushNotificationPositionLiquidatedTitle": {
     "message": "Na-liquidate ang posisyon"
   },
+  "pushNotificationShieldClaimCreatedDescriptionShort": {
+    "message": "Nagawa na ang claim mo"
+  },
+  "pushNotificationShieldClaimCreatedTitle": {
+    "message": "Nagawa ang claim"
+  },
+  "pushNotificationShieldClaimStatusUpdatedDescriptionShort": {
+    "message": "Na-update na ang claim mo"
+  },
+  "pushNotificationShieldClaimStatusUpdatedTitle": {
+    "message": "Na-update ang claim"
+  },
+  "pushNotificationShieldLearnMoreCta": {
+    "message": "Matuto pa"
+  },
+  "pushNotificationShieldSubscriptionCreatedDescriptionShort": {
+    "message": "Aktibo na ngayon ang plan mo."
+  },
+  "pushNotificationShieldSubscriptionPaymentFailedDescriptionShort": {
+    "message": "Inihinto ang plan mo dahil sa hindi pagbabayad."
+  },
+  "pushNotificationShieldSubscriptionTitle": {
+    "message": "Transaction Shield ng MetaMask"
+  },
+  "pushNotificationShieldUpdatePaymentCta": {
+    "message": "I-update ang paraan ng pagbabayad"
+  },
+  "pushNotificationStopLossTriggeredDescriptionLong": {
+    "message": "Nag-long close ang iyong $1 sa itinakda mong stop loss.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationStopLossTriggeredDescriptionShort": {
+    "message": "Nag-short close ang iyong $1 sa itinakda mong stop loss.",
+    "description": "$1 is the asset symbol"
+  },
   "pushNotificationStopLossTriggeredTitle": {
     "message": "Na-trigger ang stop loss"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionLong": {
+    "message": "Nag-long close ang iyong $1 sa itinakda mong take profit.",
+    "description": "$1 is the asset symbol"
+  },
+  "pushNotificationTakeProfitTriggeredDescriptionShort": {
+    "message": "Nag-short close ang iyong $1 sa itinakda mong take profit.",
+    "description": "$1 is the asset symbol"
   },
   "pushNotificationTakeProfitTriggeredTitle": {
     "message": "Na-trigger ang take profit"
@@ -4638,16 +5131,16 @@
     "message": "Nakatanggap ka ng ilang token"
   },
   "pushPlatformNotificationsFundsReceivedTitle": {
-    "message": "Natanggap ang mga pondo"
+    "message": "Natanggap ang pondo"
   },
   "pushPlatformNotificationsFundsSentDescription": {
     "message": "Matagumpay kang nakapagpadala ng $1 $2"
   },
   "pushPlatformNotificationsFundsSentDescriptionDefault": {
-    "message": "Matagumpay kang nakapagpadala ng ilang token"
+    "message": "Matagumpay mong naipadala ang ilang token"
   },
   "pushPlatformNotificationsFundsSentTitle": {
-    "message": "Naipadala ang mga pondo"
+    "message": "Naipadala ang pondo"
   },
   "pushPlatformNotificationsNftReceivedDescription": {
     "message": "Nakatanggap ka ng mga bagong NFT"
@@ -4656,49 +5149,49 @@
     "message": "Natanggap ang NFT"
   },
   "pushPlatformNotificationsNftSentDescription": {
-    "message": "Matagumpay kang nakapagpadala ng NFT"
+    "message": "Matagumpay mong naipadala ang NFT"
   },
   "pushPlatformNotificationsNftSentTitle": {
     "message": "Naipadala ang NFT"
   },
   "pushPlatformNotificationsStakingLidoStakeCompletedDescription": {
-    "message": "Matagumpay ang iyong Lido stake"
+    "message": "Matagumpay ang pag-stake mo sa Lido"
   },
   "pushPlatformNotificationsStakingLidoStakeCompletedTitle": {
     "message": "Nakumpleto ang pag-stake"
   },
   "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnDescription": {
-    "message": "Handa ng i-withdraw ang iyong Lido stake"
+    "message": "Ang stake mo sa Lido ay handa ng i-withdraw ngayon"
   },
   "pushPlatformNotificationsStakingLidoStakeReadyToBeWithdrawnTitle": {
-    "message": "Handa ng i-withdraw ang stake"
+    "message": "Handa nang i-withdraw ang stake"
   },
   "pushPlatformNotificationsStakingLidoWithdrawalCompletedDescription": {
-    "message": "Matagumpay ang pag-withdraw ng iyong Lido stake"
+    "message": "Matagumpay ang pag-withdraw mo sa Lido"
   },
   "pushPlatformNotificationsStakingLidoWithdrawalCompletedTitle": {
     "message": "Nakumpleto ang pag-withdraw"
   },
   "pushPlatformNotificationsStakingLidoWithdrawalRequestedDescription": {
-    "message": "Ipinasa ang hiling na pag-withdraw ng iyong Lido"
+    "message": "Naisumite ang hiling mo na pag-withdraw sa Lido."
   },
   "pushPlatformNotificationsStakingLidoWithdrawalRequestedTitle": {
     "message": "Hiniling ang pag-withdraw"
   },
   "pushPlatformNotificationsStakingRocketpoolStakeCompletedDescription": {
-    "message": "Matagumpay ang iyong RocketPool stake"
+    "message": "Matagumpay ang pag-stake mo sa RocketPool"
   },
   "pushPlatformNotificationsStakingRocketpoolStakeCompletedTitle": {
     "message": "Nakumpleto ang pag-stake"
   },
   "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedDescription": {
-    "message": "Matagumpay ang iyong RocketPool unstake"
+    "message": "Matagumpay ang pag-unstake mo sa RocketPool"
   },
   "pushPlatformNotificationsStakingRocketpoolUnstakeCompletedTitle": {
     "message": "Nakumpleto ang pag-unstake"
   },
   "pushPlatformNotificationsSwapCompletedDescription": {
-    "message": "Matagumpay ang iyong MetaMask Swap"
+    "message": "Matagumpay ang Pag-swap mo sa MetaMask"
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Nakumpleto ang pag-swap"
@@ -4718,11 +5211,8 @@
   "rank": {
     "message": "Rank"
   },
-  "reAddAccounts": {
-    "message": "idagdag muli ang anumang ibang mga account"
-  },
-  "reAdded": {
-    "message": "idagdag muli"
+  "rateIncludesMMFee": {
+    "message": "Kasama ang $1% na bayad sa MM."
   },
   "readdToken": {
     "message": "Puwede mong ibalik ang token na ito sa hinaharap sa pamamagitan ng pagpunta sa “Mag-import ng token” sa menu ng mga opsyon sa iyong account."
@@ -4740,11 +5230,17 @@
     "message": "Tatanggap na address",
     "description": "Page title when viewing addresses for receiving funds"
   },
+  "recipient": {
+    "message": "Tatanggap"
+  },
   "recipientAddressPlaceholderNew": {
     "message": "Ilagay ang pampublikong address (0x) o pangalan ng domain"
   },
+  "recipientEditAriaLabel": {
+    "message": "I-edit ang tatanggap"
+  },
   "recoveryPhraseReminderBackupStart": {
-    "message": "I-back up ngayon"
+    "message": "I-back up na"
   },
   "recoveryPhraseReminderConfirm": {
     "message": "Paalalahanan ako mamaya"
@@ -4789,18 +5285,21 @@
     "message": "Alisin ang account"
   },
   "removeAccountDescription": {
-    "message": "Aalisin ang account na ito sa iyong wallet. Tiyaking nasa iyo ang orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa na-import na account na ito bago magpatuloy. Puwede kang mag-import o gumawa ulit ng mga account mula sa drop-down ng account. "
+    "message": "Aalisin ang account na ito sa wallet mo. Tiyakin na mayroon ka ng orihinal na Lihim na Parirala sa Pagbawi o pribadong key para sa in-import na account na ito bago magpatuloy. Maaari kang mag-import o gumawa muli ng mga account mula sa account drop-down. "
   },
   "removeAccountModalBannerDescription": {
-    "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi o pribadong key para sa account na ito bago alisin.",
+    "message": "Tiyaking mayroon kang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase) o pribadong key para sa account na ito bago alisin.",
     "description": "Make sure you have the Secret Recovery Phrase or private key for this account before removing."
   },
   "removeAccountModalBannerTitle": {
-    "message": "Ang account na ito ay aalisin sa MetaMask.",
+    "message": "Ang account na ito ay aalisin mula sa MetaMask.",
     "description": "Title of a banner alert used on account remove modal."
   },
+  "removeAll": {
+    "message": "Alisin lahat"
+  },
   "removeKeyringSnap": {
-    "message": "Ang pag-alis ng Snap na ito ay nag-aalis sa mga account na ito sa MetaMask:"
+    "message": "Ang pag-aalis sa Snap na ito ay nag-aalis ng mga account na ito sa MetaMask:"
   },
   "removeKeyringSnapToolTip": {
     "message": "Kinokontrol ng snap ang mga account, at sa pag-alis nito, ang mga account ay aalisin din sa MetaMask, ngunit mananatili ang mga ito sa blockchain."
@@ -4815,13 +5314,13 @@
     "message": "Matagumpay na naalis ang NFT!"
   },
   "removeSnap": {
-    "message": "Alisin ang snap"
+    "message": "Alisin ang Snap"
   },
   "removeSnapAccountDescription": {
     "message": "Kung magpatuloy ka, ang account na ito ay hindi na available sa MetaMask."
   },
   "removeSnapAccountTitle": {
-    "message": "Alisin ang account"
+    "message": "Tanggalin ang account"
   },
   "removeSnapConfirmation": {
     "message": "Sigurado ka bang gusto mong alisin ang $1?",
@@ -4840,8 +5339,11 @@
   "reportIssue": {
     "message": "Mag-ulat ng isyu"
   },
+  "reportThisError": {
+    "message": "Iulat ang error na ito"
+  },
   "requestFrom": {
-    "message": "Hiling mula sa"
+    "message": "Kahilingan mula sa/kay"
   },
   "requestFromInfo": {
     "message": "Ito ang site na humihiling ng iyong pirma."
@@ -4853,14 +5355,14 @@
     "message": "Ito ang site na humihiling ng iyong kumpirmasyon."
   },
   "requestingFor": {
-    "message": "Hinihiling para sa"
+    "message": "Humihiling ng"
   },
   "requestingForAccount": {
-    "message": "Hinihiling para sa $1",
+    "message": "Humihiling ng $1",
     "description": "Name of Account"
   },
   "requestingForNetwork": {
-    "message": "Humihiling ng $1",
+    "message": "Hinihiling para sa $1",
     "description": "Name of Network"
   },
   "required": {
@@ -4872,32 +5374,12 @@
   "resetWallet": {
     "message": "I-reset ang iyong wallet"
   },
-  "resetWalletSubHeader": {
-    "message": "Hindi nagpapanatili ang MetaMask ng kopya ng iyong password. Kung nagkakaproblema ka sa pag-unlock ng iyong account, kakailanganin mong i-reset ang iyong wallet. Magagawa mo ito sa pamamagitan ng pagbibigay ng Lihim na Parirala sa Pagbawi na ginamit mo noong mag-set up ka ng iyong wallet."
+  "resetWalletButton": {
+    "message": "Oo, i-reset ang wallet"
   },
-  "resetWalletSubHeaderSocial": {
-    "message": "Hindi nagpapanatili ang MetaMask ng kopya ng iyong password. Kung nagkakaproblema ka sa pag-unlock ng iyong account, kakailanganin mong i-reset ang iyong wallet. Kung mayroon kang Lihim na Parirala sa Pagbawi, maaari mo itong gamitin para burahin ang iyong kasalukuyang wallet mula sa device na ito, kasama ang listahan ng iyong mga account."
-  },
-  "resetWalletUsingSRP": {
-    "message": "Tatanggalin ng aksyong ito mula sa iyong device ang iyong kasalukuyang wallet at Lihim na Parirala sa Pagbawi, kasama ang listahan ng mga account na isinaayos mo. Pagkatapos i-reset ang Lihim na Parirala sa Pagbawi, makikita mo ang listahan ng mga account batay sa Lihim na Parirala sa Pagbawi na ginamit mo para mag-reset. Awtomatikong kasama sa bagong listahan na ito ang mga account na may balanse. Magagawa mo ring $1 na ginawa dati. Ang mga custom account na iyong na-import ay kinakailangang $2, at ang alinmang mga custom token na idinagdag mo sa account ay kailangang $3 din."
-  },
-  "resetWalletUsingSRPSocial": {
-    "message": "Pagkatapos i-reset gamit ang Lihim na Parirala sa Pagbawi, makikita mo ang bagong listahan ng mga account. Kasama sa listahan na ito ang mga account na may balanse. Maaari mong $1 na ginawa mo dati. Ngunit kakailanganin mong magdagdag pabalik ng anumang $2 at $3 na in-import mo. "
-  },
-  "resetWalletUsingSRPSocialAccounts": {
-    "message": "idagdag pabalik ang anumang ibang mga account"
-  },
-  "resetWalletUsingSRPSocialCustomAccounts": {
-    "message": "mga custom account"
-  },
-  "resetWalletUsingSRPSocialCustomTokens": {
-    "message": "mga custom token"
-  },
-  "resetWalletWarning": {
-    "message": "Tiyakin na ginagamit mo ang tamang Lihim na Parirala sa Pagbawi bago magpatuloy. Hindi mo na ito maaaring bawiin."
-  },
-  "resetWalletWarningSocial": {
-    "message": "Siguraduhin na tamang Lihim na Parirala sa Pagbawi ang ginagamit mo bago ka mag-reset. Hindi ito maaaring bawiin."
+  "resolutionProtocol": {
+    "message": "Naayos ang address gamit ang $1",
+    "description": "$1 is the protocol name."
   },
   "restartMetamask": {
     "message": "I-restart ang MetaMask"
@@ -4926,12 +5408,19 @@
   "reusedTokenNameWarning": {
     "message": "Ang isang token dito ay muling ginagamit ang isang simbolo mula sa ibang token na tinitingnan mo, maaari itong maging nakakalito."
   },
+  "revealMultichainPrivateKeysBannerDescription": {
+    "message": "Nagbibigay sa iyo ang key na ito ng kumpletong kontrol sa iyong account para sa nauugnay na chain. $1",
+    "description": "Description for the banner warning users not to share their private key"
+  },
   "revealMultichainPrivateKeysBannerTitle": {
     "message": "Huwag ibahagi ang iyong pribadong key",
     "description": "Title for the banner warning users not to share their private key"
   },
+  "revealSecretRecoveryPhrase": {
+    "message": "I-back up ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase)"
+  },
   "revealSeedWords": {
-    "message": "Ibunyag ang Lihim na Parirala sa Pagbawi"
+    "message": "Ihayag ang Lihim na Parirala sa Pagbawi"
   },
   "revealSeedWordsDescription1": {
     "message": "Ang $1 ay nagbibigay ng $2",
@@ -4945,7 +5434,7 @@
     "message": "buong access sa iyong wallet at pondo.\n"
   },
   "revealSeedWordsNonCustodialWallet": {
-    "message": "non-custodial wallet"
+    "message": "non-custodial na wallet"
   },
   "revealSeedWordsQR": {
     "message": "QR"
@@ -4965,7 +5454,7 @@
     "description": "The bolded texted in the second part of 'revealSeedWordsWarning'"
   },
   "revealSensitiveContent": {
-    "message": "Ipakita ang sensitibong content"
+    "message": "Ipakita ang sensitibong nilalaman"
   },
   "review": {
     "message": "Suriin"
@@ -4990,10 +5479,148 @@
     "description": "The token symbol that is being revoked"
   },
   "revokeSimulationDetailsDesc": {
-    "message": "Aalisin mo ang pahintulot sa ibang tao na gumastos ng mga token mula sa account mo."
+    "message": "Inaalis mo ang pahintulot ng ibang tao na gastusin ang mga token mula sa iyong account."
   },
   "reward": {
     "message": "Reward"
+  },
+  "rewardsAuthFailDescription": {
+    "message": "May naganap na hindi nakikilalang error habang ina-authenticate ang account na ito gamit ang programa ng mga reward. Pakisubukang muli mamaya."
+  },
+  "rewardsAuthFailTitle": {
+    "message": "Hindi nakikilalang Error."
+  },
+  "rewardsErrorMessagesAccountAlreadyRegistered": {
+    "message": "Nakarehistro na ang account na ito gamit ang ibang profile ng Rewards. Pakilipat ang account para magpatuloy."
+  },
+  "rewardsErrorMessagesFailedToClaimReward": {
+    "message": "Nabigong ma-claim ang reward. Pakisubukang muli maya-maya."
+  },
+  "rewardsErrorMessagesRequestRejected": {
+    "message": "Tinanggihan mo ang kahilingan."
+  },
+  "rewardsErrorMessagesServiceNotAvailable": {
+    "message": "Hindi available sa sandaling ito ang serbisyo. Pakisubukang muli maya-maya."
+  },
+  "rewardsErrorMessagesSomethingWentWrong": {
+    "message": "Nagkaproblema. Subukang muli maya-maya."
+  },
+  "rewardsLinkAccount": {
+    "message": "Magdagdag ng account"
+  },
+  "rewardsLinkAccountError": {
+    "message": "Bigong maidagdag ang account"
+  },
+  "rewardsOnboardingIntroDescription": {
+    "message": "Mag-ipon ng points mula sa aktibidad mo. \nMagpatuloy sa mas mataas na antas upang ma-unlock ang mga reward."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedDescription": {
+    "message": "Hindi namin matukoy kung pinapayagan ng iyong bansa na mag-opt in sa programa ng mga reward. Suriin ang iyong koneksyon at subukang muli."
+  },
+  "rewardsOnboardingIntroGeoCheckFailedTitle": {
+    "message": "Hindi matukoy ang pagiging kwalipikado sa pag-opt-in"
+  },
+  "rewardsOnboardingIntroGeoCheckRetry": {
+    "message": "Subukang muli"
+  },
+  "rewardsOnboardingIntroHardwareWalletDescription": {
+    "message": "Ang mga account na hardware wallet ay hindi pa kwalipikadong tumanggap ng mga reward. Lumipat sa ibang account upang magpatuloy."
+  },
+  "rewardsOnboardingIntroHardwareWalletTitle": {
+    "message": "Hindi sinusuportahan ang account"
+  },
+  "rewardsOnboardingIntroRewardsAuthFailRetry": {
+    "message": "Subukang muli"
+  },
+  "rewardsOnboardingIntroStepConfirm": {
+    "message": "I-claim ang 250 point"
+  },
+  "rewardsOnboardingIntroStepConfirmLoadingRegion": {
+    "message": "Sinusuri ang rehiyon.."
+  },
+  "rewardsOnboardingIntroStepSkip": {
+    "message": "Hindi sa ngayon"
+  },
+  "rewardsOnboardingIntroTitle": {
+    "message": "Narito na ang mga reward"
+  },
+  "rewardsOnboardingIntroUnsupportedRegionDescription": {
+    "message": "Hindi pa sinusuportahan ang mga reward sa iyong rehiyon. Nagsisikap kaming palawakin ang access, kaya mangyaring bumalik muli sa ibang pagkakataon."
+  },
+  "rewardsOnboardingIntroUnsupportedRegionTitle": {
+    "message": "Hindi sinusuportahan ang rehiyon"
+  },
+  "rewardsOnboardingStep1Description": {
+    "message": "Ang bawat pag-swap at pag-trade sa perps na isinasagawa mo sa MetaMask ay nagpapalapit sa iyo sa mga reward. Idagdag ang iyong mga account at makikita mong nadaragdagan ang iyong mga point."
+  },
+  "rewardsOnboardingStep1Title": {
+    "message": "Makakakuha ng mga point sa bawat pag-trade"
+  },
+  "rewardsOnboardingStep2Description": {
+    "message": "Abutin ang milestones ng mga point para makuha ang perks gaya ng 50% off na bayad sa perps, mga eksklusibong token, at libreng MetaMask Metal Card."
+  },
+  "rewardsOnboardingStep2Title": {
+    "message": "Mag-level up para sa mas malalaking perk"
+  },
+  "rewardsOnboardingStep3Description": {
+    "message": "Puwede kang makakuha ng mga point sa extension, pero kakailangin mo ng mobile app para mag-trade ng perps, subaybayan ang progreso mo, at mag-redeem ng mga reward."
+  },
+  "rewardsOnboardingStep3Title": {
+    "message": "Mag-unlock ng mga reward sa mobile"
+  },
+  "rewardsOnboardingStep4LegalDisclaimerLearnMoreLink": {
+    "message": "Matuto pa"
+  },
+  "rewardsOnboardingStep4OptInError": {
+    "message": "Nabigong mag-opt-in"
+  },
+  "rewardsOnboardingStep4ReferralCodeError": {
+    "message": "Hindi valid na referral code"
+  },
+  "rewardsOnboardingStep4ReferralCodeInput": {
+    "message": "Gamitin ang referral code para makaipon ng 250 point"
+  },
+  "rewardsOnboardingStep4ReferralCodePlaceholder": {
+    "message": "Referral code (opsyonal)"
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownError": {
+    "message": "Hindi ma-validate ang referral code."
+  },
+  "rewardsOnboardingStep4ReferralCodeUnknownErrorDescription": {
+    "message": "Suriin ang iyong koneksyon at subukang muli."
+  },
+  "rewardsOnboardingStep4Title": {
+    "message": "Makakaipon ka ng 250 point kapag nag-sign up ka!"
+  },
+  "rewardsOnboardingStep4TitleWithReferralCode": {
+    "message": "Makakaipon ka ng 500 point kapag nag-sign up ka gamit ang code!"
+  },
+  "rewardsOnboardingStepConfirm": {
+    "message": "Susunod"
+  },
+  "rewardsOnboardingStepOptIn": {
+    "message": "I-claim ang mga point"
+  },
+  "rewardsPointsBalance": {
+    "message": "$1 (na) point",
+    "description": "$1 is the formatted number of rewards points"
+  },
+  "rewardsPointsBalance_couldntLoad": {
+    "message": "Hindi mai-load",
+    "description": "Text shown when points balance couldn't be loaded"
+  },
+  "rewardsPointsIcon": {
+    "message": "Mga Point ng Mga Reward",
+    "description": "Alt text for the rewards points icon"
+  },
+  "rewardsQRCodeDescription": {
+    "message": "Kakailangin mo ang app para subaybayan ang progreso mo at mag-redeem ng mga reward. I-scan ang QR code na ito at tutulungan ka naming i-import ang mga account mo."
+  },
+  "rewardsQRCodeTitle": {
+    "message": "I-download ang mobile app"
+  },
+  "rewardsSignUp": {
+    "message": "Mag-sign up para sa Mga Reward"
   },
   "rpcNameOptional": {
     "message": "Pangalan ng RPC (Opsyonal)"
@@ -5011,7 +5638,7 @@
     "message": "Itapat ang QR code sa iyong camera"
   },
   "scanQrCode": {
-    "message": "Mag-scan ng QR Code"
+    "message": "Mag-scan ng QR code"
   },
   "scrollDown": {
     "message": "Mag-scroll pababa"
@@ -5022,8 +5649,14 @@
   "searchAccounts": {
     "message": "Maghanap ng mga account"
   },
+  "searchAnAcccountOrContact": {
+    "message": "Maghanap ng account o contact"
+  },
+  "searchForAnAssetToSend": {
+    "message": "Maghanap ng ipapadalang asset"
+  },
   "searchNetworks": {
-    "message": "Maghanap ng mga network"
+    "message": "Pumili ng mga network"
   },
   "searchNfts": {
     "message": "Hanapin ang mga NFT"
@@ -5039,14 +5672,14 @@
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
   "secretRecoveryPhrase": {
-    "message": "Lihim na Parirala sa Pagbawi"
+    "message": "Secret Recovery Phrase"
   },
   "secretRecoveryPhrasePlusNumber": {
     "message": "Secret Recovery Phrase $1",
     "description": "The $1 is the order of the Secret Recovery Phrase"
   },
   "secureWallet": {
-    "message": "Secure Wallet"
+    "message": "I-secure ang wallet"
   },
   "secureWalletRemindLaterButton": {
     "message": "Paalalahanan ako mamaya"
@@ -5071,7 +5704,7 @@
     "message": "Palitan ang password"
   },
   "securityChangePasswordDescription": {
-    "message": "Pumili ng password na mahirap hulaan para i-unlock ang MetaMask app sa iyong device. Kung mawawala mo ang password na ito, kakailanganin mo ang iyong Lihim na Parirala sa Pagbawi para muling i-import ang iyong wallet."
+    "message": "Pumili ng mahirap hulaang password para ma-unlock ang MetaMask app sa iyong device. Kung makakalimutan mo ang password na ito, kakailanganin mo ang iyong Lihim na Parirala sa Pagbawi para ma-import ulit ang iyong wallet."
   },
   "securityChangePasswordTitle": {
     "message": "Password"
@@ -5081,6 +5714,9 @@
   },
   "securityChangePasswordToastSuccess": {
     "message": "Nai-save ang bagong password"
+  },
+  "securityDefaultSettingsSocialLogin": {
+    "message": "Seguridad at pagkapribado"
   },
   "securityDescription": {
     "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account"
@@ -5101,6 +5737,9 @@
   "securityProviderPoweredBy": {
     "message": "Pinapagana ng $1",
     "description": "The security provider that is providing data"
+  },
+  "securitySocialLoginDefaultSettingsDescription": {
+    "message": "Bawasan ang iyong mga tsansa ng pagsali sa mga hindi ligtas na network at protektahan ang iyong mga account at data"
   },
   "securitySocialLoginEnabled": {
     "message": "Pinagana"
@@ -5133,17 +5772,17 @@
     "message": "Ang mga Lihim na Parirala sa Pagbawi ay naglalaman ng 12, 15, 18, 21, o 24 na salita"
   },
   "seedPhraseReviewDetails": {
-    "message": "Ito ang iyong $1. Isulat ito sa tamang pagkakasunod-sunod at panatilihing ligtas. Kung may nakakaalam ng iyong Lihim na Parirala sa Pagbawi, maaari nilang i-access ang iyong wallet. $2",
-    "description": "The $1 is the bolded text 'Secret Recovery Phrase' and $2 is 'seedPhraseReviewDetails2'"
-  },
-  "seedPhraseReviewDetails2": {
-    "message": "Huwag itong ibahagi sa sinuman, kailanman."
+    "message": "Ito ang iyong $1. Isulat ito sa tamang pagkakasunod-sunod at panatilihing ligtas. Kung may nakakaalam ng iyong Lihim na Parirala sa Pagbawi, maaari nilang i-access ang iyong wallet. Huwag itong ibahagi sa kahit kanino kailanman.",
+    "description": "The $1 is the bolded text 'Secret Recovery Phrase'"
   },
   "seedPhraseReviewTitle": {
     "message": "I-save ang iyong Lihim na Parirala sa Pagbawi"
   },
+  "seedPhraseReviewTitleSettings": {
+    "message": "Gamitin ang Secret Recovery Phrase"
+  },
   "select": {
-    "message": "Piliin ang"
+    "message": "Piliin"
   },
   "selectAccountToConnect": {
     "message": "Piliin ang account na ikokonekta"
@@ -5158,7 +5797,7 @@
     "message": "Piliin lahat"
   },
   "selectAnAccount": {
-    "message": "Pumili ng Account"
+    "message": "Pumili ng account"
   },
   "selectAnAccountAlreadyConnected": {
     "message": "Ang acount na ito ay nakakonekta na sa MetaMask"
@@ -5172,17 +5811,20 @@
   "selectNFTPrivacyPreference": {
     "message": "Paganahin ang autodetection ng NFT"
   },
+  "selectNetworkToFilter": {
+    "message": "Piliin ang network na ifi-filter"
+  },
   "selectPathHelp": {
     "message": "Kung hindi mo makita ang mga account na inaasahan mo, subukang lumipat ng HD path o kasalukuyang piniling network."
+  },
+  "selectRecipient": {
+    "message": "Piliin ang tatanggap"
   },
   "selectRpcUrl": {
     "message": "Pumili ng RPC URL"
   },
   "selectSecretRecoveryPhrase": {
     "message": "Piliin ang Secret Recovery Phrase"
-  },
-  "selectType": {
-    "message": "Pumili ng Uri"
   },
   "selectedAccountMismatch": {
     "message": "Ibang account ang pinili"
@@ -5191,7 +5833,7 @@
     "message": "Kapag pinili lahat, mabibigyang-daan ang site na ito na makita ang lahat ng kasalukuyan mong account. Tiyaking pinagkakatiwalaan mo ang site na ito."
   },
   "send": {
-    "message": "Magpadala"
+    "message": "Ipadala"
   },
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
@@ -5216,13 +5858,13 @@
     "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
   },
   "sendingAsset": {
-    "message": "Ipinapadala ang $1"
+    "message": "Nagpapadala ng $1"
   },
   "sendingDisabled": {
     "message": "Ang pagpapadala ng mga asset na ERC-1155 NFT ay hindi pa suportado."
   },
   "sendingNativeAsset": {
-    "message": "Nagpapadala ng $1",
+    "message": "Ipinapadala ang $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
   },
   "sendingToTokenContractWarning": {
@@ -5247,7 +5889,7 @@
     "message": "Itakda ang Pag-apruba para sa Lahat"
   },
   "setApprovalForAllRedesignedTitle": {
-    "message": "Kahilingan sa pag-withdraw"
+    "message": "Kahilingang mag-withdraw"
   },
   "setApprovalForAllTitle": {
     "message": "Aprubahan ang $1 nang walang limitasyon sa paggastos",
@@ -5269,11 +5911,384 @@
   "settingsSubHeadingSignaturesAndTransactions": {
     "message": "Lagda at hiling sa transaksyon"
   },
-  "shieldEntryModalGetStarted": {
-    "message": "Magsimula"
+  "shieldClaim": {
+    "message": "Magsumite ng claim"
   },
-  "shieldEntryModalSkip": {
-    "message": "Laktawan"
+  "shieldClaimChainNotSupported": {
+    "message": "Hindi sinusuportahan ang chain na ito."
+  },
+  "shieldClaimDescription": {
+    "message": "Paglalarawan ng kaso"
+  },
+  "shieldClaimDescriptionPlaceholder": {
+    "message": "Magbigay ng maikling buod ng insidente"
+  },
+  "shieldClaimDetailsViewClaims": {
+    "message": "Sinusuri ng aming team ang mga claim mo. Aabisuhan ka namin sa email kapag naaprubahan na ito. Tingnan ang buong patakaran ng saklaw $1.",
+    "description": "The $1 is a link to the full coverage policy"
+  },
+  "shieldClaimDuplicateClaimExists": {
+    "message": "May naisumite kang claim para sa hash ng transaksyong ito."
+  },
+  "shieldClaimEmail": {
+    "message": "Email"
+  },
+  "shieldClaimEmailHelpText": {
+    "message": "Sa email na ito kami magpapadala sa iyo ng mga update."
+  },
+  "shieldClaimFileErrorCountExceeded": {
+    "message": "Lampas sa maximum na pinapayagang bilang ang dami ng mga file."
+  },
+  "shieldClaimFileErrorInvalidType": {
+    "message": "Di-wastong uri ng file."
+  },
+  "shieldClaimFileErrorSizeExceeded": {
+    "message": "Lampas sa maximum na pinapayagang laki ang kabuuang laki ng file."
+  },
+  "shieldClaimFileUploader": {
+    "message": "Pag-upload ng imahe"
+  },
+  "shieldClaimFileUploaderAcceptText": {
+    "message": "PDF, PNG, JPG (Max $1MB)",
+    "description": "The $1 is the maximum file size in MB"
+  },
+  "shieldClaimFileUploaderHelpText": {
+    "message": "Kung mayroon kang mga karagdagang ebidensya, i-upload ito rito."
+  },
+  "shieldClaimImpactedTxHash": {
+    "message": "Apektadong transaction hash"
+  },
+  "shieldClaimImpactedTxHashHelpText": {
+    "message": "Tinatawag ding TXID, hash ID, o ID ng transaksyon."
+  },
+  "shieldClaimImpactedTxHashHelpTextLink": {
+    "message": "Kailangan mo ba ng tulong sa paghahanap nito?"
+  },
+  "shieldClaimImpactedTxHashNotEligible": {
+    "message": "Hindi ginawa sa MetaMask ang transaksyong ito, kaya hindi ito kwalipikado para sa mga claim"
+  },
+  "shieldClaimImpactedWalletAddress": {
+    "message": "Apektadong wallet address"
+  },
+  "shieldClaimIncidentDetails": {
+    "message": "Mga detalye ng insidente"
+  },
+  "shieldClaimInvalidChainId": {
+    "message": "Maglagay ng wastong chain ID"
+  },
+  "shieldClaimInvalidEmail": {
+    "message": "Paki-lagay ang wastong valid email address"
+  },
+  "shieldClaimInvalidRequired": {
+    "message": "Kinakailangan ang field na ito"
+  },
+  "shieldClaimInvalidTxHash": {
+    "message": "Maglagay ng wastong hash ng transaksyon"
+  },
+  "shieldClaimInvalidWalletAddress": {
+    "message": "Maglagay ng wastong address ng wallet"
+  },
+  "shieldClaimMaxClaimsLimitExceeded": {
+    "message": "Naabot mo na ang maximum na limitasyon ng mga bukas na claim. Makipag-ugnayan sa suporta kung kailangan mong magsumite ng karagdagang claim."
+  },
+  "shieldClaimNetwork": {
+    "message": "Pumili ng network"
+  },
+  "shieldClaimPersonalDetails": {
+    "message": "Mga personal na detalye"
+  },
+  "shieldClaimReimbursementWalletAddress": {
+    "message": "Address ng wallet para sa reimbursement"
+  },
+  "shieldClaimReimbursementWalletAddressHelpText": {
+    "message": "Siguraduhing hindi nakompromiso ang wallet na ito."
+  },
+  "shieldClaimSameWalletAddressesError": {
+    "message": "Magkaiba dapat ang naapektuhang address ng wallet at address ng wallet para sa pagbabalik ng nagastos."
+  },
+  "shieldClaimSelectAccount": {
+    "message": "Pumili ng account"
+  },
+  "shieldClaimSelectNetwork": {
+    "message": "Pumili ng network"
+  },
+  "shieldClaimSignatureCoverageNotCovered": {
+    "message": "Hindi nahanap ang signatuure na saklaw para sa partikular na hash ng transaksyon."
+  },
+  "shieldClaimSubmissionWindowExpired": {
+    "message": "Nag-expire na ang palugit sa pagsusumite. Dapat na ma-file ang mga claim sa loob ng $1 (na) araw pagkatapos ng insidente.",
+    "description": "The $1 is the number of days"
+  },
+  "shieldClaimSubmit": {
+    "message": "Magsumite ng claim"
+  },
+  "shieldClaimSubmitError": {
+    "message": "Nabigo ang pagsusumite ng claim"
+  },
+  "shieldClaimTransactionNotFound": {
+    "message": "Hindi nahanap ang transaksyon sa chain."
+  },
+  "shieldClaimTransactionNotFromWalletAddress": {
+    "message": "Hindi mula sa address ng wallet ang hash ng transaksyon."
+  },
+  "shieldClaimTransactionNotSuccessful": {
+    "message": "Hindi matagumpay ang transaksyon sa chain."
+  },
+  "shieldClaimWalletOwnershipValidationFailed": {
+    "message": "Nabigo ang pagpapatunay sa pagmamay-ari ng wallet."
+  },
+  "shieldClaimsNumber": {
+    "message": "Claim #$1",
+    "description": "The $1 is the claim number"
+  },
+  "shieldConfirmMembership": {
+    "message": "Kumpirmahin ang plan"
+  },
+  "shieldCoverageAlertHighRiskTransaction": {
+    "message": "Isa itong transaksyon na mataas ang panganib, kaya hindi ito pinoprotektahan ng Transaction Shield ng MetaMask. $1."
+  },
+  "shieldCoverageAlertMessageChainNotSupported": {
+    "message": "Hindi sinusuportahan ang chain na ito, kaya hindi ito pinoprotektahan ng Transaction Shield ng MetaMask. $1"
+  },
+  "shieldCoverageAlertMessagePaused": {
+    "message": "Nagkaroon ng isyu sa pagbabayad ng plan mo ng Transaction Shield ng MetaMask. I-update ang paraan ng pagbabayad mo para maibalik ang pagsaklaw."
+  },
+  "shieldCoverageAlertMessagePausedAcknowledgeButton": {
+    "message": "I-update ang paraan ng pagbabayad"
+  },
+  "shieldCoverageAlertMessagePotentialRisks": {
+    "message": "May mga potensyal na panganib ang transaksyong ito, kaya hindi ito pinoprotektahan ng Transaction Shield ng MetaMask. $1"
+  },
+  "shieldCoverageAlertMessageSignatureNotSupported": {
+    "message": "Hindi sinusuportahan ang lagdang ito, kaya hindi ito pinoprotektahan ng Transaction Shield ng MetaMask. $1"
+  },
+  "shieldCoverageAlertMessageTitle": {
+    "message": "Hindi saklaw ang transaksyong ito"
+  },
+  "shieldCoverageAlertMessageTitleCovered": {
+    "message": "Saklaw ang transaksyong ito"
+  },
+  "shieldCoverageAlertMessageTitlePaused": {
+    "message": "Inihinto ang Transaction Shield"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequest": {
+    "message": "Hindi saklaw ang kahilingan sa lagda na ito"
+  },
+  "shieldCoverageAlertMessageTitleSignatureRequestCovered": {
+    "message": "Hindi saklaw ang kahilingan sa lagda na ito"
+  },
+  "shieldCoverageAlertMessageTokenTrustSignalWarning": {
+    "message": "Nagpapakita ng matibay na senyales ng panganib ang token na ito. Maaaring magdulot ng pagkawala ng pondo ang pagpapatuloy. $1."
+  },
+  "shieldCoverageAlertMessageUnknown": {
+    "message": "Hindi ma-verify ang kahilingang ito, kaya hindi ito pinoprotektahan ng Transaction Shield ng MetaMask. $1."
+  },
+  "shieldCoverageEnding": {
+    "message": "Malapit nang magtapos ang pagsaklaw ng shield"
+  },
+  "shieldCoverageEndingAction": {
+    "message": "Mag-renew"
+  },
+  "shieldCoverageEndingDescription": {
+    "message": "Magtatapos ang plan sa $1.",
+    "description": "The $1 is the date"
+  },
+  "shieldCovered": {
+    "message": "Sinasaklaw"
+  },
+  "shieldEntryModalGetStarted": {
+    "message": "Simulan ang 14 na araw na libreng trial"
+  },
+  "shieldEntryModalSubtitleA": {
+    "message": "Nagbibigay ang Transaction Shield ng proteksyon na hanggang $1 at priyoridad na suporta 24/7.",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldEntryModalSubtitleB": {
+    "message": "Makipagtransaksyon nang may higit na kumpiyansa sa proteksyon na hanggang $1 at priyoridad na suporta 24/7.",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldEntryModalTitleA": {
+    "message": "Makipagtransaksyon nang may higit na kumpiyansa"
+  },
+  "shieldEntryModalTitleB": {
+    "message": "Ipinapakilala ang Transaction Shield"
+  },
+  "shieldEstimatedChangesMonthlyTooltipText": {
+    "message": "Pahintulutan ang $1/buwan sa loob ng 12 buwan ($2 sa kabuuan). Sisingilin ka buwan-buwan, hindi ka sisingilin ng buong halaga ngayon."
+  },
+  "shieldNotCovered": {
+    "message": "Hindi saklaw"
+  },
+  "shieldPaused": {
+    "message": "Naka-pause"
+  },
+  "shieldPaymentPaused": {
+    "message": "Inihinto ang Transaction Shield"
+  },
+  "shieldPaymentPausedActionCardPayment": {
+    "message": "I-update"
+  },
+  "shieldPaymentPausedActionCryptoPayment": {
+    "message": "I-update"
+  },
+  "shieldPaymentPausedActionUnexpectedError": {
+    "message": "Tingnan"
+  },
+  "shieldPaymentPausedDescriptionCardPayment": {
+    "message": "Nabigo ang pagbabayad ng card."
+  },
+  "shieldPaymentPausedDescriptionCryptoPayment": {
+    "message": "Hindi sapat na balanse ng token."
+  },
+  "shieldPaymentPausedDescriptionUnexpectedError": {
+    "message": "Nagkaroon ng hindi inaasahang error."
+  },
+  "shieldPlanAnnual": {
+    "message": "Taunan"
+  },
+  "shieldPlanAnnualPrice": {
+    "message": "$1/taon",
+    "description": "The $1 is the price of the annual plan"
+  },
+  "shieldPlanBillingDate": {
+    "message": "Petsa ng pagsingil"
+  },
+  "shieldPlanCard": {
+    "message": "Card"
+  },
+  "shieldPlanCryptoMonthlyNote": {
+    "message": "Kabuuang buwanang bayarin na paunang naaprubahan para sa isang taon"
+  },
+  "shieldPlanDetails": {
+    "message": "Ano ang makukuha mo"
+  },
+  "shieldPlanDetails1": {
+    "message": "$1 araw na libreng trial",
+    "description": "The $1 is the number of days"
+  },
+  "shieldPlanDetails2": {
+    "message": "Hanggang $1 sa proteksyon sa transaksyon",
+    "description": "The $1 is the amount of transaction protection"
+  },
+  "shieldPlanDetails3": {
+    "message": "24/7 na access sa priyoridad na suporta sa live chat"
+  },
+  "shieldPlanDetailsRewardsTitle": {
+    "message": "Mga Reward"
+  },
+  "shieldPlanFooterNoteMonthly": {
+    "message": "Sinisingil buwan-buwan, magkansela anumang oras"
+  },
+  "shieldPlanFooterNoteYearly": {
+    "message": "Sinisingil taon-taon, magkansela anumang oras"
+  },
+  "shieldPlanMonthly": {
+    "message": "Buwanan"
+  },
+  "shieldPlanMonthlyPrice": {
+    "message": "$1/buwan",
+    "description": "The $1 is the price of the monthly plan"
+  },
+  "shieldPlanPayWith": {
+    "message": "Magbayad gamit ang"
+  },
+  "shieldPlanPayWithCard": {
+    "message": "Magbayad gamit ang card"
+  },
+  "shieldPlanPayWithToken": {
+    "message": "Magbayad ng $1",
+    "description": "The $1 is token"
+  },
+  "shieldPlanPaymentTitle": {
+    "message": "Baguhin ang paraan ng pagbabayad"
+  },
+  "shieldPlanSave": {
+    "message": "Makatipid ng 17%"
+  },
+  "shieldPlanSelectToken": {
+    "message": "Pumili ng token"
+  },
+  "shieldPlanTitle": {
+    "message": "Piliin ang iyong plano"
+  },
+  "shieldStartNowCTA": {
+    "message": "Magsimula na"
+  },
+  "shieldStartNowCTAWithTrial": {
+    "message": "Simulan ang libreng trial"
+  },
+  "shieldTx": {
+    "message": "Transaction Shield"
+  },
+  "shieldTxCancelDetails": {
+    "message": "Kapag nagkansela ka, hindi na covered ang iyong wallet at mga transaksyon mula $1.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxCancelWhenPausedDetails": {
+    "message": "Hindi aktibo ang plan mo habang nakahinto. Kung magkakansela ka, agad na matatapos ang plan mo."
+  },
+  "shieldTxMembershipActive": {
+    "message": "Aktibong plan"
+  },
+  "shieldTxMembershipBillingDetailsViewBillingHistory": {
+    "message": "Pamahalaan ang pagsingil"
+  },
+  "shieldTxMembershipCancel": {
+    "message": "Kanselahin ang plan"
+  },
+  "shieldTxMembershipCancelNotification": {
+    "message": "Kakanselahin ang plan mo sa $1.",
+    "description": "The $1 is the date"
+  },
+  "shieldTxMembershipErrorInsufficientFunds": {
+    "message": "Magtatapos ang plan mo sa $1. Mag-renew na ngayon para mapanatili ang mga benepisyo mo.",
+    "description": "The $1 is the date subscription ends"
+  },
+  "shieldTxMembershipErrorPausedCard": {
+    "message": "Inihinto ang plan mo dahil sa nabigong pagbabayad ng card."
+  },
+  "shieldTxMembershipErrorPausedCardAction": {
+    "message": "I-update ang mga detalye ng card"
+  },
+  "shieldTxMembershipErrorPausedCardTooltip": {
+    "message": "Hindi tinanggap ang iyong pagbabayad. I-update ang iyong paraan ng pagbabayad para ipagpatuloy ang iyong coverage."
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFunds": {
+    "message": "Inihinto ang plan dahil sa hindi sapat na pondo. Posibleng tumagal nang hanggang $1 (na) oras ang mga update sa pagbabayad.",
+    "description": "The $1 is the number of hours"
+  },
+  "shieldTxMembershipErrorPausedCryptoInsufficientFundsAction": {
+    "message": "Magdagdag ng pondo"
+  },
+  "shieldTxMembershipErrorPausedCryptoTooltip": {
+    "message": "Hindi sapat ang balanse ng token sa wallet mo. I-click ang subukan ulit pagkatapos pondohan ang wallet."
+  },
+  "shieldTxMembershipErrorPausedUnexpected": {
+    "message": "Inihinto ang plan dahil sa hindi inaasahang error."
+  },
+  "shieldTxMembershipErrorPausedUnexpectedAction": {
+    "message": "Kontakin ang suporta"
+  },
+  "shieldTxMembershipFreeTrial": {
+    "message": "Libreng trial"
+  },
+  "shieldTxMembershipId": {
+    "message": "ID ng Plan"
+  },
+  "shieldTxMembershipInactive": {
+    "message": "Hindi aktibong plan"
+  },
+  "shieldTxMembershipPaused": {
+    "message": "Naka-pause"
+  },
+  "shieldTxMembershipRenew": {
+    "message": "I-renew ang plan"
+  },
+  "shieldTxMembershipResubscribe": {
+    "message": "Simulan ulit ang plan"
+  },
+  "shieldTxMembershipSubmitCase": {
+    "message": "Magsumite ng claim"
   },
   "show": {
     "message": "Ipakita"
@@ -5306,7 +6321,7 @@
     "message": "Magpakita ng mas kaunti"
   },
   "showMore": {
-    "message": "Ipakita ang iba pa"
+    "message": "Magpakita ng higit pa"
   },
   "showNativeTokenAsMainBalance": {
     "message": "Ipakita ang native token bilang pangunahing balanse"
@@ -5354,7 +6369,7 @@
     "message": "Pumipirma gamit ang"
   },
   "simulationApproveHeading": {
-    "message": "I-withdraw"
+    "message": "Mag-withdraw"
   },
   "simulationDetailsApproveDesc": {
     "message": "Binibigyan mo ng pahintulot ang ibang tao na i-withdraw ang mga NFT mula sa iyong account."
@@ -5366,13 +6381,25 @@
     "message": "Hindi Available"
   },
   "simulationDetailsIncomingHeading": {
-    "message": "Natanggap mo"
+    "message": "Nakatanggap ka ng"
+  },
+  "simulationDetailsIncomingHeadingReceived": {
+    "message": "Nakatanggap ka ng"
+  },
+  "simulationDetailsIncomingHeadingReceiving": {
+    "message": "Makakatanggap ka ng"
   },
   "simulationDetailsNoChanges": {
-    "message": "Walang pagbabago"
+    "message": "Walang mga pagbabago"
   },
   "simulationDetailsOutgoingHeading": {
-    "message": "Nagpadala ka"
+    "message": "Nagpadala ka ng"
+  },
+  "simulationDetailsOutgoingHeadingSending": {
+    "message": "Nagpapadala ka ng"
+  },
+  "simulationDetailsOutgoingHeadingSent": {
+    "message": "Nagpadala ka ng"
   },
   "simulationDetailsRevokeSetApprovalForAllDesc": {
     "message": "Aalisin mo ang pahintulot sa ibang tao na i-withdraw ang mga NFT mula sa account mo."
@@ -5381,13 +6408,13 @@
     "message": "Binibigyan mo ng pahintulot ang ibang tao na i-withdraw ang mga NFT mula sa account mo."
   },
   "simulationDetailsTitle": {
-    "message": "Tinatayang mga pagbabago"
+    "message": "Tinantyang mga pagbabago"
   },
   "simulationDetailsTitleEnforced": {
     "message": "Mga pagbabago sa balanse"
   },
   "simulationDetailsTitleTooltip": {
-    "message": "Ang tinatayang mga pagbabago ay ang maaaring mangyaring kung magpapatuloy ka sa transaksyon ito. Ito ay isang prediksyon laman, hindi isang garantiya."
+    "message": "Ang tinantyang mga pagbabago ay ang maaaring mangyari kung magpapatuloy ka sa transaksyon ito. Ito ay isang hula lamang, hindi isang garantiya."
   },
   "simulationDetailsTitleTooltipEnforced": {
     "message": "Iginagarantiya ang mga pagbabago sa balanse. Kung hindi posible ang kalalabasang ito, ihihinto ang transaksyon."
@@ -5433,19 +6460,22 @@
     "message": "Mga Site"
   },
   "siweIssued": {
-    "message": "Ibinigay"
+    "message": "Inisyu"
   },
   "siweNetwork": {
     "message": "Network"
   },
   "siweRequestId": {
-    "message": "Request ID"
+    "message": "Humiling ng ID"
   },
   "siweResources": {
     "message": "Mga Mapagkukunan"
   },
   "siweURI": {
     "message": "URL"
+  },
+  "skip": {
+    "message": "Laktawan"
   },
   "skipDeepLinkInterstitial": {
     "message": "Huwag ipakita ang interstitial screen kapag binubuksan ang mga deep link"
@@ -5461,6 +6491,9 @@
   },
   "slippageEditAriaLabel": {
     "message": "I-edit ang slippage"
+  },
+  "slippageExplanation": {
+    "message": "Ang % ng pagbabago sa presyo na handa mong payagan bago makansela ang iyong transaksyon."
   },
   "smartAccount": {
     "message": "Smart account"
@@ -5499,7 +6532,7 @@
     "message": "Gumamit ng smart account?"
   },
   "smartAccountUpdateSuccessMessage": {
-    "message": "Ang iyong account ay ia-update sa smart account sa susunod mong transaksyon."
+    "message": "Maa-update sa smart account ang iyong account sa susunod mong transaksyon."
   },
   "smartAccountUpdateSuccessTitle": {
     "message": "Matagumpay!"
@@ -5692,18 +6725,6 @@
   "snapsNoInsight": {
     "message": "Walang insight na ipapakita"
   },
-  "snapsPrivacyWarningFirstMessage": {
-    "message": "Kinikilala mo na anumang snap na i-install mo ay isang Serbisyong Third Party, maliban kung tinukoy, ayon sa depenisyon sa $1 ng Consensys. Ang iyong paggamit ng mga Serbisyong Third Party ay pinapamahalaan ng hiwalay na mga tuntunin at kundisyon na itinakda ng tagapagbigay ng Serbisyong Third Party. Iyong ina-access, pinagbabatayan, o ginagamit mo ang Serbisyong Third Party sa sarili mong panganib. Itinatanggi ng Consensys ang lahat ng responsibilidad at pananagutan para sa anumang pagkalugi sa account dahil sa iyong paggamit ng mga Serbisyo ng Third Party.",
-    "description": "First part of a message in popup modal displayed when installing a snap for the first time. $1 is terms of use link."
-  },
-  "snapsPrivacyWarningSecondMessage": {
-    "message": "Ang anumang impormasyong ibinabahagi mo sa mga Serbisyo ng Third Party ay direktang kokolektahin ng mga Serbisyo ng Third Party na iyon alinsunod sa kanilang mga patakaran sa pagkapribado. Pakitingnan ang kanilang mga patakaran sa pagkapribado para sa higit pang impormasyon.",
-    "description": "Second part of a message in popup modal displayed when installing a snap for the first time."
-  },
-  "snapsPrivacyWarningThirdMessage": {
-    "message": "Walang access ang Consensys sa impormasyong ibinabahagi mo sa mga third party na ito.",
-    "description": "Third part of a message in popup modal displayed when installing a snap for the first time."
-  },
   "snapsSettings": {
     "message": "Mga settings sa Snap"
   },
@@ -5737,10 +6758,10 @@
     "message": "Hindi namin mai-load ang page na ito."
   },
   "sortBy": {
-    "message": "Isaayos ayon sa"
+    "message": "I-sort ayon sa"
   },
   "sortByAlphabetically": {
-    "message": "Ayon sa alpabeto (A-Z)"
+    "message": "Paalpabeto (A-Z)"
   },
   "sortByDecliningBalance": {
     "message": "Bumababa ang balanse ($1 high-low)",
@@ -5816,23 +6837,29 @@
   "spendingCaps": {
     "message": "Mga limitasyon sa paggastos"
   },
+  "srpAlreadyImportedError": {
+    "message": "Na-import na ang Lihim na Parirala sa Pagbawi na ito."
+  },
   "srpDetailsDescription": {
     "message": "Ang Lihim na Parirala sa Pagbawi (Secret Recovery Phrase), na tinatawag ding pariralang binhi o mnemonic, ay isang pangkat ng mga salita na nagpapahintulot sa iyo na i-access at kontrolin ang iyong crypto wallet. Para mailipat ang iyong wallet sa MetaMask, kailangan mo ang pariralang ito."
   },
   "srpDetailsOwnsAccessListItemOne": {
-    "message": "Kunin lahat ng iyong pera"
+    "message": "Kunin ang lahat ng iyong pera"
   },
   "srpDetailsOwnsAccessListItemThree": {
-    "message": "Baguhin ang iyong impormasyon sa pag-login"
+    "message": "Baguhin ang iyong impormasyon sa pag-log in"
   },
   "srpDetailsOwnsAccessListItemTwo": {
     "message": "Kumpirmahin ang mga transaksyon"
   },
   "srpDetailsOwnsAccessListTitle": {
-    "message": "Ang sinuman na mayroon ng iyong Lihim na Parirala sa Pagbawi ay maaaring:"
+    "message": "Sinuman na mayroon ng iyong Lihim na Parirala sa Pagbawi ay maaaring:"
   },
   "srpDetailsTitle": {
     "message": "Ano ang Lihim na Parirala sa Pagbawi?"
+  },
+  "srpImportDuplicateAccountError": {
+    "message": "Duplicate ang account na sinusubukan mong i-import."
   },
   "srpInputNumberOfWords": {
     "message": "Mayroon akong word phrase ng $1",
@@ -5857,7 +6884,7 @@
     "message": "Ipakita"
   },
   "srpListStateNotBackedUp": {
-    "message": "I-backup"
+    "message": "Backup"
   },
   "srpPasteFailedTooManyWords": {
     "message": "Nabigong i-paste dahil naglalaman ito ng higit sa 24 na salita. Ang lihim na parirala sa pagbawi ay mayroong hanggang 24 na salita lang.",
@@ -5892,19 +6919,19 @@
     "message": "Maaari itong ibalik para sa iyo"
   },
   "srpSecurityQuizQuestionOneWrongAnswerDescription": {
-    "message": "Kung nawala mo ang iyong Lihim na Parirala sa Pagbawi mawawala na ito nang tuluyan. Walang makakatulong sa iyo na maibalik ito, anuman ang sabihin nila."
+    "message": "Kung nawala mo ang iyong Lihim na Parirala sa Pagbawi mawawala na ito nang tuluyan. Walang makakatulong sa iyo na maibalik ito, anuman ang maaaring sabihin nila."
   },
   "srpSecurityQuizQuestionOneWrongAnswerTitle": {
     "message": "Mali! Walang makakatulong na maibalik ang iyong Lihim na Parirala sa Pagbawi"
   },
   "srpSecurityQuizQuestionTwoQuestion": {
-    "message": "Kung hihingin ng sinuman, kahit ng isang ahente ng suporta, ang iyong Lihim na Parirala sa Pagbawi..."
+    "message": "Kung sinuman, kahit isang ahente ng suporta, ay humingi ng iyong Lihim na Parirala sa Pagbawi..."
   },
   "srpSecurityQuizQuestionTwoRightAnswer": {
     "message": "Niloloko ka"
   },
   "srpSecurityQuizQuestionTwoRightAnswerDescription": {
-    "message": "Sinumang nagsasabing nangangailangan ng iyong Lihim na Parirala sa Pagbawi ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ang iyong mga asset."
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Lihim na Parirala sa Pagbawi ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
   },
   "srpSecurityQuizQuestionTwoRightAnswerTitle": {
     "message": "Tama! Ang pagbabahagi ng iyong Lihim na Parirala sa Pagbawi ay hindi kailanman isang magandang ideya"
@@ -5913,7 +6940,7 @@
     "message": "Dapat mong ibigay sa kanila"
   },
   "srpSecurityQuizQuestionTwoWrongAnswerDescription": {
-    "message": "Sinumang nagsasabing nangangailangan ng iyong Lihim na Parirala sa Pagbawi ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ang iyong mga asset."
+    "message": "Sinumang nagsasabing nangangailangan ng iyong Lihim na Parirala sa Pagbawi ay nagsisinungaling sa iyo. Kung ibabahagi mo ito sa kanila, nanakawin nila ng iyong mga ari-arian."
   },
   "srpSecurityQuizQuestionTwoWrongAnswerTitle": {
     "message": "Hindi! Huwag kailanman ibahagi ang iyong Lihim na Parirala sa Pagbawi sa sinuman"
@@ -5940,10 +6967,13 @@
     "message": "stable"
   },
   "stake": {
-    "message": "Mag-stake"
+    "message": "Stake"
   },
   "staked": {
     "message": "Nai-stake"
+  },
+  "stakingDeposit": {
+    "message": "Deposito sa Pag-stake"
   },
   "standardAccountLabel": {
     "message": "Standard Account"
@@ -6000,7 +7030,7 @@
     "message": "Naglalaman ang mga log ng estado ng iyong mga address ng pampublikong account at ipinadalang transaksyon."
   },
   "status": {
-    "message": "Katayuan"
+    "message": "Lagay"
   },
   "statusNotConnected": {
     "message": "Hindi konektado"
@@ -6033,11 +7063,15 @@
     "message": "Direktang ikonekta ang iyong Ledger sa iyong computer, pagkatapos ay i-unlock ito at buksan ang Ethereum app.",
     "description": "$1 represents the `hardwareWalletSupportLinkConversion` localization key"
   },
+  "stillConnectingTo": {
+    "message": "Kasalukuyan pa ring kumokonekta sa $1...",
+    "description": "Message shown when network connection is slow. $1 is the network name."
+  },
   "stillGettingMessage": {
     "message": "Nakukuha pa rin ang mensaheng ito?"
   },
   "strong": {
-    "message": "Mahirap"
+    "message": "Matibay"
   },
   "stxCancelled": {
     "message": "Nabigo sana ang pag-swap kung"
@@ -6110,7 +7144,7 @@
     "message": "Nai-supply"
   },
   "support": {
-    "message": "Humingi ng Tulong"
+    "message": "Support"
   },
   "supportCenter": {
     "message": "Bisitahin ang aming Sentro ng Suporta"
@@ -6125,7 +7159,7 @@
     "message": "Hubugin ang hinaharap ng MetaMask"
   },
   "swap": {
-    "message": "I-swap"
+    "message": "Mag-swap"
   },
   "swapAdjustSlippage": {
     "message": "Ayusin ang slippage"
@@ -6216,14 +7250,14 @@
     "message": "Nabigo ang pag-swap"
   },
   "swapFetchingQuote": {
-    "message": "Kinukuha ang mga quote"
+    "message": "Kumukuha ng quote"
   },
   "swapFetchingQuoteNofN": {
     "message": "Kinukuha ang quote $1 ng $2",
     "description": "A count of possible quotes shown to the user while they are waiting for quotes to be fetched. $1 is the number of quotes already loaded, and $2 is the total number of resources that we check for quotes. Keep in mind that not all resources will have a quote for a particular swap."
   },
   "swapFetchingQuotes": {
-    "message": "Kinukuha ang mga quote..."
+    "message": "Pagkuha ng mga quote..."
   },
   "swapFetchingQuotesErrorDescription": {
     "message": "Hmmm... nagkaproblema. Subukan ulit, o kung magpapatuloy ang mga error, makipag-ugnayan sa customer support."
@@ -6246,40 +7280,49 @@
     "message": "dito",
     "description": "Text for link in swapGasFeesExplanation"
   },
+  "swapGasFeesIncluded": {
+    "message": " Kasama na"
+  },
   "swapGasFeesLearnMore": {
-    "message": "Alamin pa ang tungkol sa mga bayad sa gas"
+    "message": "Matuto pa tungkol sa mga bayad sa gas"
   },
   "swapGasFeesSplit": {
     "message": "Ang mga bayad sa gas sa nakaraang screen ay hinati sa dalawang transaksyon."
+  },
+  "swapGasFeesSponsored": {
+    "message": "Binayaran ng MetaMask"
+  },
+  "swapGasFeesSponsoredExplanation": {
+    "message": "MetaMask ang nagbabayad ng bayad sa network na ito, kaya puwede kang mag-swap kahit wala kang $1 sa account mo."
   },
   "swapGasFeesSummary": {
     "message": "Ang mga bayad sa gas ay binabayaran sa mga minero ng crypto na nagpoproseso ng mga transaksyon sa $1 na network. Ang MetaMask ay hindi kumikita mula sa mga bayad sa gas.",
     "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
-    "message": "Isinasama sa presyo na ito ang mga bayad sa gas sa pamamagitan ng pagsasaayos sa halaga ng ipinadala o natanggap na token. Maaari kang tumanggap ng ETH sa hiwalay na transaksyon sa iyong listahan ng aktibidad."
+    "message": "Isinasama sa quote na ito ang mga bayad sa gas sa pamamagitan ng pagsasaayos sa halaga ng token na ipinapadala o natatanggap. Maaari mong matanggap ang ETH sa hiwalay na transaksyon sa iyong listahan ng aktibidad."
   },
   "swapGasIncludedTooltipExplanationLinkText": {
-    "message": "Alamin pa ang tungkol sa mga bayad sa gas"
+    "message": "Matuto pa tungkol sa mga bayad sa gas"
   },
   "swapHighSlippage": {
     "message": "Mataas na slippage"
   },
   "swapIncludesGasAndMetaMaskFee": {
     "message": "Kasama ang gas at $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFee": {
-    "message": "Kasama ang $1% MetaMask fee.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "message": "Kabilang ang $1% na bayad sa MetaMask.",
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapIncludesMMFeeAlt": {
     "message": "Kasama sa quote ang $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that metamask takes for swaps using the latest copy. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Kabilang ang $1% na bayad sa MetaMask – $2",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number and $2 is a link to view all quotes."
   },
   "swapLearnMore": {
     "message": "Alamin pa ang tungkol sa mga Swap"
@@ -6291,14 +7334,14 @@
     "message": "Mababang slippage"
   },
   "swapMaxSlippage": {
-    "message": "Max na slippage"
+    "message": "Pinakamataas na slippage"
   },
   "swapMetaMaskFee": {
-    "message": "Bayarin sa MetaMask"
+    "message": "Bayad sa MetaMask"
   },
   "swapMetaMaskFeeDescription": {
     "message": "Ang bayad na $1% ay awtomatikong isinasali sa quote na ito. Babayaran mo ito bilang kapalit ng isang lisensya para gamitin ang software ng pagsasama-sama ng impormasyon ng tagapagbigay ng liquidity ng MetaMask.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 quote.",
@@ -6331,7 +7374,7 @@
     "message": "Tingnan ang iyong rate bago magpatuloy"
   },
   "swapProcessing": {
-    "message": "Pagproseso"
+    "message": "Pinoproseso"
   },
   "swapQuoteDetails": {
     "message": "Mga detalye ng quote"
@@ -6347,7 +7390,7 @@
     "message": "Humiling ng mga bagong quote para makuha ang mga pinakabagong rate."
   },
   "swapQuotesExpiredErrorTitle": {
-    "message": "Pag-timeout ng mga quote"
+    "message": "Natapos na ang quote"
   },
   "swapQuotesNotAvailableDescription": {
     "message": "Hindi available sa ngayon ang ruta ng trade na ito. Subukang baguhin ang halaga, network, o token at hahanapin namin ang pinakamainam na opsyon."
@@ -6359,7 +7402,7 @@
     "message": "Walang available na quote"
   },
   "swapRate": {
-    "message": "Singil"
+    "message": "Rate"
   },
   "swapReceiving": {
     "message": "Pagtanggap"
@@ -6371,7 +7414,7 @@
     "message": "Humiling ng quotation"
   },
   "swapSelect": {
-    "message": "Piliin"
+    "message": "Piliin ang"
   },
   "swapSelectAQuote": {
     "message": "Pumili ng quote"
@@ -6406,7 +7449,7 @@
     "message": "Mababang slippage"
   },
   "swapSlippageNegativeDescription": {
-    "message": "Dapat na mas malaki o katumbas ng zero ang slippage"
+    "message": "Ang slippage ay dapat mas malaki o katumbas ng zero"
   },
   "swapSlippageNegativeTitle": {
     "message": "Dagdagan ang slippage para magpatuloy"
@@ -6440,7 +7483,7 @@
     "message": "Ang mga swap ay kumplikado at sensitibo sa oras na mga transaksyon. Inirerekomenda namin ang bayad sa gas na ito para sa magandang balanse sa pagitan ng halaga at kumpiyansa ng matagumpay na Swap."
   },
   "swapSwapFrom": {
-    "message": "Mag-swap ng"
+    "message": "I-swap mula sa"
   },
   "swapSwapSwitch": {
     "message": "Mga token na papalitan o ipapalit"
@@ -6484,6 +7527,9 @@
     "message": "Kinumpirma ng $1 (na) pinagmulan. I-verify sa $2.",
     "description": "$1 the number of sources that have verified the token, $2 points the user to a block explorer as a place they can verify information about the token."
   },
+  "swapTokens": {
+    "message": "Ipagpalit ang mga token"
+  },
   "swapTooManyDecimalsError": {
     "message": "Ang $1 ay nagpapahintulot sa hanggang $2 na decimal",
     "description": "$1 is a token symbol and $2 is the max. number of decimals allowed for the token"
@@ -6495,7 +7541,10 @@
     "message": "2 transaksyon"
   },
   "swapUnknown": {
-    "message": "Hindi Alam"
+    "message": "Hindi Kilala"
+  },
+  "swapValidationInsufficientGasMessage": {
+    "message": "Wala kang sapat na $1 para bayaran ang gas sa swap na ito. Maglagay ng mas maliit na halaga o bumili pa ng $1."
   },
   "swapZeroSlippage": {
     "message": "0% Slippage"
@@ -6517,7 +7566,7 @@
     "message": "Lumipat pabalik"
   },
   "switchEthereumChainConfirmationDescription": {
-    "message": "Dahil dito, lilipat sa dating idinagdag na network ang napiling network sa loob ng MetaMask:"
+    "message": "Ililipat nito ang napiling network sa loob ng MetaMask sa dating idinagdag na network:"
   },
   "switchEthereumChainConfirmationTitle": {
     "message": "Payagan ang site na ito para lumipat ng network?"
@@ -6528,9 +7577,11 @@
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
-  "switchToNetwork": {
-    "message": "Lumipat sa $1",
-    "description": "$1 represents the custom network that has previously been added"
+  "switchToPopup": {
+    "message": "Lumipat sa popup"
+  },
+  "switchToSidePanel": {
+    "message": "Lumipat sa panel sa gilid"
   },
   "switchToThisAccount": {
     "message": "Lumipat sa account na ito"
@@ -6544,32 +7595,35 @@
   "symbolBetweenZeroTwelve": {
     "message": "Dapat ay 11 character o mas kaunti ang simbolo."
   },
+  "syncing": {
+    "message": "Sini-sync..."
+  },
   "tapToReveal": {
     "message": "I-tap para ipakita"
   },
   "tapToRevealNote": {
-    "message": "Tiyaking walang nanonood sa iyong screen."
+    "message": "Tiyaking walang ibang taong nakakakita sa iyong screen."
   },
   "tenPercentIncreased": {
     "message": "10% na dagdag"
   },
   "terms": {
-    "message": "Mga Tuntunin ng Paggamit"
+    "message": "Mga tuntunin ng paggamit"
   },
   "termsOfService": {
-    "message": "Mga Tuntunin ng Serbisyo"
+    "message": "Mga Tuntunin ng serbisyo"
   },
   "termsOfUseAgree": {
-    "message": "Sumang-ayon"
+    "message": "Sumasang-ayon"
   },
   "termsOfUseAgreeText": {
-    "message": "Sumasang-ayon ako sa Mga Tuntunin ng Paggamit, na nalalapat sa aking paggamit ng MetaMask at sa lahat ng feature nito."
+    "message": "Sumasang-ayon ako sa Mga Tuntunin sa Paggamit, na nalalapat sa aking paggamit ng MetaMask at lahat ng feature nito."
   },
   "termsOfUseFooterText": {
     "message": "Mag-scroll upang basahin ang lahat ng seksyon"
   },
   "termsOfUseTitle": {
-    "message": "Suriin ang aming Mga Tuntunin ng Paggamit"
+    "message": "Repasuhin ang aming Mga Tuntunin ng Paggamit"
   },
   "testNetworks": {
     "message": "Suriin ang mga network"
@@ -6590,18 +7644,8 @@
   "time": {
     "message": "Oras"
   },
-  "tipsForUsingAWallet": {
-    "message": "Mga tip sa paggamit ng wallet"
-  },
-  "tipsForUsingAWalletDescription": {
-    "message": "Kapag nagdagdag ka ng mga token, magkakaroon ka ng mas maraming paraan para magamit ang web3."
-  },
   "to": {
-    "message": "Para kay/sa"
-  },
-  "toAddress": {
-    "message": "Para kay/sa: $1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
+    "message": "Sa/Kay"
   },
   "toggleDecodeDescription": {
     "message": "Ginagamit namin ang mga serbisyo ng 4byte.directory at Sourcify para i-decode at ipakita ang mas nababasang data ng transaksyon. Tinutulungan ka nito na maunawaan ang kinalabasan ng mga nakabinbin at nakalipas na transaksyon, ngunit maaaring humantong sa pagbabahagi ng iyong IP address."
@@ -6620,6 +7664,13 @@
   },
   "tokenContractAddress": {
     "message": "Address ng kontrata ng token"
+  },
+  "tokenContractError": {
+    "message": "Ang address na ito ay isang address ng kontrata ng token. Kung magpapadala ka ng mga token sa address na ito, mawawala ang mga ito sa iyo."
+  },
+  "tokenCount": {
+    "message": "token",
+    "description": "is number of tokens used for token transfers (singular form)"
   },
   "tokenDecimal": {
     "message": "Decimal na token"
@@ -6640,19 +7691,37 @@
     "message": "Mga listahan ng token"
   },
   "tokenMarketplace": {
-    "message": "Marketplace ng token"
+    "message": "Token marketplace"
   },
-  "tokenScamSecurityRisk": {
-    "message": "mga panloloko sa token at panganib sa seguridad"
+  "tokenPermissionCount": {
+    "message": "$1 token permission",
+    "description": "$1 is the count of token permissions (singular form)"
+  },
+  "tokenPermissionsCount": {
+    "message": "$1 token permissions",
+    "description": "$1 is the count of token permissions (plural form)"
   },
   "tokenStandard": {
     "message": "Pamantayan ng token"
   },
+  "tokenStream": {
+    "message": "Stream ng Token"
+  },
+  "tokenSubscription": {
+    "message": "Subskripsyon ng Token"
+  },
   "tokenSymbol": {
     "message": "Simbolo ng token"
   },
+  "tokenTransfer": {
+    "message": "Pag-transfer ng token"
+  },
   "tokens": {
     "message": "Mga Token"
+  },
+  "tokensCount": {
+    "message": "mga Token",
+    "description": "is the count of tokens used for token transfers (plural form)"
   },
   "tokensFoundTitle": {
     "message": "$1 bagong token ang nakita",
@@ -6665,7 +7734,7 @@
     "message": "Nauunawaan ko"
   },
   "tooltipSatusConnected": {
-    "message": "konektado"
+    "message": "nakakonekta"
   },
   "tooltipSatusConnectedUpperCase": {
     "message": "Nakakonekta"
@@ -6680,7 +7749,7 @@
     "message": "Kabuuang volume"
   },
   "transaction": {
-    "message": "transaksyon"
+    "message": "transaksyong"
   },
   "transactionCancelAttempted": {
     "message": "Sinubukang kanselahin ang transaksyon na may tinantyang bayad sa gas na $1 sa $2"
@@ -6695,10 +7764,10 @@
     "message": "Nagawa ang transaksyon na nagkakahalagang $1 sa $2."
   },
   "transactionDataFunction": {
-    "message": "Function"
+    "message": "Tungkulin"
   },
   "transactionDetailGasHeading": {
-    "message": "Tinantyang bayad sa gas"
+    "message": "Tinatayang bayad sa gas"
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Halaga + fees"
@@ -6737,7 +7806,7 @@
     "message": "Bayad sa priyoridad (GWEI)"
   },
   "transactionHistoryTotalGasFee": {
-    "message": "Kabuuang Bayad sa Gas"
+    "message": "Kabuuang bayad sa gas"
   },
   "transactionIdLabel": {
     "message": "ID ng Transaksyon",
@@ -6751,6 +7820,9 @@
   },
   "transactionSettings": {
     "message": "Mga setting ng transaksyon"
+  },
+  "transactionShield": {
+    "message": "Transaction Shield"
   },
   "transactionSubmitted": {
     "message": "Isinumite ang transaksyon na may tinantyang bayad sa gas na $1 sa $2."
@@ -6775,7 +7847,16 @@
     "message": "Maglipat mula kay/sa"
   },
   "transferRequest": {
-    "message": "Kahilingan na paglilipat"
+    "message": "Kahilingan sa paglilipat"
+  },
+  "tronBandwidth": {
+    "message": "Bandwidth"
+  },
+  "tronDailyResources": {
+    "message": "Araw-araw na mapagkukunan"
+  },
+  "tronEnergy": {
+    "message": "Enerhiya"
   },
   "troubleConnectingToLedgerU2FOnFirefox": {
     "message": "Nagkakaproblema kami sa pagkonekta ng iyong Ledger. $1",
@@ -6801,10 +7882,10 @@
     "message": "Maaaring paulit-ulit ang error na ito, kaya subukang i-restart ang extension."
   },
   "troubleStartingTitle": {
-    "message": "Nagkakaproblema ang MetaMask sa pagsisimula."
+    "message": "Nagkaroon ng problema sa pagsisimula ang MetaMask."
   },
   "tryAgain": {
-    "message": "Subukan ulit"
+    "message": "Subukang muli"
   },
   "turnOff": {
     "message": "I-off"
@@ -6825,13 +7906,13 @@
     "message": "Nagkaroon ng error sa paglikha ng mga notipikasyon. Pakisubukan muli mamaya."
   },
   "turnOnMetamaskNotificationsMessageFirst": {
-    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notipikasyon."
+    "message": "Manatiling may-alam sa nangyayari sa iyong wallet gamit ang mga notification."
   },
   "turnOnMetamaskNotificationsMessagePrivacyBold": {
     "message": "mga setting ng notipikasyon."
   },
   "turnOnMetamaskNotificationsMessagePrivacyLink": {
-    "message": "Matutunan kung paano namin protektahan ang iyong pagkapribado habang gamit ang tampok na ito."
+    "message": "Matuto kung paano namin pinoprotektahan ang iyong privacy habang ginagamit ang feature na ito."
   },
   "turnOnMetamaskNotificationsMessageSecond": {
     "message": "Para magamit ang mga notipikasyon sa wallet, gumagamit kami ng profile para i-sync ang ilang mga setting sa iyong mga device. $1"
@@ -6849,14 +7930,18 @@
     "message": "12 oras:"
   },
   "txAlertTitle": {
-    "message": "Ibabalik ang transaksyong ito"
+    "message": "Babawiin ang transaksyong ito"
   },
   "typeYourSRP": {
-    "message": "Ilagay ang iyong Lihim na Parirala sa Pagbawi"
+    "message": "Ilagay rito ang iyong Lihim na Parirala sa Pagbawi"
   },
   "u2f": {
     "message": "U2F",
     "description": "A name on an API for the browser to interact with devices that support the U2F protocol. On some browsers we use it to connect MetaMask to Ledger devices."
+  },
+  "unableToConnectTo": {
+    "message": "Hindi makakonekta sa $1.",
+    "description": "Message shown when network connection fails. $1 is the network name."
   },
   "unapproved": {
     "message": "Hindi inaprubahan"
@@ -6864,14 +7949,25 @@
   "unexpectedBehavior": {
     "message": "Hindi inaasahan ang pangyayaring ito at dapat itong iulat bilang bug, kahit na maibalik ang iyong mga account."
   },
+  "unifiedSwapAllowSwappingOf": {
+    "message": "Pahintulutan ang eksaktong access sa $1 $2 sa $3 para sa pag-swap"
+  },
+  "unifiedSwapFromTo": {
+    "message": "I-swap ang $1 $2 sa$3",
+    "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
+  },
   "units": {
-    "message": "mga unit"
+    "message": "(na) unit"
   },
   "unknown": {
-    "message": "Hindi Alam"
+    "message": "Hindi Kilala"
   },
   "unknownCollection": {
     "message": "Walang pangalang koleksyon"
+  },
+  "unknownNetworkForGatorPermissions": {
+    "message": "Hindi kilalang network",
+    "description": "Displayed on places like Gator permissions when regular name is not available."
   },
   "unknownNetworkForKeyEntropy": {
     "message": "Hindi kilalang network",
@@ -6881,7 +7977,7 @@
     "message": "Error: Hindi namin matukoy ang QR code na iyon"
   },
   "unlimited": {
-    "message": "Walang Limitasyon"
+    "message": "Walang limitasyon"
   },
   "unlock": {
     "message": "I-unlock"
@@ -6900,7 +7996,7 @@
     "message": "I-unpin"
   },
   "unrecognizedChain": {
-    "message": "Hindi nakikilala ang custom network na ito. Nirerekomenda namin na ikaw ay $1 bago magpatuloy",
+    "message": "Hindi kilala ang custom network na ito",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
   },
   "unsendableAsset": {
@@ -6935,6 +8031,10 @@
   "updateRequest": {
     "message": "Hiling sa pag-update"
   },
+  "updateRpc": {
+    "message": "I-update ang RPC",
+    "description": "Button text to update RPC endpoint"
+  },
   "updateToTheLatestVersion": {
     "message": "I-update sa pinakabagong bersyon"
   },
@@ -6954,16 +8054,16 @@
     "message": "I-decode ang mga smart na kontrata"
   },
   "useDifferentLoginMethod": {
-    "message": "Gumamit ng ibang paraan sa pag-login"
+    "message": "Gumamit ng ibang paraan ng pag-log in"
   },
   "useMultiAccountBalanceChecker": {
     "message": "Maramihang kahilingan sa balanse ng account"
   },
   "useMultiAccountBalanceCheckerSettingDescription": {
-    "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third party ang iyong mga account sa isa't isa."
+    "message": "Makakuha ng mas mabibilis na update sa balanse sa pamamagitan ng maramihang paghiling sa balanse ng account. Nagpapahintulot ito sa amin na makuha nang sama-sama ang iyong mga balanse ng account, para makakuha ka ng mas mabibilis na update para sa inaprubahang kasanayan. Kapag naka-off ang feature na ito, posibleng hindi maiugnay ng mga third-party ang iyong mga account sa isa't isa."
   },
   "useNftDetection": {
-    "message": "Awtomatikong tuklasin ang mga NFT"
+    "message": "Awtomatikong tuklasin and mga NFT"
   },
   "useNftDetectionDescriptionText": {
     "message": "Hayaan ang MetaMask na magdagdag ng mga NFT na iyong pag-aari gamit ang mga third-party na serbisyo. Ang awtomatikong pagtuklas ng mga NFT ay naglalantad sa iyong IP at address ng account sa mga serbisyong ito. Ang pag-enable sa tampok na ito ay maaaring mag-ugnay sa iyong IP sa iyong Ethereum address at magpakita ng pekeng NFT na in-airdrop ng mga scammer. Maaari kang magdagdag ng token sa manu-manong paraan para iwasan ang panganib na ito."
@@ -6975,7 +8075,7 @@
     "message": "Magpakita ng babala para sa mga phishing domain na nagta-target sa mga user ng Ethereum"
   },
   "useSafeChainsListValidation": {
-    "message": "Suriin ang mga Detalye ng Network"
+    "message": "Pagsusuri ng detalye ng network"
   },
   "useSafeChainsListValidationDescription": {
     "message": "Ang MetaMask ay gumagamit ng serbisyong third-party na tinatawag na $1 para magpakita ng tumpak at naka-standardized na detalye ng network. Binabawasan nito ang iyong tiyansa sa pagkonekta sa malisiyoso o malitang network. Kapag ginagamit ang tampok na ito, ang iyong IP address ay nakalantad sa chainid.network."
@@ -6985,13 +8085,13 @@
     "description": "useSafeChainsListValidationWebsite is separated from the rest of the text so that we can bold the third party service name in the middle of them"
   },
   "useSmartAccountDescription": {
-    "message": "Hayaan itong naka-on para awtomatikong lumipat sa mga account na nilikha sa loob ng MetaMask patungo sa mga smart account sa tuwing available ang mga kaugnay na feature, gaya ng mas mabilis na mga transaksyon, mas mababang bayad sa network at flexibility sa pagbabayad para sa mga iyon."
+    "message": "Panatilihin itong naka-on para awtomatikong gawing mga smart account ang mga account na ginawa sa loob ng MetaMask sa tuwing available ang mga naaangkop na feature, gaya ng mas mabibilis na transaksyon, mas mabababang bayad sa network at flexible na bayad para sa pagbabayad sa mga ito."
   },
   "useSmartAccountTitle": {
     "message": "Gumamit ng smart account"
   },
   "useTokenDetectionPrivacyDesc": {
-    "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
+    "message": "Awtomatikong ipinapakita ang mga token na ipinadala sa iyong account na nakapaloob sa komunikasyon ng mga server ng third-party para makuha ang mga larawan ng token. Ang mga server na iyon ay magkakaroon ng access sa iyong IP address."
   },
   "usedByClients": {
     "message": "Ginagamit ng iba't ibang kliyente"
@@ -7000,7 +8100,7 @@
     "message": "Username"
   },
   "userOpContractDeployError": {
-    "message": "Ang paglalabas ng kontrata mula sa isang account ng smart contract ay hindi suportado"
+    "message": "Hindi sinusuportahan ang pagtatalaga ng kontrata mula sa isang smart account"
   },
   "value": {
     "message": "Halaga"
@@ -7047,6 +8147,9 @@
   "viewOnOpensea": {
     "message": "Tingnan sa Opensea"
   },
+  "viewTokenDetails": {
+    "message": "Tingnan ang mga detalye ng token"
+  },
   "viewTransaction": {
     "message": "Tingnan ang transaksyon"
   },
@@ -7072,47 +8175,27 @@
   "visitWebSite": {
     "message": "Bisitahin ang aming website"
   },
+  "volume": {
+    "message": "Volume"
+  },
   "wallet": {
     "message": "Wallet"
   },
   "walletConnectionGuide": {
     "message": "ang aming gabay sa pagkonekta ng wallet na hardware"
   },
-  "walletDetails": {
-    "message": "Mga detalye ng wallet"
-  },
   "walletName": {
     "message": "Pangalan ng wallet"
-  },
-  "walletNotFoundDescription": {
-    "message": "Hindi nahanap ang wallet na may ID na $1.",
-    "description": "$1 is the wallet ID"
-  },
-  "walletNotFoundTitle": {
-    "message": "Hindi nahanap ang wallet"
   },
   "walletReadyLearn": {
     "message": "$1 maaari mong panatiling ligtas ang pariralang ito nang sa gayon hindi mawawala ang access mo sa iyong pera.",
     "description": "$1 is the link to Learn how"
-  },
-  "walletReadyLearnRemind": {
-    "message": "Maaari mong i-back up ang iyong mga wallet o tingnan ang iyong Lihim na Parirala sa Pagbawi sa Mga Setting > Seguridad at Password."
   },
   "walletReadyLoseSrp": {
     "message": "Kapag nawala ang iyong Lihim na Parirala sa Pagbawi, hindi mo na magagamit ang iyong wallet."
   },
   "walletReadyLoseSrpFromReminder": {
     "message": "Matutulungan ka ng Lihim na Parirala sa Pagbawi na ito na magkaroon muli ng access kung sakaling makalimutan mo ang iyong password o mawalan ng access sa iyong login."
-  },
-  "walletReadyLoseSrpRemind": {
-    "message": "Kapag hindi mo na-back up ang iyong Lihim na Parirala sa Pagbawi, mawawalan ka ng access sa iyong mga pondo kapag na-lock out ka sa app o nagkaroon ng bagong device."
-  },
-  "walletReadySocialDetails1": {
-    "message": "Maaari kang mag-log in sa iyong wallet anumang oras gamit ang iyong $1 account at password.",
-    "description": "$1 is the social login type. e.g Google, Apple, etc."
-  },
-  "walletReadySocialDetails2": {
-    "message": "Kapag nakalimutan mo ang iyong password, hindi mo maa-access ang iyong wallet."
   },
   "wantToAddThisNetwork": {
     "message": "Gusto mo bang idagdag ang network na ito?"
@@ -7153,30 +8236,42 @@
     "message": "mga website",
     "description": "Used in the 'permission_rpc' message."
   },
+  "weekly": {
+    "message": "lingguhan"
+  },
   "welcomeBack": {
     "message": "Maligayang pagbabalik"
   },
-  "welcomeToMetaMask": {
-    "message": "Magsimula na tayo"
-  },
   "whatsThis": {
     "message": "Ano ito?"
+  },
+  "willApproveAmountForBridging": {
+    "message": "Aprubahan ang token para sa bridge."
+  },
+  "willApproveAmountForSwapping": {
+    "message": "Aprubahan ang token para sa swap."
   },
   "withdrawing": {
     "message": "Wini-withdraw"
   },
   "wrongNetworkName": {
-    "message": "Ayon sa aming mga talaan, ang pangalan ng network ay maaaring hindi tumugma nang tama sa ID ng chain na ito."
+    "message": "Ayon sa aming mga rekord, maaaring hindi tumugma ang pangalan ng network sa ID ng chain na ito."
   },
   "wrongPassword": {
     "message": "Maling password",
     "description": "Displayed when the user enters an incorrect password"
+  },
+  "year": {
+    "message": "taon"
   },
   "yes": {
     "message": "Oo"
   },
   "you": {
     "message": "Ikaw"
+  },
+  "youApprove": {
+    "message": "Inaaprubahan mo"
   },
   "youDeclinedTheTransaction": {
     "message": "Tinanggihan mo ang transaksyon."
@@ -7193,7 +8288,7 @@
     "description": "Label indicating the amount and asset the user sent."
   },
   "yourAccounts": {
-    "message": "Mga account mo"
+    "message": "Ang iyong mga account"
   },
   "yourActivity": {
     "message": "Iyong aktibidad"
@@ -7221,8 +8316,5 @@
   },
   "yourWalletIsReadyFromReminder": {
     "message": "Panatilihing ligtas ang iyong Lihim na Parirala sa Pagbawi!"
-  },
-  "yourWalletIsReadyRemind": {
-    "message": "Ipapaalala namin sa iyo mamaya"
   }
 }

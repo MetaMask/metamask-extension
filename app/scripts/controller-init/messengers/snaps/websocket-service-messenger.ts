@@ -1,8 +1,9 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   WebSocketServiceEvents,
   WebSocketServiceAllowedActions,
 } from '@metamask/snaps-controllers';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type WebSocketServiceMessenger = ReturnType<
   typeof getWebSocketServiceMessenger
@@ -16,15 +17,28 @@ export type WebSocketServiceMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getWebSocketServiceMessenger(
-  messenger: Messenger<WebSocketServiceAllowedActions, WebSocketServiceEvents>,
+  messenger: RootMessenger<
+    WebSocketServiceAllowedActions,
+    WebSocketServiceEvents
+  >,
 ) {
-  return messenger.getRestricted({
-    name: 'WebSocketService',
-    allowedActions: ['SnapController:handleRequest'],
-    allowedEvents: [
+  const serviceMessenger = new Messenger<
+    'WebSocketService',
+    WebSocketServiceAllowedActions,
+    WebSocketServiceEvents,
+    typeof messenger
+  >({
+    namespace: 'WebSocketService',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: ['SnapController:handleRequest'],
+    events: [
       'SnapController:snapUpdated',
       'SnapController:snapUninstalled',
       'SnapController:snapInstalled',
     ],
   });
+  return serviceMessenger;
 }

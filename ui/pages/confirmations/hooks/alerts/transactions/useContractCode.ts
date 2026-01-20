@@ -1,3 +1,5 @@
+'use no memo';
+
 import { Hex } from '@metamask/utils';
 import { addHexPrefix, padToEven } from 'ethereumjs-util';
 import { useCallback } from 'react';

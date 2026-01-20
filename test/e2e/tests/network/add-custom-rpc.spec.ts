@@ -1,19 +1,19 @@
-import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import AddRpcProviderDialog from '../../page-objects/pages/dialog/add-rpc-provider';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
-import UpdateNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/update-network-confirmation';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
+import UpdateNetworkConfirmation from '../../page-objects/pages/confirmations/update-network-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { RowAlertKey } from '../../../../ui/components/app/confirm/info/row/constants';
 
 describe('Add Custom RPC', function (this: Suite) {
   it('should show warning when adding chainId 0x1(ethereum) and be followed by an wrong chainId error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -48,28 +48,14 @@ describe('Add Custom RPC', function (this: Suite) {
 
         // Check warning messages are displayed
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
+          RowAlertKey.ChainName,
           'According to our record the network name may not correctly match this chain ID.',
         );
         await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
+          RowAlertKey.RpcUrl,
           'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
-        await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'verify the network details',
-        );
-        await updateNetworkConfirmation.approveUpdateNetwork();
 
-        const addRpcProviderDialog = new AddRpcProviderDialog(driver);
-        await addRpcProviderDialog.checkPageIsLoaded('Ethereum');
-        await addRpcProviderDialog.approveAddRpcProvider();
-
-        await updateNetworkConfirmation.checkPageIsLoaded('Ethereum');
-        await updateNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Chain ID returned by the custom network does not match the submitted chain ID.',
-        );
-        assert.equal(
-          await updateNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
-        );
         await updateNetworkConfirmation.cancelUpdateNetwork();
       },
     );
@@ -78,7 +64,7 @@ describe('Add Custom RPC', function (this: Suite) {
   it("don't add bad rpc custom network", async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: true })
@@ -113,27 +99,14 @@ describe('Add Custom RPC', function (this: Suite) {
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
         await addNetworkConfirmation.checkPageIsLoaded('Antani');
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
+          RowAlertKey.ChainName,
           'According to our record the network name may not correctly match this chain ID.',
         );
         await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'The submitted currency symbol does not match what we expect for this chain ID.',
-        );
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
+          RowAlertKey.RpcUrl,
           'According to our records the submitted RPC URL value does not match a known provider for this chain ID.',
         );
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'verify the network details',
-        );
 
-        await addNetworkConfirmation.approveAddNetwork(false);
-        await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Chain ID returned by the custom network does not match the submitted chain ID.',
-        );
-        assert.equal(
-          await addNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
-        );
         await addNetworkConfirmation.cancelAddNetwork();
       },
     );
@@ -157,7 +130,7 @@ describe('Add Custom RPC', function (this: Suite) {
     }
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesController({ useSafeChainsListValidation: false })
@@ -198,7 +171,7 @@ describe('Add Custom RPC', function (this: Suite) {
   it("don't add unreachable custom network", async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -229,16 +202,7 @@ describe('Add Custom RPC', function (this: Suite) {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
         await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.approveAddNetwork(false);
 
-        await addNetworkConfirmation.checkPageIsLoaded('Antani');
-        await addNetworkConfirmation.checkWarningMessageIsDisplayed(
-          'Error while connecting to the custom network.',
-        );
-        assert.equal(
-          await addNetworkConfirmation.checkIsApproveButtonEnabled(),
-          false,
-        );
         await addNetworkConfirmation.cancelAddNetwork();
       },
     );

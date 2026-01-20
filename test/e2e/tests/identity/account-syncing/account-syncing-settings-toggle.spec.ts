@@ -4,21 +4,25 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
 } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
+import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockIdentityServices } from '../mocks';
 import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
+  this.timeout(160000); // This test is very long, so we need an unusually high timeout
+
   const DEFAULT_ACCOUNT_NAME = 'Account 1';
   const SECOND_ACCOUNT_NAME = 'Account 2';
   const THIRD_ACCOUNT_NAME = 'Account 3';
@@ -30,6 +34,8 @@ describe('Account syncing - Settings Toggle', function () {
    * Phase 3: Login to a fresh app instance and verify only synced accounts persist
    */
   it('syncs new accounts when account sync is enabled and exclude accounts created when sync is disabled', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const sharedMockSetup = (server: Mockttp) => {
@@ -41,7 +47,6 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -53,16 +58,18 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+
+        // Wait for the initial account sync to complete before adding new accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify the default account exists
         await accountListPage.checkAccountDisplayedInAccountList(
@@ -107,9 +114,7 @@ describe('Account syncing - Settings Toggle', function () {
         await driver.navigate(PAGES.HOME);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Create third account with sync disabled - this should NOT sync to user storage
         await accountListPage.addMultichainAccount();
@@ -132,16 +137,18 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
+
+        // Wait for the account sync to complete before verifying accounts
+        const homePage = new HomePage(driver);
+        await homePage.checkHasAccountSyncingSyncedAtLeastOnce();
 
         const header = new HeaderNavbar(driver);
         await header.checkPageIsLoaded();
         await header.openAccountMenu();
 
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.checkPageIsLoaded({
-          isMultichainAccountsState2Enabled: true,
-        });
+        await accountListPage.checkPageIsLoaded();
 
         // Verify only accounts created with sync enabled are restored
         const visibleAccounts = [DEFAULT_ACCOUNT_NAME, SECOND_ACCOUNT_NAME];

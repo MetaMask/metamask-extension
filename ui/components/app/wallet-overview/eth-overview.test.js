@@ -5,7 +5,7 @@ import { fireEvent, waitFor } from '@testing-library/react';
 import { EthAccountType, EthMethod, BtcScope } from '@metamask/keyring-api';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { useIsOriginalNativeTokenSymbol } from '../../../hooks/useIsOriginalNativeTokenSymbol';
 import useMultiPolling from '../../../hooks/useMultiPolling';
@@ -26,6 +26,18 @@ jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: () => mockDispatch,
 }));
+
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
 
 jest.mock('../../../hooks/useIsOriginalNativeTokenSymbol', () => {
   return {
@@ -123,7 +135,6 @@ describe('EthOverview', () => {
       enabledNetworkMap: {
         eip155: {
           [CHAIN_IDS.MAINNET]: true,
-          [CHAIN_IDS.SEPOLIA]: true,
         },
       },
       useExternalServices: true,

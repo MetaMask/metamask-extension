@@ -1,14 +1,15 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import NetworkManager, {
   NetworkId,
 } from '../../page-objects/pages/network-manager';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import AddNetworkConfirmation from '../../page-objects/pages/confirmations/redesign/add-network-confirmations';
+import AddNetworkConfirmation from '../../page-objects/pages/confirmations/add-network-confirmations';
 
 describe('Network Manager', function (this: Suite) {
   it('should reflect the enabled networks state in the network manager', async function () {
@@ -152,7 +153,7 @@ describe('Network Manager', function (this: Suite) {
   it('should preserve existing enabled networks when adding a network via dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({
@@ -193,15 +194,15 @@ describe('Network Manager', function (this: Suite) {
           method: 'wallet_addEthereumChain',
           params: [
             {
-              chainId: '0x89', // Polygon
-              chainName: 'Polygon',
+              chainId: '0xa86a', // avalanche mainnet
+              chainName: 'Avalanche',
               nativeCurrency: {
-                name: 'MATIC',
-                symbol: 'MATIC',
+                name: 'AVAX',
+                symbol: 'AVAX',
                 decimals: 18,
               },
               rpcUrls: ['http://localhost:8546'],
-              blockExplorerUrls: ['https://polygonscan.com'],
+              blockExplorerUrls: ['https://snowtrace.io'],
             },
           ],
         });
@@ -213,7 +214,7 @@ describe('Network Manager', function (this: Suite) {
         // Approve the network addition
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         const addNetworkConfirmation = new AddNetworkConfirmation(driver);
-        await addNetworkConfirmation.checkPageIsLoaded('Polygon');
+        await addNetworkConfirmation.checkPageIsLoaded('Avalanche');
         await addNetworkConfirmation.approveAddNetwork();
 
         // Switch back to MetaMask to verify preservation
@@ -229,7 +230,7 @@ describe('Network Manager', function (this: Suite) {
         await networkManager.checkTabIsSelected('Popular');
 
         // New network is selected (we do not keep both networks on, as UI does only supports single or all popular networks)
-        await networkManager.checkNetworkIsSelected(NetworkId.POLYGON);
+        await networkManager.checkNetworkIsSelected(NetworkId.AVALANCHE);
       },
     );
   });
@@ -237,7 +238,7 @@ describe('Network Manager', function (this: Suite) {
   it('should deselect all networks when adding a custom network via dapp', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .withEnabledNetworks({

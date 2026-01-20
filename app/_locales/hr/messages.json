@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
-  "ethereumPublicAddress": {
-    "message": "Javna adresa Ethereum"
-  },
   "etherscanView": {
     "message": "Prikaži račun na Etherscanu"
-  },
-  "expandView": {
-    "message": "Proširi prikaz"
   },
   "failed": {
     "message": "Neuspješno"

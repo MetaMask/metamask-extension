@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { ButtonSize } from '@metamask/design-system-react';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
 import TransactionIcon from '../transaction-icon';
 import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayData';
@@ -13,7 +14,7 @@ import {
 import CancelButton from '../cancel-button';
 import { cancelSwapsSmartTransaction } from '../../../ducks/swaps/swaps';
 import TransactionListItemDetails from '../transaction-list-item-details';
-import { ActivityListItem } from '../../multichain';
+import { ActivityListItem } from '../../multichain/activity-list-item';
 import {
   AvatarNetwork,
   AvatarNetworkSize,
@@ -35,14 +36,8 @@ export default function SmartTransactionListItem({
   const dispatch = useDispatch();
   const [cancelSwapLinkClicked, setCancelSwapLinkClicked] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
-  const {
-    title,
-    category,
-    primaryCurrency,
-    recipientAddress,
-    isPending,
-    senderAddress,
-  } = useTransactionDisplayData(transactionGroup);
+  const { title, category, primaryCurrency, recipientAddress, isPending } =
+    useTransactionDisplayData(transactionGroup);
   const currentChain = useSelector(getCurrentNetwork);
 
   const { time, status } = smartTransaction;
@@ -59,6 +54,8 @@ export default function SmartTransactionListItem({
   const toggleShowDetails = useCallback(() => {
     setShowDetails((prev) => !prev);
   }, []);
+  const senderAddress = transactionGroup.initialTransaction.txParams?.from;
+
   return (
     <>
       <ActivityListItem
@@ -94,11 +91,9 @@ export default function SmartTransactionListItem({
       >
         {displayedStatusKey === TransactionGroupStatus.pending &&
           showCancelSwapLink && (
-            <Box
-              paddingTop={4}
-              className="transaction-list-item__pending-actions"
-            >
+            <Box paddingTop={2}>
               <CancelButton
+                size={ButtonSize.Sm}
                 transaction={smartTransaction.uuid}
                 cancelTransaction={(e) => {
                   e?.preventDefault();

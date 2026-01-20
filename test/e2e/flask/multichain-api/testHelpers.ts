@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { Browser } from 'selenium-webdriver';
 import {
   KnownRpcMethods,
@@ -6,12 +5,13 @@ import {
 } from '@metamask/chain-agnostic-permission';
 import { JsonRpcRequest } from '@metamask/utils';
 import { Driver } from '../../webdriver/driver';
+import { DAPP_PATH } from '../../constants';
 import {
   CONTENT_SCRIPT,
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_INPAGE,
 } from '../../../../app/scripts/constants/stream';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
@@ -20,17 +20,9 @@ export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
  * Default options for setting up Multichain E2E test environment
  */
 export const DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS = {
-  dapp: true,
-  dappPaths: [
-    path.join(
-      '..',
-      '..',
-      'node_modules',
-      '@metamask',
-      'test-dapp-multichain',
-      'build',
-    ),
-  ],
+  dappOptions: {
+    customDappPaths: [DAPP_PATH.TEST_DAPP_MULTICHAIN, DAPP_PATH.TEST_SNAPS],
+  },
   localNodeOptions: [
     {
       type: 'anvil',
@@ -80,7 +72,7 @@ export const addAccountInWalletAndAuthorize = async (
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
   await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.addNewEthereumAccount();
+  await editConnectedAccountsModal.addNewAccount();
 
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();

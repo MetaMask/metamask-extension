@@ -17,7 +17,7 @@ export const useCountdownTimer = () => {
   const { quotesLastFetchedMs } = useSelector(getBridgeQuotes);
   const refreshRate = useSelector(getQuoteRefreshRate);
 
-  const [timeRemaining, setTimeRemaining] = useState(refreshRate);
+  const [timeRemaining, setTimeRemaining] = useState(refreshRate + STEP);
   const timeRemainingRef = useRef(refreshRate);
 
   // Update ref whenever timeRemaining changes

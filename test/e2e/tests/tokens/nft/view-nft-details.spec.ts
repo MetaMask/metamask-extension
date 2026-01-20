@@ -1,12 +1,11 @@
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
-import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { Driver } from '../../../webdriver/driver';
-import { Anvil } from '../../../seeder/anvil';
 
 describe('View NFT details', function () {
   const smartContract = SMART_CONTRACTS.NFTS;
@@ -14,19 +13,13 @@ describe('View NFT details', function () {
   it('user should be able to view ERC721 NFT details', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder().withNftControllerERC721().build(),
         smartContract,
         title: this.test?.fullTitle(),
       },
-      async ({
-        driver,
-        localNodes,
-      }: {
-        driver: Driver;
-        localNodes: Anvil[];
-      }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      async ({ driver }: { driver: Driver }) => {
+        await loginWithoutBalanceValidation(driver);
 
         // Click to open the NFT details page and check title
         await new Homepage(driver).goToNftTab();

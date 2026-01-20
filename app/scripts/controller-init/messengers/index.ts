@@ -24,6 +24,10 @@ import {
   getTransactionControllerInitMessenger,
 } from './transaction-controller-messenger';
 import {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
+import {
   getBackendWebSocketServiceMessenger,
   getBackendWebSocketServiceInitMessenger,
   getAccountActivityServiceMessenger,
@@ -89,6 +93,7 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
+import { getConnectivityControllerMessenger } from './connectivity';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -135,6 +140,10 @@ import {
   getRemoteFeatureFlagControllerInitMessenger,
   getRemoteFeatureFlagControllerMessenger,
 } from './remote-feature-flag-controller-messenger';
+import {
+  getRewardsControllerInitMessenger,
+  getRewardsControllerMessenger,
+} from './rewards-controller-messenger';
 import {
   getSwapsControllerInitMessenger,
   getSwapsControllerMessenger,
@@ -186,7 +195,19 @@ import {
   getSignatureControllerInitMessenger,
   getSignatureControllerMessenger,
 } from './signature-controller-messenger';
-import { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
+import {
+  getUserOperationControllerInitMessenger,
+  getUserOperationControllerMessenger,
+} from './user-operation-controller-messenger';
+import { getRewardsDataServiceMessenger } from './reward-data-service-messenger';
+import {
+  getClaimsControllerInitMessenger,
+  getClaimsControllerMessenger,
+} from './claims/claims-controller-messenger';
+import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
+import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getStorageServiceMessenger } from './storage-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -257,6 +278,8 @@ export {
 } from './ens-controller-messenger';
 export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export type { StorageServiceMessenger } from './storage-service-messenger';
+export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -279,10 +302,7 @@ export type { MetaMetricsControllerMessenger } from './metametrics-controller-me
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type {
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
@@ -334,6 +354,12 @@ export {
 export type { SubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export { getSubjectMetadataControllerMessenger } from './subject-metadata-controller-messenger';
 export type {
+  RewardsControllerMessenger,
+  RewardsControllerActions,
+  RewardsControllerEvents,
+} from './rewards-controller-messenger';
+export { getRewardsControllerMessenger } from './rewards-controller-messenger';
+export type {
   SwapsControllerMessenger,
   SwapsControllerInitMessenger,
 } from './swaps-controller-messenger';
@@ -373,8 +399,21 @@ export {
   getTokensControllerMessenger,
   getTokensControllerInitMessenger,
 } from './tokens-controller-messenger';
-export type { UserOperationControllerMessenger } from './user-operation-controller-messenger';
-export { getUserOperationControllerMessenger } from './user-operation-controller-messenger';
+export type { TransactionPayControllerInitMessenger } from './transaction-pay-controller-messenger';
+export {
+  getTransactionPayControllerMessenger,
+  getTransactionPayControllerInitMessenger,
+} from './transaction-pay-controller-messenger';
+export type {
+  UserOperationControllerMessenger,
+  UserOperationControllerInitMessenger,
+} from './user-operation-controller-messenger';
+export {
+  getUserOperationControllerMessenger,
+  getUserOperationControllerInitMessenger,
+} from './user-operation-controller-messenger';
+export { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
+export { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
 
 export const CONTROLLER_MESSENGERS = {
   AccountOrderController: {
@@ -425,6 +464,18 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
+  ConnectivityController: {
+    getMessenger: getConnectivityControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ClaimsController: {
+    getMessenger: getClaimsControllerMessenger,
+    getInitMessenger: getClaimsControllerInitMessenger,
+  },
+  ClaimsService: {
+    getMessenger: getClaimsServiceMessenger,
+    getInitMessenger: noop,
+  },
   CronjobController: {
     getMessenger: getCronjobControllerMessenger,
     getInitMessenger: noop,
@@ -463,6 +514,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ErrorReportingService: {
     getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
+  },
+  StorageService: {
+    getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {
@@ -623,6 +678,14 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSubscriptionServiceMessenger,
     getInitMessenger: noop,
   },
+  RewardsDataService: {
+    getMessenger: getRewardsDataServiceMessenger,
+    getInitMessenger: noop,
+  },
+  RewardsController: {
+    getMessenger: getRewardsControllerMessenger,
+    getInitMessenger: getRewardsControllerInitMessenger,
+  },
   SwapsController: {
     getMessenger: getSwapsControllerMessenger,
     getInitMessenger: getSwapsControllerInitMessenger,
@@ -655,9 +718,13 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getTransactionControllerMessenger,
     getInitMessenger: getTransactionControllerInitMessenger,
   },
+  TransactionPayController: {
+    getMessenger: getTransactionPayControllerMessenger,
+    getInitMessenger: getTransactionPayControllerInitMessenger,
+  },
   UserOperationController: {
     getMessenger: getUserOperationControllerMessenger,
-    getInitMessenger: noop,
+    getInitMessenger: getUserOperationControllerInitMessenger,
   },
   UserStorageController: {
     getMessenger: getUserStorageControllerMessenger,
@@ -710,5 +777,13 @@ export const CONTROLLER_MESSENGERS = {
   NetworkEnablementController: {
     getMessenger: getNetworkEnablementControllerMessenger,
     getInitMessenger: getNetworkEnablementControllerInitMessenger,
+  },
+  ProfileMetricsController: {
+    getMessenger: getProfileMetricsControllerMessenger,
+    getInitMessenger: noop,
+  },
+  ProfileMetricsService: {
+    getMessenger: getProfileMetricsServiceMessenger,
+    getInitMessenger: noop,
   },
 } as const;

@@ -31,6 +31,7 @@ const createStaticAssetTasks = require('./static');
 const createEtcTasks = require('./etc');
 const {
   getBrowserVersionMap,
+  getBuildTargetFromTask,
   getEnvironment,
   isDevBuild,
   isTestBuild,
@@ -148,12 +149,17 @@ async function defineAndRunBuildTasks() {
       'sentryHooks',
       'sentry',
       'logEncryptedVault',
+      'history', // needed by Sentry and react-router-dom v6 HashRouter
       // Globals used by `react-dom`
       'getSelection',
       // globals `opera` needs to function
       'opr',
       // for @popperjs/core and snap simple keyring site
       'devicePixelRatio',
+      // for @tanstack/react-virtual
+      'ResizeObserver',
+      'setTimeout',
+      'clearTimeout',
     ];
 
     if (
@@ -498,10 +504,9 @@ function getIgnoredFiles(target) {
 Please fix builds.yml or specify a compatible set of features.`);
   }
 
-  if (
-    target.includes(BUILD_TARGETS.DEV) ||
-    target.includes(BUILD_TARGETS.TEST)
-  ) {
+  const buildTarget = getBuildTargetFromTask(target);
+
+  if (isDevBuild(buildTarget) || isTestBuild(buildTarget)) {
     return ignoredPaths;
   }
 

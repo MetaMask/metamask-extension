@@ -3,19 +3,16 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { RelayStatus } from '../../../../../app/scripts/lib/transaction/transaction-relay';
 import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
-import {
-  WINDOW_TITLES,
-  convertETHToHexGwei,
-  withFixtures,
-} from '../../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { convertETHToHexGwei, withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { mockEip7702FeatureFlag } from '../helpers';
+import { mockSpotPrices } from '../../tokens/utils/mocks';
 
 const UUID = '1234-5678';
 const TRANSACTION_HASH =
@@ -25,7 +22,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('confirms transaction if successful', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withPreferencesControllerSmartTransactionsOptedOut()
@@ -44,6 +41,13 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer);
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },
@@ -81,7 +85,7 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
   it('fails transaction if error', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.MAINNET })
           .withPermissionControllerConnectedToTestDapp()
           .withNetworkControllerOnMainnet()
@@ -97,6 +101,13 @@ describe('Gas Fee Tokens - EIP-7702 - Sponsored', function (this: Suite) {
           mockTransactionRelaySubmit(mockServer);
           mockTransactionRelayStatus(mockServer, { success: false });
           mockSmartTransactionFeatureFlags(mockServer);
+          mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 1700,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
         },
         title: this.test?.fullTitle(),
       },

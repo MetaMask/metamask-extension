@@ -2,7 +2,7 @@ import { MockttpServer } from 'mockttp';
 import { ACCOUNTS_PROD_API_BASE_URL } from '../../../../shared/constants/accounts';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import Homepage from '../../page-objects/pages/home/homepage';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -52,7 +52,7 @@ describe('Test Survey', function () {
   it('should show 2 surveys, and then none', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPreferencesController()
           .withMetaMetricsController({

@@ -34,6 +34,7 @@ import {
   getInternalAccountListSpreadByScopesByGroupId,
   getIconSeedAddressByAccountGroupId,
   getIconSeedAddressesByAccountGroups,
+  getNormalizedGroupsMetadata,
 } from './account-tree';
 import { MultichainAccountsState } from './account-tree.types';
 import {
@@ -545,6 +546,38 @@ describe('Multichain Accounts Selectors', () => {
     });
   });
 
+  describe('getNormalizedGroupsMetadata', () => {
+    it('returns the normalized groups metadata', () => {
+      const result = getNormalizedGroupsMetadata(typedMockState);
+
+      expect(result).toStrictEqual({
+        'entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0': {
+          name: 'account 1',
+          accounts: [
+            '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+            '0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b',
+          ],
+        },
+        'entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0': {
+          name: 'account 2',
+          accounts: ['0xeb9e64b93097bc15f01f13eae97015c57ab64823'],
+        },
+        'keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813': {
+          name: 'ledger account 1',
+          accounts: ['0xc42edfcc21ed14dda456aa0756c153f7985d8813'],
+        },
+        'snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281': {
+          name: 'another snap account 1',
+          accounts: ['0xca8f1f0245530118d0cf14a06b01daf8f76cf281'],
+        },
+        'snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d': {
+          name: 'snap account 1',
+          accounts: ['0xb552685e3d2790efd64a175b00d51f02cdafee5d'],
+        },
+      });
+    });
+  });
+
   describe('getWalletIdAndNameByAccountAddress', () => {
     it('returns the wallet ID and name for an account', () => {
       const result = getWalletIdAndNameByAccountAddress(
@@ -685,6 +718,33 @@ describe('Multichain Accounts Selectors', () => {
       const result = getMultichainAccountGroupById(
         typedMockState,
         invalidGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is null', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        null as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is undefined', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        undefined as unknown as AccountGroupId,
+      );
+
+      expect(result).toBeUndefined();
+    });
+
+    it('returns undefined when accountId is an empty string', () => {
+      const result = getMultichainAccountGroupById(
+        typedMockState,
+        '' as unknown as AccountGroupId,
       );
 
       expect(result).toBeUndefined();
@@ -1302,15 +1362,13 @@ describe('Multichain Accounts Selectors', () => {
       expect(result).toBe(ACCOUNT_3_ADDRESS);
     });
 
-    it('throws error when no group ID is found', () => {
-      expect(() =>
-        getIconSeedAddressByAccountGroupId(
-          typedMockState,
-          'nonExistentGroupId' as AccountGroupId,
-        ),
-      ).toThrow(
-        'Error in getIconSeedAddressByAccountGroupId: No accounts found in the specified group',
+    it('returns empty when no group ID is found', () => {
+      const result = getIconSeedAddressByAccountGroupId(
+        typedMockState,
+        'nonExistentGroupId' as AccountGroupId,
       );
+
+      expect(result).toBe('');
     });
   });
 

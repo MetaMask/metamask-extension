@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Box, IconName, IconSize, Text } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -22,7 +22,7 @@ import { SnapIcon } from '../snaps/snap-icon';
 export default function ConnectedSnaps({ connectedSubjects }) {
   const [showOptions, setShowOptions] = useState();
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const connectedOrigin = useSelector(getOriginOfCurrentTab);
 
@@ -48,7 +48,7 @@ export default function ConnectedSnaps({ connectedSubjects }) {
         </MenuItem>
         <MenuItem
           iconName={IconName.Setting}
-          onClick={() => history.push(getSnapRoute(snapId))}
+          onClick={() => navigate(getSnapRoute(snapId))}
         >
           {t('snapsSettings')}
         </MenuItem>

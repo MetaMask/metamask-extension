@@ -1,5 +1,6 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { mockJsxSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
@@ -10,6 +11,9 @@ describe('Test Snap JSX', function () {
   it('can use JSX for snap dialog', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockJsxSnap,
         title: this.test?.fullTitle(),

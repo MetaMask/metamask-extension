@@ -1,8 +1,14 @@
-import { Messenger } from '@metamask/base-controller';
-import { NetworkControllerGetNetworkClientByIdAction } from '@metamask/network-controller';
+import { Messenger } from '@metamask/messenger';
+import {
+  NetworkControllerGetNetworkClientByIdAction,
+  NetworkControllerGetStateAction,
+} from '@metamask/network-controller';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
-type AllowedActions = NetworkControllerGetNetworkClientByIdAction;
+type AllowedActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction;
 
 export type CurrencyRateControllerMessenger = ReturnType<
   typeof getCurrencyRateControllerMessenger
@@ -16,13 +22,25 @@ export type CurrencyRateControllerMessenger = ReturnType<
  * messenger.
  */
 export function getCurrencyRateControllerMessenger(
-  messenger: Messenger<AllowedActions, never>,
+  messenger: RootMessenger<AllowedActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'CurrencyRateController',
-    allowedActions: ['NetworkController:getNetworkClientById'],
-    allowedEvents: [],
+  const controllerMessenger = new Messenger<
+    'CurrencyRateController',
+    AllowedActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'CurrencyRateController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
+      'NetworkController:getNetworkClientById',
+      'NetworkController:getState',
+    ],
+  });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions = PreferencesControllerGetStateAction;
@@ -39,11 +57,20 @@ export type CurrencyRateControllerInitMessenger = ReturnType<
  * messenger.
  */
 export function getCurrencyRateControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'CurrencyRateControllerInit',
-    allowedActions: ['PreferencesController:getState'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'CurrencyRateControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'CurrencyRateControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['PreferencesController:getState'],
+  });
+  return controllerInitMessenger;
 }

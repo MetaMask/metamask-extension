@@ -7,11 +7,11 @@ import React, {
 } from 'react';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import {
-  Switch,
+  Routes,
   Route,
+  Navigate,
+  useNavigate,
   useLocation,
-  useHistory,
-  Redirect,
 } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { TransactionStatus } from '@metamask/transaction-controller';
@@ -23,7 +23,8 @@ import {
   isHardwareWallet,
   getHardwareWalletType,
   getHDEntropyIndex,
-} from '../../selectors/selectors';
+  getCurrentNetworkTransactions,
+} from '../../selectors';
 import {
   getCurrentChainId,
   getSelectedNetworkClientId,
@@ -47,7 +48,6 @@ import {
   setTransactionSettingsOpened,
   getLatestAddedTokenTo,
 } from '../../ducks/swaps/swaps';
-import { getCurrentNetworkTransactions } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
   getSmartTransactionsOptInStatusForMetrics,
@@ -64,6 +64,7 @@ import {
   SWAPS_NOTIFICATION_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
 } from '../../helpers/constants/routes';
+import { toRelativeRoutePath } from '../routes/utils';
 import {
   ERROR_FETCHING_QUOTES,
   QUOTES_NOT_AVAILABLE_ERROR,
@@ -104,12 +105,13 @@ import NotificationPage from './notification-page/notification-page';
 
 export default function Swap() {
   const t = useContext(I18nContext);
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
-  const { pathname } = useLocation();
+  const { pathname } = location;
   const isAwaitingSwapRoute = pathname === AWAITING_SWAP_ROUTE;
   const isAwaitingSignaturesRoute = pathname === AWAITING_SIGNATURES_ROUTE;
   const isSwapsErrorRoute = pathname === SWAPS_ERROR_ROUTE;
@@ -154,13 +156,13 @@ export default function Swap() {
       await dispatch(prepareToLeaveSwaps());
       // We need to wait until "prepareToLeaveSwaps" is done, because otherwise
       // a user would be redirected from DEFAULT_ROUTE back to Swaps.
-      history.push(DEFAULT_ROUTE);
+      navigate(DEFAULT_ROUTE);
     };
 
     if (!isSwapsChain) {
       leaveSwaps();
     }
-  }, [isSwapsChain, dispatch, history]);
+  }, [isSwapsChain, dispatch, navigate]);
 
   // This will pre-load gas fees before going to the View Quote page.
   useGasFeeEstimates();
@@ -270,9 +272,9 @@ export default function Swap() {
     // If there is a swapsErrorKey and reviewSwapClicked is false, there was an error in silent quotes prefetching
     // and we don't want to show the error page in that case, because another API call for quotes can be successful.
     if (swapsErrorKey && !isSwapsErrorRoute && reviewSwapClicked) {
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
     }
-  }, [history, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
+  }, [navigate, swapsErrorKey, isSwapsErrorRoute, reviewSwapClicked]);
 
   const beforeUnloadEventAddedRef = useRef();
   useEffect(() => {
@@ -345,8 +347,7 @@ export default function Swap() {
 
   const redirectToDefaultRoute = async () => {
     clearTemporaryTokenRef.current();
-    history.push({
-      pathname: DEFAULT_ROUTE,
+    navigate(DEFAULT_ROUTE, {
       state: { stayOnHomePage: true },
     });
     dispatch(clearSwapsState());
@@ -410,108 +411,107 @@ export default function Swap() {
           </Box>
         </div>
         <div className="swaps__content">
-          <Switch>
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={PREPARE_SWAP_ROUTE}
-              exact
-              render={() => (
-                <Redirect
-                  to={{
-                    pathname: `${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`,
-                  }}
-                />
-              )}
-            />
+          {/* Using relative paths for nested routes inside parent /swaps/* */}
+          <Routes>
             <Route
-              path={SWAPS_ERROR_ROUTE}
-              exact
-              render={() => {
-                if (swapsErrorKey) {
-                  return (
-                    <AwaitingSwap
-                      swapComplete={false}
-                      errorKey={swapsErrorKey}
-                      txHash={tradeTxData?.hash}
-                      txId={tradeTxData?.id}
-                      submittedTime={tradeTxData?.submittedTime}
+              path={toRelativeRoutePath(PREPARE_SWAP_ROUTE)}
+              element={
+                <FeatureToggledRoute
+                  redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+                  flag={swapsEnabled}
+                  element={
+                    <Navigate
+                      to={`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`}
+                      replace
                     />
-                  );
-                }
-                return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-              }}
+                  }
+                />
+              }
             />
             <Route
-              path={SWAPS_NOTIFICATION_ROUTE}
-              exact
-              render={() => {
-                if (!swapsErrorKey) {
-                  return <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />;
-                }
-                return <NotificationPage notificationKey={swapsErrorKey} />;
-              }}
-            />
-            <FeatureToggledRoute
-              redirectRoute={SWAPS_MAINTENANCE_ROUTE}
-              flag={swapsEnabled}
-              path={LOADING_QUOTES_ROUTE}
-              exact
-              render={() => {
-                return aggregatorMetadata ? (
-                  <LoadingQuote
-                    loadingComplete={
-                      !fetchingQuotes && Boolean(Object.values(quotes).length)
-                    }
-                    onDone={async () => {
-                      await dispatch(setBackgroundSwapRouteState(''));
-                      if (
-                        swapsErrorKey === ERROR_FETCHING_QUOTES ||
-                        swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
-                      ) {
-                        dispatch(setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR));
-                        history.push(SWAPS_ERROR_ROUTE);
-                      } else {
-                        history.push(PREPARE_SWAP_ROUTE);
-                      }
-                    }}
-                    aggregatorMetadata={aggregatorMetadata}
+              path={toRelativeRoutePath(SWAPS_ERROR_ROUTE)}
+              element={
+                swapsErrorKey ? (
+                  <AwaitingSwap
+                    swapComplete={false}
+                    errorKey={swapsErrorKey}
+                    txHash={tradeTxData?.hash}
+                    txId={tradeTxData?.id}
+                    submittedTime={tradeTxData?.submittedTime}
                   />
                 ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
-                );
-              }}
+                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                )
+              }
             />
             <Route
-              path={SWAPS_MAINTENANCE_ROUTE}
-              exact
-              render={() => {
-                return swapsEnabled === false ? (
+              path={toRelativeRoutePath(SWAPS_NOTIFICATION_ROUTE)}
+              element={
+                swapsErrorKey ? (
+                  <NotificationPage notificationKey={swapsErrorKey} />
+                ) : (
+                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                )
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(LOADING_QUOTES_ROUTE)}
+              element={
+                <FeatureToggledRoute
+                  redirectRoute={SWAPS_MAINTENANCE_ROUTE}
+                  flag={swapsEnabled}
+                  element={
+                    aggregatorMetadata ? (
+                      <LoadingQuote
+                        loadingComplete={
+                          !fetchingQuotes &&
+                          Boolean(Object.values(quotes).length)
+                        }
+                        onDone={async () => {
+                          await dispatch(setBackgroundSwapRouteState(''));
+                          if (
+                            swapsErrorKey === ERROR_FETCHING_QUOTES ||
+                            swapsErrorKey === QUOTES_NOT_AVAILABLE_ERROR
+                          ) {
+                            dispatch(
+                              setSwapsErrorKey(QUOTES_NOT_AVAILABLE_ERROR),
+                            );
+                            navigate(SWAPS_ERROR_ROUTE);
+                          } else {
+                            navigate(PREPARE_SWAP_ROUTE);
+                          }
+                        }}
+                        aggregatorMetadata={aggregatorMetadata}
+                      />
+                    ) : (
+                      <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                    )
+                  }
+                />
+              }
+            />
+            <Route
+              path={toRelativeRoutePath(SWAPS_MAINTENANCE_ROUTE)}
+              element={
+                swapsEnabled === false ? (
                   <AwaitingSwap errorKey={OFFLINE_FOR_MAINTENANCE} />
                 ) : (
-                  <Redirect to={{ pathname: PREPARE_SWAP_ROUTE }} />
-                );
-              }}
+                  <Navigate to={PREPARE_SWAP_ROUTE} replace />
+                )
+              }
             />
             <Route
-              path={AWAITING_SIGNATURES_ROUTE}
-              exact
-              render={() => {
-                return <AwaitingSignatures />;
-              }}
+              path={toRelativeRoutePath(AWAITING_SIGNATURES_ROUTE)}
+              element={<AwaitingSignatures />}
             />
             <Route
-              path={SMART_TRANSACTION_STATUS_ROUTE}
-              exact
-              render={() => {
-                return <SmartTransactionStatus txId={tradeTxData?.id} />;
-              }}
+              path={toRelativeRoutePath(SMART_TRANSACTION_STATUS_ROUTE)}
+              element={<SmartTransactionStatus txId={tradeTxData?.id} />}
             />
             <Route
-              path={AWAITING_SWAP_ROUTE}
-              exact
-              render={() => {
-                return routeState === 'awaiting' || tradeTxData ? (
+              path={toRelativeRoutePath(AWAITING_SWAP_ROUTE)}
+              element={
+                routeState === 'awaiting' || tradeTxData ? (
                   <AwaitingSwap
                     swapComplete={tradeConfirmed}
                     txHash={tradeTxData?.hash}
@@ -522,11 +522,11 @@ export default function Swap() {
                     }
                   />
                 ) : (
-                  <Redirect to={{ pathname: DEFAULT_ROUTE }} />
-                );
-              }}
+                  <Navigate to={DEFAULT_ROUTE} replace />
+                )
+              }
             />
-          </Switch>
+          </Routes>
         </div>
       </div>
     </div>

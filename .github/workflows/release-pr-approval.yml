@@ -3,7 +3,6 @@ name: Release PR Approval
 on:
   pull_request:
     branches:
-      - Version-v*
       - release/*
 
 jobs:

@@ -21,10 +21,9 @@ import {
 import configureStore from '../../../store/store';
 import mockDefaultState from '../../../../test/data/mock-state.json';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MultichainAccountListMenu } from '.';
 
-///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 const mockGetEnvironmentType = jest.fn();
 const mockGenerateNewHdKeyring = jest.fn();
 const mockDetectNfts = jest.fn();
@@ -33,7 +32,18 @@ jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: () => () => mockGetEnvironmentType(),
 }));
-///: END:ONLY_INCLUDE_IF
+
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () => false,
+  }),
+);
 
 jest.mock('../../../store/actions', () => {
   return {

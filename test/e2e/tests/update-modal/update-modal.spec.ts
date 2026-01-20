@@ -1,8 +1,9 @@
 import { Suite } from 'mocha';
 import semver from 'semver';
 import type { Mockttp } from 'mockttp';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import UpdateModal from '../../page-objects/pages/dialog/update-modal';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { version } from '../../../../package.json';

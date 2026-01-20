@@ -12,14 +12,13 @@ import {
 import {
   Display,
   FlexDirection,
+  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useConfirmContext } from '../../../context/confirm';
-
-// TODO: change to the correct URL
-const SHIELD_TERMS_OF_USE_URL = 'https://consensys.io/terms-of-use';
+import { SHIELD_TERMS_OF_USE_URL } from '../../../../../../shared/lib/ui-utils';
 
 const ShieldFooterAgreement = () => {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
@@ -30,12 +29,16 @@ const ShieldFooterAgreement = () => {
   }
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Row} gap={4}>
+    <Box
+      display={Display.Flex}
+      flexDirection={FlexDirection.Row}
+      justifyContent={JustifyContent.center}
+      gap={4}
+    >
       <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
         {t('shieldFooterAgreement', [
           <ButtonLink
             href={SHIELD_TERMS_OF_USE_URL}
-            color={TextColor.textAlternative}
             size={ButtonLinkSize.Inherit}
             externalLink
             key="shield-footer-agreement-button"

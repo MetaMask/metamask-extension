@@ -1,7 +1,8 @@
 import { Suite } from 'mocha';
 import { Driver } from '../webdriver/driver';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import SnapInstall from '../page-objects/pages/dialog/snap-install';
@@ -20,6 +21,9 @@ describe('Test Snap getEntropy', function (this: Suite) {
   it('can use snap_getEntropy inside a snap', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockGetEntropySnap,
         title: this.test?.fullTitle(),

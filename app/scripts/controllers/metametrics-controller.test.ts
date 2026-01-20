@@ -12,8 +12,14 @@ import {
 } from '@metamask/assets-controllers';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { Browser } from 'webextension-polyfill';
-import { Messenger, deriveStateFromMetadata } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { merge } from 'lodash';
+import { ThemeType } from '../../../shared/constants/preferences';
 import { ENVIRONMENT_TYPE_BACKGROUND } from '../../../shared/constants/app';
 import { createSegmentMock } from '../lib/segment';
 import {
@@ -35,6 +41,7 @@ import MetaMetricsController, {
 } from './metametrics-controller';
 import {
   getDefaultPreferencesControllerState,
+  Preferences,
   PreferencesControllerState,
 } from './preferences-controller';
 
@@ -817,6 +824,40 @@ describe('MetaMetricsController', function () {
       });
     });
 
+    it('should use custom timestamp when provided in event payload', async function () {
+      await withController(({ controller }) => {
+        const spy = jest.spyOn(segmentMock, 'track');
+        const customTimestamp = '2024-01-15T00:00:00.000Z';
+        controller.trackEvent({
+          event: 'Fake Event',
+          category: 'Unit Test',
+          timestamp: customTimestamp,
+          properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            chain_id: '1',
+          },
+        });
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(spy).toHaveBeenCalledWith(
+          {
+            event: 'Fake Event',
+            properties: {
+              ...DEFAULT_EVENT_PROPERTIES,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              chain_id: '1',
+            },
+            context: DEFAULT_TEST_CONTEXT,
+            userId: TEST_META_METRICS_ID,
+            messageId: Utils.generateRandomId(),
+            timestamp: new Date(customTimestamp),
+          },
+          spy.mock.calls[0][1],
+        );
+      });
+    });
+
     it('should immediately flush queue if flushImmediately set to true', async function () {
       await withController(({ controller }) => {
         const spy = jest.spyOn(segmentMock, 'flush');
@@ -1480,12 +1521,8 @@ describe('MetaMetricsController', function () {
           openSeaEnabled: true,
           useNftDetection: false,
           securityAlertsEnabled: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          ShowNativeTokenAsMainBalance: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: [],
           names: {
             [NameType.ETHEREUM_ADDRESS]: {
               '0x123': {
@@ -1511,15 +1548,19 @@ describe('MetaMetricsController', function () {
               },
             },
           },
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
           participateInMetaMetrics: true,
           currentCurrency: 'usd',
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           srpSessionData: undefined,
           keyrings: [],
         });
@@ -1602,25 +1643,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: false,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           securityAlertsEnabled: true,
           names: {
             ethereumAddress: {},
           },
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: undefined,
           keyrings: [],
@@ -1663,25 +1704,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: false,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: false,
           names: {
             ethereumAddress: {},
           },
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: false,
+          } as Preferences,
           securityAlertsEnabled: true,
           srpSessionData: {
             entropySourceId1: {
@@ -1746,25 +1787,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           names: {
             ethereumAddress: {},
           },
           securityAlertsEnabled: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: {
             entropySourceId1: {
@@ -1810,25 +1851,25 @@ describe('MetaMetricsController', function () {
             selectedAccount: 'mock1',
           },
           useNftDetection: true,
-          theme: 'default',
+          theme: 'default' as ThemeType,
           useTokenDetection: true,
-          tokenSortConfig: {
-            key: 'token-sort-key',
-            order: 'dsc',
-            sortCallback: 'stringNumeric',
-          },
-          ShowNativeTokenAsMainBalance: true,
           allNfts: {},
           participateInMetaMetrics: true,
           dataCollectionForMarketing: false,
-          preferences: { privacyMode: true, tokenNetworkFilter: [] },
+          preferences: {
+            privacyMode: true,
+            tokenNetworkFilter: {},
+            tokenSortConfig: {
+              key: 'token-sort-key',
+              order: 'dsc',
+              sortCallback: 'stringNumeric',
+            },
+            showNativeTokenAsMainBalance: true,
+          } as Preferences,
           names: {
             ethereumAddress: {},
           },
           securityAlertsEnabled: true,
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          security_providers: ['blockaid'],
           currentCurrency: 'usd',
           srpSessionData: {
             entropySourceId1: {
@@ -2065,7 +2106,7 @@ describe('MetaMetricsController', function () {
             deriveStateFromMetadata(
               controller.state,
               controller.metadata,
-              'anonymous',
+              'includeInDebugSnapshot',
             ),
           ).toMatchInlineSnapshot(`
             {
@@ -2166,6 +2207,8 @@ describe('MetaMetricsController', function () {
   });
 });
 
+type RootMessenger = Messenger<MockAnyNamespace, AllowedActions, AllowedEvents>;
+
 type WithControllerOptions = {
   currentLocale?: string;
   options?: Partial<MetaMetricsControllerOptions>;
@@ -2211,7 +2254,9 @@ async function withController<ReturnValue>(
         },
       },
     } = rest;
-    const messenger = new Messenger<AllowedActions, AllowedEvents>();
+    const messenger: RootMessenger = new Messenger({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     messenger.registerActionHandler(
       'PreferencesController:getState',
@@ -2238,21 +2283,32 @@ async function withController<ReturnValue>(
       }),
     );
 
+    const metaMetricsControllerMessenger = new Messenger<
+      'MetaMetricsController',
+      AllowedActions,
+      AllowedEvents,
+      RootMessenger
+    >({
+      namespace: 'MetaMetricsController',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: metaMetricsControllerMessenger,
+      actions: [
+        'PreferencesController:getState',
+        'NetworkController:getState',
+        'NetworkController:getNetworkClientById',
+      ],
+      events: [
+        'PreferencesController:stateChange',
+        'NetworkController:networkDidChange',
+      ],
+    });
+
     return fn({
       controller: new MetaMetricsController({
         segment: segmentMock,
-        messenger: messenger.getRestricted({
-          name: 'MetaMetricsController',
-          allowedActions: [
-            'PreferencesController:getState',
-            'NetworkController:getState',
-            'NetworkController:getNetworkClientById',
-          ],
-          allowedEvents: [
-            'PreferencesController:stateChange',
-            'NetworkController:networkDidChange',
-          ],
-        }),
+        messenger: metaMetricsControllerMessenger,
         version: '0.0.1',
         environment: 'test',
         extension: MOCK_EXTENSION,

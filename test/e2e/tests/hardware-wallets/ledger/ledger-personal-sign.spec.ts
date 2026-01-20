@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -10,6 +10,7 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
   it('personal sign', async function () {
     await withFixtures(
       {
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withLedgerAccount()
           .withPermissionControllerConnectedToTestDapp({
@@ -17,7 +18,6 @@ describe('Ledger Hardware Signatures', function (this: Suite) {
           })
           .build(),
         title: this.test?.fullTitle(),
-        dapp: true,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithoutBalanceValidation(driver);

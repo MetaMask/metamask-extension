@@ -5,12 +5,12 @@ import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { TRANSACTION_DATA_UNISWAP } from '../../../../data/confirmations/transaction-decode';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { TestSuiteArguments } from './shared';
 
 const { withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign Contract Interaction Transaction Decoding', function () {
@@ -20,7 +20,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
     it(`decodes 4 bytes transaction data`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -58,7 +58,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes Sourcify transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -91,7 +91,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`falls back to raw hexadecimal when no data is retreived`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -115,7 +115,9 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
         await confirmation.checkPageIsLoaded();
         await confirmation.clickAdvancedDetailsButton();
         await confirmation.clickScrollToBottomButton();
-        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed();
+        await confirmation.verifyAdvancedDetailsHexDataIsDisplayed(
+          '0x3b4b13810000000000000000000000000000000000000000000000000000000000000001',
+        );
       },
     );
   });
@@ -123,7 +125,7 @@ describe('Confirmation Redesign Contract Interaction Transaction Decoding', func
   it(`decodes uniswap transaction data`, async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withEnabledNetworks({
@@ -171,6 +173,7 @@ async function mocked4BytesResponse(mockServer: MockttpServer) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     .withQuery({ hex_signature: '0x3b4b1381' })
+    .always()
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -214,10 +217,13 @@ async function mockedSourcifyResponse(mockServer: MockttpServer) {
     .forGet(
       'https://sourcify.dev/server/files/any/1337/0x581c3c1a2a4ebde2a0df29b5cf4c116e42945947',
     )
-    .thenCallback(() => ({
-      statusCode: 200,
-      json: SOURCIFY_RESPONSE,
-    }));
+    .always()
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: SOURCIFY_RESPONSE,
+      };
+    });
 }
 
 async function mockTokensAndInfura(mockServer: MockttpServer) {

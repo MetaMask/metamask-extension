@@ -28,7 +28,7 @@ import { Icon, IconName, IconSize } from '../icon';
 import { Tag } from '../tag';
 
 export default {
-  title: 'Components/ComponentLibrary/BadgeWrapper',
+  title: 'Components/ComponentLibrary/BadgeWrapper (deprecated)',
   component: BadgeWrapper,
   parameters: {
     docs: {

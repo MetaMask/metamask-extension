@@ -14,6 +14,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   ENVIRONMENT_TYPE_FULLSCREEN,
   ENVIRONMENT_TYPE_NOTIFICATION,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   ENVIRONMENT_TYPE_POPUP,
   PLATFORM_BRAVE,
   PLATFORM_CHROME,
@@ -37,6 +38,8 @@ const getEnvironmentTypeMemo = memoize((url) => {
     return ENVIRONMENT_TYPE_FULLSCREEN;
   } else if (parsedUrl.pathname === '/notification.html') {
     return ENVIRONMENT_TYPE_NOTIFICATION;
+  } else if (parsedUrl.pathname === '/sidepanel.html') {
+    return ENVIRONMENT_TYPE_SIDEPANEL;
   }
   return ENVIRONMENT_TYPE_BACKGROUND;
 });
@@ -251,6 +254,20 @@ export function isWebUrl(urlString: string): boolean {
   return (
     url !== null && (url.protocol === 'https:' || url.protocol === 'http:')
   );
+}
+
+/**
+ * Checks if an origin string is a web origin (http:// or https://).
+ * This is used to filter out non-web origins like chrome://, about://, moz-extension://, etc.
+ *
+ * @param origin - The origin string to check (e.g., "https://example.com", "chrome://newtab")
+ * @returns true if the origin starts with http:// or https://, false otherwise
+ */
+export function isWebOrigin(origin: string | undefined | null): boolean {
+  if (!origin) {
+    return false;
+  }
+  return origin.startsWith('http://') || origin.startsWith('https://');
 }
 
 /**

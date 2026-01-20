@@ -11,6 +11,7 @@ import { Text, TextVariant } from '@metamask/design-system-react';
 import { SignatureRequestType } from '../../../../types/confirm';
 import { useConfirmContext } from '../../../../context/confirm';
 import { ConfirmInfoRow } from '../../../../../../components/app/confirm/info/row';
+import { ConfirmInfoRowAddress } from '../../../../../../components/app/confirm/info/row/address';
 import { ConfirmInfoSection } from '../../../../../../components/app/confirm/info/row/section';
 import { ConfirmInfoRowUrl } from '../../../../../../components/app/confirm/info/row/url';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
@@ -20,9 +21,10 @@ import { RowAlertKey } from '../../../../../../components/app/confirm/info/row/c
 import { SigningInWithRow } from '../shared/sign-in-with-row/sign-in-with-row';
 
 import { NativeTokenStreamDetails } from './typed-sign-permission/native-token-stream-details';
+import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
 import { Erc20TokenPeriodicDetails } from './typed-sign-permission/erc20-token-periodic-details';
 import { Erc20TokenStreamDetails } from './typed-sign-permission/erc20-token-stream-details';
-import { NativeTokenPeriodicDetails } from './typed-sign-permission/native-token-periodic-details';
+import { Erc20TokenRevocationDetails } from './typed-sign-permission/erc20-token-revocation-details';
 
 /**
  * Main component for displaying typed signature permission information.
@@ -102,6 +104,10 @@ const TypedSignPermissionInfo: React.FC = () => {
 
       break;
     }
+    case 'erc20-token-revocation': {
+      permissionDetail = <Erc20TokenRevocationDetails expiry={expiry} />;
+      break;
+    }
     default:
       throw new Error('Invalid permission type');
   }
@@ -133,6 +139,15 @@ const TypedSignPermissionInfo: React.FC = () => {
         >
           <ConfirmInfoRowUrl url={decodedPermission.origin} />
         </ConfirmInfoAlertRow>
+
+        {'address' in decodedPermission.signer.data && (
+          <ConfirmInfoRow label={t('recipient')}>
+            <ConfirmInfoRowAddress
+              address={decodedPermission.signer.data.address}
+              chainId={chainId}
+            />
+          </ConfirmInfoRow>
+        )}
 
         <NetworkRow />
       </ConfirmInfoSection>

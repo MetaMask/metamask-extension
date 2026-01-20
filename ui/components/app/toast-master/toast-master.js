@@ -2,12 +2,11 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import classnames from 'classnames';
 import { getAllScopesFromCaip25CaveatValue } from '@metamask/chain-agnostic-permission';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
-import { useNavigate } from 'react-router-dom-v5-compat';
 import { MILLISECOND, SECOND } from '../../../../shared/constants/time';
 import {
   PRIVACY_POLICY_LINK,
@@ -21,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -58,6 +58,7 @@ import {
 import { getDappActiveNetwork } from '../../../selectors/dapp';
 import {
   getAccountGroupWithInternalAccounts,
+  getIconSeedAddressByAccountGroupId,
   getSelectedAccountGroup,
 } from '../../../selectors/multichain-accounts/account-tree';
 import { hasChainIdSupport } from '../../../../shared/lib/multichain/scope-utils';
@@ -70,7 +71,18 @@ import { getShortDateFormatterV2 } from '../../../pages/asset/util';
 import {
   getIsShieldSubscriptionEndingSoon,
   getIsShieldSubscriptionPaused,
+  getSubscriptionPaymentData,
 } from '../../../../shared/lib/shield';
+import {
+  isCardPaymentMethod,
+  isCryptoPaymentMethod,
+} from '../../../pages/settings/transaction-shield-tab/types';
+import { useSubscriptionMetrics } from '../../../hooks/shield/metrics/useSubscriptionMetrics';
+import {
+  ShieldErrorStateActionClickedEnum,
+  ShieldErrorStateLocationEnum,
+  ShieldErrorStateViewEnum,
+} from '../../../../shared/constants/subscriptions';
 import {
   selectNftDetectionEnablementToast,
   selectShowConnectAccountToast,
@@ -83,6 +95,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowStorageErrorToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -103,12 +116,22 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
-  const onHomeScreen = location.pathname === DEFAULT_ROUTE;
-  const onSettingsScreen = location.pathname.startsWith(SETTINGS_ROUTE);
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
+  // Get current pathname from React Router
+  const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
+  const onHomeScreen = currentPathname === DEFAULT_ROUTE;
+  const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
+
+  // Storage error toast should show on ALL screens
+  const storageErrorToast = <StorageErrorToast />;
 
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -130,10 +153,17 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
+  }
+
+  // On other screens, only render ToastContainer if storage error toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -241,8 +271,15 @@ function ConnectAccountGroupToast() {
       .map((account) => account.address);
   }, [existingChainIds, selectedAccountGroupInternalAccounts?.accounts]);
 
+  const seedAddress = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(
+      state,
+      selectedAccountGroupInternalAccounts?.id,
+    ),
+  );
+
   // Early return if selectedAccountGroupInternalAccounts is undefined
-  if (!selectedAccountGroupInternalAccounts) {
+  if (!selectedAccountGroupInternalAccounts || !seedAddress) {
     return null;
   }
 
@@ -252,10 +289,7 @@ function ConnectAccountGroupToast() {
         dataTestId="connect-account-toast"
         key="connect-account-toast"
         startAdornment={
-          <PreferredAvatar
-            address={selectedAccountGroupInternalAccounts.id}
-            className="self-center"
-          />
+          <PreferredAvatar address={seedAddress} className="self-center" />
         }
         text={t('accountIsntConnectedToastText', [
           selectedAccountGroupInternalAccounts.metadata?.name,
@@ -386,7 +420,7 @@ function PermittedNetworkToast() {
   const activeTabOrigin = useSelector(getOriginOfCurrentTab);
   const dappActiveNetwork = useSelector(getDappActiveNetwork);
   const safeEncodedHost = encodeURIComponent(activeTabOrigin);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   // Use dapp's active network if available, otherwise fall back to global network
   const displayNetwork = dappActiveNetwork || currentNetwork;
@@ -424,7 +458,7 @@ function PermittedNetworkToast() {
         actionText={t('editPermissions')}
         onActionClick={() => {
           dispatch(hidePermittedNetworkToast());
-          history.push(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
+          navigate(`${REVIEW_PERMISSIONS}/${safeEncodedHost}`);
         }}
         onClose={() => dispatch(hidePermittedNetworkToast())}
       />
@@ -551,40 +585,114 @@ const ClaimSubmitToast = () => {
   const showClaimSubmitToast = useSelector(selectClaimSubmitToast);
   const autoHideToastDelay = 5 * SECOND;
 
+  const isSuccess = showClaimSubmitToast === ClaimSubmitToastType.Success;
+  const isDraftSaved = showClaimSubmitToast === ClaimSubmitToastType.DraftSaved;
+  const isDraftSaveFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftSaveFailed;
+  const isErrored = showClaimSubmitToast === ClaimSubmitToastType.Errored;
+  const isDraftDeleted =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleted;
+  const isDraftDeleteFailed =
+    showClaimSubmitToast === ClaimSubmitToastType.DraftDeleteFailed;
+
   const description = useMemo(() => {
-    if (showClaimSubmitToast === ClaimSubmitToastType.Success) {
+    if (isSuccess) {
       return t('shieldClaimSubmitSuccessDescription');
     }
-    if (showClaimSubmitToast === ClaimSubmitToastType.Errored) {
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSavedDescription');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailedDescription');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeleteDraftDescription');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailedDescription');
+    }
+    if (isErrored) {
       return '';
     }
     return showClaimSubmitToast;
-  }, [showClaimSubmitToast, t]);
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isErrored,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    showClaimSubmitToast,
+    t,
+  ]);
+
+  const toastText = useMemo(() => {
+    if (isSuccess) {
+      return t('shieldClaimSubmitSuccess');
+    }
+    if (isDraftSaved) {
+      return t('shieldClaimDraftSaved');
+    }
+    if (isDraftSaveFailed) {
+      return t('shieldClaimDraftSaveFailed');
+    }
+    if (isDraftDeleted) {
+      return t('shieldClaimDeletedDraft');
+    }
+    if (isDraftDeleteFailed) {
+      return t('shieldClaimDraftDeleteFailed');
+    }
+    return t('shieldClaimSubmitError');
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+    t,
+  ]);
+
+  const dataTestId = useMemo(() => {
+    if (isSuccess) {
+      return 'claim-submit-toast-success';
+    }
+    if (isDraftSaved) {
+      return 'claim-draft-saved-toast';
+    }
+    if (isDraftSaveFailed) {
+      return 'claim-draft-save-failed-toast';
+    }
+    if (isDraftDeleted) {
+      return 'claim-draft-deleted-toast';
+    }
+    if (isDraftDeleteFailed) {
+      return 'claim-draft-delete-failed-toast';
+    }
+    return 'claim-submit-toast-error';
+  }, [
+    isSuccess,
+    isDraftSaved,
+    isDraftSaveFailed,
+    isDraftDeleted,
+    isDraftDeleteFailed,
+  ]);
 
   return (
     showClaimSubmitToast !== null && (
       <Toast
-        dataTestId={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? 'claim-submit-toast-success'
-            : 'claim-submit-toast-error'
-        }
+        dataTestId={dataTestId}
         key="claim-submit-toast"
-        text={
-          showClaimSubmitToast === ClaimSubmitToastType.Success
-            ? t('shieldClaimSubmitSuccess')
-            : t('shieldClaimSubmitError')
-        }
+        text={toastText}
         description={description}
         startAdornment={
           <Icon
             name={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconName.CheckBold
                 : IconName.CircleX
             }
             color={
-              showClaimSubmitToast === ClaimSubmitToastType.Success
+              isSuccess || isDraftSaved || isDraftDeleted
                 ? IconColor.successDefault
                 : IconColor.errorDefault
             }
@@ -607,7 +715,7 @@ function ShieldPausedToast() {
   const navigate = useNavigate();
 
   const showShieldPausedToast = useSelector(selectShowShieldPausedToast);
-
+  const { captureShieldErrorStateClickedEvent } = useSubscriptionMetrics();
   const { subscriptions } = useUserSubscriptions();
 
   const shieldSubscription = useUserSubscriptionByProduct(
@@ -617,18 +725,67 @@ function ShieldPausedToast() {
 
   const isPaused = getIsShieldSubscriptionPaused(shieldSubscription);
 
+  const isCardPayment =
+    shieldSubscription &&
+    isCardPaymentMethod(shieldSubscription?.paymentMethod);
+  const isCryptoPaymentWithError =
+    shieldSubscription &&
+    isCryptoPaymentMethod(shieldSubscription.paymentMethod) &&
+    Boolean(shieldSubscription.paymentMethod.crypto.error);
+
+  // default text to unexpected error case
+  let descriptionText = 'shieldPaymentPausedDescriptionUnexpectedError';
+  let actionText = 'shieldPaymentPausedActionUnexpectedError';
+  if (isCardPayment) {
+    descriptionText = 'shieldPaymentPausedDescriptionCardPayment';
+    actionText = 'shieldPaymentPausedActionCardPayment';
+  }
+  if (isCryptoPaymentWithError) {
+    descriptionText = 'shieldPaymentPausedDescriptionCryptoPayment';
+    actionText = 'shieldPaymentPausedActionCryptoPayment';
+  }
+
+  const trackShieldErrorStateClickedEvent = (actionClicked) => {
+    const { cryptoPaymentChain, cryptoPaymentCurrency } =
+      getSubscriptionPaymentData(shieldSubscription);
+    // capture error state clicked event
+    captureShieldErrorStateClickedEvent({
+      subscriptionStatus: shieldSubscription.status,
+      paymentType: shieldSubscription.paymentMethod.type,
+      billingInterval: shieldSubscription.interval,
+      cryptoPaymentChain,
+      cryptoPaymentCurrency,
+      errorCause: 'payment_error',
+      actionClicked,
+      location: ShieldErrorStateLocationEnum.Homepage,
+      view: ShieldErrorStateViewEnum.Toast,
+    });
+  };
+
+  const handleActionClick = async () => {
+    // capture error state clicked event
+    trackShieldErrorStateClickedEvent(ShieldErrorStateActionClickedEnum.Cta);
+    setShieldPausedToastLastClickedOrClosed(Date.now());
+    navigate(TRANSACTION_SHIELD_ROUTE);
+  };
+
+  const handleToastClose = () => {
+    // capture error state clicked event
+    trackShieldErrorStateClickedEvent(
+      ShieldErrorStateActionClickedEnum.Dismiss,
+    );
+    setShieldPausedToastLastClickedOrClosed(Date.now());
+  };
+
   return (
     Boolean(isPaused) &&
     showShieldPausedToast && (
       <Toast
         key="shield-payment-declined-toast"
-        text={t('shieldPaymentDeclined')}
-        description={t('shieldPaymentDeclinedDescription')}
-        actionText={t('shieldPaymentDeclinedAction')}
-        onActionClick={async () => {
-          setShieldPausedToastLastClickedOrClosed(Date.now());
-          navigate(TRANSACTION_SHIELD_ROUTE);
-        }}
+        text={t('shieldPaymentPaused')}
+        description={t(descriptionText)}
+        actionText={t(actionText)}
+        onActionClick={handleActionClick}
         startAdornment={
           <Icon
             name={IconName.CircleX}
@@ -636,7 +793,7 @@ function ShieldPausedToast() {
             size={IconSize.Lg}
           />
         }
-        onClose={() => setShieldPausedToastLastClickedOrClosed(Date.now())}
+        onClose={handleToastClose}
       />
     )
   );
@@ -680,6 +837,49 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function StorageErrorToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
+  const handleRevealSrpClick = () => {
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
+  };
+
+  const handleClose = () => {
+    setIsDismissed(true);
+  };
+
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  return (
+    shouldShow && (
+      <Toast
+        key="database-corruption-toast"
+        startAdornment={
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        text={t('storageErrorTitle')}
+        description={t('storageErrorDescription')}
+        actionText={t('storageErrorAction')}
+        onActionClick={handleRevealSrpClick}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={handleClose}
       />
     )
   );

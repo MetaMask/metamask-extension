@@ -16,46 +16,45 @@ import {
  * @param transactionGroup - A Bridge transaction group
  */
 export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
-  const { primaryTransaction } = transactionGroup;
+  const { initialTransaction } = transactionGroup;
 
-  // If the primary transaction is a bridge transaction, use the bridge history item for the primary transaction id
-  // Otherwise, assume that the primary transaction is an approval transaction and use the bridge history item that has the approvalTxId
-  const bridgeHistoryItemForPrimaryTxId = useSelector((state) =>
-    selectBridgeHistoryItemForTxMetaId(state, primaryTransaction.id),
+  const bridgeHistoryItemForInitialTxId = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, initialTransaction.id),
   );
   const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
-    selectBridgeHistoryForApprovalTxId(state, primaryTransaction.id),
+    selectBridgeHistoryForApprovalTxId(state, initialTransaction.id),
   );
+
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistoryItemForPrimaryTxId ?? bridgeHistoryItemWithApprovalTxId;
+    bridgeHistoryItemForInitialTxId ?? bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
     bridgeHistoryItem?.quote.srcAsset.address ??
-      primaryTransaction.sourceTokenAddress,
+      initialTransaction.sourceTokenAddress,
     bridgeHistoryItem?.pricingData?.amountSent ??
-      primaryTransaction.sourceTokenAmount,
+      initialTransaction.sourceTokenAmount,
     bridgeHistoryItem?.quote.srcAsset.symbol ??
-      primaryTransaction.sourceTokenSymbol,
+      initialTransaction.sourceTokenSymbol,
     {},
     true,
-    primaryTransaction.chainId,
+    initialTransaction.chainId,
   );
 
   return {
     category:
-      primaryTransaction.type === TransactionType.bridge
+      initialTransaction.type === TransactionType.bridge
         ? TransactionGroupCategory.bridge
         : TransactionGroupCategory.swap,
     displayCurrencyAmount,
     sourceTokenSymbol:
       bridgeHistoryItem?.quote.srcAsset.symbol ??
-      primaryTransaction.sourceTokenSymbol,
+      initialTransaction.sourceTokenSymbol,
     sourceTokenAmountSent:
       bridgeHistoryItem?.pricingData?.amountSent ??
-      primaryTransaction.sourceTokenAmount,
+      initialTransaction.sourceTokenAmount,
     destinationTokenSymbol:
       bridgeHistoryItem?.quote.destAsset.symbol ??
-      primaryTransaction.destinationTokenSymbol,
+      initialTransaction.destinationTokenSymbol,
   };
 }

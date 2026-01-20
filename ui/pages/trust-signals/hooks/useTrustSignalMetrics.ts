@@ -9,8 +9,11 @@ import type {
   Confirmation,
   SignatureRequestType,
 } from '../../confirmations/types/confirm';
-// eslint-disable-next-line import/no-restricted-paths
-import { ResultType } from '../../../../app/scripts/lib/trust-signals/types';
+import {
+  ResultType,
+  createCacheKey,
+  mapChainIdToSupportedEVMChain,
+} from '../../../../shared/lib/trust-signals';
 import { useTransactionEventFragment } from '../../confirmations/hooks/useTransactionEventFragment';
 import { useSignatureEventFragment } from '../../confirmations/hooks/useSignatureEventFragment';
 
@@ -58,11 +61,21 @@ export function useTrustSignalMetrics() {
     [currentConfirmation],
   );
 
-  const addressSecurityAlertResponse = useSelector((state) =>
-    addressToCheck
-      ? getAddressSecurityAlertResponse(state, addressToCheck)
-      : undefined,
-  );
+  const chainId = currentConfirmation?.chainId;
+
+  const addressSecurityAlertResponse = useSelector((state) => {
+    if (!addressToCheck || !chainId) {
+      return undefined;
+    }
+
+    const supportedEVMChain = mapChainIdToSupportedEVMChain(chainId);
+    if (!supportedEVMChain) {
+      return undefined;
+    }
+
+    const cacheKey = createCacheKey(supportedEVMChain, addressToCheck);
+    return getAddressSecurityAlertResponse(state, cacheKey);
+  });
 
   const { properties, anonymousProperties } = useMemo((): {
     properties: TrustSignalMetricsProperties;

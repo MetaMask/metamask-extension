@@ -1,10 +1,9 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
+const { withFixtures, getEventPayloads } = require('../../helpers');
 const {
-  unlockWallet,
-  withFixtures,
-  getEventPayloads,
-} = require('../../helpers');
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 const { MOCK_META_METRICS_ID } = require('./constants');
@@ -255,7 +254,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
   it.skip('should capture metrics when security alerts is shown', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -272,7 +271,7 @@ describe('Confirmation Security Alert - Blockaid', function () {
       },
 
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button for transaction

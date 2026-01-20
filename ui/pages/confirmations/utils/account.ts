@@ -66,3 +66,25 @@ export const isBitcoinAccountForSend = (account: InternalAccount): boolean => {
 
   return false;
 };
+
+/**
+ * Checks if an account is Tron-compatible for send operations.
+ *
+ * @param account - The internal account object to check
+ * @returns true if the account can be used for Solana transactions
+ */
+export const isTronAccountForSend = (account: InternalAccount): boolean => {
+  if (!account) {
+    return false;
+  }
+
+  if (account.type.startsWith('tron:')) {
+    return true;
+  }
+
+  if (account.scopes?.some((scope) => scope.startsWith('tron:'))) {
+    return true;
+  }
+
+  return false;
+};

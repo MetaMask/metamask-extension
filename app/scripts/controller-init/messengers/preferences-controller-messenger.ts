@@ -1,32 +1,43 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AllowedActions,
   AllowedEvents,
 } from '../../controllers/preferences-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 export type PreferencesControllerMessenger = ReturnType<
   typeof getPreferencesControllerMessenger
 >;
 
 /**
- * Create a messenger restricted to the allowed actions and events of the
+ * Create a messenger with delegated actions and events of the
  * preferences controller.
  *
  * @param messenger - The controller messenger to restrict.
- * @returns The restricted controller messenger.
+ * @returns The controller messenger.
  */
 export function getPreferencesControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'PreferencesController',
-    allowedActions: [
+  const preferencesControllerMessenger = new Messenger<
+    'PreferencesController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'PreferencesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: preferencesControllerMessenger,
+    actions: [
       'AccountsController:setSelectedAccount',
       'AccountsController:getSelectedAccount',
       'AccountsController:getAccountByAddress',
       'AccountsController:setAccountName',
       'NetworkController:getState',
     ],
-    allowedEvents: ['AccountsController:stateChange'],
+    events: ['AccountsController:stateChange'],
   });
+  return preferencesControllerMessenger;
 }

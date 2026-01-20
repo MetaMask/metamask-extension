@@ -1,5 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
 import { TokenDetectionController } from '@metamask/assets-controllers';
+import { getRootMessenger } from '../lib/messenger';
 import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
@@ -18,7 +18,7 @@ function getInitRequestMock(): jest.Mocked<
     TokenDetectionControllerInitMessenger
   >
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

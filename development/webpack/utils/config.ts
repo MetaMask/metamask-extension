@@ -2,10 +2,26 @@ import { join } from 'node:path';
 import { readFileSync } from 'node:fs';
 import { parse } from 'dotenv';
 import { setEnvironmentVariables } from '../../build/set-environment-variables';
+import { ENVIRONMENT } from '../../build/constants';
 import type { Variables } from '../../lib/variables';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
+
+type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
+
+/**
+ * Type guard to validate that a value is a valid Environment.
+ *
+ * @param value - The value to check.
+ * @returns True if the value is a valid Environment.
+ */
+function isEnvironment(value: unknown): value is Environment {
+  return (
+    typeof value === 'string' &&
+    Object.values(ENVIRONMENT).some((env) => env === value)
+  );
+}
 
 /**
  * Coerce `"true"`, `"false"`, and `"null"` to their respective JavaScript
@@ -79,6 +95,63 @@ export function getBuildName(
 }
 
 /**
+ * Resolves the MetaMask build environment.
+ *
+ * The environment determines which Sentry project events are sent to,
+ * feature flag detection, and other build-specific behaviors.
+ *
+ * Resolution order:
+ * 1. If `--test` is set, returns 'testing'
+ * 2. If `--targetEnvironment` is explicitly set via CLI, uses that value
+ * 3. If `--env development`, returns 'development'
+ * 4. Otherwise, auto-detects from git context (release branch, main, PR, or other)
+ *
+ * NOTE: 'production' environment is NEVER auto-detected. It must be explicitly
+ * set via --targetEnvironment to prevent accidental pollution of production
+ * Sentry with events from local or CI test builds.
+ *
+ * @param args - The parsed CLI arguments
+ * @returns The resolved environment string
+ */
+export function resolveEnvironment(
+  args: Pick<Args, 'test' | 'env' | 'targetEnvironment'>,
+): Environment {
+  // Test builds always use 'testing' environment
+  if (args.test) {
+    return ENVIRONMENT.TESTING;
+  }
+
+  // If explicitly set via CLI, use that value
+  // This is the ONLY way to get 'production' environment
+  if (args.targetEnvironment && isEnvironment(args.targetEnvironment)) {
+    return args.targetEnvironment;
+  }
+
+  // Development builds use 'development' environment
+  if (args.env === 'development') {
+    return ENVIRONMENT.DEVELOPMENT;
+  }
+
+  // For production-like builds (--env production), auto-detect from git context
+  // We intentionally do NOT return PRODUCTION here - that requires explicit CLI flag
+  const branch =
+    process.env.GITHUB_HEAD_REF || process.env.GITHUB_REF_NAME || '';
+  const eventName = process.env.GITHUB_EVENT_NAME || '';
+
+  // Check git context to determine the appropriate non-production environment
+  if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
+    return ENVIRONMENT.RELEASE_CANDIDATE;
+  } else if (branch === 'main') {
+    return ENVIRONMENT.STAGING;
+  } else if (eventName === 'pull_request') {
+    return ENVIRONMENT.PULL_REQUEST;
+  }
+
+  // Default: local builds or any other source
+  return ENVIRONMENT.OTHER;
+}
+
+/**
  * Computes the `variables` (extension runtime's `process.env.*`).
  *
  * @param args
@@ -96,6 +169,9 @@ export function getVariables(
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
   const isDevBuild = env === 'development';
 
+  // Resolve the MetaMask environment using proper detection logic
+  const environment = resolveEnvironment({ ...args, env });
+
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
   function set(key: string | Record<string, unknown>, value?: unknown): void {
@@ -110,7 +186,7 @@ export function getVariables(
   setEnvironmentVariables({
     buildName: getBuildName(type, activeBuild, isDevBuild, args),
     buildType: type,
-    environment: args.test ? 'testing' : env,
+    environment,
     isDevBuild,
     isTestBuild: args.test,
     version: version.versionName,
@@ -151,19 +227,20 @@ export function getVariables(
   // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
   safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
 
-  return { variables, safeVariables, version };
+  return { variables, safeVariables, version, environment };
 }
 
 /**
- * Loads configuration variables from process.env, .metamaskrc, and build.yml.
+ * Loads configuration variables from process.env, .metamaskprodrc, .metamaskrc, and build.yml.
  *
  * The order of precedence is:
  * 1. process.env
- * 2. .metamaskrc
- * 3. build.yml
+ * 2. .metamaskprodrc
+ * 3. .metamaskrc
+ * 4. builds.yml
  *
  * i.e., if a variable is defined in `process.env`, it will take precedence over
- * the same variable defined in `.metamaskrc` or `build.yml`.
+ * the same variable defined in `.metamaskprodrc`, `.metamaskrc` or `build.yml`.
  *
  * @param activeBuild
  * @param build
@@ -175,6 +252,7 @@ function loadConfigVars(
   { env }: BuildTypesConfig,
 ) {
   const definitions = loadEnv();
+  addRc(definitions, join(__dirname, '../../../.metamaskprodrc'));
   addRc(definitions, join(__dirname, '../../../.metamaskrc'));
   addVars(activeBuild.env);
   addVars(env);

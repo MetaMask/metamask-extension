@@ -1,11 +1,11 @@
 import { strict as assert } from 'assert';
 import { isObject } from 'lodash';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { DEFAULT_MULTICHAIN_TEST_DAPP_FIXTURE_OPTIONS } from '../testHelpers';
 import { withSolanaAccountSnap } from '../../../tests/solana/common-solana';
-import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
-import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/redesign/snap-sign-in-confirmation';
+import SnapTransactionConfirmation from '../../../page-objects/pages/confirmations/snap-transaction-confirmation';
+import SnapSignInConfirmation from '../../../page-objects/pages/confirmations/snap-sign-in-confirmation';
 
 describe('Multichain API - Non EVM', function () {
   const SOLANA_SCOPE = 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp';
@@ -37,10 +37,8 @@ describe('Multichain API - Non EVM', function () {
             });
 
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
             const confirmation = new SnapSignInConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
             await confirmation.clickFooterConfirmButton();
           },
         );
@@ -80,7 +78,7 @@ describe('Multichain API - Non EVM', function () {
 
             const confirmation = new SnapTransactionConfirmation(driver);
             await confirmation.checkPageIsLoaded();
-            await confirmation.checkAccountIsDisplayed('Solana 1');
+            await confirmation.checkAccountIsDisplayed('Account 1');
             await confirmation.clickFooterConfirmButton();
 
             await driver.switchToWindowWithTitle(

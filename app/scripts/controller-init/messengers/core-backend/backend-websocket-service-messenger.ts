@@ -1,7 +1,19 @@
 import { BackendWebSocketServiceMessenger as BackendPlatformWebSocketServiceMessenger } from '@metamask/core-backend';
+import {
+  Messenger,
+  MessengerActions,
+  MessengerEvents,
+} from '@metamask/messenger';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
+import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type BackendWebSocketServiceMessenger =
   BackendPlatformWebSocketServiceMessenger;
+
+type Actions = MessengerActions<BackendWebSocketServiceMessenger>;
+
+type Events = MessengerEvents<BackendWebSocketServiceMessenger>;
 
 /**
  * Get a restricted messenger for the Backend Platform WebSocket service.
@@ -11,36 +23,57 @@ export type BackendWebSocketServiceMessenger =
  * @returns The restricted messenger.
  */
 export function getBackendWebSocketServiceMessenger(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messenger: any, // Using any to avoid type conflicts with the main messenger
+  messenger: RootMessenger<Actions, Events>,
 ): BackendPlatformWebSocketServiceMessenger {
-  return messenger.getRestricted({
-    name: 'BackendWebSocketService',
-    allowedActions: [
+  const serviceMessenger = new Messenger<
+    'BackendWebSocketService',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'BackendWebSocketService',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: serviceMessenger,
+    actions: [
       'AuthenticationController:getBearerToken', // Get auth token (includes wallet unlock check)
     ],
-    allowedEvents: [
+    events: [
       'AuthenticationController:stateChange', // Listen for authentication state (sign in/out)
       'KeyringController:lock', // Listen for wallet lock
       'KeyringController:unlock', // Listen for wallet unlock
     ],
   });
+  return serviceMessenger;
 }
 
 export type BackendWebSocketServiceInitMessenger = ReturnType<
   typeof getBackendWebSocketServiceInitMessenger
 >;
 
+type AllowedInitializationActions =
+  | RemoteFeatureFlagControllerGetStateAction
+  | AuthenticationControllerGetBearerToken;
+
 export function getBackendWebSocketServiceInitMessenger(
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messenger: any,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'BackendWebSocketServiceInit',
-    allowedEvents: [],
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'BackendWebSocketServiceInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'BackendWebSocketServiceInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'RemoteFeatureFlagController:getState',
       'AuthenticationController:getBearerToken',
     ],
   });
+  return controllerInitMessenger;
 }

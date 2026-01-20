@@ -43,6 +43,8 @@ export const VERIFYING_PAYMASTER = '0xbdbDEc38ed168331b1F7004cc9e5392A2272C1D7';
 
 /* Default local node ETH balance in decimal when first login */
 export const DEFAULT_LOCAL_NODE_ETH_BALANCE_DEC = '25';
+/* Default local node USD balance in format for when first login */
+export const DEFAULT_LOCAL_NODE_USD_BALANCE = '85,000.00';
 
 /* Dapp host addresses and URL*/
 export const DAPP_HOST_ADDRESS = '127.0.0.1:8080';
@@ -51,6 +53,42 @@ export const DAPP_URL_LOCALHOST = 'http://localhost:8080';
 export const DAPP_URL = `http://${DAPP_HOST_ADDRESS}`;
 export const DAPP_ONE_URL = `http://${DAPP_ONE_ADDRESS}`;
 export const DAPP_TWO_URL = 'http://127.0.0.1:8082';
+
+// Common base segments for resolving local test dapps from this file's location
+const NODE_MODULES_BASE = ['..', '..', 'node_modules'] as const;
+const METAMASK_SCOPE = '@metamask';
+
+// Helper to build MetaMask-scoped package paths
+const mm = (pkg: string, ...rest: string[]): readonly string[] => [
+  ...NODE_MODULES_BASE,
+  METAMASK_SCOPE,
+  pkg,
+  ...rest,
+];
+
+/** Mapping of dapp keys to relative path segments from this repo's test root */
+export const DAPP_PATHS: Readonly<Record<string, readonly string[]>> =
+  Object.freeze({
+    'snap-simple-keyring-site': mm('snap-simple-keyring-site', 'public'),
+    'snap-account-abstraction-keyring': mm(
+      'snap-account-abstraction-keyring-site',
+      'public',
+    ),
+    'test-dapp': mm('test-dapp', 'dist'),
+    'test-dapp-multichain': mm('test-dapp-multichain', 'build'),
+    'test-dapp-solana': mm('test-dapp-solana', 'dist'),
+    'test-snaps': mm('test-snaps', 'dist'),
+  });
+
+// Canonical dapp path keys to be used in tests
+export const DAPP_PATH = Object.freeze({
+  TEST_DAPP: 'test-dapp',
+  TEST_DAPP_MULTICHAIN: 'test-dapp-multichain',
+  TEST_DAPP_SOLANA: 'test-dapp-solana',
+  TEST_SNAPS: 'test-snaps',
+  SNAP_SIMPLE_KEYRING_SITE: 'snap-simple-keyring-site',
+  SNAP_ACCOUNT_ABSTRACTION_KEYRING: 'snap-account-abstraction-keyring',
+} as const);
 
 /* Default BTC address created using test SRP */
 export const DEFAULT_BTC_ADDRESS = 'bc1qg6whd6pc0cguh6gpp3ewujm53hv32ta9hdp252';

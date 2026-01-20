@@ -21,7 +21,7 @@ import {
   GetSnap,
   HandleSnapRequest,
 } from '@metamask/snaps-controllers';
-import { RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { getChainIdsCaveat } from '@metamask/snaps-rpc-methods';
 
 type AllowedActions =
@@ -30,11 +30,9 @@ type AllowedActions =
   | HandleSnapRequest
   | GetPermissionControllerState;
 
-export type SnapsNameProviderMessenger = RestrictedMessenger<
+export type SnapsNameProviderMessenger = Messenger<
   'SnapsNameProvider',
   AllowedActions,
-  never,
-  AllowedActions['type'],
   never
 >;
 

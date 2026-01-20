@@ -2,7 +2,6 @@ import {
   SeedlessOnboardingController,
   Web3AuthNetwork,
 } from '@metamask/seedless-onboarding-controller';
-import { Messenger } from '@metamask/base-controller';
 import { ControllerInitRequest } from '../types';
 import {
   getSeedlessOnboardingControllerInitMessenger,
@@ -10,6 +9,7 @@ import {
   SeedlessOnboardingControllerInitMessenger,
   SeedlessOnboardingControllerMessenger,
 } from '../messengers/seedless-onboarding';
+import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ENVIRONMENT } from '../../../../development/build/constants';
 import { SeedlessOnboardingControllerInit } from './seedless-onboarding-controller-init';
@@ -22,7 +22,7 @@ function buildInitRequestMock(): jest.Mocked<
     SeedlessOnboardingControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger<never, never>();
+  const baseControllerMessenger = getRootMessenger<never, never>();
 
   return {
     ...buildControllerInitRequestMock(),
@@ -71,7 +71,12 @@ describe('SeedlessOnboardingControllerInit', () => {
         decryptWithKey: expect.any(Function),
         encrypt: expect.any(Function),
         encryptWithDetail: expect.any(Function),
+        encryptWithKey: expect.any(Function),
+        isVaultUpdated: expect.any(Function),
         importKey: expect.any(Function),
+        exportKey: expect.any(Function),
+        generateSalt: expect.any(Function),
+        keyFromPassword: expect.any(Function),
       },
       passwordOutdatedCacheTTL: expect.any(Number),
       refreshJWTToken: expect.any(Function),

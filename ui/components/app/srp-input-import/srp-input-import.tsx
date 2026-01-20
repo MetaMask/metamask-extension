@@ -44,24 +44,59 @@ type ListOfTextFieldRefs = {
 
 type SrpInputImportProps = {
   onChange: (srp: string) => void;
+  onClearCallback?: () => void;
 };
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export default function SrpInputImport({ onChange }: SrpInputImportProps) {
+export default function SrpInputImport({
+  onChange,
+  onClearCallback,
+}: SrpInputImportProps) {
   const t = useI18nContext();
   const [draftSrp, setDraftSrp] = useState<DraftSrp[]>([]);
   const [firstWord, setFirstWord] = useState('');
-  const [misSpelledWords, setMisSpelledWords] = useState<string[]>([]);
+  const [misSpelledWords, setMisSpelledWords] = useState<DraftSrp[]>([]);
 
   const srpRefs = useRef<ListOfTextFieldRefs>({});
+  const onChangeRef = useRef(onChange);
+
+  // Keep the ref updated with the latest onChange callback
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
+
+  const checkForInvalidWords = useCallback(
+    (srp?: DraftSrp[]) => {
+      const draftSrpToCheck = srp ?? draftSrp;
+      draftSrpToCheck.forEach((word) => {
+        const isInWordlist = wordlist.includes(word.word);
+        const alreadyInMisspelled = misSpelledWords.some(
+          (w) => w.id === word.id,
+        );
+        if (isInWordlist && alreadyInMisspelled) {
+          setMisSpelledWords((prev) => prev.filter((w) => w.id !== word.id));
+        } else if (!isInWordlist && !alreadyInMisspelled && word.word !== '') {
+          setMisSpelledWords((prev) => [...prev, word]);
+        }
+      });
+    },
+    [draftSrp, misSpelledWords],
+  );
 
   const initializeSrp = () => {
+    const firstWordId = uuidv4();
     setDraftSrp([
-      { word: firstWord, id: uuidv4(), active: false },
+      { word: firstWord, id: firstWordId, active: false },
       { word: '', id: uuidv4(), active: true },
     ]);
     setFirstWord('');
+    if (!wordlist.includes(firstWord)) {
+      setMisSpelledWords((prev) => [
+        ...prev,
+        { word: firstWord, id: firstWordId, active: false },
+      ]);
+    }
   };
 
   const onSrpPaste = (rawSrp: string) => {
@@ -86,6 +121,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       });
     }
 
+    checkForInvalidWords(newDraftSrp);
     setDraftSrp(newDraftSrp);
   };
 
@@ -99,12 +135,17 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
 
   const handleChange = useCallback(
     (id: string, value: string) => {
+      if (value === ' ') {
+        return;
+      }
+
       const newDraftSrp = [...draftSrp];
       const targetIndex = newDraftSrp.findIndex((word) => word.id === id);
       newDraftSrp[targetIndex] = { ...newDraftSrp[targetIndex], word: value };
       setDraftSrp(setWordActive(newDraftSrp, id));
+      onClearCallback?.();
     },
-    [draftSrp],
+    [draftSrp, onClearCallback],
   );
 
   const nextWord = useCallback(
@@ -113,6 +154,10 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         (word) => word.id === currentWordId,
       );
       const isLastWord = currentWordIndex === draftSrp.length - 1;
+
+      if (isLastWord) {
+        checkForInvalidWords();
+      }
 
       if (
         (SRP_LENGTHS.includes(draftSrp.length) &&
@@ -142,12 +187,18 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       // set next word to active
       setDraftSrp(setWordActive(draftSrp, draftSrp[currentWordIndex + 1].id));
     },
-    [draftSrp],
+    [checkForInvalidWords, draftSrp],
   );
 
   const deleteWord = useCallback(
     (wordId: string) => {
       const currentWordIndex = draftSrp.findIndex((word) => word.id === wordId);
+
+      const updatedMisSpelledWords = misSpelledWords.filter(
+        (word) => word.id !== wordId,
+      );
+      setMisSpelledWords(updatedMisSpelledWords);
+
       const previousWordId = draftSrp[currentWordIndex - 1]?.id;
       const newDraftSrp = [...draftSrp];
       newDraftSrp.splice(currentWordIndex, 1);
@@ -158,7 +209,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         setDraftSrp([]);
       }
     },
-    [draftSrp],
+    [draftSrp, misSpelledWords],
   );
 
   const handleOnKeyDown = (ev: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -219,6 +270,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
   };
 
   const onTriggerPaste = async () => {
+    setMisSpelledWords([]);
     if (getBrowserName() === PLATFORM_FIREFOX) {
       await requestPermissionAndTriggerPasteFireFox();
       return;
@@ -245,23 +297,30 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
       srpRefs.current[activeWord.id]?.focus();
     }
 
-    const wordsNotInWordList = draftSrp
-      .filter((word) => word.word !== '' && !wordlist.includes(word.word))
-      .map((word) => word.word);
-    setMisSpelledWords(wordsNotInWordList);
-
     // if srp length is valid and no empty word trigger onChange
     if (
       SRP_LENGTHS.includes(draftSrp.length) &&
-      !draftSrp.some((word) => word.word.length === 0) &&
-      wordsNotInWordList.length === 0
+      !draftSrp.some((word) => word.word.length === 0)
     ) {
-      const stringSrp = draftSrp.map((word) => word.word).join(' ');
-      onChange(stringSrp);
+      const hasInvalidWords = draftSrp.some(
+        (word) => word.word !== '' && !wordlist.includes(word.word),
+      );
+
+      if (hasInvalidWords) {
+        onChangeRef.current('');
+      } else {
+        const stringSrp = draftSrp.map((word) => word.word).join(' ');
+        onChangeRef.current(stringSrp);
+      }
     } else {
-      onChange('');
+      onChangeRef.current('');
     }
-  }, [draftSrp, onChange]);
+  }, [draftSrp]);
+
+  const misSpelledWordsList = useCallback(
+    () => misSpelledWords.map((word) => word.word),
+    [misSpelledWords],
+  );
 
   return (
     <>
@@ -269,7 +328,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Column}
-          backgroundColor={BackgroundColor.backgroundSection}
+          backgroundColor={BackgroundColor.backgroundMuted}
           borderRadius={BorderRadius.LG}
           className="srp-input-import__container"
         >
@@ -292,10 +351,13 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                       }}
                       testId={`import-srp__srp-word-${index}`}
                       key={word.id}
-                      error={misSpelledWords.includes(word.word)}
+                      error={
+                        !word.active &&
+                        misSpelledWordsList().includes(word.word)
+                      }
                       value={word.word}
                       type={
-                        word.active || misSpelledWords.includes(word.word)
+                        word.active || misSpelledWordsList().includes(word.word)
                           ? TextFieldType.Text
                           : TextFieldType.Password
                       }
@@ -314,9 +376,13 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                       onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                         if (e.key === 'Enter' || e.key === ' ') {
                           e.preventDefault();
-                          nextWord(word.id);
-                        }
-                        if (e.key === 'Backspace' && word.word.length === 0) {
+                          if (word.word.trim() !== '') {
+                            nextWord(word.id);
+                          }
+                        } else if (
+                          e.key === 'Backspace' &&
+                          word.word.length === 0
+                        ) {
                           e.preventDefault();
                           deleteWord(word.id);
                         }
@@ -326,6 +392,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                       }}
                       onBlur={() => {
                         setWordInactive(word.id);
+                        checkForInvalidWords();
                       }}
                     />
                   );
@@ -355,6 +422,7 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
                 onChange={(e) => setFirstWord(e.target.value)}
                 onKeyDown={handleOnKeyDown}
                 onPaste={handleOnPaste}
+                autoFocus
               />
             </Box>
           )}
@@ -370,6 +438,8 @@ export default function SrpInputImport({ onChange }: SrpInputImportProps) {
               variant={ButtonVariant.Link}
               onClick={async () => {
                 setDraftSrp([]);
+                setMisSpelledWords([]);
+                onClearCallback?.();
               }}
             >
               {t('onboardingSrpInputClearAll')}

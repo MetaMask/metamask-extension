@@ -2,21 +2,23 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { Anvil } from '../../../seeder/anvil';
 import { Driver } from '../../../webdriver/driver';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import FixtureBuilder from '../../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/redesign/batch-confirmation';
+import Eip7702AndSendCalls from '../../../page-objects/pages/confirmations/batch-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { mockEip7702FeatureFlag } from '../helpers';
 
-describe('Upgrade Account', function (this: Suite) {
+// Skipping these tests becasue on BIP44 EIP-7702 not supported on chain: 0x539
+// eslint-disable-next-line mocha/no-skipped-tests
+describe.skip('Upgrade Account', function (this: Suite) {
   it('an EOA account can be upgraded when triggering a batch tx from a dapp in an odd chain id', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -99,7 +101,7 @@ describe('Upgrade Account', function (this: Suite) {
   it('an EOA account is not upgraded when rejecting a batch transaction, but can trigger a new send call', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),

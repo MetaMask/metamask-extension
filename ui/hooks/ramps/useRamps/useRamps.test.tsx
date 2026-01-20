@@ -1,15 +1,15 @@
 import React, { FC } from 'react';
 import { Provider } from 'react-redux';
 import { renderHook } from '@testing-library/react-hooks';
-import { isSolanaChainId } from '@metamask/bridge-controller';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import configureStore from '../../../store/store';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import useRamps, { RampsMetaMaskEntry } from './useRamps';
 
-jest.mock('@metamask/bridge-controller', () => ({
-  ...jest.requireActual('@metamask/bridge-controller'),
-  isSolanaChainId: jest.fn(),
+jest.mock('../../../../shared/lib/asset-utils', () => ({
+  ...jest.requireActual('../../../../shared/lib/asset-utils'),
+  isEvmChainId: jest.fn(),
 }));
 
 const mockedMetametricsId = '0xtestMetaMetricsId';
@@ -41,6 +41,7 @@ describe('useRamps', () => {
     ];
 
     testCases.forEach(({ mockChainId, numericChainId }) => {
+      (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
       mockStoreState = {
         ...mockStoreState,
         metamask: {
@@ -63,6 +64,7 @@ describe('useRamps', () => {
   it('should default the metamask entry param when opening the buy crypto URL', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
     const mockChainId = '1';
+    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
 
     mockStoreState = {
       ...mockStoreState,
@@ -86,6 +88,7 @@ describe('useRamps', () => {
   it('should use the correct metamask entry param when opening the buy crypto URL', () => {
     const metaMaskEntry = 'ext_buy_banner_tokens';
     const mockChainId = '1';
+    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
 
     mockStoreState = {
       ...mockStoreState,
@@ -124,22 +127,39 @@ describe('useRamps', () => {
     jest.resetModules();
   });
 
-  it('should handle Solana chain IDs correctly', () => {
+  it('should handle EVM chain IDs correctly by converting to numeric format', () => {
     const metaMaskEntry = 'ext_buy_sell_button';
-    const solanaChainId = 'solana:4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ';
-    (isSolanaChainId as jest.Mock).mockReturnValueOnce(true);
+    const evmChainId = '0x1';
+    (isEvmChainId as jest.Mock).mockReturnValueOnce(true);
+    mockStoreState = {
+      ...mockStoreState,
+      metamask: {
+        ...mockStoreState.metamask,
+        ...mockNetworkState({ chainId: evmChainId }),
+      },
+    };
+    const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=1&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
+    const { result } = renderHook(() => useRamps(), { wrapper });
+    const buyURI = result.current.getBuyURI(evmChainId);
+    expect(buyURI).toBe(mockBuyURI);
+  });
+
+  it('should handle non-EVM chain IDs correctly (like Bitcoin)', () => {
+    const metaMaskEntry = 'ext_buy_sell_button';
+    const bitcoinChainId = 'bip122:000000000019d6689c085ae165831e93';
+    (isEvmChainId as jest.Mock).mockReturnValueOnce(false);
     mockStoreState = {
       ...mockStoreState,
       metamask: {
         ...mockStoreState.metamask,
         // @ts-expect-error ignore the 0xString interface check
-        ...mockNetworkState({ chainId: solanaChainId }),
+        ...mockNetworkState({ chainId: bitcoinChainId }),
       },
     };
-    const encodedChainId = encodeURIComponent(solanaChainId);
+    const encodedChainId = encodeURIComponent(bitcoinChainId);
     const mockBuyURI = `${process.env.PORTFOLIO_URL}/buy?metamaskEntry=${metaMaskEntry}&chainId=${encodedChainId}&metametricsId=${mockedMetametricsId}&metricsEnabled=false`;
     const { result } = renderHook(() => useRamps(), { wrapper });
-    const buyURI = result.current.getBuyURI(solanaChainId);
+    const buyURI = result.current.getBuyURI(bitcoinChainId);
     expect(buyURI).toBe(mockBuyURI);
   });
 });

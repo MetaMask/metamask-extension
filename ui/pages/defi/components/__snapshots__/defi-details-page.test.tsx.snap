@@ -6,11 +6,11 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
     class="mm-box main-container asset__container"
   >
     <div
-      class="mm-box mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
+      class="mm-box pt-4 sticky top-0 z-10 bg-background-default mm-box--padding-bottom-4 mm-box--padding-left-2 mm-box--display-flex"
     >
       <button
         aria-label="Back"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--margin-right-1 mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="defi-details-page-back-button"
       >
         <span
@@ -92,7 +92,7 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
             <a
               class="mm-box mm-box--padding-top-2 mm-box--padding-right-4 mm-box--padding-bottom-2 mm-box--padding-left-4 mm-box--display-flex mm-box--flex-direction-row mm-box--width-full"
               data-testid="multichain-token-list-button"
-              style="height: 62px; cursor: auto; background-color: transparent; transition: background-color 0.2s ease-in-out;"
+              style="height: 62px;"
             >
               <div
                 class="mm-box mm-badge-wrapper mm-box--margin-right-4 mm-box--display-inline-block"
@@ -129,30 +129,17 @@ exports[`DeFiDetailsPage renders defi asset page 1`] = `
                   class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between"
                 >
                   <div
-                    class="flex flex-row"
+                    class="flex flex-row min-w-0"
                   >
                     <div
-                      class="flex flex-row gap-2"
+                      class="flex flex-row gap-2 min-w-0"
                     >
-                      <div
-                        class="token-cell-title--ellipsis"
+                      <p
+                        class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--color-text-default"
+                        data-testid="multichain-token-list-item-token-name"
                       >
-                        <div
-                          aria-describedby="tippy-tooltip-1"
-                          class=""
-                          data-original-title="null"
-                          data-tooltipped=""
-                          style="display: inline;"
-                          tabindex="0"
-                        >
-                          <span
-                            class="mm-box mm-text mm-text--body-md mm-text--font-weight-medium mm-text--ellipsis mm-box--display-block mm-box--color-text-default"
-                            data-testid="multichain-token-list-item-token-name"
-                          >
-                            Liquid staked Ether 2.0
-                          </span>
-                        </div>
-                      </div>
+                        Liquid staked Ether 2.0
+                      </p>
                     </div>
                   </div>
                   <p

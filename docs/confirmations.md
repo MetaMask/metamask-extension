@@ -33,15 +33,22 @@ If the controller extends `BaseControllerV2`, the property `messagingSystem` is 
 #### Example
 
 ```js
+const messenger = new Messenger({
+  namespace: 'SomeController',
+  parent: this.controllerMessenger,
+});
+
+this.controllerMessenger.delegate({
+  messenger,
+  actions: [
+    `${this.approvalController.name}:addRequest`,
+    `${this.approvalController.name}:acceptRequest`,
+    `${this.approvalController.name}:rejectRequest`,
+  ],
+});
+
 this.someController = new SomeController({
-    messenger: this.controllerMessenger.getRestricted({
-      name: 'SomeController',
-      allowedActions: [
-        `${this.approvalController.name}:addRequest`,
-        `${this.approvalController.name}:acceptRequest`,
-        `${this.approvalController.name}:rejectRequest`,
-      ],
-    }),
+    messenger,
     ...
 });
 ```

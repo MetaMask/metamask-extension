@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { withFixtures } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
 import TestDappMultichain from '../../../page-objects/pages/test-dapp-multichain';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
@@ -26,7 +26,9 @@ describe('Multichain API', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
-          const parsedResult = await testDapp.getSession();
+          const parsedResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
 
           assert.deepStrictEqual(
             parsedResult.sessionScopes,
@@ -61,7 +63,9 @@ describe('Multichain API', function () {
           await testDapp.openTestDappPage();
           await testDapp.checkPageIsLoaded();
           await testDapp.connectExternallyConnectable(extensionId);
-          const parsedResult = await testDapp.getSession();
+          const parsedResult = await testDapp.getSession({
+            numberOfResultItems: 1,
+          });
 
           const sessionScope = parsedResult.sessionScopes[DEFAULT_SCOPE];
           const expectedSessionScope = getExpectedSessionScope(DEFAULT_SCOPE, [

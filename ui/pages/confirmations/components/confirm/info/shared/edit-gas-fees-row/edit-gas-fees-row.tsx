@@ -1,6 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { TEST_CHAINS } from '../../../../../../../../shared/constants/network';
 import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm/info/row/alert-row/alert-row';
@@ -20,8 +20,11 @@ import {
 import { useI18nContext } from '../../../../../../../hooks/useI18nContext';
 import { getPreferences } from '../../../../../../../selectors';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
+import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
 import { selectConfirmationAdvancedDetailsOpen } from '../../../../../selectors/preferences';
 import { useBalanceChanges } from '../../../../simulation-details/useBalanceChanges';
+import { useTransactionNativeTicker } from '../../../../../hooks/transactions/useTransactionNativeTicker';
 import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { EditGasIconButton } from '../edit-gas-icon/edit-gas-icon-button';
 import { SelectedGasFeeToken } from '../selected-gas-fee-token';
@@ -30,36 +33,49 @@ export const EditGasFeesRow = ({
   fiatFee,
   fiatFeeWith18SignificantDigits,
   nativeFee,
-  supportsEIP1559,
-  setShowCustomizeGasPopover,
 }: {
   fiatFee: string;
   fiatFeeWith18SignificantDigits: string | null;
   nativeFee: string;
-  supportsEIP1559: boolean;
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
 }) => {
   const t = useI18nContext();
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
 
   const showAdvancedDetails = useSelector(
     selectConfirmationAdvancedDetailsOpen,
   );
-  const { chainId, isGasFeeSponsored, simulationData } = transactionMeta;
+  const {
+    chainId,
+    isGasFeeSponsored: doesSentinelAllowSponsorship,
+    simulationData,
+  } = transactionMeta;
   const gasFeeToken = useSelectedGasFeeToken();
   const showFiat = useShowFiat(chainId);
   const fiatValue = gasFeeToken ? gasFeeToken.amountFiat : fiatFee;
   const tokenValue = gasFeeToken ? gasFeeToken.amountFormatted : nativeFee;
   const metamaskFeeFiat = gasFeeToken?.metamaskFeeFiat;
-
-  const tooltip = gasFeeToken
-    ? t('confirmGasFeeTokenTooltip', [metamaskFeeFiat])
-    : t('estimatedFeeTooltip');
+  const nativeTokenSymbol = useTransactionNativeTicker() ?? '';
 
   const balanceChangesResult = useBalanceChanges({ chainId, simulationData });
   const isLoadingGasUsed = !simulationData || balanceChangesResult.pending;
+
+  // This prevents the gas fee row from showing as sponsored if stx is disabled
+  // by the user and 7702 is not supported in the chain.
+  const { isSupported: isGaslessSupported } = useIsGaslessSupported();
+  const isGasFeeSponsored = isGaslessSupported && doesSentinelAllowSponsorship;
+
+  let tooltip = t('estimatedFeeTooltip');
+  if (isGasFeeSponsored) {
+    tooltip = t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol]);
+  } else if (gasFeeToken?.metaMaskFee && gasFeeToken.metaMaskFee !== '0x0') {
+    tooltip = t('confirmGasFeeTokenTooltip', [metamaskFeeFiat]);
+  }
+
+  const isGasFeeEditable =
+    !isQuotedSwapDisplayedInInfo && !gasFeeToken && !isGasFeeSponsored;
 
   return (
     <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
@@ -90,12 +106,7 @@ export const EditGasFeesRow = ({
                 {t('paidByMetaMask')}
               </Text>
             )}
-            {!gasFeeToken && !isGasFeeSponsored && (
-              <EditGasIconButton
-                supportsEIP1559={supportsEIP1559}
-                setShowCustomizeGasPopover={setShowCustomizeGasPopover}
-              />
-            )}
+            {isGasFeeEditable && <EditGasIconButton />}
             {showFiat && !showAdvancedDetails && !isGasFeeSponsored && (
               <FiatValue
                 fullValue={fiatFeeWith18SignificantDigits}
@@ -122,7 +133,7 @@ export const EditGasFeesRow = ({
               color={TextColor.textAlternative}
               paddingBottom={gasFeeToken ? 2 : 0}
             >
-              {gasFeeToken
+              {gasFeeToken?.metaMaskFee && gasFeeToken?.metaMaskFee !== '0x0'
                 ? t('confirmGasFeeTokenMetaMaskFee', [metamaskFeeFiat])
                 : ' '}
             </Text>

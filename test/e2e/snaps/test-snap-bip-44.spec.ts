@@ -1,8 +1,9 @@
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import { Driver } from '../webdriver/driver';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { switchAndApproveDialogSwitchToTestSnap } from '../page-objects/flows/snap-permission.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockBip44Snap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -20,6 +21,9 @@ describe('Test Snap bip-44', function () {
   it('can pop up bip-44 snap and get private key result', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().withKeyringControllerMultiSRP().build(),
         testSpecificMock: mockBip44Snap,
         title: this.test?.fullTitle(),

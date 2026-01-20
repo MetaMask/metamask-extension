@@ -5,7 +5,7 @@ import { GasEstimateTypes } from '../../../../../shared/constants/gas';
 import mockEstimates from '../../../../../test/data/mock-estimates.json';
 import mockState from '../../../../../test/data/mock-state.json';
 import { GasFeeContextProvider } from '../../../../contexts/gasFee';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 
 import { getSelectedInternalAccountFromMockState } from '../../../../../test/jest/mocks';
@@ -77,7 +77,7 @@ describe('GasDetailsItem', () => {
   it('should render label', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('🦊 Market')[0]).toBeInTheDocument();
+      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });
@@ -153,7 +153,7 @@ describe('GasDetailsItem', () => {
   it('should not return null even if there is simulationError if user acknowledged gasMissing warning', async () => {
     await render();
     await waitFor(() => {
-      expect(screen.queryAllByText('🦊 Market')[0]).toBeInTheDocument();
+      expect(screen.queryAllByText('Market')[0]).toBeInTheDocument();
       expect(screen.queryByText('Max fee:')).toBeInTheDocument();
       expect(screen.queryAllByText('ETH').length).toBeGreaterThan(0);
     });

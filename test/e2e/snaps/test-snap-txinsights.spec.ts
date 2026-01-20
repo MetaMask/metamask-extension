@@ -1,18 +1,14 @@
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import {
-  DAPP_URL,
-  withFixtures,
-  WINDOW_TITLES,
-  veryLargeDelayMs,
-} from '../helpers';
+import { DAPP_ONE_URL, DAPP_PATH, DAPP_URL, WINDOW_TITLES } from '../constants';
+import { withFixtures, veryLargeDelayMs } from '../helpers';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { SMART_CONTRACTS } from '../seeder/smart-contracts';
 import ContractAddressRegistry from '../seeder/contract-address-registry';
 import { TestSuiteArguments } from '../tests/confirmations/transactions/shared';
-import TransactionConfirmation from '../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 import SnapTxInsights from '../page-objects/pages/dialog/snap-txinsight';
 import { mockInsightsSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 
@@ -20,7 +16,10 @@ describe('Test Snap TxInsights', function () {
   it('shows insight for ERC20 transactions', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -36,6 +35,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { url: DAPP_ONE_URL },
         );
 
         // open the test-dapp page
@@ -54,7 +54,10 @@ describe('Test Snap TxInsights', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -74,6 +77,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { url: DAPP_ONE_URL },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });
@@ -99,7 +103,10 @@ describe('Test Snap TxInsights', function () {
     const smartContract = SMART_CONTRACTS.NFTS;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: {
+          numberOfTestDapps: 1,
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
@@ -119,6 +126,7 @@ describe('Test Snap TxInsights', function () {
         await openTestSnapClickButtonAndInstall(
           driver,
           'connectTransactionInsightButton',
+          { url: DAPP_ONE_URL },
         );
 
         await testDapp.openTestDappPage({ contractAddress, url: DAPP_URL });

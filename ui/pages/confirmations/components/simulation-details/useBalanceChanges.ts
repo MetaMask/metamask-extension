@@ -9,6 +9,7 @@ import {
 import { BigNumber } from 'bignumber.js';
 import { ContractExchangeRates } from '@metamask/assets-controllers';
 import { useAsyncResultOrThrow } from '../../../../hooks/useAsync';
+import { useDeepMemo } from '../../hooks/useDeepMemo';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 import { getCurrentCurrency } from '../../../../ducks/metamask/metamask';
 import {
@@ -17,7 +18,10 @@ import {
   selectConversionRateByChainId,
 } from '../../../../selectors';
 import { fetchTokenExchangeRates } from '../../../../helpers/utils/util';
-import { ERC20_DEFAULT_DECIMALS, fetchErc20Decimals } from '../../utils/token';
+import {
+  ERC20_DEFAULT_DECIMALS,
+  fetchAllErc20Decimals,
+} from '../../utils/token';
 
 import {
   BalanceChange,
@@ -60,22 +64,6 @@ function getAssetAmount(
       .times(isNegative ? -1 : 1)
       // Shift the decimal point to the left by the number of decimals.
       .shift(-decimals)
-  );
-}
-
-// Fetches token details for all the token addresses in the SimulationTokenBalanceChanges
-async function fetchAllErc20Decimals(
-  addresses: Hex[],
-  chainId: Hex,
-): Promise<Record<Hex, number>> {
-  const uniqueAddresses = [
-    ...new Set(addresses.map((address) => address.toLowerCase() as Hex)),
-  ];
-  const allDecimals = await Promise.all(
-    uniqueAddresses.map((address) => fetchErc20Decimals(address, chainId)),
-  );
-  return Object.fromEntries(
-    allDecimals.map((decimals, i) => [uniqueAddresses[i], decimals]),
   );
 }
 
@@ -188,27 +176,27 @@ export const useBalanceChanges = ({
     .filter((tbc) => tbc.standard === SimulationTokenStandard.erc20)
     .map((tbc) => tbc.address);
 
+  const stableErc20Addresses = useDeepMemo(
+    () => erc20TokenAddresses,
+    [erc20TokenAddresses],
+  );
+
   const erc20Decimals = useAsyncResultOrThrow(
-    () => fetchAllErc20Decimals(erc20TokenAddresses, chainId),
-    [chainId, JSON.stringify(erc20TokenAddresses)],
+    () => fetchAllErc20Decimals(stableErc20Addresses, chainId),
+    [chainId, stableErc20Addresses],
   );
 
   const erc20FiatRates = useAsyncResultOrThrow(
-    () => fetchTokenFiatRates(fiatCurrency, erc20TokenAddresses, chainId),
-    [JSON.stringify(erc20TokenAddresses), chainId, fiatCurrency],
+    () => fetchTokenFiatRates(fiatCurrency, stableErc20Addresses, chainId),
+    [stableErc20Addresses, chainId, fiatCurrency],
   );
 
   const erc20UsdRates = useAsyncResultOrThrow(
     async () =>
       fiatCurrency === CURRENCY_USD
         ? (erc20FiatRates.value ?? {})
-        : fetchTokenFiatRates(CURRENCY_USD, erc20TokenAddresses, chainId),
-    [
-      JSON.stringify(erc20TokenAddresses),
-      chainId,
-      fiatCurrency,
-      erc20FiatRates.value,
-    ],
+        : fetchTokenFiatRates(CURRENCY_USD, stableErc20Addresses, chainId),
+    [stableErc20Addresses, chainId, fiatCurrency, erc20FiatRates.value],
   );
 
   if (

@@ -109,10 +109,7 @@ export const FileUploader = ({
 
         if (validationError) {
           setError(validationError);
-          return; // Stop processing on first error
-        }
-
-        if (!existingFileNames.has(file.name)) {
+        } else if (!existingFileNames.has(file.name)) {
           validFiles.push(file);
         }
       }
@@ -200,7 +197,7 @@ export const FileUploader = ({
         onKeyDown={handleKeyDown}
         {...dropAreaProps}
         className={twMerge(
-          'flex flex-col items-center justify-center w-full p-6 gap-2 text-center rounded-lg border border-dashed border-default hover:bg-background-default-hover hover:border-solid cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-2',
+          'relative flex flex-col items-center justify-center w-full p-6 gap-2 text-center rounded-lg border border-dashed border-default hover:bg-background-default-hover hover:border-solid cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary-default focus:ring-offset-2',
           isDragging && 'bg-background-default-hover border-solid',
           dropAreaProps?.className || '',
         )}
@@ -272,18 +269,11 @@ export const FileUploader = ({
                   file.type?.includes('image') ? IconName.Image : IconName.File
                 }
                 size={IconSize.Md}
-                color={IconColor.IconAlternative}
               />
-              <Text
-                variant={TextVariant.BodySm}
-                color={TextColor.TextAlternative}
-              >
-                {file.name}
-              </Text>
+              <Text variant={TextVariant.BodySm}>{file.name}</Text>
               <ButtonIcon
                 iconName={IconName.Close}
                 size={ButtonIconSize.Sm}
-                color={IconColor.IconAlternative}
                 ariaLabel={t('delete')}
                 onClick={() => {
                   const remainingFiles = Array.from(files).filter(

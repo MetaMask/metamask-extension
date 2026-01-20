@@ -1,4 +1,9 @@
-import { Messenger, ActionConstraint } from '@metamask/base-controller';
+import {
+  Messenger,
+  ActionConstraint,
+  MockAnyNamespace,
+  MOCK_ANY_NAMESPACE,
+} from '@metamask/messenger';
 import { TokenBalancesController } from '@metamask/assets-controllers';
 import { PreferencesControllerGetStateAction } from '../controllers/preferences-controller';
 import { ControllerInitRequest } from './types';
@@ -20,9 +25,10 @@ function getInitRequestMock(): jest.Mocked<
   >
 > {
   const baseMessenger = new Messenger<
+    MockAnyNamespace,
     PreferencesControllerGetStateAction | ActionConstraint,
     never
-  >();
+  >({ namespace: MOCK_ANY_NAMESPACE });
 
   // @ts-expect-error: Partial mock.
   baseMessenger.registerActionHandler('PreferencesController:getState', () => ({
@@ -37,6 +43,14 @@ function getInitRequestMock(): jest.Mocked<
         remoteFeatureFlags: {
           assetsAccountApiBalances: [],
         },
+      }) as never,
+  );
+
+  baseMessenger.registerActionHandler(
+    'OnboardingController:getState',
+    () =>
+      ({
+        completedOnboarding: true,
       }) as never,
   );
 
@@ -66,6 +80,8 @@ describe('TokenBalancesControllerInit', () => {
       queryMultipleAccounts: true,
       allowExternalServices: expect.any(Function),
       accountsApiChainIds: expect.any(Function),
+      platform: 'extension',
+      isOnboarded: expect.any(Function),
     });
   });
 });

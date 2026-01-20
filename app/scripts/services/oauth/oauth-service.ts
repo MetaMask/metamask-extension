@@ -1,9 +1,20 @@
 import { AuthConnection } from '@metamask/seedless-onboarding-controller';
-import { RestrictedMessenger } from '@metamask/base-controller';
 import log from 'loglevel';
-import { OAuthErrorMessages } from '../../../../shared/modules/error';
+import {
+  createSentryError,
+  isUserCancelledLoginError,
+  OAuthErrorMessages,
+} from '../../../../shared/modules/error';
 import { checkForLastError } from '../../../../shared/modules/browser-runtime.utils';
 import { TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import {
+  MetaMetricsEventName,
+  MetaMetricsEventCategory,
+  MetaMetricsEventAccountType,
+  MetaMetricsEventPayload,
+  MetaMetricsEventOptions,
+} from '../../../../shared/constants/metametrics';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import { BaseLoginHandler } from './base-login-handler';
 import { createLoginHandler } from './create-login-handler';
 import {
@@ -11,8 +22,7 @@ import {
   OAuthLoginEnv,
   OAuthLoginResult,
   OAuthRefreshTokenResult,
-  OAuthServiceAction,
-  OAuthServiceEvent,
+  OAuthServiceMessenger,
   OAuthServiceOptions,
   SERVICE_NAME,
   ServiceName,
@@ -29,13 +39,7 @@ export default class OAuthService {
 
   state = null;
 
-  #messenger: RestrictedMessenger<
-    typeof SERVICE_NAME,
-    OAuthServiceAction,
-    OAuthServiceEvent,
-    OAuthServiceAction['type'],
-    OAuthServiceEvent['type']
-  >;
+  #messenger: OAuthServiceMessenger;
 
   #env: OAuthConfig & OAuthLoginEnv;
 
@@ -45,12 +49,21 @@ export default class OAuthService {
 
   #bufferedEndTrace: OAuthServiceOptions['bufferedEndTrace'];
 
+  #trackEvent: OAuthServiceOptions['trackEvent'];
+
+  #addEventBeforeMetricsOptIn: OAuthServiceOptions['addEventBeforeMetricsOptIn'];
+
+  #getParticipateInMetaMetrics: OAuthServiceOptions['getParticipateInMetaMetrics'];
+
   constructor({
     messenger,
     env,
     webAuthenticator,
     bufferedTrace,
     bufferedEndTrace,
+    trackEvent,
+    addEventBeforeMetricsOptIn,
+    getParticipateInMetaMetrics,
   }: OAuthServiceOptions) {
     this.#messenger = messenger;
 
@@ -62,6 +75,9 @@ export default class OAuthService {
     this.#webAuthenticator = webAuthenticator;
     this.#bufferedTrace = bufferedTrace;
     this.#bufferedEndTrace = bufferedEndTrace;
+    this.#trackEvent = trackEvent;
+    this.#addEventBeforeMetricsOptIn = addEventBeforeMetricsOptIn;
+    this.#getParticipateInMetaMetrics = getParticipateInMetaMetrics;
 
     this.#messenger.registerActionHandler(
       `${SERVICE_NAME}:startOAuthLogin`,
@@ -85,6 +101,47 @@ export default class OAuthService {
   }
 
   /**
+   * Track a MetaMetrics event with buffering (handles consent checking)
+   *
+   * @param payload - The event payload
+   * @param options - Optional event options
+   */
+  #trackEventWithBuffering(
+    payload: MetaMetricsEventPayload,
+    options?: MetaMetricsEventOptions,
+  ): void {
+    const isMetricsEnabled = Boolean(this.#getParticipateInMetaMetrics());
+
+    if (isMetricsEnabled) {
+      this.#trackEvent(payload, options);
+    } else {
+      const bufferedPayload = {
+        ...payload,
+        actionId: `${Date.now() + Math.random()}`,
+      };
+      this.#addEventBeforeMetricsOptIn(bufferedPayload);
+    }
+  }
+
+  /**
+   * Determine if the current flow is a rehydration (existing user coming back)
+   *
+   * @returns True if this is a rehydration flow, false if not, null if status couldn't be determined
+   */
+  #isRehydrationFlow(): boolean | null {
+    try {
+      const state = this.#messenger.call('OnboardingController:getState');
+      return (
+        state.firstTimeFlowType === FirstTimeFlowType.socialImport &&
+        !state.completedOnboarding
+      );
+    } catch (error) {
+      log.error('Error checking rehydration flow:', error);
+      return null;
+    }
+  }
+
+  /**
    * Start the OAuth login process for the given social login type.
    *
    * @param authConnection - The social login type to login with.
@@ -101,7 +158,11 @@ export default class OAuthService {
       this.#webAuthenticator,
     );
 
-    return this.#handleOAuthLogin(loginHandler);
+    const oAuthLoginResult = await this.#handleOAuthLogin(
+      loginHandler,
+      authConnection,
+    );
+    return oAuthLoginResult;
   }
 
   /**
@@ -182,10 +243,15 @@ export default class OAuthService {
    * Then, we will use the Authorization Code to get the Jwt Token from the Web3Auth Authentication Server.
    *
    * @param loginHandler - The login handler to use.
+   * @param authConnection - The auth connection type (google | apple).
    * @returns The login result.
    */
-  async #handleOAuthLogin(loginHandler: BaseLoginHandler) {
+  async #handleOAuthLogin(
+    loginHandler: BaseLoginHandler,
+    authConnection: AuthConnection,
+  ) {
     const authUrl = await loginHandler.getAuthUrl();
+    const isRehydration = this.#isRehydrationFlow();
 
     let providerLoginSuccess = false;
     let redirectUrlFromOAuth = null;
@@ -212,12 +278,13 @@ export default class OAuthService {
                   reject(error);
                 }
               } else {
-                if (this.#isUserCancelledLoginError()) {
-                  reject(
-                    new Error(OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR),
-                  );
+                const userCancelledLoginError =
+                  this.#getUserCancelledLoginError();
+                if (userCancelledLoginError) {
+                  reject(userCancelledLoginError);
                   return;
                 }
+                // Throw default error for no redirect URL found
                 reject(
                   new Error(OAuthErrorMessages.NO_REDIRECT_URL_FOUND_ERROR),
                 );
@@ -230,17 +297,32 @@ export default class OAuthService {
       });
       providerLoginSuccess = true;
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+      // Track provider login failure
+      const isUserCancelled = isUserCancelledLoginError(error as Error);
+      this.#trackEventWithBuffering({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: isUserCancelled ? 'user_cancelled' : 'error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: 'provider_login',
+        },
+      });
 
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthProviderLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthProviderLoginError,
-      });
+      if (!isUserCancelled) {
+        this.#messenger.captureException?.(
+          createSentryError(
+            TraceName.OnboardingOAuthProviderLoginError,
+            error as Error,
+          ),
+        );
+      }
 
       throw error;
     } finally {
@@ -264,17 +346,29 @@ export default class OAuthService {
       getAuthTokensSuccess = true;
       return loginResult;
     } catch (error: unknown) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
+      // Track token exchange failure
+      this.#trackEventWithBuffering({
+        event: MetaMetricsEventName.SocialLoginFailed,
+        category: MetaMetricsEventCategory.Onboarding,
+        properties: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          account_type: `${MetaMetricsEventAccountType.Default}_${authConnection}`,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_rehydration:
+            isRehydration === null ? 'unknown' : String(isRehydration),
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          failure_type: 'error',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_category: 'get_auth_tokens',
+        },
+      });
 
-      this.#bufferedTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.#bufferedEndTrace?.({
-        name: TraceName.OnboardingOAuthBYOAServerGetAuthTokensError,
-      });
+      this.#messenger.captureException?.(
+        createSentryError(
+          `OAuth2 token exchange failed for ${authConnection}`,
+          error as Error,
+        ),
+      );
 
       throw error;
     } finally {
@@ -365,43 +459,61 @@ export default class OAuthService {
     return url.searchParams.get('code');
   }
 
-  #isUserCancelledLoginError(): boolean {
+  #getUserCancelledLoginError(): Error | undefined {
     const error = checkForLastError();
-    return error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR;
+    if (isUserCancelledLoginError(error)) {
+      return error;
+    }
+    return undefined;
   }
 
   async setMarketingConsent(
     hasEmailMarketingConsent: boolean,
   ): Promise<boolean> {
-    const state = this.#messenger.call('SeedlessOnboardingController:getState');
-    const { accessToken } = state;
-    if (!accessToken) {
-      throw new Error('No access token found');
-    }
+    try {
+      const state = this.#messenger.call(
+        'SeedlessOnboardingController:getState',
+      );
+      const { accessToken } = state;
+      if (!accessToken) {
+        throw new Error('No access token found');
+      }
 
-    const requestData = {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      opt_in_status: hasEmailMarketingConsent,
-    };
+      const requestData = {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        opt_in_status: hasEmailMarketingConsent,
+      };
 
-    const res = await fetch(
-      `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`,
+      const res = await fetch(
+        `${this.#env.authServerUrl}${AUTH_SERVER_MARKETING_OPT_IN_STATUS_PATH}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify(requestData),
         },
-        body: JSON.stringify(requestData),
-      },
-    );
+      );
 
-    if (!res.ok) {
-      throw new Error('Failed to post marketing opt in status');
+      if (!res.ok) {
+        throw new Error('Failed to post marketing opt in status');
+      }
+
+      return res.ok;
+    } catch (error) {
+      log.error('Failed to post marketing opt in status', error);
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to post marketing opt in status',
+          error as Error,
+        ),
+      );
+
+      // rethrow the original error
+      throw error;
     }
-
-    return res.ok;
   }
 
   async getMarketingConsent(): Promise<boolean> {
@@ -434,6 +546,14 @@ export default class OAuthService {
       return Boolean(data?.is_opt_in ?? false);
     } catch (error) {
       log.error('Failed to get marketing opt in status', error);
+
+      this.#messenger.captureException?.(
+        createSentryError(
+          'Failed to get marketing opt in status',
+          error as Error,
+        ),
+      );
+
       return false;
     }
   }

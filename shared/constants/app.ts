@@ -12,10 +12,12 @@ export type EnvironmentType =
   | 'popup'
   | 'notification'
   | 'fullscreen'
-  | 'background';
+  | 'background'
+  | 'sidepanel';
 export const ENVIRONMENT_TYPE_POPUP = 'popup';
 export const ENVIRONMENT_TYPE_NOTIFICATION = 'notification';
 export const ENVIRONMENT_TYPE_FULLSCREEN = 'fullscreen';
+export const ENVIRONMENT_TYPE_SIDEPANEL = 'sidepanel';
 export const ENVIRONMENT_TYPE_BACKGROUND = 'background';
 
 export const PLATFORM_BRAVE = 'Brave';
@@ -87,6 +89,7 @@ export const POLLING_TOKEN_ENVIRONMENT_TYPES = {
   [ENVIRONMENT_TYPE_POPUP]: 'popupGasPollTokens',
   [ENVIRONMENT_TYPE_NOTIFICATION]: 'notificationGasPollTokens',
   [ENVIRONMENT_TYPE_FULLSCREEN]: 'fullScreenGasPollTokens',
+  [ENVIRONMENT_TYPE_SIDEPANEL]: 'sidePanelGasPollTokens',
   [ENVIRONMENT_TYPE_BACKGROUND]: 'none',
 } as const;
 

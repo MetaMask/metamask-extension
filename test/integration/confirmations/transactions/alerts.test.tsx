@@ -5,7 +5,6 @@ import nock from 'nock';
 import { SimulationTokenStandard } from '@metamask/transaction-controller';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import {
@@ -236,7 +235,7 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -262,14 +261,12 @@ const addTokenBalanceChangesToTransaction = (
 
 describe('Contract Interaction Confirmation Alerts', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {
@@ -490,15 +487,23 @@ describe('Contract Interaction Confirmation Alerts', () => {
       });
     });
 
-    expect(await screen.findByTestId('inline-alert')).toBeInTheDocument();
+    expect(await screen.findAllByTestId('inline-alert')).toHaveLength(2);
 
-    fireEvent.click(await screen.findByTestId('inline-alert'));
+    fireEvent.click((await screen.findAllByTestId('inline-alert'))[0]);
 
     expect(await screen.findByTestId('alert-modal')).toBeInTheDocument();
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),
     ).toBeInTheDocument();
+
+    expect(
+      await screen.findByTestId('alert-modal__selected-alert'),
+    ).toHaveTextContent(
+      'We can’t move forward with this transaction until you manually update the fee.',
+    );
+
+    fireEvent.click(await screen.findByTestId('alert-modal-next-button'));
 
     expect(
       await screen.findByTestId('alert-modal__selected-alert'),

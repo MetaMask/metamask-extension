@@ -1,4 +1,4 @@
-import { Hex, add0x } from '@metamask/utils';
+import { Hex } from '@metamask/utils';
 import {
   BatchTransactionParams,
   GasFeeToken,
@@ -8,20 +8,22 @@ import { BigNumber } from 'bignumber.js';
 import { useSelector } from 'react-redux';
 import { Interface } from '@ethersproject/abi';
 import { abiERC20 } from '@metamask/metamask-eth-abis';
-
 import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../shared/constants/transaction';
-import { useConfirmContext } from '../../../../context/confirm';
-import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
-import { formatAmount } from '../../../simulation-details/formatAmount';
+import { getNetworkConfigurationsByChainId } from '../../../../../../../shared/modules/selectors/networks';
+import { getCurrencyRates } from '../../../../../../ducks/metamask/metamask';
 import { getIntlLocale } from '../../../../../../ducks/locale/locale';
+import { useFiatFormatter } from '../../../../../../hooks/useFiatFormatter';
+import { useEthFiatAmount } from '../../../../../../hooks/useEthFiatAmount';
 import {
+  getShouldShowFiat,
   selectNetworkConfigurationByChainId,
   selectTransactionAvailableBalance,
 } from '../../../../../../selectors';
+import { formatAmount } from '../../../simulation-details/formatAmount';
+import { useConfirmContext } from '../../../../context/confirm';
 import { useFeeCalculations } from './useFeeCalculations';
 
 export const RATE_WEI_NATIVE = '0xDE0B6B3A7640000'; // 1x10^18
-export const METAMASK_FEE_PERCENTAGE = 0.35;
 
 export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
   const { currentConfirmation: transactionMeta } =
@@ -29,30 +31,46 @@ export function useGasFeeToken({ tokenAddress }: { tokenAddress?: Hex }) {
 
   const locale = useSelector(getIntlLocale);
   const nativeFeeToken = useNativeGasFeeToken();
-  const { gasFeeTokens } = transactionMeta ?? {};
+  const { gasFeeTokens, chainId } = transactionMeta ?? {};
 
   let gasFeeToken = gasFeeTokens?.find(
     (token) => token.tokenAddress.toLowerCase() === tokenAddress?.toLowerCase(),
   );
 
+  // This is just a legacy fallback for if `useGasFeeToken` were to be called
+  // with no `tokenAddress`. Even if it's `NATIVE_TOKEN_ADDRESS` we don't rely
+  // on `useNativeGasFeeToken`.
   if (!gasFeeToken) {
     gasFeeToken = nativeFeeToken;
   }
 
   const { amount, decimals } = gasFeeToken ?? { amount: '0x0', decimals: 0 };
 
-  const metaMaskFee = add0x(
-    new BigNumber(amount).times(METAMASK_FEE_PERCENTAGE).toString(16),
-  );
+  const metaMaskFee = gasFeeToken?.fee;
 
   const amountFormatted = formatAmount(
     locale,
     new BigNumber(amount).shift(-decimals),
   );
 
-  const amountFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.amount);
-  const balanceFiat = useFiatTokenValue(gasFeeToken, gasFeeToken?.balance);
-  const metamaskFeeFiat = useFiatTokenValue(gasFeeToken, metaMaskFee);
+  const amountFiat = useFiatTokenValue(
+    gasFeeToken,
+    gasFeeToken?.amount,
+    'AMOUNT',
+    chainId,
+  );
+  const balanceFiat = useFiatTokenValue(
+    gasFeeToken,
+    gasFeeToken?.balance,
+    'BALANCE',
+    chainId,
+  );
+  const metamaskFeeFiat = useFiatTokenValue(
+    gasFeeToken,
+    metaMaskFee,
+    'FEE',
+    chainId,
+  );
 
   const transferTransaction =
     tokenAddress === NATIVE_TOKEN_ADDRESS
@@ -121,8 +139,23 @@ function useNativeGasFeeToken(): GasFeeToken {
 function useFiatTokenValue(
   gasFeeToken: GasFeeToken | undefined,
   tokenValue: Hex | undefined,
+  _label: string,
+  chainId?: Hex,
 ) {
   const { decimals, rateWei } = gasFeeToken ?? { decimals: 0, rateWei: '0x0' };
+
+  const currencyRates = useSelector(getCurrencyRates);
+  const networkConfigurationsByChainId = useSelector(
+    getNetworkConfigurationsByChainId,
+  );
+  const showFiat = useSelector(getShouldShowFiat);
+  const fiatFormatter = useFiatFormatter();
+
+  // Get the correct conversion rate for the transaction's chainId
+  const conversionRateForChain = chainId
+    ? currencyRates?.[networkConfigurationsByChainId[chainId]?.nativeCurrency]
+        ?.conversionRate
+    : undefined;
 
   const nativeWei = new BigNumber(tokenValue ?? '0x0')
     .shift(-decimals)
@@ -130,9 +163,27 @@ function useFiatTokenValue(
 
   const nativeEth = nativeWei.shift(-18);
 
-  const fiatValue = useEthFiatAmount(nativeEth, {}, true);
+  // Always call the hook (even if not used) to avoid conditional hook errors
+  const fallbackFiatValue = useEthFiatAmount(nativeEth, {}, true);
 
-  return gasFeeToken ? fiatValue : '';
+  // Calculate fiat value using the correct conversion rate
+  if (!gasFeeToken || !tokenValue || !showFiat) {
+    return '';
+  }
+
+  const conversionRate = conversionRateForChain;
+
+  if (!conversionRate || conversionRate <= 0) {
+    return fallbackFiatValue ?? '';
+  }
+
+  const fiatAmount = nativeEth.times(conversionRate);
+
+  if (fiatAmount.lt(new BigNumber(0.01)) && fiatAmount.gt(new BigNumber(0))) {
+    return `< ${fiatFormatter(0.01)}`;
+  }
+
+  return fiatFormatter(fiatAmount.toNumber());
 }
 
 function getTokenTransferTransaction(

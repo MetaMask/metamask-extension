@@ -127,4 +127,40 @@ describe('useCarouselManagement (simple Contentful tests)', () => {
 
     expect(getDispatchedSlides()).toEqual([]);
   });
+
+  test('lineage is called only once per account, not in infinite loop', async () => {
+    const mockGetUserProfileLineage = jest.requireMock(
+      '../../store/actions',
+    ).getUserProfileLineage;
+
+    mockGetUseExternalServices.mockReturnValue(true);
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      contentfulCarouselEnabled: true,
+    });
+
+    const { rerender } = renderHook(() => useCarouselManagement());
+
+    await waitFor(() => expect(mockUpdateSlides).toHaveBeenCalled());
+
+    mockGetUserProfileLineage.mockClear();
+    mockUpdateSlides.mockClear();
+
+    mockGetSlides.mockReturnValue([slide('fund')]);
+
+    rerender();
+
+    // Wait a bit to ensure any potential loops would manifest
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Lineage should NOT be called again just because slides changed
+    // (it should only be called when account/settings change)
+    expect(mockGetUserProfileLineage).not.toHaveBeenCalled();
+
+    mockGetSelectedInternalAccount.mockReturnValue({ address: '0xnew' });
+    rerender();
+
+    await waitFor(() => expect(mockGetUserProfileLineage).toHaveBeenCalled());
+
+    expect(mockGetUserProfileLineage).toHaveBeenCalledTimes(1);
+  });
 });

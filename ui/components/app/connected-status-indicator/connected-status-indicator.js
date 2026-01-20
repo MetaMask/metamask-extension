@@ -18,7 +18,7 @@ import {
   getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
 } from '../../../selectors';
-import { ConnectedSiteMenu } from '../../multichain';
+import { ConnectedSiteMenu } from '../../multichain/connected-site-menu';
 import {
   getInternalAccountsFromGroupById,
   getSelectedAccountGroup,
@@ -26,7 +26,6 @@ import {
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
-
   const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
   const accountGroupInternalAccounts = useSelector((state) =>
     getInternalAccountsFromGroupById(state, selectedAccountGroupId),

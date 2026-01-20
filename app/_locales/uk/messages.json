@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Введіть пароль, щоб продовжити"
   },
-  "ethereumPublicAddress": {
-    "message": "Публічна адреса Ethereum"
-  },
   "etherscanView": {
     "message": "Переглянути обліковий запис на Etherscan"
-  },
-  "expandView": {
-    "message": "Розгорнути подання"
   },
   "failed": {
     "message": "Помилка"

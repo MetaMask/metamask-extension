@@ -1,12 +1,13 @@
-import { Messenger, RestrictedMessenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { getRootMessenger } from '../../../lib/messenger';
 import { getAccountActivityServiceMessenger } from './account-activity-service-messenger';
 
 describe('getAccountActivityServiceMessenger', () => {
   it('returns a restricted controller messenger', () => {
-    const controllerMessenger = new Messenger<never, never>();
+    const controllerMessenger = getRootMessenger<never, never>();
     const messenger = getAccountActivityServiceMessenger(controllerMessenger);
 
-    expect(messenger).toBeInstanceOf(RestrictedMessenger);
+    expect(messenger).toBeInstanceOf(Messenger);
     expect(messenger).toBeDefined();
   });
 });

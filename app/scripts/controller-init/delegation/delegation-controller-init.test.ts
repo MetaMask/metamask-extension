@@ -1,5 +1,4 @@
 import { DelegationController } from '@metamask/delegation-controller';
-import { Messenger } from '@metamask/base-controller';
 import {
   type TransactionMeta,
   TransactionStatus,
@@ -14,6 +13,7 @@ import {
   getDelegationControllerMessenger,
   getDelegationControllerInitMessenger,
 } from '../messengers/delegation/delegation-controller-messenger';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   DelegationControllerInit,
   awaitDeleteDelegationEntry,
@@ -27,7 +27,7 @@ function buildInitRequestMock(): jest.Mocked<
     DelegationControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
   const controllerMessenger = getDelegationControllerMessenger(
     baseControllerMessenger,
   );
@@ -112,7 +112,7 @@ describe('DelegationController:awaitDeleteDelegationEntry', () => {
 
   beforeEach(() => {
     controller = new DelegationController({
-      messenger: getDelegationControllerMessenger(new Messenger()),
+      messenger: getDelegationControllerMessenger(getRootMessenger()),
       state: {},
       hashDelegation: () => '0x123' as Hex,
       getDelegationEnvironment: () => ({

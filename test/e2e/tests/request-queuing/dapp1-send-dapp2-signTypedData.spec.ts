@@ -1,14 +1,10 @@
-import FixtureBuilder from '../../fixture-builder';
-import {
-  withFixtures,
-  DAPP_URL,
-  DAPP_ONE_URL,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { DAPP_ONE_URL, DAPP_URL, WINDOW_TITLES } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import { Driver } from '../../webdriver/driver';
 
 describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
@@ -17,12 +13,11 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerTripleNode()
           .withSelectedNetworkControllerPerDomain()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

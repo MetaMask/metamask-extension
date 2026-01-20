@@ -56,7 +56,11 @@ export const BridgeCTAInfoText = () => {
   const feePercentage = bpsToPercentage(quoteBpsFee) ?? BRIDGE_MM_FEE_RATE;
 
   return hasMMFee || hasApproval ? (
-    <Row gap={1} justifyContent={JustifyContent.center}>
+    <Row
+      gap={1}
+      justifyContent={JustifyContent.center}
+      data-testid="bridge-cta-info-text"
+    >
       <Text variant={TextVariant.bodyXs} color={TextColor.textAlternative}>
         {[
           hasMMFee ? t('rateIncludesMMFee', [feePercentage]) : null,
@@ -83,6 +87,7 @@ export const BridgeCTAInfoText = () => {
             ? t('bridgeApprovalWarningForHardware', [
                 activeQuote.sentAmount.amount,
                 activeQuote.quote.srcAsset.symbol,
+                activeQuote.quote.destAsset.symbol,
               ])
             : t('bridgeApprovalWarning', [
                 activeQuote.sentAmount.amount,

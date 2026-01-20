@@ -2,7 +2,7 @@ import {
   AccountActivityService,
   AccountActivityServiceMessenger,
 } from '@metamask/core-backend';
-import { Messenger } from '@metamask/base-controller';
+import { getRootMessenger } from '../../lib/messenger';
 import { ControllerInitRequest } from '../types';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { getAccountActivityServiceMessenger } from '../messengers/core-backend';
@@ -14,7 +14,7 @@ jest.mock('../../../../shared/lib/trace');
 function getInitRequestMock(): jest.Mocked<
   ControllerInitRequest<AccountActivityServiceMessenger>
 > {
-  const baseMessenger = new Messenger<never, never>();
+  const baseMessenger = getRootMessenger<never, never>();
 
   const requestMock = {
     ...buildControllerInitRequestMock(),

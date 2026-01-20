@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { promises as fs } from 'fs';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';

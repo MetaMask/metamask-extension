@@ -4,17 +4,24 @@ import {
   SolAccountType,
   CaipChainId,
   EthScope,
+  TrxAccountType,
 } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { AccountsControllerState } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
-import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 
 export type AccountsState = {
   metamask: AccountsControllerState;
 };
+
+export function isBitcoinAccount(account: InternalAccount) {
+  return Boolean(
+    account &&
+      Object.values(BtcAccountType).includes(account.type as BtcAccountType),
+  );
+}
 
 export function isSolanaAccount(account: InternalAccount) {
   const { DataAccount } = SolAccountType;
@@ -22,31 +29,31 @@ export function isSolanaAccount(account: InternalAccount) {
   return Boolean(account && account.type === DataAccount);
 }
 
-export function isNonEvmAccount(account: InternalAccount) {
-  const { DataAccount } = SolAccountType;
+export function isTronAccount(account: InternalAccount) {
+  const { Eoa } = TrxAccountType;
+  return Boolean(account && account.type === Eoa);
+}
 
-  return Boolean(
-    account &&
-      (Object.values(BtcAccountType).includes(account.type as BtcAccountType) ||
-        account.type === DataAccount),
+export function isNonEvmAccount(account: InternalAccount) {
+  return (
+    isBitcoinAccount(account) ||
+    isSolanaAccount(account) ||
+    isTronAccount(account)
   );
 }
 
+export const getInternalAccountsObject = (state: AccountsState) =>
+  state.metamask.internalAccounts.accounts;
+
 export const getInternalAccounts = createSelector(
-  (state: AccountsState) =>
-    Object.values(state.metamask.internalAccounts.accounts),
-  (accounts) => accounts,
+  getInternalAccountsObject,
+  (accounts) => Object.values(accounts),
 );
 
-export const getInternalAccountsObject = createSelector(
-  (state: AccountsState) => state.metamask.internalAccounts.accounts,
-  (internalAccounts) => internalAccounts,
-);
-
-export const getMemoizedInternalAccountByAddress = createDeepEqualSelector(
-  [getInternalAccounts, (_state, address) => address],
-  (internalAccounts, address) => {
-    return internalAccounts.find((account) =>
+export const getInternalAccountByAddress = createSelector(
+  [getInternalAccounts, (_, address: string) => address],
+  (accounts, address) => {
+    return accounts.find((account) =>
       isEqualCaseInsensitive(account.address, address),
     );
   },
@@ -57,21 +64,25 @@ export function getSelectedInternalAccount(state: AccountsState) {
   return state.metamask.internalAccounts.accounts[accountId];
 }
 
-export function isSelectedInternalAccountEth(state: AccountsState) {
-  const account = getSelectedInternalAccount(state);
-  const { Eoa, Erc4337 } = EthAccountType;
+export const isSelectedInternalAccountEth = createSelector(
+  getSelectedInternalAccount,
+  (account) => {
+    const { Eoa, Erc4337 } = EthAccountType;
+    return Boolean(
+      account && (account.type === Eoa || account.type === Erc4337),
+    );
+  },
+);
 
-  return Boolean(account && (account.type === Eoa || account.type === Erc4337));
-}
+export const isSelectedInternalAccountSolana = createSelector(
+  getSelectedInternalAccount,
+  (account) => isSolanaAccount(account),
+);
 
-export function isSelectedInternalAccountSolana(state: AccountsState) {
-  return isSolanaAccount(getSelectedInternalAccount(state));
-}
-
-export function hasCreatedSolanaAccount(state: AccountsState) {
-  const accounts = getInternalAccounts(state);
-  return accounts.some((account) => isSolanaAccount(account));
-}
+export const hasCreatedSolanaAccount = createSelector(
+  getInternalAccounts,
+  (accounts) => accounts.some((account) => isSolanaAccount(account)),
+);
 
 /**
  * Returns all internal accounts that declare support for the provided CAIP scope.
@@ -80,7 +91,7 @@ export function hasCreatedSolanaAccount(state: AccountsState) {
  * @param _state - Redux state (unused; required for selector signature)
  * @param scope - The CAIP scope string to filter accounts by
  */
-export const getInternalAccountsByScope = createDeepEqualSelector(
+export const getInternalAccountsByScope = createSelector(
   [getInternalAccounts, (_state: AccountsState, scope: CaipChainId) => scope],
   (accounts, scope): InternalAccount[] => {
     if (!Array.isArray(accounts) || accounts.length === 0) {

@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   KeyringControllerGetStateAction,
   KeyringControllerLockEvent,
@@ -6,6 +6,7 @@ import {
 } from '@metamask/keyring-controller';
 import { HandleSnapRequest } from '@metamask/snaps-controllers';
 import { MetaMetricsControllerGetMetaMetricsIdAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type MessengerActions = KeyringControllerGetStateAction | HandleSnapRequest;
 
@@ -25,16 +26,23 @@ export type AuthenticationControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getAuthenticationControllerMessenger(
-  messenger: Messenger<MessengerActions, MessengerEvents>,
+  messenger: RootMessenger<MessengerActions, MessengerEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'AuthenticationController',
-    allowedActions: [
-      'KeyringController:getState',
-      'SnapController:handleRequest',
-    ],
-    allowedEvents: ['KeyringController:lock', 'KeyringController:unlock'],
+  const controllerMessenger = new Messenger<
+    'AuthenticationController',
+    MessengerActions,
+    MessengerEvents,
+    typeof messenger
+  >({
+    namespace: 'AuthenticationController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: ['KeyringController:getState', 'SnapController:handleRequest'],
+    events: ['KeyringController:lock', 'KeyringController:unlock'],
+  });
+  return controllerMessenger;
 }
 
 export type AllowedInitializationActions =
@@ -53,11 +61,20 @@ export type AuthenticationControllerInitMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getAuthenticationControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'AuthenticationController',
-    allowedActions: ['MetaMetricsController:getMetaMetricsId'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'AuthenticationController',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'AuthenticationController',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:getMetaMetricsId'],
+  });
+  return controllerInitMessenger;
 }

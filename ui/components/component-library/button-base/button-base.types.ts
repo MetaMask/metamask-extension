@@ -5,6 +5,9 @@ import { TextDirection, TextProps, TextStyleUtilityProps } from '../text';
 import { IconName } from '../icon';
 import type { IconProps } from '../icon';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonBaseSize {
   Sm = 'sm',
   Md = 'md',

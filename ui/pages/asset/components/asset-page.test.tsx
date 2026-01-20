@@ -8,7 +8,7 @@ import {
   CHAIN_IDS,
   MAINNET_DISPLAY_NAME,
 } from '../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { KeyringType } from '../../../../shared/constants/keyring';
 import { AssetType } from '../../../../shared/constants/transaction';
 import { ETH_EOA_METHODS } from '../../../../shared/constants/eth-methods';
@@ -404,7 +404,7 @@ describe('AssetPage', () => {
     const { container } = renderWithProvider(
       <AssetPage asset={native} optionsButton={null} />,
       store,
-      ['/0x1'],
+      '/0x1',
     );
     const dynamicImages = container.querySelectorAll('img[alt*="logo"]');
     dynamicImages.forEach((img) => {
@@ -484,7 +484,7 @@ describe('AssetPage', () => {
           },
         },
       }),
-      ['/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55'],
+      '/0x1/0xe4246B1Ac0Ba6839d9efA41a8A30AE3007185f55',
     );
 
     // Verify chart is rendered

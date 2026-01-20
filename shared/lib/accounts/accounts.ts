@@ -2,21 +2,26 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipChainId } from '@metamask/utils';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { DiscoveredAccount, KeyringAccount } from '@metamask/keyring-api';
-import { KeyringInternalSnapClient } from '@metamask/keyring-internal-snap-client';
+import {
+  KeyringInternalSnapClient,
+  KeyringInternalSnapClientMessenger,
+} from '@metamask/keyring-internal-snap-client';
 import {
   SnapKeyring,
   SnapKeyringInternalOptions,
 } from '@metamask/eth-snap-keyring';
 import { KeyringTypes } from '@metamask/keyring-controller';
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import { SnapId } from '@metamask/snaps-sdk';
 import { HandleSnapRequest as SnapControllerHandleRequest } from '@metamask/snaps-controllers';
 import { AccountsControllerGetNextAvailableAccountNameAction } from '@metamask/accounts-controller';
 ///: END:ONLY_INCLUDE_IF
 import { MultichainNetworks } from '../../constants/multichain/networks';
 import { captureException } from '../sentry';
+import { HardwareDeviceNames } from '../../constants/hardware-wallets';
 import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
+import { TRON_WALLET_SNAP_ID } from './tron-wallet-snap';
 
 /**
  * Supported non-EVM Snaps.
@@ -25,7 +30,8 @@ import { SOLANA_WALLET_SNAP_ID } from './solana-wallet-snap';
 // eslint-disable-next-line @typescript-eslint/naming-convention
 type SUPPORTED_WALLET_SNAP_ID =
   | typeof SOLANA_WALLET_SNAP_ID
-  | typeof BITCOIN_WALLET_SNAP_ID;
+  | typeof BITCOIN_WALLET_SNAP_ID
+  | typeof TRON_WALLET_SNAP_ID;
 
 /**
  * Get the next available account name based on the suggestion and the list of
@@ -92,8 +98,22 @@ export async function getNextAvailableSnapAccountName(
       // for all 3 networks.
       return `Solana Account ${accountNumber}`;
     }
+    case TRON_WALLET_SNAP_ID: {
+      return `Tron Account ${accountNumber}`;
+    }
     default:
       return defaultSnapAccountName;
+  }
+}
+
+export function isHardwareAccount(account: InternalAccount): boolean {
+  try {
+    const keyringType = account?.metadata?.keyring?.type;
+    return Object.values(HardwareDeviceNames).includes(
+      keyringType as HardwareDeviceNames,
+    );
+  } catch {
+    return false;
   }
 }
 
@@ -120,6 +140,7 @@ export type WalletSnapClient = {
 };
 
 export type MultichainWalletSnapClientMessenger = Messenger<
+  'MultichainWalletSnapClient',
   | SnapControllerHandleRequest
   | AccountsControllerGetNextAvailableAccountNameAction,
   never
@@ -144,13 +165,17 @@ export class MultichainWalletSnapClient implements WalletSnapClient {
 
     this.#messenger = messenger;
 
+    const clientMessenger: KeyringInternalSnapClientMessenger = new Messenger({
+      namespace: 'KeyringInternalSnapClient',
+      parent: messenger,
+    });
+    messenger.delegate({
+      messenger: clientMessenger,
+      actions: ['SnapController:handleRequest'],
+    });
     this.#client = new KeyringInternalSnapClient({
       snapId,
-      messenger: messenger.getRestricted({
-        name: 'KeyringInternalSnapClient',
-        allowedActions: ['SnapController:handleRequest'],
-        allowedEvents: [],
-      }),
+      messenger: clientMessenger,
     });
   }
 

@@ -2,13 +2,13 @@ import { strict as assert } from 'assert';
 import {
   ACCOUNT_1,
   ACCOUNT_2,
+  DAPP_HOST_ADDRESS,
   WINDOW_TITLES,
-  withFixtures,
-} from '../../../helpers';
+} from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
-import FixtureBuilder from '../../../fixture-builder';
-import { DAPP_HOST_ADDRESS } from '../../../constants';
-import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import ConnectAccountConfirmation from '../../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../../page-objects/pages/dialog/edit-connected-accounts-modal';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../../page-objects/pages/permission/permission-list-page';
@@ -63,7 +63,7 @@ describe('Call `wallet_createSession`, then update the accounts and/or scopes in
           driver,
         );
         await editConnectedAccountsModal.checkPageIsLoaded();
-        await editConnectedAccountsModal.addNewEthereumAccount();
+        await editConnectedAccountsModal.addNewAccount();
         await connectAccountConfirmation.confirmConnect();
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

@@ -1,6 +1,7 @@
 import { Mockttp } from 'mockttp';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   mockBip32Snap,
   mockJsonRpcSnap,
@@ -19,6 +20,9 @@ describe('Test Snap RPC', function () {
   it('can use the cross-snap RPC endowment and produce a public key', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSnapBinaries,
         title: this.test?.fullTitle(),

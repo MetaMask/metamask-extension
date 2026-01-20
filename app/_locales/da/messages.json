@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Indtast adgangskode for at fortsætte"
   },
-  "ethereumPublicAddress": {
-    "message": "Offentlig Ethereum-adresse"
-  },
   "etherscanView": {
     "message": "Se konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Udvis Visning"
   },
   "failed": {
     "message": "Mislykkedes"

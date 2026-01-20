@@ -1,15 +1,15 @@
 {
   "AccountOrderController": {
-    "pinnedAccountList": {},
-    "hiddenAccountList": {}
+    "hiddenAccountList": {},
+    "pinnedAccountList": {}
   },
-  "AccountTracker": { "accounts": "object", "accountsByChainId": "object" },
+  "AccountTracker": { "accountsByChainId": "object" },
   "AccountTreeController": {
-    "accountTree": "object",
-    "isAccountTreeSyncingInProgress": "boolean",
-    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
     "accountGroupsMetadata": "object",
-    "accountWalletsMetadata": "object"
+    "accountTree": "object",
+    "accountWalletsMetadata": "object",
+    "hasAccountTreeSyncingSyncedAtLeastOnce": "boolean",
+    "isAccountTreeSyncingInProgress": "boolean"
   },
   "AccountsController": {
     "internalAccounts": { "accounts": "object", "selectedAccount": "string" }
@@ -23,84 +23,95 @@
   "AnnouncementController": { "announcements": "object" },
   "AppMetadataController": {
     "currentAppVersion": "string",
+    "currentMigrationVersion": "number",
     "previousAppVersion": "",
-    "previousMigrationVersion": 0,
-    "currentMigrationVersion": "number"
+    "previousMigrationVersion": 0
   },
   "AppStateController": {
+    "activeQrCodeScanRequest": null,
+    "addressSecurityAlertResponses": "object",
+    "appActiveTab": "undefined",
+    "browserEnvironment": { "browser": "string", "os": "string" },
+    "canTrackWalletFundsObtained": false,
     "connectedStatusPopoverHasBeenShown": true,
+    "currentExtensionPopupId": "number",
+    "dappSwapComparisonData": "object",
     "defaultHomeActiveTabName": null,
-    "browserEnvironment": { "os": "string", "browser": "string" },
-    "popupGasPollTokens": "object",
-    "notificationGasPollTokens": "object",
-    "fullScreenGasPollTokens": "object",
-    "recoveryPhraseReminderHasBeenShown": true,
-    "recoveryPhraseReminderLastShown": "number",
-    "outdatedBrowserWarningLastShown": "object",
-    "nftsDetectionNoticeDismissed": false,
-    "showTestnetMessageInDropdown": true,
-    "showBetaHeader": false,
-    "showPermissionsTour": true,
-    "showShieldEntryModalOnce": "boolean",
-    "showNetworkBanner": true,
-    "showAccountBanner": true,
-    "productTour": "accountIcon",
-    "trezorModel": null,
-    "onboardingDate": null,
-    "lastViewedUserSurvey": null,
-    "networkConnectionBanner": "object",
-    "isRampCardClosed": false,
-    "newPrivacyPolicyToastClickedOrClosed": "boolean",
-    "newPrivacyPolicyToastShownDate": "number",
-    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
-    "hasShownMultichainAccountsIntroModal": "boolean",
-    "surveyLinkLastClickedOrClosed": "object",
-    "showDownloadMobileAppSlide": "boolean",
-    "slides": "object",
-    "throttledOrigins": "object",
-    "isUpdateAvailable": false,
-    "updateModalLastDismissedAt": null,
-    "lastUpdatedAt": null,
     "enableEnforcedSimulations": true,
     "enableEnforcedSimulationsForTransactions": "object",
     "enforcedSimulationsSlippage": "number",
     "enforcedSimulationsSlippageForTransactions": "object",
-    "activeQrCodeScanRequest": null,
+    "fullScreenGasPollTokens": "object",
+    "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+    "hasShownMultichainAccountsIntroModal": "boolean",
+    "isRampCardClosed": false,
+    "isUpdateAvailable": false,
+    "isWalletResetInProgress": "boolean",
+    "lastUpdatedAt": null,
+    "lastViewedUserSurvey": null,
+    "networkConnectionBanner": "object",
+    "newPrivacyPolicyToastClickedOrClosed": "boolean",
+    "newPrivacyPolicyToastShownDate": "number",
+    "nftsDetectionNoticeDismissed": false,
     "nftsDropdownState": {},
-    "signatureSecurityAlertResponses": "object",
-    "addressSecurityAlertResponses": "object",
-    "currentExtensionPopupId": "number",
-    "termsOfUseLastAgreed": "number",
-    "snapsInstallPrivacyWarningShown": true,
+    "notificationGasPollTokens": "object",
+    "onboardingDate": null,
+    "outdatedBrowserWarningLastShown": "object",
+    "pendingShieldCohort": null,
+    "pendingShieldCohortTxType": null,
+    "pna25Acknowledged": "boolean",
+    "popupGasPollTokens": "object",
+    "productTour": "accountIcon",
+    "recoveryPhraseReminderHasBeenShown": true,
+    "recoveryPhraseReminderLastShown": "number",
     "shieldEndingToastLastClickedOrClosed": "object",
-    "shieldPausedToastLastClickedOrClosed": "object"
+    "shieldPausedToastLastClickedOrClosed": "object",
+    "showAccountBanner": true,
+    "showBetaHeader": false,
+    "showDownloadMobileAppSlide": "boolean",
+    "showNetworkBanner": true,
+    "showPermissionsTour": true,
+    "showShieldEntryModalOnce": "boolean",
+    "showStorageErrorToast": false,
+    "showTestnetMessageInDropdown": true,
+    "sidePanelGasPollTokens": [],
+    "signatureSecurityAlertResponses": "object",
+    "slides": "object",
+    "snapsInstallPrivacyWarningShown": true,
+    "surveyLinkLastClickedOrClosed": "object",
+    "termsOfUseLastAgreed": "number",
+    "throttledOrigins": "object",
+    "trezorModel": null,
+    "updateModalLastDismissedAt": null
   },
   "ApprovalController": {
-    "pendingApprovals": "object",
+    "approvalFlows": "object",
     "pendingApprovalCount": "number",
-    "approvalFlows": "object"
+    "pendingApprovals": "object"
   },
   "AuthenticationController": {
     "isSignedIn": "boolean",
     "srpSessionData": "object"
   },
   "BridgeController": {
+    "assetExchangeRates": "object",
+    "minimumBalanceForRentExemptionInLamports": "string",
+    "quoteFetchError": null,
     "quoteRequest": {
       "srcTokenAddress": "0x0000000000000000000000000000000000000000"
     },
-    "quotesInitialLoadTime": null,
     "quotes": {},
+    "quotesInitialLoadTime": null,
     "quotesLastFetched": null,
     "quotesLoadingStatus": null,
-    "quoteFetchError": null,
-    "quotesRefreshCount": 0,
-    "assetExchangeRates": "object",
-    "minimumBalanceForRentExemptionInLamports": "string"
+    "quotesRefreshCount": 0
   },
   "BridgeStatusController": { "txHistory": "object" },
+  "ClaimsController": "object",
+  "ClaimsService": "undefined",
+  "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
-    "currentCurrency": "usd",
     "currencyRates": {
       "ETH": {
         "conversionDate": "number",
@@ -112,49 +123,50 @@
         "conversionRate": 0.2,
         "usdConversionRate": 0.2
       }
-    }
+    },
+    "currentCurrency": "usd"
   },
   "DeFiPositionsController": "object",
   "DecryptMessageController": {
-    "unapprovedDecryptMsgs": "object",
-    "unapprovedDecryptMsgCount": 0
+    "unapprovedDecryptMsgCount": 0,
+    "unapprovedDecryptMsgs": "object"
   },
   "DelegationController": "object",
   "EncryptionPublicKeyController": {
-    "unapprovedEncryptionPublicKeyMsgs": "object",
-    "unapprovedEncryptionPublicKeyMsgCount": 0
+    "unapprovedEncryptionPublicKeyMsgCount": 0,
+    "unapprovedEncryptionPublicKeyMsgs": "object"
   },
   "EnsController": {
     "ensEntries": "object",
     "ensResolutionsByAddress": "object"
   },
   "GasFeeController": {
-    "gasFeeEstimatesByChainId": {},
-    "gasFeeEstimates": {},
     "estimatedGasFeeTimeBounds": {},
     "gasEstimateType": "none",
+    "gasFeeEstimates": {},
+    "gasFeeEstimatesByChainId": {},
     "nonRPCGasFeeApisDisabled": "boolean"
   },
   "GatorPermissionsController": "object",
   "InstitutionalSnapController": "object",
   "KeyringController": {
+    "encryptionKey": "string",
+    "encryptionSalt": "string",
     "isUnlocked": true,
     "keyrings": "object",
-    "vault": "string",
-    "encryptionKey": "string",
-    "encryptionSalt": "string"
+    "vault": "string"
   },
   "LoggingController": { "logs": "object" },
   "MetaMetricsController": {
-    "participateInMetaMetrics": true,
-    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
     "dataCollectionForMarketing": "boolean",
-    "marketingCampaignCookieId": null,
     "eventsBeforeMetricsOptIn": "object",
-    "tracesBeforeMetricsOptIn": "object",
-    "traits": "object",
     "fragments": "object",
-    "segmentApiCalls": "object"
+    "marketingCampaignCookieId": null,
+    "metaMetricsId": "0x86bacb9b2bf9a7e8d2b147eadb95ac9aaa26842327cd24afc8bd4b3c1d136420",
+    "participateInMetaMetrics": true,
+    "segmentApiCalls": "object",
+    "tracesBeforeMetricsOptIn": "object",
+    "traits": "object"
   },
   "MetaMetricsDataDeletionController": {
     "metaMetricsDataDeletionId": null,
@@ -162,6 +174,7 @@
   },
   "MultichainAssetsController": {
     "accountsAssets": "object",
+    "allIgnoredAssets": "object",
     "assetsMetadata": "object"
   },
   "MultichainAssetsRatesController": {
@@ -171,30 +184,39 @@
   "MultichainBalancesController": { "balances": "object" },
   "MultichainNetworkController": "object",
   "MultichainRatesController": {
+    "cryptocurrencies": ["btc", "sol"],
     "fiatCurrency": "usd",
     "rates": {
       "btc": { "conversionDate": 0, "conversionRate": 0 },
       "sol": { "conversionDate": 0, "conversionRate": 0 }
-    },
-    "cryptocurrencies": ["btc", "sol"]
+    }
   },
   "MultichainTransactionsController": "object",
-  "NameController": { "names": "object", "nameSources": "object" },
+  "NameController": { "nameSources": "object", "names": "object" },
   "NetworkController": {
-    "selectedNetworkClientId": "string",
-    "networksMetadata": {
-      "networkConfigurationId": {
-        "EIPS": { "1559": true },
-        "status": "available"
-      }
-    },
-    "networkConfigurationsByChainId": "object"
+    "networkConfigurationsByChainId": "object",
+    "networksMetadata": "object",
+    "selectedNetworkClientId": "string"
   },
   "NetworkEnablementController": {
-    "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+    "enabledNetworkMap": {
+      "bip122": "object",
+      "eip155": "object",
+      "solana": "object",
+      "tron": "object"
+    }
   },
   "NetworkOrderController": {
-    "orderedNetworkList": { "0": "object", "1": "object", "2": "object" }
+    "orderedNetworkList": {
+      "0": "object",
+      "1": "object",
+      "2": "object",
+      "3": "object",
+      "4": "object",
+      "5": "object",
+      "6": "object",
+      "7": "object"
+    }
   },
   "NftController": {
     "allNftContracts": "object",
@@ -203,113 +225,124 @@
   },
   "NftDetectionController": "object",
   "NotificationServicesController": {
-    "subscriptionAccountsSeen": "object",
+    "isCheckingAccountsPresence": "boolean",
+    "isFeatureAnnouncementsEnabled": "boolean",
+    "isFetchingMetamaskNotifications": "boolean",
     "isMetamaskNotificationsFeatureSeen": "boolean",
     "isNotificationServicesEnabled": "boolean",
-    "isFeatureAnnouncementsEnabled": "boolean",
+    "isUpdatingMetamaskNotifications": "boolean",
+    "isUpdatingMetamaskNotificationsAccount": "object",
     "metamaskNotificationsList": "object",
     "metamaskNotificationsReadList": "object",
-    "isUpdatingMetamaskNotifications": "boolean",
-    "isFetchingMetamaskNotifications": "boolean",
-    "isUpdatingMetamaskNotificationsAccount": "object",
-    "isCheckingAccountsPresence": "boolean"
+    "subscriptionAccountsSeen": "object"
   },
   "NotificationServicesPushController": {
-    "isPushEnabled": "boolean",
     "fcmToken": "string",
+    "isPushEnabled": "boolean",
     "isUpdatingFCMToken": "boolean"
   },
   "OnboardingController": {
-    "seedPhraseBackedUp": true,
-    "firstTimeFlowType": "import",
     "completedOnboarding": true,
-    "onboardingTabs": "object"
+    "firstTimeFlowType": "import",
+    "onboardingTabs": "object",
+    "seedPhraseBackedUp": true
   },
   "PPOMController": { "storageMetadata": {} },
   "PermissionController": { "subjects": "object" },
   "PermissionLogController": {
-    "permissionHistory": "object",
-    "permissionActivityLog": "object"
+    "permissionActivityLog": "object",
+    "permissionHistory": "object"
   },
   "PhishingController": {
-    "urlScanCache": "object",
-    "tokenScanCache": "object"
+    "tokenScanCache": "object",
+    "urlScanCache": "object"
   },
   "PreferencesController": {
-    "selectedAddress": "string",
-    "useBlockie": false,
-    "usePhishDetect": true,
-    "dismissSeedBackUpReminder": true,
-    "overrideContentSecurityPolicyHeader": true,
-    "useMultiAccountBalanceChecker": true,
-    "useSafeChainsListValidation": "boolean",
-    "useTokenDetection": true,
-    "useNftDetection": false,
-    "use4ByteResolution": true,
-    "useCurrencyRateCheck": true,
-    "openSeaEnabled": false,
-    "securityAlertsEnabled": "boolean",
-    "watchEthereumAccountEnabled": "boolean",
     "addSnapAccountEnabled": "boolean",
     "advancedGasFee": {},
-    "featureFlags": {},
-    "knownMethodData": "object",
     "currentLocale": "en",
-    "identities": "object",
-    "lostIdentities": "object",
+    "dismissSeedBackUpReminder": true,
+    "enableMV3TimestampSave": true,
+    "featureFlags": {},
     "forgottenPassword": false,
+    "identities": "object",
+    "ipfsGateway": "string",
+    "isIpfsGatewayEnabled": "boolean",
+    "isMultiAccountBalancesEnabled": "boolean",
+    "knownMethodData": "object",
+    "ledgerTransportType": "webhid",
+    "lostIdentities": "object",
+    "manageInstitutionalWallets": "boolean",
+    "openSeaEnabled": false,
+    "overrideContentSecurityPolicyHeader": true,
     "preferences": {
       "dismissSmartAccountSuggestionEnabled": "boolean",
       "featureNotificationsEnabled": "boolean",
       "hideZeroBalanceTokens": false,
       "petnamesEnabled": "boolean",
       "privacyMode": "boolean",
+      "shouldShowAggregatedBalancePopover": "boolean",
       "showExtensionInFullSizeView": false,
       "showFiatInTestnets": false,
+      "showMultiRpcModal": "boolean",
+      "showNativeTokenAsMainBalance": true,
       "showTestNetworks": false,
       "skipDeepLinkInterstitial": "boolean",
-      "smartTransactionsOptInStatus": true,
-      "showNativeTokenAsMainBalance": true,
-      "showMultiRpcModal": "boolean",
-      "tokenSortConfig": "object",
-      "shouldShowAggregatedBalancePopover": "boolean",
-      "tokenNetworkFilter": { "0x539": "boolean" },
-      "smartTransactionsMigrationApplied": "boolean",
       "smartAccountOptIn": "boolean",
-      "useNativeCurrencyAsPrimaryCurrency": "boolean"
+      "smartTransactionsMigrationApplied": "boolean",
+      "smartTransactionsOptInStatus": true,
+      "tokenNetworkFilter": { "0x539": "boolean" },
+      "tokenSortConfig": "object",
+      "useNativeCurrencyAsPrimaryCurrency": "boolean",
+      "useSidePanelAsDefault": "boolean"
     },
-    "ipfsGateway": "string",
-    "isIpfsGatewayEnabled": "boolean",
-    "useAddressBarEnsResolution": true,
-    "ledgerTransportType": "webhid",
+    "referrals": "object",
+    "securityAlertsEnabled": "boolean",
+    "selectedAddress": "string",
     "snapRegistryList": "object",
-    "theme": "light",
     "snapsAddSnapAccountModalDismissed": "boolean",
+    "theme": "light",
+    "use4ByteResolution": true,
+    "useAddressBarEnsResolution": true,
+    "useBlockie": false,
+    "useCurrencyRateCheck": true,
     "useExternalNameSources": "boolean",
-    "useTransactionSimulations": true,
-    "enableMV3TimestampSave": true,
     "useExternalServices": "boolean",
-    "isMultiAccountBalancesEnabled": "boolean",
-    "manageInstitutionalWallets": "boolean",
-    "referrals": "object"
+    "useMultiAccountBalanceChecker": true,
+    "useNftDetection": false,
+    "usePhishDetect": true,
+    "useSafeChainsListValidation": "boolean",
+    "useTokenDetection": true,
+    "useTransactionSimulations": true,
+    "watchEthereumAccountEnabled": "boolean"
   },
+  "ProfileMetricsController": "object",
   "RemoteFeatureFlagController": {
+    "cacheTimestamp": "number",
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
       "feature3": { "name": "groupC", "value": "valueC" },
       "sendRedesign": { "enabled": false }
-    },
-    "cacheTimestamp": "number"
+    }
   },
+  "RewardsController": {
+    "rewardsAccounts": "object",
+    "rewardsActiveAccount": null,
+    "rewardsSeasonStatuses": "object",
+    "rewardsSeasons": "object",
+    "rewardsSubscriptionTokens": "object",
+    "rewardsSubscriptions": "object"
+  },
+  "RewardsDataService": "undefined",
   "SeedlessOnboardingController": "object",
   "SelectedNetworkController": { "domains": "object" },
   "ShieldController": "object",
   "SignatureController": {
     "signatureRequests": "object",
+    "unapprovedPersonalMsgCount": 0,
     "unapprovedPersonalMsgs": "object",
     "unapprovedTypedMessages": "object",
-    "unapprovedPersonalMsgCount": 0,
     "unapprovedTypedMessagesCount": 0
   },
   "SmartTransactionsController": {
@@ -322,72 +355,75 @@
     }
   },
   "SnapController": {
-    "snaps": "object",
+    "isReady": "boolean",
     "snapStates": "object",
+    "snaps": "object",
     "unencryptedSnapStates": "object"
   },
   "SnapInsightsController": { "insights": "object" },
   "SnapInterfaceController": { "interfaces": "object" },
   "SnapsRegistry": {
-    "database": null,
-    "lastUpdated": null,
-    "databaseUnavailable": "boolean"
+    "database": "object",
+    "databaseUnavailable": "boolean",
+    "lastUpdated": "number",
+    "signature": "string"
   },
   "SubjectMetadataController": { "subjectMetadata": "object" },
   "SubscriptionController": "object",
   "SwapsController": {
     "swapsState": {
-      "quotes": "object",
-      "quotesPollingLimitEnabled": false,
-      "fetchParams": null,
-      "tokens": null,
-      "tradeTxId": null,
       "approveTxId": null,
-      "quotesLastFetched": null,
-      "customMaxGas": "",
+      "customApproveTxData": "string",
       "customGasPrice": null,
       "customMaxFeePerGas": null,
+      "customMaxGas": "",
       "customMaxPriorityFeePerGas": null,
-      "swapsUserFeeLevel": "",
-      "selectedAggId": null,
-      "customApproveTxData": "string",
       "errorKey": "",
-      "topAggId": null,
+      "fetchParams": null,
+      "quotes": "object",
+      "quotesLastFetched": null,
+      "quotesPollingLimitEnabled": false,
       "routeState": "",
-      "swapsFeatureIsLive": true,
       "saveFetchedQuotes": false,
-      "swapsQuoteRefreshTime": 60000,
+      "selectedAggId": null,
+      "swapsFeatureFlags": {},
+      "swapsFeatureIsLive": true,
       "swapsQuotePrefetchingRefreshTime": 60000,
+      "swapsQuoteRefreshTime": 60000,
       "swapsStxBatchStatusRefreshTime": 10000,
-      "swapsStxStatusDeadline": 180,
       "swapsStxGetTransactionsRefreshTime": 10000,
       "swapsStxMaxFeeMultiplier": 2,
-      "swapsFeatureFlags": {}
+      "swapsStxStatusDeadline": 180,
+      "swapsUserFeeLevel": "",
+      "tokens": null,
+      "topAggId": null,
+      "tradeTxId": null
     }
   },
   "TokenBalancesController": { "tokenBalances": "object" },
   "TokenListController": {
-    "tokensChainsCache": { "0x539": "object" },
-    "preventPollingOnNetworkRestart": false
+    "preventPollingOnNetworkRestart": false,
+    "tokensChainsCache": { "0x539": "object" }
   },
   "TokenRatesController": { "marketData": "object" },
   "TokensController": {
-    "allTokens": {},
+    "allDetectedTokens": {},
     "allIgnoredTokens": {},
-    "allDetectedTokens": {}
+    "allTokens": {}
   },
+  "TransactionPayController": { "transactionData": "object" },
   "TxController": {
-    "methodData": "object",
-    "transactions": "object",
-    "transactionBatches": "object",
     "lastFetchedBlockNumbers": "object",
-    "submitHistory": "object"
+    "methodData": "object",
+    "submitHistory": "object",
+    "transactionBatches": "object",
+    "transactions": "object"
   },
   "UserOperationController": { "userOperations": "object" },
   "UserStorageController": {
+    "isAccountSyncingEnabled": true,
     "isBackupAndSyncEnabled": true,
     "isBackupAndSyncUpdateLoading": "boolean",
-    "isAccountSyncingEnabled": true,
     "isContactSyncingEnabled": true,
     "isContactSyncingInProgress": "boolean"
   }

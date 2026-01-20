@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Box } from '../../../component-library';
 import Spinner from '../../../ui/spinner';
 import {
@@ -46,7 +46,7 @@ export function AssetPickerModalNftTab({
   renderSearch,
 }: AssetPickerModalNftTabProps) {
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
@@ -79,7 +79,7 @@ export function AssetPickerModalNftTab({
   const handleNftClick = async (nft: NFT) => {
     trackEvent(
       {
-        event: MetaMetricsEventName.sendAssetSelected,
+        event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
           // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -114,7 +114,7 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    navigateToSendRoute(history, isSendRedesignEnabled, {
+    navigateToSendRoute(navigate, isSendRedesignEnabled, {
       address: nft.address,
       chainId: nft.chainId,
     });

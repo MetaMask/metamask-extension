@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   CaipAccountId,
   CaipChainId,
@@ -57,17 +57,19 @@ import {
   EvmAndMultichainNetworkConfigurationsWithCaipChainId,
   MergedInternalAccountWithCaipAccountId,
 } from '../../../../selectors/selectors.types';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../../shared/constants/network';
 import { endTrace, trace, TraceName } from '../../../../../shared/lib/trace';
 import { SiteCell } from './site-cell/site-cell';
 
 export const ReviewPermissions = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const urlParams = useParams<{ origin: string }>();
+
   // @ts-expect-error TODO: Fix this type error by handling undefined parameters
   const securedOrigin = decodeURIComponent(urlParams.origin);
+
   const [showAccountToast, setShowAccountToast] = useState(false);
   const [showNetworkToast, setShowNetworkToast] = useState(false);
   const [showDisconnectAllModal, setShowDisconnectAllModal] = useState(false);
@@ -90,7 +92,7 @@ export const ReviewPermissions = () => {
     );
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
     // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    history.push(`${CONNECT_ROUTE}/${requestId}`);
+    navigate(`${CONNECT_ROUTE}/${requestId}`);
   };
 
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
@@ -130,7 +132,7 @@ export const ReviewPermissions = () => {
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,

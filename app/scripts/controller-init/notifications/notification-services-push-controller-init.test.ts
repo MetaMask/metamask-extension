@@ -2,7 +2,6 @@ import {
   Controller as NotificationServicesPushController,
   defaultState,
 } from '@metamask/notification-services-controller/push-services';
-import { Messenger } from '@metamask/base-controller';
 import { buildControllerInitRequestMock } from '../test/utils';
 import { ControllerInitRequest } from '../types';
 import {
@@ -11,6 +10,7 @@ import {
   NotificationServicesPushControllerInitMessenger,
   type NotificationServicesPushControllerMessenger,
 } from '../messengers/notifications';
+import { getRootMessenger } from '../../lib/messenger';
 import {
   getNormalisedLocale,
   NotificationServicesPushControllerInit,
@@ -24,7 +24,7 @@ function buildInitRequestMock(): jest.Mocked<
     NotificationServicesPushControllerInitMessenger
   >
 > {
-  const baseControllerMessenger = new Messenger();
+  const baseControllerMessenger = getRootMessenger();
 
   return {
     ...buildControllerInitRequestMock(),

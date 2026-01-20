@@ -1,13 +1,14 @@
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 
-import { withFixtures, unlockWallet } from '../../../helpers';
-import FixtureBuilder from '../../../fixture-builder';
+import { withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { Driver } from '../../../webdriver/driver';
 import {
   DEFAULT_FIXTURE_ACCOUNT_LOWERCASE,
   WINDOW_TITLES,
 } from '../../../constants';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 const signatureRequestType = {
   signTypedData: 'Sign Typed Data',
@@ -32,7 +33,7 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and confirm`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -41,7 +42,7 @@ describe('Sign Typed Data Signature Request', function () {
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
           const publicAddress = DEFAULT_FIXTURE_ACCOUNT_LOWERCASE;
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();
@@ -80,7 +81,7 @@ describe('Sign Typed Data Signature Request', function () {
     it(`can queue multiple Signature Requests of ${data.type} and reject`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
@@ -88,7 +89,7 @@ describe('Sign Typed Data Signature Request', function () {
         },
         async ({ driver }) => {
           const confirmation = new SignTypedData(driver);
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage();

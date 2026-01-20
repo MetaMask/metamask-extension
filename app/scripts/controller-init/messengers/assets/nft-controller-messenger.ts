@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -20,6 +20,7 @@ import {
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../../controllers/metametrics-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AddApprovalRequest
@@ -51,15 +52,24 @@ export type NftControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getNftControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'NftController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'NftController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NftController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'PreferencesController:stateChange',
       'AccountsController:selectedEvmAccountChange',
     ],
-    allowedActions: [
+    actions: [
       'ApprovalController:addRequest',
       'NetworkController:getNetworkClientById',
       'AccountsController:getSelectedAccount',
@@ -74,6 +84,7 @@ export function getNftControllerMessenger(
       'PhishingController:bulkScanUrls',
     ],
   });
+  return controllerMessenger;
 }
 
 export type AllowedInitializationActions =
@@ -91,11 +102,20 @@ export type NftControllerInitMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getNftControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'NftControllerInit',
-    allowedActions: ['MetaMetricsController:trackEvent'],
-    allowedEvents: [],
+  const controllerInitMessenger = new Messenger<
+    'NftControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'NftControllerInit',
+    parent: messenger,
   });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: ['MetaMetricsController:trackEvent'],
+  });
+  return controllerInitMessenger;
 }

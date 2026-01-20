@@ -1,9 +1,10 @@
 import { Suite } from 'mocha';
 import { MockttpServer, CompletedRequest } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
@@ -226,7 +227,7 @@ describe('PPOM Blockaid Alert - Malicious Contract interaction', function (this:
   it('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkController({
             selectedNetworkClientId: 'networkConfigurationId',

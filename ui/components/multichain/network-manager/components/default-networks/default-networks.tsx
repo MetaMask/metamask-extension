@@ -1,13 +1,14 @@
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { memo, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { BtcScope, EthScope, SolScope } from '@metamask/keyring-api';
+import { BtcScope, EthScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   FEATURED_RPCS,
 } from '../../../../../../shared/constants/network';
 import {
   convertCaipToHexChainId,
+  getFilteredFeaturedNetworks,
   getNetworkIcon,
   getRpcDataByChainId,
   sortNetworks,
@@ -45,16 +46,22 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getSelectedMultichainNetworkConfiguration,
+} from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
+  getGasFeesSponsoredNetworkEnabled,
+  getUseExternalServices,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
-import { isFlask } from '../../../../../helpers/utils/build-types';
+import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -81,6 +88,13 @@ const DefaultNetworks = memo(() => {
     getIsMultichainAccountsState2Enabled,
   );
 
+  const useExternalServices = useSelector(getUseExternalServices);
+
+  // Get the currently selected network to allow it through when BFT is OFF
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
+  const selectedNonEvmChainId =
+    !isEvmNetworkSelected && currentNetwork ? currentNetwork.chainId : null;
+
   // extract the evm account of the selected account group
   const evmAccountGroup = useSelector((state) =>
     getInternalAccountBySelectedAccountGroupAndCaip(state, EthScope.Eoa),
@@ -97,30 +111,95 @@ const DefaultNetworks = memo(() => {
 
   let btcAccountGroup = null;
 
-  if (isFlask()) {
-    btcAccountGroup = useSelector((state) =>
-      getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
-    );
-  }
+  ///: BEGIN:ONLY_INCLUDE_IF(bitcoin)
+  btcAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, BtcScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  let trxAccountGroup = null;
+
+  ///: BEGIN:ONLY_INCLUDE_IF(tron)
+  trxAccountGroup = useSelector((state) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, TrxScope.Mainnet),
+  );
+  ///: END:ONLY_INCLUDE_IF
+
+  // Get blacklisted chain IDs from feature flag
+  const blacklistedChainIds = useSelector(
+    selectAdditionalNetworksBlacklistFeatureFlag,
+  );
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (chainId: string | undefined): boolean => {
+      if (!chainId) {
+        return false;
+      }
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          chainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ],
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled],
+  );
 
   // Use the shared state hook
   const { nonTestNetworks, isNetworkInDefaultNetworkTab } =
     useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
-  const orderedNetworks = useMemo(
-    () => sortNetworks(nonTestNetworks, orderedNetworksList),
-    [nonTestNetworks, orderedNetworksList],
-  );
+  const orderedNetworks = useMemo(() => {
+    // Filter nonTestNetworks object based on basic functionality toggle
+    // Exception: Keep the currently selected non-EVM chain visible
+    const filteredNetworks = useExternalServices
+      ? nonTestNetworks
+      : Object.fromEntries(
+          Object.entries(nonTestNetworks).filter(
+            ([, network]) =>
+              isEvmChainId(network.chainId as `0x${string}`) ||
+              network.chainId === selectedNonEvmChainId,
+          ),
+        );
+    return sortNetworks(filteredNetworks, orderedNetworksList);
+  }, [
+    nonTestNetworks,
+    orderedNetworksList,
+    useExternalServices,
+    selectedNonEvmChainId,
+  ]);
 
   // Memoize the featured networks calculation
-  const featuredNetworksNotYetEnabled = useMemo(
-    () =>
-      FEATURED_RPCS.filter(({ chainId }) => !evmNetworks[chainId]).sort(
-        (a, b) => a.name.localeCompare(b.name),
-      ),
-    [evmNetworks],
-  );
+  const featuredNetworksNotYetEnabled = useMemo(() => {
+    // Filter out networks that are already enabled
+    const availableNetworks = FEATURED_RPCS.filter(
+      ({ chainId }) => !evmNetworks[chainId],
+    );
+
+    // Apply basic functionality toggle filter to exclude non-EVM networks when BFT is OFF
+    const bftFilteredNetworks = useExternalServices
+      ? availableNetworks
+      : availableNetworks.filter(({ chainId }) =>
+          isEvmChainId(chainId as `0x${string}`),
+        );
+
+    // Apply blacklist filter to exclude blacklisted networks
+    const filteredNetworks = getFilteredFeaturedNetworks(
+      blacklistedChainIds,
+      bftFilteredNetworks,
+    );
+
+    // Sort alphabetically
+    return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
+  }, [evmNetworks, blacklistedChainIds, useExternalServices]);
 
   const isAllPopularNetworksSelected = useMemo(
     () => allEnabledNetworksForAllNamespaces.length > 1,
@@ -184,14 +263,18 @@ const DefaultNetworks = memo(() => {
           if (evmAccountGroup && network.isEvm) {
             return true;
           }
+          // When basic functionality toggle is OFF, only show EVM networks
+          // Exception: Keep the currently selected non-EVM chain visible
+          if (!useExternalServices) {
+            return network.chainId === selectedNonEvmChainId;
+          }
           if (solAccountGroup && network.chainId === SolScope.Mainnet) {
             return true;
           }
-          if (
-            btcAccountGroup &&
-            isFlask() &&
-            network.chainId === BtcScope.Mainnet
-          ) {
+          if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
+            return true;
+          }
+          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
             return true;
           }
           return false;
@@ -201,11 +284,19 @@ const DefaultNetworks = memo(() => {
         if (isEvmNetworkSelected) {
           return network.isEvm;
         }
+        // When basic functionality toggle is OFF, only show EVM networks
+        // Exception: Keep the currently selected non-EVM chain visible
+        if (!useExternalServices) {
+          return network.chainId === selectedNonEvmChainId;
+        }
         if (selectedAccount.scopes.includes(SolScope.Mainnet)) {
           return network.chainId === SolScope.Mainnet;
         }
         if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
           return network.chainId === BtcScope.Mainnet;
+        }
+        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
+          return network.chainId === TrxScope.Mainnet;
         }
         return false;
       });
@@ -240,6 +331,7 @@ const DefaultNetworks = memo(() => {
           name={network.name}
           iconSrc={iconSrc}
           iconSize={AvatarNetworkSize.Md}
+          focus={false}
           rpcEndpoint={
             hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -272,11 +364,14 @@ const DefaultNetworks = memo(() => {
     handleNetworkChangeCallback,
     btcAccountGroup,
     solAccountGroup,
+    trxAccountGroup,
     isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,
     selectedAccount,
     enabledChainIds,
+    useExternalServices,
+    selectedNonEvmChainId,
   ]);
 
   // Memoize the additional network list items
@@ -309,12 +404,22 @@ const DefaultNetworks = memo(() => {
             src={networkImageUrl}
             borderRadius={BorderRadius.LG}
           />
-          <Text
-            variant={TextVariant.bodyMdMedium}
-            color={TextColor.textDefault}
-          >
-            {network.name}
-          </Text>
+          <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              color={TextColor.textDefault}
+            >
+              {network.name}
+            </Text>
+            {isNetworkGasSponsored(network.chainId) && (
+              <Text
+                variant={TextVariant.bodySm}
+                color={TextColor.textAlternative}
+              >
+                {t('noNetworkFee')}
+              </Text>
+            )}
+          </Box>
           <ButtonIcon
             size={ButtonIconSize.Md}
             color={IconColor.iconDefault}
@@ -326,7 +431,12 @@ const DefaultNetworks = memo(() => {
         </Box>
       );
     });
-  }, [featuredNetworksNotYetEnabled, handleAdditionalNetworkClick, t]);
+  }, [
+    featuredNetworksNotYetEnabled,
+    handleAdditionalNetworkClick,
+    t,
+    isNetworkGasSponsored,
+  ]);
 
   return (
     <>
@@ -342,6 +452,7 @@ const DefaultNetworks = memo(() => {
               iconSrc={IconName.Global}
               iconSize={IconSize.Xl}
               selected={isAllPopularNetworksSelected}
+              focus={false}
             />
           </Box>
         ) : null}

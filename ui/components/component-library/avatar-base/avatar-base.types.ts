@@ -6,6 +6,9 @@ import {
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { TextStyleUtilityProps } from '../text';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarBaseSize {
   Xs = 'xs',
   Sm = 'sm',

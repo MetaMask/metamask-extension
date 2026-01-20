@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type { AccountsControllerGetAccountByAddressAction } from '@metamask/accounts-controller';
 import type { HandleSnapRequest } from '@metamask/snaps-controllers';
 import type {
@@ -18,6 +18,7 @@ import type {
 } from '@metamask/bridge-controller';
 import type { GetGasFeeState } from '@metamask/gas-fee-controller';
 import { MultichainTransactionsControllerTransactionConfirmedEvent } from '@metamask/multichain-transactions-controller';
+import { RootMessenger } from '../../lib/messenger';
 
 type AllowedActions =
   | NetworkControllerFindNetworkClientIdByChainIdAction
@@ -25,7 +26,6 @@ type AllowedActions =
   | NetworkControllerGetNetworkClientByIdAction
   | HandleSnapRequest
   | TransactionControllerGetStateAction
-  | BridgeControllerAction<BridgeBackgroundAction.GET_BRIDGE_ERC20_ALLOWANCE>
   | BridgeControllerAction<BridgeBackgroundAction.TRACK_METAMETRICS_EVENT>
   | BridgeControllerAction<BridgeBackgroundAction.STOP_POLLING_FOR_QUOTES>
   | GetGasFeeState
@@ -49,28 +49,36 @@ export type BridgeStatusControllerMessenger = ReturnType<
  * messenger.
  */
 export function getBridgeStatusControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'BridgeStatusController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'BridgeStatusController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'BridgeStatusController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'AccountsController:getAccountByAddress',
       'NetworkController:getNetworkClientById',
       'NetworkController:findNetworkClientIdByChainId',
       'NetworkController:getState',
-      'BridgeController:getBridgeERC20Allowance',
       'BridgeController:trackUnifiedSwapBridgeEvent',
       'BridgeController:stopPollingForQuotes',
       'GasFeeController:getState',
-      'AccountsController:getAccountByAddress',
       'SnapController:handleRequest',
       'TransactionController:getState',
       'RemoteFeatureFlagController:getState',
     ],
-    allowedEvents: [
+    events: [
       'MultichainTransactionsController:transactionConfirmed',
       'TransactionController:transactionFailed',
       'TransactionController:transactionConfirmed',
     ],
   });
+  return controllerMessenger;
 }

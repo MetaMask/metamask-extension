@@ -10,8 +10,7 @@ import {
 // @ts-expect-error suppress CommonJS vs ECMAScript error
 import { Point } from 'chart.js';
 import { useDispatch, useSelector } from 'react-redux';
-import { MINUTE } from '../../../../shared/constants/time';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
 import { getShouldShowFiat } from '../../../selectors';
 import { getHistoricalPrices } from '../../../selectors/assets';
 import {
@@ -52,6 +51,21 @@ export const DEFAULT_USE_HISTORICAL_PRICES_METADATA: HistoricalPrices['metadata'
     yMin: Infinity,
     yMax: -Infinity,
   };
+
+/**
+ * Converts a chain ID to hex format. If the chain ID is already in hex format, returns it as-is.
+ * If it's a CAIP chain ID, converts it to hex. Returns null if conversion fails.
+ *
+ * @param chainId - The chain ID to convert (Hex or CaipChainId).
+ * @returns The hex chain ID, or null if conversion fails.
+ */
+const toHexChainId = (chainId: Hex | CaipChainId): Hex | null => {
+  try {
+    return isCaipChainId(chainId) ? convertCaipToHexChainId(chainId) : chainId;
+  } catch (e) {
+    return null;
+  }
+};
 
 type UseHistoricalPricesParams = {
   chainId: Hex | CaipChainId;
@@ -99,7 +113,10 @@ const useHistoricalPricesEvm = ({
   timeRange,
 }: UseHistoricalPricesParams) => {
   const isEvm = isEvmChainId(chainId);
-  const showFiat: boolean = useSelector(getShouldShowFiat);
+  const hexChainId = toHexChainId(chainId);
+  const showFiat: boolean = useSelector((state) =>
+    getShouldShowFiat(state, hexChainId),
+  );
 
   const [loading, setLoading] = useState<boolean>(false);
   const [prices, setPrices] = useState<Point[]>([]);
@@ -133,12 +150,26 @@ const useHistoricalPricesEvm = ({
 
     setLoading(true);
     const timePeriod = fromIso8601DurationToPriceApiTimePeriod(timeRange);
-    fetchWithCache({
-      url: `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
-      cacheOptions: { cacheRefreshTime: 5 * MINUTE },
-      functionName: 'GetAssetHistoricalPrices',
-      fetchOptions: { headers: { 'X-Client-Id': 'extension' } },
-    })
+    fetch(
+      `https://price.api.cx.metamask.io/v1/chains/${chainId}/historical-prices/${address}?vsCurrency=${currency}&timePeriod=${timePeriod}`,
+      {
+        headers: {
+          'X-Client-Id': 'extension',
+          'Content-Type': 'application/json',
+        },
+        referrerPolicy: 'no-referrer-when-downgrade',
+        method: 'GET',
+        mode: 'cors',
+      },
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error(
+            `GetAssetHistoricalPrices failed with status ${response.status}: ${response.statusText}`,
+          );
+        }
+        return response.json();
+      })
       .catch(() => ({}))
       .then((resp?: { prices?: number[][] }) => {
         const pricesToSet =
@@ -206,9 +237,7 @@ const useHistoricalPricesNonEvm = ({
    */
   useEffect(() => {
     if (isEvm) {
-      return () => {
-        // No clean up needed
-      };
+      return;
     }
 
     // On non-EVM, we fetch the prices from the snap, then store them in the redux state, and grab them from the redux state

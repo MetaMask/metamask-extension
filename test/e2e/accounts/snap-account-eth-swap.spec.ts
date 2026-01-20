@@ -1,6 +1,7 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   buildQuote,
   reviewQuote,
@@ -39,8 +40,9 @@ describe('Snap Account - Swap', function () {
   it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
-        dapp: true,
-        dappPaths: ['snap-simple-keyring-site'],
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: mockSwapsAndSimpleKeyringSnap,
         title: this.test?.fullTitle(),

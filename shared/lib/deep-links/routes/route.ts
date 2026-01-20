@@ -9,7 +9,12 @@ export {
   DEFAULT_ROUTE,
   DEEP_LINK_ROUTE,
   NOTIFICATIONS_ROUTE,
+  SHIELD_PLAN_ROUTE,
+  SETTINGS_ROUTE,
+  DEVELOPER_OPTIONS_ROUTE,
 } from '../../../../ui/helpers/constants/routes';
+
+export { default as ZENDESK_URLS } from '../../../../ui/helpers/constants/zendesk-url';
 
 /**
  * Represents the final destination.

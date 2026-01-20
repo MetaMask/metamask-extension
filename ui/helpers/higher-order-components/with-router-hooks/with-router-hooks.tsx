@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  useNavigate,
-  useLocation,
-  useParams,
-} from 'react-router-dom-v5-compat';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 
 // Types for the router hooks
 export type RouterHooksProps = {
@@ -14,11 +10,18 @@ export type RouterHooksProps = {
 
 function withRouterHooks<Props extends object>(
   WrappedComponent: React.ComponentType<Props & RouterHooksProps>,
-): React.ComponentType<Props> {
-  function componentWithRouterHooks(props: Props) {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const params = useParams();
+): React.ComponentType<Props & Partial<RouterHooksProps>> {
+  const ComponentWithRouterHooks = (
+    props: Props & Partial<RouterHooksProps>,
+  ) => {
+    const hookNavigate = useNavigate();
+    const hookLocation = useLocation();
+    const hookParams = useParams();
+
+    // Use passed props if they exist, otherwise fall back to hooks
+    const navigate = props.navigate ?? hookNavigate;
+    const location = props.location ?? hookLocation;
+    const params = props.params ?? hookParams;
 
     return (
       <WrappedComponent
@@ -28,14 +31,14 @@ function withRouterHooks<Props extends object>(
         params={params}
       />
     );
-  }
+  };
 
   // Preserve component name for debugging
-  componentWithRouterHooks.displayName = `withRouterHooks(${
+  ComponentWithRouterHooks.displayName = `withRouterHooks(${
     WrappedComponent.displayName || WrappedComponent.name || 'Component'
   })`;
 
-  return componentWithRouterHooks;
+  return ComponentWithRouterHooks;
 }
 
 export default withRouterHooks;

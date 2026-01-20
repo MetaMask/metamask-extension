@@ -1,12 +1,13 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, DAPP_ONE_URL, WINDOW_TITLES } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DAPP_ONE_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 
 describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', function (this: Suite) {
   it('should queue `eth_requestAccounts` requests when the requesting dapp does not already have connected accounts', async function () {
@@ -14,12 +15,11 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',
@@ -100,12 +100,11 @@ describe('Request Queuing Dapp 1 Send Tx -> Dapp 2 Request Accounts Tx', functio
     const chainId = 1338;
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerDoubleNode()
           .withPermissionControllerConnectedToTwoTestDapps()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         localNodeOptions: [
           {
             type: 'anvil',

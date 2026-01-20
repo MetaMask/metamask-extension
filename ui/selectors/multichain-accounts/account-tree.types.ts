@@ -13,6 +13,11 @@ export type WalletMetadata = {
   name: string;
 };
 
+export type NormalizedGroupMetadata = {
+  name: string;
+  accounts: string[];
+};
+
 export type AccountTreeWallets = {
   [walletId: AccountWalletId]: AccountWalletObject;
 };
@@ -72,4 +77,14 @@ export type AccountGroupWithInternalAccounts = {
   [K in keyof AccountGroupObjectWithWalletNameAndId]: K extends 'accounts'
     ? InternalAccount[]
     : AccountGroupObjectWithWalletNameAndId[K];
+};
+
+/**
+ * Statistics about account groups in the account tree.
+ * Used for analytics tracking.
+ */
+export type AccountListStats = {
+  pinnedCount: number;
+  hiddenCount: number;
+  totalAccounts: number;
 };

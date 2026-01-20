@@ -1,6 +1,6 @@
 import NonEvmHomepage from '../../page-objects/pages/home/non-evm-homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
-import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/redesign/snap-transaction-confirmation';
+import SnapTransactionConfirmation from '../../page-objects/pages/confirmations/snap-transaction-confirmation';
 import { DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS } from '../../flask/solana-wallet-standard/testHelpers';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import { mockSendRedesignFeatureFlag } from './common';
@@ -22,6 +22,11 @@ describe('Send Solana', function () {
         );
 
         await nonEvmHomepage.clickOnSendButton();
+
+        // Navigating immediate will not work - we wait in the asset page to catch up
+        await driver.waitForSelector({
+          text: '50 SOL',
+        });
 
         await sendPage.createSendRequest({
           chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',

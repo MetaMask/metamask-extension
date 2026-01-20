@@ -149,6 +149,7 @@ export const CHAIN_ID_TO_SECURITY_API_NAME: Record<
   [CHAIN_IDS.ZKSYNC_ERA]: 'zksync',
   [CHAIN_IDS.BASE]: 'base',
   [CHAIN_IDS.SEI]: 'sei',
+  [CHAIN_IDS.MONAD]: 'monad',
   [MultichainNetworks.SOLANA]: 'solana',
   [MultichainNetworks.BITCOIN]: 'bitcoin',
   [MultichainNetworks.BITCOIN_TESTNET]: null, // not supported
@@ -165,6 +166,7 @@ export function convertChainIdToBlockAidChainName(
 
 export async function fetchTxAlerts(
   params: {
+    signal: AbortSignal;
     chainId: AllowedBridgeChainIds;
     trade: string;
     accountAddress: string;
@@ -174,7 +176,7 @@ export async function fetchTxAlerts(
     return null;
   }
 
-  const { chainId, trade, accountAddress } = params;
+  const { chainId, trade, accountAddress, signal } = params;
 
   const chain = convertChainIdToBlockAidChainName(chainId);
 
@@ -205,6 +207,7 @@ export async function fetchTxAlerts(
     headers: {
       'Content-Type': 'application/json',
     },
+    signal,
   });
 
   if (!response.ok) {

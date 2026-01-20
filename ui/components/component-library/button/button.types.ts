@@ -3,6 +3,9 @@ import type { ButtonPrimaryStyleUtilityProps } from '../button-primary/button-pr
 import type { ButtonSecondaryStyleUtilityProps } from '../button-secondary/button-secondary.types';
 import type { ButtonLinkStyleUtilityProps } from '../button-link/button-link.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonSize {
   Sm = 'sm',
   Md = 'md',
@@ -11,6 +14,9 @@ export enum ButtonSize {
   Auto = 'auto',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum ButtonVariant {
   Primary = 'primary',
   Secondary = 'secondary',

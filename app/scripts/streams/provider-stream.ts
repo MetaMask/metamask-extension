@@ -1,11 +1,11 @@
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { Substream } from '@metamask/object-multiplex/dist/Substream';
 import { WindowPostMessageStream } from '@metamask/post-message-stream';
-import PortStream from 'extension-port-stream';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error types/readable-stream.d.ts does not get picked up by ts-node
 import { pipeline, Transform } from 'readable-stream';
 import browser from 'webextension-polyfill';
+import { ExtensionPortStream } from 'extension-port-stream';
 import {
   CONTENT_SCRIPT,
   LEGACY_CONTENT_SCRIPT,
@@ -36,7 +36,7 @@ let extensionMux: ObjectMultiplex,
   extensionEip1193Channel: Substream,
   extensionCaipChannel: Substream,
   extensionPort: browser.Runtime.Port | null,
-  extensionStream: PortStream | null,
+  extensionStream: ExtensionPortStream | null,
   pageMux: ObjectMultiplex,
   pageChannel: Substream,
   caipChannel: Substream;
@@ -52,6 +52,46 @@ const setupPageStreams = () => {
   // so we can handle the channels individually
   pageMux = new ObjectMultiplex();
   pageMux.setMaxListeners(25);
+
+  /**
+   * Graceful shutdown handler for the page mux.
+   *
+   * WHY THIS IS NEEDED (unlike in inpage.js):
+   *
+   * EXTENSION CONTEXT vs PAGE CONTEXT:
+   * This code runs in the EXTENSION's content script context (persistent), unlike
+   * inpage.js which runs in PAGE context (destroyed on navigation). The extension
+   * context persists even when pages navigate/close.
+   *
+   * PREVENTS "PREMATURE CLOSE" ERRORS:
+   * When the underlying transport (pageStream) terminates, the mux needs to
+   * gracefully end before the pipeline detects the closure. Without this handler,
+   * the pipeline sees an abrupt stream closure and throws "ERR_STREAM_PREMATURE_CLOSE".
+   *
+   * TIMING MATTERS:
+   * By listening to 'close' and 'end' events on the transport, we can end the mux
+   * proactively, before the pipeline's error detection kicks in, preventing the error
+   * from propagating through the stream chain.
+   *
+   * HIGH IMPACT:
+   * These "Premature close" errors are the #1 error in Sentry (3.8M/month). They occur
+   * during normal operations: page navigation, tab closure, etc. Graceful shutdown
+   * significantly reduces error noise in production.
+   *
+   * For context, see:
+   * - https://github.com/MetaMask/metamask-extension/issues/26337
+   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   * - Similar approach in caip-stream.ts from PR #33470
+   */
+  const endPageMuxIfOpen = () => {
+    if (!pageMux.destroyed && !pageMux.writableEnded) {
+      pageMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  pageStream.once?.('close', endPageMuxIfOpen);
+  pageStream.once?.('end', endPageMuxIfOpen);
 
   pipeline(pageMux, pageStream, pageMux, (err: Error) =>
     logStreamDisconnectWarning('MetaMask Inpage Multiplex', err),
@@ -73,7 +113,7 @@ let METAMASK_EXTENSION_CONNECT_SENT = false;
 export const setupExtensionStreams = () => {
   METAMASK_EXTENSION_CONNECT_SENT = true;
   extensionPort = browser.runtime.connect({ name: CONTENT_SCRIPT });
-  extensionStream = new PortStream(extensionPort);
+  extensionStream = new ExtensionPortStream(extensionPort, { chunkSize: 0 });
   extensionStream.on('data', extensionStreamMessageListener);
 
   // create and connect channel muxers
@@ -81,6 +121,21 @@ export const setupExtensionStreams = () => {
   extensionMux = new ObjectMultiplex();
   extensionMux.setMaxListeners(25);
   extensionMux.ignoreStream(LEGACY_PUBLIC_CONFIG); // TODO:LegacyProvider: Delete
+
+  /**
+   * Graceful shutdown handler for the extension mux.
+   * See the comment above the page mux handler for detailed explanation of why
+   * these handlers are necessary in extension context but not in page context.
+   */
+  const endExtensionMuxIfOpen = () => {
+    if (!extensionMux.destroyed && !extensionMux.writableEnded) {
+      extensionMux.end();
+    }
+  };
+
+  // Attach handlers to detect when the underlying transport terminates
+  extensionStream?.once?.('close', endExtensionMuxIfOpen);
+  extensionStream?.once?.('end', endExtensionMuxIfOpen);
 
   pipeline(extensionMux, extensionStream, extensionMux, (err: Error) => {
     logStreamDisconnectWarning('MetaMask Background Multiplex', err);
@@ -314,12 +369,13 @@ function getNotificationTransformStream() {
     highWaterMark: 16,
     objectMode: true,
     transform: (chunk, _, cb) => {
-      if (chunk?.name === METAMASK_EIP_1193_PROVIDER) {
-        if (chunk.data?.method === 'metamask_accountsChanged') {
-          chunk.data.method = 'wallet_accountsChanged';
-          chunk.data.result = chunk.data.params;
-          delete chunk.data.params;
-        }
+      if (
+        chunk?.name === METAMASK_EIP_1193_PROVIDER &&
+        chunk.data?.method === 'metamask_accountsChanged'
+      ) {
+        chunk.data.method = 'wallet_accountsChanged';
+        chunk.data.result = chunk.data.params;
+        delete chunk.data.params;
       }
       cb(null, chunk);
     },

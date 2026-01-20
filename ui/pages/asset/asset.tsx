@@ -2,7 +2,7 @@ import { Nft } from '@metamask/assets-controllers';
 import { CaipChainId, Hex } from '@metamask/utils';
 import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect, useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { isEqualCaseInsensitive } from '../../../shared/modules/string-utils';
 import NftDetails from '../../components/app/assets/nfts/nft-details/nft-details';
 import { getNFTsByChainId } from '../../ducks/metamask/metamask';
@@ -11,7 +11,6 @@ import { getTokenByAccountAndAddressAndChainId } from '../../selectors/assets';
 import NativeAsset from './components/native-asset';
 import TokenAsset from './components/token-asset';
 
-/** A page representing a native, token, or NFT asset */
 const Asset = () => {
   const params = useParams<{
     chainId: Hex;
@@ -47,12 +46,12 @@ const Asset = () => {
 
   const content = (() => {
     if (nft) {
-      return <NftDetails nft={nft} />;
+      return <NftDetails nft={nft} nftChainId={chainId} />;
     }
 
     const isInvalid = !token || !chainId;
     if (isInvalid) {
-      return <Redirect to={{ pathname: DEFAULT_ROUTE }} />;
+      return <Navigate to={DEFAULT_ROUTE} />;
     }
 
     const shouldShowToken = !token.isNative && token.address;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { SEND_STAGES } from '../../../ducks/send';
 // TODO: Remove restricted import
@@ -10,14 +10,33 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { AppHeader } from '.';
 
+// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
+// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
+const mockIsMultichainAccountsFeatureEnabled = jest.fn();
+jest.mock(
+  '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+  () => ({
+    ...jest.requireActual(
+      '../../../../shared/lib/multichain-accounts/remote-feature-flag',
+    ),
+    isMultichainAccountsFeatureEnabled: () =>
+      mockIsMultichainAccountsFeatureEnabled(),
+  }),
+);
+
 jest.mock('../../../../app/scripts/lib/util', () => ({
   ...jest.requireActual('../../../../app/scripts/lib/util'),
   getEnvironmentType: jest.fn(),
 }));
 
-jest.mock('react-router-dom-v5-compat', () => ({
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
   // eslint-disable-next-line react/prop-types
   Link: ({ children, ...props }) => <a {...props}>{children}</a>,
+  // eslint-disable-next-line react/prop-types
+  CompatRouter: ({ children }) => <div>{children}</div>,
+  matchPath: jest.fn(),
+  useNavigate: () => jest.fn(),
 }));
 
 const render = ({
@@ -34,12 +53,15 @@ const render = ({
     activeTab: {
       origin: 'https://remix.ethereum.org',
     },
-    ...(stateChanges ?? {}),
+    ...stateChanges,
   });
   return renderWithProvider(<AppHeader location={location} />, store);
 };
 
 describe('App Header', () => {
+  beforeEach(() => {
+    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
+  });
   afterEach(() => {
     jest.clearAllMocks();
   });
@@ -62,6 +84,8 @@ describe('App Header', () => {
     });
 
     it('should show the copy button for multichain', () => {
+      mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
+
       const { getByTestId } = render({
         stateChanges: { send: { stage: SEND_STAGES.DRAFT } },
       });

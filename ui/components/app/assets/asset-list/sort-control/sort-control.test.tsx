@@ -2,7 +2,7 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 import { useSelector } from 'react-redux';
 import { setTokenSortConfig } from '../../../../../store/actions';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { MetaMetricsContext } from '../../../../../contexts/metametrics';
 import { getPreferences } from '../../../../../selectors';
 import { getCurrentCurrency } from '../../../../../ducks/metamask/metamask';
@@ -87,7 +87,7 @@ describe('SortControl', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
       category: 'Settings',
-      event: 'Token Sort Preference',
+      event: 'Token Sort Preference Updated',
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -113,7 +113,7 @@ describe('SortControl', () => {
 
     expect(mockTrackEvent).toHaveBeenCalledWith({
       category: 'Settings',
-      event: 'Token Sort Preference',
+      event: 'Token Sort Preference Updated',
       properties: {
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
         // eslint-disable-next-line @typescript-eslint/naming-convention

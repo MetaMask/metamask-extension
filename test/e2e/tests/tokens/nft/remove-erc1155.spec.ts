@@ -1,7 +1,7 @@
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../../helpers';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import Homepage from '../../../page-objects/pages/home/homepage';
 import NFTDetailsPage from '../../../page-objects/pages/nft-details-page';
 import NftListPage from '../../../page-objects/pages/home/nft-list';
@@ -28,7 +28,7 @@ describe('Remove ERC1155 NFT', function () {
   it('user should be able to remove ERC1155 NFT on details page', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNftControllerERC1155()
           .withEnabledNetworks({

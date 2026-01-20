@@ -438,14 +438,8 @@
   "ethGasPriceFetchWarning": {
     "message": "顯示備用 gas 價格，因為目前主要的 gas 估計服務無法使用。"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公開位址"
-  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
-  },
-  "expandView": {
-    "message": "展開畫面"
   },
   "externalExtension": {
     "message": "外部擴充功能"
@@ -474,10 +468,6 @@
   },
   "from": {
     "message": "來源帳戶"
-  },
-  "fromAddress": {
-    "message": "來自：$1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
   },
   "gasLimit": {
     "message": "Gas 上限"
@@ -1096,10 +1086,6 @@
   },
   "to": {
     "message": "目的帳戶"
-  },
-  "toAddress": {
-    "message": "傳送到：$1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "token": {
     "message": "代碼"

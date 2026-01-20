@@ -171,15 +171,7 @@ export default class SecurityTab extends PureComponent {
     }
   }
 
-  toggleSetting(value, eventName, eventAction, toggleMethod) {
-    this.context.trackEvent({
-      category: MetaMetricsEventCategory.Settings,
-      event: eventName,
-      properties: {
-        action: eventAction,
-        legacy_event: true,
-      },
-    });
+  toggleSetting(value, toggleMethod) {
     toggleMethod(!value);
   }
 
@@ -240,6 +232,8 @@ export default class SecurityTab extends PureComponent {
     const getButtonText = () => {
       if (socialLoginEnabled) {
         return t('securitySrpWalletRecovery');
+      } else if (isSeedPhraseBackedUp) {
+        return t('revealSeedWords');
       }
       return t('revealSecretRecoveryPhrase');
     };
@@ -306,6 +300,7 @@ export default class SecurityTab extends PureComponent {
             <SRPQuiz
               isOpen={this.state.srpQuizModalVisible}
               onClose={this.hideSrpQuizModal}
+              navigate={this.props.navigate}
             />
           )}
         </div>
@@ -849,12 +844,7 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useTokenDetection}
             onToggle={(value) => {
-              this.toggleSetting(
-                value,
-                MetaMetricsEventName.KeyAutoDetectTokens,
-                MetaMetricsEventName.KeyAutoDetectTokens,
-                setUseTokenDetection,
-              );
+              this.toggleSetting(value, setUseTokenDetection);
             }}
             offLabel={t('off')}
             onLabel={t('on')}
@@ -892,12 +882,7 @@ export default class SecurityTab extends PureComponent {
           <ToggleButton
             value={useMultiAccountBalanceChecker}
             onToggle={(value) => {
-              this.toggleSetting(
-                value,
-                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                MetaMetricsEventName.KeyBatchAccountBalanceRequests,
-                setUseMultiAccountBalanceChecker,
-              );
+              this.toggleSetting(value, setUseMultiAccountBalanceChecker);
             }}
             offLabel={t('off')}
             onLabel={t('on')}

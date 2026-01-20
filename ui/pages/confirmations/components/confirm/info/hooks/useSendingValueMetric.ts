@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect } from 'react';
+import { useDeepMemo } from '../../../../hooks/useDeepMemo';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 
 export type UseSendingValueMetricProps = {
@@ -20,9 +21,11 @@ export const useSendingValueMetric = ({
   const sensitiveProperties = {};
   const params = { properties, sensitiveProperties };
 
+  const stableParams = useDeepMemo(() => params, [params]);
+
   useEffect(() => {
     if (fiatValue !== undefined && fiatValue !== '') {
-      updateTransactionEventFragment(params, transactionId);
+      updateTransactionEventFragment(stableParams, transactionId);
     }
-  }, [updateTransactionEventFragment, transactionId, JSON.stringify(params)]);
+  }, [updateTransactionEventFragment, transactionId, stableParams, fiatValue]);
 };

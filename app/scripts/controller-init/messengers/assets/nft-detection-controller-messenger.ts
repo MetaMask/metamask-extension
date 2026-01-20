@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerGetNetworkClientByIdAction,
@@ -9,6 +9,7 @@ import { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-c
 import { PreferencesControllerStateChangeEvent } from '@metamask/preferences-controller';
 import { AddApprovalRequest } from '@metamask/approval-controller';
 import { PhishingControllerBulkScanUrlsAction } from '@metamask/phishing-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | AddApprovalRequest
@@ -33,15 +34,24 @@ export type NftDetectionControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getNftDetectionControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'NftDetectionController',
-    allowedEvents: [
+  const controllerMessenger = new Messenger<
+    'NftDetectionController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'NftDetectionController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    events: [
       'NetworkController:stateChange',
       'PreferencesController:stateChange',
     ],
-    allowedActions: [
+    actions: [
       'ApprovalController:addRequest',
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
@@ -50,4 +60,5 @@ export function getNftDetectionControllerMessenger(
       'PhishingController:bulkScanUrls',
     ],
   });
+  return controllerMessenger;
 }

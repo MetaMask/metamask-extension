@@ -1,6 +1,9 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
-const { unlockWallet, withFixtures } = require('../../helpers');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
+const { withFixtures } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
@@ -246,7 +249,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
   it.skip('should show banner alert', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -259,7 +262,7 @@ describe('PPOM Blockaid Alert - Set Approval to All', function () {
       },
 
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await driver.openNewPage(DAPP_URL);
 
         const expectedTitle = 'This is a deceptive request';

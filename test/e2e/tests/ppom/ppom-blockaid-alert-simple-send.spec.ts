@@ -1,17 +1,17 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import FixtureBuilder from '../../fixture-builder';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../mock-balance-polling/mock-balance-polling';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockServerJsonRpc } from './mocks/mock-server-json-rpc';
 import { SECURITY_ALERTS_PROD_API_BASE_URL } from './constants';
 
-const mockMaliciousAddress = '0x5fbdb2315678afecb367f032d93f642f64180aa3';
 const mockBenignAddress = '0x50587E46C5B96a3F6f9792922EC647F13E6EFAE4';
 
 const expectedMaliciousTitle = 'This is a deceptive request';
@@ -24,7 +24,7 @@ const SEND_REQUEST_BASE_MOCK = {
     {
       from: '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
       data: '0x',
-      to: mockMaliciousAddress,
+      to: mockBenignAddress.toLowerCase(),
       value: '0xde0b6b3a7640000',
     },
   ],
@@ -142,7 +142,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
   it('should not show security alerts for benign requests', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({
@@ -189,7 +189,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
       // we need to use localhost instead of the ip
       // see issue: https://github.com/MetaMask/MetaMask-planning/issues/3560
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp({
@@ -234,7 +234,7 @@ describe('Simple Send Security Alert - Blockaid', function (this: Suite) {
   it('should show "Be careful" if the PPOM request fails to check transaction', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPreferencesController({

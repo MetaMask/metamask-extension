@@ -2,7 +2,10 @@ import { useEffect, useCallback, useRef, useContext } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Hex, hexToNumber } from '@metamask/utils';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
-import { getNetworkConnectionBanner } from '../selectors/selectors';
+import {
+  getNetworkConnectionBanner,
+  getIsDeviceOffline,
+} from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
@@ -30,6 +33,7 @@ export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
     const trackEvent = useContext(MetaMetricsContext);
+    const isOffline = useSelector(getIsDeviceOffline);
     const firstUnavailableEvmNetwork = useSelector(
       selectFirstUnavailableEvmNetwork,
     );
@@ -62,7 +66,7 @@ export const useNetworkConnectionBanner =
     const clearTimers = useCallback(() => {
       clearDegradedTimer();
       clearUnavailableTimer();
-    }, []);
+    }, [clearDegradedTimer, clearUnavailableTimer]);
 
     const trackNetworkBannerEvent = useCallback(
       ({
@@ -117,7 +121,8 @@ export const useNetworkConnectionBanner =
           properties: {
             banner_type: bannerType,
             chain_id_caip: `eip155:${chainIdAsDecimal}`,
-            rpc_endpoint_url: sanitizedRpcUrl,
+            rpc_domain: sanitizedRpcUrl,
+            rpc_endpoint_url: sanitizedRpcUrl, // @deprecated - Will be removed in a future release.
           },
           /* eslint-enable @typescript-eslint/naming-convention */
         });
@@ -141,6 +146,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
         }
@@ -168,6 +174,7 @@ export const useNetworkConnectionBanner =
               networkName: firstUnavailableEvmNetwork.networkName,
               networkClientId: firstUnavailableEvmNetwork.networkClientId,
               chainId: firstUnavailableEvmNetwork.chainId,
+              isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
             }),
           );
 
@@ -184,8 +191,20 @@ export const useNetworkConnectionBanner =
 
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
     // If the first unavailable network changes, reset all timers and change the status
+    // If the device is offline, don't show network banners - the issue is device connectivity, not the network
 
     useEffect(() => {
+      // When device is offline, clear timers and reset banner state
+      // We don't want to show network degraded/unavailable banners when the real issue
+      // is the device's internet connectivity
+      if (isOffline) {
+        clearTimers();
+        if (networkConnectionBannerState.status !== 'available') {
+          dispatch(updateNetworkConnectionBanner({ status: 'available' }));
+        }
+        return;
+      }
+
       if (firstUnavailableEvmNetwork) {
         if (networkConnectionBannerState.status === 'degraded') {
           startUnavailableTimer();
@@ -203,6 +222,7 @@ export const useNetworkConnectionBanner =
         clearTimers();
       };
     }, [
+      isOffline,
       firstUnavailableEvmNetwork,
       clearTimers,
       dispatch,

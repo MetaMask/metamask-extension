@@ -1,34 +1,49 @@
-import {
+import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  Messenger,
 } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerGetNetworkClientByIdAction,
   NetworkControllerGetStateAction,
   NetworkControllerStateChangeEvent,
 } from '@metamask/network-controller';
+import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerListAccountsAction,
+  AccountsControllerSelectedEvmAccountChangeEvent,
 } from '@metamask/accounts-controller';
 import {
   AccountTrackerUpdateNativeBalancesAction,
   AccountTrackerUpdateStakedBalancesAction,
+  AccountTrackerControllerGetStateAction,
   TokensControllerState,
+  type TokenDetectionControllerAddDetectedTokensViaWsAction,
+  TokenDetectionControllerAddDetectedTokensViaPollingAction,
+  TokenDetectionControllerDetectTokensAction,
 } from '@metamask/assets-controllers';
-import { KeyringControllerAccountRemovedEvent } from '@metamask/keyring-controller';
+import {
+  TransactionControllerIncomingTransactionsReceivedEvent,
+  TransactionControllerTransactionConfirmedEvent,
+} from '@metamask/transaction-controller';
+import {
+  KeyringControllerAccountRemovedEvent,
+  KeyringControllerGetStateAction,
+  KeyringControllerLockEvent,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
 import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import type {
   AccountActivityServiceStatusChangedEvent,
   AccountActivityServiceBalanceUpdatedEvent,
 } from '@metamask/core-backend';
-import type { TokenDetectionControllerAddDetectedTokensViaWsAction } from '@metamask/assets-controllers';
-import { AccountTrackerControllerGetStateAction } from '../../controllers/account-tracker-controller';
 import {
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from '../../controllers/preferences-controller';
+import { OnboardingControllerGetStateAction } from '../../controllers/onboarding';
+import { RootMessenger } from '../../lib/messenger';
 
 // Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
@@ -42,24 +57,33 @@ type TokensControllerStateChangeEvent = ControllerStateChangeEvent<
 >;
 
 type AllowedActions =
+  | NetworkControllerGetNetworkClientByIdAction
+  | NetworkControllerGetStateAction
+  | TokensControllerGetStateAction
+  | TokenDetectionControllerAddDetectedTokensViaPollingAction
+  | TokenDetectionControllerAddDetectedTokensViaWsAction
+  | TokenDetectionControllerDetectTokensAction
+  | PreferencesControllerGetStateAction
   | AccountsControllerGetSelectedAccountAction
   | AccountsControllerListAccountsAction
   | AccountTrackerControllerGetStateAction
   | AccountTrackerUpdateNativeBalancesAction
   | AccountTrackerUpdateStakedBalancesAction
-  | NetworkControllerGetNetworkClientByIdAction
-  | NetworkControllerGetStateAction
-  | PreferencesControllerGetStateAction
-  | TokensControllerGetStateAction
-  | TokenDetectionControllerAddDetectedTokensViaWsAction;
+  | KeyringControllerGetStateAction
+  | AuthenticationController.AuthenticationControllerGetBearerToken;
 
 type AllowedEvents =
-  | KeyringControllerAccountRemovedEvent
-  | NetworkControllerStateChangeEvent
-  | PreferencesControllerStateChangeEvent
   | TokensControllerStateChangeEvent
+  | PreferencesControllerStateChangeEvent
+  | NetworkControllerStateChangeEvent
+  | KeyringControllerAccountRemovedEvent
+  | KeyringControllerLockEvent
+  | KeyringControllerUnlockEvent
+  | AccountActivityServiceBalanceUpdatedEvent
   | AccountActivityServiceStatusChangedEvent
-  | AccountActivityServiceBalanceUpdatedEvent;
+  | AccountsControllerSelectedEvmAccountChangeEvent
+  | TransactionControllerTransactionConfirmedEvent
+  | TransactionControllerIncomingTransactionsReceivedEvent;
 
 export type TokenBalancesControllerMessenger = ReturnType<
   typeof getTokenBalancesControllerMessenger
@@ -73,36 +97,56 @@ export type TokenBalancesControllerMessenger = ReturnType<
  * messenger.
  */
 export function getTokenBalancesControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenBalancesController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'TokenBalancesController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'TokenBalancesController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:getState',
       'NetworkController:getNetworkClientById',
-      'TokensController:getState',
       'PreferencesController:getState',
+      'TokensController:getState',
+      'TokenDetectionController:addDetectedTokensViaPolling',
+      'TokenDetectionController:addDetectedTokensViaWs',
+      'TokenDetectionController:detectTokens',
       'AccountsController:getSelectedAccount',
       'AccountsController:listAccounts',
       'AccountTrackerController:getState',
       'AccountTrackerController:updateNativeBalances',
       'AccountTrackerController:updateStakedBalances',
-      'TokenDetectionController:addDetectedTokensViaWs',
+      'KeyringController:getState',
+      'AuthenticationController:getBearerToken',
     ],
-    allowedEvents: [
+    events: [
+      'NetworkController:stateChange',
       'PreferencesController:stateChange',
       'TokensController:stateChange',
-      'NetworkController:stateChange',
       'KeyringController:accountRemoved',
-      'AccountActivityService:statusChanged',
+      'KeyringController:lock',
+      'KeyringController:unlock',
       'AccountActivityService:balanceUpdated',
+      'AccountActivityService:statusChanged',
+      'AccountsController:selectedEvmAccountChange',
+      'TransactionController:transactionConfirmed',
+      'TransactionController:incomingTransactionsReceived',
     ],
   });
+  return controllerMessenger;
 }
 
 type AllowedInitializationActions =
   | PreferencesControllerGetStateAction
-  | RemoteFeatureFlagControllerGetStateAction;
+  | RemoteFeatureFlagControllerGetStateAction
+  | OnboardingControllerGetStateAction;
 
 export type TokenBalancesControllerInitMessenger = ReturnType<
   typeof getTokenBalancesControllerInitMessenger
@@ -115,14 +159,24 @@ export type TokenBalancesControllerInitMessenger = ReturnType<
  * @param messenger
  */
 export function getTokenBalancesControllerInitMessenger(
-  messenger: Messenger<AllowedInitializationActions, never>,
+  messenger: RootMessenger<AllowedInitializationActions, never>,
 ) {
-  return messenger.getRestricted({
-    name: 'TokenBalancesControllerInit',
-    allowedActions: [
+  const controllerInitMessenger = new Messenger<
+    'TokenBalancesControllerInit',
+    AllowedInitializationActions,
+    never,
+    typeof messenger
+  >({
+    namespace: 'TokenBalancesControllerInit',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerInitMessenger,
+    actions: [
       'PreferencesController:getState',
       'RemoteFeatureFlagController:getState',
+      'OnboardingController:getState',
     ],
-    allowedEvents: [],
   });
+  return controllerInitMessenger;
 }

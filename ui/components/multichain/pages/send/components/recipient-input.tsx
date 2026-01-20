@@ -46,7 +46,7 @@ export const SendPageRecipientInput = () => {
       await dispatch(updateRecipientUserInput(address));
       trackEvent(
         {
-          event: MetaMetricsEventName.sendRecipientSelected,
+          event: MetaMetricsEventName.SendRecipientSelected,
           category: MetaMetricsEventCategory.Send,
           properties: {
             location: 'send page recipient input',

@@ -37,6 +37,9 @@ export enum OffscreenCommunicationEvents {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   metamaskBackgroundReady = 'metamask-background-ready',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  connectivityChange = 'connectivity-change',
 }
 
 /**
@@ -69,13 +72,13 @@ export enum TrezorAction {
 export enum LedgerAction {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  getAppNameAndVersion = 'ledger-get-app-name-and-version',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   makeApp = 'ledger-make-app',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   updateTransport = 'ledger-update-transport',
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  unlock = 'ledger-unlock',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   getPublicKey = 'ledger-unlock',

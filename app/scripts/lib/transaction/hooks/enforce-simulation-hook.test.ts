@@ -5,7 +5,11 @@ import {
 } from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 import { ORIGIN_METAMASK } from '@metamask/controller-utils';
-import { Messenger } from '@metamask/base-controller';
+import {
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import { TransactionControllerInitMessenger } from '../../../controller-init/messengers/transaction-controller-messenger';
 import { applyTransactionContainers } from '../containers/util';
 import { AppStateControllerGetStateAction } from '../../../controllers/app-state-controller';
@@ -61,19 +65,30 @@ describe('EnforceSimulationHook', () => {
     });
 
     const baseMessenger = new Messenger<
+      MockAnyNamespace,
       AppStateControllerGetStateAction,
       never
-    >();
+    >({
+      namespace: MOCK_ANY_NAMESPACE,
+    });
 
     baseMessenger.registerActionHandler(
       'AppStateController:getState',
       getAppControllerStateMock,
     );
 
-    messenger = baseMessenger.getRestricted({
-      name: 'TransactionControllerInitMessenger',
-      allowedActions: ['AppStateController:getState'],
-      allowedEvents: [],
+    messenger = new Messenger<
+      'TransactionControllerInitMessenger',
+      AppStateControllerGetStateAction,
+      never,
+      typeof baseMessenger
+    >({
+      namespace: 'TransactionControllerInitMessenger',
+      parent: baseMessenger,
+    });
+    baseMessenger.delegate({
+      messenger,
+      actions: ['AppStateController:getState'],
     });
 
     getAppControllerStateMock.mockReturnValue({

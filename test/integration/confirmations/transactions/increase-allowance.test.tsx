@@ -6,7 +6,6 @@ import { TokenStandard } from '../../../../shared/constants/transaction';
 import * as backgroundConnection from '../../../../ui/store/background-connection';
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
-import { createTestProviderTools } from '../../../stub/provider';
 import mockMetaMaskState from '../../data/integration-init-state.json';
 import { createMockImplementation, mock4byte } from '../../helpers';
 import { getUnapprovedIncreaseAllowanceTransaction } from './transactionDataHelpers';
@@ -109,7 +108,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 
@@ -122,14 +121,12 @@ const setupSubmitRequestToBackgroundMocks = (
 
 describe('ERC20 increaseAllowance Confirmation', () => {
   beforeAll(() => {
-    const { provider } = createTestProviderTools({
-      networkId: 'sepolia',
-      chainId: '0xaa36a7',
-    });
+    global.ethereumProvider = {
+      request: jest.fn(),
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    global.ethereumProvider = provider as any;
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } as any;
   });
 
   beforeEach(() => {

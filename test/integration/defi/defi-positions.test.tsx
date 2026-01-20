@@ -11,6 +11,8 @@ import {
   clickElementById,
   clickElementByText,
   createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
   waitForElementByText,
   waitForElementByTextToNotBePresent,
 } from '../helpers';
@@ -34,18 +36,13 @@ const setupSubmitRequestToBackgroundMocks = (
 ) => {
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
 
-const account =
-  mockMetaMaskState.internalAccounts.accounts[
-    mockMetaMaskState.internalAccounts
-      .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-  ];
-
-const accountName = account.metadata.name;
+const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+const accountName = getSelectedAccountGroupName(mockMetaMaskState);
 
 const withMetamaskConnectedToMainnet = {
   ...mockMetaMaskState,
@@ -246,8 +243,6 @@ const withMetamaskConnectedToMainnet = {
   },
 };
 
-const isGlobalNetworkSelectorRemoved = process.env.REMOVE_GNS;
-
 describe('Defi positions list', () => {
   beforeEach(() => {
     process.env.PORTFOLIO_VIEW = 'true';
@@ -300,10 +295,6 @@ describe('Defi positions list', () => {
     await screen.findByText(accountName);
 
     await clickElementById('account-overview__defi-tab');
-    if (!isGlobalNetworkSelectorRemoved) {
-      await clickElementById('sort-by-networks');
-      await clickElementById('network-filter-current__button');
-    }
     await waitForElementByText('AaveV3 Mainnet');
     await waitForElementByText('MetaMask Staking');
     await waitForElementByTextToNotBePresent('AaveV3 Polygon');
@@ -378,7 +369,6 @@ describe('Defi positions list', () => {
               MetaMetricsEventName.DeFiDetailsOpened,
         );
 
-      console.log(JSON.stringify(metricsEvents));
       expect(metricsEvents).toHaveLength(2);
     });
 

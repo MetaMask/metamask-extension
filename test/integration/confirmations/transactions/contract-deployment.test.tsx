@@ -17,7 +17,12 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation, mock4byte } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+  mock4byte,
+} from '../../helpers';
 import { getUnapprovedContractDeploymentTransaction } from './transactionDataHelpers';
 
 jest.mock('../../../../ui/store/background-connection', () => ({
@@ -126,7 +131,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -144,13 +149,8 @@ describe('Contract Deployment Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedContractDeployment({
         accountAddress: account.address,
@@ -167,7 +167,7 @@ describe('Contract Deployment Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     fireEvent.click(

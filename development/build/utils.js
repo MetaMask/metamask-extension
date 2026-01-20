@@ -30,6 +30,49 @@ function isTestBuild(buildTarget) {
 }
 
 /**
+ * Task prefix to build target mapping.
+ * Used to extract the build target from task names like 'scripts:core:test:standardEntryPoints'.
+ * Sorted by prefix length (longest first) to ensure 'test-live' matches before 'test'.
+ */
+const TASK_PREFIX_TO_BUILD_TARGET = [
+  ['scripts:core:test-live', BUILD_TARGETS.TEST_DEV],
+  ['scripts:core:dist', BUILD_TARGETS.DIST],
+  ['scripts:core:prod', BUILD_TARGETS.PROD],
+  ['scripts:core:test', BUILD_TARGETS.TEST],
+  ['scripts:core:dev', BUILD_TARGETS.DEV],
+];
+
+/**
+ * Extract the build target from a task name.
+ *
+ * Task names follow patterns like:
+ * - 'dev' -> 'dev' (already a build target)
+ * - 'scripts:core:test:standardEntryPoints' -> 'test'
+ * - 'scripts:core:test-live:sentry' -> 'testDev'
+ *
+ * @param {string} taskName - The task name or build target.
+ * @returns {BUILD_TARGETS} The extracted build target, or the original
+ * taskName if it couldn't be mapped (for backwards compatibility).
+ */
+function getBuildTargetFromTask(taskName) {
+  // If it's already a valid build target, return it
+  const validTargets = Object.values(BUILD_TARGETS);
+  if (validTargets.includes(taskName)) {
+    return taskName;
+  }
+
+  // Check task prefixes to extract the build target
+  for (const [prefix, buildTarget] of TASK_PREFIX_TO_BUILD_TARGET) {
+    if (taskName.startsWith(prefix)) {
+      return buildTarget;
+    }
+  }
+
+  // Return original for backwards compatibility with unknown task names
+  return taskName;
+}
+
+/**
  * Map the current version to a format that is compatible with each browser.
  *
  * The given version number is assumed to be a SemVer version number. Additionally, if the version
@@ -127,10 +170,7 @@ function getEnvironment({ buildTarget }) {
     return ENVIRONMENT.DEVELOPMENT;
   } else if (isTestBuild(buildTarget)) {
     return ENVIRONMENT.TESTING;
-  } else if (
-    /^Version-v(\d+)[.](\d+)[.](\d+)/u.test(branch) ||
-    /^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)
-  ) {
+  } else if (/^release\/(\d+)[.](\d+)[.](\d+)/u.test(branch)) {
     return ENVIRONMENT.RELEASE_CANDIDATE;
   } else if (branch === 'main') {
     return ENVIRONMENT.STAGING;
@@ -302,6 +342,7 @@ function makeSelfInjecting(filePath) {
 module.exports = {
   getBrowserVersionMap,
   getBuildName,
+  getBuildTargetFromTask,
   getEnvironment,
   isDevBuild,
   isTestBuild,

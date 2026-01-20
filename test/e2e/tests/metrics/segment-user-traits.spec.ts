@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import {
   completeCreateNewWalletOnboardingFlow,
   createNewWalletOnboardingFlow,
@@ -83,7 +83,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: true,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -107,7 +106,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
           })
           .build(),
         title: this.test?.fullTitle(),
@@ -143,7 +141,6 @@ describe('Segment User Traits', function () {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withMetaMetricsController({
             metaMetricsId: MOCK_META_METRICS_ID,
-            participateInMetaMetrics: false,
           })
           .build(),
         title: this.test?.fullTitle(),

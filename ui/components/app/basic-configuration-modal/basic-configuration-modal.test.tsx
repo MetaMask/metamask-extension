@@ -1,8 +1,7 @@
 import * as React from 'react';
 import { fireEvent, waitFor } from '@testing-library/react';
-import { useLocation } from 'react-router-dom';
 import configureStore from '../../../store/store';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import * as Actions from '../../../store/actions';
 import {
   hideBasicFunctionalityModal,
@@ -32,9 +31,10 @@ jest.mock('react-redux', () => {
   };
 });
 
+const mockUseLocation = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
+  useLocation: () => mockUseLocation(),
 }));
 
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -68,7 +68,7 @@ const arrangeMocks = <T extends boolean>({
 }: ArrangeMocksParams<T> = {}): ArrangeMocksReturn<T> => {
   jest.clearAllMocks();
 
-  (useLocation as jest.Mock).mockReturnValue({
+  (mockUseLocation as jest.Mock).mockReturnValue({
     pathname: isOnboarding
       ? ONBOARDING_PRIVACY_SETTINGS_ROUTE
       : '/any-other-path',

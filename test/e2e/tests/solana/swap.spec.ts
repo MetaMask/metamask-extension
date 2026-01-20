@@ -20,7 +20,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -46,7 +46,7 @@ describe('Swap on Solana', function () {
         });
 
         await swapPage.closeQuotes();
-        await swapPage.reviewSolanaQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '167.7',
           swapFrom: 'SOL',
           swapTo: 'USDC',
@@ -79,7 +79,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({
@@ -87,7 +87,7 @@ describe('Swap on Solana', function () {
           swapTo: 'SOL',
           swapFrom: 'USDC',
         });
-        await swapPage.reviewSolanaQuote({
+        await swapPage.reviewQuote({
           swapToAmount: '0.00589',
           swapFrom: 'USDC',
           swapTo: 'SOL',
@@ -119,7 +119,7 @@ describe('Swap on Solana', function () {
       async (driver) => {
         const homePage = new NonEvmHomepage(driver);
 
-        await homePage.checkPageIsLoaded('50');
+        await homePage.checkPageIsLoaded({ amount: '50' });
         const swapPage = new SwapPage(driver);
         await homePage.clickOnSwapButton();
         await swapPage.createSolanaSwap({

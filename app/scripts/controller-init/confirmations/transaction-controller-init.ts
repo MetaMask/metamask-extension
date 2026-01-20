@@ -13,6 +13,8 @@ import {
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
 import { Hex } from '@metamask/utils';
+import { NetworkClientId } from '@metamask/network-controller';
+import { toHex } from '@metamask/controller-utils';
 import { trace } from '../../../../shared/lib/trace';
 import { getIsSmartTransaction } from '../../../../shared/modules/selectors';
 import { getShieldGatewayConfig } from '../../../../shared/modules/shield';
@@ -56,7 +58,6 @@ export const TransactionControllerInit: ControllerInitFunction<
     getFlatState,
     getPermittedAccounts,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
     persistedState,
   } = request;
 
@@ -127,7 +128,14 @@ export const TransactionControllerInit: ControllerInitFunction<
       const uiState = getUIState(getFlatState());
 
       // @ts-expect-error Smart transaction selector types does not match controller state
-      return !getIsSmartTransaction(uiState, chainId);
+      const isSmartTransactionEnabled = getIsSmartTransaction(uiState, chainId);
+
+      const isSendBundleSupportedChain = await isSendBundleSupported(chainId);
+
+      // EIP7702 gas fee tokens are enabled when:
+      // - Smart transactions are NOT enabled, OR
+      // - Send bundle is NOT supported
+      return !isSmartTransactionEnabled || !isSendBundleSupportedChain;
     },
     isFirstTimeInteractionEnabled: () =>
       preferencesController().state.securityAlertsEnabled,
@@ -142,6 +150,18 @@ export const TransactionControllerInit: ControllerInitFunction<
     // @ts-expect-error Controller uses string for names rather than enum
     trace,
     hooks: {
+      // Note: `#afterAdd.updateTransaction` is actually called before adding the TransactionMeta to the state
+      // Reference: https://github.com/MetaMask/core/blob/main/packages/transaction-controller/src/TransactionController.ts#L1335
+      afterAdd: async (_params: { transactionMeta: TransactionMeta }) => {
+        return {
+          updateTransaction: async (transactionMeta: TransactionMeta) => {
+            await initMessenger.call(
+              'SubscriptionService:submitSubscriptionSponsorshipIntent',
+              transactionMeta,
+            );
+          },
+        };
+      },
       afterSimulate: new EnforceSimulationHook({
         messenger: initMessenger,
       }).getAfterSimulateHook(),
@@ -191,7 +211,6 @@ export const TransactionControllerInit: ControllerInitFunction<
   addTransactionControllerListeners(
     initMessenger,
     getTransactionMetricsRequest,
-    updateAccountBalanceForTransactionNetwork,
   );
 
   const api = getApi(controller);
@@ -222,8 +241,6 @@ function getApi(
       controller.updateSelectedGasFeeToken.bind(controller),
     updateTransactionGasFees:
       controller.updateTransactionGasFees.bind(controller),
-    updateTransactionSendFlowHistory:
-      controller.updateTransactionSendFlowHistory.bind(controller),
   };
 }
 
@@ -259,21 +276,8 @@ function getExternalPendingTransactions(
 function addTransactionControllerListeners(
   initMessenger: TransactionControllerInitMessenger,
   getTransactionMetricsRequest: () => TransactionMetricsRequest,
-  updateAccountBalanceForTransactionNetwork: (
-    transactionMeta: TransactionMeta,
-  ) => void,
 ) {
   const transactionMetricsRequest = getTransactionMetricsRequest();
-
-  initMessenger.subscribe(
-    'TransactionController:unapprovedTransactionAdded',
-    updateAccountBalanceForTransactionNetwork,
-  );
-
-  initMessenger.subscribe(
-    'TransactionController:transactionConfirmed',
-    updateAccountBalanceForTransactionNetwork,
-  );
 
   initMessenger.subscribe(
     'TransactionController:postTransactionBalanceUpdated',
@@ -354,6 +358,19 @@ function getUIState(flatState: ControllerFlatState) {
   return { metamask: flatState };
 }
 
+async function getNextNonce(
+  transactionController: TransactionController,
+  address: string,
+  networkClientId: NetworkClientId,
+): Promise<Hex> {
+  const nonceLock = await transactionController.getNonceLock(
+    address,
+    networkClientId,
+  );
+  nonceLock.releaseLock();
+  return toHex(nonceLock.nextNonce);
+}
+
 export async function publishHook({
   flatState,
   initMessenger,
@@ -369,22 +386,22 @@ export async function publishHook({
   transactionController: TransactionController;
   transactionMeta: TransactionMeta;
 }) {
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const { isSmartTransaction, featureFlags } = getSmartTransactionCommonParams(
+    flatState,
+    transactionMeta.chainId,
+  );
   const sendBundleSupport = await isSendBundleSupported(
     transactionMeta.chainId,
   );
 
-  if (
-    !isSmartTransaction ||
-    !sendBundleSupport ||
-    transactionMeta.isGasFeeSponsored
-  ) {
+  if (!isSmartTransaction || !sendBundleSupport) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,
       ),
       messenger: initMessenger,
+      getNextNonce: (address, networkClientId) =>
+        getNextNonce(transactionController, address, networkClientId),
     }).getHook();
 
     const result = await hook(transactionMeta, signedTx);
@@ -405,8 +422,6 @@ export async function publishHook({
       smartTransactionsController,
       controllerMessenger: initMessenger,
       isSmartTransaction,
-      isHardwareWallet: isHardwareWalletAccount,
-      // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
       featureFlags,
     });
 
@@ -447,8 +462,10 @@ export function publishBatchHook({
     );
   }
 
-  const { isSmartTransaction, featureFlags, isHardwareWalletAccount } =
-    getSmartTransactionCommonParams(flatState, transactionMeta.chainId);
+  const { isSmartTransaction, featureFlags } = getSmartTransactionCommonParams(
+    flatState,
+    transactionMeta.chainId,
+  );
 
   if (!isSmartTransaction) {
     return undefined;
@@ -460,8 +477,6 @@ export function publishBatchHook({
     smartTransactionsController,
     controllerMessenger: hookControllerMessenger,
     isSmartTransaction,
-    isHardwareWallet: isHardwareWalletAccount,
-    // @ts-expect-error Smart transaction selector return type does not match FeatureFlags type from hook
     featureFlags,
     transactionMeta,
   });

@@ -1,11 +1,16 @@
 import startCase from 'lodash/startCase';
 import { version as VERSION } from '../package.json';
+import { getPageLoadBenchmarkComment } from './page-load-benchmark-pr-comment';
 import { postCommentWithMetamaskBot } from './utils/benchmark-utils';
-
-start().catch(console.error);
 
 const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
+const pageTypes = ['standardHome', 'powerUserHome'];
+
+/**
+ * The threshold for whether to highlight a change in bundle size, in bytes.
+ */
+const BUNDLE_SIZE_THRESOLD = 1_000;
 
 type BenchmarkResults = Record<
   (typeof benchmarkPlatforms)[number],
@@ -14,6 +19,8 @@ type BenchmarkResults = Record<
     Record<string, Record<string, Record<string, string>>>
   >
 >;
+
+start().catch(console.error);
 
 function getHumanReadableSize(bytes: number): string {
   if (!bytes) {
@@ -59,6 +66,8 @@ async function start(): Promise<void> {
     HEAD_COMMIT_HASH,
     MERGE_BASE_COMMIT_HASH,
     HOST_URL,
+    LAVAMOAT_POLICY_CHANGED,
+    POST_NEW_BUILDS,
   } = process.env as Record<string, string>;
 
   if (!PR_NUMBER) {
@@ -154,9 +163,19 @@ async function start(): Promise<void> {
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
-  const contentRows = [
-    ...buildContentRows,
-    `build viz: ${depVizLink}`,
+  const contentRows = [];
+
+  // Only post new Extension builds if this run is not using old builds
+  if (POST_NEW_BUILDS === 'true') {
+    contentRows.push(...buildContentRows);
+  }
+
+  // Only show lavamoat build viz link if the policy files changed
+  if (LAVAMOAT_POLICY_CHANGED === 'true') {
+    contentRows.push(`lavamoat build viz: ${depVizLink}`);
+  }
+
+  contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
     `storybook: ${storybookLink}`,
@@ -166,7 +185,8 @@ async function start(): Promise<void> {
        <summary>bundle viz:</summary>
        ${bundleMarkup}
      </details>`,
-  ];
+  );
+
   const hiddenContent = `<ul>${contentRows
     .map((row) => `<li>${row}</li>`)
     .join('\n')}</ul>`;
@@ -177,29 +197,32 @@ async function start(): Promise<void> {
   for (const platform of benchmarkPlatforms) {
     benchmarkResults[platform] = {};
     for (const buildType of buildTypes) {
-      const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-pageload.json`;
-      try {
-        const benchmarkResponse = await fetch(benchmarkUrl);
-        if (!benchmarkResponse.ok) {
-          throw new Error(
-            `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+      benchmarkResults[platform][buildType] = {};
+      for (const page of pageTypes) {
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${page}.json`;
+        try {
+          const benchmarkResponse = await fetch(benchmarkUrl);
+          if (!benchmarkResponse.ok) {
+            throw new Error(
+              `Failed to fetch benchmark data, status ${benchmarkResponse.statusText}`,
+            );
+          }
+          const benchmark = await benchmarkResponse.json();
+          benchmarkResults[platform][buildType][page] = benchmark[page];
+        } catch (error) {
+          console.error(
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            `Error encountered processing benchmark data for ${platform}-${buildType}-${page}: '${error}'`,
           );
         }
-        const benchmark = await benchmarkResponse.json();
-        benchmarkResults[platform][buildType] = benchmark;
-      } catch (error) {
-        console.error(
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `Error encountered processing benchmark data for '${platform}': '${error}'`,
-        );
       }
     }
   }
 
   const summaryPlatform = benchmarkPlatforms[0];
   const summaryBuildType = buildTypes[0];
-  const summaryPage = 'home';
+  const summaryPage = pageTypes[0];
   let commentBody = artifactsBody;
   if (benchmarkResults[summaryPlatform][summaryBuildType]) {
     try {
@@ -258,13 +281,26 @@ async function start(): Promise<void> {
             for (const metric of allMetrics) {
               let metricData = `<td>${metric}</td>`;
               for (const measure of allMeasures) {
-                metricData += `<td align="right">${Math.round(
-                  parseFloat(
+                // Default to dash if data is missing (e.g. firstPaint for Firefox, or the benchmark crashed)
+                let output = '-';
+
+                // if this platform-buildType-page exists in the data (the benchmark didn't crash)
+                if (benchmarkResults[platform][buildType][page]) {
+                  const individualMetricString =
                     benchmarkResults[platform][buildType][page][measure][
                       metric
-                    ],
-                  ),
-                )}</td>`;
+                    ];
+
+                  const individualMetricNumber = Math.round(
+                    parseFloat(individualMetricString),
+                  );
+
+                  // If it's a number, output it
+                  if (!isNaN(individualMetricNumber)) {
+                    output = individualMetricNumber.toString();
+                  }
+                }
+                metricData += `<td align="right">${output}</td>`;
               }
               metricRows.push(metricData);
             }
@@ -304,6 +340,12 @@ async function start(): Promise<void> {
     }
   } else {
     console.log(`No results for ${summaryPlatform} found; skipping benchmark`);
+  }
+
+  // Add the page load benchmark results
+  const pageLoadBenchmarkComment = await getPageLoadBenchmarkComment();
+  if (pageLoadBenchmarkComment) {
+    commentBody += pageLoadBenchmarkComment;
   }
 
   try {
@@ -360,17 +402,25 @@ async function start(): Promise<void> {
       .map((row) => `<li>${row}</li>`)
       .join('\n')}</ul>`;
 
-    const sizeDiff = diffs.background + diffs.common;
+    const sizeDiffBackground = diffs.background + diffs.common;
+    const sizeDiffUi = diffs.ui + diffs.common;
 
-    const sizeDiffWarning =
-      sizeDiff > 0
-        ? `🚨 Warning! Bundle size has increased!`
-        : `🚀 Bundle size reduced!`;
+    let sizeDiffWarning;
+    if (
+      sizeDiffBackground > BUNDLE_SIZE_THRESOLD ||
+      sizeDiffUi > BUNDLE_SIZE_THRESOLD
+    ) {
+      sizeDiffWarning = `🚨 Warning! Bundle size has increased!`;
+    } else if (
+      sizeDiffBackground < -BUNDLE_SIZE_THRESOLD ||
+      sizeDiffUi < -BUNDLE_SIZE_THRESOLD
+    ) {
+      sizeDiffWarning = `🚀 Bundle size reduced!`;
+    }
 
-    const sizeDiffExposedContent =
-      sizeDiff === 0
-        ? `Bundle size diffs`
-        : `Bundle size diffs [${sizeDiffWarning}]`;
+    const sizeDiffExposedContent = sizeDiffWarning
+      ? `Bundle size diffs [${sizeDiffWarning}]`
+      : `Bundle size diffs`;
 
     const sizeDiffBody = `<details><summary>${sizeDiffExposedContent}</summary>${sizeDiffHiddenContent}</details>\n\n`;
 

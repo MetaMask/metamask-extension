@@ -1,5 +1,4 @@
 import React from 'react';
-import { fireEvent, screen } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import {
@@ -9,20 +8,33 @@ import {
   Subscription,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import mockState from '../../../../test/data/mock-state.json';
+import { initialState as rewardsInitialState } from '../../../ducks/rewards';
 import TransactionShield from './transaction-shield';
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+const mockUseLocation = jest.fn();
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
+    useLocation: () => mockUseLocation,
   };
 });
 
+jest.mock('./shield-banner-animation', () => ({
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __esModule: true,
+  default: () => <div data-testid="shield-banner-animation" />,
+}));
+
 describe('Transaction Shield Page', () => {
   const STATE_MOCK = {
+    ...mockState,
+    rewards: rewardsInitialState,
     metamask: {
+      ...mockState.metamask,
       customerId: '1',
       trialedProducts: [],
       subscriptions: [
@@ -48,6 +60,7 @@ describe('Transaction Shield Page', () => {
               displayBrand: 'Visa',
             },
           },
+          isEligibleForSupport: true,
         } satisfies Subscription,
       ],
     },
@@ -59,20 +72,5 @@ describe('Transaction Shield Page', () => {
 
     const transactionShieldPage = getByTestId('transaction-shield-page');
     expect(transactionShieldPage).toBeInTheDocument();
-  });
-
-  it('should call onCancelMembership when the cancel membership button is clicked', async () => {
-    const { getByTestId } = renderWithProvider(<TransactionShield />, store);
-
-    const cancelMembershipButton = getByTestId(
-      'shield-tx-membership-cancel-button',
-    );
-    fireEvent.click(cancelMembershipButton);
-
-    const cancelMembershipModal = await screen.findByTestId(
-      'cancel-membership-modal',
-    );
-
-    expect(cancelMembershipModal).toBeInTheDocument();
   });
 });

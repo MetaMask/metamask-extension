@@ -1,6 +1,6 @@
 import { Mockttp } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import ChangePasswordPage from '../../page-objects/pages/settings/change-password-page';
@@ -61,6 +61,7 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
@@ -91,6 +92,7 @@ describe('Change wallet password', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true }).build(),
+        ignoredConsoleErrors: ['unable to proceed, wallet is locked'],
         title: this.test?.fullTitle(),
         testSpecificMock: (server: Mockttp) => {
           // using this to mock the OAuth Service (Web Authentication flow + Auth server)
@@ -118,7 +120,7 @@ describe('Change wallet password', function () {
 
         const loginPage = new LoginPage(driver);
 
-        // // Try to login with old password, should show incorrect password message
+        // Try to login with old password, should show incorrect password message
         await loginPage.loginToHomepage(OLD_PASSWORD);
         await loginPage.checkIncorrectPasswordMessageIsDisplayed();
 

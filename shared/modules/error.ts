@@ -39,6 +39,9 @@ export enum OAuthErrorMessages {
   USER_CANCELLED_LOGIN_ERROR = 'The user did not approve access.',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  USER_CANCELLED_LOGIN_ERROR_FIREFOX = 'User cancelled or denied access.',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   NO_REDIRECT_URL_FOUND_ERROR = 'No redirect URL found',
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -46,4 +49,31 @@ export enum OAuthErrorMessages {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   INVALID_OAUTH_STATE_ERROR = 'Invalid OAuth state',
+}
+
+/**
+ * Checks if the Web Authentication error is a user cancelled error.
+ *
+ * @param error - The error to check.
+ * @returns True if the error is a user cancelled login error, false otherwise.
+ */
+export function isUserCancelledLoginError(error: Error | undefined): boolean {
+  // NOTE: Firefox and chrome have different error messages for user cancelled the social login window.
+  return (
+    error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR ||
+    error?.message === OAuthErrorMessages.USER_CANCELLED_LOGIN_ERROR_FIREFOX
+  );
+}
+
+/**
+ * Creates an error instance with readable message and cause for sentry.
+ *
+ * @param message - The message to create the error with.
+ * @param cause - The cause of the error.
+ * @returns The created error.
+ */
+export function createSentryError(message: string, cause: Error): Error {
+  const error = new Error(message) as Error & { cause: Error };
+  error.cause = cause;
+  return error;
 }

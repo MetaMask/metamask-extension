@@ -54,6 +54,9 @@ class SelectNetwork {
 
   private readonly toggleButton = '.toggle-button > div';
 
+  private readonly addPopularNetworkByChainIdIcon = (chainId: string) =>
+    `[data-testid="popular-network-${chainId}"] [data-testid="test-add-button"] button`;
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -99,13 +102,10 @@ class SelectNetwork {
    */
   async clickAddButtonForPopularNetwork(chainId: string): Promise<void> {
     console.log('Click Add Button for Popular Network');
-    await this.driver.clickElementAndWaitToDisappear({
-      text: 'Add',
-      css: `[data-testid="test-add-button"]`,
-      parent: {
-        css: `[data-testid="popular-network-${chainId}"]`,
-      },
-    });
+
+    const buttonSelector = this.addPopularNetworkByChainIdIcon(chainId);
+
+    await this.driver.clickElementAndWaitToDisappear(buttonSelector);
   }
 
   async clickCloseButton(): Promise<void> {
@@ -163,6 +163,13 @@ class SelectNetwork {
   async selectNetworkName(networkName: string): Promise<void> {
     console.log(`Click ${networkName}`);
     const networkNameItem = `[data-testid="${networkName}"]`;
+    await this.driver.clickElementAndWaitToDisappear(networkNameItem);
+    await this.driver.assertElementNotPresent('.loading-overlay');
+  }
+
+  async selectNetworkByChainId(chainId: string): Promise<void> {
+    console.log(`Click ${chainId}`);
+    const networkNameItem = `[data-testid="network-list-item-${chainId}"]`;
     await this.driver.clickElementAndWaitToDisappear(networkNameItem);
     await this.driver.assertElementNotPresent('.loading-overlay');
   }

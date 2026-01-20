@@ -1,5 +1,6 @@
-import { Messenger } from '@metamask/base-controller';
 import { AllowedActions, AllowedEvents } from '@metamask/accounts-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../lib/messenger';
 
 export type AccountsControllerMessenger = ReturnType<
   typeof getAccountsControllerMessenger
@@ -13,15 +14,24 @@ export type AccountsControllerMessenger = ReturnType<
  * messenger.
  */
 export function getAccountsControllerMessenger(
-  messenger: Messenger<AllowedActions, AllowedEvents>,
+  messenger: RootMessenger<AllowedActions, AllowedEvents>,
 ) {
-  return messenger.getRestricted({
-    name: 'AccountsController',
-    allowedActions: [
+  const accountsControllerMessenger = new Messenger<
+    'AccountsController',
+    AllowedActions,
+    AllowedEvents,
+    typeof messenger
+  >({
+    namespace: 'AccountsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: accountsControllerMessenger,
+    actions: [
       'KeyringController:getState',
       'KeyringController:getKeyringsByType',
     ],
-    allowedEvents: [
+    events: [
       'SnapController:stateChange',
       'KeyringController:stateChange',
       'SnapKeyring:accountAssetListUpdated',
@@ -30,4 +40,5 @@ export function getAccountsControllerMessenger(
       'MultichainNetworkController:networkDidChange',
     ],
   });
+  return accountsControllerMessenger;
 }

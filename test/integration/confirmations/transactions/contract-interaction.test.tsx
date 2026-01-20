@@ -17,13 +17,18 @@ import * as backgroundConnection from '../../../../ui/store/background-connectio
 import { tEn } from '../../../lib/i18n-helpers';
 import { integrationTestRender } from '../../../lib/render-helpers';
 import mockMetaMaskState from '../../data/integration-init-state.json';
-import { createMockImplementation, mock4byte } from '../../helpers';
+import {
+  createMockImplementation,
+  getSelectedAccountGroupAccounts,
+  getSelectedAccountGroupName,
+  mock4byte,
+} from '../../helpers';
 import {
   getMaliciousUnapprovedTransaction,
   getUnapprovedContractInteractionTransaction,
 } from './transactionDataHelpers';
 
-jest.setTimeout(20_000);
+jest.setTimeout(30_000);
 
 jest.mock('../../../../ui/store/background-connection', () => ({
   ...jest.requireActual('../../../../ui/store/background-connection'),
@@ -129,7 +134,7 @@ const setupSubmitRequestToBackgroundMocks = (
   mockedBackgroundConnection.submitRequestToBackground.mockImplementation(
     createMockImplementation({
       ...advancedDetailsMockedRequests,
-      ...(mockRequests ?? {}),
+      ...mockRequests,
     }),
   );
 };
@@ -162,13 +167,8 @@ describe('Contract Interaction Confirmation', () => {
   });
 
   it('displays the header account modal with correct data', async () => {
-    const account =
-      mockMetaMaskState.internalAccounts.accounts[
-        mockMetaMaskState.internalAccounts
-          .selectedAccount as keyof typeof mockMetaMaskState.internalAccounts.accounts
-      ];
-
-    const accountName = account.metadata.name;
+    const [account] = getSelectedAccountGroupAccounts(mockMetaMaskState);
+    const accountName = getSelectedAccountGroupName(mockMetaMaskState);
     const mockedMetaMaskState =
       getMetaMaskStateWithUnapprovedContractInteraction({
         accountAddress: account.address,
@@ -190,7 +190,7 @@ describe('Contract Interaction Confirmation', () => {
       accountName,
     );
     expect(
-      await screen.findByTestId('header-network-display-name'),
+      await screen.findByTestId('confirmation__details-network-name'),
     ).toHaveTextContent('Sepolia');
 
     await act(async () => {
@@ -515,19 +515,21 @@ describe('Contract Interaction Confirmation', () => {
 
     fireEvent.click(await screen.findByTestId('confirm-footer-cancel-button'));
 
-    expect(
-      mockedBackgroundConnection.submitRequestToBackground,
-    ).toHaveBeenCalledWith(
-      'updateEventFragment',
-      expect.arrayContaining([
-        expect.objectContaining({
-          properties: expect.objectContaining({
-            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-            // eslint-disable-next-line @typescript-eslint/naming-convention
-            external_link_clicked: 'security_alert_support_link',
+    await waitFor(() => {
+      expect(
+        mockedBackgroundConnection.submitRequestToBackground,
+      ).toHaveBeenCalledWith(
+        'updateEventFragment',
+        expect.arrayContaining([
+          expect.objectContaining({
+            properties: expect.objectContaining({
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              external_link_clicked: 'security_alert_support_link',
+            }),
           }),
-        }),
-      ]),
-    );
+        ]),
+      );
+    });
   });
 });

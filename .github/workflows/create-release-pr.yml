@@ -69,27 +69,28 @@ jobs:
         shell: bash
         env:
           SEMVER: ${{ inputs.semver-version }}
-          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           .github/scripts/resolve-previous-ref.sh
 
   create-release-pr:
     needs: [resolve-bases, resolve-previous-ref]
     name: Create Release Pull Request using Github Tools
-    uses: MetaMask/github-tools/.github/workflows/create-release-pr.yml@7fe185fdb0e60981c898e88d82e44ff33f604daa
-    with:
-      platform: extension
-      checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
-      release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
-      semver-version: ${{ inputs.semver-version }}
-      previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
-      github-tools-version: 7fe185fdb0e60981c898e88d82e44ff33f604daa
-    secrets:
-      # This token needs write permissions to metamask-extension & read permissions to metamask-planning
-      # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
-      # (this is due to github limitations on fetching secrets from called workflows).
-      github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
-      google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}
+    runs-on: ubuntu-latest
     permissions:
       contents: write
       pull-requests: write
+    steps:
+      - name: Create Release PR
+        uses: MetaMask/github-tools/.github/actions/create-release-pr@v1
+        with:
+          platform: extension
+          checkout-base-branch: ${{ needs.resolve-bases.outputs.checkout_base }}
+          release-pr-base-branch: ${{ needs.resolve-bases.outputs.release_base }}
+          semver-version: ${{ inputs.semver-version }}
+          previous-version-ref: ${{ needs.resolve-previous-ref.outputs.previous_ref }}
+          # This token needs write permissions to metamask-extension & read permissions to metamask-planning
+          # If called from auto-create-release-pr use the PR_TOKEN passed in as an input, if called manually use github secret token values
+          # (this is due to github limitations on fetching secrets from called workflows).
+          github-token: ${{ github.event_name == 'workflow_dispatch' && secrets.PR_TOKEN || secrets.github-token }}
+          google-application-creds-base64: ${{ github.event_name == 'workflow_dispatch' && secrets.GCP_RLS_SHEET_ACCOUNT_BASE64 || secrets.google-application-creds-base64 }}

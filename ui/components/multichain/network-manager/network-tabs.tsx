@@ -35,12 +35,17 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
             className: 'network-manager__tab-content',
           }}
         >
-          <Tab tabKey="networks" name={t('networkTabPopular') ?? 'Popular'}>
+          <Tab
+            tabKey="networks"
+            name={t('networkTabPopular') ?? 'Popular'}
+            className="flex-1"
+          >
             <DefaultNetworks />
           </Tab>
           <Tab
             tabKey="custom-networks"
             name={t('networkTabCustom') ?? 'Custom'}
+            className="flex-1"
           >
             <CustomNetworks />
           </Tab>

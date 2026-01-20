@@ -3,9 +3,10 @@ import { Mockttp } from 'mockttp';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
@@ -15,6 +16,9 @@ describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.TEST_SNAPS],
+        },
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),

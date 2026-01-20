@@ -13,12 +13,28 @@ import Dropdown from '../../../components/ui/dropdown';
 import { getURLHostName } from '../../../helpers/utils/util';
 
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
+import { capitalizeStr } from './utils';
 
 class AccountList extends Component {
   state = {
     pathValue: null,
   };
+
+  componentDidMount() {
+    const { device } = this.props;
+    const { trackEvent } = this.context;
+
+    trackEvent({
+      event: MetaMetricsEventName.ConnectHardwareWalletAccountSelectorViewed,
+      properties: {
+        device_type: capitalizeStr(device),
+      },
+    });
+  }
 
   goToNextPage = () => {
     // If we have < 5 accounts, it's restricted by BIP-44
@@ -64,10 +80,6 @@ class AccountList extends Component {
         </div>
       </div>
     );
-  }
-
-  capitalizeDevice(device) {
-    return device.slice(0, 1).toUpperCase() + device.slice(1);
   }
 
   renderHeader() {
@@ -237,7 +249,13 @@ class AccountList extends Component {
   renderForgetDevice() {
     return (
       <div className="hw-forget-device-container">
-        <a onClick={this.props.onForgetDevice.bind(this, this.props.device)}>
+        <a
+          onClick={this.props.onForgetDevice.bind(
+            this,
+            this.props.device,
+            this.props.selectedPath,
+          )}
+        >
           {this.context.t('forgetDevice')}
         </a>
       </div>

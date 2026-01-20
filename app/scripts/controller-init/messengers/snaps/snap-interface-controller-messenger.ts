@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AccountsControllerListMultichainAccountsAction,
   GetSnap,
@@ -14,6 +14,8 @@ import {
   AccountsControllerGetAccountByAddressAction,
   AccountsControllerGetSelectedMultichainAccountAction,
 } from '@metamask/accounts-controller';
+import { HasPermission } from '@metamask/permission-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | MaybeUpdateState
@@ -24,7 +26,8 @@ type Actions =
   | MultichainAssetsControllerGetStateAction
   | AccountsControllerGetSelectedMultichainAccountAction
   | AccountsControllerGetAccountByAddressAction
-  | AccountsControllerListMultichainAccountsAction;
+  | AccountsControllerListMultichainAccountsAction
+  | HasPermission;
 
 type Events = NotificationListUpdatedEvent;
 
@@ -41,11 +44,20 @@ export type SnapInterfaceControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapInterfaceControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapInterfaceController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SnapInterfaceController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapInterfaceController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       `PhishingController:maybeUpdateState`,
       `PhishingController:testOrigin`,
       `ApprovalController:hasRequest`,
@@ -55,7 +67,9 @@ export function getSnapInterfaceControllerMessenger(
       `AccountsController:getSelectedMultichainAccount`,
       `AccountsController:getAccountByAddress`,
       `AccountsController:listMultichainAccounts`,
+      `PermissionController:hasPermission`,
     ],
-    allowedEvents: ['NotificationServicesController:notificationsListUpdated'],
+    events: ['NotificationServicesController:notificationsListUpdated'],
   });
+  return controllerMessenger;
 }

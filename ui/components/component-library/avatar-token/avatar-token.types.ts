@@ -1,6 +1,9 @@
 import type { PolymorphicComponentPropWithRef } from '../box';
 import type { AvatarBaseStyleUtilityProps } from '../avatar-base/avatar-base.types';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum AvatarTokenSize {
   Xs = 'xs',
   Sm = 'sm',

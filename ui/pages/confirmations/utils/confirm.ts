@@ -109,3 +109,13 @@ export const toPunycodeURL = (urlString: string): string | undefined => {
     return undefined;
   }
 };
+
+/**
+ * Removes the protocol (http://, https://, etc.) from a URL
+ *
+ * @param urlString - The URL to strip the protocol from
+ * @returns The URL without the protocol
+ */
+export const stripProtocol = (urlString: string): string => {
+  return urlString.replace(/^\w+:\/\//u, '');
+};

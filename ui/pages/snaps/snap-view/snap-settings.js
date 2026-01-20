@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import semver from 'semver';
 import { isSnapId } from '@metamask/snaps-utils';
 import { useI18nContext } from '../../../hooks/useI18nContext';
@@ -35,9 +35,7 @@ import {
   getPermissions,
   getSnapLatestVersion,
   getSnapMetadata,
-  ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  getMemoizedMetaMaskInternalAccounts,
-  ///: END:ONLY_INCLUDE_IF
+  getInternalAccounts,
 } from '../../../selectors';
 import {
   Box,
@@ -57,7 +55,7 @@ import { KeyringSnapRemovalResultStatus } from './constants';
 ///: END:ONLY_INCLUDE_IF
 
 function SnapSettings({ snapId, initRemove, resetInitRemove }) {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const snaps = useSelector(getSnaps);
   const dispatch = useDispatch();
@@ -73,7 +71,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
   // eslint-disable-next-line no-unused-vars -- Main build does not use setKeyringAccounts
   const [keyringAccounts, setKeyringAccounts] = useState([]);
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  const internalAccounts = useSelector(getMemoizedMetaMaskInternalAccounts);
+  const internalAccounts = useSelector(getInternalAccounts);
   ///: END:ONLY_INCLUDE_IF
 
   const connectedSubjects = useSelector((state) =>
@@ -95,9 +93,8 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     if (isKeyringSnap) {
       (async () => {
         const addresses = await getSnapAccountsById(snap.id);
-        const snapIdentities = Object.values(internalAccounts).filter(
-          (internalAccount) =>
-            addresses.includes(internalAccount.address.toLowerCase()),
+        const snapIdentities = internalAccounts.filter((internalAccount) =>
+          addresses.includes(internalAccount.address.toLowerCase()),
         );
         setKeyringAccounts(snapIdentities);
       })();
@@ -126,7 +123,7 @@ function SnapSettings({ snapId, initRemove, resetInitRemove }) {
     const approvalId = await dispatch(updateSnap('MetaMask', snapToInstall));
 
     if (approvalId) {
-      history.push(`${CONNECT_ROUTE}/${approvalId}`);
+      navigate(`${CONNECT_ROUTE}/${approvalId}`);
     }
   };
 

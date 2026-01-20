@@ -77,15 +77,10 @@ export const createCaipStream = (portStream: Duplex): Duplex => {
   };
 
   // 1. Listen for tab/iframe shutdown signals
-  // a. Node-style streams emit 'close' and/or 'end'
+  // A DuplexStream streams emits 'close' and/or 'end' event. If it is an ExtensionPortStream,
+  // it automatically calls `destroy` on the stream when the chrome.runtime.Port disconnects.
   portStream.once?.('close', handlePortGone);
   portStream.once?.('end', handlePortGone);
-
-  // b. chrome.runtime.Port exposes onDisconnect
-  //    (ExtensionPortStream exposes the raw Port at `._port`)
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const rawPort: chrome.runtime.Port | undefined = (portStream as any)?._port;
-  rawPort?.onDisconnect?.addListener(handlePortGone);
 
   // 2. Wire up the full duplex pipeline
   pipeline(portStream, caipStream, portStream, (err: Error | null) => {

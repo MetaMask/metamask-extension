@@ -17,7 +17,7 @@ import { AvatarNetwork, AvatarNetworkSize } from '../avatar-network';
 import { Text } from '../text';
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarToken',
+  title: 'Components/ComponentLibrary/AvatarToken (deprecated)',
   component: AvatarToken,
   parameters: {
     docs: {

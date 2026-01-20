@@ -17,11 +17,13 @@ export const EstimatedChanges = ({
   tokenAddress,
   chainId,
   productPrice,
+  tokenSymbol,
 }: {
   approvalAmount: string;
   tokenAddress: Hex;
   chainId: Hex;
   productPrice?: ProductPrice;
+  tokenSymbol?: string;
 }) => {
   const t = useI18nContext();
 
@@ -36,9 +38,9 @@ export const EstimatedChanges = ({
         tooltip={
           isYearlySubscription
             ? null
-            : t('shieldEstimatedChangesMonthlyTooltip', [
-                approvalAmount,
-                Number(approvalAmount) / 12,
+            : t('shieldEstimatedChangesMonthlyTooltipText', [
+                `$${Number(approvalAmount) / 12}`,
+                `$${approvalAmount}`,
               ])
         }
       />
@@ -50,6 +52,7 @@ export const EstimatedChanges = ({
             type={NameType.ETHEREUM_ADDRESS}
             preferContractSymbol
             variation={chainId}
+            fallbackName={tokenSymbol}
           />
         </Box>
       </ConfirmInfoRow>
