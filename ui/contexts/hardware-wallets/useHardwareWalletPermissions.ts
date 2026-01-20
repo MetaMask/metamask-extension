@@ -96,14 +96,17 @@ export const useHardwareWalletPermissions = ({
       const permissionState =
         await checkHardwareWalletPermission(targetWalletType);
 
-      // Only update state if this request wasn't aborted by a newer one
-      if (!abortController.signal.aborted) {
+      // Only update state if this request wasn't aborted and not externally aborted
+      if (
+        !abortController.signal.aborted &&
+        !refs.abortControllerRef.current?.signal.aborted
+      ) {
         setHardwareConnectionPermissionState(permissionState);
       }
 
       return permissionState;
     },
-    [setHardwareConnectionPermissionState],
+    [refs, setHardwareConnectionPermissionState],
   );
 
   const requestHardwareWalletPermissionAction = useCallback(
@@ -115,8 +118,11 @@ export const useHardwareWalletPermissions = ({
 
       const granted = await requestHardwareWalletPermission(targetWalletType);
 
-      // Only update state if this request wasn't aborted by a newer one
-      if (!abortController.signal.aborted) {
+      // Only update state if this request wasn't aborted and not externally aborted
+      if (
+        !abortController.signal.aborted &&
+        !refs.abortControllerRef.current?.signal.aborted
+      ) {
         setHardwareConnectionPermissionState(
           granted
             ? HardwareConnectionPermissionState.Granted
@@ -126,7 +132,7 @@ export const useHardwareWalletPermissions = ({
 
       return granted;
     },
-    [setHardwareConnectionPermissionState],
+    [refs, setHardwareConnectionPermissionState],
   );
 
   return {
