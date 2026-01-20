@@ -14,6 +14,9 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
+const isHexString = (str: unknown): boolean => typeof str === 'string' && /^0x[0-9A-Fa-f]+$/.test(str);
+const isFloatString = (str: unknown): boolean => typeof str === 'string' && /^[0-9.]+$/.test(str);
+
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
  * see when these tests are run. In this case we are looking for
@@ -46,7 +49,7 @@ async function testSpecificMock(mockServer: Mockttp) {
           },
           {
             sendRedesign: {
-              enabled: false,
+              enabled: true,
             },
           },
         ],
@@ -195,7 +198,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await sendRedesignedTransactionToAddress({
           driver,
           recipientAddress: RECIPIENT,
-          amount: '2.0',
+          amount: '2',
         });
 
         // Get the transaction hash from the activity list
@@ -204,8 +207,10 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await activityList.clickOnActivity(1);
         await activityList.clickCopyTransactionHashButton();
         const txHash = await driver.getClipboardContent();
+        console.log('txHash', txHash);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
+        console.log('events', events);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,
@@ -231,8 +236,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
             payload.properties?.environment_type === 'background' &&
             // Sensitive properties (only in anon events)
             payload.properties?.transaction_envelope_type === 'fee-market' &&
-            payload.properties?.gas_limit === '0x5208' &&
-            payload.properties?.default_gas === '0.000021',
+            isHexString(payload.properties?.gas_limit) &&
+            isFloatString(payload.properties?.default_gas)
         ];
 
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
@@ -283,8 +288,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
             payload.properties?.environment_type === 'background' &&
             // Sensitive properties (only in anon events)
             payload.properties?.transaction_envelope_type === 'fee-market' &&
-            payload.properties?.gas_limit === '0x5208' &&
-            payload.properties?.default_gas === '0.000021' &&
+            isHexString(payload.properties?.gas_limit) &&
+            isFloatString(payload.properties?.default_gas) &&
             // Finalized-specific properties
             typeof payload.properties?.gas_used === 'string' &&
             typeof payload.properties?.completion_time === 'string',

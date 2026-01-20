@@ -4,6 +4,8 @@ import { Driver } from '../../webdriver/driver';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../pages/home/activity-list';
+import SendPage from '../pages/send/send-page';
+import SendTokenConfirmPage from '../pages/send/send-token-confirmation-page';
 
 /**
  * This function initiates the steps required to send a transaction from the homepage to final confirmation.
@@ -30,15 +32,20 @@ export const sendRedesignedTransactionToAddress = async ({
   await homePage.startSendFlow();
 
   // user should land on send token screen to fill recipient and amount
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient(recipientAddress);
-  await sendToPage.fillAmount(amount);
-  await sendToPage.goToNextScreen();
+  const sendPage = new SendPage(driver);
+  const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
+  const activityListPage = new ActivityListPage(driver);
+
+  await sendPage.selectToken('0x539', 'ETH');
+  await sendPage.fillRecipient(recipientAddress);
+  await sendPage.fillAmount(amount);
+  await sendPage.pressContinueButton();
+  await sendTokenConfirmationPage.clickOnConfirm();
 
   // confirm transaction when user lands on confirm transaction screen
-  const transactionConfirmationPage = new TransactionConfirmation(driver);
-  await transactionConfirmationPage.clickFooterConfirmButton();
+  await activityListPage.checkTransactionActivityByText('Sent');
+  await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
+  await activityListPage.checkTxAmountInActivity(`-${amount} ETH`);
 };
 
 /**

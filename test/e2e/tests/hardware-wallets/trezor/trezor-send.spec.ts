@@ -8,6 +8,7 @@ import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { sendRedesignedTransactionToAddress } from '../../../page-objects/flows/send-transaction.flow';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { mockSendRedesignFeatureFlag } from '../../send/common';
 
 const RECIPIENT = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -23,6 +24,7 @@ describe('Trezor Hardware', function (this: Suite) {
           localNodeOptions: {
             hardfork: testCase.hardfork,
           },
+          testSpecificMock: mockSendRedesignFeatureFlag,
           title: this.test?.fullTitle(),
         },
         async ({
