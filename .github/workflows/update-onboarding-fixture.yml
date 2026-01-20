@@ -230,7 +230,7 @@ jobs:
       - name: Check whether there are fixture changes
         id: fixture-changes
         run: |
-          if git diff --exit-code
+          if git diff --exit-code test/e2e/fixtures/onboarding-fixture.json
           then
             echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
           else
@@ -262,6 +262,7 @@ jobs:
     name: Check whether the fixture update succeeded
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    if: always()
     needs:
       - commit-updated-fixture
     outputs:
@@ -269,7 +270,12 @@ jobs:
     steps:
       - name: Set PASSED output
         id: set-output
-        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+        run: |
+          if [[ "${{ needs.commit-updated-fixture.result }}" == "success" ]]; then
+            echo "PASSED=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "PASSED=false" >> "$GITHUB_OUTPUT"
+          fi
 
   failure-comment:
     name: Comment about the fixture update failure

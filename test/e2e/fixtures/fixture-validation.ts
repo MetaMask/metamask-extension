@@ -247,8 +247,21 @@ export const mergeFixtureChanges = (
     }
     processedPaths.add(leafPath);
 
-    // Delete the specific property
-    deleteNestedValue(merged, leafPath);
+    // If the key path was an array path (leafPath differs from keyPath),
+    // update the array from newState instead of deleting it entirely.
+    // This handles the case where array items changed but the array still exists.
+    if (leafPath !== keyPath) {
+      const value = getNestedValue(newState, leafPath);
+      if (value !== undefined) {
+        setNestedValue(merged, leafPath, value);
+      } else {
+        // Array no longer exists in newState, delete it
+        deleteNestedValue(merged, leafPath);
+      }
+    } else {
+      // Regular property (not array), just delete it
+      deleteNestedValue(merged, leafPath);
+    }
   }
 
   // Update type mismatches - update only the specific property
