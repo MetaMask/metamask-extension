@@ -56,6 +56,23 @@ export async function mockTronFeatureFlags(
     }));
 }
 
+export async function mockBroadTransaction(
+  mockServer: Mockttp,
+): Promise<MockedEndpoint> {
+  return mockServer
+    .forPost(
+      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/broadcasttransaction',
+    )
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        code: 'TRANSACTION_EXPIRATION_ERROR',
+        txid: '6db783c4142b3749a4b598db4644155455c9206e2eca4b31efbd48e46773d9d5',
+        message: '5472616e73616374696f6e2065787069726564',
+      },
+    }));
+}
+
 export async function mockTronGetAccount(
   mockServer: Mockttp,
   mockZeroBalance?: boolean,
@@ -1026,6 +1043,7 @@ export async function mockTronApis(
     await mockTronSpotPrices(mockServer),
     await mockTrxNativeSpotPrices(mockServer),
     await mockTronAssets(mockServer),
+    await mockBroadTransaction(mockServer),
   ];
 }
 
