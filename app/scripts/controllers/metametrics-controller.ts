@@ -1360,6 +1360,7 @@ export default class MetaMetricsController extends BaseController<
     metamaskState: MetaMaskState,
   ): Partial<MetaMetricsUserTraits> | null {
     const { traits } = this.state;
+    const storageKindTrait = traits[MetaMetricsUserTrait.StorageKind];
 
     const currentTraits = {
       [MetaMetricsUserTrait.AddressBookEntries]: sum(
@@ -1369,6 +1370,9 @@ export default class MetaMetricsController extends BaseController<
         // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
         // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
         traits[MetaMetricsUserTrait.InstallDateExt] || '',
+      ...(storageKindTrait
+        ? { [MetaMetricsUserTrait.StorageKind]: storageKindTrait }
+        : {}),
       [MetaMetricsUserTrait.LedgerConnectionType]:
         metamaskState.ledgerTransportType,
       [MetaMetricsUserTrait.NetworksAdded]: Object.values(
