@@ -39,6 +39,7 @@ describe('ProfileMetricsControllerInit', () => {
       state: undefined,
       interval: expect.any(Number),
       assertUserOptedIn: expect.any(Function),
+      initialDelayDuration: expect.any(Number),
       getMetaMetricsId: expect.any(Function),
     });
   });

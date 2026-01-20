@@ -3,12 +3,14 @@ import {
   NetworkConfiguration,
   NetworkController,
   RpcEndpointType,
+  NetworkControllerMessenger,
 } from '@metamask/network-controller';
 import {
   DEFAULT_MAX_RETRIES,
   BlockExplorerUrl,
   ChainId,
 } from '@metamask/controller-utils';
+import { CONNECTIVITY_STATUSES } from '@metamask/connectivity-controller';
 import { hasProperty } from '@metamask/utils';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SECOND } from '../../../shared/constants/time';
@@ -23,12 +25,12 @@ import {
 } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { ControllerInitFunction } from './types';
-import {
-  NetworkControllerInitMessenger,
-  NetworkControllerMessenger,
-} from './messengers';
+import { NetworkControllerInitMessenger } from './messengers';
 
-export const ADDITIONAL_DEFAULT_NETWORKS = [ChainId['monad-testnet']];
+export const ADDITIONAL_DEFAULT_NETWORKS = [
+  ChainId['monad-testnet'],
+  ChainId['megaeth-testnet-v2'],
+];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {
   let initialNetworkControllerState = initialState;
@@ -40,25 +42,6 @@ function getInitialState(initialState?: Partial<NetworkController['state']>) {
 
     const networks =
       initialNetworkControllerState.networkConfigurationsByChainId ?? {};
-
-    // TODO: Remove this once the MegaETH Testnet v2 is released from the controller utils
-    networks['0x18c7'] = {
-      chainId: '0x18c7', // 6343
-      name: 'MegaETH Testnet',
-      nativeCurrency: 'MegaETH',
-      blockExplorerUrls: ['https://megaeth-testnet-v2.blockscout.com'],
-      defaultRpcEndpointIndex: 0,
-      defaultBlockExplorerUrlIndex: 0,
-      rpcEndpoints: [
-        {
-          // to align the same networkClientId from the controller utils
-          networkClientId: 'megaeth-testnet-v2',
-          url: 'https://timothy.megaeth.com/rpc',
-          type: RpcEndpointType.Custom,
-          failoverUrls: [],
-        },
-      ],
-    };
 
     // TODO: Consider changing `getDefaultNetworkControllerState` on the
     // controller side to include some of these tweaks.
@@ -221,9 +204,18 @@ export const NetworkControllerInit: ControllerInitFunction<
     // Note that the total number of attempts is 1 more than this
     // (which is why we add 1 below).
     const maxRetries = DEFAULT_MAX_RETRIES;
+    const isOffline = (): boolean => {
+      const connectivityState = controllerMessenger.call(
+        'ConnectivityController:getState',
+      );
+      return (
+        connectivityState.connectivityStatus === CONNECTIVITY_STATUSES.Offline
+      );
+    };
     const commonOptions = {
       fetch: globalThis.fetch.bind(globalThis),
       btoa: globalThis.btoa.bind(globalThis),
+      isOffline,
     };
     const commonPolicyOptions = {
       // Ensure that the "cooldown" period after breaking the circuit is short.

@@ -1,14 +1,19 @@
 import { useCallback } from 'react';
-import { type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Category,
+  ErrorCode,
+  HardwareWalletError,
+  Severity,
+} from '@metamask/hw-wallet-sdk';
 import {
   DeviceEvent,
   ConnectionStatus,
   type DeviceEventPayload,
   type HardwareWalletConnectionState,
+  HardwareWalletType,
 } from './types';
 import { ConnectionState } from './connectionState';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
-import { getConnectionStateFromError } from './errors';
 
 /**
  * Props required by device event handlers
@@ -23,8 +28,36 @@ export type DeviceEventHandlerProps = {
             prev: HardwareWalletConnectionState,
           ) => HardwareWalletConnectionState),
     ) => void;
+    cleanupAdapter: () => void;
+    abortAndCleanupController: () => void;
+    resetConnectionRefs: () => void;
   };
   onDeviceEvent?: (payload: DeviceEventPayload) => void;
+};
+
+/**
+ * Determines if the given app name is correct for the wallet type
+ *
+ * @param appName - The current app name
+ * @param walletType - The hardware wallet type
+ * @returns true if the app is correct, false otherwise
+ */
+const isCorrectAppForWallet = (
+  appName: string,
+  walletType: HardwareWalletType | null,
+): boolean => {
+  if (!walletType) {
+    return false;
+  }
+
+  // For Ledger devices, the correct app is "Ethereum"
+  if (walletType === HardwareWalletType.Ledger) {
+    return appName.toLowerCase() === 'ethereum';
+  }
+
+  // For other wallet types (Trezor, QR-based), app validation is handled differently
+  // or may not require specific app validation
+  return true;
 };
 
 /**
@@ -42,18 +75,18 @@ export const useDeviceEventHandlers = ({
 }: Omit<DeviceEventHandlerProps, 'state'>) => {
   const updateConnectionState = useCallback(
     (newState: HardwareWalletConnectionState) => {
-      setters.setConnectionState((prev) => {
-        if (prev.status !== newState.status) {
+      setters.setConnectionState((oldState) => {
+        if (oldState.status !== newState.status) {
           return newState;
         }
 
         if (
           newState.status === ConnectionStatus.ErrorState &&
-          prev.status === ConnectionStatus.ErrorState
+          oldState.status === ConnectionStatus.ErrorState
         ) {
           if (
-            prev.reason !== newState.reason ||
-            prev.error?.message !== newState.error?.message
+            oldState.reason !== newState.reason ||
+            oldState.error?.message !== newState.error?.message
           ) {
             return newState;
           }
@@ -61,17 +94,18 @@ export const useDeviceEventHandlers = ({
 
         if (
           newState.status === ConnectionStatus.AwaitingApp &&
-          prev.status === ConnectionStatus.AwaitingApp
+          oldState.status === ConnectionStatus.AwaitingApp
         ) {
           if (
-            prev.reason !== newState.reason ||
-            prev.appName !== newState.appName
+            oldState.reason !== newState.reason ||
+            oldState.appName !== newState.appName
           ) {
             return newState;
           }
         }
 
-        return prev;
+        // Nothing changed, keep using the same ref
+        return oldState;
       });
     },
     [setters],
@@ -79,23 +113,35 @@ export const useDeviceEventHandlers = ({
 
   const handleDeviceEvent = useCallback(
     (payload: DeviceEventPayload) => {
-      if (refs.abortControllerRef.current?.signal.aborted) {
+      const { abortControllerRef } = refs;
+
+      if (abortControllerRef.current?.signal.aborted) {
         return;
       }
 
-      console.log('[HardwareWalletEventHandlers] Device event:', payload.event);
-
       switch (payload.event) {
         case DeviceEvent.Disconnected:
-          if (!refs.isConnectingRef.current) {
-            updateConnectionState(ConnectionState.disconnected());
-          }
+          updateConnectionState(ConnectionState.disconnected());
           break;
 
         case DeviceEvent.DeviceLocked:
-          updateConnectionState(
-            ConnectionState.error('locked', payload.error as Error),
-          );
+          if (payload.error) {
+            updateConnectionState(
+              ConnectionState.error(DeviceEvent.DeviceLocked, payload.error),
+            );
+          } else {
+            updateConnectionState(
+              ConnectionState.error(
+                DeviceEvent.DeviceLocked,
+                new HardwareWalletError('Device is locked', {
+                  code: ErrorCode.AuthenticationDeviceLocked,
+                  severity: Severity.Err,
+                  category: Category.Authentication,
+                  userMessage: 'Device is locked',
+                }),
+              ),
+            );
+          }
           break;
 
         case DeviceEvent.AppNotOpen:
@@ -103,19 +149,69 @@ export const useDeviceEventHandlers = ({
           // that should show a modal to the user
           if (payload.error) {
             updateConnectionState(
-              ConnectionState.error('app_not_open', payload.error),
+              ConnectionState.error(DeviceEvent.AppNotOpen, payload.error),
             );
           } else {
-            updateConnectionState(ConnectionState.awaitingApp('not_open'));
+            updateConnectionState(
+              ConnectionState.awaitingApp(DeviceEvent.AppNotOpen),
+            );
           }
           break;
+
+        case DeviceEvent.AppChanged: {
+          // BOLOS is the Ledger OS dashboard - means no app is open
+          const currentAppName = payload.currentAppName ?? 'BOLOS';
+          // Check if the app is correct for this wallet type
+          if (
+            isCorrectAppForWallet(currentAppName, refs.walletTypeRef.current)
+          ) {
+            // If correct app, clear any awaiting state since device is ready
+            updateConnectionState(ConnectionState.ready());
+            break;
+          }
+          // If wrong app, set awaiting state with wrong_app reason
+          updateConnectionState(
+            ConnectionState.awaitingApp(DeviceEvent.AppNotOpen, currentAppName),
+          );
+          break;
+        }
 
         case DeviceEvent.ConnectionFailed:
           if (payload.error) {
             updateConnectionState(
-              ConnectionState.error('connection_failed', payload.error),
+              ConnectionState.error(
+                DeviceEvent.ConnectionFailed,
+                payload.error,
+              ),
+            );
+          } else {
+            updateConnectionState(
+              ConnectionState.error(
+                DeviceEvent.ConnectionFailed,
+                new HardwareWalletError('Hardware wallet connection failed', {
+                  code: ErrorCode.ConnectionTransportMissing,
+                  severity: Severity.Err,
+                  category: Category.Connection,
+                  userMessage: 'Hardware wallet connection failed',
+                }),
+              ),
             );
           }
+          break;
+
+        case DeviceEvent.OperationTimeout:
+          updateConnectionState(
+            ConnectionState.error(
+              DeviceEvent.OperationTimeout,
+              payload.error ??
+                new HardwareWalletError('Operation timed out', {
+                  code: ErrorCode.ConnectionTimeout,
+                  severity: Severity.Err,
+                  category: Category.Protocol,
+                  userMessage: 'Operation timed out',
+                }),
+            ),
+          );
           break;
 
         default:
@@ -125,39 +221,42 @@ export const useDeviceEventHandlers = ({
       // Forward event to adapter if callback provided
       onDeviceEvent?.(payload);
     },
-    [refs, updateConnectionState, setters, onDeviceEvent],
+    // Adding ignore to exclude refs.
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [updateConnectionState, onDeviceEvent],
   );
 
   const handleDisconnect = useCallback(
     (disconnectError?: unknown) => {
-      if (refs.abortControllerRef.current?.signal.aborted) {
+      const { abortControllerRef } = refs;
+
+      if (abortControllerRef.current?.signal.aborted) {
         return;
       }
 
-      if (refs.isConnectingRef.current) {
-        return;
-      }
+      // Abort any ongoing operations and cleanup all refs
+      setters.abortAndCleanupController();
+      setters.cleanupAdapter();
+      setters.resetConnectionRefs();
 
-      refs.adapterRef.current = null;
-      refs.isConnectingRef.current = false;
-      refs.currentConnectionIdRef.current = null;
-
-      if (
-        disconnectError &&
-        typeof disconnectError === 'object' &&
-        'code' in disconnectError
-      ) {
+      if (disconnectError instanceof HardwareWalletError) {
         // Handle structured hardware wallet errors
-        updateConnectionState(
-          getConnectionStateFromError(
-            disconnectError as unknown as HardwareWalletError,
-          ),
-        );
+        updateConnectionState({
+          status: ConnectionStatus.ErrorState,
+          reason: disconnectError.message,
+          error: disconnectError,
+        });
       } else {
+        // Errors will be handled by the ErrorProvider
+        // Error provider will handle all the other error cases
         updateConnectionState(ConnectionState.disconnected());
       }
     },
-    [refs, updateConnectionState],
+    // Adding ignore to exclude refs.
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [setters, updateConnectionState],
   );
 
   return {

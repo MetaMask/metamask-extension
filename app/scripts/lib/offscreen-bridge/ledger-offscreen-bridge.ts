@@ -3,9 +3,7 @@ import {
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
-  handleLedgerTransportError,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
@@ -87,10 +85,12 @@ export class LedgerOffscreenBridge
   }
 
   getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
-    console.log('[LedgerOffscreenBridge] getAppNameAndVersion starting');
-    return this.#sendMessage({
-      action: LedgerAction.getAppAndName,
-    });
+    return this.#sendMessage(
+      {
+        action: LedgerAction.getAppNameAndVersion,
+      },
+      { timeout: MESSAGE_TIMEOUT },
+    );
   }
 
   getPublicKey(params: { hdPath: string }): Promise<{

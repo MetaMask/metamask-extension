@@ -96,6 +96,12 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           solana: {
             'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': true,
           },
+          tron: {
+            'tron:728126428': true,
+          },
+          bip122: {
+            'bip122:000000000019d6689c085ae165831e93': true,
+          },
         },
       },
       AccountOrderController: {

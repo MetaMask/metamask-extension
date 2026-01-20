@@ -77,6 +77,10 @@ const ClaimsList = () => {
       const id = isDraft
         ? (claimData as ClaimDraft).draftId
         : (claimData as Claim).id;
+
+      const displayId = isDraft
+        ? (claimData as ClaimDraft).draftId
+        : (claimData as Claim).shortId;
       return (
         <Box
           asChild
@@ -105,7 +109,7 @@ const ClaimsList = () => {
                 fontWeight={FontWeight.Medium}
                 textAlign={TextAlign.Left}
               >
-                {t('shieldClaimsNumber', [id])}
+                {t('shieldClaimsNumber', [displayId])}
               </Text>
               <Text
                 variant={TextVariant.BodySm}
@@ -141,10 +145,18 @@ const ClaimsList = () => {
             variant={TextVariant.HeadingSm}
             fontWeight={FontWeight.Medium}
             className="mb-3"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-heading' : undefined
+            }
           >
             {groupDetails.title}
           </Text>
-          <Box className="flex flex-col gap-2">
+          <Box
+            className="flex flex-col gap-2"
+            data-testid={
+              groupDetails.isDraft ? 'claims-group-drafts-list' : undefined
+            }
+          >
             {groupDetails.claims.map((claim) =>
               claimItem(
                 claim,

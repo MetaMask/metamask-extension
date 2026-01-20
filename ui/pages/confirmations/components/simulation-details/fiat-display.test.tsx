@@ -129,7 +129,7 @@ describe('FiatDisplay', () => {
         <TotalFiatDisplay fiatAmounts={[FIAT_UNAVAILABLE, FIAT_UNAVAILABLE]} />,
         mockStoreWithShowingFiatOnTestnets,
       );
-      expect(screen.getByText('Not Available')).toBeInTheDocument();
+      expect(screen.getByText('Not available')).toBeInTheDocument();
     });
   });
 });

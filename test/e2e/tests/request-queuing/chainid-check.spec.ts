@@ -1,18 +1,14 @@
 import { strict as assert } from 'assert';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
 import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
-import {
-  withFixtures,
-  unlockWallet,
-  DAPP_URL,
-  regularDelayMs,
-  WINDOW_TITLES,
-} from '../../helpers';
+import { withFixtures, regularDelayMs } from '../../helpers';
 import { PAGES } from '../../webdriver/driver';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import type { Driver } from '../../webdriver/driver';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Request Queueing chainId proxy sync', function () {
   it('should preserve per dapp network selections after connecting and switching without refresh calls', async function () {
@@ -40,7 +36,7 @@ describe('Request Queueing chainId proxy sync', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Navigate to extension home screen
         await driver.navigate(PAGES.HOME);

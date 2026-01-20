@@ -127,13 +127,36 @@ export const useHardwareWalletStateManager = () => {
       setDeviceId,
       setHardwareConnectionPermissionState,
       setConnectionState,
+      /**
+       * Cleans up the adapter by calling destroy() and nullifying the reference
+       */
+      cleanupAdapter: () => {
+        const adapter = adapterRef.current;
+        if (adapter) {
+          adapter.destroy();
+          adapterRef.current = null;
+        }
+      },
+      /**
+       * Aborts and cleans up the current AbortController
+       */
+      abortAndCleanupController: () => {
+        const controller = abortControllerRef.current;
+        if (controller) {
+          controller.abort();
+          abortControllerRef.current = null;
+        }
+      },
+      /**
+       * Resets connection-related refs to their initial state
+       */
+      resetConnectionRefs: () => {
+        isConnectingRef.current = false;
+        currentConnectionIdRef.current = null;
+      },
     }),
     [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
   );
-
-  useEffect(() => {
-    console.log('[Hardware Context]: State', state);
-  }, [state]);
 
   return {
     state,

@@ -1,11 +1,9 @@
 import { Browser } from 'selenium-webdriver';
 import { Mockttp } from 'mockttp';
+import { TEST_SEED_PHRASE, WALLET_PASSWORD } from '../../constants';
 import {
   convertToHexValue,
-  TEST_SEED_PHRASE,
-  WALLET_PASSWORD,
   withFixtures,
-  unlockWallet,
   isSidePanelEnabled,
 } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
@@ -27,6 +25,7 @@ import {
   onboardingMetricsFlow,
   handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
+import LoginPage from '../../page-objects/pages/login-page';
 
 const IMPORTED_SRP_ACCOUNT_1 = '0x0Cc5261AB8cE458dc977078A3623E2BaDD27afD3';
 
@@ -57,10 +56,9 @@ describe('MetaMask onboarding', function () {
         await incompleteCreateNewWalletOnboardingFlow({ driver });
         await driver.refresh();
 
-        await unlockWallet(driver, {
-          navigate: true,
-          password: WALLET_PASSWORD,
-        });
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
 
         const secureWalletPage = new SecureWalletPage(driver);
         await secureWalletPage.checkPageIsLoaded();
@@ -337,7 +335,10 @@ describe('MetaMask onboarding', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
         // First screen we should be on is MetaMetrics
         const onboardingMetricsPage = new OnboardingMetricsPage(driver);
         await onboardingMetricsPage.checkPageIsLoaded();
