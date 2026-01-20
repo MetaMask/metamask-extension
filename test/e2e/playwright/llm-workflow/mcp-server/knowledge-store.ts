@@ -217,6 +217,7 @@ const PRIOR_KNOWLEDGE_CONFIG = {
   maxSimilarSteps: 10,
   maxSuggestedActions: 5,
   maxAvoid: 5,
+  minAvoidFailureCount: 2,
 } as const;
 
 const SIMILARITY_WEIGHTS = {
@@ -1502,7 +1503,7 @@ export class KnowledgeStore {
 
     const failureEntries = Array.from(failureCounts.values());
     for (const failure of failureEntries) {
-      if (failure.count < 2) {
+      if (failure.count < PRIOR_KNOWLEDGE_CONFIG.minAvoidFailureCount) {
         continue;
       }
 
