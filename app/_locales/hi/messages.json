@@ -1272,9 +1272,6 @@
   "close": {
     "message": "बंद करें"
   },
-  "closeExtension": {
-    "message": "एक्सटेंशन को बंद करें"
-  },
   "closeSlide": {
     "message": "$1 बंद करें",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3890,9 +3887,6 @@
   "needImportFile": {
     "message": "इंपोर्ट करने के लिए आपको एक फाइल को चुनना होगा।",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ETH के नेगेटिव अमाउंट नहीं भेज सकते।"
   },
   "negativeOrZeroAmountToken": {
     "message": "नेगेटिव या ज़ीरो वैल्यू के एसेट नहीं भेज सकते।"

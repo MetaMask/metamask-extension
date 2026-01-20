@@ -1278,9 +1278,6 @@
   "close": {
     "message": "Kapat"
   },
-  "closeExtension": {
-    "message": "Uzantıyı kapat"
-  },
   "closeSlide": {
     "message": "Kapat: $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3896,9 +3893,6 @@
   "needImportFile": {
     "message": "İçe aktarılacak dosyayı seçmelisiniz.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Negatif tutarlarda ETH gönderilemez."
   },
   "negativeOrZeroAmountToken": {
     "message": "Eksi veya sıfır tutarlarda varlık gönderilemez."

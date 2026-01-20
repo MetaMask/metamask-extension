@@ -81,7 +81,7 @@
       "packages": {
         "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -94,7 +94,7 @@
       },
       "packages": {
         "@ethereumjs/tx>@ethereumjs/rlp": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true
       }
     },
@@ -105,7 +105,7 @@
       "packages": {
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -118,7 +118,7 @@
       "packages": {
         "@metamask/eth-sig-util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -131,7 +131,7 @@
       "packages": {
         "eth-lattice-keyring>@ethereumjs/util>@ethereumjs/rlp": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": true,
         "webpack>events": true,
         "browserify>insert-module-globals>is-buffer": true,
         "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
@@ -809,7 +809,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
         "uuid": true
       }
@@ -980,7 +980,7 @@
         "@metamask/keyring-api": true,
         "@metamask/metamask-eth-abis": true,
         "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/polling-controller": true,
+        "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "@metamask/transaction-pay-controller>bignumber.js": true,
@@ -1038,6 +1038,11 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/utils": true
+      }
+    },
+    "@metamask/connectivity-controller": {
+      "packages": {
+        "@metamask/base-controller": true
       }
     },
     "@metamask/controller-utils": {
@@ -1166,7 +1171,7 @@
         "@metamask/scure-bip39": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": true
       }
     },
     "@metamask/eth-json-rpc-filters": {
@@ -1194,6 +1199,20 @@
       }
     },
     "@metamask/eth-json-rpc-middleware": {
+      "globals": {
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/eth-sig-util": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/superstruct": true,
+        "@metamask/utils": true,
+        "@metamask/json-rpc-engine>klona": true,
+        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
+      }
+    },
+    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1270,7 +1289,7 @@
         "@metamask/utils": true,
         "@metamask/eth-sig-util>@scure/base": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/eth-sig-util>ethereum-cryptography": true,
         "tweetnacl": true
       }
     },
@@ -1280,7 +1299,7 @@
         "@metamask/eth-sig-util": true,
         "@metamask/utils": true,
         "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": true,
         "crypto-browserify>randombytes": true
       }
     },
@@ -1633,7 +1652,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/network-controller": true,
+        "@metamask/bridge-controller>@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1675,6 +1694,35 @@
       }
     },
     "@metamask/network-controller": {
+      "globals": {
+        "Intl.NumberFormat": true,
+        "URL": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "@metamask/base-controller": true,
+        "@metamask/connectivity-controller": true,
+        "@metamask/controller-utils": true,
+        "@metamask/network-controller>@metamask/eth-block-tracker": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
+        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-provider": true,
+        "@metamask/controller-utils>@metamask/eth-query": true,
+        "@metamask/json-rpc-engine": true,
+        "@metamask/rpc-errors": true,
+        "@metamask/network-controller>@metamask/swappable-obj-proxy": true,
+        "@metamask/utils": true,
+        "cockatiel": true,
+        "addons-linter>deepmerge": true,
+        "eslint>fast-deep-equal": true,
+        "immer": true,
+        "lodash": true,
+        "reselect": true,
+        "uri-js": true,
+        "uuid": true
+      }
+    },
+    "@metamask/bridge-controller>@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
         "URL": true,
@@ -1823,7 +1871,7 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/phishing-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
@@ -1840,24 +1888,12 @@
         "@metamask/base-controller": true,
         "@metamask/controller-utils": true,
         "@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography": true,
         "webpack-cli>fastest-levenshtein": true,
         "punycode": true
       }
     },
     "@metamask/bridge-controller>@metamask/polling-controller": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/base-controller": true,
-        "fast-json-stable-stringify": true,
-        "uuid": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/polling-controller": {
       "globals": {
         "clearTimeout": true,
         "console.error": true,
@@ -1946,6 +1982,7 @@
         "@metamask/controller-utils": true,
         "@metamask/bridge-controller>@metamask/polling-controller": true,
         "@metamask/profile-sync-controller": true,
+        "@metamask/utils": true,
         "@metamask/eth-qr-keyring>async-mutex": true
       }
     },
@@ -2109,9 +2146,12 @@
         "@metamask/controller-utils": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/smart-transactions-controller>@metamask/polling-controller": true,
+        "@metamask/superstruct": true,
         "@metamask/transaction-controller": true,
+        "@metamask/utils": true,
         "@metamask/smart-transactions-controller>bignumber.js": true,
-        "lodash": true
+        "lodash": true,
+        "reselect": true
       }
     },
     "@metamask/snaps-controllers": {
@@ -2395,12 +2435,57 @@
         "@noble/hashes": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@noble/curves": {
+    "ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
       "globals": {
         "TextEncoder": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@noble/hashes": {
@@ -2417,6 +2502,66 @@
       }
     },
     "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -2581,17 +2726,17 @@
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": {
       "globals": {
         "TextDecoder": true,
         "TextEncoder": true
       }
     },
-    "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": {
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": {
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/curves": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32>@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -3708,15 +3853,118 @@
         "eth-method-registry>@metamask/ethjs-query": true
       }
     },
+    "ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "ethereum-cryptography>@noble/curves": true,
+        "@noble/hashes": true
+      }
+    },
     "@ethereumjs/tx>ethereum-cryptography": {
       "globals": {
         "TextDecoder": true,
         "crypto": true
       },
       "packages": {
-        "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
-        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
-        "@ethereumjs/tx>ethereum-cryptography>@scure/bip32": true
+        "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "@ethereumjs/tx>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/curves": true,
+        "eth-lattice-keyring>@ethereumjs/util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@noble/hashes": true,
+        "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography>@scure/bip32": true
+      }
+    },
+    "@metamask/eth-sig-util>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/eth-sig-util>ethereum-cryptography>@noble/curves": true,
+        "@metamask/eth-sig-util>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/keyring-controller>@metamask/eth-simple-keyring>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/phishing-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/phishing-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "ethereumjs-util>ethereum-cryptography": {
