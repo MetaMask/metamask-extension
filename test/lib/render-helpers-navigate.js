@@ -60,7 +60,8 @@ function createProviderWrapper(
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
-  const mockMetaMetricsContext = createMockMetaMetricsContext(getMockTrackEvent);
+  const mockMetaMetricsContext =
+    createMockMetaMetricsContext(getMockTrackEvent);
 
   const Wrapper = ({ children }) => {
     const container = (

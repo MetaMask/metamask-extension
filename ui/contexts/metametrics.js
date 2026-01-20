@@ -289,7 +289,7 @@ export class LegacyMetaMetricsProvider extends Component {
   };
 
   getChildContext() {
-    const context = this.context;
+    const { context } = this;
     return {
       trackEvent: context.trackEvent,
       bufferedTrace: context.bufferedTrace,

@@ -47,7 +47,12 @@ export default function AccountExist() {
   const firstTimeFlowType = useSelector(getFirstTimeFlowType);
   const userSocialLoginEmail = useSelector(getSocialLoginEmail);
   const socialLoginType = useSelector(getSocialLoginType);
-  const { trackEvent, bufferedTrace, bufferedEndTrace, onboardingParentContext } = useContext(MetaMetricsContext);
+  const {
+    trackEvent,
+    bufferedTrace,
+    bufferedEndTrace,
+    onboardingParentContext,
+  } = useContext(MetaMetricsContext);
 
   const onLoginWithDifferentMethod = async (
     e: React.MouseEvent<HTMLButtonElement>,
