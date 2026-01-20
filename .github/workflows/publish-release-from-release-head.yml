@@ -144,6 +144,7 @@ jobs:
     name: Publish release
     needs:
       - validate-branch
+      - approve-release
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-flask-browserify
@@ -195,6 +196,7 @@ jobs:
       QUICKNODE_OPTIMISM_URL: ${{ secrets.QUICKNODE_OPTIMISM_URL }}
       QUICKNODE_POLYGON_URL: ${{ secrets.QUICKNODE_POLYGON_URL }}
       QUICKNODE_SEI_URL: ${{ secrets.QUICKNODE_SEI_URL }}
+      QUICKNODE_MONAD_URL: ${{ secrets.QUICKNODE_MONAD_URL }}
       SEGMENT_BETA_WRITE_KEY: ${{ secrets.SEGMENT_BETA_WRITE_KEY }}
       SEGMENT_EXPERIMENTAL_WRITE_KEY: ${{ secrets.SEGMENT_EXPERIMENTAL_WRITE_KEY }}
       SEGMENT_FLASK_WRITE_KEY: ${{ secrets.SEGMENT_FLASK_WRITE_KEY }}
