@@ -67,9 +67,10 @@ export const getPendingApprovals = createSelector(
   (approvals) => Object.values(approvals),
 );
 
-export function pendingApprovalsSortedSelector(state: ApprovalsMetaMaskState) {
-  return getPendingApprovals(state).sort((a1, a2) => a1.time - a2.time);
-}
+export const pendingApprovalsSortedSelector = createSelector(
+  getPendingApprovals,
+  (approvals) => [...approvals].sort((a1, a2) => a1.time - a2.time),
+);
 
 /**
  * Returns pending approvals sorted by time for use in confirmation navigation.
