@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
 import type { SortField } from '../market-row';
 
@@ -13,34 +14,34 @@ export type SortOptionId =
 
 export type SortOption = {
   id: SortOptionId;
-  label: string;
+  labelKey: string;
   field: SortField;
   direction: SortDirection;
 };
 
 export const SORT_OPTIONS: SortOption[] = [
-  { id: 'volume', label: 'Volume', field: 'volume', direction: 'desc' },
+  { id: 'volume', labelKey: 'perpsSortVolume', field: 'volume', direction: 'desc' },
   {
     id: 'priceChangeHigh',
-    label: 'Price change: high to low',
+    labelKey: 'perpsSortPriceChangeHighToLow',
     field: 'priceChange',
     direction: 'desc',
   },
   {
     id: 'priceChangeLow',
-    label: 'Price change: low to high',
+    labelKey: 'perpsSortPriceChangeLowToHigh',
     field: 'priceChange',
     direction: 'asc',
   },
   {
     id: 'openInterest',
-    label: 'Open interest',
+    labelKey: 'perpsSortOpenInterest',
     field: 'openInterest',
     direction: 'desc',
   },
   {
     id: 'fundingRate',
-    label: 'Funding rate',
+    labelKey: 'perpsSortFundingRate',
     field: 'fundingRate',
     direction: 'desc',
   },
@@ -68,9 +69,11 @@ export const SortDropdown: React.FC<SortDropdownProps> = ({
   selectedOptionId,
   onOptionChange,
 }) => {
+  const t = useI18nContext();
+
   const options: DropdownOption<SortOptionId>[] = useMemo(
-    () => SORT_OPTIONS.map((opt) => ({ id: opt.id, label: opt.label })),
-    [],
+    () => SORT_OPTIONS.map((opt) => ({ id: opt.id, label: t(opt.labelKey) })),
+    [t],
   );
 
   const handleChange = useCallback(
