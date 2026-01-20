@@ -117,9 +117,11 @@ export const MarketRow: React.FC<MarketRowProps> = ({
           gap={2}
         >
           <Text fontWeight={FontWeight.Medium}>{displaySymbol}</Text>
-          <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
-            {market.maxLeverage}
-          </Text>
+          <span className="shrink-0 rounded-md bg-background-muted px-1.5">
+            <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+              {market.maxLeverage}
+            </Text>
+          </span>
         </Box>
         <Text variant={TextVariant.BodySm} color={TextColor.TextAlternative}>
           {metricValue}
