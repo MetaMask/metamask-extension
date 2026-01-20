@@ -10,7 +10,11 @@ import {
   useHardwareWalletState,
   useHardwareWalletActions,
 } from './HardwareWalletContext';
-import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
+import {
+  HardwareWalletType,
+  HardwareConnectionPermissionState,
+  ConnectionStatus,
+} from './types';
 
 const mockStore = configureStore([]);
 
@@ -140,7 +144,9 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.isHardwareWalletAccount).toBe(false);
       expect(result.current.walletType).toBe(null);
-      expect(result.current.connectionState.status).toBe('disconnected');
+      expect(result.current.connectionState.status).toBe(
+        ConnectionStatus.Disconnected,
+      );
       expect(result.current.deviceId).toBe(null);
       expect(result.current.hardwareConnectionPermissionState).toBe(
         HardwareConnectionPermissionState.Unknown,
@@ -282,7 +288,7 @@ describe('HardwareWalletContext', () => {
 
       expect(result.current.connectionState).toEqual(
         expect.objectContaining({
-          status: 'disconnected',
+          status: ConnectionStatus.Disconnected,
         }),
       );
     });
@@ -294,7 +300,9 @@ describe('HardwareWalletContext', () => {
         wrapper: createWrapper(store),
       });
 
-      expect(result.current.connectionState.status).toBe('disconnected');
+      expect(result.current.connectionState.status).toBe(
+        ConnectionStatus.Disconnected,
+      );
     });
   });
 

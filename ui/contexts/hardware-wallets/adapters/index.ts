@@ -1,3 +1,4 @@
 export { LedgerAdapter } from './LedgerAdapter';
-export { TrezorAdapter } from './TrezorAdapter';
+export { NonHardwareAdapter } from './NonHardwareAdapter';
 export { QRAdapter } from './QRAdapter';
+export { TrezorAdapter } from './TrezorAdapter';
