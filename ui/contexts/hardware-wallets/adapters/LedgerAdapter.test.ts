@@ -618,6 +618,81 @@ describe('LedgerAdapter', () => {
         expect((error as Error).message).toBe('Verification failed');
       }
     });
+
+    it('preserves ConnectionTransportMissing error from connect() failure', async () => {
+      delete (window.navigator as { hid?: unknown }).hid;
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      try {
+        await adapter.ensureDeviceReady(deviceId);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HardwareWalletError);
+        expect((error as HardwareWalletError).code).toBe(
+          ErrorCode.ConnectionTransportMissing,
+        );
+      }
+    });
+
+    it('preserves AuthenticationDeviceLocked error from connect() failure', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      const lockError = new HardwareWalletError('Device is locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Err,
+        category: Category.Authentication,
+        userMessage: 'Device is locked',
+      });
+      mockAttemptLedgerTransportCreation.mockRejectedValue(lockError);
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      try {
+        await adapter.ensureDeviceReady(deviceId);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HardwareWalletError);
+        expect((error as HardwareWalletError).code).toBe(
+          ErrorCode.AuthenticationDeviceLocked,
+        );
+      }
+
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.DeviceLocked,
+          error: expect.any(Error),
+        }),
+      );
+    });
+
+    it('preserves DeviceDisconnected error from connect() failure when device not found', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([]);
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      try {
+        await adapter.ensureDeviceReady(deviceId);
+      } catch (error) {
+        expect(error).toBeInstanceOf(HardwareWalletError);
+        expect((error as HardwareWalletError).code).toBe(
+          ErrorCode.DeviceDisconnected,
+        );
+      }
+
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.Disconnected,
+          error: expect.any(Error),
+        }),
+      );
+    });
   });
 
   describe('edge cases', () => {

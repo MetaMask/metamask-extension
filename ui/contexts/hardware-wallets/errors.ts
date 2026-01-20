@@ -9,6 +9,7 @@ import { ConnectionState } from './connectionState';
 import {
   HardwareWalletType,
   type HardwareWalletConnectionState,
+  DeviceEvent,
 } from './types';
 
 /**
@@ -249,4 +250,31 @@ export function getConnectionStateFromError(
     default:
       return ConnectionState.error('unknown', error);
   }
+}
+
+/**
+ * Map error codes to device events for consistent error handling across adapters
+ */
+export const ERROR_CODE_TO_DEVICE_EVENT: Record<ErrorCode, DeviceEvent> = {
+  [ErrorCode.AuthenticationDeviceLocked]: DeviceEvent.DeviceLocked,
+  [ErrorCode.AuthenticationDeviceBlocked]: DeviceEvent.DeviceLocked,
+  [ErrorCode.DeviceStateEthAppClosed]: DeviceEvent.AppNotOpen,
+  [ErrorCode.DeviceDisconnected]: DeviceEvent.Disconnected,
+  [ErrorCode.ConnectionClosed]: DeviceEvent.Disconnected,
+};
+
+/**
+ * Get the appropriate device event for an error code
+ *
+ * @param errorCode - The error code
+ * @param defaultEvent - Default event if error code is not mapped
+ * @returns The corresponding device event
+ */
+export function getDeviceEventForError(
+  errorCode: ErrorCode | undefined,
+  defaultEvent: DeviceEvent = DeviceEvent.ConnectionFailed,
+): DeviceEvent {
+  return errorCode
+    ? (ERROR_CODE_TO_DEVICE_EVENT[errorCode] ?? defaultEvent)
+    : defaultEvent;
 }

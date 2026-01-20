@@ -4,7 +4,7 @@ import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
 } from '../../../store/actions';
-import { createHardwareWalletError } from '../errors';
+import { createHardwareWalletError, getDeviceEventForError } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -104,34 +104,12 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         HardwareWalletType.Ledger,
       );
 
-      const errorCode = hwError.code;
+      const deviceEvent = getDeviceEventForError(hwError.code);
 
-      if (errorCode) {
-        if (
-          errorCode === ErrorCode.AuthenticationDeviceLocked ||
-          errorCode === ErrorCode.AuthenticationDeviceBlocked
-        ) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.DeviceLocked,
-            error: hwError,
-          });
-        } else if (errorCode === ErrorCode.DeviceStateEthAppClosed) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.AppNotOpen,
-            error: hwError,
-          });
-        } else if (errorCode === ErrorCode.DeviceDisconnected) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error: hwError,
-          });
-        } else {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.ConnectionFailed,
-            error: hwError,
-          });
-        }
-      }
+      this.options.onDeviceEvent({
+        event: deviceEvent,
+        error: hwError,
+      });
 
       throw hwError;
     }
@@ -180,18 +158,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    */
   async ensureDeviceReady(deviceId: string): Promise<boolean> {
     if (!this.isConnected()) {
-      try {
-        await this.connect(deviceId);
-      } catch (error) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceDisconnected,
-          HardwareWalletType.Ledger,
-          error instanceof Error ? error.message : 'Unknown error',
-          {
-            cause: error instanceof Error ? error : undefined,
-          },
-        );
-      }
+      await this.connect(deviceId);
     }
 
     try {
@@ -210,42 +177,22 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     } catch (error) {
       if (error instanceof HardwareWalletError && error.code) {
         // Emit appropriate device events with the properly reconstructed error
-        if (
-          error.code === ErrorCode.AuthenticationDeviceLocked ||
-          error.code === ErrorCode.AuthenticationDeviceBlocked
-        ) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.DeviceLocked,
-            error,
-          });
-        } else if (error.code === ErrorCode.DeviceStateEthAppClosed) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.AppNotOpen,
-            error,
-          });
-        } else if (error.code === ErrorCode.DeviceDisconnected) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error,
-          });
-          // Reset connection state when device is disconnected
-          this.connected = false;
-          this.currentDeviceId = null;
-        } else if (error.code === ErrorCode.ConnectionClosed) {
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error,
-          });
-          // Reset connection state when connection is closed
-          this.connected = false;
-          this.currentDeviceId = null;
-        } else {
-          // Catch-all for other errors
-          this.options.onDeviceEvent({
-            event: DeviceEvent.Disconnected,
-            error,
-          });
-          // Reset connection state when any disconnection occurs
+        const deviceEvent = getDeviceEventForError(
+          error.code,
+          DeviceEvent.Disconnected,
+        );
+        this.options.onDeviceEvent({
+          event: deviceEvent,
+          error,
+        });
+
+        // Reset connection state for disconnection-related errors
+        const shouldResetConnection = [
+          ErrorCode.DeviceDisconnected,
+          ErrorCode.ConnectionClosed,
+        ].includes(error.code);
+
+        if (shouldResetConnection || deviceEvent === DeviceEvent.Disconnected) {
           this.connected = false;
           this.currentDeviceId = null;
         }
