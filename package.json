@@ -286,7 +286,6 @@
     "@ledgerhq/device-management-kit": "1.0.0",
     "@ledgerhq/device-signer-kit-ethereum": "1.9.5",
     "@ledgerhq/device-transport-kit-web-ble": "1.3.2",
-    "@ledgerhq/device-transport-kit-web-hid": "1.2.3",
     "@ledgerhq/errors": "^6.21.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
