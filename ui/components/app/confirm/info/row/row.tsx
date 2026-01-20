@@ -196,7 +196,15 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
             {!labelChildren && tooltip?.length && (
               <Tooltip
                 position="bottom"
-                html={<span style={{ whiteSpace: 'pre-line' }}>{tooltip}</span>}
+                {...(tooltip.includes('\n')
+                  ? {
+                      html: (
+                        <span style={{ whiteSpace: 'pre-line' }}>
+                          {tooltip}
+                        </span>
+                      ),
+                    }
+                  : { title: tooltip })}
                 style={{ display: 'flex' }}
               >
                 <Icon
