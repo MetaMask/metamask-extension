@@ -6,6 +6,7 @@ import { ApprovalType } from '@metamask/controller-utils';
 import { createSelector } from 'reselect';
 import { Json } from '@metamask/utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
+import { EMPTY_OBJECT } from './shared';
 
 export type ApprovalsMetaMaskState = {
   metamask: {
@@ -59,7 +60,7 @@ export function selectHasApprovalFlows(state: ApprovalsMetaMaskState) {
 }
 
 const getPendingApprovalsObject = (state: ApprovalsMetaMaskState) =>
-  state.metamask.pendingApprovals ?? {};
+  state.metamask.pendingApprovals ?? EMPTY_OBJECT;
 
 export const getPendingApprovals = createSelector(
   getPendingApprovalsObject,
