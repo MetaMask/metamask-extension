@@ -1877,7 +1877,7 @@ const addAppInstalledEvent = async () => {
     if (deferredDeepLink) {
       controller.appStateController.setDeferredDeepLink(deferredDeepLink);
       eventProperties.install_source = 'deeplink';
-      eventProperties.deepLink_path = deferredDeepLink.referringLink;
+      eventProperties.deeplink_path = deferredDeepLink.referringLink;
     }
 
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
