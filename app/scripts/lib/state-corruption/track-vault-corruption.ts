@@ -32,6 +32,7 @@
 // - The corruption type property tells us what we need to know
 // - Reliability matters more than extra metadata
 
+import { isObject } from '@metamask/utils';
 import { segment } from '../segment';
 import { VaultCorruptionType } from '../../../../shared/constants/state-corruption';
 import {
@@ -54,15 +55,28 @@ function getMetaMetricsFromBackup(backup: Backup | null): {
     return null;
   }
 
-  const metaMetricsState = backup.MetaMetricsController as {
-    participateInMetaMetrics?: boolean | null;
-    metaMetricsId?: string | null;
-  };
+  const metaMetricsState = backup.MetaMetricsController;
 
-  if (
-    metaMetricsState.participateInMetaMetrics !== true ||
-    !metaMetricsState.metaMetricsId
-  ) {
+  // Validate it's an object (defensive check in case state shape changes)
+  if (!isObject(metaMetricsState)) {
+    console.error(
+      'MetaMetricsController is not an object in backup state:',
+      typeof metaMetricsState,
+    );
+    return null;
+  }
+
+  // User hasn't opted in to MetaMetrics
+  if (metaMetricsState.participateInMetaMetrics !== true) {
+    return null;
+  }
+
+  // Validate metaMetricsId is a string
+  if (typeof metaMetricsState.metaMetricsId !== 'string') {
+    console.error(
+      'metaMetricsId is not a string in backup state:',
+      typeof metaMetricsState.metaMetricsId,
+    );
     return null;
   }
 
