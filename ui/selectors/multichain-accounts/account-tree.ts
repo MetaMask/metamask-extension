@@ -37,6 +37,7 @@ import { getMultichainNetworkConfigurationsByChainId } from '../multichain/netwo
 import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
   AccountGroupWithInternalAccounts,
+  AccountListStats,
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountGroupScopeToCaipAccountId,
@@ -939,5 +940,37 @@ export const getWalletIdsByType = createSelector(
     return Object.entries(wallets)
       .filter(([, wallet]) => wallet.type === walletType)
       .map(([walletId]) => walletId) as AccountWalletId[];
+  },
+);
+
+/**
+ * Get account list statistics (pinned count, hidden count, total accounts).
+ * Used for analytics tracking in the account list views.
+ *
+ * @param accountTree - Account tree state.
+ * @returns Object with pinnedCount, hiddenCount, and totalAccounts.
+ */
+export const getAccountListStats = createSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState): AccountListStats => {
+    let pinnedCount = 0;
+    let hiddenCount = 0;
+    let totalAccounts = 0;
+
+    if (accountTree?.wallets) {
+      for (const wallet of Object.values(accountTree.wallets)) {
+        for (const group of Object.values(wallet.groups || {})) {
+          totalAccounts += 1;
+          if (group.metadata?.pinned) {
+            pinnedCount += 1;
+          }
+          if (group.metadata?.hidden) {
+            hiddenCount += 1;
+          }
+        }
+      }
+    }
+
+    return { pinnedCount, hiddenCount, totalAccounts };
   },
 );
