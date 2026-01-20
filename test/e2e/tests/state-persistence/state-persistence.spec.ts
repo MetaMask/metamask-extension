@@ -1,11 +1,12 @@
 import assert from 'node:assert/strict';
 import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { PAGES, type Driver } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
 
 type DataStorage = {
   meta: {
@@ -312,9 +313,9 @@ const reloadExtension = async (driver: Driver) => {
  */
 const reloadAndUnlock = async (driver: Driver) => {
   await reloadExtension(driver);
-  await unlockWallet(driver, {
-    password: WALLET_PASSWORD,
-  });
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
   await ensureHomeReady(driver);
 };
 
@@ -370,9 +371,7 @@ describe('State Persistence', function () {
       });
     });
 
-    // Temporarily disabled
-    // eslint-disable-next-line mocha/no-skipped-tests
-    it.skip('should update from data state to split state', async function () {
+    it('should update from data state to split state', async function () {
       const accountName = 'Account 2';
 
       await withFixtures(
