@@ -1275,9 +1275,6 @@
   "close": {
     "message": "닫기"
   },
-  "closeExtension": {
-    "message": "확장 닫기"
-  },
   "closeSlide": {
     "message": "$1 닫기",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3893,9 +3890,6 @@
   "needImportFile": {
     "message": "반드시 가져올 파일을 선택해야 합니다.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "음수 ETH 양은 전송할 수 없습니다."
   },
   "negativeOrZeroAmountToken": {
     "message": "마이너스 또는 금액이 0인 자산은 보낼 수 없습니다."

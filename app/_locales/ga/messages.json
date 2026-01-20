@@ -1206,9 +1206,6 @@
   "close": {
     "message": "Dún"
   },
-  "closeExtension": {
-    "message": "Dún síneadh"
-  },
   "closeSlide": {
     "message": "Dún $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3657,9 +3654,6 @@
   "needImportFile": {
     "message": "Ní mór duit comhad a roghnú le hallmhairiú.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Ní féidir méideanna diúltacha ETH a sheoladh."
   },
   "negativeOrZeroAmountToken": {
     "message": "Ní féidir méideanna diúltacha ná nialasacha sócmhainne a sheoladh."

@@ -84,6 +84,7 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConnectivityController } from '@metamask/connectivity-controller';
 import {
   ProfileMetricsController,
   ProfileMetricsService,
@@ -205,7 +206,8 @@ export type Controller =
   | NetworkEnablementController
   | ClaimsService
   | ProfileMetricsController
-  | ProfileMetricsService;
+  | ProfileMetricsService
+  | ConnectivityController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
