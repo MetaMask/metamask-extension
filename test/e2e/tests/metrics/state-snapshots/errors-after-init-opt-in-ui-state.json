@@ -131,6 +131,13 @@
         "usdConversionRate": 0.2
       }
     },
+    "connectivityStatus": "online",
+    "throttledOrigins": "object",
+    "isSeedlessOnboardingUserAuthenticated": "boolean",
+    "activeQrCodeScanRequest": null,
+    "appActiveTab": "object",
+    "browserEnvironment": { "os": "string", "browser": "string" },
+    "connectedStatusPopoverHasBeenShown": true,
     "currentAppVersion": "string",
     "currentCurrency": "usd",
     "currentExtensionPopupId": "number",

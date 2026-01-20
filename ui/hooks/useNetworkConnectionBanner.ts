@@ -6,7 +6,7 @@ import {
   getNetworkConnectionBanner,
   getIsDeviceOffline,
 } from '../selectors/selectors';
-import { updateNetworkConnectionBanner, updateNetwork } from '../store/actions';
+import { updateNetworkConnectionBanner } from '../store/actions';
 import { MetaMetricsContext } from '../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -203,6 +203,7 @@ export const useNetworkConnectionBanner =
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
     // If the first unavailable network changes, reset all timers and change the status
     // If the device is offline, don't show network banners - the issue is device connectivity, not the network
+
     useEffect(() => {
       // When device is offline, clear timers and reset banner state
       // We don't want to show network degraded/unavailable banners when the real issue
