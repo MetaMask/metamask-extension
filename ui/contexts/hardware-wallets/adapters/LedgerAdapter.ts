@@ -245,6 +245,9 @@ export class LedgerAdapter implements HardwareWalletAdapter {
             event: DeviceEvent.Disconnected,
             error,
           });
+          // Reset connection state when any disconnection occurs
+          this.connected = false;
+          this.currentDeviceId = null;
         }
       }
 

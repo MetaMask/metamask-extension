@@ -502,12 +502,15 @@ describe('LedgerAdapter', () => {
       // Verify adapter is initially connected
       expect(adapter.isConnected()).toBe(true);
 
-      const connectionClosedError = new HardwareWalletError('Connection closed', {
-        code: ErrorCode.ConnectionClosed,
-        severity: Severity.Err,
-        category: Category.DeviceState,
-        userMessage: 'Connection closed',
-      });
+      const connectionClosedError = new HardwareWalletError(
+        'Connection closed',
+        {
+          code: ErrorCode.ConnectionClosed,
+          severity: Severity.Err,
+          category: Category.DeviceState,
+          userMessage: 'Connection closed',
+        },
+      );
       mockGetAppNameAndVersion.mockRejectedValue(connectionClosedError);
 
       await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
@@ -540,6 +543,39 @@ describe('LedgerAdapter', () => {
       // Filter out any calls that don't have an error (like successful events)
       const errorEventCalls = deviceEventCalls.filter((call) => call[0]?.error);
       expect(errorEventCalls.length).toBe(0);
+    });
+
+    it('emits DISCONNECTED event and resets state for unknown HardwareWalletError codes during verification', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect(deviceId);
+
+      // Verify adapter is initially connected
+      expect(adapter.isConnected()).toBe(true);
+
+      const unknownHwError = new HardwareWalletError('Unknown hardware error', {
+        code: ErrorCode.Unknown,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Unknown hardware error',
+      });
+      mockGetAppNameAndVersion.mockRejectedValue(unknownHwError);
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith(
+        expect.objectContaining({
+          event: DeviceEvent.Disconnected,
+          error: expect.any(Error),
+        }),
+      );
+
+      // Verify connection state is reset after unknown error
+      expect(adapter.isConnected()).toBe(false);
     });
 
     it('throws error when connection fails during verification', async () => {
