@@ -37,6 +37,11 @@ class ActivityListPage {
     tag: 'button',
   };
 
+  private readonly copyTransactionHashButton = {
+    text: 'Copy transaction ID',
+    tag: 'button',
+  };
+
   private readonly failedTransactions = {
     text: 'Failed',
     css: '.transaction-status-label--failed',
@@ -61,11 +66,6 @@ class ActivityListPage {
 
   private readonly viewTransactionOnExplorerButton = {
     text: 'View on block explorer',
-    tag: 'button',
-  };
-
-  private readonly copyTransactionHashButton = {
-    text: 'Copy transaction ID',
     tag: 'button',
   };
 
