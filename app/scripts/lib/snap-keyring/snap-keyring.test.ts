@@ -17,7 +17,6 @@ import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
 import {
   showAccountCreationDialog,
-  showAccountNameSuggestionDialog,
   snapKeyringBuilder,
 } from './snap-keyring';
 import {
@@ -259,30 +258,6 @@ describe('Snap Keyring Methods', () => {
       });
     });
 
-    describe('showAccountNameSuggestionDialog', () => {
-      it('shows account name suggestion dialog and return true on user confirmation', async () => {
-        const controllerMessenger = createControllerMessenger();
-        controllerMessenger.call('ApprovalController:startFlow');
-
-        await showAccountNameSuggestionDialog(
-          mockSnapId,
-          controllerMessenger,
-          accountNameSuggestion,
-        );
-
-        expect(mockAddRequest).toHaveBeenCalledTimes(1);
-        expect(mockAddRequest).toHaveBeenCalledWith([
-          {
-            origin: mockSnapId,
-            type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-            requestData: {
-              snapSuggestedAccountName: accountNameSuggestion,
-            },
-          },
-          true,
-        ]);
-      });
-    });
   });
 
   describe('addAccount', () => {
@@ -303,12 +278,11 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      // 1. Account creation confirmation dialogs (creation + account name suggestion)
+      // 1. Account creation confirmation dialogs
       // 2. Account creation summary dialog
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
       // 1. Account creation confirmation dialog
-      // 2. Account account name suggestion dialog
-      expect(mockAddRequest).toHaveBeenCalledTimes(2);
+      expect(mockAddRequest).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -317,16 +291,6 @@ describe('Snap Keyring Methods', () => {
         true,
       ]);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: '',
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
@@ -394,20 +358,11 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenCalledTimes(1);
+      // Only the finalize flow is started when confirmation is skipped
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      // No dialogs are shown when confirmation is skipped
+      expect(mockAddRequest).toHaveBeenCalledTimes(0);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            // No user defined name
-            snapSuggestedAccountName: '',
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
@@ -428,17 +383,13 @@ describe('Snap Keyring Methods', () => {
         },
       });
       expect(mockSetAccountName).not.toHaveBeenCalled();
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with confirmations and with a user defined name', async () => {
       const mockNameSuggestion = 'new name';
-      mockAddRequest.mockReturnValueOnce(true).mockReturnValueOnce({
-        success: true,
-        name: mockNameSuggestion,
-      });
+      mockAddRequest.mockReturnValueOnce(true);
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -450,9 +401,8 @@ describe('Snap Keyring Methods', () => {
       });
 
       expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      // First request for show account creation dialog
-      // Second request for account name suggestion second
-      expect(mockAddRequest).toHaveBeenCalledTimes(2);
+      // Only the account creation dialog is shown
+      expect(mockAddRequest).toHaveBeenCalledTimes(1);
       expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
         {
           origin: mockSnapId,
@@ -461,16 +411,6 @@ describe('Snap Keyring Methods', () => {
         true,
       ]);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(2, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: mockNameSuggestion,
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(3);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
@@ -532,10 +472,6 @@ describe('Snap Keyring Methods', () => {
 
     it('handles account creation with skipping confirmation and with user defined name', async () => {
       const mockNameSuggestion = 'suggested name';
-      mockAddRequest.mockReturnValueOnce({
-        success: true,
-        name: mockNameSuggestion,
-      });
       const builder = createSnapKeyringBuilder();
       await builder().handleKeyringSnapMessage(mockSnapId, {
         method: 'notify:accountCreated',
@@ -546,19 +482,11 @@ describe('Snap Keyring Methods', () => {
         },
       });
 
-      expect(mockStartFlow).toHaveBeenCalledTimes(2);
-      expect(mockAddRequest).toHaveBeenCalledTimes(1);
+      // Only the finalize flow is started when confirmation is skipped
+      expect(mockStartFlow).toHaveBeenCalledTimes(1);
+      // No dialogs are shown when confirmation is skipped
+      expect(mockAddRequest).toHaveBeenCalledTimes(0);
       expect(mockPersistKeyringHelper).toHaveBeenCalledTimes(1);
-      expect(mockAddRequest).toHaveBeenNthCalledWith(1, [
-        {
-          origin: mockSnapId,
-          type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-          requestData: {
-            snapSuggestedAccountName: mockNameSuggestion,
-          },
-        },
-        true,
-      ]);
       expect(mockTrackEvent).toHaveBeenCalledTimes(1);
       expect(mockTrackEvent).toHaveBeenNthCalledWith(1, {
         category: MetaMetricsEventCategory.Accounts,
@@ -583,9 +511,8 @@ describe('Snap Keyring Methods', () => {
         mockAccount.id,
         mockNameSuggestion,
       ]);
-      expect(mockEndFlow).toHaveBeenCalledTimes(2);
+      expect(mockEndFlow).toHaveBeenCalledTimes(1);
       expect(mockEndFlow).toHaveBeenNthCalledWith(1, [{ id: mockFlowId }]);
-      expect(mockEndFlow).toHaveBeenNthCalledWith(2, [{ id: mockFlowId }]);
     });
 
     it('handles account creation with skipping confirmation and skipping name suggestion', async () => {

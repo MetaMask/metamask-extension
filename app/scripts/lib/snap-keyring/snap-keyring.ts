@@ -86,38 +86,6 @@ export async function showAccountCreationDialog(
   }
 }
 
-/**
- * Show the account name suggestion confirmation dialog for a given Snap.
- *
- * @param snapId - Snap ID to show the account name suggestion dialog for.
- * @param messenger - The controller messenger instance.
- * @param accountNameSuggestion - Suggested name for the new account.
- * @returns The user's confirmation result.
- */
-export async function showAccountNameSuggestionDialog(
-  snapId: string,
-  messenger: SnapKeyringBuilderMessenger,
-  accountNameSuggestion: string,
-): Promise<{ success: boolean; name?: string }> {
-  try {
-    const confirmationResult = (await messenger.call(
-      'ApprovalController:addRequest',
-      {
-        origin: snapId,
-        type: SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
-        requestData: {
-          snapSuggestedAccountName: accountNameSuggestion,
-        },
-      },
-      true,
-    )) as { success: boolean; name?: string };
-    return confirmationResult;
-  } catch (e) {
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-    throw new Error(`Error occurred while showing name account dialog.\n${e}`);
-  }
-}
 
 class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
@@ -208,27 +176,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   }
 
   /**
-   * Get the account name from the user through a dialog.
-   *
-   * @param snapId - ID of the Snap that created the account.
-   * @param accountNameSuggestion - Suggested name for the account.
-   * @returns The name that should be used for the account.
-   */
-  async #getAccountNameFromDialog(
-    snapId: SnapId,
-    accountNameSuggestion: string,
-  ): Promise<{ success: boolean; accountName?: string }> {
-    const { success, name: accountName } =
-      await showAccountNameSuggestionDialog(
-        snapId,
-        this.#messenger,
-        accountNameSuggestion,
-      );
-
-    return { success, accountName };
-  }
-
-  /**
    * Use the account name suggestion to decide the name of the account.
    *
    * @param accountNameSuggestion - Suggested name for the account.
@@ -247,21 +194,19 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   async #addAccountConfirmations({
     snapId,
     skipConfirmationDialog,
-    skipAccountNameSuggestionDialog,
     skipApprovalFlow,
     handleUserInput,
     accountNameSuggestion,
   }: {
     snapId: SnapId;
     skipConfirmationDialog: boolean;
-    skipAccountNameSuggestionDialog: boolean;
     skipApprovalFlow: boolean;
     accountNameSuggestion: string;
     handleUserInput: (accepted: boolean) => Promise<void>;
   }): Promise<{ accountName?: string }> {
-    // If both confirmation and name suggestion dialogs are skipped (preinstalled snap
-    // without confirmations), don't enter the approval flow at all to avoid
-    // unnecessary loader/flow UI. Just compute the name and signal acceptance.
+    // If the confirmation dialog is skipped (preinstalled snap without confirmations),
+    // don't enter the approval flow at all to avoid unnecessary loader/flow UI.
+    // Just compute the name and signal acceptance.
     if (skipApprovalFlow) {
       const { success, accountName } = await this.#getAccountNameFromSuggestion(
         accountNameSuggestion,
@@ -289,12 +234,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         }
       }
 
-      // 2. Show the account RENAMING confirmation dialog. Note that
-      //    pre-installed Snaps can skip this dialog.
+      // 2. Generate the account name from the suggestion.
       {
-        const { success, accountName } = skipAccountNameSuggestionDialog
-          ? await this.#getAccountNameFromSuggestion(accountNameSuggestion)
-          : await this.#getAccountNameFromDialog(snapId, accountNameSuggestion);
+        const { success, accountName } =
+          await this.#getAccountNameFromSuggestion(accountNameSuggestion);
 
         await handleUserInput(success);
 
@@ -467,7 +410,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     accountNameSuggestion: string = '',
     {
       displayConfirmation,
-      displayAccountNameSuggestion,
       setSelectedAccount,
     }: SnapKeyringInternalOptions = getDefaultInternalOptions(),
   ) {
@@ -487,23 +429,18 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     const skipConfirmationDialog =
       skipAll || (isPreinstalled && !displayConfirmation);
 
-    // Only pre-installed Snaps can skip the account name suggestion dialog.
-    const skipAccountNameSuggestionDialog =
-      skipAll || (isPreinstalled && !displayAccountNameSuggestion);
-
     // Only pre-installed Snaps can skip the account from being selected.
     const skipSetSelectedAccountStep =
       skipAll || (isPreinstalled && !setSelectedAccount);
 
-    const skipApprovalFlow =
-      skipConfirmationDialog && skipAccountNameSuggestionDialog;
+    // Skip the approval flow if the confirmation dialog is skipped.
+    const skipApprovalFlow = skipConfirmationDialog;
 
-    // First part of the flow, which includes confirmation dialogs (if not skipped).
+    // First part of the flow, which includes confirmation dialog (if not skipped).
     // Once confirmed, we resume the Snap execution.
     const { accountName } = await this.#addAccountConfirmations({
       snapId,
       skipConfirmationDialog,
-      skipAccountNameSuggestionDialog,
       skipApprovalFlow,
       // We do not set the account name suggestion if it's a multichain wallet Snap since the
       // current naming could have race conditions with other account creations, and since
