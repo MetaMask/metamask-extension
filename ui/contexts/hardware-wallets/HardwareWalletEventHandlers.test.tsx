@@ -308,7 +308,7 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('handles CONNECTION_FAILED event', () => {
+    it('handles ConnectionFailed event', () => {
       const { result } = setupHook();
 
       const error = new Error('Connection failed');
@@ -395,10 +395,15 @@ describe('useDeviceEventHandlers', () => {
       const prevState = ConnectionState.disconnected();
       const resultState = updater(prevState);
 
-      expect(resultState).toEqual(
+      expect(resultState).toStrictEqual(
         ConnectionState.error(
           DeviceEvent.OperationTimeout,
-          new Error('Operation timed out'),
+          new HardwareWalletError('Operation timed out', {
+            code: ErrorCode.ConnectionTimeout,
+            severity: Severity.Err,
+            category: Category.Protocol,
+            userMessage: 'Operation timed out',
+          }),
         ),
       );
     });
