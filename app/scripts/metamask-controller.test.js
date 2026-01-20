@@ -4516,7 +4516,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValue({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: true,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: true,
+              },
             },
           });
         jest.spyOn(metamaskController.approvalController, 'add');
@@ -4537,7 +4539,9 @@ describe('MetaMaskController', () => {
           .spyOn(metamaskController.remoteFeatureFlagController, 'state', 'get')
           .mockReturnValueOnce({
             remoteFeatureFlags: {
-              extensionUxDefiReferral: false,
+              extensionUxDefiReferralPartners: {
+                [DefiReferralPartner.Hyperliquid]: false,
+              },
             },
           });
         jest.spyOn(metamaskController, 'getPermittedAccounts');
