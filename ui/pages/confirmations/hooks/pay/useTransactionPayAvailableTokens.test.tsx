@@ -3,7 +3,6 @@ import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import * as transactionPayUtils from '../../utils/transaction-pay';
 import { useSendTokens } from '../send/useSendTokens';
 import { Asset, AssetStandard } from '../../types/send';
-import type { TransactionPayAsset } from './types';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
 
 jest.mock('../send/useSendTokens');
@@ -26,7 +25,7 @@ const SEND_TOKEN_MOCK: Asset = {
   fiat: { balance: 1.23 },
 };
 
-const TOKEN_MOCK: TransactionPayAsset = {
+const TOKEN_MOCK: Asset = {
   ...SEND_TOKEN_MOCK,
   disabled: false,
   isSelected: false,
