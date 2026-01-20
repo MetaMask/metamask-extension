@@ -136,7 +136,11 @@ export function useSpenderAlerts(): Alert[] {
         undefined,
         transactionMeta?.chainId as string,
       );
-    }, [tokenAddressOverride]);
+    }, [
+      tokenAddressOverride,
+      transactionMeta?.txParams?.from,
+      transactionMeta?.chainId,
+    ]);
 
   const isSafeToSkipAlert = useMemo(() => {
     if (alertSkipReason === AlertSkipReason.ZeroValue) {
@@ -165,8 +169,8 @@ export function useSpenderAlerts(): Alert[] {
     }
 
     // Handle approval transactions
-    const transactionMeta = currentConfirmation as TransactionMeta;
-    const txData = transactionMeta.txParams?.data;
+    const txMeta = currentConfirmation as TransactionMeta;
+    const txData = txMeta.txParams?.data;
 
     if (txData) {
       const approvalData = parseApprovalTransactionData(
