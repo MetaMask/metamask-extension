@@ -9,7 +9,6 @@ import { isCrossChain } from '@metamask/bridge-controller';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
-import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
@@ -104,7 +103,7 @@ import {
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
-import { useScrollContainer } from '../../../contexts/scroll-container';
+import VirtualizedList from '../virtualized-list';
 
 // When we are on a token page, we only want to show transactions that involve that token.
 // In the case of token transfers or approvals, these will be transactions sent to the
@@ -420,7 +419,6 @@ export default function UnifiedTransactionList({
   hideNetworkFilter,
   tokenChainIdOverride,
 }) {
-  const scrollContainerRef = useScrollContainer();
   const selectedAccount = useSelector(getSelectedAccount);
   const enabledNetworks = useSelector(getEnabledNetworks);
 
@@ -829,15 +827,6 @@ export default function UnifiedTransactionList({
     return flattened;
   }, [processedUnifiedActivityItems]);
 
-  const virtualizer = useVirtualizer({
-    count: items.length,
-    getScrollElement: () => scrollContainerRef?.current || null,
-    estimateSize: (index) =>
-      items[index]?.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT,
-    overscan: 10,
-    initialOffset: scrollContainerRef?.current?.scrollTop,
-  });
-
   return (
     <>
       {selectedTransaction &&
@@ -874,49 +863,33 @@ export default function UnifiedTransactionList({
             account={selectedAccount}
           />
         ) : (
-          <div
-            className="transaction-list__transactions relative w-full"
-            style={{
-              height: `${virtualizer.getTotalSize()}px`,
-            }}
-          >
-            {virtualizer.getVirtualItems().map((virtualItem) => {
-              const item = items[virtualItem.index];
-
+          <VirtualizedList
+            data={items}
+            className="transaction-list__transactions"
+            estimatedItemSize={ITEM_HEIGHT}
+            getItemSize={(item) =>
+              item.type === 'date-header' ? HEADER_HEIGHT : ITEM_HEIGHT
+            }
+            keyExtractor={(item) =>
+              item.type === 'date-header' ? `date-${item.date}` : item.id
+            }
+            renderItem={({ item, index }) => {
               if (item.type === 'date-header') {
                 return (
-                  <div
-                    key={`date-${item.date}`}
-                    className="absolute top-0 left-0 w-full"
-                    style={{
-                      transform: `translateY(${virtualItem.start}px)`,
-                    }}
+                  <Text
+                    paddingTop={3}
+                    paddingInline={4}
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textAlternative}
                   >
-                    <Text
-                      paddingTop={3}
-                      paddingInline={4}
-                      variant={TextVariant.bodyMdMedium}
-                      color={TextColor.textAlternative}
-                    >
-                      {item.date}
-                    </Text>
-                  </div>
+                    {item.date}
+                  </Text>
                 );
               }
 
-              return (
-                <div
-                  key={item.id}
-                  className="absolute top-0 left-0 w-full"
-                  style={{
-                    transform: `translateY(${virtualItem.start}px)`,
-                  }}
-                >
-                  {renderTransaction(item.data, virtualItem.index)}
-                </div>
-              );
-            })}
-          </div>
+              return renderTransaction(item.data, index);
+            }}
+          />
         )}
       </Box>
     </>

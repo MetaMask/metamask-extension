@@ -2,13 +2,11 @@ import React, { useContext, useEffect, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { type CaipChainId, type Hex } from '@metamask/utils';
 import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import TokenCell from '../token-cell';
 import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
-  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -41,7 +39,7 @@ import {
   isTronResource,
 } from '../../../../../shared/lib/asset-utils';
 import { sortAssetsWithPriority } from '../util/sortAssetsWithPriority';
-import { useScrollContainer } from '../../../../contexts/scroll-container';
+import VirtualizedList from '../../virtualized-list';
 
 type TokenListProps = {
   onTokenClick: (chainId: string, address: string) => void;
@@ -51,9 +49,7 @@ type TokenListProps = {
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
-  const scrollContainerRef = useScrollContainer();
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);
@@ -162,20 +158,10 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     tokenSortConfig,
     isMultichainAccountsState2Enabled,
     accountGroupIdAssets,
-    // newTokensImported included in deps, but not in hook's logic
-    newTokensImported,
     allEnabledNetworksForAllNamespaces,
     shouldHideZeroBalanceTokens,
     useExternalServices,
   ]);
-
-  const virtualizer = useVirtualizer({
-    count: sortedFilteredTokens.length,
-    getScrollElement: () => scrollContainerRef?.current || null,
-    estimateSize: () => ASSET_CELL_HEIGHT,
-    overscan: 10,
-    initialOffset: scrollContainerRef?.current?.scrollTop,
-  });
 
   useEffect(() => {
     if (sortedFilteredTokens) {
@@ -234,39 +220,28 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     );
   }
 
-  const virtualItems = virtualizer.getVirtualItems();
-
   return (
-    <div
-      className="relative w-full"
-      style={{
-        height: `${virtualizer.getTotalSize()}px`,
-      }}
-    >
-      {virtualItems.map((virtualItem) => {
-        const token = sortedFilteredTokens[virtualItem.index];
+    <VirtualizedList
+      data={sortedFilteredTokens}
+      estimatedItemSize={ASSET_CELL_HEIGHT}
+      keyExtractor={(token) =>
+        `${token.chainId}-${token.symbol}-${token.address}`
+      }
+      renderItem={({ item: token }) => {
         const isNonEvmTestnet = NON_EVM_TESTNET_IDS.includes(
           token.chainId as CaipChainId,
         );
 
         return (
-          <div
-            key={`${token.chainId}-${token.symbol}-${token.address}`}
-            className="absolute top-0 left-0 w-full"
-            style={{
-              transform: `translateY(${virtualItem.start}px)`,
-            }}
-          >
-            <TokenCell
-              token={token}
-              privacyMode={privacyMode}
-              onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
-              safeChains={safeChains}
-            />
-          </div>
+          <TokenCell
+            token={token}
+            privacyMode={privacyMode}
+            onClick={isNonEvmTestnet ? undefined : handleTokenClick(token)}
+            safeChains={safeChains}
+          />
         );
-      })}
-    </div>
+      }}
+    />
   );
 }
 
