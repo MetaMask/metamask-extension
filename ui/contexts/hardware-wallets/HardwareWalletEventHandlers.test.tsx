@@ -133,7 +133,12 @@ describe('useDeviceEventHandlers', () => {
     it('handles DeviceLocked event', () => {
       const { result } = setupHook();
 
-      const error = new Error('Device locked');
+      const error = new HardwareWalletError('Device locked', {
+        code: ErrorCode.AuthenticationDeviceLocked,
+        severity: Severity.Err,
+        category: Category.Authentication,
+        userMessage: 'Device locked',
+      });
       result.current.handleDeviceEvent({
         event: DeviceEvent.DeviceLocked,
         error,
@@ -183,7 +188,12 @@ describe('useDeviceEventHandlers', () => {
     it('handles AppNotOpen event with error', () => {
       const { result } = setupHook();
 
-      const error = new Error('App not open');
+      const error = new HardwareWalletError('App not open', {
+        code: ErrorCode.DeviceStateEthAppClosed,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'App not open',
+      });
       result.current.handleDeviceEvent({
         event: DeviceEvent.AppNotOpen,
         error,
@@ -311,7 +321,12 @@ describe('useDeviceEventHandlers', () => {
     it('handles ConnectionFailed event', () => {
       const { result } = setupHook();
 
-      const error = new Error('Connection failed');
+      const error = new HardwareWalletError('Connection failed', {
+        code: ErrorCode.ConnectionTransportMissing,
+        severity: Severity.Err,
+        category: Category.Connection,
+        userMessage: 'Connection failed',
+      });
       result.current.handleDeviceEvent({
         event: DeviceEvent.ConnectionFailed,
         error,
@@ -361,7 +376,12 @@ describe('useDeviceEventHandlers', () => {
     it('handles OperationTimeout event with error', () => {
       const { result } = setupHook();
 
-      const error = new Error('Operation timed out');
+      const error = new HardwareWalletError('Operation timed out', {
+        code: ErrorCode.ConnectionTimeout,
+        severity: Severity.Err,
+        category: Category.Protocol,
+        userMessage: 'Operation timed out',
+      });
       result.current.handleDeviceEvent({
         event: DeviceEvent.OperationTimeout,
         error,
@@ -434,11 +454,25 @@ describe('useDeviceEventHandlers', () => {
       { event: DeviceEvent.Disconnected, additionalPayload: {} },
       {
         event: DeviceEvent.DeviceLocked,
-        additionalPayload: { error: new Error('Device locked') },
+        additionalPayload: {
+          error: new HardwareWalletError('Device locked', {
+            code: ErrorCode.AuthenticationDeviceLocked,
+            severity: Severity.Err,
+            category: Category.Authentication,
+            userMessage: 'Device locked',
+          }),
+        },
       },
       {
         event: DeviceEvent.AppNotOpen,
-        additionalPayload: { error: new Error('App not open') },
+        additionalPayload: {
+          error: new HardwareWalletError('App not open', {
+            code: ErrorCode.DeviceStateEthAppClosed,
+            severity: Severity.Err,
+            category: Category.DeviceState,
+            userMessage: 'App not open',
+          }),
+        },
       },
       {
         event: DeviceEvent.AppChanged,
@@ -446,11 +480,25 @@ describe('useDeviceEventHandlers', () => {
       },
       {
         event: DeviceEvent.ConnectionFailed,
-        additionalPayload: { error: new Error('Connection failed') },
+        additionalPayload: {
+          error: new HardwareWalletError('Connection failed', {
+            code: ErrorCode.ConnectionTransportMissing,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Connection failed',
+          }),
+        },
       },
       {
         event: DeviceEvent.OperationTimeout,
-        additionalPayload: { error: new Error('Timeout') },
+        additionalPayload: {
+          error: new HardwareWalletError('Timeout', {
+            code: ErrorCode.ConnectionTimeout,
+            severity: Severity.Err,
+            category: Category.Protocol,
+            userMessage: 'Timeout',
+          }),
+        },
       },
     ])(
       'calls onDeviceEvent callback for $event event',
