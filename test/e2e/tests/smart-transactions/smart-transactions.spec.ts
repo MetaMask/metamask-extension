@@ -2,8 +2,9 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../constants';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -12,6 +13,7 @@ import SwapPage from '../../page-objects/pages/swap/swap-page';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import { TX_SENTINEL_URL } from '../../../../shared/constants/transaction';
 import { mockSpotPrices } from '../tokens/utils/mocks';
+import { mockSmartTransactionsRemoteFlags } from './remote-flags';
 import {
   mockSmartTransactionRequests,
   mockGasIncludedTransactionRequests,
@@ -45,10 +47,13 @@ async function withFixturesForSmartTransactions(
         hardfork: 'london',
         chainId: '1',
       },
-      testSpecificMock,
+      testSpecificMock: async (mockServer: MockttpServer) => {
+        await mockSmartTransactionsRemoteFlags(mockServer);
+        await testSpecificMock(mockServer);
+      },
     },
     async ({ driver }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
       await runTestWithFixtures({ driver });
     },
   );

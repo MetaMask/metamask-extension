@@ -3333,13 +3333,13 @@ export function getUnconnectedAccounts(state, activeTab) {
 }
 
 export const getOrderedConnectedAccountsForActiveTab = createDeepEqualSelector(
-  (state) => state.activeTab,
+  getOriginOfCurrentTab,
   (state) => state.metamask.permissionHistory,
   getMetaMaskAccountsOrdered,
   getAllPermittedAccountsForCurrentTab,
-  (activeTab, permissionHistory, orderedAccounts, connectedAccounts) => {
+  (origin, permissionHistory, orderedAccounts, connectedAccounts) => {
     const permissionHistoryByAccount =
-      permissionHistory[activeTab.origin]?.eth_accounts?.accounts || {};
+      permissionHistory[origin]?.eth_accounts?.accounts || {};
 
     const connectedAccountsAddresses = connectedAccounts.map(
       (caipAccountId) => {
@@ -3988,10 +3988,11 @@ export function getOrderedConnectedAccountsForConnectedDapp(state, activeTab) {
 }
 
 export function getPermissionsForActiveTab(state) {
-  const { activeTab, metamask } = state;
+  const { metamask } = state;
   const { subjects = {} } = metamask;
+  const origin = getOriginOfCurrentTab(state);
 
-  const permissions = subjects[activeTab.origin]?.permissions ?? {};
+  const permissions = subjects[origin]?.permissions ?? {};
 
   return Object.keys(permissions).map((parentCapability) => {
     return {
@@ -4140,4 +4141,14 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
  */
 export function getNetworkConnectionBanner(state) {
   return state.metamask.networkConnectionBanner;
+}
+
+/**
+ * Check if the device is offline.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {boolean} True if the device is offline
+ */
+export function getIsDeviceOffline(state) {
+  return state.metamask.connectivityStatus === 'offline';
 }

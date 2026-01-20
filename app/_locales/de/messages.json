@@ -1278,9 +1278,6 @@
   "close": {
     "message": "Schließen"
   },
-  "closeExtension": {
-    "message": "Erweiterung schließen"
-  },
   "closeSlide": {
     "message": "$1 schließen",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3896,9 +3893,6 @@
   "needImportFile": {
     "message": "Für den Import müssen Sie eine Datei auswählen.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Negative ETH Beträge können nicht versendet werden."
   },
   "negativeOrZeroAmountToken": {
     "message": "Negative oder Nullbeträge von Assets können nicht gesendet werden."

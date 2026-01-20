@@ -26,6 +26,16 @@ export default class ShieldClaimsListPage {
     tag: 'h4',
   };
 
+  private readonly draftClaimsHeading =
+    '[data-testid="claims-group-drafts-heading"]';
+
+  private readonly draftClaimsList = '[data-testid="claims-group-drafts-list"]';
+
+  private readonly draftClaimItem = '[data-testid^="claim-item-draft"]';
+
+  private readonly draftDeletedToast =
+    '[data-testid="claim-draft-deleted-toast"]';
+
   private readonly emptyNewClaimButton =
     '[data-testid="claims-list-empty-new-claim-button"]';
 
@@ -129,5 +139,31 @@ export default class ShieldClaimsListPage {
       );
       return claimItems.length === 3;
     }, 10000);
+  }
+
+  async checkDraftSectionDisplayed(): Promise<void> {
+    console.log('Checking if draft section is displayed');
+    await this.driver.waitForSelector(this.draftClaimsHeading);
+  }
+
+  async checkDraftClaimExists(): Promise<void> {
+    console.log('Checking if exactly one draft claim exists in draft section');
+    await this.driver.waitForSelector(this.draftClaimItem);
+  }
+
+  async clickDraftClaim(): Promise<void> {
+    console.log('Clicking on draft claim');
+    await this.driver.clickElement(this.draftClaimItem);
+  }
+
+  async checkDraftDeletedToast(): Promise<void> {
+    console.log('Checking draft deleted toast is displayed');
+    await this.driver.waitForSelector(this.draftDeletedToast);
+  }
+
+  async checkDraftClaimDeleted(): Promise<void> {
+    console.log('Checking if draft claim is deleted');
+    await this.checkDraftDeletedToast();
+    await this.driver.assertElementNotPresent(this.draftClaimsList);
   }
 }

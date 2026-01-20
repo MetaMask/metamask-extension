@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1301,9 +1304,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -3259,6 +3259,9 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
+  "insufficientBalanceToCoverFees": {
+    "message": "Insufficient balance to cover fees"
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -3994,9 +3997,6 @@
   "needImportFile": {
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
@@ -4748,6 +4748,14 @@
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
+  },
+  "payWith": {
+    "message": "Pay with",
+    "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithModalTitle": {
+    "message": "Pay with",
+    "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
   "pending": {
     "message": "Pending"
@@ -8516,6 +8524,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

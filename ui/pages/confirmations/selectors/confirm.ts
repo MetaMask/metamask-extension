@@ -13,12 +13,6 @@ const ConfirmationApprovalTypes = [
   ApprovalType.Transaction,
 ];
 
-export function pendingConfirmationsSelector(state: ConfirmMetamaskState) {
-  return getPendingApprovals(state).filter(({ type }) =>
-    ConfirmationApprovalTypes.includes(type as ApprovalType),
-  );
-}
-
 export function pendingConfirmationsSortedSelector(
   state: ConfirmMetamaskState,
 ) {
@@ -47,12 +41,6 @@ export function selectEnableEnforcedSimulations(
     state.metamask.enableEnforcedSimulationsForTransactions[transactionId] ??
     state.metamask.enableEnforcedSimulations
   );
-}
-
-export function selectEnforcedSimulationsDefaultSlippage(
-  state: ConfirmMetamaskState,
-): number {
-  return state.metamask.enforcedSimulationsSlippage;
 }
 
 export function selectEnforcedSimulationsSlippage(
