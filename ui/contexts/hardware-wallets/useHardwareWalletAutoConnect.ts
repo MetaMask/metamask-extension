@@ -170,6 +170,7 @@ export const useHardwareWalletAutoConnect = ({
     } = refs;
     if (
       !isHardwareWalletAccount ||
+      !walletType ||
       hardwareConnectionPermissionState !==
         HardwareConnectionPermissionState.Granted
     ) {
@@ -192,7 +193,7 @@ export const useHardwareWalletAutoConnect = ({
     // so we only mark auto-connected for the correct account
     const effectAccountAddress = accountAddress;
 
-    (walletType ? getHardwareWalletDeviceId(walletType) : Promise.resolve(null))
+    getHardwareWalletDeviceId(walletType)
       .then(async (id) => {
         if (abortSignal?.aborted || isCancelled) {
           return;
@@ -201,7 +202,6 @@ export const useHardwareWalletAutoConnect = ({
         setDeviceId((prevId) => (prevId === id ? prevId : id));
 
         if (
-          walletType &&
           id &&
           connectRef.current &&
           !adapterRef.current?.isConnected() &&
