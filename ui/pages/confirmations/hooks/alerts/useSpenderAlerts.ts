@@ -19,7 +19,7 @@ import {
   TrustSignalDisplayState,
 } from '../../../../hooks/useTrustSignals';
 import { useIsNFT } from '../../components/confirm/info/approve/hooks/use-is-nft';
-import { getIsRevokeDAIPermit } from '../../components/confirm/utils';
+import { DAI_CONTRACT_ADDRESS } from '../../components/confirm/info/shared/constants';
 import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
@@ -63,16 +63,21 @@ function getAlertSkipReason(
     const msgData = signatureRequest.msgParams?.data as string;
 
     if (msgData) {
-      const { primaryType, message } = parseTypedDataMessage(msgData);
+      const { primaryType, message, domain } = parseTypedDataMessage(msgData);
       const isPermit = PRIMARY_TYPES_PERMIT.some(
         (type) => type === primaryType,
       );
 
       if (isPermit) {
-        const isDaiRevoke = getIsRevokeDAIPermit(signatureRequest);
-        const isEIP2612ZeroValue = isZeroAmount(message?.value);
+        const isDaiPermit =
+          domain?.verifyingContract?.toLowerCase() ===
+          DAI_CONTRACT_ADDRESS.toLowerCase();
 
-        if (isDaiRevoke || isEIP2612ZeroValue) {
+        const isZeroValuePermit = isDaiPermit
+          ? message?.allowed === false // DAI uses `allowed` boolean
+          : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
+
+        if (isZeroValuePermit) {
           return AlertSkipReason.ZeroValue;
         }
       }
