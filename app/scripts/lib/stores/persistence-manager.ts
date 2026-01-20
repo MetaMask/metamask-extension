@@ -51,16 +51,30 @@ export class PersistenceError extends Error {
   backup: object | null;
 
   /**
+   * The type of vault corruption that occurred.
+   * - UnaccessibleDatabase: The storage system threw an error (e.g., Firefox's
+   *   "An unexpected error occurred")
+   * - MissingVaultInDatabase: The database was accessible but the vault was missing
+   */
+  corruptionType: VaultCorruptionType;
+
+  /**
    * The original error that caused the persistence failure, if any.
    * This is useful for debugging as it preserves the original error message
    * (e.g., Firefox's "Error: An unexpected error occurred").
    */
   override cause?: Error;
 
-  constructor(message: string, backup: object | null, cause?: Error) {
+  constructor(
+    message: string,
+    backup: object | null,
+    corruptionType: VaultCorruptionType,
+    cause?: Error,
+  ) {
     super(message);
     this.name = 'PersistenceError';
     this.backup = backup;
+    this.corruptionType = corruptionType;
     this.cause = cause;
   }
 }
@@ -625,6 +639,7 @@ export class PersistenceManager {
               throw new PersistenceError(
                 MISSING_VAULT_ERROR,
                 backup,
+                corruptionType,
                 localStoreError,
               );
             } else if (localStoreError) {

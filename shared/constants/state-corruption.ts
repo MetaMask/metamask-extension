@@ -15,4 +15,8 @@ export enum VaultCorruptionType {
    * The database itself is inaccessible (e.g., Firefox's "An unexpected error occurred").
    */
   UnaccessibleDatabase = 'unaccessible_database',
+  /**
+   * Unknown corruption type. Used as a fallback for unexpected error types. (shouldn't happen in practice)
+   */
+  Unknown = 'unknown',
 }
