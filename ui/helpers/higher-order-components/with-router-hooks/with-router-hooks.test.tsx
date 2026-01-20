@@ -5,18 +5,20 @@ import withRouterHooks, { RouterHooksProps } from './with-router-hooks';
 
 // Mock the react-router-dom hooks
 const mockUseNavigate = jest.fn();
-const mockUseLocation = {
+let mockLocationKey = 'default-key';
+const getMockUseLocation = () => ({
   pathname: '/test',
   search: '',
   hash: '',
   state: null,
-};
+  key: mockLocationKey,
+});
 const mockUseParams = { id: 'test-id' };
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
-  useLocation: () => mockUseLocation,
+  useLocation: () => getMockUseLocation(),
   useParams: () => mockUseParams,
 }));
 
@@ -261,6 +263,43 @@ describe('withRouterHooks HOC', () => {
       expect(paramsReceived[0]).toBe(paramsSet1);
       expect(paramsReceived[1]).toBe(paramsSet2);
       expect(paramsReceived[0]).not.toBe(paramsReceived[1]);
+    });
+
+    it('maintains stable location reference when only key changes (same-path navigation)', () => {
+      // This test verifies that location.key changes don't cause unnecessary re-renders.
+      // React Router changes key on every navigation, even to the same path.
+      const locationsReceived: ReturnType<typeof useLocation>[] = [];
+
+      const TestComponentForMemo: React.FC<
+        TestComponentProps & { renderCount?: number }
+      > = ({ location }) => {
+        locationsReceived.push(location);
+        return <div>Location key test</div>;
+      };
+
+      // Start with key-1
+      mockLocationKey = 'key-1';
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      const { rerender } = render(
+        <MemoryRouter>
+          <WrappedComponent renderCount={1} />
+        </MemoryRouter>,
+      );
+
+      // Change key to simulate same-path navigation (key changes, path stays same)
+      mockLocationKey = 'key-2';
+
+      rerender(
+        <MemoryRouter>
+          <WrappedComponent renderCount={2} />
+        </MemoryRouter>,
+      );
+
+      // Location should be the same reference because only key changed
+      // (pathname, search, hash, state are all the same)
+      expect(locationsReceived).toHaveLength(2);
+      expect(locationsReceived[0]).toBe(locationsReceived[1]);
     });
   });
 });
