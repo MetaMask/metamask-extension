@@ -7461,27 +7461,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-network-controller@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@metamask/multichain-network-controller@npm:3.0.0"
-  dependencies:
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.16.0"
-    "@metamask/keyring-api": "npm:^21.0.0"
-    "@metamask/keyring-internal-api": "npm:^9.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.8.1"
-    "@solana/addresses": "npm:^2.0.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/accounts-controller": ^35.0.0
-    "@metamask/network-controller": ^26.0.0
-  checksum: 10/b167cd4bed12285c1e37f74a681371c453936e1aaa7e1207fb98cd97cbfa8831ca9e96a569a8787caac3f5a831627435e001dc8febaad2e61a142e4298f57d2f
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-network-controller@npm:^3.0.2":
+"@metamask/multichain-network-controller@npm:^3.0.0, @metamask/multichain-network-controller@npm:^3.0.2":
   version: 3.0.2
   resolution: "@metamask/multichain-network-controller@npm:3.0.2"
   dependencies:
