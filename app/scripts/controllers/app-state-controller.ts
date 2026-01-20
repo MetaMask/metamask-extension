@@ -1761,7 +1761,7 @@ export class AppStateController extends BaseController<
    *
    * @param deferredDeepLink - Deferred deep link data.
    */
-  async setDeferredDeepLink(deferredDeepLink: DeferredDeepLink): Promise<void> {
+  setDeferredDeepLink(deferredDeepLink: DeferredDeepLink): void {
     if (deferredDeepLink) {
       this.update((state) => {
         state.deferredDeepLink = deferredDeepLink;

@@ -1875,9 +1875,9 @@ const addAppInstalledEvent = async () => {
     const eventProperties = {};
 
     if (deferredDeepLink) {
-      await controller.appStateController.setDeferredDeepLink(deferredDeepLink);
-      eventProperties.installSource = 'deeplink';
-      eventProperties.deepLinkPath = deferredDeepLink.referringLink;
+      controller.appStateController.setDeferredDeepLink(deferredDeepLink);
+      eventProperties.install_source = 'deeplink';
+      eventProperties.deepLink_path = deferredDeepLink.referringLink;
     }
 
     controller.metaMetricsController.addEventBeforeMetricsOptIn({
@@ -1916,10 +1916,10 @@ async function handleOnInstalled([details]) {
  */
 async function onInstall() {
   log.debug('First install detected');
-  await addAppInstalledEvent();
   if (!process.env.IN_TEST && !process.env.METAMASK_DEBUG) {
     platform.openExtensionInBrowser();
   }
+  await addAppInstalledEvent();
 }
 
 /**

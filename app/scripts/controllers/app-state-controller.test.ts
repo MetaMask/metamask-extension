@@ -1099,7 +1099,7 @@ describe('AppStateController', () => {
           createdAt: 1765465337256,
           referringLink: 'https://link.metamask.io/deep-link',
         };
-        await controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.setDeferredDeepLink(mockDeepLinkData);
 
         expect(controller.state.deferredDeepLink).toStrictEqual(
           mockDeepLinkData,
@@ -1110,7 +1110,7 @@ describe('AppStateController', () => {
     it('does not update the state when deferred deep link is not available', async () => {
       await withController(async ({ controller }) => {
         // @ts-expect-error Passing null is intentional here for testing purposes
-        await controller.setDeferredDeepLink(null);
+        controller.setDeferredDeepLink(null);
 
         expect(controller.state.deferredDeepLink).toBeUndefined();
       });
