@@ -10,10 +10,7 @@ import {
   parseTypedDataMessage,
   parseApprovalTransactionData,
 } from '../../../../../shared/modules/transaction.utils';
-import {
-  PRIMARY_TYPES_PERMIT,
-  PrimaryType,
-} from '../../../../../shared/constants/signatures';
+import { PRIMARY_TYPES_PERMIT } from '../../../../../shared/constants/signatures';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
 import { RowAlertKey } from '../../../../components/app/confirm/info/row/constants';
 import { Severity } from '../../../../helpers/constants/design-system';
@@ -27,42 +24,8 @@ import { useAsyncResult } from '../../../../hooks/useAsync';
 import { getTokenStandardAndDetailsByChain } from '../../../../store/actions';
 import { TokenStandard } from '../../../../../shared/constants/transaction';
 
-type PermitDetails = {
-  amount?: string | number;
-};
-
 function isZeroAmount(amount: string | number | undefined): boolean {
   return amount === '0' || amount === 0;
-}
-
-function isPermit2ZeroAmount(
-  message: Record<string, unknown>,
-  primaryType: string,
-): boolean {
-  switch (primaryType) {
-    case PrimaryType.PermitSingle:
-    case PrimaryType.PermitBatch: {
-      const details = message?.details as PermitDetails | PermitDetails[];
-      if (Array.isArray(details)) {
-        return (
-          details.length > 0 && details.every((d) => isZeroAmount(d.amount))
-        );
-      }
-      return isZeroAmount(details?.amount);
-    }
-    case PrimaryType.PermitTransferFrom:
-    case PrimaryType.PermitBatchTransferFrom: {
-      const permitted = message?.permitted as PermitDetails | PermitDetails[];
-      if (Array.isArray(permitted)) {
-        return (
-          permitted.length > 0 && permitted.every((p) => isZeroAmount(p.amount))
-        );
-      }
-      return isZeroAmount(permitted?.amount);
-    }
-    default:
-      return false;
-  }
 }
 
 enum AlertSkipReason {
@@ -107,15 +70,9 @@ function getAlertSkipReason(
 
       if (isPermit) {
         const isDaiRevoke = getIsRevokeDAIPermit(signatureRequest);
-        const isEIP2612ZeroValue = isZeroAmount(
-          message?.value as string | number | undefined,
-        );
-        const isPermit2ZeroValue = isPermit2ZeroAmount(
-          message as Record<string, unknown>,
-          primaryType,
-        );
+        const isEIP2612ZeroValue = isZeroAmount(message?.value);
 
-        if (isDaiRevoke || isEIP2612ZeroValue || isPermit2ZeroValue) {
+        if (isDaiRevoke || isEIP2612ZeroValue) {
           return AlertSkipReason.ZeroValue;
         }
       }
