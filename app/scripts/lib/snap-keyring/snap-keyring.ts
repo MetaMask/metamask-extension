@@ -438,7 +438,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         try {
           await this.#removeAccountHelper(address);
           await handleUserInput(confirmationResult);
-          await this.#persistKeyringHelper();
+          await this.saveState();
 
           // TODO: Add events tracking to the dialog itself, so that events are more
           // "linked" to UI actions
