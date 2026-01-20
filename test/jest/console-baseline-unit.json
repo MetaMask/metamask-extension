@@ -399,6 +399,9 @@
     "ui/pages/onboarding-flow/recovery-phrase/confirm-recovery-phrase.test.js": {
       "React: Missing key props in lists": 1
     },
+    "ui/pages/perps/perps-market-detail-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/swaps/loading-swaps-quotes/loading-swaps-quotes.test.js": {
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
