@@ -7,7 +7,6 @@ import {
   BASE_SHIELD_SUBSCRIPTION_CRYPTO_MONTHLY,
   BASE_SUBSCRIPTION_API_URL,
   CLAIMS_API,
-  MOCK_CHECKOUT_SESSION_URL,
   MOCK_CLAIM_2,
   MOCK_CLAIMS_CONFIGURATION_RESPONSE,
   MOCK_CLAIMS_RESPONSE,
@@ -88,26 +87,14 @@ export class ShieldMockttpService {
     await this.#handleCancelSubscription(server, overrides);
     await this.#handleRenewSubscription(server, overrides);
     await this.#handleUpdateCryptoPaymentMethod(server);
-    // Mock USER_EVENTS - dev URL
+    // Mock USER_EVENTS - PROD URL
     await server
       .forPost(SUBSCRIPTION_API.USER_EVENTS)
       .thenJson(200, SHIELD_USER_EVENTS_RESPONSE);
-    // Mock USER_EVENTS - production URL using regex
-    const userEventsRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/user-events$/u;
-    await server
-      .forPost(userEventsRegex)
-      .thenJson(200, SHIELD_USER_EVENTS_RESPONSE);
 
-    // Mock COHORT_ASSIGNMENT - dev URL
+    // Mock COHORT_ASSIGNMENT - PROD URL
     await server
       .forPost(SUBSCRIPTION_API.COHORT_ASSIGNMENT)
-      .thenJson(200, MOCK_COHORT_ASSIGNMENT_RESPONSE);
-    // Mock COHORT_ASSIGNMENT - production URL using regex
-    const cohortAssignmentRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/cohorts\/assign$/u;
-    await server
-      .forPost(cohortAssignmentRegex)
       .thenJson(200, MOCK_COHORT_ASSIGNMENT_RESPONSE);
 
     // Claims APIs
@@ -509,15 +496,10 @@ export class ShieldMockttpService {
   }
 
   async #handleSubscriptionPricing(server: Mockttp) {
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.PRICING)
       .thenJson(200, SHIELD_PRICING_DATA);
-
-    // Mock production URL using regex
-    const pricingRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/pricing$/u;
-    await server.forGet(pricingRegex).thenJson(200, SHIELD_PRICING_DATA);
   }
 
   async #handleSubscriptionEligibility(
@@ -550,17 +532,9 @@ export class ShieldMockttpService {
       },
     ];
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.ELIGIBILITY)
-      .always()
-      .thenJson(200, eligibilityResponse);
-
-    // Mock production URL using regex
-    const eligibilityRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions\/eligibility$/u;
-    await server
-      .forGet(eligibilityRegex)
       .always()
       .thenJson(200, eligibilityResponse);
   }
@@ -573,22 +547,14 @@ export class ShieldMockttpService {
       return {
         statusCode: 200,
         json: {
-          checkoutSessionUrl: MOCK_CHECKOUT_SESSION_URL,
+          checkoutSessionUrl: SUBSCRIPTION_API.CHECKOUT_SESSION,
         },
       };
     };
 
-    // Mock dev URL - use .always() to ensure it matches
+    // Mock PROD URL - use .always() to ensure it matches
     await server
       .forPost(SUBSCRIPTION_API.CREATE_SUBSCRIPTION_BY_CARD)
-      .always()
-      .thenCallback(cardSubscriptionCallback);
-
-    // Mock production URL using regex - use .always() to ensure it matches
-    const createCardRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions\/card$/u;
-    await server
-      .forPost(createCardRegex)
       .always()
       .thenCallback(cardSubscriptionCallback);
   }
@@ -616,16 +582,9 @@ export class ShieldMockttpService {
       };
     };
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forPost(SUBSCRIPTION_API.CREATE_SUBSCRIPTION_BY_CRYPTO)
-      .thenCallback(cryptoSubscriptionCallback);
-
-    // Mock production URL using regex
-    const createCryptoRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions\/crypto$/u;
-    await server
-      .forPost(createCryptoRegex)
       .thenCallback(cryptoSubscriptionCallback);
   }
 
@@ -636,17 +595,9 @@ export class ShieldMockttpService {
       paymentTokenAddress: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48', // USDC or USDT
     };
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forPost(SUBSCRIPTION_API.CRYPTO_APPROVAL_AMOUNT)
-      .always()
-      .thenJson(200, approvalAmountResponse);
-
-    // Mock production URL using regex
-    const approvalAmountRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions\/crypto\/approval-amount$/u;
-    await server
-      .forPost(approvalAmountRegex)
       .always()
       .thenJson(200, approvalAmountResponse);
   }
@@ -813,23 +764,15 @@ export class ShieldMockttpService {
     const subscriptionsCallback = () =>
       this.#buildSubscriptionResponse(overrides);
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forGet(SUBSCRIPTION_API.SUBSCRIPTIONS)
-      .always()
-      .thenCallback(subscriptionsCallback);
-
-    // Mock production URL using regex
-    const subscriptionsRegex =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions$/u;
-    await server
-      .forGet(subscriptionsRegex)
       .always()
       .thenCallback(subscriptionsCallback);
   }
 
   async #handleCheckoutSession(server: Mockttp) {
-    await server.forGet(MOCK_CHECKOUT_SESSION_URL).thenCallback(() => ({
+    await server.forGet(SUBSCRIPTION_API.CHECKOUT_SESSION).thenCallback(() => ({
       statusCode: 302,
       headers: { Location: 'https://mock-redirect-url.com' },
     }));
@@ -850,19 +793,12 @@ export class ShieldMockttpService {
       };
     };
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forPost(
         `${BASE_SUBSCRIPTION_API_URL}/subscriptions/${subscriptionId}/cancel`,
       )
       .thenCallback(cancelCallback);
-
-    // Mock production URL using regex
-    const cancelRegex = new RegExp(
-      `^https://subscription\\.api\\.cx\\.metamask\\.io/v1/subscriptions/${subscriptionId}/cancel$`,
-      'u',
-    );
-    await server.forPost(cancelRegex).thenCallback(cancelCallback);
   }
 
   async #handleRenewSubscription(
@@ -880,19 +816,12 @@ export class ShieldMockttpService {
       };
     };
 
-    // Mock dev URL
+    // Mock PROD URL
     await server
       .forPost(
         `${BASE_SUBSCRIPTION_API_URL}/subscriptions/${subscriptionId}/uncancel`,
       )
       .thenCallback(renewCallback);
-
-    // Mock production URL using regex
-    const renewRegex = new RegExp(
-      `^https://subscription\\.api\\.cx\\.metamask\\.io/v1/subscriptions/${subscriptionId}/uncancel$`,
-      'u',
-    );
-    await server.forPost(renewRegex).thenCallback(renewCallback);
   }
 
   async #handleUpdateCryptoPaymentMethod(server: Mockttp) {
@@ -928,25 +857,17 @@ export class ShieldMockttpService {
       };
     };
 
-    // Mock dev URL
+    // Mock PROD URL - use regex to match any subscription ID
     const escapedBaseUrl = BASE_SUBSCRIPTION_API_URL.replace(
       /[.*+?^${}()|[\]\\]/gu,
       '\\$&',
     );
-    const updatePaymentMethodRegexDev = new RegExp(
+    const updatePaymentMethodRegex = new RegExp(
       `^${escapedBaseUrl}/subscriptions/[^/]+/payment-method/crypto$`,
       'u',
     );
     await server
-      .forPatch(updatePaymentMethodRegexDev)
-      .always()
-      .thenCallback(updatePaymentMethodCallback);
-
-    // Mock production URL using regex
-    const updatePaymentMethodRegexProd =
-      /^https:\/\/subscription\.api\.cx\.metamask\.io\/v1\/subscriptions\/[^/]+\/payment-method\/crypto$/u;
-    await server
-      .forPatch(updatePaymentMethodRegexProd)
+      .forPatch(updatePaymentMethodRegex)
       .always()
       .thenCallback(updatePaymentMethodCallback);
   }
