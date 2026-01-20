@@ -6,6 +6,7 @@ export const SENSITIVE_FIELD_PATTERNS = [
   /mnemonic/iu,
   /private.*key/iu,
   /secret/iu,
+  /api[-_]?key/iu,
 ] as const;
 
 export function isSensitiveField(fieldName: string): boolean {

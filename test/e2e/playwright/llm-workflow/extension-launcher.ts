@@ -2,7 +2,6 @@ import path from 'path';
 import { promises as fs, existsSync } from 'fs';
 import { execSync } from 'child_process';
 import { chromium, type Page, type BrowserContext } from '@playwright/test';
-import { Anvil } from '../../seeder/anvil';
 import type {
   LaunchOptions,
   ScreenshotOptions,
@@ -16,21 +15,20 @@ import type {
 
 import { OnboardingFlow } from './page-objects/onboarding/onboarding-flow';
 import { MockServer } from './mock-server';
-import { HomePage } from './page-objects/home-page';
-import {
+import type {
   AnvilSeederWrapper,
-  type SmartContractName,
+  SmartContractName,
 } from './anvil-seeder-wrapper';
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const FixtureServer = require('../../fixtures/fixture-server');
-/* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-const {
-  defaultFixture,
-  FIXTURE_STATE_METADATA_VERSION,
-} = require('../../fixtures/default-fixture');
-/* eslint-enable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
-// eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
-const FixtureBuilderClass = require('../../fixtures/fixture-builder');
+import { ConsoleErrorBuffer } from './launcher/console-error-buffer';
+import { delay } from './launcher/retry';
+import { resolveExtensionId } from './launcher/extension-id-resolver';
+import { waitForExtensionUiReady } from './launcher/extension-readiness';
+import {
+  getExtensionState,
+  detectCurrentScreen,
+} from './launcher/state-inspector';
+import { AnvilService } from './launcher/anvil-service';
+import { FixtureServerService } from './launcher/fixture-server-service';
 
 const DEFAULT_PASSWORD = 'correct horse battery staple';
 const DEFAULT_ANVIL_PORT = 8545;
@@ -61,9 +59,9 @@ export class MetaMaskExtensionLauncher {
 
   private extensionId: string | undefined;
 
-  private anvil: Anvil | undefined;
+  private anvilService: AnvilService | undefined;
 
-  private fixtureServer: typeof FixtureServer | undefined;
+  private fixtureServerService: FixtureServerService | undefined;
 
   private mockServer: MockServer | undefined;
 
@@ -73,13 +71,7 @@ export class MetaMaskExtensionLauncher {
 
   private userDataDir: string;
 
-  private consoleErrorBuffer: {
-    timestamp: number;
-    message: string;
-    source: string;
-  }[] = [];
-
-  private readonly maxConsoleErrors = 100;
+  private consoleErrorBuffer = new ConsoleErrorBuffer(100);
 
   constructor(options: LaunchOptions = {}) {
     this.options = {
@@ -191,7 +183,6 @@ export class MetaMaskExtensionLauncher {
 
     try {
       await this.startAnvil();
-      await this.deploySeedContracts();
       await this.startFixtureServer();
       await this.startMockServer();
 
@@ -238,62 +229,20 @@ export class MetaMaskExtensionLauncher {
   }
 
   private async startAnvil(): Promise<void> {
-    console.log('Starting Anvil...');
-    this.anvil = new Anvil();
+    this.anvilService = new AnvilService({
+      network: this.options.network,
+      anvilPort: this.options.anvilPort,
+      defaultChainId: DEFAULT_CHAIN_ID,
+      seedContracts: this.options.seedContracts,
+      fetchWithTimeout: this.fetchWithTimeout.bind(this),
+      log: {
+        info: (message) => console.log(message),
+        error: (message, error) => console.error(message, error),
+      },
+    });
 
-    const port = this.getAnvilPort();
-    const chainId = this.getChainId();
-
-    const anvilOptions: {
-      port: number;
-      chainId: number;
-      forkUrl?: string;
-      forkBlockNumber?: number;
-    } = {
-      port,
-      chainId,
-    };
-
-    if (this.options.network?.mode === 'fork' && this.options.network.rpcUrl) {
-      anvilOptions.forkUrl = this.options.network.rpcUrl;
-      if (this.options.network.forkBlockNumber) {
-        anvilOptions.forkBlockNumber = this.options.network.forkBlockNumber;
-      }
-    }
-
-    await this.anvil.start(anvilOptions);
-    await this.waitForAnvilReady();
-
-    this.seeder = new AnvilSeederWrapper(this.anvil.getProvider());
-    console.log('AnvilSeeder initialized');
-
-    console.log(`Anvil started on port ${port} with chainId ${chainId}`);
-  }
-
-  private async deploySeedContracts(): Promise<void> {
-    const { seedContracts } = this.options;
-
-    if (!seedContracts || seedContracts.length === 0) {
-      return;
-    }
-
-    if (!this.seeder) {
-      throw new Error('Seeder not initialized');
-    }
-
-    console.log(`Deploying ${seedContracts.length} seed contracts...`);
-
-    for (const contractName of seedContracts) {
-      try {
-        const deployed = await this.seeder.deployContract(contractName);
-        console.log(`  Deployed ${contractName} at ${deployed.address}`);
-      } catch (error) {
-        console.error(`  Failed to deploy ${contractName}:`, error);
-        throw error;
-      }
-    }
-
-    console.log('Seed contract deployment complete');
+    await this.anvilService.start();
+    this.seeder = this.anvilService.getSeeder();
   }
 
   private async fetchWithTimeout(
@@ -315,93 +264,18 @@ export class MetaMaskExtensionLauncher {
     }
   }
 
-  private async waitForAnvilReady(maxAttempts = 20): Promise<void> {
-    const port = this.getAnvilPort();
-    for (let i = 0; i < maxAttempts; i++) {
-      try {
-        const response = await this.fetchWithTimeout(
-          `http://localhost:${port}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              jsonrpc: '2.0',
-              method: 'eth_blockNumber',
-              params: [],
-              id: 1,
-            }),
-          },
-          3000,
-        );
-        if (response.ok) {
-          const data = await response.json();
-          if (data.result !== undefined) {
-            console.log('Anvil is ready');
-            return;
-          }
-        }
-      } catch {
-        // Retry on connection failure
-      }
-      await new Promise((r) => setTimeout(r, 500));
-    }
-    throw new Error(
-      `Anvil failed to respond after ${maxAttempts} attempts on port ${port}. ` +
-        `To kill any orphan process: lsof -ti:${port} | xargs kill -9`,
-    );
-  }
-
   private async startFixtureServer(): Promise<void> {
-    console.log('Starting FixtureServer...');
-    this.fixtureServer = new FixtureServer({
-      port: this.getFixtureServerPort(),
+    this.fixtureServerService = new FixtureServerService({
+      port: this.options.fixtureServerPort,
+      stateMode: this.options.stateMode,
+      fixture: this.options.fixture,
+      fetchWithTimeout: this.fetchWithTimeout.bind(this),
+      log: {
+        info: (message) => console.log(message),
+      },
     });
-    await this.fixtureServer.start();
-    await this.waitForFixtureServerReady();
 
-    let fixture: FixtureData;
-
-    if (this.options.fixture) {
-      fixture = this.options.fixture;
-      if (!fixture.meta) {
-        fixture.meta = { version: FIXTURE_STATE_METADATA_VERSION };
-      }
-    } else if (this.options.stateMode === 'onboarding') {
-      const builder = new FixtureBuilderClass({ onboarding: true });
-      fixture = builder.build();
-    } else {
-      fixture = defaultFixture();
-      fixture.meta = { version: FIXTURE_STATE_METADATA_VERSION };
-    }
-
-    this.fixtureServer.loadJsonState(fixture, null);
-    console.log(
-      `FixtureServer running on port ${this.getFixtureServerPort()} (mode: ${this.options.stateMode})`,
-    );
-  }
-
-  private async waitForFixtureServerReady(maxAttempts = 10): Promise<void> {
-    const port = this.getFixtureServerPort();
-    for (let i = 0; i < maxAttempts; i++) {
-      try {
-        const response = await this.fetchWithTimeout(
-          `http://localhost:${port}/state.json`,
-          {},
-          3000,
-        );
-        if (response.ok) {
-          console.log('FixtureServer is ready');
-          return;
-        }
-      } catch {
-        // Retry on connection failure
-      }
-      await new Promise((r) => setTimeout(r, 500));
-    }
-    throw new Error(
-      `FixtureServer failed to respond after ${maxAttempts} attempts on port ${port}. ` +
-        `To kill any orphan process: lsof -ti:${port} | xargs kill -9`,
-    );
+    await this.fixtureServerService.start();
   }
 
   private async startMockServer(): Promise<void> {
@@ -430,32 +304,44 @@ export class MetaMaskExtensionLauncher {
     }
 
     const port = this.mockServer.getPort();
-    for (let i = 0; i < maxAttempts; i++) {
+    let ready = false;
+
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
       try {
-        const response = await this.fetchWithTimeout(
+        const result = await this.fetchWithTimeout(
           `https://localhost:${port}/`,
           { method: 'GET' },
           3000,
         );
-        if (response.status === 503 || response.ok) {
-          console.log('MockServer is ready');
-          return;
+        if (result.status === 503 || result.ok) {
+          ready = true;
+          break;
         }
       } catch (e) {
         const error = e as Error;
         if (error.cause && String(error.cause).includes('ECONNREFUSED')) {
-          await new Promise((r) => setTimeout(r, 200));
+          await delay(200);
           continue;
         }
         if (error.name === 'AbortError') {
-          await new Promise((r) => setTimeout(r, 200));
+          await delay(200);
           continue;
         }
         console.log('MockServer is ready (self-signed cert accepted)');
-        return;
+        ready = true;
+        break;
       }
-      await new Promise((r) => setTimeout(r, 200));
+
+      if (attempt < maxAttempts - 1) {
+        await delay(200);
+      }
     }
+
+    if (ready) {
+      console.log('MockServer is ready');
+      return;
+    }
+
     throw new Error(
       `MockServer failed to respond after ${maxAttempts} attempts on port ${port}. ` +
         `To kill any orphan process: lsof -ti:${port} | xargs kill -9`,
@@ -497,14 +383,13 @@ export class MetaMaskExtensionLauncher {
       page = await this.context.newPage();
     }
 
-    this.extensionId = await this.getExtensionIdFromServiceWorker();
-
-    if (!this.extensionId) {
-      console.log(
-        'Service worker discovery failed, falling back to chrome://extensions',
-      );
-      this.extensionId = await this.getExtensionIdFromExtensionsPage(page);
-    }
+    this.extensionId = await resolveExtensionId({
+      context: this.context,
+      log: {
+        info: (message) => console.log(message),
+        warn: (message, error) => console.warn(message, error),
+      },
+    });
 
     if (!this.extensionId) {
       throw new Error('Could not find MetaMask extension ID');
@@ -515,7 +400,14 @@ export class MetaMaskExtensionLauncher {
 
     this.attachConsoleListeners(page);
 
-    await this.waitForExtensionUIReady(page);
+    await waitForExtensionUiReady({
+      page,
+      screenshotDir: this.options.screenshotDir,
+      log: {
+        info: (message) => console.log(message),
+        error: (message) => console.error(message),
+      },
+    });
 
     this.extensionPage = page;
   }
@@ -533,198 +425,11 @@ export class MetaMaskExtensionLauncher {
   }
 
   private addConsoleError(message: string, source: string): void {
-    this.consoleErrorBuffer.push({
+    this.consoleErrorBuffer.add({
       timestamp: Date.now(),
       message,
       source,
     });
-
-    if (this.consoleErrorBuffer.length > this.maxConsoleErrors) {
-      this.consoleErrorBuffer.shift();
-    }
-  }
-
-  private async getExtensionIdFromServiceWorker(): Promise<string | undefined> {
-    if (!this.context) {
-      return undefined;
-    }
-
-    try {
-      const existingWorkers = this.context.serviceWorkers();
-      for (const worker of existingWorkers) {
-        const extensionId = this.extractExtensionIdFromUrl(worker.url());
-        if (extensionId) {
-          console.log(
-            `Found extension ID from existing service worker: ${extensionId}`,
-          );
-          return extensionId;
-        }
-      }
-
-      const worker = await Promise.race([
-        this.context.waitForEvent('serviceworker', { timeout: 10000 }),
-        new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000)),
-      ]);
-
-      if (worker && typeof worker !== 'number') {
-        const extensionId = this.extractExtensionIdFromUrl(worker.url());
-        if (extensionId) {
-          console.log(
-            `Found extension ID from new service worker: ${extensionId}`,
-          );
-          return extensionId;
-        }
-      }
-    } catch (error) {
-      console.warn('Service worker extension ID discovery failed:', error);
-    }
-
-    return undefined;
-  }
-
-  private extractExtensionIdFromUrl(url: string): string | undefined {
-    const match = url.match(/chrome-extension:\/\/([a-z]{32})\//u);
-    return match ? match[1] : undefined;
-  }
-
-  private async waitForExtensionUIReady(
-    page: Page,
-    timeout = 30000,
-  ): Promise<void> {
-    const selectors = [
-      '[data-testid="unlock-password"]',
-      '[data-testid="onboarding-create-wallet"]',
-      '[data-testid="onboarding-import-wallet"]',
-      '[data-testid="account-menu-icon"]',
-      '[data-testid="get-started"]',
-      '[data-testid="onboarding-terms-checkbox"]',
-      '[data-testid="onboarding-privacy-policy"]',
-    ];
-
-    try {
-      await Promise.race(
-        selectors.map((selector) =>
-          page.waitForSelector(selector, { timeout }),
-        ),
-      );
-      console.log('Extension UI is ready');
-    } catch {
-      const currentUrl = page.url();
-      const screenshotPath = path.join(
-        this.options.screenshotDir,
-        `ui-ready-failure-${Date.now()}.png`,
-      );
-      await page.screenshot({ path: screenshotPath, fullPage: true });
-      console.error(`Debug screenshot saved: ${screenshotPath}`);
-
-      throw new Error(
-        `Extension UI did not reach expected state within ${timeout}ms. ` +
-          `Current URL: ${currentUrl}. ` +
-          'Expected one of: unlock page, onboarding page, or home page. ' +
-          `Debug screenshot saved to: ${screenshotPath}`,
-      );
-    }
-  }
-
-  private async getExtensionIdFromExtensionsPage(
-    page: Page,
-    maxRetries = 3,
-  ): Promise<string | undefined> {
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        await page.goto('chrome://extensions');
-        await page.waitForLoadState('domcontentloaded');
-        await this.waitForExtensionsPageReady(page);
-
-        const extensionId = await page.evaluate(() => {
-          const extensionsManager =
-            document.querySelector('extensions-manager');
-          if (!extensionsManager?.shadowRoot) {
-            return undefined;
-          }
-
-          const itemList = extensionsManager.shadowRoot.querySelector(
-            'extensions-item-list',
-          );
-          if (!itemList?.shadowRoot) {
-            return undefined;
-          }
-
-          const items = itemList.shadowRoot.querySelectorAll('extensions-item');
-
-          for (const item of items) {
-            const nameEl = item.shadowRoot?.querySelector('#name');
-            const name = nameEl?.textContent || '';
-            if (name.includes('MetaMask')) {
-              return item.getAttribute('id') || undefined;
-            }
-          }
-
-          return undefined;
-        });
-
-        if (extensionId) {
-          return extensionId;
-        }
-
-        if (attempt < maxRetries) {
-          console.warn(
-            `MetaMask extension not found (attempt ${attempt}/${maxRetries}), retrying...`,
-          );
-          await new Promise((r) => setTimeout(r, 1000));
-        }
-      } catch (error) {
-        if (attempt < maxRetries) {
-          console.warn(
-            `Error getting extension ID (attempt ${attempt}/${maxRetries}):`,
-            error,
-          );
-          await new Promise((r) => setTimeout(r, 1000));
-        } else {
-          throw new Error(
-            `Failed to get MetaMask extension ID after ${maxRetries} attempts. ` +
-              `Ensure the extension is built at: ${this.options.extensionPath}. ` +
-              `Run: yarn build:test`,
-          );
-        }
-      }
-    }
-
-    return undefined;
-  }
-
-  private async waitForExtensionsPageReady(
-    page: Page,
-    maxAttempts = 20,
-  ): Promise<void> {
-    for (let i = 0; i < maxAttempts; i++) {
-      const isReady = await page.evaluate(() => {
-        const extensionsManager = document.querySelector('extensions-manager');
-        if (!extensionsManager?.shadowRoot) {
-          return false;
-        }
-
-        const itemList = extensionsManager.shadowRoot.querySelector(
-          'extensions-item-list',
-        );
-        if (!itemList?.shadowRoot) {
-          return false;
-        }
-
-        const items = itemList.shadowRoot.querySelectorAll('extensions-item');
-        return items.length > 0;
-      });
-
-      if (isReady) {
-        return;
-      }
-      await new Promise((r) => setTimeout(r, 100));
-    }
-    throw new Error(
-      `chrome://extensions page did not load extensions within ${maxAttempts * 100}ms. ` +
-        'The shadow DOM structure was not fully populated. ' +
-        'This may indicate a Chrome version incompatibility or slow system.',
-    );
   }
 
   async unlock(password: string = DEFAULT_PASSWORD): Promise<void> {
@@ -811,9 +516,10 @@ export class MetaMaskExtensionLauncher {
       `${name}-state.json`,
     );
 
+    const consoleErrors = this.consoleErrorBuffer.getAll();
     const dumpData = {
       state,
-      consoleErrors: this.consoleErrorBuffer,
+      consoleErrors,
       timestamp: Date.now(),
     };
 
@@ -824,12 +530,12 @@ export class MetaMaskExtensionLauncher {
     console.log(`[debugDump] Current screen: ${state.currentScreen}`);
     console.log(`[debugDump] Current URL: ${state.currentUrl}`);
     console.log(
-      `[debugDump] Console errors captured: ${this.consoleErrorBuffer.length}`,
+      `[debugDump] Console errors captured: ${this.consoleErrorBuffer.size}`,
     );
 
-    if (this.consoleErrorBuffer.length > 0) {
+    if (this.consoleErrorBuffer.size > 0) {
       console.log(`[debugDump] Recent errors:`);
-      const recentErrors = this.consoleErrorBuffer.slice(-5);
+      const recentErrors = this.consoleErrorBuffer.getRecent(5);
       for (const error of recentErrors) {
         console.log(
           `  - ${error.message.substring(0, 100)}${error.message.length > 100 ? '...' : ''}`,
@@ -837,7 +543,7 @@ export class MetaMaskExtensionLauncher {
       }
     }
 
-    return { screenshot, state, consoleErrors: [...this.consoleErrorBuffer] };
+    return { screenshot, state, consoleErrors };
   }
 
   async getState(): Promise<ExtensionState> {
@@ -845,124 +551,16 @@ export class MetaMaskExtensionLauncher {
       throw new Error('Extension not initialized');
     }
 
-    const currentUrl = this.extensionPage.url();
-    const isUnlocked = await this.extensionPage
-      .locator('[data-testid="account-menu-icon"]')
-      .isVisible()
-      .catch(() => false);
-
-    const currentScreen = await this.detectCurrentScreen();
-
-    let accountAddress: string | null = null;
-    let networkName: string | null = null;
-    const chainId: number | null = this.getChainId();
-    let balance: string | null = null;
-
-    if (currentScreen === 'home' && isUnlocked) {
-      const homePage = new HomePage(this.extensionPage);
-
-      accountAddress = (await homePage.getAccountAddress()) || null;
-      networkName = (await homePage.getNetworkName()) || null;
-      balance = (await homePage.getBalance()) || null;
-    }
-
-    return {
-      isLoaded: true,
-      currentUrl,
+    return getExtensionState(this.extensionPage, {
       extensionId: this.extensionId,
-      isUnlocked,
-      currentScreen,
-      accountAddress,
-      networkName,
-      chainId,
-      balance,
-    };
+      chainId: this.getChainId(),
+    });
   }
 
   private async detectCurrentScreen(): Promise<
     ExtensionState['currentScreen']
   > {
-    if (!this.extensionPage) {
-      return 'unknown';
-    }
-
-    const currentUrl = this.extensionPage.url();
-    const urlScreenMatch = this.detectScreenFromUrl(currentUrl);
-    if (urlScreenMatch !== 'unknown') {
-      return urlScreenMatch;
-    }
-
-    const screenSelectors: {
-      screen: ExtensionState['currentScreen'];
-      selector: string;
-    }[] = [
-      { screen: 'unlock', selector: '[data-testid="unlock-password"]' },
-      { screen: 'home', selector: '[data-testid="account-menu-icon"]' },
-      { screen: 'onboarding-welcome', selector: '[data-testid="get-started"]' },
-      {
-        screen: 'onboarding-import',
-        selector: '[data-testid="onboarding-import-wallet"]',
-      },
-      {
-        screen: 'onboarding-create',
-        selector: '[data-testid="onboarding-create-wallet"]',
-      },
-      {
-        screen: 'onboarding-srp',
-        selector: '[data-testid="srp-input-import__srp-note"]',
-      },
-      {
-        screen: 'onboarding-password',
-        selector: '[data-testid="create-password-new-input"]',
-      },
-      {
-        screen: 'onboarding-complete',
-        selector: '[data-testid="onboarding-complete-done"]',
-      },
-      {
-        screen: 'onboarding-metametrics',
-        selector: '[data-testid="metametrics-i-agree"]',
-      },
-      { screen: 'settings', selector: '[data-testid="settings-page"]' },
-    ];
-
-    for (const { screen, selector } of screenSelectors) {
-      const isVisible = await this.extensionPage
-        .locator(selector)
-        .isVisible({ timeout: 500 })
-        .catch(() => false);
-      if (isVisible) {
-        return screen;
-      }
-    }
-
-    return 'unknown';
-  }
-
-  private detectScreenFromUrl(url: string): ExtensionState['currentScreen'] {
-    const hash = url.split('#')[1] ?? '';
-
-    const urlPatterns: {
-      pattern: RegExp;
-      screen: ExtensionState['currentScreen'];
-    }[] = [
-      { pattern: /^\/send/u, screen: 'send' },
-      { pattern: /^\/swap/u, screen: 'swap' },
-      { pattern: /^\/bridge/u, screen: 'bridge' },
-      { pattern: /^\/confirm-transaction/u, screen: 'confirm-transaction' },
-      { pattern: /^\/confirm-signature/u, screen: 'confirm-signature' },
-      { pattern: /^\/settings/u, screen: 'settings' },
-      { pattern: /^\/unlock/u, screen: 'unlock' },
-      { pattern: /notification\.html/u, screen: 'notification' },
-    ];
-
-    for (const { pattern, screen } of urlPatterns) {
-      if (pattern.test(hash) || pattern.test(url)) {
-        return screen;
-      }
-    }
-
-    return 'unknown';
+    return detectCurrentScreen(this.extensionPage);
   }
 
   async navigateToHome(): Promise<void> {
@@ -1100,15 +698,15 @@ export class MetaMaskExtensionLauncher {
     }
 
     const fixtureServerPort = this.getFixtureServerPort();
-    if (this.fixtureServer) {
+    if (this.fixtureServerService) {
       try {
-        await this.fixtureServer.stop();
+        await this.fixtureServerService.stop();
       } catch (e) {
         const msg = `Failed to stop FixtureServer on port ${fixtureServerPort}. Kill manually: lsof -ti:${fixtureServerPort} | xargs kill -9`;
         console.error(msg);
         errors.push(msg);
       }
-      this.fixtureServer = undefined;
+      this.fixtureServerService = undefined;
     }
 
     if (this.seeder) {
@@ -1117,15 +715,15 @@ export class MetaMaskExtensionLauncher {
     }
 
     const anvilPort = this.getAnvilPort();
-    if (this.anvil) {
+    if (this.anvilService) {
       try {
-        await this.anvil.quit();
+        await this.anvilService.stop();
       } catch (e) {
         const msg = `Failed to stop Anvil on port ${anvilPort}. Kill manually: lsof -ti:${anvilPort} | xargs kill -9`;
         console.error(msg);
         errors.push(msg);
       }
-      this.anvil = undefined;
+      this.anvilService = undefined;
     }
 
     if (errors.length > 0) {

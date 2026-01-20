@@ -483,6 +483,10 @@ describe('Zod Schemas', () => {
         'mm_knowledge_search',
         'mm_knowledge_summarize',
         'mm_knowledge_sessions',
+        'mm_seed_contract',
+        'mm_seed_contracts',
+        'mm_get_contract_address',
+        'mm_list_contracts',
       ]);
     });
   });
