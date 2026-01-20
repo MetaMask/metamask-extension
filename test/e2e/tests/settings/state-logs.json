@@ -345,6 +345,7 @@
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
+    "connectivityStatus": "string",
     "conversionRates": {},
     "coverageResults": {},
     "cryptocurrencies": ["string"],
@@ -1092,7 +1093,8 @@
     },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
-      "install_date_ext": "string"
+      "install_date_ext": "string",
+      "storage_kind": "string"
     },
     "transactionBatches": [],
     "transactionData": {},
