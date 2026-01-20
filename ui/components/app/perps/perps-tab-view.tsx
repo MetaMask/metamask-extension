@@ -12,6 +12,7 @@ import {
   IconName,
   IconSize,
   IconColor,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { useNavigate } from 'react-router-dom';
 import log from 'loglevel';
@@ -64,10 +65,9 @@ export const PerpsTabView: React.FC = () => {
         paddingRight={4}
         paddingTop={2}
       >
-        <button
-          type="button"
+        <ButtonBase
           onClick={handleSearchPress}
-          className="flex items-center justify-center rounded-full p-2 hover:bg-hover active:bg-pressed"
+          className="rounded-full p-2"
           data-testid="perps-search-button"
           aria-label={t('perpsSearchMarkets')}
         >
@@ -76,7 +76,7 @@ export const PerpsTabView: React.FC = () => {
             size={IconSize.Md}
             color={IconColor.IconDefault}
           />
-        </button>
+        </ButtonBase>
       </Box>
 
       {/* Control Bar with Balance and P&L */}

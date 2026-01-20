@@ -108,9 +108,8 @@ export function Dropdown<T extends string>({
           data-testid={`${testId}-menu`}
         >
           {options.map((option) => (
-            <button
+            <ButtonBase
               key={option.id}
-              type="button"
               onClick={() => handleSelect(option)}
               className="flex w-full items-center justify-between px-3 py-2 text-left hover:bg-hover active:bg-pressed"
               data-testid={`${testId}-option-${option.id}`}
@@ -132,7 +131,7 @@ export function Dropdown<T extends string>({
                   color={IconColor.PrimaryDefault}
                 />
               )}
-            </button>
+            </ButtonBase>
           ))}
         </Box>
       )}
