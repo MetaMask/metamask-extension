@@ -1,33 +1,24 @@
 import { useSelector } from 'react-redux';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { getConfirmationSender } from '../components/confirm/utils';
 import { useConfirmContext } from '../context/confirm';
 import { MultichainAccountsState } from '../../../selectors/multichain-accounts/account-tree.types';
-import {
-  selectAccountGroupNameByInternalAccount,
-  selectInternalAccountNameByAddress,
-} from '../selectors/accounts';
+import { selectAccountGroupNameByInternalAccount } from '../selectors/accounts';
 import { RootState } from '../selectors/preferences';
 import {
   getWalletIdAndNameByAccountAddress,
   getWalletsWithAccounts,
 } from '../../../selectors/multichain-accounts/account-tree';
+import { useIsBIP44 } from './useIsBIP44';
 
 function useConfirmationRecipientInfo() {
   const { currentConfirmation } = useConfirmContext();
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
+  const isBIP44 = useIsBIP44();
 
   const { from } = getConfirmationSender(currentConfirmation);
   const senderAddress = from ?? '';
 
-  const accountGroupName = useSelector((state: MultichainAccountsState) =>
+  const senderName = useSelector((state: MultichainAccountsState) =>
     selectAccountGroupNameByInternalAccount(state, senderAddress),
-  );
-
-  const internalAccountName = useSelector((state: RootState) =>
-    selectInternalAccountNameByAddress(state, senderAddress),
   );
 
   const walletInfo = useSelector((state: RootState) =>
@@ -36,15 +27,11 @@ function useConfirmationRecipientInfo() {
 
   const walletsWithAccounts = useSelector(getWalletsWithAccounts);
 
-  const senderName = isMultichainAccountsState2Enabled
-    ? accountGroupName
-    : internalAccountName;
-
   const hasMoreThanOneWallet = Object.keys(walletsWithAccounts).length > 1;
 
   return {
     hasMoreThanOneWallet,
-    isBIP44: isMultichainAccountsState2Enabled,
+    isBIP44,
     senderAddress,
     senderName: senderName ?? '',
     walletName: walletInfo?.name ?? '',

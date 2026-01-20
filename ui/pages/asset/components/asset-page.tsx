@@ -9,7 +9,6 @@ import {
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type CaipAssetType,
-  type Hex,
   isCaipChainId,
   parseCaipAssetType,
 } from '@metamask/utils';
@@ -21,14 +20,11 @@ import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { endTrace, TraceName } from '../../../../shared/lib/trace';
 import { hexToDecimal } from '../../../../shared/modules/conversion.utils';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
-import useMultiChainAssets from '../../../components/app/assets/hooks/useMultichainAssets';
 import TokenCell from '../../../components/app/assets/token-cell';
 import {
   TokenFiatDisplayInfo,
   type TokenWithFiatAmount,
 } from '../../../components/app/assets/types';
-import { calculateTokenBalance } from '../../../components/app/assets/util/calculateTokenBalance';
-import TransactionList from '../../../components/app/transaction-list';
 import UnifiedTransactionList from '../../../components/app/transaction-list/unified-transaction-list.component';
 import CoinButtons from '../../../components/app/wallet-overview/coin-buttons';
 import {
@@ -58,15 +54,12 @@ import { DEFAULT_ROUTE } from '../../../helpers/constants/routes';
 import { getPortfolioUrl } from '../../../helpers/utils/portfolio';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import {
   getDataCollectionForMarketing,
   getIsBridgeChain,
-  getIsMultichainAccountsState2Enabled,
   getIsSwapsChain,
   getMetaMetricsId,
   getParticipateInMetaMetrics,
-  getSelectedAccountNativeTokenCachedBalanceByChainId,
   getShowFiatInTestnets,
 } from '../../../selectors';
 import {
@@ -106,9 +99,6 @@ const AssetPage = ({
   const isEvm = isEvmChainId(asset.chainId);
   // TODO BIP44 Refactor: This selector does not work with BIP44 enabled, pass the information in the asset object
   const nativeAssetType = useSelector(getMultichainNativeAssetType);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
   const caipChainId = isCaipChainId(asset.chainId)
     ? asset.chainId
@@ -121,9 +111,7 @@ const AssetPage = ({
     endTrace({ name: TraceName.AssetDetails });
   }, []);
 
-  const { chainId, type, symbol, name, image, decimals } = asset;
-
-  const isNative = type === AssetType.native;
+  const { chainId, type, symbol, name, image } = asset;
 
   const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
   const isBridgeChain = useSelector((state) =>
@@ -144,48 +132,6 @@ const AssetPage = ({
   const showFiatInTestnets = useSelector(getShowFiatInTestnets);
   const showFiat =
     shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-
-  const nativeBalances: Record<Hex, Hex> = useSelector(
-    getSelectedAccountNativeTokenCachedBalanceByChainId,
-  ) as Record<Hex, Hex>;
-
-  const { tokenBalances } = useTokenBalances({ chainIds: [chainId] });
-
-  const selectedAccountTokenBalancesAcrossChains =
-    tokenBalances[selectedAccount.address as Hex];
-
-  const multiChainAssets = useMultiChainAssets();
-  const mutichainTokenWithFiatAmount = multiChainAssets
-    .filter((item) => item.chainId === chainId && item.address !== undefined)
-    .find((item) => {
-      switch (type) {
-        case AssetType.native:
-          return item.isNative;
-        case AssetType.token:
-          return item.address === asset.address;
-        default:
-          return false;
-      }
-    }) ?? {
-    // TODO: remove the fallback case where the mutichainTokenWithFiatAmount is undefined
-    // Root cause: There is a race condition where when switching from a non-EVM network
-    // to an EVM network, the mutichainTokenWithFiatAmount is undefined
-    // This is a workaround to avoid the error
-    // Look into the isEvm selector
-    // We might be switching network before account.
-    address: '',
-    chainId: '',
-    symbol: '',
-    title: '',
-    image: '',
-    tokenFiatAmount: 0,
-    string: '',
-    decimals: 0,
-    aggregators: [],
-    isNative: false,
-    balance: 0,
-    secondary: 0,
-  };
 
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);
   const isMarketingEnabled = useSelector(getDataCollectionForMarketing);
@@ -211,56 +157,27 @@ const AssetPage = ({
 
   const { currentPrice } = useCurrentPrice(asset);
 
-  let balance, tokenFiatAmount, assetId, updatedAsset;
-  if (isMultichainAccountsState2Enabled) {
-    const assetWithBalance = accountGroupIdAssets[chainId]?.find(
-      (item) =>
-        item.assetId.toLowerCase() === address.toLowerCase() ||
-        // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
-        (!address && !isEvm && item.isNative),
-    );
+  const assetWithBalance = accountGroupIdAssets[chainId]?.find(
+    (item) =>
+      item.assetId.toLowerCase() === address.toLowerCase() ||
+      // TODO: This is a workaround for non-evm native assets, as the address that is received here is blank
+      (!address && !isEvm && item.isNative),
+  );
 
-    assetId = assetWithBalance?.assetId || '';
-    address = assetWithBalance?.assetId || '';
-    balance = assetWithBalance?.balance ?? '0';
-    tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
-    const tokenHexBalance = assetWithBalance?.rawBalance as string;
+  address = assetWithBalance?.assetId || '';
+  const assetId = assetWithBalance?.assetId || '';
+  const balance = assetWithBalance?.balance ?? '0';
+  const tokenFiatAmount = assetWithBalance?.fiat?.balance ?? 0;
+  const tokenHexBalance = assetWithBalance?.rawBalance as string;
 
-    updatedAsset = {
-      ...asset,
-      balance: {
-        value: hexToDecimal(tokenHexBalance),
-        display: balance,
-        fiat: String(tokenFiatAmount),
-      },
-    };
-  } else {
-    const tokenHexBalance =
-      selectedAccountTokenBalancesAcrossChains?.[chainId]?.[address as Hex];
-
-    balance = calculateTokenBalance({
-      isNative,
-      chainId,
-      address: address as Hex,
-      decimals,
-      nativeBalances,
-      selectedAccountTokenBalancesAcrossChains,
-    });
-
-    tokenFiatAmount = currentPrice
-      ? currentPrice * parseFloat(String(balance))
-      : 0;
-
-    // this is needed in order to assign the correct balances to TokenButtons before navigating to send/swap screens
-    updatedAsset = {
-      ...asset,
-      balance: {
-        value: hexToDecimal(tokenHexBalance),
-        display: String(balance),
-        fiat: String(tokenFiatAmount),
-      },
-    };
-  }
+  const updatedAsset = {
+    ...asset,
+    balance: {
+      value: hexToDecimal(tokenHexBalance),
+      display: balance,
+      fiat: String(tokenFiatAmount),
+    },
+  };
 
   const shouldShowSpendingCaps = isEvm;
   const portfolioSpendingCapsUrl = useMemo(
@@ -290,37 +207,24 @@ const AssetPage = ({
 
   const bip44Asset = useSelector((state) => getAsset(state, address, chainId));
 
-  const tokenWithFiatAmount =
-    isEvm || isMultichainAccountsState2Enabled
-      ? {
-          address: isEvm ? address : assetId,
-          chainId,
-          symbol,
-          image,
-          title: name ?? symbol,
-          tokenFiatAmount: showFiat ? tokenFiatAmount : null,
-          string: balance ? balance.toString() : '',
-          decimals: asset.decimals,
-          aggregators:
-            type === AssetType.token && asset.aggregators
-              ? asset.aggregators
-              : [],
-          isNative: type === AssetType.native,
-          balance,
-          secondary: balance ? Number(balance) : 0,
-          accountType: bip44Asset?.accountType,
-        }
-      : {
-          ...mutichainTokenWithFiatAmount,
-          accountType: bip44Asset?.accountType,
-        };
+  const tokenWithFiatAmount = {
+    address: isEvm ? address : assetId,
+    chainId,
+    symbol,
+    image,
+    title: name ?? symbol,
+    tokenFiatAmount: showFiat ? tokenFiatAmount : null,
+    string: balance ? balance.toString() : '',
+    decimals: asset.decimals,
+    aggregators:
+      type === AssetType.token && asset.aggregators ? asset.aggregators : [],
+    isNative: type === AssetType.native,
+    balance,
+    secondary: balance ? Number(balance) : 0,
+    accountType: bip44Asset?.accountType,
+  };
 
   const { safeChains } = useSafeChains();
-
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
 
   // Check if we should show Tron resources
   const isTron = useMultichainSelector(getMultichainIsTron, selectedAccount);
@@ -529,19 +433,13 @@ const AssetPage = ({
             <Text paddingInline={4} variant={TextVariant.headingSm}>
               {t('yourActivity')}
             </Text>
-            {showUnifiedTransactionList ? (
+            {
               <UnifiedTransactionList
                 tokenAddress={address}
                 hideNetworkFilter
                 tokenChainIdOverride={chainId}
               />
-            ) : (
-              <TransactionList
-                tokenAddress={address}
-                hideNetworkFilter
-                overrideFilterForCurrentChain={type === AssetType.native}
-              />
-            )}
+            }
           </Box>
         </Box>
       </Box>

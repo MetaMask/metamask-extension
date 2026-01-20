@@ -198,7 +198,6 @@ describe('Add wallet', function () {
         await accountListPage.addNewImportedAccount(
           testPrivateKey,
           'The account you are trying to import is a duplicate',
-          { isMultichainAccountsState2Enabled: true },
         );
       },
     );

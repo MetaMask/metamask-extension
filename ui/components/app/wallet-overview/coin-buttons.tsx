@@ -25,10 +25,8 @@ import {
 } from '../../../pages/multichain-accounts/multichain-account-address-list-page';
 import {
   getUseExternalServices,
-  getNetworkConfigurationIdByChainId,
   getSwapsDefaultToken,
 } from '../../../selectors';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
 import { getSelectedAccountGroup } from '../../../selectors/multichain-accounts/account-tree';
 import Tooltip from '../../ui/tooltip';
 import {
@@ -50,13 +48,11 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
-import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
   getMultichainNetwork,
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
@@ -99,17 +95,9 @@ const CoinButtons = ({
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
-  const currentChainId = useSelector(getCurrentChainId);
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
-  // Multichain accounts feature flag and selected account group
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
+  // Selected account group
   const selectedAccountGroup = useSelector(getSelectedAccountGroup);
 
   const defaultSwapsToken = useSelector((state) =>
@@ -130,10 +118,7 @@ const CoinButtons = ({
   // Initially, those events were using a "ETH" as `token_symbol`, so we keep this behavior
   // for EVM, no matter the currently selected native token (e.g. SepoliaETH if you are on Sepolia
   // network).
-  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  const { isEvmNetwork } = useMultichainSelector(getMultichainNetwork, account);
   const multichainNativeToken = useMultichainSelector(
     getMultichainNativeCurrency,
     account,
@@ -220,33 +205,9 @@ const CoinButtons = ({
   const { openBridgeExperience } = useBridging();
 
   const setCorrectChain = useCallback(async () => {
-    if (
-      currentChainId !== chainId &&
-      multichainChainId !== chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
-      try {
-        const networkConfigurationId = networks[chainId];
-        await dispatch(setActiveNetworkWithError(networkConfigurationId));
-      } catch (err) {
-        console.error(`Failed to switch chains.
-        Target chainId: ${chainId}, Current chainId: ${currentChainId}.
-        ${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          err
-        }`);
-        throw err;
-      }
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentChainId,
-    multichainChainId,
-    chainId,
-    networks,
-    dispatch,
-  ]);
+    // With multichain accounts state 2 enabled, chain switching is no longer needed
+    // as operations are handled per account group
+  }, []);
 
   const handleSendOnClick = useCallback(async () => {
     trackEvent(
@@ -353,7 +314,7 @@ const CoinButtons = ({
       },
     });
 
-    if (isMultichainAccountsState2Enabled && selectedAccountGroup) {
+    if (selectedAccountGroup) {
       // Navigate to the multichain address list page with receive source
       navigate(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(selectedAccountGroup)}?${AddressListQueryParams.Source}=${AddressListSource.Receive}`,
@@ -362,14 +323,7 @@ const CoinButtons = ({
       // Show the traditional receive modal
       setShowReceiveModal(true);
     }
-  }, [
-    isMultichainAccountsState2Enabled,
-    selectedAccountGroup,
-    navigate,
-    trackEvent,
-    trackingLocation,
-    chainId,
-  ]);
+  }, [selectedAccountGroup, navigate, trackEvent, trackingLocation, chainId]);
 
   return (
     <Box

@@ -33,7 +33,6 @@ import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
 import {
   getEnabledNetworksByNamespace,
-  getIsMultichainAccountsState2Enabled,
   getMultichainNetworkConfigurationsByChainId,
   getOrderedNetworksList,
   getShowTestNetworks,
@@ -50,9 +49,6 @@ export const CustomNetworks = React.memo(() => {
   );
   const showTestnets = useSelector(getShowTestNetworks);
   const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
-  const isMultichainAccountsFeatureEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const { nonTestNetworks, testNetworks } = useNetworkManagerState();
 
@@ -160,7 +156,6 @@ export const CustomNetworks = React.memo(() => {
     orderedNetworks,
     isEvmNetworkSelected,
     generateMultichainNetworkListItem,
-    isMultichainAccountsFeatureEnabled,
     t,
   ]);
 

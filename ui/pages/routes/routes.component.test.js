@@ -33,20 +33,6 @@ jest.mock('webextension-polyfill', () => ({
   },
 }));
 
-// TODO: Remove this mock when multichain accounts feature flag is entirely removed.
-// TODO: Convert any old tests (UI/UX state 1) to its state 2 equivalent (if possible).
-const mockIsMultichainAccountsFeatureEnabled = jest.fn();
-jest.mock(
-  '../../../shared/lib/multichain-accounts/remote-feature-flag',
-  () => ({
-    ...jest.requireActual(
-      '../../../shared/lib/multichain-accounts/remote-feature-flag',
-    ),
-    isMultichainAccountsFeatureEnabled: () =>
-      mockIsMultichainAccountsFeatureEnabled(),
-  }),
-);
-
 jest.mock('../../store/actions', () => ({
   ...jest.requireActual('../../store/actions'),
   getGasFeeTimeEstimate: jest.fn().mockImplementation(() => Promise.resolve()),
@@ -138,8 +124,6 @@ describe('Routes Component', () => {
   useIsOriginalNativeTokenSymbol.mockImplementation(() => true);
 
   beforeEach(() => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(true);
-
     // Clear previous mock implementations
     useMultiPolling.mockClear();
 
@@ -232,7 +216,7 @@ describe('toast display', () => {
     id: '481d4435-23da-499a-8c18-fcebbb1eaf03',
   });
   const mockNonEvmAccount = createMockInternalAccount({
-    name: 'Snap Account 1',
+    name: 'Bitcoin Account 1',
     type: BtcAccountType.P2wpkh,
     id: '4174eb0c-0a73-4213-b807-a2e5a5c4ebfd',
     address: 'bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq',
@@ -461,31 +445,22 @@ describe('toast display', () => {
     expect(toastContainer).not.toBeInTheDocument();
   });
 
-  it('does not render toastContainer if the unconnected account is non-EVM', () => {
-    const { queryByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockNonEvmAccount.id),
-    );
-    const toastContainer = queryByTestId('connect-account-toast');
-    expect(toastContainer).not.toBeInTheDocument();
-  });
+  it.each([mockNonEvmAccount, mockSolanaAccount])(
+    'does not render toastContainer if the unconnected account is non-EVM',
+    (nonEvmAccount) => {
+      const { queryByTestId } = render(
+        DEFAULT_ROUTE,
+        getToastConnectAccountDisplayTestState(nonEvmAccount.id),
+      );
+      const toastContainer = queryByTestId('connect-account-toast');
+      expect(toastContainer).not.toBeInTheDocument();
+    },
+  );
 
   it('does render toastContainer if the unconnected selected account is EVM', () => {
     const { getByTestId } = render(
       DEFAULT_ROUTE,
       getToastConnectAccountDisplayTestState(mockAccount2.id),
-    );
-    const toastContainer = getByTestId('connect-account-toast');
-    expect(toastContainer).toBeInTheDocument();
-  });
-
-  // Probably not applicable anymore since BIP-44 account groups?
-  it('does render toastContainer if the unconnected selected account is Solana', () => {
-    mockIsMultichainAccountsFeatureEnabled.mockReturnValue(false);
-
-    const { getByTestId } = render(
-      DEFAULT_ROUTE,
-      getToastConnectAccountDisplayTestState(mockSolanaAccount.id),
     );
     const toastContainer = getByTestId('connect-account-toast');
     expect(toastContainer).toBeInTheDocument();

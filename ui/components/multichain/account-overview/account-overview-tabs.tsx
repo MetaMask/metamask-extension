@@ -20,10 +20,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
-import {
-  getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
-} from '../../../selectors';
+import { getEnabledChainIds } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';
@@ -135,10 +132,7 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+  const showUnifiedTransactionList = true;
 
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
@@ -162,8 +156,8 @@ export const AccountOverviewTabs = ({
           >
             <Box marginBottom={2}>
               <AssetList
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                showTokensLinks={showTokensLinks}
                 safeChains={safeChains}
               />
             </Box>
@@ -188,8 +182,8 @@ export const AccountOverviewTabs = ({
           >
             <Box>
               <DeFiTab
-                showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickDeFi}
+                showTokensLinks={showTokensLinks}
                 safeChains={safeChains}
               />
             </Box>

@@ -54,8 +54,6 @@ import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
   getMultichainNetworkConfigurationsByChainId,
-  getIsMultichainAccountsState2Enabled,
-  getSelectedInternalAccount,
   getGasFeesSponsoredNetworkEnabled,
   getUseExternalServices,
 } from '../../../../../selectors';
@@ -84,10 +82,6 @@ const DefaultNetworks = memo(() => {
 
   const isEvmNetworkSelected = useSelector(getMultichainIsEvm);
 
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-
   const useExternalServices = useSelector(getUseExternalServices);
 
   // Get the currently selected network to allow it through when BFT is OFF
@@ -101,8 +95,6 @@ const DefaultNetworks = memo(() => {
   );
 
   const enabledChainIds = useSelector(getAllEnabledNetworksForAllNamespaces);
-
-  const selectedAccount = useSelector(getSelectedInternalAccount);
 
   // extract the solana account of the selected account group
   const solAccountGroup = useSelector((state) =>
@@ -257,46 +249,24 @@ const DefaultNetworks = memo(() => {
   const networkListItems = useMemo(() => {
     // Helper function to filter networks based on account type and selection
     const getFilteredNetworks = () => {
-      if (isMultichainAccountsState2Enabled) {
-        return orderedNetworks.filter((network) => {
-          // Show EVM networks if user has EVM accounts
-          if (evmAccountGroup && network.isEvm) {
-            return true;
-          }
-          // When basic functionality toggle is OFF, only show EVM networks
-          // Exception: Keep the currently selected non-EVM chain visible
-          if (!useExternalServices) {
-            return network.chainId === selectedNonEvmChainId;
-          }
-          if (solAccountGroup && network.chainId === SolScope.Mainnet) {
-            return true;
-          }
-          if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
-            return true;
-          }
-          if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
-            return true;
-          }
-          return false;
-        });
-      }
       return orderedNetworks.filter((network) => {
-        if (isEvmNetworkSelected) {
-          return network.isEvm;
+        // Show EVM networks if user has EVM accounts
+        if (evmAccountGroup && network.isEvm) {
+          return true;
         }
         // When basic functionality toggle is OFF, only show EVM networks
         // Exception: Keep the currently selected non-EVM chain visible
         if (!useExternalServices) {
           return network.chainId === selectedNonEvmChainId;
         }
-        if (selectedAccount.scopes.includes(SolScope.Mainnet)) {
-          return network.chainId === SolScope.Mainnet;
+        if (solAccountGroup && network.chainId === SolScope.Mainnet) {
+          return true;
         }
-        if (selectedAccount.scopes.includes(BtcScope.Mainnet)) {
-          return network.chainId === BtcScope.Mainnet;
+        if (btcAccountGroup && network.chainId === BtcScope.Mainnet) {
+          return true;
         }
-        if (selectedAccount.scopes.includes(TrxScope.Mainnet)) {
-          return network.chainId === TrxScope.Mainnet;
+        if (trxAccountGroup && network.chainId === TrxScope.Mainnet) {
+          return true;
         }
         return false;
       });
@@ -355,7 +325,6 @@ const DefaultNetworks = memo(() => {
     });
   }, [
     orderedNetworks,
-    isEvmNetworkSelected,
     isNetworkInDefaultNetworkTab,
     getItemCallbacks,
     isSingleNetworkSelected,
@@ -365,10 +334,8 @@ const DefaultNetworks = memo(() => {
     btcAccountGroup,
     solAccountGroup,
     trxAccountGroup,
-    isMultichainAccountsState2Enabled,
     evmAccountGroup,
     dispatch,
-    selectedAccount,
     enabledChainIds,
     useExternalServices,
     selectedNonEvmChainId,
@@ -441,28 +408,22 @@ const DefaultNetworks = memo(() => {
   return (
     <>
       <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
-        {isEvmNetworkSelected || isMultichainAccountsState2Enabled ? (
-          <Box
-            className="network-manager__all-popular-networks"
-            data-testid="network-manager-select-all"
-          >
-            <NetworkListItem
-              name={t('allPopularNetworks')}
-              onClick={selectAllDefaultNetworks}
-              iconSrc={IconName.Global}
-              iconSize={IconSize.Xl}
-              selected={isAllPopularNetworksSelected}
-              focus={false}
-            />
-          </Box>
-        ) : null}
+        <Box
+          className="network-manager__all-popular-networks"
+          data-testid="network-manager-select-all"
+        >
+          <NetworkListItem
+            name={t('allPopularNetworks')}
+            onClick={selectAllDefaultNetworks}
+            iconSrc={IconName.Global}
+            iconSize={IconSize.Xl}
+            selected={isAllPopularNetworksSelected}
+            focus={false}
+          />
+        </Box>
         {networkListItems}
-        {(isEvmNetworkSelected || isMultichainAccountsState2Enabled) && (
-          <>
-            <AdditionalNetworksInfo />
-            {additionalNetworkListItems}
-          </>
-        )}
+        <AdditionalNetworksInfo />
+        {additionalNetworkListItems}
       </Box>
     </>
   );

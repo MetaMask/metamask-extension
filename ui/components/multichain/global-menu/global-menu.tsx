@@ -83,12 +83,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import {
-  AccountDetailsMenuItem,
-  DiscoverMenuItem,
-  ViewExplorerMenuItem,
-} from '../menu-items';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
+import { AccountDetailsMenuItem, DiscoverMenuItem } from '../menu-items';
 import { useUserSubscriptions } from '../../../hooks/subscription/useSubscription';
 import {
   getIsShieldSubscriptionActive,
@@ -132,10 +127,6 @@ export const GlobalMenu = ({
     getIsShieldSubscriptionPaused(subscriptions);
 
   const account = useSelector(getSelectedInternalAccount);
-
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
 
@@ -432,20 +423,11 @@ export const GlobalMenu = ({
         </MenuItem>
       )}
       {account && !isPopup && !isSidepanel && (
-        <>
-          <AccountDetailsMenuItem
-            metricsLocation={METRICS_LOCATION}
-            closeMenu={closeMenu}
-            address={account.address}
-          />
-          {isMultichainAccountsState2Enabled ? null : (
-            <ViewExplorerMenuItem
-              metricsLocation={METRICS_LOCATION}
-              closeMenu={closeMenu}
-              account={account}
-            />
-          )}
-        </>
+        <AccountDetailsMenuItem
+          metricsLocation={METRICS_LOCATION}
+          closeMenu={closeMenu}
+          address={account.address}
+        />
       )}
       <Box
         borderColor={BorderColor.borderMuted}

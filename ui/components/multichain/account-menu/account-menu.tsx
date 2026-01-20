@@ -52,7 +52,6 @@ import {
   ///: END:ONLY_INCLUDE_IF
   getManageInstitutionalWallets,
   getHDEntropyIndex,
-  getIsMultichainAccountsState1Enabled,
 } from '../../../selectors';
 import {
   MetaMetricsEventAccountType,
@@ -150,13 +149,11 @@ export const SNAP_CLIENT_CONFIG_MAP: Record<
  *
  * @param t - Function to translate text.
  * @param actionMode - An action mode.
- * @param isMultichainAccountsState1Enabled - Whether the multichain accounts state 1 is enabled.
  * @returns The title for this action mode.
  */
 export const getActionTitle = (
   t: (text: string, args?: string[]) => string,
   actionMode: ActionMode,
-  isMultichainAccountsState1Enabled: boolean,
 ) => {
   switch (actionMode) {
     case ACTION_MODES.ADD:
@@ -186,9 +183,7 @@ export const getActionTitle = (
     case ACTION_MODES.SELECT_SRP:
       return t('selectSecretRecoveryPhrase');
     default:
-      return isMultichainAccountsState1Enabled
-        ? t('accounts')
-        : t('selectAnAccount');
+      return t('accounts');
   }
 };
 
@@ -210,9 +205,6 @@ export const AccountMenu = ({
     endTrace({ name: TraceName.AccountList });
   }, []);
   const navigate = useNavigate();
-  const isMultichainAccountsState1Enabled = useSelector(
-    getIsMultichainAccountsState1Enabled,
-  );
 
   // sync SRPs list when menu opens
   useSyncSRPs();
@@ -317,13 +309,8 @@ export const AccountMenu = ({
   );
 
   const title = useMemo(
-    () =>
-      getActionTitle(
-        t as (text: string) => string,
-        actionMode,
-        Boolean(isMultichainAccountsState1Enabled),
-      ),
-    [actionMode, t, isMultichainAccountsState1Enabled],
+    () => getActionTitle(t as (text: string) => string, actionMode),
+    [actionMode, t],
   );
 
   // eslint-disable-next-line no-empty-function
@@ -734,17 +721,12 @@ export const AccountMenu = ({
                 display={Display.Flex}
               >
                 <ButtonSecondary
-                  startIconName={
-                    isMultichainAccountsState1Enabled ? undefined : IconName.Add
-                  }
                   size={ButtonSecondarySize.Lg}
                   block
                   onClick={() => setActionMode(ACTION_MODES.MENU)}
                   data-testid="multichain-account-menu-popover-action-button"
                 >
-                  {isMultichainAccountsState1Enabled
-                    ? t('addAccountOrWallet')
-                    : t('addImportAccount')}
+                  {t('addAccountOrWallet')}
                 </ButtonSecondary>
               </Box>
             ) : null}

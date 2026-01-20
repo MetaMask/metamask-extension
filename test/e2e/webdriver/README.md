@@ -70,7 +70,7 @@ CSS Selectors in Selenium are string patterns used to identify an element based 
 > Syntax for locating the attribute **data-testid**
 >
 > ```tsx
-> await driver.findElement('[data-testid="eth-overview-buy"]');
+> await driver.findElement('[data-testid="coin-overview-buy"]');
 > ```
 >
 > </details>

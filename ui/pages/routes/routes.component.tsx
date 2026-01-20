@@ -137,9 +137,7 @@ import { useMultichainAccountsIntroModal } from '../../hooks/useMultichainAccoun
 import { AccountList } from '../multichain-accounts/account-list';
 import { AddWalletPage } from '../multichain-accounts/add-wallet-page';
 import { WalletDetailsPage } from '../multichain-accounts/wallet-details-page';
-import { ReviewPermissions } from '../../components/multichain/pages/review-permissions-page/review-permissions-page';
 import { MultichainReviewPermissions } from '../../components/multichain-accounts/permissions/permission-review-page/multichain-review-permissions-page';
-import { State2Wrapper } from '../../components/multichain-accounts/state2-wrapper/state2-wrapper';
 import { RootLayout } from '../../layouts/root-layout';
 import { LegacyLayout } from '../../layouts/legacy-layout';
 import { createRouteWithLayout } from '../../layouts/route-with-layout';
@@ -330,12 +328,7 @@ const ShieldPlan = mmLazy(
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(() => (
-  <State2Wrapper
-    state1Component={ReviewPermissions as React.ComponentType<unknown>}
-    state2Component={
-      MultichainReviewPermissions as React.ComponentType<unknown>
-    }
-  />
+  <MultichainReviewPermissions />
 ));
 
 // eslint-disable-next-line @typescript-eslint/naming-convention

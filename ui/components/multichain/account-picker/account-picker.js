@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
-import { useSelector } from 'react-redux';
 import { AvatarAccountSize } from '@metamask/design-system-react';
 import { toChecksumHexAddress } from '../../../../shared/modules/hexstring-utils';
 import {
@@ -17,7 +16,6 @@ import {
   BorderRadius,
   Display,
   FlexDirection,
-  FontWeight,
   IconColor,
   Size,
   TextColor,
@@ -25,7 +23,6 @@ import {
 } from '../../../helpers/constants/design-system';
 import { shortenAddress } from '../../../helpers/utils/util';
 import { trace, TraceName } from '../../../../shared/lib/trace';
-import { getIsMultichainAccountsState2Enabled } from '../../../selectors';
 import { PreferredAvatar } from '../../app/preferred-avatar';
 
 const AccountMenuStyle = { height: 'auto' };
@@ -46,25 +43,16 @@ export const AccountPicker = ({
   const shortenedAddress = address
     ? shortenAddress(toChecksumHexAddress(address))
     : '';
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
 
   const accountNameStyling = useMemo(
     () => ({
       ...labelProps.style,
-      fontWeight: isMultichainAccountsState2Enabled ? 500 : FontWeight.Medium,
+      fontWeight: 500,
     }),
-    [isMultichainAccountsState2Enabled, labelProps.style],
+    [labelProps.style],
   );
 
-  const accountNameFontVariant = useMemo(
-    () =>
-      isMultichainAccountsState2Enabled
-        ? TextVariant.bodyMdMedium
-        : TextVariant.bodyMdMedium,
-    [isMultichainAccountsState2Enabled],
-  );
+  const accountNameFontVariant = useMemo(() => TextVariant.bodyMdMedium, []);
 
   return (
     <Box

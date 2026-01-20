@@ -9,16 +9,11 @@ import { InternalAccount } from '@metamask/keyring-internal-api';
 import { I18nContext } from '../../../contexts/i18n';
 import { startNewDraftTransaction } from '../../../ducks/send';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
-import {
-  getNetworkConfigurationIdByChainId,
-  getSelectedMultichainNetworkConfiguration,
-  getIsMultichainAccountsState2Enabled,
-  getUseExternalServices,
-} from '../../../selectors';
+import { getUseExternalServices } from '../../../selectors';
 import useBridging from '../../../hooks/bridge/useBridging';
 
 import { INVALID_ASSET_TYPE } from '../../../helpers/constants/error-keys';
-import { showModal, setActiveNetworkWithError } from '../../../store/actions';
+import { showModal } from '../../../store/actions';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -44,7 +39,6 @@ import { getIsNativeTokenBuyable } from '../../../ducks/ramps';
 import { useHandleSendNonEvm } from '../../../components/app/wallet-overview/hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import { Asset } from '../types/asset';
 import { navigateToSendRoute } from '../../confirmations/utils/send';
 import { isEvmChainId } from '../../../../shared/lib/asset-utils';
@@ -66,28 +60,9 @@ const TokenButtons = ({
   const navigate = useNavigate();
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
   const isEvm = isEvmChainId(token.chainId);
-  const isMultichainAccountsState2Enabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
   const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
-  const { chainId: multichainChainId } = useSelector(
-    getSelectedMultichainNetworkConfiguration,
-  );
 
-  const currentEvmChainId = useSelector(getCurrentChainId);
-
-  const currentChainId = (() => {
-    if (isMultichainAccountsState2Enabled) {
-      return token.chainId;
-    }
-
-    return isEvm ? currentEvmChainId : multichainChainId;
-  })();
-
-  const networks = useSelector(getNetworkConfigurationIdByChainId) as Record<
-    string,
-    string
-  >;
+  const currentChainId = token.chainId;
 
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
   const { openBuyCryptoInPdapp } = useRamps();
@@ -107,37 +82,6 @@ const TokenButtons = ({
       );
     }
   }, [token.isERC721, token.address, dispatch]);
-
-  // TODO BIP 44 Refactor: Remove this code
-  const setCorrectChain = useCallback(async () => {
-    // If we aren't presently on the chain of the asset, change to it
-    if (
-      currentEvmChainId !== token.chainId &&
-      multichainChainId !== token.chainId &&
-      !isMultichainAccountsState2Enabled
-    ) {
-      try {
-        const networkConfigurationId = networks[token.chainId];
-        await dispatch(setActiveNetworkWithError(networkConfigurationId));
-      } catch (err) {
-        console.error(`Failed to switch chains.
-        Target chainId: ${token.chainId}, Current chainId: ${currentEvmChainId}.
-        ${
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          err
-        }`);
-        throw err;
-      }
-    }
-  }, [
-    isMultichainAccountsState2Enabled,
-    currentEvmChainId,
-    multichainChainId,
-    networks,
-    token.chainId,
-    dispatch,
-  ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
     openBuyCryptoInPdapp();
@@ -185,7 +129,6 @@ const TokenButtons = ({
     ///: END:ONLY_INCLUDE_IF
 
     try {
-      await setCorrectChain();
       await dispatch(
         startNewDraftTransaction({
           type: AssetType.token,
@@ -209,7 +152,6 @@ const TokenButtons = ({
     dispatch,
     navigate,
     token,
-    setCorrectChain,
     account,
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
@@ -218,10 +160,9 @@ const TokenButtons = ({
   ]);
 
   const handleSwapOnClick = useCallback(async () => {
-    await setCorrectChain();
     // Handle clicking from the asset details page
     openBridgeExperience(MetaMetricsSwapsEventSource.TokenView, token);
-  }, [token, setCorrectChain, openBridgeExperience]);
+  }, [token, openBridgeExperience]);
 
   return (
     <Box
