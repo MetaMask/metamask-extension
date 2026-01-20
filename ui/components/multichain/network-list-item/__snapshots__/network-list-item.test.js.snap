@@ -3,23 +3,24 @@
 exports[`NetworkListItem renders properly 1`] = `
 <div>
   <div
-    class="gap-4 items-center justify-between pt-4 pr-4 pb-4 pl-4 bg-transparent multichain-network-list-item w-full flex multichain-network-list-item--deselected"
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
     data-testid="network-list-item-0x1"
   >
     <div
-      class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-8 w-8"
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
     >
       <img
-        alt="Polygon"
-        class="size-full object-contain"
+        alt="Polygon logo"
+        class="mm-avatar-network__network-image"
         src="./images/pol-token.svg"
       />
     </div>
     <div
-      class="flex-col items-start justify-start w-full overflow-hidden flex"
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
     >
       <div
-        class="items-center w-full flex"
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
         data-testid="Polygon"
       >
         <div
@@ -31,35 +32,25 @@ exports[`NetworkListItem renders properly 1`] = `
             tabindex="0"
             title=""
           >
-            <div
-              class=""
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
               tabindex="0"
             >
-              <p
-                class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
-              >
-                Polygon
-              </p>
-            </div>
+              Polygon
+            </p>
           </div>
         </div>
       </div>
     </div>
     <button
       aria-label="[networkOptions]"
-      class="inline-flex items-center justify-center p-0 h-6 w-6 rounded bg-transparent hover:bg-hover active:bg-pressed text-icon-default"
+      class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
       data-testid="network-list-item-options-button-0x1"
     >
-      <svg
-        class="inline-block w-4 h-4 text-inherit"
-        fill="currentColor"
-        viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M12 20q-.825 0-1.412-.587C10 18.826 10 18.55 10 18s.196-1.02.588-1.412S11.45 16 12 16s1.02.196 1.413.587S14 17.45 14 18s-.196 1.02-.587 1.413S12.55 20 12 20m0-6q-.825 0-1.412-.587C10 12.825 10 12.55 10 12s.196-1.02.588-1.412S11.45 10 12 10s1.02.196 1.413.588S14 11.45 14 12s-.196 1.02-.587 1.413S12.55 14 12 14m0-6q-.825 0-1.412-.587C10 6.825 10 6.55 10 6s.196-1.02.588-1.412S11.45 4 12 4s1.02.196 1.413.588S14 5.45 14 6s-.196 1.02-.587 1.413S12.55 8 12 8"
-        />
-      </svg>
+      <span
+        class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+        style="mask-image: url('./images/icons/more-vertical.svg');"
+      />
     </button>
   </div>
 </div>

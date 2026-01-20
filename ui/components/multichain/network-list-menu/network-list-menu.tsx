@@ -79,7 +79,6 @@ import {
   TextAlign,
   TextColor,
   TextVariant,
-  TextVariant,
 } from '../../../helpers/constants/design-system';
 import {
   Box,
@@ -592,7 +591,6 @@ export const NetworkListMenu = ({ onClose }: NetworkListMenuProps) => {
         name={network.name}
         iconSrc={iconSrc}
         iconSize={AvatarNetworkSize.Sm}
-        variant={TextVariant.bodyMdMedium}
         selected={canSelectNetwork && isCurrentNetwork && !focusSearch}
         focus={canSelectNetwork && isCurrentNetwork && !focusSearch}
         rpcEndpoint={
