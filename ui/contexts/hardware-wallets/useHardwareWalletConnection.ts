@@ -1,9 +1,9 @@
 import { useCallback, useEffect } from 'react';
+import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
   createHardwareWalletError,
 } from './errors';
-import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
 import {
@@ -67,7 +67,6 @@ export const useHardwareWalletConnection = ({
       if (existingDeviceId) {
         return existingDeviceId;
       }
-
 
       try {
         const discoveredId = await getHardwareWalletDeviceId(targetWalletType);
@@ -191,7 +190,6 @@ export const useHardwareWalletConnection = ({
       abortSignal?: AbortSignal;
       isLatestAttempt: IsLatestAttempt;
     }) => {
-
       if (!isLatestAttempt()) {
         return;
       }
@@ -241,7 +239,7 @@ export const useHardwareWalletConnection = ({
     }
 
     resetAdapterForFreshConnection();
-    const { connectionId, isLatestAttempt } = beginConnectionAttempt();
+    const { isLatestAttempt } = beginConnectionAttempt();
 
     const discoveredDeviceId = await resolveOrDiscoverDeviceId(effectiveType);
     if (!discoveredDeviceId) {
@@ -313,7 +311,7 @@ export const useHardwareWalletConnection = ({
 
   const ensureDeviceReady = useCallback(
     async (targetDeviceId?: string): Promise<boolean> => {
-      const effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
+      let effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
       const abortSignal = refs.abortControllerRef.current?.signal;
 
       if (abortSignal?.aborted) {
@@ -333,6 +331,8 @@ export const useHardwareWalletConnection = ({
             setDeviceId(effectiveDeviceId);
           }
           await connect();
+          // Update effectiveDeviceId to use newly discovered device ID if connect() found one
+          effectiveDeviceId = refs.deviceIdRef.current;
         } catch (error) {
           return false;
         }
