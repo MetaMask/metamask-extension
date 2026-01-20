@@ -20,6 +20,8 @@ export class NonHardwareAdapter implements HardwareWalletAdapter {
 
   /**
    * Connect resolves successfully - regular accounts are always connected
+   *
+   * @param _deviceId
    */
   async connect(_deviceId: string): Promise<void> {
     return Promise.resolve();
@@ -50,9 +52,10 @@ export class NonHardwareAdapter implements HardwareWalletAdapter {
   /**
    * Always returns true - regular accounts are always ready
    * since there's no hardware device state to check
+   *
+   * @param _deviceId
    */
   async ensureDeviceReady(_deviceId: string): Promise<boolean> {
     return true;
   }
 }
-

@@ -466,6 +466,58 @@ describe('LedgerAdapter', () => {
       );
     });
 
+    it('resets connected state when device is disconnected during verification', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect(deviceId);
+
+      // Verify adapter is initially connected
+      expect(adapter.isConnected()).toBe(true);
+
+      const disconnectError = new HardwareWalletError('Device disconnected', {
+        code: ErrorCode.DeviceDisconnected,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Device disconnected',
+      });
+      mockGetAppNameAndVersion.mockRejectedValue(disconnectError);
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      // Verify connection state is reset after disconnect error
+      expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('resets connected state when connection is closed during verification', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect(deviceId);
+
+      // Verify adapter is initially connected
+      expect(adapter.isConnected()).toBe(true);
+
+      const connectionClosedError = new HardwareWalletError('Connection closed', {
+        code: ErrorCode.ConnectionClosed,
+        severity: Severity.Err,
+        category: Category.DeviceState,
+        userMessage: 'Connection closed',
+      });
+      mockGetAppNameAndVersion.mockRejectedValue(connectionClosedError);
+
+      await expect(adapter.ensureDeviceReady(deviceId)).rejects.toThrow(
+        HardwareWalletError,
+      );
+
+      // Verify connection state is reset after connection closed error
+      expect(adapter.isConnected()).toBe(false);
+    });
+
     it('does not emit device event for errors without error code during verification', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
@@ -486,9 +538,7 @@ describe('LedgerAdapter', () => {
       const deviceEventCalls = (mockOptions.onDeviceEvent as jest.Mock).mock
         .calls;
       // Filter out any calls that don't have an error (like successful events)
-      const errorEventCalls = deviceEventCalls.filter(
-        (call) => call[0]?.error,
-      );
+      const errorEventCalls = deviceEventCalls.filter((call) => call[0]?.error);
       expect(errorEventCalls.length).toBe(0);
     });
 

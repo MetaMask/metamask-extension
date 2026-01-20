@@ -26,7 +26,7 @@ type HardwareWalletErrorData = {
  * @param error - The error to check
  * @returns True if the error is a JsonRpcError with HardwareWalletError data
  */
-function isJsonRpcHardwareWalletError(
+export function isJsonRpcHardwareWalletError(
   error: unknown,
 ): error is JsonRpcError<HardwareWalletErrorData> & {
   data: HardwareWalletErrorData;
@@ -37,7 +37,7 @@ function isJsonRpcHardwareWalletError(
     error.data !== undefined &&
     typeof error.data === 'object' &&
     'code' in error.data &&
-    typeof error.data.code === 'string'
+    typeof error.data.code === 'number'
   );
 }
 
@@ -64,7 +64,7 @@ export function extractHardwareWalletErrorCode(
     error &&
     typeof error === 'object' &&
     'code' in error &&
-    typeof error.code === 'string'
+    typeof error.code === 'number'
   ) {
     return error.code as unknown as ErrorCode;
   }
@@ -100,7 +100,10 @@ export function reconstructHardwareWalletError(
         severity: error.data.severity as Severity,
         category: error.data.category as Category,
         userMessage: error.data.userMessage ?? '',
-        metadata: error.data.metadata,
+        metadata: {
+          ...error.data.metadata,
+          walletType,
+        },
       },
     );
 
