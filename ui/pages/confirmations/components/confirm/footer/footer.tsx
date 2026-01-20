@@ -317,7 +317,7 @@ const Footer = () => {
     navigate,
     onTransactionConfirm,
     navigateNext,
-    currentConfirmation.id,
+    currentConfirmation,
     dispatch,
   ]);
 
@@ -332,14 +332,14 @@ const Footer = () => {
     onDappSwapCompleted();
     if (isAddEthereumChain) {
       navigate(DEFAULT_ROUTE);
-    } else {
+    } else if (currentConfirmation?.id) {
       navigateNext(currentConfirmation.id);
     }
   }, [
     navigateNext,
     onCancel,
     shouldThrottleOrigin,
-    currentConfirmation,
+    currentConfirmation?.id,
     isAddEthereumChain,
     navigate,
     onDappSwapCompleted,
