@@ -101,7 +101,7 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.disconnectMock.mockClear();
     this.isConnectedMock.mockClear();
     this.destroyMock.mockClear();
-    this.verifyDeviceReadyMock.mockClear();
+    this.ensureDeviceReadyMock.mockClear();
     this.setPendingOperationMock.mockClear();
   }
 
@@ -125,6 +125,6 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
       this.connected = false;
       this.deviceIdValue = null;
     });
-    this.verifyDeviceReadyMock.mockResolvedValue(true);
+    this.ensureDeviceReadyMock.mockResolvedValue(true);
   }
 }

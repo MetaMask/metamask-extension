@@ -16,8 +16,9 @@ export function createAdapterForHardwareWalletType(
   adapterOptions: HardwareWalletAdapterOptions,
 ): HardwareWalletAdapter {
   switch (walletType) {
-
     default:
-      throw new Error(`Unsupported hardware wallet type: ${String(walletType)}`);
+      throw new Error(
+        `Unsupported hardware wallet type: ${String(walletType)}`,
+      );
   }
 }

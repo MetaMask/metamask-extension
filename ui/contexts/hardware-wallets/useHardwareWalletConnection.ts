@@ -45,8 +45,6 @@ export const useHardwareWalletConnection = ({
 
   const resetAdapterForFreshConnection = useCallback(() => {
     if (refs.isConnectingRef.current || refs.adapterRef.current) {
-      // eslint-disable-next-line no-console
-      console.log('[HardwareWalletConnection] Resetting existing adapter');
       refs.adapterRef.current?.destroy();
       refs.adapterRef.current = null;
     }
@@ -70,11 +68,6 @@ export const useHardwareWalletConnection = ({
         return existingDeviceId;
       }
 
-      // eslint-disable-next-line no-console
-      console.log(
-        '[HardwareWalletConnection]',
-        `Attempting to discover ${targetWalletType} device`,
-      );
 
       try {
         const discoveredId = await getHardwareWalletDeviceId(targetWalletType);
@@ -91,8 +84,6 @@ export const useHardwareWalletConnection = ({
 
         return discoveredId;
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('[HardwareWalletConnection] Discovery failed:', error);
         updateConnectionState(
           getConnectionStateFromError(
             createHardwareWalletError(
@@ -200,8 +191,6 @@ export const useHardwareWalletConnection = ({
       abortSignal?: AbortSignal;
       isLatestAttempt: IsLatestAttempt;
     }) => {
-      // eslint-disable-next-line no-console
-      console.error('[HardwareWalletConnection] error:', error);
 
       if (!isLatestAttempt()) {
         return;
@@ -259,11 +248,6 @@ export const useHardwareWalletConnection = ({
       return;
     }
 
-    // eslint-disable-next-line no-console
-    console.log(
-      '[HardwareWalletConnection]',
-      `Connecting to ${effectiveType} device: ${discoveredDeviceId} (ID: ${connectionId})`,
-    );
     setConnectingStateForDevice({ abortSignal, deviceId: discoveredDeviceId });
 
     try {
@@ -333,14 +317,10 @@ export const useHardwareWalletConnection = ({
       const abortSignal = refs.abortControllerRef.current?.signal;
 
       if (abortSignal?.aborted) {
-        // eslint-disable-next-line no-console
-        console.log('[HardwareWalletConnection] ensureDeviceReady aborted');
         return false;
       }
 
       if (!refs.adapterRef.current?.isConnected()) {
-        // eslint-disable-next-line no-console
-        console.log('[HardwareWalletConnection] Not connected, connecting');
         const currentWalletType = refs.walletTypeRef.current;
 
         if (!currentWalletType) {
@@ -354,11 +334,6 @@ export const useHardwareWalletConnection = ({
           }
           await connect();
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error(
-            '[HardwareWalletConnection] connect failed in ensureDeviceReady',
-            error,
-          );
           return false;
         }
       }
@@ -368,21 +343,11 @@ export const useHardwareWalletConnection = ({
         if (adapter?.ensureDeviceReady && effectiveDeviceId) {
           try {
             const result = await adapter.ensureDeviceReady(effectiveDeviceId);
-            // eslint-disable-next-line no-console
-            console.log(
-              '[HardwareWalletConnection] ensureDeviceReady:',
-              result,
-            );
             if (result) {
               updateConnectionState(ConnectionState.ready());
             }
             return result;
           } catch (error) {
-            // eslint-disable-next-line no-console
-            console.error(
-              '[HardwareWalletConnection] verifyDeviceReady',
-              error,
-            );
             if (error && typeof error === 'object' && 'code' in error) {
               updateConnectionState(
                 getConnectionStateFromError(error as HardwareWalletError),

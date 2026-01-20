@@ -376,7 +376,7 @@ describe('useHardwareWalletConnection', () => {
     it('verifies device when already connected', async () => {
       const mockAdapter = {
         isConnected: jest.fn().mockReturnValue(true),
-        verifyDeviceReady: jest.fn().mockResolvedValue(true),
+        ensureDeviceReady: jest.fn().mockResolvedValue(true),
       };
       mockRefs.adapterRef.current = mockAdapter;
 
@@ -388,7 +388,7 @@ describe('useHardwareWalletConnection', () => {
       });
 
       expect(ready).toBe(true);
-      expect(mockAdapter.verifyDeviceReady).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith('device-123');
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.ready(),
       );
@@ -397,7 +397,7 @@ describe('useHardwareWalletConnection', () => {
     it('returns false when device verification fails', async () => {
       const mockAdapter = {
         isConnected: jest.fn().mockReturnValue(true),
-        verifyDeviceReady: jest
+        ensureDeviceReady: jest
           .fn()
           .mockRejectedValue(new Error('Verification failed')),
       };
@@ -423,7 +423,7 @@ describe('useHardwareWalletConnection', () => {
       mockRefs.deviceIdRef.current = 'existing-device-123';
       const mockAdapter = {
         isConnected: jest.fn().mockReturnValue(true),
-        verifyDeviceReady: jest.fn().mockResolvedValue(true),
+        ensureDeviceReady: jest.fn().mockResolvedValue(true),
       };
       mockRefs.adapterRef.current = mockAdapter;
 
@@ -433,7 +433,7 @@ describe('useHardwareWalletConnection', () => {
         await result.current.ensureDeviceReady();
       });
 
-      expect(mockAdapter.verifyDeviceReady).toHaveBeenCalledWith(
+      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith(
         'existing-device-123',
       );
     });
@@ -475,7 +475,7 @@ describe('useHardwareWalletConnection', () => {
     it('handles structured hardware wallet errors', async () => {
       const mockAdapter = {
         isConnected: jest.fn().mockReturnValue(true),
-        verifyDeviceReady: jest
+        ensureDeviceReady: jest
           .fn()
           .mockRejectedValue(
             createHardwareWalletError(
@@ -497,8 +497,8 @@ describe('useHardwareWalletConnection', () => {
       expect(ready).toBe(false);
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
-          status: ConnectionStatus.AwaitingApp,
-          reason: 'not_open',
+          status: ConnectionStatus.ErrorState,
+          reason: 'locked',
         }),
       );
     });
