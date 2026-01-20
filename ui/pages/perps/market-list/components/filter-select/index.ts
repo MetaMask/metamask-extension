@@ -1,6 +1,2 @@
-export { FilterSelect, FILTER_OPTIONS } from './filter-select';
-export type {
-  FilterSelectProps,
-  MarketFilter,
-  FilterOption,
-} from './filter-select';
+export { FilterSelect } from './filter-select';
+export type { FilterSelectProps, MarketFilter } from './filter-select';

@@ -21,6 +21,7 @@ import {
 } from '../../../components/app/perps/mocks';
 import type { PerpsMarketData } from '../../../components/app/perps/types';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../helpers/constants/routes';
+import { sortMarkets } from '../utils/sortMarkets';
 import { MarketRow, type SortField } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
@@ -41,85 +42,6 @@ const allMarkets: PerpsMarketData[] = [
   ...mockCryptoMarkets,
   ...mockHip3Markets,
 ];
-
-/**
- * Sort markets based on field and direction
- *
- * @param markets - Array of markets to sort
- * @param field - Field to sort by
- * @param direction - Sort direction (asc/desc)
- * @returns Sorted array of markets
- */
-const sortMarkets = (
-  markets: PerpsMarketData[],
-  field: SortField,
-  direction: SortDirection,
-): PerpsMarketData[] => {
-  return [...markets].sort((a, b) => {
-    let comparison = 0;
-
-    switch (field) {
-      case 'volume': {
-        // Parse volume like "$1.2B", "$850M"
-        const parseVolume = (vol: string): number => {
-          const num = parseFloat(vol.replace(/[$,]/gu, ''));
-          if (vol.includes('B')) {
-            return num * 1e9;
-          }
-          if (vol.includes('M')) {
-            return num * 1e6;
-          }
-          if (vol.includes('K')) {
-            return num * 1e3;
-          }
-          return num;
-        };
-        comparison = parseVolume(a.volume) - parseVolume(b.volume);
-        break;
-      }
-      case 'priceChange': {
-        // Parse change like "+2.84%", "-1.19%"
-        const parseChange = (change: string): number => {
-          return parseFloat(change.replace(/[%+]/gu, ''));
-        };
-        comparison =
-          parseChange(a.change24hPercent) - parseChange(b.change24hPercent);
-        break;
-      }
-      case 'openInterest': {
-        // Parse OI like "$2.5B", "$450M"
-        const parseOI = (oi: string | undefined): number => {
-          if (!oi) {
-            return 0;
-          }
-          const num = parseFloat(oi.replace(/[$,]/gu, ''));
-          if (oi.includes('B')) {
-            return num * 1e9;
-          }
-          if (oi.includes('M')) {
-            return num * 1e6;
-          }
-          if (oi.includes('K')) {
-            return num * 1e3;
-          }
-          return num;
-        };
-        comparison = parseOI(a.openInterest) - parseOI(b.openInterest);
-        break;
-      }
-      case 'fundingRate': {
-        const rateA = a.fundingRate ?? 0;
-        const rateB = b.fundingRate ?? 0;
-        comparison = rateA - rateB;
-        break;
-      }
-      default:
-        comparison = 0;
-    }
-
-    return direction === 'desc' ? -comparison : comparison;
-  });
-};
 
 /**
  * Filter markets based on search query
@@ -220,11 +142,11 @@ export const MarketListView: React.FC = () => {
     }
 
     if (currentSortOption) {
-      markets = sortMarkets(
+      markets = sortMarkets({
         markets,
-        currentSortOption.field,
-        currentSortOption.direction,
-      );
+        sortBy: currentSortOption.field,
+        direction: currentSortOption.direction,
+      });
     }
     return markets;
   }, [selectedFilter, stockSubFilter, searchQuery, currentSortOption]);
