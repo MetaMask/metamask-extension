@@ -79,6 +79,7 @@ export const useHardwareWalletAutoConnect = ({
       const currentPermissionState =
         await checkHardwareWalletPermission(walletType);
 
+      // Check abort after async operation
       if (abortSignal?.aborted) {
         return;
       }
@@ -87,9 +88,15 @@ export const useHardwareWalletAutoConnect = ({
 
       if (
         currentPermissionState === HardwareConnectionPermissionState.Granted &&
-        !adapterRef.current?.isConnected() &&
-        !isConnectingRef.current
+        !adapterRef.current?.isConnected()
       ) {
+        // Synchronous check-and-set to prevent race condition
+        // This must happen atomically before any async work
+        if (isConnectingRef.current) {
+          return;
+        }
+        isConnectingRef.current = true;
+
         const connect = connectRef.current;
         if (connect) {
           try {
@@ -98,7 +105,13 @@ export const useHardwareWalletAutoConnect = ({
           } catch (error) {
             // Connection failed, don't mark as connected
             // Error is already handled by connectRef implementation
+          } finally {
+            // Reset connecting state when done (success or failure)
+            isConnectingRef.current = false;
           }
+        } else {
+          // No connect function available, reset the flag
+          isConnectingRef.current = false;
         }
       }
     };
