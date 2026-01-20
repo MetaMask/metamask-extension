@@ -5133,6 +5133,21 @@
   "perpsSize": {
     "message": "Size"
   },
+  "perpsSortFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortPriceChangeHighToLow": {
+    "message": "Price change: high to low"
+  },
+  "perpsSortPriceChangeLowToHigh": {
+    "message": "Price change: low to high"
+  },
+  "perpsSortVolume": {
+    "message": "Volume"
+  },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
   },
@@ -5147,21 +5162,6 @@
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
-  },
-  "perpsSortVolume": {
-    "message": "Volume"
-  },
-  "perpsSortPriceChangeHighToLow": {
-    "message": "Price change: high to low"
-  },
-  "perpsSortPriceChangeLowToHigh": {
-    "message": "Price change: low to high"
-  },
-  "perpsSortOpenInterest": {
-    "message": "Open interest"
-  },
-  "perpsSortFundingRate": {
-    "message": "Funding rate"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
