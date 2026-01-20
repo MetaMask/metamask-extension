@@ -10,6 +10,7 @@ import {
 } from '@metamask/transaction-pay-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
+import { Asset } from '../../types/send';
 import { useTransactionPayMetrics } from './useTransactionPayMetrics';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -18,7 +19,6 @@ import {
   useTransactionPayTotals,
 } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import type { TransactionPayAsset } from './types';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
@@ -117,7 +117,7 @@ describe('useTransactionPayMetrics', () => {
       {},
       {},
       {},
-    ] as TransactionPayAsset[]);
+    ] as Asset[]);
 
     useTransactionPayTotalsMock.mockReturnValue(undefined);
   });
