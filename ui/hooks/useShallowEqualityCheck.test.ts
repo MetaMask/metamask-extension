@@ -51,7 +51,11 @@ describe('useShallowEqualityCheck', () => {
   it('correctly distinguishes undefined values from missing keys', () => {
     const { result, rerender } = renderHook(
       ({ value }) => useShallowEqualityCheck(value),
-      { initialProps: { value: { a: 'x', b: undefined } as Record<string, string | undefined> } },
+      {
+        initialProps: {
+          value: { a: 'x', b: undefined } as Record<string, string | undefined>,
+        },
+      },
     );
 
     const firstResult = result.current;

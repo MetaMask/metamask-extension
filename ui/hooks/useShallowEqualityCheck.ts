@@ -26,7 +26,6 @@ import { shallowEqual } from 'react-redux';
  * // useShallowEqualityCheck → compares VALUES automatically
  * const good = useShallowEqualityCheck(hookParams); // ✅ stable if values match
  * ```
- *
  * @param value - The value to stabilize
  * @returns Referentially stable value that only changes when shallow comparison fails
  */
