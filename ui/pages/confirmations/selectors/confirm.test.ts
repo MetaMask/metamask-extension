@@ -4,7 +4,6 @@ import { QuoteResponse } from '@metamask/bridge-controller';
 import { ConfirmMetamaskState } from '../types/confirm';
 import {
   oldestPendingConfirmationSelector,
-  pendingConfirmationsSelector,
   pendingConfirmationsSortedSelector,
   selectDappSwapComparisonData,
 } from './confirm';
@@ -54,17 +53,6 @@ describe('confirm selectors', () => {
       },
     },
   };
-
-  describe('pendingConfirmationsSelector', () => {
-    it('should return pending confirmations from state', () => {
-      const result = pendingConfirmationsSelector(mockedState);
-
-      expect(result).toStrictEqual([
-        mockedState.metamask.pendingApprovals[2],
-        mockedState.metamask.pendingApprovals[3],
-      ]);
-    });
-  });
 
   describe('pendingConfirmationsSortedSelector', () => {
     it('should return pending confirmations sorted by time', () => {
