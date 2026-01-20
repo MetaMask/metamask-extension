@@ -2680,6 +2680,9 @@ export default class MetamaskController extends EventEmitter {
       cancelQrCodeScan:
         appStateController.cancelQrCodeScan.bind(appStateController),
 
+      // mpc wallets
+      createMpcWallet: this.createMpcWallet.bind(this),
+
       // vault management
       submitPassword: this.submitPassword.bind(this),
       verifyPassword: this.verifyPassword.bind(this),
@@ -5637,6 +5640,19 @@ export default class MetamaskController extends EventEmitter {
 
     const { identities } = this.preferencesController.state;
     return { unlockedAccount, identities, accounts };
+  }
+
+  //
+  // MPC Wallet Management
+  //
+
+  /**
+   * Creates a new MPC wallet.
+   *
+   * @returns {Promise<void>}
+   */
+  async createMpcWallet() {
+    await this.keyringController.addNewKeyring(KeyringTypes.mpc);
   }
 
   //

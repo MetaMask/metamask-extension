@@ -337,7 +337,7 @@
     "@metamask/kernel-ui": "^0.3.0",
     "@metamask/kernel-utils": "^0.3.0",
     "@metamask/keyring-api": "^21.3.0",
-    "@metamask/keyring-controller": "^25.0.0",
+    "@metamask/keyring-controller": "npm:@metamask-previews/keyring-controller@25.0.0-preview-1137ade3",
     "@metamask/keyring-internal-api": "^9.1.0",
     "@metamask/keyring-internal-snap-client": "^8.0.0",
     "@metamask/keyring-snap-client": "^8.1.0",

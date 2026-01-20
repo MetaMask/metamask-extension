@@ -298,6 +298,12 @@
   "addNewAccount": {
     "message": "Add a new Ethereum account"
   },
+  "addMpcWallet": {
+    "message": "Add an MPC wallet"
+  },
+  "mpcWalletDescription": {
+    "message": "The MPC wallet will be setup between your device and the cloud. It is super secure because the private key does not exist in one place."
+  },
   "addNewEthereumAccountLabel": {
     "message": "Ethereum account"
   },
