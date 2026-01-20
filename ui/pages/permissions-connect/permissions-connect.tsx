@@ -630,16 +630,8 @@ function PermissionsConnect() {
 
           // Store CAIP account IDs and chain IDs for chain-agnostic permission approval
           setSelectedCaipAccountIds(caipAccountIds);
-          // Only store non-EVM chain IDs for display - EVM chains are handled separately
-          const nonEvmCaipChainIds = requestedCaipChainIds.filter((chainId) => {
-            try {
-              const { namespace } = parseCaipChainId(chainId);
-              return namespace !== KnownCaipNamespace.Eip155;
-            } catch {
-              return false;
-            }
-          });
-          setSelectedCaipChainIds(nonEvmCaipChainIds);
+          // Store all requested CAIP chain IDs - the chain-agnostic system can handle mixed EVM/non-EVM chains
+          setSelectedCaipChainIds(requestedCaipChainIds);
 
           // Extract addresses from CAIP account IDs
           const addresses = caipAccountIds.map(
