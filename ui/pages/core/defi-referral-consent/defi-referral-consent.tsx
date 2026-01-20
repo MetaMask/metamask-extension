@@ -4,7 +4,6 @@ import {
   BoxAlignItems,
   BoxBackgroundColor,
   BoxFlexDirection,
-  BoxJustifyContent,
   Button,
   Checkbox,
   FontWeight,
@@ -80,7 +79,10 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   };
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className="h-full justify-between">
+    <Box
+      flexDirection={BoxFlexDirection.Column}
+      className="h-full justify-between"
+    >
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
@@ -96,7 +98,10 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
           {t('defiReferralSubtitle')}{' '}
-          <PartnerLink text={`${t('learnMoreUpperCase')}.`} url={learnMoreUrl} />
+          <PartnerLink
+            text={`${t('learnMoreUpperCase')}.`}
+            url={learnMoreUrl}
+          />
         </Text>
       </Box>
       <Box paddingBottom={6} paddingHorizontal={4}>

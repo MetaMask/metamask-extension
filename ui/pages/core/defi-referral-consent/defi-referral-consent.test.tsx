@@ -43,26 +43,22 @@ describe('DefiReferralConsent', () => {
       it('renders the component with correct title and subtitle', () => {
         const store = mockStore(mockState);
 
-        renderWithProvider(
-          <DefiReferralConsent {...props} />,
-          store,
-        );
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         expect(
           screen.getByText(`MetaMask x ${partnerName}`),
         ).toBeInTheDocument();
         expect(
-          screen.getByText('Save up to 4% on trades with a MetaMask referral code.'),
+          screen.getByText(
+            'Save up to 4% on trades with a MetaMask referral code.',
+          ),
         ).toBeInTheDocument();
       });
 
       it('renders the partner image with correct alt text', () => {
         const store = mockStore(mockState);
 
-        renderWithProvider(
-          <DefiReferralConsent {...props} />,
-          store,
-        );
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         const image = screen.getByAltText(`${partnerName} referral`);
         expect(image).toBeInTheDocument();
@@ -75,10 +71,7 @@ describe('DefiReferralConsent', () => {
       it('renders the learn more link with correct URL', () => {
         const store = mockStore(mockState);
 
-        renderWithProvider(
-          <DefiReferralConsent {...props} />,
-          store,
-        );
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         const learnMoreLink = screen.getByRole('link');
         expect(learnMoreLink).toHaveAttribute('href', learnMoreUrl);
@@ -89,10 +82,7 @@ describe('DefiReferralConsent', () => {
       it('renders the checkbox with default checked state', () => {
         const store = mockStore(mockState);
 
-        renderWithProvider(
-          <DefiReferralConsent {...props} />,
-          store,
-        );
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         const checkbox = screen.getByRole('checkbox');
         expect(checkbox).toBeInTheDocument();
@@ -148,10 +138,7 @@ describe('DefiReferralConsent', () => {
       it('renders the checkbox label', () => {
         const store = mockStore(mockState);
 
-        renderWithProvider(
-          <DefiReferralConsent {...props} />,
-          store,
-        );
+        renderWithProvider(<DefiReferralConsent {...props} />, store);
 
         expect(
           screen.getByText(
