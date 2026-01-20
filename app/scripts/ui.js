@@ -115,7 +115,7 @@ async function start() {
   const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
 
-  async function handleStartUISync() {
+  async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
 
     // this means we've received a message from the background, and so
@@ -135,6 +135,7 @@ async function start() {
       backgroundConnection,
       windowType,
       traceContext,
+      initialState,
     );
 
     if (isManifestV3) {
@@ -237,9 +238,15 @@ async function initializeUiWithTab(
   connectionStream,
   windowType,
   traceContext,
+  initialState,
 ) {
   try {
-    const store = await initializeUi(tab, connectionStream, traceContext);
+    const store = await initializeUi(
+      tab,
+      connectionStream,
+      traceContext,
+      initialState,
+    );
 
     endTrace({ name: TraceName.UIStartup });
 
@@ -307,12 +314,18 @@ async function queryCurrentActiveTab(windowType) {
   return { id, title, origin, protocol, url };
 }
 
-async function initializeUi(activeTab, backgroundConnection, traceContext) {
+async function initializeUi(
+  activeTab,
+  backgroundConnection,
+  traceContext,
+  initialState,
+) {
   return await launchMetaMaskUi({
     activeTab,
     container,
     backgroundConnection,
     traceContext,
+    initialState,
   });
 }
 

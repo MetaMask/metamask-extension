@@ -2457,7 +2457,6 @@ export default class MetamaskController extends EventEmitter {
 
     return {
       // etc
-      getState: this.getState.bind(this),
       setCurrentCurrency: currencyRateController.setCurrentCurrency.bind(
         currencyRateController,
       ),
@@ -6810,11 +6809,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
-    const patchStore = new PatchStore(this.memStore);
+    let patchStore;
     let uiReady = false;
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream) || !uiReady) {
+      if (!isStreamWritable(outStream) || !uiReady || !patchStore) {
         return;
       }
 
@@ -6850,10 +6849,16 @@ export default class MetamaskController extends EventEmitter {
       if (!isStreamWritable(outStream)) {
         return;
       }
+      // Start tracking patches immediately after retrieving initial state for this UI connection
+      // to ensure we don't miss any patches, or include extra patches.
+      const initialState = this.getState();
+      patchStore = new PatchStore(this.memStore);
+
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
         method: 'startUISync',
+        params: [initialState],
       });
     };
 

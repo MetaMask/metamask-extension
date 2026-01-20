@@ -79,7 +79,7 @@ export const connectToBackground = (
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
     } else if (method === METHOD_START_UI_SYNC) {
-      await handleStartUISync();
+      await handleStartUISync(data.params[0]);
     } else {
       throw new Error(
         `Internal JSON-RPC Notification Not Handled:\n\n ${JSON.stringify(
@@ -91,14 +91,9 @@ export const connectToBackground = (
 };
 
 export default async function launchMetamaskUi(opts) {
-  const { backgroundConnection, traceContext } = opts;
+  const { backgroundConnection, initialState } = opts;
 
-  const metamaskState = await trace(
-    { name: TraceName.GetState, parentContext: traceContext },
-    backgroundConnection.getState.bind(backgroundConnection),
-  );
-
-  const store = await startApp(metamaskState, opts);
+  const store = await startApp(initialState, opts);
 
   await backgroundConnection.startPatches();
 
