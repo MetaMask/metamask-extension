@@ -2,8 +2,9 @@
 import { MockttpServer } from 'mockttp';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../constants';
-import { unlockWallet, withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { createDappTransaction } from '../../page-objects/flows/transaction';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
@@ -52,7 +53,7 @@ async function withFixturesForSmartTransactions(
       },
     },
     async ({ driver }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver, undefined, undefined, '20 ETH');
       await runTestWithFixtures({ driver });
     },
   );
