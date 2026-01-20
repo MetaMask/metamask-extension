@@ -90,11 +90,11 @@ export const useHardwareWalletAutoConnect = ({
         !adapterRef.current?.isConnected() &&
         !isConnectingRef.current
       ) {
-        setDeviceIdRef(newDeviceId);
         const connect = connectRef.current;
         if (connect) {
           try {
             await connect();
+            setDeviceIdRef(newDeviceId);
           } catch (error) {
             // Connection failed, don't mark as connected
             // Error is already handled by connectRef implementation
@@ -208,10 +208,10 @@ export const useHardwareWalletAutoConnect = ({
           !isConnectingRef.current &&
           !hasAutoConnectedRef.current
         ) {
-          setDeviceIdRef(id);
           const connect = connectRef.current;
           try {
             await connect();
+            setDeviceIdRef(id);
             // Check cancellation again after async connect completes
             if (!isCancelled) {
               setAutoConnected(effectAccountAddress ?? null, id);
