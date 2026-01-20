@@ -517,7 +517,7 @@ const handleOnConnect = async (port) => {
       return;
     } else if (typeof simulatedDelay === 'number') {
       await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
-    } else {
+    } else if (simulatedDelay !== undefined) {
       log.error(
         `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
       );
