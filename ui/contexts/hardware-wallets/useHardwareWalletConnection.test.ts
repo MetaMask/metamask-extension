@@ -1,27 +1,32 @@
 import { renderHook, act } from '@testing-library/react-hooks';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { useHardwareWalletConnection } from './useHardwareWalletConnection';
-import { HardwareWalletType, ConnectionStatus } from './types';
+import {
+  HardwareWalletType,
+  ConnectionStatus,
+  type HardwareWalletAdapter,
+} from './types';
 import { ConnectionState } from './connectionState';
 import { createHardwareWalletError } from './errors';
 import * as webConnectionUtils from './webConnectionUtils';
 import { createAdapterForHardwareWalletType } from './adapters/factory';
+import { MockHardwareWalletAdapter } from './__mocks__/MockHardwareWalletAdapter';
 
 jest.mock('./webConnectionUtils');
 jest.mock('./adapters/factory');
 
-type MockAdapter = {
-  connect?: jest.Mock;
-  disconnect?: jest.Mock;
-  destroy?: jest.Mock;
-  isConnected?: jest.Mock;
-  ensureDeviceReady?: jest.Mock;
-};
+/**
+ * Connection error reasons enum
+ */
+enum ConnectionErrorReason {
+  Locked = 'locked',
+  ConnectionFailed = 'connection_failed',
+}
 
 describe('useHardwareWalletConnection', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
-    adapterRef: { current: MockAdapter | null };
+    adapterRef: { current: HardwareWalletAdapter | null };
     isConnectingRef: { current: boolean };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
@@ -82,10 +87,13 @@ describe('useHardwareWalletConnection', () => {
       (
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
-      const mockAdapter = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );
@@ -100,7 +108,7 @@ describe('useHardwareWalletConnection', () => {
         HardwareWalletType.Ledger,
       );
       expect(createAdapterForHardwareWalletType).toHaveBeenCalled();
-      expect(mockAdapter.connect).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.connectMock).toHaveBeenCalledWith('device-123');
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.connected(),
       );
@@ -109,10 +117,13 @@ describe('useHardwareWalletConnection', () => {
 
     it('connects successfully with existing device ID', async () => {
       mockRefs.deviceIdRef.current = 'existing-device-123';
-      const mockAdapter = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );
@@ -126,7 +137,9 @@ describe('useHardwareWalletConnection', () => {
       expect(
         webConnectionUtils.getHardwareWalletDeviceId,
       ).not.toHaveBeenCalled();
-      expect(mockAdapter.connect).toHaveBeenCalledWith('existing-device-123');
+      expect(mockAdapter.connectMock).toHaveBeenCalledWith(
+        'existing-device-123',
+      );
     });
 
     it('handles device discovery failure', async () => {
@@ -143,7 +156,7 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'connection_failed',
+          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -162,7 +175,7 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'connection_failed',
+          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -194,10 +207,14 @@ describe('useHardwareWalletConnection', () => {
       (
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
-      const mockAdapter = {
-        connect: jest.fn().mockRejectedValue(new Error('Connection failed')),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.connectMock.mockRejectedValue(new Error('Connection failed'));
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );
@@ -211,10 +228,10 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'connection_failed',
+          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
-      expect(mockAdapter.destroy).toHaveBeenCalled();
+      expect(mockAdapter.destroyMock).toHaveBeenCalled();
     });
 
     it('aborts when AbortController is aborted', async () => {
@@ -244,13 +261,19 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'connection_failed',
+          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
 
     it('destroys existing adapter before new connection', async () => {
-      const existingAdapter = { destroy: jest.fn() };
+      const existingAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
       mockRefs.adapterRef.current = existingAdapter;
       mockRefs.isConnectingRef.current = true;
 
@@ -264,16 +287,19 @@ describe('useHardwareWalletConnection', () => {
         await result.current.connect();
       });
 
-      expect(existingAdapter.destroy).toHaveBeenCalled();
+      expect(existingAdapter.destroyMock).toHaveBeenCalled();
     });
   });
 
   describe('disconnect', () => {
     it('disconnects successfully', async () => {
-      const mockAdapter = {
-        disconnect: jest.fn().mockResolvedValue(undefined),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -282,8 +308,8 @@ describe('useHardwareWalletConnection', () => {
         await result.current.disconnect();
       });
 
-      expect(mockAdapter.disconnect).toHaveBeenCalled();
-      expect(mockAdapter.destroy).toHaveBeenCalled();
+      expect(mockAdapter.disconnectMock).toHaveBeenCalled();
+      expect(mockAdapter.destroyMock).toHaveBeenCalled();
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.disconnected(),
       );
@@ -306,7 +332,14 @@ describe('useHardwareWalletConnection', () => {
 
   describe('clearError', () => {
     it('clears error when adapter is connected', () => {
-      const mockAdapter = { isConnected: jest.fn().mockReturnValue(true) };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -319,7 +352,14 @@ describe('useHardwareWalletConnection', () => {
     });
 
     it('clears error when adapter is not connected', () => {
-      const mockAdapter = { isConnected: jest.fn().mockReturnValue(false) };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(false);
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -349,11 +389,13 @@ describe('useHardwareWalletConnection', () => {
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
 
-      const mockAdapter = {
-        connect: jest.fn().mockResolvedValue(undefined),
-        ensureDeviceReady: jest.fn().mockResolvedValue(true),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );
@@ -366,18 +408,24 @@ describe('useHardwareWalletConnection', () => {
       });
 
       expect(ready).toBe(true);
-      expect(mockAdapter.connect).toHaveBeenCalledWith('device-123');
-      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.connectMock).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledWith(
+        'device-123',
+      );
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.ready(),
       );
     });
 
     it('verifies device when already connected', async () => {
-      const mockAdapter = {
-        isConnected: jest.fn().mockReturnValue(true),
-        ensureDeviceReady: jest.fn().mockResolvedValue(true),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -388,19 +436,26 @@ describe('useHardwareWalletConnection', () => {
       });
 
       expect(ready).toBe(true);
-      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith('device-123');
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledWith(
+        'device-123',
+      );
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         ConnectionState.ready(),
       );
     });
 
     it('returns false when device verification fails', async () => {
-      const mockAdapter = {
-        isConnected: jest.fn().mockReturnValue(true),
-        ensureDeviceReady: jest
-          .fn()
-          .mockRejectedValue(new Error('Verification failed')),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockAdapter.ensureDeviceReadyMock.mockRejectedValue(
+        new Error('Verification failed'),
+      );
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -414,17 +469,21 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'connection_failed',
+          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
 
     it('uses existing device ID when none provided', async () => {
       mockRefs.deviceIdRef.current = 'existing-device-123';
-      const mockAdapter = {
-        isConnected: jest.fn().mockReturnValue(true),
-        ensureDeviceReady: jest.fn().mockResolvedValue(true),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -433,7 +492,7 @@ describe('useHardwareWalletConnection', () => {
         await result.current.ensureDeviceReady();
       });
 
-      expect(mockAdapter.ensureDeviceReady).toHaveBeenCalledWith(
+      expect(mockAdapter.ensureDeviceReadyMock).toHaveBeenCalledWith(
         'existing-device-123',
       );
     });
@@ -454,10 +513,14 @@ describe('useHardwareWalletConnection', () => {
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
       ).mockResolvedValue('device-123');
 
-      const mockAdapter = {
-        connect: jest.fn().mockRejectedValue(new Error('Connection failed')),
-        destroy: jest.fn(),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.connectMock.mockRejectedValue(new Error('Connection failed'));
       (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
         mockAdapter,
       );
@@ -473,18 +536,21 @@ describe('useHardwareWalletConnection', () => {
     });
 
     it('handles structured hardware wallet errors', async () => {
-      const mockAdapter = {
-        isConnected: jest.fn().mockReturnValue(true),
-        ensureDeviceReady: jest
-          .fn()
-          .mockRejectedValue(
-            createHardwareWalletError(
-              ErrorCode.AuthenticationDeviceLocked,
-              HardwareWalletType.Ledger,
-              'Device locked',
-            ),
-          ),
-      };
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockAdapter.ensureDeviceReadyMock.mockRejectedValue(
+        createHardwareWalletError(
+          ErrorCode.AuthenticationDeviceLocked,
+          HardwareWalletType.Ledger,
+          'Device locked',
+        ),
+      );
       mockRefs.adapterRef.current = mockAdapter;
 
       const { result } = setupHook();
@@ -498,7 +564,7 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: 'locked',
+          reason: ConnectionErrorReason.Locked,
         }),
       );
     });
