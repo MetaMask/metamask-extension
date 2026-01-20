@@ -3439,6 +3439,12 @@
       "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/components/modals/pay-with-modal/pay-with-modal.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
     }
