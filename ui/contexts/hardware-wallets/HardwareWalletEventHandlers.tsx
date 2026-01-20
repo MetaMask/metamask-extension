@@ -248,6 +248,7 @@ export const useDeviceEventHandlers = ({
           error: disconnectError,
         });
       } else {
+        // Errors will be handled by the ErrorProvider
         // Error provider will handle all the other error cases
         updateConnectionState(ConnectionState.disconnected());
       }

@@ -330,14 +330,32 @@ describe('useDeviceEventHandlers', () => {
       );
     });
 
-    it('ignores ConnectionFailed event without error', () => {
+    it('handles ConnectionFailed event without error using default HardwareWalletError', () => {
       const { result } = setupHook();
 
       result.current.handleDeviceEvent({
         event: DeviceEvent.ConnectionFailed,
       });
 
-      expect(mockSetters.setConnectionState).not.toHaveBeenCalled();
+      expect(mockSetters.setConnectionState).toHaveBeenCalledWith(
+        expect.any(Function),
+      );
+
+      const updater = mockSetters.setConnectionState.mock.calls[0][0];
+      const prevState = ConnectionState.disconnected();
+      const resultState = updater(prevState);
+
+      expect(resultState).toEqual(
+        ConnectionState.error(
+          DeviceEvent.ConnectionFailed,
+          new HardwareWalletError('Hardware wallet connection failed', {
+            code: ErrorCode.ConnectionTransportMissing,
+            severity: Severity.Err,
+            category: Category.Connection,
+            userMessage: 'Hardware wallet connection failed',
+          }),
+        ),
+      );
     });
 
     it('handles OperationTimeout event with error', () => {
