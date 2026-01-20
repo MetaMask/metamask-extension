@@ -121,13 +121,11 @@ describe('Transaction Controller Init', () => {
       .mockReturnValue({
         isSmartTransaction: false,
         featureFlags: {
-          smartTransactions: {
-            extensionReturnTxHashAsap: false,
-            extensionReturnTxHashAsapBatch: false,
-            extensionSkipSmartTransactionStatusPage: false,
-            mobileActive: false,
-            extensionActive: false,
-          },
+          extensionReturnTxHashAsap: false,
+          extensionReturnTxHashAsapBatch: false,
+          extensionSkipSmartTransactionStatusPage: false,
+          mobileActive: false,
+          extensionActive: false,
         },
         isHardwareWalletAccount: false,
       });
