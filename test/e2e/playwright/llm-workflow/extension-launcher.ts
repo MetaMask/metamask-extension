@@ -462,10 +462,6 @@ export class MetaMaskExtensionLauncher {
     );
   }
 
-  getMockServer(): MockServer | undefined {
-    return this.mockServer;
-  }
-
   private async ensureExtensionBuilt(): Promise<void> {
     try {
       await fs.access(this.options.extensionPath);
@@ -754,152 +750,6 @@ export class MetaMaskExtensionLauncher {
     );
   }
 
-  async ensureUnlockedAndReady(
-    password: string = DEFAULT_PASSWORD,
-    maxAttempts = 3,
-  ): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const modalSelectors = [
-      '[data-testid="metametrics-i-agree"]',
-      '[data-testid="onboarding-complete-done"]',
-      '[data-testid="pin-extension-done"]',
-      '[data-testid="download-app-continue"]',
-      '[data-testid="popover-close"]',
-      '[data-testid="modal-header-close-button"]',
-      '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
-      '[data-testid="shield-entry-modal-close-button"]',
-      'button[aria-label="Close"]',
-    ];
-
-    const accountMenuIcon = this.extensionPage.locator(
-      '[data-testid="account-menu-icon"]',
-    );
-
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      if (attempt > 1) {
-        await this.navigateToHome();
-      }
-      await this.extensionPage.waitForLoadState('domcontentloaded');
-
-      for (const selector of modalSelectors) {
-        const button = this.extensionPage.locator(selector).first();
-        if (await button.isVisible({ timeout: 1500 }).catch(() => false)) {
-          // eslint-disable-next-line no-empty-function
-          await button.click().catch(() => {});
-          await button
-            .waitFor({ state: 'hidden', timeout: 3000 })
-            // eslint-disable-next-line no-empty-function
-            .catch(() => {});
-        }
-      }
-
-      const unlockInput = this.extensionPage.locator(
-        '[data-testid="unlock-password"]',
-      );
-      if (await unlockInput.isVisible({ timeout: 2000 }).catch(() => false)) {
-        await unlockInput.fill(password);
-        await this.extensionPage
-          .locator('[data-testid="unlock-submit"]')
-          .click();
-        await accountMenuIcon
-          .waitFor({ state: 'visible', timeout: 10000 })
-          // eslint-disable-next-line no-empty-function
-          .catch(() => {});
-      }
-
-      if (
-        await accountMenuIcon.isVisible({ timeout: 3000 }).catch(() => false)
-      ) {
-        return;
-      }
-    }
-
-    const state = await this.getState();
-    throw new Error(
-      `Failed to reach ready state after ${maxAttempts} attempts. ` +
-        `Current screen: ${state.currentScreen}`,
-    );
-  }
-
-  async waitForScreen(
-    screen: ExtensionState['currentScreen'],
-    timeoutMs: number = 10000,
-  ): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const startTime = Date.now();
-    const pollInterval = 500;
-
-    while (Date.now() - startTime < timeoutMs) {
-      const currentScreen = await this.detectCurrentScreen();
-      if (currentScreen === screen) {
-        return;
-      }
-      await new Promise((r) => setTimeout(r, pollInterval));
-    }
-
-    const dump = await this.debugDump(`waitForScreen-${screen}-timeout`);
-    throw new Error(
-      `Timeout waiting for screen '${screen}' after ${timeoutMs}ms. ` +
-        `Current screen: '${dump.state.currentScreen}'. ` +
-        `Debug screenshot: ${dump.screenshot.path}`,
-    );
-  }
-
-  async assertScreen(screen: ExtensionState['currentScreen']): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const currentScreen = await this.detectCurrentScreen();
-    if (currentScreen !== screen) {
-      const dump = await this.debugDump(`assertScreen-${screen}-failed`);
-      throw new Error(
-        `Expected screen '${screen}' but found '${currentScreen}'. ` +
-          `Debug screenshot: ${dump.screenshot.path}. ` +
-          `State JSON: ${dump.screenshot.path.replace('.png', '-state.json')}`,
-      );
-    }
-  }
-
-  async closeInterferingModals(): Promise<number> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-
-    const modalSelectors = [
-      '[data-testid="popover-close"]',
-      '[data-testid="modal-header-close-button"]',
-      '[data-testid="survey-toast-banner-base"] [aria-label="Close"]',
-      '[data-testid="shield-entry-modal-close-button"]',
-      '[data-testid="pin-extension-done"]',
-      '[data-testid="download-app-continue"]',
-      'button[aria-label="Close"]',
-    ];
-
-    let closedCount = 0;
-
-    for (const selector of modalSelectors) {
-      const button = this.extensionPage.locator(selector).first();
-      if (await button.isVisible({ timeout: 500 }).catch(() => false)) {
-        // eslint-disable-next-line no-empty-function
-        await button.click().catch(() => {});
-        await button
-          .waitFor({ state: 'hidden', timeout: 2000 })
-          // eslint-disable-next-line no-empty-function
-          .catch(() => {});
-        closedCount += 1;
-      }
-    }
-
-    return closedCount;
-  }
-
   async completeOnboarding(options?: {
     seedPhrase?: string;
     password?: string;
@@ -988,18 +838,6 @@ export class MetaMaskExtensionLauncher {
     }
 
     return { screenshot, state, consoleErrors: [...this.consoleErrorBuffer] };
-  }
-
-  getConsoleErrors(): {
-    timestamp: number;
-    message: string;
-    source: string;
-  }[] {
-    return [...this.consoleErrorBuffer];
-  }
-
-  clearConsoleErrors(): void {
-    this.consoleErrorBuffer = [];
   }
 
   async getState(): Promise<ExtensionState> {
@@ -1147,34 +985,6 @@ export class MetaMaskExtensionLauncher {
     await this.extensionPage.waitForLoadState('domcontentloaded');
   }
 
-  async click(selector: string): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-    await this.extensionPage.locator(selector).click();
-  }
-
-  async fill(selector: string, value: string): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-    await this.extensionPage.locator(selector).fill(value);
-  }
-
-  async waitFor(selector: string, timeout: number = 10000): Promise<void> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-    await this.extensionPage.waitForSelector(selector, { timeout });
-  }
-
-  async getText(selector: string): Promise<string> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
-    }
-    return (await this.extensionPage.locator(selector).textContent()) ?? '';
-  }
-
   getPage(): Page {
     if (!this.extensionPage) {
       throw new Error('Extension page not initialized');
@@ -1189,28 +999,11 @@ export class MetaMaskExtensionLauncher {
     return this.context;
   }
 
-  getAnvil(): Anvil {
-    if (!this.anvil) {
-      throw new Error('Anvil not initialized');
-    }
-    return this.anvil;
-  }
-
   getSeeder(): AnvilSeederWrapper {
     if (!this.seeder) {
       throw new Error('Seeder not initialized. Ensure Anvil has started.');
     }
     return this.seeder;
-  }
-
-  async openNewDappPage(url: string): Promise<Page> {
-    if (!this.context) {
-      throw new Error('Browser context not initialized');
-    }
-    const page = await this.context.newPage();
-    await page.goto(url);
-    await page.waitForLoadState('domcontentloaded');
-    return page;
   }
 
   async getAllExtensionPages(): Promise<Page[]> {
@@ -1224,23 +1017,6 @@ export class MetaMaskExtensionLauncher {
       .filter((page) => page.url().startsWith(extensionPrefix));
   }
 
-  async getNotificationPage(): Promise<Page | null> {
-    if (!this.context || !this.extensionId) {
-      throw new Error('Browser context not initialized');
-    }
-
-    const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
-    const pages = this.context.pages();
-
-    for (const page of pages) {
-      if (page.url().startsWith(notificationUrl)) {
-        return page;
-      }
-    }
-
-    return null;
-  }
-
   async waitForNotificationPage(timeoutMs: number = 10000): Promise<Page> {
     if (!this.context || !this.extensionId) {
       throw new Error('Browser context not initialized');
@@ -1248,7 +1024,9 @@ export class MetaMaskExtensionLauncher {
 
     const notificationUrl = `chrome-extension://${this.extensionId}/notification.html`;
 
-    const existingPage = await this.getNotificationPage();
+    const existingPage = this.context
+      .pages()
+      .find((page) => page.url().startsWith(notificationUrl));
     if (existingPage) {
       await existingPage.waitForLoadState('domcontentloaded');
       this.attachConsoleListeners(existingPage);
@@ -1277,7 +1055,9 @@ export class MetaMaskExtensionLauncher {
       this.attachConsoleListeners(newPage);
       return newPage;
     } catch (error) {
-      const finalCheck = await this.getNotificationPage();
+      const finalCheck = this.context
+        .pages()
+        .find((page) => page.url().startsWith(notificationUrl));
       if (finalCheck) {
         await finalCheck.waitForLoadState('domcontentloaded');
         this.attachConsoleListeners(finalCheck);
@@ -1293,31 +1073,6 @@ export class MetaMaskExtensionLauncher {
           `Current extension pages: [${pageUrls}]`,
       );
     }
-  }
-
-  async switchToExtensionHome(): Promise<Page> {
-    if (!this.extensionPage || !this.extensionId) {
-      throw new Error('Extension not initialized');
-    }
-
-    await this.extensionPage.bringToFront();
-    const currentUrl = this.extensionPage.url();
-    const homeUrl = `chrome-extension://${this.extensionId}/home.html`;
-
-    if (!currentUrl.startsWith(homeUrl)) {
-      await this.navigateToHome();
-    }
-
-    return this.extensionPage;
-  }
-
-  async closeNotificationPage(): Promise<boolean> {
-    const notificationPage = await this.getNotificationPage();
-    if (notificationPage) {
-      await notificationPage.close();
-      return true;
-    }
-    return false;
   }
 
   async cleanup(): Promise<void> {
