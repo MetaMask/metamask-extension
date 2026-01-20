@@ -14,6 +14,19 @@ export const SUN_PER_TRX = 1_000_000;
 export const FEATURE_FLAGS_URL =
   'https://client-config.api.cx.metamask.io/v1/flags';
 
+// Tron Infura API base URL pattern (matches any project ID)
+const TRON_INFURA_BASE_URL = 'https://tron-mainnet\\.infura\\.io/v3/[^/]+';
+
+/**
+ * Creates a regex pattern for Tron Infura API endpoints
+ *
+ * @param path - The endpoint path to append to the base URL
+ * @returns A RegExp that matches the full URL with any project ID
+ */
+function tronInfuraUrl(path: string): RegExp {
+  return new RegExp(`^${TRON_INFURA_BASE_URL}${path}$`, 'u');
+}
+
 // BIP44 Stage 2 feature flags - enables automatic multichain account creation
 export const BIP44_STAGE_TWO = {
   enableMultichainAccountsState2: {
@@ -60,9 +73,7 @@ export async function mockBroadTransaction(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(
-      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/broadcasttransaction$/u,
-    )
+    .forPost(tronInfuraUrl('/wallet/broadcasttransaction'))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -78,12 +89,7 @@ export async function mockTronGetAccount(
   mockZeroBalance?: boolean,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      new RegExp(
-        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}$`,
-        'u',
-      ),
-    )
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}`))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -185,9 +191,7 @@ export async function mockTronGetAccountResource(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(
-      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/getaccountresource$/u,
-    )
+    .forPost(tronInfuraUrl('/wallet/getaccountresource'))
     .withJsonBody({
       address: TRON_ACCOUNT_ADDRESS,
       visible: true,
@@ -223,10 +227,7 @@ export async function mockTronGetTrc20Transactions(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
-      new RegExp(
-        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20$`,
-        'u',
-      ),
+      tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20`),
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -396,12 +397,7 @@ export async function mockTronGetTransactions(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forGet(
-      new RegExp(
-        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions$`,
-        'u',
-      ),
-    )
+    .forGet(tronInfuraUrl(`/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
@@ -755,9 +751,7 @@ export async function mockTronGetBlock(
   mockServer: Mockttp,
 ): Promise<MockedEndpoint> {
   return mockServer
-    .forPost(
-      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/getblock$/u,
-    )
+    .forPost(tronInfuraUrl('/wallet/getblock'))
     .thenCallback(() => ({
       statusCode: 200,
       json: {
