@@ -27,7 +27,8 @@ export const getIsRevokeDAIPermit = (confirmation: SignatureRequestType) => {
     domain: { verifyingContract },
   } = parseTypedDataMessage(msgData as string);
   const isRevokeDAIPermit =
-    message.allowed === false && verifyingContract === DAI_CONTRACT_ADDRESS;
+    message.allowed === false &&
+    verifyingContract?.toLowerCase() === DAI_CONTRACT_ADDRESS.toLowerCase();
 
   return isRevokeDAIPermit;
 };
