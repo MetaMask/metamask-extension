@@ -8,8 +8,10 @@ import { useGasEstimateFailedAlerts } from './alerts/transactions/useGasEstimate
 import { useGasFeeLowAlerts } from './alerts/transactions/useGasFeeLowAlerts';
 import { useGasTooLowAlerts } from './alerts/transactions/useGasTooLowAlerts';
 import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { useInsufficientPayTokenBalanceAlert } from './alerts/transactions/useInsufficientPayTokenBalanceAlert';
 import { useMultipleApprovalsAlerts } from './alerts/transactions/useMultipleApprovalsAlerts';
 import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
+import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
@@ -44,8 +46,11 @@ function useTransactionAlerts(): Alert[] {
   const gasFeeLowAlerts = useGasFeeLowAlerts();
   const gasTooLowAlerts = useGasTooLowAlerts();
   const insufficientBalanceAlerts = useInsufficientBalanceAlerts();
+  const insufficientPayTokenBalanceAlerts =
+    useInsufficientPayTokenBalanceAlert();
   const multipleApprovalAlerts = useMultipleApprovalsAlerts();
   const noGasPriceAlerts = useNoGasPriceAlerts();
+  const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
   const resimulationAlert = useResimulationAlert();
@@ -62,8 +67,10 @@ function useTransactionAlerts(): Alert[] {
       ...gasFeeLowAlerts,
       ...gasTooLowAlerts,
       ...insufficientBalanceAlerts,
+      ...insufficientPayTokenBalanceAlerts,
       ...multipleApprovalAlerts,
       ...noGasPriceAlerts,
+      ...noPayTokenQuotesAlerts,
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
       ...resimulationAlert,
@@ -79,8 +86,10 @@ function useTransactionAlerts(): Alert[] {
       gasFeeLowAlerts,
       gasTooLowAlerts,
       insufficientBalanceAlerts,
+      insufficientPayTokenBalanceAlerts,
       multipleApprovalAlerts,
       noGasPriceAlerts,
+      noPayTokenQuotesAlerts,
       nonContractAddressAlerts,
       pendingTransactionAlerts,
       resimulationAlert,
