@@ -1723,6 +1723,9 @@
       "Reselect: Identity function warnings": 4,
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
       "Reselect: Identity function warnings": 2,
       "warn: ⚠️ React Router Future Flag": 2,
