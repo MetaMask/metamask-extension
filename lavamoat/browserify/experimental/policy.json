@@ -33,20 +33,7 @@
         "webpack>events": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": {
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util": true,
-        "browserify>buffer": true,
-        "eth-lattice-keyring>gridplus-sdk>crc-32": true,
-        "webpack>events": true
-      }
-    },
     "@ethereumjs/tx>@ethereumjs/rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": {
       "globals": {
         "TextEncoder": true
       }
@@ -66,25 +53,17 @@
         "TextEncoder": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/rlp": {
+      "globals": {
+        "TextEncoder": true
+      }
+    },
     "@ethereumjs/tx": {
       "packages": {
         "@ethereumjs/tx>@ethereumjs/common": true,
         "@ethereumjs/tx>@ethereumjs/rlp": true,
         "@ethereumjs/tx>@ethereumjs/util": true,
         "@ethereumjs/tx>ethereum-cryptography": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common>@ethereumjs/util>@ethereumjs/rlp": true,
-        "browserify>buffer": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
-        "webpack>events": true,
-        "browserify>insert-module-globals>is-buffer": true,
-        "eth-lattice-keyring>@ethereumjs/util>micro-ftch": true
       }
     },
     "@ethereumjs/tx>@ethereumjs/util": {
@@ -2426,6 +2405,30 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "viem>ox>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
+    "viem>@noble/curves": {
+      "globals": {
+        "TextEncoder": true
+      },
+      "packages": {
+        "@noble/hashes": true
+      }
+    },
     "@noble/hashes": {
       "globals": {
         "TextDecoder": true,
@@ -2615,6 +2618,19 @@
         "@ethereumjs/tx>ethereum-cryptography>@noble/curves": true,
         "@ethereumjs/tx>ethereum-cryptography>@noble/hashes": true,
         "@ethereumjs/tx>ethereum-cryptography>@scure/bip32>@scure/base": true
+      }
+    },
+    "viem>@scure/bip32": {
+      "packages": {
+        "@noble/curves": true,
+        "@noble/hashes": true,
+        "@scure/base": true
+      }
+    },
+    "viem>@scure/bip39": {
+      "packages": {
+        "@noble/hashes": true,
+        "@scure/base": true
       }
     },
     "@segment/loosely-validate-event": {
@@ -3166,21 +3182,10 @@
         "define": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>borc>bignumber.js": {
-      "globals": {
-        "crypto": true,
-        "define": true
-      }
-    },
     "eth-lattice-keyring>gridplus-sdk>bignumber.js": {
       "globals": {
         "crypto": true,
         "define": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>bitwise": {
-      "packages": {
-        "browserify>buffer": true
       }
     },
     "@metamask/design-system-react>blo": {
@@ -3194,17 +3199,6 @@
       },
       "packages": {
         "browserify>browser-resolve": true
-      }
-    },
-    "eth-lattice-keyring>gridplus-sdk>borc": {
-      "globals": {
-        "console": true
-      },
-      "packages": {
-        "eth-lattice-keyring>gridplus-sdk>borc>bignumber.js": true,
-        "browserify>buffer": true,
-        "buffer>ieee754": true,
-        "eth-lattice-keyring>gridplus-sdk>borc>iso-url": true
       }
     },
     "bowser": {
@@ -3276,6 +3270,11 @@
         "browserify>util": true
       }
     },
+    "bs58": {
+      "packages": {
+        "bs58>base-x": true
+      }
+    },
     "ethereumjs-util>ethereum-cryptography>bs58check>bs58": {
       "packages": {
         "@ensdomains/content-hash>multihashes>multibase>base-x": true
@@ -3286,6 +3285,12 @@
         "ethereumjs-util>ethereum-cryptography>bs58check>bs58": true,
         "ethereumjs-util>create-hash": true,
         "koa>content-disposition>safe-buffer": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>bs58check": {
+      "packages": {
+        "@noble/hashes": true,
+        "bs58": true
       }
     },
     "buffer": {
@@ -3342,12 +3347,31 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>cbor-bigdecimal": {
+      "globals": {
+        "define": true
+      },
+      "packages": {
+        "eth-lattice-keyring>gridplus-sdk>bignumber.js": true
+      }
+    },
     "@ngraveio/bc-ur>cbor-sync": {
       "globals": {
         "define": true
       },
       "packages": {
         "browserify>buffer": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>cbor": {
+      "globals": {
+        "TextDecoder": true,
+        "URL": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "eth-lattice-keyring>gridplus-sdk>cbor>nofilter": true,
+        "stream-browserify": true
       }
     },
     "chalk": {
@@ -3685,16 +3709,6 @@
         "string.prototype.matchall>es-abstract>stop-iteration-iterator": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
-      "globals": {
-        "intToBuffer": true
-      },
-      "packages": {
-        "bn.js": true,
-        "buffer": true,
-        "eth-ens-namehash>js-sha3": true
-      }
-    },
     "eth-ens-namehash": {
       "globals": {
         "name": "write"
@@ -3710,7 +3724,6 @@
         "addEventListener": true,
         "browser": true,
         "clearInterval": true,
-        "fetch": true,
         "open": true,
         "setInterval": true
       },
@@ -3952,38 +3965,42 @@
     "eth-lattice-keyring>gridplus-sdk": {
       "globals": {
         "AbortController": true,
+        "Calldata": true,
+        "Constants": true,
         "Request": true,
         "URL": true,
-        "__values": true,
+        "Utils": true,
         "caches": true,
         "clearTimeout": true,
+        "console.debug": true,
         "console.error": true,
         "console.log": true,
         "console.warn": true,
         "fetch": true,
-        "setTimeout": true
+        "setTimeout": true,
+        "structuredClone": true
       },
       "packages": {
-        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/common": true,
-        "@ethereumjs/tx": true,
-        "@ethersproject/abi": true,
+        "eth-lattice-keyring>gridplus-sdk>@ethereumjs/rlp": true,
+        "@metamask/eth-sig-util": true,
         "eth-lattice-keyring>gridplus-sdk>aes-js": true,
         "bitcoin-address-validation>bech32": true,
         "eth-lattice-keyring>gridplus-sdk>bignumber.js": true,
-        "eth-lattice-keyring>gridplus-sdk>bitwise": true,
         "bn.js": true,
-        "eth-lattice-keyring>gridplus-sdk>borc": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
+        "eth-lattice-keyring>gridplus-sdk>bs58check": true,
         "browserify>buffer": true,
+        "eth-lattice-keyring>gridplus-sdk>cbor-bigdecimal": true,
+        "eth-lattice-keyring>gridplus-sdk>cbor": true,
         "eth-lattice-keyring>gridplus-sdk>crc-32": true,
         "@toruslabs/eccrypto>elliptic": true,
-        "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": true,
         "ethers>@ethersproject/sha2>hash.js": true,
-        "eth-ens-namehash>js-sha3": true,
         "lodash": true,
-        "eth-lattice-keyring>gridplus-sdk>rlp": true,
-        "ganache>secp256k1": true,
-        "eth-lattice-keyring>gridplus-sdk>uuid": true
+        "eth-lattice-keyring>gridplus-sdk>ox": true,
+        "eth-lattice-keyring>gridplus-sdk>secp256k1": true,
+        "uuid": true,
+        "eth-lattice-keyring>gridplus-sdk>uuid": true,
+        "viem": true,
+        "eth-lattice-keyring>gridplus-sdk>zod": true
       }
     },
     "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": {
@@ -4186,19 +4203,17 @@
         "string.prototype.matchall>get-intrinsic": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>borc>iso-url": {
-      "globals": {
-        "URL": true,
-        "URLSearchParams": true,
-        "location": true
-      }
-    },
     "@open-rpc/test-coverage>isomorphic-fetch": {
       "globals": {
         "fetch.bind": true
       },
       "packages": {
         "@open-rpc/test-coverage>isomorphic-fetch>whatwg-fetch": true
+      }
+    },
+    "viem>isows": {
+      "globals": {
+        "WebSocket": true
       }
     },
     "@ensdomains/content-hash>js-base64": {
@@ -4503,6 +4518,15 @@
         "fetch": true
       }
     },
+    "eth-lattice-keyring>gridplus-sdk>cbor>nofilter": {
+      "globals": {
+        "TextDecoder": true
+      },
+      "packages": {
+        "browserify>buffer": true,
+        "stream-browserify": true
+      }
+    },
     "eth-method-registry>@metamask/ethjs-contract>ethjs-abi>number-to-bn": {
       "packages": {
         "bn.js": true,
@@ -4537,6 +4561,55 @@
     "@metamask/object-multiplex>once": {
       "packages": {
         "@metamask/object-multiplex>once>wrappy": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>ox": {
+      "globals": {
+        "AbortController": true,
+        "Request": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "clearTimeout": true,
+        "crypto.getRandomValues": true,
+        "crypto.randomUUID": true,
+        "crypto.subtle.decrypt": true,
+        "crypto.subtle.deriveBits": true,
+        "crypto.subtle.deriveKey": true,
+        "crypto.subtle.encrypt": true,
+        "crypto.subtle.exportKey": true,
+        "crypto.subtle.generateKey": true,
+        "crypto.subtle.importKey": true,
+        "crypto.subtle.sign": true,
+        "crypto.subtle.verify": true,
+        "document.title": true,
+        "fetch": true,
+        "location.hostname": true,
+        "location.origin": true,
+        "navigator.credentials": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "viem>ox>@adraffy/ens-normalize": true,
+        "@noble/ciphers": true,
+        "eth-lattice-keyring>gridplus-sdk>ox>@noble/curves": true,
+        "@noble/hashes": true,
+        "viem>@scure/bip32": true,
+        "viem>@scure/bip39": true,
+        "eth-lattice-keyring>gridplus-sdk>ox>abitype": true,
+        "viem>ox>abitype": true,
+        "viem>ox>eventemitter3": true
+      }
+    },
+    "viem>ox": {
+      "globals": {
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "crypto.getRandomValues": true
+      },
+      "packages": {
+        "viem>ox>@noble/curves": true,
+        "@noble/hashes": true,
+        "viem>ox>abitype": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1": {
@@ -5274,11 +5347,6 @@
         "browserify>buffer": true
       }
     },
-    "eth-lattice-keyring>gridplus-sdk>rlp": {
-      "globals": {
-        "TextEncoder": true
-      }
-    },
     "wait-on>rxjs": {
       "globals": {
         "cancelAnimationFrame": true,
@@ -5333,6 +5401,11 @@
       }
     },
     "ganache>secp256k1": {
+      "packages": {
+        "@toruslabs/eccrypto>elliptic": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>secp256k1": {
       "packages": {
         "@toruslabs/eccrypto>elliptic": true
       }
@@ -5723,6 +5796,30 @@
         "react-markdown>vfile>vfile-message": true
       }
     },
+    "viem": {
+      "globals": {
+        "AbortController": true,
+        "Image": true,
+        "Request": true,
+        "TextDecoder": true,
+        "TextEncoder": true,
+        "atob": true,
+        "btoa": true,
+        "clearInterval": true,
+        "clearTimeout": true,
+        "console.error": true,
+        "fetch": true,
+        "setInterval": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "viem>@noble/curves": true,
+        "@noble/hashes": true,
+        "viem>abitype": true,
+        "viem>isows": true,
+        "viem>ox": true
+      }
+    },
     "browserify>vm-browserify": {
       "globals": {
         "document.body.appendChild": true,
@@ -5792,6 +5889,16 @@
         "string.prototype.matchall>es-abstract>get-proto": true,
         "string.prototype.matchall>gopd": true,
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
+      }
+    },
+    "eth-lattice-keyring>gridplus-sdk>zod": {
+      "globals": {
+        "File": true,
+        "URL": true,
+        "__zod_globalRegistry": true,
+        "atob": true,
+        "btoa": true,
+        "navigator": true
       }
     }
   }

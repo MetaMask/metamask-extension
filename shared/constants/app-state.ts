@@ -1,5 +1,5 @@
 import { NetworkClientId } from '@metamask/network-controller';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 

@@ -263,7 +263,8 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs@npm:6.13.0": "^6.14.1"
+    "qs@npm:6.13.0": "^6.14.1",
+    "gridplus-sdk@npm:^4.0.0": "patch:gridplus-sdk@npm%3A4.0.0#~/.yarn/patches/gridplus-sdk-npm-4.0.0-0e9f598de2.patch"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -428,7 +429,7 @@
     "dompurify": "patch:dompurify@npm%3A3.2.5#~/.yarn/patches/dompurify-npm-3.2.5-d9af707abe.patch",
     "eth-chainlist": "~0.0.498",
     "eth-ens-namehash": "^2.0.8",
-    "eth-lattice-keyring": "patch:eth-lattice-keyring@npm%3A0.12.4#~/.yarn/patches/eth-lattice-keyring-npm-0.12.4-c5fb3fcf54.patch",
+    "eth-lattice-keyring": "^1.1.0",
     "eth-method-registry": "^4.0.0",
     "ethereumjs-util": "^7.0.10",
     "extension-port-stream": "^5.0.2",

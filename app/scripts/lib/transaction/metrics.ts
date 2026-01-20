@@ -8,7 +8,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { Json, add0x, createProjectLogger } from '@metamask/utils';
-import { Hex } from 'viem';
+import type { Hex } from 'viem';
 import {
   MESSAGE_TYPE,
   ORIGIN_METAMASK,
