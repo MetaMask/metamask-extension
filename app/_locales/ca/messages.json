@@ -373,9 +373,6 @@
     "message": "Has de seleccionar un arxiu per a importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No es poden enviar quantitats negatives de ETH."
-  },
   "networkName": {
     "message": "Nom de la xarxa"
   },
