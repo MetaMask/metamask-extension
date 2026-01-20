@@ -5241,6 +5241,14 @@ describe('MetaMaskController', () => {
         }),
       });
 
+      // Prevent RemoteFeatureFlagController from making real fetches in this block.
+      jest
+        .spyOn(
+          metamaskController.remoteFeatureFlagController,
+          'updateRemoteFeatureFlags',
+        )
+        .mockResolvedValue();
+
       jest
         .spyOn(metamaskController, '_importAccountsWithBalances')
         .mockResolvedValue({});
