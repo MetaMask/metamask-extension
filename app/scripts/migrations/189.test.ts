@@ -1,5 +1,5 @@
 import { BrowserStorageAdapter } from '../lib/stores/browser-storage-adapter';
-import { migrate, version } from './188';
+import { migrate, version } from './189';
 
 const VERSION = version;
 const oldVersion = VERSION - 1;
