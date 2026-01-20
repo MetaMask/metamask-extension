@@ -80,7 +80,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
   };
 
   return (
-    <Box flexDirection={BoxFlexDirection.Column} className="h-full">
+    <Box flexDirection={BoxFlexDirection.Column} className="h-full justify-between">
       <Box
         flexDirection={BoxFlexDirection.Column}
         alignItems={BoxAlignItems.Center}
@@ -99,35 +99,28 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           <PartnerLink text={`${t('learnMoreUpperCase')}.`} url={learnMoreUrl} />
         </Text>
       </Box>
-      <Box
-        flexDirection={BoxFlexDirection.Column}
-        justifyContent={BoxJustifyContent.Between}
-        alignItems={BoxAlignItems.Center}
-        className="h-full"
-      >
-        <Box paddingBottom={6} paddingHorizontal={4}>
-          <PartnerImage partnerId={partnerId} partnerName={partnerName} />
+      <Box paddingBottom={6} paddingHorizontal={4}>
+        <PartnerImage partnerId={partnerId} partnerName={partnerName} />
+      </Box>
+      <Box flexDirection={BoxFlexDirection.Column} gap={4}>
+        <Box
+          backgroundColor={BoxBackgroundColor.BackgroundSection}
+          padding={3}
+          className="rounded-lg"
+        >
+          <Checkbox
+            id="defi-referral-consent-checkbox"
+            isSelected={isChecked}
+            onChange={handleCheckboxClick}
+            label={t('defiReferralCheckboxLabel')}
+            labelProps={{
+              variant: TextVariant.BodySm,
+              color: TextColor.TextAlternative,
+            }}
+            className="items-start cursor-pointer"
+          />
         </Box>
-        <Box flexDirection={BoxFlexDirection.Column} gap={4}>
-          <Box
-            backgroundColor={BoxBackgroundColor.BackgroundSection}
-            padding={3}
-            className="rounded-lg"
-          >
-            <Checkbox
-              id="defi-referral-consent-checkbox"
-              isSelected={isChecked}
-              onChange={handleCheckboxClick}
-              label={t('defiReferralCheckboxLabel')}
-              labelProps={{
-                variant: TextVariant.BodySm,
-                color: TextColor.TextAlternative,
-              }}
-              className="items-start cursor-pointer"
-            />
-          </Box>
-          <Button onClick={handleSubmit}>{t('confirm')}</Button>
-        </Box>
+        <Button onClick={handleSubmit}>{t('confirm')}</Button>
       </Box>
     </Box>
   );
