@@ -92,17 +92,10 @@ describe('Storage Operations Failure Recovery', function () {
           await homePage.checkPageIsLoaded();
 
           // The toast should appear because writes are failing
-          await driver.waitForSelector('[data-testid="storage-error-toast"]');
+          await homePage.checkStorageErrorToastIsDisplayed();
 
           // Click the toast action button to navigate to reveal SRP page
-          // The button text is inside a nested span, so we target the span's text
-          await driver.clickElement({
-            text: 'Back up Secret Recovery Phrase',
-            tag: 'span',
-          });
-
-          // Verify we navigated to the reveal SRP page (password prompt)
-          await driver.waitForSelector('[data-testid="input-password"]');
+          await homePage.clickStorageErrorToastBackupButton();
         },
       );
     });
