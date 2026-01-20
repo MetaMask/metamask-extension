@@ -206,9 +206,19 @@ export const MarketListView: React.FC = () => {
   }, []);
 
   // Filter and sort markets
+  // When searching, bypass filters and search ALL markets (like mobile)
+  // When not searching, apply filters
   const displayedMarkets = useMemo(() => {
-    let markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
-    markets = filterMarkets(markets, searchQuery);
+    let markets: PerpsMarketData[];
+
+    if (searchQuery.trim()) {
+      // Searching: search across ALL markets, ignore filters
+      markets = filterMarkets(allMarkets, searchQuery);
+    } else {
+      // Not searching: apply filters
+      markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
+    }
+
     if (currentSortOption) {
       markets = sortMarkets(
         markets,
@@ -296,27 +306,29 @@ export const MarketListView: React.FC = () => {
         />
       </Box>
 
-      {/* Filter and Sort Row */}
-      <Box
-        className="border-b border-border-muted px-4 py-3 flex-wrap"
-        flexDirection={BoxFlexDirection.Row}
-        alignItems={BoxAlignItems.Center}
-        justifyContent={BoxJustifyContent.Start}
-        gap={3}
-        data-testid="market-list-filter-sort-row"
-      >
-        <FilterSelect value={selectedFilter} onChange={handleFilterChange} />
-        <SortDropdown
-          selectedOptionId={selectedSortId}
-          onOptionChange={handleSortChange}
-        />
-        {selectedFilter === 'stocks' && (
-          <StockSubFilterSelect
-            value={stockSubFilter}
-            onChange={setStockSubFilter}
+      {/* Filter and Sort Row - Hidden when searching */}
+      {!searchQuery.trim() && (
+        <Box
+          className="border-b border-border-muted px-4 py-3 flex-wrap"
+          flexDirection={BoxFlexDirection.Row}
+          alignItems={BoxAlignItems.Center}
+          justifyContent={BoxJustifyContent.Start}
+          gap={3}
+          data-testid="market-list-filter-sort-row"
+        >
+          <FilterSelect value={selectedFilter} onChange={handleFilterChange} />
+          <SortDropdown
+            selectedOptionId={selectedSortId}
+            onOptionChange={handleSortChange}
           />
-        )}
-      </Box>
+          {selectedFilter === 'stocks' && (
+            <StockSubFilterSelect
+              value={stockSubFilter}
+              onChange={setStockSubFilter}
+            />
+          )}
+        </Box>
+      )}
 
       {/* Market List */}
       <Box
