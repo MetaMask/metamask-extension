@@ -28,89 +28,84 @@ export const ConfigRegistryControllerInit: ControllerInitFunction<
     throw new Error('ConfigRegistryController requires a controllerMessenger');
   }
 
-  try {
-    const fetchFn = globalThis.fetch.bind(globalThis);
-    const apiService = new ConfigRegistryApiService({
-      apiBaseUrl: 'https://client-config.uat-api.cx.metamask.io/v1/config',
-      endpointPath: '/networks',
-      fetch: fetchFn,
-    });
+  const fetchFn = globalThis.fetch.bind(globalThis);
+  const apiService = new ConfigRegistryApiService({
+    apiBaseUrl: 'https://client-config.uat-api.cx.metamask.io/v1/config',
+    endpointPath: '/networks',
+    fetch: fetchFn,
+  });
 
-    const persistedControllerState = persistedState.ConfigRegistryController;
+  const persistedControllerState = persistedState.ConfigRegistryController;
 
-    const controller = new ConfigRegistryController({
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      messenger: controllerMessenger as any,
-      state: persistedControllerState,
-      apiService,
-    });
+  const controller = new ConfigRegistryController({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    messenger: controllerMessenger as any,
+    state: persistedControllerState,
+    apiService,
+  });
 
-    const togglePolling = () => {
-      try {
-        const isEnabled = isConfigRegistryApiEnabled(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          controllerMessenger as any,
-        );
+  const togglePolling = () => {
+    try {
+      const isEnabled = isConfigRegistryApiEnabled(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        controllerMessenger as any,
+      );
 
-        if (isEnabled) {
-          try {
-            controller.startPolling({});
+      if (isEnabled) {
+        try {
+          controller.startPolling({});
 
-            const hasPersistedConfigs =
-              controller.state.configs &&
-              Object.keys(controller.state.configs).length > 0;
+          const hasPersistedConfigs =
+            controller.state.configs?.networks &&
+            Object.keys(controller.state.configs.networks).length > 0;
 
-            if (!hasPersistedConfigs) {
-              try {
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                (controller as any)._executePoll({});
-              } catch (pollError) {
-                // Ignore poll errors
-              }
+          if (!hasPersistedConfigs) {
+            try {
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              (controller as any)._executePoll({});
+            } catch (pollError) {
+              // Ignore poll errors during initialization
             }
-          } catch (error) {
-            // Polling might already be started, which is fine
           }
-        } else {
-          try {
-            controller.stopPolling();
-          } catch (error) {
-            // Polling might not be started, which is fine
-          }
+        } catch (error) {
+          // Polling might already be started, which is fine
         }
-      } catch (error) {
-        // Ignore errors in togglePolling
+      } else {
+        try {
+          controller.stopPolling();
+          controller.clearConfigs();
+        } catch (error) {
+          // Polling might not be started, which is fine
+        }
       }
-    };
+    } catch (error) {
+      // Ignore errors in togglePolling
+    }
+  };
 
-    const initialRemoteFeatureFlagsState = initMessenger.call(
-      'RemoteFeatureFlagController:getState',
-    );
-    togglePolling();
+  const initialRemoteFeatureFlagsState = initMessenger.call(
+    'RemoteFeatureFlagController:getState',
+  );
 
-    initMessenger.subscribe(
-      'RemoteFeatureFlagController:stateChange',
-      previousValueComparator((prevState, currState) => {
-        const prevFlag =
-          prevState?.remoteFeatureFlags?.config_registry_api_enabled;
-        const currFlag =
-          currState?.remoteFeatureFlags?.config_registry_api_enabled;
+  togglePolling();
 
-        if (prevFlag !== currFlag) {
-          togglePolling();
-        }
+  initMessenger.subscribe(
+    'RemoteFeatureFlagController:stateChange',
+    previousValueComparator((prevState, currState) => {
+      const prevFlag = prevState?.remoteFeatureFlags?.configRegistryApiEnabled;
+      const currFlag = currState?.remoteFeatureFlags?.configRegistryApiEnabled;
 
-        return true;
-      }, initialRemoteFeatureFlagsState),
-    );
+      if (prevFlag !== currFlag) {
+        togglePolling();
+      }
 
-    return {
-      controller,
-      memStateKey: 'ConfigRegistryController',
-      persistedStateKey: 'ConfigRegistryController',
-    };
-  } catch (error) {
-    console.error('ConfigRegistryController initialization error:', error);
-    throw error;
-  }
+      return true;
+    }, initialRemoteFeatureFlagsState),
+  );
+
+  return {
+    controller,
+    memStateKey: 'ConfigRegistryController',
+    persistedStateKey: 'ConfigRegistryController',
+  };
 };

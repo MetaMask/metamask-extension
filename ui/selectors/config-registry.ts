@@ -24,7 +24,7 @@ export const getConfigRegistryState = (
 
   return (
     controllerState ?? {
-      configs: {},
+      configs: { networks: {} },
       version: null,
       lastFetched: null,
       fetchError: null,
@@ -35,7 +35,7 @@ export const getConfigRegistryState = (
 
 /**
  * Gets all network configurations from Config Registry.
- * Networks are stored in configs with chainId as key.
+ * Networks are stored in configs.networks with chainId as key.
  *
  * @param state - The MetaMask state object
  * @returns Array of NetworkConfig from the config registry
@@ -44,15 +44,13 @@ export const getConfigRegistryNetworks = createSelector(
   [getConfigRegistryState],
   (configState): NetworkConfig[] => {
     const { configs } = configState;
-    if (!configs || Object.keys(configs).length === 0) {
+    const networks = configs?.networks || {};
+    if (!networks || Object.keys(networks).length === 0) {
       return [];
     }
 
-    // Networks are stored in configs with chainId as key
-    // Each entry has: { key: chainId, value: NetworkConfig, metadata?: {...} }
-    return Object.values(configs)
+    const result = Object.values(networks)
       .map((entry) => {
-        // The value should be the NetworkConfig object
         const network = entry.value;
         if (network && typeof network === 'object' && 'chainId' in network) {
           return network as NetworkConfig;
@@ -60,6 +58,8 @@ export const getConfigRegistryNetworks = createSelector(
         return null;
       })
       .filter((network): network is NetworkConfig => network !== null);
+
+    return result;
   },
 );
 
@@ -72,21 +72,14 @@ export const getConfigRegistryNetworks = createSelector(
 export const isConfigRegistryNetworksLoading = createSelector(
   [getConfigRegistryState],
   (configState) => {
-    // Consider loading if:
-    // 1. No configs yet AND no lastFetched timestamp (initial state)
-    // 2. There's a fetch error (might be retrying)
-    // If we have lastFetched, we've successfully fetched (even if empty)
     const hasFetched = configState.lastFetched !== null;
-    const hasConfigs =
-      configState.configs && Object.keys(configState.configs).length > 0;
+    const networks = configState.configs?.networks || {};
+    const hasConfigs = Object.keys(networks).length > 0;
 
-    // If we have configs (even without lastFetched), we're not loading
-    // This handles the case where persisted configs exist but lastFetched wasn't saved
     if (hasConfigs) {
       return false;
     }
 
-    // Only consider loading if we've never fetched AND have no configs
     return !hasFetched && !hasConfigs;
   },
 );

@@ -101,24 +101,50 @@ describe('getConfigForRemoteFeatureFlagRequest', () => {
 });
 
 describe('RemoteFeatureFlagControllerInit', () => {
+  let mockControllerInstance: jest.Mocked<RemoteFeatureFlagController>;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+
+    mockControllerInstance = {
+      enable: jest.fn(),
+      disable: jest.fn(),
+      updateRemoteFeatureFlags: jest.fn().mockResolvedValue(undefined),
+    } as unknown as jest.Mocked<RemoteFeatureFlagController>;
+
+    jest.mocked(RemoteFeatureFlagController).mockImplementation(() => {
+      return mockControllerInstance;
+    });
+  });
+
   it('initializes the controller', () => {
     const { controller } =
       RemoteFeatureFlagControllerInit(getInitRequestMock());
-    expect(controller).toBeInstanceOf(RemoteFeatureFlagController);
+    expect(controller).toBeDefined();
+    expect(controller).toBe(mockControllerInstance);
   });
 
   it('passes the proper arguments to the controller', () => {
     RemoteFeatureFlagControllerInit(getInitRequestMock());
 
     const controllerMock = jest.mocked(RemoteFeatureFlagController);
-    expect(controllerMock).toHaveBeenCalledWith({
-      messenger: expect.any(Object),
-      state: undefined,
-      disabled: false,
-      fetchInterval: expect.any(Number),
-      getMetaMetricsId: expect.any(Function),
-      clientConfigApiService: expect.any(ClientConfigApiService),
-      clientVersion: expect.any(String),
-    });
+    expect(controllerMock).toHaveBeenCalledWith(
+      expect.objectContaining({
+        messenger: expect.any(Object),
+        state: expect.anything(),
+        disabled: false,
+        fetchInterval: expect.any(Number),
+        getMetaMetricsId: expect.any(Function),
+        clientConfigApiService: expect.any(ClientConfigApiService),
+        clientVersion: expect.any(String),
+      }),
+    );
+  });
+
+  it('calls toggle() initially to fetch flags on startup', () => {
+    RemoteFeatureFlagControllerInit(getInitRequestMock());
+
+    expect(mockControllerInstance.enable).toHaveBeenCalled();
+    expect(mockControllerInstance.updateRemoteFeatureFlags).toHaveBeenCalled();
   });
 });

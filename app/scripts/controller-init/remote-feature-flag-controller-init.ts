@@ -85,8 +85,6 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
   const getIsDisabled = () =>
     !hasCompletedOnboarding || !canUseExternalServices;
 
-  // Merge manifest flags into persisted state so they're available to controllers
-  // that check RemoteFeatureFlagController state (like ConfigRegistryController)
   const manifestFlags = getManifestFlags();
   const baseState = persistedState.RemoteFeatureFlagController || {};
   const mergedState = manifestFlags?.remoteFeatureFlags
@@ -173,6 +171,8 @@ export const RemoteFeatureFlagControllerInit: ControllerInitFunction<
       return true;
     }, onboardingState),
   );
+
+  toggle();
 
   return {
     controller,

@@ -58,7 +58,7 @@ export function transformNetworkConfigurationToAddNetworkFields(
 
 /**
  * Processes networks from Config Registry API:
- * - Filters by isFeatured=true
+ * - Filters by isFeatured=true and isTestnet=false
  * - Transforms to NetworkConfiguration format
  * - Compares with existing networks to avoid duplicates
  *
@@ -75,6 +75,7 @@ export function processFeaturedNetworksFromConfigRegistry(
     isFeatured: true,
     isActive: true,
     isDeprecated: false,
+    isTestnet: false,
   };
 
   // Compare with existing networks

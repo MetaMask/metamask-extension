@@ -2632,7 +2632,7 @@ export function updateMetamaskState(
       stateToPatch = {
         ...currentState,
         ConfigRegistryController: {
-          configs: {},
+          configs: { networks: {} },
           version: null,
           lastFetched: null,
           fetchError: null,
@@ -2654,7 +2654,7 @@ export function updateMetamaskState(
         stateToPatch = {
           ...stateToPatch,
           ConfigRegistryController: {
-            configs: {},
+            configs: { networks: {} },
             version: null,
             lastFetched: null,
             fetchError: null,

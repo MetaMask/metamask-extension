@@ -281,6 +281,22 @@ jest.mock('../../shared/modules/mv3.utils', () => ({
   },
 }));
 
+jest.mock('@metamask/config-registry-controller', () => ({
+  ConfigRegistryController: jest.fn().mockImplementation(() => ({
+    startPolling: jest.fn(),
+    stopPolling: jest.fn(),
+    getState: jest.fn(() => ({
+      configs: {},
+      version: null,
+      lastFetched: null,
+      fetchError: null,
+      etag: null,
+    })),
+  })),
+  ConfigRegistryApiService: jest.fn(),
+  isConfigRegistryApiEnabled: jest.fn(() => false),
+}));
+
 jest.mock('./controllers/permissions', () => ({
   ...jest.requireActual('./controllers/permissions'),
   getOriginsWithSessionProperty: jest.fn(),
@@ -509,12 +525,43 @@ describe('MetaMaskController', () => {
         metamaskController.seedlessOnboardingController,
         'authenticate',
       );
+
+      // Mock ConfigRegistryController if it exists
+      if (metamaskController.configRegistryController) {
+        jest
+          .spyOn(metamaskController.configRegistryController, 'stopPolling')
+          .mockReturnValue();
+      }
     });
 
     describe('should reset states on first time profile load', () => {
       it('in mv2, it should reset state without attempting to call browser storage', () => {
         expect(metamaskController.resetStates).toHaveBeenCalledTimes(1);
         expect(browserPolyfillMock.storage.session.set).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('onClientClosed', () => {
+      it('stops polling for ConfigRegistryController', () => {
+        const stopPollingSpy = jest.spyOn(
+          metamaskController.configRegistryController,
+          'stopPolling',
+        );
+
+        metamaskController.onClientClosed();
+
+        expect(stopPollingSpy).toHaveBeenCalled();
+      });
+
+      it('handles missing ConfigRegistryController gracefully', () => {
+        const originalController = metamaskController.configRegistryController;
+        metamaskController.configRegistryController = null;
+
+        expect(() => {
+          metamaskController.onClientClosed();
+        }).not.toThrow();
+
+        metamaskController.configRegistryController = originalController;
       });
     });
 
