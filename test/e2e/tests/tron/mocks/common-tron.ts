@@ -61,7 +61,7 @@ export async function mockBroadTransaction(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forPost(
-      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/broadcasttransaction',
+      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/broadcasttransaction$/u,
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -79,7 +79,10 @@ export async function mockTronGetAccount(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}`,
+      new RegExp(
+        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}$`,
+        'u',
+      ),
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -183,7 +186,7 @@ export async function mockTronGetAccountResource(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forPost(
-      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/getaccountresource',
+      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/getaccountresource$/u,
     )
     .withJsonBody({
       address: TRON_ACCOUNT_ADDRESS,
@@ -220,7 +223,10 @@ export async function mockTronGetTrc20Transactions(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20`,
+      new RegExp(
+        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions/trc20$`,
+        'u',
+      ),
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -391,7 +397,10 @@ export async function mockTronGetTransactions(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forGet(
-      `https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions`,
+      new RegExp(
+        `^https://tron-mainnet\\.infura\\.io/v3/[^/]+/v1/accounts/${TRON_ACCOUNT_ADDRESS}/transactions$`,
+        'u',
+      ),
     )
     .thenCallback(() => ({
       statusCode: 200,
@@ -747,7 +756,7 @@ export async function mockTronGetBlock(
 ): Promise<MockedEndpoint> {
   return mockServer
     .forPost(
-      'https://tron-mainnet.infura.io/v3/5b98a22672004ef1bf40a80123c5c48d/wallet/getblock',
+      /^https:\/\/tron-mainnet\.infura\.io\/v3\/[^/]+\/wallet\/getblock$/u,
     )
     .thenCallback(() => ({
       statusCode: 200,
