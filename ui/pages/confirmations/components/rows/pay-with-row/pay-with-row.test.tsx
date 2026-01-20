@@ -4,14 +4,14 @@ import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
+import { useSendTokens } from '../../../hooks/send/useSendTokens';
 import { useConfirmContext } from '../../../context/confirm';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { PayWithRow, PayWithRowSkeleton } from './pay-with-row';
 
 jest.mock('../../../hooks/pay/useTransactionPayToken');
-jest.mock('../../../hooks/pay/useTransactionPayAvailableTokens');
+jest.mock('../../../hooks/send/useSendTokens');
 jest.mock('../../../context/confirm');
 jest.mock('../../../../multichain-accounts/account-details/account-type-utils');
 jest.mock('../../../../../hooks/useFiatFormatter');
@@ -86,9 +86,7 @@ const getMockState = () => ({
 
 describe('PayWithRow', () => {
   const useTransactionPayTokenMock = jest.mocked(useTransactionPayToken);
-  const useTransactionPayAvailableTokensMock = jest.mocked(
-    useTransactionPayAvailableTokens,
-  );
+  const useSendTokensMock = jest.mocked(useSendTokens);
   const useConfirmContextMock = jest.mocked(useConfirmContext);
   const isHardwareAccountMock = jest.mocked(isHardwareAccount);
   const useFiatFormatterMock = jest.mocked(useFiatFormatter);
@@ -100,7 +98,7 @@ describe('PayWithRow', () => {
       (value: number) => `$${value.toFixed(2)}`,
     );
 
-    useTransactionPayAvailableTokensMock.mockReturnValue([]);
+    useSendTokensMock.mockReturnValue([]);
 
     useTransactionPayTokenMock.mockReturnValue({
       payToken: {

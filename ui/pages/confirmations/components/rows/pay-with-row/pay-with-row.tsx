@@ -3,13 +3,7 @@ import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { BigNumber } from 'bignumber.js';
 
-import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../../../shared/constants/network';
 import {
-  AvatarNetwork,
-  AvatarNetworkSize,
-  AvatarToken,
-  AvatarTokenSize,
-  BadgeWrapper,
   Box,
   Icon,
   IconName,
@@ -31,12 +25,11 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useFiatFormatter } from '../../../../../hooks/useFiatFormatter';
 import { getInternalAccountByAddress } from '../../../../../selectors/accounts';
-import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 import { isHardwareAccount } from '../../../../multichain-accounts/account-details/account-type-utils';
 import { useConfirmContext } from '../../../context/confirm';
 import { useTransactionPayToken } from '../../../hooks/pay/useTransactionPayToken';
-import { useTransactionPayAvailableTokens } from '../../../hooks/pay/useTransactionPayAvailableTokens';
 import { PayWithModal } from '../../modals/pay-with-modal';
+import { TokenIcon } from '../../token-icon';
 
 export const PayWithRowSkeleton = () => {
   return (
@@ -75,12 +68,6 @@ export const PayWithRow = () => {
     getInternalAccountByAddress(state, from ?? ''),
   );
 
-  const networkConfiguration = useSelector((state) =>
-    chainId ? selectNetworkConfigurationByChainId(state, chainId) : undefined,
-  );
-
-  const availableTokens = useTransactionPayAvailableTokens();
-
   const canEdit = fromAccount ? !isHardwareAccount(fromAccount) : true;
 
   const handleClick = useCallback(() => {
@@ -99,21 +86,7 @@ export const PayWithRow = () => {
     [fiatFormatter, payToken?.balanceUsd],
   );
 
-  const tokenImage = useMemo(() => {
-    if (!payToken || !chainId) {
-      return undefined;
-    }
-
-    const matchingToken = availableTokens.find(
-      (token) =>
-        token.address?.toLowerCase() === payToken.address?.toLowerCase() &&
-        token.chainId === payToken.chainId,
-    );
-
-    return matchingToken?.image;
-  }, [payToken, chainId, availableTokens]);
-
-  if (!payToken) {
+  if (!payToken || !chainId) {
     return <PayWithRowSkeleton />;
   }
 
@@ -140,24 +113,7 @@ export const PayWithRow = () => {
           cursor: canEdit ? 'pointer' : 'default',
         }}
       >
-        <BadgeWrapper
-          badge={
-            chainId ? (
-              <AvatarNetwork
-                size={AvatarNetworkSize.Xs}
-                name={networkConfiguration?.name ?? ''}
-                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
-              />
-            ) : null
-          }
-        >
-          <AvatarToken
-            size={AvatarTokenSize.Md}
-            src={tokenImage}
-            name={payToken.symbol}
-            showHalo={false}
-          />
-        </BadgeWrapper>
+        <TokenIcon chainId={chainId} tokenAddress={payToken.address} />
         <Text
           variant={TextVariant.bodyMdMedium}
           color={TextColor.textDefault}
