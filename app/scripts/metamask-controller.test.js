@@ -415,6 +415,17 @@ describe('MetaMaskController', () => {
           },
         ]),
       );
+    nock('https:///client-side-detection.api.cx.metamask.io')
+      .persist()
+      .get('/v1/request-blocklist')
+      .reply(
+        200,
+        JSON.stringify({
+          recentlyAdded: [],
+          recentlyRemoved: [],
+          lastFetchedAt: 0,
+        }),
+      );
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
