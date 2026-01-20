@@ -1,12 +1,10 @@
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
 import {
   FormTextField,
   TextFieldSize,
   TextFieldType,
 } from '../../component-library';
-import { hideWarning } from '../../../store/actions';
 
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import ShowHideToggle from '../../ui/show-hide-toggle';
@@ -15,21 +13,11 @@ import BottomButtons from './bottom-buttons';
 export default function PrivateKeyImportView({
   importAccountFunc,
   onActionComplete,
+  importErrorMessage,
 }) {
   const t = useI18nContext();
-  const dispatch = useDispatch();
   const [privateKey, setPrivateKey] = useState('');
   const [showPrivateKey, setShowPrivateKey] = useState(false);
-
-  // Since MetaMask still uses a global warning state,
-  // hide the "invalid" warning when the private key import view is unmounted
-  useEffect(() => {
-    return () => {
-      dispatch(hideWarning());
-    };
-  }, [dispatch]);
-
-  const warning = useSelector((state) => state.appState.warning);
 
   function handleKeyPress(event) {
     if (privateKey !== '' && event.key === 'Enter') {
@@ -48,8 +36,8 @@ export default function PrivateKeyImportView({
         id="private-key-box"
         size={TextFieldSize.Lg}
         autoFocus
-        helpText={warning}
-        error
+        helpText={importErrorMessage}
+        error={Boolean(importErrorMessage)}
         label={t('pastePrivateKey')}
         value={privateKey}
         onChange={(event) => setPrivateKey(event.target.value)}
@@ -90,4 +78,8 @@ PrivateKeyImportView.propTypes = {
    * Executes when the key is imported
    */
   onActionComplete: PropTypes.func.isRequired,
+  /**
+   * Import error message
+   */
+  importErrorMessage: PropTypes.string,
 };

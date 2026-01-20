@@ -4,7 +4,7 @@ import {
   Caip25CaveatType,
   Caip25EndowmentPermissionName,
 } from '@metamask/chain-agnostic-permission';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import configureStore from '../../../store/store';
 import { ConnectPage, ConnectPageProps } from './connect-page';
@@ -40,8 +40,6 @@ const render = (
   const {
     props = {
       request: {
-        id: '1',
-        origin: mockTestDappUrl,
         permissions: {
           [Caip25EndowmentPermissionName]: {
             caveats: [
@@ -78,6 +76,8 @@ const render = (
       ...state,
       permissionHistory: {
         mockTestDappUrl: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           eth_accounts: {
             accounts: {
               '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc': 1709225290848,
@@ -101,7 +101,7 @@ describe('ConnectPage', () => {
   it('should render image icon correctly', () => {
     const { getAllByAltText } = render();
 
-    const images = getAllByAltText('github.io logo');
+    const images = getAllByAltText('metamask.github.io logo');
     expect(images.length).toBe(2);
     expect(images[0]).toHaveAttribute(
       'src',
@@ -116,10 +116,7 @@ describe('ConnectPage', () => {
   it('should render fallback icon correctly', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: mockTestDappUrl,
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -132,16 +129,13 @@ describe('ConnectPage', () => {
     });
 
     const divElement = container.querySelector('div.mm-avatar-base--size-lg');
-    expect(divElement).toHaveTextContent('g');
+    expect(divElement).toHaveTextContent('m');
   });
 
   it('should render fallback icon correctly for IP address as an origin', () => {
     const { container } = render({
       props: {
-        request: {
-          id: '1',
-          origin: 'http://127.0.0.1/test-dapp',
-        },
+        request: {},
         permissionsRequestId: '1',
         rejectPermissionsRequest: jest.fn(),
         approveConnection: jest.fn(),
@@ -160,17 +154,12 @@ describe('ConnectPage', () => {
 
   it('should render title correctly', () => {
     const { getByText } = render();
-    expect(getByText('github.io')).toBeDefined();
+    expect(getByText('metamask.github.io')).toBeDefined();
   });
 
   it('should render subtitle correctly', () => {
     const { getByText } = render();
-    expect(getByText('Connect this website with MetaMask.')).toBeDefined();
-  });
-
-  it('should render learn more link correctly', () => {
-    const { getByText } = render();
-    expect(getByText('Learn more')).toBeDefined();
+    expect(getByText('Connect this website with MetaMask')).toBeDefined();
   });
 
   it('should render accounts tab correctly', () => {
@@ -256,8 +245,6 @@ describe('ConnectPage', () => {
     const { container } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -300,8 +287,6 @@ describe('ConnectPage', () => {
     const { getByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -322,6 +307,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -343,8 +330,6 @@ describe('ConnectPage', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -365,6 +350,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: false,
           },
         },
@@ -386,8 +373,6 @@ describe('ConnectPage', () => {
     const { getByText, getByTestId } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -408,6 +393,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },
@@ -429,8 +416,6 @@ describe('ConnectPage', () => {
     const { queryByText } = render({
       props: {
         request: {
-          id: '1',
-          origin: mockTestDappUrl,
           permissions: {
             [Caip25EndowmentPermissionName]: {
               caveats: [
@@ -451,6 +436,8 @@ describe('ConnectPage', () => {
             },
           },
           metadata: {
+            id: '1',
+            origin: mockTargetSubjectMetadata.origin,
             promptToCreateSolanaAccount: true,
           },
         },

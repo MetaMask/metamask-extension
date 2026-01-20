@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires, @typescript-eslint/no-require-imports, import/no-commonjs */
 import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import type { To } from 'react-router-dom';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventKeyType,
@@ -55,7 +55,7 @@ const rightAnswerIcon = (
 
 const openSupportArticle = (): void => {
   global.platform.openTab({
-    url: ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE,
+    url: `${ZENDESK_URLS.PASSWORD_AND_SRP_ARTICLE}#metamask-secret-recovery-phrase-dos-and-donts`,
   });
 };
 
@@ -64,13 +64,21 @@ export type SRPQuizProps = {
   isOpen: boolean;
   onClose: () => void;
   closeAfterCompleting?: boolean;
+  navigate: {
+    (
+      to: To,
+      options?: { replace?: boolean; state?: Record<string, unknown> },
+    ): void;
+    (delta: number): void;
+  };
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
   const [stage, setStage] = useState<QuizStage>(QuizStage.introduction);
 
   const trackEvent = useContext(MetaMetricsContext);
-  const history = useHistory();
   const t = useI18nContext();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);
 
@@ -235,7 +243,7 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
                 route = `${REVEAL_SEED_ROUTE}/${props.keyringId}`;
               }
 
-              history.push(route);
+              props.navigate(route);
               if (props.closeAfterCompleting) {
                 props.onClose();
               }
@@ -286,8 +294,12 @@ export default function SRPQuiz(props: SRPQuizProps): JSX.Element {
         category: MetaMetricsEventCategory.Keys,
         event: MetaMetricsEventName.KeyExportSelected,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           key_type: MetaMetricsEventKeyType.Srp,
           location,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           hd_entropy_index: hdEntropyIndex,
         },
       },

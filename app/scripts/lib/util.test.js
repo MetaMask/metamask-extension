@@ -15,18 +15,29 @@ import {
 } from '../../../shared/constants/app';
 import { isPrefixedFormattedHexString } from '../../../shared/modules/network.utils';
 import * as FourBiteUtils from '../../../shared/lib/four-byte';
+import { withResolvers } from '../../../shared/lib/promise-with-resolvers';
 import {
   shouldEmitDappViewedEvent,
   addUrlProtocolPrefix,
-  deferredPromise,
   formatTxMetaForRpcResult,
   getEnvironmentType,
   getPlatform,
   getValidUrl,
   isWebUrl,
+  isWebOrigin,
   getMethodDataName,
   getBooleanFlag,
+  extractRpcDomain,
+  isKnownDomain,
+  initializeRpcProviderDomains,
 } from './util';
+
+// Mock the module
+jest.mock('./util', () => ({
+  ...jest.requireActual('./util'),
+  isKnownDomain: jest.fn(),
+  initializeRpcProviderDomains: jest.fn(),
+}));
 
 describe('app utils', () => {
   describe('getEnvironmentType', () => {
@@ -110,6 +121,31 @@ describe('app utils', () => {
       );
       expect(getValidUrl('https://exa%20mple.com')).toStrictEqual(null);
       expect(getValidUrl('')).toStrictEqual(null);
+    });
+
+    it('should test isWebOrigin', () => {
+      // Valid web origins
+      expect(isWebOrigin('http://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('https://example.com')).toStrictEqual(true);
+      expect(isWebOrigin('http://localhost:8545')).toStrictEqual(true);
+      expect(isWebOrigin('https://metamask.io')).toStrictEqual(true);
+
+      // Non-web origins (browser internal pages)
+      expect(isWebOrigin('chrome://newtab')).toStrictEqual(false);
+      expect(isWebOrigin('chrome://settings')).toStrictEqual(false);
+      expect(isWebOrigin('about:blank')).toStrictEqual(false);
+      expect(isWebOrigin('about:debugging')).toStrictEqual(false);
+
+      // Extension pages
+      expect(isWebOrigin('chrome-extension://abc123')).toStrictEqual(false);
+      expect(isWebOrigin('moz-extension://abc123')).toStrictEqual(false);
+
+      // Edge cases
+      expect(isWebOrigin(null)).toStrictEqual(false);
+      expect(isWebOrigin(undefined)).toStrictEqual(false);
+      expect(isWebOrigin('')).toStrictEqual(false);
+      expect(isWebOrigin('file:///path/to/file')).toStrictEqual(false);
+      expect(isWebOrigin('ftp://example.com')).toStrictEqual(false);
     });
   });
 
@@ -205,9 +241,9 @@ describe('app utils', () => {
     });
   });
 
-  describe('deferredPromise', () => {
+  describe('Promise.withResolvers', () => {
     it('should allow rejecting a deferred Promise', async () => {
-      const { promise, reject } = deferredPromise();
+      const { promise, reject } = withResolvers();
 
       reject(new Error('test'));
 
@@ -215,7 +251,7 @@ describe('app utils', () => {
     });
 
     it('should allow resolving a deferred Promise', async () => {
-      const { promise, resolve } = deferredPromise();
+      const { promise, resolve } = withResolvers();
 
       resolve('test');
 
@@ -223,7 +259,7 @@ describe('app utils', () => {
     });
 
     it('should still be rejected after reject is called twice', async () => {
-      const { promise, reject } = deferredPromise();
+      const { promise, reject } = withResolvers();
 
       reject(new Error('test'));
       reject(new Error('different message'));
@@ -232,7 +268,7 @@ describe('app utils', () => {
     });
 
     it('should still be rejected after resolve is called post-rejection', async () => {
-      const { promise, resolve, reject } = deferredPromise();
+      const { promise, resolve, reject } = withResolvers();
 
       reject(new Error('test'));
       resolve('different message');
@@ -241,7 +277,7 @@ describe('app utils', () => {
     });
 
     it('should still be resolved after resolve is called twice', async () => {
-      const { promise, resolve } = deferredPromise();
+      const { promise, resolve } = withResolvers();
 
       resolve('test');
       resolve('different message');
@@ -250,7 +286,7 @@ describe('app utils', () => {
     });
 
     it('should still be resolved after reject is called post-resolution', async () => {
-      const { promise, resolve, reject } = deferredPromise();
+      const { promise, resolve, reject } = withResolvers();
 
       resolve('test');
       reject(new Error('different message'));
@@ -269,6 +305,17 @@ describe('app utils', () => {
       expect(
         shouldEmitDappViewedEvent('fake-metrics-id-invalid'),
       ).toStrictEqual(false);
+    });
+
+    it('should return false for Firefox', () => {
+      jest
+        .spyOn(window.navigator, 'userAgent', 'get')
+        .mockReturnValue(
+          'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:95.0) Gecko/20100101 Firefox/95.0',
+        );
+      expect(shouldEmitDappViewedEvent('fake-metrics-id-fd20')).toStrictEqual(
+        false,
+      );
     });
   });
 
@@ -449,6 +496,116 @@ describe('app utils', () => {
       expect(getBooleanFlag('false')).toBe(false);
       expect(getBooleanFlag(undefined)).toBe(false);
       expect(getBooleanFlag('foo')).toBe(false);
+    });
+  });
+
+  describe('RPC URL handling utilities', () => {
+    describe('isKnownDomain', () => {
+      beforeEach(() => {
+        const testKnownDomains = new Set([
+          'mainnet.infura.io',
+          'eth-mainnet.alchemyapi.io',
+        ]);
+
+        isKnownDomain.mockImplementation((domain) => {
+          if (!domain) {
+            return false;
+          }
+          return testKnownDomains.has(domain.toLowerCase());
+        });
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should correctly identify known domains', () => {
+        expect(isKnownDomain('mainnet.infura.io')).toBe(true);
+        expect(isKnownDomain('MAINNET.INFURA.IO')).toBe(true);
+        expect(isKnownDomain('unknown-domain.com')).toBe(false);
+        expect(isKnownDomain(null)).toBe(false);
+        expect(isKnownDomain('')).toBe(false);
+      });
+    });
+
+    describe('initializeRpcProviderDomains', () => {
+      let mockPromise;
+
+      beforeEach(() => {
+        mockPromise = Promise.resolve();
+        initializeRpcProviderDomains.mockReturnValue(mockPromise);
+      });
+
+      afterEach(() => {
+        jest.clearAllMocks();
+      });
+
+      it('should return a promise', async () => {
+        const result = initializeRpcProviderDomains();
+        expect(result).toBeInstanceOf(Promise);
+        await result;
+      });
+
+      it('should reuse the same promise on subsequent calls', () => {
+        const result1 = initializeRpcProviderDomains();
+        const result2 = initializeRpcProviderDomains();
+        expect(result1).toBe(result2);
+      });
+    });
+  });
+
+  describe('extractRpcDomain', () => {
+    const testKnownDomains = new Set([
+      'mainnet.infura.io',
+      'linea-goerli.infura.io',
+      'eth-mainnet.alchemyapi.io',
+      'rpc.tenderly.co',
+    ]);
+
+    it('should extract domain from known URLs', () => {
+      expect(
+        extractRpcDomain(
+          'https://mainnet.infura.io/v3/abc123',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+
+      expect(
+        extractRpcDomain(
+          'https://eth-mainnet.alchemyapi.io/v2/key',
+          testKnownDomains,
+        ),
+      ).toBe('eth-mainnet.alchemyapi.io');
+
+      expect(
+        extractRpcDomain(
+          'https://MAINNET.INFURA.IO/v3/abc123',
+          testKnownDomains,
+        ),
+      ).toBe('mainnet.infura.io');
+    });
+
+    it('should handle URLs without protocol for known domains', () => {
+      expect(
+        extractRpcDomain('mainnet.infura.io/v3/abc123', testKnownDomains),
+      ).toBe('mainnet.infura.io');
+    });
+
+    it('should return private for any unknown domain', () => {
+      expect(extractRpcDomain('http://localhost:8545')).toBe('private');
+      expect(extractRpcDomain('https://unknown-domain.com')).toBe('private');
+      expect(extractRpcDomain('http://192.168.1.1:8545')).toBe('private');
+      expect(extractRpcDomain('ws://custom-domain.xyz')).toBe('private');
+      expect(extractRpcDomain('https://rpc.ankr.com/eth_goerli')).toBe(
+        'private',
+      );
+    });
+
+    it('should handle invalid URLs and edge cases', () => {
+      expect(extractRpcDomain('')).toBe('invalid');
+      expect(extractRpcDomain(null)).toBe('invalid');
+      expect(extractRpcDomain('http://')).toBe('invalid');
+      expect(extractRpcDomain('https://')).toBe('invalid');
     });
   });
 });

@@ -1,13 +1,15 @@
+/* eslint-disable mocha/no-skipped-tests */
 import { Mockttp } from 'mockttp';
-import { withFixtures, unlockWallet } from '../../helpers';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../../data/mock-data';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { buildQuote, reviewQuote, checkNotification } from './shared';
 
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: SWAP_TEST_ETH_USDC_TRADES_MOCK,
@@ -15,10 +17,11 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
-describe('Swaps - notifications', function () {
+// Skipped as this will be supported in the new swap flow in the future
+describe.skip('Swaps - notifications', function () {
   async function mockTradesApiPriceSlippageError(mockServer: Mockttp) {
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => {
         return {
           statusCode: 200,
@@ -72,7 +75,7 @@ describe('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 2,
           swapTo: 'INUINU',
@@ -118,7 +121,7 @@ describe('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 0.001,
           swapTo: 'USDC',
@@ -148,7 +151,7 @@ describe('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 2,
           swapToContractAddress: '0x72c9Fb7ED19D3ce51cea5C56B3e023cd918baaDf',
@@ -171,7 +174,7 @@ describe('Swaps - notifications', function () {
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
         await buildQuote(driver, {
           amount: 0.0001,
           swapTo: 'DAI',

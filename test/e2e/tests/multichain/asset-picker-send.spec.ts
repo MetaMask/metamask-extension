@@ -1,14 +1,19 @@
-import { strict as assert } from 'assert';
 import { Context } from 'mocha';
+import { MockttpServer } from 'mockttp';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import FixtureBuilder from '../../fixture-builder';
-import {
-  openActionMenuAndStartSendFlow,
-  unlockWallet,
-  withFixtures,
-} from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 import { RECIPIENT_ADDRESS_MOCK } from '../simulation-details/types';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import PrivacySettingsPage from '../../page-objects/pages/settings/privacy-settings';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import TokenList from '../../page-objects/pages/token-list';
+import AssetPicker from '../../page-objects/pages/asset-picker';
+import { mockSpotPrices } from '../tokens/utils/mocks';
 
 describe('AssetPickerSendFlow', function () {
   const chainId = CHAIN_IDS.MAINNET;
@@ -28,75 +33,47 @@ describe('AssetPickerSendFlow', function () {
         ...fixtures,
         title: (this as Context).test?.fullTitle(),
         ethConversionInUsd,
+        testSpecificMock: async (mockServer: MockttpServer) => {
+          await mockSpotPrices(mockServer, {
+            'eip155:1/slip44:60': {
+              price: 10000,
+              marketCap: 382623505141,
+              pricePercentChange1d: 0,
+            },
+          });
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Disable token auto detection
-        await driver.openNewURL(
-          `${driver.extensionUrl}/home.html#settings/security`,
-        );
-        await driver.clickElement(
-          '[data-testid="autoDetectTokens"] .toggle-button',
-        );
-        await driver.navigate();
+        const settingsPage = new SettingsPage(driver);
+        const homePage = new HomePage(driver);
+        await new HeaderNavbar(driver).openSettingsPage();
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToPrivacySettings();
+        await new PrivacySettingsPage(driver).toggleAutoDetectTokens();
+        await settingsPage.closeSettingsPage();
 
-        // Open the send flow
-        openActionMenuAndStartSendFlow(driver);
+        await homePage.checkPageIsLoaded();
 
-        await driver.fill('[data-testid="ens-input"]', RECIPIENT_ADDRESS_MOCK);
-        await driver.fill('.unit-input__input', '2');
+        await homePage.startSendFlow();
+        const sendToPage = new SendTokenPage(driver);
+        await sendToPage.checkPageIsLoaded();
+        await sendToPage.fillRecipient(RECIPIENT_ADDRESS_MOCK);
+        await sendToPage.fillAmount('2');
+        const tokenDetailsList = new TokenList(driver);
 
-        const isDest = 'dest';
-        const buttons = await driver.findElements(
-          '[data-testid="asset-picker-button"]',
-        );
-        const indexOfButtonToClick = isDest ? 1 : 0;
-        await buttons[indexOfButtonToClick].click();
+        await sendToPage.clickOnAssetPicker(driver, 'dest');
 
-        // check that the name , crypto amount and fiat amount are correctly displayed
-        const tokenListName = await (
-          await driver.findElement(
-            '[data-testid="multichain-token-list-item-token-name"]',
-          )
-        ).getText();
+        await tokenDetailsList.checkTokenName('Ether');
+        await tokenDetailsList.checkTokenBalanceWithName('$250,000.00');
+        await tokenDetailsList.checkTokenMarketValue('25 ETH');
 
-        assert.equal(tokenListName, 'Ethereum');
-
-        const tokenListValue = await (
-          await driver.findElement(
-            '[data-testid="multichain-token-list-item-value"]',
-          )
-        ).getText();
-
-        assert.equal(tokenListValue, '$250,000.00');
-
-        const tokenListSecondaryValue = await (
-          await driver.findElement(
-            '[data-testid="multichain-token-list-item-secondary-value"]',
-          )
-        ).getText();
-
-        assert.equal(tokenListSecondaryValue, '25 ETH');
-
-        // Search for CHZ
-        const searchInputField = await driver.waitForSelector(
-          '[data-testid="asset-picker-modal-search-input"]',
-        );
-        await searchInputField.sendKeys('CHZ');
-
-        await driver.elementCountBecomesN(
-          '[data-testid="multichain-token-list-button"]',
-          1,
-        );
-        // check that CHZ is disabled
-        const [tkn] = await driver.findElements(
-          '[data-testid="multichain-token-list-button"]',
-        );
-
-        await tkn.click();
-        const isSelected = await tkn.isSelected();
-        assert.equal(isSelected, false);
+        // Search for CHZ and check that CHZ is disabled
+        const assetPicker = new AssetPicker(driver);
+        await assetPicker.searchAssetAndVerifyCount('CHZ', 1);
+        await assetPicker.checkTokenIsDisabled();
       },
     );
   });

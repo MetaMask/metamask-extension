@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../../../../../shared/constants/transaction';
 import {
   Box,
   Icon,
@@ -15,21 +17,38 @@ import {
   Display,
 } from '../../../../../../../helpers/constants/design-system';
 import { useConfirmContext } from '../../../../../context/confirm';
+import { useDappSwapContext } from '../../../../../context/dapp-swap';
 import { getNetworkConfigurationsByChainId } from '../../../../../../../../shared/modules/selectors/networks';
 import { GasFeeTokenModal } from '../gas-fee-token-modal';
-import {
-  NATIVE_TOKEN_ADDRESS,
-  useSelectedGasFeeToken,
-} from '../../hooks/useGasFeeToken';
+import { useSelectedGasFeeToken } from '../../hooks/useGasFeeToken';
 import { GasFeeTokenIcon, GasFeeTokenIconSize } from '../gas-fee-token-icon';
 import { useIsGaslessSupported } from '../../../../../hooks/gas/useIsGaslessSupported';
+import { useIsInsufficientBalance } from '../../../../../hooks/useIsInsufficientBalance';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function SelectedGasFeeToken() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { isQuotedSwapDisplayedInInfo } = useDappSwapContext();
   const { chainId, gasFeeTokens } = currentConfirmation;
-  const isGaslessSupported = useIsGaslessSupported();
-  const hasGasFeeTokens = isGaslessSupported && Boolean(gasFeeTokens?.length);
+
+  const { isSupported: isGaslessSupported, isSmartTransaction } =
+    useIsGaslessSupported();
+
+  const hasInsufficientNative = useIsInsufficientBalance();
+
+  const hasOnlyFutureNativeToken =
+    gasFeeTokens?.length === 1 &&
+    gasFeeTokens[0].tokenAddress === NATIVE_TOKEN_ADDRESS;
+
+  const supportsFutureNative = hasInsufficientNative && isSmartTransaction;
+
+  const hasGasFeeTokens =
+    !isQuotedSwapDisplayedInInfo &&
+    isGaslessSupported &&
+    Boolean(gasFeeTokens?.length) &&
+    (!hasOnlyFutureNativeToken || supportsFutureNative);
 
   const networkConfiguration = useSelector(getNetworkConfigurationsByChainId)?.[
     chainId
@@ -55,14 +74,21 @@ export function SelectedGasFeeToken() {
       <Box
         data-testid="selected-gas-fee-token"
         onClick={handleClick}
-        backgroundColor={BackgroundColor.backgroundAlternative}
+        backgroundColor={
+          hasGasFeeTokens
+            ? BackgroundColor.backgroundMuted
+            : BackgroundColor.transparent
+        }
         borderRadius={BorderRadius.pill}
         display={Display.InlineFlex}
         alignItems={AlignItems.center}
-        paddingInline={2}
+        paddingInlineStart={1}
+        marginLeft={1}
         gap={1}
         style={{
           cursor: hasGasFeeTokens ? 'pointer' : 'default',
+          paddingInlineEnd: '6px',
+          padding: hasGasFeeTokens ? '4px 8px' : '0px',
         }}
       >
         <GasFeeTokenIcon

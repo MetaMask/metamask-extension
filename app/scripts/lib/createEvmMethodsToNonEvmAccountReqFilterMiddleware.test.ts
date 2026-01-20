@@ -5,10 +5,7 @@ import createEvmMethodsToNonEvmAccountReqFilterMiddleware, {
 } from './createEvmMethodsToNonEvmAccountReqFilterMiddleware';
 
 describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
-  const getMockRequest = (
-    method: string,
-    params: Record<string, Json>[] | undefined,
-  ) => ({
+  const getMockRequest = (method: string, params: Record<string, Json>) => ({
     jsonrpc: jsonrpc2,
     id: 1,
     method,
@@ -16,6 +13,7 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
   });
   const getMockResponse = () => ({ jsonrpc: jsonrpc2, id: 'foo' });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   it.each([
     // EVM requests
     {
@@ -243,24 +241,32 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {} }],
       calledNext: false,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ snap_getClientStatus: {} }],
       calledNext: true,
     },
     {
       accountType: BtcAccountType.P2wpkh,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
       calledNext: false,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {} }],
       calledNext: true,
     },
@@ -268,12 +274,16 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ snap_getClientStatus: {} }],
       calledNext: true,
     },
     {
       accountType: EthAccountType.Eoa,
       method: 'wallet_requestPermissions',
+      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: [{ eth_accounts: {}, snap_getClientStatus: {} }],
       calledNext: true,
     },
@@ -287,8 +297,8 @@ describe('createEvmMethodsToNonEvmAccountReqFilterMiddleware', () => {
     }: {
       accountType: EthAccountType | BtcAccountType;
       method: string;
-      params: Record<string, Json>[] | undefined;
-      calledNext: boolean;
+      params: Record<string, Json>;
+      calledNext: number;
     }) => {
       const filterFn = createEvmMethodsToNonEvmAccountReqFilterMiddleware({
         messenger: {

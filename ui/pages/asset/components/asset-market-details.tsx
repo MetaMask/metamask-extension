@@ -4,10 +4,11 @@ import { CaipAssetType } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
 import { formatCurrency } from '../../../helpers/utils/confirm-tx.util';
 
-import { getPricePrecision, localizeLargeNumber } from '../util';
+import { getPricePrecision } from '../util';
 
 import { Box, Text } from '../../../components/component-library';
 import {
+  BorderColor,
   Display,
   FlexDirection,
   JustifyContent,
@@ -19,7 +20,6 @@ import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import {
   getMultichainConversionRate,
-  getMultichainIsEvm,
   getMultichainNativeCurrency,
 } from '../../../selectors/multichain';
 import { getAssetsRates } from '../../../selectors/assets';
@@ -28,6 +28,8 @@ import { AssetType } from '../../../../shared/constants/transaction';
 import { Asset } from '../types/asset';
 // eslint-disable-next-line import/no-restricted-paths
 import { getConversionRatesForNativeAsset } from '../../../../app/scripts/lib/util';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+import { useFormatters } from '../../../hooks/useFormatters';
 
 export const AssetMarketDetails = ({
   asset,
@@ -42,8 +44,9 @@ export const AssetMarketDetails = ({
   const evmMarketData = useSelector(getMarketData);
   const currencyRates = useSelector(getCurrencyRates);
   const nonEvmConversionRates = useSelector(getAssetsRates);
+  const { formatCurrencyCompact, formatCompact } = useFormatters();
 
-  const isEvm = useSelector(getMultichainIsEvm);
+  const isEvm = isEvmChainId(asset.chainId);
   const nativeCurrency = useMultichainSelector(getMultichainNativeCurrency);
 
   const { type, symbol, chainId } = asset;
@@ -94,45 +97,67 @@ export const AssetMarketDetails = ({
 
   let marketCap = toNumber(tokenMarketDetails.marketCap);
   let totalVolume = toNumber(tokenMarketDetails.totalVolume);
-  let circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
+  const circulatingSupply = toNumber(tokenMarketDetails.circulatingSupply);
   let allTimeHigh = toNumber(tokenMarketDetails.allTimeHigh);
   let allTimeLow = toNumber(tokenMarketDetails.allTimeLow);
 
   if (isEvm) {
     marketCap *= tokenExchangeRate;
     totalVolume *= tokenExchangeRate;
-    circulatingSupply *= tokenExchangeRate;
     allTimeHigh *= tokenExchangeRate;
     allTimeLow *= tokenExchangeRate;
   }
 
   return (
-    <Box paddingLeft={4} paddingRight={4}>
-      <Text variant={TextVariant.headingMd} paddingBottom={4}>
+    <Box>
+      <Box
+        marginBottom={2}
+        borderColor={BorderColor.borderMuted}
+        marginInline={4}
+        style={{ height: '1px', borderBottomWidth: 0 }}
+      ></Box>
+      <Text
+        variant={TextVariant.headingSm}
+        paddingInline={4}
+        paddingTop={2}
+        paddingBottom={2}
+      >
         {t('marketDetails')}
       </Text>
-      <Box display={Display.Flex} flexDirection={FlexDirection.Column} gap={2}>
+      <Box
+        paddingInline={4}
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={2}
+      >
         {marketCap > 0 &&
           renderRow(
             t('marketCap'),
-            <Text data-testid="asset-market-cap">
-              {localizeLargeNumber(t, marketCap)}
+            <Text
+              variant={TextVariant.bodyMdMedium}
+              data-testid="asset-market-cap"
+            >
+              {formatCurrencyCompact(marketCap, currency)}
             </Text>,
           )}
         {totalVolume > 0 &&
           renderRow(
             t('totalVolume'),
-            <Text>{localizeLargeNumber(t, totalVolume)}</Text>,
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCurrencyCompact(totalVolume, currency)}
+            </Text>,
           )}
         {circulatingSupply > 0 &&
           renderRow(
             t('circulatingSupply'),
-            <Text>{localizeLargeNumber(t, circulatingSupply)}</Text>,
+            <Text variant={TextVariant.bodyMdMedium}>
+              {formatCompact(circulatingSupply)}
+            </Text>,
           )}
         {allTimeHigh > 0 &&
           renderRow(
             t('allTimeHigh'),
-            <Text>
+            <Text variant={TextVariant.bodyMdMedium}>
               {formatCurrency(
                 `${allTimeHigh}`,
                 currency,
@@ -143,7 +168,7 @@ export const AssetMarketDetails = ({
         {allTimeLow > 0 &&
           renderRow(
             t('allTimeLow'),
-            <Text>
+            <Text variant={TextVariant.bodyMdMedium}>
               {formatCurrency(
                 `${allTimeLow}`,
                 currency,

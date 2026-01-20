@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import classNames from 'classnames';
-import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -9,15 +8,8 @@ import {
   Display,
   JustifyContent,
 } from '../../../helpers/constants/design-system';
-import {
-  AvatarAccount,
-  AvatarAccountSize,
-  AvatarAccountVariant,
-  BadgeWrapper,
-  Box,
-  BoxProps,
-} from '../../component-library';
-import { getUseBlockie } from '../../../selectors';
+import { BadgeWrapper, Box, BoxProps } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import Tooltip from '../../ui/tooltip';
 
 import { BadgeStatusProps } from './badge-status.types';
@@ -30,47 +22,37 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
   badgeBorderColor = BorderColor.borderMuted,
   address,
   isConnectedAndNotActive = false,
+  showConnectedStatus = true,
   text,
   ...props
 }): JSX.Element => {
-  const useBlockie = useSelector(getUseBlockie);
-
   const tooltipContents = useMemo(() => {
+    let positionObj;
+    if (showConnectedStatus) {
+      positionObj = isConnectedAndNotActive
+        ? { bottom: '-4%', right: '-12%' }
+        : { bottom: '-10%', right: '-20%' };
+    }
+
     return (
       <BadgeWrapper
-        positionObj={
-          isConnectedAndNotActive
-            ? { bottom: 2, right: 5 }
-            : { bottom: -1, right: 2 }
-        }
+        positionObj={positionObj}
         badge={
-          <Box
-            className={classNames('multichain-badge-status__badge', {
-              'multichain-badge-status__badge-not-connected':
-                isConnectedAndNotActive,
-            })}
-            backgroundColor={badgeBackgroundColor}
-            borderRadius={BorderRadius.full}
-            borderColor={badgeBorderColor}
-            borderWidth={2}
-          />
+          showConnectedStatus && (
+            <Box
+              className={classNames('multichain-badge-status__badge', {
+                'multichain-badge-status__badge-not-connected':
+                  isConnectedAndNotActive,
+              })}
+              backgroundColor={badgeBackgroundColor}
+              borderRadius={BorderRadius.full}
+              borderColor={badgeBorderColor}
+              borderWidth={2}
+            />
+          )
         }
       >
-        {
-          ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-          <AvatarAccount
-            borderColor={BorderColor.transparent}
-            size={AvatarAccountSize.Md}
-            address={address}
-            variant={
-              useBlockie
-                ? AvatarAccountVariant.Blockies
-                : AvatarAccountVariant.Jazzicon
-            }
-            marginInlineEnd={2}
-          />
-          ///: END:ONLY_INCLUDE_IF
-        }
+        {<PreferredAvatar address={address} className="flex" />}
       </BadgeWrapper>
     );
   }, [
@@ -78,12 +60,12 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
     badgeBackgroundColor,
     badgeBorderColor,
     isConnectedAndNotActive,
-    useBlockie,
+    showConnectedStatus,
   ]);
 
   return (
     <Box
-      className={classNames('multichain-badge-status', className)}
+      className={classNames('multichain-badge-status pr-1', className)}
       data-testid="multichain-badge-status"
       as="button"
       display={Display.Flex}
@@ -92,14 +74,18 @@ export const BadgeStatus: React.FC<BadgeStatusProps> = ({
       backgroundColor={BackgroundColor.transparent}
       {...(props as BoxProps<'div'>)}
     >
-      <Tooltip
-        style={TooltipStyle}
-        title={text}
-        data-testid="multichain-badge-status__tooltip"
-        position="bottom"
-      >
-        {tooltipContents}
-      </Tooltip>
+      {showConnectedStatus ? (
+        <Tooltip
+          style={TooltipStyle}
+          title={text}
+          data-testid="multichain-badge-status__tooltip"
+          position="bottom"
+        >
+          {tooltipContents}
+        </Tooltip>
+      ) : (
+        tooltipContents
+      )}
     </Box>
   );
 };

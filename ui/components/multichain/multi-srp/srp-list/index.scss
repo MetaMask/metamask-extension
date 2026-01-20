@@ -2,7 +2,13 @@
 
 .srp-list {
   &__container {
-    overflow-y: hidden;
+    max-height: 500px;
+    overflow-y: auto;
+
+    &--settings {
+      max-height: unset;
+      overflow-y: visible;
+    }
   }
 
   &__divider {
@@ -22,6 +28,6 @@
   &__account-name {
     overflow: hidden;
     white-space: nowrap;
-    max-width: 80px;
+    max-width: 120px;
   }
 }

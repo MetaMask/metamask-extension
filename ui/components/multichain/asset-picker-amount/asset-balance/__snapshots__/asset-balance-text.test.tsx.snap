@@ -7,13 +7,13 @@ exports[`AssetBalanceText matches snapshot 1`] = `
     title="undefined"
   >
     <span
-      class="mm-box mm-text currency-display-component__text mm-text--body-sm mm-text--ellipsis mm-box--color-textColor"
+      class="mm-box mm-text currency-display-component__text cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--body-sm mm-text--ellipsis mm-box--color-textColor"
       data-testid="account-value-and-suffix"
     >
       prefix-fiat value
     </span>
     <span
-      class="mm-box mm-text currency-display-component__suffix mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-textColor"
+      class="mm-box mm-text currency-display-component__suffix cursor-pointer transition-colors duration-200 hover:text-text-alternative mm-text--body-sm mm-box--margin-inline-start-1 mm-box--color-textColor"
     >
       suffix
     </span>

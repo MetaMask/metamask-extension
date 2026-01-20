@@ -10,6 +10,8 @@ import {
 } from './select-option.types';
 
 export const SelectOption: SelectOptionComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'div'>(
     { className = '', value, children, ...props }: SelectOptionProps<C>,
     ref?: PolymorphicRef<C>,

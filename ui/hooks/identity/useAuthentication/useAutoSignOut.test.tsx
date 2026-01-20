@@ -1,5 +1,5 @@
 import { act } from '@testing-library/react-hooks';
-import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../../../test/lib/render-helpers-navigate';
 import * as actions from '../../../store/actions';
 import { MetamaskIdentityProvider } from '../../../contexts/identity';
 import { useAutoSignOut } from './useAutoSignOut';
@@ -16,6 +16,7 @@ const arrangeMockState = (
   return {
     metamask: {
       ...stateOverrides,
+      keyrings: [],
     },
   };
 };
@@ -65,7 +66,7 @@ prerequisiteCombinations.forEach((combinedState) => {
   }
 });
 
-describe('useAutoSignIn', () => {
+describe('useAutoSignOut', () => {
   it('should initialize correctly', () => {
     const state = arrangeMockState({
       isUnlocked: false,

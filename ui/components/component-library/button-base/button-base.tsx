@@ -20,7 +20,12 @@ import {
   ButtonBaseComponent,
 } from './button-base.types';
 
+/**
+ * @deprecated Please update your code to use `ButtonBase` from `@metamask/design-system-react`
+ */
 export const ButtonBase: ButtonBaseComponent = React.forwardRef(
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   <C extends React.ElementType = 'button' | 'a'>(
     {
       as,
@@ -86,7 +91,7 @@ export const ButtonBase: ButtonBaseComponent = React.forwardRef(
         display={Display.InlineFlex}
         justifyContent={JustifyContent.center}
         alignItems={AlignItems.center}
-        borderRadius={BorderRadius.pill}
+        borderRadius={BorderRadius.XL}
         {...(tagProps as TextProps<C>)}
       >
         {startIconName && (

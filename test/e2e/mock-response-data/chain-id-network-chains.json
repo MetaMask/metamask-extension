@@ -1,6 +1,6 @@
 [
   {
-    "name": "Ethereum Mainnet",
+    "name": "Ethereum",
     "chain": "ETH",
     "icon": "ethereum",
     "rpc": [
@@ -204,8 +204,30 @@
     "faucets": [],
     "infoURL": "https://testnet.megaeth.com",
     "shortName": "megatest",
-    "chainId": 6342,
-    "networkId": 6342,
+    "chainId": 6343,
+    "networkId": 6343,
     "slip44": 1
+  },
+  {
+    "name": "Monad Testnet",
+    "chain": "MON",
+    "nativeCurrency": {
+      "name": "Monad Testnet Token",
+      "symbol": "MON",
+      "decimals": 18
+    },
+    "rpc": ["https://testnet-rpc.monad.xyz"],
+    "faucets": ["https://faucet.monad.xyz"],
+    "infoURL": "https://testnet.monad.xyz",
+    "shortName": "monadtest",
+    "chainId": 10143,
+    "networkId": 10143,
+    "explorers": [
+      {
+        "name": "Monad Testnet Explorer",
+        "url": "https://testnet.monadexplorer.com",
+        "standard": "EIP3091"
+      }
+    ]
   }
 ]

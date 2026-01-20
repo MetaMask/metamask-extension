@@ -5,9 +5,11 @@ import {
   ErrorObject,
   MethodObject,
 } from '@open-rpc/meta-schema';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {
@@ -32,6 +34,8 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     return 'Multichain Authorization Confirmation Rule';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async afterRequest(__: unknown, call: Call) {
     await new Promise((resolve, reject) => {
       addToQueue({
@@ -58,7 +62,7 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
               });
               await this.driver.clickElement({ text, tag: 'button' });
               // make sure to switch back to the dapp or else the next test will fail on the wrong window
-              await switchToOrOpenDapp(this.driver);
+              await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
             } catch (e) {
               console.log(e);
             }
@@ -68,58 +72,58 @@ export class MultichainAuthorizationConfirmationErrors implements Rule {
     });
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   getCalls(__: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;
-    if (isMethodAllowed) {
-      if (method.errors) {
-        method.errors.forEach((err) => {
-          const unsupportedErrorCodes = [5000, 5100, 5101, 5102, 5300, 5301];
-          const error = err as ErrorObject;
-          if (unsupportedErrorCodes.includes(error.code)) {
-            return;
-          }
-          let params: Record<string, unknown> = {};
-          switch (error.code) {
-            case 5100:
-              params = {
-                requiredScopes: {
-                  'eip155:10124': {
-                    methods: ['eth_signTypedData_v4'],
-                    notifications: [],
-                  },
+    if (isMethodAllowed && method.errors) {
+      method.errors.forEach((err) => {
+        const unsupportedErrorCodes = [5000, 5100, 5101, 5102, 5300, 5301];
+        const error = err as ErrorObject;
+        if (unsupportedErrorCodes.includes(error.code)) {
+          return;
+        }
+        let params: Record<string, unknown> = {};
+        switch (error.code) {
+          case 5100:
+            params = {
+              requiredScopes: {
+                'eip155:10124': {
+                  methods: ['eth_signTypedData_v4'],
+                  notifications: [],
                 },
-              };
-              break;
-            case 5302:
-              params = {
-                requiredScopes: {
-                  'eip155:1': {
-                    methods: ['eth_signTypedData_v4'],
-                    notifications: [],
-                  },
+              },
+            };
+            break;
+          case 5302:
+            params = {
+              requiredScopes: {
+                'eip155:1': {
+                  methods: ['eth_signTypedData_v4'],
+                  notifications: [],
                 },
-                sessionProperties: {},
-              };
-              break;
-            default:
-              break;
-          }
+              },
+              sessionProperties: {},
+            };
+            break;
+          default:
+            break;
+        }
 
-          // params should make error happen (or lifecycle hooks will make it happen)
-          calls.push({
-            title: `${this.getTitle()} - with error ${error.code} ${
-              error.message
-            } `,
-            methodName: method.name,
-
-            params: params as any,
-            url: '',
-            resultSchema: (method.result as ContentDescriptorObject).schema,
-            expectedResult: error,
-          });
+        // params should make error happen (or lifecycle hooks will make it happen)
+        calls.push({
+          title: `${this.getTitle()} - with error ${error.code} ${
+            error.message
+          } `,
+          methodName: method.name,
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          params: params as any,
+          url: '',
+          resultSchema: (method.result as ContentDescriptorObject).schema,
+          expectedResult: error,
         });
-      }
+      });
     }
     return calls;
   }

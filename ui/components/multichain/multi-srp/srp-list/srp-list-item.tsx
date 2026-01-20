@@ -1,33 +1,36 @@
 import React from 'react';
-import { InternalAccountWithBalance } from '../../../../selectors';
-import { useMultichainAccountTotalFiatBalance } from '../../../../hooks/useMultichainAccountTotalFiatBalance';
+import { useSelector } from 'react-redux';
+import { type AccountGroupId } from '@metamask/account-api';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import { PreferredAvatar } from '../../../app/preferred-avatar';
 import {
   Display,
   FlexDirection,
   AlignItems,
   JustifyContent,
   TextVariant,
-  TextColor,
 } from '../../../../helpers/constants/design-system';
-import { shortenAddress } from '../../../../helpers/utils/util';
-import UserPreferencedCurrencyDisplay from '../../../app/user-preferenced-currency-display';
-import {
-  Text,
-  AvatarAccount,
-  AvatarAccountSize,
-  Box,
-} from '../../../component-library';
+import { getIconSeedAddressByAccountGroupId } from '../../../../selectors/multichain-accounts/account-tree';
+import { Text, Box } from '../../../component-library';
 
 type SrpListItemProps = {
-  account: InternalAccountWithBalance;
+  accountId: AccountGroupId;
+  accountName: string;
+  balance: string;
 };
 
-export const SrpListItem = ({ account }: SrpListItemProps) => {
-  const { totalFiatBalance } = useMultichainAccountTotalFiatBalance(account);
+export const SrpListItem = ({
+  accountId,
+  accountName,
+  balance,
+}: SrpListItemProps) => {
+  const seedAddress = useSelector((state) =>
+    getIconSeedAddressByAccountGroupId(state, accountId),
+  );
 
   return (
     <Box
-      key={account.address}
+      key={accountId}
       display={Display.Flex}
       flexDirection={FlexDirection.Row}
       alignItems={AlignItems.center}
@@ -38,36 +41,21 @@ export const SrpListItem = ({ account }: SrpListItemProps) => {
         flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
       >
-        <AvatarAccount address={account.address} size={AvatarAccountSize.Xs} />
+        <PreferredAvatar
+          address={seedAddress}
+          size={AvatarAccountSize.Xs}
+          data-testid="avatar"
+        />
         <Text
           className="srp-list__account-name"
           variant={TextVariant.bodySm}
           ellipsis
-          paddingInlineStart={3}
+          paddingInlineStart={5}
         >
-          {account.metadata.name}
-        </Text>
-        <Text
-          variant={TextVariant.bodySm}
-          color={TextColor.textAlternative}
-          marginLeft={1}
-          paddingInlineStart={1}
-        >
-          {shortenAddress(account.address)}
+          {accountName}
         </Text>
       </Box>
-      <Text variant={TextVariant.bodySm}>
-        <UserPreferencedCurrencyDisplay
-          account={account}
-          value={totalFiatBalance}
-          type="PRIMARY"
-          ethNumberOfDecimals={4}
-          hideTitle
-          showFiat
-          isAggregatedFiatOverviewBalance
-          hideLabel
-        />
-      </Text>
+      <Text variant={TextVariant.bodySm}>{balance}</Text>
     </Box>
   );
 };

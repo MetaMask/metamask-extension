@@ -1,14 +1,23 @@
-import { type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration } from '@metamask/multichain-network-controller';
+import {
+  MultichainNetworkConfiguration,
+  type MultichainNetworkConfiguration as InternalMultichainNetworkConfiguration,
+  NON_EVM_TESTNET_IDS,
+} from '@metamask/multichain-network-controller';
 import {
   RpcEndpointType,
   type NetworkState as InternalNetworkState,
   type NetworkConfiguration as InternalNetworkConfiguration,
+  NetworkConfiguration,
+  NetworkClientId,
 } from '@metamask/network-controller';
 import { createSelector } from 'reselect';
 import { AccountsControllerState } from '@metamask/accounts-controller';
-import { NetworkStatus } from '../../constants/network';
+import type { CaipChainId, Hex } from '@metamask/utils';
+import {
+  CAIP_FORMATTED_TEST_CHAINS,
+  NetworkStatus,
+} from '../../constants/network';
 import { hexToDecimal } from '../conversion.utils';
-import { createDeepEqualSelector } from './util';
 
 export type NetworkState = {
   metamask: InternalNetworkState;
@@ -48,10 +57,33 @@ export type MultichainNetworkConfigurationsByChainIdState = {
   };
 };
 
-export const getNetworkConfigurationsByChainId = createDeepEqualSelector(
-  (state: NetworkConfigurationsByChainIdState) =>
-    state.metamask.networkConfigurationsByChainId,
-  (networkConfigurationsByChainId) => networkConfigurationsByChainId,
+export type EvmAndMultichainNetworkConfigurationsWithCaipChainId = (
+  | NetworkConfiguration
+  | MultichainNetworkConfiguration
+) & {
+  caipChainId: CaipChainId;
+};
+
+export const getNetworkConfigurationsByChainId = (
+  state: NetworkConfigurationsByChainIdState,
+) => state.metamask.networkConfigurationsByChainId;
+
+export const selectDefaultNetworkClientIdsByChainId = createSelector(
+  getNetworkConfigurationsByChainId,
+  (networkConfigurationsByChainId) => {
+    const clientIdsByChain: Record<Hex, NetworkClientId> = {};
+
+    for (const [chainId, networkConfiguration] of Object.entries(
+      networkConfigurationsByChainId,
+    )) {
+      clientIdsByChain[chainId as Hex] =
+        networkConfiguration.rpcEndpoints[
+          networkConfiguration.defaultRpcEndpointIndex
+        ].networkClientId;
+    }
+
+    return clientIdsByChain;
+  },
 );
 
 export function getSelectedNetworkClientId(
@@ -75,7 +107,7 @@ export const getNetworkConfigurationsByCaipChainId = ({
   internalAccounts,
 }: {
   multichainNetworkConfigurationsByChainId: Record<
-    string,
+    CaipChainId,
     InternalMultichainNetworkConfiguration
   >;
   networkConfigurationsByChainId: Record<string, InternalNetworkConfiguration>;
@@ -100,13 +132,13 @@ export const getNetworkConfigurationsByCaipChainId = ({
     ([caipChainId, networkConfig]) => {
       const matchesAccount = Object.values(internalAccounts.accounts).some(
         (account) => {
-          const matchesScope = account.scopes.some((scope) => {
+          const matchesScope = account.scopes?.some((scope) => {
             return scope === caipChainId;
           });
 
           const isSnapEnabled = account.metadata.snap?.enabled;
 
-          return matchesScope && isSnapEnabled;
+          return Boolean(matchesScope && isSnapEnabled);
         },
       );
 
@@ -138,9 +170,53 @@ export const getAllNetworkConfigurationsByCaipChainId = createSelector(
     multichainNetworkConfigurationsByChainId,
     internalAccounts,
   ) => {
-    return getNetworkConfigurationsByCaipChainId({
-      networkConfigurationsByChainId,
+    // We have this logic here to filter out non EVM test networks
+    // to properly handle this we should use the selector from
+    // multichain/networks.ts in the UI side
+    const { nonEvmNetworks, nonEvmTestNetworks } = Object.keys(
       multichainNetworkConfigurationsByChainId,
+    ).reduce(
+      (
+        result: {
+          nonEvmNetworks: Record<
+            CaipChainId,
+            InternalMultichainNetworkConfiguration
+          >;
+          nonEvmTestNetworks: Record<
+            CaipChainId,
+            InternalMultichainNetworkConfiguration
+          >;
+        },
+        key: string,
+      ) => {
+        const caipKey = key as CaipChainId;
+        if (NON_EVM_TESTNET_IDS.includes(caipKey)) {
+          result.nonEvmTestNetworks[caipKey] =
+            multichainNetworkConfigurationsByChainId[caipKey];
+        } else {
+          result.nonEvmNetworks[caipKey] =
+            multichainNetworkConfigurationsByChainId[caipKey];
+        }
+        return result;
+      },
+      {
+        nonEvmNetworks: {} as Record<
+          CaipChainId,
+          InternalMultichainNetworkConfiguration
+        >,
+        nonEvmTestNetworks: {} as Record<
+          CaipChainId,
+          InternalMultichainNetworkConfiguration
+        >,
+      },
+    );
+
+    return getNetworkConfigurationsByCaipChainId({
+      multichainNetworkConfigurationsByChainId: {
+        ...nonEvmNetworks,
+        ...nonEvmTestNetworks,
+      },
+      networkConfigurationsByChainId,
       internalAccounts,
     });
   },
@@ -217,6 +293,10 @@ export function getInfuraBlocked(
   );
 }
 
+export function getNetworksMetadata(state: NetworkState) {
+  return state.metamask.networksMetadata;
+}
+
 export function getCurrentChainId(state: ProviderConfigState) {
   const { chainId } = getProviderConfig(state);
   return chainId;
@@ -230,5 +310,75 @@ export const getIsAllNetworksFilterEnabled = createSelector(
       allOpts[chain] = true;
     });
     return allOpts;
+  },
+);
+
+/**
+ * Returns all available network configurations without test networks.
+ *
+ * @param state - Redux state object.
+ * @returns Array of network configurations, excluding test networks.
+ */
+export const getNonTestNetworks = createSelector(
+  [getAllNetworkConfigurationsByCaipChainId],
+  (
+    networkConfigurationsByCaipChainId,
+  ): EvmAndMultichainNetworkConfigurationsWithCaipChainId[] => {
+    return Object.entries(networkConfigurationsByCaipChainId)
+      .filter(([chainId]) => {
+        const caipChainId = chainId as CaipChainId;
+        return !CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
+      })
+      .map(([chainId, network]) => ({
+        ...network,
+        caipChainId: chainId as CaipChainId,
+      }));
+  },
+);
+
+/**
+ * Returns an array of simplified network configurations available based on the CAIP account scopes,
+ * without test networks.
+ *
+ * @param _state - Redux state object.
+ * @param scopes - Array of CAIP account scopes to filter networks by.
+ * @returns Array of network configurations with chainId and name, filtered by provided scopes.
+ */
+export const getNetworksByScopes = createSelector(
+  [getNonTestNetworks, (_state, scopes: string[]) => scopes],
+  (nonTestNetworks, scopes): { chainId: string | number; name: string }[] => {
+    if (!scopes) {
+      return [];
+    }
+
+    return scopes.reduce(
+      (result: { chainId: string | number; name: string }[], scope) => {
+        // Special case for eip155:0 - include all EVM networks
+        if (scope === 'eip155:0') {
+          const evmNetworks = nonTestNetworks
+            .filter((network) => network.caipChainId?.startsWith('eip155:'))
+            .map((network) => ({
+              chainId: network.chainId,
+              name: network.name,
+            }));
+
+          return result.concat(evmNetworks);
+        }
+
+        const matchingNetwork = nonTestNetworks.find(
+          (network) => network.caipChainId === scope,
+        );
+
+        if (matchingNetwork) {
+          return result.concat({
+            chainId: matchingNetwork.chainId,
+            name: matchingNetwork.name,
+          });
+        }
+
+        return result;
+      },
+      [],
+    );
   },
 );

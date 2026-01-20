@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { getCleanAppState, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { TestSuiteArguments } from '../confirmations/transactions/shared';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -44,6 +44,7 @@ describe('Remote feature flag', function (this: Suite) {
           .build(),
         title: this.test?.fullTitle(),
       },
+
       async ({ driver }: TestSuiteArguments) => {
         await loginWithBalanceValidation(driver);
         const uiState = await getCleanAppState(driver);
@@ -71,11 +72,11 @@ describe('Remote feature flag', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
-        await settingsPage.goToDevelopOptionSettings();
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.goToDeveloperOptions();
 
         const developOptionsPage = new DevelopOptions(driver);
-        await developOptionsPage.check_pageIsLoaded();
+        await developOptionsPage.checkPageIsLoaded();
         await developOptionsPage.validateRemoteFeatureFlagState();
       },
     );

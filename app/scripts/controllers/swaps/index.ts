@@ -3,12 +3,12 @@ import { Web3Provider } from '@ethersproject/providers';
 import { BaseController, StateMetadata } from '@metamask/base-controller';
 import { GasFeeState } from '@metamask/gas-fee-controller';
 import { TransactionParams } from '@metamask/transaction-controller';
-import { captureException } from '@sentry/browser';
 import { BigNumber } from 'bignumber.js';
 import abi from 'human-standard-token-abi';
 import { cloneDeep, mapValues } from 'lodash';
 import { NetworkClient, NetworkClientId } from '@metamask/network-controller';
 import { Hex } from '@metamask/utils';
+import { captureException } from '../../../../shared/lib/sentry';
 import { EtherDenomination } from '../../../../shared/constants/common';
 import { GasEstimateTypes } from '../../../../shared/constants/gas';
 import {
@@ -77,8 +77,10 @@ type Network = {
 
 const metadata: StateMetadata<SwapsControllerState> = {
   swapsState: {
+    includeInStateLogs: true,
     persist: false,
-    anonymous: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
 };
 
@@ -132,7 +134,10 @@ export default class SwapsController extends BaseController<
     [aggId: string]: Quote;
   }> = defaultFetchTradesInfo;
 
-  constructor(opts: SwapsControllerOptions, state: SwapsControllerState) {
+  constructor(
+    opts: SwapsControllerOptions,
+    state: Partial<SwapsControllerState> | undefined,
+  ) {
     super({
       name: controllerName,
       metadata,
@@ -145,112 +150,112 @@ export default class SwapsController extends BaseController<
       },
     });
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:fetchAndSetQuotes`,
       this.fetchAndSetQuotes.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSelectedQuoteAggId`,
       this.setSelectedQuoteAggId.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:resetSwapsState`,
       this.resetSwapsState.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsTokens`,
       this.setSwapsTokens.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:clearSwapsQuotes`,
       this.clearSwapsQuotes.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setApproveTxId`,
       this.setApproveTxId.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setTradeTxId`,
       this.setTradeTxId.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsTxGasPrice`,
       this.setSwapsTxGasPrice.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsTxGasLimit`,
       this.setSwapsTxGasLimit.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsTxMaxFeePerGas`,
       this.setSwapsTxMaxFeePerGas.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsTxMaxFeePriorityPerGas`,
       this.setSwapsTxMaxFeePriorityPerGas.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:safeRefetchQuotes`,
       this.safeRefetchQuotes.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:stopPollingForQuotes`,
       this.stopPollingForQuotes.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setBackgroundSwapRouteState`,
       this.setBackgroundSwapRouteState.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:resetPostFetchState`,
       this.resetPostFetchState.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsErrorKey`,
       this.setSwapsErrorKey.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setInitialGasEstimate`,
       this.setInitialGasEstimate.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setCustomApproveTxData`,
       this.setCustomApproveTxData.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsLiveness`,
       this.setSwapsLiveness.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsFeatureFlags`,
       this.setSwapsFeatureFlags.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsUserFeeLevel`,
       this.setSwapsUserFeeLevel.bind(this),
     );
 
-    this.messagingSystem.registerActionHandler(
+    this.messenger.registerActionHandler(
       `SwapsController:setSwapsQuotesPollingLimitEnabled`,
       this.setSwapsQuotesPollingLimitEnabled.bind(this),
     );
@@ -486,7 +491,7 @@ export default class SwapsController extends BaseController<
   }): Promise<[string | null, Record<string, Quote>] | Record<string, never>> {
     let chainId;
     if (networkClientId) {
-      const networkClient = this.messagingSystem.call(
+      const networkClient = this.messenger.call(
         'NetworkController:getNetworkClientById',
         networkClientId,
       );
@@ -933,6 +938,8 @@ export default class SwapsController extends BaseController<
    *
    * @param newState - The new state to set
    */
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   public __test__updateState = (newState: Partial<SwapsControllerState>) => {
     this.update((oldState) => {
       return { swapsState: { ...oldState.swapsState, ...newState.swapsState } };
@@ -1036,9 +1043,7 @@ export default class SwapsController extends BaseController<
       }
     >;
   } {
-    const { marketData } = this.messagingSystem.call(
-      'TokenRatesController:getState',
-    );
+    const { marketData } = this.messenger.call('TokenRatesController:getState');
     return { marketData };
   }
 
@@ -1129,6 +1134,8 @@ export default class SwapsController extends BaseController<
           event: MetaMetricsEventName.QuoteError,
           category: MetaMetricsEventCategory.Swaps,
           properties: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             error_type: MetaMetricsEventErrorType.GasTimeout,
             aggregator,
           },
@@ -1171,7 +1178,7 @@ export default class SwapsController extends BaseController<
   }
 
   #setNetwork(networkClientId: NetworkClientId) {
-    const networkClient = this.messagingSystem.call(
+    const networkClient = this.messenger.call(
       'NetworkController:getNetworkClientById',
       networkClientId,
     );

@@ -7,6 +7,7 @@ import {
   TextAlign,
   TextVariant,
   JustifyContent,
+  AlignItems,
 } from '../../../../../../helpers/constants/design-system';
 
 import type { StyleUtilityProps } from '../../../../../component-library/box';
@@ -49,6 +50,7 @@ export const Header = ({
       padding={4}
       width={BlockSize.Full}
       justifyContent={JustifyContent.center}
+      alignItems={AlignItems.center}
       className={classnames('multichain-page-header', className)}
       startAccessory={startAccessory}
       endAccessory={endAccessory}
@@ -58,8 +60,8 @@ export const Header = ({
         display={Display.Block}
         variant={TextVariant.bodyMdBold}
         textAlign={TextAlign.Center}
-        paddingInlineStart={8}
-        paddingInlineEnd={8}
+        paddingInlineStart={2}
+        paddingInlineEnd={2}
         ellipsis
         {...textProps}
       >

@@ -12,7 +12,7 @@ class MockedPage {
    *
    * @param message - The message to check if it is displayed on the mocked page.
    */
-  async check_displayedMessage(message: string): Promise<void> {
+  async checkDisplayedMessage(message: string): Promise<void> {
     console.log('Checking if message is displayed on mocked page', message);
     await this.driver.waitForSelector({
       text: message,

@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
   },
-  "ethereumPublicAddress": {
-    "message": "Adresa publică Ethereum"
-  },
   "etherscanView": {
     "message": "Vizualizare cont pe Etherscan"
-  },
-  "expandView": {
-    "message": "Extindeți vizualizarea"
   },
   "failed": {
     "message": "Eșuat"
@@ -257,20 +251,8 @@
   "gasLimit": {
     "message": "Limită gas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Limita gaz este numărul maxim de unități de gaz pe care sunteți dispus(ă) să le cheltuiți."
-  },
   "gasLimitTooLow": {
     "message": "Limita de gaz trebuie să fie de cel puțin 21.000"
-  },
-  "gasPrice": {
-    "message": "Preț gas (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Prețul gaz este foarte scăzut"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Prețul în gas indică suma Ether pe care doriți să o plătiți pentru fiecare unitate gas."
   },
   "gasUsed": {
     "message": "Suma gaz folosită"
@@ -393,9 +375,6 @@
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Nu se pot trimite sume negative de ETH."
   },
   "networkName": {
     "message": "Numele rețelei"
@@ -623,9 +602,6 @@
   "supportCenter": {
     "message": "Accesați centrul de asistență"
   },
-  "switchNetworks": {
-    "message": "Schimbați rețelele"
-  },
   "symbol": {
     "message": "Simbol"
   },
@@ -634,9 +610,6 @@
   },
   "terms": {
     "message": "Termeni și condiții"
-  },
-  "tips": {
-    "message": "Cadouri bănești"
   },
   "to": {
     "message": "Către"
@@ -710,9 +683,6 @@
   "unlock": {
     "message": "Deblochează"
   },
-  "unlockMessage": {
-    "message": "Web-ul descentralizat așteaptă"
-  },
   "urlErrorMsg": {
     "message": "URL necesită prefixul potrivit HTTP/HTTPS."
   },
@@ -736,8 +706,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Expresia dvs. seed privată"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Preț gas zero la accelerare"
   }
 }

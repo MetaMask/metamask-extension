@@ -7,6 +7,8 @@ import React, {
 } from 'react';
 import classnames from 'classnames';
 import PropTypes from 'prop-types';
+import { CaipChainId } from '@metamask/utils';
+import { useSelector } from 'react-redux';
 import {
   AlignItems,
   BackgroundColor,
@@ -35,6 +37,11 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getAvatarNetworkColor } from '../../../helpers/utils/accounts';
 import Tooltip from '../../ui/tooltip/tooltip';
 import { NetworkListItemMenu } from '../network-list-item-menu';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors';
+import { convertCaipToHexChainId } from '../../../../shared/modules/network.utils';
+
+const isIconSrc = (iconSrc?: string | IconName): iconSrc is IconName =>
+  Object.values(IconName).includes(iconSrc as IconName);
 
 // TODO: Consider increasing this. This tooltip is
 // rendering when it has enough room to see everything
@@ -58,10 +65,11 @@ export const NetworkListItem = ({
   showEndAccessory = true,
   disabled = false,
   variant,
+  notSelectable = false,
 }: {
   name: string;
   iconSrc?: string;
-  iconSize?: AvatarNetworkSize;
+  iconSize?: AvatarNetworkSize | IconSize;
   rpcEndpoint?: { name?: string; url: string };
   chainId?: string;
   selected?: boolean;
@@ -76,6 +84,7 @@ export const NetworkListItem = ({
   showEndAccessory?: boolean;
   disabled?: boolean;
   variant?: TextVariant;
+  notSelectable?: boolean;
 }) => {
   const t = useI18nContext();
   const networkRef = useRef<HTMLInputElement>(null);
@@ -91,6 +100,43 @@ export const NetworkListItem = ({
     setNetworkListItemMenuElement(ref);
   };
   const [networkOptionsMenuOpen, setNetworkOptionsMenuOpen] = useState(false);
+
+  // This selector provides the indication if the "Gas sponsored" label
+  // is enabled based on the remote feature flag.
+  const isGasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
+
+  // Check if a network has gas sponsorship enabled
+  const isNetworkGasSponsored = useCallback(
+    (networkChainId: string | undefined): boolean => {
+      if (!networkChainId) {
+        return false;
+      }
+
+      // Convert chainId to hex if it's in CAIP format, otherwise use as-is
+      let hexChainId: string;
+      try {
+        // Check if it's in CAIP format (contains ':')
+        if (networkChainId.includes(':')) {
+          hexChainId = convertCaipToHexChainId(networkChainId as CaipChainId);
+        } else {
+          // Already in hex format
+          hexChainId = networkChainId;
+        }
+      } catch (error) {
+        // If conversion fails, use the original chainId
+        hexChainId = networkChainId;
+      }
+
+      return Boolean(
+        isGasFeesSponsoredNetworkEnabled?.[
+          hexChainId as keyof typeof isGasFeesSponsoredNetworkEnabled
+        ],
+      );
+    },
+    [isGasFeesSponsoredNetworkEnabled],
+  );
 
   const renderButton = useCallback(() => {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
@@ -132,6 +178,7 @@ export const NetworkListItem = ({
 
   return (
     <Box
+      data-testid={`network-list-item-${chainId}`}
       paddingLeft={4}
       paddingRight={4}
       paddingTop={rpcEndpoint ? 2 : 4}
@@ -142,7 +189,9 @@ export const NetworkListItem = ({
       }
       className={classnames('multichain-network-list-item', {
         'multichain-network-list-item--selected': selected,
+        'multichain-network-list-item--deselected': !selected,
         'multichain-network-list-item--disabled': disabled,
+        'multichain-network-list-item--not-selectable': notSelectable,
       })}
       display={Display.Flex}
       alignItems={AlignItems.center}
@@ -158,13 +207,17 @@ export const NetworkListItem = ({
           backgroundColor={BackgroundColor.primaryDefault}
         />
       )}
-      <AvatarNetwork
-        borderColor={BorderColor.backgroundDefault}
-        backgroundColor={getAvatarNetworkColor(name)}
-        name={name}
-        src={iconSrc}
-        size={iconSize}
-      />
+      {isIconSrc(iconSrc) ? (
+        <Icon name={iconSrc} size={iconSize as IconSize} />
+      ) : (
+        <AvatarNetwork
+          borderColor={BorderColor.backgroundDefault}
+          backgroundColor={getAvatarNetworkColor(name)}
+          name={name}
+          src={iconSrc}
+          size={iconSize as AvatarNetworkSize}
+        />
+      )}
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
@@ -198,6 +251,11 @@ export const NetworkListItem = ({
             </Text>
           </Tooltip>
         </Box>
+        {isNetworkGasSponsored(chainId) && (
+          <Text variant={TextVariant.bodySm} color={TextColor.textAlternative}>
+            {t('noNetworkFee')}
+          </Text>
+        )}
         {rpcEndpoint && (
           <Box
             className="multichain-network-list-item__rpc-endpoint"
@@ -231,7 +289,7 @@ export const NetworkListItem = ({
 
       {renderButton()}
       {showEndAccessory
-        ? endAccessory ?? (
+        ? (endAccessory ?? (
             <NetworkListItemMenu
               anchorElement={networkListItemMenuElement}
               isOpen={networkOptionsMenuOpen}
@@ -240,7 +298,7 @@ export const NetworkListItem = ({
               onDiscoverClick={onDiscoverClick}
               onClose={() => setNetworkOptionsMenuOpen(false)}
             />
-          )
+          ))
         : null}
     </Box>
   );

@@ -5,6 +5,8 @@ export const SUPPORT_LINK = process.env.SUPPORT_LINK;
 export const COINGECKO_LINK = 'https://www.coingecko.com/';
 export const CRYPTOCOMPARE_LINK = 'https://www.cryptocompare.com/';
 export const PRIVACY_POLICY_LINK = 'https://consensys.io/privacy-policy/';
+export const METAMETRICS_SETTINGS_LINK =
+  'https://support.metamask.io/configure/privacy/how-to-manage-your-metametrics-settings/';
 export const SURVEY_LINK = 'https://www.getfeedback.com/r/Oczu1vP0';
 
 // TODO make sure these links are correct
@@ -25,3 +27,8 @@ export const GAS_FEES_LEARN_MORE_URL =
 
 export const SMART_ACCOUNT_INFO_LINK =
   'https://support.metamask.io/configure/accounts/what-is-a-smart-account';
+
+export const VAULT_RECOVERY_LINK = `https://support.metamask.io/configure/wallet/how-to-recover-your-secret-recovery-phrase/#step-two-locate-your-vault`;
+
+export const SHIELD_TERMS_OF_USE_URL =
+  'https://consensys.io/transaction-shield-supplemental-terms-and-privacy-notice';

@@ -1,26 +1,32 @@
-import { TokenListMap } from '@metamask/assets-controllers';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useSelector } from 'react-redux';
 import { useI18nContext } from '../../../../../../hooks/useI18nContext';
-import { getTokenList, getWatchedToken } from '../../../../../../selectors';
-import { MultichainState } from '../../../../../../selectors/multichain';
+import {
+  getAllTokens,
+  selectERC20TokensByChain,
+} from '../../../../../../selectors';
+import { Token } from '../../../../../../components/app/assets/types';
 
 export const useTokenDetails = (transactionMeta: TransactionMeta) => {
   const t = useI18nContext();
-  const selectedToken = useSelector((state: MultichainState) =>
-    getWatchedToken(transactionMeta)(state),
+  const {
+    chainId,
+    txParams: { to, from },
+  } = transactionMeta ?? { txParams: {} };
+  const erc20TokensByChain = useSelector(selectERC20TokensByChain);
+  const allTokens = useSelector(getAllTokens);
+
+  const erc20Token =
+    erc20TokensByChain[chainId]?.data?.[to?.toLowerCase() as string];
+  const tokenListToken = allTokens?.[chainId]?.[from as string]?.find(
+    (token: Token) =>
+      token.address?.toLowerCase() === (to?.toLowerCase() as string),
   );
-  const tokenList = useSelector(getTokenList) as TokenListMap;
 
   const tokenImage =
-    selectedToken?.iconUrl ||
-    selectedToken?.image ||
-    tokenList[transactionMeta?.txParams?.to as string]?.iconUrl;
-
+    erc20Token?.iconUrl || tokenListToken?.iconUrl || undefined;
   const tokenSymbol =
-    selectedToken?.symbol ||
-    tokenList[transactionMeta?.txParams?.to as string]?.symbol ||
-    t('unknown');
+    erc20Token?.symbol || tokenListToken?.symbol || t('unknown');
 
   return { tokenImage, tokenSymbol };
 };

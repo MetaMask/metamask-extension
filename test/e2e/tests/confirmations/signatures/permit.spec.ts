@@ -1,20 +1,21 @@
 import { strict as assert } from 'assert';
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { openDapp, unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockPermitDecoding,
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -28,13 +29,11 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -68,8 +67,8 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          uiCustomizations: ['permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -82,17 +81,16 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
       }: TestSuiteArguments) => {
         const testDapp = new TestDapp(driver);
         const confirmation = new Confirmation(driver);
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        await testDapp.openTestDappPage();
         await testDapp.clickPermit();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -107,9 +105,9 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -120,9 +118,8 @@ describe('Confirmation Signature - Permit', function (this: Suite) {
   });
 
   it('display decoding information if available', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await initializePages(driver);
         await openDappAndTriggerSignature(driver, SignatureType.Permit);
@@ -172,7 +169,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successSignPermit(publicAddress);
+  await testDapp.checkSuccessSignPermit(publicAddress);
   await testDapp.verifySignPermitResult(expectedSignature);
   await testDapp.verifySignPermitResultR(expectedR);
   await testDapp.verifySignPermitResultS(expectedS);

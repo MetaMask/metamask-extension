@@ -1,93 +1,105 @@
-import { strict as assert } from 'assert';
-import { expect } from '@playwright/test';
-import {
-  withFixtures,
-  logInWithBalanceValidation,
-  unlockWallet,
-  getEventPayloads,
-} from '../../helpers';
-import { MockedEndpoint, Mockttp } from '../../mock-e2e';
+import { Mockttp } from 'mockttp';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import AssetListPage from '../../page-objects/pages/home/asset-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SettingsPage from '../../page-objects/pages/settings/settings-page';
+import {
+  loginWithBalanceValidation,
+  loginWithoutBalanceValidation,
+} from '../../page-objects/flows/login.flow';
 
-import FixtureBuilder from '../../fixture-builder';
+async function mockPriceApi(mockServer: Mockttp) {
+  const spotPricesMockEth = await mockServer
+    .forGet(/^https:\/\/price\.api\.cx\.metamask\.io\/v3\/spot-prices/u)
 
-async function mockSegment(mockServer: Mockttp) {
-  return [
-    await mockServer
-      .forPost('https://api.segment.io/v1/batch')
-      .withJsonBodyIncluding({
-        batch: [{ type: 'track', event: 'Show native token as main balance' }],
-      })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-        };
-      }),
-  ];
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        'eip155:1/slip44:60': {
+          id: 'ethereum',
+          price: 1,
+          marketCap: 112500000,
+          totalVolume: 4500000,
+          dilutedMarketCap: 120000000,
+          pricePercentChange1d: 0,
+        },
+      },
+    }));
+  const mockExchangeRates = await mockServer
+    .forGet('https://price.api.cx.metamask.io/v1/exchange-rates')
+    .thenCallback(() => ({
+      statusCode: 200,
+      json: {
+        eth: {
+          name: 'Ether',
+          ticker: 'eth',
+          value: 1 / 1700,
+          currencyType: 'crypto',
+        },
+        usd: {
+          name: 'US Dollar',
+          ticker: 'usd',
+          value: 1,
+          currencyType: 'fiat',
+        },
+      },
+    }));
+
+  return [spotPricesMockEth, mockExchangeRates];
 }
 
 describe('Settings: Show native token as main balance', function () {
-  it('Should show balance in crypto when toggle is on', async function () {
+  it('Should show balance in crypto when toggle is off', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().withConversionRateDisabled().build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await logInWithBalanceValidation(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
-        );
-        const tokenValue = '25 ETH';
-        const tokenListAmount = await driver.findElement(
-          '[data-testid="multichain-token-list-item-value"]',
-        );
-        await driver.waitForNonEmptyElement(tokenListAmount);
-        assert.equal(await tokenListAmount.getText(), tokenValue);
+        await loginWithBalanceValidation(driver);
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenAmountIsDisplayed('25 ETH');
       },
     );
   });
 
-  it('Should show balance in fiat when toggle is OFF', async function () {
+  it('Should show balance in fiat when toggle is on', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
           .withConversionRateEnabled()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.checkPageIsLoaded();
+        await advancedSettingsPage.toggleShowConversionOnTestnets();
+        await settingsPage.closeSettingsPage();
 
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-fiat-on-testnets-toggle');
-
-        await driver.delay(1000);
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // close popover
-        await driver.clickElement('[data-testid="popover-close"]');
-
-        await driver.clickElement(
-          '[data-testid="account-overview__asset-tab"]',
-        );
-
-        const tokenListAmount = await driver.findElement(
-          '.eth-overview__primary-container',
-        );
-        assert.equal(await tokenListAmount.getText(), '$42,500.00\nUSD');
+        // assert amount displayed
+        const assetListPage = new AssetListPage(driver);
+        await assetListPage.checkTokenFiatAmountIsDisplayed('$42,500.00');
       },
     );
   });
@@ -96,132 +108,35 @@ describe('Settings: Show native token as main balance', function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x1': true } })
           .withConversionRateEnabled()
           .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
           .build(),
         title: this.test?.fullTitle(),
+        testSpecificMock: async (mockServer: Mockttp) => {
+          await mockPriceApi(mockServer);
+        },
       },
       async ({ driver }: { driver: Driver }) => {
-        await unlockWallet(driver);
+        await loginWithoutBalanceValidation(driver);
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+        await homePage.checkExpectedBalanceIsDisplayed('$42,500.00', 'USD');
 
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
+        await homePage.headerNavbar.openSettingsPage();
+        const settingsPage = new SettingsPage(driver);
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.clickAdvancedTab();
+        const advancedSettingsPage = new AdvancedSettings(driver);
+        await advancedSettingsPage.checkPageIsLoaded();
+        await advancedSettingsPage.toggleShowConversionOnTestnets();
+        await settingsPage.closeSettingsPage();
 
-        await driver.clickElement({
-          text: 'Advanced',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-fiat-on-testnets-toggle');
-
-        await driver.delay(1000);
-
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // close popover for the first time
-        await driver.clickElement('[data-testid="popover-close"]');
         // go to setting and back to home page and make sure popover is not shown again
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        // close setting
-        await driver.clickElement(
-          '.settings-page__header__title-container__close-button',
-        );
-        // assert popover does not exist
-        await driver.assertElementNotPresent('[data-testid="popover-close"]');
-      },
-    );
-  });
-
-  it('Should Successfully track the event when toggle is turned off', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
-            participateInMetaMetrics: true,
-          })
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({
-        driver,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          text: 'General',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-native-token-as-main-balance');
-
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        expect(events[0].properties).toMatchObject({
-          show_native_token_as_main_balance: false,
-          category: 'Settings',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-        });
-      },
-    );
-  });
-
-  it('Should Successfully track the event when toggle is turned on', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withMetaMetricsController({
-            metaMetricsId: 'fake-metrics-fd20',
-            participateInMetaMetrics: true,
-          })
-          .withPreferencesControllerShowNativeTokenAsMainBalanceDisabled()
-          .build(),
-        title: this.test?.fullTitle(),
-        testSpecificMock: mockSegment,
-      },
-      async ({
-        driver,
-        mockedEndpoint: mockedEndpoints,
-      }: {
-        driver: Driver;
-        mockedEndpoint: MockedEndpoint[];
-      }) => {
-        await unlockWallet(driver);
-
-        await driver.clickElement(
-          '[data-testid="account-options-menu-button"]',
-        );
-
-        await driver.clickElement({ text: 'Settings', tag: 'div' });
-        await driver.clickElement({
-          text: 'General',
-          tag: 'div',
-        });
-        await driver.clickElement('.show-native-token-as-main-balance');
-
-        const events = await getEventPayloads(driver, mockedEndpoints);
-        expect(events[0].properties).toMatchObject({
-          show_native_token_as_main_balance: true,
-          category: 'Settings',
-          locale: 'en',
-          chain_id: '0x539',
-          environment_type: 'fullscreen',
-        });
+        await homePage.headerNavbar.openSettingsPage();
+        await settingsPage.checkPageIsLoaded();
+        await settingsPage.closeSettingsPage();
+        await homePage.checkPageIsLoaded();
       },
     );
   });

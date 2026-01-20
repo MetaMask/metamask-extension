@@ -1,4 +1,10 @@
 import { createSelector } from 'reselect';
+import type {
+  SmartTransactionsNetworkConfig,
+  SmartTransactionsFeatureFlagsState,
+} from '@metamask/smart-transactions-controller';
+import { selectSmartTransactionsFeatureFlagsForChain } from '@metamask/smart-transactions-controller';
+import type { Hex, CaipChainId } from '@metamask/utils';
 import {
   getAllowedSmartTransactionsChainIds,
   SKIP_STX_RPC_URL_CHECK_CHAIN_IDS,
@@ -10,9 +16,14 @@ import {
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
 } from '../../../ui/selectors/selectors'; // TODO: Migrate shared selectors to this file.
+import {
+  getRemoteFeatureFlags,
+  type RemoteFeatureFlagsState,
+  // eslint-disable-next-line import/no-restricted-paths
+} from '../../../ui/selectors/remote-feature-flags';
 import { isProduction } from '../environment';
-import { getFeatureFlagsByChainId } from './feature-flags';
-import { getCurrentChainId, NetworkState } from './networks';
+import { getCurrentChainId, type NetworkState } from './networks';
+import { createDeepEqualSelector } from './util';
 
 export type SmartTransactionsMetaMaskState = {
   metamask: {
@@ -32,28 +43,38 @@ export type SmartTransactionsMetaMaskState = {
         };
       };
     };
-    swapsState: {
-      swapsFeatureFlags: {
-        ethereum: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-          smartTransactions: {
-            expectedDeadline?: number;
-            maxDeadline?: number;
-            extensionReturnTxHashAsap?: boolean;
-          };
-        };
-        smartTransactions: {
-          extensionActive: boolean;
-          mobileActive: boolean;
-        };
-      };
-    };
     smartTransactionsState: {
       liveness: boolean;
+      livenessByChainId: Record<string, boolean>;
     };
   };
 };
+
+export type SmartTransactionsState = SmartTransactionsMetaMaskState &
+  NetworkState &
+  RemoteFeatureFlagsState;
+
+/**
+ * Stable wrapper for controller's feature flags state shape.
+ */
+const selectSmartTransactionsFeatureFlagsState = createDeepEqualSelector(
+  (state) => getRemoteFeatureFlags(state).smartTransactionsNetworks,
+  (smartTransactionsNetworks): SmartTransactionsFeatureFlagsState => ({
+    remoteFeatureFlags: { smartTransactionsNetworks },
+  }),
+);
+
+/**
+ * @param state - The Redux state.
+ * @param chainId - The chain ID (hex or CAIP-2 format).
+ * @returns The validated and merged feature flags for the chain.
+ */
+export const getSmartTransactionsFeatureFlagsForChain = createDeepEqualSelector(
+  selectSmartTransactionsFeatureFlagsState,
+  (_state, chainId: Hex | CaipChainId) => chainId,
+  (featureFlagsState, chainId): SmartTransactionsNetworkConfig =>
+    selectSmartTransactionsFeatureFlagsForChain(featureFlagsState, chainId),
+);
 
 /**
  * Returns the user's explicit opt-in status for the smart transactions feature.
@@ -170,17 +191,21 @@ const getIsAllowedRpcUrlForSmartTransactions = (
 };
 
 export const getSmartTransactionsEnabled = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+  const effectiveChainId = (chainId || getCurrentChainId(state)) as Hex;
   const supportedAccount = accountSupportsSmartTx(state);
-  // @ts-expect-error Smart transaction selector types does not match controller state
-  const featureFlagsByChainId = getFeatureFlagsByChainId(state, chainId);
-  // TODO: Create a new proxy service only for MM feature flags.
-  const smartTransactionsFeatureFlagEnabled =
-    featureFlagsByChainId?.smartTransactions?.extensionActive;
+  const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+    state,
+    effectiveChainId,
+  );
+  const smartTransactionsFeatureFlagEnabled = featureFlags?.extensionActive;
   const smartTransactionsLiveness =
-    state.metamask.smartTransactionsState?.liveness;
+    state.metamask.smartTransactionsState?.livenessByChainId?.[
+      effectiveChainId
+    ];
   return Boolean(
     getChainSupportsSmartTransactions(state, chainId) &&
       getIsAllowedRpcUrlForSmartTransactions(state, chainId) &&
@@ -191,7 +216,7 @@ export const getSmartTransactionsEnabled = (
 };
 
 export const getIsSmartTransaction = (
-  state: SmartTransactionsMetaMaskState & NetworkState,
+  state: SmartTransactionsState,
   chainId?: string,
 ): boolean => {
   const smartTransactionsPreferenceEnabled =

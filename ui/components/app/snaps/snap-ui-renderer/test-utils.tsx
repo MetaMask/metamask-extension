@@ -1,9 +1,10 @@
 import React from 'react';
-import { Reducer } from 'redux';
+import { DeepPartial, Reducer } from 'redux';
 import { RenderResult } from '@testing-library/react';
+import type { SnapId } from '@metamask/snaps-sdk';
 import { JSXElement } from '@metamask/snaps-sdk/jsx';
 import configureStore, { MetaMaskReduxState } from '../../../../store/store';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { SnapUIRenderer } from './snap-ui-renderer';
 
@@ -11,23 +12,16 @@ export const MOCK_SNAP_ID = 'npm:@metamask/test-snap-bip44';
 export const MOCK_INTERFACE_ID = 'interfaceId';
 
 type RenderInterfaceOptions = {
+  snapId?: SnapId;
   useFooter?: boolean;
   onCancel?: () => void;
   contentBackgroundColor?: string;
   state?: Record<string, unknown>;
-};
-
-// The return type from renderWithProvider includes RenderResult plus a history property
-type RenderWithProviderResult = RenderResult & {
-  history: {
-    location: {
-      pathname: string;
-    };
-  };
+  metamaskState?: DeepPartial<MetaMaskReduxState>;
 };
 
 // Combine the renderWithProvider result with our custom properties
-type RenderInterfaceResult = RenderWithProviderResult & {
+type RenderInterfaceResult = RenderResult & {
   updateInterface: (
     newContent: JSXElement,
     newState?: Record<string, unknown> | null,
@@ -44,24 +38,30 @@ type RenderInterfaceResult = RenderWithProviderResult & {
  * @param options.onCancel - The function to call when the interface is cancelled.
  * @param options.contentBackgroundColor - The background color of the content.
  * @param options.state - The state of the interface.
+ * @param options.metamaskState - The initial state of the MetaMask store.
+ * @param options.snapId - The ID of the snap to render the interface for.
  * @returns Testing utilities with render result, plus updateInterface and getRenderCount functions.
  */
 export function renderInterface(
   content: JSXElement,
   {
     useFooter = false,
+    snapId = MOCK_SNAP_ID as SnapId,
     onCancel,
     contentBackgroundColor,
     state = {},
+    metamaskState = {},
   }: RenderInterfaceOptions = {},
 ): RenderInterfaceResult {
   const store = configureStore({
     ...mockState,
+    ...metamaskState,
     metamask: {
       ...mockState.metamask,
+      ...metamaskState?.metamask,
       interfaces: {
         [MOCK_INTERFACE_ID]: {
-          snapId: MOCK_SNAP_ID,
+          snapId,
           content,
           state,
           context: null,
@@ -81,7 +81,7 @@ export function renderInterface(
           ...storeState.metamask,
           interfaces: {
             [MOCK_INTERFACE_ID]: {
-              snapId: MOCK_SNAP_ID,
+              snapId,
               content: action.content,
               state: action.state ?? reduxState,
               context: null,
@@ -109,7 +109,7 @@ export function renderInterface(
 
   const result = renderWithProvider(
     <SnapUIRenderer
-      snapId={MOCK_SNAP_ID}
+      snapId={snapId}
       interfaceId={MOCK_INTERFACE_ID}
       useFooter={useFooter}
       onCancel={onCancel}

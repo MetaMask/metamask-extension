@@ -38,15 +38,11 @@ import { initializeProvider } from '@metamask/providers/initializeInpageProvider
 import ObjectMultiplex from '@metamask/object-multiplex';
 import { pipeline } from 'readable-stream';
 
-// this is currently equivalent to process.env.MULTICHAIN_API
-// which can't be used for conditional imports
-///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
 import {
   getMultichainClient,
   getDefaultTransport,
 } from '@metamask/multichain-api-client';
 import { registerSolanaWalletStandard } from '@metamask/solana-wallet-standard';
-///: END:ONLY_INCLUDE_IF
 
 import shouldInjectProvider from '../../shared/modules/provider-injection';
 import { METAMASK_EIP_1193_PROVIDER } from './constants/stream';
@@ -71,6 +67,38 @@ if (shouldInjectProvider()) {
   });
 
   const mux = new ObjectMultiplex();
+
+  /**
+   * Note: We do NOT add graceful shutdown handlers (close/end/beforeunload) to the mux
+   * in this file, unlike in the background stream files (provider-stream.ts, etc.).
+   *
+   * This is intentional because:
+   *
+   * 1. CONTEXT DIFFERENCE:
+   *    - inpage.js runs in PAGE CONTEXT (web pages)
+   *    - Background streams run in EXTENSION CONTEXT (persistent background)
+   *
+   * 2. AUTOMATIC CLEANUP:
+   *    - When a page navigates/unloads, the browser automatically destroys the entire
+   *      script execution context, including all streams and event listeners
+   *    - No explicit cleanup is needed - the browser handles it naturally
+   *
+   * 3. AVOIDING PREMATURE DISCONNECTION:
+   *    - Adding handlers that call mux.end() or connectionStream.end() can actually
+   *      CAUSE disconnection errors when pages navigate to external URLs
+   *    - Tests showed that explicit handlers in page context trigger "Disconnected from
+   *      MetaMask background" errors during rapid navigation scenarios (e.g., deep links)
+   *
+   * 4. DIFFERENT ERROR SOURCE:
+   *    - "Premature close" errors in page context are typically harmless - they occur
+   *      during normal page navigation and don't indicate a real problem
+   *    - The critical "Premature close" issues (3.8M/month in Sentry) come from the
+   *      BACKGROUND streams that persist across page loads
+   *
+   * For context on the "Premature close" issue, see:
+   * - https://github.com/MetaMask/metamask-extension/issues/26337
+   * - https://github.com/MetaMask/metamask-extension/issues/35241
+   */
   pipeline(metamaskStream, mux, metamaskStream, (error) => {
     let warningMsg = `Lost connection to "${METAMASK_EIP_1193_PROVIDER}".`;
     if (error?.stack) {
@@ -91,12 +119,11 @@ if (shouldInjectProvider()) {
     },
   });
 
-  // this is currently equivalent to process.env.MULTICHAIN_API
-  ///: BEGIN:ONLY_INCLUDE_IF(build-beta,build-flask)
-  getMultichainClient({
+  const multichainClient = getMultichainClient({
     transport: getDefaultTransport(),
-  }).then((client) => {
-    registerSolanaWalletStandard({ client });
   });
-  ///: END:ONLY_INCLUDE_IF
+  registerSolanaWalletStandard({
+    client: multichainClient,
+    walletName: process.env.METAMASK_BUILD_NAME,
+  });
 }

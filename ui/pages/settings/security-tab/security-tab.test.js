@@ -1,5 +1,5 @@
 import { fireEvent, queryByRole, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { userEvent } from '@testing-library/user-event';
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
@@ -10,9 +10,10 @@ import { getEnvironmentType } from '../../../../app/scripts/lib/util';
 import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import mockState from '../../../../test/data/mock-state.json';
 import { tEn } from '../../../../test/lib/i18n-helpers';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { getIsSecurityAlertsEnabled } from '../../../selectors';
 import { REVEAL_SRP_LIST_ROUTE } from '../../../helpers/constants/routes';
+import { FirstTimeFlowType } from '../../../../shared/constants/onboarding';
 import SecurityTab from './security-tab.container';
 
 const mockOpenDeleteMetaMetricsDataModal = jest.fn();
@@ -48,21 +49,12 @@ jest.mock('../../../ducks/app/app.ts', () => {
   };
 });
 
-const mockHistoryPush = jest.fn();
+const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  // eslint-disable-next-line react/display-name
-  withRouter: (Component) => (props) =>
-    (
-      <Component
-        {...props}
-        {...{
-          history: {
-            push: mockHistoryPush,
-          },
-        }}
-      />
-    ),
+  useNavigate: () => mockUseNavigate,
+  useLocation: () => ({ pathname: '/settings/security' }),
+  useParams: () => ({}),
 }));
 
 describe('Security Tab', () => {
@@ -100,6 +92,30 @@ describe('Security Tab', () => {
     const { container } = renderWithProviders(<SecurityTab />, mockStore);
 
     expect(container).toMatchSnapshot();
+  });
+
+  it('should render success banner when SRP is backed up', () => {
+    const { getByTestId } = renderWithProviders(<SecurityTab />, mockStore);
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-success');
+  });
+
+  it('should render danger banner when SRP is not backed up', () => {
+    const { getByTestId } = renderWithProviders(
+      <SecurityTab />,
+      configureMockStore([thunk])({
+        ...mockState,
+        metamask: {
+          ...mockState.metamask,
+          seedPhraseBackedUp: false,
+          firstTimeFlowType: FirstTimeFlowType.create,
+        },
+      }),
+    );
+    const bannerAlert = getByTestId('backup-state-banner-alert');
+    expect(bannerAlert).toBeInTheDocument();
+    expect(bannerAlert).toHaveClass('mm-banner-alert--severity-danger');
   });
 
   it('toggles Display NFT media enabled', async () => {
@@ -154,27 +170,7 @@ describe('Security Tab', () => {
     ).toBe(true);
   });
 
-  it('toggles SRP Quiz if there is only one srp', async () => {
-    renderWithProviders(<SecurityTab />, mockStore);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-
-    fireEvent.click(screen.getByTestId('reveal-seed-words'));
-
-    expect(screen.getByTestId(`srp_stage_introduction`)).toBeInTheDocument();
-
-    const container = screen.getByTestId('srp-quiz-header');
-    const checkbox = queryByRole(container, 'button');
-    fireEvent.click(checkbox);
-
-    expect(
-      screen.queryByTestId(`srp_stage_introduction`),
-    ).not.toBeInTheDocument();
-  });
-
-  it('redirects to srp list if there are multiple srps', async () => {
+  it('redirects to srp list upon clicking "Reveal Secret Recovery Phrase"', async () => {
     const mockStoreWithMultipleSRPs = configureMockStore([thunk])({
       ...mockState,
       metamask: {
@@ -184,13 +180,10 @@ describe('Security Tab', () => {
           {
             type: 'HD Key Tree',
             accounts: ['0x'],
-          },
-        ],
-        keyringsMetadata: [
-          ...mockState.metamask.keyringsMetadata,
-          {
-            id: '01JM1XSBQ78YXY1NNT003HT74V',
-            name: '',
+            metadata: {
+              id: '01JM1XSBQ78YXY1NNT003HT74V',
+              name: '',
+            },
           },
         ],
       },
@@ -203,9 +196,7 @@ describe('Security Tab', () => {
 
     fireEvent.click(screen.getByTestId('reveal-seed-words'));
 
-    expect(mockHistoryPush).toHaveBeenCalledWith({
-      pathname: REVEAL_SRP_LIST_ROUTE,
-    });
+    expect(mockUseNavigate).toHaveBeenCalledWith(REVEAL_SRP_LIST_ROUTE);
   });
 
   it('sets IPFS gateway', async () => {
@@ -265,6 +256,10 @@ describe('Security Tab', () => {
     expect(
       await toggleCheckbox('ipfs-gateway-resolution-container', false),
     ).toBe(true);
+  });
+
+  it('toggles skipDeepLinkInterstitial', async () => {
+    expect(toggleCheckbox('skipDeepLinkInterstitial', false)).toBe(true);
   });
 
   it('clicks "Add Custom Network"', async () => {

@@ -72,6 +72,8 @@ function addAssetToZip(
  * this.options.transform function to modify the manifest before collecting the
  * entry points.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export class ManifestPlugin<Z extends boolean> {
   /**
    * File types that can be compressed well using DEFLATE compression, used when
@@ -302,6 +304,20 @@ export class ManifestPlugin<Z extends boolean> {
         }
       }
 
+      // handle manifest v3 service worker logic
+      if (
+        manifest.manifest_version === 3 &&
+        manifest.background?.service_worker
+      ) {
+        const serviceWorkerEntrypoint = compilation.entrypoints.get(
+          manifest.background.service_worker,
+        );
+        if (serviceWorkerEntrypoint) {
+          const serviceWorkerFiles = serviceWorkerEntrypoint.getFiles();
+          manifest.background.service_worker = serviceWorkerFiles[0];
+        }
+      }
+
       // allow the user to `transform` the manifest. Use a copy of the manifest
       // so modifications for one browser don't affect other browsers.
       if (transform) {
@@ -315,24 +331,14 @@ export class ManifestPlugin<Z extends boolean> {
   }
 
   private hookIntoPipelines(compilation: Compilation): void {
-    // prepare manifests early so we can catch errors early instead of waiting
-    // until the end of the compilation.
-    this.prepareManifests(compilation);
-
-    // TODO: MV3 needs to be handled differently. Specifically, it needs to
-    // load the files it needs via a function call to `importScripts`, plus some
-    // other shenanigans.
-
     // hook into the processAssets hook to move/zip assets
-    const tapOptions = {
-      name: NAME,
-      stage: Infinity,
-    };
+    const tapOptions = { name: NAME, stage: Infinity };
     if (this.options.zip) {
       const options = this.options as ManifestPluginOptions<true>;
       compilation.hooks.processAssets.tapPromise(
         tapOptions,
         async (assets: Assets) => {
+          this.prepareManifests(compilation);
           await this.zipAssets(compilation, assets, options);
           this.moveAssets(
             compilation,
@@ -344,6 +350,7 @@ export class ManifestPlugin<Z extends boolean> {
     } else {
       const options = this.options as ManifestPluginOptions<false>;
       compilation.hooks.processAssets.tap(tapOptions, (assets: Assets) => {
+        this.prepareManifests(compilation);
         this.moveAssets(compilation, assets, options);
       });
     }

@@ -59,7 +59,11 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
             location: 'Token List Item',
             text: 'Stake',
             // FIXME: This might not be a number for non-EVM accounts
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             chain_id: chainId,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             token_symbol: symbol,
           },
         });
@@ -73,11 +77,11 @@ export const StakeableLink = ({ chainId, symbol }: StakeableLinkProps) => {
         paddingInlineEnd={1}
         fontWeight={FontWeight.Medium}
       >
-        {t('stake')}
+        {t('earn')}
       </Text>
       <Icon
         name={IconName.Stake}
-        size={IconSize.Sm}
+        size={IconSize.Xs}
         color={IconColor.primaryDefault}
       />
     </Box>

@@ -11,6 +11,11 @@ import { renderWithConfirmContextProvider } from '../../../../../../test/lib/con
 import configureStore from '../../../../../store/store';
 import Header from './header';
 
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => jest.fn(),
+}));
+
 const render = (state: DefaultRootState = getMockTypedSignConfirmState()) => {
   const store = configureStore(state);
   return renderWithConfirmContextProvider(<Header />, store);
@@ -49,10 +54,10 @@ describe('Header', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('contains network name and account name', () => {
+  it('contains wallet name and account name', () => {
     const { getByText } = render();
-    expect(getByText('Test Account')).toBeInTheDocument();
-    expect(getByText('Goerli')).toBeInTheDocument();
+    expect(getByText('Account 1')).toBeInTheDocument();
+    expect(getByText('Wallet 1')).toBeInTheDocument();
   });
 
   it('contains account info icon', async () => {

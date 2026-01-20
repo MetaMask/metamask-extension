@@ -1,7 +1,13 @@
-// PersistanceManager.test.ts
-import { captureException } from '@sentry/browser';
+// PersistenceManager.test.ts
+// node is missing the navigator.locks API so we polyfill it for the tests
+import 'navigator.locks';
 import log from 'loglevel';
 
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
 import { PersistenceManager } from './persistence-manager';
 import ExtensionStore from './extension-store';
 import { MetaMaskStateType } from './base-store';
@@ -9,20 +15,30 @@ import { MetaMaskStateType } from './base-store';
 const MOCK_DATA = { config: { foo: 'bar' } };
 
 const mockStoreSet = jest.fn();
+const mockStoreSetKeyValues = jest.fn();
 const mockStoreGet = jest.fn();
+const mockStoreReset = jest.fn();
 
 jest.mock('./extension-store', () => {
   return jest.fn().mockImplementation(() => {
-    return { set: mockStoreSet, get: mockStoreGet };
+    return {
+      set: mockStoreSet,
+      setKeyValues: mockStoreSetKeyValues,
+      get: mockStoreGet,
+      reset: mockStoreReset,
+    };
   });
 });
-jest.mock('./read-only-network-store');
-jest.mock('@sentry/browser', () => ({
-  captureException: jest.fn(),
-}));
 jest.mock('loglevel', () => ({
   error: jest.fn(),
+  info: jest.fn(),
 }));
+jest.mock('../../../../shared/lib/sentry', () => ({
+  captureException: jest.fn(),
+  captureMessage: jest.fn(),
+}));
+const mockedCaptureException = jest.mocked(captureException);
+const mockedCaptureMessage = jest.mocked(captureMessage);
 
 describe('PersistenceManager', () => {
   let manager: PersistenceManager;
@@ -33,6 +49,9 @@ describe('PersistenceManager', () => {
   });
 
   describe('set', () => {
+    beforeEach(() => {
+      manager.storageKind = 'data';
+    });
     it('throws if state is missing', async () => {
       await expect(
         manager.set(undefined as unknown as MetaMaskStateType),
@@ -64,7 +83,10 @@ describe('PersistenceManager', () => {
       mockStoreSet.mockRejectedValueOnce(error);
 
       await manager.set({ appState: { broken: true } });
-      expect(captureException).toHaveBeenCalledWith(error);
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'set-failed' },
+        fingerprint: ['persistence-error', 'set-failed'],
+      });
       expect(log.error).toHaveBeenCalledWith(
         'error setting state in local store:',
         error,
@@ -80,7 +102,7 @@ describe('PersistenceManager', () => {
       await manager.set({ appState: { broken: true } });
       await manager.set({ appState: { broken: true } });
 
-      expect(captureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
     });
 
     it('captures exception twice if store.set fails, then succeeds and then fails again', async () => {
@@ -100,21 +122,58 @@ describe('PersistenceManager', () => {
 
       await manager.set({ appState: { broken: true } });
 
-      expect(captureException).toHaveBeenCalledTimes(2);
+      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
+    });
+
+    it('tracks recovery with captureMessage when store.set fails then succeeds', async () => {
+      manager.setMetadata({ version: 17 });
+
+      const error = new Error('store.set error');
+      mockStoreSet.mockRejectedValueOnce(error);
+
+      // First set fails
+      await manager.set({ appState: { broken: true } });
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
+
+      // Second set succeeds - should trigger recovery tracking
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { fixed: true } });
+
+      expect(mockedCaptureMessage).toHaveBeenCalledTimes(1);
+      expect(mockedCaptureMessage).toHaveBeenCalledWith(
+        'Data persistence recovered after temporary failure',
+        {
+          level: 'info',
+          tags: { 'persistence.event': 'set-recovered' },
+          fingerprint: ['persistence-event', 'set-recovered'],
+        },
+      );
+    });
+
+    it('does not track recovery if set never failed', async () => {
+      manager.setMetadata({ version: 17 });
+
+      // Set succeeds without prior failure
+      mockStoreSet.mockResolvedValueOnce(undefined);
+      await manager.set({ appState: { working: true } });
+
+      expect(mockedCaptureMessage).not.toHaveBeenCalled();
     });
   });
 
   describe('get', () => {
     it('returns undefined and clears mostRecentRetrievedState if store returns empty', async () => {
-      mockStoreGet.mockReturnValueOnce({});
-      const result = await manager.get();
+      mockStoreGet.mockResolvedValueOnce({});
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
 
     it('returns undefined if store returns null', async () => {
-      mockStoreGet.mockReturnValueOnce(null);
-      const result = await manager.get();
+      mockStoreGet.mockResolvedValueOnce(null);
+      const result = await manager.get({ validateVault: false });
       expect(result).toBeUndefined();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
@@ -122,7 +181,7 @@ describe('PersistenceManager', () => {
     it('updates mostRecentRetrievedState if extension has not been initialized', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      const result = await manager.get();
+      const result = await manager.get({ validateVault: false });
       expect(result).toStrictEqual({ data: MOCK_DATA });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
@@ -130,9 +189,10 @@ describe('PersistenceManager', () => {
     });
 
     it('does not overwrite mostRecentRetrievedState if already initialized', async () => {
+      manager.storageKind = 'data';
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
       // First call to get -> sets isExtensionInitialized = false -> sets mostRecentRetrievedState
-      await manager.get();
+      await manager.get({ validateVault: false });
       // The act of calling set will set isExtensionInitialized to true
       manager.setMetadata({ version: 10 });
       await manager.set({ appState: { test: true } });
@@ -141,10 +201,176 @@ describe('PersistenceManager', () => {
       mockStoreGet.mockResolvedValueOnce({
         data: { config: { newData: true } },
       });
-      await manager.get();
+      await manager.get({ validateVault: false });
       expect(manager.mostRecentRetrievedState).toStrictEqual({
         data: MOCK_DATA,
       });
+    });
+
+    it('does not throw when validating state with a *missing vault* and no backup', async () => {
+      // the reason this does NOT throw is because this could be an initial
+      // state; we have no good evidence that this isn't the first time
+      // state is being initialized, so we just assume it is fine.
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get({ validateVault: true });
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does not throw when validating a valid vault', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: 'vault',
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+
+      const result = await manager.get({ validateVault: true });
+      expect(result).toStrictEqual({ data: mockData });
+      expect(manager.mostRecentRetrievedState).toStrictEqual({
+        data: mockData,
+      });
+    });
+
+    it('does throw when validating state with a *missing vault* but has a backup', async () => {
+      const mockData = {
+        data: {
+          KeyringController: {
+            vault: undefined, // vault is missing on purpose
+          },
+        },
+      };
+      mockStoreGet.mockResolvedValueOnce({ data: mockData });
+      manager.getBackup = jest.fn().mockResolvedValueOnce({
+        KeyringController: {
+          vault: 'vault',
+        },
+      });
+
+      await expect(manager.get({ validateVault: true })).rejects.toThrow(
+        MISSING_VAULT_ERROR,
+      );
+    });
+  });
+  describe('persist', () => {
+    it('throws if storageKind is not split', async () => {
+      manager.storageKind = 'data';
+
+      await expect(manager.persist()).rejects.toThrow(
+        'MetaMask - cannot use `persist` when storageKind is not "split"',
+      );
+    });
+
+    it('throws if metadata has not been set', async () => {
+      await expect(manager.persist()).rejects.toThrow(
+        'MetaMask - metadata must be set before calling "persist"',
+      );
+    });
+
+    it('calls localStore.setKeyValues with pending pairs', async () => {
+      manager.setMetadata({ version: 10, storageKind: 'split' });
+      manager.update('FooController', { foo: 'bar' });
+      manager.update('BarController', undefined);
+
+      await manager.persist();
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(1);
+      const passedMap = mockStoreSetKeyValues.mock.calls[0][0] as Map<
+        string,
+        unknown
+      >;
+      expect(passedMap.get('meta')).toEqual({
+        version: 10,
+        storageKind: 'split',
+      });
+      expect(passedMap.get('FooController')).toEqual({ foo: 'bar' });
+      expect(passedMap.has('BarController')).toBe(true);
+      expect(passedMap.get('BarController')).toBeUndefined();
+    });
+
+    it('logs error and captures exception if store.setKeyValues throws', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(error, {
+        tags: { 'persistence.error': 'persist-failed' },
+        fingerprint: ['persistence-error', 'persist-failed'],
+      });
+      expect(log.error).toHaveBeenCalledWith(
+        'error setting state in local store:',
+        error,
+      );
+    });
+
+    it('retries pending updates when store.setKeyValues throws', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      await manager.persist();
+
+      mockStoreSetKeyValues.mockResolvedValueOnce(undefined);
+
+      await manager.persist();
+
+      expect(mockStoreSetKeyValues).toHaveBeenCalledTimes(2);
+      const retryMap = mockStoreSetKeyValues.mock.calls[1][0] as Map<
+        string,
+        unknown
+      >;
+
+      expect(retryMap.get('meta')).toEqual({ version: 10 });
+      expect(retryMap.get('FooController')).toEqual({ foo: 'bar' });
+    });
+
+    it('captures exception only once if store.setKeyValues throws multiple times', async () => {
+      manager.setMetadata({ version: 10 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValue(error);
+
+      await manager.persist();
+      await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(1);
+    });
+
+    it('captures exception twice if store.setKeyValues fails, then succeeds and then fails again', async () => {
+      manager.setMetadata({ version: 17 });
+      manager.update('FooController', { foo: 'bar' });
+
+      const error = new Error('store.setKeyValues error');
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+
+      await manager.persist();
+
+      mockStoreSetKeyValues.mockResolvedValueOnce(undefined);
+      await manager.persist();
+
+      mockStoreSetKeyValues.mockRejectedValueOnce(error);
+      await manager.persist();
+
+      expect(mockedCaptureException).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -152,7 +378,7 @@ describe('PersistenceManager', () => {
     it('sets mostRecentRetrievedState to null if previously set', async () => {
       mockStoreGet.mockResolvedValueOnce({ data: MOCK_DATA });
 
-      await manager.get();
+      await manager.get({ validateVault: false });
       manager.cleanUpMostRecentRetrievedState();
       expect(manager.mostRecentRetrievedState).toBeNull();
     });
@@ -161,6 +387,116 @@ describe('PersistenceManager', () => {
       expect(manager.mostRecentRetrievedState).toBeNull();
       manager.cleanUpMostRecentRetrievedState();
       expect(manager.mostRecentRetrievedState).toBeNull();
+    });
+  });
+
+  describe('Locks', () => {
+    it('should acquire a lock when setting state', async () => {
+      manager.storageKind = 'data';
+      manager.setMetadata({ version: 10 });
+
+      manager.open = jest.fn().mockResolvedValue(undefined);
+
+      const { request } = navigator.locks;
+      const mockCallback = jest.fn();
+      const mockLocksRequest = jest
+        .fn()
+        .mockImplementation((name, options, _) => {
+          return request.call(navigator.locks, name, options, mockCallback);
+        });
+      navigator.locks.request = mockLocksRequest;
+
+      // should be saved
+      const one = manager.set({ appState: { test: 1 } });
+      // should be tossed
+      const two = manager.set({ appState: { test: 2 } });
+      // should be saved
+      const three = manager.set({ appState: { test: 3 } });
+
+      await Promise.race([one, two, three]);
+
+      // lock should be requested 3 times
+      expect(mockLocksRequest).toHaveBeenCalledTimes(3);
+      // but the mockCallback should only be called twice!
+      expect(mockCallback).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('Broken indexedDb', () => {
+    const originalOpen = indexedDB.open.bind(indexedDB);
+    let brokenManager: PersistenceManager;
+
+    /**
+     * Breaks the indexedDB open request with a specific error.
+     *
+     * @param error - The error to throw when opening the database.
+     */
+    function breakIndexedDbWithError(error: Error) {
+      // make indexedDb throw the FF DOMException `InvalidStateError`:
+      // "A mutation operation was attempted on a database that did not allow mutations."
+      indexedDB.open = (name: string, version?: number) => {
+        const request = {} as unknown as IDBOpenDBRequest;
+        if (name === 'metamask-backup' && version === 1) {
+          // @ts-expect-error - we're intentionally mocking the error here
+          request.error = error;
+          setTimeout(() => {
+            request.onerror?.({ target: request } as unknown as Event);
+          }, 0);
+        }
+        return request;
+      };
+    }
+
+    afterEach(() => {
+      // restore indexedDB.open back to its original function
+      indexedDB.open = originalOpen;
+    });
+
+    it('Handles DOMException InvalidStateError: A mutation operation was attempted on a database that did not allow mutations.', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const domException = new DOMException(
+        'A mutation operation was attempted on a database that did not allow mutations.',
+        'InvalidStateError',
+      );
+      breakIndexedDbWithError(domException);
+
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await brokenManager.open();
+
+      // We don't have a valid indexedDB database to use, so `getBackup` now
+      // returns `undefined`
+      expect(await brokenManager.getBackup()).toBeUndefined();
+
+      expect(mockedCaptureException).toHaveBeenCalledWith(domException, {
+        tags: { 'persistence.error': 'backup-db-open-failed' },
+        fingerprint: ['persistence-error', 'backup-db-open-failed'],
+      });
+      expect(consoleWarnSpy).toHaveBeenCalledWith(
+        'Could not open backup database; automatic vault recovery will not be available.',
+      );
+      expect(consoleErrorSpy).toHaveBeenCalledWith(domException);
+    });
+
+    it('Bubbles up IndexedDB error on initialization', async () => {
+      const consoleWarnSpy = jest.spyOn(console, 'warn').mockImplementation();
+      const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation();
+
+      const randomError = new Error('Random Error');
+      breakIndexedDbWithError(randomError);
+
+      brokenManager = new PersistenceManager({
+        localStore: new ExtensionStore(),
+      });
+      await expect(brokenManager.open()).rejects.toThrow(randomError);
+      // in the application any other start up errors would be handled
+      // further up the stack. Logging them here would be redundant.
+      expect(mockedCaptureException).not.toHaveBeenCalled();
+      expect(consoleWarnSpy).not.toHaveBeenCalled();
+      expect(consoleErrorSpy).not.toHaveBeenCalled();
     });
   });
 });

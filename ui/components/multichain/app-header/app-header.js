@@ -27,7 +27,10 @@ import { toggleNetworkMenu } from '../../../store/actions';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { getEnvironmentType } from '../../../../app/scripts/lib/util';
-import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
+import {
+  ENVIRONMENT_TYPE_POPUP,
+  ENVIRONMENT_TYPE_SIDEPANEL,
+} from '../../../../shared/constants/app';
 import { getIsUnlocked } from '../../../ducks/metamask/metamask';
 import { SEND_STAGES, getSendStage } from '../../../ducks/send';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
@@ -51,7 +54,9 @@ export const AppHeader = ({ location }) => {
 
   const dispatch = useDispatch();
 
-  const popupStatus = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
+  const environmentType = getEnvironmentType();
+  const popupStatus = environmentType === ENVIRONMENT_TYPE_POPUP;
+  const isSidepanel = environmentType === ENVIRONMENT_TYPE_SIDEPANEL;
 
   // Disable the network and account pickers if the user is in
   // a critical flow
@@ -62,13 +67,16 @@ export const AppHeader = ({ location }) => {
     SEND_STAGES.ADD_RECIPIENT,
   ].includes(sendStage);
   const isConfirmationPage = Boolean(
-    matchPath(location.pathname, {
-      path: CONFIRM_TRANSACTION_ROUTE,
-      exact: false,
-    }),
+    matchPath(
+      {
+        path: CONFIRM_TRANSACTION_ROUTE,
+        end: false,
+      },
+      location?.pathname || '',
+    ),
   );
   const isSwapsPage = Boolean(
-    matchPath(location.pathname, { path: SWAPS_ROUTE, exact: false }),
+    matchPath({ path: SWAPS_ROUTE, end: false }, location?.pathname || ''),
   );
 
   const unapprovedTransactions = useSelector(getUnapprovedTransactions);
@@ -97,16 +105,12 @@ export const AppHeader = ({ location }) => {
     });
   }, [chainId, dispatch, trackEvent]);
 
-  // This is required to ensure send and confirmation screens
-  // look as desired
-  const headerBottomMargin = !popupStatus && disableNetworkPicker ? 4 : 0;
-
   const unlockedStyling = {
     alignItems: AlignItems.center,
     width: BlockSize.Full,
     backgroundColor: BackgroundColor.backgroundDefault,
     padding: 2,
-    paddingLeft: 4,
+    paddingLeft: 2,
     paddingRight: 4,
     gap: 2,
   };
@@ -123,21 +127,16 @@ export const AppHeader = ({ location }) => {
 
   return (
     <>
-      {isUnlocked && !popupStatus ? <MultichainMetaFoxLogo /> : null}
-      <AppHeaderContainer
-        isUnlocked={isUnlocked}
-        popupStatus={popupStatus}
-        headerBottomMargin={headerBottomMargin}
-      >
+      {isUnlocked && !popupStatus && !isSidepanel && true ? (
+        <MultichainMetaFoxLogo />
+      ) : null}
+      <AppHeaderContainer isUnlocked={isUnlocked} popupStatus={popupStatus}>
         <>
           <Box
             className={classnames(
               isUnlocked
-                ? 'multichain-app-header__contents'
+                ? 'multichain-app-header__contents flex'
                 : 'multichain-app-header__lock-contents',
-              {
-                'multichain-app-header-shadow': isUnlocked && !popupStatus,
-              },
             )}
             {...(isUnlocked ? unlockedStyling : lockStyling)}
           >

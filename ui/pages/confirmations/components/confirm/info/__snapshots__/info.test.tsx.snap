@@ -3,7 +3,7 @@
 exports[`Info renders info section for approve request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -11,10 +11,12 @@ exports[`Info renders info section for approve request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -23,7 +25,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-11"
+              aria-describedby="tippy-tooltip-18"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -31,7 +33,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -54,10 +56,12 @@ exports[`Info renders info section for approve request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -84,13 +88,13 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -105,19 +109,21 @@ exports[`Info renders info section for approve request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="confirmation__approve-spender"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -126,7 +132,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-8"
+              aria-describedby="tippy-tooltip-14"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -134,7 +140,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -146,13 +152,13 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -173,14 +179,52 @@ exports[`Info renders info section for approve request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -189,7 +233,7 @@ exports[`Info renders info section for approve request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-9"
+              aria-describedby="tippy-tooltip-15"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -197,7 +241,7 @@ exports[`Info renders info section for approve request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -215,9 +259,67 @@ exports[`Info renders info section for approve request 1`] = `
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-16"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                data-testid="transaction-details-recipient-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x07614...3ad68
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -226,13 +328,15 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -241,7 +345,7 @@ exports[`Info renders info section for approve request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-10"
+                aria-describedby="tippy-tooltip-17"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -249,7 +353,7 @@ exports[`Info renders info section for approve request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -280,9 +384,9 @@ exports[`Info renders info section for approve request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -305,12 +409,17 @@ exports[`Info renders info section for approve request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -319,10 +428,12 @@ exports[`Info renders info section for approve request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -335,12 +446,12 @@ exports[`Info renders info section for approve request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
-            🦊 Market
+            Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -362,108 +473,114 @@ exports[`Info renders info section for approve request 1`] = `
 exports[`Info renders info section for contract interaction request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-0 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-0 mm-box--padding-bottom-0 mm-box--padding-inline-0 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
-      class="mm-box simulation-details-layout mm-box--padding-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
+      class="mm-box simulation-details-layout mm-box--padding-top-1 mm-box--padding-bottom-2 mm-box--padding-inline-3 mm-box--display-flex mm-box--gap-3 mm-box--flex-direction-column mm-box--rounded-lg mm-box--border-color-transparent box--border-style-solid box--border-width-1"
       data-testid="simulation-details-layout"
     >
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center"
       >
         <div
-          class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-          style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+            class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+            style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; padding-left: 0px; padding-right: 0px;"
           >
             <div
-              class="mm-box mm-box--display-flex mm-box--align-items-center"
+              class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+              style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
             >
-              <p
-                class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+              <div
+                class="mm-box mm-box--display-flex mm-box--align-items-center"
+                style="flex-shrink: 0;"
               >
-                Estimated changes
-              </p>
-              <div>
-                <div
-                  aria-describedby="tippy-tooltip-3"
-                  class=""
-                  data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
-                  data-tooltipped=""
-                  style="display: flex;"
-                  tabindex="0"
+                <p
+                  class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
                 >
-                  <span
-                    class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
-                    style="mask-image: url('./images/icons/question.svg');"
-                  />
+                  Estimated changes
+                </p>
+                <div>
+                  <div
+                    aria-describedby="tippy-tooltip-10"
+                    class=""
+                    data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
+                    data-tooltipped=""
+                    style="display: flex;"
+                    tabindex="0"
+                  >
+                    <span
+                      class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                      style="mask-image: url('./images/icons/question.svg');"
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div
-          role="progressbar"
+        <p
+          class="mm-box mm-text mm-text--body-md mm-text--text-align-right mm-box--width-11/12 mm-box--color-text-default"
         >
-          <svg
-            class="preloader__icon"
-            fill="none"
-            height="20"
-            viewBox="0 0 16 16"
-            width="20"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              clip-rule="evenodd"
-              d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-              fill="var(--color-primary-muted)"
-              fill-rule="evenodd"
-            />
-            <mask
-              height="16"
-              id="mask0"
-              mask-type="alpha"
-              maskUnits="userSpaceOnUse"
-              width="16"
-              x="0"
-              y="0"
-            >
-              <path
-                clip-rule="evenodd"
-                d="M8 13.7143C4.84409 13.7143 2.28571 11.1559 2.28571 8C2.28571 4.84409 4.84409 2.28571 8 2.28571C11.1559 2.28571 13.7143 4.84409 13.7143 8C13.7143 11.1559 11.1559 13.7143 8 13.7143ZM8 16C3.58172 16 0 12.4183 0 8C0 3.58172 3.58172 0 8 0C12.4183 0 16 3.58172 16 8C16 12.4183 12.4183 16 8 16Z"
-                fill="var(--color-primary-default)"
-                fill-rule="evenodd"
-              />
-            </mask>
-            <g
-              mask="url(#mask0)"
-            >
-              <path
-                d="M6.85718 17.9999V11.4285V8.28564H-4.85711V17.9999H6.85718Z"
-                fill="var(--color-primary-default)"
-              />
-            </g>
-          </svg>
-        </div>
+          No changes
+        </p>
       </div>
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="transaction-details-section"
   >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -472,7 +589,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-4"
+              aria-describedby="tippy-tooltip-11"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -480,7 +597,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -504,10 +621,12 @@ exports[`Info renders info section for contract interaction request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -516,7 +635,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-5"
+              aria-describedby="tippy-tooltip-12"
               class=""
               data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
               data-tooltipped=""
@@ -524,7 +643,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-recipient-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -536,13 +655,13 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -556,7 +675,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -565,13 +684,15 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -580,7 +701,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-6"
+                aria-describedby="tippy-tooltip-13"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -588,7 +709,7 @@ exports[`Info renders info section for contract interaction request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -619,9 +740,9 @@ exports[`Info renders info section for contract interaction request 1`] = `
             $0.04
           </p>
           <div
-            class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -644,12 +765,17 @@ exports[`Info renders info section for contract interaction request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -658,10 +784,12 @@ exports[`Info renders info section for contract interaction request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -674,12 +802,12 @@ exports[`Info renders info section for contract interaction request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
-            🦊 Market
+            Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -701,17 +829,55 @@ exports[`Info renders info section for contract interaction request 1`] = `
 exports[`Info renders info section for personal sign request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -728,7 +894,7 @@ exports[`Info renders info section for personal sign request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -747,15 +913,15 @@ exports[`Info renders info section for personal sign request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-column mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 32px; top: 2px;"
       >
         <span
@@ -765,7 +931,7 @@ exports[`Info renders info section for personal sign request 1`] = `
       </button>
       <button
         aria-label="collapse-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         data-testid="sectionCollapseButton"
         style="cursor: pointer; position: absolute; right: 8px;"
       >
@@ -775,10 +941,12 @@ exports[`Info renders info section for personal sign request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--padding-right-12 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -805,7 +973,7 @@ exports[`Info renders info section for personal sign request 1`] = `
 exports[`Info renders info section for setApprovalForAll request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__simulation_section"
   >
     <div
@@ -813,10 +981,12 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -825,7 +995,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-12"
+              aria-describedby="tippy-tooltip-19"
               class=""
               data-original-title="Estimated changes are what might happen if you go through with this transaction. This is just a prediction, not a guarantee."
               data-tooltipped=""
@@ -833,7 +1003,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -856,10 +1026,12 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -886,13 +1058,13 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
           </div>
           <div
-            class="mm-box mm-box--display-flex"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-column"
           >
             <div
               class="name name__clickable name__missing"
             >
               <span
-                class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                 style="mask-image: url('./images/icons/question.svg');"
               />
               <p
@@ -907,19 +1079,21 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation__approve-details"
   >
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="confirmation__approve-spender"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -928,7 +1102,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-13"
+              aria-describedby="tippy-tooltip-20"
               class=""
               data-original-title="This is the address that will be able to withdraw your NFTs."
               data-tooltipped=""
@@ -936,7 +1110,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="confirmation__approve-spender-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -948,13 +1122,13 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -975,14 +1149,52 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       data-testid="transaction-details-origin-row"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -991,7 +1203,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
           </p>
           <div>
             <div
-              aria-describedby="tippy-tooltip-14"
+              aria-describedby="tippy-tooltip-21"
               class=""
               data-original-title="This is the site asking for your confirmation."
               data-tooltipped=""
@@ -999,7 +1211,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 data-testid="transaction-details-origin-row-tooltip"
                 style="mask-image: url('./images/icons/question.svg');"
               />
@@ -1017,9 +1229,67 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         </p>
       </div>
     </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      data-testid="transaction-details-recipient-row"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Interacting with
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-22"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                data-testid="transaction-details-recipient-row-tooltip"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0x07614...3ad68
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="gas-fee-section"
   >
     <div
@@ -1028,13 +1298,15 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
         data-testid="edit-gas-fees-row"
-        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center; margin-bottom: 2px;"
+        style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent; align-items: center;"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+          class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+          style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
         >
           <div
             class="mm-box mm-box--display-flex mm-box--align-items-center"
+            style="flex-shrink: 0;"
           >
             <p
               class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1043,7 +1315,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             </p>
             <div>
               <div
-                aria-describedby="tippy-tooltip-15"
+                aria-describedby="tippy-tooltip-23"
                 class=""
                 data-original-title="Amount paid to process the transaction on network."
                 data-tooltipped=""
@@ -1051,7 +1323,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
                 tabindex="0"
               >
                 <span
-                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                  class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                   data-testid="edit-gas-fees-row-tooltip"
                   style="mask-image: url('./images/icons/question.svg');"
                 />
@@ -1082,9 +1354,9 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
             $0.08
           </p>
           <div
-            class="mm-box mm-box--padding-inline-2 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-background-alternative mm-box--rounded-pill"
+            class="mm-box mm-box--margin-left-1 mm-box--padding-inline-start-1 mm-box--display-inline-flex mm-box--gap-1 mm-box--align-items-center mm-box--background-color-transparent mm-box--rounded-pill"
             data-testid="selected-gas-fee-token"
-            style="cursor: default;"
+            style="cursor: default; padding-inline-end: 6px; padding: 0px;"
           >
             <div
               class="mm-box"
@@ -1107,12 +1379,17 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       <div
         class="mm-box mm-box--padding-inline-2 mm-box--display-flex mm-box--justify-content-space-between"
       >
-        <p
-          class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
-          data-testid="gas-fee-token-fee"
+        <div
+          class="mm-box"
+          style="margin-top: 0px;"
         >
-           
-        </p>
+          <p
+            class="mm-box mm-text mm-text--body-sm mm-box--padding-bottom-0 mm-box--color-text-alternative"
+            data-testid="gas-fee-token-fee"
+          >
+             
+          </p>
+        </div>
       </div>
     </div>
     <div
@@ -1121,10 +1398,12 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1137,12 +1416,12 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
         class="mm-box mm-box--display-flex mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex mm-box--flex-wrap-wrap"
+          class="mm-box mm-box--margin-bottom-1 mm-box--display-flex mm-box--flex-wrap-wrap"
         >
           <p
-            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-1 mm-box--color-text-alternative"
+            class="mm-box mm-text mm-text--body-md mm-box--padding-inline-end-2 mm-box--color-text-alternative"
           >
-            🦊 Market
+            Market
           </p>
           <p
             class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
@@ -1164,7 +1443,7 @@ exports[`Info renders info section for setApprovalForAll request 1`] = `
 exports[`Info renders info section for typed sign request 1`] = `
 <div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_request-section"
   >
     <div
@@ -1172,10 +1451,48 @@ exports[`Info renders info section for typed sign request 1`] = `
       style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start mm-box--color-text-default"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1192,7 +1509,7 @@ exports[`Info renders info section for typed sign request 1`] = `
               tabindex="0"
             >
               <span
-                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-muted"
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
                 style="mask-image: url('./images/icons/question.svg');"
               />
             </div>
@@ -1211,32 +1528,49 @@ exports[`Info renders info section for typed sign request 1`] = `
     </div>
     <div
       class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
-      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
     >
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
           >
             Interacting with
           </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-3"
+              class=""
+              data-original-title="This is the contract you're interacting with. Protect yourself from scammers by verifying the details."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
         </div>
       </div>
       <div
         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
       >
         <div
-          class="mm-box mm-box--display-flex"
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
         >
           <div
             class="name name__clickable name__missing"
           >
             <span
-              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
               style="mask-image: url('./images/icons/question.svg');"
             />
             <p
@@ -1250,16 +1584,16 @@ exports[`Info renders info section for typed sign request 1`] = `
     </div>
   </div>
   <div
-    class="mm-box mm-box--margin-bottom-4 mm-box--padding-2 mm-box--background-color-background-default mm-box--rounded-md"
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
     data-testid="confirmation_message-section"
   >
     <div
-      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-5 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
       style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
     >
       <button
         aria-label="copy-button"
-        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-muted mm-box--background-color-transparent mm-box--rounded-lg"
+        class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-alternative mm-box--background-color-transparent mm-box--rounded-lg"
         style="cursor: pointer; position: absolute; right: 4px; top: 2px;"
       >
         <span
@@ -1268,10 +1602,12 @@ exports[`Info renders info section for typed sign request 1`] = `
         />
       </button>
       <div
-        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+        class="mm-box mm-box--padding-right-6 mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
       >
         <div
           class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
         >
           <p
             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1288,10 +1624,12 @@ exports[`Info renders info section for typed sign request 1`] = `
           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-left: 0px; padding-right: 0px;"
         >
           <div
-            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
           >
             <div
               class="mm-box mm-box--display-flex mm-box--align-items-center"
+              style="flex-shrink: 0;"
             >
               <p
                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1324,10 +1662,12 @@ exports[`Info renders info section for typed sign request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1353,10 +1693,12 @@ exports[`Info renders info section for typed sign request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1374,10 +1716,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1403,10 +1747,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1424,10 +1770,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1440,13 +1788,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p
@@ -1464,10 +1812,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1480,13 +1830,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p
@@ -1504,10 +1854,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1520,13 +1872,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                         class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                       >
                         <div
-                          class="mm-box mm-box--display-flex"
+                          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                         >
                           <div
                             class="name name__clickable name__missing"
                           >
                             <span
-                              class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                               style="mask-image: url('./images/icons/question.svg');"
                             />
                             <p
@@ -1548,10 +1900,12 @@ exports[`Info renders info section for typed sign request 1`] = `
               style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
             >
               <div
-                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
               >
                 <div
                   class="mm-box mm-box--display-flex mm-box--align-items-center"
+                  style="flex-shrink: 0;"
                 >
                   <p
                     class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1569,10 +1923,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                   style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                 >
                   <div
-                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                    class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                    style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                   >
                     <div
                       class="mm-box mm-box--display-flex mm-box--align-items-center"
+                      style="flex-shrink: 0;"
                     >
                       <p
                         class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1590,10 +1946,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1619,10 +1977,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                       style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                     >
                       <div
-                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                       >
                         <div
                           class="mm-box mm-box--display-flex mm-box--align-items-center"
+                          style="flex-shrink: 0;"
                         >
                           <p
                             class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1640,10 +2000,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1656,13 +2018,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
                               >
                                 <span
-                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                                   style="mask-image: url('./images/icons/question.svg');"
                                 />
                                 <p
@@ -1680,10 +2042,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1696,13 +2060,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
                               >
                                 <span
-                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                                   style="mask-image: url('./images/icons/question.svg');"
                                 />
                                 <p
@@ -1720,10 +2084,12 @@ exports[`Info renders info section for typed sign request 1`] = `
                           style="overflow-wrap: anywhere; min-height: 24px; position: relative; padding-right: 0px;"
                         >
                           <div
-                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-center mm-box--align-items-flex-start"
+                            class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+                            style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
                           >
                             <div
                               class="mm-box mm-box--display-flex mm-box--align-items-center"
+                              style="flex-shrink: 0;"
                             >
                               <p
                                 class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
@@ -1736,13 +2102,13 @@ exports[`Info renders info section for typed sign request 1`] = `
                             class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
                           >
                             <div
-                              class="mm-box mm-box--display-flex"
+                              class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
                             >
                               <div
                                 class="name name__clickable name__missing"
                               >
                                 <span
-                                  class="mm-box name__icon mm-icon mm-icon--size-md mm-box--display-inline-block mm-box--color-inherit"
+                                  class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
                                   style="mask-image: url('./images/icons/question.svg');"
                                 />
                                 <p
@@ -1762,6 +2128,501 @@ exports[`Info renders info section for typed sign request 1`] = `
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Info renders info section for typed sign request with permission 1`] = `
+<div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_justification-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Justification
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-4"
+              class=""
+              data-original-title="Justification for the request provided by the website"
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        The reason for the permission
+      </p>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="confirmation_permission-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Request from
+          </p>
+          <div>
+            <div
+              aria-describedby="tippy-tooltip-5"
+              class=""
+              data-original-title="This is the site asking for your signature."
+              data-tooltipped=""
+              style="display: flex;"
+              tabindex="0"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--margin-left-1 mm-box--display-inline-block mm-box--color-icon-alternative"
+                style="mask-image: url('./images/icons/question.svg');"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center"
+      >
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+        >
+          metamask.github.io
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Recipient
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--align-items-center"
+      >
+        <div
+          class="mm-box overflow-hidden mm-box--display-flex mm-box--flex-direction-column"
+        >
+          <div
+            class="name name__clickable name__missing"
+          >
+            <span
+              class="mm-box name__icon mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+              style="mask-image: url('./images/icons/question.svg');"
+            />
+            <p
+              class="mm-box mm-text name__value mm-text--body-md mm-box--color-text-default"
+            >
+              0xCdD61...A3829
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative; background: transparent;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Network
+          </p>
+        </div>
+      </div>
+      <div
+        class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+      >
+        <div
+          class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+          style="border-width: 0px;"
+        >
+          G
+        </div>
+        <p
+          class="mm-box mm-text mm-text--body-md mm-box--color-text-default"
+          data-testid="confirmation__details-network-name"
+        >
+          Goerli
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="native-token-stream-details-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Initial allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <div
+            style="min-width: 0;"
+          >
+            <div
+              aria-describedby="tippy-tooltip-6"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                &lt;0.000001
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+        >
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Max allowance
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <div
+            style="min-width: 0;"
+          >
+            <div
+              aria-describedby="tippy-tooltip-7"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                &lt;0.000001
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+        >
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+    <div
+      style="padding-top: 8px; padding-bottom: 8px;"
+    >
+      <div
+        style="height: 1px; margin-left: -8px; margin-right: -8px;"
+      />
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Start date
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          29 November 1973
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Expiration
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-col"
+      >
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          29 November 1973
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box mm-box--margin-bottom-4 mm-box--padding-top-1 mm-box--padding-bottom-1 mm-box--padding-inline-2 mm-box--background-color-background-section mm-box--rounded-lg"
+    data-testid="native-token-stream-stream-rate-section"
+  >
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Stream rate
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <div
+            style="min-width: 0;"
+          >
+            <div
+              aria-describedby="tippy-tooltip-8"
+              class=""
+              data-original-title="0.00000000000000466"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                &lt;0.000001
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+        >
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
+      </div>
+    </div>
+    <div
+      class="mm-box confirm-info-row mm-box--margin-top-2 mm-box--margin-bottom-2 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--display-flex mm-box--flex-direction-row mm-box--flex-wrap-wrap mm-box--justify-content-space-between mm-box--align-items-flex-start mm-box--color-text-default mm-box--rounded-lg"
+      style="overflow-wrap: anywhere; min-height: 24px; position: relative;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--flex-direction-row mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--color-text-alternative"
+        style="flex-shrink: 0; flex-basis: auto; max-width: 100%;"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--align-items-center"
+          style="flex-shrink: 0;"
+        >
+          <p
+            class="mm-box mm-text mm-text--body-md-medium mm-box--color-inherit"
+          >
+            Available per day
+          </p>
+        </div>
+      </div>
+      <div
+        class="flex flex-row gap-2 items-center"
+      >
+        <div
+          class="mm-box mm-box--display-flex mm-box--gap-2 mm-box--flex-wrap-wrap mm-box--align-items-center mm-box--min-width-0"
+        >
+          <div
+            style="min-width: 0;"
+          >
+            <div
+              aria-describedby="tippy-tooltip-9"
+              class=""
+              data-original-title="0.000000000402624"
+              data-tooltipped=""
+              style="display: inline;"
+              tabindex="0"
+            >
+              <p
+                class="mm-box mm-text mm-text--body-md mm-box--color-inherit"
+                style="white-space: pre-wrap;"
+              >
+                &lt;0.000001
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-4 w-4"
+        >
+          <img
+            alt="ETH"
+            class="size-full object-contain"
+            src="./images/eth_logo.svg"
+          />
+        </div>
+        <p
+          class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+        >
+          ETH
+        </p>
       </div>
     </div>
   </div>

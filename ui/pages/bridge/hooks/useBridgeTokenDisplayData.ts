@@ -1,10 +1,13 @@
 import { useSelector } from 'react-redux';
-import { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
-import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import type { BridgeHistoryItem } from '@metamask/bridge-status-controller';
+import { TransactionType } from '@metamask/transaction-controller';
+import type { TransactionGroup } from '../../../hooks/bridge/useBridgeTxHistoryData';
 import { useTokenFiatAmount } from '../../../hooks/useTokenFiatAmount';
 import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
-import { selectBridgeHistoryForAccount } from '../../../ducks/bridge-status/selectors';
-import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
+import {
+  selectBridgeHistoryForApprovalTxId,
+  selectBridgeHistoryItemForTxMetaId,
+} from '../../../ducks/bridge-status/selectors';
 
 /**
  * A Bridge transaction group's primaryTransaction contains details of the swap,
@@ -13,27 +16,45 @@ import { BridgeHistoryItem } from '../../../../shared/types/bridge-status';
  * @param transactionGroup - A Bridge transaction group
  */
 export function useBridgeTokenDisplayData(transactionGroup: TransactionGroup) {
-  const { primaryTransaction } = transactionGroup;
-  const chainId = useSelector(getCurrentChainId);
-  const bridgeHistory = useSelector(selectBridgeHistoryForAccount);
+  const { initialTransaction } = transactionGroup;
+
+  const bridgeHistoryItemForInitialTxId = useSelector((state) =>
+    selectBridgeHistoryItemForTxMetaId(state, initialTransaction.id),
+  );
+  const bridgeHistoryItemWithApprovalTxId = useSelector((state) =>
+    selectBridgeHistoryForApprovalTxId(state, initialTransaction.id),
+  );
 
   const bridgeHistoryItem: BridgeHistoryItem | undefined =
-    bridgeHistory[primaryTransaction.id];
+    bridgeHistoryItemForInitialTxId ?? bridgeHistoryItemWithApprovalTxId;
 
   // Display currency can be fiat or a token
   const displayCurrencyAmount = useTokenFiatAmount(
-    primaryTransaction.sourceTokenAddress,
-    bridgeHistoryItem?.pricingData?.amountSent,
-    primaryTransaction.sourceTokenSymbol,
+    bridgeHistoryItem?.quote.srcAsset.address ??
+      initialTransaction.sourceTokenAddress,
+    bridgeHistoryItem?.pricingData?.amountSent ??
+      initialTransaction.sourceTokenAmount,
+    bridgeHistoryItem?.quote.srcAsset.symbol ??
+      initialTransaction.sourceTokenSymbol,
     {},
     true,
-    chainId,
+    initialTransaction.chainId,
   );
 
   return {
-    category: TransactionGroupCategory.bridge,
+    category:
+      initialTransaction.type === TransactionType.bridge
+        ? TransactionGroupCategory.bridge
+        : TransactionGroupCategory.swap,
     displayCurrencyAmount,
-    sourceTokenSymbol: primaryTransaction.sourceTokenSymbol,
-    sourceTokenAmountSent: bridgeHistoryItem?.pricingData?.amountSent,
+    sourceTokenSymbol:
+      bridgeHistoryItem?.quote.srcAsset.symbol ??
+      initialTransaction.sourceTokenSymbol,
+    sourceTokenAmountSent:
+      bridgeHistoryItem?.pricingData?.amountSent ??
+      initialTransaction.sourceTokenAmount,
+    destinationTokenSymbol:
+      bridgeHistoryItem?.quote.destAsset.symbol ??
+      initialTransaction.destinationTokenSymbol,
   };
 }

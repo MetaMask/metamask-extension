@@ -1,5 +1,5 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import React, { Dispatch, SetStateAction } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { Box } from '../../../../../../../components/component-library';
 import {
@@ -19,11 +19,7 @@ import { ConfirmInfoAlertRow } from '../../../../../../../components/app/confirm
 import { RowAlertKey } from '../../../../../../../components/app/confirm/info/row/constants';
 import { useAutomaticGasFeeTokenSelect } from '../../../../../hooks/useAutomaticGasFeeTokenSelect';
 
-export const GasFeesDetails = ({
-  setShowCustomizeGasPopover,
-}: {
-  setShowCustomizeGasPopover: Dispatch<SetStateAction<boolean>>;
-}) => {
+export const GasFeesDetails = (): JSX.Element | null => {
   const t = useI18nContext();
   useAutomaticGasFeeTokenSelect();
 
@@ -65,54 +61,59 @@ export const GasFeesDetails = ({
         fiatFee={estimatedFeeFiat}
         fiatFeeWith18SignificantDigits={estimatedFeeFiatWith18SignificantDigits}
         nativeFee={estimatedFeeNative}
-        supportsEIP1559={supportsEIP1559}
-        setShowCustomizeGasPopover={setShowCustomizeGasPopover}
       />
-      {showAdvancedDetails && hasLayer1GasFee && (
-        <>
-          <GasFeesRow
-            data-testid="gas-fee-details-l1"
-            label={t('l1Fee')}
-            tooltipText={t('l1FeeTooltip')}
-            fiatFee={l1FeeFiat}
-            fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
-            nativeFee={l1FeeNative}
-          />
-          <GasFeesRow
-            data-testid="gas-fee-details-l2"
-            label={t('l2Fee')}
-            tooltipText={t('l2FeeTooltip')}
-            fiatFee={l2FeeFiat}
-            fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
-            nativeFee={l2FeeNative}
-          />
-        </>
-      )}
-      {supportsEIP1559 && !transactionMeta.selectedGasFeeToken && (
-        <ConfirmInfoAlertRow
-          alertKey={RowAlertKey.Speed}
-          data-testid="gas-fee-details-speed"
-          label={t('speed')}
-          ownerId={transactionMeta.id}
-        >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
-            <GasTiming
-              maxFeePerGas={maxFeePerGas}
-              maxPriorityFeePerGas={maxPriorityFeePerGas}
+      {showAdvancedDetails &&
+        hasLayer1GasFee &&
+        !transactionMeta.isGasFeeSponsored && (
+          <>
+            <GasFeesRow
+              data-testid="gas-fee-details-l1"
+              label={t('l1Fee')}
+              tooltipText={t('l1FeeTooltip')}
+              fiatFee={l1FeeFiat}
+              fiatFeeWith18SignificantDigits={l1FeeFiatWith18SignificantDigits}
+              nativeFee={l1FeeNative}
             />
-          </Box>
-        </ConfirmInfoAlertRow>
-      )}
-      {showAdvancedDetails && !transactionMeta.selectedGasFeeToken && (
-        <GasFeesRow
-          data-testid="gas-fee-details-max-fee"
-          label={t('maxFee')}
-          tooltipText={t('maxFeeTooltip')}
-          fiatFee={maxFeeFiat}
-          fiatFeeWith18SignificantDigits={maxFeeFiatWith18SignificantDigits}
-          nativeFee={maxFeeNative}
-        />
-      )}
+            <GasFeesRow
+              data-testid="gas-fee-details-l2"
+              label={t('l2Fee')}
+              tooltipText={t('l2FeeTooltip')}
+              fiatFee={l2FeeFiat}
+              fiatFeeWith18SignificantDigits={l2FeeFiatWith18SignificantDigits}
+              nativeFee={l2FeeNative}
+            />
+          </>
+        )}
+      {supportsEIP1559 &&
+        !transactionMeta.selectedGasFeeToken &&
+        !transactionMeta.isGasFeeSponsored && (
+          <ConfirmInfoAlertRow
+            alertKey={RowAlertKey.Speed}
+            data-testid="gas-fee-details-speed"
+            label={t('speed')}
+            ownerId={transactionMeta.id}
+          >
+            <Box display={Display.Flex} alignItems={AlignItems.center}>
+              <GasTiming
+                chainId={transactionMeta.chainId}
+                maxFeePerGas={maxFeePerGas}
+                maxPriorityFeePerGas={maxPriorityFeePerGas}
+              />
+            </Box>
+          </ConfirmInfoAlertRow>
+        )}
+      {showAdvancedDetails &&
+        !transactionMeta.selectedGasFeeToken &&
+        !transactionMeta.isGasFeeSponsored && (
+          <GasFeesRow
+            data-testid="gas-fee-details-max-fee"
+            label={t('maxFee')}
+            tooltipText={t('maxFeeTooltip')}
+            fiatFee={maxFeeFiat}
+            fiatFeeWith18SignificantDigits={maxFeeFiatWith18SignificantDigits}
+            nativeFee={maxFeeNative}
+          />
+        )}
     </>
   );
 };

@@ -11,7 +11,7 @@
       width: 100%;
     }
 
-    &:hover {
+    &:hover:not([disabled]) {
       background-color: var(--color-background-alternative-hover);
       border-color: var(--color-border-default);
     }

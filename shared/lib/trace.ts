@@ -1,9 +1,7 @@
-import * as Sentry from '@sentry/browser';
-import { MeasurementUnit, StartSpanOptions } from '@sentry/types';
+import type * as Sentry from '@sentry/browser';
+import { MeasurementUnit, Span, StartSpanOptions } from '@sentry/types';
 import { createModuleLogger } from '@metamask/utils';
-// TODO: Remove restricted import
-// eslint-disable-next-line import/no-restricted-paths
-import { log as sentryLogger } from '../../app/scripts/lib/setupSentry';
+import { sentryLogger } from './sentry';
 
 /**
  * The supported trace names.
@@ -13,9 +11,16 @@ export enum TraceName {
   AccountOverviewAssetListTab = 'Account Overview Asset List Tab',
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
+  AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
+  AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
+  BridgeBalancesUpdated = 'Bridge Balances Updated',
+  BridgeViewLoaded = 'Bridge View Loaded',
+  ConnectPage = 'Connect Page',
+  CreateAccount = 'Create Account',
   DeveloperTest = 'Developer Test',
+  DisconnectAllModal = 'Disconnect All Modal',
   FirstRender = 'First Render',
   GetState = 'Get State',
   ImportNfts = 'Import Nfts',
@@ -26,12 +31,74 @@ export enum TraceName {
   Middleware = 'Middleware',
   NestedTest1 = 'Nested Test 1',
   NestedTest2 = 'Nested Test 2',
+  NetworkList = 'Network List',
   NotificationDisplay = 'Notification Display',
   PPOMValidation = 'PPOM Validation',
+  ReceiveModal = 'Receive Modal',
+  SendCompleted = 'Send Completed',
   SetupStore = 'Setup Store',
   Signature = 'Signature',
+  SwapQuotesFetched = 'Swap Quotes Fetched',
+  SwapViewLoaded = 'Swap View Loaded',
   Transaction = 'Transaction',
   UIStartup = 'UI Startup',
+  RevealSeed = 'Reveal Seed',
+  ImportSrp = 'Import Srp',
+  AddAccount = 'Add Account',
+  LoadCollectibles = 'Load Collectibles',
+  GetAssetHistoricalPrices = 'Get Asset Historical Prices',
+  OnFinishedTransaction = 'On Finished Transaction',
+  AccountSyncFull = 'Account Sync Full',
+  AccountSyncSaveIndividual = 'Account Sync Save Individual',
+  ContactSyncFull = 'Contact Sync Full',
+  ContactSyncDeleteRemote = 'Contact Sync Delete Remote',
+  ContactSyncUpdateRemote = 'Contact Sync Update Remote',
+  ContactSyncSaveBatch = 'Contact Sync Save Batch',
+  OnboardingNewSocialAccountExists = 'Onboarding - New Social Account Exists',
+  OnboardingNewSocialCreateWallet = 'Onboarding - New Social Create Wallet',
+  OnboardingNewSrpCreateWallet = 'Onboarding - New SRP Create Wallet',
+  OnboardingExistingSocialLogin = 'Onboarding - Existing Social Login',
+  OnboardingExistingSocialAccountNotFound = 'Onboarding - Existing Social Account Not Found',
+  OnboardingExistingSrpImport = 'Onboarding - Existing SRP Import',
+  OnboardingJourneyOverall = 'Onboarding - Overall Journey',
+  OnboardingSocialLoginAttempt = 'Onboarding - Social Login Attempt',
+  OnboardingPasswordSetupAttempt = 'Onboarding - Password Setup Attempt',
+  OnboardingPasswordLoginAttempt = 'Onboarding - Password Login Attempt',
+  OnboardingResetPassword = 'Onboarding - Reset Password',
+  OnboardingCreateKeyAndBackupSrp = 'Onboarding - Create Key and Backup SRP',
+  OnboardingAddSrp = 'Onboarding - Add SRP',
+  OnboardingFetchSrps = 'Onboarding - Fetch SRPs',
+  OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
+  OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
+  OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
+  OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
+  OnboardingCreateKeyAndBackupSrpError = 'Onboarding - Create Key and Backup SRP Error',
+  OnboardingAddSrpError = 'Onboarding - Add SRP Error',
+  OnboardingFetchSrpsError = 'Onboarding - Fetch SRPs Error',
+  OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
+  OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
+  OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
+  // Accounts
+  ShowAccountList = 'Show Account List',
+  ShowAccountAddressList = 'Show Account Address List',
+  ShowAccountPrivateKeyList = 'Show Account Private Key List',
+  CreateMultichainAccount = 'Create Multichain Account',
+  DiscoverAccounts = 'Discover Accounts',
+  EvmDiscoverAccounts = 'EVM Discover Accounts',
+}
+
+/**
+ * The operation names to use for the trace.
+ */
+export enum TraceOperation {
+  AccountList = 'account.list',
+  OnboardingUserJourney = 'onboarding.user_journey',
+  OnboardingSecurityOp = 'onboarding.security_operation',
+  OnboardingError = 'onboarding.error',
+  // Accounts
+  AccountCreate = 'account.create',
+  AccountUi = 'account.ui',
+  AccountDiscover = 'account.discover',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');
@@ -50,6 +117,7 @@ type PendingTrace = {
   end: (timestamp?: number) => void;
   request: TraceRequest;
   startTime: number;
+  span?: Span | null;
 };
 
 /**
@@ -60,6 +128,8 @@ export type TraceContext = unknown;
 /**
  * A callback function that can be traced.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TraceCallback<T> = (context?: TraceContext) => T;
 
 /**
@@ -85,6 +155,9 @@ export type TraceRequest = {
   /**
    * The parent context of the trace.
    * If provided, the trace will be nested under the parent trace.
+   * Can be either:
+   * - A Sentry Span
+   * - { _name: TraceName, _id?: string } (when serialized across RPC)
    */
   parentContext?: TraceContext;
 
@@ -97,6 +170,11 @@ export type TraceRequest = {
    * Custom tags to associate with the trace.
    */
   tags?: Record<string, number | string | boolean>;
+
+  /**
+   * Custom operation name to associate with the trace.
+   */
+  op?: string;
 };
 
 /**
@@ -118,9 +196,18 @@ export type EndTraceRequest = {
    * Override the end time of the trace.
    */
   timestamp?: number;
+
+  /**
+   * Custom data to associate with the trace when ending it.
+   * These will be set as attributes on the span.
+   */
+  data?: Record<string, number | string | boolean>;
 };
 
-export function trace<T>(request: TraceRequest, fn: TraceCallback<T>): T;
+export function trace<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType;
 
 export function trace(request: TraceRequest): TraceContext;
 
@@ -134,6 +221,8 @@ export function trace(request: TraceRequest): TraceContext;
  * @param fn - The optional callback to record the duration of.
  * @returns The context of the trace, or the result of the callback if provided.
  */
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function trace<T>(
   request: TraceRequest,
   fn?: TraceCallback<T>,
@@ -151,7 +240,7 @@ export function trace<T>(
  *
  * @param request - The data necessary to identify and end the pending trace.
  */
-export function endTrace(request: EndTraceRequest) {
+export function endTrace(request: EndTraceRequest): void {
   const { name, timestamp } = request;
   const id = getTraceId(request);
   const key = getTraceKey(request);
@@ -160,6 +249,13 @@ export function endTrace(request: EndTraceRequest) {
   if (!pendingTrace) {
     log('No pending trace found', name, id);
     return;
+  }
+
+  if (request.data && pendingTrace.span) {
+    const span = pendingTrace.span as Span;
+    for (const [attrKey, attrValue] of Object.entries(request.data)) {
+      span.setAttribute(attrKey, attrValue);
+    }
   }
 
   pendingTrace.end(timestamp);
@@ -172,7 +268,10 @@ export function endTrace(request: EndTraceRequest) {
   logTrace(pendingRequest, startTime, endTime);
 }
 
-function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
+function traceCallback<ResultType>(
+  request: TraceRequest,
+  fn: TraceCallback<ResultType>,
+): ResultType {
   const { name } = request;
 
   const callback = (span: Sentry.Span | null) => {
@@ -185,7 +284,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
       initSpan(span, request);
     }
 
-    return tryCatchMaybePromise<T>(
+    return tryCatchMaybePromise<ResultType>(
       () => fn(span),
       (currentError) => {
         error = currentError;
@@ -195,7 +294,7 @@ function traceCallback<T>(request: TraceRequest, fn: TraceCallback<T>): T {
         const end = Date.now();
         logTrace(request, start, end, error);
       },
-    ) as T;
+    ) as ResultType;
   };
 
   return startSpan(request, (spanOptions) =>
@@ -217,7 +316,7 @@ function startTrace(request: TraceRequest): TraceContext {
       initSpan(span, request);
     }
 
-    const pendingTrace = { end, request, startTime };
+    const pendingTrace = { end, request, startTime, span };
     const key = getTraceKey(request);
     tracesByKey.set(key, pendingTrace);
 
@@ -231,17 +330,67 @@ function startTrace(request: TraceRequest): TraceContext {
   );
 }
 
+/**
+ * Check if value is a valid Sentry Span (has spanContext method).
+ *
+ * @param value - The value to check.
+ * @returns True if value is a Sentry Span.
+ */
+function isValidSentrySpan(value: unknown): value is Sentry.Span {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'spanContext' in value &&
+    typeof (value as { spanContext?: unknown }).spanContext === 'function'
+  );
+}
+
+/**
+ * Resolve parentContext to a Sentry Span.
+ * Accepts either a Sentry Span or { _name, _id? } object from RPC.
+ *
+ * @param parentContext - Sentry Span or { _name: TraceName, _id?: string }.
+ * @returns Resolved Sentry Span or null.
+ */
+function resolveParentSpan(parentContext: unknown): Sentry.Span | null {
+  if (!parentContext) {
+    return null;
+  }
+
+  if (isValidSentrySpan(parentContext)) {
+    return parentContext;
+  }
+
+  if (
+    typeof parentContext === 'object' &&
+    '_name' in parentContext &&
+    typeof (parentContext as { _name?: unknown })._name === 'string'
+  ) {
+    const ctx = parentContext as { _name: string; _id?: string };
+    const parentKey = getTraceKey({
+      name: ctx._name as TraceName,
+      id: ctx._id,
+    });
+    const parentTrace = tracesByKey.get(parentKey);
+    return parentTrace?.span ?? null;
+  }
+
+  return null;
+}
+
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function startSpan<T>(
   request: TraceRequest,
   callback: (spanOptions: StartSpanOptions) => T,
 ) {
-  const { data: attributes, name, parentContext, startTime } = request;
-  const parentSpan = (parentContext ?? null) as Sentry.Span | null;
+  const { data: attributes, name, parentContext, startTime, op } = request;
+  const parentSpan = resolveParentSpan(parentContext);
 
   const spanOptions: StartSpanOptions = {
     attributes,
     name,
-    op: OP_DEFAULT,
+    op: op ?? OP_DEFAULT,
     parentSpan,
     startTime,
   };
@@ -268,11 +417,11 @@ function logTrace(
   log('Finished trace', name, duration, { request, error });
 }
 
-function getTraceId(request: TraceRequest) {
+function getTraceId(request: TraceRequest | EndTraceRequest) {
   return request.id ?? ID_DEFAULT;
 }
 
-function getTraceKey(request: TraceRequest) {
+function getTraceKey(request: TraceRequest | EndTraceRequest) {
   const { name } = request;
   const id = getTraceId(request);
 
@@ -317,6 +466,8 @@ function initSpan(_span: Sentry.Span, request: TraceRequest) {
   }
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function tryCatchMaybePromise<T>(
   tryFn: () => T,
   catchFn: (error: unknown) => void,
@@ -346,6 +497,8 @@ function tryCatchMaybePromise<T>(
   return undefined;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpan<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -359,6 +512,8 @@ function sentryStartSpan<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryStartSpanManual<T>(
   spanOptions: StartSpanOptions,
   callback: (span: Sentry.Span | null) => T,
@@ -372,6 +527,8 @@ function sentryStartSpanManual<T>(
   return actual(spanOptions, callback);
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 function sentryWithIsolationScope<T>(callback: (scope: Sentry.Scope) => T): T {
   const actual = globalThis.sentry?.withIsolationScope;
 

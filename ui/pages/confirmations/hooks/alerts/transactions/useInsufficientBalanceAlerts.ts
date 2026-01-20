@@ -1,62 +1,67 @@
-import { Hex } from '@metamask/utils';
-import { useMemo } from 'react';
-import { useSelector } from 'react-redux';
+'use no memo';
 
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
-import {
-  selectTransactionAvailableBalance,
-  selectTransactionFeeById,
-  selectTransactionValue,
-} from '../../../../../selectors';
-import { getMultichainNativeCurrency } from '../../../../../selectors/multichain';
-import { isBalanceSufficient } from '../../../send/send.utils';
-import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import { Severity } from '../../../../../helpers/constants/design-system';
+import { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import {
   AlertActionKey,
   RowAlertKey,
 } from '../../../../../components/app/confirm/info/row/constants';
+import { Alert } from '../../../../../ducks/confirm-alerts/confirm-alerts';
+import { Severity } from '../../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { getUseTransactionSimulations } from '../../../../../selectors';
 import { useConfirmContext } from '../../../context/confirm';
-import { sumHexes } from '../../../../../../shared/modules/conversion.utils';
+import { useIsGaslessSupported } from '../../gas/useIsGaslessSupported';
+import { useHasInsufficientBalance } from '../../useHasInsufficientBalance';
 
-export function useInsufficientBalanceAlerts(): Alert[] {
+export function useInsufficientBalanceAlerts({
+  ignoreGasFeeToken,
+}: {
+  ignoreGasFeeToken?: boolean;
+} = {}): Alert[] {
   const t = useI18nContext();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
+  const { selectedGasFeeToken, gasFeeTokens } = currentConfirmation ?? {};
+  const { hasInsufficientBalance, nativeCurrency } =
+    useHasInsufficientBalance();
+  const isSimulationEnabled = useSelector(getUseTransactionSimulations);
+  const isSponsored = currentConfirmation?.isGasFeeSponsored;
   const {
-    id: transactionId,
-    chainId,
-    selectedGasFeeToken,
-  } = currentConfirmation ?? {};
+    isSupported: isGaslessSupported,
+    pending: isGaslessSupportedPending,
+  } = useIsGaslessSupported();
 
-  const batchTransactionValues =
-    currentConfirmation?.nestedTransactions?.map(
-      (trxn) => (trxn.value as Hex) ?? 0x0,
-    ) ?? [];
+  const isGasFeeTokensEmpty = gasFeeTokens?.length === 0;
 
-  const balance = useSelector((state) =>
-    selectTransactionAvailableBalance(state, transactionId, chainId),
-  );
+  // Check if gasless check has completed (regardless of result)
+  const isGaslessCheckComplete = !isGaslessSupportedPending;
 
-  const value = useSelector((state) =>
-    selectTransactionValue(state, transactionId),
-  );
+  // Transaction is sponsored only if it's marked as sponsored AND gasless is supported
+  const isSponsoredTransaction = isSponsored && isGaslessSupported;
 
-  const totalValue = sumHexes(value, ...batchTransactionValues);
+  // Simulation is complete if it's disabled, or if enabled and gasFeeTokens is loaded
+  const isSimulationComplete = !isSimulationEnabled || Boolean(gasFeeTokens);
 
-  const { hexMaximumTransactionFee } = useSelector((state) =>
-    selectTransactionFeeById(state, transactionId),
-  );
+  // Check if user has selected a gas fee token (or we're ignoring that check)
+  const hasNoGasFeeTokenSelected = ignoreGasFeeToken || !selectedGasFeeToken;
 
-  const nativeCurrency = useSelector(getMultichainNativeCurrency);
+  // Gasless check is complete AND one of:
+  //  - Gasless is NOT supported (native currency needed for gas)
+  //  - Gasless IS supported but no alternative gas fee tokens are available
+  //  - Gas fee tokens are available but none is selected
+  const shouldCheckGaslessConditions =
+    isGaslessCheckComplete &&
+    (!isGaslessSupported ||
+      isGasFeeTokensEmpty ||
+      (!isGasFeeTokensEmpty && !selectedGasFeeToken));
 
-  const insufficientBalance = !isBalanceSufficient({
-    amount: totalValue,
-    gasTotal: hexMaximumTransactionFee,
-    balance,
-  });
-
-  const showAlert = insufficientBalance && !selectedGasFeeToken;
+  const showAlert =
+    hasInsufficientBalance &&
+    isSimulationComplete &&
+    hasNoGasFeeTokenSelected &&
+    shouldCheckGaslessConditions &&
+    !isSponsoredTransaction;
 
   return useMemo(() => {
     if (!showAlert) {

@@ -15,7 +15,10 @@ import { getTokenStandardAndDetails } from '../../../../../../store/actions';
 import { TokenStandard } from '../../../../../../../shared/constants/transaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../../test/lib/confirmations/render-helpers';
 import { BalanceChange } from '../../../simulation-details/types';
-import { buildApproveTransactionData } from '../../../../../../../test/data/confirmations/token-approve';
+import {
+  buildApproveTransactionData,
+  buildPermit2ApproveTransactionData,
+} from '../../../../../../../test/data/confirmations/token-approve';
 import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../shared/constants';
 import { buildSetApproveForAllTransactionData } from '../../../../../../../test/data/confirmations/set-approval-for-all';
 import { useBatchApproveBalanceChanges } from './useBatchApproveBalanceChanges';
@@ -30,6 +33,7 @@ jest.mock('../../../../../../store/actions', () => ({
 }));
 
 const TO_MOCK = '0x1234567891234567891234567891234567891234';
+const TOKEN_ADDRESS_MOCK = '0x1234567891234567891234567891234567891235';
 const AMOUNT_MOCK = 123;
 const AMOUNT_HEX_MOCK = '0x7b';
 const DATA_MOCK = buildApproveTransactionData(TO_MOCK, AMOUNT_MOCK);
@@ -43,6 +47,7 @@ const BALANCE_CHANGE_MOCK: BalanceChange = {
   amount: new BigNumber('123.56'),
   fiatAmount: 12.34,
   isApproval: false,
+  usdAmount: 12.34,
 };
 
 async function runHook({
@@ -139,6 +144,46 @@ describe('useBatchApproveBalanceChanges', () => {
         ],
       },
     });
+  });
+
+  it('generates ERC-20 token balance changes from Permit2 approval', async () => {
+    await runHook({
+      nestedTransactions: [
+        {
+          data: buildPermit2ApproveTransactionData(
+            TOKEN_ADDRESS_MOCK,
+            TO_MOCK,
+            AMOUNT_MOCK,
+            456,
+          ),
+          to: TO_MOCK,
+        },
+      ],
+    });
+
+    expect(useBalanceChangesMock).toHaveBeenLastCalledWith({
+      chainId: CHAIN_ID,
+      simulationData: {
+        tokenBalanceChanges: [
+          {
+            address: TOKEN_ADDRESS_MOCK,
+            difference: AMOUNT_HEX_MOCK,
+            id: undefined,
+            isAll: false,
+            isDecrease: true,
+            isUnlimited: false,
+            nestedTransactionIndex: 0,
+            newBalance: '0x0',
+            previousBalance: '0x0',
+            standard: SimulationTokenStandard.erc20,
+          },
+        ],
+      },
+    });
+
+    expect(getTokenStandardAndDetailsMock).toHaveBeenCalledWith(
+      TOKEN_ADDRESS_MOCK,
+    );
   });
 
   it('generates unlimited ERC-20 token balance changes', async () => {

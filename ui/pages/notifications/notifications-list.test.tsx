@@ -1,10 +1,29 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { screen } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
+import { processNotification } from '@metamask/notification-services-controller/notification-services';
+import {
+  createMockNotificationEthSent,
+  createMockNotificationEthReceived,
+  createMockNotificationERC20Sent,
+  createMockNotificationERC20Received,
+  createMockNotificationERC721Sent,
+  createMockNotificationERC721Received,
+  createMockNotificationERC1155Sent,
+  createMockNotificationERC1155Received,
+  createMockNotificationLidoReadyToBeWithdrawn,
+  createMockNotificationLidoStakeCompleted,
+  createMockNotificationLidoWithdrawalCompleted,
+  createMockNotificationLidoWithdrawalRequested,
+  createMockNotificationMetaMaskSwapsCompleted,
+  createMockNotificationRocketPoolStakeCompleted,
+  createMockNotificationRocketPoolUnStakeCompleted,
+  createMockFeatureAnnouncementRaw,
+  createMockPlatformNotification,
+} from '@metamask/notification-services-controller/notification-services/mocks';
+
 import thunk from 'redux-thunk';
-import { MetamaskNotificationsProvider } from '../../contexts/metamask-notifications/metamask-notifications';
+import { renderWithProvider } from '../../../test/lib/render-helpers-navigate';
 import { NotificationsList, TAB_KEYS } from './notifications-list';
 
 jest.mock('../../store/actions', () => ({
@@ -18,7 +37,7 @@ const store = mockStore({
   metamask: {
     isMetamaskNotificationsEnabled: true,
     isFeatureAnnouncementsEnabled: true,
-    isProfileSyncingEnabled: true,
+    isBackupAndSyncEnabled: true,
     metamaskNotifications: [],
     internalAccounts: {
       accounts: [
@@ -38,24 +57,42 @@ const store = mockStore({
   },
 });
 
+const mockNotifications = [
+  processNotification(createMockNotificationEthSent()),
+  processNotification(createMockNotificationEthReceived()),
+  processNotification(createMockNotificationERC20Sent()),
+  processNotification(createMockNotificationERC20Received()),
+  processNotification(createMockNotificationERC721Sent()),
+  processNotification(createMockNotificationERC721Received()),
+  processNotification(createMockNotificationERC1155Sent()),
+  processNotification(createMockNotificationERC1155Received()),
+  processNotification(createMockNotificationLidoReadyToBeWithdrawn()),
+  processNotification(createMockNotificationLidoStakeCompleted()),
+  processNotification(createMockNotificationLidoWithdrawalCompleted()),
+  processNotification(createMockNotificationLidoWithdrawalRequested()),
+  processNotification(createMockNotificationMetaMaskSwapsCompleted()),
+  processNotification(createMockNotificationRocketPoolStakeCompleted()),
+  processNotification(createMockNotificationRocketPoolUnStakeCompleted()),
+  processNotification(createMockFeatureAnnouncementRaw()),
+  processNotification(createMockPlatformNotification()),
+];
+
 describe('NotificationsList', () => {
   it('renders the notifications list page', () => {
-    render(
-      <Provider store={store}>
-        <Router>
-          <MetamaskNotificationsProvider>
-            <NotificationsList
-              activeTab={TAB_KEYS.ALL}
-              notifications={[]}
-              isLoading={false}
-              isError={false}
-              notificationsCount={0}
-            />
-          </MetamaskNotificationsProvider>
-        </Router>
-      </Provider>,
+    renderWithProvider(
+      <NotificationsList
+        activeTab={TAB_KEYS.ALL}
+        notifications={mockNotifications}
+        isLoading={false}
+        isError={false}
+        notificationsCount={0}
+      />,
+      store,
     );
 
     expect(screen.getByTestId('notifications-list')).toBeInTheDocument();
+    expect(screen.queryAllByTestId(/notification-list-item-/u)).toHaveLength(
+      mockNotifications.length,
+    );
   });
 });

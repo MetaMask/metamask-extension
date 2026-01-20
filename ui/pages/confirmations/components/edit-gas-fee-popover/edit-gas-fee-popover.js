@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 
 import {
@@ -7,7 +8,6 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useTransactionModalContext } from '../../../../contexts/transaction-modal';
 import Box from '../../../../components/ui/box';
-import ErrorMessage from '../../../../components/ui/error-message';
 import Popover from '../../../../components/ui/popover';
 
 import {
@@ -15,14 +15,21 @@ import {
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import { INSUFFICIENT_FUNDS_ERROR_KEY } from '../../../../helpers/constants/error-keys';
-import { useGasFeeContext } from '../../../../contexts/gasFee';
+import {
+  GasFeeContextProvider,
+  useGasFeeContext,
+} from '../../../../contexts/gasFee';
 import AppLoadingSpinner from '../../../../components/app/app-loading-spinner';
 import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
-import { Text } from '../../../../components/component-library';
+import {
+  BannerAlert,
+  BannerAlertSeverity,
+  Text,
+} from '../../../../components/component-library';
 import EditGasItem from './edit-gas-item';
 import NetworkStatistics from './network-statistics';
 
-const EditGasFeePopover = () => {
+const EditGasFeePopoverWrapped = () => {
   const { balanceError, editGasMode } = useGasFeeContext();
   const t = useI18nContext();
   const { closeAllModals, closeModal, currentModal, openModalCount } =
@@ -55,7 +62,11 @@ const EditGasFeePopover = () => {
           <div className="edit-gas-fee-popover__content">
             <Box>
               {balanceError && (
-                <ErrorMessage errorKey={INSUFFICIENT_FUNDS_ERROR_KEY} />
+                <BannerAlert
+                  severity={BannerAlertSeverity.Danger}
+                  description={t(INSUFFICIENT_FUNDS_ERROR_KEY)}
+                  marginBottom={1}
+                />
               )}
               <div className="edit-gas-fee-popover__content__header">
                 <span className="edit-gas-fee-popover__content__header-option">
@@ -112,6 +123,25 @@ const EditGasFeePopover = () => {
       </>
     </Popover>
   );
+};
+
+const EditGasFeePopover = ({ transaction, editGasMode }) => {
+  const { currentModal } = useTransactionModalContext();
+
+  if (currentModal !== 'editGasFee') {
+    return null;
+  }
+
+  return (
+    <GasFeeContextProvider transaction={transaction} editGasMode={editGasMode}>
+      <EditGasFeePopoverWrapped />
+    </GasFeeContextProvider>
+  );
+};
+
+EditGasFeePopover.propTypes = {
+  transaction: PropTypes.object.isRequired,
+  editGasMode: PropTypes.string,
 };
 
 export default EditGasFeePopover;

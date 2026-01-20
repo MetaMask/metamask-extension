@@ -2,7 +2,7 @@ import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SendTokenPage from '../../page-objects/pages/send/send-token-page';
@@ -79,7 +79,14 @@ describe('ENS', function (this: Suite) {
   it('domain resolves to a correct address', async function () {
     await withFixtures(
       {
-        fixtures: new FixtureBuilder().withNetworkControllerOnMainnet().build(),
+        fixtures: new FixtureBuilder()
+          .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
+          .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockInfura,
       },
@@ -88,23 +95,23 @@ describe('ENS', function (this: Suite) {
 
         // click send button on homepage to start send flow
         const homepage = new HomePage(driver);
-        await homepage.check_pageIsLoaded();
-        await homepage.check_expectedBalanceIsDisplayed('20');
+        await homepage.checkPageIsLoaded();
+        await homepage.checkExpectedBalanceIsDisplayed('20');
         await homepage.startSendFlow();
 
         // fill ens address as recipient when user lands on send token screen
         const sendToPage = new SendTokenPage(driver);
-        await sendToPage.check_pageIsLoaded();
+        await sendToPage.checkPageIsLoaded();
         await sendToPage.fillRecipient(sampleEnsDomain);
 
         // verify that ens domain resolves to the correct address
-        await sendToPage.check_ensAddressResolution(
+        await sendToPage.checkEnsAddressResolution(
           sampleEnsDomain,
           shortSampleAddress,
         );
 
         // Verify the resolved ENS address can be used as the recipient address
-        await sendToPage.check_ensAddressAsRecipient(
+        await sendToPage.checkEnsAddressAsRecipient(
           sampleEnsDomain,
           shortSampleAddress,
         );

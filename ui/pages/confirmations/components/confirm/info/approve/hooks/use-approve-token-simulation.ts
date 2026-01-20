@@ -10,8 +10,12 @@ import { TOKEN_VALUE_UNLIMITED_THRESHOLD } from '../../shared/constants';
 import { parseApprovalTransactionData } from '../../../../../../../../shared/modules/transaction.utils';
 import { useIsNFT } from './use-is-nft';
 
-export function isSpendingCapUnlimited(decodedSpendingCap: number) {
-  return decodedSpendingCap >= TOKEN_VALUE_UNLIMITED_THRESHOLD;
+export function isSpendingCapUnlimited(
+  value: number | string | BigNumber,
+  decimals: number = 0,
+) {
+  const finalValue = calcTokenAmount(value, decimals);
+  return finalValue.gte(TOKEN_VALUE_UNLIMITED_THRESHOLD);
 }
 
 export const useApproveTokenSimulation = (
@@ -19,12 +23,13 @@ export const useApproveTokenSimulation = (
   decimals: string | undefined,
 ) => {
   const locale = useSelector(getIntlLocale);
-  const { isNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
+  const { isNFT: isToNFT, pending: isNFTPending } = useIsNFT(transactionMeta);
   const transactionData = transactionMeta?.txParams?.data as Hex | undefined;
 
-  const { amountOrTokenId: parsedValue } =
+  const { amountOrTokenId: parsedValue, tokenAddress } =
     parseApprovalTransactionData(transactionData ?? '0x') ?? {};
 
+  const isNFT = isToNFT && !tokenAddress;
   const value = parsedValue ?? new BigNumber(0);
 
   const decodedSpendingCap = calcTokenAmount(
@@ -38,7 +43,7 @@ export const useApproveTokenSimulation = (
     return isNFT
       ? `${tokenPrefix}${decodedSpendingCap}`
       : formatAmount(locale, new BigNumber(decodedSpendingCap));
-  }, [decodedSpendingCap, isNFT, locale]);
+  }, [decodedSpendingCap, isNFT, locale, tokenPrefix]);
 
   const { spendingCap, isUnlimitedSpendingCap } = useMemo(() => {
     if (!isNFT && isSpendingCapUnlimited(parseInt(decodedSpendingCap, 10))) {
@@ -48,7 +53,7 @@ export const useApproveTokenSimulation = (
       spendingCap: `${tokenPrefix}${decodedSpendingCap}`,
       isUnlimitedSpendingCap: false,
     };
-  }, [decodedSpendingCap, formattedSpendingCap, isNFT]);
+  }, [decodedSpendingCap, isNFT, tokenPrefix]);
 
   return {
     isUnlimitedSpendingCap,

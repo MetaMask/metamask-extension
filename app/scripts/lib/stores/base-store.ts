@@ -10,7 +10,17 @@ export type MetaMaskStateType = Record<string, unknown>;
  * be updated when the extension is loaded, by comparing the version to the
  * target versions of the migrations.
  */
-export type MetaData = { version: number };
+export type MetaData = {
+  /**
+   * The version of the state tree determined by the
+   * migration
+   */
+  version: number;
+  /**
+   * The kind of storage being used.
+   */
+  storageKind?: 'data' | 'split';
+};
 
 /**
  * This type represents the structure of the storage object that is saved in
@@ -19,7 +29,13 @@ export type MetaData = { version: number };
  * with a single key 'version' that is the current version of the state tree.
  */
 export type MetaMaskStorageStructure = {
+  /**
+   * The MetaMask State tree
+   */
   data?: MetaMaskStateType;
+  /**
+   * The metadata object
+   */
   meta?: MetaData;
 };
 
@@ -41,8 +57,12 @@ export type MetaMaskStorageStructure = {
  * storage system. This method should handle necessary validation or
  * error handling to ensure the state is persisted correctly.
  */
-export abstract class BaseStore {
-  abstract set(state: MetaMaskStateType): Promise<void>;
+export type BaseStore = {
+  setKeyValues: (pairs: Map<string, unknown>) => Promise<void>;
 
-  abstract get(): Promise<MetaMaskStorageStructure | null>;
-}
+  set: (state: Required<MetaMaskStorageStructure>) => Promise<void>;
+
+  get: () => Promise<MetaMaskStorageStructure | null>;
+
+  reset: () => Promise<void>;
+};

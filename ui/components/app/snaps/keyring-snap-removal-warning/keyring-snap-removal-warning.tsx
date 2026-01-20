@@ -28,6 +28,8 @@ import InfoTooltip from '../../../ui/info-tooltip';
 import { getCurrentChainId } from '../../../../../shared/modules/selectors/networks';
 import { KeyringAccountListItem } from './keyring-account-list-item';
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export default function KeyringRemovalSnapWarning({
   snap,
   keyringAccounts,
@@ -157,6 +159,8 @@ export default function KeyringRemovalSnapWarning({
           </ModalBody>
           <ModalFooter
             onCancel={onCancel}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onSubmit={async () => {
               if (!showConfirmation) {
                 setShowConfirmation(true);

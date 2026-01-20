@@ -1,34 +1,42 @@
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import withModalProps from '../../../../helpers/higher-order-components/with-modal-props';
-import {
-  removeNetwork,
-  setActiveNetworkConfigurationId,
-} from '../../../../store/actions';
+import { removeNetwork, setEnabledNetworks } from '../../../../store/actions';
 import {
   getNetworkConfigurationsByChainId,
-  getCurrentChainId,
+  getProviderConfig,
 } from '../../../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../../../shared/constants/network';
+import { getIsMultichainAccountsState2Enabled } from '../../../../selectors';
 import ConfirmDeleteNetwork from './confirm-delete-network.component';
 
 const mapStateToProps = (state, ownProps) => {
   const networks = getNetworkConfigurationsByChainId(state);
-  const currentChainId = getCurrentChainId(state);
-  const { rpcEndpoints, defaultRpcEndpointIndex } = networks[CHAIN_IDS.MAINNET];
-  const ethereumMainnetClientId =
-    rpcEndpoints[defaultRpcEndpointIndex].networkClientId;
+  const isMultichainAccountsFeatureEnabled =
+    getIsMultichainAccountsState2Enabled(state);
+
+  let selectedEvmChainId;
+  try {
+    selectedEvmChainId = getProviderConfig(state).chainId;
+  } catch {
+    // Do nothing
+  }
   const { chainId, name: networkNickname } = networks[ownProps.target];
-  return { ethereumMainnetClientId, currentChainId, chainId, networkNickname };
+  const isChainToDeleteSelected = chainId === selectedEvmChainId;
+  return {
+    chainId,
+    networkNickname,
+    isChainToDeleteSelected,
+    isMultichainAccountsFeatureEnabled,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
+    switchToEthereumNetwork: async () => {
+      await dispatch(setEnabledNetworks('0x1'));
+    },
     removeNetwork: (chainId) => {
       dispatch(removeNetwork(chainId));
-    },
-    switchEvmNetwork: (networkClientId) => {
-      dispatch(setActiveNetworkConfigurationId(networkClientId));
     },
   };
 };

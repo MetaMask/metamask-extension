@@ -30,7 +30,7 @@ import { ButtonIcon, ButtonIconSize } from '../button-icon';
 import { ButtonLink, ButtonLinkSize } from '../button-link';
 
 export default {
-  title: 'Components/ComponentLibrary/Icon',
+  title: 'Components/ComponentLibrary/Icon (deprecated)',
   component: Icon,
   parameters: {
     docs: {

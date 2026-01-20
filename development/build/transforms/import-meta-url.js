@@ -89,11 +89,19 @@ module.exports = function ({ types: t }) {
         const match = originalArg.value.match(pattern);
         if (match) {
           const filename = match[1];
-          const ext = originalArg.value.split('.').pop();
-          return t.stringLiteral(join(rootPath, `${filename}.${ext}`));
+          const ext = originalArg.value.split('.').slice(1).join('.');
+          const urlSafePath = join(rootPath, `${filename}.${ext}`).replace(
+            /\\/gu,
+            '/',
+          );
+          return t.stringLiteral(urlSafePath);
         }
       }
-      return t.stringLiteral(join(rootPath, originalArg.value));
+      const urlSafePath = join(rootPath, originalArg.value).replace(
+        /\\/gu,
+        '/',
+      );
+      return t.stringLiteral(urlSafePath);
     }
 
     const quasis = [...originalArg.quasis];

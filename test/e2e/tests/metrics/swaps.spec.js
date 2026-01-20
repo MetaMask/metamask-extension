@@ -1,12 +1,15 @@
+/* eslint-disable mocha/no-skipped-tests */
 const { strict: assert } = require('assert');
 const { toHex } = require('@metamask/controller-utils');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   withFixtures,
-  unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
 } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const {
   buildQuote,
   reviewQuote,
@@ -42,16 +45,16 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
       .times()
       .thenCallback(() => ({ statusCode: 200 })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/tokens')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/tokens')
       .thenCallback(() => ({ statusCode: 200, json: TOKENS_API_MOCK_RESULT })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/topAssets')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/topAssets')
       .thenCallback(() => ({
         statusCode: 200,
         json: TOP_ASSETS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/aggregatorMetadata')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/aggregatorMetadata')
       .thenCallback(() => ({
         statusCode: 200,
         json: AGGREGATOR_METADATA_API_MOCK_RESULT,
@@ -63,19 +66,19 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
         json: GAS_PRICE_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/featureFlags')
+      .forGet('https://bridge.api.cx.metamask.io/featureFlags')
       .thenCallback(() => ({
         statusCode: 200,
         json: FEATURE_FLAGS_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
       })),
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: NETWORKS_2_API_MOCK_RESULT,
@@ -90,7 +93,8 @@ async function mockSegmentAndMetaswapRequests(mockServer) {
 }
 
 // TODO: (MM-PENDING) These tests are planned for deprecation as part of swaps testing revamp
-describe('Swap Eth for another Token', function () {
+// Skipped as this will be supported in the new swap flow in the future
+describe.skip('Swap Eth for another Token', function () {
   it('Completes a Swap between ETH and DAI after changing initial rate', async function () {
     await withFixtures(
       {
@@ -100,11 +104,14 @@ describe('Swap Eth for another Token', function () {
             participateInMetaMetrics: true,
           })
           .build(),
+        localNodeOptions: {
+          hardfork: 'muirGlacier',
+        },
         title: this.test.fullTitle(),
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await getQuoteAndSwapTokens(driver);
 

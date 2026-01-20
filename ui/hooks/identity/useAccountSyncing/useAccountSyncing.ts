@@ -3,12 +3,12 @@ import { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   deleteAccountSyncingDataFromUserStorage,
-  syncInternalAccountsWithUserStorage,
+  syncAccountTreeWithUserStorage,
 } from '../../../store/actions';
 import {
-  selectIsAccountSyncingReadyToBeDispatched,
-  selectIsProfileSyncingEnabled,
-} from '../../../selectors/identity/profile-syncing';
+  selectIsAccountSyncingEnabled,
+  selectIsBackupAndSyncEnabled,
+} from '../../../selectors/identity/backup-and-sync';
 import { getUseExternalServices } from '../../../selectors';
 import {
   getCompletedOnboarding,
@@ -23,10 +23,8 @@ import { selectIsSignedIn } from '../../../selectors/identity/authentication';
  * @returns a boolean if internally we can perform account syncing or not.
  */
 export const useShouldDispatchAccountSyncing = () => {
-  const isAccountSyncingReadyToBeDispatched = useSelector(
-    selectIsAccountSyncingReadyToBeDispatched,
-  );
-  const isProfileSyncingEnabled = useSelector(selectIsProfileSyncingEnabled);
+  const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);
+  const isAccountSyncingEnabled = useSelector(selectIsAccountSyncingEnabled);
   const basicFunctionality: boolean | undefined = useSelector(
     getUseExternalServices,
   );
@@ -36,16 +34,16 @@ export const useShouldDispatchAccountSyncing = () => {
     getCompletedOnboarding,
   );
 
-  const shouldDispatchProfileSyncing: boolean = Boolean(
+  const shouldDispatchAccountSyncing: boolean = Boolean(
     basicFunctionality &&
-      isProfileSyncingEnabled &&
+      isBackupAndSyncEnabled &&
+      isAccountSyncingEnabled &&
       isUnlocked &&
       isSignedIn &&
-      completedOnboarding &&
-      isAccountSyncingReadyToBeDispatched,
+      completedOnboarding,
   );
 
-  return shouldDispatchProfileSyncing;
+  return shouldDispatchAccountSyncing;
 };
 
 /**
@@ -64,7 +62,7 @@ export const useAccountSyncing = () => {
       if (!shouldDispatchAccountSyncing) {
         return;
       }
-      dispatch(syncInternalAccountsWithUserStorage());
+      dispatch(syncAccountTreeWithUserStorage());
     } catch (e) {
       log.error(e);
     }
@@ -87,7 +85,7 @@ export const useDeleteAccountSyncingDataFromUserStorage = () => {
     } catch {
       // Do Nothing
     }
-  }, []);
+  }, [dispatch]);
 
   return { dispatchDeleteAccountSyncingData };
 };

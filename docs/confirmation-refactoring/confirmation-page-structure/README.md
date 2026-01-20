@@ -44,7 +44,7 @@ Other confirmation components listed above map to different types of transaction
      State cleanup is detailed more in a separate document [here](https://github.com/MetaMask/metamask-extension/tree/main/docs/confirmation-refactoring/confirmation-state-management).
 3. ### [confirm-page-container](https://github.com/MetaMask/metamask-extension/tree/03ccc5366cf31c9fa0fedc2fac533ebc64e6f2b4/ui/components/app/confirm-page-container) cleanup:
    As described we should continue to have `confirm-page-container` components taking care of layout. Also wherever possible more re-usable smaller layout components for different part of confirmation page like gas details, gas selection popover, etc should be added.
-   `confirm-page-container` defines a layout which is used by most comfirmation pages, but some pages like new token allowance implementation for `ERC20` differ from this layout. We will be able to use more and more of these re-usable components for other confirmation pages layouts also.
+   `confirm-page-container` defines a layout which is used by most confirmation pages, but some pages like new token allowance implementation for `ERC20` differ from this layout. We will be able to use more and more of these re-usable components for other confirmation pages layouts also.
    - Move code specific to transaction to their confirmation component, for instance code related to `ApproveForAll` should be moved to `/pages/confirm-approve`, code related to `hideTitle` can be moved to `/pages/confirm-contract-interaction` etc.
    - All header related code [here](https://github.com/MetaMask/metamask-extension/blob/03ccc5366cf31c9fa0fedc2fac533ebc64e6f2b4/ui/components/app/confirm-page-container/confirm-page-container.component.js#L191) should be moved to [confirm-page-container-header](https://github.com/MetaMask/metamask-extension/tree/03ccc5366cf31c9fa0fedc2fac533ebc64e6f2b4/ui/components/app/confirm-page-container/confirm-page-container-header)
    - All warnings related code can be moved to a new child component.
@@ -52,7 +52,6 @@ Other confirmation components listed above map to different types of transaction
 4. ### Edit gas popovers:
 
    There are 2 different versions popovers for gas editing:
-
    - Legacy gas popover - [component](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/edit-gas-popover)
    - EIP-1559 V2 gas popover - [component1](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/edit-gas-fee-popover), [component2](https://github.com/MetaMask/metamask-extension/tree/main/ui/components/app/advanced-gas-fee-popover).
      Context [transaction-modal-context](https://github.com/MetaMask/metamask-extension/blob/main/ui/contexts/transaction-modal.js) is used to show hide EIP-1559 gas popovers.

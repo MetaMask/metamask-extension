@@ -7,6 +7,7 @@ import browser from 'webextension-polyfill';
 import log from 'loglevel';
 import {
   BROKEN_PRERENDER_BROWSER_VERSIONS,
+  FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS,
   FIXED_PRERENDER_BROWSER_VERSIONS,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -77,4 +78,39 @@ export function getIsBrowserPrerenderBroken(
       !bowser.satisfies(FIXED_PRERENDER_BROWSER_VERSIONS)) ??
     false
   );
+}
+
+/**
+ * Returns true if the Chromium-based browser is no longer affected by a bug
+ * that causes MV3 updates to break service workers, and Extension updates are stable.
+ *
+ * @param {import('bowser').Parser} bowser - optional Bowser Parser instance to check against
+ * @returns {boolean} Whether the browser is no longer affected by the MV3 update bug.
+ */
+export function getIsChromiumBrowserMV3StableUpdatesSupported(
+  bowser = Bowser.getParser(window.navigator.userAgent),
+) {
+  return (
+    bowser.satisfies(FIXED_MV3_STABLE_UPDATES_CHROMIUM_BROWSER_VERSIONS) ??
+    false
+  );
+}
+
+/**
+ * Returns the name of the browser
+ *
+ * @param {Bowser} bowser - optional Bowser instance to check against
+ * @param {Navigator} navigator - optional Navigator instance to check against
+ * @returns {string} The name of the browser
+ */
+export function getBrowserName(
+  bowser = Bowser.getParser(window.navigator.userAgent),
+  navigator = window.navigator,
+) {
+  // Handle case for brave by parsing navigator.userAgent
+  if ('brave' in navigator) {
+    return 'Brave';
+  }
+
+  return bowser.getBrowserName();
 }

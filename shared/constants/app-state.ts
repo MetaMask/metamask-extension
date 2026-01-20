@@ -1,3 +1,5 @@
+import { NetworkClientId } from '@metamask/network-controller';
+import { Hex } from 'viem';
 import { TraceName } from '../lib/trace';
 import { MetaMetricsEventName } from './metametrics';
 
@@ -5,18 +7,23 @@ export enum AccountOverviewTabKey {
   Tokens = 'tokens',
   Nfts = 'nfts',
   Activity = 'activity',
+  DeFi = 'defi',
+  Perps = 'perps',
 }
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
-  [AccountOverviewTabKey.Nfts]: MetaMetricsEventName.NftScreenOpened,
+  [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
   [AccountOverviewTabKey.Activity]: MetaMetricsEventName.ActivityScreenOpened,
+  [AccountOverviewTabKey.Perps]: MetaMetricsEventName.PerpsScreenOpened,
 } as const;
 
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: TraceName.AccountOverviewAssetListTab,
   [AccountOverviewTabKey.Nfts]: TraceName.AccountOverviewNftsTab,
   [AccountOverviewTabKey.Activity]: TraceName.AccountOverviewActivityTab,
+  [AccountOverviewTabKey.DeFi]: TraceName.AccountOverviewDeFiTab,
+  [AccountOverviewTabKey.Perps]: TraceName.AccountOverviewPerpsTab,
 } as const;
 
 export type CarouselSlide = {
@@ -27,4 +34,33 @@ export type CarouselSlide = {
   dismissed?: boolean;
   href?: string;
   undismissable?: boolean;
+  startDate?: string;
+  endDate?: string;
+  priorityPlacement?: boolean;
+  variableName?: string;
+  cardPlacement?: string;
 };
+
+export enum PasswordChangeToastType {
+  Success = 'success',
+  Errored = 'errored',
+}
+
+export enum ClaimSubmitToastType {
+  Success = 'success',
+  Errored = 'errored',
+  DraftSaved = 'draft-saved',
+  DraftSaveFailed = 'draft-save-failed',
+  DraftDeleted = 'draft-deleted',
+  DraftDeleteFailed = 'draft-delete-failed',
+}
+
+export type NetworkConnectionBanner =
+  | { status: 'unknown' | 'available' }
+  | {
+      status: 'degraded' | 'unavailable';
+      networkName: string;
+      networkClientId: NetworkClientId;
+      chainId: Hex;
+      isInfuraEndpoint: boolean;
+    };

@@ -1,90 +1,113 @@
-import React, { useCallback, useContext, useMemo } from 'react';
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { endTrace, trace } from '../../../../shared/lib/trace';
-import { useI18nContext } from '../../../hooks/useI18nContext';
-import { ASSET_ROUTE } from '../../../helpers/constants/routes';
-import {
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  SUPPORT_LINK,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../../../shared/lib/ui-utils';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
-import { MetaMetricsContext } from '../../../contexts/metametrics';
-import NftsTab from '../../app/assets/nfts/nfts-tab';
-import AssetList from '../../app/assets/asset-list';
-import TransactionList from '../../app/transaction-list';
-import { Tabs, Tab } from '../../ui/tabs';
-///: BEGIN:ONLY_INCLUDE_IF(build-main)
-import {
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  Display,
-  ///: END:ONLY_INCLUDE_IF
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  JustifyContent,
-} from '../../../helpers/constants/design-system';
-///: END:ONLY_INCLUDE_IF
-import {
-  Box,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  ButtonLink,
-  ButtonLinkSize,
-  IconName,
-  ///: END:ONLY_INCLUDE_IF
-} from '../../component-library';
-
+import { useNavigate } from 'react-router-dom';
+import { Hex, isStrictHexString } from '@metamask/utils';
+import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import {
   ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP,
   ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP,
   AccountOverviewTabKey,
 } from '../../../../shared/constants/app-state';
+import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { endTrace, trace } from '../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import { ASSET_ROUTE, DEFI_ROUTE } from '../../../helpers/constants/routes';
+import { useI18nContext } from '../../../hooks/useI18nContext';
+import { useSafeChains } from '../../../pages/settings/networks-tab/networks-form/use-safe-chains';
+import {
+  getEnabledChainIds,
+  getIsMultichainAccountsState2Enabled,
+} from '../../../selectors';
+import { getIsPerpsEnabled } from '../../../selectors/perps';
+import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
 import { detectNfts } from '../../../store/actions';
-import { getAllChainsToPoll } from '../../../selectors';
+import AssetList from '../../app/assets/asset-list';
+import DeFiTab from '../../app/assets/defi-list/defi-tab';
+import NftsTab from '../../app/assets/nfts/nfts-tab';
+import TransactionList from '../../app/transaction-list';
+import UnifiedTransactionList from '../../app/transaction-list/unified-transaction-list.component';
+import { PerpsTabView } from '../../app/perps';
+import { Box } from '../../component-library';
+import { Tab, Tabs } from '../../ui/tabs';
+import { useTokenBalances } from '../../../hooks/useTokenBalances';
 import { AccountOverviewCommonProps } from './common';
+import { AssetListTokenDetection } from './asset-list-token-detection';
 
 export type AccountOverviewTabsProps = AccountOverviewCommonProps & {
   showTokens: boolean;
   showTokensLinks?: boolean;
   showNfts: boolean;
   showActivity: boolean;
+  showDefi?: boolean;
 };
 
 export const AccountOverviewTabs = ({
   onTabClick,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  onSupportLinkClick,
-  ///: END:ONLY_INCLUDE_IF
   defaultHomeActiveTabName,
   showTokens,
   showTokensLinks,
   showNfts,
   showActivity,
+  showDefi,
 }: AccountOverviewTabsProps) => {
-  const history = useHistory();
+  const [activeTabKey, setActiveTabKey] = useState<
+    AccountOverviewTabKey | undefined
+  >(defaultHomeActiveTabName ?? undefined);
+  const navigate = useNavigate();
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
-  const allChainIds = useSelector(getAllChainsToPoll);
+  const selectedChainIds = useSelector(getEnabledChainIds);
 
-  const tabProps = useMemo(
-    () => ({
-      activeClassName: 'account-overview__tab--active',
-      className: 'account-overview__tab',
-    }),
-    [],
+  useEffect(() => {
+    if (defaultHomeActiveTabName) {
+      setActiveTabKey(defaultHomeActiveTabName);
+    }
+  }, [defaultHomeActiveTabName]);
+
+  // Get all enabled networks (what the user has actually selected)
+  const allEnabledNetworks = useSelector(getAllEnabledNetworksForAllNamespaces);
+
+  // Convert enabled networks to CAIP format for metrics
+  const networkFilterForMetrics = useMemo(
+    () =>
+      allEnabledNetworks.map((chainId) =>
+        isStrictHexString(chainId) ? toEvmCaipChainId(chainId) : chainId,
+      ),
+    [allEnabledNetworks],
   );
+
+  // EVM specific tokenBalance polling, updates state via polling loop per chainId
+  useTokenBalances({
+    chainIds: selectedChainIds as Hex[],
+  });
 
   const handleTabClick = useCallback(
     (tabName: AccountOverviewTabKey) => {
+      setActiveTabKey(tabName);
       onTabClick(tabName);
       if (tabName === AccountOverviewTabKey.Nfts) {
-        dispatch(detectNfts(allChainIds));
+        dispatch(detectNfts(selectedChainIds));
       }
-      trackEvent({
-        category: MetaMetricsEventCategory.Home,
-        event: ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[tabName],
-      });
+      if (tabName in ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP) {
+        trackEvent({
+          category: MetaMetricsEventCategory.Home,
+          event:
+            ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP[
+              tabName as keyof typeof ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP
+            ],
+          properties: {
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            network_filter: networkFilterForMetrics,
+          },
+        });
+      }
       if (defaultHomeActiveTabName) {
         endTrace({
           name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[
@@ -92,62 +115,83 @@ export const AccountOverviewTabs = ({
           ],
         });
       }
-      trace({ name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName] });
+      trace({
+        name: ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP[tabName],
+      });
     },
-    [onTabClick],
+    [networkFilterForMetrics, onTabClick],
   );
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-  const NeedHelpButtonLink = React.memo((props: Record<string, unknown>) => (
-    <ButtonLink
-      size={ButtonLinkSize.Md}
-      startIconName={IconName.MessageQuestion}
-      data-testid="need-help-link"
-      href={SUPPORT_LINK}
-      display={Display.Flex}
-      onClick={onSupportLinkClick}
-      externalLink
-      {...props}
-    >
-      {t('needHelpLinkText')}
-    </ButtonLink>
-  ));
-  ///: END:ONLY_INCLUDE_IF
 
   const onClickAsset = useCallback(
     (chainId: string, asset: string) =>
-      history.push(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
-    [history],
+      navigate(`${ASSET_ROUTE}/${chainId}/${encodeURIComponent(asset)}`),
+    [navigate],
+  );
+  const onClickDeFi = useCallback(
+    (chainId: string, protocolId: string) =>
+      navigate(`${DEFI_ROUTE}/${chainId}/${encodeURIComponent(protocolId)}`),
+    [navigate],
   );
 
+  const { safeChains } = useSafeChains();
+
+  const isBIP44FeatureFlagEnabled = useSelector(
+    getIsMultichainAccountsState2Enabled,
+  );
+  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
+
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+
   return (
-    <Box style={{ flexGrow: '1' }}>
-      <Tabs
-        defaultActiveTabKey={defaultHomeActiveTabName}
+    <>
+      <AssetListTokenDetection />
+
+      <Tabs<AccountOverviewTabKey>
+        defaultActiveTabKey={defaultHomeActiveTabName ?? undefined}
+        activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
-        tabsClassName="account-overview__tabs"
+        tabListProps={{
+          className: 'px-4',
+        }}
       >
         {showTokens && (
           <Tab
             name={t('tokens')}
-            tabKey="tokens"
+            tabKey={AccountOverviewTabKey.Tokens}
             data-testid="account-overview__asset-tab"
-            {...tabProps}
           >
-            <Box marginTop={2}>
+            <Box marginBottom={2}>
               <AssetList
                 showTokensLinks={showTokensLinks ?? true}
                 onClickAsset={onClickAsset}
+                safeChains={safeChains}
               />
-              {
-                ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-                <NeedHelpButtonLink
-                  justifyContent={JustifyContent.flexStart}
-                  paddingLeft={4}
-                  marginBottom={4}
-                ></NeedHelpButtonLink>
-                ///: END:ONLY_INCLUDE_IF
-              }
+            </Box>
+          </Tab>
+        )}
+
+        {isPerpsEnabled && (
+          <Tab
+            name={t('perps')}
+            tabKey={AccountOverviewTabKey.Perps}
+            data-testid="account-overview__perps-tab"
+          >
+            <PerpsTabView />
+          </Tab>
+        )}
+
+        {showDefi && (
+          <Tab
+            name={t('defi')}
+            tabKey={AccountOverviewTabKey.DeFi}
+            data-testid="account-overview__defi-tab"
+          >
+            <Box>
+              <DeFiTab
+                showTokensLinks={showTokensLinks ?? true}
+                onClickAsset={onClickDeFi}
+                safeChains={safeChains}
+              />
             </Box>
           </Tab>
         )}
@@ -155,43 +199,27 @@ export const AccountOverviewTabs = ({
         {showNfts && (
           <Tab
             name={t('nfts')}
-            tabKey="nfts"
+            tabKey={AccountOverviewTabKey.Nfts}
             data-testid="account-overview__nfts-tab"
-            {...tabProps}
           >
             <NftsTab />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              <NeedHelpButtonLink
-                justifyContent={JustifyContent.flexStart}
-                paddingLeft={4}
-                marginBottom={4}
-              ></NeedHelpButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
           </Tab>
         )}
 
         {showActivity && (
           <Tab
             name={t('activity')}
-            tabKey="activity"
+            tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
-            {...tabProps}
           >
-            <TransactionList boxProps={{ paddingTop: 3 }} />
-            {
-              ///: BEGIN:ONLY_INCLUDE_IF(build-main)
-              <NeedHelpButtonLink
-                justifyContent={JustifyContent.center}
-                marginBottom={4}
-                marginTop={4}
-              ></NeedHelpButtonLink>
-              ///: END:ONLY_INCLUDE_IF
-            }
+            {showUnifiedTransactionList ? (
+              <UnifiedTransactionList />
+            ) : (
+              <TransactionList />
+            )}
           </Tab>
         )}
       </Tabs>
-    </Box>
+    </>
   );
 };

@@ -5,6 +5,9 @@
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
+  // prevent overflow-x
+  max-width: 100%;
+
   @include design-system.screen-sm-min {
     width: $width-screen-sm-min;
   }

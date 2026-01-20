@@ -58,7 +58,7 @@ export default function SnapsConnect({
     useState(!isPreinstalled && !snapsInstallPrivacyWarningShown);
 
   const onCancel = useCallback(() => {
-    rejectConnection(request.metadata.id);
+    rejectConnection(request?.metadata?.id);
   }, [request, rejectConnection]);
 
   const onConnect = useCallback(() => {
@@ -168,7 +168,11 @@ export default function SnapsConnect({
           <Box paddingBottom={2}>
             <SnapIcon snapId={snaps[0]} avatarSize={IconSize.Xl} />
           </Box>
-          <Text paddingBottom={2} variant={TextVariant.headingMd}>
+          <Text
+            paddingBottom={2}
+            variant={TextVariant.headingMd}
+            textAlign="center"
+          >
             {t('connectionRequest')}
           </Text>
           <Text

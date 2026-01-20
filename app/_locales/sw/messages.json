@@ -223,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
-  "ethereumPublicAddress": {
-    "message": "Anwani ya Umma ya Ethereum"
-  },
   "etherscanView": {
     "message": "Tazama akaunti kwenye Etherscan"
-  },
-  "expandView": {
-    "message": "Panua Mwonekano"
   },
   "failed": {
     "message": "Imeshindwa"
@@ -251,20 +245,8 @@
   "gasLimit": {
     "message": "Kikomo cha Gesi"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Ukomo wa gesi ni kiwango cha juu kabisa cha cha vizio vya gesi ambavyo upo tayari kutumia."
-  },
   "gasLimitTooLow": {
     "message": "Kikomo cha gesi kinapaswa kua angalau 21000"
-  },
-  "gasPrice": {
-    "message": "Pata Bei (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Bei ya Gesi Ipo Chini Kupita Kiasi"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Bei ya gesi hubainisha kiwango cha Ether ambacho upo radhi kulipia kila kizio cha gesi."
   },
   "gasUsed": {
     "message": "Gesi iliyotumika"
@@ -384,9 +366,6 @@
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Haiwezi kutuma viwango hasi vya ETH."
   },
   "networkName": {
     "message": "Jina la mtandao"
@@ -614,9 +593,6 @@
   "supportCenter": {
     "message": "Tembelea Kituo chetu cha Usaidizi"
   },
-  "switchNetworks": {
-    "message": "Badilisha mitandao"
-  },
   "symbol": {
     "message": "Ishara"
   },
@@ -625,9 +601,6 @@
   },
   "terms": {
     "message": "Masharti ya Matumizi"
-  },
-  "tips": {
-    "message": "Michango"
   },
   "to": {
     "message": "Kwenda"
@@ -707,9 +680,6 @@
   "unlock": {
     "message": "Fungua"
   },
-  "unlockMessage": {
-    "message": "Wavuti uliotenganishwa unasubiri"
-  },
   "urlErrorMsg": {
     "message": "URI huhitaji kiambishi sahihi cha  HTTP/HTTPS."
   },
@@ -733,8 +703,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Kirai chako kianzio cha binafsi"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Bei ya gesi sifuri kwenye kuongeza kasi"
   }
 }

@@ -1,21 +1,19 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
 import {
   assertChangedSpendingCap,
   editSpendingCap,
   mocked4BytesApprove,
-  openDAppWithContract,
   TestSuiteArguments,
 } from './shared';
 
-const {
-  defaultGanacheOptionsForType2Transactions,
-  withFixtures,
-} = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const { withFixtures } = require('../../../helpers');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
@@ -25,16 +23,28 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
     it('Sends a type 0 transaction (Legacy)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createERC20ApproveTransaction(driver);
 
@@ -56,17 +66,26 @@ describe('Confirmation Redesign ERC20 Revoke Allowance', function () {
     it('Sends a type 2 transaction (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           testSpecificMock: mocks,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
           await createERC20ApproveTransaction(driver);
 

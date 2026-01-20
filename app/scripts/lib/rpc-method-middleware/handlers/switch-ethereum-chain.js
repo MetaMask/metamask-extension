@@ -1,4 +1,5 @@
 import { providerErrors } from '@metamask/rpc-errors';
+import { isSnapId } from '@metamask/snaps-utils';
 
 import { MESSAGE_TYPE } from '../../../../../shared/constants/app';
 import {
@@ -18,6 +19,8 @@ const switchEthereumChain = {
     requestPermittedChainsPermissionIncrementalForOrigin: true,
     rejectApprovalRequestsForOrigin: true,
     setTokenNetworkFilter: true,
+    setEnabledNetworks: true,
+    getEnabledNetworks: true,
     hasApprovalRequestsForOrigin: true,
   },
 };
@@ -38,6 +41,8 @@ async function switchEthereumChainHandler(
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
     hasApprovalRequestsForOrigin,
   },
 ) {
@@ -80,11 +85,14 @@ async function switchEthereumChainHandler(
   return switchChain(res, end, chainId, networkClientIdToSwitchTo, {
     origin,
     isSwitchFlow: true,
+    autoApprove: isSnapId(origin),
     setActiveNetwork,
     getCaveat,
     requestPermittedChainsPermissionIncrementalForOrigin,
     rejectApprovalRequestsForOrigin,
     setTokenNetworkFilter,
+    setEnabledNetworks,
+    getEnabledNetworks,
     requestUserApproval,
     hasApprovalRequestsForOrigin,
     toNetworkConfiguration,

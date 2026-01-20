@@ -1,104 +1,262 @@
-import { useEffect } from 'react';
+import { isEqual } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { updateSlides } from '../../store/actions';
-import { getSelectedAccountCachedBalance, getSlides } from '../../selectors';
+import log from 'loglevel';
+import { BigNumber } from 'bignumber.js';
+import { Platform } from '@metamask/profile-sync-controller/sdk';
 import type { CarouselSlide } from '../../../shared/constants/app-state';
-import { getIsRemoteModeEnabled } from '../../selectors/remote-mode';
 import {
-  FUND_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-  BRIDGE_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-  CARD_SLIDE,
-  CASH_SLIDE,
-  REMOTE_MODE_SLIDE,
-  SWEEPSTAKES_START,
-  SWEEPSTAKES_END,
-  ZERO_BALANCE,
-  MULTI_SRP_SLIDE,
-  SWEEPSTAKES_SLIDE,
-  ///: BEGIN:ONLY_INCLUDE_IF(solana)
-  SOLANA_SLIDE,
-  ///: END:ONLY_INCLUDE_IF
-} from './constants';
+  getUserProfileLineage as getUserProfileLineageAction,
+  updateSlides,
+} from '../../store/actions';
+import {
+  getRemoteFeatureFlags,
+  getSelectedAccountCachedBalance,
+  getSelectedInternalAccount,
+  getShowDownloadMobileAppSlide,
+  getSlides,
+  getUseExternalServices,
+} from '../../selectors';
+import { fetchCarouselSlidesFromContentful } from './fetchCarouselSlidesFromContentful';
 
-type UseSlideManagementProps = {
-  testDate?: string; // Only used in unit/e2e tests to simulate dates for sweepstakes campaign
+type UseSlideManagementProps = { testDate?: string; enabled?: boolean };
+const ZERO_BALANCE = '0x0';
+
+export function isActive(
+  slide: { startDate?: string; endDate?: string },
+  now = new Date(),
+): boolean {
+  const start = slide.startDate ? new Date(slide.startDate) : null;
+  const end = slide.endDate ? new Date(slide.endDate) : null;
+  if (start && now < start) {
+    return false;
+  }
+  if (end && now > end) {
+    return false;
+  }
+  return true;
+}
+
+// preserve dismissed/undismissable across re-fetches
+const normalize = (
+  raw: CarouselSlide | undefined,
+  existing: CarouselSlide[],
+) => {
+  if (!raw) {
+    return undefined;
+  }
+  const prev = existing.find((s) => s.id === raw.id);
+  return {
+    ...raw,
+    dismissed: prev?.dismissed ?? false,
+    undismissable: raw.undismissable || prev?.undismissable || false,
+  } as CarouselSlide;
 };
 
-export function getSweepstakesCampaignActive(currentDate: Date) {
-  return currentDate >= SWEEPSTAKES_START && currentDate <= SWEEPSTAKES_END;
+function orderByCardPlacement(slides: CarouselSlide[]): CarouselSlide[] {
+  const placed: (CarouselSlide | undefined)[] = [];
+  const unplaced: CarouselSlide[] = [];
+
+  for (const s of slides) {
+    const raw = s.cardPlacement;
+    const n = typeof raw === 'string' ? Number(raw) : raw;
+    if (typeof n === 'number' && Number.isFinite(n)) {
+      const idx = Math.max(0, Math.floor(n) - 1);
+      if (idx >= placed.length) {
+        placed.length = idx + 1;
+      }
+      placed[idx] = s;
+    } else {
+      unplaced.push(s);
+    }
+  }
+
+  let up = 0;
+  for (let i = 0; i < placed.length && up < unplaced.length; i++) {
+    if (!placed[i]) {
+      placed[i] = unplaced[up];
+      up += 1;
+    }
+  }
+
+  while (up < unplaced.length) {
+    placed.push(unplaced[up]);
+    up += 1;
+  }
+
+  return placed.filter(Boolean) as CarouselSlide[];
 }
 
 export const useCarouselManagement = ({
   testDate,
+  enabled = true,
 }: UseSlideManagementProps = {}) => {
   const inTest = Boolean(process.env.IN_TEST);
   const dispatch = useDispatch();
   const slides = useSelector(getSlides);
+  const remoteFeatureFlags = useSelector(getRemoteFeatureFlags);
   const totalBalance = useSelector(getSelectedAccountCachedBalance);
-  const isRemoteModeEnabled = useSelector(getIsRemoteModeEnabled);
+  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const useExternalServices = useSelector(getUseExternalServices);
+  const showDownloadMobileAppSlide = useSelector(getShowDownloadMobileAppSlide);
+  const prevSlidesRef = useRef<CarouselSlide[]>();
+  const hasZeroBalance = new BigNumber(totalBalance ?? ZERO_BALANCE).eq(
+    ZERO_BALANCE,
+  );
+  const contentfulEnabled =
+    remoteFeatureFlags?.contentfulCarouselEnabled ?? false;
 
-  const hasZeroBalance = totalBalance === ZERO_BALANCE;
+  const [downloadEligible, setDownloadEligible] = useState<boolean>(false);
+  const [downloadEligibilityReady, setDownloadEligibilityReady] =
+    useState<boolean>(false);
 
   useEffect(() => {
-    const defaultSlides: CarouselSlide[] = [];
-    const existingSweepstakesSlide = slides.find(
-      (slide: CarouselSlide) => slide.id === SWEEPSTAKES_SLIDE.id,
-    );
-    const isSweepstakesSlideDismissed =
-      existingSweepstakesSlide?.dismissed ?? false;
+    const eligibilityNeeded =
+      contentfulEnabled && useExternalServices && showDownloadMobileAppSlide;
 
-    const fundSlide = {
-      ...FUND_SLIDE,
-      undismissable: hasZeroBalance,
+    if (!eligibilityNeeded) {
+      setDownloadEligible(false);
+      setDownloadEligibilityReady(true);
+      return () => undefined;
+    }
+
+    setDownloadEligibilityReady(false);
+
+    let cancelled = false;
+
+    (async () => {
+      try {
+        const lineage = await getUserProfileLineageAction();
+        if (!cancelled) {
+          const onMobile = Boolean(
+            lineage?.lineage?.some((l) => l.agent === Platform.MOBILE),
+          );
+          setDownloadEligible(!onMobile);
+          setDownloadEligibilityReady(true);
+        }
+      } catch (error) {
+        if (!cancelled) {
+          log.warn('Failed to fetch user profile lineage:', error);
+          setDownloadEligible(false);
+          setDownloadEligibilityReady(true);
+        }
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    selectedAccount.address,
+    useExternalServices,
+    showDownloadMobileAppSlide,
+    contentfulEnabled,
+  ]);
+
+  useEffect(() => {
+    // Wait until eligibility is resolved (or not required) to avoid double fetch
+    if (!downloadEligibilityReady) {
+      return;
+    }
+
+    // If carousel is disabled, clear the slides
+    if (!enabled) {
+      const empty: CarouselSlide[] = [];
+      if (!isEqual(prevSlidesRef.current, empty)) {
+        dispatch(updateSlides(empty));
+        prevSlidesRef.current = empty;
+      }
+      return;
+    }
+    const maybeFetchContentful = async () => {
+      // Early Return if Contentful is disabled
+      if (!contentfulEnabled) {
+        const empty: CarouselSlide[] = [];
+        if (!isEqual(prevSlidesRef.current, empty)) {
+          dispatch(updateSlides(empty));
+          prevSlidesRef.current = empty;
+        }
+        return;
+      }
+
+      if (contentfulEnabled) {
+        try {
+          const { prioritySlides, regularSlides } =
+            await fetchCarouselSlidesFromContentful();
+
+          const pRaw = [...prioritySlides];
+          const rRaw = [...regularSlides];
+
+          const isNowActive = (s: CarouselSlide) =>
+            isActive(s, testDate ? new Date(testDate) : new Date());
+
+          const normalizeList = (list: CarouselSlide[]) =>
+            list
+              .map((s) => normalize(s, slides))
+              .filter((s): s is CarouselSlide => Boolean(s))
+              .filter(isNowActive);
+
+          // Fund: force undismissable on zero balance
+          const fundCheck = (s: CarouselSlide): CarouselSlide => {
+            if (s.variableName === 'fund') {
+              return {
+                ...s,
+                undismissable: hasZeroBalance || s.undismissable,
+              };
+            }
+            return s;
+          };
+
+          const isEligible = (s: CarouselSlide) => {
+            // Show Download Mobile App (only if not already on mobile + flags)
+            if (s.variableName === 'downloadMobileApp') {
+              return downloadEligible;
+            }
+            return true;
+          };
+
+          const activePrioritySlides = normalizeList(pRaw)
+            .map(fundCheck)
+            .filter(isEligible);
+          const activeRegularSlides = normalizeList(rRaw)
+            .map(fundCheck)
+            .filter(isEligible);
+
+          // Order based on cardPlacement
+          const orderedNonPriority = orderByCardPlacement(activeRegularSlides);
+          const mergedSlides = [...activePrioritySlides, ...orderedNonPriority];
+
+          if (!isEqual(prevSlidesRef.current, mergedSlides)) {
+            dispatch(updateSlides(mergedSlides));
+            prevSlidesRef.current = mergedSlides;
+          }
+        } catch (err) {
+          log.warn('Failed to fetch Contentful slides:', err);
+          if (!isEqual(prevSlidesRef.current, [])) {
+            dispatch(updateSlides([]));
+            prevSlidesRef.current = [];
+          }
+        }
+      }
     };
 
-    ///: BEGIN:ONLY_INCLUDE_IF(build-main,build-beta,build-flask)
-    defaultSlides.push(BRIDGE_SLIDE);
-    ///: END:ONLY_INCLUDE_IF
-    defaultSlides.push(CARD_SLIDE);
-    defaultSlides.push(CASH_SLIDE);
-    defaultSlides.push(MULTI_SRP_SLIDE);
-    ///: BEGIN:ONLY_INCLUDE_IF(solana)
-    defaultSlides.push(SOLANA_SLIDE);
-    ///: END:ONLY_INCLUDE_IF
-
-    defaultSlides.splice(hasZeroBalance ? 0 : 2, 0, fundSlide);
-
-    if (isRemoteModeEnabled) {
-      defaultSlides.unshift(REMOTE_MODE_SLIDE);
-    }
-
-    // Handle sweepstakes slide
-    const currentDate = testDate
-      ? new Date(testDate)
-      : new Date(new Date().toISOString());
-    const isSweepstakesActive = getSweepstakesCampaignActive(currentDate);
-
-    // Only show the sweepstakes slide if:
-    // 1. Not in test mode
-    // 2. Sweepstakes campaign is active
-    // 3. Slide has not been dismissed by user
-    if (!inTest && isSweepstakesActive && !isSweepstakesSlideDismissed) {
-      const newSweepstakesSlide = {
-        ...SWEEPSTAKES_SLIDE,
-        dismissed: false,
-      };
-      defaultSlides.unshift(newSweepstakesSlide);
-    } else if (existingSweepstakesSlide?.dismissed) {
-      // Add the sweepstakes slide with the dismissed state preserved
-      // We need this to maintain the persisted dismissed state
-      const dismissedSweepstakesSlide = {
-        ...SWEEPSTAKES_SLIDE,
-        dismissed: true,
-      };
-
-      defaultSlides.push(dismissedSweepstakesSlide);
-    }
-
-    dispatch(updateSlides(defaultSlides));
-  }, [dispatch, hasZeroBalance, isRemoteModeEnabled, slides, testDate, inTest]);
+    (async () => {
+      try {
+        await maybeFetchContentful();
+      } catch (err) {
+        log.warn('Failed to load carousel slides:', err);
+      }
+    })();
+  }, [
+    enabled,
+    dispatch,
+    hasZeroBalance,
+    contentfulEnabled,
+    testDate,
+    inTest,
+    slides,
+    downloadEligibilityReady,
+  ]);
 
   return { slides };
 };

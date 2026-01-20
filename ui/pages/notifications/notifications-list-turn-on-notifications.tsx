@@ -56,7 +56,13 @@ export const NotificationsListTurnOnNotifications = () => {
     await enableNotifications();
     trackEvent({
       category: MetaMetricsEventCategory.NotificationInteraction,
-      event: MetaMetricsEventName.EnablingNotifications,
+      event: MetaMetricsEventName.NotificationsActivated,
+      properties: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        action_type: 'completed',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        is_profile_syncing_enabled: true,
+      },
     });
     if (!error && !isUpdatingMetamaskNotifications) {
       listNotifications();
@@ -116,6 +122,8 @@ export const NotificationsListTurnOnNotifications = () => {
       </Text>
       <Box>
         <Button
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+          // eslint-disable-next-line @typescript-eslint/no-misused-promises
           onClick={() => handleTurnOnNotifications()}
           size={ButtonSize.Md}
           disabled={loading}

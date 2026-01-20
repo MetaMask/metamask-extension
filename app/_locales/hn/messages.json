@@ -100,9 +100,6 @@
   "gasLimitTooLow": {
     "message": "२१००० - गैस की सीमा कम से कम 21000 होनी चाहिए"
   },
-  "gasPrice": {
-    "message": "गैस मूल्य (जीडब्ल्यूईआई),(GWEI)"
-  },
   "here": {
     "message": "यहां",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -167,9 +164,6 @@
   "needImportFile": {
     "message": "आयात करने के लिए आपको एक फ़ाइल का चयन करना होगा।",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ईटीएच की नकारात्मक मात्रा नहीं भेज सकते हैं।."
   },
   "networks": {
     "message": "नेटवर्क"

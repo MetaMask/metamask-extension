@@ -11,7 +11,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useNftsCollections } from '../../../../hooks/useNftsCollections';
 import { useTokenTracker } from '../../../../hooks/useTokenTracker';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-send-state.json';
 import { AssetType } from '../../../../../shared/constants/transaction';
 import {
@@ -96,8 +96,19 @@ jest.mock('../../../../hooks/useNfts', () => ({
 
 jest.mock('lodash', () => ({
   ...jest.requireActual('lodash'),
-  debounce: jest.fn().mockImplementation((fn) => fn),
+  debounce: jest.fn().mockImplementation((fn) => {
+    const debouncedFn = fn;
+    debouncedFn.cancel = jest.fn();
+    return debouncedFn;
+  }),
 }));
+
+jest.mock(
+  '../../../../pages/confirmations/hooks/useRedesignedSendFlow',
+  () => ({
+    useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
+  }),
+);
 
 describe('AssetPickerModal', () => {
   const useSelectorMock = useSelector as jest.Mock;
@@ -223,6 +234,8 @@ describe('AssetPickerModal', () => {
   });
 
   it('renders no NFTs message when there are no NFTs', () => {
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     sinon.stub(actions, 'detectNfts').returns(() => Promise.resolve());
     renderWithProvider(
       <AssetPickerModal
@@ -239,8 +252,7 @@ describe('AssetPickerModal', () => {
     );
 
     fireEvent.click(screen.getByText('nfts'));
-    expect(screen.getByText('noNFTs')).toBeInTheDocument();
-    expect(screen.getByText('learnMoreUpperCase')).toBeInTheDocument();
+    expect(screen.getByTestId('nft-tab-empty-state')).toBeInTheDocument();
   });
 
   it('filters tokens based on search query', () => {
@@ -379,7 +391,7 @@ describe('AssetPickerModal', () => {
     expect(modalTitle).toBeInTheDocument();
 
     expect(getAllByRole('img')).toHaveLength(2);
-    const modalContent = getByText('Ethereum Mainnet');
+    const modalContent = getByText('Ethereum');
     expect(modalContent).toBeInTheDocument();
   });
 
@@ -423,8 +435,8 @@ describe('AssetPickerModal token filtering', () => {
     header: 'Select Token',
     isOpen: true,
     onClose: jest.fn(),
-    onAssetChange: onAssetChangeMock,
     autoFocus: true,
+    onAssetChange: onAssetChangeMock,
     network: {
       chainId: '0xa',
       name: 'Optimism',

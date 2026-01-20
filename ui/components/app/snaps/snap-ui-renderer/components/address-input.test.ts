@@ -2,6 +2,8 @@ import { Box, AddressInput, Field } from '@metamask/snaps-sdk/jsx';
 import { fireEvent } from '@testing-library/react';
 import { renderInterface } from '../test-utils';
 
+const MOCK_ACCOUNT_NAME = 'Account 1';
+
 describe('SnapUIAddressInput', () => {
   it('will render', () => {
     const { container, getByRole } = renderInterface(
@@ -110,7 +112,7 @@ describe('SnapUIAddressInput', () => {
       },
     });
 
-    const matchedAddressName = getByText('Test Account');
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
     const matchedAddress = getByText(
       '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
     );
@@ -181,5 +183,103 @@ describe('SnapUIAddressInput', () => {
     const input = getByRole('textbox') as HTMLInputElement;
     fireEvent.change(input, { target: { value: testAddress } });
     expect(container).toMatchSnapshot();
+  });
+
+  it('renders the matched address info in a disabled state', () => {
+    const { getByText, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
+    expect(matchedAddressName).toBeDefined();
+
+    const matchedAccountInfo = container.querySelector(
+      '.snap-ui-renderer__matched-account-info',
+    );
+
+    expect(matchedAccountInfo?.getAttribute('style')).toContain('opacity: 0.5');
+    expect(container).toMatchSnapshot();
+  });
+
+  it('renders the matched address info with an error', () => {
+    const { getByText, queryByText } = renderInterface(
+      Box({
+        children: Field({
+          label: 'Address',
+          error: 'Invalid address',
+          children: AddressInput({
+            name: 'input',
+            chainId: 'eip155:0',
+          }),
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    const matchedAddressName = queryByText(MOCK_ACCOUNT_NAME);
+    expect(matchedAddressName).toBeTruthy();
+
+    const error = getByText('Invalid address');
+    expect(error).toBeDefined();
+  });
+
+  it('disables clear button for the input when disabled', () => {
+    const { getByRole, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      {
+        state: { input: 'eip155:0:0x1234567890123456789012345678901234567890' },
+      },
+    );
+
+    const input = getByRole('textbox') as HTMLInputElement;
+    expect(input.value).toBe('0x1234567890123456789012345678901234567890');
+
+    const clearIcon = container.querySelector(
+      '.snap-ui-renderer__address-input__clear-button',
+    );
+    expect(clearIcon).not.toBeNull();
+
+    fireEvent.click(clearIcon as Element);
+
+    expect(input.value).toBe('0x1234567890123456789012345678901234567890');
+  });
+
+  it('disables clear button for the matched address info when disabled', () => {
+    const { getByText, container } = renderInterface(
+      Box({
+        children: AddressInput({
+          name: 'input',
+          chainId: 'eip155:0',
+          disabled: true,
+        }),
+      }),
+      { state: { input: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc' } },
+    );
+
+    const matchedAddressName = getByText(MOCK_ACCOUNT_NAME);
+    expect(matchedAddressName).toBeDefined();
+
+    const clearIcon = container.querySelector(
+      '.snap-ui-renderer__matched-account-info__clear-button',
+    );
+    expect(clearIcon).not.toBeNull();
+
+    fireEvent.click(clearIcon as Element);
+
+    const matchedAddressNameAfterClick = getByText(MOCK_ACCOUNT_NAME);
+    expect(matchedAddressNameAfterClick).toBeDefined();
   });
 });

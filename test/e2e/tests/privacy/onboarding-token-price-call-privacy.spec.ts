@@ -1,12 +1,13 @@
 import assert from 'assert';
 import { Mockttp, MockedEndpoint } from 'mockttp';
 import { withFixtures, regularDelayMs } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import {
   importSRPOnboardingFlow,
   createNewWalletOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
 
 // Mock function implementation for Token Price requests
@@ -16,7 +17,7 @@ async function mockTokenPriceApi(
   return [
     // mainnet
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
         json: {},
@@ -30,6 +31,11 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
@@ -57,10 +63,14 @@ describe('MetaMask onboarding', function () {
 
         // complete create new wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // network requests happen here
         for (const mockedEndpoint of mockedEndpoints) {
@@ -85,6 +95,11 @@ describe('MetaMask onboarding', function () {
       {
         fixtures: new FixtureBuilder({ onboarding: true })
           .withNetworkControllerOnMainnet()
+          .withEnabledNetworks({
+            eip155: {
+              '0x1': true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
         testSpecificMock: mockTokenPriceApi,
@@ -106,10 +121,14 @@ describe('MetaMask onboarding', function () {
 
         // complete import wallet onboarding
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
+
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
+
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
         // requests happen here
         for (const mockedEndpoint of mockedEndpoints) {

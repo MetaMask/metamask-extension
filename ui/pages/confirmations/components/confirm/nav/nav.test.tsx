@@ -16,13 +16,13 @@ jest.mock('react-redux', () => ({
   useDispatch: () => jest.fn(),
 }));
 
-const mockHistoryReplace = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    replace: mockHistoryReplace,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 const render = () => {
   const store = configureStore(
@@ -109,7 +109,10 @@ describe('ConfirmNav', () => {
     const { getByLabelText } = render();
     const nextButton = getByLabelText('Next Confirmation');
     fireEvent.click(nextButton);
-    expect(mockHistoryReplace).toHaveBeenCalledTimes(1);
+    expect(mockUseNavigate).toHaveBeenCalledWith(
+      '/confirm-transaction/testApprovalId2/signature-request',
+      { replace: true },
+    );
   });
 
   it('invoke action rejectAllApprovals when "Reject all" button is clicked', () => {
@@ -120,7 +123,7 @@ describe('ConfirmNav', () => {
 
       // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      .mockImplementation(() => ({} as any));
+      .mockImplementation(() => ({}) as any);
     fireEvent.click(rejectAllButton);
     expect(rejectSpy).toHaveBeenCalledTimes(1);
   });

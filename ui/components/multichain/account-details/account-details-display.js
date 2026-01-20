@@ -1,6 +1,7 @@
 import React, { useCallback, useContext } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
+import { isEvmAccountType } from '@metamask/keyring-api';
 
 import EditableLabel from '../../ui/editable-label/editable-label';
 
@@ -40,15 +41,18 @@ export const AccountDetailsDisplay = ({
   accounts,
   accountName,
   address,
+  accountType,
   onExportClick,
 }) => {
   const dispatch = useDispatch();
   const trackEvent = useContext(MetaMetricsContext);
-  const checksummedAddress = toChecksumHexAddress(address)?.toLowerCase();
+  const formatedAddress = isEvmAccountType(accountType)
+    ? toChecksumHexAddress(address)?.toLowerCase()
+    : address;
   const [copied, handleCopy] = useCopyToClipboard();
   const handleClick = useCallback(() => {
-    handleCopy(checksummedAddress);
-  }, [checksummedAddress, handleCopy]);
+    handleCopy(formatedAddress);
+  }, [formatedAddress, handleCopy]);
   const chainId = useSelector(getCurrentChainId);
   const deviceName = useSelector(getHardwareWalletType);
   const { networkSupporting7702Present, pending } = useEIP7702Networks(address);
@@ -81,7 +85,7 @@ export const AccountDetailsDisplay = ({
           data-testid="account-address-shortened"
           marginBottom={4}
         >
-          {shortenString(checksummedAddress, {
+          {shortenString(formatedAddress, {
             truncatedStartChars: 12,
             truncatedEndChars: 10,
           })}
@@ -114,14 +118,11 @@ export const AccountDetailsDisplay = ({
         </Box>
       )}
       {!pending && networkSupporting7702Present && (
-        <Tabs
-          onTabClick={() => undefined}
-          style={{ width: '100%', marginTop: '8px' }}
-        >
-          <Tab name="Type" tabKey="Type" style={{ width: '50%' }}>
+        <Tabs onTabClick={() => undefined} className="mt-2">
+          <Tab name="Type" tabKey="Type" className="flex-1">
             <SmartAccountTab address={address} />
           </Tab>
-          <Tab name="Details" tabKey="Details" style={{ width: '50%' }}>
+          <Tab name="Details" tabKey="Details" className="flex-1">
             <AccountDetailsSection
               address={address}
               onExportClick={onExportClick}
@@ -152,6 +153,10 @@ AccountDetailsDisplay.propTypes = {
    * Current address
    */
   address: PropTypes.string.isRequired,
+  /**
+   * Current account type
+   */
+  accountType: PropTypes.string.isRequired,
   /**
    * Executes upon Export button click
    */

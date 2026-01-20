@@ -61,6 +61,10 @@
   },
   "metamask": {
     "allTokens": {},
+    "enableEnforcedSimulations": true,
+    "enableEnforcedSimulationsForTransactions": {},
+    "enforcedSimulationsSlippage": 10,
+    "enforcedSimulationsSlippageForTransactions": {},
     "tokenBalances": {},
     "use4ByteResolution": true,
     "ipfsGateway": "dweb.link",
@@ -70,6 +74,11 @@
     "participateInMetaMetrics": false,
     "gasEstimateType": "fee-market",
     "showBetaHeader": false,
+    "isUpdateAvailable": false,
+    "updateModalLastDismissedAt": null,
+    "lastUpdatedAt": null,
+    "subscriptions": [],
+    "trialedProducts": [],
     "gasFeeEstimatesByChainId": {
       "0x5": {
         "gasEstimateType": "fee-market",
@@ -102,7 +111,6 @@
         }
       }
     },
-    "permissionHistory": {},
     "gasFeeEstimates": {
       "low": {
         "minWaitTimeEstimate": 180000,
@@ -462,8 +470,199 @@
           }
         ],
         "blockExplorerUrls": []
+      },
+      "0xaa36a7": {
+        "chainId": "0xaa36a7",
+        "name": "Sepolia",
+        "nativeCurrency": "ETH",
+        "defaultRpcEndpointIndex": 0,
+        "ticker": "ETH",
+        "rpcEndpoints": [
+          {
+            "type": "custom",
+            "url": "https://sepolia.com",
+            "networkClientId": "sepolia"
+          }
+        ],
+        "blockExplorerUrls": []
+      },
+      "0x38": {
+        "blockExplorerUrls": ["https://bscscan.com/"],
+        "chainId": "0x38",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689643708,
+        "name": "BNB Chain",
+        "nativeCurrency": "BNB",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "ae8c8c36-7478-42bf-9b1a-610c81380000",
+            "type": "custom",
+            "url": "https://bsc-dataseed.binance.org/"
+          }
+        ]
+      },
+      "0x89": {
+        "blockExplorerUrls": ["https://polygonscan.com/"],
+        "chainId": "0x89",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689655105,
+        "name": "Polygon",
+        "nativeCurrency": "POL",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "b46d8e79-ebf2-4fdc-8cb9-45610e990000",
+            "type": "custom",
+            "url": "https://polygon-mainnet.infura.io/v3/"
+          }
+        ]
+      },
+      "0xa4b1": {
+        "blockExplorerUrls": ["https://explorer.arbitrum.io"],
+        "chainId": "0xa4b1",
+        "defaultBlockExplorerUrlIndex": 0,
+        "defaultRpcEndpointIndex": 0,
+        "lastUpdatedAt": 1738689624782,
+        "name": "Arbitrum",
+        "nativeCurrency": "ETH",
+        "rpcEndpoints": [
+          {
+            "networkClientId": "100849a6-a63c-4ebd-9bbe-0c84134d0000",
+            "type": "custom",
+            "url": "https://arbitrum-mainnet.infura.io/v3/"
+          }
+        ]
       }
     },
+    "accountTree": {
+      "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+      "wallets": {
+        "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+          "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
+          "type": "entropy",
+          "groups": {
+            "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+              "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
+              "type": "multichain-account",
+              "accounts": [
+                "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3",
+                "07c2cfec-36c9-46c4-8115-3836d3ac9047"
+              ],
+              "metadata": {
+                "name": "Account 1",
+                "entropy": {
+                  "groupIndex": 0
+                },
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Wallet 1",
+            "entropy": {
+              "id": "01JKAF3DSGM3AB87EM9N0K41AJ"
+            }
+          }
+        },
+        "entropy:01JKAF3PJ247KAM6C03G5Q0NP8": {
+          "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8",
+          "type": "entropy",
+          "groups": {
+            "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0": {
+              "id": "entropy:01JKAF3PJ247KAM6C03G5Q0NP8/0",
+              "type": "multichain-account",
+              "accounts": ["784225f4-d30b-4e77-a900-c8bbce735b88"],
+              "metadata": {
+                "name": "Account 2",
+                "hidden": false,
+                "pinned": false,
+                "entropy": {
+                  "groupIndex": 0
+                }
+              }
+            }
+          },
+          "metadata": {
+            "name": "Wallet 2",
+            "entropy": {
+              "id": "01JKAF3PJ247KAM6C03G5Q0NP8"
+            }
+          }
+        },
+        "keyring:Ledger Hardware": {
+          "id": "keyring:Ledger Hardware",
+          "type": "keyring",
+          "groups": {
+            "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
+              "id": "keyring:Ledger Hardware/0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+              "type": "single-account",
+              "accounts": ["15e69915-2a1a-4019-93b3-916e11fd432f"],
+              "metadata": {
+                "name": "Ledger Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Ledger Hardware",
+            "keyring": {
+              "type": "Ledger Hardware"
+            }
+          }
+        },
+        "snap:local:custody:test": {
+          "id": "snap:local:custody:test",
+          "type": "snap",
+          "groups": {
+            "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
+              "id": "snap:local:custody:test/0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
+              "type": "single-account",
+              "accounts": ["694225f4-d30b-4e77-a900-c8bbce735b42"],
+              "metadata": {
+                "name": "Another Snap Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Custody test",
+            "snap": {
+              "id": "local:custody:test"
+            }
+          }
+        },
+        "snap:local:snap-id": {
+          "id": "snap:local:snap-id",
+          "type": "snap",
+          "groups": {
+            "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
+              "id": "snap:local:snap-id/0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+              "type": "single-account",
+              "accounts": ["c3deeb99-ba0d-4a4e-a0aa-033fc1f79ae3"],
+              "metadata": {
+                "name": "Snap Account 1",
+                "hidden": false,
+                "pinned": false
+              }
+            }
+          },
+          "metadata": {
+            "name": "Snap: snap-name",
+            "snap": {
+              "id": "local:snap-id"
+            }
+          }
+        }
+      }
+    },
+    "isAccountTreeSyncingInProgress": false,
+    "hasAccountTreeSyncingSyncedAtLeastOnce": false,
+    "accountGroupsMetadata": {},
+    "accountWalletsMetadata": {},
     "internalAccounts": {
       "accounts": {
         "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3": {
@@ -476,7 +675,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -497,7 +698,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3DSGM3AB87EM9N0K41AJ"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -539,7 +742,9 @@
               "type": "HD Key Tree"
             }
           },
-          "options": {},
+          "options": {
+            "entropySource": "01JKAF3PJ247KAM6C03G5Q0NP8"
+          },
           "methods": [
             "personal_sign",
             "eth_signTransaction",
@@ -607,45 +812,43 @@
         "accounts": [
           "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
           "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b"
-        ]
+        ],
+        "metadata": {
+          "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
+          "name": ""
+        }
       },
       {
         "type": "Ledger Hardware",
-        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"]
+        "accounts": ["0xc42edfcc21ed14dda456aa0756c153f7985d8813"],
+        "metadata": {
+          "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
+          "name": ""
+        }
       },
       {
         "type": "Simple Key Pair",
-        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"]
+        "accounts": ["0xeb9e64b93097bc15f01f13eae97015c57ab64823"],
+        "metadata": {
+          "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
+          "name": ""
+        }
       },
       {
         "type": "Snap Keyring",
-        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"]
+        "accounts": ["0xb552685e3d2790efd64a175b00d51f02cdafee5d"],
+        "metadata": {
+          "id": "01JKAF3SSWRQK818R830GE8PHX",
+          "name": ""
+        }
       },
       {
         "type": "Custody test",
-        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
-      }
-    ],
-    "keyringsMetadata": [
-      {
-        "id": "01JKAF3DSGM3AB87EM9N0K41AJ",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3KP7VPAG0YXEDTDRB6ZV",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3PJ247KAM6C03G5Q0NP8",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3SSWRQK818R830GE8PHX",
-        "name": ""
-      },
-      {
-        "id": "01JKAF3WYGWF7JX6PC4YYVSK2Q",
-        "name": ""
+        "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"],
+        "metadata": {
+          "id": "01JKAF3WYGWF7JX6PC4YYVSK2Q",
+          "name": ""
+        }
       }
     ],
     "identities": {
@@ -738,59 +941,27 @@
     },
     "accountsByChainId": {
       "0x5": {
-        "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-          "balance": "0x346ba7725f412cbfdb",
-          "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
+        "0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc": {
+          "balance": "0x346ba7725f412cbfdb"
         },
-        "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-          "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
+        "0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B": {
           "balance": "0x0"
         },
-        "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-          "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
+        "0xc42EDfCC21eD14dDA456AA0756C153F7985D8813": {
           "balance": "0x0"
         },
-        "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-          "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
+        "0xeB9e64B93097bc15F01F13eae97015c57ab64823": {
           "balance": "0x0"
         },
         "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-          "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
           "balance": "0x0"
         },
-        "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
-          "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
+        "0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D": {
           "balance": "0x0"
         }
       }
     },
     "selectedAddress": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-    "accounts": {
-      "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
-        "balance": "0x346ba7725f412cbfdb",
-        "address": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
-      },
-      "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b": {
-        "address": "0xec1adf982415d2ef5ec55899b9bfb8bc0f29251b",
-        "balance": "0x0"
-      },
-      "0xc42edfcc21ed14dda456aa0756c153f7985d8813": {
-        "address": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-        "balance": "0x0"
-      },
-      "0xeb9e64b93097bc15f01f13eae97015c57ab64823": {
-        "address": "0xeb9e64b93097bc15f01f13eae97015c57ab64823",
-        "balance": "0x0"
-      },
-      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-        "address": "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281",
-        "balance": "0x0"
-      },
-      "0xb552685e3d2790efd64a175b00d51f02cdafee5d": {
-        "address": "0xb552685e3d2790efd64a175b00d51f02cdafee5d",
-        "balance": "0x0"
-      }
-    },
     "tokens": [
       {
         "address": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
@@ -907,6 +1078,7 @@
     "useNftDetection": true,
     "openSeaEnabled": true,
     "orderedNetworkList": [],
+    "enabledNetworkMap": {},
     "pinnedAccountList": [],
     "hiddenAccountList": [],
     "advancedGasFee": {
@@ -1223,39 +1395,7 @@
           "gasPrice": "0x3b9aca00"
         },
         "gasLimitNoBuffer": "0x5208",
-        "history": [
-          {
-            "id": 8393540981007587,
-            "time": 1536268017676,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc",
-              "to": "0xc42edfcc21ed14dda456aa0756c153f7985d8813",
-              "value": "0x0",
-              "gas": "0x5208",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1536268017685
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1536268017686
-            }
-          ]
-        ],
+        "history": [],
         "origin": "metamask"
       },
       {
@@ -1273,118 +1413,7 @@
           "nonce": "0xb5"
         },
         "gasLimitNoBuffer": "0xcf08",
-        "history": [
-          {
-            "id": 3387511061307736,
-            "time": 1528133130531,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
-              "value": "0x1bc16d674ec80000",
-              "gas": "0xcf08",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133130666
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1528133130667
-            }
-          ],
-          [],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "approved",
-              "note": "txStateManager: setting status to approved",
-              "timestamp": 1528133131716
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/txParams/nonce",
-              "value": "0xb5",
-              "note": "transactions#approveTransaction",
-              "timestamp": 1528133131806
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "signed",
-              "note": "transactions#publishTransaction",
-              "timestamp": 1528133131825
-            },
-            {
-              "op": "add",
-              "path": "/rawTx",
-              "value": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "add",
-              "path": "/hash",
-              "value": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
-              "note": "transactions#setTxHash",
-              "timestamp": 1528133131951
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/submittedTime",
-              "value": 1528133131951,
-              "note": "txStateManager - add submitted time stamp",
-              "timestamp": 1528133131952
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "submitted",
-              "note": "txStateManager: setting status to submitted",
-              "timestamp": 1528133131955
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/firstRetryBlockNumber",
-              "value": "0x24af6b",
-              "note": "transactions/pending-tx-tracker#event: tx:block-update",
-              "timestamp": 1528133134414
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "confirmed",
-              "note": "txStateManager: setting status to confirmed",
-              "timestamp": 1528133158516
-            }
-          ]
-        ],
+        "history": [],
         "origin": "MetaMask",
         "rawTx": "0xf86c81b5843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba03f879cd33a31180da38545d0f809822e00ddf35954d8b0ece83bacf22347ce54a06ad050487978e425ca6a014ed55ea8e9a190069863ed96a0eefa88d729ea1eda",
         "hash": "0x516b77569173a04c76fdb6545cf279ebd0c75f5d25d6e4ce019925205f0e3709",
@@ -1406,118 +1435,7 @@
           "nonce": "0xb6"
         },
         "gasLimitNoBuffer": "0xcf08",
-        "history": [
-          {
-            "id": 3387511061307737,
-            "time": 1528133149983,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
-              "value": "0x1bc16d674ec80000",
-              "gas": "0xcf08",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133150011
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1528133150013
-            }
-          ],
-          [],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "approved",
-              "note": "txStateManager: setting status to approved",
-              "timestamp": 1528133151102
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/txParams/nonce",
-              "value": "0xb6",
-              "note": "transactions#approveTransaction",
-              "timestamp": 1528133151189
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "signed",
-              "note": "transactions#publishTransaction",
-              "timestamp": 1528133151203
-            },
-            {
-              "op": "add",
-              "path": "/rawTx",
-              "value": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "add",
-              "path": "/hash",
-              "value": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
-              "note": "transactions#setTxHash",
-              "timestamp": 1528133151342
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/submittedTime",
-              "value": 1528133151347,
-              "note": "txStateManager - add submitted time stamp",
-              "timestamp": 1528133151347
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "submitted",
-              "note": "txStateManager: setting status to submitted",
-              "timestamp": 1528133151368
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/firstRetryBlockNumber",
-              "value": "0x24af6d",
-              "note": "transactions/pending-tx-tracker#event: tx:block-update",
-              "timestamp": 1528133158532
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "confirmed",
-              "note": "txStateManager: setting status to confirmed",
-              "timestamp": 1528133190636
-            }
-          ]
-        ],
+        "history": [],
         "origin": "MetaMask",
         "rawTx": "0xf86c81b6843b9aca0082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba0692deaabf0d79544d41e7c475ad43760679a4f25d0fee908b1da308db1a291a7a0384db85fc6c843ea25986a0760f3c50ab6504fc559fc71fc7f23f60950eb316d",
         "hash": "0x9271b266d05022cfa841362fae43763ebafcee540d84278b0157ef4a68d4e26f",
@@ -1539,118 +1457,7 @@
           "nonce": "0xb7"
         },
         "gasLimitNoBuffer": "0xcf08",
-        "history": [
-          {
-            "id": 3387511061307738,
-            "time": 1528133180635,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0x92e659448c48fc926ec942d0da1459260d36bb33",
-              "value": "0x1bc16d674ec80000",
-              "gas": "0xcf08",
-              "gasPrice": "0x12a05f200"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133180720
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1528133180722
-            }
-          ],
-          [],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "approved",
-              "note": "txStateManager: setting status to approved",
-              "timestamp": 1528133181623
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/txParams/nonce",
-              "value": "0xb7",
-              "note": "transactions#approveTransaction",
-              "timestamp": 1528133181726
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "signed",
-              "note": "transactions#publishTransaction",
-              "timestamp": 1528133181749
-            },
-            {
-              "op": "add",
-              "path": "/rawTx",
-              "value": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "add",
-              "path": "/hash",
-              "value": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
-              "note": "transactions#setTxHash",
-              "timestamp": 1528133181885
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/submittedTime",
-              "value": 1528133181885,
-              "note": "txStateManager - add submitted time stamp",
-              "timestamp": 1528133181885
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "submitted",
-              "note": "txStateManager: setting status to submitted",
-              "timestamp": 1528133181888
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/firstRetryBlockNumber",
-              "value": "0x24af6f",
-              "note": "transactions/pending-tx-tracker#event: tx:block-update",
-              "timestamp": 1528133190653
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "confirmed",
-              "note": "txStateManager: setting status to confirmed",
-              "timestamp": 1528133222745
-            }
-          ]
-        ],
+        "history": [],
         "origin": "MetaMask",
         "rawTx": "0xf86d81b785012a05f20082cf089492e659448c48fc926ec942d0da1459260d36bb33881bc16d674ec80000802ba086f9846798be6988c39a5cf85f0dbe267e59ca0b96a6a7077e92cba33e10a258a064ffa52ac90c238ce21e6f085283216191b185a1eccd7daae6e2ab66ba26ada0",
         "hash": "0x4e061e977c099735bc9e5203e717f7d9dccb3fcb2f82031a12a3ed326f95d43b",
@@ -1673,122 +1480,7 @@
           "nonce": "0xb8"
         },
         "gasLimitNoBuffer": "0x6169e",
-        "history": [
-          {
-            "id": 3387511061307739,
-            "time": 1528133223918,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0xfe2149773b3513703e79ad23d05a778a185016ee",
-              "value": "0xaa87bee538000",
-              "data": "0xea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de33",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "add",
-              "path": "/txParams/gas",
-              "value": "0x6169e",
-              "timestamp": 1528133225488
-            },
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false
-            }
-          ],
-          [
-            {
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "op": "add",
-              "path": "/origin",
-              "value": "crypko.ai"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "approved",
-              "note": "txStateManager: setting status to approved",
-              "timestamp": 1528133227279
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/txParams/nonce",
-              "value": "0xb8",
-              "note": "transactions#approveTransaction",
-              "timestamp": 1528133227374
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "signed",
-              "note": "transactions#publishTransaction",
-              "timestamp": 1528133227405
-            },
-            {
-              "op": "add",
-              "path": "/rawTx",
-              "value": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "add",
-              "path": "/hash",
-              "value": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
-              "note": "transactions#setTxHash",
-              "timestamp": 1528133227534
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/submittedTime",
-              "value": 1528133227538,
-              "note": "txStateManager - add submitted time stamp",
-              "timestamp": 1528133227538
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "submitted",
-              "note": "txStateManager: setting status to submitted",
-              "timestamp": 1528133227543
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/firstRetryBlockNumber",
-              "value": "0x24af72",
-              "note": "transactions/pending-tx-tracker#event: tx:block-update",
-              "timestamp": 1528133238980
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "confirmed",
-              "note": "txStateManager: setting status to confirmed",
-              "timestamp": 1528133255035
-            }
-          ]
-        ],
+        "history": [],
         "origin": "crypko.ai",
         "rawTx": "0xf8b181b8843b9aca008306169e94fe2149773b3513703e79ad23d05a778a185016ee870aa87bee538000b844ea94496b000000000000000000000000000000000000000000000000000000000001e1eb000000000000000000000000000000000000000000000000000000000001de332ca07bb2efbb8529d67606f9f89e7934c594a31d50c7d24a3286c20a2944a3b8c2a9a07b55ebd8aa28728ce0e38dd3b3503b78fccedae80053626d8649c68346c7c49c",
         "hash": "0x466ae7d4b7c270121f0a8d68fbc6c9091ffc4aa976a553a5bfa56a79cf9f63dd",
@@ -1811,119 +1503,7 @@
           "nonce": "0xb9"
         },
         "gasLimitNoBuffer": "0xd508",
-        "history": [
-          {
-            "id": 3387511061307740,
-            "time": 1528133291381,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0x108cf70c7d384c552f42c07c41c0e1e46d77ea0d",
-              "value": "0x0",
-              "data": "0xa9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb330000000000000000000000000000000000000000000000000000000000000002",
-              "gas": "0xd508",
-              "gasPrice": "0x3b9aca00"
-            }
-          },
-          [
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false,
-              "timestamp": 1528133291486
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "MetaMask",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1528133291486
-            }
-          ],
-          [],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "approved",
-              "note": "txStateManager: setting status to approved",
-              "timestamp": 1528133293588
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/txParams/nonce",
-              "value": "0xb9",
-              "note": "transactions#approveTransaction",
-              "timestamp": 1528133293706
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "signed",
-              "note": "transactions#publishTransaction",
-              "timestamp": 1528133293724
-            },
-            {
-              "op": "add",
-              "path": "/rawTx",
-              "value": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9"
-            }
-          ],
-          [],
-          [
-            {
-              "op": "add",
-              "path": "/hash",
-              "value": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
-              "note": "transactions#setTxHash",
-              "timestamp": 1528133293853
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/submittedTime",
-              "value": 1528133293859,
-              "note": "txStateManager - add submitted time stamp",
-              "timestamp": 1528133293862
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "submitted",
-              "note": "txStateManager: setting status to submitted",
-              "timestamp": 1528133293867
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/firstRetryBlockNumber",
-              "value": "0x24af76",
-              "note": "transactions/pending-tx-tracker#event: tx:block-update",
-              "timestamp": 1528133295200
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "confirmed",
-              "note": "txStateManager: setting status to confirmed",
-              "timestamp": 1528133327522
-            }
-          ]
-        ],
+        "history": [],
         "origin": "MetaMask",
         "rawTx": "0xf8a981b9843b9aca0082d50894108cf70c7d384c552f42c07c41c0e1e46d77ea0d80b844a9059cbb00000000000000000000000092e659448c48fc926ec942d0da1459260d36bb3300000000000000000000000000000000000000000000000000000000000000022ca04f05310490d3e3a9a159ae25f52cec9afb0a69527d30be832aaae12e64ff056ea075f81a5220bed481e764bab8830c57169c59fe528ca9cf3442f47f7618a9b4a9",
         "hash": "0x3680dc9815cd05b620b6dd0017d949604ca7d92f051d5542fc8a5ecaa876af09",
@@ -1944,67 +1524,12 @@
           "gas": "0x5208"
         },
         "gasLimitNoBuffer": "0x5208",
-        "history": [
-          {
-            "id": 3387511061307741,
-            "time": 1528133318440,
-            "status": "unapproved",
-            "chainId": "0x5",
-            "loadingDefaults": true,
-            "txParams": {
-              "from": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62",
-              "to": "0x3b222de3aaba8ec9771ca9e9af5d8ed757fb7f62"
-            }
-          },
-          [
-            {
-              "op": "add",
-              "path": "/txParams/value",
-              "value": "0x0",
-              "timestamp": 1528133319641
-            },
-            {
-              "op": "add",
-              "path": "/txParams/gasPrice",
-              "value": "0x3b9aca00"
-            },
-            {
-              "op": "add",
-              "path": "/txParams/gas",
-              "value": "0x5208"
-            },
-            {
-              "op": "replace",
-              "path": "/loadingDefaults",
-              "value": false
-            }
-          ],
-          [
-            {
-              "op": "add",
-              "path": "/origin",
-              "value": "tmashuang.github.io",
-              "note": "#newUnapprovedTransaction - adding the origin",
-              "timestamp": 1528133319642
-            }
-          ],
-          [
-            {
-              "op": "replace",
-              "path": "/status",
-              "value": "rejected",
-              "note": "txStateManager: setting status to rejected",
-              "timestamp": 1528133320924
-            }
-          ]
-        ],
+        "history": [],
         "origin": "tmashuang.github.io"
       }
     ],
     "addSnapAccountEnabled": false,
     "watchEthereumAccountEnabled": false,
-    "bitcoinSupportEnabled": false,
-    "bitcoinTestnetSupportEnabled": false,
     "pendingApprovals": {
       "testApprovalId": {
         "id": "testApprovalId",
@@ -2134,17 +1659,27 @@
         }
       }
     },
-    "bridgeStatusState": {
-      "txHistory": {}
+    "txHistory": {},
+    "throttledOrigins": {},
+    "delegations": {},
+    "accountsAssets": {},
+    "assetsMetadata": {},
+    "allIgnoredAssets": {},
+    "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"erc20-token-revocation\":{},\"other\":{}}",
+    "isGatorPermissionsEnabled": false,
+    "isFetchingGatorPermissions": false,
+    "isUpdatingGatorPermissions": false,
+    "networkConnectionBanner": {
+      "status": "unknown"
     },
-    "throttledOrigins": {}
+    "coverageResults": {}
   },
   "ramps": {
     "buyableChains": [
       {
         "active": true,
         "chainId": 1,
-        "chainName": "Ethereum Mainnet",
+        "chainName": "Ethereum",
         "shortName": "Ethereum",
         "nativeTokenSupported": true
       },
@@ -2165,7 +1700,7 @@
       {
         "active": true,
         "chainId": 56,
-        "chainName": "BNB Chain Mainnet",
+        "chainName": "BNB Chain",
         "shortName": "BNB Chain",
         "nativeTokenSupported": true
       },
@@ -2179,7 +1714,7 @@
       {
         "active": true,
         "chainId": 137,
-        "chainName": "Polygon Mainnet",
+        "chainName": "Polygon",
         "shortName": "Polygon",
         "nativeTokenSupported": true
       },
@@ -2193,7 +1728,7 @@
       {
         "active": true,
         "chainId": 324,
-        "chainName": "zkSync Era Mainnet",
+        "chainName": "zkSync Era",
         "shortName": "zkSync Era",
         "nativeTokenSupported": true
       },
@@ -2221,7 +1756,7 @@
       {
         "active": true,
         "chainId": 8453,
-        "chainName": "Base Mainnet",
+        "chainName": "Base",
         "shortName": "Base",
         "nativeTokenSupported": true
       },

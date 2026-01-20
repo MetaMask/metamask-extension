@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { WALLET_SNAP_PERMISSION_KEY } from '@metamask/snaps-utils';
+import { isInternalAccountInPermittedAccountIds } from '@metamask/chain-agnostic-permission';
 import {
   STATUS_CONNECTED,
   STATUS_CONNECTED_TO_ANOTHER_ACCOUNT,
@@ -16,15 +17,19 @@ import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
   getAllPermittedAccountsForCurrentTab,
   getPermissionsForActiveTab,
-  getSelectedInternalAccount,
 } from '../../../selectors';
-import { ConnectedSiteMenu } from '../../multichain';
-import { isInternalAccountInPermittedAccountIds } from '../../../../shared/lib/multichain/chain-agnostic-permission-utils/caip-accounts';
+import { ConnectedSiteMenu } from '../../multichain/connected-site-menu';
+import {
+  getInternalAccountsFromGroupById,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 
 export default function ConnectedStatusIndicator({ onClick, disabled }) {
   const t = useI18nContext();
-
-  const selectedAccount = useSelector(getSelectedInternalAccount);
+  const selectedAccountGroupId = useSelector(getSelectedAccountGroup);
+  const accountGroupInternalAccounts = useSelector((state) =>
+    getInternalAccountsFromGroupById(state, selectedAccountGroupId),
+  );
 
   const permissionsForActiveTab = useSelector(getPermissionsForActiveTab);
 
@@ -34,11 +39,15 @@ export default function ConnectedStatusIndicator({ onClick, disabled }) {
 
   const permittedAccounts = useSelector(getAllPermittedAccountsForCurrentTab);
 
-  const currentTabIsConnectedToSelectedAddress =
-    isInternalAccountInPermittedAccountIds(selectedAccount, permittedAccounts);
+  const currentTabIsConnectedToAccountGroup =
+    selectedAccountGroupId &&
+    accountGroupInternalAccounts &&
+    accountGroupInternalAccounts.some((account) =>
+      isInternalAccountInPermittedAccountIds(account, permittedAccounts),
+    );
 
   let status;
-  if (currentTabIsConnectedToSelectedAddress) {
+  if (currentTabIsConnectedToAccountGroup) {
     status = STATUS_CONNECTED;
   } else if (permittedAccounts.length > 0) {
     status = STATUS_CONNECTED_TO_ANOTHER_ACCOUNT;

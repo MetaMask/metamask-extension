@@ -8,24 +8,27 @@
 // It must be run first in case an error is thrown later during initialization.
 import './lib/setup-initial-state-hooks';
 
-import EventEmitter from 'events';
-import { finished, pipeline } from 'readable-stream';
-import debounce from 'debounce-stream';
+// Import this very early, so globalThis.INFURA_PROJECT_ID_FROM_MANIFEST_FLAGS is always defined
+import '../../shared/constants/infura-project-id';
+
+import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
-import { storeAsStream } from '@metamask/obs-store';
-import { isObject } from '@metamask/utils';
-import PortStream from 'extension-port-stream';
-import { NotificationServicesController } from '@metamask/notification-services-controller';
-
+import { isObject, hasProperty } from '@metamask/utils';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import { ExtensionPortStream } from 'extension-port-stream';
+import { withResolvers } from '../../shared/lib/promise-with-resolvers';
+import { FirstTimeFlowType } from '../../shared/constants/onboarding';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_NOTIFICATION,
   ENVIRONMENT_TYPE_FULLSCREEN,
-  EXTENSION_MESSAGES,
+  ENVIRONMENT_TYPE_SIDEPANEL,
   PLATFORM_FIREFOX,
   MESSAGE_TYPE,
 } from '../../shared/constants/app';
+import { EXTENSION_MESSAGES } from '../../shared/constants/messages';
+import { BACKGROUND_LIVENESS_METHOD } from '../../shared/constants/background-liveness-check';
 import {
   REJECT_NOTIFICATION_CLOSE,
   REJECT_NOTIFICATION_CLOSE_SIG,
@@ -36,46 +39,52 @@ import {
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { maskObject } from '../../shared/modules/object.utils';
-import { FIXTURE_STATE_METADATA_VERSION } from '../../test/e2e/default-fixture';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
-import {
-  FakeLedgerBridge,
-  FakeTrezorBridge,
-} from '../../test/stub/keyring-bridge';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
-import { PersistenceManager } from './lib/stores/persistence-manager';
+import { isStateCorruptionError } from '../../shared/constants/errors';
+import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
+import { getManifestFlags } from '../../shared/lib/manifestFlags';
+import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
+import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
+import {
+  CorruptionHandler,
+  hasVault,
+} from './lib/state-corruption/state-corruption-recovery';
+import {
+  backedUpStateKeys,
+  PersistenceManager,
+} from './lib/stores/persistence-manager';
 import ExtensionStore from './lib/stores/extension-store';
-import ReadOnlyNetworkStore from './lib/stores/read-only-network-store';
+import { FixtureExtensionStore } from './lib/stores/fixture-extension-store';
+import { useSplitStateStorage } from './lib/use-split-state-storage';
 import migrations from './migrations';
 import Migrator from './lib/migrator';
+import { updateRemoteFeatureFlags } from './lib/update-remote-feature-flags';
 import ExtensionPlatform from './platforms/extension';
 import { SENTRY_BACKGROUND_STATE } from './constants/sentry-state';
 
-import createStreamSink from './lib/createStreamSink';
 import NotificationManager, {
   NOTIFICATION_MANAGER_EVENTS,
 } from './lib/notification-manager';
 import MetamaskController, {
   METAMASK_CONTROLLER_EVENTS,
 } from './metamask-controller';
-import getFirstPreferredLangCode from './lib/get-first-preferred-lang-code';
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import {
-  deferredPromise,
   getPlatform,
+  isWebOrigin,
   shouldEmitDappViewedEvent,
 } from './lib/util';
-import { createOffscreen } from './offscreen';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
-import { generateWalletState } from './fixtures/generate-wallet-state';
 import rawFirstTimeState from './first-time-state';
+import { onUpdate } from './on-update';
 
 /* eslint-enable import/first */
 
@@ -85,26 +94,54 @@ import {
   METAMASK_EIP_1193_PROVIDER,
 } from './constants/stream';
 import { PREINSTALLED_SNAPS_URLS } from './constants/snaps';
+import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
+import { DeepLinkRouter } from './lib/deep-links/deep-link-router';
+import { createEvent } from './lib/deep-links/metrics';
+import { getRequestSafeReload } from './lib/safe-reload';
+import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
+import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
+
+/**
+ * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
+ */
+
+// MV3 configures the ExtensionLazyListener in service-worker.ts and sets it on globalThis.stateHooks,
+// but in MV2 we don't need to do that, so we create it here (and we don't add any lazy listeners,
+// as it doesn't need them).
+const lazyListener =
+  globalThis.stateHooks.lazyListener ?? new ExtensionLazyListener(browser);
 
 // eslint-disable-next-line @metamask/design-tokens/color-no-hex
 const BADGE_COLOR_APPROVAL = '#0376C9';
-// eslint-disable-next-line @metamask/design-tokens/color-no-hex
-const BADGE_COLOR_NOTIFICATION = '#D73847';
 const BADGE_MAX_COUNT = 9;
 
-// Setup global hook for improved Sentry state snapshots during initialization
 const inTest = process.env.IN_TEST;
-const migrator = new Migrator({
-  migrations,
-  defaultVersion: process.env.WITH_STATE
-    ? FIXTURE_STATE_METADATA_VERSION
-    : null,
-});
-
-const localStore = inTest ? new ReadOnlyNetworkStore() : new ExtensionStore();
+const useFixtureStore =
+  inTest && getManifestFlags().testing?.forceExtensionStore !== true;
+const localStore = useFixtureStore
+  ? new FixtureExtensionStore({ initialize: true })
+  : new ExtensionStore();
 const persistenceManager = new PersistenceManager({ localStore });
+
+const { safePersist, requestSafeReload, evacuate } =
+  getRequestSafeReload(persistenceManager);
+
+// Setup global hook for improved Sentry state snapshots during initialization
 global.stateHooks.getMostRecentPersistedState = () =>
   persistenceManager.mostRecentRetrievedState;
+
+// Expose storageKind for Sentry tagging (used to distinguish 'data' vs 'split' storage)
+global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
+
+/**
+ * A helper function to log the current state of the vault. Useful for debugging
+ * purposes, to, in the case of storage errors, a possible way for an end
+ * user to recover their vault. Hopefully this is never needed.
+ */
+global.logEncryptedVault = () => {
+  persistenceManager.logEncryptedVault();
+};
 
 const { sentry } = global;
 let firstTimeState = { ...rawFirstTimeState };
@@ -126,14 +163,18 @@ const isFirefox = getPlatform() === PLATFORM_FIREFOX;
 let openPopupCount = 0;
 let notificationIsOpen = false;
 let uiIsTriggering = false;
+let sidePanelIsOpen = false;
 const openMetamaskTabsIDs = {};
 const requestAccountTabIds = {};
 let controller;
+const senderOriginMapping = {};
 const tabOriginMapping = {};
 
 if (inTest || process.env.METAMASK_DEBUG) {
-  global.stateHooks.metamaskGetState =
-    persistenceManager.get.bind(persistenceManager);
+  global.stateHooks.metamaskGetState = persistenceManager.get.bind(
+    persistenceManager,
+    { validateVault: false },
+  );
 }
 
 const phishingPageUrl = new URL(process.env.PHISHING_WARNING_PAGE_URL);
@@ -146,39 +187,9 @@ const ONE_SECOND_IN_MILLISECONDS = 1_000;
 // Timeout for initializing phishing warning page.
 const PHISHING_WARNING_PAGE_TIMEOUT = ONE_SECOND_IN_MILLISECONDS;
 
-// Event emitter for state persistence
-export const statePersistenceEvents = new EventEmitter();
-
-if (!isManifestV3) {
-  /**
-   * `onInstalled` event handler.
-   *
-   * On MV3 builds we must listen for this event in `app-init`, otherwise we found that the listener
-   * is never called.
-   * There is no `app-init` file on MV2 builds, so we add a listener here instead.
-   *
-   * @param {import('webextension-polyfill').Runtime.OnInstalledDetailsType} details - Event details.
-   */
-  const onInstalledListener = (details) => {
-    if (details.reason === 'install') {
-      onInstall();
-      browser.runtime.onInstalled.removeListener(onInstalledListener);
-    }
-  };
-
-  browser.runtime.onInstalled.addListener(onInstalledListener);
-
-  // This condition is for when the `onInstalled` listener in `app-init` was called before
-  // `background.js` was loaded.
-} else if (globalThis.stateHooks.metamaskWasJustInstalled) {
-  onInstall();
-  // Delete just to clean up global namespace
-  delete globalThis.stateHooks.metamaskWasJustInstalled;
-  // This condition is for when `background.js` was loaded before the `onInstalled` listener was
-  // called.
-} else {
-  globalThis.stateHooks.metamaskTriggerOnInstall = () => onInstall();
-}
+lazyListener.once('runtime', 'onInstalled').then((details) => {
+  handleOnInstalled(details);
+});
 
 /**
  * This deferred Promise is used to track whether initialization has finished.
@@ -187,11 +198,30 @@ if (!isManifestV3) {
  * called once initialization has completed, and that `rejectInitialization` is
  * called if initialization fails in an unrecoverable way.
  */
-const {
-  promise: isInitialized,
-  resolve: resolveInitialization,
-  reject: rejectInitialization,
-} = deferredPromise();
+/**
+ * @type {Promise<void>}
+ */
+let isInitialized;
+/**
+ * @type {() => void}
+ */
+let resolveInitialization;
+/**
+ * @type {() => void}
+ */
+let rejectInitialization;
+
+/**
+ * Creates a deferred Promise and sets the global variables to track the
+ * state of application initialization (or re-initialization).
+ */
+function setGlobalInitializers() {
+  const deferred = withResolvers();
+  isInitialized = deferred.promise;
+  resolveInitialization = deferred.resolve;
+  rejectInitialization = deferred.reject;
+}
+setGlobalInitializers();
 
 /**
  * Sends a message to the dapp(s) content script to signal it can connect to MetaMask background as
@@ -235,8 +265,11 @@ const sendReadyMessageToTabs = async () => {
         checkForLastErrorAndLog();
       })
       .catch(() => {
-        // An error may happen if the contentscript is blocked from loading,
-        // and thus there is no runtime.onMessage handler to listen to the message.
+        // An error may happen if:
+        //  * a contentscript is blocked from loading, and thus there is no
+        // `runtime.onMessage` handlers to listen to the message, or
+        //  * if MetaMask reloads/installs while tabs are already open, as these
+        // tabs won't have a valid Port to send the message to.
         checkForLastErrorAndLog();
       });
   }
@@ -253,13 +286,30 @@ const sendReadyMessageToTabs = async () => {
  * @param {MetamaskController} theController
  */
 function maybeDetectPhishing(theController) {
+  /**
+   * Redirects a tab to the phishing warning page.
+   *
+   * @param {number} tabId - The ID of the tab to redirect
+   * @param {string} url - The URL to redirect to (phishing warning page)
+   * @returns {Promise<boolean>} Returns true if the redirect was successful, false otherwise.
+   *   Returns false for Google pre-fetch requests or if the redirect fails.
+   */
   async function redirectTab(tabId, url) {
     try {
-      return await browser.tabs.update(tabId, {
+      const tab = await browser.tabs.get(tabId);
+
+      // Prevent redirect when due to Google pre-fetching
+      if (tab.url && tab.url.startsWith('https://www.google.com/search')) {
+        return false;
+      }
+
+      await browser.tabs.update(tabId, {
         url,
       });
+      return true;
     } catch (error) {
-      return sentry?.captureException(error);
+      sentry?.captureException(error);
+      return false;
     }
   }
   // we can use the blocking API in MV2, but not in MV3
@@ -299,11 +349,12 @@ function maybeDetectPhishing(theController) {
       }
 
       const { hostname, href, searchParams } = new URL(details.url);
-      if (inTest) {
-        if (searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')) {
-          // this is a test page that needs to bypass early phishing detection
-          return {};
-        }
+      if (
+        inTest &&
+        searchParams.has('IN_TEST_BYPASS_EARLY_PHISHING_DETECTION')
+      ) {
+        // this is a test page that needs to bypass early phishing detection
+        return {};
       }
 
       theController.phishingController.maybeUpdateState();
@@ -325,33 +376,59 @@ function maybeDetectPhishing(theController) {
 
       // Determine the block reason based on the type
       let blockReason;
-      let blockedUrl = hostname;
+      let blockedUrl = href;
       if (phishingTestResponse?.result && blockedRequestResponse.result) {
         blockReason = `${phishingTestResponse.type} and ${blockedRequestResponse.type}`;
       } else if (phishingTestResponse?.result) {
         blockReason = phishingTestResponse.type;
       } else {
+        // Override the blocked URL to the initiator URL if the request was flagged by c2 detection
         blockReason = blockedRequestResponse.type;
         blockedUrl = details.initiator;
       }
 
-      theController.metaMetricsController.trackEvent({
-        // should we differentiate between background redirection and content script redirection?
-        event: MetaMetricsEventName.PhishingPageDisplayed,
-        category: MetaMetricsEventCategory.Phishing,
-        properties: {
-          url: blockedUrl,
-          referrer: {
-            url: blockedUrl,
-          },
-          reason: blockReason,
-          requestDomain: blockedRequestResponse.result ? hostname : undefined,
-        },
+      let blockedHostname;
+      try {
+        blockedHostname = new URL(blockedUrl).hostname;
+      } catch {
+        // If blockedUrl is null or undefined, fall back to the original URL
+        blockedHostname = hostname;
+        blockedUrl = href;
+      }
+
+      const querystring = new URLSearchParams({
+        hostname: blockedHostname, // used for creating the EPD issue title (false positive report)
+        href: blockedUrl, // used for displaying the URL on the phsihing warning page + proceed anyway URL
       });
-      const querystring = new URLSearchParams({ hostname, href });
       const redirectUrl = new URL(phishingPageHref);
       redirectUrl.hash = querystring.toString();
       const redirectHref = redirectUrl.toString();
+
+      // Helper function to track phishing page metrics
+      const trackPhishingMetrics = () => {
+        if (!isFirefox) {
+          theController.metaMetricsController.trackEvent(
+            {
+              // should we differentiate between background redirection and content script redirection?
+              event: MetaMetricsEventName.PhishingPageDisplayed,
+              category: MetaMetricsEventCategory.Phishing,
+              properties: {
+                url: blockedUrl,
+                referrer: {
+                  url: blockedUrl,
+                },
+                reason: blockReason,
+                requestDomain: blockedRequestResponse.result
+                  ? hostname
+                  : undefined,
+              },
+            },
+            {
+              excludeMetaMetricsId: true,
+            },
+          );
+        }
+      };
 
       // blocking is better than tab redirection, as blocking will prevent
       // the browser from loading the page at all
@@ -360,13 +437,21 @@ function maybeDetectPhishing(theController) {
         // For non-`main_frame` requests (e.g. `sub_frame` or WebSocket), we cancel them
         // and redirect the whole tab asynchronously so that the user sees the warning.
         if (details.type === 'main_frame') {
+          trackPhishingMetrics();
           return { redirectUrl: redirectHref };
         }
-        redirectTab(details.tabId, redirectHref);
+        redirectTab(details.tabId, redirectHref).then((redirected) => {
+          if (redirected) {
+            trackPhishingMetrics();
+          }
+        });
         return { cancel: true };
       }
-      // redirect the whole tab (even if it's a sub_frame request)
-      redirectTab(details.tabId, redirectHref);
+      redirectTab(details.tabId, redirectHref).then((redirected) => {
+        if (redirected) {
+          trackPhishingMetrics();
+        }
+      });
       return {};
     },
     {
@@ -418,17 +503,113 @@ let connectEip1193;
 /** @type {ConnectCaipMultichain} */
 let connectCaipMultichain;
 
-browser.runtime.onConnect.addListener(async (...args) => {
-  // Queue up connection attempts here, waiting until after initialization
-  await isInitialized;
+const corruptionHandler = new CorruptionHandler();
+/**
+ * Handles the onConnect event.
+ *
+ * @param {browser.Runtime.Port} port - The port provided by a new context.
+ */
+const handleOnConnect = async (port) => {
+  if (
+    inTest &&
+    getManifestFlags().testing?.simulateUnresponsiveBackground === true
+  ) {
+    return;
+  }
 
-  // This is set in `setupController`, which is called as part of initialization
-  connectWindowPostMessage(...args);
-});
+  try {
+    // `handleOnConnect` can be called asynchronously, well after the `onConnect`
+    // event was emitted, due to the lazy listener setup in `service-worker.ts`, so we
+    // might not be able to send this message if the window has already closed.
+    port.postMessage({
+      data: {
+        method: BACKGROUND_LIVENESS_METHOD,
+      },
+      name: 'background-liveness',
+    });
+  } catch (e) {
+    log.error(
+      'MetaMask - background-liveness check: Failed to message to port',
+      e,
+    );
+    // window already closed, no need to continue.
+    return;
+  }
+
+  // Queue up connection attempts here, waiting until after initialization
+  try {
+    await isInitialized;
+
+    // This is set in `setupController`, which is called as part of initialization
+    connectWindowPostMessage(port);
+  } catch (error) {
+    sentry?.captureException(error);
+
+    // if we have a STATE_CORRUPTION_ERROR tell the user about it and offer to
+    // restore from a backup, if we have one.
+    if (isStateCorruptionError(error)) {
+      await corruptionHandler.handleStateCorruptionError({
+        port,
+        error,
+        database: persistenceManager,
+        repairCallback: async (backup) => {
+          // we are going to reinitialize the background script, so we need to
+          // reset the initialization promises. this is gross since it is
+          // possible the original references could have been passed to other
+          // functions, and we can't update those references from here.
+          // right now, that isn't the case though.
+          setGlobalInitializers();
+
+          if (hasVault(backup)) {
+            await initBackground(backup);
+            controller.onboardingController.setFirstTimeFlowType(
+              FirstTimeFlowType.restore,
+            );
+          } else {
+            // if we don't have a backup we need to make sure we clear the state
+            // from the database, and then reinitialize the background script
+            // with the first time state.
+            await persistenceManager.reset();
+            await initBackground(null);
+          }
+        },
+      });
+    } else {
+      const errorLike = isObject(error)
+        ? {
+            message: error.message ?? 'Unknown error',
+            name: error.name ?? 'UnknownError',
+            stack: error.stack,
+          }
+        : {
+            message: String(error),
+            name: 'UnknownError',
+            stack: '',
+          };
+      // general errors
+      tryPostMessage(port, DISPLAY_GENERAL_STARTUP_ERROR, {
+        error: errorLike,
+        currentLocale: controller?.preferencesController?.state?.currentLocale,
+      });
+    }
+  }
+};
+const installOnConnectListener = () => {
+  lazyListener.addListener('runtime', 'onConnect', handleOnConnect);
+};
+if (
+  inTest &&
+  getManifestFlags().testing?.simulatedSlowBackgroundLoadingTimeout
+) {
+  const { simulatedSlowBackgroundLoadingTimeout } = getManifestFlags().testing;
+  setTimeout(installOnConnectListener, simulatedSlowBackgroundLoadingTimeout);
+} else {
+  installOnConnectListener();
+}
+
 browser.runtime.onConnectExternal.addListener(async (...args) => {
   // Queue up connection attempts here, waiting until after initialization
   await isInitialized;
-
   // This is set in `setupController`, which is called as part of initialization
   connectExternallyConnectable(...args);
 });
@@ -462,10 +643,7 @@ function saveTimestamp() {
  * @property {boolean} welcomeScreen - True if welcome screen should be shown.
  * @property {string} currentLocale - A locale string matching the user's preferred display language.
  * @property {string} networkStatus - Either "unknown", "available", "unavailable", or "blocked", depending on the status of the currently selected network.
- * @property {object} accounts - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values.
  * @property {object} accountsByChainId - An object mapping lower-case hex addresses to objects with "balance" and "address" keys, both storing hex string values keyed by chain id.
- * @property {hex} currentBlockGasLimit - The most recently seen block gas limit, in a lower case hex prefixed string.
- * @property {object} currentBlockGasLimitByChainId - The most recently seen block gas limit, in a lower case hex prefixed string keyed by chain id.
  * @property {object} unapprovedPersonalMsgs - An object of messages pending approval, mapping a unique ID to the options.
  * @property {number} unapprovedPersonalMsgCount - The number of messages in unapprovedPersonalMsgs.
  * @property {object} unapprovedEncryptionPublicKeyMsgs - An object of messages pending approval, mapping a unique ID to the options.
@@ -491,90 +669,165 @@ function saveTimestamp() {
 /**
  * Initializes the MetaMask controller, and sets up all platform configuration.
  *
+ * @param {Backup | null} backup
  * @returns {Promise} Setup complete.
  */
-async function initialize() {
-  try {
-    const offscreenPromise = isManifestV3 ? createOffscreen() : null;
+async function initialize(backup) {
+  const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
-    const initData = await loadStateFromPersistence();
+  // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
+  // This ensures we capture the initial connectivity status from the offscreen document
+  // which is sent right after isBooted. We queue the status until the controller is ready.
+  let pendingConnectivityStatus = null;
+  let connectivityReady = false;
 
-    const initState = initData.data;
-    const initLangCode = await getFirstPreferredLangCode();
-
-    let isFirstMetaMaskControllerSetup;
-
-    // We only want to start this if we are running a test build, not for the release build.
-    // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
-    // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
-    // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
-    if (process.env.IN_TEST && window.navigator?.webdriver) {
-      getSocketBackgroundToMocha();
-    }
-
-    if (isManifestV3) {
-      // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
-      // miliseconds. This keeps the service worker alive.
-      if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
-        const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
-
-        saveTimestamp();
-        setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+  if (isManifestV3) {
+    addOffscreenConnectivityListener((isOnline) => {
+      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
+        const status = isOnline ? 'online' : 'offline';
+        controller.controllerApi.setConnectivityStatus(status);
+      } else {
+        // Queue until controller is ready
+        pendingConnectivityStatus = isOnline;
       }
-
-      const sessionData = await browser.storage.session.get([
-        'isFirstMetaMaskControllerSetup',
-      ]);
-
-      isFirstMetaMaskControllerSetup =
-        sessionData?.isFirstMetaMaskControllerSetup === undefined;
-      await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
-    }
-
-    const overrides = inTest
-      ? {
-          keyrings: {
-            trezorBridge: FakeTrezorBridge,
-            ledgerBridge: FakeLedgerBridge,
-          },
-        }
-      : {};
-
-    const preinstalledSnaps = await loadPreinstalledSnaps();
-
-    setupController(
-      initState,
-      initLangCode,
-      overrides,
-      isFirstMetaMaskControllerSetup,
-      initData.meta,
-      offscreenPromise,
-      preinstalledSnaps,
-    );
-
-    // `setupController` sets up the `controller` object, so we can use it now:
-    maybeDetectPhishing(controller);
-
-    if (!isManifestV3) {
-      await loadPhishingWarningPage();
-    }
-    await sendReadyMessageToTabs();
-    log.info('MetaMask initialization complete.');
-
-    resolveInitialization();
-  } catch (error) {
-    rejectInitialization(error);
+    });
   }
+
+  const initData = await loadStateFromPersistence(backup);
+
+  const initState = initData.data;
+  const initLangCode = await getFirstPreferredLangCode();
+
+  let isFirstMetaMaskControllerSetup;
+
+  // We only want to start this if we are running a test build, not for the release build.
+  // `navigator.webdriver` is true if Selenium, Puppeteer, or Playwright are running.
+  // In MV3, the Service Worker sees `navigator.webdriver` as `undefined`, so this will trigger from
+  // an Offscreen Document message instead. Because it's a singleton class, it's safe to start multiple times.
+  if (process.env.IN_TEST && window.navigator?.webdriver) {
+    const { getSocketBackgroundToMocha } =
+      // Use `require` to make it easier to exclude this test code from the Browserify build.
+      // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+      require('../../test/e2e/background-socket/socket-background-to-mocha');
+    getSocketBackgroundToMocha();
+  }
+
+  if (isManifestV3) {
+    // Save the timestamp immediately and then every `SAVE_TIMESTAMP_INTERVAL`
+    // miliseconds. This keeps the service worker alive.
+    if (initState.PreferencesController?.enableMV3TimestampSave !== false) {
+      const SAVE_TIMESTAMP_INTERVAL_MS = 2 * 1000;
+
+      saveTimestamp();
+      setInterval(saveTimestamp, SAVE_TIMESTAMP_INTERVAL_MS);
+    }
+
+    const sessionData = await browser.storage.session.get([
+      'isFirstMetaMaskControllerSetup',
+    ]);
+
+    isFirstMetaMaskControllerSetup =
+      sessionData?.isFirstMetaMaskControllerSetup === undefined;
+    await browser.storage.session.set({ isFirstMetaMaskControllerSetup });
+  }
+
+  const overrides = inTest
+    ? {
+        keyrings: {
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          trezorBridge: require('../../test/stub/keyring-bridge')
+            .FakeTrezorBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          ledgerBridge: require('../../test/stub/keyring-bridge')
+            .FakeLedgerBridge,
+          // Use `require` to make it easier to exclude this test code from the Browserify build.
+          // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+          qrBridge: require('../../test/stub/keyring-bridge').FakeQrBridge,
+        },
+      }
+    : {};
+
+  const preinstalledSnaps = await loadPreinstalledSnaps();
+  const cronjobControllerStorageManager = new CronjobControllerStorageManager();
+  await cronjobControllerStorageManager.init();
+
+  setupController(
+    initState,
+    initLangCode,
+    overrides,
+    isFirstMetaMaskControllerSetup,
+    initData.meta,
+    offscreenPromise,
+    preinstalledSnaps,
+    cronjobControllerStorageManager,
+  );
+
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
+  });
+
+  // `setupController` sets up the `controller` object, so we can use it now:
+  maybeDetectPhishing(controller);
+
+  // Set up connectivity detection
+  if (isManifestV3) {
+    // MV3: Listener was set up earlier, now apply any pending status and mark ready
+    connectivityReady = true;
+    if (pendingConnectivityStatus !== null) {
+      const status = pendingConnectivityStatus ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    }
+  } else {
+    // MV2: Background page has access to window events
+    const updateConnectivity = (isOnline) => {
+      const status = isOnline ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    };
+    updateConnectivity(globalThis.navigator.onLine);
+    globalThis.addEventListener('online', () => updateConnectivity(true));
+    globalThis.addEventListener('offline', () => updateConnectivity(false));
+  }
+
+  if (!isManifestV3) {
+    await loadPhishingWarningPage();
+  }
+  await sendReadyMessageToTabs();
+
+  new DeepLinkRouter({
+    getExtensionURL: platform.getExtensionURL,
+    getState: controller.getState.bind(controller),
+  })
+    .on('navigate', async ({ url, parsed }) => {
+      // don't track deep links that are immediately redirected (like /buy)
+      if (!('redirectTo' in parsed)) {
+        await controller.metaMetricsController.trackEvent(
+          createEvent({ signature: parsed.signature, url }),
+        );
+      }
+    })
+    .on('error', (error) => sentry?.captureException(error))
+    .install();
 }
 
 /**
  * Loads the preinstalled snaps from urls and returns them as an array.
  * It fails if any Snap fails to load in the expected time range.
+ * Supports .json.gz files using gzip decompression.
  */
 async function loadPreinstalledSnaps() {
   const fetchWithTimeout = getFetchWithTimeout();
   const promises = PREINSTALLED_SNAPS_URLS.map(async (url) => {
     const response = await fetchWithTimeout(url);
+
+    // If the Snap is compressed, decompress it
+    if (url.pathname.endsWith('.json.gz')) {
+      const ds = new DecompressionStream('gzip');
+      const decompressedStream = response.body.pipeThrough(ds);
+      return await new Response(decompressedStream).json();
+    }
+
     return await response.json();
   });
 
@@ -653,35 +906,99 @@ async function loadPhishingWarningPage() {
  * Loads any stored data, prioritizing the latest storage strategy.
  * Migrates that data schema in case it was last loaded on an older version.
  *
- * @returns {Promise<MetaMaskState>} Last data emitted from previous instance of MetaMask.
+ * @param {Backup | null} backup
+ * @returns {Promise<{data: MetaMaskState meta: {version: number}}>} Last data emitted from previous instance of MetaMask.
  */
-export async function loadStateFromPersistence() {
-  // migrations
-  migrator.on('error', console.warn);
-
+export async function loadStateFromPersistence(backup) {
   if (process.env.WITH_STATE) {
-    const stateOverrides = await generateWalletState();
+    const withState = JSON.parse(process.env.WITH_STATE);
+
+    // Use `require` to make it easier to exclude this test code from the Browserify build.
+    // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+    const { generateWalletState } = require('./fixtures/generate-wallet-state');
+    const fixtureBuilder = await generateWalletState(withState, false);
+
+    const stateOverrides = fixtureBuilder.fixture.data;
     firstTimeState = { ...firstTimeState, ...stateOverrides };
   }
 
   // read from disk
   // first from preferred, async API:
-  const preMigrationVersionedData =
-    (await persistenceManager.get()) ||
-    migrator.generateInitialState(firstTimeState);
+  /**
+   * @type {import("./lib/stores/base-store").MetaMaskStorageStructure | undefined}
+   */
+  let preMigrationVersionedData;
+  if (backup) {
+    preMigrationVersionedData = { data: {}, meta: {} };
+    for (const key of backedUpStateKeys) {
+      if (hasProperty(backup, key)) {
+        preMigrationVersionedData.data[key] = backup[key];
+      }
+    }
+    // use the meta property from the backup if it exists, that way the
+    // migrations will behave correctly.
+    if (hasProperty(backup, 'meta') && isObject(backup.meta)) {
+      preMigrationVersionedData.meta = backup.meta;
+      // old versions of meta used "data" as the storage kind, without
+      // explicitly setting the "storageKind" to data. If it is missing, we just
+      // always default to "data" ("data" was the default before "split"
+      // existed).
+      // We need to set it properly here so that the persistence manager uses
+      // the correct storage kind when restoring from the `backup`.
+      if (
+        backup.meta.storageKind === 'split' ||
+        backup.meta.storageKind === 'data'
+      ) {
+        persistenceManager.storageKind = backup.meta.storageKind;
+      } else {
+        persistenceManager.storageKind = 'data';
+      }
+    }
+    // sanity check on the meta property
+    if (typeof preMigrationVersionedData.meta.version !== 'number') {
+      log.error(
+        "The `backup`'s `meta.version` property was missing during backup restore.",
+      );
+      // the last migration version before we started storing backups was `155`
+      // so we can use that version as a fallback.
+      preMigrationVersionedData.meta.version = 155;
+    }
+  } else {
+    const validateVault = true;
+    preMigrationVersionedData = await persistenceManager.get({ validateVault });
+  }
+
+  const migrator = new Migrator({
+    migrations,
+    defaultVersion: process.env.WITH_STATE
+      ? // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+        require('../../test/e2e/fixtures/fixture-builder')
+          .FIXTURE_STATE_METADATA_VERSION
+      : null,
+  });
 
   // report migration errors to sentry
   migrator.on('error', (err) => {
+    console.warn(err);
     // get vault structure without secrets
     const vaultStructure = getObjStructure(preMigrationVersionedData);
-    sentry.captureException(err, {
+    sentry?.captureException(err, {
       // "extra" key is required by Sentry
       extra: { vaultStructure },
     });
   });
 
+  let writeAllKeysToState = false;
+  if (!preMigrationVersionedData?.data && !preMigrationVersionedData?.meta) {
+    // brand new state; write all keys!
+    writeAllKeysToState = true;
+    preMigrationVersionedData = migrator.generateInitialState(firstTimeState);
+  }
+
   // migrate data
-  const versionedData = await migrator.migrateData(preMigrationVersionedData);
+  const { state: versionedData, changedKeys } = await migrator.migrateData(
+    preMigrationVersionedData,
+  );
   if (!versionedData) {
     throw new Error('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
@@ -693,6 +1010,12 @@ export async function loadStateFromPersistence() {
       `MetaMask - migrator metadata version has invalid type '${typeof versionedData
         .meta.version}'`,
     );
+  } else if (
+    !['data', 'split', undefined].includes(versionedData.meta.storageKind)
+  ) {
+    throw new Error(
+      `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
+    );
   } else if (!isObject(versionedData.data)) {
     throw new Error(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
@@ -701,8 +1024,61 @@ export async function loadStateFromPersistence() {
   // this initializes the meta/version data as a class variable to be used for future writes
   persistenceManager.setMetadata(versionedData.meta);
 
-  // write to disk
-  persistenceManager.set(versionedData.data);
+  log.debug(
+    "[Split State]: Loaded data from persistence with storageKind '%s'",
+    persistenceManager.storageKind,
+  );
+  if (persistenceManager.storageKind === 'data') {
+    const alreadyTried =
+      versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
+    const shouldUseSplitStateStorage =
+      !alreadyTried && (await useSplitStateStorage(versionedData.data));
+    log.debug(
+      '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
+      shouldUseSplitStateStorage,
+      alreadyTried,
+    );
+    if (shouldUseSplitStateStorage) {
+      // a sigil to mark that we *tried* to migrate to split state storage
+      versionedData.meta.platformSplitStateGradualRolloutAttempted = true;
+      persistenceManager.setMetadata(versionedData.meta);
+    }
+
+    log.debug(
+      "[Split State]: Writing data to persistence with storageKind 'data'",
+    );
+    // write to disk
+    await persistenceManager.set(versionedData.data);
+
+    if (shouldUseSplitStateStorage) {
+      await persistenceManager.migrateToSplitState(versionedData.data);
+      versionedData.meta = persistenceManager.getMetaData();
+      if (versionedData.meta !== undefined) {
+        delete versionedData.meta.platformSplitStateGradualRolloutAttempted;
+        // persist the new metadata one more time
+        persistenceManager.setMetadata(versionedData.meta);
+      }
+      await persistenceManager.persist();
+    }
+  } else if (persistenceManager.storageKind === 'split') {
+    if (writeAllKeysToState) {
+      for (const [key, value] of Object.entries(versionedData.data)) {
+        persistenceManager.update(key, value);
+      }
+    } else {
+      // write changes only
+      for (const key of changedKeys) {
+        persistenceManager.update(key, versionedData.data[key]);
+      }
+    }
+    // write to disk
+    await persistenceManager.persist();
+  } else {
+    throw new Error(
+      `MetaMask - persistenceManager has invalid storageKind '${persistenceManager.storageKind}'`,
+    );
+  }
+  log.debug('[Split State]: Load complete.');
 
   // return just the data
   return versionedData;
@@ -731,18 +1107,23 @@ function emitDappViewedMetricEvent(origin) {
   );
   const numberOfTotalAccounts = Object.keys(preferencesState.identities).length;
 
-  controller.metaMetricsController.trackEvent({
-    event: MetaMetricsEventName.DappViewed,
-    category: MetaMetricsEventCategory.InpageProvider,
-    referrer: {
-      url: origin,
+  controller.metaMetricsController.trackEvent(
+    {
+      event: MetaMetricsEventName.DappViewed,
+      category: MetaMetricsEventCategory.InpageProvider,
+      referrer: {
+        url: origin,
+      },
+      properties: {
+        is_first_visit: false,
+        number_of_accounts: numberOfTotalAccounts,
+        number_of_accounts_connected: numberOfConnectedAccounts,
+      },
     },
-    properties: {
-      is_first_visit: false,
-      number_of_accounts: numberOfTotalAccounts,
-      number_of_accounts_connected: numberOfConnectedAccounts,
+    {
+      excludeMetaMetricsId: true,
     },
-  });
+  );
 }
 
 /**
@@ -751,16 +1132,26 @@ function emitDappViewedMetricEvent(origin) {
  * @param {chrome.runtime.Port} remotePort - The port provided by a new context.
  */
 function trackDappView(remotePort) {
-  if (!remotePort.sender || !remotePort.sender.tab || !remotePort.sender.url) {
+  if (
+    !remotePort.sender?.tab ||
+    !remotePort.sender?.url ||
+    !remotePort.sender?.tab?.url
+  ) {
     return;
   }
   const tabId = remotePort.sender.tab.id;
   const url = new URL(remotePort.sender.url);
   const { origin } = url;
+  const tabUrl = new URL(remotePort.sender.tab.url);
+  const { origin: tabOrigin } = tabUrl;
 
-  // store the orgin to corresponding tab so it can provide infor for onActivated listener
-  if (!Object.keys(tabOriginMapping).includes(tabId)) {
-    tabOriginMapping[tabId] = origin;
+  // store the origin to corresponding tab so it can provide info for onActivated listener
+  if (!Object.keys(senderOriginMapping).includes(tabId)) {
+    senderOriginMapping[tabId] = origin;
+  }
+  // do the same for tab origin, which can be different to sender origin
+  if (!(tabId in tabOriginMapping)) {
+    tabOriginMapping[tabId] = tabOrigin;
   }
 
   const isConnectedToDapp = controller.controllerMessenger.call(
@@ -823,6 +1214,66 @@ function trackAppOpened(environment) {
 }
 
 /**
+ * Helper function to refresh appActiveTab by querying the current active tab
+ * This is used when the sidepanel opens to ensure it has the current tab info
+ */
+const refreshAppActiveTab = async () => {
+  await isInitialized;
+  if (!controller) {
+    return;
+  }
+
+  try {
+    const tabs = await browser.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tabs || tabs.length === 0) {
+      return;
+    }
+
+    const activeTab = tabs[0];
+    const { id, title, url, favIconUrl } = activeTab;
+
+    if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
+      return;
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
+      return;
+    }
+
+    // Update appActiveTab with current active tab info
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    console.log('Error refreshing appActiveTab:', error.message);
+  }
+};
+
+/**
  * Initializes the MetaMask Controller with any initial state and default language.
  * Configures platform-specific error reporting strategy.
  * Streams emitted state updates to platform-specific storage strategy.
@@ -835,6 +1286,7 @@ function trackAppOpened(environment) {
  * @param {object} stateMetadata - Metadata about the initial state and migrations, including the most recent migration version
  * @param {Promise<void>} offscreenPromise - A promise that resolves when the offscreen document has finished initialization.
  * @param {Array} preinstalledSnaps - A list of preinstalled Snaps loaded from disk during boot.
+ * @param {CronjobControllerStorageManager} cronjobControllerStorageManager - A storage manager for the CronjobController.
  */
 export function setupController(
   initState,
@@ -844,12 +1296,13 @@ export function setupController(
   stateMetadata,
   offscreenPromise,
   preinstalledSnaps,
+  cronjobControllerStorageManager,
 ) {
   //
   // MetaMask Controller
   //
   controller = new MetamaskController({
-    infuraProjectId: process.env.INFURA_PROJECT_ID,
+    infuraProjectId: globalThis.INFURA_PROJECT_ID,
     // User confirmation callbacks:
     showUserConfirmation: triggerUi,
     // initial state
@@ -866,13 +1319,126 @@ export function setupController(
     getOpenMetamaskTabsIds: () => {
       return openMetamaskTabsIDs;
     },
-    persistenceManager,
     overrides,
     isFirstMetaMaskControllerSetup,
     currentMigrationVersion: stateMetadata.version,
     featureFlags: {},
     offscreenPromise,
     preinstalledSnaps,
+    requestSafeReload,
+    cronjobControllerStorageManager,
+  });
+
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed(() => {
+    controller.appStateController.setShowStorageErrorToast(true);
+  });
+
+  /**
+   * @type {Array<string>} List of controller store keys that have changed since initialization.
+   */
+  const changedControllerKeys = [];
+  const currentState = controller.store.getState();
+  for (const key of Object.keys(currentState)) {
+    const initialControllerState = initState[key] || {};
+    const newControllerState = currentState[key];
+    const newControllerStateKeys = Object.keys(newControllerState);
+
+    // if the number of keys has changed, we need to persist the new state
+    if (
+      newControllerStateKeys.length ===
+      Object.keys(initialControllerState).length
+    ) {
+      // if any of the controller's own top-level keys have changed
+      // (via reference comparison) we need to persist the new state.
+      for (const subKey of newControllerStateKeys) {
+        if (newControllerState[subKey] !== initialControllerState[subKey]) {
+          changedControllerKeys.push(key);
+          break;
+        }
+      }
+    } else {
+      changedControllerKeys.push(key);
+    }
+  }
+
+  if (persistenceManager.storageKind === 'split') {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // update the new state
+      changedControllerKeys.forEach((key) => {
+        persistenceManager.update(key, currentState[key]);
+      });
+      // then persist it
+      safePersist().catch((error) => {
+        log.error('Error persisting updated state:', error);
+        sentry?.captureException(error);
+      });
+    }
+
+    controller.store.on(
+      'stateChange',
+      async ({ controllerKey, newState, _oldState, _patches }) => {
+        persistenceManager.update(controllerKey, newState);
+
+        // if this key is one of the `backedUpStateKeys` we must always
+        // re-persist all of the other `backedUpStateKeys`, as they must always
+        // stored in the backup DB together.
+        if (backedUpStateKeys.includes(controllerKey)) {
+          backedUpStateKeys.forEach((key) => {
+            if (key === controllerKey) {
+              // already updated this one
+              return;
+            }
+            // Get the state for this backed-up key using messenger.
+            // We filter to only persistent properties using deriveStateFromMetadata
+            // to match what ComposableObservableStore does in stateChange events.
+            // This ensures non-persistent properties (e.g., KeyringController's
+            // isUnlocked, keyrings, encryptionKey) are not written to storage.
+            const controllerConfig = controller.store.config[key];
+            if (!controllerConfig?.metadata) {
+              throw new Error(
+                `Cannot backup ${key}: controller metadata is required but not found. ` +
+                  `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
+              );
+            }
+            const fullState = controller.controllerMessenger.call(
+              `${key}:getState`,
+            );
+            const state = deriveStateFromMetadata(
+              fullState,
+              controllerConfig.metadata,
+              'persist',
+            );
+            persistenceManager.update(key, state);
+          });
+        }
+        try {
+          await safePersist();
+        } catch (error) {
+          log.error('Error persisting state change:', error);
+          sentry?.captureException(error);
+        }
+      },
+    );
+  } else {
+    if (changedControllerKeys.length > 0) {
+      log.info(
+        `MetaMaskController state changed during configuration for controllers: ${changedControllerKeys.join(', ')}. Persisting updated state.`,
+      );
+      // persist the new state
+      safePersist(currentState).catch((error) => {
+        log.error('Error persisting updated controller state:', error);
+        sentry?.captureException(error);
+      });
+    }
+    controller.store.on('update', safePersist);
+  }
+  controller.store.on('error', (error) => {
+    log.error('MetaMask controller.store error:', error);
+    sentry?.captureException(error);
   });
 
   setupEnsIpfsResolver({
@@ -886,26 +1452,15 @@ export function setupController(
     provider: controller.provider,
   });
 
-  // setup state persistence
-  pipeline(
-    storeAsStream(controller.store),
-    debounce(1000),
-    createStreamSink(async (state) => {
-      await persistenceManager.set(state);
-      statePersistenceEvents.emit('state-persisted', state);
-    }),
-    (error) => {
-      log.error('MetaMask - Persistence pipeline failed', error);
-    },
-  );
-
   setupSentryGetStateGlobal(controller);
 
   const isClientOpenStatus = () => {
     return (
       openPopupCount > 0 ||
       Boolean(Object.keys(openMetamaskTabsIDs).length) ||
-      notificationIsOpen
+      notificationIsOpen ||
+      sidePanelIsOpen ||
+      false
     );
   };
 
@@ -947,14 +1502,41 @@ export function setupController(
     }
 
     if (isMetaMaskInternalProcess) {
+      /**
+       * @type {ExtensionPortStream}
+       */
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort);
+
+      /**
+       * send event to sentry with details about the event
+       *
+       * @param {import("extension-port-stream").MessageTooLargeEventData} details
+       */
+      const handleMessageTooLarge = function ({ chunkSize }) {
+        /**
+         * @type {MetamaskController}
+         */
+        const theController = controller;
+        theController.metaMetricsController.trackEvent({
+          event: MetaMetricsEventName.PortStreamChunked,
+          category: MetaMetricsEventCategory.PortStream,
+          properties: { chunkSize },
+        });
+      };
+      remotePort.onDisconnect.addListener(() =>
+        portStream.off('message-too-large', handleMessageTooLarge),
+      );
+      portStream.on('message-too-large', handleMessageTooLarge);
+
       // communication with popup
       controller.isClientOpen = true;
       controller.setupTrustedCommunication(portStream, remotePort.sender);
       trackAppOpened(processName);
 
-      initializeRemoteFeatureFlags();
+      // lazily update the remote feature flags every time the UI is opened.
+      updateRemoteFeatureFlags(controller);
 
       if (processName === ENVIRONMENT_TYPE_POPUP) {
         openPopupCount += 1;
@@ -963,6 +1545,19 @@ export function setupController(
           const isClientOpen = isClientOpenStatus();
           controller.isClientOpen = isClientOpen;
           onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_POPUP);
+        });
+      }
+
+      if (processName === ENVIRONMENT_TYPE_SIDEPANEL) {
+        sidePanelIsOpen = true;
+        // Refresh appActiveTab when sidepanel opens to ensure it has the current tab info
+        // This handles the case where user connected to dapp while sidepanel was closed
+        refreshAppActiveTab();
+        finished(portStream, () => {
+          sidePanelIsOpen = false;
+          const isClientOpen = isClientOpenStatus();
+          controller.isClientOpen = isClientOpen;
+          onCloseEnvironmentInstances(isClientOpen, ENVIRONMENT_TYPE_SIDEPANEL);
         });
       }
 
@@ -1000,7 +1595,8 @@ export function setupController(
       senderUrl.pathname === phishingPageUrl.pathname
     ) {
       const portStreamForPhishingPage =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
       controller.setupPhishingCommunication({
         connectionStream: portStreamForPhishingPage,
       });
@@ -1029,18 +1625,22 @@ export function setupController(
         )
       ) {
         const portStreamForCookieHandlerPage =
-          overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+          overrides?.getPortStream?.(remotePort) ||
+          new ExtensionPortStream(remotePort, { chunkSize: 0 });
         controller.setUpCookieHandlerCommunication({
           connectionStream: portStreamForCookieHandlerPage,
         });
       }
 
       const portStream =
-        overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+        overrides?.getPortStream?.(remotePort) ||
+        new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
       connectEip1193(portStream, remotePort.sender);
 
-      if (process.env.MULTICHAIN_API && isFirefox) {
+      // for firefox and manifest v2 (non production webpack builds)
+      // we expose the multichain provider via window.postMessage
+      if (isFirefox || !isManifestV3) {
         const mux = setupMultiplex(portStream);
         mux.ignoreStream(METAMASK_EIP_1193_PROVIDER);
 
@@ -1054,10 +1654,14 @@ export function setupController(
 
   connectExternallyConnectable = (remotePort) => {
     const portStream =
-      overrides?.getPortStream?.(remotePort) || new PortStream(remotePort);
+      overrides?.getPortStream?.(remotePort) ||
+      new ExtensionPortStream(remotePort, { chunkSize: 0 });
 
-    const isDappConnecting = remotePort.sender.tab?.id;
-    if (isDappConnecting && process.env.MULTICHAIN_API) {
+    // if the sender.id value is present it means the caller is an extension rather
+    // than a site. When the caller is an extension we want to fallback to connecting
+    // it with the 1193 provider
+    const isDappConnecting = !remotePort.sender.id;
+    if (isDappConnecting) {
       if (metamaskBlockedPorts.includes(remotePort.name)) {
         return;
       }
@@ -1079,10 +1683,6 @@ export function setupController(
   };
 
   connectCaipMultichain = (connectionStream, sender) => {
-    if (!process.env.MULTICHAIN_API) {
-      return;
-    }
-
     controller.setupUntrustedCommunicationCaip({
       connectionStream,
       sender,
@@ -1150,16 +1750,12 @@ export function setupController(
    */
   function updateBadge() {
     const pendingApprovalCount = getPendingApprovalCount();
-    const unreadNotificationsCount = getUnreadNotificationsCount();
 
     let label = '';
-    let badgeColor = BADGE_COLOR_APPROVAL;
+    const badgeColor = BADGE_COLOR_APPROVAL;
 
     if (pendingApprovalCount) {
       label = getBadgeLabel(pendingApprovalCount, BADGE_MAX_COUNT);
-    } else if (unreadNotificationsCount > 0) {
-      label = getBadgeLabel(unreadNotificationsCount, BADGE_MAX_COUNT);
-      badgeColor = BADGE_COLOR_NOTIFICATION;
     }
 
     try {
@@ -1178,22 +1774,6 @@ export function setupController(
     }
   }
 
-  /**
-   * Initializes remote feature flags by making a request to fetch them from the clientConfigApi.
-   * This function is called when MM is during internal process.
-   * If the request fails, the error will be logged but won't interrupt extension initialization.
-   *
-   * @returns {Promise<void>} A promise that resolves when the remote feature flags have been updated.
-   */
-  async function initializeRemoteFeatureFlags() {
-    try {
-      // initialize the request to fetch remote feature flags
-      await controller.remoteFeatureFlagController.updateRemoteFeatureFlags();
-    } catch (error) {
-      log.error('Error initializing remote feature flags:', error);
-    }
-  }
-
   function getPendingApprovalCount() {
     try {
       const pendingApprovalCount =
@@ -1202,55 +1782,6 @@ export function setupController(
       return pendingApprovalCount;
     } catch (error) {
       console.error('Failed to get pending approval count:', error);
-      return 0;
-    }
-  }
-
-  function getUnreadNotificationsCount() {
-    try {
-      const { isNotificationServicesEnabled, isFeatureAnnouncementsEnabled } =
-        controller.notificationServicesController.state;
-
-      const snapNotificationCount = Object.values(
-        controller.notificationServicesController.state
-          .metamaskNotificationsList,
-      ).filter(
-        (notification) =>
-          notification.type ===
-            NotificationServicesController.Constants.TRIGGER_TYPES.SNAP &&
-          notification.readDate === null,
-      ).length;
-
-      const featureAnnouncementCount = isFeatureAnnouncementsEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type ===
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT,
-          ).length
-        : 0;
-
-      const walletNotificationCount = isNotificationServicesEnabled
-        ? controller.notificationServicesController.state.metamaskNotificationsList.filter(
-            (notification) =>
-              !notification.isRead &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES
-                  .FEATURES_ANNOUNCEMENT &&
-              notification.type !==
-                NotificationServicesController.Constants.TRIGGER_TYPES.SNAP,
-          ).length
-        : 0;
-
-      const unreadNotificationsCount =
-        snapNotificationCount +
-        featureAnnouncementCount +
-        walletNotificationCount;
-
-      return unreadNotificationsCount;
-    } catch (error) {
-      console.error('Failed to get unread notifications count:', error);
       return 0;
     }
   }
@@ -1281,15 +1812,6 @@ export function setupController(
 
     controller.rejectAllPendingApprovals();
   }
-
-  // Updates the snaps registry and check for newly blocked snaps to block if the user has at least one snap installed that isn't preinstalled.
-  if (
-    Object.values(controller.snapController.state.snaps).some(
-      (snap) => !snap.preinstalled,
-    )
-  ) {
-    controller.snapController.updateBlockedSnaps();
-  }
 }
 
 //
@@ -1313,7 +1835,9 @@ async function triggerUi() {
   if (
     !uiIsTriggering &&
     (isVivaldi || openPopupCount === 0) &&
-    !currentlyActiveMetamaskTab
+    !currentlyActiveMetamaskTab &&
+    !sidePanelIsOpen &&
+    true
   ) {
     uiIsTriggering = true;
     try {
@@ -1351,6 +1875,24 @@ const addAppInstalledEvent = () => {
 };
 
 /**
+ * Handles the onInstalled event.
+ *
+ * @param {[chrome.runtime.InstalledDetails]} params - Array containing a single installation details object.
+ */
+async function handleOnInstalled([details]) {
+  if (details.reason === 'install') {
+    onInstall();
+  } else if (details.reason === 'update') {
+    const { previousVersion } = details;
+    if (!previousVersion || previousVersion === platform.getVersion()) {
+      return;
+    }
+    await isInitialized;
+    onUpdate(controller, platform, previousVersion, requestSafeReload);
+  }
+}
+
+/**
  * Trigger actions that should happen only upon initial install (e.g. open tab for onboarding).
  */
 function onInstall() {
@@ -1361,11 +1903,23 @@ function onInstall() {
   }
 }
 
+/**
+ * Trigger actions that should happen only when an update is available
+ */
+async function onUpdateAvailable() {
+  await isInitialized;
+  log.debug('An update is available');
+  controller.appStateController.setIsUpdateAvailable(true);
+}
+
+browser.runtime.onUpdateAvailable.addListener(onUpdateAvailable);
+
 function onNavigateToTab() {
   browser.tabs.onActivated.addListener((onActivatedTab) => {
     if (controller) {
       const { tabId } = onActivatedTab;
-      const currentOrigin = tabOriginMapping[tabId];
+      const currentOrigin = senderOriginMapping[tabId];
+      const currentTabOrigin = tabOriginMapping[tabId];
       // *** Emit DappViewed metric event when ***
       // - navigate to a connected dapp
       if (currentOrigin) {
@@ -1377,9 +1931,257 @@ function onNavigateToTab() {
           emitDappViewedMetricEvent(currentOrigin);
         }
       }
+
+      // If the connected dApp is a referral partner, trigger the referral flow
+      const partner = getPartnerByOrigin(currentTabOrigin);
+      if (partner) {
+        const connectSitePermissions =
+          controller.permissionController.state.subjects[currentTabOrigin];
+        // when the dapp is not connected, connectSitePermissions is undefined
+        const isConnectedToDapp = connectSitePermissions !== undefined;
+        if (isConnectedToDapp) {
+          controller
+            .handleDefiReferral(
+              partner,
+              tabId,
+              ReferralTriggerType.OnNavigateConnectedTab,
+            )
+            .catch((error) => {
+              log.error(
+                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
+                error,
+              );
+            });
+        }
+      }
     }
   });
 }
+
+// Sidepanel-specific functionality
+// Set initial side panel behavior based on user preference
+const initSidePanelBehavior = async () => {
+  // Only initialize sidepanel behavior if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
+    return;
+  }
+
+  try {
+    // Wait for controller to be initialized
+    await isInitialized;
+
+    // Get user preference (default to false for side panel)
+    const useSidePanelAsDefault =
+      controller?.preferencesController?.state?.preferences
+        ?.useSidePanelAsDefault ?? false;
+
+    // Set panel behavior based on preference
+    if (browser?.sidePanel?.setPanelBehavior) {
+      await browser.sidePanel.setPanelBehavior({
+        openPanelOnActionClick: useSidePanelAsDefault,
+      });
+    }
+  } catch (error) {
+    console.error('Error setting side panel behavior:', error);
+  }
+};
+
+initSidePanelBehavior();
+
+// Listen for preference changes to update side panel behavior dynamically
+const setupPreferenceListener = async () => {
+  // Only setup preference listener if the browser supports the sidePanel API (not Firefox)
+  if (!browser?.sidePanel) {
+    return;
+  }
+
+  try {
+    await isInitialized;
+
+    // Listen for preference changes using the controller messenger
+    controller?.controllerMessenger?.subscribe(
+      'PreferencesController:stateChange',
+      (state) => {
+        const useSidePanelAsDefault =
+          state?.preferences?.useSidePanelAsDefault ?? false;
+
+        if (browser?.sidePanel?.setPanelBehavior) {
+          browser.sidePanel
+            .setPanelBehavior({
+              openPanelOnActionClick: useSidePanelAsDefault,
+            })
+            .catch((error) =>
+              console.error('Error updating panel behavior:', error),
+            );
+        }
+      },
+    );
+  } catch (error) {
+    console.error('Error setting up preference listener:', error);
+  }
+};
+
+setupPreferenceListener();
+
+// Initialize appActiveTab by querying the current active tab on startup
+const initializeAppActiveTab = async () => {
+  await refreshAppActiveTab();
+};
+
+initializeAppActiveTab();
+
+// Tab listeners to populate appActiveTab
+browser.tabs.onActivated.addListener(async ({ tabId }) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  try {
+    const tabInfo = await browser.tabs.get(tabId);
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    if (!url) {
+      // Clear appActiveTab when there's no URL (e.g., new blank tab)
+      controller.appStateController.clearAppActiveTab();
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    if (!isWebOrigin(origin)) {
+      // Clear appActiveTab for non-web pages (chrome://, about:, extensions, etc.)
+      controller.appStateController.clearAppActiveTab();
+      return {};
+    }
+
+    // Update the app active tab state
+    controller.appStateController.setAppActiveTab({
+      id,
+      title,
+      origin,
+      protocol,
+      url,
+      host,
+      href,
+      favIconUrl,
+    });
+
+    // Update subject metadata for permission system
+    controller.subjectMetadataController.addSubjectMetadata({
+      origin,
+      name: title || host || origin,
+      iconUrl: favIconUrl || null,
+      subjectType: 'website',
+    });
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onActivated listener:', error.message);
+  }
+
+  return {};
+});
+
+browser.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
+  // Wait for controller to be initialized
+  await isInitialized;
+  if (!controller) {
+    return {};
+  }
+
+  // Only update when URL changes or when page finishes loading
+  // This prevents flickering from multiple updates during page load
+  const urlChanged = changeInfo.url !== undefined;
+  const statusComplete = changeInfo.status === 'complete';
+
+  if (!urlChanged && !statusComplete) {
+    return {};
+  }
+
+  try {
+    // Use tab from parameter if available, otherwise fetch it.
+    // The tab parameter is usually provided by Chrome, but may be undefined
+    // in edge cases (e.g., when a tab is being removed), so we fall back to
+    // fetching it explicitly.
+    const tabInfo = tab || (await browser.tabs.get(tabId));
+    const { id, title, url, favIconUrl } = tabInfo;
+
+    // Only update if this is the currently active tab
+    // This prevents updating with stale data from background tabs
+    const currentAppActiveTab =
+      controller.appStateController.state.appActiveTab;
+    const isActiveTab = currentAppActiveTab?.id === id;
+
+    if (!url) {
+      // Only clear if this is the currently active tab
+      if (isActiveTab) {
+        controller.appStateController.clearAppActiveTab();
+      }
+      return {};
+    }
+
+    const { origin, protocol, host, href } = new URL(url);
+
+    // Skip if no origin, null origin, or extension pages
+    if (
+      !origin ||
+      origin === 'null' ||
+      origin.startsWith('chrome-extension://') ||
+      origin.startsWith('moz-extension://')
+    ) {
+      // Only clear if this is the currently active tab
+      if (isActiveTab) {
+        controller.appStateController.clearAppActiveTab();
+      }
+      return {};
+    }
+
+    // Also check if this tab is actually the active tab in the current window.
+    // This is needed because stored appActiveTab might be stale if the user
+    // switched tabs quickly, or if tabs were closed/reopened. Querying the
+    // browser ensures we only update for the truly active tab.
+    let isActuallyActive = false;
+    try {
+      const activeTabs = await browser.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+      isActuallyActive = activeTabs.some((activeTab) => activeTab.id === id);
+    } catch (error) {
+      // Fallback to checking against stored active tab
+      isActuallyActive = isActiveTab;
+    }
+
+    // Only update if URL changed and it's the active tab, or if status is complete and it's the active tab
+    if ((urlChanged || statusComplete) && isActuallyActive) {
+      // Update the app active tab state
+      controller.appStateController.setAppActiveTab({
+        id,
+        title,
+        origin,
+        protocol,
+        url,
+        host,
+        href,
+        favIconUrl,
+      });
+
+      // Update subject metadata for permission system
+      controller.subjectMetadataController.addSubjectMetadata({
+        origin,
+        name: title || host || origin,
+        iconUrl: favIconUrl || null,
+        subjectType: 'website',
+      });
+    }
+  } catch (error) {
+    // Ignore errors from tabs that don't exist or can't be accessed
+    console.log('Error in tabs.onUpdated listener:', error.message);
+  }
+
+  return {};
+});
 
 function setupSentryGetStateGlobal(store) {
   global.stateHooks.getSentryAppState = function () {
@@ -1388,10 +2190,14 @@ function setupSentryGetStateGlobal(store) {
   };
 }
 
-async function initBackground() {
+/**
+ *
+ * @param {Backup | null} backup
+ */
+async function initBackground(backup) {
   onNavigateToTab();
   try {
-    await initialize();
+    await initialize(backup);
     if (process.env.IN_TEST) {
       // Send message to offscreen document
       if (browser.offscreen) {
@@ -1404,10 +2210,27 @@ async function initBackground() {
       }
     }
     persistenceManager.cleanUpMostRecentRetrievedState();
+
+    log.info('MetaMask initialization complete.');
+    resolveInitialization();
   } catch (error) {
     log.error(error);
+    rejectInitialization(error);
   }
 }
 if (!process.env.SKIP_BACKGROUND_INITIALIZATION) {
-  initBackground();
+  initBackground(null);
+}
+
+if (inTest) {
+  // listen for test messages from the background
+  // maintenance note: if you can't find any tests containing 'STOP_PERSISTENCE'
+  // you can remove this, and probably the evacuate function in app\scripts\lib\safe-reload.ts too.
+  browser.runtime.onMessage.addListener(async (message, _sender) => {
+    if (message.type === 'STOP_PERSISTENCE') {
+      await evacuate();
+      return { status: 'PERSISTENCE_STOPPED' };
+    }
+    return Promise.resolve();
+  });
 }

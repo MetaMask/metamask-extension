@@ -7,9 +7,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { EditGasModes } from '../../../../../shared/constants/gas';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
-import { GasFeeContextProvider } from '../../../../contexts/gasFee';
 
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
 import { ETH_EOA_METHODS } from '../../../../../shared/constants/eth-methods';
@@ -60,26 +59,20 @@ const MOCK_FEE_ESTIMATE = {
   networkCongestion: 0.7,
 };
 
-const render = async ({ txProps, contextProps } = {}) => {
+const render = async ({ txProps, props } = {}) => {
   const store = configureStore({
     metamask: {
       currencyRates: {},
       ...mockNetworkState({ chainId: CHAIN_IDS.GOERLI, ticker: 'ETH' }),
       accountsByChainId: {
         [CHAIN_IDS.GOERLI]: {
-          '0xAddress': { address: '0xAddress', balance: '0x1F4' },
-        },
-      },
-      accounts: {
-        '0xAddress': {
-          address: '0xAddress',
-          balance: '0x1F4',
+          '0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc': { balance: '0x1F4' },
         },
       },
       internalAccounts: {
         accounts: {
           'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3': {
-            address: '0xAddress',
+            address: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
             id: 'cf8dace4-9439-4bd4-b3a8-88c821c8fcb3',
             metadata: {
               name: 'Test Account',
@@ -110,12 +103,10 @@ const render = async ({ txProps, contextProps } = {}) => {
   await act(
     async () =>
       (result = renderWithProvider(
-        <GasFeeContextProvider
+        <EditGasFeePopover
           transaction={{ txParams: { gas: '0x5208' }, ...txProps }}
-          {...contextProps}
-        >
-          <EditGasFeePopover />
-        </GasFeeContextProvider>,
+          {...props}
+        />,
         store,
       )),
   );
@@ -160,7 +151,10 @@ describe('EditGasFeePopover', () => {
         status: TransactionStatus.unapproved,
         type: TransactionType.simpleSend,
         userFeeLevel: 'high',
-        txParams: { value: '0x64', from: '0xAddress' },
+        txParams: {
+          value: '0x64',
+          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).not.toBeInTheDocument();
@@ -172,7 +166,10 @@ describe('EditGasFeePopover', () => {
         status: TransactionStatus.unapproved,
         type: TransactionType.simpleSend,
         userFeeLevel: 'high',
-        txParams: { value: '0x5208', from: '0xAddress' },
+        txParams: {
+          value: '0x5208',
+          from: '0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc',
+        },
       },
     });
     expect(screen.queryByText('Insufficient funds.')).toBeInTheDocument();
@@ -180,7 +177,7 @@ describe('EditGasFeePopover', () => {
 
   it('should not show low, aggressive and dapp-suggested options for swap', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.swaps },
+      props: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('🐢')).not.toBeInTheDocument();
     expect(screen.queryByText('🦊')).toBeInTheDocument();
@@ -198,7 +195,7 @@ describe('EditGasFeePopover', () => {
 
   it('should not show time estimates for swaps', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.swaps },
+      props: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('Time')).not.toBeInTheDocument();
     expect(screen.queryByText('Max fee')).toBeInTheDocument();
@@ -206,43 +203,43 @@ describe('EditGasFeePopover', () => {
 
   it('should show correct header for edit gas mode', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.swaps },
+      props: { editGasMode: EditGasModes.swaps },
     });
     expect(screen.queryByText('Edit gas fee')).toBeInTheDocument();
     await render({
-      contextProps: { editGasMode: EditGasModes.cancel },
+      props: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('Edit cancellation gas fee')).toBeInTheDocument();
     await render({
-      contextProps: { editGasMode: EditGasModes.speedUp },
+      props: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('Edit speed up gas fee')).toBeInTheDocument();
   });
 
   it('should not show low option for cancel mode', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.cancel },
+      props: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
   it('should not show low option for speedup mode', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.speedUp },
+      props: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('Low')).not.toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for cancel gas mode', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.cancel },
+      props: { editGasMode: EditGasModes.cancel },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });
 
   it('should show tenPercentIncreased option for speedup gas mode', async () => {
     await render({
-      contextProps: { editGasMode: EditGasModes.speedUp },
+      props: { editGasMode: EditGasModes.speedUp },
     });
     expect(screen.queryByText('10% increase')).toBeInTheDocument();
   });

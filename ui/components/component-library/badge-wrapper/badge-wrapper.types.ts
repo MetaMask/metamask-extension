@@ -5,15 +5,33 @@ import type {
   StyleUtilityProps,
 } from '../box';
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum BadgeWrapperPosition {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   topRight = 'top-right',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   bottomRight = 'bottom-right',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   topLeft = 'top-left',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   bottomLeft = 'bottom-left',
 }
 
+/**
+ * @deprecated This type has been deprecated in favor of the one from @metamask/design-system-react
+ */
 export enum BadgeWrapperAnchorElementShape {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   rectangular = 'rectangular',
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   circular = 'circular',
 }
 
@@ -57,9 +75,13 @@ export interface BadgeWrapperStyleUtilityProps extends StyleUtilityProps {
   className?: string;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BadgeWrapperProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, BadgeWrapperStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type BadgeWrapperComponent = <C extends React.ElementType = 'div'>(
   props: BadgeWrapperProps<C>,
 ) => React.ReactElement | null;

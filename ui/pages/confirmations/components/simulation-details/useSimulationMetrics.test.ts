@@ -1,3 +1,5 @@
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+/* eslint-disable @typescript-eslint/naming-convention */
 import { useContext, useEffect, useState } from 'react';
 import {
   SimulationData,
@@ -15,6 +17,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
 import { BalanceChange } from './types';
 import {
   AssetType,
@@ -53,18 +56,26 @@ const BALANCE_CHANGE_MOCK = {
   fiatAmount: 1.23,
 } as unknown as BalanceChange;
 
-const DISPLAY_NAME_UNKNOWN_MOCK = { hasPetname: false, name: null };
+const DISPLAY_NAME_UNKNOWN_MOCK = {
+  hasPetname: false,
+  name: null,
+  displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
+};
 
 const DISPLAY_NAME_DEFAULT_MOCK = {
   hasPetname: false,
   name: SYMBOL_MOCK,
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
 };
 
 const DISPLAY_NAME_SAVED_MOCK = {
   hasPetname: true,
   name: 'testName',
   contractDisplayName: SYMBOL_MOCK,
+  displayState: TrustSignalDisplayState.Unknown,
+  isAccount: false,
 };
 
 describe('useSimulationMetrics', () => {
@@ -87,7 +98,7 @@ describe('useSimulationMetrics', () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let trackEventMock: jest.MockedFunction<any>;
 
-  function expectUpdateTransactionEventFragmentCalled(
+  function useExpectUpdateTransactionEventFragmentCalled(
     {
       balanceChanges,
       simulationData,
@@ -168,51 +179,43 @@ describe('useSimulationMetrics', () => {
       jest.restoreAllMocks();
     });
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['in progress', undefined, 'simulation_in_progress'],
       [
         'reverted',
-        { error: { code: SimulationErrorCode.Reverted } } as SimulationData,
+        { error: { code: SimulationErrorCode.Reverted } },
         'transaction_revert',
       ],
-      [
-        'failed',
-        { error: { message: 'testError' } } as SimulationData,
-        'failed',
-      ],
-      [
-        'no changes',
-        { tokenBalanceChanges: [] } as SimulationData,
-        'no_balance_change',
-      ],
-      [
-        'changes',
-        { tokenBalanceChanges: [{}] } as SimulationData,
-        'balance_change',
-      ],
+      ['failed', { error: { message: 'testError' } }, 'failed'],
+      ['no changes', { tokenBalanceChanges: [] }, 'no_balance_change'],
+      ['changes', { tokenBalanceChanges: [{}] }, 'balance_change'],
     ])(
       'with simulation response if %s',
       (
         _: string,
-        simulationData: SimulationData | undefined,
+        simulationData: Record<string, unknown>,
         simulationResponse: string,
       ) => {
         useDisplayNamesMock.mockReset();
         useDisplayNamesMock.mockReturnValue([]);
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            simulationData: simulationData as SimulationData,
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              simulation_response: simulationResponse,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              simulationData: simulationData as SimulationData,
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                simulation_response: simulationResponse,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_quantity'],
       ['sending', true, 'simulation_sending_assets_quantity'],
@@ -224,19 +227,22 @@ describe('useSimulationMetrics', () => {
           amount: new BigNumber(isNegative ? -1 : 1),
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange, balanceChange, balanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: 3,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange, balanceChange, balanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: 3,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving ERC-20',
@@ -303,25 +309,28 @@ describe('useSimulationMetrics', () => {
         property: string,
         value: AssetType[],
       ) => {
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [
-              {
-                ...BALANCE_CHANGE_MOCK,
-                asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
-                amount: new BigNumber(isNegative ? -1 : 1),
-              } as BalanceChange,
-            ],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: value,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [
+                {
+                  ...BALANCE_CHANGE_MOCK,
+                  asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
+                  amount: new BigNumber(isNegative ? -1 : 1),
+                } as BalanceChange,
+              ],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: value,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and available',
@@ -366,19 +375,22 @@ describe('useSimulationMetrics', () => {
           fiatAmount,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: [expected],
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: [expected],
+              }),
             }),
-          }),
+          ),
         );
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       [
         'receiving and native',
@@ -464,19 +476,22 @@ describe('useSimulationMetrics', () => {
           asset: { ...BALANCE_CHANGE_MOCK.asset, standard },
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange as BalanceChange],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: [expected],
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange as BalanceChange],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: [expected],
+              }),
             }),
-          }),
+          ),
         );
       },
     );
 
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       ['receiving', false, 'simulation_receiving_assets_total_value'],
       ['sending', true, 'simulation_sending_assets_total_value'],
@@ -486,23 +501,25 @@ describe('useSimulationMetrics', () => {
         const balanceChange1 = {
           ...BALANCE_CHANGE_MOCK,
           amount: new BigNumber(isNegative ? -1 : 1),
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
         const balanceChange2 = {
           ...balanceChange1,
-          fiatAmount: 1.23,
+          usdAmount: 1.23,
         };
 
-        expectUpdateTransactionEventFragmentCalled(
-          {
-            balanceChanges: [balanceChange1, balanceChange2],
-          },
-          expect.objectContaining({
-            properties: expect.objectContaining({
-              [property]: 2.46,
+        renderHook(() =>
+          useExpectUpdateTransactionEventFragmentCalled(
+            {
+              balanceChanges: [balanceChange1, balanceChange2],
+            },
+            expect.objectContaining({
+              properties: expect.objectContaining({
+                [property]: 2.46,
+              }),
             }),
-          }),
+          ),
         );
       },
     );
@@ -510,13 +527,15 @@ describe('useSimulationMetrics', () => {
 
   describe('creates incomplete asset event', () => {
     it('if petname is unknown', () => {
-      useSimulationMetrics({
-        enableMetrics: true,
-        balanceChanges: [BALANCE_CHANGE_MOCK],
-        simulationData: undefined,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics: true,
+          balanceChanges: [BALANCE_CHANGE_MOCK],
+          simulationData: undefined,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith({
@@ -537,13 +556,15 @@ describe('useSimulationMetrics', () => {
       useDisplayNamesMock.mockReset();
       useDisplayNamesMock.mockReturnValue([DISPLAY_NAME_SAVED_MOCK]);
 
-      useSimulationMetrics({
-        enableMetrics: true,
-        balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
-        simulationData: undefined,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics: true,
+          balanceChanges: [{ ...BALANCE_CHANGE_MOCK, fiatAmount: null }],
+          simulationData: undefined,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(trackEventMock).toHaveBeenCalledTimes(1);
       expect(trackEventMock).toHaveBeenCalledWith({
@@ -561,6 +582,7 @@ describe('useSimulationMetrics', () => {
     });
   });
 
+  // @ts-expect-error This is missing from the Mocha type definitions
   it.each([
     [
       'simulation disabled',
@@ -580,13 +602,15 @@ describe('useSimulationMetrics', () => {
       enableMetrics: boolean,
       simulationData: { error: { code: SimulationErrorCode } } | undefined,
     ) => {
-      useSimulationMetrics({
-        enableMetrics,
-        balanceChanges: [BALANCE_CHANGE_MOCK],
-        simulationData: simulationData as SimulationData,
-        loading: false,
-        transactionId: TRANSACTION_ID_MOCK,
-      });
+      renderHook(() =>
+        useSimulationMetrics({
+          enableMetrics,
+          balanceChanges: [BALANCE_CHANGE_MOCK],
+          simulationData: simulationData as SimulationData,
+          loading: false,
+          transactionId: TRANSACTION_ID_MOCK,
+        }),
+      );
 
       expect(updateTransactionEventFragmentMock).not.toHaveBeenCalled();
     },

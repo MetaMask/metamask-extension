@@ -1,6 +1,8 @@
 $color-map: (
   'background-default': --color-background-default,
   'background-alternative': --color-background-alternative,
+  'background-section': --color-background-section,
+  'background-subsection': --color-background-subsection,
   'background-muted': --color-background-muted,
   'background-hover': --color-background-hover,
   'background-pressed': --color-background-pressed,
@@ -10,6 +12,7 @@ $color-map: (
   'icon-default': --color-icon-default,
   'icon-alternative': --color-icon-alternative,
   'icon-muted': --color-icon-muted,
+  'icon-inverse': --color-icon-inverse,
   'border-default': --color-border-default,
   'border-muted': --color-border-muted,
   'overlay-default': --color-overlay-default,

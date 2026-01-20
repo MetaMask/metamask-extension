@@ -1,8 +1,8 @@
 import React from 'react';
 import { toChecksumHexAddress } from '@metamask/controller-utils';
-import { AvatarAccount, Box, Text } from '../../component-library';
+import { Box, Text } from '../../component-library';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 import {
-  BlockSize,
   Display,
   JustifyContent,
   FlexDirection,
@@ -18,6 +18,8 @@ export type NotificationsSettingsAccountProps = {
   name?: string;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function NotificationsSettingsAccount({
   address,
   name,
@@ -30,13 +32,12 @@ export function NotificationsSettingsAccount({
       alignItems={AlignItems.center}
       gap={4}
     >
-      <AvatarAccount address={checksumAddress} />
+      <PreferredAvatar address={checksumAddress} />
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.flexStart}
         justifyContent={JustifyContent.spaceBetween}
-        width={BlockSize.Full}
       >
         <Text variant={TextVariant.bodyLgMedium} textAlign={TextAlign.Left}>
           {name ?? checksumAddress}

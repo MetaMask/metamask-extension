@@ -9,7 +9,16 @@ import {
 } from '@metamask/network-controller';
 import { CaipChainId } from '@metamask/utils';
 import { ChainId } from '@metamask/controller-utils';
-import { MAX_SAFE_CHAIN_ID } from '../constants/network';
+import type { AddNetworkFields } from '@metamask/network-controller';
+import {
+  AVALANCHE_DISPLAY_NAME,
+  BNB_DISPLAY_NAME,
+  LINEA_SEPOLIA_DISPLAY_NAME,
+  MAINNET_DISPLAY_NAME,
+  MAX_SAFE_CHAIN_ID,
+  POLYGON_DISPLAY_NAME,
+  SEPOLIA_DISPLAY_NAME,
+} from '../constants/network';
 import {
   isSafeChainId,
   isPrefixedFormattedHexString,
@@ -19,6 +28,7 @@ import {
   sortNetworks,
   getRpcDataByChainId,
   sortNetworksByPrioity,
+  getFilteredFeaturedNetworks,
 } from './network.utils';
 
 describe('network utils', () => {
@@ -167,44 +177,46 @@ describe('network utils', () => {
   });
 
   describe('sortNetworks', () => {
+    const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
+      [SolScope.Mainnet]: {
+        chainId: SolScope.Mainnet,
+        name: 'Solana',
+        nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+        isEvm: false,
+      },
+      [EthScope.Mainnet]: {
+        chainId: EthScope.Mainnet,
+        name: MAINNET_DISPLAY_NAME,
+        nativeCurrency: 'ETH',
+        blockExplorerUrls: ['https://etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        isEvm: true,
+      },
+      [EthScope.Testnet]: {
+        chainId: EthScope.Testnet,
+        name: SEPOLIA_DISPLAY_NAME,
+        nativeCurrency: 'SepoliaETH',
+        blockExplorerUrls: ['https://sepolia.etherscan.io'],
+        defaultBlockExplorerUrlIndex: 0,
+        isEvm: true,
+      },
+      [BtcScope.Mainnet]: {
+        chainId: BtcScope.Mainnet,
+        name: 'Bitcoin',
+        nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+        isEvm: false,
+      },
+    };
+
     it('sorts a list of networks based on the order of their chain IDs', () => {
-      const networks: Record<CaipChainId, MultichainNetworkConfiguration> = {
-        [SolScope.Mainnet]: {
-          chainId: SolScope.Mainnet,
-          name: 'Solana',
-          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
-          isEvm: false,
-        },
-        [EthScope.Mainnet]: {
-          chainId: EthScope.Mainnet,
-          name: 'Ethereum Mainnet',
-          nativeCurrency: 'ETH',
-          blockExplorerUrls: ['https://etherscan.io'],
-          defaultBlockExplorerUrlIndex: 0,
-          isEvm: true,
-        },
-        [EthScope.Testnet]: {
-          chainId: EthScope.Testnet,
-          name: 'Sepolia',
-          nativeCurrency: 'SepoliaETH',
-          blockExplorerUrls: ['https://sepolia.etherscan.io'],
-          defaultBlockExplorerUrlIndex: 0,
-          isEvm: true,
-        },
-        [BtcScope.Mainnet]: {
-          chainId: BtcScope.Mainnet,
-          name: 'Bitcoin',
-          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
-          isEvm: false,
-        },
-      };
-      const sortedChainIds = [
-        { networkId: SolScope.Mainnet },
-        { networkId: BtcScope.Mainnet },
-        { networkId: EthScope.Mainnet },
-        { networkId: EthScope.Testnet },
-      ];
-      expect(sortNetworks(networks, sortedChainIds)).toStrictEqual([
+      expect(
+        sortNetworks(networks, [
+          { networkId: SolScope.Mainnet },
+          { networkId: BtcScope.Mainnet },
+          { networkId: EthScope.Mainnet },
+          { networkId: EthScope.Testnet },
+        ]),
+      ).toStrictEqual([
         {
           chainId: SolScope.Mainnet,
           name: 'Solana',
@@ -219,7 +231,7 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Mainnet,
-          name: 'Ethereum Mainnet',
+          name: MAINNET_DISPLAY_NAME,
           nativeCurrency: 'ETH',
           blockExplorerUrls: ['https://etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
@@ -227,11 +239,49 @@ describe('network utils', () => {
         },
         {
           chainId: EthScope.Testnet,
-          name: 'Sepolia',
+          name: SEPOLIA_DISPLAY_NAME,
           nativeCurrency: 'SepoliaETH',
           blockExplorerUrls: ['https://sepolia.etherscan.io'],
           defaultBlockExplorerUrlIndex: 0,
           isEvm: true,
+        },
+      ]);
+    });
+
+    it('places non-EVM networks to the end of the array', () => {
+      expect(
+        sortNetworks(networks, [
+          { networkId: EthScope.Mainnet },
+          { networkId: EthScope.Testnet },
+        ]),
+      ).toStrictEqual([
+        {
+          chainId: EthScope.Mainnet,
+          name: MAINNET_DISPLAY_NAME,
+          nativeCurrency: 'ETH',
+          blockExplorerUrls: ['https://etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        {
+          chainId: EthScope.Testnet,
+          name: SEPOLIA_DISPLAY_NAME,
+          nativeCurrency: 'SepoliaETH',
+          blockExplorerUrls: ['https://sepolia.etherscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+          isEvm: true,
+        },
+        {
+          chainId: SolScope.Mainnet,
+          name: 'Solana',
+          nativeCurrency: `${SolScope.Mainnet}/slip44:501`,
+          isEvm: false,
+        },
+        {
+          chainId: BtcScope.Mainnet,
+          name: 'Bitcoin',
+          nativeCurrency: `${BtcScope.Mainnet}/slip44:0`,
+          isEvm: false,
         },
       ]);
     });
@@ -241,7 +291,7 @@ describe('network utils', () => {
     const evmNetworks: Record<string, NetworkConfiguration> = {
       '0x1': {
         chainId: '0x1',
-        name: 'Ethereum Mainnet',
+        name: MAINNET_DISPLAY_NAME,
         nativeCurrency: 'ETH',
         rpcEndpoints: [
           {
@@ -256,7 +306,7 @@ describe('network utils', () => {
       },
       '0x38': {
         chainId: '0x38',
-        name: 'Binance Smart Chain Mainnet',
+        name: BNB_DISPLAY_NAME,
         nativeCurrency: 'BNB',
         rpcEndpoints: [
           {
@@ -271,7 +321,7 @@ describe('network utils', () => {
       },
       '0x89': {
         chainId: '0x89',
-        name: 'Polygon Mainnet',
+        name: POLYGON_DISPLAY_NAME,
         nativeCurrency: 'MATIC',
         rpcEndpoints: [
           {
@@ -286,7 +336,7 @@ describe('network utils', () => {
       },
       '0xa86a': {
         chainId: '0xa86a',
-        name: 'Avalanche Mainnet',
+        name: AVALANCHE_DISPLAY_NAME,
         nativeCurrency: 'AVAX',
         rpcEndpoints: [
           {
@@ -339,11 +389,11 @@ describe('network utils', () => {
       };
       const sepolia = {
         chainId: toEvmCaipChainId(ChainId.sepolia),
-        name: 'Sepolia',
+        name: SEPOLIA_DISPLAY_NAME,
       };
       const lineaSepolia = {
         chainId: toEvmCaipChainId(ChainId['linea-sepolia']),
-        name: 'Linea Sepolia',
+        name: LINEA_SEPOLIA_DISPLAY_NAME,
       };
 
       const networks = [
@@ -366,6 +416,136 @@ describe('network utils', () => {
       ]);
 
       expect(result).toStrictEqual(expectedResult);
+    });
+  });
+
+  describe('getFilteredFeaturedNetworks', () => {
+    const mockNetworkList: AddNetworkFields[] = [
+      {
+        chainId: '0xa86a' as const,
+        name: 'Avalanche',
+        nativeCurrency: 'AVAX',
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0xa4b1' as const,
+        name: 'Arbitrum',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0x89' as const,
+        name: 'Polygon',
+        nativeCurrency: 'POL',
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+      {
+        chainId: '0x2105' as const,
+        name: 'Base',
+        nativeCurrency: 'ETH',
+        rpcEndpoints: [],
+        defaultRpcEndpointIndex: 0,
+        blockExplorerUrls: [],
+        defaultBlockExplorerUrlIndex: 0,
+      },
+    ];
+
+    it('filters out blacklisted chain IDs from network list', () => {
+      const blacklistedChainIds = ['0xa86a', '0xa4b1'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toHaveLength(2);
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa86a' }),
+      );
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa4b1' }),
+      );
+      expect(result).toContainEqual(
+        expect.objectContaining({ chainId: '0x89' }),
+      );
+      expect(result).toContainEqual(
+        expect.objectContaining({ chainId: '0x2105' }),
+      );
+    });
+
+    it('returns full list when blacklist is empty array', () => {
+      const blacklistedChainIds: string[] = [];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toStrictEqual(mockNetworkList);
+      expect(result).toHaveLength(mockNetworkList.length);
+    });
+
+    it('returns full list when blacklist is not an array', () => {
+      const blacklistedChainIds = null as unknown as string[];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toStrictEqual(mockNetworkList);
+    });
+
+    it('returns empty array when all networks are blacklisted', () => {
+      const allChainIds = mockNetworkList.map((network) => network.chainId);
+
+      const result = getFilteredFeaturedNetworks(allChainIds, mockNetworkList);
+
+      expect(result).toStrictEqual([]);
+      expect(result).toHaveLength(0);
+    });
+
+    it('returns full list when blacklisted chain IDs do not match any network', () => {
+      const blacklistedChainIds = ['0x999999', '0x888888'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toStrictEqual(mockNetworkList);
+      expect(result).toHaveLength(mockNetworkList.length);
+    });
+
+    it('returns empty array when base network list is empty', () => {
+      const blacklistedChainIds = ['0xa86a'];
+
+      const result = getFilteredFeaturedNetworks(blacklistedChainIds, []);
+
+      expect(result).toStrictEqual([]);
+    });
+
+    it('handles single network blacklist', () => {
+      const blacklistedChainIds = ['0xa86a'];
+
+      const result = getFilteredFeaturedNetworks(
+        blacklistedChainIds,
+        mockNetworkList,
+      );
+
+      expect(result).toHaveLength(3);
+      expect(result).not.toContainEqual(
+        expect.objectContaining({ chainId: '0xa86a' }),
+      );
     });
   });
 });

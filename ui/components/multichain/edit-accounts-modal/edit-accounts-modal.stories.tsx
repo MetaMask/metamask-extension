@@ -37,6 +37,7 @@ export default {
           'eth_signTypedData_v3',
           'eth_signTypedData_v4',
         ],
+        scopes: ['eip155:0'],
         type: 'eip155:eoa',
         metadata: {
           name: 'Account 1',

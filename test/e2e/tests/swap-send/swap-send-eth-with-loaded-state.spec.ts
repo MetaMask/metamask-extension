@@ -1,41 +1,27 @@
 import { Suite } from 'mocha';
 import { MockttpServer } from 'mockttp';
-import {
-  logInWithBalanceValidation,
-  openActionMenuAndStartSendFlow,
-  withFixtures,
-} from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import AdvancedSettings from '../../page-objects/pages/settings/advanced-settings';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
 import { NATIVE_TOKEN_SYMBOL, SwapSendPage } from './swap-send-test-utils';
-import fs from 'fs';
 
 async function mockSwapQuotes(mockServer: MockttpServer) {
-  const BRIDGE_GET_ALL_FEATURE_FLAGS_PATH =
-    'test/e2e/mock-response-data/bridge-get-all-feature-flags.json';
-  const BRIDGE_GET_ALL_FEATURE_FLAGS = fs.readFileSync(
-    BRIDGE_GET_ALL_FEATURE_FLAGS_PATH,
-  );
   return [
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => ({
         statusCode: 200,
-        json: {},
+        json: {
+          'eip155:1/slip44:60': {
+            id: 'ethereum',
+            price: 1700, // Default ETH price for swap tests
+            marketCap: 382623505141,
+            pricePercentChange1d: 0,
+          },
+        },
       })),
-
-    await mockServer
-      .forGet('https://bridge.dev-api.cx.metamask.io/getAllFeatureFlags')
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: JSON.parse(BRIDGE_GET_ALL_FEATURE_FLAGS.toString()),
-        };
-      }),
 
     await mockServer
       .forGet(
@@ -63,7 +49,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/token/1')
+      .forGet('https://bridge.api.cx.metamask.io/token/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
@@ -125,7 +111,7 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/v2/networks/1/quotes')
+      .forGet('https://bridge.api.cx.metamask.io/v2/networks/1/quotes')
       .thenCallback(() => ({
         statusCode: 200,
         json: [
@@ -161,14 +147,14 @@ async function mockSwapQuotes(mockServer: MockttpServer) {
       })),
 
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1')
       .thenCallback(() => ({
         statusCode: 200,
         json: {
           active: true,
           networkId: 1,
           chainId: 1,
-          chainName: 'Ethereum Mainnet',
+          chainName: 'Ethereum',
           nativeCurrency: {
             name: 'Ether',
             symbol: 'ETH',
@@ -223,6 +209,12 @@ describe('Swap-Send ETH', function () {
         {
           fixtures: new FixtureBuilder()
             .withNetworkControllerOnMainnet()
+            .withEnabledNetworks({
+              eip155: {
+                '0x1': true, // Ethereum
+              },
+            })
+            .withPreferencesControllerSmartTransactionsOptedOut()
             .withTokensController({
               allTokens: {
                 '0x1': {
@@ -238,7 +230,20 @@ describe('Swap-Send ETH', function () {
                 },
               },
             })
+            .withTokenBalancesController({
+              tokenBalances: {
+                '0x5cfe73b6021e818b776b421b1c4db2474086a7e1': {
+                  '0x1': {
+                    '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2':
+                      '0x2B5E3AF16B1880000', // 50 WETH in hex
+                  },
+                },
+              },
+            })
             .build(),
+          manifestFlags: {
+            testing: { disableSmartTransactionsOverride: true },
+          },
           title: this.test?.fullTitle(),
           testSpecificMock: mockSwapQuotes,
           localNodeOptions: [
@@ -255,28 +260,15 @@ describe('Swap-Send ETH', function () {
         },
         async ({ driver }) => {
           const swapSendPage = new SwapSendPage(driver);
-          await logInWithBalanceValidation(driver);
+          await loginWithBalanceValidation(driver);
 
           const homePage = new HomePage(driver);
-          await homePage.check_pageIsLoaded();
-          await homePage.check_expectedTokenBalanceIsDisplayed('50', 'WETH');
-          await homePage.check_expectedTokenBalanceIsDisplayed('25', 'ETH');
-
-          // disable smart transactions
-          const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.check_pageIsLoaded();
-          await headerNavbar.openSettingsPage();
-
-          const settingsPage = new SettingsPage(driver);
-          await settingsPage.check_pageIsLoaded();
-          await settingsPage.clickAdvancedTab();
-          const advancedSettingsPage = new AdvancedSettings(driver);
-          await advancedSettingsPage.check_pageIsLoaded();
-          await advancedSettingsPage.toggleSmartTransactions();
-          await settingsPage.closeSettingsPage();
+          await homePage.checkPageIsLoaded();
+          await homePage.checkExpectedTokenBalanceIsDisplayed('50', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('25', 'ETH');
 
           // START SWAP AND SEND FLOW
-          await openActionMenuAndStartSendFlow(driver);
+          await homePage.startSendFlow();
 
           await swapSendPage.fillRecipientAddressInput(DEFAULT_FIXTURE_ACCOUNT);
           await swapSendPage.fillAmountInput('1');
@@ -304,6 +296,7 @@ describe('Swap-Send ETH', function () {
           ];
 
           await swapSendPage.clickOnAsset('WETH', 'dest');
+
           await swapSendPage.verifyAssetSymbolsAndAmounts(
             ETH_WETH_TOKEN_INPUTS[0],
             ETH_WETH_TOKEN_INPUTS[1],
@@ -322,16 +315,16 @@ describe('Swap-Send ETH', function () {
 
           await swapSendPage.submitSwap();
           await swapSendPage.verifyHistoryEntry(
-            'Send ETH as WETH',
+            'Sent ETH as WETH',
             'Confirmed',
             '-10 ETH',
             '',
           );
 
           await homePage.goToTokensTab();
-          await homePage.check_expectedTokenBalanceIsDisplayed('60', 'WETH');
+          await homePage.checkExpectedTokenBalanceIsDisplayed('60', 'WETH');
           // https://github.com/MetaMask/metamask-extension/issues/31427
-          // await homePage.check_expectedTokenBalanceIsDisplayed(
+          // await homePage.checkExpectedTokenBalanceIsDisplayed(
           //   '14.99994',
           //   'ETH',
           // );

@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Za nadaljevanje vnesite geslo"
   },
-  "ethereumPublicAddress": {
-    "message": "Javni naslov Ethereum"
-  },
   "etherscanView": {
     "message": "Poglej račun na Etherscan"
-  },
-  "expandView": {
-    "message": "Razširi pogled"
   },
   "failed": {
     "message": "Ni uspelo"
@@ -254,20 +248,8 @@
   "from": {
     "message": "Od"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Omejitev plina je največja količina enot plina, ki ste jo pripravljeni porabiti."
-  },
   "gasLimitTooLow": {
     "message": "Gas limit mora biti vsaj 21000"
-  },
-  "gasPrice": {
-    "message": "Gas price (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas Price zelo nizkek"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena plina določa količino etra, ki ste ga pripravljeni plačati za vsako enoto plina."
   },
   "gasUsed": {
     "message": "Uporabljen gas"
@@ -390,9 +372,6 @@
   "needImportFile": {
     "message": "Za uvoz morate izbrati datoteko.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Negativnih zneskov ETH ni mogoče poslati."
   },
   "networkName": {
     "message": "Ime omrežja"
@@ -620,9 +599,6 @@
   "supportCenter": {
     "message": "Obiščite naše središče za podporo"
   },
-  "switchNetworks": {
-    "message": "Preklop omrežja"
-  },
   "symbol": {
     "message": "Simbol"
   },
@@ -631,9 +607,6 @@
   },
   "terms": {
     "message": "Pogoji uporabe"
-  },
-  "tips": {
-    "message": "Nasveti"
   },
   "to": {
     "message": "Za"
@@ -713,9 +686,6 @@
   "unlock": {
     "message": "Odkleni"
   },
-  "unlockMessage": {
-    "message": "Decentralizirana spletna denarnica"
-  },
   "urlErrorMsg": {
     "message": "URI zahtevajo ustrezno HTTP/HTTPS predpono."
   },
@@ -739,8 +709,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaš zasebni seed phrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Ničelni gas price na pospešitvi"
   }
 }

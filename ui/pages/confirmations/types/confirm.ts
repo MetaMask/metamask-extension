@@ -1,6 +1,8 @@
 import { ApprovalControllerState } from '@metamask/approval-controller';
 import { DecodingData } from '@metamask/signature-controller';
 import { SIWEMessage } from '@metamask/controller-utils';
+import { DecodedPermission } from '@metamask/gator-permissions-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
 import {
   TransactionMeta,
   TransactionType,
@@ -18,6 +20,8 @@ export type SecurityAlertResponse = {
   block?: number;
   reason: string;
   features?: string[];
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   result_type: string;
   providerRequestsCount?: Record<string, number>;
   securityAlertId?: string;
@@ -40,6 +44,7 @@ export type SignatureRequestType = {
   securityAlertResponse?: SecurityAlertResponse;
   decodingLoading?: boolean;
   decodingData?: DecodingData;
+  decodedPermission?: DecodedPermission;
 };
 
 export type Confirmation = SignatureRequestType | TransactionMeta;
@@ -49,5 +54,13 @@ export type ConfirmMetamaskState = {
     pendingApprovals: ApprovalControllerState['pendingApprovals'];
     approvalFlows: ApprovalControllerState['approvalFlows'];
     signatureSecurityAlertResponses?: Record<string, SecurityAlertResponse>;
+    enableEnforcedSimulations: boolean;
+    enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+    enforcedSimulationsSlippage: number;
+    enforcedSimulationsSlippageForTransactions: Record<string, number>;
+    dappSwapComparisonData?: Record<
+      string,
+      { quotes?: QuoteResponse[]; latency?: number }
+    >;
   };
 };

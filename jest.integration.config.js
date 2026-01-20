@@ -1,3 +1,5 @@
+const consoleReporterRules = require('./test/jest/console-reporter-rules-integration');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/shared/**/*.(js|ts|tsx)',
@@ -6,8 +8,26 @@ module.exports = {
   coverageDirectory: './coverage/integration',
   coveragePathIgnorePatterns: ['.stories.*', '.snap', '.test.(js|ts|tsx)'],
   coverageReporters: ['html', 'json'],
+  maxWorkers: '50%',
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    // Console baseline reporter MUST be first to capture raw console messages
+    // before jest-clean-console-reporter processes them
+    [
+      '<rootDir>/test/jest/console-baseline-reporter.js',
+      {
+        testType: 'integration',
+      },
+    ],
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    'summary',
     [
       'jest-junit',
       {
@@ -39,9 +59,15 @@ module.exports = {
     // Use babel-jest to transpile tests with the next/babel preset
     // https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
-    '^.+\\.(css|scss|sass|less)$': 'jest-preview/transforms/css',
+    // Use custom transform for pre-bundled CSS to avoid jest-preview's CSS inlining
+    // which truncates large CSS files and loses design-token variables
+    'test/integration/config/assets/index\\.css$':
+      '<rootDir>/test/integration/config/transforms/css-link.js',
     '^(?!.*\\.(js|jsx|mjs|cjs|ts|tsx|css|json)$)':
       'jest-preview/transforms/file',
   },
   transformIgnorePatterns: ['/node_modules/'],
+  // Ensure console output is buffered (not streamed) so reporters can access testResult.console
+  // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
+  verbose: false,
 };

@@ -1,23 +1,24 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useConfirmContext } from '../context/confirm';
+
+import { NATIVE_TOKEN_ADDRESS } from '../../../../shared/constants/transaction';
 import { useAsyncResult } from '../../../hooks/useAsync';
-import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
 import { forceUpdateMetamaskState } from '../../../store/actions';
-import { useInsufficientBalanceAlerts } from './alerts/transactions/useInsufficientBalanceAlerts';
+import { updateSelectedGasFeeToken } from '../../../store/controller-actions/transaction-controller';
+import { useConfirmContext } from '../context/confirm';
 import { useIsGaslessSupported } from './gas/useIsGaslessSupported';
+import { useHasInsufficientBalance } from './useHasInsufficientBalance';
 
 export function useAutomaticGasFeeTokenSelect() {
   const dispatch = useDispatch();
-  const isGaslessSupported = useIsGaslessSupported();
+  const { isSmartTransaction } = useIsGaslessSupported();
+  const [firstCheck, setFirstCheck] = useState(true);
 
   const { currentConfirmation: transactionMeta } =
     useConfirmContext<TransactionMeta>();
 
-  const hasInsufficientBalance = Boolean(
-    useInsufficientBalanceAlerts()?.length,
-  );
+  const { hasInsufficientBalance } = useHasInsufficientBalance();
 
   const {
     gasFeeTokens,
@@ -25,7 +26,11 @@ export function useAutomaticGasFeeTokenSelect() {
     selectedGasFeeToken,
   } = transactionMeta;
 
-  const firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
+  let firstGasFeeTokenAddress = gasFeeTokens?.[0]?.tokenAddress;
+
+  if (!isSmartTransaction && firstGasFeeTokenAddress === NATIVE_TOKEN_ADDRESS) {
+    firstGasFeeTokenAddress = gasFeeTokens?.[1]?.tokenAddress;
+  }
 
   const selectFirstToken = useCallback(async () => {
     await updateSelectedGasFeeToken(transactionId, firstGasFeeTokenAddress);
@@ -33,16 +38,18 @@ export function useAutomaticGasFeeTokenSelect() {
   }, [dispatch, transactionId, firstGasFeeTokenAddress]);
 
   const shouldSelect =
-    isGaslessSupported &&
     hasInsufficientBalance &&
     !selectedGasFeeToken &&
     Boolean(firstGasFeeTokenAddress);
 
   useAsyncResult(async () => {
-    if (!shouldSelect) {
+    if (!gasFeeTokens || !transactionId || !firstCheck) {
       return;
     }
 
-    await selectFirstToken();
-  }, []);
+    if (shouldSelect) {
+      await selectFirstToken();
+      setFirstCheck(false);
+    }
+  }, [shouldSelect, selectFirstToken, firstCheck, gasFeeTokens, transactionId]);
 }

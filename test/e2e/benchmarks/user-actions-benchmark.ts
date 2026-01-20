@@ -1,0 +1,234 @@
+import { promises as fs } from 'fs';
+import path from 'path';
+import { Mockttp } from 'mockttp';
+import { hideBin } from 'yargs/helpers';
+import yargs from 'yargs/yargs';
+import { exitWithError } from '../../../development/lib/exit-with-error';
+import {
+  getFirstParentDirectoryThatExists,
+  isWritable,
+} from '../../helpers/file';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import { withFixtures } from '../helpers';
+import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
+import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
+import HomePage from '../page-objects/pages/home/homepage';
+import HeaderNavbar from '../page-objects/pages/header-navbar';
+import AccountListPage from '../page-objects/pages/account-list-page';
+import {
+  DEFAULT_BRIDGE_FEATURE_FLAGS,
+  MOCK_TOKENS_ETHEREUM,
+} from '../tests/bridge/constants';
+import { Driver } from '../webdriver/driver';
+
+async function mockTokensEthereum(mockServer: Mockttp) {
+  return await mockServer
+    .forGet(`https://token.api.cx.metamask.io/tokens/1`)
+    .thenCallback(() => {
+      return {
+        statusCode: 200,
+        json: MOCK_TOKENS_ETHEREUM,
+      };
+    });
+}
+
+const USER_ACTIONS_PERSONA = 'standard';
+
+async function loadNewAccount(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
+  let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-loadNewAccount';
+
+  await withFixtures(
+    {
+      fixtures: new FixtureBuilder().build(),
+      disableServerMochaToBackground: true,
+      localNodeOptions: {
+        accounts: 1,
+      },
+      title: testTitle,
+    },
+    async ({ driver }: { driver: Driver }) => {
+      await loginWithBalanceValidation(driver);
+
+      const headerNavbar = new HeaderNavbar(driver);
+      await headerNavbar.openAccountMenu();
+      const accountListPage = new AccountListPage(driver);
+      await accountListPage.checkPageIsLoaded();
+
+      const timestampBeforeAction = new Date();
+      await accountListPage.addMultichainAccount();
+      const timestampAfterAction = new Date();
+      loadingTimes =
+        timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+    },
+  );
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+}
+
+async function confirmTx(): Promise<{
+  duration: number;
+  testTitle: string;
+  persona: string;
+}> {
+  let loadingTimes: number = 0;
+  const testTitle = 'benchmark-userActions-confirmTx';
+
+  await withFixtures(
+    {
+      fixtures: new FixtureBuilder().build(),
+      disableServerMochaToBackground: true,
+      title: testTitle,
+    },
+    async ({ driver }: { driver: Driver }) => {
+      await loginWithBalanceValidation(driver);
+
+      const homePage = new HomePage(driver);
+      await homePage.startSendFlow();
+
+      await driver.fill(
+        'input[placeholder="Enter public address (0x) or domain name"]',
+        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+      );
+
+      await driver.fill('.unit-input__input', '1');
+
+      await driver.waitForSelector({ text: 'Continue', tag: 'button' });
+      await driver.clickElement({ text: 'Continue', tag: 'button' });
+
+      const timestampBeforeAction = new Date();
+
+      await driver.waitForSelector({ text: 'Confirm', tag: 'button' });
+      await driver.clickElement({ text: 'Confirm', tag: 'button' });
+
+      await driver.clickElement(
+        '[data-testid="account-overview__activity-tab"]',
+      );
+      await driver.wait(async () => {
+        const confirmedTxes = await driver.findElements(
+          '.transaction-status-label--confirmed',
+        );
+        return confirmedTxes.length === 1;
+      }, 10000);
+      await driver.waitForSelector('.transaction-status-label--confirmed');
+      const timestampAfterAction = new Date();
+      loadingTimes =
+        timestampAfterAction.getTime() - timestampBeforeAction.getTime();
+    },
+  );
+  return { duration: loadingTimes, testTitle, persona: USER_ACTIONS_PERSONA };
+}
+
+async function bridgeUserActions(): Promise<{
+  loadPage: number;
+  loadAssetPicker: number;
+  searchToken: number;
+  testTitle: string;
+  persona: string;
+}> {
+  let loadPage: number = 0;
+  let loadAssetPicker: number = 0;
+  let searchToken: number = 0;
+  const testTitle = 'benchmark-userActions-bridgeUserActions';
+
+  const fixtureBuilder = new FixtureBuilder()
+    .withNetworkControllerOnMainnet()
+    .withEnabledNetworks({ eip155: { '0x1': true } });
+
+  await withFixtures(
+    {
+      fixtures: fixtureBuilder.build(),
+      disableServerMochaToBackground: true,
+      testSpecificMock: mockTokensEthereum,
+      title: testTitle,
+      manifestFlags: {
+        remoteFeatureFlags: {
+          bridgeConfig: DEFAULT_BRIDGE_FEATURE_FLAGS,
+        },
+      },
+    },
+    async ({ driver }: { driver: Driver }) => {
+      await loginWithBalanceValidation(driver);
+      const homePage = new HomePage(driver);
+      const quotePage = new BridgeQuotePage(driver);
+
+      const timestampBeforeLoadPage = new Date();
+      await homePage.startSwapFlow();
+      const timestampAfterLoadPage = new Date();
+
+      loadPage =
+        timestampAfterLoadPage.getTime() - timestampBeforeLoadPage.getTime();
+
+      const timestampBeforeClickAssetPicker = new Date();
+      await driver.clickElement(quotePage.sourceAssetPickerButton);
+      const timestampAfterClickAssetPicker = new Date();
+
+      loadAssetPicker =
+        timestampAfterClickAssetPicker.getTime() -
+        timestampBeforeClickAssetPicker.getTime();
+
+      const tokenToSearch = 'FXS';
+      const timestampBeforeTokenSearch = new Date();
+      await driver.fill(quotePage.assetPrickerSearchInput, tokenToSearch);
+      await driver.waitForSelector({
+        text: tokenToSearch,
+        css: quotePage.tokenButton,
+      });
+      const timestampAferTokenSearch = new Date();
+
+      searchToken =
+        timestampAferTokenSearch.getTime() -
+        timestampBeforeTokenSearch.getTime();
+    },
+  );
+  return {
+    loadPage,
+    loadAssetPicker,
+    searchToken,
+    testTitle,
+    persona: USER_ACTIONS_PERSONA,
+  };
+}
+
+async function main(): Promise<void> {
+  const { argv } = yargs(hideBin(process.argv)).usage(
+    '$0 [options]',
+    'Run a page load benchmark',
+    (_yargs) =>
+      _yargs.option('out', {
+        description:
+          'Output filename. Output printed to STDOUT of this is omitted.',
+        type: 'string',
+        normalize: true,
+      }),
+  );
+
+  const results: Record<string, Record<string, string | number>> = {};
+
+  results.loadNewAccount = await loadNewAccount();
+  results.confirmTx = await confirmTx();
+  results.bridge = await bridgeUserActions();
+  const { out } = argv as { out?: string };
+
+  if (out) {
+    const outputDirectory = path.dirname(out);
+    const existingParentDirectory =
+      await getFirstParentDirectoryThatExists(outputDirectory);
+    if (!(await isWritable(existingParentDirectory))) {
+      throw new Error('Specified output file directory is not writable');
+    }
+    if (outputDirectory !== existingParentDirectory) {
+      await fs.mkdir(outputDirectory, { recursive: true });
+    }
+    await fs.writeFile(out, JSON.stringify(results, null, 2));
+  } else {
+    console.log(JSON.stringify(results, null, 2));
+  }
+}
+
+main().catch((error) => {
+  exitWithError(error);
+});

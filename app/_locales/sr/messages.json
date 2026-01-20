@@ -226,14 +226,8 @@
   "enterPasswordContinue": {
     "message": "Unesite lozinku kako biste nastavili"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum javna adresa"
-  },
   "etherscanView": {
     "message": "Pogledajte račun na Etherscan-u"
-  },
-  "expandView": {
-    "message": "Proširite prikaz"
   },
   "failed": {
     "message": "Neuspešno"
@@ -254,20 +248,8 @@
   "gasLimit": {
     "message": "Limit gasa"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Granica gasa je maksimalni iznos jedinica gasa koje ste voljni da potrošite."
-  },
   "gasLimitTooLow": {
     "message": "Limit za gas mora da bude najmanje 21 000"
-  },
-  "gasPrice": {
-    "message": "Cena gasa (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Cena gasa izuzetno niska"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Cena gasa određuje količinu Ethera koju ste spremni da platite za svaku jedinicu gasa."
   },
   "gasUsed": {
     "message": "Korišćen gas"
@@ -393,9 +375,6 @@
   "needImportFile": {
     "message": "Morate izabrati fajl koji ćete uvesti.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Ne možete poslati negativan iznos ETH."
   },
   "networkName": {
     "message": "Ime mreže"
@@ -623,9 +602,6 @@
   "supportCenter": {
     "message": "Posetite naš centar za podršku"
   },
-  "switchNetworks": {
-    "message": "Prebacivanje mreže"
-  },
   "symbol": {
     "message": "Simbol"
   },
@@ -634,9 +610,6 @@
   },
   "terms": {
     "message": "Uslovi korišćenja"
-  },
-  "tips": {
-    "message": "Donacije"
   },
   "to": {
     "message": "Za"
@@ -713,9 +686,6 @@
   "unlock": {
     "message": "Откључај"
   },
-  "unlockMessage": {
-    "message": "Decentralizovani veb čeka"
-  },
   "urlErrorMsg": {
     "message": "URI-ovi zahtevaju odgovarajući prefiks HTTP / HTTPS."
   },
@@ -739,8 +709,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Vaša privatna šifra za oporavak naloga (seed phrase)"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nulta cena gasa ubrzava"
   }
 }

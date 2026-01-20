@@ -1,6 +1,8 @@
 import { migrate, version } from './139';
 
 const PermissionNames = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   eth_accounts: 'eth_accounts',
   permittedChains: 'endowment:permitted-chains',
 };
@@ -495,6 +497,7 @@ describe('migration #139', () => {
     });
   });
 
+  // @ts-expect-error This function is missing from the Mocha type definitions
   describe.each([
     [
       'built-in',

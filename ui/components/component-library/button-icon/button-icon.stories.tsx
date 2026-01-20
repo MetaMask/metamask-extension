@@ -7,7 +7,7 @@ import README from './README.mdx';
 import { IconName } from '../icon';
 
 export default {
-  title: 'Components/ComponentLibrary/ButtonIcon',
+  title: 'Components/ComponentLibrary/ButtonIcon (deprecated)',
   component: ButtonIcon,
   parameters: {
     docs: {

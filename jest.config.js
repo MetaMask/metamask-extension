@@ -1,3 +1,5 @@
+const consoleReporterRules = require('./test/jest/console-reporter-rules-unit');
+
 module.exports = {
   collectCoverageFrom: [
     '<rootDir>/app/scripts/**/*.(js|ts|tsx)',
@@ -5,13 +7,29 @@ module.exports = {
     '<rootDir>/ui/**/*.(js|ts|tsx)',
     '<rootDir>/development/build/transforms/**/*.js',
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/helpers/foundry/**/*.(js|ts|tsx)',
   ],
   coverageDirectory: './coverage/unit',
   coveragePathIgnorePatterns: ['.stories.*', '.snap$'],
   coverageReporters: ['html', 'json'],
+  // The path to the Prettier executable used to format snapshots
+  // Jest doesn't support Prettier 3 yet, so we use Prettier 2
+  prettierPath: require.resolve('prettier-2'),
   reporters: [
-    'default',
+    // Console baseline reporter MUST be first to capture raw console messages
+    // before jest-clean-console-reporter processes them
+    [
+      '<rootDir>/test/jest/console-baseline-reporter.js',
+      {
+        testType: 'unit',
+      },
+    ],
+    [
+      'jest-clean-console-reporter',
+      {
+        rules: consoleReporterRules,
+      },
+    ],
+    'summary',
     [
       'jest-junit',
       {
@@ -37,17 +55,20 @@ module.exports = {
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
-    '<rootDir>/test/helpers/foundry/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
   // We have to specify the environment we are running in, which is jsdom. The
   // default is 'node'. This can be modified *per file* using a comment at the
   // head of the file. So it may be worthwhile to switch to 'node' in any
-  // background tests.
-  testEnvironment: 'jsdom',
+  // background tests. `jest-fixed-jsdom` is an improved version of jsdom.
+  testEnvironment: 'jest-fixed-jsdom',
   testEnvironmentOptions: {
     customExportConditions: ['node', 'node-addons'],
   },
   workerIdleMemoryLimit: '500MB',
+  // Ensure console output is buffered (not streamed) so reporters can access testResult.console
+  // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
+  verbose: false,
 };

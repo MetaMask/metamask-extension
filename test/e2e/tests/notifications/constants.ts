@@ -1,4 +1,4 @@
-// As we rely on profile syncing for most of our features, we need to use the same SRP for all of our tests
+// As we rely on backup and sync for most of our features, we need to use the same SRP for all of our tests
 export const NOTIFICATIONS_TEAM_SEED_PHRASE =
   'leisure swallow trip elbow prison wait rely keep supply hole general mountain';
 export const NOTIFICATIONS_TEAM_PASSWORD = 'notify_password';

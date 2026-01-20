@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   DeleteInterface,
   GetAllSnaps,
@@ -10,6 +10,7 @@ import {
   TransactionControllerTransactionStatusUpdatedEvent,
 } from '@metamask/transaction-controller';
 import { SignatureStateChange } from '@metamask/signature-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
   | HandleSnapRequest
@@ -35,20 +36,30 @@ export type SnapInsightsControllerMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapInsightsControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'SnapInsightsController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'SnapInsightsController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'SnapInsightsController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'SnapController:handleRequest',
       'SnapController:getAll',
       'PermissionController:getPermissions',
       'SnapInterfaceController:deleteInterface',
     ],
-    allowedEvents: [
+    events: [
       'TransactionController:unapprovedTransactionAdded',
       'TransactionController:transactionStatusUpdated',
       'SignatureController:stateChange',
     ],
   });
+  return controllerMessenger;
 }

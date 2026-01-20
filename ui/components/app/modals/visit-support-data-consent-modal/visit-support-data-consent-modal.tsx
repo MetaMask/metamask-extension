@@ -30,6 +30,7 @@ import {
 } from '../../../../../shared/constants/metametrics';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { SUPPORT_LINK } from '../../../../../shared/lib/ui-utils';
+import { useUserSubscriptions } from '../../../../hooks/subscription/useSubscription';
 
 type VisitSupportDataConsentModalProps = {
   onClose: () => void;
@@ -45,12 +46,14 @@ const VisitSupportDataConsentModal: React.FC<
   const sessionData = useSelector(selectSessionData);
   const profileId = sessionData?.profile?.profileId;
   const metaMetricsId = useSelector(getMetaMetricsId);
+  const { customerId: shieldCustomerId } = useUserSubscriptions();
 
   const handleClickContactSupportButton = useCallback(
     (params: {
       version: string;
       profileId?: string;
       metaMetricsId?: string;
+      shieldCustomerId?: string;
     }) => {
       onClose();
       let supportLinkWithUserId = SUPPORT_LINK as string;
@@ -61,6 +64,9 @@ const VisitSupportDataConsentModal: React.FC<
       }
       if (params.metaMetricsId) {
         queryParams.append('metamask_metametrics_id', params.metaMetricsId);
+      }
+      if (params.shieldCustomerId) {
+        queryParams.append('shield_id', params.shieldCustomerId);
       }
 
       const queryString = queryParams.toString();
@@ -140,6 +146,7 @@ const VisitSupportDataConsentModal: React.FC<
                   version,
                   profileId,
                   metaMetricsId,
+                  shieldCustomerId,
                 })
               }
               data-testid="visit-support-data-consent-modal-accept-button"

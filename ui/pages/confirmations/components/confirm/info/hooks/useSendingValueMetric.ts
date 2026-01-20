@@ -1,5 +1,6 @@
 import { TransactionMeta } from '@metamask/transaction-controller';
 import { useEffect } from 'react';
+import { useDeepMemo } from '../../../../hooks/useDeepMemo';
 import { useTransactionEventFragment } from '../../../../hooks/useTransactionEventFragment';
 
 export type UseSendingValueMetricProps = {
@@ -14,13 +15,17 @@ export const useSendingValueMetric = ({
   const { updateTransactionEventFragment } = useTransactionEventFragment();
 
   const transactionId = transactionMeta.id;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   const properties = { sending_value: fiatValue };
   const sensitiveProperties = {};
   const params = { properties, sensitiveProperties };
 
+  const stableParams = useDeepMemo(() => params, [params]);
+
   useEffect(() => {
     if (fiatValue !== undefined && fiatValue !== '') {
-      updateTransactionEventFragment(params, transactionId);
+      updateTransactionEventFragment(stableParams, transactionId);
     }
-  }, [updateTransactionEventFragment, transactionId, JSON.stringify(params)]);
+  }, [updateTransactionEventFragment, transactionId, stableParams, fiatValue]);
 };

@@ -438,14 +438,8 @@
   "ethGasPriceFetchWarning": {
     "message": "顯示備用 gas 價格，因為目前主要的 gas 估計服務無法使用。"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公開位址"
-  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
-  },
-  "expandView": {
-    "message": "展開畫面"
   },
   "externalExtension": {
     "message": "外部擴充功能"
@@ -475,49 +469,23 @@
   "from": {
     "message": "來源帳戶"
   },
-  "fromAddress": {
-    "message": "來自：$1",
-    "description": "$1 is the address to include in the From label. It is typically shortened first using shortenAddress"
-  },
   "gasLimit": {
     "message": "Gas 上限"
-  },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gas 上限代表願意為交易手續費所付出的最高總價"
   },
   "gasLimitTooLow": {
     "message": "Gas 上限至少為 21000"
   },
-  "gasLimitTooLowWithDynamicFee": {
-    "message": "Gas 上限至少為 $1",
-    "description": "$1 is the custom gas limit, in decimal."
-  },
-  "gasPrice": {
-    "message": "Gas 價格 (GWEI)"
-  },
   "gasPriceExcessive": {
     "message": "您的 gas 費用設定得太高了。考慮降低一些。"
   },
-  "gasPriceExcessiveInput": {
-    "message": "Gas 價格極高"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gas 價格極低"
-  },
   "gasPriceFetchFailed": {
     "message": "由於網路錯誤，gas 價格估計失敗。"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gas 價格代表願意為交易手續費付出的單位價格，價格越高交易處理速度越快。"
   },
   "gasUsed": {
     "message": "Gas 用量"
   },
   "general": {
     "message": "一般"
-  },
-  "goBack": {
-    "message": "Go Back"
   },
   "goerli": {
     "message": "Goerli 測試網路"
@@ -570,9 +538,6 @@
   },
   "importAccountMsg": {
     "message": " 匯入的帳戶並不會與您原有 MetaMask 帳戶助憶詞建立關聯。請用以下連結瞭解匯入帳戶相關的資料： "
-  },
-  "importMyWallet": {
-    "message": "Import My Wallet"
   },
   "importTokensCamelCase": {
     "message": "Import Tokens"
@@ -735,9 +700,6 @@
     "message": "您必須選擇一個檔案來匯入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "不能送出負值的以太幣。"
-  },
   "networkDetails": {
     "message": "網路詳細資料"
   },
@@ -816,9 +778,6 @@
   },
   "on": {
     "message": "開啟"
-  },
-  "onboardingPinExtensionBillboardAccess": {
-    "message": "Full Access"
   },
   "onlyConnectTrust": {
     "message": "記住，只連線到您信任的網站。",
@@ -966,33 +925,6 @@
   "securityAndPrivacy": {
     "message": "安全＆隱私"
   },
-  "seedPhraseIntroSidebarBulletOne": {
-    "message": "寫下來並且存放在不同的秘密地點。"
-  },
-  "seedPhraseIntroSidebarBulletTwo": {
-    "message": "存在安全保管箱裡。"
-  },
-  "seedPhraseIntroSidebarCopyOne": {
-    "message": "您的助憶詞就是您的錢包與資金的「總鑰匙」。"
-  },
-  "seedPhraseIntroSidebarCopyThree": {
-    "message": "如果有人向您詢問您的助憶詞，他們十之八九是在詐騙您。"
-  },
-  "seedPhraseIntroSidebarCopyTwo": {
-    "message": "永遠永遠不要洩漏您的助憶詞，即使是 MetaMask 官方也一樣！"
-  },
-  "seedPhraseIntroSidebarTitleOne": {
-    "message": "什麼是助憶詞？"
-  },
-  "seedPhraseIntroSidebarTitleThree": {
-    "message": "我應該分享我的助憶詞嗎？"
-  },
-  "seedPhraseIntroSidebarTitleTwo": {
-    "message": "我該如何存放我的助憶詞？"
-  },
-  "seedPhraseIntroTitle": {
-    "message": "保護您的錢包"
-  },
   "seedPhraseReq": {
     "message": "助憶詞為 12, 15, 18, 21 或 24 個單字"
   },
@@ -1023,10 +955,6 @@
   "send": {
     "message": "發送"
   },
-  "sendSpecifiedTokens": {
-    "message": "發送 $1",
-    "description": "Symbol of the specified token"
-  },
   "settings": {
     "message": "設定"
   },
@@ -1053,9 +981,6 @@
   },
   "signed": {
     "message": "已簽署"
-  },
-  "skipAccountSecurity": {
-    "message": "Skip Account Security?"
   },
   "somethingWentWrong": {
     "message": "糟糕！出了點問題。"
@@ -1138,9 +1063,6 @@
   "switchNetwork": {
     "message": "切換網路"
   },
-  "switchNetworks": {
-    "message": "切換網路"
-  },
   "switchToThisAccount": {
     "message": "切換到這個帳戶"
   },
@@ -1159,15 +1081,8 @@
   "termsOfService": {
     "message": "服務條款"
   },
-  "tips": {
-    "message": "提示"
-  },
   "to": {
     "message": "目的帳戶"
-  },
-  "toAddress": {
-    "message": "傳送到：$1",
-    "description": "$1 is the address to include in the To label. It is typically shortened first using shortenAddress"
   },
   "token": {
     "message": "代碼"
@@ -1257,9 +1172,6 @@
   "unlock": {
     "message": "解鎖"
   },
-  "unlockMessage": {
-    "message": "去中心化網路世界等待著您"
-  },
   "unrecognizedChain": {
     "message": "無法辨識這個自訂網路。我們建議您先$1再繼續。",
     "description": "$1 is a clickable link with text defined by the 'unrecognizedChanLinkText' key. The link will open to instructions for users to validate custom network details."
@@ -1318,8 +1230,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "您的助憶詞"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "加速的 Gas 價格為 0"
   }
 }

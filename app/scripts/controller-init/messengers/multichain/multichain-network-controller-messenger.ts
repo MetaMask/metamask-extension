@@ -1,4 +1,4 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
 import {
   AccountsControllerListMultichainAccountsAction,
   AccountsControllerSelectedAccountChangeEvent,
@@ -6,11 +6,18 @@ import {
 import {
   type NetworkControllerSetActiveNetworkAction,
   type NetworkControllerGetStateAction,
+  type NetworkControllerRemoveNetworkAction,
+  type NetworkControllerGetSelectedChainIdAction,
+  type NetworkControllerFindNetworkClientIdByChainIdAction,
 } from '@metamask/network-controller';
+import { RootMessenger } from '../../../lib/messenger';
 
 type Actions =
-  | NetworkControllerSetActiveNetworkAction
   | NetworkControllerGetStateAction
+  | NetworkControllerSetActiveNetworkAction
+  | NetworkControllerRemoveNetworkAction
+  | NetworkControllerGetSelectedChainIdAction
+  | NetworkControllerFindNetworkClientIdByChainIdAction
   | AccountsControllerListMultichainAccountsAction;
 
 type Events = AccountsControllerSelectedAccountChangeEvent;
@@ -27,15 +34,28 @@ export type MultichainNetworkControllerMessenger = ReturnType<
  * @returns The restricted controller messenger.
  */
 export function getMultichainNetworkControllerMessenger(
-  messenger: Messenger<Actions, Events>,
+  messenger: RootMessenger<Actions, Events>,
 ) {
-  return messenger.getRestricted({
-    name: 'MultichainNetworkController',
-    allowedActions: [
+  const controllerMessenger = new Messenger<
+    'MultichainNetworkController',
+    Actions,
+    Events,
+    typeof messenger
+  >({
+    namespace: 'MultichainNetworkController',
+    parent: messenger,
+  });
+  messenger.delegate({
+    messenger: controllerMessenger,
+    actions: [
       'NetworkController:setActiveNetwork',
       'NetworkController:getState',
+      'NetworkController:removeNetwork',
+      'NetworkController:findNetworkClientIdByChainId',
+      'NetworkController:getSelectedChainId',
       'AccountsController:listMultichainAccounts',
     ],
-    allowedEvents: ['AccountsController:selectedAccountChange'],
+    events: ['AccountsController:selectedAccountChange'],
   });
+  return controllerMessenger;
 }

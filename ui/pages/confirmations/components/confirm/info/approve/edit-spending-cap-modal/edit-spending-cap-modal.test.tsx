@@ -1,9 +1,15 @@
 import React, { ReactNode } from 'react';
 import configureMockStore from 'redux-mock-store';
 import { Hex } from '@metamask/utils';
-import { act } from '@testing-library/react';
-import { getMockApproveConfirmState } from '../../../../../../../../test/data/confirmations/helper';
+import { act, fireEvent } from '@testing-library/react';
+import {
+  getMockApproveConfirmState,
+  getMockConfirmStateForTransaction,
+} from '../../../../../../../../test/data/confirmations/helper';
 import { renderWithConfirmContextProvider } from '../../../../../../../../test/lib/confirmations/render-helpers';
+import { genUnapprovedContractInteractionConfirmation } from '../../../../../../../../test/data/confirmations/contract-interaction';
+import { buildPermit2ApproveTransactionData } from '../../../../../../../../test/data/confirmations/token-approve';
+import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import {
   countDecimalDigits,
   EditSpendingCapModal,
@@ -38,14 +44,27 @@ jest.mock('../hooks/use-approve-token-simulation', () => ({
 
 jest.mock('../../../../../hooks/useAssetDetails', () => ({
   useAssetDetails: jest.fn(() => ({
-    decimals: 18,
+    decimals: 4,
     userBalance: '1000000',
     tokenSymbol: 'TST',
   })),
 }));
 
-function render({ onSubmit }: { onSubmit?: (data: Hex) => void } = {}) {
-  const state = getMockApproveConfirmState();
+const ADDRESS_MOCK = '0x1234567890123456789012345678901234567890';
+const ADDRESS_MOCK_2 = '0x1234567890123456789012345678901234567891';
+
+function render({
+  transactionData,
+  onSubmit,
+}: { transactionData?: Hex; onSubmit?: (data: Hex) => void } = {}) {
+  const state = transactionData
+    ? getMockConfirmStateForTransaction(
+        genUnapprovedContractInteractionConfirmation({
+          txData: transactionData,
+        }),
+      )
+    : getMockApproveConfirmState();
+
   const mockStore = configureMockStore()(state);
 
   return renderWithConfirmContextProvider(
@@ -78,7 +97,48 @@ describe('EditSpendingCapModal', () => {
     expect(onSubmit).toHaveBeenCalled();
   });
 
+  it('supports Permit2 approval', async () => {
+    const onSubmit = jest.fn();
+
+    const { getByText, getByTestId } = render({
+      onSubmit,
+      transactionData: buildPermit2ApproveTransactionData(
+        ADDRESS_MOCK,
+        ADDRESS_MOCK_2,
+        78900,
+        456,
+      ),
+    });
+
+    await act(async () => {
+      fireEvent.change(getByTestId('custom-spending-cap-input'), {
+        target: { value: '1.23' },
+      });
+    });
+
+    await act(async () => {
+      getByText('Save').click();
+    });
+
+    expect(onSubmit).toHaveBeenCalledWith(
+      buildPermit2ApproveTransactionData(
+        ADDRESS_MOCK,
+        ADDRESS_MOCK_2,
+        12300,
+        456,
+      ),
+    );
+
+    expect(jest.mocked(useAssetDetails)).toHaveBeenCalledWith(
+      ADDRESS_MOCK,
+      expect.anything(),
+      expect.anything(),
+      expect.anything(),
+    );
+  });
+
   describe('countDecimalDigits()', () => {
+    // @ts-expect-error This is missing from the Mocha type definitions
     it.each([
       { numberString: '0', expectedDecimals: 0 },
       { numberString: '100', expectedDecimals: 0 },

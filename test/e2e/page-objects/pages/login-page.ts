@@ -1,5 +1,5 @@
 import { Driver } from '../../webdriver/driver';
-import { WALLET_PASSWORD } from '../../helpers';
+import { WALLET_PASSWORD } from '../../constants';
 
 class LoginPage {
   private driver: Driver;
@@ -10,7 +10,17 @@ class LoginPage {
 
   private welcomeBackMessage: object;
 
-  private forgotPasswordButton: object;
+  private forgotPasswordButton: string;
+
+  private resetPasswordModalButton: string;
+
+  private resetWalletButton: string;
+
+  private connectionsRemovedModal: string;
+
+  private connectionsRemovedModalButton: string;
+
+  private incorrectPasswordMessage: { css: string; text: string };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -20,16 +30,25 @@ class LoginPage {
       css: '[data-testid="unlock-page-title"]',
       text: 'Welcome back',
     };
-    this.forgotPasswordButton = {
-      text: 'Forgot password?',
-      tag: 'a',
+    this.forgotPasswordButton = '[data-testid="unlock-forgot-password-button"]';
+
+    this.resetPasswordModalButton =
+      '[data-testid="reset-password-modal-button"]';
+
+    this.incorrectPasswordMessage = {
+      css: '[data-testid="unlock-page-help-text"]',
+      text: 'Password is incorrect. Please try again.',
     };
+
+    this.resetWalletButton = '[data-testid="login-error-modal-button"]';
+    this.connectionsRemovedModal = '[data-testid="connections-removed-modal"]';
+    this.connectionsRemovedModalButton =
+      '[data-testid="connections-removed-modal-button"]';
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.welcomeBackMessage,
         this.passwordInput,
         this.unlockButton,
       ]);
@@ -51,9 +70,39 @@ class LoginPage {
     await this.driver.clickElement(this.unlockButton);
   }
 
+  async checkIncorrectPasswordMessageIsDisplayed(): Promise<void> {
+    console.log('Checking if incorrect password message is displayed');
+    const isDisplayed = await this.driver.waitForSelector(
+      this.incorrectPasswordMessage,
+    );
+    if (!isDisplayed) {
+      throw new Error('Incorrect password message is not displayed');
+    }
+  }
+
   async gotoResetPasswordPage(): Promise<void> {
     console.log('Navigating to reset password page');
     await this.driver.clickElement(this.forgotPasswordButton);
+    await this.driver.clickElementAndWaitToDisappear(
+      this.resetPasswordModalButton,
+    );
+  }
+
+  async resetWallet(): Promise<void> {
+    console.log(
+      'Resetting wallet due to unrecoverable error in social login unlock',
+    );
+    await this.driver.clickElementAndWaitToDisappear(this.resetWalletButton);
+  }
+
+  async checkConnectionsRemovedModalIsDisplayed(): Promise<void> {
+    console.log('Checking if connections removed modal is displayed');
+    await this.driver.waitForSelector(this.connectionsRemovedModal);
+  }
+
+  async resetWalletFromConnectionsRemovedModal(): Promise<void> {
+    console.log('Resetting wallet from connections removed modal');
+    await this.driver.clickElement(this.connectionsRemovedModalButton);
   }
 }
 

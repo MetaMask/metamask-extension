@@ -48,6 +48,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
   networkIcon,
 }) => (
   <Box
+    className="snap-ui-renderer__asset-selector-option"
     display={Display.Flex}
     alignItems={AlignItems.center}
     width={BlockSize.Full}
@@ -65,7 +66,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
           />
         }
       >
-        <AvatarToken src={icon} />
+        <AvatarToken src={icon} name={symbol} />
       </BadgeWrapper>
     </Box>
     <Box
@@ -91,9 +92,7 @@ const SnapUIAssetSelectorOption: FunctionComponent<SnapUIAsset> = ({
       textAlign={TextAlign.End}
       className="snap-ui-renderer__asset-selector-option__balance"
     >
-      <Text variant={TextVariant.bodySmMedium}>
-        {balance} {symbol}
-      </Text>
+      <Text variant={TextVariant.bodySmMedium}>{balance}</Text>
       <Text color={TextColor.textAlternative} variant={TextVariant.bodySm}>
         {fiat}
       </Text>

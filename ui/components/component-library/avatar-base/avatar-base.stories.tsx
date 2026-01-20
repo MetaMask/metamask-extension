@@ -33,7 +33,7 @@ const marginSizeKnobOptions = [
 ];
 
 export default {
-  title: 'Components/ComponentLibrary/AvatarBase',
+  title: 'Components/ComponentLibrary/AvatarBase (deprecated)',
   component: AvatarBase,
   parameters: {
     docs: {

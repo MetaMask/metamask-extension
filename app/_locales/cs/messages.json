@@ -118,9 +118,6 @@
   "gasLimitTooLow": {
     "message": "Limit paliva musí být alespoň 21000"
   },
-  "gasPrice": {
-    "message": "Cena paliva (GWEI)"
-  },
   "here": {
     "message": "zde",
     "description": "as in -click here- for more information (goes with troubleTokenBalances)"
@@ -184,9 +181,6 @@
   "needImportFile": {
     "message": "Musíte zvolit soubor k importu.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Nelze odeslat zápornou částku ETH."
   },
   "networks": {
     "message": "Sítě"

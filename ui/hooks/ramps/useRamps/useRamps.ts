@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { CaipChainId, Hex } from '@metamask/utils';
+import { CaipChainId, Hex, hexToNumber } from '@metamask/utils';
 import { ChainId } from '../../../../shared/constants/network';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -8,6 +8,9 @@ import {
   getMetaMetricsId,
   getParticipateInMetaMetrics,
 } from '../../../selectors';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
+
+const DEFAULT_PORTFOLIO_URL = 'https://app.metamask.io';
 
 type IUseRamps = {
   openBuyCryptoInPdapp: (chainId?: ChainId | CaipChainId) => void;
@@ -35,7 +38,15 @@ const useRamps = (
       try {
         const params = new URLSearchParams();
         params.set('metamaskEntry', metamaskEntry);
-        params.set('chainId', _chainId);
+
+        let numericChainId = '';
+        if (isEvmChainId(_chainId)) {
+          numericChainId = hexToNumber(_chainId).toString();
+        } else {
+          numericChainId = _chainId;
+        }
+
+        params.set('chainId', numericChainId);
         if (metaMetricsId) {
           params.set('metametricsId', metaMetricsId);
         }
@@ -43,30 +54,25 @@ const useRamps = (
         if (isMarketingEnabled) {
           params.set('marketingEnabled', String(isMarketingEnabled));
         }
-
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-        const url = new URL(process.env.PORTFOLIO_URL || '');
+        const url = new URL(process.env.PORTFOLIO_URL || DEFAULT_PORTFOLIO_URL);
         url.pathname = 'buy';
         url.search = params.toString();
         return url.toString();
       } catch {
-        return 'https://portfolio.metamask.io/buy';
+        return `${DEFAULT_PORTFOLIO_URL}/buy`;
       }
     },
-    [metaMetricsId],
+    [isMarketingEnabled, isMetaMetricsEnabled, metaMetricsId, metamaskEntry],
   );
 
   const openBuyCryptoInPdapp = useCallback(
     (_chainId?: ChainId | CaipChainId) => {
-      // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
       const buyUrl = getBuyURI(_chainId || chainId);
       global.platform.openTab({
         url: buyUrl,
       });
     },
-    [chainId],
+    [chainId, getBuyURI],
   );
 
   return { openBuyCryptoInPdapp, getBuyURI };

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Modal from '../../modal';
 import { Text } from '../../../component-library/text';
@@ -10,15 +10,17 @@ import { ASSET_ROUTE } from '../../../../helpers/constants/routes';
 import { getNfts } from '../../../../ducks/metamask/metamask';
 import { ignoreTokens, showImportNftsModal } from '../../../../store/actions';
 import { isEqualCaseInsensitive } from '../../../../../shared/modules/string-utils';
+import { getSelectedNetworkClientId } from '../../../../../shared/modules/selectors/networks';
 
 const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const t = useI18nContext();
   const dispatch = useDispatch();
   const allNfts = useSelector(getNfts);
   const tokenAddedAsNFT = allNfts.find(({ address }) =>
     isEqualCaseInsensitive(address, tokenAddress),
   );
+  const networkClientId = useSelector(getSelectedNetworkClientId);
 
   return (
     <Modal
@@ -28,12 +30,11 @@ const ConvertTokenToNFTModal = ({ hideModal, tokenAddress }) => {
             ignoreTokens({
               tokensToIgnore: tokenAddress,
               dontShowLoadingIndicator: true,
+              networkClientId,
             }),
           );
           const { tokenId } = tokenAddedAsNFT;
-          history.push({
-            pathname: `${ASSET_ROUTE}/${tokenAddress}/${tokenId}`,
-          });
+          navigate(`${ASSET_ROUTE}/${tokenAddress}/${tokenId}`);
         } else {
           dispatch(
             showImportNftsModal({ tokenAddress, ignoreErc20Token: true }),

@@ -5,23 +5,42 @@ import {
   toMultichainNetworkConfiguration,
   ActiveNetworksByAddress,
 } from '@metamask/multichain-network-controller';
-import { type NetworkConfiguration as InternalNetworkConfiguration } from '@metamask/network-controller';
-import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { type CaipChainId, type Hex } from '@metamask/utils';
+import {
+  NetworkStatus,
+  type NetworkConfiguration as InternalNetworkConfiguration,
+} from '@metamask/network-controller';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import {
+  type CaipChainId,
+  type Hex,
+  KnownCaipNamespace,
+  parseCaipChainId,
+} from '@metamask/utils';
 
+import { createSelector } from 'reselect';
 import {
   type ProviderConfigState,
   type SelectedNetworkClientIdState,
   getProviderConfig,
   getNetworkConfigurationsByChainId,
   MultichainNetworkConfigurationsByChainIdState,
+  selectDefaultNetworkClientIdsByChainId,
+  getNetworksMetadata,
 } from '../../../shared/modules/selectors/networks';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
+import { getEnabledNetworks } from '../../../shared/modules/selectors/multichain';
+import { getIsMetaMaskInfuraEndpointUrl } from '../../../shared/lib/network-utils';
+import { infuraProjectId } from '../../../shared/constants/network';
+import { type RemoteFeatureFlagsState } from '../remote-feature-flags';
+import { getInternalAccounts, type AccountsState } from '../accounts';
 import {
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
-} from '../selectors';
-import { getInternalAccounts } from '../accounts';
+  getIsSolanaTestnetSupportEnabled,
+  getIsBitcoinTestnetSupportEnabled,
+  getIsTronSupportEnabled,
+  getIsTronTestnetSupportEnabled,
+} from './feature-flags';
 
 // Selector types
 
@@ -57,117 +76,220 @@ export type MultichainNetworkConfigState =
     IsEvmSelectedState &
     SelectedNetworkClientIdState &
     ProviderConfigState &
-    NetworksWithTransactionActivityByAccountsState;
+    NetworksWithTransactionActivityByAccountsState &
+    RemoteFeatureFlagsState &
+    AccountsState;
 
 // Selectors
 
-export const getNonEvmMultichainNetworkConfigurationsByChainId = (
-  state: MultichainNetworkConfigurationsByChainIdState,
-) => state.metamask.multichainNetworkConfigurationsByChainId;
-
-export const getIsNonEvmNetworksEnabled = createDeepEqualSelector(
+export const getIsNonEvmNetworksEnabled = createSelector(
   getIsBitcoinSupportEnabled,
   getIsSolanaSupportEnabled,
+  getIsTronSupportEnabled,
   getInternalAccounts,
-  (isBitcoinEnabled, isSolanaEnabled, internalAccounts) => {
-    if (isBitcoinEnabled && isSolanaEnabled) {
-      return { bitcoinEnabled: true, solanaEnabled: true };
+  (isBitcoinEnabled, isSolanaEnabled, isTronEnabled, internalAccounts) => {
+    if (isBitcoinEnabled && isSolanaEnabled && isTronEnabled) {
+      return { bitcoinEnabled: true, solanaEnabled: true, tronEnabled: true };
     }
 
     let bitcoinEnabled = isBitcoinEnabled;
     let solanaEnabled = isSolanaEnabled;
+    let tronEnabled = isTronEnabled;
 
     // The scopes have been set to optional because the first time
     // they're used we can't guarantee that the scopes will be set
     // during the keyring migration execution.
     for (const { scopes } of internalAccounts) {
-      if (scopes?.includes(BtcScope.Mainnet)) {
+      if (
+        scopes?.includes(
+          BtcScope.Mainnet || BtcScope.Testnet || BtcScope.Signet,
+        )
+      ) {
         bitcoinEnabled = true;
       }
       if (scopes?.includes(SolScope.Mainnet)) {
         solanaEnabled = true;
       }
-      if (bitcoinEnabled && solanaEnabled) {
+      if (scopes?.includes(TrxScope.Mainnet)) {
+        tronEnabled = true;
+      }
+      if (bitcoinEnabled && solanaEnabled && tronEnabled) {
         break;
       }
     }
 
-    return { bitcoinEnabled, solanaEnabled };
+    return { bitcoinEnabled, solanaEnabled, tronEnabled };
   },
 );
 
-export const getMultichainNetworkConfigurationsByChainId =
+export const getNonEvmMultichainNetworkConfigurationsByChainId =
   createDeepEqualSelector(
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    (state: MultichainNetworkConfigurationsByChainIdState) =>
+      state.metamask.multichainNetworkConfigurationsByChainId,
     getIsNonEvmNetworksEnabled,
-    getNonEvmMultichainNetworkConfigurationsByChainId,
-    ///: END:ONLY_INCLUDE_IF
-    getNetworkConfigurationsByChainId,
+    getIsSolanaTestnetSupportEnabled,
+    getIsBitcoinTestnetSupportEnabled,
+    getIsTronTestnetSupportEnabled,
     (
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      multichainNetworkConfigurationsByChainId,
       isNonEvmNetworksEnabled,
-      nonEvmNetworkConfigurationsByChainId,
-      ///: END:ONLY_INCLUDE_IF
-      networkConfigurationsByChainId,
-    ): [
-      Record<CaipChainId, InternalMultichainNetworkConfiguration>,
-      Record<Hex, InternalNetworkConfiguration>,
-    ] => {
-      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      isSolanaTestnetSupportEnabled,
+      isBitcoinTestnetSupportEnabled,
+      isTronTestnetSupportEnabled,
+    ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
       const filteredNonEvmNetworkConfigurationsByChainId: Record<
         CaipChainId,
         InternalMultichainNetworkConfiguration
       > = {};
 
-      // This is not ideal but since there are only two non EVM networks
+      // This is not ideal but since there are only three non EVM networks
       // we can just filter them out based on the support enabled
-      const { bitcoinEnabled, solanaEnabled } = isNonEvmNetworksEnabled;
-      if (bitcoinEnabled) {
+      const { bitcoinEnabled, solanaEnabled, tronEnabled } =
+        isNonEvmNetworksEnabled;
+
+      if (
+        bitcoinEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[BtcScope.Mainnet]
+      ) {
         filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet] =
-          nonEvmNetworkConfigurationsByChainId[BtcScope.Mainnet];
-        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
-          nonEvmNetworkConfigurationsByChainId[BtcScope.Testnet];
-        filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
-          nonEvmNetworkConfigurationsByChainId[BtcScope.Signet];
+          multichainNetworkConfigurationsByChainId[BtcScope.Mainnet];
       }
 
-      if (solanaEnabled) {
+      if (
+        bitcoinEnabled &&
+        isBitcoinTestnetSupportEnabled &&
+        multichainNetworkConfigurationsByChainId
+      ) {
+        if (multichainNetworkConfigurationsByChainId[BtcScope.Testnet]) {
+          filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Testnet] =
+            multichainNetworkConfigurationsByChainId[BtcScope.Testnet];
+        }
+        if (multichainNetworkConfigurationsByChainId[BtcScope.Signet]) {
+          filteredNonEvmNetworkConfigurationsByChainId[BtcScope.Signet] =
+            multichainNetworkConfigurationsByChainId[BtcScope.Signet];
+        }
+      }
+
+      if (
+        solanaEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[SolScope.Mainnet]
+      ) {
         filteredNonEvmNetworkConfigurationsByChainId[SolScope.Mainnet] =
-          nonEvmNetworkConfigurationsByChainId[SolScope.Mainnet];
-        // TODO: Uncomment this when we want to support testnet
-        // filteredNonEvmNetworkConfigurationsByChainId[SolScope.Testnet] =
-        //   nonEvmNetworkConfigurationsByChainId[SolScope.Testnet];
-        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
-          nonEvmNetworkConfigurationsByChainId[SolScope.Devnet];
+          multichainNetworkConfigurationsByChainId[SolScope.Mainnet];
       }
-      ///: END:ONLY_INCLUDE_IF
 
-      // There's a fallback for EVM network names/nicknames, in case the network
-      // does not have a name/nickname the fallback is the first rpc endpoint url.
-      // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
-      const evmNetworks = Object.entries(networkConfigurationsByChainId).reduce(
-        (acc, [, network]) => ({
-          ...acc,
-          [toEvmCaipChainId(network.chainId)]: {
-            ...toMultichainNetworkConfiguration(network),
-            name:
-              network.name ||
-              network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
-          },
-        }),
-        {},
-      );
+      if (
+        solanaEnabled &&
+        isSolanaTestnetSupportEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[SolScope.Devnet]
+      ) {
+        filteredNonEvmNetworkConfigurationsByChainId[SolScope.Devnet] =
+          multichainNetworkConfigurationsByChainId[SolScope.Devnet];
+      }
 
-      const networks = {
-        ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-        ...filteredNonEvmNetworkConfigurationsByChainId,
-        ///: END:ONLY_INCLUDE_IF
-        ...evmNetworks,
-      };
+      if (
+        tronEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[TrxScope.Mainnet]
+      ) {
+        filteredNonEvmNetworkConfigurationsByChainId[TrxScope.Mainnet] =
+          multichainNetworkConfigurationsByChainId[TrxScope.Mainnet];
+      }
 
-      return [networks, networkConfigurationsByChainId];
+      if (
+        tronEnabled &&
+        isTronTestnetSupportEnabled &&
+        multichainNetworkConfigurationsByChainId &&
+        multichainNetworkConfigurationsByChainId[TrxScope.Nile] &&
+        multichainNetworkConfigurationsByChainId[TrxScope.Shasta]
+      ) {
+        filteredNonEvmNetworkConfigurationsByChainId[TrxScope.Nile] =
+          multichainNetworkConfigurationsByChainId[TrxScope.Nile];
+        filteredNonEvmNetworkConfigurationsByChainId[TrxScope.Shasta] =
+          multichainNetworkConfigurationsByChainId[TrxScope.Shasta];
+      }
+
+      return filteredNonEvmNetworkConfigurationsByChainId;
     },
   );
+
+/**
+ * Returns all EVM networks converted to multichain network configuration format.
+ * This selector provides stable references when the underlying data hasn't changed.
+ */
+export const getEvmMultichainNetworkConfigurations = createSelector(
+  getNetworkConfigurationsByChainId,
+  (
+    networkConfigurationsByChainId,
+  ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+    // There's a fallback for EVM network names/nicknames, in case the network
+    // does not have a name/nickname the fallback is the first rpc endpoint url.
+    // TODO: Update toMultichainNetworkConfigurationsByChainId to handle this case.
+    const evmNetworks: Record<
+      CaipChainId,
+      InternalMultichainNetworkConfiguration
+    > = {};
+
+    for (const [, network] of Object.entries(networkConfigurationsByChainId)) {
+      evmNetworks[toEvmCaipChainId(network.chainId)] = {
+        ...toMultichainNetworkConfiguration(network),
+        name:
+          network.name ||
+          network.rpcEndpoints[network.defaultRpcEndpointIndex].url,
+      };
+    }
+
+    return evmNetworks;
+  },
+);
+
+/**
+ * Returns all multichain network configurations (both EVM and non-EVM) by chain ID.
+ * This selector provides stable references when the underlying data hasn't changed.
+ */
+export const getAllMultichainNetworkConfigurations = createSelector(
+  ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+  getNonEvmMultichainNetworkConfigurationsByChainId,
+  ///: END:ONLY_INCLUDE_IF
+  getEvmMultichainNetworkConfigurations,
+  (
+    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+    nonEvmNetworkConfigurationsByChainId,
+    ///: END:ONLY_INCLUDE_IF
+    evmNetworks,
+  ): Record<CaipChainId, InternalMultichainNetworkConfiguration> => {
+    return {
+      ///: BEGIN:ONLY_INCLUDE_IF(multichain)
+      ...nonEvmNetworkConfigurationsByChainId,
+      ///: END:ONLY_INCLUDE_IF
+      ...evmNetworks,
+    };
+  },
+);
+
+/**
+ * Returns a tuple of [multichain networks, EVM network configurations].
+ * This selector provides stable references when the underlying data hasn't changed.
+ *
+ * @deprecated Prefer using `getAllMultichainNetworkConfigurations` for multichain networks
+ * or `getNetworkConfigurationsByChainId` for EVM-only networks directly.
+ */
+export const getMultichainNetworkConfigurationsByChainId = createSelector(
+  getAllMultichainNetworkConfigurations,
+  getNetworkConfigurationsByChainId,
+  (
+    networks,
+    networkConfigurationsByChainId,
+  ): [
+    Record<CaipChainId, InternalMultichainNetworkConfiguration>,
+    Record<Hex, InternalNetworkConfiguration>,
+  ] => {
+    return [networks, networkConfigurationsByChainId];
+  },
+);
 
 export const getIsEvmMultichainNetworkSelected = (state: IsEvmSelectedState) =>
   state.metamask.isEvmSelected;
@@ -184,19 +306,155 @@ export const getSelectedMultichainNetworkChainId = (
   return state.metamask.selectedMultichainNetworkChainId;
 };
 
-export const getSelectedMultichainNetworkConfiguration = (
-  state: MultichainNetworkConfigState,
-) => {
-  const chainId = getSelectedMultichainNetworkChainId(state);
-  const [networkConfigurationsByChainId] =
-    getMultichainNetworkConfigurationsByChainId(state);
-  return networkConfigurationsByChainId[chainId];
-};
+export const getSelectedMultichainNetworkConfiguration = createSelector(
+  getSelectedMultichainNetworkChainId,
+  getAllMultichainNetworkConfigurations,
+  (chainId, networkConfigurationsByChainId) => {
+    return networkConfigurationsByChainId[chainId];
+  },
+);
 
 export const getNetworksWithActivity = (state: MultichainNetworkConfigState) =>
   state.metamask.networksWithTransactionActivity;
 
-export const getNetworksWithTransactionActivity = createDeepEqualSelector(
-  getNetworksWithActivity,
-  (networksWithActivity) => networksWithActivity,
+export const getEnabledNetworksByNamespace = createSelector(
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (enabledNetworkMap, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+    const namespaceMap = enabledNetworkMap[namespace] ?? {};
+
+    return Object.fromEntries(
+      Object.entries(namespaceMap).filter(([, enabled]) => enabled === true),
+    );
+  },
+);
+
+export const getAllEnabledNetworksForAllNamespaces = createSelector(
+  getEnabledNetworks,
+  (enabledNetworkMap) =>
+    Object.values(enabledNetworkMap).flatMap((namespaceNetworks) =>
+      Object.entries(namespaceNetworks)
+        .filter(([, enabled]) => enabled)
+        .map(([chainId]) => chainId),
+    ),
+);
+
+export const getEnabledChainIds = createSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace] || {};
+
+    return Object.keys(networkConfigurations).filter(
+      (chainId) => networksForNamespace[chainId],
+    );
+  },
+);
+
+export const getEnabledNetworkClientIds = createSelector(
+  getNetworkConfigurationsByChainId,
+  getEnabledNetworks,
+  getSelectedMultichainNetworkChainId,
+  (networkConfigurations, enabledNetworks, currentMultichainChainId) => {
+    const { namespace } = parseCaipChainId(currentMultichainChainId);
+
+    // Get enabled networks for the current namespace
+    const networksForNamespace = enabledNetworks[namespace as string] || {};
+
+    return Object.entries(networkConfigurations).reduce(
+      (acc, [chainId, network]) => {
+        if (networksForNamespace[chainId]) {
+          acc.push(
+            network.rpcEndpoints[network.defaultRpcEndpointIndex]
+              .networkClientId,
+          );
+        }
+        return acc;
+      },
+      [] as string[],
+    );
+  },
+);
+
+export const selectAnyEnabledNetworksAreAvailable = createSelector(
+  getEnabledNetworks,
+  selectDefaultNetworkClientIdsByChainId,
+  getNetworksMetadata,
+  (allEnabledNetworks, defaultNetworkClientIdsByChainId, networksMetadata) => {
+    return Object.entries(allEnabledNetworks).reduce<boolean>(
+      (result, [namespace, enabledNetworksByChainId]) => {
+        if (namespace === KnownCaipNamespace.Eip155) {
+          const chainIds = Object.entries(enabledNetworksByChainId)
+            .filter(([_chainId, isEnabled]) => isEnabled)
+            .map(([chainId, _isEnabled]) => chainId) as Hex[];
+          const networkClientIds = chainIds.map(
+            (chainId) => defaultNetworkClientIdsByChainId[chainId],
+          );
+          return (
+            // If only non-EVM networks are enabled, then we may still
+            // have an entry for EIP-155 but it will be empty
+            networkClientIds.length === 0 ||
+            networkClientIds.some(
+              (networkClientId) =>
+                networksMetadata[networkClientId]?.status ===
+                NetworkStatus.Available,
+            )
+          );
+        }
+        // Assume that all non-EVM networks are available
+        return result;
+      },
+      true,
+    );
+  },
+);
+
+export const selectFirstUnavailableEvmNetwork = createSelector(
+  getEnabledNetworks,
+  getNetworkConfigurationsByChainId,
+  getNetworksMetadata,
+  (enabledNetworks, networkConfigurationsByChainId, networksMetadata) => {
+    const enabledEvmNetworks = enabledNetworks[KnownCaipNamespace.Eip155] ?? {};
+    const enabledChainIds = Object.entries(enabledEvmNetworks)
+      .filter(([, isEnabled]) => isEnabled)
+      .map(([chainId]) => chainId as Hex);
+
+    for (const chainId of enabledChainIds) {
+      const networkConfiguration = networkConfigurationsByChainId[chainId];
+      if (networkConfiguration) {
+        // Get the network client ID directly from the network configuration
+        const { rpcEndpoints, defaultRpcEndpointIndex, name } =
+          networkConfiguration;
+        const rpcEndpoint = rpcEndpoints[defaultRpcEndpointIndex];
+
+        if (rpcEndpoint) {
+          const metadata = networksMetadata[rpcEndpoint.networkClientId];
+
+          if (
+            metadata !== undefined &&
+            metadata.status !== NetworkStatus.Available
+          ) {
+            return {
+              networkClientId: rpcEndpoint.networkClientId,
+              chainId,
+              networkName: name,
+              // We have to use this function to check whether the endpoint is
+              // an Infura endpoint because some Infura endpoint URLs use the
+              // wrong type.
+              isInfuraEndpoint: getIsMetaMaskInfuraEndpointUrl(
+                rpcEndpoint.url,
+                infuraProjectId ?? '',
+              ),
+            };
+          }
+        }
+      }
+    }
+    return null;
+  },
 );

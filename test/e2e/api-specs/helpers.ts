@@ -5,7 +5,12 @@ import { InternalScopeString } from '@metamask/chain-agnostic-permission';
 import { Driver } from '../webdriver/driver';
 
 // eslint-disable-next-line @typescript-eslint/no-shadow
-declare let window: any;
+declare let window: Window & {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ethereum: any;
+};
 
 type QueueItem = {
   task: () => Promise<unknown>;
@@ -84,6 +89,8 @@ export const createCaip27DriverTransport = (
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
@@ -169,6 +176,8 @@ export const createMultichainDriverTransport = (
   // use externally_connectable to communicate with the extension
   // https://developer.chrome.com/docs/extensions/mv3/messaging/
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,
@@ -241,6 +250,8 @@ export const createMultichainDriverTransport = (
 
 export const createDriverTransport = (driver: Driver) => {
   return async (
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     __: string,
     method: string,
     params: unknown[] | Record<string, unknown>,

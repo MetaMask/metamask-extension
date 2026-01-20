@@ -3,13 +3,15 @@ import {
   UserStorageControllerState,
   Controller as UserStorageController,
 } from '@metamask/profile-sync-controller/user-storage';
-import { captureException } from '@sentry/browser';
 import { ControllerInitFunction } from '../types';
-import { isProduction } from '../../../../shared/modules/environment';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
+import { trace } from '../../../../shared/lib/trace';
+import { captureException } from '../../../../shared/lib/sentry';
+import { UserStorageControllerInitMessenger } from '../messengers/identity/user-storage-controller-messenger';
+import { loadAuthenticationConfig } from '../../../../shared/modules/authentication';
 
 /**
  * Initialize the UserStorage controller.
@@ -21,48 +23,73 @@ import {
  */
 export const UserStorageControllerInit: ControllerInitFunction<
   UserStorageController,
-  UserStorageControllerMessenger
+  UserStorageControllerMessenger,
+  UserStorageControllerInitMessenger
 > = (request) => {
-  const { controllerMessenger, persistedState, trackEvent } = request;
+  // The environment must be the same used by AuthenticationController.
+  const env = loadAuthenticationConfig();
+  const { controllerMessenger, initMessenger, persistedState } = request;
   const controller = new UserStorageController({
     messenger: controllerMessenger,
     state: persistedState.UserStorageController as UserStorageControllerState,
+    // @ts-expect-error Controller uses string for names rather than enum
+    trace,
     config: {
-      accountSyncing: {
-        maxNumberOfAccountsToAdd: isProduction() ? undefined : 100,
-        onAccountAdded: (profileId) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
-            event: MetaMetricsEventName.AccountsSyncAdded,
+      env,
+      contactSyncing: {
+        onContactUpdated: (profileId) => {
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Updated',
             },
           });
         },
-        onAccountNameUpdated: (profileId) => {
-          trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
-            event: MetaMetricsEventName.AccountsSyncNameUpdated,
+        onContactDeleted: (profileId) => {
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Contact Deleted',
             },
           });
         },
-        onAccountSyncErroneousSituation: (
+        onContactSyncErroneousSituation: (
           profileId,
           situationMessage,
           sentryContext,
         ) => {
           captureException(
-            new Error(`Account sync - ${situationMessage}`),
+            new Error(`Contact sync - ${situationMessage}`),
             sentryContext,
           );
-          trackEvent({
-            category: MetaMetricsEventCategory.ProfileSyncing,
-            event: MetaMetricsEventName.AccountsSyncErroneousSituation,
+          initMessenger.call('MetaMetricsController:trackEvent', {
+            category: MetaMetricsEventCategory.BackupAndSync,
+            event: MetaMetricsEventName.ProfileActivityUpdated,
             properties: {
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               profile_id: profileId,
-              situation_message: situationMessage,
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              feature_name: 'Backup And Sync',
+              action: 'Contacts Sync Erroneous Situation',
+              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              additional_description: situationMessage,
             },
           });
         },

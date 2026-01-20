@@ -1,6 +1,6 @@
 # Confirmation Pages - Frontend State Management
 
-State Management is very important piece to keep frontend confirmation code simplified. Currently state management is fragmented over places and is complicated. Following guidelines will be useful for designing State Magagement:
+State Management is very important piece to keep frontend confirmation code simplified. Currently state management is fragmented over places and is complicated. Following guidelines will be useful for designing State Management:
 
 1. Use state obtained from backend (redux store `state.metamask`) as single source of truth
 2. For state derived from the backend state hooks can be written, these will internally use backend state
@@ -17,9 +17,7 @@ Refactorings:
   - [gas](https://github.com/MetaMask/metamask-extension/tree/main/ui/ducks/gas): this is not used anywhere and can be removed.
   - [send](https://github.com/MetaMask/metamask-extension/tree/main/ui/ducks/send): this duck is important state machine for send flow and we should continue to maintain.
 - [gasFeeContext](https://github.com/MetaMask/metamask-extension/blob/main/ui/contexts/gasFee.js) is huge context written on top of [gasFeeInput](https://github.com/MetaMask/metamask-extension/tree/main/ui/hooks/gasFeeInput) hook. The context / hook provides about 20 different values used in different places in confirmation pages. We need to break this down:
-
   - Context is required only to provide temporary UI state for confirmation pages which includes:
-
     - `transaction` - active transaction on confirmation pages
     - `editGasMode` - cancel, speedup, swap or default, this is also temporary UI state
 

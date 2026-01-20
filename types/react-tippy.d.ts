@@ -70,6 +70,8 @@ declare module 'react-tippy' {
 
   export class Tooltip extends React.Component<TooltipProps> {}
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   export function withTooltip<P>(
     component: React.ComponentType<P>,
     options: TooltipProps,

@@ -1,7 +1,11 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
-import { getAddressBook, getInternalAccounts } from '../../../selectors';
+import withRouterHooks from '../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
+import {
+  getAddressBook,
+  getCompleteAddressBook,
+  getInternalAccounts,
+} from '../../../selectors';
 
 import {
   CONTACT_ADD_ROUTE,
@@ -28,6 +32,7 @@ const mapStateToProps = (state, ownProps) => {
     editingContact,
     addingContact,
     addressBook: getAddressBook(state),
+    completeAddressBook: getCompleteAddressBook(state),
     internalAccounts: getInternalAccounts(state),
     selectedAddress: pathNameTailIsAddress ? pathNameTail : '',
     hideAddressBook,
@@ -35,4 +40,7 @@ const mapStateToProps = (state, ownProps) => {
   };
 };
 
-export default compose(withRouter, connect(mapStateToProps))(ContactListTab);
+export default compose(
+  withRouterHooks,
+  connect(mapStateToProps),
+)(ContactListTab);

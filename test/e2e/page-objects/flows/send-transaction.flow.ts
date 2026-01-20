@@ -2,7 +2,7 @@ import HomePage from '../pages/home/homepage';
 import SendTokenPage from '../pages/send/send-token-page';
 import { Driver } from '../../webdriver/driver';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
-import TransactionConfirmation from '../pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../pages/confirmations/transaction-confirmation';
 import ActivityListPage from '../pages/home/activity-list';
 
 /**
@@ -31,7 +31,7 @@ export const sendRedesignedTransactionToAddress = async ({
 
   // user should land on send token screen to fill recipient and amount
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.fillRecipient(recipientAddress);
   await sendToPage.fillAmount(amount);
   await sendToPage.goToNextScreen();
@@ -67,7 +67,7 @@ export const sendRedesignedTransactionToAccount = async ({
 
   // user should land on send token screen to fill recipient and amount
   const sendToPage = new SendTokenPage(driver);
-  await sendToPage.check_pageIsLoaded();
+  await sendToPage.checkPageIsLoaded();
   await sendToPage.selectRecipientAccount(recipientAccount);
   await sendToPage.fillAmount(amount);
   await sendToPage.goToNextScreen();
@@ -116,8 +116,8 @@ export const validateTransaction = async (driver: Driver, quantity: string) => {
   const homePage = new HomePage(driver);
   await homePage.goToActivityList();
   const activityList = new ActivityListPage(driver);
-  await activityList.check_confirmedTxNumberDisplayedInActivity(1);
+  await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
 
-  await activityList.check_txAction('Send', 1);
-  await activityList.check_txAmountInActivity(`${quantity} ETH`, 1);
+  await activityList.checkTxAction({ action: 'Sent' });
+  await activityList.checkTxAmountInActivity(`${quantity} ETH`, 1);
 };

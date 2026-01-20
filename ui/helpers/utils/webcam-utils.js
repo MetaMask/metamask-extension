@@ -7,13 +7,14 @@ import {
 } from '../../../shared/constants/app';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
-import { getEnvironmentType, getPlatform } from '../../../app/scripts/lib/util';
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
+import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 
 class WebcamUtils {
   static async checkStatus() {
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
     const isFirefoxOrBrave =
-      getPlatform() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
+      getBrowserName() === (PLATFORM_FIREFOX || PLATFORM_BRAVE);
 
     const devices = await window.navigator.mediaDevices.enumerateDevices();
     const webcams = devices.filter((device) => device.kind === 'videoinput');

@@ -1,4 +1,11 @@
-import { Messenger } from '@metamask/base-controller';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
+import {
+  ActionConstraint,
+  EventConstraint,
+  MOCK_ANY_NAMESPACE,
+  Messenger,
+  MockAnyNamespace,
+} from '@metamask/messenger';
 import AppMetadataController, {
   getDefaultAppMetadataControllerState,
   type AppMetadataControllerOptions,
@@ -118,7 +125,84 @@ describe('AppMetadataController', () => {
       );
     });
   });
+
+  describe('metadata', () => {
+    it('includes expected state in debug snapshots', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInDebugSnapshot',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('includes expected state in state logs', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'includeInStateLogs',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('persists expected state', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'persist',
+          ),
+        ).toMatchInlineSnapshot(`
+          {
+            "currentAppVersion": "",
+            "currentMigrationVersion": 0,
+            "previousAppVersion": "",
+            "previousMigrationVersion": 0,
+          }
+        `);
+      });
+    });
+
+    it('exposes expected state to UI', () => {
+      withController(({ controller }) => {
+        expect(
+          deriveStateFromMetadata(
+            controller.state,
+            controller.metadata,
+            'usedInUi',
+          ),
+        ).toMatchInlineSnapshot(`{}`);
+      });
+    });
+  });
 });
+
+type RootMessenger = Messenger<
+  MockAnyNamespace,
+  ActionConstraint,
+  EventConstraint
+>;
 
 type WithControllerOptions = Partial<AppMetadataControllerOptions>;
 
@@ -137,12 +221,18 @@ function withController<ReturnValue>(
 ): ReturnValue {
   const [options = {}, fn] = args.length === 2 ? args : [{}, args[0]];
 
-  const messenger = new Messenger<never, never>();
+  const messenger: RootMessenger = new Messenger({
+    namespace: MOCK_ANY_NAMESPACE,
+  });
 
-  const appMetadataControllerMessenger = messenger.getRestricted({
-    name: 'AppMetadataController',
-    allowedActions: [],
-    allowedEvents: [],
+  const appMetadataControllerMessenger = new Messenger<
+    'AppMetadataController',
+    never,
+    never,
+    RootMessenger
+  >({
+    namespace: 'AppMetadataController',
+    parent: messenger,
   });
 
   return fn({

@@ -7,10 +7,12 @@ import {
   parseCaipChainId,
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
-import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
+import { useMemo } from 'react';
+import { getInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
+import { useFormatters } from '../../../../hooks/useFormatters';
 import { getIntlLocale } from '../../../../ducks/locale/locale';
 import { formatWithThreshold } from '../../assets/util/formatWithThreshold';
 import {
@@ -65,11 +67,12 @@ export const useSnapAssetSelectorData = ({
 }: UseSnapAssetSelectorDataParams) => {
   const currentCurrency = useSelector(getMemoizedCurrentCurrency);
   const locale = useSelector(getIntlLocale);
+  const { formatTokenQuantity } = useFormatters();
 
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
   const account = useSelector((state) =>
-    getMemoizedInternalAccountByAddress(state, parsedAccounts[0].address),
+    getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
   const networks = useSelector(
     getMemoizedMultichainNetworkConfigurationsByChainId,
@@ -90,20 +93,6 @@ export const useSnapAssetSelectorData = ({
     });
 
   /**
-   * Formats an asset balance.
-   *
-   * @param balance - The balance to format.
-   * @returns The formatted balance.
-   */
-  const formatAssetBalance = (balance: string) => {
-    const parsedBalance = parseFloat(balance);
-    return formatWithThreshold(parsedBalance, 0.00001, locale, {
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 5,
-    });
-  };
-
-  /**
    * Formats a non-EVM asset for the SnapUIAssetSelector.
    *
    * @param asset - The asset to format.
@@ -119,7 +108,7 @@ export const useSnapAssetSelectorData = ({
       icon: asset.image,
       symbol: asset.symbol,
       name: asset.title,
-      balance: formatAssetBalance(asset.primary),
+      balance: formatTokenQuantity(Number(asset.balance ?? 0), asset.symbol),
       networkName,
       networkIcon: getImageForChainId(asset.chainId),
       fiat: formatFiatBalance(asset.secondary),
@@ -133,21 +122,27 @@ export const useSnapAssetSelectorData = ({
     .map((chainId) => chainId)
     .filter(({ chainId }) => (chainIds ? chainIds?.includes(chainId) : true));
 
-  // Format the assets
-  const formattedAssets: SnapUIAsset[] = assets.map(formatAsset);
+  const formattedAssets = useMemo(() => {
+    // Filter the assets by the requested chain IDs
+    const filteredAssets = assets.filter((asset) =>
+      requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
+        // Handles the "eip155:0" case
+        if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
+          const { namespace: assetNamepace } = parseCaipChainId(
+            asset.chainId as CaipChainId,
+          );
+          return assetNamepace === namespace;
+        }
 
-  // Filter the assets by the requested chain IDs
-  const filteredAssets = formattedAssets.filter((asset) =>
-    requestedChainIds.some(({ chainId, chain: { namespace, reference } }) => {
-      // Handles the "eip155:0" case
-      if (namespace === KnownCaipNamespace.Eip155 && reference === '0') {
-        const { namespace: assetNamepace } = parseCaipChainId(asset.chainId);
-        return assetNamepace === namespace;
-      }
+        return chainId === asset.chainId;
+      }),
+    );
 
-      return chainId === asset.chainId;
-    }),
-  );
+    // Format the assets
+    const formatted: SnapUIAsset[] = filteredAssets.map(formatAsset);
 
-  return filteredAssets;
+    return formatted;
+  }, [assets]);
+
+  return formattedAssets;
 };

@@ -2,12 +2,14 @@ import React from 'react';
 import { fireEvent } from '@testing-library/react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import { FundingMethodModal } from './funding-method-modal';
 
 jest.mock('../../../hooks/ramps/useRamps/useRamps', () => ({
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   __esModule: true,
   default: jest.fn(),
 }));
@@ -35,6 +37,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -50,6 +53,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -64,6 +68,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -80,6 +85,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={onClickReceive}
+        data-testid="funding-method-modal"
       />,
       store,
     );
@@ -97,6 +103,7 @@ describe('FundingMethodModal', () => {
         onClose={jest.fn()}
         title="Test Modal"
         onClickReceive={jest.fn()}
+        data-testid="funding-method-modal"
       />,
       store,
     );

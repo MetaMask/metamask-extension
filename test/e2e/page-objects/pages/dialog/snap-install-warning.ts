@@ -14,7 +14,7 @@ class SnapInstallWarning {
     this.driver = driver;
   }
 
-  async check_pageIsLoaded(): Promise<void> {
+  async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
         this.checkBoxPermission,
@@ -37,7 +37,7 @@ class SnapInstallWarning {
 
   async clickConfirmButton() {
     console.log('Click confirm button');
-    await this.driver.clickElement(this.buttonConfirm);
+    await this.driver.clickElementAndWaitToDisappear(this.buttonConfirm);
   }
 }
 

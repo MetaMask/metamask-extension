@@ -23,6 +23,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
+import { SizeNumber } from '../../../../ui/box/box';
 import { CopyIcon } from './copy-icon';
 
 export enum ConfirmInfoRowVariant {
@@ -32,17 +33,21 @@ export enum ConfirmInfoRowVariant {
 }
 
 export type ConfirmInfoRowProps = {
-  label: string;
   children?: React.ReactNode | string;
-  tooltip?: string;
-  variant?: ConfirmInfoRowVariant;
-  style?: React.CSSProperties;
-  labelChildren?: React.ReactNode;
+  collapsed?: boolean;
   color?: TextColor;
   copyEnabled?: boolean;
   copyText?: string;
   'data-testid'?: string;
-  collapsed?: boolean;
+  label: string;
+  labelChildren?: React.ReactNode;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  tooltip?: string;
+  tooltipIcon?: IconName;
+  tooltipIconColor?: IconColor;
+  variant?: ConfirmInfoRowVariant;
+  labelChildrenStyleOverride?: React.CSSProperties;
 };
 
 const BACKGROUND_COLORS = {
@@ -64,7 +69,7 @@ const TOOLTIP_ICONS = {
 };
 
 const TOOLTIP_ICON_COLORS = {
-  [ConfirmInfoRowVariant.Default]: Color.iconMuted,
+  [ConfirmInfoRowVariant.Default]: Color.iconAlternative,
   [ConfirmInfoRowVariant.Critical]: Color.errorAlternative,
   [ConfirmInfoRowVariant.Warning]: Color.warningDefault,
 };
@@ -85,10 +90,17 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
   copyText,
   'data-testid': dataTestId,
   collapsed,
+  tooltipIcon,
+  tooltipIconColor,
+  onClick,
+  labelChildrenStyleOverride,
 }) => {
   const [expanded, setExpanded] = useState(!collapsed);
 
   const isCollapsible = collapsed !== undefined;
+
+  const contentPaddingRight = ((copyEnabled ? 6 : 0) +
+    (isCollapsible ? 6 : 0)) as SizeNumber;
 
   return (
     <ConfirmInfoRowContext.Provider value={{ variant }}>
@@ -105,7 +117,7 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         marginTop={2}
         marginBottom={2}
         paddingLeft={2}
-        paddingRight={copyEnabled ? 5 : 2}
+        paddingRight={2}
         color={TEXT_COLORS[variant] as TextColor}
         style={{
           overflowWrap: OverflowWrap.Anywhere,
@@ -118,12 +130,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
           <CopyIcon
             copyText={copyText ?? ''}
             style={{ right: isCollapsible ? 32 : 4 }}
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
           />
         )}
         {isCollapsible && (
           <ButtonIcon
-            color={IconColor.iconMuted}
+            color={IconColor.iconAlternative}
             iconName={expanded ? IconName.Collapse : IconName.Expand}
             size={ButtonIconSize.Sm}
             style={{
@@ -139,11 +151,27 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.center}
+          justifyContent={JustifyContent.flexStart}
           alignItems={AlignItems.flexStart}
-          color={color}
+          color={color ?? TextColor.textAlternative}
+          paddingRight={contentPaddingRight || null}
+          onClick={onClick}
+          className={onClick && 'hoverable'}
+          style={{
+            flexShrink: 0,
+            flexBasis: 'auto',
+            width: 'fit-content',
+            maxWidth: '100%',
+          }}
         >
-          <Box display={Display.Flex} alignItems={AlignItems.center}>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            style={{
+              flexShrink: 0,
+              ...labelChildrenStyleOverride,
+            }}
+          >
             <Text variant={TextVariant.bodyMdMedium} color={TextColor.inherit}>
               {label}
             </Text>
@@ -155,9 +183,12 @@ export const ConfirmInfoRow: React.FC<ConfirmInfoRowProps> = ({
                 style={{ display: 'flex' }}
               >
                 <Icon
-                  name={TOOLTIP_ICONS[variant]}
+                  name={tooltipIcon ?? TOOLTIP_ICONS[variant]}
                   marginLeft={1}
-                  color={TOOLTIP_ICON_COLORS[variant] as unknown as IconColor}
+                  color={
+                    tooltipIconColor ??
+                    (TOOLTIP_ICON_COLORS[variant] as unknown as IconColor)
+                  }
                   size={IconSize.Sm}
                   {...(dataTestId
                     ? { 'data-testid': `${dataTestId}-tooltip` }

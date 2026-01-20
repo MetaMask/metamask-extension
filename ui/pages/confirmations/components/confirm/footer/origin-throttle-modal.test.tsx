@@ -1,10 +1,10 @@
 import React from 'react';
 import configureStore from 'redux-mock-store';
 import { screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom';
 import { I18nContext } from '../../../../../contexts/i18n';
 import { useOriginThrottling } from '../../../hooks/useOriginThrottling';
-import { renderWithProvider } from '../../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../../test/data/mock-state.json';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
 import OriginThrottleModal from './origin-throttle-modal';

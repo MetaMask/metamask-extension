@@ -229,14 +229,8 @@
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
-  "ethereumPublicAddress": {
-    "message": "„Ethereum“ viešasis adresas"
-  },
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
-  },
-  "expandView": {
-    "message": "Išskleisti rodinį"
   },
   "failed": {
     "message": "Nepavyko"
@@ -257,20 +251,8 @@
   "gasLimit": {
     "message": "Dujų apribojimas"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Dujų apribojimas yra maksimalus dujų vienetų, kuriuos pageidaujate išleisti, skaičius."
-  },
   "gasLimitTooLow": {
     "message": "Dujų apribojimas turi būti bent 21000"
-  },
-  "gasPrice": {
-    "message": "Dujų kaina (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Dujų kaina ypatingai maža"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Dujų kaina nurodo eterių sumą, kurią pageidaujate sumokėti už kiekvieną dujų vienetą."
   },
   "gasUsed": {
     "message": "Sunaudotos dujos"
@@ -402,9 +384,6 @@
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Neigiamų ETH sumų siųsti negalima."
   },
   "networkName": {
     "message": "Tinklo pavadinimas"
@@ -632,9 +611,6 @@
   "supportCenter": {
     "message": "Apsilankykite mūsų pagalbos centre"
   },
-  "switchNetworks": {
-    "message": "Perjungti tinklus"
-  },
   "symbol": {
     "message": "Simbolis"
   },
@@ -643,9 +619,6 @@
   },
   "terms": {
     "message": "Naudojimo sąlygos"
-  },
-  "tips": {
-    "message": "Arbatpinigiai"
   },
   "to": {
     "message": "Iki"
@@ -725,9 +698,6 @@
   "unlock": {
     "message": "Atrakinti"
   },
-  "unlockMessage": {
-    "message": "Laukiančios decentralizuotos svetainės"
-  },
   "urlErrorMsg": {
     "message": "URI reikia atitinkamo HTTP/HTTPS priešdėlio."
   },
@@ -751,8 +721,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Jūsų asmeninė atkūrimo frazė"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Nustatykite nulinę dujų kainą greitėjant"
   }
 }

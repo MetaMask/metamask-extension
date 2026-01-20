@@ -1,12 +1,20 @@
-import { BtcScope, SolScope } from '@metamask/keyring-api';
-import { BaseController, RestrictedMessenger } from '@metamask/base-controller';
+import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
+import { BaseController, StateMetadata } from '@metamask/base-controller';
+import type { Messenger } from '@metamask/messenger';
 import {
+  NetworkControllerSetActiveNetworkAction,
   NetworkControllerStateChangeEvent,
   NetworkState,
+  NetworkControllerNetworkRemovedEvent,
+  NetworkControllerGetStateAction,
 } from '@metamask/network-controller';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import type { CaipChainId, Hex } from '@metamask/utils';
+import type { CaipChainId, CaipNamespace, Hex } from '@metamask/utils';
 import type { Patch } from 'immer';
+import type {
+  ControllerGetStateAction,
+  ControllerStateChangeEvent,
+} from '@metamask/base-controller';
 import { TEST_CHAINS } from '../../../shared/constants/network';
 
 // Unique name for the controller
@@ -18,6 +26,11 @@ const controllerName = 'NetworkOrderController';
 export type NetworksInfo = {
   networkId: CaipChainId; // The network's chain id
 };
+
+export type EnabledNetworksByChainId = Record<
+  CaipNamespace,
+  Record<string, boolean>
+>;
 
 // State shape for NetworkOrderController
 export type NetworkOrderControllerState = {
@@ -31,22 +44,36 @@ export type NetworkOrderStateChange = {
 };
 
 // Describes the action for updating the networks list
-export type NetworkOrderControllerupdateNetworksListAction = {
+export type NetworkOrderControllerUpdateNetworksListAction = {
   type: `${typeof controllerName}:updateNetworksList`;
   handler: NetworkOrderController['updateNetworksList'];
 };
 
 // Union of all possible actions for the messenger
 export type NetworkOrderControllerMessengerActions =
-  NetworkOrderControllerupdateNetworksListAction;
+  | ControllerGetStateAction<typeof controllerName, NetworkOrderControllerState>
+  | NetworkOrderControllerUpdateNetworksListAction;
+
+export type NetworkOrderControllerMessengerEvents =
+  | ControllerStateChangeEvent<
+      typeof controllerName,
+      NetworkOrderControllerState
+    >
+  | NetworkOrderStateChange;
+
+type AllowedActions =
+  | NetworkControllerGetStateAction
+  | NetworkControllerSetActiveNetworkAction;
+
+type AllowedEvents =
+  | NetworkControllerStateChangeEvent
+  | NetworkControllerNetworkRemovedEvent;
 
 // Type for the messenger of NetworkOrderController
-export type NetworkOrderControllerMessenger = RestrictedMessenger<
+export type NetworkOrderControllerMessenger = Messenger<
   typeof controllerName,
-  NetworkOrderControllerMessengerActions,
-  NetworkOrderStateChange | NetworkControllerStateChangeEvent,
-  never,
-  NetworkOrderStateChange['type'] | NetworkControllerStateChangeEvent['type']
+  NetworkOrderControllerMessengerActions | AllowedActions,
+  NetworkOrderControllerMessengerEvents | AllowedEvents
 >;
 
 // Default state for the controller
@@ -55,10 +82,12 @@ const defaultState: NetworkOrderControllerState = {
 };
 
 // Metadata for the controller state
-const metadata = {
+const metadata: StateMetadata<NetworkOrderControllerState> = {
   orderedNetworkList: {
+    includeInStateLogs: false,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -95,7 +124,7 @@ export class NetworkOrderController extends BaseController<
     });
 
     // Subscribe to network state changes
-    this.messagingSystem.subscribe(
+    this.messenger.subscribe(
       'NetworkController:stateChange',
       (networkControllerState) => {
         this.onNetworkControllerStateChange(networkControllerState);
@@ -122,6 +151,7 @@ export class NetworkOrderController extends BaseController<
       const nonEvmChainIds: CaipChainId[] = [
         BtcScope.Mainnet,
         SolScope.Mainnet,
+        TrxScope.Mainnet,
       ];
 
       const newNetworks = chainIds
@@ -138,7 +168,7 @@ export class NetworkOrderController extends BaseController<
         .filter(
           ({ networkId }) =>
             chainIds.includes(networkId) ||
-            // Since Bitcoin and Solana are not part of the @metamask/network-controller, we have
+            // Since Bitcoin, Solana and Tron are not part of the @metamask/network-controller, we have
             // to add a second check to make sure it is not filtered out.
             // TODO: Update this logic to @metamask/multichain-network-controller once all networks are migrated.
             nonEvmChainIds.includes(networkId),

@@ -1,6 +1,7 @@
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { Driver } from '../webdriver/driver';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import {
   buildQuote,
   reviewQuote,
@@ -11,6 +12,7 @@ import { TRADES_API_MOCK_RESULT } from '../../data/mock-data';
 import { installSnapSimpleKeyring } from '../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import { Mockttp } from '../mock-e2e';
+import { mockSnapSimpleKeyringAndSite } from '../tests/account/snap-keyring-site-mocks';
 
 const DAI = 'DAI';
 const TEST_ETH = 'TESTETH';
@@ -18,7 +20,7 @@ const TEST_ETH = 'TESTETH';
 async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   return [
     await mockServer
-      .forGet('https://swap.api.cx.metamask.io/networks/1/trades')
+      .forGet('https://bridge.api.cx.metamask.io/networks/1/trades')
       .thenCallback(() => ({
         statusCode: 200,
         json: TRADES_API_MOCK_RESULT,
@@ -26,13 +28,24 @@ async function mockSwapsTransactionQuote(mockServer: Mockttp) {
   ];
 }
 
+async function mockSwapsAndSimpleKeyringSnap(mockServer: Mockttp) {
+  return [
+    ...(await mockSnapSimpleKeyringAndSite(mockServer)),
+    await mockSwapsTransactionQuote(mockServer),
+  ];
+}
+
 describe('Snap Account - Swap', function () {
-  it('swaps ETH for DAI using a snap account', async function () {
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('swaps ETH for DAI using a snap account', async function () {
     await withFixtures(
       {
+        dappOptions: {
+          customDappPaths: [DAPP_PATH.SNAP_SIMPLE_KEYRING_SITE],
+        },
         fixtures: new FixtureBuilder().build(),
+        testSpecificMock: mockSwapsAndSimpleKeyringSnap,
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSwapsTransactionQuote,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);

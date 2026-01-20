@@ -223,14 +223,8 @@
   "enterPasswordContinue": {
     "message": "Ange lösenord för att fortsätta"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum offentlig adress"
-  },
   "etherscanView": {
     "message": "Visa konto på Etherscan"
-  },
-  "expandView": {
-    "message": "Expandera vy"
   },
   "failed": {
     "message": "Misslyckades"
@@ -251,20 +245,8 @@
   "gasLimit": {
     "message": "Gasgräns"
   },
-  "gasLimitInfoTooltipContent": {
-    "message": "Gasgräns innebär det maximala antalet gasenheter som du är villig att spendera."
-  },
   "gasLimitTooLow": {
     "message": "Gasgräns måste vara minst 21 000"
-  },
-  "gasPrice": {
-    "message": "Gas-pris (GWEI)"
-  },
-  "gasPriceExtremelyLow": {
-    "message": "Gaspris extremt lågt"
-  },
-  "gasPriceInfoTooltipContent": {
-    "message": "Gaspriset anger den summa Ether som du är villig att betala för varje gasenhet."
   },
   "gasUsed": {
     "message": "Gas använd"
@@ -390,9 +372,6 @@
   "needImportFile": {
     "message": "Du måste välja en fil att importera.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Kan inte skicka negativa summor av ETH."
   },
   "networkName": {
     "message": "Nätverksnamn"
@@ -620,17 +599,11 @@
   "supportCenter": {
     "message": "Besök vårt supportcenter"
   },
-  "switchNetworks": {
-    "message": "Växla nätverk"
-  },
   "symbolBetweenZeroTwelve": {
     "message": "Symbolen måste vara 11 tecken eller färre."
   },
   "terms": {
     "message": "Användarvillkor"
-  },
-  "tips": {
-    "message": "Donationer"
   },
   "to": {
     "message": "Till"
@@ -704,9 +677,6 @@
   "unlock": {
     "message": "Lås upp"
   },
-  "unlockMessage": {
-    "message": "Den decentraliserade webben väntar"
-  },
   "urlErrorMsg": {
     "message": "URI:er kräver lämpligt HTTP/HTTPS-prefix."
   },
@@ -730,8 +700,5 @@
   },
   "yourPrivateSeedPhrase": {
     "message": "Din privata seedphrase"
-  },
-  "zeroGasPriceOnSpeedUpError": {
-    "message": "Inget gaspris vid uppsnabbning"
   }
 }

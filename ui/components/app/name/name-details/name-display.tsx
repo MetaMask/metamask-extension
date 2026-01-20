@@ -1,9 +1,13 @@
 import React, { memo } from 'react';
-import classnames from 'classnames';
 import { NameType } from '@metamask/name-controller';
+import { AvatarAccountSize } from '@metamask/design-system-react';
+import classnames from 'classnames';
 import Identicon from '../../../ui/identicon';
-import { Icon, IconName, IconSize } from '../../../component-library';
+import { Icon, IconSize, Text } from '../../../component-library';
+import { TextVariant } from '../../../../helpers/constants/design-system';
 import { useDisplayName } from '../../../../hooks/useDisplayName';
+import { TrustSignalDisplayState } from '../../../../hooks/useTrustSignals';
+import { PreferredAvatar } from '../../preferred-avatar';
 import ShortenedName from './shortened-name';
 import FormattedName from './formatted-value';
 
@@ -13,11 +17,12 @@ export type NameDisplayProps = {
   type: NameType;
   variation: string;
   handleClick?: () => void;
+  showFullName?: boolean;
+  /**
+   * The fallback value to display if the name is not found or cannot be resolved.
+   */
+  fallbackName?: string;
 };
-
-function doesHaveDisplayName(name: string | null): name is string {
-  return Boolean(name);
-}
 
 const NameDisplay = memo(
   ({
@@ -26,41 +31,91 @@ const NameDisplay = memo(
     preferContractSymbol,
     variation,
     handleClick,
+    showFullName = false,
+    fallbackName,
+    ...props
   }: NameDisplayProps) => {
-    const { name, hasPetname, image } = useDisplayName({
+    const { name, image, icon, displayState, isAccount } = useDisplayName({
       value,
       type,
       preferContractSymbol,
       variation,
     });
 
-    const hasDisplayName = doesHaveDisplayName(name);
+    const renderIcon = () => {
+      // If icon exists, use it (trust signal /unknown)
+      if (icon) {
+        return (
+          <Icon
+            name={icon.name}
+            className="name__icon"
+            size={IconSize.Sm}
+            color={icon.color}
+          />
+        );
+      }
+
+      if (image) {
+        return <Identicon address={value} diameter={16} image={image} />;
+      }
+
+      return (
+        <PreferredAvatar
+          className="rounded-md"
+          address={value}
+          size={AvatarAccountSize.Xs}
+        />
+      );
+    };
+
+    const renderName = () => {
+      const nameWithFallbackValue = name || fallbackName;
+      if (!nameWithFallbackValue) {
+        return <FormattedName value={value} type={type} {...props} />;
+      }
+
+      if (name && showFullName) {
+        return (
+          <Text className="name__name" variant={TextVariant.bodyMd} {...props}>
+            {name}
+          </Text>
+        );
+      }
+
+      return <ShortenedName name={nameWithFallbackValue} {...props} />;
+    };
 
     return (
       <div
         className={classnames({
           name: true,
-          name__clickable: Boolean(handleClick),
-          name__saved: hasPetname,
-          name__recognized_unsaved: !hasPetname && hasDisplayName,
-          name__missing: !hasDisplayName,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__clickable: Boolean(handleClick) && !isAccount,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__saved: displayState === TrustSignalDisplayState.Petname,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__recognized_unsaved:
+            displayState === TrustSignalDisplayState.Recognized,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__missing: displayState === TrustSignalDisplayState.Unknown,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__malicious: displayState === TrustSignalDisplayState.Malicious,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__verified: displayState === TrustSignalDisplayState.Verified,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          name__warning: displayState === TrustSignalDisplayState.Warning,
         })}
         onClick={handleClick}
       >
-        {hasDisplayName ? (
-          <Identicon address={value} diameter={16} image={image} />
-        ) : (
-          <Icon
-            name={IconName.Question}
-            className="name__icon"
-            size={IconSize.Md}
-          />
-        )}
-        {hasDisplayName ? (
-          <ShortenedName name={name} />
-        ) : (
-          <FormattedName value={value} type={type} />
-        )}
+        {renderIcon()}
+        {renderName()}
       </div>
     );
   },

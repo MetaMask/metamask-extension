@@ -7,9 +7,11 @@ import {
   MethodObject,
 } from '@open-rpc/meta-schema';
 import paramsToObj from '@open-rpc/test-coverage/build/utils/params-to-obj';
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 import _ from 'lodash';
 import { Driver } from '../webdriver/driver';
-import { WINDOW_TITLES, switchToOrOpenDapp } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
 import { addToQueue } from './helpers';
 
 type MultichainAuthorizationConfirmationOptions = {
@@ -31,6 +33,8 @@ export class MultichainAuthorizationConfirmation implements Rule {
     return 'Multichain Authorization Confirmation Rule';
   }
 
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   async afterRequest(__: unknown, call: Call) {
     await new Promise((resolve, reject) => {
       addToQueue({
@@ -57,7 +61,7 @@ export class MultichainAuthorizationConfirmation implements Rule {
             await this.driver.clickElement({ text, tag: 'button' });
 
             // make sure to switch back to the dapp or else the next test will fail on the wrong window
-            await switchToOrOpenDapp(this.driver);
+            await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
           } catch (e) {
             console.log(e);
           }
@@ -67,6 +71,8 @@ export class MultichainAuthorizationConfirmation implements Rule {
   }
 
   // get all the confirmation calls to make and expect to pass
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   getCalls(__: unknown, method: MethodObject) {
     const calls: Call[] = [];
     const isMethodAllowed = this.only ? this.only.includes(method.name) : true;

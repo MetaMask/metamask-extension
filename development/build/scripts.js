@@ -32,7 +32,7 @@ const { streamFlatMap } = require('../stream-flat-map');
 const { isManifestV3 } = require('../../shared/modules/mv3.utils');
 const { setEnvironmentVariables } = require('./set-environment-variables');
 const { BUILD_TARGETS } = require('./constants');
-const { getConfig } = require('./config');
+const { getConfig, getActiveFeatures } = require('./config');
 const {
   isDevBuild,
   isTestBuild,
@@ -94,6 +94,8 @@ const scuttlingConfigBase = {
     history: '',
     isNaN: '',
     parseInt: '',
+    // Lodash
+    RegExp: '',
   },
 };
 
@@ -131,6 +133,8 @@ module.exports = createScriptTasks;
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
+ * @param options.shouldIncludeOcapKernel - Whether the build includes the
+ * Ocap Kernel.
  * @returns {object} A set of tasks, one for each build target.
  */
 function createScriptTasks({
@@ -143,6 +147,7 @@ function createScriptTasks({
   livereload,
   policyOnly,
   shouldLintFenceFiles,
+  shouldIncludeOcapKernel = false,
   version,
 }) {
   // high level tasks
@@ -207,7 +212,7 @@ function createScriptTasks({
             case 'content-script':
               return './app/vendor/trezor/content-script.js';
             case 'offscreen':
-              return './offscreen/scripts/offscreen.ts';
+              return './app/offscreen/offscreen.ts';
             default:
               return `./app/scripts/${label}.js`;
           }
@@ -215,6 +220,7 @@ function createScriptTasks({
         ignoredFiles,
         policyOnly,
         shouldLintFenceFiles,
+        shouldIncludeOcapKernel,
         version,
       }),
     );
@@ -270,6 +276,20 @@ function createScriptTasks({
         shouldLintFenceFiles,
       }),
     );
+
+    // task for building devtools and kernel-panel
+    if (shouldIncludeOcapKernel) {
+      const devtoolsSubtask = createTask(
+        `${taskPrefix}:devtools`,
+        createDevtoolsBundle({ buildTarget }),
+      );
+      const kernelPanelSubtask = createTask(
+        `${taskPrefix}:kernel-panel`,
+        createKernelPanelBundle({ buildTarget }),
+      );
+      allSubtasks.push(devtoolsSubtask, kernelPanelSubtask);
+    }
+
     // make a parent task that runs each task in a child thread
     return composeParallel(initiateLiveReload, ...allSubtasks);
   }
@@ -313,6 +333,54 @@ function createScriptTasks({
       buildType,
       destFilepath: `scripts/${label}.js`,
       entryFilepath: `./app/scripts/${label}.js`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "devtools" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createDevtoolsBundle({ buildTarget }) {
+    const label = 'devtools';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/${label}.js`,
+      entryFilepath: `./app/devtools/${label}.ts`,
+      ignoredFiles,
+      label,
+      policyOnly,
+      shouldLintFenceFiles,
+      version,
+      applyLavaMoat,
+    });
+  }
+
+  /**
+   * Create a bundle for the "kernel-panel" module.
+   *
+   * @param {object} options - The build options.
+   * @param {BUILD_TARGETS} options.buildTarget - The current build target.
+   * @returns {Function} A function that creates the bundle.
+   */
+  function createKernelPanelBundle({ buildTarget }) {
+    const label = 'kernel-panel';
+    return createNormalBundle({
+      browserPlatforms,
+      buildTarget,
+      buildType,
+      destFilepath: `devtools/ocap-kernel/${label}.js`,
+      entryFilepath: `./app/devtools/ocap-kernel/${label}.ts`,
       ignoredFiles,
       label,
       policyOnly,
@@ -509,6 +577,8 @@ async function createManifestV3AppInitializationBundle({
  * @param {string} options.version - The current version of the extension.
  * @param options.shouldIncludeSnow - Whether the build should use
  * Snow at runtime or not.
+ * @param options.shouldIncludeOcapKernel - Whether the build includes the
+ * Ocap Kernel.
  * @returns {Function} A function that creates the set of bundles.
  */
 function createFactoredBuild({
@@ -521,6 +591,7 @@ function createFactoredBuild({
   ignoredFiles,
   policyOnly,
   shouldLintFenceFiles,
+  shouldIncludeOcapKernel = false,
   version,
 }) {
   return async function () {
@@ -535,7 +606,7 @@ function createFactoredBuild({
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
-    const { variables, activeBuild } = config;
+    const { variables } = config;
     setEnvironmentVariables({
       isDevBuild: reloadOnChange,
       isTestBuild: isTestBuild(buildTarget),
@@ -549,7 +620,7 @@ function createFactoredBuild({
       version,
     });
     const features = {
-      active: new Set(activeBuild.features ?? []),
+      active: new Set(getActiveFeatures()),
       all: new Set(Object.keys(config.buildsYml.features)),
     };
     setupBundlerDefaults(buildConfiguration, {
@@ -658,10 +729,11 @@ function createFactoredBuild({
           buildTarget === BUILD_TARGETS.TEST ||
           buildTarget === BUILD_TARGETS.TEST_DEV;
         const scripts = getScriptTags({
-          groupSet,
-          commonSet,
-          shouldIncludeSnow,
           applyLavaMoat,
+          commonSet,
+          groupSet,
+          shouldIncludeOcapKernel,
+          shouldIncludeSnow,
         });
         switch (groupLabel) {
           case 'ui': {
@@ -670,7 +742,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               scripts,
             });
             renderHtmlFile({
@@ -688,11 +759,17 @@ function createFactoredBuild({
               scripts,
             });
             renderHtmlFile({
+              htmlName: 'sidepanel',
+              browserPlatforms,
+              applyLavaMoat,
+              shouldIncludeSnow,
+              scripts,
+            });
+            renderHtmlFile({
               htmlName: 'notification',
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               isTest,
               scripts,
             });
@@ -701,7 +778,6 @@ function createFactoredBuild({
               browserPlatforms,
               shouldIncludeSnow,
               applyLavaMoat,
-              isMMI: buildType === 'mmi',
               isTest,
               scripts,
             });
@@ -829,7 +905,7 @@ function createNormalBundle({
 
     const environment = getEnvironment({ buildTarget });
     const config = await getConfig(buildType, environment);
-    const { activeBuild, variables } = config;
+    const { variables } = config;
     setEnvironmentVariables({
       buildName: getBuildName({
         environment,
@@ -847,7 +923,7 @@ function createNormalBundle({
     );
 
     const features = {
-      active: new Set(activeBuild.features ?? []),
+      active: new Set(getActiveFeatures()),
       all: new Set(Object.keys(config.buildsYml.features)),
     };
     setupBundlerDefaults(buildConfiguration, {
@@ -927,7 +1003,9 @@ function setupBundlerDefaults(
           extensions,
         },
       ],
-      // We are transpelling the firebase package to be compatible with the lavaMoat restrictions
+      // Transpile dependencies that are either:
+      // - Not supported by browserify (e.g. ESM-only packages)
+      // - Reliant on language features not yet supported by our minimum browser version targets
       [
         babelify,
         {
@@ -945,6 +1023,15 @@ function setupBundlerDefaults(
             './**/node_modules/rxjs',
             './**/node_modules/axios',
             './**/node_modules/xstate',
+            // Ocap Kernel
+            './**/node_modules/@endo',
+            './**/node_modules/@agoric',
+            // Snaps
+            './**/node_modules/@metamask/snaps-controllers',
+            './**/node_modules/@metamask/snaps-execution-environments',
+            './**/node_modules/@metamask/snaps-rpc-methods',
+            './**/node_modules/@metamask/snaps-sdk',
+            './**/node_modules/@metamask/snaps-utils',
           ],
           global: true,
         },
@@ -958,9 +1045,9 @@ function setupBundlerDefaults(
     debug: true,
   });
 
-  // Ensure react-devtools is only included in dev builds
+  // Ensure react-devtools-core is only included in dev builds
   if (buildTarget !== BUILD_TARGETS.DEV) {
-    bundlerOpts.manualIgnore.push('react-devtools');
+    bundlerOpts.manualIgnore.push('react-devtools-core');
     bundlerOpts.manualIgnore.push('remote-redux-devtools');
   }
 
@@ -1152,10 +1239,11 @@ async function createBundle(buildConfiguration, { reloadOnChange }) {
 }
 
 function getScriptTags({
-  groupSet,
-  commonSet,
-  shouldIncludeSnow,
   applyLavaMoat,
+  commonSet,
+  groupSet,
+  shouldIncludeOcapKernel = false,
+  shouldIncludeSnow,
 }) {
   if (applyLavaMoat === undefined) {
     throw new Error(
@@ -1170,11 +1258,17 @@ function getScriptTags({
   const securityScripts = applyLavaMoat
     ? [
         './scripts/runtime-lavamoat.js',
+        ...(shouldIncludeOcapKernel
+          ? ['./scripts/eventual-send-install.js']
+          : []),
         './scripts/lockdown-more.js',
         './scripts/policy-load.js',
       ]
     : [
         './scripts/lockdown-install.js',
+        ...(shouldIncludeOcapKernel
+          ? ['./scripts/eventual-send-install.js']
+          : []),
         './scripts/lockdown-run.js',
         './scripts/lockdown-more.js',
         './scripts/runtime-cjs.js',
@@ -1199,7 +1293,6 @@ function renderHtmlFile({
   browserPlatforms,
   shouldIncludeSnow,
   applyLavaMoat,
-  isMMI,
   isTest,
   scripts = [],
 }) {
@@ -1216,26 +1309,45 @@ function renderHtmlFile({
 
   const scriptTags = scripts.join('\n    ');
 
-  const htmlFilePath =
-    htmlName === 'offscreen'
-      ? `./offscreen/${htmlName}.html`
-      : `./app/${htmlName}.html`;
+  const htmlFilePath = `./app/html/pages/${htmlName}.html`;
   const htmlTemplate = readFileSync(htmlFilePath, 'utf8');
 
-  const eta = new Eta();
+  const eta = new Eta({ views: './app/' });
   const htmlOutput = eta
-    .renderString(htmlTemplate, { isMMI, isTest, shouldIncludeSnow })
+    .renderString(htmlTemplate, { isTest, shouldIncludeSnow })
     // these replacements are added to support the webpack build's automatic
     // compilation of html files, which the gulp-based process doesn't support.
-    .replace('./scripts/load/background.ts', './load-background.js')
+    .replace('../../scripts/load/background.ts', './load-background.js')
     .replace(
       '<script src="./load-background.js" defer></script>',
       `${scriptTags}\n    <script src="./chromereload.js" async></script>`,
     )
-    .replace('<script src="./scripts/load/ui.ts" defer></script>', scriptTags)
-    .replace('<script src="./load-offscreen.js" defer></script>', scriptTags)
-    .replace('../ui/css/index.scss', './index.css')
-    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js');
+    .replace(
+      '<script src="../../scripts/load/ui.ts" defer></script>',
+      scriptTags,
+    )
+    .replace(
+      '<script src="../../offscreen/offscreen.ts" defer></script>',
+      scriptTags,
+    )
+    .replace('../../../ui/css/index.scss', './index.css')
+    .replace('@lavamoat/snow/snow.prod.js', './scripts/snow.js')
+    .replace('../../scripts/use-snow.js', './scripts/use-snow.js')
+    .replace(
+      '<script src="../../scripts/load/bootstrap.ts" defer></script>',
+      '',
+    )
+    .replace('../../images/enslogo.svg', './images/enslogo.svg')
+    .replace(
+      '../../images/logo/metamask-fox.svg',
+      './images/logo/metamask-fox.svg',
+    )
+    .replace('../../images/spinner.gif', './images/spinner.gif')
+    .replace(
+      '../../vendor/trezor/usb-permissions.js',
+      './vendor/trezor/usb-permissions.js',
+    )
+    .replace('../../images/icon-64.png', './images/icon-64.png');
   browserPlatforms.forEach((platform) => {
     const dest = `./dist/${platform}/${htmlName}.html`;
     // we dont have a way of creating async events atm

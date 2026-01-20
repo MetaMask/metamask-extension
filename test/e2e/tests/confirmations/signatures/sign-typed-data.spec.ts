@@ -1,16 +1,16 @@
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApproved,
   mockSignatureRejected,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import SignTypedData from '../../../page-objects/pages/confirmations/redesign/sign-typed-data-confirmation';
+import SignTypedData from '../../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertHeaderInfoBalance,
@@ -24,13 +24,11 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   it('initiates and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -73,9 +71,8 @@ describe('Confirmation Signature - Sign Typed Data', function (this: Suite) {
   });
 
   it('initiates and rejects', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -115,8 +112,8 @@ async function assertInfoValues(driver: Driver) {
 async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   const testDapp = new TestDapp(driver);
-  testDapp.check_successSignTypedData(publicAddress);
-  testDapp.verify_successSignTypedDataResult(
+  testDapp.checkSuccessSignTypedData(publicAddress);
+  testDapp.verifySuccessSignTypedDataResult(
     '0x32791e3c41d40dd5bbfb42e66cf80ca354b0869ae503ad61cd19ba68e11d4f0d2e42a5835b0bfd633596b6a7834ef7d36033633a2479dacfdb96bda360d51f451b',
   );
 }

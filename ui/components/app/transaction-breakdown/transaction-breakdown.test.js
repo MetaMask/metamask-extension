@@ -1,7 +1,7 @@
 import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import { within } from '@testing-library/react';
-import { renderWithProvider } from '../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../test/stub/networks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
@@ -139,8 +139,8 @@ describe('TransactionBreakdown', () => {
         getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
       ).toStrictEqual([
         ['Nonce', '114'],
-        ['Amount Sent', '33.425656732428330864 BAT'],
-        ['Amount Received', '0.00222334422997802 ETH'],
+        ['Amount sent', '33.425656732428330864 BAT'],
+        ['Amount received', '0.00222334422997802 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
@@ -171,8 +171,8 @@ describe('TransactionBreakdown', () => {
       ).toStrictEqual([
         ['Nonce', '114'],
         // Verify small amounts not in scientific notation
-        ['Amount Sent', '0.0000000000000001 BAT'],
-        ['Amount Received', '0.0000000000000001 ETH'],
+        ['Amount sent', '0.0000000000000001 BAT'],
+        ['Amount received', '0.0000000000000001 ETH'],
         ['Gas limit (units)', '246742'],
         ['Gas used (units)', '195177'],
         ['Base fee (GWEI)', '6.476394595'],
@@ -180,6 +180,30 @@ describe('TransactionBreakdown', () => {
         ['Total gas fee', '0.001281ETH'],
         ['Max fee per gas', '0.000000008ETH'],
         ['Total', '0.00128108ETH'],
+      ]);
+    });
+
+    it('renders "Network Fee" as "Paid by MetaMask" when gas is sponsored', () => {
+      const { getAllByTestId } = renderWithProvider(
+        <TransactionBreakdown
+          {...{
+            ...props,
+            transaction: {
+              ...props.transaction,
+              isGasFeeSponsored: true,
+            },
+          }}
+        />,
+        store,
+      );
+
+      expect(
+        getActualDataFrom(getAllByTestId('transaction-breakdown-row')),
+      ).toStrictEqual([
+        ['Nonce', '114'],
+        ['Amount sent', '33.425656732428330864 BAT'],
+        ['Amount received', '0.00222334422997802 ETH'],
+        ['Network fee', 'Paid by MetaMask'],
       ]);
     });
   });

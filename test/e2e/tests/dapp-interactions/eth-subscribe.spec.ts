@@ -1,5 +1,6 @@
-import { DAPP_ONE_URL, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_ONE_URL } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
@@ -7,18 +8,17 @@ describe('eth_subscribe', function () {
   it('only broadcasts subscription notifications on the page that registered the subscription', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 2 },
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        dappOptions: { numberOfDapps: 2 },
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
-        await testDapp.check_pageIsLoaded();
+        await testDapp.checkPageIsLoaded();
 
         const setupSubscriptionListener = `
           const responseContainer = document.createElement('div');
@@ -50,16 +50,16 @@ describe('eth_subscribe', function () {
         `);
 
         // Verify that the new block is seen on the first dapp
-        await testDapp.check_ethSubscribeResponse(true);
+        await testDapp.checkEthSubscribeResponse(true);
 
         // Switch to the second dapp
         const testDapp2 = new TestDapp(driver);
         await testDapp2.openTestDappPage({ url: DAPP_ONE_URL });
-        await testDapp2.check_pageIsLoaded();
+        await testDapp2.checkPageIsLoaded();
 
         // Setup the same subscription listener as on the first dapp, but without registering a new subscription
         await driver.executeScript(setupSubscriptionListener);
-        await testDapp2.check_ethSubscribeResponse(false);
+        await testDapp2.checkEthSubscribeResponse(false);
       },
     );
   });

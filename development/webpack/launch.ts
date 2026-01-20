@@ -27,9 +27,9 @@ const args = parser(rawArgv, { alias, boolean: Object.keys(alias) }) as Args;
 if (args.cache === false || args.help === true || args.watch === true) {
   // there are no time savings to running the build in a child process if: the
   // cache is disabled, we need to output "help", or we're in watch mode.
-  require('./build.ts').build();
+  require('./build').build();
 } else {
-  fork(process, join(__dirname, 'fork.mts'), rawArgv);
+  fork(process, join(__dirname, 'fork'), rawArgv);
 }
 
 /**
@@ -46,12 +46,10 @@ function fork(process: NodeJS.Process, file: string, argv: string[]) {
   // node recommends using 75% of the available memory for `max-old-space-size`
   // https://github.com/nodejs/node/blob/dd67bf08cb1ab039b4060d381cc68179ee78701a/doc/api/cli.md#--max-old-space-sizesize-in-megabytes
   const maxOldSpaceMB = ~~((require('node:os').totalmem() * 0.75) / (1 << 20));
-  // `--huge-max-old-generation-size` and `--max-semi-space-size=128` reduce
-  // garbage collection pauses; 128MB provided max benefit in perf testing.
+  // `--max-semi-space-size=128` reduces garbage collection pauses; 128MB provided max benefit in perf testing.
   const nodeOptions = [
     `--max-old-space-size=${maxOldSpaceMB}`,
     '--max-semi-space-size=128',
-    '--huge-max-old-generation-size',
   ];
 
   // run the build in a child process so that we can exit the parent process as

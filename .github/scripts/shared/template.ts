@@ -40,6 +40,7 @@ const bugReportIssueTemplateTitles = [
 // Titles of PR template
 const prTemplateTitles = [
   '## **Description**',
+  '## **Changelog**',
   '## **Related issues**',
   '## **Manual testing steps**',
   '## **Screenshots/Recordings**',

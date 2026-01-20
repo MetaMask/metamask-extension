@@ -30,6 +30,8 @@ import {
   ExternalLinkButton,
 } from './annonucement-footer-buttons';
 
+const purify = DOMPurify(window);
+
 const { TRIGGER_TYPES } = NotificationServicesController.Constants;
 
 const isFeatureAnnouncementNotification = isOfTypeNodeGuard([
@@ -99,16 +101,18 @@ export const components: NotificationComponent<FeatureAnnouncementNotification> 
               as="div"
               // TODO - we can replace the raw HTML string injection with react components
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(notification.data.longDescription),
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                __html: purify.sanitize(notification.data.longDescription),
               }}
             />
           </Box>
         ),
       },
-    },
-    footer: {
-      type: NotificationComponentType.AnnouncementFooter,
-      ExtensionLink: ExtensionLinkButton,
-      ExternalLink: ExternalLinkButton,
+      footer: {
+        type: NotificationComponentType.AnnouncementFooter,
+        ExtensionLink: ExtensionLinkButton,
+        ExternalLink: ExternalLinkButton,
+      },
     },
   };

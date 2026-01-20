@@ -1,7 +1,10 @@
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
+import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
+import SignTypedDataConfirmation from '../pages/confirmations/sign-typed-data-confirmation';
+import PermitConfirmation from '../pages/confirmations/permit-confirmation';
 
 /**
  * This function initiates the steps for a personal sign with snap account on test dapp.
@@ -18,9 +21,18 @@ export const personalSignWithSnapAccount = async (
   approveTransaction: boolean = true,
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
-  await testDapp.check_pageIsLoaded();
-  await testDapp.personalSign();
-  if (!isSyncFlow) {
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickPersonalSign();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new PersonalSignConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -28,9 +40,9 @@ export const personalSignWithSnapAccount = async (
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
-    await testDapp.check_successPersonalSign(publicAddress);
+    await testDapp.checkSuccessPersonalSign(publicAddress);
   } else {
-    await testDapp.check_failedPersonalSign(
+    await testDapp.checkFailedPersonalSign(
       'Error: Request rejected by user or snap.',
     );
   }
@@ -51,9 +63,18 @@ export const signTypedDataWithSnapAccount = async (
   approveTransaction: boolean = true,
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
-  await testDapp.check_pageIsLoaded();
-  await testDapp.signTypedData();
-  if (!isSyncFlow) {
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedData();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -61,9 +82,9 @@ export const signTypedDataWithSnapAccount = async (
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
-    await testDapp.check_successSignTypedData(publicAddress);
+    await testDapp.checkSuccessSignTypedData(publicAddress);
   } else {
-    await testDapp.check_failedSignTypedData(
+    await testDapp.checkFailedSignTypedData(
       'Error: Request rejected by user or snap.',
     );
   }
@@ -84,10 +105,19 @@ export const signTypedDataV3WithSnapAccount = async (
   approveTransaction: boolean = true,
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
-  await testDapp.check_pageIsLoaded();
-  await testDapp.signTypedDataV3Redesign();
-
-  if (!isSyncFlow) {
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav3();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -95,9 +125,9 @@ export const signTypedDataV3WithSnapAccount = async (
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
-    await testDapp.check_successSignTypedDataV3(publicAddress);
+    await testDapp.checkSuccessSignTypedDataV3(publicAddress);
   } else {
-    await testDapp.check_failedSignTypedDataV3(
+    await testDapp.checkFailedSignTypedDataV3(
       'Error: Request rejected by user or snap.',
     );
   }
@@ -118,9 +148,19 @@ export const signTypedDataV4WithSnapAccount = async (
   approveTransaction: boolean = true,
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
-  await testDapp.check_pageIsLoaded();
-  await testDapp.signTypedDataV4();
-  if (!isSyncFlow) {
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav4();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -128,9 +168,9 @@ export const signTypedDataV4WithSnapAccount = async (
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
-    await testDapp.check_successSignTypedDataV4(publicAddress);
+    await testDapp.checkSuccessSignTypedDataV4(publicAddress);
   } else {
-    await testDapp.check_failedSignTypedDataV4(
+    await testDapp.checkFailedSignTypedDataV4(
       'Error: Request rejected by user or snap.',
     );
   }
@@ -151,9 +191,18 @@ export const signPermitWithSnapAccount = async (
   approveTransaction: boolean = true,
 ): Promise<void> => {
   const testDapp = new TestDapp(driver);
-  await testDapp.check_pageIsLoaded();
-  await testDapp.signPermit();
-  if (!isSyncFlow) {
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickPermit();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new PermitConfirmation(driver);
+  await confirmation.verifyOrigin();
+  if (isSyncFlow) {
+    await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  } else {
+    // Cannot wait for window to close as new window is opened with Finish signing.
+    // So we add a hardcoded delay to avoid race condition with the window dialog being closed and re-opened very fast (to fix with MMQA-1240)
+    await confirmation.clickFooterConfirmButton();
+    await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
     await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
       approveTransaction,
@@ -161,10 +210,72 @@ export const signPermitWithSnapAccount = async (
     );
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
-    await testDapp.check_successSignPermit(publicAddress);
+    await testDapp.checkSuccessSignPermit(publicAddress);
   } else {
-    await testDapp.check_failedSignPermit(
+    await testDapp.checkFailedSignPermit(
       'Error: Request rejected by user or snap.',
     );
   }
+};
+
+/**
+ * Sign typed data (eth_signTypedData) flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedData = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedData();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedData(publicAddress);
+};
+
+/**
+ * Sign typed data V3 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedDataV3 = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav3();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedDataV3(publicAddress);
+};
+
+/**
+ * Sign typed data V4 flow (non-snap).
+ *
+ * @param driver - The webdriver instance.
+ * @param publicAddress - Address expected to appear in the dapp verification.
+ */
+export const signTypedDataV4 = async (
+  driver: Driver,
+  publicAddress: string,
+): Promise<void> => {
+  const testDapp = new TestDapp(driver);
+  await testDapp.checkPageIsLoaded();
+  await testDapp.clickSignTypedDatav4();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  const confirmation = new SignTypedDataConfirmation(driver);
+  await confirmation.verifyConfirmationHeadingTitle();
+  await confirmation.clickScrollToBottomButton();
+  await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
+  await testDapp.checkSuccessSignTypedDataV4(publicAddress);
 };

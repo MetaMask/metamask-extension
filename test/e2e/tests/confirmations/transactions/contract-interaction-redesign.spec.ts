@@ -1,31 +1,29 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { openDapp, unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
 import { MockedEndpoint } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import TestDapp from '../../../page-objects/pages/test-dapp';
+import ActivityListPage from '../../../page-objects/pages/home/activity-list';
+import HomePage from '../../../page-objects/pages/home/homepage';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
+import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
+import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
   assertAdvancedGasDetails,
-  confirmDepositTransaction,
-  confirmDepositTransactionWithCustomNonce,
-  createDepositTransaction,
-  openDAppWithContract,
   TestSuiteArguments,
   toggleAdvancedDetails,
-  toggleOnHexData,
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
 const {
-  defaultGanacheOptionsForType2Transactions,
-  WINDOW_TITLES,
-  withFixtures,
-} = require('../../../helpers');
-const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
@@ -36,18 +34,32 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy)`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -55,19 +67,29 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 2 transaction (EIP1559)`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
 
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -75,13 +97,16 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Sends a contract interaction type 0 transaction (Legacy) with a Trezor account`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withTrezorAccount()
             .withPermissionControllerConnectedToTestDapp({
               account: KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
             })
             .build(),
+          localNodeOptions: {
+            hardfork: 'muirGlacier',
+          },
           smartContract,
           title: this.test?.fullTitle(),
         },
@@ -96,19 +121,32 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             '0x100000000000000000000',
           )) ?? console.error('localNodes is undefined or empty');
 
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
 
-          await createDepositTransaction(driver);
-          await confirmDepositTransaction(driver);
+          await loginWithBalanceValidation(
+            driver,
+            undefined,
+            undefined,
+            '1.21M',
+          );
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
 
           // Assert transaction is completed
           await driver.switchToWindowWithTitle(
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.waitForSelector('.transaction-status-label--confirmed');
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityList = new ActivityListPage(driver);
+          await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityList.checkTxAction({ action: 'Deposit' });
         },
       );
     });
@@ -116,7 +154,7 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it(`Opens a contract interaction type 2 transaction that includes layer 1 fees breakdown on a layer 2`, async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder({ inputChainId: CHAIN_IDS.OPTIMISM })
             .withPermissionControllerConnectedToTestDapp()
             .withPreferencesController({
@@ -128,22 +166,26 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
             .withNetworkControllerOnOptimism()
             .build(),
           localNodeOptions: {
-            ...defaultGanacheOptionsForType2Transactions,
             chainId: hexToNumber(CHAIN_IDS.OPTIMISM),
           },
           smartContract,
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
           await createLayer2Transaction(driver);
 
           const contractAddress = await (
             contractRegistry as ContractAddressRegistry
           ).getContractAddress(smartContract);
 
-          await openDapp(driver, contractAddress);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
 
           await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -159,20 +201,28 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction without custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createDepositTransaction(driver);
-
-          await confirmDepositTransaction(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -180,26 +230,30 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction with custom nonce editing (EIP1559)', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createDepositTransaction(driver);
-
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
-
-          await confirmDepositTransactionWithCustomNonce(driver, '10');
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
+          await transactionConfirmation.setCustomNonce('10');
+          await transactionConfirmation.clickFooterConfirmButton();
         },
       );
     });
@@ -209,23 +263,28 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('Sends a contract interaction type 2 transaction (EIP1559) and checks the advanced gas details', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
-
-          await createDepositTransaction(driver);
-
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-          await toggleAdvancedDetails(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
           await assertAdvancedGasDetails(driver);
         },
       );
@@ -234,25 +293,39 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
     it('If hex data is enabled, advanced details are shown', async function () {
       await withFixtures(
         {
-          dapp: true,
+          dappOptions: { numberOfTestDapps: 1 },
           fixtures: new FixtureBuilder()
             .withPermissionControllerConnectedToTestDapp()
             .build(),
-          localNodeOptions: defaultGanacheOptionsForType2Transactions,
           smartContract,
           title: this.test?.fullTitle(),
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await openDAppWithContract(driver, contractRegistry, smartContract);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          const contractAddress =
+            await contractRegistry?.getContractAddress(smartContract);
 
-          await toggleOnHexData(driver);
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          const homePage = new HomePage(driver);
+          await homePage.headerNavbar.openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.clickAdvancedTab();
+          const advancedSettingsPage = new AdvancedSettings(driver);
+          await advancedSettingsPage.checkPageIsLoaded();
+          await advancedSettingsPage.toggleOnHexData();
 
-          await createDepositTransaction(driver);
+          const testDapp = new TestDapp(driver);
+          await testDapp.openTestDappPage({ contractAddress });
+          await testDapp.checkPageIsLoaded();
 
-          await driver.waitUntilXWindowHandles(3);
-          await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-          // re open advanced details
-          await toggleAdvancedDetails(driver);
+          await testDapp.createDepositTransaction();
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkPageIsLoaded();
+          await transactionConfirmation.clickAdvancedDetailsButton();
 
           await assertAdvancedGasDetails(driver);
         },

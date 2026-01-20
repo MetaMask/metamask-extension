@@ -14,9 +14,13 @@ import {
 import type { TransactionParams } from '@metamask/transaction-controller';
 import type { Provider } from '@metamask/network-controller';
 
-import { Hex } from '@metamask/utils';
+import { Hex, JsonRpcParams } from '@metamask/utils';
 import { BigNumber } from 'bignumber.js';
-import { AssetType, TokenStandard } from '../constants/transaction';
+import {
+  APPROVAL_METHOD_NAMES,
+  AssetType,
+  TokenStandard,
+} from '../constants/transaction';
 import { readAddressAsContract } from './contract-utils';
 import { isEqualCaseInsensitive } from './string-utils';
 
@@ -30,6 +34,19 @@ const INFERRABLE_TRANSACTION_TYPES: TransactionType[] = [
   TransactionType.simpleSend,
 ];
 
+const ABI_PERMIT_2_APPROVE = {
+  inputs: [
+    { internalType: 'address', name: 'token', type: 'address' },
+    { internalType: 'address', name: 'spender', type: 'address' },
+    { internalType: 'uint160', name: 'amount', type: 'uint160' },
+    { internalType: 'uint48', name: 'expiration', type: 'uint48' },
+  ],
+  name: 'approve',
+  outputs: [],
+  stateMutability: 'nonpayable',
+  type: 'function',
+};
+
 type InferTransactionTypeResult = {
   // The type of transaction
   type: TransactionType;
@@ -37,10 +54,13 @@ type InferTransactionTypeResult = {
   getCodeResponse: string | null | undefined;
 };
 
+type DataMessageParam = object | string | number | boolean | JsonRpcParams;
+
 const erc20Interface = new Interface(abiERC20);
 const erc721Interface = new Interface(abiERC721);
 const erc1155Interface = new Interface(abiERC1155);
 const USDCInterface = new Interface(abiFiatTokenV2);
+const permit2Interface = new Interface([ABI_PERMIT_2_APPROVE]);
 
 /**
  * Determines if the maxFeePerGas and maxPriorityFeePerGas fields are supplied
@@ -109,28 +129,20 @@ export function txParamsAreDappSuggested(
  * @returns TransactionDescription | undefined
  */
 export function parseStandardTokenTransactionData(data: string) {
-  try {
-    return erc20Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc721 ABI
-  }
+  const interfaces = [
+    erc20Interface,
+    erc721Interface,
+    erc1155Interface,
+    USDCInterface,
+    permit2Interface,
+  ];
 
-  try {
-    return erc721Interface.parseTransaction({ data });
-  } catch {
-    // ignore and next try to parse with erc1155 ABI
-  }
-
-  try {
-    return erc1155Interface.parseTransaction({ data });
-  } catch {
-    // ignore and return undefined
-  }
-
-  try {
-    return USDCInterface.parseTransaction({ data });
-  } catch {
-    // ignore and return undefined
+  for (const iface of interfaces) {
+    try {
+      return iface.parseTransaction({ data });
+    } catch {
+      // Intentionally empty
+    }
   }
 
   return undefined;
@@ -315,10 +327,14 @@ function extractLargeMessageValue(dataToParse: string): string | undefined {
  * @param dataToParse
  * @returns
  */
-export const parseTypedDataMessage = (dataToParse: string) => {
-  const result = JSON.parse(dataToParse);
+export const parseTypedDataMessage = (dataToParse: DataMessageParam) => {
+  const result =
+    typeof dataToParse === 'object'
+      ? dataToParse
+      : JSON.parse(String(dataToParse));
 
-  const messageValue = extractLargeMessageValue(dataToParse);
+  const messageValue = extractLargeMessageValue(String(dataToParse));
+
   if (result.message?.value) {
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31880
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
@@ -339,31 +355,56 @@ export function parseApprovalTransactionData(data: Hex):
       amountOrTokenId?: BigNumber;
       isApproveAll?: boolean;
       isRevokeAll?: boolean;
+      name: string;
+      tokenAddress?: Hex;
+      spender?: Hex;
     }
   | undefined {
   const transactionDescription = parseStandardTokenTransactionData(data);
   const { args, name } = transactionDescription ?? {};
 
-  if (
-    !['approve', 'increaseAllowance', 'setApprovalForAll'].includes(name ?? '')
-  ) {
+  if (!APPROVAL_METHOD_NAMES.includes(name ?? '') || !name) {
     return undefined;
   }
 
   const rawAmountOrTokenId =
     args?._value ?? // ERC-20 - approve
-    args?.increment; // Fiat Token V2 - increaseAllowance
+    args?.increment ?? // Fiat Token V2 - increaseAllowance
+    args?.amount; // Permit2 - approve
 
   const amountOrTokenId = rawAmountOrTokenId
     ? new BigNumber(rawAmountOrTokenId?.toString())
     : undefined;
 
+  const spender = args?.spender ?? args?._spender ?? args?.[0];
+
   const isApproveAll = name === 'setApprovalForAll' && args?._approved === true;
   const isRevokeAll = name === 'setApprovalForAll' && args?._approved === false;
+  const tokenAddress = name === 'approve' ? args?.token : undefined;
 
   return {
     amountOrTokenId,
     isApproveAll,
     isRevokeAll,
+    name,
+    tokenAddress,
+    spender,
   };
+}
+
+/**
+ * Extracts the recipient address from a transaction's data field.
+ * This function parses standard token transaction data and attempts to retrieve
+ * the recipient address from the transaction arguments. It checks for both `_to`
+ * and `to` argument patterns commonly found in token transfer transactions.
+ *
+ * @param data - The hexadecimal string representation of the transaction data to parse
+ * @returns The recipient address as a string if found in the transaction data, or undefined if not present
+ */
+export function getTransactionDataRecipient(data: string): string | undefined {
+  const transactionData = parseStandardTokenTransactionData(data);
+
+  const transferTo = transactionData?.args?._to || transactionData?.args?.to;
+
+  return transferTo;
 }

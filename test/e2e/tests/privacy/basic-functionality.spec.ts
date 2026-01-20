@@ -1,21 +1,28 @@
 import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
-import { withFixtures } from '../../helpers';
+import { withFixtures, isSidePanelEnabled } from '../../helpers';
 import { METAMASK_STALELIST_URL } from '../phishing-controller/helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import OnboardingCompletePage from '../../page-objects/pages/onboarding/onboarding-complete-page';
 import OnboardingPrivacySettingsPage from '../../page-objects/pages/onboarding/onboarding-privacy-settings-page';
-import { switchToNetworkFlow } from '../../page-objects/flows/network.flow';
+import { switchToNetworkFromSendFlow } from '../../page-objects/flows/network.flow';
 import {
   completeImportSRPOnboardingFlow,
   importSRPOnboardingFlow,
+  handleSidepanelPostOnboarding,
 } from '../../page-objects/flows/onboarding.flow';
-import { mockEmptyPrices } from '../tokens/utils/mocks';
+import { mockEmptyPrices, mockSpotPrices } from '../tokens/utils/mocks';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { UserStorageMockttpController, UserStorageResponseData } from '../../helpers/identity/user-storage/userStorageMockttpController';
-import { accountsToMockForAccountsSync, getAccountsSyncMockResponse } from '../identity/account-syncing/mock-data';
+import {
+  UserStorageMockttpController,
+  UserStorageResponseData,
+} from '../../helpers/identity/user-storage/userStorageMockttpController';
+import {
+  accountsToMockForAccountsSync,
+  getAccountsSyncMockResponse,
+} from '../identity/account-syncing/mock-data';
 import { mockIdentityServices } from '../identity/mocks';
 
 async function mockApis(
@@ -47,17 +54,13 @@ async function mockApis(
           json: [{ fakedata: true }],
         };
       }),
-    await mockServer
-      .forGet('https://min-api.cryptocompare.com/data/pricemulti')
-      .withQuery({ fsyms: 'ETH', tsyms: 'usd' })
-      .thenCallback(() => {
-        return {
-          statusCode: 200,
-          json: {
-            fakedata: 0,
-          },
-        };
-      }),
+    await mockSpotPrices(mockServer, {
+      'eip155:1/slip44:60': {
+        price: 1700,
+        marketCap: 382623505141,
+        pricePercentChange1d: 0,
+      },
+    }),
     await mockServer
       .forGet(
         'https://nft.api.cx.metamask.io/users/0x5cfe73b6021e818b776b421b1c4db2474086a7e1/tokens',
@@ -76,7 +79,7 @@ async function mockApis(
           },
         };
       }),
-    await mockEmptyPrices(mockServer, CHAIN_IDS.MAINNET),
+    await mockEmptyPrices(mockServer),
   ];
 }
 
@@ -90,26 +93,35 @@ describe('MetaMask onboarding', function () {
       mockedAccountSyncResponse,
       userStorageMockttpController,
     };
-  }
+  };
 
   it('should prevent network requests to basic functionality endpoints when the basic functionality toggle is off', async function () {
-    const {
-      mockedAccountSyncResponse,
-      userStorageMockttpController,
-    } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
-        fixtures: new FixtureBuilder({ onboarding: true })
-          .build(),
+        fixtures: new FixtureBuilder({ onboarding: true }).build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
+        manifestFlags: {
+          remoteFeatureFlags: {
+            sendRedesign: {
+              enabled: false,
+            },
+          },
+        },
+        testSpecificMock: (server: Mockttp) =>
+          mockApis(
+            server,
+            userStorageMockttpController,
+            mockedAccountSyncResponse,
+          ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await importSRPOnboardingFlow({ driver });
 
         const onboardingCompletePage = new OnboardingCompletePage(driver);
-        await onboardingCompletePage.check_pageIsLoaded();
-        await onboardingCompletePage.check_walletReadyMessageIsDisplayed();
+        await onboardingCompletePage.checkPageIsLoaded();
+        await onboardingCompletePage.checkWalletReadyMessageIsDisplayed();
         await onboardingCompletePage.navigateToDefaultPrivacySettings();
 
         const onboardingPrivacySettingsPage = new OnboardingPrivacySettingsPage(
@@ -119,13 +131,16 @@ describe('MetaMask onboarding', function () {
         await onboardingPrivacySettingsPage.toggleAssetsSettings();
         await onboardingPrivacySettingsPage.navigateBackToOnboardingCompletePage();
 
-        await onboardingCompletePage.check_pageIsLoaded();
+        await onboardingCompletePage.checkPageIsLoaded();
         await onboardingCompletePage.completeOnboarding();
 
-        const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        // Handle sidepanel navigation if needed
+        await handleSidepanelPostOnboarding(driver);
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.refreshErc20TokenList();
 
         for (const mockedEndpoint of mockedEndpoints) {
@@ -141,30 +156,51 @@ describe('MetaMask onboarding', function () {
   });
 
   it('should not prevent network requests to basic functionality endpoints when the basic functionality toggle is on', async function () {
-    const {
-      mockedAccountSyncResponse,
-      userStorageMockttpController,
-    } = await arrange();
+    const { mockedAccountSyncResponse, userStorageMockttpController } =
+      await arrange();
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
+          .withEnabledNetworks({
+            eip155: {
+              [CHAIN_IDS.MAINNET]: true,
+            },
+          })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: (server: Mockttp) => mockApis(server, userStorageMockttpController, mockedAccountSyncResponse),
+        testSpecificMock: (server: Mockttp) =>
+          mockApis(
+            server,
+            userStorageMockttpController,
+            mockedAccountSyncResponse,
+          ),
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
         await completeImportSRPOnboardingFlow({ driver });
 
         const homePage = new HomePage(driver);
-        await homePage.check_pageIsLoaded();
+        await homePage.checkPageIsLoaded();
 
-        await switchToNetworkFlow(driver, 'Ethereum Mainnet');
+        await switchToNetworkFromSendFlow(driver, 'Ethereum');
         await homePage.refreshErc20TokenList();
+
+        // Check if sidepanel is enabled
+        const hasSidepanel = await isSidePanelEnabled();
 
         // intended delay to allow for network requests to complete
         await driver.delay(1000);
         for (const mockedEndpoint of mockedEndpoints) {
           const requests = await mockedEndpoint.getSeenRequests();
+
+          if (hasSidepanel) {
+            // Skip assertion for sidepanel builds - cannot accurately count requests
+            // when sidepanel loads home.html in parallel with the main test window
+            console.log(
+              `Skipping request count assertion for sidepanel build - ${mockedEndpoint}`,
+            );
+            continue;
+          }
+
           assert.equal(
             requests.length,
             1,

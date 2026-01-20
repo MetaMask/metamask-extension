@@ -1,4 +1,5 @@
-import { Messenger } from '@metamask/base-controller';
+import { Messenger } from '@metamask/messenger';
+import { RootMessenger } from '../../../lib/messenger';
 
 export type SnapsRegistryMessenger = ReturnType<
   typeof getSnapsRegistryMessenger
@@ -12,11 +13,10 @@ export type SnapsRegistryMessenger = ReturnType<
  * @returns The restricted messenger.
  */
 export function getSnapsRegistryMessenger(
-  controllerMessenger: Messenger<never, never>,
+  controllerMessenger: RootMessenger<never, never>,
 ) {
-  return controllerMessenger.getRestricted({
-    name: 'SnapsRegistry',
-    allowedEvents: [],
-    allowedActions: [],
+  return new Messenger({
+    namespace: 'SnapsRegistry',
+    parent: controllerMessenger,
   });
 }

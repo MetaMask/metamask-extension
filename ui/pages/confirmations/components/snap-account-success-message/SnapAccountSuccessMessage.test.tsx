@@ -2,12 +2,13 @@ import React from 'react';
 import configureStore from '../../../../store/store';
 // Use mock-send-state to have some identites being populated
 import mockState from '../../../../../test/data/mock-send-state.json';
-import { renderWithProvider } from '../../../../../test/jest';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import SnapAccountSuccessMessage from './SnapAccountSuccessMessage';
 
 const store = configureStore(mockState);
 
 // If you're using some kind of global variable (like `global.platform` in your component), you might want to mock it.
+// @ts-expect-error mocking platform
 global.platform = {
   openTab: jest.fn(),
   closeCurrentWindow: jest.fn(),

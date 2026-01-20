@@ -1,5 +1,7 @@
 import { SUPPORTED_CHAIN_IDS } from '@metamask/assets-controllers';
-import { Hex } from '@metamask/utils';
+import { Hex, assert } from '@metamask/utils';
+import { Duration } from 'luxon';
+import { PriceApiTimePeriod } from './types/PriceApiTimePeriod';
 
 /** Formats a datetime in a short human readable format like 'Feb 8, 12:11 PM' */
 export const getShortDateFormatter = () =>
@@ -19,23 +21,20 @@ export const getShortDateFormatterV2 = () =>
   });
 
 /**
- * Formats a potentially large number to the nearest unit.
- * e.g. 1T for trillions, 2.3B for billions, 4.56M for millions, 7,890 for thousands, etc.
+ * Returns a dynamically formatted date string.
+ * If the date is in the same year as the current date, it omits the year.
+ * Otherwise, it includes the year.
  *
- * @param t - An I18nContext translator.
- * @param number - The number to format.
- * @returns A localized string of the formatted number + unit.
+ * @param date - The date to format, either as a Date object or timestamp.
+ * @returns A formatted date string.
  */
-// eslint-disable-next-line
-export const localizeLargeNumber = (t: any, number: number) => {
-  if (number >= 1000000000000) {
-    return `${(number / 1000000000000).toFixed(2)}${t('trillionAbbreviation')}`;
-  } else if (number >= 1000000000) {
-    return `${(number / 1000000000).toFixed(2)}${t('billionAbbreviation')}`;
-  } else if (number >= 1000000) {
-    return `${(number / 1000000).toFixed(2)}${t('millionAbbreviation')}`;
-  }
-  return number.toFixed(2);
+export const getDynamicShortDate = (date: Date | number) => {
+  const currentDate = new Date(date);
+  const now = new Date();
+  const isSameYear = currentDate.getFullYear() === now.getFullYear();
+  return isSameYear
+    ? getShortDateFormatter().format(date)
+    : getShortDateFormatterV2().format(date);
 };
 
 /**
@@ -91,4 +90,39 @@ export const findAssetByAddress = <TItem extends { address: string }>(
     (token) =>
       token.address && token.address.toLowerCase() === address.toLowerCase(),
   );
+};
+
+/**
+ * Maps an ISO 8601 duration string to a Price API time period string.
+ *
+ * @param duration - The ISO 8601 duration string, e.g. "P1D", "P1M", "P1Y", "P3YT45S", ...
+ * @returns The corresponding Price API time period string.
+ */
+export const fromIso8601DurationToPriceApiTimePeriod = (
+  duration: string,
+): PriceApiTimePeriod => {
+  assert(
+    Duration.fromISO(duration, { locale: 'en' }).isValid,
+    `Invalid ISO 8601 duration: ${duration}`,
+  );
+
+  const SUPPORTED_MAPPINGS: Record<string, PriceApiTimePeriod> = {
+    P1D: '1D',
+    P7D: '7D',
+    P1W: '7D',
+    P1M: '1M',
+    P3M: '3M',
+    P1Y: '1Y',
+    P1000Y: '1000Y',
+  };
+
+  const timePeriod = SUPPORTED_MAPPINGS[duration];
+
+  if (!timePeriod) {
+    throw new Error(
+      `No Price API timePeriod matching the ISO 8601 duration: ${duration}`,
+    );
+  }
+
+  return timePeriod;
 };

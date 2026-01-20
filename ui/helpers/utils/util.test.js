@@ -209,56 +209,56 @@ describe('util', () => {
     });
     it('should return false when given a modern chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.52',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated chrome browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.2623.112 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101 Firefox/102.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:115.0) Gecko/20100101 Firefox/115.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated firefox browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:75.0) Gecko/20100101 Firefox/91.0',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 OPR/95.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 OPR/101.0.0.0',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated opera browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 OPR/58.0.3135.47',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.5615.165 Safari/537.36 OPR/98.0.4759.39',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
     });
     it('should return false when given a modern edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edg/109.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.5672.126 Safari/537.36 Edg/113.0.1774.50',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(false);
     });
     it('should return true when given an outdated edge browser', () => {
       const browser = Bowser.getParser(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.3578.98 Safari/537.36 Edge/89.0.416.68',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.3578.98 Safari/537.36 Edge/109.0.416.68',
       );
       const result = util.getIsBrowserDeprecated(browser);
       expect(result).toStrictEqual(true);
@@ -913,13 +913,55 @@ describe('util', () => {
       ).toStrictEqual('The Quick Brown Fox Jumps Over The Lazy Dog');
     });
 
-    it('should return a string that matches sanitizeString regex with the matched characters replaced', () => {
+    it('escapes RIGHT-TO-LEFT OVERRIDE (U+202E)', () => {
+      expect(util.sanitizeString('Send \u202E1000 ETH')).toStrictEqual(
+        'Send \\u202E1000 ETH',
+      );
+    });
+
+    it('escapes LEFT-TO-RIGHT OVERRIDE (U+202D)', () => {
+      expect(util.sanitizeString('Amount: \u202D1000')).toStrictEqual(
+        'Amount: \\u202D1000',
+      );
+    });
+
+    it('escapes RIGHT-TO-LEFT MARK (U+200F)', () => {
+      expect(util.sanitizeString('Send 100\u200F0 ETH')).toStrictEqual(
+        'Send 100\\u200F0 ETH',
+      );
+    });
+
+    it('escapes multiple bidi control characters', () => {
+      expect(util.sanitizeString('Send\u200F\u202E\u202D1000')).toStrictEqual(
+        'Send\\u200F\\u202E\\u202D1000',
+      );
+    });
+
+    it('escapes LTR/RTL isolates (U+2066–U+2069)', () => {
+      expect(util.sanitizeString('Check\u20661000\u2069')).toStrictEqual(
+        'Check\\u20661000\\u2069',
+      );
+    });
+
+    it('displays hidden bidi marks as escaped sequences in text containing numbers', () => {
       expect(
         util.sanitizeString(
-          'The Quick ‭Brown \u202EFox Jumps Over \u202DThe Lazy Dog',
+          'Pay ‏11‏1.1 USDC to 0x3333333333333333333333333333333333333333',
         ),
       ).toStrictEqual(
-        'The Quick \\u202DBrown \\u202EFox Jumps Over \\u202DThe Lazy Dog',
+        'Pay \\u200F11\\u200F1.1 USDC to 0x3333333333333333333333333333333333333333',
+      );
+    });
+
+    it('keeps clean text unchanged', () => {
+      expect(util.sanitizeString('Send 1000 ETH')).toStrictEqual(
+        'Send 1000 ETH',
+      );
+    });
+
+    it('keeps legitimate Unicode (emojis, non-Latin scripts)', () => {
+      expect(util.sanitizeString('Hello 👋 مرحبا')).toStrictEqual(
+        'Hello 👋 مرحبا',
       );
     });
   });
@@ -1379,7 +1421,7 @@ describe('util', () => {
       ).toBe(true);
     });
 
-    it('returns false for third party Snap accounts derived from HD keyring', () => {
+    it('returns false for third-party Snap accounts derived from HD keyring', () => {
       const snapAccount = {
         address: '0x123',
         options: {
@@ -1479,7 +1521,7 @@ describe('util', () => {
     it('should return the correct title for origin with subdomain', () => {
       expect(
         util.transformOriginToTitle('https://metamask.github.io/test-dapp/'),
-      ).toBe('github.io');
+      ).toBe('metamask.github.io');
     });
 
     it('should return the correct title for localhost', () => {

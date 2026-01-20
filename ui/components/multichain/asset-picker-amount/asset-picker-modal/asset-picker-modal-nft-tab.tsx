@@ -1,23 +1,7 @@
 import React, { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import {
-  Box,
-  Text,
-  ButtonLink,
-  ButtonLinkSize,
-} from '../../../component-library';
-import {
-  TextColor,
-  TextVariant,
-  TextAlign,
-  Display,
-  JustifyContent,
-  AlignItems,
-  FlexDirection,
-} from '../../../../helpers/constants/design-system';
-import { useI18nContext } from '../../../../hooks/useI18nContext';
-import ZENDESK_URLS from '../../../../helpers/constants/zendesk-url';
+import { useNavigate } from 'react-router-dom';
+import { Box } from '../../../component-library';
 import Spinner from '../../../ui/spinner';
 import {
   getIsMainnet,
@@ -27,7 +11,6 @@ import {
 import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-notice-nfts-tab/nfts-detection-notice-nfts-tab';
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
-import { SEND_ROUTE } from '../../../../helpers/constants/routes';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import {
   MetaMetricsEventCategory,
@@ -39,6 +22,9 @@ import {
   updateSendAsset,
 } from '../../../../ducks/send';
 import { getNftImage } from '../../../../helpers/utils/nfts';
+import { useRedesignedSendFlow } from '../../../../pages/confirmations/hooks/useRedesignedSendFlow';
+import { navigateToSendRoute } from '../../../../pages/confirmations/utils/send';
+import { NftEmptyState } from '../../../app/assets/nfts/nft-empty-state';
 import { NFT } from './types';
 
 export type PreviouslyOwnedCollections = {
@@ -52,23 +38,26 @@ type AssetPickerModalNftTabProps = {
   renderSearch: () => void;
 };
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function AssetPickerModalNftTab({
   searchQuery,
   onClose,
   renderSearch,
 }: AssetPickerModalNftTabProps) {
-  const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
   const useNftDetection = useSelector(getUseNftDetection);
   const isMainnet = useSelector(getIsMainnet);
   const nftsStillFetchingIndication = useSelector(
     getNftIsStillFetchingIndication,
   );
+  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   const { currentlyOwnedNfts } = useNfts({
     overridePopularNetworkFilter: true,
   });
+
   const trackEvent = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
@@ -90,15 +79,23 @@ export function AssetPickerModalNftTab({
   const handleNftClick = async (nft: NFT) => {
     trackEvent(
       {
-        event: MetaMetricsEventName.sendAssetSelected,
+        event: MetaMetricsEventName.SendAssetSelected,
         category: MetaMetricsEventCategory.Send,
         properties: {
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_destination_asset_picker_modal: false,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_nft: true,
         },
         sensitiveProperties: {
           ...sendAnalytics,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_symbol: nft.name,
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           new_asset_address: nft.address,
         },
       },
@@ -117,7 +114,10 @@ export function AssetPickerModalNftTab({
         skipComputeEstimatedGasLimit: false,
       }),
     );
-    history.push(SEND_ROUTE);
+    navigateToSendRoute(navigate, isSendRedesignEnabled, {
+      address: nft.address,
+      chainId: nft.chainId,
+    });
     onClose && onClose();
   };
 
@@ -138,6 +138,8 @@ export function AssetPickerModalNftTab({
       {hasAnyNfts ? (
         <>
           <Box>
+            {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
+            {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
           </Box>
           {nftsStillFetchingIndication && (
@@ -156,38 +158,7 @@ export function AssetPickerModalNftTab({
               <NFTsDetectionNoticeNFTsTab />
             </Box>
           )}
-          <Box
-            padding={12}
-            display={Display.Flex}
-            flexDirection={FlexDirection.Column}
-            alignItems={AlignItems.center}
-            justifyContent={JustifyContent.center}
-          >
-            <Box
-              marginTop={12}
-              marginBottom={12}
-              display={Display.Flex}
-              justifyContent={JustifyContent.center}
-              alignItems={AlignItems.center}
-              flexDirection={FlexDirection.Column}
-              className="nfts-tab__link"
-            >
-              <Text
-                color={TextColor.textAlternative}
-                variant={TextVariant.bodyMdMedium}
-                textAlign={TextAlign.Center}
-              >
-                {t('noNFTs')}
-              </Text>
-              <ButtonLink
-                size={ButtonLinkSize.Sm}
-                href={ZENDESK_URLS.NFT_TOKENS}
-                externalLink
-              >
-                {t('learnMoreUpperCase')}
-              </ButtonLink>
-            </Box>
-          </Box>
+          <NftEmptyState className="mx-auto mt-5 mb-6" />
         </>
       )}
     </Box>

@@ -2,11 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { isEqual } from 'lodash';
 import { getNftContracts, getAllNfts } from '../ducks/metamask/metamask';
-import {
-  getAllChainsToPoll,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getSelectedInternalAccount,
-} from '../selectors';
+import { getAllChainsToPoll, getSelectedInternalAccount } from '../selectors';
+import { getEnabledNetworksByNamespace } from '../selectors/multichain/networks';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { NFT } from '../components/multichain/asset-picker-amount/asset-picker-modal/types';
 import { usePrevious } from './usePrevious';
@@ -25,20 +22,33 @@ export function useNfts({
   const chainId = useSelector(getCurrentChainId);
 
   const allChainIds = useSelector(getAllChainsToPoll);
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
+  const enabledNetworksByNamespace = useSelector(getEnabledNetworksByNamespace);
 
   const nfts = useMemo(() => {
-    return isTokenNetworkFilterEqualCurrentNetwork ||
-      overridePopularNetworkFilter
-      ? allUserNfts?.[chainId] ?? []
-      : allUserNfts;
+    // Filter NFTs to only include those from enabled networks
+    const nftsFromEnabledNetworks: Record<string, NFT[]> = {};
+
+    if (overridePopularNetworkFilter) {
+      return allUserNfts?.[chainId] ?? [];
+    }
+
+    Object.entries(allUserNfts ?? {}).forEach(
+      ([networkChainId, networkNfts]) => {
+        if (
+          enabledNetworksByNamespace?.[networkChainId] &&
+          Array.isArray(networkNfts)
+        ) {
+          nftsFromEnabledNetworks[networkChainId] = networkNfts as NFT[];
+        }
+      },
+    );
+
+    return nftsFromEnabledNetworks;
   }, [
-    isTokenNetworkFilterEqualCurrentNetwork,
+    overridePopularNetworkFilter,
     allUserNfts,
     chainId,
-    overridePopularNetworkFilter,
+    enabledNetworksByNamespace,
   ]);
 
   const nftContracts = useSelector(getNftContracts);
@@ -48,7 +58,7 @@ export function useNfts({
 
   const [currentlyOwnedNfts, setCurrentlyOwnedNfts] = useState<NFT[]>([]);
   const [previouslyOwnedNfts, setPreviouslyOwnedNfts] = useState<NFT[]>([]);
-  const [loading, setNftsLoading] = useState(() => nfts?.length >= 0);
+  const [loading, setNftsLoading] = useState(true);
   const prevNfts = usePrevious(nfts);
   const prevChainId = usePrevious(allChainIds);
   const prevSelectedAddress = usePrevious(selectedAddress);

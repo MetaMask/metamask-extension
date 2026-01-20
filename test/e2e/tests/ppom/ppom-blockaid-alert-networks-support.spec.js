@@ -1,11 +1,10 @@
 const { strict: assert } = require('assert');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
+const { withFixtures } = require('../../helpers');
 const {
-  WINDOW_TITLES,
-  openDapp,
-  unlockWallet,
-  withFixtures,
-} = require('../../helpers');
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
+const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
 const { mockServerJsonRpc } = require('./mocks/mock-server-json-rpc');
 
 async function mockInfura(mockServer) {
@@ -50,7 +49,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
   it.skip('should show banner alert after switchinig to another supported network', async function () {
     await withFixtures(
       {
-        dapp: true,
+        dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
           .withNetworkControllerOnMainnet()
           .withPermissionControllerConnectedToTestDapp()
@@ -67,14 +66,13 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         const expectedDescription =
           'If you approve this request, you might lose your assets.';
 
-        await unlockWallet(driver);
-        await openDapp(driver);
+        await loginWithBalanceValidation(driver);
+        await driver.openNewPage(DAPP_URL);
 
         // Click TestDapp button to send JSON-RPC request
         await driver.clickElement('#maliciousTradeOrder');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.assertElementNotPresent('.loading-indicator');
@@ -118,7 +116,7 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement({ tag: 'button', text: 'Approve' });
         await driver.clickElement({
           tag: 'h6',
-          text: 'Switch to Arbitrum One',
+          text: 'Switch to Arbitrum',
         });
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
@@ -126,7 +124,6 @@ describe('PPOM Blockaid Alert - Multiple Networks Support', function () {
         await driver.clickElement('#maliciousRawEthButton');
 
         // Wait for confirmation pop-up
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         bannerAlertFoundByTitle = await driver.findElement({

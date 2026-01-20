@@ -2,8 +2,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 import { TransactionMeta } from '@metamask/transaction-controller';
 import log from 'loglevel';
+import { getAllowedSmartTransactionsChainIds } from '../../../../shared/constants/smartTransactions';
 import {
-  getChainSupportsSmartTransactions,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../../shared/modules/selectors';
 import { fetchSwapsFeatureFlags } from '../../swaps/swaps.util';
@@ -17,15 +18,26 @@ import { useConfirmContext } from '../context/confirm';
 export function useSmartTransactionFeatureFlags() {
   const dispatch = useDispatch();
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
-  const { id: transactionId, txParams } = currentConfirmation ?? {};
+  const {
+    id: transactionId,
+    txParams,
+    chainId: transactionChainId,
+  } = currentConfirmation ?? {};
   const isTransaction = Boolean(txParams);
 
   const smartTransactionsPreferenceEnabled = useSelector(
     getSmartTransactionsPreferenceEnabled,
   );
 
-  const currentChainSupportsSmartTransactions = useSelector(
-    getChainSupportsSmartTransactions,
+  // TODO: replace with the new feature flags when we have them.
+  const chainSupportsSTX =
+    transactionChainId &&
+    getAllowedSmartTransactionsChainIds().includes(transactionChainId);
+
+  const featureFlags = useSelector((state) =>
+    transactionChainId
+      ? getSmartTransactionsFeatureFlagsForChain(state, transactionChainId)
+      : undefined,
   );
 
   useEffect(() => {
@@ -33,17 +45,21 @@ export function useSmartTransactionFeatureFlags() {
       !isTransaction ||
       !transactionId ||
       !smartTransactionsPreferenceEnabled ||
-      !currentChainSupportsSmartTransactions
+      !chainSupportsSTX
     ) {
       return;
     }
 
-    Promise.all([fetchSwapsFeatureFlags(), fetchSmartTransactionsLiveness()()])
+    Promise.all([
+      // TODO: remove this when swaps feature flags are removed.
+      fetchSwapsFeatureFlags(),
+      fetchSmartTransactionsLiveness({ chainId: transactionChainId })(),
+    ])
       .then(([swapsFeatureFlags]) => {
         dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
         dispatch(
           setSmartTransactionsRefreshInterval(
-            swapsFeatureFlags.smartTransactions?.batchStatusPollingInterval,
+            featureFlags?.batchStatusPollingInterval ?? 1000,
           ),
         );
       })
@@ -54,6 +70,9 @@ export function useSmartTransactionFeatureFlags() {
     isTransaction,
     transactionId,
     smartTransactionsPreferenceEnabled,
-    currentChainSupportsSmartTransactions,
+    chainSupportsSTX,
+    transactionChainId,
+    featureFlags,
+    dispatch,
   ]);
 }

@@ -1,9 +1,9 @@
-import { captureException } from '@sentry/browser';
+import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
+  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
-import { getSocketBackgroundToMocha } from '../../test/e2e/background-socket/socket-background-to-mocha';
 
 /**
  * Returns whether the offscreen document already exists or not.
@@ -54,6 +54,10 @@ export async function createOffscreen() {
         // If the Offscreen Document sees `navigator.webdriver === true` and we are in a test environment,
         // start the SocketBackgroundToMocha.
         if (process.env.IN_TEST && msg.webdriverPresent) {
+          const { getSocketBackgroundToMocha } =
+            // Use `require` to make it easier to exclude this test code from the Browserify build.
+            // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires, node/global-require
+            require('../../test/e2e/background-socket/socket-background-to-mocha');
           getSocketBackgroundToMocha();
         }
       }
@@ -95,4 +99,31 @@ export async function createOffscreen() {
   await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
+}
+
+/**
+ * Sets up a listener for connectivity status messages from the offscreen document.
+ *
+ * **Note:** This function is only used in Manifest V3 (MV3). In Manifest V2 (MV2),
+ * connectivity status is detected using window event listeners in the background page.
+ * The function will return early if `chrome.offscreen` is not available.
+ *
+ * @param {Function} onConnectivityChange - Callback to invoke with the connectivity status.
+ * The callback receives a boolean indicating whether the device is online.
+ */
+export function addOffscreenConnectivityListener(onConnectivityChange) {
+  const { chrome } = globalThis;
+  if (!chrome.offscreen) {
+    return;
+  }
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (
+      message &&
+      message.target === OffscreenCommunicationTarget.extensionMain &&
+      message.event === OffscreenCommunicationEvents.connectivityChange
+    ) {
+      onConnectivityChange(message.isOnline);
+    }
+  });
 }

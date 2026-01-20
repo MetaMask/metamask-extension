@@ -1,17 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { Provider } from 'react-redux';
 import { render } from '@testing-library/react';
-import { renderHook } from '@testing-library/react-hooks';
-import userEvent from '@testing-library/user-event';
-import { Router } from 'react-router-dom';
+import { userEvent } from '@testing-library/user-event';
 import PropTypes from 'prop-types';
-import { createMemoryHistory } from 'history';
-import configureStore from '../../ui/store/store';
+import { noop } from 'lodash';
 import { I18nContext, LegacyI18nProvider } from '../../ui/contexts/i18n';
-import { LegacyMetaMetricsProvider } from '../../ui/contexts/metametrics';
 import { getMessage } from '../../ui/helpers/utils/i18n-helper';
 import * as en from '../../app/_locales/en/messages.json';
-import { setupInitialStore } from '../../ui';
+import { setupInitialStore, connectToBackground } from '../../ui';
 import Root from '../../ui/pages';
 
 export const I18nProvider = (props) => {
@@ -38,92 +33,6 @@ I18nProvider.propTypes = {
 I18nProvider.defaultProps = {
   children: undefined,
 };
-
-const createProviderWrapper = (store, pathname = '/') => {
-  const history = createMemoryHistory({ initialEntries: [pathname] });
-  const Wrapper = ({ children }) =>
-    store ? (
-      <Provider store={store}>
-        <Router history={history}>
-          <I18nProvider currentLocale="en" current={en} en={en}>
-            <LegacyI18nProvider>
-              <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-            </LegacyI18nProvider>
-          </I18nProvider>
-        </Router>
-      </Provider>
-    ) : (
-      <Router history={history}>
-        <LegacyI18nProvider>
-          <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
-        </LegacyI18nProvider>
-      </Router>
-    );
-
-  Wrapper.propTypes = {
-    children: PropTypes.node,
-  };
-  return {
-    Wrapper,
-    history,
-  };
-};
-
-export function renderWithProvider(
-  component,
-  store,
-  pathname = '/',
-  renderer = render,
-) {
-  const { history, Wrapper } = createProviderWrapper(store, pathname);
-  return {
-    ...renderer(component, { wrapper: Wrapper }),
-    history,
-  };
-}
-
-export function renderHookWithProvider(hook, state, pathname = '/', Container) {
-  const store = state ? configureStore(state) : undefined;
-
-  const { history, Wrapper: ProviderWrapper } = createProviderWrapper(
-    store,
-    pathname,
-  );
-
-  const wrapper = Container
-    ? ({ children }) => (
-        <ProviderWrapper>
-          <Container>{children}</Container>
-        </ProviderWrapper>
-      )
-    : ProviderWrapper;
-
-  return {
-    ...renderHook(hook, { wrapper }),
-    history,
-  };
-}
-
-/**
- * Renders a hook with a provider and optional container.
- *
- * @template {(...args: any) => any} Hook
- * @template {Parameters<Hook>} HookParams
- * @template {ReturnType<Hook>} HookReturn
- * @template {import('@testing-library/react-hooks').RenderHookResult<HookParams, HookReturn>} RenderHookResult
- * @template {import('history').History} History
- * @param {Hook} hook - The hook to be rendered.
- * @param [state] - The initial state for the store.
- * @param [pathname] - The initial pathname for the history.
- * @param [Container] - An optional container component.
- * @returns {RenderHookResult & { history: History }} The result of the rendered hook and the history object.
- */
-export const renderHookWithProviderTyped = (
-  hook,
-  state,
-  pathname = '/',
-  Container,
-) => renderHookWithProvider(hook, state, pathname, Container);
 
 export function renderWithLocalization(component) {
   const Wrapper = ({ children }) => (
@@ -186,9 +95,9 @@ export async function integrationTestRender(extendedRenderOptions) {
     ...renderOptions
   } = extendedRenderOptions;
 
-  const store = await setupInitialStore(preloadedState, backgroundConnection, {
-    activeTab,
-  });
+  connectToBackground(backgroundConnection, noop);
+
+  const store = await setupInitialStore(preloadedState, activeTab);
 
   return {
     ...render(<Root store={store} />, { ...renderOptions }),

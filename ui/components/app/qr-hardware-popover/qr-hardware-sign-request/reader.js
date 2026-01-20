@@ -17,19 +17,23 @@ const Reader = ({
   };
 
   const handleSuccess = async (ur) => {
-    if (ur.type === 'eth-signature') {
-      const ethSignature = ETHSignature.fromCBOR(ur.cbor);
-      const buffer = ethSignature.getRequestId();
-      const signId = uuid.stringify(buffer);
-      if (signId === requestId) {
-        return await submitQRHardwareSignature(signId, ur.cbor.toString('hex'));
-      }
-      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
-      throw new Error(t('QRHardwareMismatchedSignId'));
-    } else {
+    if (ur.type !== 'eth-signature') {
       setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
       throw new Error(t('unknownQrCode'));
     }
+    const ethSignature = ETHSignature.fromCBOR(ur.cbor);
+    const buffer = ethSignature.getRequestId();
+    const signId = uuid.stringify(buffer);
+
+    if (signId !== requestId) {
+      setErrorTitle(t('QRHardwareInvalidTransactionTitle'));
+      throw new Error(t('QRHardwareMismatchedSignId'));
+    }
+
+    return await submitQRHardwareSignature({
+      type: ur.type,
+      cbor: ur.cbor.toString('hex'),
+    });
   };
 
   return (

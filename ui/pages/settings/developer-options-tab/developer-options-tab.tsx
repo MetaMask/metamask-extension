@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import {
   Box,
@@ -19,7 +19,7 @@ import {
   JustifyContent,
   AlignItems,
 } from '../../../helpers/constants/design-system';
-import { ONBOARDING_SECURE_YOUR_WALLET_ROUTE } from '../../../helpers/constants/routes';
+import { ONBOARDING_REVIEW_SRP_ROUTE } from '../../../helpers/constants/routes';
 import {
   getNumberOfSettingRoutesInTab,
   handleSettingsRefs,
@@ -38,7 +38,8 @@ import { ENVIRONMENT_TYPE_POPUP } from '../../../../shared/constants/app';
 import { getRemoteFeatureFlags } from '../../../selectors';
 import ToggleRow from './developer-options-toggle-row-component';
 import SentryTest from './sentry-test';
-import { ProfileSyncDevSettings } from './profile-sync';
+import { BackupAndSyncDevSettings } from './backup-and-sync';
+import MigrateToSplitStateTest from './migrate-to-split-state-test';
 
 /**
  * Settings Page for Developer Options (internal-only)
@@ -52,7 +53,7 @@ import { ProfileSyncDevSettings } from './profile-sync';
 const DeveloperOptionsTab = () => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [hasResetAnnouncements, setHasResetAnnouncements] = useState(false);
   const [hasResetOnboarding, setHasResetOnboarding] = useState(false);
@@ -80,7 +81,7 @@ const DeveloperOptionsTab = () => {
     await dispatch(resetOnboarding());
     setHasResetOnboarding(true);
 
-    const backUpSRPRoute = `${ONBOARDING_SECURE_YOUR_WALLET_ROUTE}/?isFromReminder=true`;
+    const backUpSRPRoute = `${ONBOARDING_REVIEW_SRP_ROUTE}/?isFromReminder=true`;
     const isPopup = getEnvironmentType() === ENVIRONMENT_TYPE_POPUP;
 
     if (isPopup) {
@@ -89,9 +90,9 @@ const DeveloperOptionsTab = () => {
         platform?.openExtensionInBrowser(backUpSRPRoute, null, true);
       }
     } else {
-      history.push(backUpSRPRoute);
+      navigate(backUpSRPRoute);
     }
-  }, [dispatch, history]);
+  }, [dispatch, navigate]);
 
   const handleToggleServiceWorkerAlive = async (
     value: boolean,
@@ -171,6 +172,8 @@ const DeveloperOptionsTab = () => {
         <div className="settings-page__content-item-col">
           <Button
             variant={ButtonVariant.Primary}
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleResetOnboardingClick}
           >
             Reset
@@ -203,6 +206,8 @@ const DeveloperOptionsTab = () => {
         title="Service Worker Keep Alive"
         description="Results in a timestamp being continuously saved to session.storage"
         isEnabled={isServiceWorkerKeptAlive}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
         onToggle={(value) => handleToggleServiceWorkerAlive(!value)}
         dataTestId="developer-options-service-worker-alive-toggle"
         settingsRef={settingsRefs[3] as React.RefObject<HTMLDivElement>}
@@ -271,8 +276,10 @@ const DeveloperOptionsTab = () => {
         {renderServiceWorkerKeepAliveToggle()}
       </div>
 
-      <ProfileSyncDevSettings />
+      <BackupAndSyncDevSettings />
       <SentryTest />
+      <hr />
+      <MigrateToSplitStateTest />
     </div>
   );
 };

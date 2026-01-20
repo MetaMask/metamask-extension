@@ -2,13 +2,18 @@ import type {
   ContractExchangeRates,
   Token,
 } from '@metamask/assets-controllers';
-import type { PayloadAction } from '@reduxjs/toolkit';
-import type { Action, AnyAction } from 'redux';
+import { PayloadAction } from '@reduxjs/toolkit';
+import { Action, AnyAction } from 'redux';
+import { ModalType } from '@metamask/subscription-controller';
 import {
   HardwareTransportStates,
   type WebHIDConnectedStatuses,
 } from '../../../shared/constants/hardware-wallets';
 import * as actionConstants from '../../store/actionConstants';
+import {
+  PasswordChangeToastType,
+  ClaimSubmitToastType,
+} from '../../../shared/constants/app-state';
 
 type AppState = {
   customNonceValue: string;
@@ -52,6 +57,7 @@ type AppState = {
   };
   showPermittedNetworkToastOpen: boolean;
   showIpfsModalOpen: boolean;
+  showSupportDataConsentModal: boolean;
   keyringRemovalSnapModal: {
     snapName: string;
     result: 'success' | 'failure' | 'none';
@@ -106,6 +112,7 @@ type AppState = {
         nickname?: string;
         editCompleted?: boolean;
         newNetwork?: boolean;
+        trackRpcUpdateFromBanner?: boolean;
       }
     | undefined;
   newNetworkAddedConfigurationId: string;
@@ -122,8 +129,22 @@ type AppState = {
   snapsInstallPrivacyWarningShown: boolean;
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding: boolean;
+  isAccessedFromDappConnectedSitePopover: boolean;
   errorInSettings: string | null;
   showNewSrpAddedToast: boolean;
+  showPasswordChangeToast: PasswordChangeToastType | null;
+  showCopyAddressToast: boolean;
+  showClaimSubmitToast: ClaimSubmitToastType | null;
+  shieldEntryModal?: {
+    show: boolean;
+    shouldSubmitEvents: boolean;
+    modalType?: ModalType;
+    triggeringCohort?: string;
+    /**
+     * Whether the user has interacted with the modal.
+     */
+    hasUserInteractedWithModal?: boolean;
+  };
 };
 
 export type AppSliceState = {
@@ -217,8 +238,13 @@ const initialState: AppState = {
   snapsInstallPrivacyWarningShown: false,
   isAddingNewNetwork: false,
   isMultiRpcOnboarding: false,
+  isAccessedFromDappConnectedSitePopover: false,
   errorInSettings: null,
   showNewSrpAddedToast: false,
+  showPasswordChangeToast: null,
+  showCopyAddressToast: false,
+  showClaimSubmitToast: null,
+  showSupportDataConsentModal: false,
 };
 
 export default function reduceApp(
@@ -397,13 +423,6 @@ export default function reduceApp(
         alertOpen: false,
         alertMessage: null,
       };
-
-    case actionConstants.SET_ACCOUNT_DETAILS_ADDRESS: {
-      return {
-        ...appState,
-        accountDetailsAddress: action.payload,
-      };
-    }
 
     // qr scanner methods
     case actionConstants.QR_CODE_DETECTED:
@@ -678,7 +697,15 @@ export default function reduceApp(
         ...appState,
         isAddingNewNetwork: Boolean(action.payload?.isAddingNewNetwork),
         isMultiRpcOnboarding: Boolean(action.payload?.isMultiRpcOnboarding),
+        isAccessedFromDappConnectedSitePopover: Boolean(
+          action.payload?.isAccessedFromDappConnectedSitePopover,
+        ),
         isNetworkMenuOpen: !appState.isNetworkMenuOpen,
+      };
+    case actionConstants.CLOSE_NETWORK_MENU:
+      return {
+        ...appState,
+        isNetworkMenuOpen: false,
       };
     case actionConstants.DELETE_METAMETRICS_DATA_MODAL_OPEN:
       return {
@@ -735,6 +762,38 @@ export default function reduceApp(
         showNewSrpAddedToast: action.payload,
       };
 
+    case actionConstants.SET_SHOW_PASSWORD_CHANGE_TOAST:
+      return {
+        ...appState,
+        showPasswordChangeToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_COPY_ADDRESS_TOAST:
+      return {
+        ...appState,
+        showCopyAddressToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_CLAIM_SUBMIT_TOAST:
+      return {
+        ...appState,
+        showClaimSubmitToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:
+      return {
+        ...appState,
+        showSupportDataConsentModal: action.payload,
+      };
+
+    case actionConstants.SET_SHIELD_ENTRY_MODAL_STATUS:
+      return {
+        ...appState,
+        shieldEntryModal: {
+          ...action.payload,
+        },
+      };
+
     default:
       return appState;
   }
@@ -787,6 +846,12 @@ export function setOnBoardedInThisUISession(
   return { type: actionConstants.ONBOARDED_IN_THIS_UI_SESSION, payload };
 }
 
+export function setShowCopyAddressToast(
+  payload: boolean,
+): PayloadAction<boolean> {
+  return { type: actionConstants.SET_SHOW_COPY_ADDRESS_TOAST, payload };
+}
+
 export function setCustomTokenAmount(payload: string): PayloadAction<string> {
   return { type: actionConstants.SET_CUSTOM_TOKEN_AMOUNT, payload };
 }
@@ -822,6 +887,24 @@ export function getQrCodeData(state: AppSliceState): {
 
 export function getGasLoadingAnimationIsShowing(state: AppSliceState): boolean {
   return state.appState.gasLoadingAnimationIsShowing;
+}
+
+export function getLedgerWebHidConnectedStatus(
+  state: AppSliceState,
+): string | null {
+  return state.appState.ledgerWebHidConnectedStatus;
+}
+
+export function getLedgerTransportStatus(state: AppSliceState): string | null {
+  return state.appState.ledgerTransportStatus;
+}
+
+export function getShowSupportDataConsentModal(state: AppSliceState): boolean {
+  return state.appState.showSupportDataConsentModal;
+}
+
+export function getShowCopyAddressToast(state: AppSliceState): boolean {
+  return state.appState.showCopyAddressToast;
 }
 
 export function openDeleteMetaMetricsDataModal(): Action {

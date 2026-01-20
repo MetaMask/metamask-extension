@@ -4,13 +4,11 @@ import thunk from 'redux-thunk';
 import {
   SmartTransaction,
   SmartTransactionStatuses,
-} from '@metamask/smart-transactions-controller/dist/types';
+} from '@metamask/smart-transactions-controller';
 
 import { fireEvent } from '@testing-library/react';
-import {
-  renderWithProvider,
-  createSwapsMockStore,
-} from '../../../../test/jest';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
+import { createSwapsMockStore } from '../../../../test/jest';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import {
   SmartTransactionStatusPage,
@@ -108,7 +106,7 @@ describe('SmartTransactionStatusPage', () => {
   });
 
   describe('Action Buttons', () => {
-    it('calls onCloseExtension when Close extension button is clicked', () => {
+    it('calls onCloseExtension when Back to home button is clicked', () => {
       const onCloseExtension = jest.fn();
       const store = mockStore(createSwapsMockStore());
 
@@ -120,8 +118,8 @@ describe('SmartTransactionStatusPage', () => {
         store,
       );
 
-      const closeButton = getByText('Close extension');
-      fireEvent.click(closeButton);
+      const backToHomeButton = getByText('Back to home');
+      fireEvent.click(backToHomeButton);
       expect(onCloseExtension).toHaveBeenCalled();
     });
 

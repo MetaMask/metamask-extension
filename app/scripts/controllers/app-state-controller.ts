@@ -1,19 +1,32 @@
 import { v4 as uuid } from 'uuid';
 import log from 'loglevel';
 import { ApprovalType } from '@metamask/controller-utils';
-import { KeyringControllerQRKeyringStateChangeEvent } from '@metamask/keyring-controller';
 import {
   BaseController,
   ControllerGetStateAction,
   ControllerStateChangeEvent,
-  RestrictedMessenger,
+  StateMetadata,
 } from '@metamask/base-controller';
 import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { Json } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
+import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
+import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
+import {
+  KeyringControllerGetStateAction,
+  KeyringControllerUnlockEvent,
+} from '@metamask/keyring-controller';
+import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
+
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
 import { isManifestV3 } from '../../../shared/modules/mv3.utils';
@@ -24,6 +37,7 @@ import {
   ENVIRONMENT_TYPE_BACKGROUND,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   ORIGIN_METAMASK,
+  DOWNLOAD_MOBILE_APP_SLIDE_ID,
 } from '../../../shared/constants/app';
 import { DEFAULT_AUTO_LOCK_TIME_LIMIT } from '../../../shared/constants/preferences';
 import { LastInteractedConfirmationInfo } from '../../../shared/types/confirm';
@@ -31,61 +45,134 @@ import { SecurityAlertResponse } from '../lib/ppom/types';
 import {
   AccountOverviewTabKey,
   CarouselSlide,
+  NetworkConnectionBanner,
 } from '../../../shared/constants/app-state';
 import type {
   ThrottledOrigins,
   ThrottledOrigin,
 } from '../../../shared/types/origin-throttling';
+import {
+  ScanAddressResponse,
+  CachedScanAddressResponse,
+  GetAddressSecurityAlertResponse,
+  AddAddressSecurityAlertResponse,
+} from '../../../shared/lib/trust-signals';
+import {
+  DefaultSubscriptionPaymentOptions,
+  ShieldSubscriptionMetricsPropsFromUI,
+} from '../../../shared/types';
 import type {
   Preferences,
   PreferencesControllerGetStateAction,
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
+};
+
 export type AppStateControllerState = {
-  timeoutMinutes: number;
-  connectedStatusPopoverHasBeenShown: boolean;
-  defaultHomeActiveTabName: AccountOverviewTabKey | null;
+  activeQrCodeScanRequest: QrScanRequest | null;
+  addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
+  appActiveTab?: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  };
   browserEnvironment: Record<string, string>;
-  popupGasPollTokens: string[];
-  notificationGasPollTokens: string[];
-  fullScreenGasPollTokens: string[];
-  recoveryPhraseReminderHasBeenShown: boolean;
-  recoveryPhraseReminderLastShown: number;
-  outdatedBrowserWarningLastShown: number | null;
-  nftsDetectionNoticeDismissed: boolean;
-  showTestnetMessageInDropdown: boolean;
-  showBetaHeader: boolean;
-  showPermissionsTour: boolean;
-  showNetworkBanner: boolean;
-  showAccountBanner: boolean;
-  trezorModel: string | null;
+  connectedStatusPopoverHasBeenShown: boolean;
+  // States used for displaying the changed network toast
+  currentExtensionPopupId: number;
   currentPopupId?: number;
-  onboardingDate: number | null;
-  lastViewedUserSurvey: number | null;
-  isRampCardClosed: boolean;
-  newPrivacyPolicyToastClickedOrClosed: boolean | null;
-  newPrivacyPolicyToastShownDate: number | null;
+  defaultHomeActiveTabName: AccountOverviewTabKey | null;
+  enableEnforcedSimulations: boolean;
+  enableEnforcedSimulationsForTransactions: Record<string, boolean>;
+  enforcedSimulationsSlippage: number;
+  enforcedSimulationsSlippageForTransactions: Record<string, number>;
+  fullScreenGasPollTokens: string[];
   // This key is only used for checking if the user had set advancedGasFee
   // prior to Migration 92.3 where we split out the setting to support
   // multiple networks.
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   hadAdvancedGasFeesSetPriorToMigration92_3: boolean;
-  qrHardware: Json;
-  nftsDropdownState: Json;
-  surveyLinkLastClickedOrClosed: number | null;
-  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
-  // States used for displaying the changed network toast
-  switchedNetworkDetails: Record<string, string> | null;
-  switchedNetworkNeverShowMessage: boolean;
-  currentExtensionPopupId: number;
+  canTrackWalletFundsObtained: boolean;
+  isRampCardClosed: boolean;
+  isUpdateAvailable: boolean;
   lastInteractedConfirmationInfo?: LastInteractedConfirmationInfo;
-  termsOfUseLastAgreed?: number;
-  snapsInstallPrivacyWarningShown?: boolean;
-  interactiveReplacementToken?: { url: string; oldRefreshToken: string };
-  noteToTraderMessage?: string;
-  custodianDeepLink?: { fromAddress: string; custodyId: string };
+  lastUpdatedAt: number | null;
+  lastUpdatedFromVersion: string | null;
+  lastViewedUserSurvey: number | null;
+  networkConnectionBanner: NetworkConnectionBanner;
+  newPrivacyPolicyToastClickedOrClosed: boolean | null;
+  newPrivacyPolicyToastShownDate: number | null;
+  pna25Acknowledged: boolean;
+  nftsDetectionNoticeDismissed: boolean;
+  nftsDropdownState: Json;
+  notificationGasPollTokens: string[];
+  onboardingDate: number | null;
+  outdatedBrowserWarningLastShown: number | null;
+  popupGasPollTokens: string[];
+  sidePanelGasPollTokens: string[];
+  productTour?: string;
+  recoveryPhraseReminderHasBeenShown: boolean;
+  recoveryPhraseReminderLastShown: number;
+  showAccountBanner: boolean;
+  showBetaHeader: boolean;
+  showDownloadMobileAppSlide: boolean;
+  showNetworkBanner: boolean;
+  showPermissionsTour: boolean;
+  showTestnetMessageInDropdown: boolean;
+  signatureSecurityAlertResponses: Record<string, SecurityAlertResponse>;
   slides: CarouselSlide[];
+  snapsInstallPrivacyWarningShown?: boolean;
+  surveyLinkLastClickedOrClosed: number | null;
+  shieldEndingToastLastClickedOrClosed: number | null;
+  shieldPausedToastLastClickedOrClosed: number | null;
+  termsOfUseLastAgreed?: number;
   throttledOrigins: ThrottledOrigins;
+  timeoutMinutes: number;
+  trezorModel: string | null;
+  updateModalLastDismissedAt: number | null;
+  hasShownMultichainAccountsIntroModal: boolean;
+  showShieldEntryModalOnce: boolean | null;
+  pendingShieldCohort: string | null;
+  pendingShieldCohortTxType: string | null;
+  defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
+  dappSwapComparisonData?: {
+    [uniqueId: string]: DappSwapComparisonData;
+  };
+
+  /**
+   * The properties for the Shield subscription metrics.
+   * Since we can't access some of these properties in the background, we need to get them from the UI.
+   */
+  shieldSubscriptionMetricsProps?: ShieldSubscriptionMetricsPropsFromUI;
+
+  /**
+   * Whether the wallet reset is in progress.
+   */
+  isWalletResetInProgress: boolean;
+
+  /**
+   * Whether to show the storage error toast.
+   * This is set to true when set operations fail (storage.local or IndexedDB).
+   */
+  showStorageErrorToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -98,18 +185,45 @@ export type AppStateControllerGetStateAction = ControllerGetStateAction<
   AppStateControllerState
 >;
 
+export type AppStateControllerGetUnlockPromiseAction = {
+  type: 'AppStateController:getUnlockPromise';
+  handler: (shouldShowUnlockRequest: boolean) => Promise<void>;
+};
+
+export type AppStateControllerRequestQrCodeScanAction = {
+  type: 'AppStateController:requestQrCodeScan';
+  handler: (request: QrScanRequest) => Promise<SerializedUR>;
+};
+
+export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
+  type: 'AppStateController:setCanTrackWalletFundsObtained';
+  handler: AppStateController['setCanTrackWalletFundsObtained'];
+};
+
+export type AppStateControllerSetPendingShieldCohortAction = {
+  type: 'AppStateController:setPendingShieldCohort';
+  handler: AppStateController['setPendingShieldCohort'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
-export type AppStateControllerActions = AppStateControllerGetStateAction;
+export type AppStateControllerActions =
+  | AppStateControllerGetStateAction
+  | AppStateControllerGetUnlockPromiseAction
+  | AppStateControllerRequestQrCodeScanAction
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetPendingShieldCohortAction;
 
 /**
  * Actions that this controller is allowed to call.
  */
-type AllowedActions =
+export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
-  | PreferencesControllerGetStateAction;
+  | KeyringControllerGetStateAction
+  | PreferencesControllerGetStateAction
+  | ProfileMetricsControllerSkipInitialDelayAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -134,37 +248,34 @@ export type AppStateControllerEvents =
 /**
  * Events that this controller is allowed to subscribe.
  */
-type AllowedEvents =
-  | PreferencesControllerStateChangeEvent
-  | KeyringControllerQRKeyringStateChangeEvent;
+export type AllowedEvents =
+  | KeyringControllerUnlockEvent
+  | PreferencesControllerStateChangeEvent;
 
-export type AppStateControllerMessenger = RestrictedMessenger<
+export type AppStateControllerMessenger = Messenger<
   typeof controllerName,
   AppStateControllerActions | AllowedActions,
-  AppStateControllerEvents | AllowedEvents,
-  AllowedActions['type'],
-  AllowedEvents['type']
+  AppStateControllerEvents | AllowedEvents
 >;
 
 type PollingTokenType =
   | 'popupGasPollTokens'
   | 'notificationGasPollTokens'
-  | 'fullScreenGasPollTokens';
+  | 'fullScreenGasPollTokens'
+  | 'sidePanelGasPollTokens';
 
 type AppStateControllerInitState = Partial<
   Omit<
     AppStateControllerState,
-    | 'qrHardware'
     | 'nftsDropdownState'
     | 'signatureSecurityAlertResponses'
-    | 'switchedNetworkDetails'
+    | 'addressSecurityAlertResponses'
     | 'currentExtensionPopupId'
+    | 'networkConnectionBanner'
   >
 >;
 
 export type AppStateControllerOptions = {
-  addUnlockListener: (callback: () => void) => void;
-  isUnlocked: () => boolean;
   state?: AppStateControllerInitState;
   onInactiveTimeout?: () => void;
   messenger: AppStateControllerMessenger;
@@ -172,202 +283,448 @@ export type AppStateControllerOptions = {
 };
 
 const getDefaultAppStateControllerState = (): AppStateControllerState => ({
-  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  activeQrCodeScanRequest: null,
+  appActiveTab: undefined,
+  browserEnvironment: {},
   connectedStatusPopoverHasBeenShown: true,
   defaultHomeActiveTabName: null,
-  browserEnvironment: {},
-  popupGasPollTokens: [],
-  notificationGasPollTokens: [],
+  enableEnforcedSimulations: true,
+  enableEnforcedSimulationsForTransactions: {},
+  enforcedSimulationsSlippage: 10,
+  enforcedSimulationsSlippageForTransactions: {},
   fullScreenGasPollTokens: [],
-  recoveryPhraseReminderHasBeenShown: false,
-  recoveryPhraseReminderLastShown: new Date().getTime(),
-  outdatedBrowserWarningLastShown: null,
-  nftsDetectionNoticeDismissed: false,
-  showTestnetMessageInDropdown: true,
-  showBetaHeader: isBeta(),
-  showPermissionsTour: true,
-  showNetworkBanner: true,
-  showAccountBanner: true,
-  trezorModel: null,
-  onboardingDate: null,
-  lastViewedUserSurvey: null,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  hadAdvancedGasFeesSetPriorToMigration92_3: false,
+  canTrackWalletFundsObtained: true,
   isRampCardClosed: false,
+  isUpdateAvailable: false,
+  lastUpdatedAt: null,
+  lastUpdatedFromVersion: null,
+  lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
-  hadAdvancedGasFeesSetPriorToMigration92_3: false,
-  surveyLinkLastClickedOrClosed: null,
-  switchedNetworkNeverShowMessage: false,
+  pna25Acknowledged: false,
+  nftsDetectionNoticeDismissed: false,
+  notificationGasPollTokens: [],
+  onboardingDate: null,
+  outdatedBrowserWarningLastShown: null,
+  popupGasPollTokens: [],
+  sidePanelGasPollTokens: [],
+  productTour: 'accountIcon',
+  recoveryPhraseReminderHasBeenShown: false,
+  recoveryPhraseReminderLastShown: new Date().getTime(),
+  showAccountBanner: true,
+  showBetaHeader: isBeta(),
+  showDownloadMobileAppSlide: true,
+  showNetworkBanner: true,
+  showPermissionsTour: true,
+  showTestnetMessageInDropdown: true,
   slides: [],
+  surveyLinkLastClickedOrClosed: null,
+  shieldEndingToastLastClickedOrClosed: null,
+  shieldPausedToastLastClickedOrClosed: null,
   throttledOrigins: {},
+  timeoutMinutes: DEFAULT_AUTO_LOCK_TIME_LIMIT,
+  trezorModel: null,
+  updateModalLastDismissedAt: null,
+  hasShownMultichainAccountsIntroModal: false,
+  showShieldEntryModalOnce: null,
+  pendingShieldCohort: null,
+  pendingShieldCohortTxType: null,
+  isWalletResetInProgress: false,
+  dappSwapComparisonData: {},
+  showStorageErrorToast: false,
   ...getInitialStateOverrides(),
 });
 
+/**
+ * Return initial state for properties that should overwrite persisted state.
+ *
+ * TODO: Stop persisting state that we want to override, so that we can remove this function.
+ *
+ * @returns Initial state for properties that should overwrite persisted state.
+ */
 function getInitialStateOverrides() {
   return {
-    qrHardware: {},
+    addressSecurityAlertResponses: {},
+    currentExtensionPopupId: 0,
     nftsDropdownState: {},
     signatureSecurityAlertResponses: {},
-    switchedNetworkDetails: null,
-    currentExtensionPopupId: 0,
+    networkConnectionBanner: {
+      status: 'unknown' as const,
+    },
   };
 }
 
-const controllerMetadata = {
-  timeoutMinutes: {
-    persist: true,
-    anonymous: true,
+const controllerMetadata: StateMetadata<AppStateControllerState> = {
+  activeQrCodeScanRequest: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  connectedStatusPopoverHasBeenShown: {
-    persist: true,
-    anonymous: true,
+  addressSecurityAlertResponses: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  defaultHomeActiveTabName: {
-    persist: true,
-    anonymous: true,
+  appActiveTab: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   browserEnvironment: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  popupGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  notificationGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  fullScreenGasPollTokens: {
-    persist: false,
-    anonymous: true,
-  },
-  recoveryPhraseReminderHasBeenShown: {
+  connectedStatusPopoverHasBeenShown: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
-  },
-  recoveryPhraseReminderLastShown: {
-    persist: true,
-    anonymous: true,
-  },
-  outdatedBrowserWarningLastShown: {
-    persist: true,
-    anonymous: true,
-  },
-  nftsDetectionNoticeDismissed: {
-    persist: true,
-    anonymous: true,
-  },
-  showTestnetMessageInDropdown: {
-    persist: true,
-    anonymous: true,
-  },
-  showBetaHeader: {
-    persist: true,
-    anonymous: true,
-  },
-  showPermissionsTour: {
-    persist: true,
-    anonymous: true,
-  },
-  showNetworkBanner: {
-    persist: true,
-    anonymous: true,
-  },
-  showAccountBanner: {
-    persist: true,
-    anonymous: true,
-  },
-  trezorModel: {
-    persist: true,
-    anonymous: true,
-  },
-  currentPopupId: {
-    persist: false,
-    anonymous: true,
-  },
-  onboardingDate: {
-    persist: true,
-    anonymous: true,
-  },
-  lastViewedUserSurvey: {
-    persist: true,
-    anonymous: true,
-  },
-  isRampCardClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  newPrivacyPolicyToastClickedOrClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  newPrivacyPolicyToastShownDate: {
-    persist: true,
-    anonymous: true,
-  },
-  hadAdvancedGasFeesSetPriorToMigration92_3: {
-    persist: true,
-    anonymous: true,
-  },
-  qrHardware: {
-    persist: false,
-    anonymous: true,
-  },
-  nftsDropdownState: {
-    persist: false,
-    anonymous: true,
-  },
-  surveyLinkLastClickedOrClosed: {
-    persist: true,
-    anonymous: true,
-  },
-  signatureSecurityAlertResponses: {
-    persist: false,
-    anonymous: true,
-  },
-  switchedNetworkDetails: {
-    persist: false,
-    anonymous: true,
-  },
-  switchedNetworkNeverShowMessage: {
-    persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   currentExtensionPopupId: {
+    includeInStateLogs: true,
     persist: false,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  currentPopupId: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  defaultHomeActiveTabName: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  enableEnforcedSimulations: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  enableEnforcedSimulationsForTransactions: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  enforcedSimulationsSlippage: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  enforcedSimulationsSlippageForTransactions: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  fullScreenGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  hadAdvancedGasFeesSetPriorToMigration92_3: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  canTrackWalletFundsObtained: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  isRampCardClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  isUpdateAvailable: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   lastInteractedConfirmationInfo: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  termsOfUseLastAgreed: {
+  lastUpdatedAt: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  snapsInstallPrivacyWarningShown: {
+  lastUpdatedFromVersion: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  interactiveReplacementToken: {
+  lastViewedUserSurvey: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
-  noteToTraderMessage: {
-    persist: true,
-    anonymous: true,
+  networkConnectionBanner: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
   },
-  custodianDeepLink: {
+  newPrivacyPolicyToastClickedOrClosed: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  newPrivacyPolicyToastShownDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pna25Acknowledged: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  nftsDetectionNoticeDismissed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  nftsDropdownState: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  notificationGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  onboardingDate: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  outdatedBrowserWarningLastShown: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  popupGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  sidePanelGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  productTour: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  recoveryPhraseReminderHasBeenShown: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  recoveryPhraseReminderLastShown: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showAccountBanner: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showBetaHeader: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showDownloadMobileAppSlide: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showNetworkBanner: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showPermissionsTour: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  showTestnetMessageInDropdown: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  signatureSecurityAlertResponses: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   slides: {
+    includeInStateLogs: true,
     persist: true,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  snapsInstallPrivacyWarningShown: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  surveyLinkLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  shieldEndingToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  shieldPausedToastLastClickedOrClosed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  termsOfUseLastAgreed: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
   throttledOrigins: {
+    includeInStateLogs: true,
     persist: false,
-    anonymous: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  timeoutMinutes: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  trezorModel: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: false,
+  },
+  updateModalLastDismissedAt: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  hasShownMultichainAccountsIntroModal: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  showShieldEntryModalOnce: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohort: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  pendingShieldCohortTxType: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  isWalletResetInProgress: {
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+    includeInStateLogs: true,
+  },
+  defaultSubscriptionPaymentOptions: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  shieldSubscriptionMetricsProps: {
+    includeInStateLogs: false,
+    persist: true,
+    includeInDebugSnapshot: false,
+    usedInUi: false,
+  },
+  dappSwapComparisonData: {
+    includeInStateLogs: false,
+    persist: false,
+    includeInDebugSnapshot: false,
+    usedInUi: true,
+  },
+  showStorageErrorToast: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
   },
 };
 
@@ -382,17 +739,15 @@ export class AppStateController extends BaseController<
 
   #timer: NodeJS.Timeout | null;
 
-  isUnlocked: () => boolean;
-
   readonly waitingForUnlock: { resolve: () => void }[];
 
   #approvalRequestId: string | null;
 
+  #qrCodeScanPromise: DeferredPromise<SerializedUR> | null = null;
+
   constructor({
     state = {},
     messenger,
-    addUnlockListener,
-    isUnlocked,
     onInactiveTimeout,
     extension,
   }: AppStateControllerOptions) {
@@ -413,9 +768,12 @@ export class AppStateController extends BaseController<
     this.#onInactiveTimeout = onInactiveTimeout || (() => undefined);
     this.#timer = null;
 
-    this.isUnlocked = isUnlocked;
     this.waitingForUnlock = [];
-    addUnlockListener(this.#handleUnlock.bind(this));
+
+    messenger.subscribe(
+      'KeyringController:unlock',
+      this.#handleUnlock.bind(this),
+    );
 
     messenger.subscribe(
       'PreferencesController:stateChange',
@@ -430,19 +788,30 @@ export class AppStateController extends BaseController<
       },
     );
 
-    messenger.subscribe(
-      'KeyringController:qrKeyringStateChange',
-      (qrHardware: Json) =>
-        this.update((currentState) => {
-          // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
-          currentState.qrHardware = qrHardware;
-        }),
-    );
-
     const { preferences } = messenger.call('PreferencesController:getState');
     if (typeof preferences.autoLockTimeLimit === 'number') {
       this.#setInactiveTimeout(preferences.autoLockTimeLimit);
     }
+
+    this.messenger.registerActionHandler(
+      'AppStateController:getUnlockPromise',
+      this.getUnlockPromise.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:requestQrCodeScan',
+      this.#requestQrCodeScan.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setCanTrackWalletFundsObtained',
+      this.setCanTrackWalletFundsObtained.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingShieldCohort',
+      this.setPendingShieldCohort.bind(this),
+    );
 
     this.#approvalRequestId = null;
   }
@@ -458,7 +827,9 @@ export class AppStateController extends BaseController<
    */
   getUnlockPromise(shouldShowUnlockRequest: boolean): Promise<void> {
     return new Promise((resolve) => {
-      if (this.isUnlocked()) {
+      const { isUnlocked } = this.messenger.call('KeyringController:getState');
+
+      if (isUnlocked) {
         resolve();
       } else {
         this.#waitForUnlock(resolve, shouldShowUnlockRequest);
@@ -477,7 +848,7 @@ export class AppStateController extends BaseController<
    */
   #waitForUnlock(resolve: () => void, shouldShowUnlockRequest: boolean): void {
     this.waitingForUnlock.push({ resolve });
-    this.messagingSystem.publish('AppStateController:unlockChange');
+    this.messenger.publish('AppStateController:unlockChange');
     if (shouldShowUnlockRequest) {
       this.#requestApproval();
     }
@@ -491,7 +862,7 @@ export class AppStateController extends BaseController<
       while (this.waitingForUnlock.length > 0) {
         this.waitingForUnlock.shift()?.resolve();
       }
-      this.messagingSystem.publish('AppStateController:unlockChange');
+      this.messenger.publish('AppStateController:unlockChange');
     }
 
     this.#acceptApproval();
@@ -564,6 +935,39 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setPna25Acknowledged(acknowledged: boolean, disableDelay = false): void {
+    this.update((state) => {
+      state.pna25Acknowledged = acknowledged;
+    });
+    if (disableDelay && acknowledged) {
+      this.messenger.call('ProfileMetricsController:skipInitialDelay');
+    }
+  }
+
+  setShieldPausedToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldPausedToastLastClickedOrClosed = time;
+    });
+  }
+
+  setShieldEndingToastLastClickedOrClosed(time: number): void {
+    this.update((state) => {
+      state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets whether to show the storage error toast.
+   * This is called when set operations fail (storage.local or IndexedDB).
+   *
+   * @param show - Whether to show the toast
+   */
+  setShowStorageErrorToast(show: boolean): void {
+    this.update((state) => {
+      state.showStorageErrorToast = show;
+    });
+  }
+
   /**
    * Replaces slides in state with new slides. If a slide with the same id
    * already exists, it will be merged with the new slide.
@@ -603,6 +1007,10 @@ export class AppStateController extends BaseController<
         }
         return slide;
       });
+
+      if (id === DOWNLOAD_MOBILE_APP_SLIDE_ID) {
+        state.showDownloadMobileAppSlide = false;
+      }
     });
   }
 
@@ -656,6 +1064,50 @@ export class AppStateController extends BaseController<
    */
   setLastActiveTime(): void {
     this.#resetTimer();
+  }
+
+  /**
+   * Set whether or not there is an update available
+   *
+   * @param isUpdateAvailable - Whether or not there is an update available
+   */
+  setIsUpdateAvailable(isUpdateAvailable: boolean): void {
+    this.update((state) => {
+      state.isUpdateAvailable = isUpdateAvailable;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has dismissed the update modal
+   *
+   * @param updateModalLastDismissedAt - timestamp of the last time the user has dismissed the update modal.
+   */
+  setUpdateModalLastDismissedAt(updateModalLastDismissedAt: number): void {
+    this.update((state) => {
+      state.updateModalLastDismissedAt = updateModalLastDismissedAt;
+    });
+  }
+
+  /**
+   * Record the timestamp of the last time the user has updated
+   *
+   * @param lastUpdatedAt - timestamp of the last time the user has updated
+   */
+  setLastUpdatedAt(lastUpdatedAt: number): void {
+    this.update((state) => {
+      state.lastUpdatedAt = lastUpdatedAt;
+    });
+  }
+
+  /**
+   * Record the previous version the user updated from
+   *
+   * @param fromVersion - the version the user updated from
+   */
+  setLastUpdatedFromVersion(fromVersion: string): void {
+    this.update((state) => {
+      state.lastUpdatedFromVersion = fromVersion;
+    });
   }
 
   /**
@@ -745,11 +1197,10 @@ export class AppStateController extends BaseController<
   ): void {
     if (
       pollingTokenType.toString() !==
-      POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND]
+        POLLING_TOKEN_ENVIRONMENT_TYPES[ENVIRONMENT_TYPE_BACKGROUND] &&
+      this.#isValidPollingTokenType(pollingTokenType)
     ) {
-      if (this.#isValidPollingTokenType(pollingTokenType)) {
-        this.#updatePollingTokens(pollingToken, pollingTokenType);
-      }
+      this.#updatePollingTokens(pollingToken, pollingTokenType);
     }
   }
 
@@ -804,6 +1255,7 @@ export class AppStateController extends BaseController<
       'popupGasPollTokens',
       'notificationGasPollTokens',
       'fullScreenGasPollTokens',
+      'sidePanelGasPollTokens',
     ];
 
     return validTokenTypes.includes(pollingTokenType);
@@ -817,6 +1269,7 @@ export class AppStateController extends BaseController<
       state.popupGasPollTokens = [];
       state.notificationGasPollTokens = [];
       state.fullScreenGasPollTokens = [];
+      state.sidePanelGasPollTokens = [];
     });
   }
 
@@ -854,6 +1307,28 @@ export class AppStateController extends BaseController<
   }
 
   /**
+   * Sets whether the multichain intro modal has been shown to the user
+   *
+   * @param hasShown - Whether the modal has been shown
+   */
+  setHasShownMultichainAccountsIntroModal(hasShown: boolean): void {
+    this.update((state) => {
+      state.hasShownMultichainAccountsIntroModal = hasShown;
+    });
+  }
+
+  /**
+   * Sets the product tour to be shown to the user
+   *
+   * @param productTour - Tour name to show (e.g., 'accountIcon') or empty string to hide
+   */
+  setProductTour(productTour: string): void {
+    this.update((state) => {
+      state.productTour = productTour;
+    });
+  }
+
+  /**
    * Sets whether the Network Banner should be shown
    *
    * @param showNetworkBanner
@@ -861,6 +1336,19 @@ export class AppStateController extends BaseController<
   setShowNetworkBanner(showNetworkBanner: boolean): void {
     this.update((state) => {
       state.showNetworkBanner = showNetworkBanner;
+    });
+  }
+
+  /**
+   * Updates the network connection banner state
+   *
+   * @param networkConnectionBanner - The new banner state
+   */
+  updateNetworkConnectionBanner(
+    networkConnectionBanner: AppStateControllerState['networkConnectionBanner'],
+  ): void {
+    this.update((state) => {
+      state.networkConnectionBanner = networkConnectionBanner;
     });
   }
 
@@ -887,44 +1375,6 @@ export class AppStateController extends BaseController<
   }
 
   /**
-   * Sets an object with networkName and appName
-   * or `null` if the message is meant to be cleared
-   *
-   * @param switchedNetworkDetails - Details about the network that MetaMask just switched to.
-   */
-  setSwitchedNetworkDetails(
-    switchedNetworkDetails: { origin: string; networkClientId: string } | null,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = switchedNetworkDetails;
-    });
-  }
-
-  /**
-   * Clears the switched network details in state
-   */
-  clearSwitchedNetworkDetails(): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-    });
-  }
-
-  /**
-   * Remembers if the user prefers to never see the
-   * network switched message again
-   *
-   * @param switchedNetworkNeverShowMessage
-   */
-  setSwitchedNetworkNeverShowMessage(
-    switchedNetworkNeverShowMessage: boolean,
-  ): void {
-    this.update((state) => {
-      state.switchedNetworkDetails = null;
-      state.switchedNetworkNeverShowMessage = switchedNetworkNeverShowMessage;
-    });
-  }
-
-  /**
    * Sets a property indicating the model of the user's Trezor hardware wallet
    *
    * @param trezorModel - The Trezor model.
@@ -942,59 +1392,10 @@ export class AppStateController extends BaseController<
    */
   updateNftDropDownState(nftsDropdownState: Json): void {
     this.update((state) => {
+      // @ts-expect-error this is caused by a bug in Immer, not being able to handle recursive types like Json
       state.nftsDropdownState = nftsDropdownState;
     });
   }
-
-  ///: BEGIN:ONLY_INCLUDE_IF(build-mmi)
-  /**
-   * Set the interactive replacement token with a url and the old refresh token
-   *
-   * @param opts
-   * @param opts.url
-   * @param opts.oldRefreshToken
-   */
-  showInteractiveReplacementTokenBanner({
-    url,
-    oldRefreshToken,
-  }: {
-    url: string;
-    oldRefreshToken: string;
-  }): void {
-    this.update((state) => {
-      state.interactiveReplacementToken = {
-        url,
-        oldRefreshToken,
-      };
-    });
-  }
-
-  /**
-   * Set the setCustodianDeepLink with the fromAddress and custodyId
-   *
-   * @param opts
-   * @param opts.fromAddress
-   * @param opts.custodyId
-   */
-  setCustodianDeepLink({
-    fromAddress,
-    custodyId,
-  }: {
-    fromAddress: string;
-    custodyId: string;
-  }): void {
-    this.update((state) => {
-      state.custodianDeepLink = { fromAddress, custodyId };
-    });
-  }
-
-  setNoteToTraderMessage(message: string): void {
-    this.update((state) => {
-      state.noteToTraderMessage = message;
-    });
-  }
-
-  ///: END:ONLY_INCLUDE_IF
 
   getSignatureSecurityAlertResponse(
     securityAlertId: string,
@@ -1013,6 +1414,43 @@ export class AppStateController extends BaseController<
       });
     }
   }
+
+  getAddressSecurityAlertResponse: GetAddressSecurityAlertResponse = (
+    cacheKey: string,
+  ): ScanAddressResponse | undefined => {
+    const cached = this.state.addressSecurityAlertResponses[cacheKey];
+
+    if (!cached) {
+      return undefined;
+    }
+
+    // Check if the cached response has expired (15 minute TTL)
+    const now = Date.now();
+    const ADDRESS_SECURITY_ALERT_TTL = 15 * MINUTE;
+    if (now - cached.timestamp > ADDRESS_SECURITY_ALERT_TTL) {
+      // Remove expired entry
+      this.update((state) => {
+        delete state.addressSecurityAlertResponses[cacheKey];
+      });
+      return undefined;
+    }
+
+    // Return the response without the timestamp
+    const { timestamp, ...response } = cached;
+    return response;
+  };
+
+  addAddressSecurityAlertResponse: AddAddressSecurityAlertResponse = (
+    cacheKey: string,
+    addressSecurityAlertResponse: ScanAddressResponse,
+  ): void => {
+    this.update((state) => {
+      state.addressSecurityAlertResponses[cacheKey] = {
+        ...addressSecurityAlertResponse,
+        timestamp: Date.now(),
+      };
+    });
+  };
 
   /**
    * A setter for the currentPopupId which indicates the id of popup window that's currently active
@@ -1061,7 +1499,7 @@ export class AppStateController extends BaseController<
     }
     this.#approvalRequestId = uuid();
 
-    this.messagingSystem
+    this.messenger
       .call(
         'ApprovalController:addRequest',
         {
@@ -1082,7 +1520,7 @@ export class AppStateController extends BaseController<
       return;
     }
     try {
-      this.messagingSystem.call(
+      this.messenger.call(
         'ApprovalController:acceptRequest',
         this.#approvalRequestId,
       );
@@ -1104,5 +1542,209 @@ export class AppStateController extends BaseController<
     this.update((state) => {
       state.throttledOrigins[origin] = throttledOriginState;
     });
+  }
+
+  /**
+   * Completes a QR code scan by resolving the promise with the scanned data.
+   *
+   * @param scannedData - The data that was scanned from the QR code.
+   * @throws If no QR code scan is in progress.
+   */
+  completeQrCodeScan(scannedData: SerializedUR): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.resolve(scannedData);
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Cancels the current QR code scan, if one is in progress.
+   * This will reject the promise with an error.
+   *
+   * @param error - The error to reject the promise with.
+   * @throws If no QR code scan is in progress.
+   */
+  cancelQrCodeScan(error?: Error): void {
+    if (!this.#qrCodeScanPromise) {
+      throw new Error('No QR code scan is in progress.');
+    }
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = null;
+    });
+
+    this.#qrCodeScanPromise.reject(error || new Error('Scan cancelled'));
+    this.#qrCodeScanPromise = null;
+  }
+
+  /**
+   * Requests a QR code scan and returns a promise that resolves with the scanned data.
+   * If a scan is already in progress, it returns the existing promise.
+   *
+   * @param request - The QR code scan request.
+   * @returns The scanned QR code data.
+   */
+  #requestQrCodeScan(request: QrScanRequest): Promise<SerializedUR> {
+    if (this.#qrCodeScanPromise) {
+      return this.#qrCodeScanPromise.promise;
+    }
+
+    const deferredPromise = createDeferredPromise<SerializedUR>();
+    this.#qrCodeScanPromise = deferredPromise;
+
+    this.update((state) => {
+      state.activeQrCodeScanRequest = request;
+    });
+
+    return deferredPromise.promise;
+  }
+
+  setEnableEnforcedSimulations(enabled: boolean): void {
+    this.update((state) => {
+      state.enableEnforcedSimulations = enabled;
+    });
+  }
+
+  setEnableEnforcedSimulationsForTransaction(
+    transactionId: string,
+    enabled: boolean,
+  ): void {
+    this.update((state) => {
+      state.enableEnforcedSimulationsForTransactions[transactionId] = enabled;
+    });
+  }
+
+  setEnforcedSimulationsSlippage(value: number): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippage = value;
+    });
+  }
+
+  setEnforcedSimulationsSlippageForTransaction(
+    transactionId: string,
+    value: number,
+  ): void {
+    this.update((state) => {
+      state.enforcedSimulationsSlippageForTransactions[transactionId] = value;
+    });
+  }
+
+  /**
+   * Sets the active tab information
+   *
+   * @param tabData - The active tab data
+   */
+
+  setAppActiveTab(tabData: {
+    id: number;
+    title: string;
+    origin: string;
+    protocol: string;
+    url: string;
+    host: string;
+    href: string;
+    favIconUrl?: string;
+  }): void {
+    this.update((state) => {
+      state.appActiveTab = tabData;
+    });
+  }
+
+  /**
+   * Clears the active tab information by setting appActiveTab to undefined.
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
+    });
+  }
+
+  setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
+    this.update((state) => {
+      state.showShieldEntryModalOnce = showShieldEntryModalOnce;
+    });
+  }
+
+  setPendingShieldCohort(cohort: string | null, txType?: string | null): void {
+    this.update((state) => {
+      state.pendingShieldCohort = cohort;
+      if (txType !== undefined) {
+        state.pendingShieldCohortTxType = txType;
+      }
+    });
+  }
+
+  setCanTrackWalletFundsObtained(enabled: boolean): void {
+    this.update((state) => {
+      state.canTrackWalletFundsObtained = enabled;
+    });
+  }
+
+  setIsWalletResetInProgress(isResetting: boolean): void {
+    this.update((state) => {
+      state.isWalletResetInProgress = isResetting;
+    });
+  }
+
+  getIsWalletResetInProgress(): boolean {
+    return this.state.isWalletResetInProgress;
+  }
+
+  setDefaultSubscriptionPaymentOptions(
+    defaultSubscriptionPaymentOptions: DefaultSubscriptionPaymentOptions,
+  ): void {
+    this.update((state) => {
+      state.defaultSubscriptionPaymentOptions =
+        defaultSubscriptionPaymentOptions;
+    });
+  }
+
+  /**
+   * Update the Shield subscription metrics properties which are not accessible in the background directly.
+   *
+   * @param shieldSubscriptionMetricsProps - The Shield subscription metrics properties.
+   */
+  setShieldSubscriptionMetricsProps(
+    shieldSubscriptionMetricsProps: ShieldSubscriptionMetricsPropsFromUI,
+  ): void {
+    this.update((state) => {
+      state.shieldSubscriptionMetricsProps = shieldSubscriptionMetricsProps;
+    });
+  }
+
+  deleteDappSwapComparisonData(uniqueId: string): void {
+    this.update((state) => {
+      delete state.dappSwapComparisonData?.[uniqueId];
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+      };
+    });
+  }
+
+  setDappSwapComparisonData(
+    uniqueId: string,
+    info: DappSwapComparisonData,
+  ): void {
+    this.update((state) => {
+      state.dappSwapComparisonData = {
+        ...state.dappSwapComparisonData,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
+      };
+    });
+  }
+
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
+    return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  FontFamily,
   FontWeight,
   FontStyle,
   TextVariant,
@@ -116,6 +117,10 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
    */
   fontStyle?: FontStyle;
   /**
+   * The font family of the Text component. Should use the FontFamily enum
+   */
+  fontFamily?: FontFamily;
+  /**
    * The textTransform of the Text component. Should use the TextTransform enum from
    * ./ui/helpers/constants/design-system.js
    */
@@ -136,9 +141,13 @@ export interface TextStyleUtilityProps extends StyleUtilityProps {
   ellipsis?: boolean;
 }
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextProps<C extends React.ElementType> =
   PolymorphicComponentPropWithRef<C, TextStyleUtilityProps>;
 
+// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export type TextComponent = <C extends React.ElementType = 'span'>(
   props: TextProps<C>,
 ) => React.ReactElement | null;

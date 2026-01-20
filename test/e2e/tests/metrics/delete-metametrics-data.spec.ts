@@ -1,16 +1,16 @@
 import { strict as assert } from 'assert';
-import { MockedEndpoint, Mockttp } from 'mockttp';
 import { Suite } from 'mocha';
-import { getEventPayloads, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
-import { Driver } from '../../webdriver/driver';
-import { TestSuiteArguments } from '../confirmations/transactions/shared';
+import { MockedEndpoint, Mockttp } from 'mockttp';
 import { MOCK_META_METRICS_ID } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import PrivacySettings from '../../page-objects/pages/settings/privacy-settings';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
-import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import { Driver } from '../../webdriver/driver';
+import { TestSuiteArguments } from '../confirmations/transactions/shared';
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -94,14 +94,17 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // delete MetaMetrics data on privacy settings page
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
+        await privacySettings.checkPageIsLoaded();
         await privacySettings.deleteMetaMetrics();
-        assert.equal(await privacySettings.check_deleteMetaMetricsDataButtonEnabled(), false);
+        assert.equal(
+          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
+          false,
+        );
 
         const events = await getEventPayloads(
           driver,
@@ -111,19 +114,26 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         assert.deepStrictEqual(events[0].properties, {
           category: 'Settings',
           locale: 'en',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           chain_id: '0x539',
+          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           environment_type: 'fullscreen',
         });
 
         await settingsPage.closeSettingsPage();
-        await new HomePage(driver).check_pageIsLoaded();
+        await new HomePage(driver).checkPageIsLoaded();
         await headerNavbar.openSettingsPage();
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         // check MetaMetrics data button is enabled when user goes back to privacy settings page
-        await privacySettings.check_pageIsLoaded();
-        assert.equal(await privacySettings.check_deleteMetaMetricsDataButtonEnabled(), true);
+        await privacySettings.checkPageIsLoaded();
+        assert.equal(
+          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
+          true,
+        );
       },
     );
   });
@@ -145,12 +155,15 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        assert.equal(await privacySettings.check_deleteMetaMetricsDataButtonEnabled(), false);
+        await privacySettings.checkPageIsLoaded();
+        assert.equal(
+          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
+          false,
+        );
       },
     );
   });
@@ -167,12 +180,15 @@ describe('Delete MetaMetrics Data', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openSettingsPage();
         const settingsPage = new SettingsPage(driver);
-        await settingsPage.check_pageIsLoaded();
+        await settingsPage.checkPageIsLoaded();
         await settingsPage.goToPrivacySettings();
 
         const privacySettings = new PrivacySettings(driver);
-        await privacySettings.check_pageIsLoaded();
-        assert.equal(await privacySettings.check_deleteMetaMetricsDataButtonEnabled(), false);
+        await privacySettings.checkPageIsLoaded();
+        assert.equal(
+          await privacySettings.checkDeleteMetaMetricsDataButtonEnabled(),
+          false,
+        );
       },
     );
   });

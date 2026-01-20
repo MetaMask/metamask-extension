@@ -4,12 +4,14 @@ on:
   pull_request:
     types:
       - opened
-      - reopened
-      - synchronize
 
 jobs:
   add-team-label:
-    if: ${{ !github.event.pull_request.head.repo.fork }}
-    uses: metamask/github-tools/.github/workflows/add-team-label.yml@18af6e4b56a18230d1792480e249ebc50b324927
-    secrets:
-      TEAM_LABEL_TOKEN: ${{ secrets.TEAM_LABEL_TOKEN }}
+    name: Add team label
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add team label
+        if: ${{ !github.event.pull_request.head.repo.fork }}
+        uses: MetaMask/github-tools/.github/actions/add-team-label@v1
+        with:
+          team-label-token: ${{ secrets.TEAM_LABEL_TOKEN }}

@@ -1,14 +1,13 @@
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import {
   mockSignatureRejected,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ConfirmAlertModal from '../../../page-objects/pages/dialog/confirm-alert';
 import {
   BlockaidReason,
@@ -23,11 +22,11 @@ import {
   openDappAndTriggerSignature,
   SignatureType,
 } from './signature-helpers';
+
 describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite) {
   it('displays alert for domain binding and confirms', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({ driver }: TestSuiteArguments) => {
         await initializePages(driver);
         const confirmation = new Confirmation(driver);
@@ -53,9 +52,8 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
   });
 
   it('initiates and rejects from confirmation screen', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -74,19 +72,32 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'confirmation',
           expectedProps: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_action_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_key_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved_count: 0,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 0,
           },
           securityAlertReason: BlockaidReason.notApplicable,
@@ -99,9 +110,8 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
   });
 
   it('initiates and rejects from alert friction modal', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -125,19 +135,32 @@ describe('Malicious Confirmation Signature - Bad Domain', function (this: Suite)
           driver,
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'personal_sign',
-          uiCustomizations: [
-            'redesigned_confirmation',
-            'sign_in_with_ethereum',
-          ],
+          uiCustomizations: ['sign_in_with_ethereum'],
           location: 'alert_friction_modal',
           expectedProps: {
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_action_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_key_clicked: [],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_resolved_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_triggered_count: 1,
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized: ['requestFrom'],
+            // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+            // eslint-disable-next-line @typescript-eslint/naming-convention
             alert_visualized_count: 1,
           },
           securityAlertReason: BlockaidReason.notApplicable,

@@ -61,7 +61,6 @@ const ENTRYPOINTS = [
   // 'development/', // Development scripts and utilities
   // 'test/', // Tests
   'app/', // Main application code
-  'offscreen/', // Offscreen page for MV3
   'shared/', // Shared utilities and components
   'ui/', // UI components and styles
 ];
@@ -76,11 +75,12 @@ async function update(): Promise<void> {
     console.log('Generating dependency graph...');
     const tree = await madge(ENTRYPOINTS, MADGE_CONFIG);
     const circularDeps = normalizeJson(tree.circular());
-    const formatted = prettier.format(
+    const prettierOptions = await prettier.resolveConfig(TARGET_FILE);
+    const formatted = await prettier.format(
       FILE_HEADER + JSON.stringify(circularDeps, null, 2),
       {
         // get options from .prettierrc
-        ...prettier.resolveConfig.sync(TARGET_FILE),
+        ...prettierOptions,
         filepath: TARGET_FILE,
       },
     );

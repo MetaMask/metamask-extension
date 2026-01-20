@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { CreateAccount } from '..';
@@ -30,7 +30,7 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
   snapSuggestedAccountName,
 }) => {
   const t = useI18nContext();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const mostRecentOverviewPage = useSelector(getMostRecentOverviewPage);
 
@@ -54,12 +54,20 @@ export const CreateNamedSnapAccount: React.FC<CreateNamedSnapAccountProps> = ({
 
   const onClose = useCallback(async () => {
     await onActionComplete({ success: false });
-    history.push(mostRecentOverviewPage);
+    navigate(mostRecentOverviewPage);
   }, []);
 
   return (
-    <Box padding={4} className="name-snap-account-page">
-      <ModalHeader padding={4} onClose={onClose}>
+    <Box padding={6} className="name-snap-account-page">
+      <ModalHeader
+        paddingTop={2}
+        paddingBottom={4}
+        paddingRight={0}
+        paddingLeft={0}
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        onClose={onClose}
+      >
         {t('addAccountToMetaMask')}
       </ModalHeader>
       <CreateAccount

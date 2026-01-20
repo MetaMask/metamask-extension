@@ -36,10 +36,9 @@ export const AccountDetailsSection = ({
   const account = useSelector((state) =>
     getInternalAccountByAddress(state, address),
   );
-  const {
-    metadata: { keyring },
-  } = account;
-  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(keyring?.type);
+  const exportPrivateKeyFeatureEnabled = isAbleToExportAccount(
+    account?.metadata.keyring?.type,
+  );
   const keyrings = useSelector(getMetaMaskKeyrings);
   const exportSrpFeatureEnabled = isAbleToRevealSrp(account, keyrings);
 
@@ -58,8 +57,12 @@ export const AccountDetailsSection = ({
               category: MetaMetricsEventCategory.Accounts,
               event: MetaMetricsEventName.KeyExportSelected,
               properties: {
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 key_type: MetaMetricsEventKeyType.Pkey,
                 location: 'Account Details Modal',
+                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 hd_entropy_index: hdEntropyIndex,
               },
             });
@@ -69,23 +72,19 @@ export const AccountDetailsSection = ({
           {t('showPrivateKey')}
         </ButtonSecondary>
       ) : null}
-      {
-        ///: BEGIN:ONLY_INCLUDE_IF(multi-srp)
-        exportSrpFeatureEnabled ? (
-          <ButtonSecondary
-            data-testid="account-details-display-export-srp"
-            block
-            size={ButtonSecondarySize.Lg}
-            variant={TextVariant.bodyMd}
-            onClick={() => {
-              onExportClick('SRP');
-            }}
-          >
-            {t('showSRP')}
-          </ButtonSecondary>
-        ) : null
-        ///: END:ONLY_INCLUDE_IF
-      }
+      {exportSrpFeatureEnabled ? (
+        <ButtonSecondary
+          data-testid="account-details-display-export-srp"
+          block
+          size={ButtonSecondarySize.Lg}
+          variant={TextVariant.bodyMd}
+          onClick={() => {
+            onExportClick('SRP');
+          }}
+        >
+          {t('showSRP')}
+        </ButtonSecondary>
+      ) : null}
     </>
   );
 };

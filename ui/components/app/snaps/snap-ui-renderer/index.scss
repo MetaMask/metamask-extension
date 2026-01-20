@@ -1,15 +1,24 @@
 @use "design-system";
 
 .snap-ui-renderer {
+  $height-screen-sm-min: 720px;
   $width-screen-sm-min: 85vw;
   $width-screen-md-min: 80vw;
   $width-screen-lg-min: 62vw;
 
   &__container {
-    & > *:first-child {
-      gap: 16px;
-      margin: 16px;
-    }
+    height: 100%;
+  }
+
+  &__container > &__panel {
+    gap: 16px;
+    overflow-y: auto;
+    padding: 16px;
+  }
+
+
+  &__content {
+    flex: 1 1 auto;
   }
 
   &__spinner {
@@ -70,21 +79,11 @@
   }
 
   &__footer {
+    box-shadow: var(--shadow-size-md) var(--color-shadow-default);
+    height: 80px;
     margin-top: auto;
-
-    @include design-system.screen-sm-min {
-      max-width: $width-screen-sm-min;
-    }
-
-    @include design-system.screen-md-min {
-      max-width: $width-screen-md-min;
-    }
-
-    @include design-system.screen-lg-min {
-      max-width: $width-screen-lg-min;
-    }
+    transition: bottom 0.3s ease-in-out;
   }
-
 
   &__panel.box--flex-direction-row {
     .snap-ui-renderer__field {

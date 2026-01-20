@@ -8,12 +8,10 @@ import {
   addTransactionAndRouteToConfirmationPage,
   getCode,
 } from '../../../store/actions';
-import { renderHookWithProvider } from '../../../../test/lib/render-helpers';
+import { EIP_7702_REVOKE_ADDRESS } from '../../../../shared/lib/eip7702-utils';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { useConfirmationNavigation } from './useConfirmationNavigation';
-import {
-  EIP_7702_REVOKE_ADDRESS,
-  useEIP7702Account,
-} from './useEIP7702Account';
+import { useEIP7702Account } from './useEIP7702Account';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -34,11 +32,25 @@ const ADDRESS_MOCK = '0x1234';
 const UPGRADE_CONTRACT_ADDRESS_MOCK = '0x5678';
 const CODE_MOCK = '0xabcd';
 const TRANSACTION_ID_MOCK = '1234-5678';
+const SEPOLIA_CHAINID = '0xaa36a7';
 
 function runHook({ onRedirect }: { onRedirect?: () => void } = {}) {
   const { result } = renderHookWithProvider(
-    () => useEIP7702Account({ onRedirect }),
-    {},
+    () => useEIP7702Account({ onRedirect, chainId: SEPOLIA_CHAINID }),
+    {
+      metamask: {
+        networkConfigurationsByChainId: {
+          [SEPOLIA_CHAINID]: {
+            defaultRpcEndpointIndex: 0,
+            rpcEndpoints: [
+              {
+                networkClientId: 'sepolia',
+              },
+            ],
+          },
+        },
+      },
+    },
   );
   return result.current;
 }
@@ -55,16 +67,17 @@ describe('useEIP7702Account', () => {
   beforeEach(() => {
     jest.resetAllMocks();
 
-    addTransactionAndRouteToConfirmationPageMock.mockReturnValue({
+    const mockDispatch = jest.fn().mockResolvedValue({
+      hash: TRANSACTION_ID_MOCK,
+      id: TRANSACTION_ID_MOCK,
       type: 'MockAction',
-    } as unknown as ReturnType<typeof addTransactionAndRouteToConfirmationPageMock>);
+    });
+    useDispatchMock.mockReturnValue(mockDispatch);
 
     useConfirmationNavigationMock.mockReturnValue({
       confirmations: [],
       navigateToId: jest.fn(),
     } as unknown as ReturnType<typeof useConfirmationNavigationMock>);
-
-    useDispatchMock.mockReturnValue(jest.fn());
   });
 
   describe('isUpgraded', () => {
@@ -74,10 +87,11 @@ describe('useEIP7702Account', () => {
       expect(result).toBe(true);
     });
 
+    // @ts-expect-error This function is missing from the Mocha type definitions
     it.each([undefined, '', '0x'])(
       'returns false if code is %s',
-      async (code) => {
-        getCodeMock.mockResolvedValue(code as string);
+      async (code: string) => {
+        getCodeMock.mockResolvedValue(code);
         const result = await runHook().isUpgraded(ADDRESS_MOCK);
         expect(result).toBe(false);
       },
@@ -102,6 +116,8 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
+          networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.revokeDelegation,
         },
       );
@@ -117,6 +133,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -141,6 +158,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -173,7 +191,8 @@ describe('useEIP7702Account', () => {
           type: TransactionEnvelopeType.setCode,
         },
         {
-          networkClientId: undefined,
+          networkClientId: 'sepolia',
+          requireApproval: true,
           type: TransactionType.batch,
         },
       );
@@ -189,6 +208,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );
@@ -213,6 +233,7 @@ describe('useEIP7702Account', () => {
 
       useDispatchMock.mockReturnValue(
         jest.fn().mockResolvedValue({
+          hash: TRANSACTION_ID_MOCK,
           id: TRANSACTION_ID_MOCK,
         }),
       );

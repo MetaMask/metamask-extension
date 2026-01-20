@@ -1,6 +1,6 @@
 import { compose } from 'redux';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import withRouterHooks from '../../../../helpers/higher-order-components/with-router-hooks/with-router-hooks';
 import {
   addToAddressBook,
   showQrScanner,
@@ -11,6 +11,7 @@ import {
   getDomainError,
   getDomainResolutions,
   resetDomainResolution,
+  lookupDomainName,
 } from '../../../../ducks/domains';
 import { getAddressBook, getInternalAccounts } from '../../../../selectors';
 import AddContact from './add-contact.component';
@@ -27,15 +28,17 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addToAddressBook: (recipient, nickname) =>
-      dispatch(addToAddressBook(recipient, nickname)),
+    addToAddressBook: (recipient, nickname, memo, customChainId) =>
+      dispatch(addToAddressBook(recipient, nickname, memo, customChainId)),
     scanQrCode: () => dispatch(showQrScanner()),
     qrCodeDetected: (data) => dispatch(qrCodeDetected(data)),
     resetDomainResolution: () => dispatch(resetDomainResolution()),
+    lookupDomainName: (domainName, chainId) =>
+      dispatch(lookupDomainName(domainName, chainId)),
   };
 };
 
 export default compose(
-  withRouter,
+  withRouterHooks,
   connect(mapStateToProps, mapDispatchToProps),
 )(AddContact);

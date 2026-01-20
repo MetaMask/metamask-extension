@@ -1,9 +1,111 @@
 import log from 'loglevel';
-import { captureException } from '@sentry/browser';
 import { isEmpty } from 'lodash';
-import { type MetaMaskStateType, MetaMaskStorageStructure } from './base-store';
-import ExtensionStore from './extension-store';
-import ReadOnlyNetworkStore from './read-only-network-store';
+import { RuntimeObject, hasProperty, isObject } from '@metamask/utils';
+import {
+  captureException,
+  captureMessage,
+} from '../../../../shared/lib/sentry';
+import { MISSING_VAULT_ERROR } from '../../../../shared/constants/errors';
+import { getManifestFlags } from '../../../../shared/lib/manifestFlags';
+import { IndexedDBStore } from './indexeddb-store';
+import type {
+  MetaMaskStateType,
+  MetaMaskStorageStructure,
+  BaseStore,
+  MetaData,
+} from './base-store';
+import { runTrackedTask } from './utils/run-tracked-task';
+
+export type StorageKind = 'data' | 'split';
+
+export type Backup = {
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  KeyringController?: unknown;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  AppMetadataController?: unknown;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  MetaMetricsController?: unknown;
+  meta?: MetaData;
+};
+
+export const backedUpStateKeys = [
+  'KeyringController',
+  'AppMetadataController',
+  'MetaMetricsController',
+] as const;
+
+export type BackedUpStateKey = (typeof backedUpStateKeys)[number];
+
+/**
+ * This Error represents an error that occurs during persistence operations.
+ * It includes a backup of the state at the time of the error and optionally
+ * a reference to the original error that caused the persistence failure.
+ */
+export class PersistenceError extends Error {
+  backup: object | null;
+
+  /**
+   * The original error that caused the persistence failure, if any.
+   * This is useful for debugging as it preserves the original error message
+   * (e.g., Firefox's "Error: An unexpected error occurred").
+   */
+  override cause?: Error;
+
+  constructor(message: string, backup: object | null, cause?: Error) {
+    super(message);
+    this.name = 'PersistenceError';
+    this.backup = backup;
+    this.cause = cause;
+  }
+}
+
+/**
+ * Pulls out the relevant state from the MetaMask state object and returns
+ * an object to be backed up.
+ *
+ * We don't back up all properties of the state object, only the ones that are
+ * relevant for restoring the state. This is to avoid unnecessary data
+ * duplication and ensure efficient storage usage.
+ *
+ * @param state - The current MetaMask state.
+ * @param meta - The metadata object containing versioning information.
+ * @returns A Backup object containing the state of various controllers.
+ */
+function makeBackup(state: MetaMaskStateType, meta: MetaData): Backup {
+  const backup = Object.create(null);
+  for (const key of backedUpStateKeys) {
+    if (hasProperty(state, key)) {
+      backup[key] = state[key];
+    }
+  }
+  backup.meta = meta;
+  return backup;
+}
+
+/**
+ * Checks if the state contains a vault. This can be used to determine if the
+ * MetaMask state is in a valid state for backup.
+ *
+ * @param state - The current MetaMask state.
+ * @returns
+ */
+function hasVault(
+  state?: MetaMaskStateType,
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+): state is { KeyringController: RuntimeObject & Record<'vault', unknown> } {
+  const keyringController = state?.KeyringController;
+  return (
+    isObject(keyringController) &&
+    hasProperty(keyringController, 'vault') &&
+    Boolean(keyringController?.vault)
+  );
+}
+
+const STATE_LOCK = 'state-lock';
 
 /**
  * The PersistenceManager class serves as a high-level manager for handling
@@ -31,11 +133,20 @@ import ReadOnlyNetworkStore from './read-only-network-store';
  *
  * Usage:
  * The `PersistenceManager` is instantiated with a `localStore`, which is an
- * implementation of the `BaseStore` class (either `ExtensionStore` or
- * `ReadOnlyNetworkStore`). It provides methods for setting and retrieving
+ * implementation of the `BaseStore` class (`ExtensionStore`). It provides methods for setting and retrieving
  * state, managing metadata, and handling cleanup tasks.
  */
 export class PersistenceManager {
+  /**
+   * DefaultStorageKind is a static property that defines the default storage
+   * kind to be used by the PersistenceManager. It checks if the code is running
+   * in a test environment and retrieves the storage kind from manifest flags
+   * if available; otherwise, it defaults to 'split'.
+   */
+  static readonly defaultStorageKind = ((process.env.IN_TEST
+    ? getManifestFlags().testing?.storageKind
+    : null) ?? 'split') as StorageKind;
+
   /**
    * dataPersistenceFailing is a boolean that is set to true if the storage
    * system attempts to write state and the write operation fails. This is only
@@ -57,58 +168,561 @@ export class PersistenceManager {
    * includes a single key which is 'version' and contains the current version
    * number of the state tree.
    */
-  #metadata?: { version: number };
+  #metadata?: MetaData;
 
   #isExtensionInitialized: boolean = false;
 
-  #localStore: ExtensionStore | ReadOnlyNetworkStore;
+  #localStore: BaseStore;
 
-  constructor({
-    localStore,
-  }: {
-    localStore: ExtensionStore | ReadOnlyNetworkStore;
-  }) {
+  #backupDb: IndexedDBStore | null = null;
+
+  #backup?: string;
+
+  #open: boolean = false;
+
+  /**
+   * Callback to be invoked when a set operation fails (storage.local or IndexedDB).
+   * This allows the background script to notify the UI about the failure.
+   */
+  #onSetFailed?: () => void;
+
+  /**
+   * Tracks if a set failure occurred before the callback was registered.
+   * This handles the race condition where failures happen during controller initialization.
+   */
+  #setFailedBeforeCallbackRegistered = false;
+
+  constructor({ localStore }: { localStore: BaseStore }) {
     this.#localStore = localStore;
   }
 
-  setMetadata(metadata: { version: number }) {
-    this.#metadata = metadata;
+  /**
+   * Sets the callback to be invoked when a set operation fails.
+   * This is called by the background script to wire up the notification to the UI.
+   * If a failure already occurred before this callback was registered, it will be
+   * called immediately.
+   *
+   * @param callback - The callback to invoke when a set operation fails
+   */
+  setOnSetFailed(callback: () => void) {
+    this.#onSetFailed = callback;
+
+    // If a failure occurred before this callback was registered, call it now
+    if (this.#setFailedBeforeCallbackRegistered) {
+      callback();
+    }
   }
 
+  /**
+   * Notifies the UI that a set operation has failed (storage.local or IndexedDB).
+   * If the callback is not yet registered, tracks the failure for later notification.
+   */
+  #notifySetFailed() {
+    if (this.#onSetFailed) {
+      this.#onSetFailed();
+    } else {
+      // Callback not yet registered - track the failure for later
+      this.#setFailedBeforeCallbackRegistered = true;
+    }
+  }
+
+  async open() {
+    if (!this.#open) {
+      try {
+        const db = new IndexedDBStore();
+        await db.open('metamask-backup', 1);
+        this.#backupDb = db;
+      } catch (error) {
+        // `indexedDB` can't be used by addons in FF in some instances of
+        // private browsing mode due to this bug:
+        // https://bugzilla.mozilla.org/show_bug.cgi?id=1982707. In these
+        // cases we just won't have a backup vault.
+        if (
+          isObject(error) &&
+          error instanceof DOMException &&
+          error.name === 'InvalidStateError' &&
+          error.message ===
+            'A mutation operation was attempted on a database that did not allow mutations.'
+        ) {
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(error, {
+            tags: { 'persistence.error': 'backup-db-open-failed' },
+            fingerprint: ['persistence-error', 'backup-db-open-failed'],
+          });
+          console.warn(
+            'Could not open backup database; automatic vault recovery will not be available.',
+          );
+          console.error(error);
+        } else {
+          // rethrow since we couldn't handle it here.
+          throw error;
+        }
+      }
+      this.#open = true;
+    }
+  }
+
+  /**
+   * Retrieves a clone of the current metadata.
+   *
+   * @returns A clone of the current metadata object.
+   */
+  getMetaData(): MetaData | undefined {
+    return structuredClone(this.#metadata);
+  }
+
+  setMetadata(metadata: MetaData) {
+    // don't rewrite if nothing has changed
+    // this is a cheap comparison since metadata is small.
+    if (
+      this.storageKind === 'split' &&
+      JSON.stringify(this.#metadata) === JSON.stringify(metadata)
+    ) {
+      return;
+    }
+    this.#metadata = metadata;
+    if (this.storageKind === 'split') {
+      this.#pendingPairs.set('meta', metadata);
+    }
+  }
+
+  #currentLockAbortController: void | AbortController = undefined;
+
+  #pendingPairs = new Map<string, unknown>();
+
+  storageKind: StorageKind = PersistenceManager.defaultStorageKind;
+
+  /**
+   * Sets the state in the local store.
+   *
+   * @param state - The state to set in the local store. This should be an object
+   * containing the state data to be stored.
+   * @throws Error if the state is missing or if the metadata is not set before
+   * calling this method.
+   * @throws Error if the local store is not open.
+   * @throws Error if the data persistence fails during the write operation.
+   */
   async set(state: MetaMaskStateType) {
+    if (this.storageKind !== 'data') {
+      throw new Error(
+        'MetaMask - cannot set full state when storageKind is not "data"',
+      );
+    }
+
+    await this.open();
+
     if (!state) {
       throw new Error('MetaMask - updated state is missing');
     }
-    if (!this.#metadata) {
+    const meta = this.#metadata;
+    if (!meta) {
       throw new Error('MetaMask - metadata must be set before calling "set"');
     }
-    try {
-      await this.#localStore.set({ data: state, meta: this.#metadata });
-      if (this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = false;
-      }
-    } catch (err) {
-      if (!this.#dataPersistenceFailing) {
-        this.#dataPersistenceFailing = true;
-        captureException(err);
-      }
-      log.error('error setting state in local store:', err);
-    } finally {
-      this.#isExtensionInitialized = true;
-    }
+
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take its place. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `set` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
+    this.#currentLockAbortController?.abort();
+    this.#currentLockAbortController = abortController;
+
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive', signal: abortController.signal },
+      async () => {
+        this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
+        try {
+          // atomically set all the keys
+          await this.#localStore.set({
+            data: state,
+            meta,
+          });
+
+          const backup = makeBackup(state, meta);
+          // if we have a vault we can back it up
+          if (hasVault(backup)) {
+            const stringifiedBackup = JSON.stringify(backup);
+            // and the backup has changed
+            if (this.#backup !== stringifiedBackup) {
+              // save it to the backup DB - wrapped in try-catch to differentiate
+              // backup failures from storage.local failures in Sentry
+              try {
+                await this.#backupDb?.set(backup);
+                this.#backup = stringifiedBackup;
+              } catch (backupErr) {
+                backupFailed = true;
+                throw backupErr;
+              }
+            }
+          }
+
+          if (this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'set-recovered' },
+                fingerprint: ['persistence-event', 'set-recovered'],
+              },
+            );
+          }
+        } catch (err) {
+          if (!this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = true;
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed ? 'set-backup-failed' : 'set-failed';
+
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
+            });
+          }
+          this.#notifySetFailed();
+          log.error('error setting state in local store:', err);
+        } finally {
+          this.#isExtensionInitialized = true;
+        }
+      },
+    );
   }
 
-  async get() {
-    const result = await this.#localStore.get();
+  /**
+   * Updates a specific top-level (Controller) key in the local store.
+   *
+   * @param key - The top-level key to update in the local store.
+   * @param value - The value to set for the specified key. Specify `undefined`
+   * to delete the key.
+   * @throws Error if the storageKind is not 'split'.
+   */
+  update(key: keyof MetaMaskStateType, value: unknown | undefined) {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot set individual keys when storageKind is not "split"',
+      );
+    }
+    this.#pendingPairs.set(key, value);
+  }
 
-    if (isEmpty(result)) {
-      this.#mostRecentRetrievedState = null;
+  async persist() {
+    if (this.storageKind !== 'split') {
+      throw new Error(
+        'MetaMask - cannot use `persist` when storageKind is not "split"',
+      );
+    }
+
+    await this.open();
+
+    const meta = this.#metadata;
+    if (!meta) {
+      throw new Error(
+        'MetaMask - metadata must be set before calling "persist"',
+      );
+    }
+
+    const abortController = new AbortController();
+
+    // If we already have a write _pending_, abort it so the more up-to-date
+    // write can take its place. This is to prevent piling up multiple writes
+    // in the lock queue, which is pointless because we only care about the most
+    // recent write. This should rarely happen, as elsewhere we make use of
+    // `debounce` for all `persist` requests in order to slow them to once per
+    // 1000ms; however, if the state is very large it *can* take more than the
+    // `debounce`'s `wait` time to write, resulting in a pile up right here.
+    // This prevents that pile up from happening.
+    this.#currentLockAbortController?.abort();
+    this.#currentLockAbortController = abortController;
+
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive', signal: abortController.signal },
+      async () => {
+        this.#currentLockAbortController = undefined;
+        // Track which operation failed to use the correct Sentry tag
+        let backupFailed = false;
+        try {
+          const clone = structuredClone(this.#pendingPairs);
+          // reset the pendingPairs
+          this.#pendingPairs.clear();
+          try {
+            // save the pairs
+            await this.#localStore.setKeyValues(clone);
+          } catch (err) {
+            // merge the clone with the pending pairs again
+            for (const [key, value] of clone.entries()) {
+              // we can't just overwrite because other `update` calls might have
+              // happened since we created the clone. We don't want to overwrite
+              // any new changes.
+              if (!this.#pendingPairs.has(key)) {
+                this.#pendingPairs.set(key, value);
+              }
+            }
+            throw err;
+          }
+
+          const partialState = Object.create(null);
+          for (const [key, value] of clone.entries()) {
+            if (backedUpStateKeys.includes(key as BackedUpStateKey)) {
+              partialState[key] = value;
+            }
+          }
+          if (hasVault(partialState)) {
+            const backup = makeBackup(partialState, meta);
+            // save it to the backup DB - wrapped in try-catch to differentiate
+            // backup failures from storage.local failures in Sentry
+            try {
+              await this.#backupDb?.set(backup);
+            } catch (backupErr) {
+              backupFailed = true;
+              throw backupErr;
+            }
+          }
+
+          if (this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = false;
+            // Track recovery to understand how often failures are temporary.
+            // This helps answer: "Do set calls ever fail and then succeed in the same session?"
+            captureMessage(
+              'Data persistence recovered after temporary failure',
+              {
+                level: 'info',
+                tags: { 'persistence.event': 'persist-recovered' },
+                fingerprint: ['persistence-event', 'persist-recovered'],
+              },
+            );
+          }
+        } catch (err) {
+          if (!this.#dataPersistenceFailing) {
+            this.#dataPersistenceFailing = true;
+            // Use different tags to differentiate storage.local vs IndexedDB backup failures.
+            const tag = backupFailed
+              ? 'persist-backup-failed'
+              : 'persist-failed';
+
+            // Custom fingerprint prevents Sentry's deduplication from dropping
+            // this event when other persistence errors with the same underlying
+            // error message (e.g., "An unexpected error occurred") are reported.
+            captureException(err, {
+              tags: { 'persistence.error': tag },
+              fingerprint: ['persistence-error', tag],
+            });
+          }
+          this.#notifySetFailed();
+          log.error('error setting state in local store:', err);
+        } finally {
+          this.#isExtensionInitialized = true;
+        }
+      },
+    );
+  }
+
+  /**
+   * Retrieves the current state of the local store. If the store is empty,
+   * it returns undefined. If the store is not open, it throws an error.
+   *
+   * @param options - An object containing options for the retrieval.
+   * @param options.validateVault - A flag indicating whether to validate the vault
+   * @returns The current state of the local store or null if the store is empty.
+   * @throws Error if the vault is missing and a backup vault is found in IndexedDB.
+   * @throws Error if the local store is not open.
+   */
+  async get({
+    validateVault,
+  }: {
+    validateVault: boolean;
+  }): Promise<MetaMaskStorageStructure | undefined> {
+    await this.open();
+
+    return await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'shared' },
+      async () => {
+        // Capture both error and result to handle them in a unified way
+        // This allows us to respect the validateVault flag consistently
+        const [localStoreError, result] = await this.#localStore
+          .get()
+          .then((res): [undefined, MetaMaskStorageStructure | null] => [
+            undefined,
+            res,
+          ])
+          .catch((error: Error): [Error, undefined] => [error, undefined]);
+
+        // Log and capture the error if one occurred, but don't throw yet
+        if (localStoreError) {
+          log.error(
+            'Error retrieving the current state of the local store:',
+            localStoreError,
+          );
+          // Custom fingerprint prevents Sentry's deduplication from dropping
+          // this event when other persistence errors with the same underlying
+          // error message (e.g., "An unexpected error occurred") are reported.
+          captureException(localStoreError, {
+            tags: { 'persistence.error': 'get-failed' },
+            fingerprint: ['persistence-error', 'get-failed'],
+          });
+        }
+
+        if (validateVault) {
+          // Check if we need to trigger vault recovery:
+          // 1. If localStore.get() failed entirely (e.g., Firefox's "Error: An unexpected error occurred")
+          // 2. If we got a result but the vault is missing
+          const needsVaultRecovery =
+            localStoreError !== undefined || !hasVault(result?.data);
+
+          if (needsVaultRecovery) {
+            // Check if we have a backup in IndexedDB. We need to throw an error
+            // so that the user can be prompted to recover it.
+            // Wrap in try-catch to prevent backup failures from masking the
+            // original storage error (we care more about the error that got us here).
+            let backup: Backup | null = null;
+            try {
+              backup = (await this.getBackup()) ?? null;
+            } catch {
+              // Ignore getBackup errors - we're already in an error state
+            }
+
+            // This check verifies if we have any keys saved in our backup.
+            // We use this as a sigil to determine if we've ever saved a vault before.
+            if (
+              backup &&
+              Object.values(backup).some((value) => value !== undefined)
+            ) {
+              log.info('Backup vault found in IndexedDB, triggering recovery');
+              // We've got some data (we haven't checked for a vault, as the
+              // background+UI are responsible for determining what happens now).
+              // Include the original error as cause for debugging purposes.
+              throw new PersistenceError(
+                MISSING_VAULT_ERROR,
+                backup,
+                localStoreError,
+              );
+            } else if (localStoreError) {
+              log.error(
+                'No backup vault available in IndexedDB, cannot recover',
+              );
+            } else {
+              log.info('No backup vault available in IndexedDB');
+            }
+          }
+        }
+
+        // If there was a storage error and we didn't trigger vault recovery
+        // (either validateVault was false or no backup was available),
+        // re-throw the original error
+        if (localStoreError) {
+          throw localStoreError;
+        }
+
+        if (isEmpty(result)) {
+          this.#mostRecentRetrievedState = null;
+          return undefined;
+        }
+        if (!this.#isExtensionInitialized) {
+          this.#mostRecentRetrievedState = result;
+        }
+
+        // if storageKind is not set in meta, we haven't migrated, so it is still
+        // `"data"`.
+        this.storageKind = result.meta?.storageKind ?? 'data';
+
+        return result;
+      },
+    );
+  }
+
+  /**
+   * Resets the local store and the backup database. This method is used to
+   * clear the state and metadata, effectively resetting the application to
+   * its initial state.
+   */
+  async reset() {
+    await navigator.locks.request(
+      STATE_LOCK,
+      { mode: 'exclusive' },
+      async () => {
+        await Promise.all([
+          this.#localStore.reset(),
+          await this.#backupDb?.reset(),
+        ]);
+        this.#backup = undefined;
+        this.#isExtensionInitialized = false;
+        this.#dataPersistenceFailing = false;
+        this.#metadata = undefined;
+        this.storageKind = PersistenceManager.defaultStorageKind;
+        this.cleanUpMostRecentRetrievedState();
+      },
+    );
+  }
+
+  /**
+   * Retrieves the backup object containing the state of various controllers.
+   */
+  async getBackup(): Promise<Backup | undefined> {
+    const backupDb = this.#backupDb;
+    if (!backupDb) {
       return undefined;
     }
-    if (!this.#isExtensionInitialized) {
-      this.#mostRecentRetrievedState = result;
+    const [
+      KeyringController,
+      AppMetadataController,
+      MetaMetricsController,
+      meta,
+    ] = await backupDb.get([...backedUpStateKeys, `meta`]);
+    return {
+      KeyringController,
+      AppMetadataController,
+      MetaMetricsController,
+      meta: meta as MetaData | undefined,
+    };
+  }
+
+  /**
+   * Logs the encrypted vault state to the console. This is useful for
+   * debugging purposes.
+   */
+  async logEncryptedVault() {
+    let state: MetaMaskStateType | Backup | undefined;
+    let source: string | null = null;
+    try {
+      state = (await this.get({ validateVault: false }))?.data;
+      source = 'primary database';
+    } catch (e) {
+      console.error('Error getting state from persistence manager', e);
     }
-    return result;
+    if (!hasVault(state)) {
+      // try from backup
+      try {
+        state = await this.getBackup();
+        source = 'backup database';
+      } catch (e) {
+        source = null;
+        console.error('Error getting state from backup', e);
+      }
+    }
+    // if we have a vault, log it
+    if (hasVault(state)) {
+      console.log(`MetaMask - Encrypted Vault from ${source}:`);
+      console.log(state.KeyringController.vault);
+    } else {
+      console.log(
+        'MetaMask - No vault found in primary database or backup database',
+      );
+    }
   }
 
   get mostRecentRetrievedState() {
@@ -119,5 +733,47 @@ export class PersistenceManager {
     if (this.#mostRecentRetrievedState) {
       this.#mostRecentRetrievedState = null;
     }
+  }
+
+  /**
+   * Migrates the storage from 'data' kind to 'split' kind by separating
+   * each top-level controller state into its own key in the storage.
+   *
+   * @param state - The MetaMask state tree containing all controller states to
+   * migrate
+   * @throws Error if the metadata is not set before calling this method.
+   *
+   * This method should only be called when no other write operations can
+   * occur.
+   */
+  async migrateToSplitState(state: MetaMaskStateType) {
+    return runTrackedTask('migrateToSplitState', async () => {
+      if (this.storageKind === 'split') {
+        log.debug(
+          '[Split State]: Storage is already split, skipping migration',
+        );
+        return;
+      }
+
+      if (!this.#metadata) {
+        throw new Error(
+          'MetaMask - metadata must be set before calling "migrateToSplitState"',
+        );
+      }
+
+      this.storageKind = 'split';
+      const metadata = structuredClone(this.#metadata);
+      metadata.storageKind = 'split';
+      this.setMetadata(metadata);
+      for (const [key, value] of Object.entries(state)) {
+        this.update(key, value);
+      }
+
+      // mark data key for deletion
+      this.update('data', undefined);
+
+      log.debug('[Split State]: Migrating to split state storage');
+      await this.persist();
+    });
   }
 }

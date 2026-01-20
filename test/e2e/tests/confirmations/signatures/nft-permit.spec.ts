@@ -1,17 +1,17 @@
-import { TransactionEnvelopeType } from '@metamask/transaction-controller';
 import { Suite } from 'mocha';
 import { MockedEndpoint } from 'mockttp';
-import { WINDOW_TITLES } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockSignatureApprovedWithDecoding,
   mockSignatureRejectedWithDecoding,
   scrollAndConfirmAndAssertConfirm,
-  withTransactionEnvelopeTypeFixtures,
+  withSignatureFixtures,
 } from '../helpers';
 import { TestSuiteArguments } from '../transactions/shared';
-import PermitConfirmation from '../../../page-objects/pages/confirmations/redesign/permit-confirmation';
+import PermitConfirmation from '../../../page-objects/pages/confirmations/permit-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
+import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 import {
   assertAccountDetailsMetrics,
   assertPastedAddress,
@@ -25,13 +25,11 @@ import {
   SignatureType,
   triggerSignature,
 } from './signature-helpers';
-import { MetaMetricsRequestedThrough } from '../../../../../shared/constants/metametrics';
 
 describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   it('initiates and confirms and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         localNodes,
@@ -71,8 +69,8 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          uiCustomizations: ['permit'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -85,9 +83,8 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
   });
 
   it('initiates and rejects and emits the correct events', async function () {
-    await withTransactionEnvelopeTypeFixtures(
+    await withSignatureFixtures(
       this.test?.fullTitle(),
-      TransactionEnvelopeType.legacy,
       async ({
         driver,
         mockedEndpoint: mockedEndpoints,
@@ -115,9 +112,9 @@ describe('Confirmation Signature - NFT Permit', function (this: Suite) {
           mockedEndpoints: mockedEndpoints as MockedEndpoint[],
           signatureType: 'eth_signTypedData_v4',
           primaryType: 'Permit',
-          uiCustomizations: ['redesigned_confirmation', 'permit'],
+          uiCustomizations: ['permit'],
           location: 'confirmation',
-          decodingChangeTypes: ['LISTING', 'RECEIVE'],
+          decodingChangeTypes: ['RECEIVE', 'LISTING'],
           decodingResponse: 'CHANGE',
           decodingDescription: null,
           requestedThrough: MetaMetricsRequestedThrough.EthereumProvider,
@@ -147,7 +144,7 @@ async function assertVerifiedResults(driver: Driver, publicAddress: string) {
   await driver.waitUntilXWindowHandles(2);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
-  await testDapp.check_successSign721Permit(publicAddress);
+  await testDapp.checkSuccessSign721Permit(publicAddress);
   await testDapp.verifySign721PermitResult(
     '0x572bc6300f6aa669e85e0a7792bc0b0803fb70c3c492226b30007ff7030b03600e390ef295a5a525d19f444943ae82697f0e5b5b0d77cc382cb2ea9486ec27801c',
   );

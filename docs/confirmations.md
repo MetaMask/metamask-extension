@@ -33,15 +33,22 @@ If the controller extends `BaseControllerV2`, the property `messagingSystem` is 
 #### Example
 
 ```js
+const messenger = new Messenger({
+  namespace: 'SomeController',
+  parent: this.controllerMessenger,
+});
+
+this.controllerMessenger.delegate({
+  messenger,
+  actions: [
+    `${this.approvalController.name}:addRequest`,
+    `${this.approvalController.name}:acceptRequest`,
+    `${this.approvalController.name}:rejectRequest`,
+  ],
+});
+
 this.someController = new SomeController({
-    messenger: this.controllerMessenger.getRestricted({
-      name: 'SomeController',
-      allowedActions: [
-        `${this.approvalController.name}:addRequest`,
-        `${this.approvalController.name}:acceptRequest`,
-        `${this.approvalController.name}:rejectRequest`,
-      ],
-    }),
+    messenger,
     ...
 });
 ```
@@ -280,7 +287,7 @@ This supports the following parameters:
 
 Create sequential approval requests as normal using the above instructions.
 
-While the an approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
+While the approval request has been approved or rejected but no subsequent approval request has been created, a loading page is automatically displayed containing a spinner.
 
 This has no text by default, but can be specified using the `loadingText` option above, or by calling the `setFlowLoadingText` method or messenger action.
 
@@ -298,7 +305,7 @@ In rare scenarios where an approval flow is initialized within another approval 
 
 ### Overview
 
-Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has completed.
+Many types of approvals are not needed before a process is executed, but instead aim to provide a simple status page to display a success or error message after a process has been completed.
 
 The standardized result pages exist to simplify the creation of these types of approvals, and to avoid many very similar approval templates with the same intent.
 

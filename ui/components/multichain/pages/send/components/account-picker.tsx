@@ -2,9 +2,10 @@ import React, { useCallback, useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { EthAccountType } from '@metamask/keyring-api';
 import { getSelectedInternalAccount } from '../../../../../selectors';
-import { Label } from '../../../../component-library';
+import { Box, Label } from '../../../../component-library';
 import { AccountPicker } from '../../../account-picker';
 import {
+  AlignItems,
   BlockSize,
   BorderColor,
   Display,
@@ -32,7 +33,13 @@ export const SendPageAccountPicker = () => {
 
   return (
     <SendPageRow>
-      <Label paddingBottom={2}>{t('from')}</Label>
+      <Box
+        display={Display.Flex}
+        alignItems={AlignItems.center}
+        justifyContent={JustifyContent.spaceBetween}
+      >
+        <Label paddingBottom={2}>{t('from')}</Label>
+      </Box>
       <AccountPicker
         className="multichain-send-page__account-picker"
         address={internalAccount.address}
@@ -41,8 +48,8 @@ export const SendPageAccountPicker = () => {
         showAddress
         borderColor={BorderColor.borderMuted}
         borderWidth={1}
-        paddingTop={4}
-        paddingBottom={4}
+        paddingTop={3}
+        paddingBottom={3}
         paddingLeft={3}
         block
         justifyContent={JustifyContent.flexStart}

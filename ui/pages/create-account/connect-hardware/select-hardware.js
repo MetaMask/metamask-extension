@@ -10,6 +10,7 @@ import {
   Button,
   BUTTON_SIZES,
   BUTTON_VARIANT,
+  BannerAlert,
 } from '../../../components/component-library';
 import LogoLedger from '../../../components/ui/logo/logo-ledger';
 import LogoQRBased from '../../../components/ui/logo/logo-qr-based';
@@ -21,10 +22,13 @@ import {
   LedgerTransportTypes,
   HardwareAffiliateLinks,
   HardwareAffiliateTutorialLinks,
+  MarketingActionNames,
+  QrHardwareDeviceNames,
 } from '../../../../shared/constants/hardware-wallets';
 import ZENDESK_URLS from '../../../helpers/constants/zendesk-url';
-import { MetaMetricsEventCategory } from '../../../../shared/constants/metametrics';
+import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
 import { openWindow } from '../../../helpers/utils/window';
+import { getBrowserName } from '../../../../shared/modules/browser-runtime.utils';
 import {
   AlignItems,
   Display,
@@ -35,6 +39,8 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
+import { PLATFORM_FIREFOX } from '../../../../shared/constants/app';
+import { capitalizeStr } from './utils';
 
 // Not all browsers have usb support. In particular, Firefox does
 // not support usb. More information on that can be found here:
@@ -46,6 +52,11 @@ import {
 // to the browser will be handled by the Trezor connect screen. In
 // the case of Firefox, this will depend on the Trezor bridge software
 const isUSBSupported = !process.env.IN_TEST && window.navigator.usb;
+
+const isFirefox = getBrowserName() === PLATFORM_FIREFOX;
+
+const LEDGER_FIREFOX_NOT_SUPPORTED_URL =
+  'https://support.metamask.io/more-web3/wallets/how-to-connect-a-trezor-or-ledger-hardware-wallet/';
 
 export default class SelectHardware extends Component {
   static contextTypes = {
@@ -65,8 +76,20 @@ export default class SelectHardware extends Component {
     trezorRequestDevicePending: false,
   };
 
+  trackMarketingEvent = (type, device) => {
+    const { trackEvent } = this.context;
+    trackEvent({
+      event: MetaMetricsEventName.HardwareWalletMarketingButtonClicked,
+      properties: {
+        button_type: type,
+        device_type: capitalizeStr(device),
+      },
+    });
+  };
+
   connect = async () => {
     const { selectedDevice } = this.state;
+
     if (selectedDevice) {
       if (selectedDevice === HardwareDeviceNames.trezor && isUSBSupported) {
         this.setState({
@@ -88,7 +111,6 @@ export default class SelectHardware extends Component {
           this.setState({ trezorRequestDevicePending: false });
         }
       }
-
       this.props.connectToHardwareWallet(selectedDevice);
     }
     return null;
@@ -184,7 +206,10 @@ export default class SelectHardware extends Component {
         className="hw-connect__connect-btn"
         onClick={this.connect}
         disabled={
-          !this.state.selectedDevice || this.state.trezorRequestDevicePending
+          !this.state.selectedDevice ||
+          this.state.trezorRequestDevicePending ||
+          (this.state.selectedDevice === HardwareDeviceNames.ledger &&
+            isFirefox)
         }
       >
         {this.context.t('continue')}
@@ -265,25 +290,45 @@ export default class SelectHardware extends Component {
         flexDirection={FlexDirection.Column}
         alignItems={AlignItems.center}
       >
-        {this.state.selectedDevice === HardwareDeviceNames.ledger && (
-          <Box
-            display={Display.Flex}
-            flexDirection={FlexDirection.Row}
-            justifyContent={JustifyContent.center}
-            alignItems={AlignItems.center}
-            marginTop={6}
-          >
-            <Text
-              className="hw-connect__error"
-              variant={TextVariant.bodyMd}
-              as="h5"
-              marginTop={5}
-              marginBottom={3}
-            >
-              {this.context.t('ledgerMultipleDevicesUnsupportedErrorMessage')}
-            </Text>
-          </Box>
-        )}
+        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
+          !isFirefox && (
+            <Box>
+              <BannerAlert
+                marginTop={6}
+                title={this.context.t(
+                  'ledgerMultipleDevicesUnsupportedInfoTitle',
+                )}
+              >
+                {this.context.t(
+                  'ledgerMultipleDevicesUnsupportedInfoDescription',
+                )}
+              </BannerAlert>
+            </Box>
+          )}
+        {this.state.selectedDevice === HardwareDeviceNames.ledger &&
+          isFirefox && (
+            <Box>
+              <BannerAlert
+                marginTop={6}
+                severity="warning"
+                title={this.context.t('ledgerFirefoxNotSupportedTitle')}
+              >
+                {this.context.t('ledgerFirefoxNotSupportedDescription1')}
+                <a
+                  className="hw-connect__href-link"
+                  href={LEDGER_FIREFOX_NOT_SUPPORTED_URL}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  {this.context.t('ledgerFirefoxNotSupportedLink')}
+                </a>
+                {this.context.t('ledgerFirefoxNotSupportedDescription2')}
+                <br />
+                {this.context.t('ledgerFirefoxNotSupportedDescription3')}
+              </BannerAlert>
+            </Box>
+          )}
+
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
@@ -398,11 +443,11 @@ export default class SelectHardware extends Component {
                   className="hw-connect__external-btn-first"
                   variant={BUTTON_VARIANT.SECONDARY}
                   onClick={() => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: 'Clicked Ledger Buy Now',
-                    });
-                    openWindow(HardwareAffiliateLinks.ledger);
+                    this.trackMarketingEvent(
+                      MarketingActionNames.BuyNow,
+                      HardwareDeviceNames.ledger,
+                    );
+                    openWindow(HardwareAffiliateLinks.Ledger);
                   }}
                 >
                   {this.context.t('buyNow')}
@@ -411,11 +456,11 @@ export default class SelectHardware extends Component {
                   className="hw-connect__external-btn"
                   variant={BUTTON_VARIANT.SECONDARY}
                   onClick={() => {
-                    this.context.trackEvent({
-                      category: MetaMetricsEventCategory.Navigation,
-                      event: 'Clicked Ledger Tutorial',
-                    });
-                    openWindow(HardwareAffiliateTutorialLinks.ledger);
+                    this.trackMarketingEvent(
+                      MarketingActionNames.Tutorial,
+                      HardwareDeviceNames.ledger,
+                    );
+                    openWindow(HardwareAffiliateTutorialLinks.Ledger);
                   }}
                 >
                   {this.context.t('tutorial')}
@@ -478,11 +523,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn-first"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked GridPlus Buy Now',
-                  });
-                  openWindow(HardwareAffiliateLinks.gridplus);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.BuyNow,
+                    HardwareDeviceNames.lattice,
+                  );
+                  openWindow(HardwareAffiliateLinks.GridPlus);
                 }}
               >
                 {this.context.t('buyNow')}
@@ -491,11 +536,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked GidPlus Tutorial',
-                  });
-                  openWindow(HardwareAffiliateTutorialLinks.gridplus);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.Tutorial,
+                    HardwareDeviceNames.lattice,
+                  );
+                  openWindow(HardwareAffiliateTutorialLinks.GridPlus);
                 }}
               >
                 {this.context.t('tutorial')}
@@ -557,11 +602,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn-first"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked Trezor Buy Now',
-                  });
-                  openWindow(HardwareAffiliateLinks.trezor);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.BuyNow,
+                    HardwareDeviceNames.trezor,
+                  );
+                  openWindow(HardwareAffiliateLinks.Trezor);
                 }}
               >
                 {this.context.t('buyNow')}
@@ -570,11 +615,11 @@ export default class SelectHardware extends Component {
                 className="hw-connect__external-btn"
                 variant={BUTTON_VARIANT.SECONDARY}
                 onClick={() => {
-                  this.context.trackEvent({
-                    category: MetaMetricsEventCategory.Navigation,
-                    event: 'Clicked Trezor Tutorial',
-                  });
-                  openWindow(HardwareAffiliateTutorialLinks.trezor);
+                  this.trackMarketingEvent(
+                    MarketingActionNames.Tutorial,
+                    HardwareDeviceNames.trezor,
+                  );
+                  openWindow(HardwareAffiliateTutorialLinks.Trezor);
                 }}
               >
                 {this.context.t('tutorial')}
@@ -613,11 +658,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Keystone Learn More',
-                });
-                openWindow(HardwareAffiliateLinks.keystone);
+                this.trackMarketingEvent(
+                  MarketingActionNames.LearnMore,
+                  QrHardwareDeviceNames.Keystone,
+                );
+                openWindow(HardwareAffiliateLinks.Keystone);
               }}
             >
               {this.context.t('learnMoreKeystone')}
@@ -626,11 +671,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Keystone Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.keystone);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.Keystone,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.Keystone);
               }}
             >
               {this.context.t('tutorial')}
@@ -648,11 +693,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked AirGap Vault Buy Now',
-                });
-                openWindow(HardwareAffiliateLinks.airgap);
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.AirGap,
+                );
+                openWindow(HardwareAffiliateLinks.AirGap);
               }}
             >
               {this.context.t('downloadNow')}
@@ -661,11 +706,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked AirGap Vault Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.airgap);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.AirGap,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.AirGap);
               }}
             >
               {this.context.t('tutorial')}
@@ -683,11 +728,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked CoolWallet Buy Now',
-                });
-                openWindow(HardwareAffiliateLinks.coolwallet);
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.CoolWallet,
+                );
+                openWindow(HardwareAffiliateLinks.CoolWallet);
               }}
             >
               {this.context.t('buyNow')}
@@ -696,11 +741,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked CoolWallet Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.coolwallet);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.CoolWallet,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.CoolWallet);
               }}
             >
               {this.context.t('tutorial')}
@@ -716,11 +761,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked DCent Buy Now',
-                });
-                openWindow(HardwareAffiliateLinks.dcent);
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.DCent,
+                );
+                openWindow(HardwareAffiliateLinks.DCent);
               }}
             >
               {this.context.t('buyNow')}
@@ -729,11 +774,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked DCent Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.dcent);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.DCent,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.DCent);
               }}
             >
               {this.context.t('tutorial')}
@@ -751,11 +796,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked imToken Learn More',
-                });
-                openWindow(HardwareAffiliateLinks.imtoken);
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.ImToken,
+                );
+                openWindow(HardwareAffiliateLinks.ImToken);
               }}
             >
               {this.context.t('downloadNow')}
@@ -764,11 +809,46 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked imToken Tutorial',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.imtoken);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.ImToken,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.ImToken);
+              }}
+            >
+              {this.context.t('tutorial')}
+            </Button>
+          </>
+        ),
+      },
+      {
+        message: (
+          <>
+            <p className="hw-connect__QR-subtitle">
+              {this.context.t('onekey')}
+            </p>
+            <Button
+              className="hw-connect__external-btn-first"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  HardwareDeviceNames.oneKey,
+                );
+                openWindow(HardwareAffiliateLinks.OneKey);
+              }}
+            >
+              {this.context.t('buyNow')}
+            </Button>
+            <Button
+              className="hw-connect__external-btn"
+              variant={BUTTON_VARIANT.SECONDARY}
+              onClick={() => {
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  HardwareDeviceNames.oneKey,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.OneKey);
               }}
             >
               {this.context.t('tutorial')}
@@ -786,11 +866,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn-first"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Ngrave Buy Now',
-                });
-                openWindow(HardwareAffiliateLinks.ngrave);
+                this.trackMarketingEvent(
+                  MarketingActionNames.BuyNow,
+                  QrHardwareDeviceNames.Ngrave,
+                );
+                openWindow(HardwareAffiliateLinks.Ngrave);
               }}
               data-testid="ngrave-brand-buy-now-btn"
             >
@@ -800,11 +880,11 @@ export default class SelectHardware extends Component {
               className="hw-connect__external-btn"
               variant={BUTTON_VARIANT.SECONDARY}
               onClick={() => {
-                this.context.trackEvent({
-                  category: MetaMetricsEventCategory.Navigation,
-                  event: 'Clicked Ngrave Learn more',
-                });
-                openWindow(HardwareAffiliateTutorialLinks.ngrave);
+                this.trackMarketingEvent(
+                  MarketingActionNames.Tutorial,
+                  QrHardwareDeviceNames.Ngrave,
+                );
+                openWindow(HardwareAffiliateTutorialLinks.Ngrave);
               }}
               data-testid="ngrave-brand-learn-more-btn"
             >

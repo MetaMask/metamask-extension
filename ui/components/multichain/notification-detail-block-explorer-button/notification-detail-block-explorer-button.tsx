@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import type { NotificationServicesController } from '@metamask/notification-services-controller';
 import { toHex } from '@metamask/controller-utils';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
-import { CHAIN_IDS } from '../../../../shared/constants/network';
 import { ButtonVariant } from '../../component-library';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { getNetworkDetailsByChainId } from '../../../helpers/utils/notification.util';
@@ -31,9 +30,7 @@ export const NotificationDetailBlockExplorerButton = ({
   const trackEvent = useContext(MetaMetricsContext);
 
   const chainIdHex = toHex(chainId);
-  const { blockExplorerConfig } = getNetworkDetailsByChainId(
-    chainIdHex as keyof typeof CHAIN_IDS,
-  );
+  const { blockExplorerConfig } = getNetworkDetailsByChainId(chainId);
 
   const networkConfigurations = useSelector(getNetworkConfigurationsByChainId);
   const networkConfiguration = networkConfigurations[chainIdHex];
@@ -60,9 +57,17 @@ export const NotificationDetailBlockExplorerButton = ({
       category: MetaMetricsEventCategory.NotificationInteraction,
       event: MetaMetricsEventName.NotificationDetailClicked,
       properties: {
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_id: notification.id,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         notification_type: notification.type,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         chain_id: chainId,
+        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         clicked_item: 'block_explorer',
       },
     });

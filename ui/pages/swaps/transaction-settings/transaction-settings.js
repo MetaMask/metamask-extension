@@ -3,14 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import classnames from 'classnames';
 
+import { Text, TextVariant } from '@metamask/design-system-react';
 import { I18nContext } from '../../../contexts/i18n';
 import ButtonGroup from '../../../components/ui/button-group';
 import Button from '../../../components/ui/button';
 import InfoTooltip from '../../../components/ui/info-tooltip';
 import Box from '../../../components/ui/box';
-import Typography from '../../../components/ui/typography';
+
 import {
-  TypographyVariant,
   AlignItems,
   JustifyContent,
   DISPLAY,
@@ -161,13 +161,14 @@ export default function TransactionSettings({
             <>
               {!isDirectWrappingEnabled && (
                 <>
-                  <Box display={DISPLAY.FLEX} alignItems={AlignItems.center}>
-                    <Typography
-                      variant={TypographyVariant.H6}
-                      boxProps={{ paddingRight: 2 }}
-                    >
+                  <Box
+                    display={DISPLAY.FLEX}
+                    alignItems={AlignItems.center}
+                    marginBottom={2}
+                  >
+                    <Text variant={TextVariant.bodySm} className="pr-2">
                       {t('swapsMaxSlippage')}
-                    </Typography>
+                    </Text>
                     <InfoTooltip
                       position="top"
                       iconFillColor="var(--color-icon-muted)"
@@ -276,20 +277,13 @@ export default function TransactionSettings({
               )}
             </>
             {notificationText && (
-              <Box marginTop={5}>
-                <BannerAlert
-                  severity={notificationSeverity}
-                  title={notificationTitle}
-                  titleProps={{ 'data-testid': 'swaps-banner-title' }}
-                >
-                  <Typography
-                    variant={TypographyVariant.H6}
-                    testId="mm-banner-alert-notification-text"
-                  >
-                    {notificationText}
-                  </Typography>
-                </BannerAlert>
-              </Box>
+              <BannerAlert
+                severity={notificationSeverity}
+                title={notificationTitle}
+                titleProps={{ 'data-testid': 'swaps-banner-title' }}
+                description={notificationText}
+                marginTop={5}
+              />
             )}
           </Box>
           <Box marginTop={5}>

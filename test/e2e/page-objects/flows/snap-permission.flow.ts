@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Grant permission to the snap installed with the optional warning dialog.
@@ -17,15 +17,15 @@ export async function confirmPermissionSwitchToTestSnap(
   const snapInstall = new SnapInstall(driver);
   const snapInstallWarning = new SnapInstallWarning(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await snapInstall.check_pageIsLoaded();
-  await snapInstall.clickNextButton();
+  await snapInstall.checkPageIsLoaded();
+  await snapInstall.clickConnectButton();
   await snapInstall.clickConfirmButton();
   if (withWarning) {
-    await snapInstallWarning.check_pageIsLoaded();
+    await snapInstallWarning.checkPageIsLoaded();
     await snapInstallWarning.clickCheckboxPermission();
     await snapInstallWarning.clickConfirmButton();
   }
-  await snapInstall.clickNextButton();
+  await snapInstall.clickOkButton();
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 }
 
@@ -51,8 +51,50 @@ export async function switchAndApproveDialogSwitchToTestSnap(driver: Driver) {
 export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
   const snapInstall = new SnapInstall(driver);
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-  await snapInstall.clickNextButton();
-  await snapInstall.clickNextButton();
-  await snapInstall.clickNextButton();
+  await snapInstall.clickConnectButton();
+  await snapInstall.clickConfirmButton();
+  await snapInstall.clickOkButton();
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+}
+
+/**
+ * Approve the account in the dialog window and switch back to the `test-snaps`
+ * window.
+ *
+ * @param driver - WebDriver instance used to interact with the browser.
+ */
+export async function approveAccount(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+
+  await driver.waitForSelector({
+    text: 'Connect with MetaMask',
+  });
+
+  await driver.clickElement({
+    text: 'Account 1',
+  });
+
+  await driver.clickElement({
+    text: 'Connect',
+    tag: 'button',
+  });
+
+  await driver.waitForSelector({
+    text: 'Review permissions',
+    tag: 'h3',
+  });
+
+  await driver.clickElementAndWaitForWindowToClose({ text: 'Confirm' });
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
+}
+
+export async function approvePersonalSignMessage(driver: Driver) {
+  await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+  await driver.waitForSelector({
+    text: 'Signature request',
+    tag: 'h2',
+  });
+
+  await driver.clickElementAndWaitForWindowToClose({ text: 'Confirm' });
   await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
 }
