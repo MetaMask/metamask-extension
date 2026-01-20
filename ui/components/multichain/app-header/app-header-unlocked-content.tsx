@@ -306,6 +306,7 @@ export const AppHeaderUnlockedContent = ({
     selectedMultichainAccountId,
     navigate,
     isMultichainAccountsState2Enabled,
+    t,
     trackEvent,
     accountListStats,
   ]);
