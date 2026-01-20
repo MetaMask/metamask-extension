@@ -169,20 +169,20 @@ export function parseErrorByType(
       code: ErrorCode.DeviceStateEthAppClosed,
     },
     {
-      patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
-      code: ErrorCode.UserRejected,
-    },
-    {
-      patterns: ['timeout'],
-      code: ErrorCode.ConnectionTimeout,
+      patterns: ['permission.*denied'],
+      code: ErrorCode.AuthenticationSecurityCondition,
     },
     {
       patterns: ['webhid', 'hid'],
       code: ErrorCode.ConnectionTransportMissing,
     },
     {
-      patterns: ['permission.*denied'],
-      code: ErrorCode.AuthenticationSecurityCondition,
+      patterns: ['timeout'],
+      code: ErrorCode.ConnectionTimeout,
+    },
+    {
+      patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
+      code: ErrorCode.UserRejected,
     },
     {
       patterns: ['disconnected', 'not found'],

@@ -279,10 +279,6 @@ export const useHardwareWalletConnection = ({
   const disconnect = useCallback(async (): Promise<void> => {
     const abortSignal = refs.abortControllerRef.current?.signal;
 
-    if (abortSignal?.aborted) {
-      return;
-    }
-
     try {
       await refs.adapterRef.current?.disconnect();
     } finally {

@@ -9,10 +9,12 @@ import {
  *
  * @param walletType - The type of hardware wallet, or null/undefined for regular accounts
  * @param adapterOptions - Options for the adapter including event callbacks
- * @returns The appropriate adapter instance
+ * @throws Error if the wallet type is unsupported
  */
 export function createAdapterForHardwareWalletType(
   walletType: HardwareWalletType | null | undefined,
+  // TODO: remove comment when adapterOptions is used
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   adapterOptions: HardwareWalletAdapterOptions,
 ): HardwareWalletAdapter {
   switch (walletType) {

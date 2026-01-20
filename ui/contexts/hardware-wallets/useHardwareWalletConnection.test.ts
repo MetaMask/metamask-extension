@@ -318,6 +318,15 @@ describe('useHardwareWalletConnection', () => {
     });
 
     it('aborts when AbortController is aborted', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = mockAdapter;
+
       (mockRefs.abortControllerRef.current as AbortController).abort();
 
       const { result } = setupHook();
@@ -327,6 +336,8 @@ describe('useHardwareWalletConnection', () => {
       });
 
       expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      expect(mockAdapter.destroyMock).toHaveBeenCalled();
+      expect(mockRefs.adapterRef.current).toBeNull();
     });
   });
 
