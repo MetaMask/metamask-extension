@@ -6650,6 +6650,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/eth-mpc-keyring@file:./metamask-eth-mpc-keyring-0.0.0.tgz#./metamask-eth-mpc-keyring-0.0.0.tgz::hash=913223&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@ethereumjs/util": "npm:^9.1.0"
+    "@metamask/eth-sig-util": "npm:^8.2.0"
+    "@metamask/mfa-wallet-cl24-lib": "npm:^0.0.0"
+    "@metamask/mfa-wallet-dkls19-lib": "npm:^0.0.0"
+    "@metamask/mfa-wallet-util": "npm:^0.0.0"
+  checksum: 10/8fdd96690e22e77391ca2802a73f9acdb3e4593ba08fa9eb0be598a0adc7e0d40212c6ee60b2d6af046514c07552cb1b3261f9da7b52b14943b4d12c64463f87
+  languageName: node
+  linkType: hard
+
 "@metamask/eth-qr-keyring@npm:^1.1.0":
   version: 1.1.0
   resolution: "@metamask/eth-qr-keyring@npm:1.1.0"
@@ -7393,6 +7406,34 @@ __metadata:
   version: 3.1.1
   resolution: "@metamask/metamask-eth-abis@npm:3.1.1"
   checksum: 10/2d456882c5180eaf02d07f578ee8b8806d18639349d086a6b3b68c87e7ea294749efc332bfe7c1d5fb700933e71f31a46d3cd07b94c4e91c80faea5f9729bf0d
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-cl24-lib@file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz#./metamask-mfa-wallet-cl24-lib-0.0.0.tgz::hash=8ee1d0&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@msgpack/msgpack": "npm:^3.1.2"
+    "@noble/curves": "npm:^1.9.2"
+    "@noble/hashes": "npm:^1.8.0"
+  checksum: 10/ba0a676cdb75fa4aed3cefb12c28b36e29ee384f2664190cc9898af3e61b83b4c9cab815631fe18d06996c9b3fafefd35967d93dac98689f9fcb72c9f0b499a6
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-dkls19-lib@file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz#./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz::hash=adb1b2&locator=metamask-crx%40workspace%3A."
+  dependencies:
+    "@metamask/mfa-wallet-util": "npm:^0.0.0"
+    "@noble/curves": "npm:^1.9.2"
+  checksum: 10/236c5bc3d8f231109d93eecce78de1cbcb6e95d3eae9c42cf43befd0b12584f5ce5b415b2c930d108c3b047d9f505768bb06bdd62900406a6404030d334ddfd1
+  languageName: node
+  linkType: hard
+
+"@metamask/mfa-wallet-util@file:./metamask-mfa-wallet-util-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/mfa-wallet-util@file:./metamask-mfa-wallet-util-0.0.0.tgz#./metamask-mfa-wallet-util-0.0.0.tgz::hash=bf9341&locator=metamask-crx%40workspace%3A."
+  checksum: 10/63bc3760c49180a504b1351762ae903aaa064e8af6ba3a6afcd2a33e18f1408e3aa0bb9533a34612617a459f0d190d3d02d3876312750c4c943f8eb78b7b2702
   languageName: node
   linkType: hard
 
@@ -8818,6 +8859,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz::locator=metamask-crx%40workspace%3A.":
+  version: 0.0.0
+  resolution: "@metamask/tss-dkls19-lib@file:./metamask-tss-dkls19-lib-0.0.0.tgz#./metamask-tss-dkls19-lib-0.0.0.tgz::hash=c28abe&locator=metamask-crx%40workspace%3A."
+  checksum: 10/782d65c544eafc04ea32d5c403f0e4afe69e4e828728cc92452f32db46b84ac2d3e989f7d555d00f6e70482d930acca64d83dc64739cfe3e79bba33e0b7a474b
+  languageName: node
+  linkType: hard
+
 "@metamask/user-operation-controller@npm:^40.0.0":
   version: 40.0.0
   resolution: "@metamask/user-operation-controller@npm:40.0.0"
@@ -8920,6 +8968,13 @@ __metadata:
   version: 3.13.1
   resolution: "@mobily/ts-belt@npm:3.13.1"
   checksum: 10/d851e4f8b80f99646a67ecebc824994771f93509fe839680dcd3c21ab055099a0f04cd93ffa87e3529248fed0ea26abd62788302d7eb1bd2ffe42ad109229306
+  languageName: node
+  linkType: hard
+
+"@msgpack/msgpack@npm:^3.1.2":
+  version: 3.1.3
+  resolution: "@msgpack/msgpack@npm:3.1.3"
+  checksum: 10/cf597b7ed1fcedc2101b145885e7da591c5ed8aeba3a2579b99da8dd15ef13595c807f64f052da0a0dd74704097f6299fc2e2fb4165029a60a1d1df3843c03ce
   languageName: node
   linkType: hard
 
@@ -33543,6 +33598,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^22.0.1"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
+    "@metamask/eth-mpc-keyring": "npm:^0.0.0"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^18.0.2"
@@ -33629,6 +33685,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.8.0"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.19.0"
+    "@metamask/tss-dkls19-lib": "npm:^0.0.0"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"

@@ -1,6 +1,9 @@
+import { MPCKeyringOpts, MPCKeyring } from '@metamask/eth-mpc-keyring';
+import { tssLib as Dkls19TssLib } from '@metamask/tss-dkls19-lib';
 import {
   keyringBuilderFactory,
   KeyringController,
+  KeyringTypes,
 } from '@metamask/keyring-controller';
 import { QrKeyring, QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import { KeyringClass } from '@metamask/keyring-utils';
@@ -99,6 +102,23 @@ export const KeyringControllerInit: ControllerInitFunction<
         keyringOverrides?.ledgerBridge || LedgerOffscreenBridge,
       ),
       keyringBuilderFactory(LatticeKeyringOffscreen as unknown as KeyringClass),
+    );
+  }
+
+  // MPC Keyring
+  {
+    const dkls19Lib = Dkls19TssLib.loadSync();
+    const opts: MPCKeyringOpts = {
+      getRandomBytes: (length: number) =>
+        crypto.getRandomValues(new Uint8Array(length)),
+      dkls19Lib,
+      cloudURL: 'https://cloud.metamask.io',
+      networkManager: new NetworkManagerInstance(),
+      serializer: new MPCKeyringSerializerInstance(),
+      initRole: 'initiator',
+    };
+    additionalKeyrings.push(
+      Object.assign(() => new MPCKeyring(opts), { type: KeyringTypes.mpc }),
     );
   }
 

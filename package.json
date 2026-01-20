@@ -260,7 +260,13 @@
     "which@npm:^1.2.12": "^4.0.0",
     "which@npm:^1.2.14": "^4.0.0",
     "which@npm:^1.3.1": "^4.0.0",
-    "qs@npm:6.13.0": "^6.14.1"
+    "qs@npm:6.13.0": "^6.14.1",
+    "@metamask/eth-mpc-keyring": "file:./metamask-eth-mpc-keyring-0.0.0.tgz",
+    "@metamask/mfa-wallet-cl24-lib": "file:./metamask-mfa-wallet-cl24-lib-0.0.0.tgz",
+    "@metamask/mfa-wallet-dkls19-lib": "file:./metamask-mfa-wallet-dkls19-lib-0.0.0.tgz",
+    "@metamask/mfa-wallet-interface": "file:./metamask-mfa-wallet-interface-0.0.0.tgz",
+    "@metamask/mfa-wallet-util": "file:./metamask-mfa-wallet-util-0.0.0.tgz",
+    "@metamask/tss-dkls19-lib": "file:./metamask-tss-dkls19-lib-0.0.0.tgz"
   },
   "dependencies": {
     "@babel/runtime": "patch:@babel/runtime@npm%3A7.25.9#~/.yarn/patches/@babel-runtime-npm-7.25.9-fe8c62510a.patch",
@@ -315,6 +321,7 @@
     "@metamask/eth-json-rpc-filters": "^9.0.0",
     "@metamask/eth-json-rpc-middleware": "^22.0.1",
     "@metamask/eth-ledger-bridge-keyring": "11.1.2",
+    "@metamask/eth-mpc-keyring": "^0.0.0",
     "@metamask/eth-qr-keyring": "^1.1.0",
     "@metamask/eth-sig-util": "^8.2.0",
     "@metamask/eth-snap-keyring": "^18.0.2",
@@ -389,6 +396,7 @@
     "@metamask/transaction-controller": "^62.8.0",
     "@metamask/transaction-pay-controller": "^10.2.0",
     "@metamask/tron-wallet-snap": "^1.19.0",
+    "@metamask/tss-dkls19-lib": "^0.0.0",
     "@metamask/user-operation-controller": "^40.0.0",
     "@metamask/utils": "^11.4.2",
     "@ngraveio/bc-ur": "^1.1.13",
