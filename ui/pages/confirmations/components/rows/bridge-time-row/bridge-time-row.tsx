@@ -3,16 +3,16 @@ import type {
   TransactionMeta,
   TransactionType,
 } from '@metamask/transaction-controller';
-import { Box, Text } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Text } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
+} from '../../../../../components/app/confirm/info/row/row';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
@@ -46,7 +46,7 @@ export function BridgeTimeRow() {
   }
 
   if (isLoading) {
-    return <BridgeTimeRowSkeleton />;
+    return <ConfirmInfoRowSkeleton data-testid="bridge-time-row-skeleton" />;
   }
 
   const isSameChain = payToken?.chainId === chainId;
@@ -57,7 +57,11 @@ export function BridgeTimeRow() {
   );
 
   return (
-    <ConfirmInfoRow data-testid="bridge-time-row" label={t('estimatedTime')}>
+    <ConfirmInfoRow
+      data-testid="bridge-time-row"
+      label={t('estimatedTime')}
+      rowVariant={ConfirmInfoRowSize.Small}
+    >
       <Text
         variant={TextVariant.bodyMd}
         color={TextColor.textAlternative}
@@ -66,21 +70,6 @@ export function BridgeTimeRow() {
         {formattedSeconds}
       </Text>
     </ConfirmInfoRow>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function BridgeTimeRowSkeleton() {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      data-testid="bridge-time-row-skeleton"
-    >
-      <Skeleton width={100} height={20} />
-      <Skeleton width={60} height={20} />
-    </Box>
   );
 }
 

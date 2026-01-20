@@ -8,7 +8,9 @@ import {
   TransactionControllerMessenger,
   TransactionControllerOptions,
   TransactionStatus,
+  PublishHook,
 } from '@metamask/transaction-controller';
+import { TransactionPayPublishHook } from '@metamask/transaction-pay-controller';
 import {
   getTransactionControllerInitMessenger,
   getTransactionControllerMessenger,
@@ -17,9 +19,16 @@ import {
 import { getRootMessenger } from '../../lib/messenger';
 import { buildControllerInitRequestMock, CHAIN_ID_MOCK } from '../test/utils';
 import { ControllerInitRequest } from '../types';
+import * as smartTransactionsModule from '../../lib/smart-transaction/smart-transactions';
+import * as sentinelApiModule from '../../lib/transaction/sentinel-api';
+import { Delegation7702PublishHook } from '../../lib/transaction/hooks/delegation-7702-publish';
 import { TransactionControllerInit } from './transaction-controller-init';
 
 jest.mock('@metamask/transaction-controller');
+jest.mock('@metamask/transaction-pay-controller');
+jest.mock('../../lib/smart-transaction/smart-transactions');
+jest.mock('../../lib/transaction/sentinel-api');
+jest.mock('../../lib/transaction/hooks/delegation-7702-publish');
 
 /**
  * Build a mock NetworkController.
@@ -67,6 +76,10 @@ function buildInitRequestMock(): jest.Mocked<
 
 describe('Transaction Controller Init', () => {
   const transactionControllerClassMock = jest.mocked(TransactionController);
+  const transactionPayPublishHookClassMock = jest.mocked(
+    TransactionPayPublishHook,
+  );
+  const payHookMock: jest.MockedFn<PublishHook> = jest.fn();
 
   /**
    * Extract a constructor option passed to the controller.
@@ -94,6 +107,43 @@ describe('Transaction Controller Init', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+
+    transactionPayPublishHookClassMock.mockReturnValue({
+      getHook: () => payHookMock,
+    } as unknown as TransactionPayPublishHook);
+
+    payHookMock.mockResolvedValue({
+      transactionHash: undefined,
+    });
+
+    jest
+      .mocked(smartTransactionsModule.getSmartTransactionCommonParams)
+      .mockReturnValue({
+        isSmartTransaction: false,
+        featureFlags: {
+          smartTransactions: {
+            extensionReturnTxHashAsap: false,
+            extensionReturnTxHashAsapBatch: false,
+            extensionSkipSmartTransactionStatusPage: false,
+            mobileActive: false,
+            extensionActive: false,
+          },
+        },
+        isHardwareWalletAccount: false,
+      });
+
+    jest
+      .mocked(sentinelApiModule.isSendBundleSupported)
+      .mockResolvedValue(false);
+
+    const delegation7702HookMock: jest.MockedFn<PublishHook> = jest.fn();
+    delegation7702HookMock.mockResolvedValue({ transactionHash: undefined });
+    jest.mocked(Delegation7702PublishHook).mockImplementation(
+      () =>
+        ({
+          getHook: () => delegation7702HookMock,
+        }) as unknown as Delegation7702PublishHook,
+    );
   });
 
   it('returns controller instance', () => {
@@ -222,4 +272,37 @@ describe('Transaction Controller Init', () => {
       expect(isAutomaticGasFeeUpdateEnabled?.(tx)).toBe(gasFeeUpdateEnabled);
     },
   );
+
+  describe('publish hook', () => {
+    const mockTransactionMeta: TransactionMeta = {
+      id: '123',
+      chainId: CHAIN_ID_MOCK,
+      status: TransactionStatus.approved,
+      time: Date.now(),
+      txParams: {
+        from: '0x0000000000000000000000000000000000000000',
+      },
+      networkClientId: 'test-network',
+    };
+
+    it('calls TransactionPayPublishHook', async () => {
+      const hooks = testConstructorOption('hooks');
+
+      await hooks?.publish?.(mockTransactionMeta);
+
+      expect(payHookMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('returns pay hook result when transactionHash is present', async () => {
+      payHookMock.mockResolvedValue({
+        transactionHash: '0xpayHash',
+      });
+
+      const hooks = testConstructorOption('hooks');
+
+      const result = await hooks?.publish?.(mockTransactionMeta);
+
+      expect(result).toStrictEqual({ transactionHash: '0xpayHash' });
+    });
+  });
 });
