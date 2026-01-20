@@ -71,18 +71,23 @@ function getMetaMetricsFromBackup(backup: Backup | null): {
     return null;
   }
 
-  // Validate metaMetricsId is a string
-  if (typeof metaMetricsState.metaMetricsId !== 'string') {
-    console.error(
-      'metaMetricsId is not a string in backup state:',
-      typeof metaMetricsState.metaMetricsId,
-    );
+  // Validate metaMetricsId is a string.
+  // If it's missing (undefined/null), that's expected - user hasn't set up MetaMetrics.
+  // Only log an error if it exists but has an unexpected type.
+  const { metaMetricsId } = metaMetricsState;
+  if (typeof metaMetricsId !== 'string') {
+    if (metaMetricsId !== undefined && metaMetricsId !== null) {
+      console.error(
+        'metaMetricsId has unexpected type in backup state:',
+        typeof metaMetricsId,
+      );
+    }
     return null;
   }
 
   return {
     participateInMetaMetrics: true,
-    metaMetricsId: metaMetricsState.metaMetricsId,
+    metaMetricsId,
   };
 }
 
