@@ -66,6 +66,7 @@ Set the working directory to the MetaMask extension repository root.
 | `mm_seed_contracts`         | Deploy multiple smart contracts                |
 | `mm_get_contract_address`   | Get deployed address of a contract             |
 | `mm_list_contracts`         | List all deployed contracts in session         |
+| `mm_run_steps`              | Execute multiple tools in sequence             |
 
 ## Smart Contract Seeding
 
@@ -140,6 +141,63 @@ mm_list_contracts
       { "contractName": "nfts", "contractAddress": "0x...", "deployedAt": "..." }
     ]
   }
+```
+
+## Batching Multiple Steps
+
+Use `mm_run_steps` to execute multiple tools in a single call. Ideal for known, deterministic flows where you don't need to inspect intermediate state.
+
+### When to Use
+
+- **Known flows**: Sequences learned from prior knowledge or documentation
+- **Form fills**: Type into multiple fields, then click submit
+- **Wizard steps**: Click through predictable UI sequences
+- **Replaying successful flows**: Re-execute a known working sequence
+
+### When NOT to Use
+
+- **Exploration**: When you need to discover what's on screen
+- **Conditional flows**: When next step depends on intermediate state
+- **Debugging**: When you need to inspect each step's result
+
+### Example: Batch Unlock Flow
+
+```json
+mm_run_steps {
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "correct horse battery staple" } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } },
+    { "tool": "mm_wait_for", "args": { "testId": "account-menu-icon", "timeoutMs": 10000 } }
+  ],
+  "stopOnError": true
+}
+```
+
+### Options
+
+| Option        | Default | Description                     |
+| ------------- | ------- | ------------------------------- |
+| `stopOnError` | `false` | Stop executing on first failure |
+
+### Response
+
+Returns a summary with individual step results:
+
+```json
+{
+  "steps": [
+    { "tool": "mm_type", "ok": true, "result": {...}, "meta": {...} },
+    { "tool": "mm_click", "ok": true, "result": {...}, "meta": {...} },
+    { "tool": "mm_wait_for", "ok": true, "result": {...}, "meta": {...} }
+  ],
+  "summary": {
+    "ok": true,
+    "total": 3,
+    "succeeded": 3,
+    "failed": 0,
+    "durationMs": 1250
+  }
+}
 ```
 
 ## Typical Workflow

@@ -48,6 +48,20 @@ const PRIOR_KNOWLEDGE_CONFIG = {
   minAvoidFailureCount: 2,
 } as const;
 
+const STEP_INDEX_TTL_MS = 5 * 60 * 1000;
+
+const SCAN_LIMITS = {
+  maxSessionsToScan: 20,
+  maxStepsPerSession: 500,
+  maxTotalSteps: 2000,
+} as const;
+
+type StepIndex = {
+  tokenToFiles: Map<string, string[]>;
+  builtAt: number;
+  allFiles: string[];
+};
+
 const SIMILARITY_WEIGHTS = {
   sameScreen: 8,
   urlPathOverlap: 6,
@@ -55,6 +69,25 @@ const SIMILARITY_WEIGHTS = {
   a11yOverlap: 2,
   actionableTool: 2,
 } as const;
+
+/**
+ * Maximum possible similarity score based on weights and overlap caps.
+ *
+ * Calculation:
+ * - sameScreen: 8 (1 match max)
+ * - urlPathOverlap: 6 (1 match max)
+ * - testIdOverlap: 3 * 3 = 9 (capped at 3 overlaps)
+ * - a11yOverlap: 2 * 2 = 4 (capped at 2 overlaps)
+ * - actionableTool: 2 (1 match max)
+ *
+ * Total: 8 + 6 + 9 + 4 + 2 = 29
+ */
+const MAX_SIMILARITY_SCORE =
+  SIMILARITY_WEIGHTS.sameScreen +
+  SIMILARITY_WEIGHTS.urlPathOverlap +
+  SIMILARITY_WEIGHTS.testIdOverlap * 3 + // Cap of 3 overlaps
+  SIMILARITY_WEIGHTS.a11yOverlap * 2 + // Cap of 2 overlaps
+  SIMILARITY_WEIGHTS.actionableTool;
 
 const ACTIONABLE_TOOLS = [
   'mm_click',
@@ -95,6 +128,8 @@ export class KnowledgeStore {
   private knowledgeRoot: string;
 
   private sessionMetadataCache: Map<string, SessionMetadata | null> = new Map();
+
+  private stepIndexCache: Map<string, StepIndex> = new Map();
 
   constructor(rootDir?: string) {
     this.knowledgeRoot = rootDir ?? path.join(process.cwd(), KNOWLEDGE_ROOT);
@@ -422,11 +457,7 @@ export class KnowledgeStore {
       }
       return a.sessionId.localeCompare(b.sessionId);
     });
-    const maxCandidateSessions = 20;
-    const topSessions = scoredSessions.slice(
-      0,
-      Math.min(maxCandidateSessions, scoredSessions.length),
-    );
+    const topSessions = scoredSessions.slice(0, SCAN_LIMITS.maxSessionsToScan);
 
     type StepMatch = {
       step: StepRecord;
@@ -436,15 +467,22 @@ export class KnowledgeStore {
       matchedFields: string[];
     };
     const matches: StepMatch[] = [];
+    let totalStepsScanned = 0;
 
     for (const {
       sessionId: sid,
       score: sessionScore,
       metadata,
     } of topSessions) {
-      const steps = await this.loadSessionSteps(sid);
+      if (totalStepsScanned >= SCAN_LIMITS.maxTotalSteps) {
+        break;
+      }
 
-      for (const { step } of steps) {
+      const steps = await this.loadSessionSteps(sid);
+      const limitedSteps = steps.slice(0, SCAN_LIMITS.maxStepsPerSession);
+      totalStepsScanned += limitedSteps.length;
+
+      for (const { step } of limitedSteps) {
         if (!this.stepMatchesFilters(step, filters)) {
           continue;
         }
@@ -582,6 +620,86 @@ export class KnowledgeStore {
       return steps;
     } catch {
       return [];
+    }
+  }
+
+  private async getStepIndex(sessionId: string): Promise<StepIndex> {
+    const cached = this.stepIndexCache.get(sessionId);
+
+    if (cached && Date.now() - cached.builtAt < STEP_INDEX_TTL_MS) {
+      return cached;
+    }
+
+    const index = await this.buildStepIndex(sessionId);
+    this.stepIndexCache.set(sessionId, index);
+    return index;
+  }
+
+  private async buildStepIndex(sessionId: string): Promise<StepIndex> {
+    const stepsDir = path.join(this.knowledgeRoot, sessionId, 'steps');
+    const tokenToFiles = new Map<string, string[]>();
+    let allFiles: string[] = [];
+
+    try {
+      const files = await fs.readdir(stepsDir);
+      allFiles = files.filter((f) => f.endsWith('.json'));
+
+      for (const file of allFiles) {
+        const tokens = tokenizeIdentifier(file.replace('.json', ''));
+
+        for (const token of tokens) {
+          const existing = tokenToFiles.get(token) ?? [];
+          existing.push(file);
+          tokenToFiles.set(token, existing);
+        }
+      }
+    } catch {
+      /* empty */
+    }
+
+    return {
+      tokenToFiles,
+      builtAt: Date.now(),
+      allFiles,
+    };
+  }
+
+  private getCandidateFiles(index: StepIndex, tokens: string[]): string[] {
+    const fileScores = new Map<string, number>();
+
+    for (const token of tokens) {
+      const files = index.tokenToFiles.get(token) ?? [];
+      for (const file of files) {
+        fileScores.set(file, (fileScores.get(file) ?? 0) + 1);
+      }
+    }
+
+    const scored = Array.from(fileScores.entries())
+      .sort((a, b) => b[1] - a[1])
+      .map(([file]) => file);
+
+    if (scored.length === 0) {
+      return index.allFiles.slice(0, SCAN_LIMITS.maxStepsPerSession);
+    }
+
+    return scored;
+  }
+
+  private async loadStepFile(
+    sessionId: string,
+    filename: string,
+  ): Promise<StepRecord | null> {
+    const filepath = path.join(
+      this.knowledgeRoot,
+      sessionId,
+      'steps',
+      filename,
+    );
+    try {
+      const content = await fs.readFile(filepath, 'utf-8');
+      return JSON.parse(content) as StepRecord;
+    } catch {
+      return null;
     }
   }
 
@@ -1016,10 +1134,20 @@ export class KnowledgeStore {
       context.a11yNodes.map((n) => n.name.toLowerCase()),
     );
 
-    for (const sid of sessionIds) {
-      const steps = await this.loadSessionSteps(sid);
+    const limitedSessionIds = sessionIds.slice(
+      0,
+      SCAN_LIMITS.maxSessionsToScan,
+    );
 
-      for (const { step } of steps) {
+    for (const sid of limitedSessionIds) {
+      if (candidateStepCount >= SCAN_LIMITS.maxTotalSteps) {
+        break;
+      }
+
+      const steps = await this.loadSessionSteps(sid);
+      const limitedSteps = steps.slice(0, SCAN_LIMITS.maxStepsPerSession);
+
+      for (const { step } of limitedSteps) {
         candidateStepCount += 1;
 
         if (!this.stepMatchesFilters(step, filters)) {
@@ -1064,7 +1192,7 @@ export class KnowledgeStore {
               }
             : undefined,
           a11yHint,
-          confidence: Math.min(score / 20, 1),
+          confidence: Math.min(score / MAX_SIMILARITY_SCORE, 1),
         };
       });
 

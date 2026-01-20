@@ -24,6 +24,7 @@ import {
   handleGetContractAddress,
   handleListDeployedContracts,
 } from './seeding';
+import { handleRunSteps } from './batch';
 
 export type ToolHandler = (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,6 +55,7 @@ export const toolHandlers: Record<string, ToolHandler> = {
   mm_seed_contracts: handleSeedContracts as ToolHandler,
   mm_get_contract_address: handleGetContractAddress as ToolHandler,
   mm_list_contracts: handleListDeployedContracts as ToolHandler,
+  mm_run_steps: handleRunSteps as ToolHandler,
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 

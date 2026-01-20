@@ -111,3 +111,12 @@ export type KnowledgeSessionsInput = {
   limit?: number;
   filters?: KnowledgeFilters;
 };
+
+export type RunStepsInput = {
+  steps: {
+    tool: string;
+    args?: Record<string, unknown>;
+  }[];
+  stopOnError?: boolean;
+  includeObservations?: 'none' | 'failures' | 'all';
+};

@@ -80,3 +80,29 @@ export type WaitForResult = {
   found: boolean;
   target: string;
 };
+
+export type StepResult = {
+  tool: string;
+  ok: boolean;
+  result?: unknown;
+  error?: {
+    code: string;
+    message: string;
+    details?: unknown;
+  };
+  meta: {
+    durationMs: number;
+    timestamp: string;
+  };
+};
+
+export type RunStepsResult = {
+  steps: StepResult[];
+  summary: {
+    ok: boolean;
+    total: number;
+    succeeded: number;
+    failed: number;
+    durationMs: number;
+  };
+};

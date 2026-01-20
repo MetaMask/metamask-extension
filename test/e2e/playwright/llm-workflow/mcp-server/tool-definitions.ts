@@ -650,4 +650,48 @@ export const TOOL_DEFINITIONS = [
       additionalProperties: false,
     },
   },
+  {
+    name: 'mm_run_steps',
+    description:
+      'Execute multiple tools in sequence. Reduces round trips for multi-step flows.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        steps: {
+          type: 'array',
+          items: {
+            type: 'object',
+            properties: {
+              tool: {
+                type: 'string',
+                description: 'Tool name (e.g., mm_click, mm_type)',
+              },
+              args: {
+                type: 'object',
+                description: 'Tool arguments',
+              },
+            },
+            required: ['tool'],
+            additionalProperties: false,
+          },
+          minItems: 1,
+          maxItems: 50,
+          description: 'Array of tool calls to execute in order',
+        },
+        stopOnError: {
+          type: 'boolean',
+          default: false,
+          description: 'Stop execution on first error (default: false)',
+        },
+        includeObservations: {
+          type: 'string',
+          enum: ['none', 'failures', 'all'],
+          default: 'all',
+          description: 'When to include observations in results',
+        },
+      },
+      required: ['steps'],
+      additionalProperties: false,
+    },
+  },
 ];

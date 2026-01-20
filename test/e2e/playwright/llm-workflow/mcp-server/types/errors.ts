@@ -24,6 +24,9 @@ export const ErrorCodes = {
 
   MM_SEED_FAILED: 'MM_SEED_FAILED',
   MM_CONTRACT_NOT_FOUND: 'MM_CONTRACT_NOT_FOUND',
+
+  MM_UNKNOWN_TOOL: 'MM_UNKNOWN_TOOL',
+  MM_INTERNAL_ERROR: 'MM_INTERNAL_ERROR',
 } as const;
 
 export type ErrorCode = (typeof ErrorCodes)[keyof typeof ErrorCodes];

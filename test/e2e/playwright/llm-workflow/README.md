@@ -152,6 +152,36 @@ When implementing UI changes, follow this cycle:
 | `mm_knowledge_summarize` | Generate recipe-like summary of a session               |
 | `mm_knowledge_sessions`  | List recent sessions with metadata                      |
 
+### Batching
+
+| Tool           | Description                                            |
+| -------------- | ------------------------------------------------------ |
+| `mm_run_steps` | Execute multiple tools in sequence with error handling |
+
+**When to use `mm_run_steps`:**
+
+- Known flows from prior knowledge or documentation
+- Deterministic sequences (form fills, wizard steps)
+- Replaying successful flows to reduce round-trips
+
+**When NOT to use:**
+
+- First-time exploration (use `mm_describe_screen` instead)
+- When next step depends on intermediate state
+- Debugging or investigating issues
+
+**Example:**
+
+```json
+mm_run_steps({
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "correct horse battery staple" } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } }
+  ],
+  "stopOnError": true
+})
+```
+
 ---
 
 ## Element Targeting

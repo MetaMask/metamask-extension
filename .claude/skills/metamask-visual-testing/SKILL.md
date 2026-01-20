@@ -55,6 +55,7 @@ The MetaMask MCP server provides tools for browser automation:
 | `mm_knowledge_search`       | Search recorded steps (cross-session supported)             |
 | `mm_knowledge_summarize`    | Generate session recipe                                     |
 | `mm_knowledge_sessions`     | List recent sessions and their metadata (tags/flowTags)     |
+| `mm_run_steps`              | Execute multiple tools in sequence with error handling      |
 
 ## Core Workflow
 
@@ -246,6 +247,60 @@ Notes:
 - Prefer `mm_describe_screen` as your main feedback loop tool.
 - Prefer `mm_knowledge_search` early, before exploring.
 - Prefer `flowTags` on launch so future searches can filter.
+
+## Batching with mm_run_steps
+
+Use `mm_run_steps` to execute multiple tools in a single call when you **already know** the exact sequence of steps. This reduces round-trips and is ideal for known, deterministic flows.
+
+### When to Use Batching
+
+| Use mm_run_steps                              | Use Individual Calls                        |
+| --------------------------------------------- | ------------------------------------------- |
+| Known flows from prior knowledge              | First-time exploration                      |
+| Deterministic sequences (wizard steps)        | Decisions based on intermediate state       |
+| Repetitive patterns (fill form, click submit) | Debugging or investigating issues           |
+| Replaying a successful flow                   | When you need to inspect each step's result |
+
+### Example: Batched Unlock Flow
+
+When you already know the unlock sequence (from prior knowledge or documentation):
+
+```
+mm_run_steps {
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "correct horse battery staple" } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } },
+    { "tool": "mm_wait_for", "args": { "testId": "account-menu-icon", "timeoutMs": 10000 } }
+  ],
+  "stopOnError": true
+}
+```
+
+### Example: Batched Form Fill
+
+```
+mm_run_steps {
+  "steps": [
+    { "tool": "mm_click", "args": { "testId": "send-button" } },
+    { "tool": "mm_type", "args": { "testId": "send-recipient", "text": "0x1234..." } },
+    { "tool": "mm_type", "args": { "testId": "send-amount", "text": "0.1" } },
+    { "tool": "mm_click", "args": { "testId": "send-continue" } }
+  ],
+  "stopOnError": true
+}
+```
+
+### Options
+
+- `stopOnError: true` (default: false) - Stop executing on first failure
+- Returns a summary with `succeeded`/`failed` counts and individual step results
+
+### Pattern: Discover First, Then Batch
+
+1. Use `mm_describe_screen` to discover available elements
+2. Use `mm_knowledge_search` to find prior successful sequences
+3. Use `mm_run_steps` to execute the known sequence efficiently
+4. Use `mm_describe_screen` again to verify the end state
 
 ## Error Recovery
 

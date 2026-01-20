@@ -72,6 +72,7 @@ export type {
   KnowledgeSearchInput,
   KnowledgeSummarizeInput,
   KnowledgeSessionsInput,
+  RunStepsInput,
 } from './types/tool-inputs';
 
 export type {
@@ -89,6 +90,8 @@ export type {
   ClickResult,
   TypeResult,
   WaitForResult,
+  StepResult,
+  RunStepsResult,
 } from './types/tool-outputs';
 
 export type {

@@ -455,6 +455,43 @@ export const getContractAddressInputSchema = z.object({
 
 export const listDeployedContractsInputSchema = z.object({});
 
+const batchableTools = [
+  'mm_click',
+  'mm_type',
+  'mm_wait_for',
+  'mm_navigate',
+  'mm_wait_for_notification',
+  'mm_list_testids',
+  'mm_accessibility_snapshot',
+  'mm_describe_screen',
+  'mm_screenshot',
+  'mm_get_state',
+] as const;
+
+export const runStepsInputSchema = z.object({
+  steps: z
+    .array(
+      z.object({
+        tool: z.enum(batchableTools),
+        args: z.record(z.string(), z.unknown()).optional(),
+      }),
+    )
+    .min(1)
+    .max(50)
+    .describe('Array of tool calls to execute in order'),
+  stopOnError: z
+    .boolean()
+    .default(false)
+    .describe('Stop execution on first error (default: false - continue)'),
+  includeObservations: z
+    .enum(['none', 'failures', 'all'])
+    .default('all')
+    .describe(
+      'When to include observations in results: ' +
+        'none = never (fastest), failures = only for failed steps, all = always',
+    ),
+});
+
 // =============================================================================
 // Schema Map for Tool Lookup
 // =============================================================================
@@ -484,6 +521,7 @@ export const toolSchemas = {
   mm_seed_contracts: seedContractsInputSchema,
   mm_get_contract_address: getContractAddressInputSchema,
   mm_list_contracts: listDeployedContractsInputSchema,
+  mm_run_steps: runStepsInputSchema,
 } as const;
 
 export type ToolName = keyof typeof toolSchemas;
@@ -541,3 +579,4 @@ export type KnowledgeSessionsInputZ = z.infer<
 >;
 export type KnowledgeScopeZ = z.infer<typeof knowledgeScopeSchema>;
 export type KnowledgeFiltersZ = z.infer<typeof knowledgeFiltersSchema>;
+export type RunStepsInputZ = z.infer<typeof runStepsInputSchema>;
