@@ -11,13 +11,19 @@ import browser from 'webextension-polyfill';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  Icon,
+  IconName,
+  IconSize,
+  IconColor,
+} from '@metamask/design-system-react';
+import {
   AlignItems,
   BackgroundColor,
   BlockSize,
   BorderRadius,
   Display,
   FlexDirection,
-  IconColor,
+  IconColor as IconColorDeprecated,
   JustifyContent,
   TextColor,
   TextVariant,
@@ -28,8 +34,8 @@ import {
   ButtonBaseSize,
   ButtonIcon,
   ButtonIconSize,
-  IconName,
-  IconSize,
+  IconName as IconNameDeprecated,
+  IconSize as IconSizeDeprecated,
   Text,
 } from '../../component-library';
 import { MultichainHoveredAddressRowsList } from '../../multichain-accounts/multichain-address-rows-hovered-list';
@@ -181,10 +187,10 @@ export const AppHeaderUnlockedContent = ({
         size={ButtonBaseSize.Sm}
         backgroundColor={BackgroundColor.transparent}
         borderRadius={BorderRadius.LG}
-        endIconName={copied ? IconName.CopySuccess : IconName.Copy}
+        endIconName={copied ? IconNameDeprecated.CopySuccess : IconNameDeprecated.Copy}
         endIconProps={{
-          color: IconColor.iconAlternative,
-          size: IconSize.Sm,
+          color: IconColorDeprecated.iconAlternative,
+          size: IconSizeDeprecated.Sm,
         }}
         paddingLeft={2}
         paddingRight={2}
@@ -247,9 +253,11 @@ export const AppHeaderUnlockedContent = ({
         </Text>
         {selectedMultichainAccountId && (
           <Box
-            paddingLeft={2}
-            paddingTop={1}
-            paddingBottom={1}
+            marginTop={1}
+            marginLeft={2}
+            padding={1}
+            borderRadius={BorderRadius.LG}
+            backgroundColor={BackgroundColor.backgroundMuted}
             style={{ width: 'fit-content' }}
             data-testid="networks-subtitle-test-id"
           >
@@ -266,6 +274,12 @@ export const AppHeaderUnlockedContent = ({
               <MultichainAccountNetworkGroup
                 groupId={selectedMultichainAccountId}
                 limit={4}
+              />
+              <Icon
+                name={IconName.Copy}
+                size={IconSize.Xs}
+                color={IconColor.IconAlternative}
+                aria-label={t('copyAddressShort')}
               />
             </MultichainHoveredAddressRowsList>
           </Box>
@@ -387,7 +401,7 @@ export const AppHeaderUnlockedContent = ({
               </Box>
             )}
             <ButtonIcon
-              iconName={IconName.Menu}
+              iconName={IconNameDeprecated.Menu}
               data-testid="account-options-menu-button"
               ariaLabel={t('accountOptions')}
               onClick={handleMainMenuToggle}
