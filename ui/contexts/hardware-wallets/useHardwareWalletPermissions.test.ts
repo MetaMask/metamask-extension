@@ -209,15 +209,15 @@ describe('useHardwareWalletPermissions', () => {
       );
     });
 
-    it('handles different permission states', async () => {
-      const testCases = [
-        HardwareConnectionPermissionState.Granted,
-        HardwareConnectionPermissionState.Denied,
-        HardwareConnectionPermissionState.Prompt,
-        HardwareConnectionPermissionState.Unknown,
-      ];
-
-      for (const state of testCases) {
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      HardwareConnectionPermissionState.Granted,
+      HardwareConnectionPermissionState.Denied,
+      HardwareConnectionPermissionState.Prompt,
+      HardwareConnectionPermissionState.Unknown,
+    ])(
+      'handles %s permission state',
+      async (state: HardwareConnectionPermissionState) => {
         jest.clearAllMocks();
         (
           webConnectionUtils.checkHardwareWalletPermission as jest.Mock
@@ -234,8 +234,8 @@ describe('useHardwareWalletPermissions', () => {
         expect(mockSetHardwareConnectionPermissionState).toHaveBeenCalledWith(
           state,
         );
-      }
-    });
+      },
+    );
 
     it('prevents race conditions when called successively', async () => {
       // Disable the initial effect to isolate this test
