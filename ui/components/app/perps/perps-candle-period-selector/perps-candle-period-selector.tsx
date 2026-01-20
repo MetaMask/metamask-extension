@@ -11,6 +11,7 @@ import {
   BoxFlexDirection,
   BoxAlignItems,
   BoxJustifyContent,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../component-library';
 import {
@@ -68,9 +69,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
           selectedPeriod?.toLowerCase() === period.value?.toLowerCase();
 
         return (
-          <button
+          <ButtonBase
             key={period.value}
-            type="button"
             className={`perps-candle-period-button ${isSelected ? 'perps-candle-period-button--selected' : ''}`}
             onClick={() => {
               onPeriodChange?.(period.value);
@@ -85,14 +85,13 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
             >
               {period.label}
             </Text>
-          </button>
+          </ButtonBase>
         );
       })}
 
       {/* More Button with Popover */}
-      <button
+      <ButtonBase
         ref={moreButtonRef}
-        type="button"
         className={`perps-candle-period-button perps-candle-period-button--more ${isMorePeriodSelected ? 'perps-candle-period-button--selected' : ''}`}
         onClick={() => setIsMoreOpen(!isMoreOpen)}
         data-testid="perps-candle-period-more"
@@ -112,7 +111,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
           size={IconSize.Xs}
           color={IconColor.IconAlternative}
         />
-      </button>
+      </ButtonBase>
 
       <Popover
         isOpen={isMoreOpen}
@@ -129,9 +128,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
               selectedPeriod?.toLowerCase() === period.value?.toLowerCase();
 
             return (
-              <button
+              <ButtonBase
                 key={period.value}
-                type="button"
                 className={`perps-candle-period-option ${isSelected ? 'perps-candle-period-option--selected' : ''}`}
                 onClick={() => handleMorePeriodSelect(period.value)}
                 data-testid={`perps-candle-period-more-${period.value}`}
@@ -146,7 +144,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
                 >
                   {period.label}
                 </Text>
-              </button>
+              </ButtonBase>
             );
           })}
         </Box>
