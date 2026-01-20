@@ -82,7 +82,7 @@ export function Dropdown<T extends string>({
   );
 
   return (
-    <div ref={dropdownRef} className="relative">
+    <Box ref={dropdownRef} className="relative">
       {/* Trigger button styled like PickerNetwork */}
       <ButtonBase
         size={ButtonBaseSize.Sm}
@@ -135,7 +135,7 @@ export function Dropdown<T extends string>({
           ))}
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
