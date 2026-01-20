@@ -2,8 +2,8 @@ import { useEffect, type Dispatch, type SetStateAction } from 'react';
 import {
   checkHardwareWalletPermission,
   getHardwareWalletDeviceId,
-  subscribeToWebHIDEvents,
-  subscribeToWebUSBEvents,
+  subscribeToWebHidEvents,
+  subscribeToWebUsbEvents,
 } from './webConnectionUtils';
 import { HardwareWalletType, HardwareConnectionPermissionState } from './types';
 import {
@@ -22,6 +22,9 @@ type UseHardwareWalletAutoConnectParams = {
   isWebHidAvailable: boolean;
   isWebUsbAvailable: boolean;
   handleDisconnect: (error?: unknown) => void;
+  resetAutoConnectState: () => void;
+  setAutoConnected: (accountAddress: string | null, deviceId: string) => void;
+  setDeviceIdRef: (deviceId: string) => void;
 };
 
 export const useHardwareWalletAutoConnect = ({
@@ -33,136 +36,246 @@ export const useHardwareWalletAutoConnect = ({
   isWebHidAvailable,
   isWebUsbAvailable,
   handleDisconnect,
+  resetAutoConnectState,
+  setAutoConnected,
+  setDeviceIdRef,
 }: UseHardwareWalletAutoConnectParams) => {
   const { isHardwareWalletAccount, walletType, accountAddress } = state;
 
-  // Native device connect/disconnect subscriptions
-  useEffect(() => {
-    if (
-      !isHardwareWalletAccount ||
-      !walletType ||
-      hardwareConnectionPermissionState !==
-        HardwareConnectionPermissionState.Granted
-    ) {
-      return undefined;
-    }
+  const {
+    adapterRef,
+    isConnectingRef,
+    connectRef,
+    deviceIdRef,
+    hasAutoConnectedRef,
+    lastConnectedAccountRef,
+  } = refs;
 
-    const isLedger = walletType === HardwareWalletType.Ledger;
-    const isTrezor = walletType === HardwareWalletType.Trezor;
-
-    if ((isLedger && !isWebHidAvailable) || (isTrezor && !isWebUsbAvailable)) {
-      return undefined;
-    }
-
-    const abortSignal = refs.abortControllerRef.current?.signal;
-
-    const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
-      if (abortSignal?.aborted) {
-        return;
-      }
-
-      const newDeviceId = device.productId.toString();
-      setDeviceId((prevId) => (prevId === newDeviceId ? prevId : newDeviceId));
-
-      const currentPermissionState =
-        await checkHardwareWalletPermission(walletType);
-      setHardwareConnectionPermissionState(currentPermissionState);
-
+  useEffect(
+    () => {
       if (
-        currentPermissionState === HardwareConnectionPermissionState.Granted &&
-        !refs.adapterRef.current?.isConnected() &&
-        !refs.isConnectingRef.current
+        !isHardwareWalletAccount ||
+        !walletType ||
+        hardwareConnectionPermissionState !==
+          HardwareConnectionPermissionState.Granted
       ) {
-        refs.deviceIdRef.current = newDeviceId;
-        refs.connectRef.current?.();
-      }
-    };
-
-    const handleNativeDisconnect = async (device: HIDDevice | USBDevice) => {
-      if (abortSignal?.aborted) {
-        return;
+        return undefined;
       }
 
-      const disconnectedDeviceId = device.productId.toString();
-      if (refs.deviceIdRef.current === disconnectedDeviceId) {
-        handleDisconnect();
+      const isLedger = walletType === HardwareWalletType.Ledger;
+      const isTrezor = walletType === HardwareWalletType.Trezor;
 
-        const currentPermissionState =
-          await checkHardwareWalletPermission(walletType);
-        setHardwareConnectionPermissionState(currentPermissionState);
+      const isSupportedWalletType = isLedger || isTrezor;
+      const hasRequiredWebAPI =
+        (isLedger && isWebHidAvailable) || (isTrezor && isWebUsbAvailable);
+
+      if (!isSupportedWalletType || !hasRequiredWebAPI) {
+        return undefined;
       }
-    };
 
-    const unsubscribe = isLedger
-      ? subscribeToWebHIDEvents(handleNativeConnect, handleNativeDisconnect)
-      : subscribeToWebUSBEvents(handleNativeConnect, handleNativeDisconnect);
+      const abortController = new AbortController();
+      const abortSignal = abortController.signal;
 
-    return unsubscribe;
-  }, [
-    isHardwareWalletAccount,
-    walletType,
-    hardwareConnectionPermissionState,
-    isWebHidAvailable,
-    isWebUsbAvailable,
-    handleDisconnect,
-    setDeviceId,
-    setHardwareConnectionPermissionState,
-    refs,
-  ]);
+      // Capture the account address at the time this effect starts
+      // so we only mark auto-connected for the correct account
+      const effectAccountAddress = accountAddress;
 
-  // Auto-connection effect
-  useEffect(() => {
-    if (
-      !isHardwareWalletAccount ||
-      hardwareConnectionPermissionState !==
-        HardwareConnectionPermissionState.Granted
-    ) {
-      refs.hasAutoConnectedRef.current = false;
-      refs.lastConnectedAccountRef.current = null;
-      return;
-    }
-
-    const abortSignal = refs.abortControllerRef.current?.signal;
-
-    const shouldSkipAutoConnect =
-      refs.hasAutoConnectedRef.current &&
-      refs.lastConnectedAccountRef.current === accountAddress;
-    if (shouldSkipAutoConnect) {
-      return;
-    }
-
-    (walletType ? getHardwareWalletDeviceId(walletType) : Promise.resolve(null))
-      .then(async (id) => {
-        if (abortSignal?.aborted) {
+      const handleNativeConnect = async (device: HIDDevice | USBDevice) => {
+        if (abortSignal.aborted) {
           return;
         }
 
-        setDeviceId((prevId) => (prevId === id ? prevId : id));
+        const newDeviceId = device.productId.toString();
+
+        const currentPermissionState =
+          await checkHardwareWalletPermission(walletType);
+
+        // Check abort after async operation
+        if (abortSignal.aborted) {
+          return;
+        }
+
+        setDeviceId(newDeviceId);
+        setHardwareConnectionPermissionState(currentPermissionState);
 
         if (
-          walletType &&
-          id &&
-          !refs.adapterRef.current?.isConnected() &&
-          !refs.isConnectingRef.current &&
-          !refs.hasAutoConnectedRef.current &&
-          hardwareConnectionPermissionState ===
-            HardwareConnectionPermissionState.Granted
+          currentPermissionState ===
+            HardwareConnectionPermissionState.Granted &&
+          !adapterRef.current?.isConnected()
         ) {
-          refs.hasAutoConnectedRef.current = true;
-          refs.lastConnectedAccountRef.current = accountAddress ?? null;
-          refs.deviceIdRef.current = id;
-          await refs.connectRef.current?.();
+          // Synchronous check-and-set to prevent race condition
+          // This must happen atomically before any async work
+          if (isConnectingRef.current) {
+            return;
+          }
+          isConnectingRef.current = true;
+
+          const connect = connectRef.current;
+          if (connect) {
+            try {
+              await connect();
+              if (!abortSignal.aborted) {
+                setDeviceIdRef(newDeviceId);
+                setAutoConnected(effectAccountAddress, newDeviceId);
+              }
+            } catch {
+              // Connection failed, don't mark as connected
+              // Error is already handled by connectRef implementation
+            } finally {
+              // Reset connecting state when done (success or failure)
+              isConnectingRef.current = false;
+            }
+          } else {
+            // No connect function available, reset the flag
+            isConnectingRef.current = false;
+          }
         }
-      })
-      .catch(() => {
-        // Swallow errors; auto-connect best-effort only.
-      });
-  }, [
-    isHardwareWalletAccount,
-    accountAddress,
-    walletType,
-    hardwareConnectionPermissionState,
-    refs,
-    setDeviceId,
-  ]);
+      };
+
+      const handleNativeDisconnect = async (device: HIDDevice | USBDevice) => {
+        if (abortSignal.aborted) {
+          return;
+        }
+
+        const disconnectedDeviceId = device.productId.toString();
+        if (deviceIdRef.current === disconnectedDeviceId) {
+          handleDisconnect();
+
+          const currentPermissionState =
+            await checkHardwareWalletPermission(walletType);
+
+          if (abortSignal.aborted) {
+            return;
+          }
+
+          setHardwareConnectionPermissionState(currentPermissionState);
+        }
+      };
+
+      const getSubscriptionFunction = (type: HardwareWalletType) => {
+        switch (type) {
+          case HardwareWalletType.Ledger:
+            return subscribeToWebHidEvents;
+          case HardwareWalletType.Trezor:
+            return subscribeToWebUsbEvents;
+          default:
+            return () => {
+              // return noop for unsupported
+            };
+        }
+      };
+
+      const subscribeToEvents = getSubscriptionFunction(walletType);
+
+      const unsubscribe = subscribeToEvents(
+        walletType,
+        handleNativeConnect,
+        handleNativeDisconnect,
+      );
+
+      return () => {
+        unsubscribe?.();
+        abortController.abort();
+      };
+    },
+    // Ignore refs in dep array
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isHardwareWalletAccount,
+      walletType,
+      hardwareConnectionPermissionState,
+      isWebHidAvailable,
+      isWebUsbAvailable,
+      handleDisconnect,
+      setDeviceId,
+      setHardwareConnectionPermissionState,
+      setAutoConnected,
+    ],
+  );
+
+  // Auto-connection effect
+  useEffect(
+    () => {
+      if (
+        !isHardwareWalletAccount ||
+        !walletType ||
+        hardwareConnectionPermissionState !==
+          HardwareConnectionPermissionState.Granted
+      ) {
+        resetAutoConnectState();
+        return undefined;
+      }
+
+      const shouldSkipAutoConnect =
+        hasAutoConnectedRef.current &&
+        lastConnectedAccountRef.current === accountAddress;
+      if (shouldSkipAutoConnect) {
+        return undefined;
+      }
+
+      const abortController = new AbortController();
+      const abortSignal = abortController.signal;
+
+      // Capture the account address at the time this effect starts
+      // so we only mark auto-connected for the correct account
+      const effectAccountAddress = accountAddress;
+
+      getHardwareWalletDeviceId(walletType)
+        .then(async (id) => {
+          if (abortSignal.aborted) {
+            return;
+          }
+
+          setDeviceId(id);
+
+          if (
+            id &&
+            connectRef.current &&
+            !adapterRef.current?.isConnected() &&
+            !isConnectingRef.current &&
+            !hasAutoConnectedRef.current
+          ) {
+            // Synchronous check-and-set to prevent race condition with handleNativeConnect
+            // This must happen atomically before any async work
+            isConnectingRef.current = true;
+
+            const connect = connectRef.current;
+            try {
+              await connect();
+              // Check cancellation again after async connect completes
+              if (!abortSignal.aborted) {
+                setDeviceIdRef(id);
+                setAutoConnected(effectAccountAddress ?? null, id);
+              }
+            } catch {
+              // Connection failed, don't mark as auto-connected
+              // Error is already handled by connectRef implementation
+            } finally {
+              // Reset connecting state when done (success or failure)
+              isConnectingRef.current = false;
+            }
+          }
+        })
+        .catch(() => {
+          // Swallow errors; auto-connect best-effort only.
+        });
+
+      return () => {
+        abortController.abort();
+      };
+    },
+    // Ignore refs in dep array
+    // eslint-disable-next-line react-compiler/react-compiler
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [
+      isHardwareWalletAccount,
+      accountAddress,
+      walletType,
+      hardwareConnectionPermissionState,
+      setDeviceId,
+      resetAutoConnectState,
+      setAutoConnected,
+    ],
+  );
 };
