@@ -4458,12 +4458,8 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
-  value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async () => {
-    await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-  };
+export function setDefaultHomeActiveTabName(value: string): Promise<void> {
+  return submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {

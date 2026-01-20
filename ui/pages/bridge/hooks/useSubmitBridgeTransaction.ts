@@ -127,7 +127,7 @@ export default function useSubmitBridgeTransaction() {
       }
       return;
     }
-
+    // Route user to activity tab on Home page
     navigate(`${DEFAULT_ROUTE}?tab=activity`, {
       state: { stayOnHomePage: true },
     });

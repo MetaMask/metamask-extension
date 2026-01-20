@@ -65,7 +65,9 @@ export const AccountOverviewTabs = ({
   const selectedChainIds = useSelector(getEnabledChainIds);
 
   useEffect(() => {
-    setDefaultHomeActiveTabName(activeTabKey);
+    if (activeTabKey in ACCOUNT_OVERVIEW_TAB_KEY_TO_TRACE_NAME_MAP) {
+      setDefaultHomeActiveTabName(activeTabKey);
+    }
   }, [activeTabKey]);
 
   // Get all enabled networks (what the user has actually selected)
@@ -152,6 +154,7 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTab>
+        defaultActiveTabKey={activeTabKey ?? undefined}
         activeTabKey={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
