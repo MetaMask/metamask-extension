@@ -41,13 +41,13 @@ export const useHardwareWalletPermissions = ({
       const abortController = new AbortController();
       abortControllerRef.current = abortController;
 
-      // Check if the current (or previous) permission request is getting aborted
+      // Check if the current (or previous) permission request has been aborted
       const isAborted = () =>
-        !abortController.signal.aborted &&
-        !refs.abortControllerRef.current?.signal.aborted;
+        abortController.signal.aborted ||
+        Boolean(refs.abortControllerRef.current?.signal.aborted);
 
-      // Run the operation. The operation must check if its getting aborted using
-      // `isAborted` at any time.
+      // Run the operation. The operation must check if it's been aborted using
+      // `isAborted` at any time before performing state updates.
       return operation({
         abortController,
         isAborted,
@@ -84,11 +84,11 @@ export const useHardwareWalletPermissions = ({
           const permissionState =
             await checkHardwareWalletPermission(walletType);
 
-          if (isAborted()) {
+          if (!isAborted()) {
             setHardwareConnectionPermissionState(permissionState);
           }
         } catch {
-          if (isAborted()) {
+          if (!isAborted()) {
             setHardwareConnectionPermissionState(
               HardwareConnectionPermissionState.Unknown,
             );
@@ -122,7 +122,7 @@ export const useHardwareWalletPermissions = ({
           const permissionState =
             await checkHardwareWalletPermission(targetWalletType);
 
-          if (isAborted()) {
+          if (!isAborted()) {
             setHardwareConnectionPermissionState(permissionState);
           }
 
@@ -141,7 +141,7 @@ export const useHardwareWalletPermissions = ({
           const granted =
             await requestHardwareWalletPermission(targetWalletType);
 
-          if (isAborted()) {
+          if (!isAborted()) {
             setHardwareConnectionPermissionState(
               granted
                 ? HardwareConnectionPermissionState.Granted
