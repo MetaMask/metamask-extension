@@ -18,7 +18,6 @@ import { SnapControllerActions } from '@metamask/snaps-controllers';
 import { createMockInternalAccount } from '../../../test/jest/mocks';
 import {
   getNextAvailableSnapAccountName,
-  getUniqueAccountName,
   MultichainWalletSnapClient,
   SnapAccountNameOptions,
   CreateAccountSnapOptions,
@@ -29,34 +28,6 @@ import { BITCOIN_WALLET_SNAP_ID } from './bitcoin-wallet-snap';
 const SOLANA_SCOPES = [SolScope.Mainnet, SolScope.Testnet, SolScope.Devnet];
 
 describe('accounts', () => {
-  describe('getUniqueAccountName', () => {
-    it('returns the suggested name if not used', () => {
-      const name = getUniqueAccountName(
-        [
-          createMockInternalAccount({ name: 'Account 1' }),
-          createMockInternalAccount({ name: 'Account 2' }),
-          createMockInternalAccount({ name: 'Account 3' }),
-        ],
-        'Account 4',
-      );
-
-      expect(name).toBe('Account 4');
-    });
-
-    it('computes a unique name in case of conflicts', () => {
-      const name = getUniqueAccountName(
-        [
-          createMockInternalAccount({ name: 'Account 1' }),
-          createMockInternalAccount({ name: 'Account 2' }),
-          createMockInternalAccount({ name: 'Account 3' }),
-        ],
-        'Account 1',
-      );
-
-      expect(name).toBe('Account 1 2');
-    });
-  });
-
   describe('getNextAvailableSnapAccountName', () => {
     const index = 3;
     const getNextAvailableAccountName = async () => `Snap Account ${index}`;

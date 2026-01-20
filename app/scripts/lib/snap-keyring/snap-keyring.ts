@@ -18,17 +18,11 @@ import { t } from '../../../../shared/lib/translate';
 // eslint-disable-next-line import/no-restricted-paths
 import { IconName } from '../../../../ui/components/component-library/icon';
 import MetaMetricsController from '../../controllers/metametrics-controller';
-import { getUniqueAccountName } from '../../../../shared/lib/accounts';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import {
   getSnapName,
   isMultichainWalletSnap,
 } from '../../../../shared/lib/accounts/snaps';
-import {
-  FEATURE_VERSION_2,
-  isMultichainAccountsFeatureEnabled,
-  MultichainAccountsFeatureFlag,
-} from '../../../../shared/lib/multichain-accounts/remote-feature-flag';
 import { SnapKeyringBuilderMessenger } from './types';
 import { isBlockedUrl } from './utils/isBlockedUrl';
 import { showError, showSuccess } from './utils/showResult';
@@ -174,89 +168,38 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     }
   }
 
-  /**
-   * Use the account name suggestion to decide the name of the account.
-   *
-   * @param accountNameSuggestion - Suggested name for the account.
-   * @returns The name that should be used for the account.
-   */
-  async #getAccountNameFromSuggestion(
-    accountNameSuggestion: string,
-  ): Promise<{ success: boolean; accountName?: string }> {
-    const accounts = await this.#messenger.call(
-      'AccountsController:listMultichainAccounts',
-    );
-    const accountName = getUniqueAccountName(accounts, accountNameSuggestion);
-    return { success: true, accountName };
-  }
-
   async #addAccountConfirmations({
     snapId,
     skipConfirmationDialog,
     skipApprovalFlow,
     handleUserInput,
-    accountNameSuggestion,
   }: {
     snapId: SnapId;
     skipConfirmationDialog: boolean;
     skipApprovalFlow: boolean;
-    accountNameSuggestion: string;
     handleUserInput: (accepted: boolean) => Promise<void>;
-  }): Promise<{ accountName?: string }> {
+  }): Promise<void> {
     // If the confirmation dialog is skipped (preinstalled snap without confirmations),
     // don't enter the approval flow at all to avoid unnecessary loader/flow UI.
     // Just compute the name and signal acceptance.
     if (skipApprovalFlow) {
-      const { success, accountName } = await this.#getAccountNameFromSuggestion(
-        accountNameSuggestion,
-      );
-      await handleUserInput(success);
-      if (!success) {
-        throw new Error('User denied account creation');
-      }
-      return { accountName };
+      return await handleUserInput(true);
     }
 
     return await this.#withApprovalFlow(async (_) => {
-      // 1. Show the account CREATION confirmation dialog.
-      {
-        // If confirmation dialog are skipped, we consider the account creation to be confirmed until the account name dialog is closed
-        const success =
-          skipConfirmationDialog ||
-          (await showAccountCreationDialog(snapId, this.#messenger));
+      // Show the account CREATION confirmation dialog.
+      // If confirmation dialog are skipped, we consider the account creation to be confirmed automatically.
+      const success =
+        skipConfirmationDialog ||
+        (await showAccountCreationDialog(snapId, this.#messenger));
 
-        if (!success) {
-          // User has cancelled account creation
-          await handleUserInput(success);
-
-          throw new Error('User denied account creation');
-        }
-      }
-
-      // 2. Generate the account name from the suggestion.
-      {
-        const { success, accountName } =
-          await this.#getAccountNameFromSuggestion(accountNameSuggestion);
-
+      if (!success) {
+        // User has cancelled account creation
         await handleUserInput(success);
 
-        if (!success) {
-          throw new Error('User denied account creation');
-        }
-
-        return { accountName };
+        throw new Error('User denied account creation');
       }
     });
-  }
-
-  #isMultichainAccountsFeatureState2Enabled() {
-    const state = this.#messenger.call('RemoteFeatureFlagController:getState');
-
-    const featureFlag = state?.remoteFeatureFlags
-      ?.enableMultichainAccountsState2 as
-      | MultichainAccountsFeatureFlag
-      | undefined;
-    return isMultichainAccountsFeatureEnabled(featureFlag, FEATURE_VERSION_2);
   }
 
   async #addAccountFinalize({
@@ -266,8 +209,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep,
     skipApprovalFlow,
     onceSaved,
-    accountName,
-    defaultAccountNameChosen,
   }: {
     address: string;
     snapId: SnapId;
@@ -275,8 +216,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     skipSetSelectedAccountStep: boolean;
     skipApprovalFlow: boolean;
     onceSaved: Promise<string>;
-    accountName?: string;
-    defaultAccountNameChosen: boolean;
   }) {
     const learnMoreLink =
       'https://support.metamask.io/managing-my-wallet/accounts-and-addresses/how-to-add-accounts-in-your-wallet/';
@@ -298,9 +237,11 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           snap_name: snapName,
           ...(event === MetaMetricsEventName.AccountAdded && {
+            // NOTE: We keep this property for backward compatibility with existing
+            // metrics, but we're no longer naming those accounts, only account groups.
             // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            is_suggested_name: defaultAccountNameChosen,
+            is_suggested_name: false,
           }),
         },
       });
@@ -322,21 +263,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
             'AccountsController:setSelectedAccount',
             accountId,
           );
-        }
-
-        // HACK: In state 2, account creations can run in parallel, thus, `accountName`
-        // sometimes conflict with other concurrent renaming. Since we don't rely on those
-        // account names anymore, we just omit this part and make this race-free.
-        // FIXME: We still rely on the old behavior in some e2e, so we cannot remove this
-        // entirely.
-        if (!this.#isMultichainAccountsFeatureState2Enabled()) {
-          if (accountName) {
-            this.#messenger.call(
-              'AccountsController:setAccountName',
-              accountId,
-              accountName,
-            );
-          }
         }
 
         if (!skipConfirmationDialog) {
@@ -406,7 +332,9 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
     snapId: string,
     handleUserInput: (accepted: boolean) => Promise<void>,
     onceSaved: Promise<string>,
-    accountNameSuggestion: string = '',
+    // Not used anymore.
+    // TODO: Update `SnapKeyring` interface to remove this parameter.
+    _accountNameSuggestion?: string,
     {
       displayConfirmation,
       setSelectedAccount,
@@ -437,14 +365,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
 
     // First part of the flow, which includes confirmation dialog (if not skipped).
     // Once confirmed, we resume the Snap execution.
-    const { accountName } = await this.#addAccountConfirmations({
+    await this.#addAccountConfirmations({
       snapId,
       skipConfirmationDialog,
       skipApprovalFlow,
-      // We do not set the account name suggestion if it's a multichain wallet Snap since the
-      // current naming could have race conditions with other account creations, and since
-      // naming is now handled by multichain account groups, we can skip this entirely.
-      accountNameSuggestion: skipAll ? '' : accountNameSuggestion,
       handleUserInput,
     });
 
@@ -458,10 +382,7 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
       skipConfirmationDialog,
       skipSetSelectedAccountStep,
       skipApprovalFlow,
-      accountName,
       onceSaved,
-      defaultAccountNameChosen:
-        Boolean(accountNameSuggestion) && accountName === accountNameSuggestion,
     });
   }
 
