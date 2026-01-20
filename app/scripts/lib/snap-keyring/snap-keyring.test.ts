@@ -15,10 +15,7 @@ import {
 } from '../../../../shared/constants/metametrics';
 import { isSnapPreinstalled } from '../../../../shared/lib/snaps/snaps';
 import { getSnapName } from '../../../../shared/lib/accounts/snaps';
-import {
-  showAccountCreationDialog,
-  snapKeyringBuilder,
-} from './snap-keyring';
+import { showAccountCreationDialog, snapKeyringBuilder } from './snap-keyring';
 import {
   SnapKeyringBuilderAllowActions,
   SnapKeyringBuilderMessenger,
@@ -257,7 +254,6 @@ describe('Snap Keyring Methods', () => {
         ]);
       });
     });
-
   });
 
   describe('addAccount', () => {

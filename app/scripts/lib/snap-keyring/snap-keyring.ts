@@ -86,7 +86,6 @@ export async function showAccountCreationDialog(
   }
 }
 
-
 class SnapKeyringImpl implements SnapKeyringCallbacks {
   readonly #messenger: SnapKeyringBuilderMessenger;
 
