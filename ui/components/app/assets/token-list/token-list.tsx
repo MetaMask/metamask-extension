@@ -65,7 +65,7 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     getShouldHideZeroBalanceTokens,
   );
   const hasBalance = useSelector(selectAccountGroupBalanceForEmptyState);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const accountGroupIdAssets = useSelector(getAssetsBySelectedAccountGroup);
 

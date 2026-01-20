@@ -54,7 +54,7 @@ const sortingBasedOnTokenSelection = (tokensDetected) => {
 
 const DetectedToken = ({ setShowDetectedTokens }) => {
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const detectedTokens = useSelector(getDetectedTokensInCurrentNetwork);
   const networkClientId = useSelector(getSelectedNetworkClientId);

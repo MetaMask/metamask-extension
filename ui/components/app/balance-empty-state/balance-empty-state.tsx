@@ -50,7 +50,7 @@ export const BalanceEmptyState: React.FC<BalanceEmptyStateProps> = ({
   ...props
 }) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const currentLocale = useSelector(getCurrentLocale);
   const chainId = useSelector(getCurrentChainId);
   const { nickname } = useSelector(getMultichainCurrentNetwork);

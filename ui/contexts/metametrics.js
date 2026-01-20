@@ -10,6 +10,7 @@ import React, {
   useRef,
   useCallback,
   useContext,
+  useMemo,
 } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation, matchPath } from 'react-router-dom';
@@ -66,23 +67,43 @@ import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
  */
 
 /**
- * @typedef {UITrackEventMethod & {
- *   bufferedTrace?: UITraceMethod,
- *   bufferedEndTrace?: UIEndTraceMethod,
- *   onboardingParentContext?: React.MutableRefObject<Span | null>
+ * @typedef {{
+ *   trackEvent: UITrackEventMethod,
+ *   bufferedTrace: UITraceMethod,
+ *   bufferedEndTrace: UIEndTraceMethod,
+ *   onboardingParentContext: React.MutableRefObject<Span | null>
  * }} MetaMetricsContextValue
  */
+
+const defaultContextValue = {
+  trackEvent: () => {
+    captureException(
+      Error(
+        `MetaMetrics context trackEvent was called from a react node that is not a descendant of a MetaMetrics context provider`,
+      ),
+    );
+  },
+  bufferedTrace: () => {
+    captureException(
+      Error(
+        `MetaMetrics context bufferedTrace was called from a react node that is not a descendant of a MetaMetrics context provider`,
+      ),
+    );
+  },
+  bufferedEndTrace: () => {
+    captureException(
+      Error(
+        `MetaMetrics context bufferedEndTrace was called from a react node that is not a descendant of a MetaMetrics context provider`,
+      ),
+    );
+  },
+  onboardingParentContext: { current: null },
+};
 
 /**
  * @type {React.Context<MetaMetricsContextValue>}
  */
-export const MetaMetricsContext = createContext(() => {
-  captureException(
-    Error(
-      `MetaMetrics context function was called from a react node that is not a descendant of a MetaMetrics context provider`,
-    ),
-  );
-});
+export const MetaMetricsContext = createContext(defaultContextValue);
 
 export function MetaMetricsProvider({ children }) {
   const location = useLocation();
@@ -228,15 +249,18 @@ export function MetaMetricsProvider({ children }) {
     context.referrer,
   ]);
 
-  // For backwards compatibility, attach the new methods as properties to trackEvent
-  const trackEventWithMethods = trackEvent;
-  // eslint-disable-next-line react-compiler/react-compiler
-  trackEventWithMethods.bufferedTrace = bufferedTrace;
-  trackEventWithMethods.bufferedEndTrace = bufferedEndTrace;
-  trackEventWithMethods.onboardingParentContext = onboardingParentContext;
+  const contextValue = useMemo(
+    () => ({
+      trackEvent,
+      bufferedTrace,
+      bufferedEndTrace,
+      onboardingParentContext,
+    }),
+    [trackEvent, bufferedTrace, bufferedEndTrace, onboardingParentContext],
+  );
 
   return (
-    <MetaMetricsContext.Provider value={trackEventWithMethods}>
+    <MetaMetricsContext.Provider value={contextValue}>
       {children}
     </MetaMetricsContext.Provider>
   );
@@ -265,11 +289,11 @@ export class LegacyMetaMetricsProvider extends Component {
   };
 
   getChildContext() {
-    const trackEventWithMethods = this.context;
+    const context = this.context;
     return {
-      trackEvent: trackEventWithMethods,
-      bufferedTrace: trackEventWithMethods?.bufferedTrace,
-      bufferedEndTrace: trackEventWithMethods?.bufferedEndTrace,
+      trackEvent: context.trackEvent,
+      bufferedTrace: context.bufferedTrace,
+      bufferedEndTrace: context.bufferedEndTrace,
     };
   }
 
@@ -286,15 +310,20 @@ export class LegacyMetaMetricsProvider extends Component {
  */
 export function withMetaMetrics(WrappedComponent) {
   const WithMetaMetrics = (props) => {
-    const metaMetricsContext = useContext(MetaMetricsContext);
+    const {
+      trackEvent,
+      bufferedTrace,
+      bufferedEndTrace,
+      onboardingParentContext,
+    } = useContext(MetaMetricsContext);
 
     return (
       <WrappedComponent
         {...props}
-        trackEvent={metaMetricsContext}
-        bufferedTrace={metaMetricsContext?.bufferedTrace}
-        bufferedEndTrace={metaMetricsContext?.bufferedEndTrace}
-        onboardingParentContext={metaMetricsContext?.onboardingParentContext}
+        trackEvent={trackEvent}
+        bufferedTrace={bufferedTrace}
+        bufferedEndTrace={bufferedEndTrace}
+        onboardingParentContext={onboardingParentContext}
       />
     );
   };

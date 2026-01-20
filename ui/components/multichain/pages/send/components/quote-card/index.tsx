@@ -57,7 +57,7 @@ export function QuoteCard({ scrollRef }: QuoteCardProps) {
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const translatedNetworkName = useTranslatedNetworkName();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const { isSwapQuoteLoading } = useSelector(getCurrentDraftTransaction);
 

@@ -25,7 +25,7 @@ export const NotificationsListReadAllButton = ({
 }: NotificationsListReadAllButtonProps) => {
   const t = useI18nContext();
   const { markNotificationAsRead } = useMarkNotificationAsRead();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const { setNotificationTimeout } = useSnapNotificationTimeouts();
 
   const handleOnClick = () => {

@@ -79,7 +79,7 @@ export default function AwaitingSwap({
   txId,
 }) {
   const t = useContext(I18nContext);
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const hdEntropyIndex = useSelector(getHDEntropyIndex);

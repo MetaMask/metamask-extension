@@ -102,7 +102,7 @@ export const SendPage = ({
   const navigate = navigateProp || navigateHook;
   const location = locationProp || locationHook;
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const sendAnalytics = useSelector(getSendAnalyticProperties);
 
   const [isSubmitting, setIsSubmitting] = useState(false);

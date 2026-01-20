@@ -73,7 +73,7 @@ type SortControlProps = {
 
 const SortControl = ({ handleClose }: SortControlProps) => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const tokenSortConfig = useSelector(getTokenSortConfig);
   const currentCurrency = useSelector(getCurrentCurrency);
 

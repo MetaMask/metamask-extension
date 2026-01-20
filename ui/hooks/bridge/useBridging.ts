@@ -42,7 +42,7 @@ import { CHAIN_IDS } from '../../../shared/constants/network';
 const useBridging = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);

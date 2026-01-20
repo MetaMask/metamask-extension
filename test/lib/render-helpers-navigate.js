@@ -21,17 +21,14 @@ import * as enLocaleMessages from '../../app/_locales/en/messages.json';
 export const en = enLocaleMessages;
 
 // Mock MetaMetrics context for tests
-const createMockTrackEvent = (
+const createMockMetaMetricsContext = (
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
-) => {
-  const mockTrackEvent = getMockTrackEvent();
-  Object.assign(mockTrackEvent, {
-    bufferedTrace: jest.fn().mockResolvedValue(undefined),
-    bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
-    onboardingParentContext: { current: null },
-  });
-  return mockTrackEvent;
-};
+) => ({
+  trackEvent: getMockTrackEvent(),
+  bufferedTrace: jest.fn().mockResolvedValue(undefined),
+  bufferedEndTrace: jest.fn().mockResolvedValue(undefined),
+  onboardingParentContext: { current: null },
+});
 
 export const I18nProvider = (props) => {
   const { currentLocale, current, en: eng } = props;
@@ -63,14 +60,14 @@ function createProviderWrapper(
   pathname = '/',
   getMockTrackEvent = () => jest.fn().mockResolvedValue(undefined),
 ) {
-  const mockTrackEvent = createMockTrackEvent(getMockTrackEvent);
+  const mockMetaMetricsContext = createMockMetaMetricsContext(getMockTrackEvent);
 
   const Wrapper = ({ children }) => {
     const container = (
       <MemoryRouter initialEntries={[pathname]}>
         <I18nProvider currentLocale="en" current={en} en={en}>
           <LegacyI18nProvider>
-            <MetaMetricsContext.Provider value={mockTrackEvent}>
+            <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
               <LegacyMetaMetricsProvider>{children}</LegacyMetaMetricsProvider>
             </MetaMetricsContext.Provider>
           </LegacyI18nProvider>

@@ -50,7 +50,7 @@ export function TurnOnBackupAndSyncModal() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const isBasicFunctionalityEnabled = useSelector(getUseExternalServices);
   const isBackupAndSyncEnabled = useSelector(selectIsBackupAndSyncEnabled);

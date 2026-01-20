@@ -19,7 +19,7 @@ import {
 export const DeFiEmptyStateMessage: FC = () => {
   const t = useI18nContext();
   const theme = useTheme();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const metaMetricsId = useSelector(getMetaMetricsId);
   const isMetaMetricsEnabled = useSelector(getParticipateInMetaMetrics);

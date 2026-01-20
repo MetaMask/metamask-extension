@@ -61,7 +61,7 @@ export const AccountOverviewTabs = ({
   >(defaultHomeActiveTabName ?? undefined);
   const navigate = useNavigate();
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const dispatch = useDispatch();
   const selectedChainIds = useSelector(getEnabledChainIds);
 

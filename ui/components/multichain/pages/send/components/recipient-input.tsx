@@ -25,7 +25,7 @@ import { SendPageRow } from './send-page-row';
 export const SendPageRecipientInput = () => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   const recipient = useSelector(getRecipient);
   const userInput = useSelector(getRecipientUserInput);

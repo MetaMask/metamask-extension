@@ -92,7 +92,7 @@ export const AppHeaderUnlockedContent = ({
   disableAccountPicker,
   menuRef,
 }: AppHeaderUnlockedContentProps) => {
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const navigate = useNavigate();
   const dispatch = useDispatch();

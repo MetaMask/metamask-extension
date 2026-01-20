@@ -17,7 +17,7 @@ export default function SimulationErrorMessage({
 }) {
   const t = useContext(I18nContext);
 
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   useEffect(() => {
     trackEvent({

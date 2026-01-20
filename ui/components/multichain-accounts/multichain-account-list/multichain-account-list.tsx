@@ -91,7 +91,7 @@ export const MultichainAccountList = ({
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
   const t = useI18nContext();
   const defaultHomeActiveTabName: AccountOverviewTabKey = useSelector(
     getDefaultHomeActiveTabName,

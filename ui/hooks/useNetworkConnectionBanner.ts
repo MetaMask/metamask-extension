@@ -32,7 +32,7 @@ const UNAVAILABLE_BANNER_TIMEOUT = 30 * 1000;
 export const useNetworkConnectionBanner =
   (): UseNetworkConnectionBannerResult => {
     const dispatch = useDispatch();
-    const trackEvent = useContext(MetaMetricsContext);
+    const { trackEvent } = useContext(MetaMetricsContext);
     const isOffline = useSelector(getIsDeviceOffline);
     const firstUnavailableEvmNetwork = useSelector(
       selectFirstUnavailableEvmNetwork,

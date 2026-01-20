@@ -14,7 +14,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const BetaHomeFooter = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   return (
     <>

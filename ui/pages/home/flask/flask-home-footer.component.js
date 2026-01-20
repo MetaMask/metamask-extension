@@ -11,7 +11,7 @@ import { MetaMetricsContext } from '../../../contexts/metametrics';
 
 const FlaskHomeFooter = () => {
   const t = useI18nContext();
-  const trackEvent = useContext(MetaMetricsContext);
+  const { trackEvent } = useContext(MetaMetricsContext);
 
   return (
     <>
