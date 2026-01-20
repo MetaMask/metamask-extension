@@ -193,10 +193,10 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
         skipConfirmationDialog ||
         (await showAccountCreationDialog(snapId, this.#messenger));
 
+      await handleUserInput(success);
+
       if (!success) {
         // User has cancelled account creation
-        await handleUserInput(success);
-
         throw new Error('User denied account creation');
       }
     });
