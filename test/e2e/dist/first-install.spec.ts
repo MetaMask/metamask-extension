@@ -14,7 +14,7 @@ describe('First install', function () {
         // Wait for MetaMask to automatically open a new tab
         await driver.waitAndSwitchToWindowWithTitle(2, 'MetaMask');
         const startOnboardingPage = new StartOnboardingPage(driver);
-        await startOnboardingPage.checkBannerPageIsLoaded();
+        await startOnboardingPage.checkLoginPageIsLoaded();
 
         await driver.executeScript('window.stateHooks.reloadExtension()');
 
