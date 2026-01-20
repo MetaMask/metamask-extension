@@ -20,13 +20,13 @@ This specification details improvements to the MCP server focused on reducing bo
 
 ### Decisions
 
-| Question                   | Decision                                                             |
-| -------------------------- | -------------------------------------------------------------------- |
-| Execution wrapper location | New `tools/run-tool.ts`                                              |
-| Observation policy         | Configurable per-tool: `none`, `default`, or `custom`                |
-| Structured output format   | Use `structuredContent` + concise `content` text (no JSON.stringify) |
-| Knowledge store indexing   | In-memory inverted index, built lazily per session                   |
-| Batch execution semantics  | Sequential, continue-on-error by default, per-step results           |
+| Question                   | Decision                                                                                                                             |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Execution wrapper location | New `tools/run-tool.ts`                                                                                                              |
+| Observation policy         | Configurable per-tool: `none`, `default`, or `custom`                                                                                |
+| Structured output format   | ~~Use `structuredContent` + concise `content` text~~ **REVERTED**: Use standard `content[0].text` with full JSON (see Phase 2 notes) |
+| Knowledge store indexing   | In-memory inverted index, built lazily per session                                                                                   |
+| Batch execution semantics  | Sequential, continue-on-error by default, per-step results                                                                           |
 
 ---
 
@@ -440,9 +440,21 @@ export async function handleClick(
 
 ### Phase 2: MCP-Native Structured Outputs
 
+> **⚠️ REVERTED (2026-01-20)**
+>
+> This phase was implemented but subsequently reverted because `structuredContent` is **not part of the official MCP specification**. The MCP `CallToolResult` schema only includes:
+>
+> - `content` (required) - Array of content items
+> - `isError` (optional) - Boolean error flag
+> - `_meta` (optional) - Metadata
+>
+> Clients like OpenCode/Vercel AI SDK only process the standard `content` field and ignore non-standard fields like `structuredContent`. The "ergonomic" text summaries in `formatResponseAsText()` actually broke agent functionality by truncating knowledge store data to 100 characters.
+>
+> **Resolution:** Return full `JSON.stringify(response)` in the standard `content[0].text` field. This ensures all MCP clients receive complete, parseable data.
+
 **Effort: 1-2 hours**
 
-Since there are no existing consumers, we can implement the clean solution directly without backward compatibility concerns.
+~~Since there are no existing consumers, we can implement the clean solution directly without backward compatibility concerns.~~
 
 #### 2.1 Update Server Response Format
 

@@ -9,57 +9,12 @@ import {
 /* eslint-enable import/extensions */
 import type { ZodError, ZodIssue } from 'zod';
 
-import type { HandlerOptions, McpResponse } from './types';
+import type { HandlerOptions } from './types';
 import { createErrorResponse, ErrorCodes } from './types';
 import { toolSchemas, type ToolName } from './schemas';
 import { getToolHandler, hasToolHandler } from './tools/registry';
 import { sessionManager } from './session-manager';
 import { TOOL_DEFINITIONS } from './tool-definitions';
-
-function formatResponseAsText(response: McpResponse<unknown>): string {
-  if (!response.ok) {
-    return `Error [${String(response.error?.code)}]: ${String(response.error?.message)}`;
-  }
-
-  const { result } = response;
-  if (typeof result === 'object' && result !== null) {
-    const r = result as Record<string, unknown>;
-    if ('clicked' in r) {
-      return `Clicked: ${String(r.target)}`;
-    }
-    if ('typed' in r) {
-      return `Typed ${String(r.textLength)} chars into ${String(r.target)}`;
-    }
-    if ('found' in r && 'target' in r) {
-      return `Found: ${String(r.target)}`;
-    }
-    if ('items' in r && Array.isArray(r.items)) {
-      return `Found ${String(r.items.length)} items`;
-    }
-    if ('nodes' in r && Array.isArray(r.nodes)) {
-      return `Found ${String(r.nodes.length)} a11y nodes`;
-    }
-    if ('state' in r && typeof r.state === 'object' && r.state !== null) {
-      const state = r.state as Record<string, unknown>;
-      return `Screen: ${String(state.currentScreen ?? 'unknown')}`;
-    }
-    if ('sessionId' in r && typeof r.sessionId === 'string') {
-      return `Session started: ${r.sessionId}`;
-    }
-    if ('steps' in r && 'summary' in r) {
-      const summary = r.summary as Record<string, unknown>;
-      return `Batch: ${String(summary.succeeded)}/${String(summary.total)} succeeded`;
-    }
-    if ('cleanedUp' in r) {
-      return 'Session cleaned up';
-    }
-    if ('buildType' in r) {
-      return `Build completed: ${String(r.buildType)}`;
-    }
-  }
-
-  return `OK: ${JSON.stringify(result).substring(0, 100)}`;
-}
 
 function formatZodError(error: ZodError<unknown>): string {
   return (error.issues as ZodIssue[])
@@ -99,11 +54,10 @@ function createToolErrorResponse(
   );
 
   return {
-    structuredContent: response,
     content: [
       {
         type: 'text' as const,
-        text: formatResponseAsText(response),
+        text: JSON.stringify(response),
       },
     ],
     isError: true,
@@ -169,11 +123,10 @@ async function main() {
     const response = await handler(validatedArgs, options);
 
     return {
-      structuredContent: response,
       content: [
         {
           type: 'text' as const,
-          text: formatResponseAsText(response),
+          text: JSON.stringify(response),
         },
       ],
       isError: !response.ok,
