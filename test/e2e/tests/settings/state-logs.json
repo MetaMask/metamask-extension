@@ -298,6 +298,7 @@
       }
     },
     "appActiveTab": {
+      "favIconUrl": "null",
       "host": "string",
       "href": "string",
       "id": "number",
@@ -344,6 +345,7 @@
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
+    "connectivityStatus": "string",
     "conversionRates": {},
     "coverageResults": {},
     "cryptocurrencies": ["string"],
