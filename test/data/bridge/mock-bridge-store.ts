@@ -16,6 +16,7 @@ import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
 import { mockNetworkState } from '../../stub/networks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
+import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../../shared/constants/bridge';
 import { KeyringType } from '../../../shared/constants/keyring';
 import { mockTokenData } from './mock-token-data';
 
@@ -387,6 +388,18 @@ export const createBridgeMockStore = ({
                 ]),
               ),
             },
+            chainRanking: [
+              { chainId: 'eip155:1', name: 'Ethereum' },
+              ...Object.entries(
+                featureFlagOverrides?.bridgeConfig?.chains ?? {},
+              ).map(([chainId]) => ({
+                chainId: formatChainIdToCaip(chainId),
+                name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
+                  formatChainIdToCaip(chainId)
+                ],
+              })),
+              ...(featureFlagOverrides?.bridgeConfig?.chainRanking ?? []),
+            ],
           },
         },
       },
