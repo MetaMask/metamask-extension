@@ -1,4 +1,4 @@
-import React, { useContext, RefObject, useMemo } from 'react';
+import React, { useContext, RefObject } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { parseCaipChainId } from '@metamask/utils';
 import {
@@ -20,8 +20,8 @@ import {
   TextVariant,
 } from '../../../helpers/constants/design-system';
 import { I18nContext } from '../../../contexts/i18n';
-import { getAllDomains, getOriginOfCurrentTab } from '../../../selectors';
-import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
+import { getOriginOfCurrentTab } from '../../../selectors';
+import { getDappActiveNetwork } from '../../../selectors/dapp';
 import { getURLHost } from '../../../helpers/utils/util';
 import { getImageForChainId } from '../../../selectors/multichain';
 import { toggleNetworkMenu } from '../../../store/actions';
@@ -52,35 +52,11 @@ export const ConnectedSitePopover: React.FC<ConnectedSitePopoverProps> = ({
   const siteHost = isWebOrigin ? getURLHost(activeTabOrigin) : '';
   const siteName = siteHost || t('urlUnknown');
 
-  const allDomains = useSelector(getAllDomains);
-  const networkConfigurationsByChainId = useSelector(
-    getNetworkConfigurationsByChainId,
-  );
   const dispatch = useDispatch();
 
-  // Get the network that this dapp is actually connected to using domain mapping
-  const dappActiveNetwork = useMemo(() => {
-    if (!activeTabOrigin || !allDomains) {
-      return null;
-    }
-
-    // Get the networkClientId for this domain
-    const networkClientId = allDomains[activeTabOrigin];
-    if (!networkClientId) {
-      return null;
-    }
-
-    // Find the network configuration that has this networkClientId
-    const networkConfiguration = Object.values(
-      networkConfigurationsByChainId,
-    ).find((network) => {
-      return network.rpcEndpoints.some(
-        (rpcEndpoint) => rpcEndpoint.networkClientId === networkClientId,
-      );
-    });
-
-    return networkConfiguration || null;
-  }, [activeTabOrigin, allDomains, networkConfigurationsByChainId]);
+  // Get the network that this dapp is actually connected to
+  // This handles both EVM and non-EVM networks (Solana, Bitcoin, Tron)
+  const dappActiveNetwork = useSelector(getDappActiveNetwork);
 
   const getChainIdForImage = (chainId: `${string}:${string}`): string => {
     const { namespace, reference } = parseCaipChainId(chainId);

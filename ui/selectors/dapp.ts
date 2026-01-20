@@ -59,9 +59,11 @@ export const getDappActiveNetwork = createDeepEqualSelector(
         }
       }
     } else {
-      // TODO: Add support for other networks (Bitcoin, Solana)
-      const nonEvmScope = selectedAccount.scopes.find((scope: string) =>
-        scope.startsWith('solana:'),
+      const nonEvmScope = selectedAccount.scopes.find(
+        (scope: string) =>
+          scope.startsWith('solana:') ||
+          scope.startsWith('bip122:') ||
+          scope.startsWith('tron:'),
       );
 
       if (nonEvmScope) {
