@@ -41,6 +41,7 @@ function getAlertSkipReason(
     return AlertSkipReason.None;
   }
 
+  // Approval transactions
   const transactionMeta = currentConfirmation as TransactionMeta;
   const txData = transactionMeta.txParams?.data;
 
@@ -55,36 +56,35 @@ function getAlertSkipReason(
     return AlertSkipReason.None;
   }
 
+  // Permit signatures
   if (
-    isSignatureTransactionType(currentConfirmation) &&
-    currentConfirmation.type === 'eth_signTypedData'
+    !isSignatureTransactionType(currentConfirmation) ||
+    currentConfirmation.type !== 'eth_signTypedData'
   ) {
-    const signatureRequest = currentConfirmation as SignatureRequestType;
-    const msgData = signatureRequest.msgParams?.data as string;
-
-    if (msgData) {
-      const { primaryType, message, domain } = parseTypedDataMessage(msgData);
-      const isPermit = PRIMARY_TYPES_PERMIT.some(
-        (type) => type === primaryType,
-      );
-
-      if (isPermit) {
-        const isDaiPermit =
-          domain?.verifyingContract?.toLowerCase() ===
-          DAI_CONTRACT_ADDRESS.toLowerCase();
-
-        const isZeroValuePermit = isDaiPermit
-          ? message?.allowed === false // DAI uses `allowed` boolean
-          : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
-
-        if (isZeroValuePermit) {
-          return AlertSkipReason.ZeroValue;
-        }
-      }
-    }
+    return AlertSkipReason.None;
   }
 
-  return AlertSkipReason.None;
+  const signatureRequest = currentConfirmation as SignatureRequestType;
+  const msgData = signatureRequest.msgParams?.data as string;
+  if (!msgData) {
+    return AlertSkipReason.None;
+  }
+
+  const { primaryType, message, domain } = parseTypedDataMessage(msgData);
+  const isPermit = PRIMARY_TYPES_PERMIT.some((type) => type === primaryType);
+  if (!isPermit) {
+    return AlertSkipReason.None;
+  }
+
+  const isDaiPermit =
+    domain?.verifyingContract?.toLowerCase() ===
+    DAI_CONTRACT_ADDRESS.toLowerCase();
+
+  const isZeroValuePermit = isDaiPermit
+    ? message?.allowed === false // DAI uses `allowed` boolean
+    : isZeroAmount(message?.value); // Standard EIP-2612 uses `value`
+
+  return isZeroValuePermit ? AlertSkipReason.ZeroValue : AlertSkipReason.None;
 }
 
 /**
