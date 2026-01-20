@@ -11,8 +11,6 @@ import {
 import { HardwareWalletType } from './types';
 import { createHardwareWalletError } from './errors';
 
-const LOG_TAG = '[RpcErrorUtils]';
-
 type HardwareWalletErrorData = {
   [key: string]: unknown;
   code: ErrorCode;
@@ -68,7 +66,7 @@ export function extractHardwareWalletErrorCode(
     'code' in error &&
     typeof error.code === 'string'
   ) {
-    return error.code as ErrorCode;
+    return error.code as unknown as ErrorCode;
   }
 
   return null;
@@ -95,13 +93,6 @@ export function reconstructHardwareWalletError(
 
   // JsonRpcError with hardware wallet data
   if (isJsonRpcHardwareWalletError(error)) {
-    console.log(
-      LOG_TAG,
-      'Reconstructing HardwareWalletError from JsonRpcError',
-    );
-    console.log(LOG_TAG, 'Error code:', error.data.code);
-    console.log(LOG_TAG, 'Error data:', error.data);
-
     const hwError = new HardwareWalletError(
       error.message || error.data.userMessage || 'Hardware wallet error',
       {
@@ -122,7 +113,6 @@ export function reconstructHardwareWalletError(
   }
 
   // Fallback: use the error parser to create a HardwareWalletError
-  console.log(LOG_TAG, 'Parsing unknown error type');
   return createHardwareWalletError(
     ErrorCode.Unknown,
     walletType,
