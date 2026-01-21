@@ -6,7 +6,9 @@ import {
   BtcMethod,
   SolMethod,
   TrxAccountType,
+  TrxMethod,
 } from '@metamask/keyring-api';
+import { ALLOWED_BRIDGE_CHAIN_IDS } from '@metamask/bridge-controller';
 import {
   getSelectedInternalAccount,
   getIsDefiPositionsEnabled,
@@ -21,6 +23,10 @@ import {
 } from '../../../selectors/multichain';
 import { getSelectedMultichainNetworkConfiguration } from '../../../selectors/multichain/networks';
 import { CoinOverview } from '../../app/wallet-overview/coin-overview';
+import {
+  getInternalAccountsFromSelectedAccountGroup,
+  getSelectedAccountGroup,
+} from '../../../selectors/multichain-accounts/account-tree';
 import { AccountOverviewLayout } from './account-overview-layout';
 import { AccountOverviewCommonProps } from './common';
 
@@ -32,29 +38,29 @@ export type AccountOverviewProps = AccountOverviewCommonProps & {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function AccountOverview(props: AccountOverviewProps) {
   // Get account and network info
-  const account = useSelector(getSelectedInternalAccount, isEqual);
+  const accounts = useSelector(getInternalAccountsFromSelectedAccountGroup);
   const { chainId } = useSelector(getSelectedMultichainNetworkConfiguration);
-  const isEvm = useSelector(getMultichainIsEvm);
 
   // Get balance info
   const balance = useSelector(getMultichainSelectedAccountCachedBalance);
-  const balanceIsCachedForEvm = useSelector(isBalanceCached);
-  const balanceIsCached = isEvm ? balanceIsCachedForEvm : false;
+  // Only valid for EVM accounts, but all account groups have at least one EVM account.
+  const balanceIsCached = useSelector(isBalanceCached);
 
   // Get chain capabilities
   const isBuyableChain = useSelector(getIsNativeTokenBuyable);
-  const isSwapsChain = useSelector((state) => getIsSwapsChain(state, chainId));
-  const isBridgeChain = useSelector((state) =>
-    getIsBridgeChain(state, chainId),
-  );
+  const isSwapsOrBridgeChain = (
+    ALLOWED_BRIDGE_CHAIN_IDS as readonly string[]
+  ).includes(chainId);
 
   // Check signing capability across all account types
-  const isSigningEnabled =
-    account.methods.includes(EthMethod.SignTransaction) ||
-    account.methods.includes(EthMethod.SignUserOperation) ||
-    account.methods.includes(SolMethod.SignTransaction) ||
-    account.methods.includes(BtcMethod.SignPsbt) ||
-    account.type === TrxAccountType.Eoa;
+  const isSigningEnabled = accounts.some(
+    (account) =>
+      account.methods.includes(EthMethod.SignTransaction) ||
+      account.methods.includes(EthMethod.SignUserOperation) ||
+      account.methods.includes(SolMethod.SignTransaction) ||
+      account.methods.includes(BtcMethod.SignPsbt) ||
+      account.methods.includes(TrxMethod.SignTransaction),
+  );
 
   // Get tab visibility
   const defiPositionsEnabled = useSelector(getIsDefiPositionsEnabled);
@@ -68,13 +74,13 @@ export function AccountOverview(props: AccountOverviewProps) {
       {...props}
     >
       <CoinOverview
-        account={account}
+        account={accounts[0]}
         balance={balance}
         balanceIsCached={balanceIsCached}
         chainId={chainId}
         isSigningEnabled={isSigningEnabled}
-        isSwapsChain={isSwapsChain}
-        isBridgeChain={isBridgeChain}
+        isSwapsChain={isSwapsOrBridgeChain}
+        isBridgeChain={isSwapsOrBridgeChain}
         isBuyableChain={isBuyableChain}
       />
     </AccountOverviewLayout>

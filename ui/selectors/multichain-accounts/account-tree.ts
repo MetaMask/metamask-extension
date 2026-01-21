@@ -514,7 +514,7 @@ export const getInternalAccountByGroupAndCaip = createDeepEqualSelector(
   ) => {
     const { wallets } = accountTree;
     const group = getGroupByGroupId(wallets, groupId);
-
+    V;
     return getInternalAccountFromGroup(group, caipChainId, internalAccounts);
   },
 );
@@ -529,6 +529,44 @@ export const getSelectedAccountGroup = createDeepEqualSelector(
   getAccountTree,
   (accountTree: AccountTreeState) => accountTree.selectedAccountGroup,
 );
+
+/**
+ * Get the selected account group from the account tree.
+ *
+ * @param accountTree - The account tree state.
+ * @returns The selected account group, or null if not found.
+ */
+export const getInternalAccountsFromSelectedAccountGroup =
+  createDeepEqualSelector(
+    getAccountTree,
+    getSelectedAccountGroup,
+    getInternalAccountsObject,
+    (
+      accountTree: AccountTreeState,
+      selectedAccountGroupId: AccountGroupId | null,
+      internalAccounts: Record<AccountId, InternalAccount>,
+    ): InternalAccount[] => {
+      if (!selectedAccountGroupId) {
+        return [];
+      }
+
+      const { wallets } = accountTree;
+      const group = getGroupByGroupId(wallets, selectedAccountGroupId);
+      if (!group) {
+        return [];
+      }
+
+      const accounts = [];
+      for (const account of group.accounts) {
+        const internalAccount = internalAccounts[account];
+        if (internalAccount) {
+          accounts.push(internalAccount);
+        }
+      }
+
+      return accounts;
+    },
+  );
 
 /**
  * Get an internal account from the account tree by its selected account group and CAIP chain ID.
