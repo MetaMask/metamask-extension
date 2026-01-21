@@ -12,7 +12,6 @@ import NFTsDetectionNoticeNFTsTab from '../../../app/assets/nfts/nfts-detection-
 import NftGrid from '../../../app/assets/nfts/nft-grid/nft-grid';
 import { useNfts } from '../../../../hooks/useNfts';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
-import { ScrollContainer } from '../../../../contexts/scroll-container';
 import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
@@ -138,11 +137,11 @@ export function AssetPickerModalNftTab({
       {renderSearch()}
       {hasAnyNfts ? (
         <>
-          <ScrollContainer>
+          <Box>
             {/* TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879 */}
             {/* eslint-disable-next-line @typescript-eslint/no-misused-promises */}
             <NftGrid nfts={filteredNfts} handleNftClick={handleNftClick} />
-          </ScrollContainer>
+          </Box>
           {nftsStillFetchingIndication && (
             <Box className="modal-tab__fetching">
               <Spinner

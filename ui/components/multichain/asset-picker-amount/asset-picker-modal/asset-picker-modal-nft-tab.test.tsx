@@ -67,17 +67,8 @@ const mockNfts = {
 
 const mockStore = configureStore([thunk]);
 
-// Helper to mock DOM measurements for virtualizer
-function mockVirtualizerDOM() {
-  Object.defineProperty(HTMLElement.prototype, 'offsetHeight', {
-    value: 800,
-  });
-}
-
 describe('AssetPickerModalNftTab', () => {
   beforeEach(() => {
-    mockVirtualizerDOM();
-
     nock('https://mock.api')
       .get('/token/1')
       .reply(200, { name: 'Mock NFT #1' })
