@@ -3888,9 +3888,6 @@
     "message": "Нужно выбрать файл для импорта.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Невозможно отправить отрицательную сумму ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Невозможно отправить отрицательную или нулевую сумму актива."
   },

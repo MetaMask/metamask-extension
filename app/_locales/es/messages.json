@@ -3882,9 +3882,6 @@
     "message": "Debe seleccionar un archivo para la importación.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No se pueden enviar cantidades negativas de ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "No se pueden enviar montos negativos o nulos de activos."
   },

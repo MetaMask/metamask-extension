@@ -3882,9 +3882,6 @@
     "message": "您必须选择一个文件来导入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "不能发负值的 ETH。"
-  },
   "negativeOrZeroAmountToken": {
     "message": "发送的资产金额不能为负数或零。"
   },
