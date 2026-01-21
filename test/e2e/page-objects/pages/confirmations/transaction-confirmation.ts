@@ -94,6 +94,16 @@ class TransactionConfirmation extends Confirmation {
     text: tEn('review') as string,
   };
 
+  private readonly tokenGasFeeDropdown =
+    '[data-testid="selected-gas-fee-token-arrow"]';
+
+  private readonly tokenGasFeeSymbol =
+    '[data-testid="gas-fee-token-list-item-symbol"]';
+
+  private readonly gasFeeField = '[data-testid="first-gas-field"]';
+
+  private readonly fiatFeeField = '[data-testid="native-currency"]';
+
   private readonly shieldFooterCoverageIndicator = (status: string) => ({
     css: '[data-alert-key="shieldFooterCoverageIndicator"]',
     text: status,
@@ -571,6 +581,28 @@ class TransactionConfirmation extends Confirmation {
     await this.driver.waitForSelector(
       this.shieldFooterCoverageIndicator(statusText),
     );
+  }
+
+  async selectTokenFee(tokenSymbol: string): Promise<void> {
+    console.log(`Select token ${tokenSymbol} to pay for the fees`);
+    await this.driver.clickElement(this.tokenGasFeeDropdown);
+    await this.driver.clickElement({
+      css: this.tokenGasFeeSymbol,
+      text: tokenSymbol,
+    });
+  }
+
+  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
+    // Wait for both fields to be present and have the expected values
+    await this.driver.waitForSelector({
+      css: this.gasFeeField,
+      text: gasFee,
+    });
+    await this.driver.waitForSelector({
+      css: this.fiatFeeField,
+      text: fiatFee,
+    });
+    console.log('Send fees validation successful');
   }
 }
 
