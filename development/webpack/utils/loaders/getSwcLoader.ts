@@ -36,7 +36,9 @@ export function getSwcLoader(
           react: {
             development: swcConfig.isDevelopment,
             refresh:
-              __HMR_READY__ && swcConfig.isDevelopment && swcConfig.args.watch,
+              __HMR_READY__ &&
+              swcConfig.isDevelopment &&
+              Boolean(swcConfig.args.watch),
           },
           optimizer: {
             globals: {

@@ -37,11 +37,13 @@ export type CodeFenceLoaderOptions = { features: FeatureLabels };
 
 // When passed through thread-loader, options are serialized to JSON.
 // Sets become arrays, so we need to reconstruct them.
-type SerializedFeatureLabels = {
+export type SerializedFeatureLabels = {
   active: Set<string> | string[];
   all: Set<string> | string[];
 };
-type SerializedCodeFenceLoaderOptions = { features: SerializedFeatureLabels };
+export type SerializedCodeFenceLoaderOptions = {
+  features: SerializedFeatureLabels;
+};
 
 // Type for the serialized loader configuration (used with thread-loader)
 type SerializedLoaderOptions = {

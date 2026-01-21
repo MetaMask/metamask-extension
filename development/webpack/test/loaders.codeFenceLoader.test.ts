@@ -4,12 +4,12 @@ import { LoaderContext } from 'webpack';
 import { FeatureLabels } from '@metamask/build-utils';
 import codeFenceLoader, {
   getCodeFenceLoader,
-  CodeFenceLoaderOptions,
+  SerializedCodeFenceLoaderOptions,
 } from '../utils/loaders/codeFenceLoader';
 
 describe('codeFenceLoader', () => {
   type CallbackArgs = Parameters<
-    LoaderContext<CodeFenceLoaderOptions>['callback']
+    LoaderContext<SerializedCodeFenceLoaderOptions>['callback']
   >;
 
   function generateData({ omitFeature }: { omitFeature: boolean }) {
@@ -42,7 +42,7 @@ console.log('I am Groot.');
       },
       resourcePath: '<resource-path>',
       callback: (...args: CallbackArgs) => resolve(args),
-    } as unknown as LoaderContext<CodeFenceLoaderOptions>;
+    } as unknown as LoaderContext<SerializedCodeFenceLoaderOptions>;
     mockContext.callback = mockContext.callback.bind(mockContext);
     return { context: mockContext, source, expected, deferredPromise: promise };
   }
@@ -65,7 +65,7 @@ console.log('I am Groot.');
     const data = generateData({ omitFeature: false });
     data.context.getOptions = () => {
       // invalid options
-      return {} as unknown as CodeFenceLoaderOptions;
+      return {} as unknown as SerializedCodeFenceLoaderOptions;
     };
     assert.throws(
       () => codeFenceLoader.call(data.context, data.source),
