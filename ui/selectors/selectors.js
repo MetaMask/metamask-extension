@@ -155,6 +155,10 @@ import { toChecksumHexAddress } from '../../shared/modules/hexstring-utils';
 import { createDeepEqualSelector } from '../../shared/modules/selectors/util';
 import { createParameterizedShallowEqualSelector } from '../../shared/modules/selectors/selector-creators';
 import { isSnapIgnoredInProd } from '../helpers/utils/snaps';
+import {
+  FeatureFlagNames,
+  DEFAULT_FEATURE_FLAG_VALUES,
+} from '../../shared/modules/feature-flags';
 import { EMPTY_ARRAY, EMPTY_OBJECT } from './shared';
 import {
   getUnapprovedTransactions,
@@ -3219,16 +3223,19 @@ export function getIsNewSettingsEnabled(state) {
 export function getManageInstitutionalWallets(state) {
   return state.metamask.manageInstitutionalWallets;
 }
+
 /**
  * Get the state of the `defiPositionsEnabled` remote feature flag.
  *
- * @param {*} state
+ * @param state - The MetaMask state object
  * @returns The state of the `defiPositionsEnabled` remote feature flag.
  */
-export function getIsDefiPositionsEnabled(state) {
-  const { assetsDefiPositionsEnabled } = getRemoteFeatureFlags(state);
-  return Boolean(assetsDefiPositionsEnabled);
-}
+export const getIsDefiPositionsEnabled = createSelector(
+  getRemoteFeatureFlags,
+  (remoteFeatureFlags) =>
+    remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+    DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
+);
 
 /**
  * Returns true if any EVM networks are enabled in the network filter.
