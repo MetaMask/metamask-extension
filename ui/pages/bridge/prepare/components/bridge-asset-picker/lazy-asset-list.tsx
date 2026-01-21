@@ -161,6 +161,7 @@ export const BridgeAssetList = ({
               isLoading: true,
               backgroundColor: BackgroundColor.backgroundSubsection,
             }}
+            data-testid="bridge-asset-loading-skeleton"
           />
         );
       })}

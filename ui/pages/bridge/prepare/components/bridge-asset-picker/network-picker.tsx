@@ -26,6 +26,7 @@ export const NetworkPicker = ({
   buttonElement,
   isOpen,
   onClose,
+  testId,
 }: {
   chains: { chainId: CaipChainId; name: string }[];
   selectedChainId: CaipChainId | null;
@@ -34,6 +35,7 @@ export const NetworkPicker = ({
   buttonElement: HTMLElement | null;
   isOpen: boolean;
   onClose: () => void;
+  testId: string;
 }) => {
   const t = useI18nContext();
 
@@ -44,6 +46,7 @@ export const NetworkPicker = ({
       role={PopoverRole.Dialog}
       onClickOutside={onClose}
       offset={[0, 12]}
+      data-testid={testId}
       style={{
         padding: 0,
         width: 'calc(100% - 24px)',

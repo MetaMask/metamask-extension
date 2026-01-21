@@ -231,6 +231,7 @@ export const BridgeAssetPicker = ({
               setIsNetworkPickerOpen(false);
             }}
             onClose={() => setIsNetworkPickerOpen(false)}
+            testId="bridge-network-picker-popover"
           />
           <TextField
             autoFocus

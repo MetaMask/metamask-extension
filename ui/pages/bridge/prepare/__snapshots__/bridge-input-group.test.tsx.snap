@@ -1,0 +1,1316 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BridgeInputGroup should render destination networks 2`] = `
+<div
+  class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+  data-popper-escaped="true"
+  data-popper-placement="top"
+  data-popper-reference-hidden="true"
+  data-testid="bridge-network-picker-popover"
+  role="dialog"
+  style="position: absolute; left: 0px; top: 0px; width: calc(100% - 24px); padding: 0px; height: 90%; max-height: 90%; display: flex; flex-direction: column; overflow: scroll; bottom: 0px; transform: translate(0px, -12px);"
+>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+    data-testid="network-list-item-undefined"
+  >
+    <div
+      class="mm-box mm-box--margin-top-1"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
+        color="text-primary-default"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-primary-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q2.075 0 3.888.788c1.812.788 2.266 1.241 3.174 2.15s1.625 1.966 2.15 3.175S22 10.617 22 12q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22m0-2.05q.65-.9 1.125-1.875c.475-.975.575-1.342.775-2.075h-3.8q.3 1.1.775 2.075c.475.975.692 1.275 1.125 1.875m-2.6-.4q-.45-.825-.787-1.712A11.6 11.6 0 0 1 8.05 16H5.1q.725 1.25 1.813 2.175C8 19.1 8.467 19.25 9.4 19.55m5.2 0q1.4-.45 2.488-1.375c1.088-.925 1.329-1.342 1.812-2.175h-2.95q-.225.95-.562 1.838c-.337.887-.488 1.162-.788 1.712M4.25 14h3.4q-.075-.5-.112-.987C7.5 12.525 7.5 12.35 7.5 12a13 13 0 0 1 .15-2h-3.4q-.125.5-.187.988C4 11.476 4 11.65 4 12a8 8 0 0 0 .25 2m5.4 0h4.7q.075-.5.113-.987c.038-.488.037-.663.037-1.013a13 13 0 0 0-.15-2h-4.7q-.075.5-.112.988C9.5 11.476 9.5 11.65 9.5 12a13 13 0 0 0 .15 2m6.7 0h3.4q.125-.5.188-.987C20 12.525 20 12.35 20 12a8 8 0 0 0-.25-2h-3.4q.075.5.113.988c.038.488.037.662.037 1.012a13 13 0 0 1-.15 2m-.4-6h2.95q-.725-1.25-1.812-2.175C16 4.9 15.533 4.75 14.6 4.45q.45.824.788 1.713c.338.888.412 1.204.562 1.837M10.1 8h3.8q-.3-1.1-.775-2.075C12.65 4.95 12.433 4.65 12 4.05q-.65.9-1.125 1.875C10.4 6.9 10.3 7.267 10.1 8m-5 0h2.95q.225-.95.563-1.837C8.95 5.275 9.1 5 9.4 4.45Q8 4.9 6.913 5.825C5.826 6.75 5.583 7.167 5.1 8"
+          />
+        </svg>
+      </div>
+    </div>
+    <div
+      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+    />
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      A
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="All networks"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              All networks
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Solana logo"
+        class="mm-avatar-network__network-image"
+        src="./images/solana-logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Solana"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Solana
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Bitcoin logo"
+        class="mm-avatar-network__network-image"
+        src="./images/bitcoin-logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Bitcoin"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Bitcoin
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:1"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Ethereum logo"
+        class="mm-avatar-network__network-image"
+        src="./images/eth_logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Ethereum"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Ethereum
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:10"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="OP logo"
+        class="mm-avatar-network__network-image"
+        src="./images/optimism.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="OP"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              OP
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:137"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Polygon logo"
+        class="mm-avatar-network__network-image"
+        src="./images/pol-token.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Polygon"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Polygon
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:56"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="BNB Chain logo"
+        class="mm-avatar-network__network-image"
+        src="./images/bnb.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="BNB Chain"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              BNB Chain
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-tron:728126428"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Tron logo"
+        class="mm-avatar-network__network-image"
+        src="./images/tron-logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Tron"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Tron
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeInputGroup should render destination networks 3`] = `
+[
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/popular",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10","eip155:137","eip155:56","tron:728126428"],"includeAssets":[{"decimals":6,"symbol":"COMP","name":"Compound","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0xc00e94cb662c3520282e6f5717214004a7f26888.png","assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","balance":"5.030001","tokenFiatAmount":15236.151529110364},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"9535.2030001","tokenFiatAmount":2888.265783055537},{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png","assetId":"eip155:10/slip44:60","balance":"1.0000125","tokenFiatAmount":2524.2443591635597},{"decimals":18,"symbol":"SOL","name":"Solana","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","balance":"1.530","tokenFiatAmount":210.8493,"accountType":"solana:data-account"},{"decimals":18,"symbol":"BTC","name":"Bitcoin","chainId":"bip122:000000000019d6689c085ae165831e93","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png","assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","balance":".001","tokenFiatAmount":91.238,"accountType":"bip122:p2wpkh"},{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743},{"decimals":6,"symbol":"mUSD","name":"MetaMask USD","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaca92e438df0b2401ff60da7e4337b687a2435da.png","assetId":"eip155:1/erc20:0xacA92E438df0B2401fF60dA7E4337B687a2435DA","balance":"0"}]}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/popular",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"decimals":18,"symbol":"SOL","name":"Solana","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","balance":"1.530","tokenFiatAmount":210.8493,"accountType":"solana:data-account"},{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"}]}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/search",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"}],"query":"SD"}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+]
+`;
+
+exports[`BridgeInputGroup should render source networks 2`] = `
+<div
+  class="mm-box mm-popover mm-popover--open mm-popover--reference-hidden bridge-network-list-popover mm-box--margin-inline-3 mm-box--padding-4 mm-box--background-color-background-subsection mm-box--rounded-xl mm-box--border-color-border-muted box--border-style-solid box--border-width-1"
+  data-popper-escaped="true"
+  data-popper-placement="top"
+  data-popper-reference-hidden="true"
+  data-testid="bridge-network-picker-popover"
+  role="dialog"
+  style="position: absolute; left: 0px; top: 0px; width: calc(100% - 24px); padding: 0px; height: 90%; max-height: 90%; display: flex; flex-direction: column; overflow: scroll; bottom: 0px; transform: translate(0px, -12px);"
+>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--selected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-primary-muted"
+    data-testid="network-list-item-undefined"
+  >
+    <div
+      class="mm-box mm-box--margin-top-1"
+    >
+      <div
+        class="inline-flex shrink-0 items-center justify-center overflow-hidden rounded-full h-8 w-8 bg-muted"
+        color="text-primary-default"
+      >
+        <svg
+          class="inline-block w-5 h-5 text-primary-default"
+          fill="currentColor"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M12 22q-2.05 0-3.875-.787c-1.825-.788-2.28-1.242-3.187-2.15s-1.625-1.971-2.15-3.188S2 13.367 2 12q0-2.075.788-3.887c.788-1.812 1.241-2.267 2.15-3.175s1.97-1.625 3.187-2.15S10.633 2 12 2q2.075 0 3.888.788c1.812.788 2.266 1.241 3.174 2.15s1.625 1.966 2.15 3.175S22 10.617 22 12q0 2.05-.787 3.875c-.788 1.825-1.242 2.28-2.15 3.188s-1.967 1.625-3.175 2.15S13.383 22 12 22m0-2.05q.65-.9 1.125-1.875c.475-.975.575-1.342.775-2.075h-3.8q.3 1.1.775 2.075c.475.975.692 1.275 1.125 1.875m-2.6-.4q-.45-.825-.787-1.712A11.6 11.6 0 0 1 8.05 16H5.1q.725 1.25 1.813 2.175C8 19.1 8.467 19.25 9.4 19.55m5.2 0q1.4-.45 2.488-1.375c1.088-.925 1.329-1.342 1.812-2.175h-2.95q-.225.95-.562 1.838c-.337.887-.488 1.162-.788 1.712M4.25 14h3.4q-.075-.5-.112-.987C7.5 12.525 7.5 12.35 7.5 12a13 13 0 0 1 .15-2h-3.4q-.125.5-.187.988C4 11.476 4 11.65 4 12a8 8 0 0 0 .25 2m5.4 0h4.7q.075-.5.113-.987c.038-.488.037-.663.037-1.013a13 13 0 0 0-.15-2h-4.7q-.075.5-.112.988C9.5 11.476 9.5 11.65 9.5 12a13 13 0 0 0 .15 2m6.7 0h3.4q.125-.5.188-.987C20 12.525 20 12.35 20 12a8 8 0 0 0-.25-2h-3.4q.075.5.113.988c.038.488.037.662.037 1.012a13 13 0 0 1-.15 2m-.4-6h2.95q-.725-1.25-1.812-2.175C16 4.9 15.533 4.75 14.6 4.45q.45.824.788 1.713c.338.888.412 1.204.562 1.837M10.1 8h3.8q-.3-1.1-.775-2.075C12.65 4.95 12.433 4.65 12 4.05q-.65.9-1.125 1.875C10.4 6.9 10.3 7.267 10.1 8m-5 0h2.95q.225-.95.563-1.837C8.95 5.275 9.1 5 9.4 4.45Q8 4.9 6.913 5.825C5.826 6.75 5.583 7.167 5.1 8"
+          />
+        </svg>
+      </div>
+    </div>
+    <div
+      class="mm-box multichain-network-list-item__selected-indicator mm-box--background-color-primary-default mm-box--rounded-pill"
+    />
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      A
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="All networks"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              All networks
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Solana logo"
+        class="mm-avatar-network__network-image"
+        src="./images/solana-logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Solana"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Solana
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-bip122:000000000019d6689c085ae165831e93"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Bitcoin logo"
+        class="mm-avatar-network__network-image"
+        src="./images/bitcoin-logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Bitcoin"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Bitcoin
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:1"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="Ethereum logo"
+        class="mm-avatar-network__network-image"
+        src="./images/eth_logo.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="Ethereum"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              Ethereum
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="mm-box multichain-network-list-item multichain-network-list-item--deselected mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-4 mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--background-color-transparent"
+    data-testid="network-list-item-eip155:10"
+  >
+    <div
+      class="mm-box mm-text mm-avatar-base mm-avatar-base--size-md mm-avatar-network mm-text--body-sm mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-md mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+    >
+      <img
+        alt="OP logo"
+        class="mm-avatar-network__network-image"
+        src="./images/optimism.svg"
+      />
+    </div>
+    <div
+      class="mm-box mm-box--display-flex mm-box--flex-direction-column mm-box--justify-content-flex-start mm-box--align-items-flex-start mm-box--width-full"
+      style="overflow: hidden;"
+    >
+      <div
+        class="mm-box mm-box--display-flex mm-box--align-items-center mm-box--width-full"
+        data-testid="OP"
+      >
+        <div
+          class="multichain-network-list-item__tooltip"
+        >
+          <div
+            class=""
+            style="display: inline;"
+            tabindex="0"
+            title=""
+          >
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default mm-box--background-color-transparent"
+              tabindex="0"
+            >
+              OP
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`BridgeInputGroup should render source networks 3`] = `
+[
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/popular",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","bip122:000000000019d6689c085ae165831e93","eip155:1","eip155:10"],"includeAssets":[{"decimals":6,"symbol":"COMP","name":"Compound","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0xc00e94cb662c3520282e6f5717214004a7f26888.png","assetId":"eip155:10/erc20:0xc00e94Cb662C3520282E6f5717214004A7f26888","balance":"5.030001","tokenFiatAmount":15236.151529110364},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:10/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"9535.2030001","tokenFiatAmount":2888.265783055537},{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:10","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/10/slip44/60.png","assetId":"eip155:10/slip44:60","balance":"1.0000125","tokenFiatAmount":2524.2443591635597},{"decimals":18,"symbol":"SOL","name":"Solana","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","balance":"1.530","tokenFiatAmount":210.8493,"accountType":"solana:data-account"},{"decimals":18,"symbol":"BTC","name":"Bitcoin","chainId":"bip122:000000000019d6689c085ae165831e93","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/bip122/000000000019d6689c085ae165831e93/slip44/0.png","assetId":"bip122:000000000019d6689c085ae165831e93/slip44:0","balance":".001","tokenFiatAmount":91.238,"accountType":"bip122:p2wpkh"},{"decimals":18,"symbol":"ETH","name":"Ether","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/slip44/60.png","assetId":"eip155:1/slip44:60","balance":"0.01","tokenFiatAmount":25.242128065034784},{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"},{"decimals":10,"symbol":"UNI","name":"Uniswap","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984.png","assetId":"eip155:1/erc20:0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984","balance":"0.0000001848","tokenFiatAmount":0.0010728914112762384},{"decimals":9,"symbol":"LINK","name":"Link","chainId":"eip155:1","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0x514910771af9ca656af840dff83e8264ecf986ca.png","assetId":"eip155:1/erc20:0x514910771AF9Ca656af840dff83E8264EcF986CA","balance":"0.000000001","tokenFiatAmount":0.0000030290553678041743}]}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/popular",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"decimals":18,"symbol":"SOL","name":"Solana","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44/501.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501","balance":"1.530","tokenFiatAmount":210.8493,"accountType":"solana:data-account"},{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"}]}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+  [
+    "https://bridge.api.cx.metamask.io/getTokens/search",
+    {
+      "body": "{"chainIds":["solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp"],"includeAssets":[{"decimals":6,"symbol":"USDC","name":"USDC","chainId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp","image":"https://static.cx.metamask.io/api/v2/tokenIcons/assets/solana/5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v.png","assetId":"solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v","balance":"2.043238","tokenFiatAmount":2.04284978478,"accountType":"solana:data-account"}],"query":"SD"}",
+      "headers": {
+        "Content-Type": "application/json",
+        "X-Client-Id": "extension",
+      },
+      "method": "POST",
+      "signal": AbortSignal {},
+    },
+  ],
+]
+`;
+
+exports[`BridgeInputGroup should search for tokens 1`] = `
+<div
+  class="mm-modal"
+  data-testid="bridge-asset-picker-modal"
+>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+  <div
+    data-focus-lock-disabled="false"
+  >
+    <div
+      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-full mm-box--height-full"
+    >
+      <section
+        aria-modal="true"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-md mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg"
+        role="dialog"
+      >
+        <header
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <h4
+              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+            >
+              Swap
+            </h4>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </header>
+        <div
+          class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--height-full"
+          data-testid="bridge-asset-picker-modal__body"
+        >
+          <button
+            class="mm-box mm-picker-network mm-box--margin-inline-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-max mm-box--background-color-background-muted mm-box--rounded-xl"
+            data-testid="multichain-asset-picker__network"
+            style="min-height: 32px;"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              style="display: none; width: 16px; height: 16px; border-width: 0px;"
+            >
+              A
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+            >
+              All networks
+            </p>
+            <span
+              class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/arrow-down.svg');"
+            />
+          </button>
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="min-height: 48px; padding-right: 8px; outline: none;"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+              />
+            </svg>
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+              data-testid="bridge-asset-picker-search-input"
+              focused="true"
+              placeholder="Enter token name or paste address"
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="position: relative; height: 234px; overflow-y: scroll;"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              data-testid="bridge-asset"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
+            >
+              <div
+                class="relative inline-flex self-start"
+                style="align-self: center;"
+              >
+                <div
+                  class="inline-flex"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="USDC"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  color="background-default"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+                    style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+                  >
+                    <img
+                      alt="Ethereum"
+                      class="size-full object-contain"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                style="overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+                >
+                  <div
+                    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                  >
+                    <p
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                    >
+                      USDC
+                    </p>
+                  </div>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+                >
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+                    style="white-space: nowrap;"
+                  >
+                    USD Coin
+                  </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              data-testid="bridge-asset"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
+            >
+              <div
+                class="relative inline-flex self-start"
+                style="align-self: center;"
+              >
+                <div
+                  class="inline-flex"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="USDT"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5832.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  color="background-default"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+                    style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+                  >
+                    <img
+                      alt="Ethereum"
+                      class="size-full object-contain"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                style="overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+                >
+                  <div
+                    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                  >
+                    <p
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                    >
+                      USDT
+                    </p>
+                  </div>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+                >
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+                    style="white-space: nowrap;"
+                  >
+                    USDT
+                  </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full"
+              data-testid="bridge-asset-loading-skeleton"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
+            >
+              <div
+                class="mm-box mm-skeleton mm-box--background-color-background-subsection mm-box--rounded-full"
+                style="flex-shrink: 0; height: 32px; width: 32px;"
+              />
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-1 mm-box--flex-direction-column mm-box--width-full"
+              >
+                <div
+                  class="mm-box mm-skeleton mm-box--background-color-background-subsection mm-box--rounded-sm"
+                  style="height: 16px; width: 60px;"
+                />
+                <div
+                  class="mm-box mm-skeleton mm-box--background-color-background-subsection mm-box--rounded-sm"
+                  style="height: 16px; width: 36px;"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+</div>
+`;
+
+exports[`BridgeInputGroup should search for tokens 6`] = `
+<div
+  class="mm-modal"
+  data-testid="bridge-asset-picker-modal"
+>
+  <div
+    aria-hidden="true"
+    class="mm-box mm-modal-overlay mm-box--width-full mm-box--height-full mm-box--background-color-overlay-default"
+  />
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+  <div
+    data-focus-lock-disabled="false"
+  >
+    <div
+      class="mm-box mm-modal-content mm-box--padding-top-4 mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-3 mm-box--justify-content-center mm-box--align-items-flex-start mm-box--width-full mm-box--height-full"
+    >
+      <section
+        aria-modal="true"
+        class="mm-box mm-modal-content__dialog mm-modal-content__dialog--size-md mm-box--padding-top-4 mm-box--padding-bottom-4 mm-box--display-flex mm-box--flex-direction-column mm-box--width-full mm-box--height-full mm-box--background-color-background-default mm-box--rounded-lg"
+        role="dialog"
+      >
+        <header
+          class="mm-box mm-header-base mm-modal-header mm-box--padding-right-4 mm-box--padding-bottom-4 mm-box--padding-left-4 mm-box--display-flex mm-box--justify-content-space-between"
+        >
+          <div
+            class="mm-box mm-box--width-full"
+          >
+            <h4
+              class="mm-box mm-text mm-text--heading-sm mm-text--text-align-center mm-box--color-text-default"
+            >
+              Swap
+            </h4>
+          </div>
+          <div
+            class="mm-box mm-box--display-flex mm-box--justify-content-flex-end"
+            style="min-width: 0px;"
+          >
+            <button
+              aria-label="Close"
+              class="mm-box mm-button-icon mm-button-icon--size-sm mm-box--display-inline-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-icon-default mm-box--background-color-transparent mm-box--rounded-lg"
+            >
+              <span
+                class="mm-box mm-icon mm-icon--size-sm mm-box--display-inline-block mm-box--color-inherit"
+                style="mask-image: url('./images/icons/close.svg');"
+              />
+            </button>
+          </div>
+        </header>
+        <div
+          class="mm-box mm-modal-body mm-box--padding-right-0 mm-box--padding-left-0 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-column mm-box--height-full"
+          data-testid="bridge-asset-picker-modal__body"
+        >
+          <button
+            class="mm-box mm-picker-network mm-box--margin-inline-4 mm-box--padding-right-4 mm-box--padding-left-4 mm-box--display-flex mm-box--gap-2 mm-box--align-items-center mm-box--width-max mm-box--background-color-background-muted mm-box--rounded-xl"
+            data-testid="multichain-asset-picker__network"
+            style="min-height: 32px;"
+          >
+            <div
+              class="mm-box mm-text mm-avatar-base mm-avatar-base--size-xs mm-avatar-network mm-picker-network__avatar-network mm-text--body-xs mm-text--text-transform-uppercase mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center mm-box--color-text-default mm-box--background-color-background-alternative mm-box--rounded-sm mm-box--border-color-background-default mm-box--border-width-1 box--border-style-solid"
+              style="display: none; width: 16px; height: 16px; border-width: 0px;"
+            >
+              A
+            </div>
+            <p
+              class="mm-box mm-text mm-text--body-md mm-text--ellipsis mm-box--color-text-default"
+            >
+              All networks
+            </p>
+            <span
+              class="mm-box mm-picker-network__arrow-down-icon mm-icon mm-icon--size-xs mm-box--margin-left-auto mm-box--display-inline-block mm-box--color-icon-default"
+              style="mask-image: url('./images/icons/arrow-down.svg');"
+            />
+          </button>
+          <div
+            class="mm-box mm-text-field mm-text-field--size-md mm-text-field--focused mm-text-field--truncate mm-box--margin-inline-4 mm-box--padding-right-0 mm-box--padding-left-4 mm-box--display-inline-flex mm-box--align-items-center mm-box--background-color-background-default mm-box--rounded-xl mm-box--border-color-border-muted mm-box--border-width-1 box--border-style-solid"
+            style="min-height: 48px; padding-right: 8px; outline: none;"
+          >
+            <svg
+              class="inline-block w-5 h-5 text-icon-alternative"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m19.6 21-6.3-6.3q-.75.6-1.725.95C10.6 16 10.233 16 9.5 16q-2.725 0-4.612-1.888C3 12.224 3 11.317 3 9.5q0-2.725 1.888-4.612C6.776 3 7.683 3 9.5 3q2.725 0 4.613 1.888C16 6.776 16 7.683 16 9.5a6.1 6.1 0 0 1-1.3 3.8l6.3 6.3zM9.5 14q1.875 0 3.188-1.312C14 11.375 14 10.75 14 9.5s-.437-2.312-1.312-3.187S10.75 5 9.5 5s-2.312.438-3.187 1.313S5 8.25 5 9.5s.438 2.313 1.313 3.188S8.25 14 9.5 14"
+              />
+            </svg>
+            <input
+              autocomplete="off"
+              class="mm-box mm-text mm-input mm-input--disable-state-styles mm-text-field__input mm-text--body-md mm-box--margin-0 mm-box--padding-0 mm-box--padding-right-2 mm-box--padding-left-2 mm-box--color-text-default mm-box--background-color-transparent mm-box--border-style-none mm-box--border-color-border-muted box--border-width-1"
+              data-testid="bridge-asset-picker-search-input"
+              focused="true"
+              placeholder="Enter token name or paste address"
+              type="text"
+              value="USD"
+            />
+          </div>
+          <div
+            class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+            style="position: relative; height: 234px; overflow-y: scroll;"
+          >
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              data-testid="bridge-asset"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(0px);"
+            >
+              <div
+                class="relative inline-flex self-start"
+                style="align-self: center;"
+              >
+                <div
+                  class="inline-flex"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="USDC"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5831.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  color="background-default"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+                    style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+                  >
+                    <img
+                      alt="Ethereum"
+                      class="size-full object-contain"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                style="overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+                >
+                  <div
+                    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                  >
+                    <p
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                    >
+                      USDC
+                    </p>
+                  </div>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+                >
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+                    style="white-space: nowrap;"
+                  >
+                    USD Coin
+                  </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              data-testid="bridge-asset"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(78px);"
+            >
+              <div
+                class="relative inline-flex self-start"
+                style="align-self: center;"
+              >
+                <div
+                  class="inline-flex"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="USDT"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/1/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5832.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  color="background-default"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+                    style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+                  >
+                    <img
+                      alt="Ethereum"
+                      class="size-full object-contain"
+                      src="./images/eth_logo.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                style="overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+                >
+                  <div
+                    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                  >
+                    <p
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                    >
+                      USDT
+                    </p>
+                  </div>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+                >
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+                    style="white-space: nowrap;"
+                  >
+                    USDT
+                  </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+              </div>
+            </div>
+            <div
+              class="mm-box mm-container mm-container--max-width-undefined bridge-asset mm-box--padding-4 mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center mm-box--width-full mm-box--height-max mm-box--background-color-transparent mm-box--rounded-none"
+              data-testid="bridge-asset"
+              style="position: absolute; top: 0px; left: 0px; transform: translateY(156px);"
+            >
+              <div
+                class="relative inline-flex self-start"
+                style="align-self: center;"
+              >
+                <div
+                  class="inline-flex"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-full h-8 w-8"
+                  >
+                    <img
+                      alt="USDC"
+                      class="size-full object-contain"
+                      src="https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/59144/erc20/0xaf88d065e77c8cc2239327c5edb3a432268e5833.png"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="absolute"
+                  color="background-default"
+                  style="bottom: 0px; right: 0px;"
+                >
+                  <div
+                    class="inline-flex shrink-0 items-center justify-center overflow-hidden bg-section rounded-lg h-[34px] w-[34px] border-background-default border"
+                    style="width: 20px; height: 20px; border-width: 2px; border-radius: 4px;"
+                  >
+                    <img
+                      alt="Linea"
+                      class="size-full object-contain"
+                      src="./images/linea-logo-mainnet.svg"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--flex-direction-column mm-box--width-full"
+                style="overflow: hidden;"
+              >
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-start"
+                >
+                  <div
+                    class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-2 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-center"
+                  >
+                    <p
+                      class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default truncate"
+                    >
+                      USDC
+                    </p>
+                  </div>
+                  <p
+                    class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+                <div
+                  class="mm-box mm-container mm-container--max-width-undefined mm-box--display-flex mm-box--gap-4 mm-box--flex-direction-row mm-box--flex-wrap-nowrap mm-box--justify-content-space-between mm-box--align-items-flex-end"
+                >
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default truncate"
+                    style="white-space: nowrap;"
+                  >
+                    USDC
+                  </p>
+                  <p
+                    class="text-alternative text-s-body-sm leading-s-body-sm tracking-s-body-sm md:text-l-body-sm md:leading-l-body-sm md:tracking-l-body-sm font-regular font-default"
+                    style="white-space: nowrap;"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  <div
+    data-focus-guard="true"
+    style="width: 1px; height: 0px; padding: 0px; overflow: hidden; position: fixed; top: 1px; left: 1px;"
+    tabindex="0"
+  />
+</div>
+`;
