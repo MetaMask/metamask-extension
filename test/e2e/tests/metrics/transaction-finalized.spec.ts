@@ -14,8 +14,10 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 
 const FEATURE_FLAGS_URL = 'https://client-config.api.cx.metamask.io/v1/flags';
 
-const isHexString = (str: unknown): boolean => typeof str === 'string' && /^0x[0-9A-Fa-f]+$/.test(str);
-const isFloatString = (str: unknown): boolean => typeof str === 'string' && /^[0-9.]+$/.test(str);
+const isHexString = (str: unknown): boolean =>
+  typeof str === 'string' && /^0x[0-9A-Fa-f]+$/u.test(str);
+const isFloatString = (str: unknown): boolean =>
+  typeof str === 'string' && /^[0-9.]+$/u.test(str);
 
 /**
  * mocks the segment api multiple times for specific payloads that we expect to
@@ -237,7 +239,7 @@ describe('Transaction Finalized Event', function (this: Suite) {
             // Sensitive properties (only in anon events)
             payload.properties?.transaction_envelope_type === 'fee-market' &&
             isHexString(payload.properties?.gas_limit) &&
-            isFloatString(payload.properties?.default_gas)
+            isFloatString(payload.properties?.default_gas),
         ];
 
         const transactionSubmittedWithoutSensitivePropertiesAssertions = [
