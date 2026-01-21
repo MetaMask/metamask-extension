@@ -106,7 +106,9 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
               : TextColor.TextAlternative
           }
         >
-          {isMorePeriodSelected ? getCandlePeriodLabel(selectedPeriod) : t('perpsMore')}
+          {isMorePeriodSelected
+            ? getCandlePeriodLabel(selectedPeriod)
+            : t('perpsMore')}
         </Text>
         <Icon
           name={isMoreOpen ? IconName.ArrowUp : IconName.ArrowDown}

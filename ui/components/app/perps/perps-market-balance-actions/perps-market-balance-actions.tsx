@@ -149,7 +149,9 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {t('perpsAvailable', [formatCurrency(parseFloat(availableBalance), 'USD')])}
+          {t('perpsAvailable', [
+            formatCurrency(parseFloat(availableBalance), 'USD'),
+          ])}
         </Text>
       </Box>
 
