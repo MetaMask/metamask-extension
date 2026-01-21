@@ -6,12 +6,13 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
 import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { usePrevious } from '../../../../hooks/usePrevious';
+import { getPendingHardwareSigning } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
 import useSyncConfirmPath from '../../hooks/useSyncConfirmPath';
 import { Confirmation } from '../../types/confirm';
@@ -37,17 +38,29 @@ export const ConfirmContextProvider: React.FC<{
   const navigate = useNavigate();
   const previousConfirmation = usePrevious(currentConfirmation);
   const dispatch = useDispatch();
+  const isPendingHardwareSigning = useSelector(getPendingHardwareSigning);
 
   /**
    * The hook below takes care of navigating to the home page when the confirmation not acted on by user
    * but removed by us, this can happen in cases like when dapp changes network.
+   * We skip navigation if a hardware wallet transaction is being signed to prevent premature navigation.
    */
   useEffect(() => {
-    if (previousConfirmation && !currentConfirmation) {
+    if (
+      previousConfirmation &&
+      !currentConfirmation &&
+      !isPendingHardwareSigning
+    ) {
       dispatch(setDefaultHomeActiveTabName('activity'));
       navigate(DEFAULT_ROUTE, { replace: true });
     }
-  }, [previousConfirmation, currentConfirmation, navigate, dispatch]);
+  }, [
+    previousConfirmation,
+    currentConfirmation,
+    navigate,
+    dispatch,
+    isPendingHardwareSigning,
+  ]);
 
   const value = useMemo(
     () => ({

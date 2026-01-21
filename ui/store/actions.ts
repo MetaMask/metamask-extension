@@ -216,6 +216,7 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
+import { isHardwareAccount } from '../../shared/lib/accounts';
 
 type CustomGasSettings = {
   gas?: string;
@@ -2089,52 +2090,76 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch, getState) => {
-    !dontShowLoadingIndicator &&
+  return async (dispatch: MetaMaskReduxDispatch, getState) => {
+    const fromAccount = getInternalAccountByAddress(
+      getState(),
+      txMeta.txParams.from,
+    );
+    const isHardwareAccountUsed = isHardwareAccount(fromAccount);
+
+    (!dontShowLoadingIndicator || isHardwareAccountUsed) &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
 
     const getIsSendActive = () =>
       Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
 
-    return new Promise((resolve, reject) => {
+    // Set pending hardware signing state to prevent premature navigation
+    if (isHardwareAccountUsed) {
+      dispatch(setPendingHardwareSigning(true));
+    }
+
+    try {
       const actionId = generateActionId();
+      await submitRequestToBackground('resolvePendingApproval', [
+        String(txMeta.id),
+        { txMeta, actionId },
+        { waitForResult: true },
+      ]);
 
-      callBackgroundMethod(
-        'resolvePendingApproval',
-        [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
-        (err) => {
-          dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+      if (!getIsSendActive()) {
+        dispatch(resetSendState());
+      }
+      await forceUpdateMetamaskState(dispatch);
+      dispatch(completedTx(txMeta.id));
+      dispatch(hideLoadingIndication());
+      dispatch(updateCustomNonce(''));
 
-          if (!getIsSendActive()) {
-            dispatch(resetSendState());
-          }
+      dispatch(closeCurrentNotificationWindow());
+      return txMeta;
+    } catch (error) {
+      debugger;
+      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
 
-          if (err) {
-            dispatch(goHome());
-            logErrorWithMessage(err);
-            reject(err);
-            return;
-          }
-
-          resolve(txMeta);
-        },
-      );
-    })
-      .then(() => forceUpdateMetamaskState(dispatch))
-      .then(() => {
-        if (!getIsSendActive()) {
-          dispatch(resetSendState());
+      if (isHardwareAccountUsed && error.message.includes('rejected')) {
+        // Recreate the transaction with the same properties
+        try {
+          await dispatch(
+            addTransactionAndRouteToConfirmationPage(
+              { ...txMeta.txParams, retryId: `${txMeta.id}-retry` },
+              {
+                networkClientId: txMeta.networkClientId,
+                type: txMeta.type,
+              },
+            ),
+          );
+          return;
+        } catch (recreateError) {
+          console.error('Failed to recreate transaction:', recreateError);
+          dispatch(displayWarning('Failed to recreate transaction'));
         }
-        dispatch(completedTx(txMeta.id));
-        dispatch(hideLoadingIndication());
-        dispatch(updateCustomNonce(''));
-        dispatch(closeCurrentNotificationWindow());
-        return txMeta;
-      })
-      .catch((err) => {
-        dispatch(hideLoadingIndication());
-        return Promise.reject(err);
-      });
+      }
+
+      if (!getIsSendActive()) {
+        dispatch(resetSendState());
+      }
+      dispatch(hideLoadingIndication());
+      return Promise.reject(error);
+    } finally {
+      dispatch(hideLoadingIndication());
+      if (isHardwareAccountUsed) {
+        dispatch(setPendingHardwareSigning(false));
+      }
+    }
   };
 }
 
@@ -4204,6 +4229,15 @@ export function setHardwareWalletDefaultHdPath({
 export function hideLoadingIndication(): Action {
   return {
     type: actionConstants.HIDE_LOADING,
+  };
+}
+
+export function setPendingHardwareSigning(
+  isPending: boolean,
+): PayloadAction<boolean> {
+  return {
+    type: actionConstants.SET_PENDING_HARDWARE_SIGNING,
+    payload: isPending,
   };
 }
 

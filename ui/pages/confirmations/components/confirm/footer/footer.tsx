@@ -26,6 +26,10 @@ import {
 import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import {
+  doesAddressRequireLedgerHidConnection,
+  getPendingHardwareSigning,
+} from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -227,6 +231,8 @@ const Footer = () => {
     useHardwareWalletConfig();
   const { ensureDeviceReady } = useHardwareWalletActions();
 
+  const isHardwareWalletSigning = useSelector(getPendingHardwareSigning);
+
   const isSignature = isSignatureTransactionType(currentConfirmation);
   const isTransactionConfirmation = isCorrectDeveloperTransactionType(
     currentConfirmation?.type,
@@ -385,12 +391,13 @@ const Footer = () => {
             </Button>
           ) : (
             <ConfirmButton
-              alertOwnerId={currentConfirmation?.id}
-              onSubmit={onSubmit}
-              disabled={isConfirmDisabled}
-              onCancel={onCancel}
-            />
+            alertOwnerId={currentConfirmation?.id}
+            onSubmit={onSubmit}
+            disabled={isConfirmDisabled || isHardwareWalletSigning}
+            onCancel={onCancel}
+          />
           )}
+
         </Box>
         <ShieldFooterAgreement />
       </PageFooter>
