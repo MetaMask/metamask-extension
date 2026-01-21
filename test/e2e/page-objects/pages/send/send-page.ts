@@ -3,54 +3,34 @@ import { Driver } from '../../../webdriver/driver';
 class SendPage {
   private readonly driver: Driver;
 
-  private readonly amountInput = 'input[placeholder="0"]';
-
-  private readonly cancelButton = {
-    text: 'Cancel',
-    tag: 'button',
-  };
+  private readonly amountInput = '[data-testid="send-amount-input"]';
 
   private readonly continueButton = {
     text: 'Continue',
     tag: 'button',
   };
 
-  private readonly hexDataInput = '[data-testid="send-hex-textarea"]';
+  private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
-  // Note: Different send flows use different placeholders:
-  // - Legacy flow: "Enter public address (0x) or domain name"
-  // - New confirmations flow: "Enter or paste an address or name"
-  // - Fallback: data-testid="ens-input"
   private readonly inputRecipient =
-    'input[placeholder="Enter public address (0x) or domain name"], input[placeholder="Enter or paste an address or name"], [data-testid="ens-input"]';
+    'input[placeholder="Enter or paste an address or name"]';
 
   private readonly insufficientFundsError = {
     text: 'Insufficient funds',
   };
 
   private readonly insufficientFundsErrorDetailed = {
-    css: '[data-testid="send-page-amount-error"]',
-    text: '. Insufficient funds.',
+    text: 'Insufficient funds',
   };
 
   private readonly invalidAddressError = {
     text: 'Invalid address',
   };
 
-  // Max button has data-testid in multichain flow, but only text in send redesign flow
-  private readonly maxClearButton = {
+  private readonly maxButton = {
     text: 'Max',
     tag: 'button',
   };
-
-  private readonly qrScanButton = '[data-testid="ens-qr-scan-button"]';
-
-  private readonly qrScannerCameraError = {
-    css: '.qr-scanner__error',
-    text: "We couldn't access your camera. Please give it another try.",
-  };
-
-  private readonly qrScannerModal = '[data-testid="qr-scanner-modal"]';
 
   private readonly recipientModalButton =
     '[data-testid="open-recipient-modal-btn"]';
@@ -73,11 +53,6 @@ class SendPage {
     await this.driver.waitForSelector(this.networkFilterToggle);
   }
 
-  async cancelQrScannerModal(): Promise<void> {
-    console.log('Cancelling QR scanner modal');
-    await this.driver.clickElementAndWaitToDisappear(this.cancelButton);
-  }
-
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
     await this.driver.findElement(this.insufficientFundsError);
@@ -93,64 +68,36 @@ class SendPage {
     await this.driver.findElement(this.invalidAddressError);
   }
 
-  async checkQrScannerCameraError(): Promise<void> {
-    console.log('Checking for QR scanner camera error');
-    await this.driver.waitForSelector(this.qrScannerCameraError);
-  }
-
-  async checkQrScannerModalIsClosed(): Promise<void> {
-    console.log('Checking QR scanner modal is closed');
-    await this.driver.assertElementNotPresent(this.qrScannerModal);
-  }
-
-  async checkQrScannerModalIsOpen(): Promise<void> {
-    console.log('Checking QR scanner modal is open');
-    await this.driver.findVisibleElement(this.qrScannerModal);
-  }
-
   async checkSolanaNetworkIsPresent(): Promise<void> {
     console.log('Checking if Solana network is present');
     await this.driver.findElement(this.solanaNetwork);
   }
 
-  async clickMaxClearButton(): Promise<void> {
-    console.log('Clicking max/clear button');
-    // Different flows have different max button implementations:
-    // - Multichain flow: data-testid="max-clear-button" (toggles Max/Clear)
-    // - Send redesign flow: text-based "Max" button
-    const dataTestIdSelector = '[data-testid="max-clear-button"]';
-
-    // Quick check (1s) to determine which flow we're in
-    const hasDataTestId = await this.driver.isElementPresentAndVisible(
-      dataTestIdSelector,
-      1000,
-    );
-
-    if (hasDataTestId) {
-      await this.driver.clickElement(dataTestIdSelector);
-    } else {
-      await this.driver.clickElement(this.maxClearButton);
-    }
-  }
-
-  async clickQrScanButton(): Promise<void> {
-    console.log('Clicking QR scan button');
-    await this.driver.clickElement(this.qrScanButton);
+  async clickMaxButton(): Promise<void> {
+    console.log('Clicking max button');
+    await this.driver.clickElement(this.maxButton);
   }
 
   async createMaxSendRequest({
     chainId,
     symbol,
     recipientAddress,
+    recipientName,
   }: {
     chainId: string;
     symbol: string;
-    recipientAddress: string;
+    recipientAddress?: string;
+    recipientName?: string;
   }): Promise<void> {
     console.log('Creating max send request');
     await this.selectToken(chainId, symbol);
-    await this.fillRecipient(recipientAddress);
-    await this.clickMaxClearButton();
+    if (recipientAddress) {
+      await this.fillRecipient(recipientAddress);
+    }
+    if (recipientName) {
+      await this.selectAccountFromRecipientModal(recipientName);
+    }
+    await this.clickMaxButton();
     await this.pressContinueButton();
   }
 
@@ -158,22 +105,30 @@ class SendPage {
     chainId,
     symbol,
     recipientAddress,
-    amount,
+    recipientName,
+    amount = '0',
   }: {
     chainId: string;
     symbol: string;
-    recipientAddress: string;
+    recipientAddress?: string;
+    recipientName?: string;
     amount: string;
   }): Promise<void> {
     console.log('Creating send request');
     await this.selectToken(chainId, symbol);
-    await this.fillRecipient(recipientAddress);
+    if (recipientAddress) {
+      await this.fillRecipient(recipientAddress);
+    }
+    if (recipientName) {
+      await this.selectAccountFromRecipientModal(recipientName);
+    }
     await this.fillAmount(amount);
     await this.pressContinueButton();
   }
 
   async fillAmount(amount: string): Promise<void> {
     console.log(`Filling amount with ${amount}`);
+    await this.driver.waitForSelector(this.amountInput);
     await this.driver.pasteIntoField(this.amountInput, amount);
   }
 
