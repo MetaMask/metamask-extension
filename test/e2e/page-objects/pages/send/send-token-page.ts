@@ -94,6 +94,9 @@ class SendTokenPage {
   private readonly viewActivityButton =
     '[data-testid="smart-transaction-status-page-footer-close-button"]';
 
+  private readonly assetFilterInput =
+    '[data-testid="asset-filter-search-input"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
   }
@@ -432,6 +435,15 @@ class SendTokenPage {
     }
 
     console.log(`Token symbol "${tokenSymbol}" is displayed successfully`);
+  }
+
+  /**
+   * Checks if the asset filter input is displayed on the send token screen.
+   *
+   * @returns A promise that resolves when the check is complete.
+   */
+  async checkAssetFilterInput(): Promise<void> {
+    await this.driver.waitForSelector(this.assetFilterInput);
   }
 }
 

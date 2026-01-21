@@ -49,7 +49,7 @@ class SwapPage {
   private readonly closeQuotesButton = 'header button';
 
   private readonly destinationTokenButton =
-    '[data-testid="prepare-swap-page-swap-to"]';
+    '[data-testid="bridge-destination-button"]';
 
   private readonly fromToText =
     '[data-testid="multichain-token-list-button"] p';
@@ -83,8 +83,7 @@ class SwapPage {
   private readonly transactionStatusDescription =
     '[data-testid="swap-smart-transaction-status-description"]';
 
-  private readonly swapAmount =
-    '[data-testid="prepare-swap-page-from-token-amount"]';
+  private readonly swapAmount = '[data-testid="from-amount"]';
 
   private readonly swapButton = {
     tag: 'button',
@@ -93,8 +92,23 @@ class SwapPage {
 
   private readonly transactionHeader = '[data-testid="awaiting-swap-header"]';
 
+  private readonly networkFees = '[data-testid="network-fees"]';
+
+  private readonly slippageEditButton = '[data-testid="slippage-edit-button"]';
+
+  private readonly minimumReceived = '[data-testid="minimum-received"]';
+
+  private readonly maxButton = {
+    text: 'Max',
+    tag: 'button',
+  };
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async waitForMaxButtonToBeDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.maxButton);
   }
 
   async checkPageIsLoaded(): Promise<void> {
@@ -196,6 +210,12 @@ class SwapPage {
 
   async checkNoQuotesAvailable(): Promise<void> {
     await this.driver.waitForSelector(this.noQuotesAvailableMessage);
+  }
+
+  async checkQuoteIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkFees);
+    await this.driver.waitForSelector(this.slippageEditButton);
+    await this.driver.waitForSelector(this.minimumReceived);
   }
 
   async checkQuoteIsGasIncluded(): Promise<void> {

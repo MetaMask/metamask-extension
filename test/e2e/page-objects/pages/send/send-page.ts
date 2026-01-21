@@ -62,8 +62,15 @@ class SendPage {
   private readonly tokenAsset = (chainId: string, symbol: string) =>
     `[data-testid="token-asset-${chainId}-${symbol}"]`;
 
+  private readonly networkFilterToggle =
+    '[data-testid="send-network-filter-toggle"]';
+
   constructor(driver: Driver) {
     this.driver = driver;
+  }
+
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkFilterToggle);
   }
 
   async cancelQrScannerModal(): Promise<void> {
@@ -231,6 +238,13 @@ class SendPage {
     for (const char of amount) {
       await inputElement.sendKeys(char);
     }
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
   }
 }
 
