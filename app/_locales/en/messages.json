@@ -2031,6 +2031,9 @@
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },
+  "deepLink_theCardOnboardingPage": {
+    "message": "the MetaMask Card onboarding page"
+  },
   "deepLink_theHomePage": {
     "message": "the home page"
   },
