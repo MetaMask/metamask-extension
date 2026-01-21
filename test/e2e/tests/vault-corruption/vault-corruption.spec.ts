@@ -5,12 +5,12 @@ import {
   completeCreateNewWalletOnboardingFlow,
   completeVaultRecoveryOnboardingFlow,
 } from '../../page-objects/flows/onboarding.flow';
-import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
 import {
-  onboardThenTriggerCorruption,
-  getConfig,
   getFirstAddress,
-} from './helpers';
+  onboardThenTriggerCorruptionFlow,
+} from '../../page-objects/flows/vault-corruption.flow';
+import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import { getConfig } from './helpers';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -83,7 +83,7 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenTriggerCorruption(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
@@ -113,7 +113,7 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenTriggerCorruption(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakAllDatabasesScript('KeyringController'),
         );
@@ -148,7 +148,7 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenTriggerCorruption(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakPrimaryDatabaseOnlyScript,
         );
@@ -191,7 +191,7 @@ describe('Vault Corruption', function () {
     await withFixtures(
       getConfig(this.test?.title),
       async ({ driver }: { driver: Driver }) => {
-        const initialFirstAddress = await onboardThenTriggerCorruption(
+        const initialFirstAddress = await onboardThenTriggerCorruptionFlow(
           driver,
           breakAllDatabasesScript('meta'),
         );
