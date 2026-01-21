@@ -276,6 +276,13 @@ drop_triggers() {
     sqlite3 "$db" "DROP TRIGGER IF EXISTS file_update_trigger;" 2>/dev/null
 }
 
+# Helper function to flush WAL and ensure changes persist
+flush_wal() {
+    local db="$1"
+    # Checkpoint WAL to ensure changes are written to main database file
+    sqlite3 "$db" "PRAGMA wal_checkpoint(TRUNCATE);" 2>/dev/null
+}
+
 # Menu
 echo -e "${YELLOW}Select corruption type:${NC}"
 echo ""
@@ -299,13 +306,20 @@ echo ""
 echo "  6) Delete 'data' and 'meta' keys + delete BACKUP vault"
 echo "     → Expected: Fresh install flow (no recovery possible)"
 echo ""
+echo "  === Migration Error Reproduction (Issue #31159) ==="
+echo "  7) ${RED}Delete 'data' ONLY (keep existing meta intact)${NC}"
+echo "     → Exact reproduction of GitHub issue #31159 and #31117"
+echo "     → Error: 'MetaMask - migrator data has invalid type undefined'"
+echo "     → Simulates storage corruption where meta survives but data is lost"
+echo "     → NOTE: Requires MetaMask v12.13.1 or similar vulnerable version"
+echo ""
 echo "  === Cleanup ==="
-echo "  7) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
+echo "  8) ${RED}NUCLEAR: Delete ALL MetaMask storage (fresh start)${NC}"
 echo "     → Fixes 'An unexpected error occurred' after reinstall"
 echo ""
-echo "  8) Exit without changes"
+echo "  9) Exit without changes"
 echo ""
-read -p "Enter choice [1-8]: " choice
+read -p "Enter choice [1-9]: " choice
 
 case $choice in
     1)
@@ -591,7 +605,7 @@ case $choice in
         echo "  - No recovery possible without SRP"
         ;;
 
-    7)
+    8)
         echo ""
         echo -e "${RED}╔═══════════════════════════════════════════════════════════════╗${NC}"
         echo -e "${RED}║  WARNING: This will DELETE ALL MetaMask storage for Firefox!  ║${NC}"
@@ -657,9 +671,251 @@ case $choice in
         exit 0
         ;;
 
-    8)
+    9)
         echo "Exiting without changes."
         exit 0
+        ;;
+
+    7)
+        echo ""
+        echo -e "${RED}╔═══════════════════════════════════════════════════════════════════════╗${NC}"
+        echo -e "${RED}║  Reproducing Issue #31159: Delete 'data' ONLY (keep meta intact)      ║${NC}"
+        echo -e "${RED}╚═══════════════════════════════════════════════════════════════════════╝${NC}"
+        echo ""
+
+        if [ -z "$PRIMARY_DB" ]; then
+            echo -e "${RED}ERROR: Primary vault database not found!${NC}"
+            exit 1
+        fi
+
+        # Show ALL keys with their actual names AND hex encoding (for debugging)
+        echo -e "${BLUE}=== DEBUG: All keys in PRIMARY vault ===${NC}"
+        echo ""
+        sqlite3 "$PRIMARY_DB" "SELECT key, hex(key), length(data) as data_size, file_ids FROM object_data ORDER BY key;" 2>/dev/null
+        echo ""
+
+        # List each key with hex representation
+        echo -e "${BLUE}=== Key analysis (with hex) ===${NC}"
+        echo "Keys found:"
+        sqlite3 "$PRIMARY_DB" "SELECT '  key: ' || key || '  hex: ' || hex(key) || '  size: ' || length(data) || ' bytes' FROM object_data;" 2>/dev/null
+        echo ""
+
+        # Check table schema first
+        echo -e "${BLUE}=== Table schema ===${NC}"
+        sqlite3 "$PRIMARY_DB" ".schema object_data" 2>&1
+        echo ""
+
+        # Get the keys directly using hex comparison to avoid encoding issues
+        echo -e "${BLUE}=== Finding keys by hex pattern ===${NC}"
+
+        # The key '0ebub' has hex 3065627562
+        # The key '0nfub' has hex 306E667562
+        # We'll use hex() function to match
+
+        echo "  Looking for data key (hex contains '65627562' = 'ebub')..."
+        DATA_KEY_HEX=$(sqlite3 "$PRIMARY_DB" "SELECT hex(key) FROM object_data WHERE hex(key) LIKE '%65627562%' LIMIT 1;" 2>&1)
+        echo "  Found hex: '$DATA_KEY_HEX'"
+
+        if [ -n "$DATA_KEY_HEX" ] && [[ ! "$DATA_KEY_HEX" == *"Error"* ]]; then
+            DATA_KEY=$(sqlite3 "$PRIMARY_DB" "SELECT key FROM object_data WHERE hex(key) = '$DATA_KEY_HEX';" 2>&1)
+            echo "  DATA key: '$DATA_KEY'"
+        fi
+
+        echo ""
+        echo "  Looking for meta key (hex contains '6E667562' = 'nfub')..."
+        META_KEY_HEX=$(sqlite3 "$PRIMARY_DB" "SELECT hex(key) FROM object_data WHERE hex(key) LIKE '%6E667562%' LIMIT 1;" 2>&1)
+        echo "  Found hex: '$META_KEY_HEX'"
+
+        if [ -n "$META_KEY_HEX" ] && [[ ! "$META_KEY_HEX" == *"Error"* ]]; then
+            META_KEY=$(sqlite3 "$PRIMARY_DB" "SELECT key FROM object_data WHERE hex(key) = '$META_KEY_HEX';" 2>&1)
+            echo "  META key: '$META_KEY'"
+        fi
+        echo ""
+
+        echo -e "${CYAN}Identified keys summary:${NC}"
+        echo "  DATA_KEY='$DATA_KEY'  DATA_KEY_HEX='$DATA_KEY_HEX'"
+        echo "  META_KEY='$META_KEY'  META_KEY_HEX='$META_KEY_HEX'"
+        echo ""
+
+        # Validate we found the keys
+        if [ -z "$META_KEY_HEX" ] || [[ "$META_KEY_HEX" == *"Error"* ]]; then
+            echo -e "${RED}ERROR: Could not find 'meta' key!${NC}"
+            echo "  META_KEY_HEX value: '$META_KEY_HEX'"
+            echo ""
+            echo "The key might be stored differently. Please check the key list above"
+            echo "and identify which key contains the metadata (with 'version' field)."
+            exit 1
+        fi
+
+        if [ -z "$DATA_KEY_HEX" ] || [[ "$DATA_KEY_HEX" == *"Error"* ]]; then
+            echo -e "${YELLOW}WARNING: 'data' key not found or already deleted!${NC}"
+            echo "  DATA_KEY_HEX value: '$DATA_KEY_HEX'"
+            echo "Current state might already be corrupted."
+            echo ""
+            echo "Keys remaining:"
+            sqlite3 "$PRIMARY_DB" "SELECT key, hex(key), length(data) FROM object_data;"
+            exit 0
+        fi
+
+        echo -e "${GREEN}✓ Found both keys${NC}"
+        echo ""
+
+        # Show meta content (first 200 bytes as hex for debugging)
+        echo -e "${BLUE}=== META key content preview (hex) ===${NC}"
+        sqlite3 "$PRIMARY_DB" "SELECT hex(substr(data, 1, 200)) FROM object_data WHERE rowid=$META_ROWID;" 2>/dev/null | fold -w 60
+        echo ""
+
+        # Confirmation
+        echo -e "${YELLOW}Will DELETE: rowid=$DATA_ROWID ('$DATA_KEY')${NC}"
+        echo -e "${GREEN}Will KEEP:   rowid=$META_ROWID ('$META_KEY')${NC}"
+        echo ""
+        read -p "Proceed? (yes/no): " confirm
+        if [ "$confirm" != "yes" ]; then
+            echo "Aborted."
+            exit 0
+        fi
+
+        # Step 1: Drop triggers
+        echo ""
+        echo -e "${YELLOW}Step 1: Dropping Firefox triggers...${NC}"
+        drop_triggers "$PRIMARY_DB"
+        echo -e "${GREEN}✓ Triggers dropped${NC}"
+
+        # Step 2: Delete external files for 'data' key
+        echo ""
+        echo -e "${YELLOW}Step 2: Checking for external files...${NC}"
+        DATA_FILE_IDS=$(sqlite3 "$PRIMARY_DB" "SELECT file_ids FROM object_data WHERE key='$DATA_KEY';" 2>/dev/null)
+        echo "  file_ids value: '$DATA_FILE_IDS'"
+
+        if [ -n "$DATA_FILE_IDS" ] && [ "$DATA_FILE_IDS" != "null" ] && [ "$DATA_FILE_IDS" != "" ]; then
+            if [ -d "$PRIMARY_FILES" ]; then
+                for fid in $(echo "$DATA_FILE_IDS" | grep -oE '[0-9]+'); do
+                    if [ -f "$PRIMARY_FILES/$fid" ]; then
+                        rm -f "$PRIMARY_FILES/$fid"
+                        echo -e "  ${GREEN}✓ Deleted external file: $fid${NC}"
+                    fi
+                done
+            fi
+        else
+            echo "  No external files to delete"
+        fi
+
+        # Step 3: Delete the 'data' key using hex comparison
+        echo ""
+        echo -e "${YELLOW}Step 3: Deleting 'data' key using hex comparison...${NC}"
+
+        # Show current state before delete
+        echo "  Before DELETE:"
+        sqlite3 "$PRIMARY_DB" "SELECT key, hex(key), length(data) FROM object_data;"
+
+        # Show the exact command we're running
+        echo ""
+        echo "  Target: key with hex='$DATA_KEY_HEX'"
+
+        # Create a temp SQL file to avoid any shell escaping issues
+        # Use hex() comparison to avoid encoding issues
+        TEMP_SQL=$(mktemp)
+        cat > "$TEMP_SQL" << EOSQL
+PRAGMA busy_timeout = 5000;
+BEGIN IMMEDIATE;
+DELETE FROM object_data WHERE hex(key) = '${DATA_KEY_HEX}';
+SELECT 'Rows deleted: ' || changes();
+COMMIT;
+PRAGMA wal_checkpoint(TRUNCATE);
+SELECT 'After checkpoint - rows remaining: ' || COUNT(*) FROM object_data;
+EOSQL
+
+        echo "  SQL commands:"
+        cat "$TEMP_SQL" | sed 's/^/    /'
+        echo ""
+
+        echo "  Executing..."
+        sqlite3 "$PRIMARY_DB" < "$TEMP_SQL" 2>&1
+        DELETE_EXIT=$?
+        rm -f "$TEMP_SQL"
+
+        echo ""
+        if [ $DELETE_EXIT -ne 0 ]; then
+            echo -e "${RED}  ERROR: sqlite3 exited with code $DELETE_EXIT${NC}"
+        else
+            echo -e "${GREEN}  sqlite3 completed successfully${NC}"
+        fi
+
+        # Show state after delete
+        echo ""
+        echo "  After DELETE:"
+        sqlite3 "$PRIMARY_DB" "SELECT key, hex(key), length(data) FROM object_data;"
+
+        # Step 4: Flush WAL to ensure changes persist
+        echo ""
+        echo -e "${YELLOW}Step 4: Flushing WAL to persist changes...${NC}"
+        flush_wal "$PRIMARY_DB"
+        echo -e "${GREEN}✓ WAL checkpoint complete${NC}"
+
+        # Verify deletion with explicit queries using hex comparison
+        echo ""
+        echo -e "${YELLOW}Step 5: Verifying changes...${NC}"
+        echo "  Checking for DATA key (hex=$DATA_KEY_HEX)..."
+        REMAINING_DATA=$(sqlite3 "$PRIMARY_DB" "SELECT COUNT(*) FROM object_data WHERE hex(key)='$DATA_KEY_HEX';")
+        echo "  Result: $REMAINING_DATA"
+        if [ "$REMAINING_DATA" = "0" ]; then
+            echo -e "${GREEN}✓ Verified: 'data' key is gone${NC}"
+        else
+            echo -e "${RED}WARNING: 'data' key still exists! Count: $REMAINING_DATA${NC}"
+        fi
+
+        echo "  Checking for META key (hex=$META_KEY_HEX)..."
+        REMAINING_META=$(sqlite3 "$PRIMARY_DB" "SELECT COUNT(*) FROM object_data WHERE hex(key)='$META_KEY_HEX';")
+        echo "  Result: $REMAINING_META"
+        if [ "$REMAINING_META" = "1" ]; then
+            echo -e "${GREEN}✓ Verified: 'meta' key still exists${NC}"
+        else
+            echo -e "${RED}WARNING: 'meta' key is missing! Count: $REMAINING_META${NC}"
+        fi
+
+        # Show all remaining rows
+        echo ""
+        echo "  All rows after operation:"
+        sqlite3 "$PRIMARY_DB" "SELECT '    key=' || key || '  hex=' || hex(key) || '  (' || length(data) || ' bytes)' FROM object_data;"
+
+        # Final state - re-open database to ensure we see committed changes
+        echo ""
+        echo -e "${BLUE}=== Final state (after WAL flush) ===${NC}"
+        # Force a fresh read by reopening the database
+        sqlite3 "$PRIMARY_DB" "PRAGMA wal_checkpoint(PASSIVE);" 2>/dev/null
+        sqlite3 "$PRIMARY_DB" "SELECT key, hex(key), length(data) as size, file_ids FROM object_data ORDER BY key;"
+
+        # Also show a count
+        FINAL_COUNT=$(sqlite3 "$PRIMARY_DB" "SELECT COUNT(*) FROM object_data;")
+        echo ""
+        echo "Total keys remaining: $FINAL_COUNT"
+        echo ""
+
+        echo -e "${RED}═══════════════════════════════════════════════════════════════════════${NC}"
+        echo -e "${RED}✗ Corruption applied!${NC}"
+        echo -e "${RED}═══════════════════════════════════════════════════════════════════════${NC}"
+        echo ""
+        echo "Storage now has:"
+        echo "  ✗ 'data' key: DELETED"
+        echo "  ✓ 'meta' key: PRESENT"
+        echo ""
+        echo -e "${YELLOW}Expected on v12.13.1:${NC}"
+        echo "  Error: 'MetaMask - migrator data has invalid type undefined'"
+        echo ""
+        echo -e "${CYAN}If you still see fresh install instead of error:${NC}"
+        echo "  1. Check background console (about:debugging → Inspect)"
+        echo "  2. Look for any early errors or recovery messages"
+        echo "  3. The issue might be in how local-store.js handles missing data"
+        echo ""
+        echo -e "${YELLOW}Debug tip: Add this to background.js after persistenceManager.get():${NC}"
+        echo "  console.log('preMigrationVersionedData:', JSON.stringify(preMigrationVersionedData));"
+        echo ""
+        echo -e "${CYAN}Alternatively, check storage directly in Firefox console:${NC}"
+        echo "  In about:debugging → Inspect MetaMask → Console, run:"
+        echo "  browser.storage.local.get(null).then(r => console.log(JSON.stringify(r, null, 2)))"
+        echo ""
+        echo -e "${CYAN}Or verify SQLite directly with this command:${NC}"
+        echo "  sqlite3 \"$PRIMARY_DB\" \"SELECT key, length(data) as size FROM object_data;\""
         ;;
 
     *)
