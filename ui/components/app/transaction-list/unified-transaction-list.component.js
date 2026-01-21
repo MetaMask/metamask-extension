@@ -42,6 +42,8 @@ import {
 import {
   SmartTransactionStatus,
   TransactionGroupCategory,
+  NATIVE_TOKEN_ADDRESS,
+  POLYGON_NATIVE_TOKEN_ADDRESS,
 } from '../../../../shared/constants/transaction';
 import { SWAPS_CHAINID_CONTRACT_ADDRESS_MAP } from '../../../../shared/constants/swaps';
 import { isEqualCaseInsensitive } from '../../../../shared/modules/string-utils';
@@ -122,7 +124,8 @@ const getTransactionGroupRecipientAddressFilter = (
     const { to, data } = txParams;
 
     const isNativeAssetActivityFilter =
-      recipientAddress === '0x0000000000000000000000000000000000000000';
+      recipientAddress === NATIVE_TOKEN_ADDRESS ||
+      recipientAddress === POLYGON_NATIVE_TOKEN_ADDRESS;
     const isSimpleSendTx =
       !data || data === '' || data === '0x' || data === '0x0';
     const isOnSameChain = chainIds.includes(chainId);
@@ -143,7 +146,23 @@ const getTransactionGroupRecipientAddressFilter = (
     if (isSwapContract && data) {
       const normalizedRecipient = recipientAddress.slice(2).toLowerCase();
       const normalizedData = data.toLowerCase();
-      return normalizedData.includes(normalizedRecipient);
+
+      // Check if the recipient address is in the data
+      if (normalizedData.includes(normalizedRecipient)) {
+        return true;
+      }
+
+      // Special case for Polygon: if filtering by Polygon native address (0x...1010),
+      // also check for standard zero address (0x...00) which is used in swap data
+      if (
+        isEqualCaseInsensitive(
+          recipientAddress,
+          POLYGON_NATIVE_TOKEN_ADDRESS,
+        ) &&
+        normalizedData.includes(NATIVE_TOKEN_ADDRESS.slice(2).toLowerCase())
+      ) {
+        return true;
+      }
     }
 
     return false;
