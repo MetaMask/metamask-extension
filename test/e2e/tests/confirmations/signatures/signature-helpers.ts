@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import { getEventPayloads, unlockWallet } from '../../../helpers';
+import { getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
@@ -378,11 +378,11 @@ function compareSecurityAlertProperties(
 ) {
   if (
     expectedProperties.security_alert_response &&
-    (expectedProperties.security_alert_response === 'loading' ||
+    (expectedProperties.security_alert_response === 'Loading' ||
       expectedProperties.security_alert_response === 'Benign')
   ) {
     if (
-      actualProperties.security_alert_response !== 'loading' &&
+      actualProperties.security_alert_response !== 'Loading' &&
       actualProperties.security_alert_response !== 'Benign'
     ) {
       assert.fail(
@@ -498,7 +498,7 @@ export async function openDappAndTriggerSignature(
 }
 
 export async function openDappAndTriggerDeploy(driver: Driver) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
   await driver.clickElement('#deployNFTsButton');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

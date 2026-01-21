@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1298,9 +1301,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -3256,6 +3256,9 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
+  "insufficientBalanceToCoverFees": {
+    "message": "Insufficient balance to cover fees"
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -3991,9 +3994,6 @@
   "needImportFile": {
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
@@ -4746,6 +4746,14 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "payWith": {
+    "message": "Pay with",
+    "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithModalTitle": {
+    "message": "Pay with",
+    "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
   "pending": {
     "message": "Pending"
   },
@@ -5054,6 +5062,118 @@
   },
   "perps": {
     "message": "Perps"
+  },
+  "perps24hVolume": {
+    "message": "24h Volume"
+  },
+  "perpsAutoClose": {
+    "message": "Auto close"
+  },
+  "perpsBuy": {
+    "message": "buy"
+  },
+  "perpsCloseAll": {
+    "message": "Close all"
+  },
+  "perpsClosedShort": {
+    "message": "Closed short"
+  },
+  "perpsDetails": {
+    "message": "Details"
+  },
+  "perpsDirection": {
+    "message": "Direction"
+  },
+  "perpsDisclaimer": {
+    "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+  },
+  "perpsEmptyDescription": {
+    "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsEntryPrice": {
+    "message": "Entry price"
+  },
+  "perpsFundingPayments": {
+    "message": "Funding payments"
+  },
+  "perpsFundingRate": {
+    "message": "Funding Rate"
+  },
+  "perpsIncreasedPosition": {
+    "message": "Increased position"
+  },
+  "perpsLearnBasics": {
+    "message": "Learn the basics of perps"
+  },
+  "perpsLiquidationPrice": {
+    "message": "Liquidation price"
+  },
+  "perpsLong": {
+    "message": "Long"
+  },
+  "perpsMargin": {
+    "message": "Margin"
+  },
+  "perpsMarket": {
+    "message": "Market"
+  },
+  "perpsMarketNotFound": {
+    "message": "Market not found"
+  },
+  "perpsMarketNotFoundDescription": {
+    "message": "The market \"$1\" could not be found.",
+    "description": "$1 is the market symbol that was not found"
+  },
+  "perpsOpenInterest": {
+    "message": "Open Interest"
+  },
+  "perpsOpenOrders": {
+    "message": "Open Orders"
+  },
+  "perpsOpenedLong": {
+    "message": "Opened long"
+  },
+  "perpsOrders": {
+    "message": "Orders"
+  },
+  "perpsPnl": {
+    "message": "P&L"
+  },
+  "perpsPosition": {
+    "message": "Position"
+  },
+  "perpsPositions": {
+    "message": "Positions"
+  },
+  "perpsRecentActivity": {
+    "message": "Recent Activity"
+  },
+  "perpsReturn": {
+    "message": "Return"
+  },
+  "perpsSell": {
+    "message": "sell"
+  },
+  "perpsShort": {
+    "message": "Short"
+  },
+  "perpsSize": {
+    "message": "Size"
+  },
+  "perpsStartNewTrade": {
+    "message": "Start a new trade"
+  },
+  "perpsStartTrading": {
+    "message": "Start trading"
+  },
+  "perpsStats": {
+    "message": "Stats"
+  },
+  "perpsTotalBalance": {
+    "message": "Total Balance"
+  },
+  "perpsUnrealizedPnl": {
+    "message": "Unrealized P&L"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -6386,8 +6506,14 @@
   "shieldFooterAgreement": {
     "message": "By continuing, I agree to Transaction Shield $1"
   },
+  "shieldManagePlan": {
+    "message": "Manage plan"
+  },
   "shieldNotCovered": {
     "message": "Not covered"
+  },
+  "shieldPastPlansTitle": {
+    "message": "Past details"
   },
   "shieldPaused": {
     "message": "Paused"
@@ -6491,6 +6617,9 @@
   "shieldPlanTitle": {
     "message": "Choose your plan"
   },
+  "shieldPlanYearly": {
+    "message": "Yearly"
+  },
   "shieldStartNowCTA": {
     "message": "Start now"
   },
@@ -6500,6 +6629,9 @@
   "shieldTx": {
     "message": "Transaction Shield"
   },
+  "shieldTxBillingAccount": {
+    "message": "Billing account"
+  },
   "shieldTxCancelDetails": {
     "message": "If you cancel, your wallet and transactions will not be covered starting $1.",
     "description": "The $1 is the date subscription ends"
@@ -6507,48 +6639,78 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Your plan isn't active while paused. If you cancel, your plan will immediately end."
   },
-  "shieldTxDetails1Description": {
-    "message": "Secures assets on covered transactions"
+  "shieldTxDetails1DescriptionTrial": {
+    "message": "Free for $1 days, then $2",
+    "description": "The $1 is the number of days and the $2 is the price of the plan"
   },
   "shieldTxDetails1Title": {
-    "message": "Up to $10,000 transaction protection"
+    "message": "MetaMask Transaction Shield"
   },
   "shieldTxDetails2Description": {
-    "message": "Get faster, dedicated support anytime"
+    "message": "$1, next billing on $2",
+    "description": "The $1 is interval and the $2 is the date of next billing"
   },
   "shieldTxDetails2Title": {
-    "message": "Priority support"
+    "message": "Billing cycle"
   },
-  "shieldTxDetails3Description": {
-    "message": "Get $1 points/$2",
-    "description": "The $1 is the number of points, $2 is the plan interval (month or year)"
+  "shieldTxDetails3DescriptionCrypto": {
+    "message": "Crypto ($1)",
+    "description": "The $1 is the token symbol"
   },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Sign up"
+  "shieldTxDetails3DescriptionCryptoWithAccount": {
+    "message": "Crypto ($1), $2",
+    "description": "The $1 is the token symbol and the $2 is the account"
   },
   "shieldTxDetails3Title": {
-    "message": "Earn during rewards season"
+    "message": "Payment method"
+  },
+  "shieldTxDetailsManage": {
+    "message": "Manage"
+  },
+  "shieldTxDetailsTitle": {
+    "message": "Plan details"
   },
   "shieldTxMembershipActive": {
     "message": "Active plan"
   },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Billing details"
+  "shieldTxMembershipBenefits": {
+    "message": "Your benefits"
   },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
+  "shieldTxMembershipBenefits1Description": {
+    "message": "Secures assets on covered transactions"
   },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Charges"
+  "shieldTxMembershipBenefits1Title": {
+    "message": "Up to $1 protection",
+    "description": "The $1 is the amount of transaction protection"
   },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Next billing"
+  "shieldTxMembershipBenefits2Description": {
+    "message": "Get faster, dedicated support anytime"
   },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Payment method"
+  "shieldTxMembershipBenefits2Title": {
+    "message": "Priority support"
+  },
+  "shieldTxMembershipBenefits3Description": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3DescriptionInactive": {
+    "message": "Get $1 points/$2",
+    "description": "The $1 is the number of points and the $2 is the interval"
+  },
+  "shieldTxMembershipBenefits3LinkRewards": {
+    "message": "Link"
+  },
+  "shieldTxMembershipBenefits3SignUp": {
+    "message": "Sign up"
+  },
+  "shieldTxMembershipBenefits3Title": {
+    "message": "Earn season rewards"
+  },
+  "shieldTxMembershipBenefitsInactive": {
+    "message": "What you get"
+  },
+  "shieldTxMembershipBenefitsViewAll": {
+    "message": "View all"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Manage billing"
@@ -6560,12 +6722,13 @@
     "message": "Your plan will be cancelled on $1.",
     "description": "The $1 is the date"
   },
+  "shieldTxMembershipCancelledDate": {
+    "message": "You cancelled your plan on $1",
+    "description": "The $1 is the date"
+  },
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Your plan ends on $1. Renew now to continue your benefits.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Retry payment"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Your plan has been paused due to a failed card payment."
@@ -6592,17 +6755,21 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Contact support"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Update card details"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Free trial"
   },
+  "shieldTxMembershipFreeTrialDaysLeft": {
+    "message": "You have $1 days left on your trial",
+    "description": "The $1 is the number of days left"
+  },
   "shieldTxMembershipId": {
-    "message": "Plan ID"
+    "message": "Member ID"
   },
   "shieldTxMembershipInactive": {
     "message": "Inactive plan"
+  },
+  "shieldTxMembershipMakeClaim": {
+    "message": "Make a claim"
   },
   "shieldTxMembershipPaused": {
     "message": "Paused"
@@ -6610,14 +6777,27 @@
   "shieldTxMembershipRenew": {
     "message": "Renew plan"
   },
+  "shieldTxMembershipRenewDescription": {
+    "message": "Reactivate for $1",
+    "description": "The $1 is the price of the plan"
+  },
   "shieldTxMembershipResubscribe": {
     "message": "Restart plan"
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Submit a claim"
   },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "View full benefits"
+  "shieldTxPastPlans": {
+    "message": "Past plans"
+  },
+  "shieldTxPastPlansMonthly": {
+    "message": "Monthly plan"
+  },
+  "shieldTxPastPlansYearly": {
+    "message": "Yearly plan"
+  },
+  "shieldTxViewPastInvoice": {
+    "message": "View past invoice"
   },
   "show": {
     "message": "Show"
@@ -8420,6 +8600,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"

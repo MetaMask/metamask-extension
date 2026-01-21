@@ -13,8 +13,9 @@ import {
   isWritable,
 } from '../../helpers/file';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import AccountListPage from '../page-objects/pages/account-list-page';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { PAGES } from '../webdriver/driver';
 import { mockNotificationServices } from '../tests/notifications/mocks';
@@ -47,7 +48,7 @@ async function measurePageStandard(
       title,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       for (let i = 0; i < pageLoads; i++) {
         // Reset network report before next page load
@@ -93,7 +94,7 @@ async function measurePagePowerUser(
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       for (let i = 0; i < pageLoads; i++) {
         // Reset network report before next page load

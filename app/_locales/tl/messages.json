@@ -1278,9 +1278,6 @@
   "close": {
     "message": "Isara"
   },
-  "closeExtension": {
-    "message": "Isara ang extension"
-  },
   "closeSlide": {
     "message": "Isara ang $1",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3897,9 +3894,6 @@
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Hindi makakapagpadala ng mga negatibong halaga ng ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
@@ -6230,38 +6224,8 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Hindi aktibo ang plan mo habang nakahinto. Kung magkakansela ka, agad na matatapos ang plan mo."
   },
-  "shieldTxDetails1Description": {
-    "message": "Sine-secure ang mga asset sa mga saklaw na transaksyon"
-  },
-  "shieldTxDetails2Description": {
-    "message": "Tumanggap ng mas mabilis at dedikadong suporta anumang oras"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Suporta para sa priority"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Mag-sign up"
-  },
   "shieldTxMembershipActive": {
     "message": "Aktibong plan"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Mga detalye ng paniningil"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Billing account"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Mga bayad"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Susunod na paniningil"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Paraan ng pagbabayad"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Pamahalaan ang pagsingil"
@@ -6276,9 +6240,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Magtatapos ang plan mo sa $1. Mag-renew na ngayon para mapanatili ang mga benepisyo mo.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Subukan ulit ang pagbabayad"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Inihinto ang plan mo dahil sa nabigong pagbabayad ng card."
@@ -6305,9 +6266,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Kontakin ang suporta"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "I-update ang mga detalye ng card"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Libreng trial"
   },
@@ -6328,9 +6286,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Magsumite ng claim"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Tingnan ang mga kumpletong benepisyo"
   },
   "show": {
     "message": "Ipakita"

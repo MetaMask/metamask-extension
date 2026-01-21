@@ -72,7 +72,6 @@ import {
   getTokenStandardAndDetails,
   showModal,
   addTransactionAndRouteToConfirmationPage,
-  updateTransactionSendFlowHistory,
   getCurrentNetworkEIP1559Compatibility,
   getLayer1GasFee,
   gasFeeStopPollingByPollingToken,
@@ -80,7 +79,6 @@ import {
   getBalancesInSingleCall,
   estimateGas,
   addTransactionAndWaitForPublish,
-  setDefaultHomeActiveTabName,
   rejectPendingApproval,
 } from '../../store/actions';
 import { setCustomGasLimit } from '../gas/gas.duck';
@@ -2847,13 +2845,6 @@ export function signTransaction(navigate) {
         ),
       );
       await dispatch(
-        updateTransactionSendFlowHistory(
-          draftTransaction.id,
-          unapprovedTx.sendFlowHistory?.length || 0,
-          draftTransaction.history,
-        ),
-      );
-      await dispatch(
         updateEditableParams(draftTransaction.id, editingTx.txParams),
       );
       await dispatch(
@@ -2988,8 +2979,7 @@ export function signTransaction(navigate) {
         );
         transactionId = swapAndSendTxId;
 
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } else {
         // basic send
         const { id: basicSendTxId } = await dispatch(
