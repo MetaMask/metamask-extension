@@ -1,5 +1,6 @@
 import * as reactRedux from 'react-redux';
 import sinon from 'sinon';
+import { TransactionType } from '@metamask/transaction-controller';
 import mockState from '../../test/data/mock-state.json';
 import transactions from '../../test/data/transaction-data.json';
 // TODO: Remove restricted import
@@ -252,6 +253,42 @@ describe('useTransactionDisplayData', () => {
         );
       });
     });
+  });
+
+  it('should use protocol label for contract interactions without method data', () => {
+    const contractInteractionAddress =
+      '0x68b3465833fb72a70ecdf485e0e4c7bd8665fc45';
+    const contractInteractionTransaction = {
+      id: 9001,
+      chainId: CHAIN_IDS.MAINNET,
+      status: 'confirmed',
+      time: 1,
+      type: TransactionType.contractInteraction,
+      txParams: {
+        from: ADDRESS_MOCK,
+        to: contractInteractionAddress,
+        value: '0x0',
+        data: '0x',
+      },
+    };
+
+    const state = getMockState();
+    state.metamask.use4ByteResolution = false;
+
+    const { result } = renderHookWithProvider(
+      () =>
+        useTransactionDisplayData({
+          initialTransaction: contractInteractionTransaction,
+          primaryTransaction: contractInteractionTransaction,
+          transactions: [contractInteractionTransaction],
+        }),
+      state,
+      DEFAULT_ROUTE,
+    );
+
+    expect(result.current.title).toStrictEqual(
+      'Contract interaction (Uniswap V3)',
+    );
   });
 
   it('should return an appropriate object', () => {

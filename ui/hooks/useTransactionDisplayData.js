@@ -35,6 +35,7 @@ import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
+import { getContractInteractionLabel } from '../helpers/utils/contract-interaction-heuristics';
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -353,9 +354,17 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.revokeDelegation
   ) {
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
-    title =
-      (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
-      transactionTypeTitle;
+    const methodTitle =
+      methodData?.name && camelCaseToCapitalize(methodData.name);
+    const protocolLabel = getContractInteractionLabel(recipientAddress);
+
+    if (methodTitle) {
+      title = methodTitle;
+    } else if (protocolLabel) {
+      title = `${transactionTypeTitle} (${protocolLabel})`;
+    } else {
+      title = transactionTypeTitle;
+    }
   } else if (type === TransactionType.deployContract) {
     title = getTransactionTypeTitle(t, type);
   } else if (type === TransactionType.incoming) {
