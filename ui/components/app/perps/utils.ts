@@ -203,7 +203,6 @@ export const safeDecodeURIComponent = (value: string): string | undefined => {
  * @param markets - Array of markets to filter
  * @param searchQuery - Search query string
  * @returns Filtered array of markets matching the query
- *
  * @example
  * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'btc') // → [{ symbol: 'BTC', name: 'Bitcoin' }]
  * filterMarketsByQuery([{ symbol: 'BTC', name: 'Bitcoin' }], 'coin') // → [{ symbol: 'BTC', name: 'Bitcoin' }]

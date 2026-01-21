@@ -25,9 +25,9 @@ export const PERPS_CONSTANTS = {
 } as const;
 
 /**
-* Market sorting configuration
-* Controls sorting behavior for the markets view
-*/
+ * Market sorting configuration
+ * Controls sorting behavior for the markets view
+ */
 export const MARKET_SORTING_CONFIG = {
   // Default sort direction
   DEFAULT_DIRECTION: 'desc' as const,
