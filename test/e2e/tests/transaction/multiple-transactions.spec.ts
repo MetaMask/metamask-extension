@@ -36,7 +36,6 @@ describe('Multiple transactions', function () {
         // confirms second transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
-        await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.clickFooterConfirmButton();
@@ -87,7 +86,6 @@ describe('Multiple transactions', function () {
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkPageNumbers(1, 2);
-        await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.clickFooterCancelButton();
         await transactionConfirmation.checkPageIsLoaded();
