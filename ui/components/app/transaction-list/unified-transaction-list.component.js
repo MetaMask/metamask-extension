@@ -143,7 +143,7 @@ const getTransactionGroupRecipientAddressFilter = (
     const isSwapContract =
       swapContractForChain && isEqualCaseInsensitive(to, swapContractForChain);
 
-    if (isSwapContract && data) {
+    if (isSwapContract && data && isOnSameChain) {
       const normalizedRecipient = recipientAddress.slice(2).toLowerCase();
       const normalizedData = data.toLowerCase();
 
@@ -625,7 +625,7 @@ export default function UnifiedTransactionList({
   }, [nonEvmChainIds, enabledNetworksForAllNamespaces]);
 
   const unifiedActivityItems = useMemo(() => {
-    return buildUnifiedActivityItems(
+    const allItems = buildUnifiedActivityItems(
       enabledNetworksFilteredPendingTransactions,
       enabledNetworksFilteredCompletedTransactions,
       nonEvmTransactionsForToken,
@@ -636,6 +636,40 @@ export default function UnifiedTransactionList({
         nonEvmChainIds: enabledNonEvmChainIds,
       },
     );
+
+    // Additional filter for bridge transactions when viewing asset details
+    if (!tokenAddress) {
+      return allItems;
+    }
+
+    return allItems.filter((item) => {
+      // Non-EVM transactions already filtered
+      if (item.kind === TransactionKind.NON_EVM) {
+        return true;
+      }
+
+      const { initialTransaction } = item.transactionGroup;
+      const { type, id } = initialTransaction;
+
+      // Non-bridge transactions already filtered
+      if (
+        type !== TransactionType.bridge &&
+        type !== TransactionType.bridgeApproval
+      ) {
+        return true;
+      }
+
+      // For bridge transactions, check bridgeHistoryItems
+      const bridgeHistoryItem = bridgeHistoryItems[id];
+      if (bridgeHistoryItem?.quote?.srcAsset?.address) {
+        return isEqualCaseInsensitive(
+          bridgeHistoryItem.quote.srcAsset.address,
+          tokenAddress,
+        );
+      }
+
+      return false;
+    });
   }, [
     enabledNetworksFilteredPendingTransactions,
     enabledNetworksFilteredCompletedTransactions,
@@ -644,6 +678,7 @@ export default function UnifiedTransactionList({
     tokenAddress,
     evmChainIds,
     enabledNonEvmChainIds,
+    bridgeHistoryItems,
   ]);
   const groupedUnifiedActivityItems =
     groupAnyTransactionsByDate(unifiedActivityItems);
