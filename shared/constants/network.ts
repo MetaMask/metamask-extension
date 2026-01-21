@@ -392,6 +392,7 @@ export const MSU_DISPLAY_NAME = 'MapleStory Universe';
 export const BOB_DISPLAY_NAME = 'BOB';
 export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
 export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
+export const CHZ_DISPLAY_NAME = 'Chiliz';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -716,6 +717,7 @@ export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
 export const BOB_IMAGE_URL = './images/bob.svg';
 export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
 export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
+export const CHZ_IMAGE_URL = './images/chz.png';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -896,6 +898,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.CHZ]: CHZ_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -1248,6 +1251,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHZ_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1340,6 +1344,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.CHZ]: CHZ_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
