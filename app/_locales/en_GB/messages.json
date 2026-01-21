@@ -5066,8 +5066,24 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favourites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5077,6 +5093,9 @@
   },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5093,6 +5112,12 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
@@ -5104,6 +5129,12 @@
   },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
+  },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5123,6 +5154,9 @@
   "perpsMarketNotFoundDescription": {
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
+  },
+  "perpsMore": {
+    "message": "More"
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
@@ -5169,11 +5203,23 @@
   "perpsStats": {
     "message": "Stats"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
   "perpsUnrealizedPnl": {
-    "message": "Unrealized P&L"
+    "message": "Unrealised P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

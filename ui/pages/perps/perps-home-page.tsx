@@ -175,7 +175,7 @@ const PerpsHomePage: React.FC = () => {
           fontWeight={FontWeight.Bold}
           style={{ flex: 1 }}
         >
-          Perps
+          {t('perps')}
         </Text>
 
         {/* Search Icon */}
@@ -183,7 +183,7 @@ const PerpsHomePage: React.FC = () => {
           data-testid="perps-home-search-button"
           color={IconColor.IconAlternative}
           size={ButtonIconSize.Md}
-          ariaLabel="Search"
+          ariaLabel={t('search')}
           iconName={IconName.Search}
           onClick={handleSearchClick}
         />
@@ -217,12 +217,12 @@ const PerpsHomePage: React.FC = () => {
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
             >
-              Your positions
+              {t('perpsYourPositions')}
             </Text>
             <ButtonIcon
               color={IconColor.IconAlternative}
               size={ButtonIconSize.Sm}
-              ariaLabel="Position options"
+              ariaLabel={t('perpsPositions')}
               iconName={IconName.MoreHorizontal}
               onClick={() => {
                 // TODO: Handle positions menu
@@ -255,7 +255,7 @@ const PerpsHomePage: React.FC = () => {
                   />
                   <Box className="perps-activity-item__left">
                     <Text className="perps-activity-item__action">
-                      {displaySymbol} | {isLong ? 'Long' : 'Short'}
+                      {displaySymbol} | {isLong ? t('perpsLong') : t('perpsShort')}
                     </Text>
                     <Text className="perps-activity-item__amount">
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
@@ -290,12 +290,12 @@ const PerpsHomePage: React.FC = () => {
               variant={TextVariant.HeadingSm}
               fontWeight={FontWeight.Medium}
             >
-              Your orders
+              {t('perpsYourOrders')}
             </Text>
             <ButtonIcon
               color={IconColor.IconAlternative}
               size={ButtonIconSize.Sm}
-              ariaLabel="Order options"
+              ariaLabel={t('perpsOrders')}
               iconName={IconName.MoreHorizontal}
               onClick={() => {
                 // TODO: Handle orders menu
@@ -306,8 +306,8 @@ const PerpsHomePage: React.FC = () => {
             {openOrders.map((order, index) => {
               const displaySymbol = getDisplayName(order.symbol);
               const orderTypeLabel =
-                order.orderType === 'limit' ? 'Limit' : 'Market';
-              const sideLabel = order.side === 'buy' ? 'buy' : 'sell';
+                order.orderType === 'limit' ? t('perpsLimit') : t('perpsMarket');
+              const sideLabel = order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
               const orderValue =
                 order.orderType === 'limit'
                   ? `$${(parseFloat(order.size) * parseFloat(order.price)).toFixed(2)}`
@@ -354,7 +354,7 @@ const PerpsHomePage: React.FC = () => {
           paddingBottom={2}
         >
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            Explore crypto
+            {t('perpsExploreCrypto')}
           </Text>
           <Icon
             name={IconName.ArrowRight}
@@ -432,7 +432,7 @@ const PerpsHomePage: React.FC = () => {
           paddingBottom={2}
         >
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            Explore stocks and commodities
+            {t('perpsExploreStocksAndCommodities')}
           </Text>
           <Icon
             name={IconName.ArrowRight}
@@ -510,7 +510,7 @@ const PerpsHomePage: React.FC = () => {
           paddingBottom={2}
         >
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
-            Activity
+            {t('perpsActivity')}
           </Text>
           <Icon
             name={IconName.ArrowRight}
@@ -527,7 +527,7 @@ const PerpsHomePage: React.FC = () => {
           >
             <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
             <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">Opened long</Text>
+              <Text className="perps-activity-item__action">{t('perpsOpenedLong')}</Text>
               <Text className="perps-activity-item__amount">2.5 ETH</Text>
             </Box>
             <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
@@ -539,7 +539,7 @@ const PerpsHomePage: React.FC = () => {
           <Box className="perps-activity-item" role="button" tabIndex={0}>
             <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
             <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">Closed short</Text>
+              <Text className="perps-activity-item__action">{t('perpsClosedShort')}</Text>
               <Text className="perps-activity-item__amount">0.5 BTC</Text>
             </Box>
             <Text className="perps-activity-item__pnl perps-activity-item__pnl--loss">
@@ -556,7 +556,7 @@ const PerpsHomePage: React.FC = () => {
             <PerpsTokenLogo symbol="SOL" size={AvatarTokenSize.Md} />
             <Box className="perps-activity-item__left">
               <Text className="perps-activity-item__action">
-                Increased position
+                {t('perpsIncreasedPosition')}
               </Text>
               <Text className="perps-activity-item__amount">50 SOL</Text>
             </Box>
@@ -586,7 +586,7 @@ const PerpsHomePage: React.FC = () => {
             justifyContent={BoxJustifyContent.Between}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              Contact support
+              {t('perpsContactSupport')}
             </Text>
             <Icon
               name={IconName.ArrowRight}
@@ -611,7 +611,7 @@ const PerpsHomePage: React.FC = () => {
             justifyContent={BoxJustifyContent.Between}
           >
             <Text variant={TextVariant.BodyMd} fontWeight={FontWeight.Medium}>
-              Learn the basics of perps
+              {t('perpsLearnBasics')}
             </Text>
             <Icon
               name={IconName.ArrowRight}

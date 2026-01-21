@@ -13,6 +13,7 @@ import {
   BoxJustifyContent,
   TextAlign,
 } from '@metamask/design-system-react';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useFormatters } from '../../../../hooks/useFormatters';
 import { mockAccountState } from '../mocks';
 
@@ -33,6 +34,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
   onWithdraw,
   onLearnMore,
 }) => {
+  const t = useI18nContext();
   const { formatCurrency } = useFormatters();
 
   // Use mock data for now
@@ -82,7 +84,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             fontWeight={FontWeight.Medium}
             textAlign={TextAlign.Center}
           >
-            Trade perps
+            {t('perpsTradePerps')}
           </Text>
         </Box>
 
@@ -92,7 +94,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             color={TextColor.TextAlternative}
             textAlign={TextAlign.Center}
           >
-            Add funds to start trading perpetual contracts with leverage
+            {t('perpsAddFundsDescription')}
           </Text>
         </Box>
 
@@ -108,7 +110,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-add-funds-empty"
           >
-            Add funds
+            {t('perpsAddFunds')}
           </Button>
 
           <Button
@@ -118,7 +120,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             style={{ width: '100%' }}
             data-testid="perps-balance-actions-learn-more"
           >
-            Learn more
+            {t('perpsLearnMore')}
           </Button>
         </Box>
       </Box>
@@ -147,7 +149,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
           color={TextColor.TextAlternative}
           data-testid="perps-balance-actions-available"
         >
-          {formatCurrency(parseFloat(availableBalance), 'USD')} available
+          {t('perpsAvailable', [formatCurrency(parseFloat(availableBalance), 'USD')])}
         </Text>
       </Box>
 
@@ -161,7 +163,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-withdraw"
           >
-            Withdraw
+            {t('perpsWithdraw')}
           </Button>
 
           <Button
@@ -171,7 +173,7 @@ const PerpsMarketBalanceActions: React.FC<PerpsMarketBalanceActionsProps> = ({
             style={{ flex: 1 }}
             data-testid="perps-balance-actions-add-funds"
           >
-            Add funds
+            {t('perpsAddFunds')}
           </Button>
         </Box>
       )}

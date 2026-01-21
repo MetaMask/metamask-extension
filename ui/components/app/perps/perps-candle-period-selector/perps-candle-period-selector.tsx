@@ -14,6 +14,7 @@ import {
   ButtonBase,
 } from '@metamask/design-system-react';
 import { Popover, PopoverPosition } from '../../../component-library';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
 import {
   CandlePeriod,
   CANDLE_PERIODS,
@@ -38,6 +39,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
   selectedPeriod,
   onPeriodChange,
 }) => {
+  const t = useI18nContext();
   const [isMoreOpen, setIsMoreOpen] = useState(false);
   const moreButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -104,7 +106,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
               : TextColor.TextAlternative
           }
         >
-          {isMorePeriodSelected ? getCandlePeriodLabel(selectedPeriod) : 'More'}
+          {isMorePeriodSelected ? getCandlePeriodLabel(selectedPeriod) : t('perpsMore')}
         </Text>
         <Icon
           name={isMoreOpen ? IconName.ArrowUp : IconName.ArrowDown}

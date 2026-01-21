@@ -14,11 +14,8 @@ import {
   // @ts-expect-error suppress CommonJS vs ECMAScript error
 } from 'lightweight-charts';
 import { brandColor } from '@metamask/design-tokens';
-import {
-  CandlePeriod,
-  ZOOM_CONFIG,
-  getVisibleRange,
-} from '../constants/chartConfig';
+import { Box } from '@metamask/design-system-react';
+import { CandlePeriod, ZOOM_CONFIG } from '../constants/chartConfig';
 import {
   mockCandleData,
   formatCandleDataForChart,
@@ -83,14 +80,22 @@ const PerpsCandlestickChart = forwardRef<
       }
     }, []);
 
-    // Apply zoom to show specific number of candles
+    // Apply zoom to show specific number of candles (matches mobile pattern)
     const applyZoom = useCallback((candleCount: number, forceReset = false) => {
       if (!chartRef.current || dataLengthRef.current === 0) {
         return;
       }
 
-      const range = getVisibleRange(dataLengthRef.current, candleCount);
-      chartRef.current.timeScale().setVisibleLogicalRange(range);
+      const actualCount = Math.max(
+        ZOOM_CONFIG.MIN_CANDLES,
+        Math.min(ZOOM_CONFIG.MAX_CANDLES, candleCount),
+      );
+
+      const dataLength = dataLengthRef.current;
+      const from = Math.max(0, dataLength - actualCount);
+      const to = dataLength - 1 + 2; // +2 for right padding
+
+      chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
       if (forceReset) {
         chartRef.current.timeScale().scrollToRealTime();
@@ -246,6 +251,8 @@ const PerpsCandlestickChart = forwardRef<
       const formattedData = formatCandleDataForChart(dataToUse);
 
       if (formattedData.length > 0) {
+        // Type assertion needed: mock data uses a Time branded type that is
+        // structurally identical but incompatible with library's Time due to unique symbols
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         seriesRef.current.setData(formattedData as any);
         dataLengthRef.current = formattedData.length;
@@ -253,6 +260,8 @@ const PerpsCandlestickChart = forwardRef<
         // Update volume data
         if (volumeSeriesRef.current) {
           const volumeData = formatVolumeDataForChart(dataToUse);
+          // Type assertion needed: mock data uses a Time branded type that is
+          // structurally identical but incompatible with library's Time due to unique symbols
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           volumeSeriesRef.current.setData(volumeData as any);
         }
@@ -266,9 +275,11 @@ const PerpsCandlestickChart = forwardRef<
           ZOOM_CONFIG.DEFAULT_CANDLES,
           formattedData.length,
         );
-        const range = getVisibleRange(formattedData.length, visibleCandles);
+        const dataLength = formattedData.length;
+        const from = Math.max(0, dataLength - visibleCandles);
+        const to = dataLength - 1 + 2; // +2 for right padding
 
-        chartRef.current.timeScale().setVisibleLogicalRange(range);
+        chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
         // Scroll to real time when period changes
         if (periodChanged) {
@@ -285,7 +296,7 @@ const PerpsCandlestickChart = forwardRef<
     }, [selectedPeriod, onPeriodDataRequest]);
 
     return (
-      <div
+      <Box
         ref={containerRef}
         className="perps-candlestick-chart"
         data-testid="perps-candlestick-chart"

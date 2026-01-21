@@ -234,7 +234,7 @@ const PerpsMarketDetailPage: React.FC = () => {
         {/* Favorite Star */}
         <Box
           data-testid="perps-market-detail-favorite-button"
-          aria-label="Add to favorites"
+          aria-label={t('perpsAddToFavorites')}
           className="p-2 cursor-pointer"
           onClick={() => {
             // TODO: Handle favorite toggle

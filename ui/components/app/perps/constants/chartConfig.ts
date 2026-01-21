@@ -161,37 +161,26 @@ export const DURATION_CANDLE_PERIODS: Record<
 } as const;
 
 /**
- * Calculate the number of candles to fetch based on duration and period
+ * Calculate the number of candles to fetch based on duration and candle period
  *
- * @param durationMinutes - Duration in minutes
- * @param periodMinutes - Candle period in minutes
+ * Converts duration and candle period enums to minutes, then calculates
+ * the number of candles needed. Result is capped between MIN (10) and
+ * TOTAL (500) for memory management.
+ *
+ * @param duration - Chart duration (e.g., ChartDuration.OneDay)
+ * @param candlePeriod - Candle period (e.g., CandlePeriod.OneHour)
  * @returns Number of candles (clamped between MIN and TOTAL)
  */
 export function calculateCandleCount(
-  durationMinutes: number,
-  periodMinutes: number,
+  duration: ChartDuration,
+  candlePeriod: CandlePeriod,
 ): number {
-  const count = Math.floor(durationMinutes / periodMinutes);
-  return Math.max(CANDLE_COUNT.MIN, Math.min(CANDLE_COUNT.TOTAL, count));
-}
+  const periodInMinutes = PERIOD_TO_MINUTES[candlePeriod] ?? 60;
+  const durationInMinutes = DURATION_TO_MINUTES[duration] ?? 1440;
 
-/**
- * Get visible range for chart zoom
- *
- * @param dataLength - Total number of candles in data
- * @param visibleCount - Number of candles to show
- * @returns Object with from and to indices for setVisibleLogicalRange
- */
-export function getVisibleRange(
-  dataLength: number,
-  visibleCount: number,
-): { from: number; to: number } {
-  const count = Math.max(
-    ZOOM_CONFIG.MIN_CANDLES,
-    Math.min(ZOOM_CONFIG.MAX_CANDLES, visibleCount),
-  );
-  return {
-    from: Math.max(0, dataLength - count),
-    to: dataLength - 1 + 2, // +2 for right padding
-  };
+  const candleCount = Math.ceil(durationInMinutes / periodInMinutes);
+
+  // Cap at TOTAL candles max for memory management
+  // Allow minimum of MIN candles for basic functionality
+  return Math.min(Math.max(candleCount, CANDLE_COUNT.MIN), CANDLE_COUNT.TOTAL);
 }
