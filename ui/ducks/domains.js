@@ -126,82 +126,94 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
   }
 
   const promise = (async () => {
-    const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
-    const subjects = getPermissionSubjects(state);
-    const nameLookupSnaps = getNameLookupSnapsIds(state);
+    try {
+      const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
+      const subjects = getPermissionSubjects(state);
+      const nameLookupSnaps = getNameLookupSnapsIds(state);
 
-    if (signal?.aborted) {
-      return [];
-    }
-
-    const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
-      const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-      const chainIdCaveat = getChainIdsCaveat(permission);
-      const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
-
-      if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
-        return false;
+      if (signal?.aborted) {
+        resolutionCache.delete(cacheKey);
+        return [];
       }
 
-      if (lookupMatchersCaveat) {
-        const { tlds, schemes } = lookupMatchersCaveat;
-        return (
-          tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
-          schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
-        );
-      }
+      const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+        const permission =
+          subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
+        const chainIdCaveat = getChainIdsCaveat(permission);
+        const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
-      return true;
-    });
-
-    if (domain.length === 0) {
-      return [];
-    }
-
-    const results = await Promise.allSettled(
-      filteredNameLookupSnapsIds.map((snapId) => {
-        return handleSnapRequest({
-          snapId,
-          origin: 'metamask',
-          handler: 'onNameLookup',
-          request: {
-            jsonrpc: '2.0',
-            method: ' ',
-            params: {
-              domain,
-              chainId,
-            },
-          },
-        });
-      }),
-    );
-
-    const filteredResults = results.reduce(
-      (successfulResolutions, result, idx) => {
-        if (result.status !== 'rejected' && result.value !== null) {
-          const resolutions = result.value.resolvedAddresses.map(
-            (resolution) => ({
-              ...resolution,
-              resolvingSnap: getSnapMetadata(
-                state,
-                filteredNameLookupSnapsIds[idx],
-              )?.name,
-            }),
-          );
-          return successfulResolutions.concat(resolutions);
+        if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+          return false;
         }
-        return successfulResolutions;
-      },
-      [],
-    );
 
-    resolutionCache.set(cacheKey, {
-      promise,
-      timestamp: Date.now(),
-      result: filteredResults,
-    });
+        if (lookupMatchersCaveat) {
+          const { tlds, schemes } = lookupMatchersCaveat;
+          return (
+            tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
+            schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
+          );
+        }
 
-    return enrichResolutionsWithAddressBook(filteredResults, state);
+        return true;
+      });
+
+      if (domain.length === 0) {
+        return [];
+      }
+
+      const results = await Promise.allSettled(
+        filteredNameLookupSnapsIds.map((snapId) => {
+          return handleSnapRequest({
+            snapId,
+            origin: 'metamask',
+            handler: 'onNameLookup',
+            request: {
+              jsonrpc: '2.0',
+              method: ' ',
+              params: {
+                domain,
+                chainId,
+              },
+            },
+          });
+        }),
+      );
+
+      const filteredResults = results.reduce(
+        (successfulResolutions, result, idx) => {
+          if (result.status !== 'rejected' && result.value !== null) {
+            const resolutions = result.value.resolvedAddresses.map(
+              (resolution) => ({
+                ...resolution,
+                resolvingSnap: getSnapMetadata(
+                  state,
+                  filteredNameLookupSnapsIds[idx],
+                )?.name,
+              }),
+            );
+            return successfulResolutions.concat(resolutions);
+          }
+          return successfulResolutions;
+        },
+        [],
+      );
+
+      if (signal?.aborted) {
+        resolutionCache.delete(cacheKey);
+        return [];
+      }
+
+      resolutionCache.set(cacheKey, {
+        promise,
+        timestamp: Date.now(),
+        result: filteredResults,
+      });
+
+      return enrichResolutionsWithAddressBook(filteredResults, state);
+    } catch (error) {
+      resolutionCache.delete(cacheKey);
+      throw error;
+    }
   })();
 
   resolutionCache.set(cacheKey, {
