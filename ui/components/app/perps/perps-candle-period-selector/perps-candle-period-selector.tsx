@@ -59,7 +59,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
-      gap={0}
+      gap={1}
       paddingTop={2}
       paddingBottom={2}
       paddingLeft={4}
@@ -118,9 +118,10 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
             : t('perpsMore')}
         </Text>
         <Icon
-          name={isMoreOpen ? IconName.ArrowUp : IconName.ArrowDown}
+          name={IconName.ArrowDown}
           size={IconSize.Xs}
           color={IconColor.IconAlternative}
+          className="shrink-0"
         />
       </ButtonBase>
 
