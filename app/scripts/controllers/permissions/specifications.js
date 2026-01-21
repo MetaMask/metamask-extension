@@ -161,6 +161,8 @@ export const unrestrictedMethods = Object.freeze([
   'personal_ecRecover',
   'personal_sign',
   'wallet_requestExecutionPermissions',
+  'wallet_getSupportedExecutionPermissions',
+  'wallet_getGrantedExecutionPermissions',
   'wallet_addEthereumChain',
   'wallet_getCallsStatus',
   'wallet_getCapabilities',
