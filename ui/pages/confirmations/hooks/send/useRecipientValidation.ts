@@ -33,6 +33,12 @@ export const useRecipientValidation = () => {
   const unmountedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Use ref to hold the latest validation function to avoid recreating the debounced function
+  // when dependencies change. This prevents pending validations from being cancelled.
+  const validateRecipientRef = useRef<
+    (toAddress: string, signal?: AbortSignal) => Promise<RecipientValidationResult>
+  >();
+
   useEffect(() => {
     return () => {
       unmountedRef.current = true;
@@ -40,8 +46,9 @@ export const useRecipientValidation = () => {
     };
   }, []);
 
-  const validateRecipient = useCallback(
-    async (
+  // Update the ref whenever dependencies change
+  useEffect(() => {
+    validateRecipientRef.current = async (
       toAddress: string,
       signal?: AbortSignal,
     ): Promise<RecipientValidationResult> => {
@@ -76,25 +83,25 @@ export const useRecipientValidation = () => {
       return {
         error: 'invalidAddress',
       };
-    },
-    [
-      asset,
-      chainId,
-      isBitcoinSendType,
-      isEvmSendType,
-      isSolanaSendType,
-      isTronSendType,
-      validateName,
-    ],
-  );
+    };
+  }, [
+    asset,
+    chainId,
+    isBitcoinSendType,
+    isEvmSendType,
+    isSolanaSendType,
+    isTronSendType,
+    validateName,
+  ]);
 
+  // Create debounced function only once - it calls through the ref to get latest validation logic
   const debouncedValidateRecipient = useMemo(
     () =>
       debounce(async (toAddress: string) => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = new AbortController();
 
-        const validationResult = await validateRecipient(
+        const validationResult = await validateRecipientRef.current?.(
           toAddress,
           abortControllerRef.current.signal,
         );
@@ -109,7 +116,7 @@ export const useRecipientValidation = () => {
           });
         }
       }, VALIDATION_DEBOUNCE_MS),
-    [validateRecipient],
+    [],
   );
 
   useEffect(() => {

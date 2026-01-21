@@ -100,6 +100,7 @@ export function initializeDomainSlice() {
 
 const resolutionCache = new Map();
 const CACHE_TTL_MS = 60000;
+const MAX_CACHE_SIZE = 100;
 
 function enrichResolutionsWithAddressBook(resolutions, state) {
   return resolutions.map((resolution) => ({
@@ -107,6 +108,19 @@ function enrichResolutionsWithAddressBook(resolutions, state) {
     addressBookEntryName: getAddressBookEntry(state, resolution.resolvedAddress)
       ?.name,
   }));
+}
+
+/**
+ * Removes expired entries from the cache to prevent unbounded memory growth.
+ * Called periodically during cache operations.
+ */
+function pruneExpiredCacheEntries() {
+  const now = Date.now();
+  for (const [key, value] of resolutionCache.entries()) {
+    if (now - value.timestamp >= CACHE_TTL_MS) {
+      resolutionCache.delete(key);
+    }
+  }
 }
 
 export async function fetchResolutions({ domain, chainId, state, signal }) {
@@ -117,111 +131,106 @@ export async function fetchResolutions({ domain, chainId, state, signal }) {
     return [];
   }
 
-  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
-    if (cached.result) {
-      return enrichResolutionsWithAddressBook(cached.result, state);
-    }
-    const cachedResolutions = await cached.promise;
-    return enrichResolutionsWithAddressBook(cachedResolutions, state);
+  // Only use cache if we have completed results that haven't expired
+  if (cached?.result && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return enrichResolutionsWithAddressBook(cached.result, state);
   }
 
-  const promise = (async () => {
-    try {
-      const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
-      const subjects = getPermissionSubjects(state);
-      const nameLookupSnaps = getNameLookupSnapsIds(state);
+  // Delete expired entry if it exists
+  if (cached) {
+    resolutionCache.delete(cacheKey);
+  }
 
-      if (signal?.aborted) {
-        resolutionCache.delete(cacheKey);
-        return [];
-      }
+  const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
+  const subjects = getPermissionSubjects(state);
+  const nameLookupSnaps = getNameLookupSnapsIds(state);
 
-      const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
-        const permission =
-          subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-        const chainIdCaveat = getChainIdsCaveat(permission);
-        const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
+  if (signal?.aborted) {
+    return [];
+  }
 
-        if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
-          return false;
-        }
+  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+    const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
+    const chainIdCaveat = getChainIdsCaveat(permission);
+    const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
 
-        if (lookupMatchersCaveat) {
-          const { tlds, schemes } = lookupMatchersCaveat;
-          return (
-            tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
-            schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
-          );
-        }
-
-        return true;
-      });
-
-      if (domain.length === 0) {
-        return [];
-      }
-
-      const results = await Promise.allSettled(
-        filteredNameLookupSnapsIds.map((snapId) => {
-          return handleSnapRequest({
-            snapId,
-            origin: 'metamask',
-            handler: 'onNameLookup',
-            request: {
-              jsonrpc: '2.0',
-              method: ' ',
-              params: {
-                domain,
-                chainId,
-              },
-            },
-          });
-        }),
-      );
-
-      const filteredResults = results.reduce(
-        (successfulResolutions, result, idx) => {
-          if (result.status !== 'rejected' && result.value !== null) {
-            const resolutions = result.value.resolvedAddresses.map(
-              (resolution) => ({
-                ...resolution,
-                resolvingSnap: getSnapMetadata(
-                  state,
-                  filteredNameLookupSnapsIds[idx],
-                )?.name,
-              }),
-            );
-            return successfulResolutions.concat(resolutions);
-          }
-          return successfulResolutions;
-        },
-        [],
-      );
-
-      if (signal?.aborted) {
-        resolutionCache.delete(cacheKey);
-        return [];
-      }
-
-      resolutionCache.set(cacheKey, {
-        promise,
-        timestamp: Date.now(),
-        result: filteredResults,
-      });
-
-      return enrichResolutionsWithAddressBook(filteredResults, state);
-    } catch (error) {
-      resolutionCache.delete(cacheKey);
-      throw error;
+    if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+      return false;
     }
-  })();
 
-  resolutionCache.set(cacheKey, {
-    promise,
-    timestamp: Date.now(),
+    if (lookupMatchersCaveat) {
+      const { tlds, schemes } = lookupMatchersCaveat;
+      return (
+        tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
+        schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
+      );
+    }
+
+    return true;
   });
 
-  return promise;
+  if (domain.length === 0) {
+    return [];
+  }
+
+  const results = await Promise.allSettled(
+    filteredNameLookupSnapsIds.map((snapId) => {
+      return handleSnapRequest({
+        snapId,
+        origin: 'metamask',
+        handler: 'onNameLookup',
+        request: {
+          jsonrpc: '2.0',
+          method: ' ',
+          params: {
+            domain,
+            chainId,
+          },
+        },
+      });
+    }),
+  );
+
+  if (signal?.aborted) {
+    return [];
+  }
+
+  const filteredResults = results.reduce(
+    (successfulResolutions, result, idx) => {
+      if (result.status !== 'rejected' && result.value !== null) {
+        const resolutions = result.value.resolvedAddresses.map(
+          (resolution) => ({
+            ...resolution,
+            resolvingSnap: getSnapMetadata(
+              state,
+              filteredNameLookupSnapsIds[idx],
+            )?.name,
+          }),
+        );
+        return successfulResolutions.concat(resolutions);
+      }
+      return successfulResolutions;
+    },
+    [],
+  );
+
+  // Prune expired entries and enforce max cache size before adding new entry
+  if (resolutionCache.size >= MAX_CACHE_SIZE) {
+    pruneExpiredCacheEntries();
+    // If still at max after pruning, remove oldest entry
+    if (resolutionCache.size >= MAX_CACHE_SIZE) {
+      const oldestKey = resolutionCache.keys().next().value;
+      resolutionCache.delete(oldestKey);
+    }
+  }
+
+  // Cache only completed results with current timestamp
+  resolutionCache.set(cacheKey, {
+    timestamp: Date.now(),
+    result: filteredResults,
+  });
+
+  return enrichResolutionsWithAddressBook(filteredResults, state);
 }
 
 export function lookupDomainName(domainName, chainId, signal) {
@@ -244,10 +253,10 @@ export function lookupDomainName(domainName, chainId, signal) {
     });
 
     // Due to the asynchronous nature of looking up domains, we could reach this point
-    // while a new lookup has started, if so we don't use the found result.
+    // while a new lookup has started, if so we discard the stale result.
     state = getState();
     if (trimmedDomainName !== state[name].domainName) {
-      return resolutions;
+      return [];
     }
 
     await dispatch(
