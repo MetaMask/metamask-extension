@@ -1,4 +1,3 @@
-/* eslint-disable no-debugger */
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { debounce } from 'lodash';
 import { BigNumber } from 'bignumber.js';
