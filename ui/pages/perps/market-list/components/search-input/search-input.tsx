@@ -1,13 +1,9 @@
-import React, { useCallback, useRef, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import {
-  Box,
-  BoxFlexDirection,
-  BoxAlignItems,
-  Icon,
-  IconName,
-  IconSize,
-  IconColor,
-} from '@metamask/design-system-react';
+  TextFieldSearch,
+  TextFieldSearchSize,
+} from '../../../../../components/component-library';
+import { BorderRadius } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 
 export type SearchInputProps = {
@@ -38,27 +34,6 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   autoFocus = false,
 }) => {
   const t = useI18nContext();
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (autoFocus && inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [autoFocus]);
-
-  const handleChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(event.target.value);
-    },
-    [onChange],
-  );
-
-  const handleClear = useCallback(() => {
-    onClear();
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
-  }, [onClear]);
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -70,46 +45,20 @@ export const SearchInput: React.FC<SearchInputProps> = ({
   );
 
   return (
-    <Box
-      className="flex-1 rounded-full border border-border-muted bg-background-default"
-      flexDirection={BoxFlexDirection.Row}
-      alignItems={BoxAlignItems.Center}
-      gap={2}
-      paddingLeft={3}
-      paddingRight={2}
+    <TextFieldSearch
+      size={TextFieldSearchSize.Md}
+      placeholder={t('perpsSearchMarkets')}
+      autoFocus={autoFocus}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      clearButtonOnClick={onClear}
+      borderRadius={BorderRadius.MD}
       data-testid="search-input-container"
-    >
-      <Icon
-        name={IconName.Search}
-        size={IconSize.Sm}
-        color={IconColor.IconAlternative}
-      />
-      <input
-        ref={inputRef}
-        type="text"
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        placeholder={t('perpsSearchMarkets')}
-        className="min-w-0 flex-1 border-none bg-transparent py-2 text-sm text-text-default outline-none placeholder:text-text-alternative"
-        data-testid="search-input"
-      />
-      {value && (
-        <button
-          type="button"
-          onClick={handleClear}
-          className="flex items-center justify-center rounded-full p-1 hover:bg-hover active:bg-pressed"
-          data-testid="search-clear-button"
-          aria-label={t('clear')}
-        >
-          <Icon
-            name={IconName.Close}
-            size={IconSize.Xs}
-            color={IconColor.IconAlternative}
-          />
-        </button>
-      )}
-    </Box>
+      inputProps={{
+        'data-testid': 'search-input',
+        onKeyDown: handleKeyDown,
+      }}
+    />
   );
 };
 

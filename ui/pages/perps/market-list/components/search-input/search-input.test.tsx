@@ -58,7 +58,7 @@ describe('SearchInput', () => {
       renderWithProvider(<SearchInput {...defaultProps} value="" />, mockStore);
 
       expect(
-        screen.queryByTestId('search-clear-button'),
+        screen.queryByTestId('text-field-search-clear-button'),
       ).not.toBeInTheDocument();
     });
 
@@ -68,7 +68,9 @@ describe('SearchInput', () => {
         mockStore,
       );
 
-      expect(screen.getByTestId('search-clear-button')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('text-field-search-clear-button'),
+      ).toBeInTheDocument();
     });
 
     it('calls onClear when clear button is clicked', () => {
@@ -78,7 +80,7 @@ describe('SearchInput', () => {
         mockStore,
       );
 
-      const clearButton = screen.getByTestId('search-clear-button');
+      const clearButton = screen.getByTestId('text-field-search-clear-button');
       fireEvent.click(clearButton);
 
       expect(onClear).toHaveBeenCalledTimes(1);
