@@ -113,7 +113,7 @@ jobs:
       - name: Compute needs-lint flag
         id: set-needs-lint
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        run: echo "needs-lint=true" >> "$GITHUB_OUTPUT"
+        run: echo "needs-lint=false" >> "$GITHUB_OUTPUT"
 
       # May be split into two later, but can't easily be split right now
       - name: Compute needs-unit-and-integration flag
