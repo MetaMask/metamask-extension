@@ -182,10 +182,6 @@ export function parseErrorByType(
       code: ErrorCode.ConnectionTransportMissing,
     },
     {
-      patterns: ['permission.*denied'],
-      code: ErrorCode.AuthenticationSecurityCondition,
-    },
-    {
       patterns: ['disconnected', 'not found'],
       code: ErrorCode.DeviceDisconnected,
     },
@@ -298,7 +294,7 @@ export const ERROR_CODE_TO_DEVICE_EVENT: Record<ErrorCode, DeviceEvent> = {
   [ErrorCode.BluetoothConnectionFailed]: DeviceEvent.Disconnected,
   [ErrorCode.MobileNotSupported]: DeviceEvent.ConnectionFailed,
   [ErrorCode.TxInsufficientFunds]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.Unknown]: DeviceEvent.ConnectionFailed,
+  [ErrorCode.Unknown]: DeviceEvent.Disconnected,
 };
 
 /**
