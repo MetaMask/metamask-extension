@@ -3388,6 +3388,8 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
+      // Hardware wallet transaction approval with retry support
+      approveHardwareTransaction: this.approveHardwareTransaction.bind(this),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -5450,8 +5452,6 @@ export default class MetamaskController extends EventEmitter {
       async (keyring) => await keyring.getAppNameAndVersion(),
     );
   }
-
-
 
   /**
    * Fetch account list from a hardware device.
@@ -8156,7 +8156,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * @deprecated This is only meant to facilit ate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8674,6 +8674,115 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  /**
+   * Approve a hardware wallet transaction with retry support.
+   * Uses an approval flow to keep the popup open during the signing process.
+   * If the user rejects on the hardware device, the transaction is recreated
+   * and the user stays on the confirmation page.
+   *
+   * @param {object} opts - Options for the transaction
+   * @param {string} opts.txId - The transaction ID to approve
+   * @param {object} opts.txMeta - The transaction metadata
+   * @param {string} opts.actionId - The action ID for tracking
+   * @returns {Promise<{success: boolean, newTxMeta?: object, error?: string}>}
+   */
+  approveHardwareTransaction = async ({ txId, txMeta, actionId }) => {
+    try {
+      // Resolve the pending approval (this triggers the hardware wallet signing)
+      await this.approvalController.accept(
+        String(txId),
+        { txMeta, actionId },
+        { waitForResult: true },
+      );
+
+      return { success: true };
+    } catch (error) {
+      const errorMessage = error.message;
+      // Check if user rejected on the hardware device
+      if (errorMessage.includes('rejected')) {
+        // Start approval flow ONLY when recreating to keep popup open
+        let approvalFlowId = null;
+        try {
+          const { id } = this.approvalController.startFlow({
+            loadingText: 'Recreating transaction...',
+          });
+          approvalFlowId = id;
+
+          // Recreate the transaction
+          const newTxMeta = await this.#recreateTransaction(txMeta);
+
+          // End the approval flow (popup stays open due to new pending approval)
+          this.#endApprovalFlowSafely(approvalFlowId);
+
+          return {
+            success: false,
+            rejected: true,
+            newTxMeta,
+            newTxId: newTxMeta?.id,
+          };
+        } catch (recreateError) {
+          log.error('Failed to recreate transaction:', recreateError);
+          this.#endApprovalFlowSafely(approvalFlowId);
+          return {
+            success: false,
+            rejected: true,
+            error: 'Failed to recreate transaction',
+          };
+        }
+      }
+
+      // Other errors - return error result instead of throwing
+      // This allows the UI to handle errors gracefully without exceptions
+      log.error('Hardware wallet transaction failed:', error);
+      return {
+        success: false,
+        rejected: false,
+        error: errorMessage || 'Hardware wallet transaction failed',
+      };
+    }
+  };
+
+  /**
+   * Safely end an approval flow, ignoring errors if already ended.
+   *
+   * @param {string | null} flowId - The flow ID to end
+   */
+  #endApprovalFlowSafely(flowId) {
+    if (!flowId) {
+      return;
+    }
+    try {
+      this.approvalController.endFlow({ id: flowId });
+    } catch (error) {
+      // Flow may already be ended, ignore
+      log.debug('Error ending approval flow (may already be ended):', error);
+    }
+  }
+
+  /**
+   * Recreate a transaction that was rejected on a hardware wallet.
+   *
+   * @param {object} originalTxMeta - The original transaction metadata
+   * @returns {Promise<object>} The new transaction metadata
+   */
+  async #recreateTransaction(originalTxMeta) {
+    const { txParams, networkClientId, type } = originalTxMeta;
+
+    // Add the transaction with a retry ID to track it
+    // addTransaction returns { result, transactionMeta }
+    const { transactionMeta } = await this.txController.addTransaction(
+      { ...txParams, retryId: `${originalTxMeta.id}-retry` },
+      {
+        networkClientId,
+        type,
+        origin: ORIGIN_METAMASK,
+        actionId: `${Date.now() + Math.random()}`,
+      },
+    );
+
+    return transactionMeta;
+  }
 
   rejectAllPendingApprovals() {
     const deleteInterface = (id) =>

@@ -9,6 +9,7 @@ import {
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import { TransportStatusError } from '@ledgerhq/errors';
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -162,38 +163,31 @@ export class LedgerOffscreenBridge
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {
-            reject(response?.payload?.error);
-            // Process the error from the offscreen document
-            // const error = response?.payload?.error;
+            // Need to process the payload to get the error
+            // and then reject with the error
+            const error = response?.payload?.error;
 
-            // // Reconstruct the original error from the serialized error
-            // let reconstructedError: Error;
-            // if (
-            //   error &&
-            //   typeof error.statusCode === 'number' &&
-            //   error.statusCode > 0
-            // ) {
-            //   // Reconstruct TransportStatusError
-            //   reconstructedError = new TransportStatusError(error.statusCode);
-            // } else if (error?.message) {
-            //   // Reconstruct generic Error
-            //   reconstructedError = new Error(error.message, {
-            //     cause: error,
-            //   });
-            // } else {
-            //   // Fallback for unknown error structure
-            //   reconstructedError = new Error('Unknown Ledger error occurred');
-            // }
-
-            // // Use centralized error handler to convert to LedgerHardwareWalletError
-            // try {
-            //   handleLedgerTransportError(
-            //     reconstructedError,
-            //     'Ledger operation failed',
-            //   );
-            // } catch (ledgerError) {
-            //   reject(ledgerError);
-            // }
+            if (
+              error &&
+              typeof error.statusCode === 'number' &&
+              error.statusCode > 0
+            ) {
+              // This is TransportStatusError, convert the SerializedLedgerError to a TransportStatusError
+              // TransportStatusError will regenerate the error message based on the statusCode
+              const transportStatusError = new TransportStatusError(
+                error.statusCode,
+              );
+              reject(transportStatusError);
+            } else if (error?.message) {
+              // Regenerate the error based on the SerializedLedgerError
+              const newError = new Error(error.message, {
+                cause: error,
+              });
+              reject(newError);
+            } else {
+              // Fallback for unknown Ledger errors when error information is not available
+              reject(new Error('Unknown Ledger error occurred'));
+            }
           }
         },
       );

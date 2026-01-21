@@ -204,6 +204,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { isHardwareAccount } from '../../shared/lib/accounts';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -216,7 +217,6 @@ import type {
   MetaMaskReduxState,
   TemporaryMessageDataType,
 } from './store';
-import { isHardwareAccount } from '../../shared/lib/accounts';
 
 type CustomGasSettings = {
   gas?: string;
@@ -2080,12 +2080,22 @@ export async function addTransaction(
   ]);
 }
 
+/**
+ * Result type for updateAndApproveTx.
+ * When a hardware wallet transaction is rejected and recreated,
+ * recreatedTxId contains the new transaction ID to navigate to.
+ */
+export type UpdateAndApproveTxResult = {
+  txMeta: TransactionMeta | null;
+  recreatedTxId?: string;
+};
+
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
 ): ThunkAction<
-  Promise<TransactionMeta | null>,
+  Promise<UpdateAndApproveTxResult>,
   MetaMaskReduxState,
   unknown,
   AnyAction
@@ -2095,72 +2105,153 @@ export function updateAndApproveTx(
       getState(),
       txMeta.txParams.from,
     );
-    const isHardwareAccountUsed = isHardwareAccount(fromAccount);
 
-    (!dontShowLoadingIndicator || isHardwareAccountUsed) &&
-      dispatch(showLoadingIndication(loadingIndicatorMessage));
-
-    const getIsSendActive = () =>
-      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
-
-    // Set pending hardware signing state to prevent premature navigation
-    if (isHardwareAccountUsed) {
-      dispatch(setPendingHardwareSigning(true));
+    if (isHardwareAccount(fromAccount)) {
+      console.log('[Debug] Approving hardware transaction');
+      return approveHardwareTransaction(
+        dispatch,
+        getState,
+        txMeta,
+        loadingIndicatorMessage,
+      );
     }
 
-    try {
-      const actionId = generateActionId();
-      await submitRequestToBackground('resolvePendingApproval', [
-        String(txMeta.id),
-        { txMeta, actionId },
-        { waitForResult: true },
-      ]);
-
-      if (!getIsSendActive()) {
-        dispatch(resetSendState());
-      }
-      await forceUpdateMetamaskState(dispatch);
-      dispatch(completedTx(txMeta.id));
-      dispatch(hideLoadingIndication());
-      dispatch(updateCustomNonce(''));
-
-      dispatch(closeCurrentNotificationWindow());
-      return txMeta;
-    } catch (error) {
-      debugger;
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-
-      if (isHardwareAccountUsed && error.message.includes('rejected')) {
-        // Recreate the transaction with the same properties
-        try {
-          await dispatch(
-            addTransactionAndRouteToConfirmationPage(
-              { ...txMeta.txParams, retryId: `${txMeta.id}-retry` },
-              {
-                networkClientId: txMeta.networkClientId,
-                type: txMeta.type,
-              },
-            ),
-          );
-          return;
-        } catch (recreateError) {
-          console.error('Failed to recreate transaction:', recreateError);
-          dispatch(displayWarning('Failed to recreate transaction'));
-        }
-      }
-
-      if (!getIsSendActive()) {
-        dispatch(resetSendState());
-      }
-      dispatch(hideLoadingIndication());
-      return Promise.reject(error);
-    } finally {
-      dispatch(hideLoadingIndication());
-      if (isHardwareAccountUsed) {
-        dispatch(setPendingHardwareSigning(false));
-      }
-    }
+    return approveTransaction(
+      dispatch,
+      getState,
+      txMeta,
+      dontShowLoadingIndicator,
+      loadingIndicatorMessage,
+    );
   };
+}
+
+async function approveTransaction(
+  dispatch: MetaMaskReduxDispatch,
+  getState: () => MetaMaskReduxState,
+  txMeta: TransactionMeta,
+  dontShowLoadingIndicator: boolean,
+  loadingIndicatorMessage: string,
+): Promise<UpdateAndApproveTxResult> {
+  const isSendActive = () => getState().send.stage !== SEND_STAGES.INACTIVE;
+
+  if (!dontShowLoadingIndicator) {
+    dispatch(showLoadingIndication(loadingIndicatorMessage));
+  }
+
+  try {
+    await submitRequestToBackground('resolvePendingApproval', [
+      String(txMeta.id),
+      { txMeta, actionId: generateActionId() },
+      { waitForResult: true },
+    ]);
+
+    await forceUpdateMetamaskState(dispatch);
+    dispatch(completedTx(txMeta.id));
+    dispatch(updateCustomNonce(''));
+    dispatch(closeCurrentNotificationWindow());
+
+    return { txMeta };
+  } catch (error) {
+    dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+    throw error;
+  } finally {
+    if (!isSendActive()) {
+      dispatch(resetSendState());
+    }
+    dispatch(hideLoadingIndication());
+  }
+}
+
+/**
+ * Result type for the hardware wallet transaction approval.
+ */
+type ApproveHardwareTransactionResult = {
+  success: boolean;
+  rejected?: boolean;
+  newTxMeta?: TransactionMeta;
+  newTxId?: string;
+  error?: string;
+};
+
+/**
+ * Approve a hardware wallet transaction using the background API.
+ * This uses an approval flow to keep the popup open during signing.
+ * If the user rejects on the hardware device, the transaction is automatically
+ * recreated and the user stays on the confirmation page.
+ *
+ * @param dispatch - Redux dispatch function
+ * @param getState - Redux getState function
+ * @param txMeta - The transaction metadata
+ * @param loadingIndicatorMessage - Message to show during signing
+ * @returns Object with txMeta on success, or recreatedTxId when transaction was rejected and recreated
+ */
+async function approveHardwareTransaction(
+  dispatch: MetaMaskReduxDispatch,
+  getState: () => MetaMaskReduxState,
+  txMeta: TransactionMeta,
+  loadingIndicatorMessage: string,
+): Promise<UpdateAndApproveTxResult> {
+  const isSendActive = () => getState().send.stage !== SEND_STAGES.INACTIVE;
+
+  dispatch(setPendingHardwareSigning(true));
+
+  dispatch(showLoadingIndication(loadingIndicatorMessage));
+
+  try {
+    // Call the unified background API that handles approval flow + signing + recreation
+    const result =
+      await submitRequestToBackground<ApproveHardwareTransactionResult>(
+        'approveHardwareTransaction',
+        [
+          {
+            txId: txMeta.id,
+            txMeta,
+            actionId: generateActionId(),
+          },
+        ],
+      );
+
+    await forceUpdateMetamaskState(dispatch);
+
+    if (result.success) {
+      // Transaction was successfully signed and submitted
+      dispatch(completedTx(txMeta.id));
+      dispatch(updateCustomNonce(''));
+      dispatch(closeCurrentNotificationWindow());
+      return { txMeta };
+    }
+
+    if (result.rejected) {
+      // newTxMeta is the recreated transaction's TransactionMeta
+      // newTxId is also provided directly for convenience
+      const newTxId = result?.newTxId ?? result?.newTxMeta?.id;
+      // User rejected on hardware device, transaction was recreated
+      // Return the new transaction ID so the caller can navigate to it
+      // Display error if recreation failed, but don't throw (this is expected user action)
+      if (result.error) {
+        dispatch(displayWarning(result.error));
+      }
+      // Return null txMeta with recreatedTxId - caller should navigate to new confirmation
+      return { txMeta: null, recreatedTxId: newTxId };
+    }
+
+    // Handle non-rejection error case - throw so caller can handle with error handlers
+    if (result.error) {
+      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+      throw new Error(result.error);
+    }
+
+    // Unexpected result - treat as error
+    dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
+    throw new Error('Unexpected hardware transaction result');
+  } finally {
+    if (!isSendActive()) {
+      dispatch(resetSendState());
+    }
+    dispatch(hideLoadingIndication());
+    dispatch(setPendingHardwareSigning(false));
+  }
 }
 
 export async function getTransactions(
@@ -5711,12 +5802,14 @@ export function updateHiddenAccountsList(
  * further approvals are pending after the background state updates.
  *
  * @param id - The pending approval id
- * @param [value] - The value required to confirm a pending approval
- * @param [options] - Additional options for the approval
+ * @param value - The value required to confirm a pending approval
+ * @param options - Additional options for the approval
+ * @param options.waitForResult - Whether to wait for the approval result
  */
 export function resolvePendingApproval(
   id: string,
   value: unknown,
+  options?: { waitForResult?: boolean },
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
@@ -5726,7 +5819,11 @@ export function resolvePendingApproval(
       id,
     );
 
-    await submitRequestToBackground('resolvePendingApproval', [id, value]);
+    await submitRequestToBackground('resolvePendingApproval', [
+      id,
+      value,
+      options,
+    ]);
     // Before closing the current window, check if any additional confirmations
     // are added as a result of this confirmation being accepted
 

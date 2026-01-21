@@ -3,7 +3,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import React, { useCallback, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { PRODUCT_TYPES } from '@metamask/subscription-controller';
 import { useNavigate } from 'react-router-dom';
 import { MetaMetricsEventLocation } from '../../../../../../shared/constants/metametrics';
@@ -23,13 +23,10 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
-import {
-  doesAddressRequireLedgerHidConnection,
-  getPendingHardwareSigning,
-} from '../../../../../selectors';
+import { getPendingHardwareSigning } from '../../../../../selectors';
 import { useConfirmationNavigation } from '../../../hooks/useConfirmationNavigation';
 import { resolvePendingApproval } from '../../../../../store/actions';
 import { useConfirmContext } from '../../../context/confirm';
@@ -215,7 +212,7 @@ const Footer = () => {
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext } = useConfirmationNavigation();
+  const { navigateNext, navigateToId } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -298,20 +295,25 @@ const Footer = () => {
       return;
     }
 
-    try {
-      if (isAddEthereumChain) {
-        await onAddEthereumChain();
-        navigate(DEFAULT_ROUTE);
-      } else if (isTransactionConfirmation) {
-        await onTransactionConfirm();
-        navigateNext(currentConfirmation.id);
+    if (isAddEthereumChain) {
+      await onAddEthereumChain();
+      navigate(DEFAULT_ROUTE);
+      resetTransactionState();
+    } else if (isTransactionConfirmation) {
+      const { recreatedTxId } = await onTransactionConfirm();
+      // If a hardware wallet transaction was rejected and recreated,
+      // navigate to the new confirmation instead of the next one
+      // Don't reset transaction state since we're staying on confirmation flow
+      debugger;
+      if (recreatedTxId) {
+        navigate(`${CONFIRM_TRANSACTION_ROUTE}/${recreatedTxId}`, { replace: true });
       } else {
-        await dispatch(
-          resolvePendingApproval(currentConfirmation.id, undefined),
-        );
         navigateNext(currentConfirmation.id);
+        resetTransactionState();
       }
-    } finally {
+    } else {
+      await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
+      navigateNext(currentConfirmation.id);
       resetTransactionState();
     }
   }, [
@@ -323,6 +325,7 @@ const Footer = () => {
     navigate,
     onTransactionConfirm,
     navigateNext,
+    navigateToId,
     currentConfirmation,
     dispatch,
   ]);
@@ -391,13 +394,12 @@ const Footer = () => {
             </Button>
           ) : (
             <ConfirmButton
-            alertOwnerId={currentConfirmation?.id}
-            onSubmit={onSubmit}
-            disabled={isConfirmDisabled || isHardwareWalletSigning}
-            onCancel={onCancel}
-          />
+              alertOwnerId={currentConfirmation?.id}
+              onSubmit={onSubmit}
+              disabled={isConfirmDisabled || isHardwareWalletSigning}
+              onCancel={onCancel}
+            />
           )}
-
         </Box>
         <ShieldFooterAgreement />
       </PageFooter>
