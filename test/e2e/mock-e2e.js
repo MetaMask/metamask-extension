@@ -187,7 +187,7 @@ async function setupMocking(
 
   // Subscriptions Polling Get Subscriptions
   await server
-    .forGet('https://subscription.dev-api.cx.metamask.io/v1/subscriptions')
+    .forGet('https://subscription.api.cx.metamask.io/v1/subscriptions')
     .thenCallback(() => {
       return {
         statusCode: 200,
@@ -201,7 +201,7 @@ async function setupMocking(
   // Subscriptions Eligibility
   await server
     .forGet(
-      'https://subscription.dev-api.cx.metamask.io/v1/subscriptions/eligibility',
+      'https://subscription.api.cx.metamask.io/v1/subscriptions/eligibility',
     )
     .thenCallback(() => {
       return {
@@ -329,6 +329,19 @@ async function setupMocking(
         statusCode: 200,
         json: {},
       };
+    });
+
+  // SENTRY_DSN_PERFORMANCE
+  await server
+    .forPost('https://sentry.io/api/4510302346608640/envelope/')
+    .thenPassThrough({
+      beforeRequest: (req) => {
+        console.log(
+          'Request going to Sentry metamask-performance ============',
+          req.url,
+        );
+        return {};
+      },
     });
 
   await server
@@ -914,16 +927,11 @@ async function setupMocking(
 
   // Price API: Spot prices for native token (ETH)
   // Uses zero address (0x0000000000000000000000000000000000000000) to represent native token
-  // API format: v2/chains/{chainId}/spot-prices?tokenAddresses={address}&vsCurrency=usd&includeMarketData=true
+  // API format: v3/spot-prices?assetIds={assetIds}&vsCurrency=usd&includeMarketData=true
   await server
-    .forGet(
-      `https://price.api.cx.metamask.io/v2/chains/${parseInt(
-        chainId,
-        16,
-      )}/spot-prices`,
-    )
+    .forGet(`https://price.api.cx.metamask.io/v3/spot-prices`)
     .withQuery({
-      tokenAddresses: '0x0000000000000000000000000000000000000000',
+      assetIds: 'eip155:1/slip44:60',
       vsCurrency: 'usd',
       includeMarketData: 'true',
     })
@@ -931,7 +939,7 @@ async function setupMocking(
       return {
         statusCode: 200,
         json: {
-          '0x0000000000000000000000000000000000000000': {
+          'eip155:1/slip44:60': {
             id: 'ethereum',
             price: ethConversionInUsd,
             marketCap: 382623505141,
@@ -1084,11 +1092,6 @@ async function setupMocking(
                 name: 'groupC',
               },
             ],
-          },
-          {
-            sendRedesign: {
-              enabled: false,
-            },
           },
         ],
       };

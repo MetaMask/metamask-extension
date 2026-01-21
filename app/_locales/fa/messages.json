@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "برای ادامه رمز عبور را وارد کنید"
   },
-  "ethereumPublicAddress": {
-    "message": "آدرس عمومی ایتریم"
-  },
   "etherscanView": {
     "message": "حساب را در Etherscan ببینید"
   },
@@ -387,9 +384,6 @@
   "needImportFile": {
     "message": "شما باید یک فایل برای وارد کردن را انتخاب کنید.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "نمیتوان مبالغ منفی ETH را ارسال کرد."
   },
   "networkName": {
     "message": "نام شبکه"

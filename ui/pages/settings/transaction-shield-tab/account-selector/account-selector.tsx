@@ -118,7 +118,7 @@ const AccountSelector = ({
         onClick={() => setShowAccountListMenu(true)}
         aria-label={modalTitle}
       >
-        <button disabled={disabled}>
+        <button data-testid="account-selector-button" disabled={disabled}>
           {selectedAccountInfo ? (
             <>
               <PreferredAvatar
@@ -183,7 +183,9 @@ const AccountSelector = ({
                         setShowAccountListMenu(false);
                       }}
                     >
-                      <button>
+                      <button
+                        data-testid={`account-selector-account-item-${account.address.toLowerCase()}`}
+                      >
                         <PreferredAvatar
                           address={account.address ?? ''}
                           size={AvatarAccountSize.Lg}

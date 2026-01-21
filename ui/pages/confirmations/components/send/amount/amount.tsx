@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { ERC721 } from '@metamask/controller-utils';
+import { ERC721, ERC1155 } from '@metamask/controller-utils';
 
 import {
   Box,
@@ -69,6 +69,12 @@ export const Amount = ({
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = event.target.value;
       const fractionSize = getFractionLength(newValue);
+
+      const numericRegex = /^\d*\.?\d*$/u;
+      if (!numericRegex.test(newValue)) {
+        return;
+      }
+
       if (
         (fiatMode && fractionSize > 2) ||
         (!fiatMode && fractionSize > (asset?.decimals ?? 0))
@@ -122,10 +128,27 @@ export const Amount = ({
   ]);
 
   const balanceDisplayValue = useMemo(() => {
-    return fiatMode
-      ? `${getFiatDisplayValue(String(balance))} ${t('available')}`
-      : `${balance} ${asset?.symbol} ${t('available')}`;
-  }, [fiatMode, getFiatDisplayValue, balance, asset?.symbol, t]);
+    if (fiatMode) {
+      return `${getFiatDisplayValue(String(balance))} ${t('available')}`;
+    }
+
+    // For ERC1155 tokens, use name or just show balance without symbol
+    if (asset?.standard === ERC1155) {
+      const displayName = asset?.name ? ` ${asset.name}` : '';
+      return `${balance}${displayName} ${t('available')}`;
+    }
+
+    // For other tokens, use symbol
+    return `${balance} ${asset?.symbol} ${t('available')}`;
+  }, [
+    fiatMode,
+    getFiatDisplayValue,
+    balance,
+    asset?.symbol,
+    asset?.name,
+    asset?.standard,
+    t,
+  ]);
 
   if (asset?.standard === ERC721) {
     return null;
@@ -142,6 +165,7 @@ export const Amount = ({
         onPaste={setAmountInputMethodPasted}
         onInput={setAmountInputMethodManual}
         placeholder="0"
+        testId="send-amount-input"
         value={amount}
         endAccessory={
           <Box display={Display.Flex}>

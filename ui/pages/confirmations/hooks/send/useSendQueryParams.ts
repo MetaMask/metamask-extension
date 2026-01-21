@@ -1,18 +1,11 @@
 import { Hex } from '@metamask/utils';
 import { useEffect, useMemo } from 'react';
-import {
-  useNavigate,
-  useLocation,
-  useSearchParams,
-} from 'react-router-dom-v5-compat';
-import { useSelector } from 'react-redux';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 
 import { SEND_ROUTE } from '../../../../helpers/constants/routes';
-import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
-import { Asset } from '../../types/send';
 import { SendPages } from '../../constants/send';
 import { useSendContext } from '../../context/send';
-import { useSendNfts } from './useSendNfts';
+import { useSendAssets } from './useSendAssets';
 
 export const useSendQueryParams = () => {
   const {
@@ -31,9 +24,8 @@ export const useSendQueryParams = () => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const nfts = useSendNfts();
-  const assets = useSelector(getAssetsBySelectedAccountGroup);
-  const flatAssets = useMemo(() => Object.values(assets).flat(), [assets]);
+  const { tokens, nfts } = useSendAssets();
+  const allAssets = useMemo(() => [...tokens, ...nfts], [tokens, nfts]);
 
   const subPath = useMemo(() => {
     const path = pathname.split('/').filter(Boolean)[1];
@@ -129,34 +121,35 @@ export const useSendQueryParams = () => {
       return;
     }
 
-    let newAsset: Asset | undefined = flatAssets?.find(
-      ({ assetId, chainId: tokenChainId, isNative }) =>
-        paramChainId === tokenChainId &&
-        ((paramAsset && assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
-          (!paramAsset && isNative)),
-    );
+    // Search through filtered tokens and NFTs from useSendAssets
+    const newAsset = allAssets.find(
+      ({ assetId, address, chainId: tokenChainId, isNative, tokenId }) => {
+        const chainIdMatches = paramChainId === String(tokenChainId);
+        if (!chainIdMatches) {
+          return false;
+        }
 
-    if (!newAsset) {
-      newAsset = nfts?.find(
-        ({ address, chainId: tokenChainId, isNative, tokenId }) =>
-          paramChainId === tokenChainId &&
+        // For tokens (no tokenId), match by assetId or check if native
+        if (!paramTokenId) {
+          return (
+            (paramAsset &&
+              assetId?.toLowerCase() === paramAsset.toLowerCase()) ||
+            (!paramAsset && isNative)
+          );
+        }
+
+        // For NFTs (has tokenId), match by address and tokenId
+        return (
           paramTokenId === tokenId &&
           ((paramAsset &&
             address?.toLowerCase() === paramAsset.toLowerCase()) ||
-            (!paramAsset && isNative)),
-      );
-    }
+            (!paramAsset && isNative))
+        );
+      },
+    );
 
     if (newAsset) {
       updateAsset(newAsset);
     }
-  }, [
-    asset,
-    flatAssets,
-    paramAsset,
-    paramChainId,
-    paramTokenId,
-    nfts,
-    updateAsset,
-  ]);
+  }, [asset, allAssets, paramAsset, paramChainId, paramTokenId, updateAsset]);
 };

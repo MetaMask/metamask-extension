@@ -1,15 +1,15 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
-import { DAPP_PATH } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   personalSignWithSnapAccount,
@@ -59,7 +59,8 @@ describe('Snap Account Signatures', function (this: Suite) {
             WINDOW_TITLES.ExtensionInFullScreenView,
           );
           const headerNavbar = new HeaderNavbar(driver);
-          await headerNavbar.checkAccountLabel('SSK Account');
+          // BUG #37591 - With BIP44 the account mame is not retained.
+          await headerNavbar.checkAccountLabel('Snap Account 1');
 
           // Navigate to experimental settings and disable redesigned signature.
           await headerNavbar.openSettingsPage();

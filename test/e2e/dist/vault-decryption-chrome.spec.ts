@@ -3,7 +3,8 @@ import path from 'path';
 import fs from 'fs-extra';
 import level from 'level';
 import { Driver } from '../webdriver/driver';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../helpers';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import HomePage from '../page-objects/pages/home/homepage';
 import PrivacySettings from '../page-objects/pages/settings/privacy-settings';
@@ -103,8 +104,8 @@ async function getFileSize(filePath: string): Promise<number> {
  */
 async function waitUntilFileIsWritten({
   driver,
-  maxRetries = 5,
-  minFileSize = 1000000,
+  maxRetries = 10,
+  minFileSize = 30000,
 }: {
   driver: Driver;
   maxRetries?: number;
@@ -128,39 +129,6 @@ async function waitUntilFileIsWritten({
   throw new Error(
     `File did not reach the minimum size of ${minFileSize} bytes after ${maxRetries} retries.`,
   );
-}
-
-/**
- * Closes the announcements popover if present
- *
- * @param driver
- */
-async function closePopoverIfPresent(driver: Driver) {
-  const popoverButtonSelector = '[data-testid="popover-close"]';
-  // It shows in the Smart Transactions Opt-In Modal.
-  const enableButtonSelector = {
-    text: 'Enable',
-    tag: 'button',
-  };
-  const popoverTourSelector = '[data-testid="tour-cta-button"]';
-
-  await driver.clickElementSafe(popoverButtonSelector);
-  await driver.clickElementSafe(enableButtonSelector);
-  await driver.clickElementSafe(popoverTourSelector);
-
-  // Token Autodetection Independent Announcement
-  const tokenAutodetection = {
-    css: '[data-testid="auto-detect-token-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(tokenAutodetection);
-
-  // NFT Autodetection Independent Announcement
-  const nftAutodetection = {
-    css: '[data-testid="auto-detect-nft-modal"] button',
-    text: 'Not right now',
-  };
-  await driver.clickElementSafe(nftAutodetection);
 }
 
 describe('Vault Decryptor Page', function () {
@@ -187,41 +155,57 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
-
-        // go to privacy settings page
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
-        await new HeaderNavbar(driver).openSettingsPage();
-        const settingsPage = new SettingsPage(driver);
-        await settingsPage.checkPageIsLoaded();
-        await settingsPage.goToPrivacySettings();
-
-        // fill password to reveal SRP and get the SRP
-        const privacySettings = new PrivacySettings(driver);
-        await privacySettings.checkPageIsLoaded();
-        await privacySettings.openRevealSrpQuiz();
-        await privacySettings.completeRevealSrpQuiz();
-        await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
-        const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
 
         // Retry-logic to ensure the file is ready before uploading it to mitigate flakiness when Chrome hasn't finished writing
+        const extensionPath = await getExtensionStorageFilePath(driver);
         await waitUntilFileIsWritten({ driver });
 
-        // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
-        await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
-        const vaultDecryptorPage = new VaultDecryptorPage(driver);
-        await vaultDecryptorPage.checkPageIsLoaded();
-        const extensionPath = await getExtensionStorageFilePath(driver);
-        const extensionLogFile = getExtensionLogFile(extensionPath);
-        await vaultDecryptorPage.uploadLogFile(extensionLogFile);
+        // copy log file to a temp location, to avoid reading it while the browser is writing it
+        let copiedDir;
+        try {
+          copiedDir = await copyDirectoryToTmp(extensionPath);
+          const extensionLogFileCopy = getExtensionLogFile(copiedDir);
 
-        // fill the password and decrypt
-        await vaultDecryptorPage.fillPassword();
-        await vaultDecryptorPage.confirmDecrypt();
-        await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+          // navigate to the Vault decryptor webapp and fill the input field with storage recovered from filesystem
+          await driver.openNewPage(VAULT_DECRYPTOR_PAGE);
+          const vaultDecryptorPage = new VaultDecryptorPage(driver);
+          await vaultDecryptorPage.checkPageIsLoaded();
+          await vaultDecryptorPage.uploadLogFile(extensionLogFileCopy);
+
+          // fill the password and decrypt
+          await vaultDecryptorPage.fillPassword();
+          await vaultDecryptorPage.confirmDecrypt();
+
+          // go back to MetaMask
+          await driver.switchToWindowWithTitle(
+            WINDOW_TITLES.ExtensionInFullScreenView,
+          );
+
+          // go to privacy settings page
+          const homePage = new HomePage(driver);
+          await homePage.checkPageIsLoaded();
+          await homePage.checkBalanceEmptyStateIsDisplayed();
+          await new HeaderNavbar(driver).openSettingsPage();
+          const settingsPage = new SettingsPage(driver);
+          await settingsPage.checkPageIsLoaded();
+          await settingsPage.goToPrivacySettings();
+
+          // fill password to reveal SRP and get the SRP
+          const privacySettings = new PrivacySettings(driver);
+          await privacySettings.checkPageIsLoaded();
+          await privacySettings.openRevealSrpQuiz();
+          await privacySettings.completeRevealSrpQuiz();
+          await privacySettings.fillPasswordToRevealSrp(WALLET_PASSWORD);
+          const seedPhrase = await privacySettings.getSrpInRevealSrpDialog();
+
+          // compare the SRP values
+          await driver.switchToWindowWithTitle('MetaMask Vault Decryptor');
+          await vaultDecryptorPage.checkVaultIsDecrypted(seedPhrase);
+        } finally {
+          if (copiedDir) {
+            await fs.remove(copiedDir);
+          }
+        }
       },
     );
   });
@@ -250,13 +234,16 @@ describe('Vault Decryptor Page', function () {
           password: WALLET_PASSWORD,
           needNavigateToNewPage: false,
         });
-        // close popover if any (Announcements etc..)
-        await closePopoverIfPresent(driver);
+
+        // Ensure we're on the main extension window after onboarding
+        await driver.switchToWindowWithTitle(
+          WINDOW_TITLES.ExtensionInFullScreenView,
+        );
 
         // go to privacy settings page
         const homePage = new HomePage(driver);
         await homePage.checkPageIsLoaded();
-        await homePage.checkExpectedBalanceIsDisplayed('0');
+        await homePage.checkBalanceEmptyStateIsDisplayed();
         await new HeaderNavbar(driver).openSettingsPage();
         const settingsPage = new SettingsPage(driver);
         await settingsPage.checkPageIsLoaded();
@@ -276,11 +263,7 @@ describe('Vault Decryptor Page', function () {
 
         // copy log file to a temp location, to avoid reading it while the browser is writting it
         type VaultData = {
-          // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          KeyringController: {
-            vault: string;
-          };
+          vault: string;
         };
         let newDir;
         let vaultObj;
@@ -289,8 +272,10 @@ describe('Vault Decryptor Page', function () {
           newDir = await copyDirectoryToTmp(extensionPath);
           db = new level.Level(newDir, { valueEncoding: 'json' });
           await db.open();
-          const data = (await db.get('data')) as unknown as VaultData;
-          vaultObj = JSON.parse(data.KeyringController.vault);
+          const keyringController = (await db.get(
+            'KeyringController',
+          )) as unknown as VaultData;
+          vaultObj = JSON.parse(keyringController.vault);
         } finally {
           if (db) {
             await db.close();

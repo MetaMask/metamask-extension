@@ -25,13 +25,10 @@ import {
   getQuoteRequest,
   getIsToOrFromNonEvm,
   getIsStxEnabled,
+  getValidationErrors,
 } from '../../../ducks/bridge/selectors';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  formatCurrencyAmount,
-  formatNetworkFee,
-  formatTokenAmount,
-} from '../utils/quote';
+import { formatNetworkFee, formatTokenAmount } from '../utils/quote';
 import { getCurrentCurrency } from '../../../ducks/metamask/metamask';
 import {
   IconColor,
@@ -49,6 +46,7 @@ import { useRewards } from '../../../hooks/bridge/useRewards';
 import { RewardsBadge } from '../../../components/app/rewards/RewardsBadge';
 import AddRewardsAccount from '../../../components/app/rewards/AddRewardsAccount';
 import { Skeleton } from '../../../components/component-library/skeleton';
+import { getGasFeesSponsoredNetworkEnabled } from '../../../selectors/selectors';
 import { BridgeQuotesModal } from './bridge-quotes-modal';
 
 const getTimerColor = (timeInSeconds: number) => {
@@ -89,8 +87,12 @@ export const MultichainBridgeQuoteCard = ({
   const slippage = useSelector(getSlippage);
   const isSolanaSwap = useSelector(getIsSolanaSwap);
   const dispatch = useDispatch();
+  const { isEstimatedReturnLow } = useSelector(getValidationErrors);
 
   const isToOrFromNonEvm = useSelector(getIsToOrFromNonEvm);
+  const gasFeesSponsoredNetworkEnabled = useSelector(
+    getGasFeesSponsoredNetworkEnabled,
+  );
 
   const [showAllQuotes, setShowAllQuotes] = useState(false);
 
@@ -101,7 +103,43 @@ export const MultichainBridgeQuoteCard = ({
   const gasIncluded = activeQuote?.quote?.gasIncluded ?? false;
   const gasIncluded7702 = activeQuote?.quote?.gasIncluded7702 ?? false;
   const gasSponsored = activeQuote?.quote?.gasSponsored ?? false;
-  const isGasless = gasIncluded7702 || gasIncluded || gasSponsored;
+
+  const isCurrentNetworkGasSponsored = useMemo(() => {
+    if (!fromChain?.chainId || !gasFeesSponsoredNetworkEnabled) {
+      return false;
+    }
+    return Boolean(
+      gasFeesSponsoredNetworkEnabled[
+        fromChain.chainId as keyof typeof gasFeesSponsoredNetworkEnabled
+      ],
+    );
+  }, [fromChain?.chainId, gasFeesSponsoredNetworkEnabled]);
+
+  const shouldShowGasSponsored = useMemo(() => {
+    if (gasSponsored) {
+      return true;
+    }
+
+    // For the insufficientBal workaround, validate it's a same-chain swap
+    if (insufficientBal && isCurrentNetworkGasSponsored) {
+      // Gas sponsorship only applies to same-chain swaps, not cross-chain bridges
+      const isSameChain =
+        fromToken?.chainId &&
+        toToken?.chainId &&
+        fromToken.chainId === toToken.chainId;
+      return Boolean(isSameChain);
+    }
+
+    return false;
+  }, [
+    gasSponsored,
+    insufficientBal,
+    isCurrentNetworkGasSponsored,
+    fromToken?.chainId,
+    toToken?.chainId,
+  ]);
+
+  const isGasless = gasIncluded7702 || gasIncluded || shouldShowGasSponsored;
 
   const nativeTokenSymbol = fromChain
     ? getNativeAssetForChainId(fromChain.chainId).symbol
@@ -171,8 +209,9 @@ export const MultichainBridgeQuoteCard = ({
               <Text
                 variant={TextVariant.bodySm}
                 color={getTimerColor(secondsUntilNextRefresh)}
+                style={{ width: 32 }}
               >
-                {`(0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh})`}
+                {`0:${secondsUntilNextRefresh < 10 ? '0' : ''}${secondsUntilNextRefresh}`}
               </Text>
             )}
 
@@ -267,10 +306,12 @@ export const MultichainBridgeQuoteCard = ({
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
               >
-                {t('networkFeeExplanation')}
+                {shouldShowGasSponsored
+                  ? t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])
+                  : t('networkFeeExplanation')}
               </Tooltip>
             </Row>
-            {gasSponsored && (
+            {shouldShowGasSponsored && (
               <Row gap={1} data-testid="network-fees-sponsored">
                 <Text
                   variant={TextVariant.bodySm}
@@ -278,20 +319,17 @@ export const MultichainBridgeQuoteCard = ({
                 >
                   {t('swapGasFeesSponsored')}
                 </Text>
-                <Tooltip
-                  title={t('swapGasFeesSponsored')}
-                  position={PopoverPosition.TopStart}
-                  offset={[-16, 16]}
-                >
-                  {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
-                </Tooltip>
               </Row>
             )}
-            {!gasSponsored && activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (
               <Row gap={1} data-testid="network-fees-included">
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                   style={{ textDecoration: 'line-through' }}
                 >
                   {activeQuote.includedTxFees?.valueInCurrency
@@ -300,26 +338,34 @@ export const MultichainBridgeQuoteCard = ({
                         currency,
                       )
                     : formatNetworkFee(
-                        activeQuote.totalNetworkFee?.valueInCurrency,
+                        activeQuote.gasFee.effective?.valueInCurrency,
                         currency,
                       )}
                 </Text>
                 <Text
                   variant={TextVariant.bodySm}
-                  color={TextColor.textAlternative}
+                  color={
+                    isEstimatedReturnLow
+                      ? TextColor.warningDefault
+                      : TextColor.textAlternative
+                  }
                 >
                   {t('swapGasFeesIncluded')}
                 </Text>
               </Row>
             )}
-            {!gasSponsored && !activeQuote.quote.gasIncluded && (
+            {!shouldShowGasSponsored && !activeQuote.quote.gasIncluded && (
               <Text
                 variant={TextVariant.bodySm}
-                color={TextColor.textAlternative}
+                color={
+                  isEstimatedReturnLow
+                    ? TextColor.warningDefault
+                    : TextColor.textAlternative
+                }
                 data-testid="network-fees"
               >
                 {formatNetworkFee(
-                  activeQuote.totalNetworkFee?.valueInCurrency,
+                  activeQuote.gasFee.effective?.valueInCurrency,
                   currency,
                 )}
               </Text>
@@ -365,7 +411,7 @@ export const MultichainBridgeQuoteCard = ({
         </Row>
 
         {/* Minimum Received */}
-        {activeQuote.minToTokenAmount.valueInCurrency && (
+        {activeQuote.minToTokenAmount.amount && (
           <Row justifyContent={JustifyContent.spaceBetween}>
             <Row gap={2}>
               <Text
@@ -388,10 +434,10 @@ export const MultichainBridgeQuoteCard = ({
               color={TextColor.textAlternative}
               data-testid="minimum-received"
             >
-              {formatCurrencyAmount(
-                activeQuote.minToTokenAmount.valueInCurrency,
-                currency,
-                2,
+              {formatTokenAmount(
+                locale,
+                activeQuote.minToTokenAmount.amount,
+                activeQuote.quote.destAsset.symbol,
               )}
             </Text>
           </Row>

@@ -1,8 +1,11 @@
 import { act } from '@testing-library/react';
 import { RpcEndpointType } from '@metamask/network-controller';
-import { renderHookWithProviderTyped } from '../../test/lib/render-helpers';
+import { renderHookWithProviderTyped } from '../../test/lib/render-helpers-navigate';
 import { selectFirstUnavailableEvmNetwork } from '../selectors/multichain/networks';
-import { getNetworkConnectionBanner } from '../selectors/selectors';
+import {
+  getNetworkConnectionBanner,
+  getIsDeviceOffline,
+} from '../selectors/selectors';
 import { updateNetworkConnectionBanner } from '../store/actions';
 import mockState from '../../test/data/mock-state.json';
 import { MetaMetricsEventName } from '../../shared/constants/metametrics';
@@ -27,6 +30,7 @@ jest.mock('../selectors/selectors', () => {
   return {
     ...jest.requireActual('../selectors/selectors'),
     getNetworkConnectionBanner: jest.fn(),
+    getIsDeviceOffline: jest.fn(),
   };
 });
 
@@ -50,6 +54,7 @@ const mockSelectFirstUnavailableEvmNetwork = jest.mocked(
   selectFirstUnavailableEvmNetwork,
 );
 const mockGetNetworkConnectionBanner = jest.mocked(getNetworkConnectionBanner);
+const mockGetIsDeviceOffline = jest.mocked(getIsDeviceOffline);
 const mockUpdateNetworkConnectionBanner = jest.mocked(
   updateNetworkConnectionBanner,
 );
@@ -61,6 +66,9 @@ describe('useNetworkConnectionBanner', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();
+
+    // Default to online
+    mockGetIsDeviceOffline.mockReturnValue(false);
 
     mockGetNetworkConfigurationsByChainId.mockReturnValue({
       '0x1': {
@@ -188,6 +196,7 @@ describe('useNetworkConnectionBanner', () => {
               /* eslint-disable @typescript-eslint/naming-convention */
               banner_type: 'degraded',
               chain_id_caip: 'eip155:1',
+              rpc_domain: 'mainnet.infura.io',
               rpc_endpoint_url: 'mainnet.infura.io',
               /* eslint-enable @typescript-eslint/naming-convention */
             },
@@ -294,6 +303,7 @@ describe('useNetworkConnectionBanner', () => {
             /* eslint-disable @typescript-eslint/naming-convention */
             banner_type: 'unavailable',
             chain_id_caip: 'eip155:1',
+            rpc_domain: 'mainnet.infura.io',
             rpc_endpoint_url: 'mainnet.infura.io',
             /* eslint-enable @typescript-eslint/naming-convention */
           },
@@ -350,6 +360,155 @@ describe('useNetworkConnectionBanner', () => {
 
       // Would have updated status to "degraded" if not for resetting timers
       expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('when device is offline', () => {
+    beforeEach(() => {
+      mockGetIsDeviceOffline.mockReturnValue(true);
+    });
+
+    it('does not show degraded banner even if network is unavailable', () => {
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+      mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
+
+      renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+
+      // Should reset to available, not show degraded
+      expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+        status: 'available',
+      });
+      expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalledWith(
+        expect.objectContaining({ status: 'degraded' }),
+      );
+    });
+
+    it('resets banner to available when device goes offline while showing degraded', () => {
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+      mockGetNetworkConnectionBanner.mockReturnValue({
+        status: 'degraded',
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+
+      renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+
+      expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+        status: 'available',
+      });
+    });
+
+    it('does not update banner if already available when offline', () => {
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+      mockGetNetworkConnectionBanner.mockReturnValue({ status: 'available' });
+
+      renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+
+      expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalled();
+    });
+
+    it('does not progress from degraded to unavailable when device goes offline', () => {
+      // Device is offline with degraded banner showing
+      mockGetIsDeviceOffline.mockReturnValue(true);
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+      mockGetNetworkConnectionBanner.mockReturnValue({
+        status: 'degraded',
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+
+      renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+
+      // Clear to only track new calls
+      mockUpdateNetworkConnectionBanner.mockClear();
+
+      // Wait for what would have been the unavailable timeout
+      act(() => {
+        jest.advanceTimersByTime(30000);
+      });
+
+      // Should NOT progress to unavailable since device is offline
+      expect(mockUpdateNetworkConnectionBanner).not.toHaveBeenCalledWith(
+        expect.objectContaining({ status: 'unavailable' }),
+      );
+    });
+
+    it('resumes normal behavior when device comes back online', () => {
+      // Start offline
+      mockGetIsDeviceOffline.mockReturnValue(true);
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
+      // Use 'unknown' so it will try to start timers when coming back online
+      mockGetNetworkConnectionBanner.mockReturnValue({ status: 'unknown' });
+
+      const { rerender } = renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+
+      // Clear any calls from initial render
+      mockUpdateNetworkConnectionBanner.mockClear();
+
+      // Device comes back online
+      mockGetIsDeviceOffline.mockReturnValue(false);
+      rerender();
+
+      // Advance timer to trigger degraded
+      act(() => {
+        jest.advanceTimersByTime(5000);
+      });
+
+      // Should now show degraded banner
+      expect(mockUpdateNetworkConnectionBanner).toHaveBeenCalledWith({
+        status: 'degraded',
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+      });
     });
   });
 });

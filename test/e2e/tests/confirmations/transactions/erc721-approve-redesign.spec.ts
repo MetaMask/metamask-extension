@@ -1,13 +1,14 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { MockttpServer } from 'mockttp';
-import { WINDOW_TITLES, withFixtures } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { scrollAndConfirmAndAssertConfirm } from '../helpers';
 import { TestSuiteArguments, toggleAdvancedDetails } from './shared';
 
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 
 describe('Confirmation Redesign ERC721 Approve Component', function () {
@@ -209,6 +210,6 @@ async function confirmApproveTransaction(driver: Driver) {
 
   await driver.clickElement({ text: 'Activity', tag: 'button' });
   await driver.waitForSelector(
-    '.transaction-list__completed-transactions .activity-list-item:nth-of-type(1)',
+    '.transaction-status-label--confirmed:nth-of-type(1)',
   );
 }

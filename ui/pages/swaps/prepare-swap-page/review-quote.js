@@ -7,7 +7,7 @@ import React, {
   useCallback,
 } from 'react';
 import { shallowEqual, useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import BigNumber from 'bignumber.js';
 import { isEqual } from 'lodash';
 import classnames from 'classnames';
@@ -44,7 +44,7 @@ import {
   fetchSwapsSmartTransactionFees,
   getSmartTransactionFees,
   getCurrentSmartTransactionsEnabled,
-  getIsEstimatedReturnLow,
+  useGetIsEstimatedReturnLow,
 } from '../../../ducks/swaps/swaps';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
 import {
@@ -1133,7 +1133,7 @@ export default function ReviewQuote({
     currentCurrency,
   ]);
 
-  const isEstimatedReturnLow = getIsEstimatedReturnLow({
+  const isEstimatedReturnLow = useGetIsEstimatedReturnLow({
     usedQuote,
     rawNetworkFees,
   });

@@ -11,7 +11,7 @@ import {
   METAMASK_CAIP_MULTICHAIN_PROVIDER,
   METAMASK_INPAGE,
 } from '../../../../app/scripts/constants/stream';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import EditConnectedAccountsModal from '../../page-objects/pages/dialog/edit-connected-accounts-modal';
 
 export type FixtureCallbackArgs = { driver: Driver; extensionId: string };
@@ -72,7 +72,7 @@ export const addAccountInWalletAndAuthorize = async (
 
   const editConnectedAccountsModal = new EditConnectedAccountsModal(driver);
   await editConnectedAccountsModal.checkPageIsLoaded();
-  await editConnectedAccountsModal.addNewEthereumAccount();
+  await editConnectedAccountsModal.addNewAccount();
 
   await connectAccountConfirmation.checkPageIsLoaded();
   await connectAccountConfirmation.confirmConnect();

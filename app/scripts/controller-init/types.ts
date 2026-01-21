@@ -7,7 +7,7 @@ import { Duplex } from 'readable-stream';
 import { SubjectType } from '@metamask/permission-controller';
 import { PreinstalledSnap } from '@metamask/snaps-controllers';
 import { Browser } from 'webextension-polyfill';
-import { ExportableKeyEncryptor } from '@metamask/keyring-controller';
+import { Encryptor } from '@metamask/keyring-controller';
 import { KeyringClass } from '@metamask/keyring-utils';
 import { QrKeyringScannerBridge } from '@metamask/eth-qr-keyring';
 import type { TransactionMetricsRequest } from '../../../shared/types';
@@ -83,7 +83,7 @@ export type ControllerInitRequest<
    * An instance of an encryptor to use for encrypting and decrypting
    * sensitive data.
    */
-  encryptor?: ExportableKeyEncryptor;
+  encryptor: Encryptor;
 
   /**
    * The extension browser API.

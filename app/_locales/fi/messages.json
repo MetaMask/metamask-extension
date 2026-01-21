@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Syötä salasana voidaksesi jatkaa"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereumin julkinen osoite"
-  },
   "etherscanView": {
     "message": "Tarkastele tiliä Etherscanissa"
   },
@@ -387,9 +384,6 @@
   "needImportFile": {
     "message": "Sinun tarvitsee valita tuotava tiedosto.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ETH:ta ei voi lähettää negatiivista määrää."
   },
   "networkName": {
     "message": "Verkon nimi"

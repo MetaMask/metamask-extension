@@ -5,7 +5,7 @@ import React from 'react';
 import configureStore from 'redux-mock-store';
 import mockUnifiedSwapTxGroup from '../../../../test/data/swap/mock-unified-swap-transaction-group.json';
 import mockBridgeTxData from '../../../../test/data/bridge/mock-bridge-transaction-details.json';
-import { renderWithProvider } from '../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
 import TransactionListItem from '.';
@@ -13,9 +13,9 @@ import TransactionListItem from '.';
 const mockUseNavigate = jest.fn();
 const mockUseLocation = jest.fn();
 
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
     useLocation: () => mockUseLocation(),
   };

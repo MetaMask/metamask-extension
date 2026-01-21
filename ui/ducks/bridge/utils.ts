@@ -7,18 +7,12 @@ import {
 import { BigNumber } from 'bignumber.js';
 import type { ContractMarketData } from '@metamask/assets-controllers';
 import {
-  AddNetworkFields,
-  NetworkConfiguration,
-} from '@metamask/network-controller';
-import {
   ChainId,
   type TxData,
   BridgeClientId,
   formatChainIdToCaip,
   getNativeAssetForChainId,
   isNativeAddress,
-  isNonEvmChainId,
-  formatChainIdToHex,
   isBitcoinChainId,
 } from '@metamask/bridge-controller';
 import { handleFetch } from '@metamask/controller-utils';
@@ -27,8 +21,10 @@ import { Numeric } from '../../../shared/modules/Numeric';
 import { getTransaction1559GasFeeEstimates } from '../../pages/swaps/swaps.util';
 import { getAssetImageUrl, toAssetId } from '../../../shared/lib/asset-utils';
 import { BRIDGE_CHAINID_COMMON_TOKEN_PAIR } from '../../../shared/constants/bridge';
-import { CHAIN_ID_TOKEN_IMAGE_MAP } from '../../../shared/constants/network';
-import { MULTICHAIN_TOKEN_IMAGE_MAP } from '../../../shared/constants/multichain/networks';
+import {
+  TRON_RESOURCE_SYMBOLS_SET,
+  type TronResourceSymbol,
+} from '../../../shared/constants/multichain/assets';
 import type { TokenPayload, BridgeToken } from './types';
 
 // Re-export isNonEvmChainId from bridge-controller for backward compatibility
@@ -49,11 +45,8 @@ export const isTronEnergyOrBandwidthResource = (
   symbol: string | undefined,
 ): boolean => {
   return (
-    Boolean(chainId?.toString().includes('tron:')) &&
-    Boolean(
-      symbol?.toUpperCase().includes('ENERGY') ||
-        symbol?.toUpperCase().includes('BANDWIDTH'),
-    )
+    Boolean(chainId?.toString()?.includes('tron:')) &&
+    TRON_RESOURCE_SYMBOLS_SET.has(symbol?.toLowerCase() as TronResourceSymbol)
   );
 };
 
@@ -259,41 +252,9 @@ export const exchangeRatesFromNativeAndCurrencyRates = (
 };
 
 export const isNetworkAdded = (
-  v:
-    | NetworkConfiguration
-    | AddNetworkFields
-    | (Omit<NetworkConfiguration, 'chainId'> & { chainId: CaipChainId })
-    | undefined,
-): v is NetworkConfiguration =>
-  v !== undefined &&
-  'networkClientId' in v.rpcEndpoints[v.defaultRpcEndpointIndex];
-
-const getTokenImage = (payload: TokenPayload['payload']) => {
-  if (!payload) {
-    return '';
-  }
-  const { image, iconUrl, icon, chainId, address, assetId } = payload;
-  const caipChainId = formatChainIdToCaip(chainId);
-  // If the token is native, return the SVG image asset
-  if (isNativeAddress(address)) {
-    // Non-EVM chains (Solana, Bitcoin) use MULTICHAIN_TOKEN_IMAGE_MAP
-    if (isNonEvmChainId(chainId)) {
-      return MULTICHAIN_TOKEN_IMAGE_MAP[caipChainId];
-    }
-    // EVM chains use CHAIN_ID_TOKEN_IMAGE_MAP
-    return CHAIN_ID_TOKEN_IMAGE_MAP[
-      formatChainIdToHex(chainId) as keyof typeof CHAIN_ID_TOKEN_IMAGE_MAP
-    ];
-  }
-  // If the token is not native, return the image from the payload
-  const imageFromPayload = image ?? iconUrl ?? icon;
-  if (imageFromPayload) {
-    return imageFromPayload;
-  }
-  // If there's no image from the payload, build the asset image URL and return it
-  const assetIdToUse = assetId ?? toAssetId(address, caipChainId);
-  return (assetIdToUse && getAssetImageUrl(assetIdToUse, caipChainId)) ?? '';
-};
+  availableNetworks: { chainId: Hex | CaipChainId }[],
+  chainId: Hex | CaipChainId,
+) => availableNetworks.some((network) => network.chainId === chainId);
 
 export const toBridgeToken = (
   payload: TokenPayload['payload'],
@@ -302,13 +263,17 @@ export const toBridgeToken = (
     return null;
   }
   const caipChainId = formatChainIdToCaip(payload.chainId);
+  const assetId = payload.assetId ?? toAssetId(payload.address, caipChainId);
+  const imageFromPayload = payload.image ?? payload.iconUrl ?? payload.icon;
   return {
     ...payload,
     balance: payload.balance ?? '0',
-    string: payload.string ?? '0',
     chainId: payload.chainId,
-    image: getTokenImage(payload),
-    assetId: payload.assetId ?? toAssetId(payload.address, caipChainId),
+    image:
+      (assetId
+        ? getAssetImageUrl(assetId, caipChainId)
+        : (imageFromPayload ?? '')) ?? '',
+    assetId,
   };
 };
 const createBridgeTokenPayload = (

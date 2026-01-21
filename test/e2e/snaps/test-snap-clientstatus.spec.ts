@@ -1,15 +1,15 @@
 import sdkPackageJson from '@metamask/snaps-sdk/package.json';
 import packageJson from '../../../package.json';
 
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { Driver } from '../webdriver/driver';
 import { TestSnaps } from '../page-objects/pages/test-snaps';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
 import { mockClientStatusSnap } from '../mock-response-data/snaps/snap-binary-mocks';
-import { DAPP_PATH } from '../constants';
 
 describe('Test Snap Client Status', function () {
   it('can properly show client status locked state', async function () {

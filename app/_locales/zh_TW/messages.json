@@ -438,9 +438,6 @@
   "ethGasPriceFetchWarning": {
     "message": "顯示備用 gas 價格，因為目前主要的 gas 估計服務無法使用。"
   },
-  "ethereumPublicAddress": {
-    "message": "以太坊公開位址"
-  },
   "etherscanView": {
     "message": "在 Etherscan 上查看帳戶"
   },
@@ -702,9 +699,6 @@
   "needImportFile": {
     "message": "您必須選擇一個檔案來匯入。",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "不能送出負值的以太幣。"
   },
   "networkDetails": {
     "message": "網路詳細資料"

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { Hex } from '@metamask/utils';
 import {
@@ -7,17 +7,19 @@ import {
   ButtonIcon,
   ButtonIconSize,
   IconName,
-  Text,
-  TextAlign,
-  TextVariant,
   BoxFlexDirection,
   BoxJustifyContent,
-  TextColor,
   IconColor,
 } from '@metamask/design-system-react';
 import { Content, Header, Page } from '../../page';
-import { BackgroundColor } from '../../../../../helpers/constants/design-system';
+import {
+  BackgroundColor,
+  TextVariant as TextVariantLocal,
+} from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../../shared/constants/preferences';
 import {
   PREVIOUS_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
@@ -26,19 +28,34 @@ import { PermissionGroupListItem } from '../components';
 import {
   AppState,
   getPermissionGroupMetaData,
+  getPermissionGroupMetaDataByOrigin,
 } from '../../../../../selectors/gator-permissions/gator-permissions';
+import { getDisplayOrigin, safeDecodeURIComponent } from '../helper';
 
 export const TokenTransferPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
   const navigate = useNavigate();
+  const urlParams = useParams<{ origin?: string }>();
+  const origin = urlParams.origin
+    ? safeDecodeURIComponent(urlParams.origin)
+    : undefined;
+
   const permissionGroupName = 'token-transfer';
+
+  // Get permissions - filtered by origin if provided, otherwise all
   const permissionGroupMetaData = useSelector((state: AppState) =>
-    getPermissionGroupMetaData(state, permissionGroupName),
+    origin
+      ? getPermissionGroupMetaDataByOrigin(state, {
+          permissionGroupName,
+          siteOrigin: origin,
+        })
+      : getPermissionGroupMetaData(state, permissionGroupName),
   );
+
   const handlePermissionGroupItemClick = (chainId: Hex) => {
-    navigate(
-      `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`,
-    );
+    const baseRoute = `${REVIEW_GATOR_PERMISSIONS_ROUTE}/${chainId}/${permissionGroupName}`;
+    navigate(origin ? `${baseRoute}/${encodeURIComponent(origin)}` : baseRoute);
   };
 
   const renderPageContent = () =>
@@ -76,14 +93,14 @@ export const TokenTransferPage = () => {
             size={ButtonIconSize.Sm}
           />
         }
+        textProps={{
+          variant: TextVariantLocal.headingMd,
+          'data-testid': 'token-transfer-page-title',
+        }}
       >
-        <Text
-          variant={TextVariant.HeadingMd}
-          textAlign={TextAlign.Center}
-          data-testid="token-transfer-page-title"
-        >
-          {t('tokenTransfer')}
-        </Text>
+        {origin
+          ? `${getDisplayOrigin(origin, false)}: ${t('tokenTransfer')}`
+          : t('tokenTransfer')}
       </Header>
       <Content padding={0}>
         {permissionGroupMetaData.length > 0 ? (
@@ -93,19 +110,25 @@ export const TokenTransferPage = () => {
             data-testid="no-connections"
             flexDirection={BoxFlexDirection.Column}
             justifyContent={BoxJustifyContent.Center}
-            gap={2}
+            className="h-full"
             padding={4}
           >
-            <Text variant={TextVariant.BodyMd} textAlign={TextAlign.Center}>
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.BodyMd}
-              color={TextColor.TextAlternative}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
+            <TabEmptyState
+              icon={
+                <img
+                  src={
+                    theme === ThemeType.dark
+                      ? '/images/empty-state-permissions-dark.png'
+                      : '/images/empty-state-permissions-light.png'
+                  }
+                  alt={t('permissionsPageEmptyDescription')}
+                  width={72}
+                  height={72}
+                />
+              }
+              description={t('permissionsPageEmptyDescription')}
+              className="mx-auto"
+            />
           </Box>
         )}
       </Content>

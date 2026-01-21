@@ -15,7 +15,9 @@ export const mockBitcoinFeatureFlag = (mockServer: Mockttp) =>
         ok: true,
         statusCode: 200,
         json: [
-          { bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' } },
+          {
+            bitcoinAccounts: { enabled: true, minimumVersion: '13.6.0' },
+          },
         ],
       };
     });

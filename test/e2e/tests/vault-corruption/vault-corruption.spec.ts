@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
-import { WALLET_PASSWORD, WINDOW_TITLES, withFixtures } from '../../helpers';
+import { until } from 'selenium-webdriver';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
   completeCreateNewWalletOnboardingFlow,
@@ -8,8 +10,9 @@ import {
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
-import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
+import AccountAddressModal from '../../page-objects/pages/multichain/account-address-modal';
 import LoginPage from '../../page-objects/pages/login-page';
+import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
 
 describe('Vault Corruption', function () {
   this.timeout(120000); // This test is very long, so we need an unusually high timeout
@@ -26,8 +29,8 @@ describe('Vault Corruption', function () {
     // to access the storage API here
     const browser = globalThis.browser ?? globalThis.chrome;
 
-    // corrupt the primary database by deleting the data key
-    browser.storage.local.set({ data: null }, () => {
+    // corrupt the primary database by deleting the KeyringController key
+    browser.storage.local.set({ KeyringController: null }, () => {
       ${code}
     });
 `;
@@ -194,14 +197,16 @@ describe('Vault Corruption', function () {
     confirm: boolean;
   }) {
     // click the Recovery/Reset button
+    await driver.waitForSelector('#critical-error-button');
     await driver.clickElement('#critical-error-button');
 
-    // Confirm we want to recover/reset.
-    const prompt = await driver.driver.switchTo().alert();
+    // Wait for the confirmation alert to appear and handle it immediately
+    await driver.driver.wait(until.alertIsPresent(), 20000);
+    const alert = await driver.driver.switchTo().alert();
     if (confirm) {
-      await prompt.accept();
+      await alert.accept();
     } else {
-      await prompt.dismiss();
+      await alert.dismiss();
     }
 
     if (confirm) {
@@ -221,7 +226,8 @@ describe('Vault Corruption', function () {
       await driver.assertElementNotPresent('#critical-error-button');
     } else {
       // the button should be enabled if the user dismissed the prompt
-      await driver.findClickableElement('#critical-error-button');
+      // Wait for UI to settle after dismissing the alert
+      await driver.waitForSelector('#critical-error-button');
     }
   }
 
@@ -255,12 +261,21 @@ describe('Vault Corruption', function () {
 
     const accountListPage = new AccountListPage(driver);
     await accountListPage.checkPageIsLoaded();
-    await accountListPage.openAccountDetailsModal('Account 1');
+    await accountListPage.openMultichainAccountMenu({
+      accountLabel: 'Account 1',
+    });
 
-    const accountDetailsModal = new AccountDetailsModal(driver);
-    await accountDetailsModal.checkPageIsLoaded();
+    await accountListPage.clickMultichainAccountMenuItem('Addresses');
 
-    const accountAddress = await accountDetailsModal.getAccountAddress();
+    const addressListModal = new AddressListModal(driver);
+    await addressListModal.clickQRbutton();
+
+    const accountAddressModal = new AccountAddressModal(driver);
+    const accountAddress = await accountAddressModal.getAccountAddress();
+    await accountAddressModal.goBack();
+    await addressListModal.goBack();
+    await accountListPage.closeMultichainAccountsPage();
+
     return accountAddress;
   }
 

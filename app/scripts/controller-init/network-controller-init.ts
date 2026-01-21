@@ -3,12 +3,14 @@ import {
   NetworkConfiguration,
   NetworkController,
   RpcEndpointType,
+  NetworkControllerMessenger,
 } from '@metamask/network-controller';
 import {
   DEFAULT_MAX_RETRIES,
   BlockExplorerUrl,
   ChainId,
 } from '@metamask/controller-utils';
+import { CONNECTIVITY_STATUSES } from '@metamask/connectivity-controller';
 import { hasProperty } from '@metamask/utils';
 import { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import { SECOND } from '../../../shared/constants/time';
@@ -23,14 +25,11 @@ import {
 } from '../../../shared/constants/network';
 import { captureException } from '../../../shared/lib/sentry';
 import { ControllerInitFunction } from './types';
-import {
-  NetworkControllerInitMessenger,
-  NetworkControllerMessenger,
-} from './messengers';
+import { NetworkControllerInitMessenger } from './messengers';
 
 export const ADDITIONAL_DEFAULT_NETWORKS = [
-  ChainId['megaeth-testnet'],
   ChainId['monad-testnet'],
+  ChainId['megaeth-testnet-v2'],
 ];
 
 function getInitialState(initialState?: Partial<NetworkController['state']>) {
@@ -205,9 +204,18 @@ export const NetworkControllerInit: ControllerInitFunction<
     // Note that the total number of attempts is 1 more than this
     // (which is why we add 1 below).
     const maxRetries = DEFAULT_MAX_RETRIES;
+    const isOffline = (): boolean => {
+      const connectivityState = controllerMessenger.call(
+        'ConnectivityController:getState',
+      );
+      return (
+        connectivityState.connectivityStatus === CONNECTIVITY_STATUSES.Offline
+      );
+    };
     const commonOptions = {
       fetch: globalThis.fetch.bind(globalThis),
       btoa: globalThis.btoa.bind(globalThis),
+      isOffline,
     };
     const commonPolicyOptions = {
       // Ensure that the "cooldown" period after breaking the circuit is short.

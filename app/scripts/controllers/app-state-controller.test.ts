@@ -311,11 +311,13 @@ describe('AppStateController', () => {
         controller.addPollingToken('token1', 'popupGasPollTokens');
         controller.addPollingToken('token2', 'notificationGasPollTokens');
         controller.addPollingToken('token3', 'fullScreenGasPollTokens');
+        controller.addPollingToken('token4', 'sidePanelGasPollTokens');
         controller.clearPollingTokens();
 
         expect(controller.state.popupGasPollTokens).toStrictEqual([]);
         expect(controller.state.notificationGasPollTokens).toStrictEqual([]);
         expect(controller.state.fullScreenGasPollTokens).toStrictEqual([]);
+        expect(controller.state.sidePanelGasPollTokens).toStrictEqual([]);
       });
     });
   });
@@ -792,6 +794,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -804,7 +807,9 @@ describe('AppStateController', () => {
               "showNetworkBanner": true,
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
+              "showStorageErrorToast": false,
               "showTestnetMessageInDropdown": true,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -883,6 +888,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -895,7 +901,9 @@ describe('AppStateController', () => {
               "showNetworkBanner": true,
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
+              "showStorageErrorToast": false,
               "showTestnetMessageInDropdown": true,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,
@@ -963,6 +971,7 @@ describe('AppStateController', () => {
               "onboardingDate": null,
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
               "recoveryPhraseReminderLastShown": 1000,
@@ -1053,6 +1062,7 @@ describe('AppStateController', () => {
               "outdatedBrowserWarningLastShown": null,
               "pendingShieldCohort": null,
               "pendingShieldCohortTxType": null,
+              "pna25Acknowledged": false,
               "popupGasPollTokens": [],
               "productTour": "accountIcon",
               "recoveryPhraseReminderHasBeenShown": false,
@@ -1065,6 +1075,8 @@ describe('AppStateController', () => {
               "showNetworkBanner": true,
               "showPermissionsTour": true,
               "showShieldEntryModalOnce": null,
+              "showStorageErrorToast": false,
+              "sidePanelGasPollTokens": [],
               "signatureSecurityAlertResponses": {},
               "slides": [],
               "snapsInstallPrivacyWarningShown": false,

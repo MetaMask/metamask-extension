@@ -233,9 +233,6 @@
   "enterPasswordContinue": {
     "message": "أدخل كلمة المرور للمتابعة"
   },
-  "ethereumPublicAddress": {
-    "message": "عنوان الإيثيريوم العمومي"
-  },
   "etherscanView": {
     "message": "عرض الحساب على Etherscan"
   },
@@ -388,9 +385,6 @@
   "needImportFile": {
     "message": "يلزم تحديد ملف للاستيراد.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "لا يمكن إرسال مبالغ سلبية من ETH."
   },
   "networkName": {
     "message": "اسم الشبكة"

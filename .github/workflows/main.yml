@@ -41,8 +41,27 @@ permissions:
   id-token: write # required for s3 uploads
 
 jobs:
-  identify-builds:
+  check-skip-merge-queue:
+    name: Check if pull request can skip merge queue
     runs-on: ubuntu-latest
+    outputs:
+      skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        if: github.event_name == 'merge_group'
+
+      - name: Check pull request merge queue status
+        id: check-skip-merge-queue
+        if: github.event_name == 'merge_group'
+        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+
+  identify-builds:
+    name: Identify builds from run
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    runs-on: ubuntu-latest
+    needs:
+      - check-skip-merge-queue
     timeout-minutes: 2
     outputs:
       builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run }}
@@ -61,7 +80,11 @@ jobs:
         run: .github/scripts/identify-builds-from-run.sh
 
   prep-deps:
+    name: Prepare dependencies
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
     runs-on: ubuntu-latest
+    needs:
+      - check-skip-merge-queue
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -81,7 +104,10 @@ jobs:
 
   lint-workflows:
     name: Lint workflows
-    uses: metamask/github-tools/.github/workflows/lint-workflows.yml@1299bb1de0c6974ae6d0a32c7e8897fe168239ac
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
+    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
     needs:
@@ -308,7 +334,7 @@ jobs:
 
       - name: Upload 'bundle-size' to S3
         if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -365,12 +391,18 @@ jobs:
 
   build-storybook:
     name: Build storybook
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
     uses: ./.github/workflows/build-storybook.yml
     secrets:
       STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
+    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    needs:
+      - check-skip-merge-queue
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
@@ -384,6 +416,7 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -391,6 +424,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Download artifact 'build-dist-browserify'
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
         uses: actions/download-artifact@v4
         with:
           name: build-dist-browserify
@@ -398,10 +432,11 @@ jobs:
           run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
 
       - run: ./development/source-map-explorer.sh
+        if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
 
       - name: Upload 'source-map-explorer' to S3
-        if: ${{ vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        if: ${{ github.event_name != 'merge_group' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -479,7 +514,7 @@ jobs:
 
       - name: Upload 'build-viz' to S3
         if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' && vars.AWS_REGION && vars.AWS_IAM_ROLE && vars.AWS_S3_BUCKET }}
-        uses: metamask/github-tools/.github/actions/upload-s3@1233659b3850eb84824d7375e2e0c58eb237701d
+        uses: MetaMask/github-tools/.github/actions/upload-s3@v1
         with:
           aws-region: ${{ vars.AWS_REGION }}
           role-to-assume: ${{ vars.AWS_IAM_ROLE }}
@@ -529,6 +564,45 @@ jobs:
     uses: ./.github/workflows/publish-release.yml
     secrets: inherit
 
+  trigger-regression-validation:
+    name: Trigger Regression Validation
+    # Only run for release branches, not forks
+    if: ${{ (startsWith(github.head_ref || github.ref_name, 'release/') && !(github.event.pull_request.head.repo.fork || github.event.repository.fork)) }}
+    needs:
+      - build-dist-browserify
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger regression validation in external repo
+        env:
+          DISPATCH_TOKEN: ${{ secrets.METAMASK_REGRESSION_TRIGGER_TEST }}
+        run: |
+          # Extract version from branch name (e.g., release/12.5.0 -> 12.5.0)
+          # Use BRANCH env var which correctly handles both push and pull_request events
+          VERSION="${BRANCH#release/}"
+
+          echo "Triggering regression validation..."
+          echo "Run ID: ${{ github.run_id }}"
+          echo "Branch: $BRANCH"
+          echo "Version: $VERSION"
+          echo "Commit SHA: $HEAD_COMMIT_HASH"
+
+          curl -X POST \
+            -H "Accept: application/vnd.github.v3+json" \
+            -H "Authorization: token $DISPATCH_TOKEN" \
+            https://api.github.com/repos/MetaMask/extension-regression-validation-poc/dispatches \
+            -d '{
+              "event_type": "release_pr_updated",
+              "client_payload": {
+                "run_id": "${{ github.run_id }}",
+                "version": "'"$VERSION"'",
+                "branch": "'"$BRANCH"'",
+                "commit_sha": "'"$HEAD_COMMIT_HASH"'"
+              }
+            }'
+
+          echo "Regression validation triggered successfully"
+
   # Explanation for all-jobs-completed and all-jobs-pass being separate:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
@@ -571,14 +645,23 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
+      - check-skip-merge-queue
       - all-jobs-completed
       - needs-e2e
       - e2e-chrome
       - e2e-firefox
       - identify-builds
+    env:
+      SKIPPED: ${{ needs.check-skip-merge-queue.outputs.skip-merge-queue == 'true' }}
     steps:
       - name: Check that all jobs have passed
         run: |
+          # If the merge queue was skipped, consider all jobs as passed
+          if [[ "$SKIPPED" == "true" ]]; then
+            echo "Merge queue skipped, considering all jobs as passed"
+            exit 0
+          fi
+
           # Check if all non-E2E jobs passed
           if [[ "${{ needs.all-jobs-completed.outputs.PASSED }}" != "true" ]]; then
             echo "Non-E2E jobs failed"
@@ -587,12 +670,12 @@ jobs:
 
           # Check E2E jobs only if they should have run
           if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
-            if [[ "${{ needs.e2e-chrome.result }}" == "failure" ]]; then
-              echo "E2E Chrome tests failed"
+            if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
+              echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
             fi
-            if [[ "${{ needs.e2e-firefox.result }}" == "failure" ]]; then
-              echo "E2E Firefox tests failed"
+            if [[ "${{ needs.e2e-firefox.result }}" != "success" ]]; then
+              echo "E2E Firefox tests did not succeed (result: ${{ needs.e2e-firefox.result }})"
               exit 1
             fi
           fi
@@ -612,9 +695,12 @@ jobs:
     if: ${{ github.event_name == 'merge_group' && failure() && !github.event.repository.fork }}
     needs:
       - all-jobs-pass
-    uses: metamask/github-tools/.github/workflows/log-merge-group-failure.yml@6bbad335a01fce1a9ec1eabd9515542c225d46c0
-    secrets:
-      GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
-      GOOGLE_SERVICE_ACCOUNT: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
-      SPREADSHEET_ID: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
-      SHEET_NAME: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log merge group failure
+        uses: MetaMask/github-tools/.github/actions/log-merge-group-failure@v1
+        with:
+          google-application-credentials: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          google-service-account: ${{ secrets.GOOGLE_SERVICE_ACCOUNT }}
+          spreadsheet-id: ${{ secrets.GOOGLE_MERGE_QUEUE_SPREADSHEET_ID }}
+          sheet-name: ${{ secrets.GOOGLE_MERGE_QUEUE_SHEET_NAME }}

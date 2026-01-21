@@ -3,6 +3,8 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 
+// Mocha type definitions are conflicting with Jest
+import { it as jestIt } from '@jest/globals';
 import {
   getMockConfirmStateForTransaction,
   getMockPersonalSignConfirmStateForRequest,
@@ -42,6 +44,13 @@ const EXPECTED_ALERT = {
   provider: SecurityProvider.Blockaid,
   reason: 'This is a deceptive request',
 };
+
+const IGNORED_TYPES = [
+  BlockaidResultType.Benign,
+  BlockaidResultType.Loading,
+  BlockaidResultType.NotApplicable,
+  'NewUnexpectedTypeFromAPI',
+];
 
 describe('useBlockaidAlerts', () => {
   it('returns an empty array when there is no confirmation', () => {
@@ -93,4 +102,28 @@ describe('useBlockaidAlerts', () => {
     delete result.current[0].reportUrl;
     expect(result.current[0]).toStrictEqual(EXPECTED_ALERT);
   });
+
+  jestIt.each(IGNORED_TYPES)(
+    'does NOT show alert for ignored result type: %s',
+    (ignoredType: string) => {
+      const mockCurrentState = getMockConfirmStateForTransaction({
+        id: '1',
+        type: TransactionType.contractInteraction,
+        chainId: '0x5',
+        status: TransactionStatus.unapproved,
+        securityAlertResponse: {
+          ...mockSecurityAlertResponse,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          result_type: ignoredType,
+        },
+      });
+
+      const { result } = renderHookWithConfirmContextProvider(
+        () => useBlockaidAlert(),
+        mockCurrentState,
+      );
+
+      expect(result.current).toHaveLength(0);
+    },
+  );
 });

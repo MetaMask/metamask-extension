@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import { CaipAssetId } from '@metamask/keyring-api';
 import { isTronResource } from '../../../../shared/lib/asset-utils';
-import { getAssetsBySelectedAccountGroup } from '../../../selectors/assets';
+import { getAssetsBySelectedAccountGroupWithTronResources } from '../../../selectors/assets';
 import { getMultichainBalances } from '../../../selectors/multichain';
 import { TRON_RESOURCE } from '../../../../shared/constants/multichain/assets';
 
@@ -28,17 +28,19 @@ export const useTronResources = (
   energy: TronResource;
   bandwidth: TronResource;
 } => {
-  const accountGroupAssets = useSelector(getAssetsBySelectedAccountGroup);
+  const accountGroupAssets = useSelector(
+    getAssetsBySelectedAccountGroupWithTronResources,
+  );
   const multichainBalances = useSelector(getMultichainBalances);
 
   return useMemo(() => {
     if (!account || !chainId) {
       return {
-        energy: { type: 'energy' as const, current: 0, max: 1, percentage: 0 },
+        energy: { type: 'energy' as const, current: 0, max: 0, percentage: 0 },
         bandwidth: {
           type: 'bandwidth' as const,
           current: 0,
-          max: 1,
+          max: 0,
           percentage: 0,
         },
       };
@@ -85,13 +87,14 @@ export const useTronResources = (
       type: 'energy' | 'bandwidth',
       data: { current: number; max: number },
     ): TronResource => {
-      const totalMax = Math.max(1, data.max);
+      // Use max of 1 only for percentage calculation to avoid division by zero
+      const divisor = Math.max(1, data.max);
 
       return {
         type,
         current: data.current,
-        max: totalMax,
-        percentage: (data.current / totalMax) * 100,
+        max: data.max, // Keep actual max for display (can be 0)
+        percentage: (data.current / divisor) * 100,
       };
     };
 

@@ -11,6 +11,7 @@ export type RewardsState = {
   onboardingModalOpen: boolean;
   onboardingActiveStep: OnboardingStep;
   onboardingModalRendered: boolean;
+  onboardingReferralCode: string | null;
 
   // Geolocation state
   geoLocation: string | null;
@@ -30,7 +31,6 @@ export type RewardsState = {
   errorToast: RewardsErrorToastState;
   // Show/hide rewards badge
   rewardsBadgeHidden: boolean;
-
   // Account linked timestamp (when an account is linked to a subscription)
   accountLinkedTimestamp: number | null;
 };
@@ -39,6 +39,7 @@ export const initialState: RewardsState = {
   onboardingModalOpen: false,
   onboardingActiveStep: OnboardingStep.INTRO,
   onboardingModalRendered: true,
+  onboardingReferralCode: '',
 
   geoLocation: null,
   optinAllowedForGeo: null,
@@ -63,7 +64,6 @@ export const initialState: RewardsState = {
   },
   // Show/hide rewards badge
   rewardsBadgeHidden: true,
-
   // Account linked timestamp
   accountLinkedTimestamp: null,
 };
@@ -89,6 +89,13 @@ const rewardsSlice = createSlice({
 
     setOnboardingModalRendered: (state, action: PayloadAction<boolean>) => {
       state.onboardingModalRendered = action.payload;
+    },
+
+    setOnboardingReferralCode: (
+      state,
+      action: PayloadAction<string | null>,
+    ) => {
+      state.onboardingReferralCode = action.payload;
     },
 
     setRewardsGeoMetadata: (
@@ -164,7 +171,6 @@ const rewardsSlice = createSlice({
     setRewardsBadgeHidden: (state, action: PayloadAction<boolean>) => {
       state.rewardsBadgeHidden = action.payload;
     },
-
     setRewardsAccountLinkedTimestamp: (
       state,
       action: PayloadAction<number | null>,
@@ -179,6 +185,7 @@ export const {
   setOnboardingModalOpen,
   setOnboardingActiveStep,
   setOnboardingModalRendered,
+  setOnboardingReferralCode,
   setCandidateSubscriptionId,
   setSeasonStatusLoading,
   setSeasonStatus,

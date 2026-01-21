@@ -7,9 +7,9 @@ import { useConfirmSendNavigation } from './useConfirmSendNavigation';
 const mockUseRedesignedSendFlow = jest.mocked(useRedesignedSendFlow);
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -58,7 +58,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 
   it('navigates back when send redesign is enabled and confirmation is metamask simpleSend', () => {
@@ -82,7 +82,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when send redesign is enabled but type is not simpleSend', () => {
@@ -94,7 +94,7 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 
   it('does not navigate back when send redesign is enabled but both origin and type do not match', () => {
@@ -106,6 +106,6 @@ describe('useConfirmSendNavigation', () => {
     const result = renderHook();
     result.navigateBackIfSend();
 
-    expect(mockUseNavigate).not.toHaveBeenCalled();
+    expect(mockUseNavigate).not.toHaveBeenCalledWith(-1);
   });
 });

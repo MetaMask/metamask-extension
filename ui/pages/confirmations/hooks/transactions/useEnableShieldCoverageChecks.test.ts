@@ -2,7 +2,7 @@ import {
   PRODUCT_TYPES,
   SUBSCRIPTION_STATUSES,
 } from '@metamask/subscription-controller';
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/confirmations/render-helpers';
 import { useEnableShieldCoverageChecks } from './useEnableShieldCoverageChecks';
 
 jest.mock('../../../../hooks/subscription/useSubscription', () => ({
@@ -32,7 +32,7 @@ describe('useEnableShieldCoverageChecks', () => {
     process.env.METAMASK_SHIELD_ENABLED = 'false';
   });
 
-  it('returns true when user has a SHIELD subscription', () => {
+  it('returns true when user has a SHIELD subscription and basic functionality is enabled', () => {
     useUserSubscriptions.mockReturnValue({
       subscriptions: [
         {
@@ -44,11 +44,41 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(() =>
-      useEnableShieldCoverageChecks(),
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useEnableShieldCoverageChecks(),
+      {
+        metamask: {
+          useExternalServices: true,
+        },
+      },
     );
 
     expect(result.current.isEnabled).toBe(true);
+    expect(result.current.isPaused).toBe(false);
+  });
+
+  it('returns false when user has a SHIELD subscription but Basic Functionality is disabled', () => {
+    useUserSubscriptions.mockReturnValue({
+      subscriptions: [
+        {
+          products: [{ name: PRODUCT_TYPES.SHIELD }],
+          status: SUBSCRIPTION_STATUSES.active,
+        },
+      ],
+      loading: false,
+      error: null,
+    });
+
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useEnableShieldCoverageChecks(),
+      {
+        metamask: {
+          useExternalServices: false,
+        },
+      },
+    );
+
+    expect(result.current.isEnabled).toBe(false);
     expect(result.current.isPaused).toBe(false);
   });
 
@@ -60,8 +90,13 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(() =>
-      useEnableShieldCoverageChecks(),
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useEnableShieldCoverageChecks(),
+      {
+        metamask: {
+          useExternalServices: true,
+        },
+      },
     );
 
     expect(result.current.isEnabled).toBe(false);
@@ -81,8 +116,13 @@ describe('useEnableShieldCoverageChecks', () => {
       error: null,
     });
 
-    const { result } = renderHookWithProvider(() =>
-      useEnableShieldCoverageChecks(),
+    const { result } = renderHookWithConfirmContextProvider(
+      () => useEnableShieldCoverageChecks(),
+      {
+        metamask: {
+          useExternalServices: true,
+        },
+      },
     );
 
     expect(result.current.isEnabled).toBe(false);

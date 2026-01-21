@@ -1,8 +1,9 @@
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 
@@ -13,6 +14,7 @@ describe('Multiple ERC20 Watch Asset', function () {
       {
         dappOptions: { numberOfTestDapps: 1 },
         fixtures: new FixtureBuilder()
+          .withEnabledNetworks({ eip155: { '0x539': true } })
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         smartContract: [tokenContract, tokenContract, tokenContract],

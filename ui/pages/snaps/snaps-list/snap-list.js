@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import SnapListItem from '../../../components/app/snaps/snap-list-item';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -40,8 +40,8 @@ import { getSnapRoute } from '../../../helpers/utils/util';
 
 const SnapList = () => {
   const t = useI18nContext();
-  const navigate = useNavigate();
   const settingsRef = useRef();
+  const navigate = useNavigate();
   const onClick = (snap) => {
     navigate(getSnapRoute(snap.id));
   };
@@ -136,7 +136,7 @@ const SnapList = () => {
                   display={Display.Flex}
                   width={BlockSize.Full}
                   height={BlockSize.Min}
-                ></Box>
+                />
                 <Box
                   className="snaps__content__list__container--no-snaps_banner-tip"
                   display={Display.Flex}

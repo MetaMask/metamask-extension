@@ -22,7 +22,6 @@ import {
   setSwapsFeatureFlags,
   setSelectedQuoteAggId,
   setSwapsTxGasLimit,
-  fetchSmartTransactionsLiveness,
   signAndSendSmartTransaction,
   updateSmartTransaction,
   setSmartTransactionsRefreshInterval,
@@ -59,7 +58,6 @@ import {
   getCurrentChainId,
   getSelectedNetworkClientId,
 } from '../../../shared/modules/selectors/networks';
-import { getFeatureFlagsByChainId } from '../../../shared/modules/selectors/feature-flags';
 import {
   getSelectedAccount,
   getTokenExchangeRates,
@@ -74,6 +72,7 @@ import {
 } from '../../selectors';
 import {
   getSmartTransactionsEnabled,
+  getSmartTransactionsFeatureFlagsForChain,
   getSmartTransactionsOptInStatusForMetrics,
   getSmartTransactionsPreferenceEnabled,
 } from '../../../shared/modules/selectors';
@@ -352,6 +351,9 @@ export const getSwapsQuotePrefetchingRefreshTime = (state) =>
 export const getBackgroundSwapRouteState = (state) =>
   state.metamask.swapsState.routeState;
 
+export const selectShowAwaitingSwapScreen = (state) =>
+  state.metamask.swapsState.routeState === 'awaiting';
+
 export const getCustomSwapsGas = (state) =>
   state.metamask.swapsState.customMaxGas;
 
@@ -370,6 +372,9 @@ export const getSwapsUserFeeLevel = (state) =>
 export const getFetchParams = (state) => state.metamask.swapsState.fetchParams;
 
 export const getQuotes = (state) => state.metamask.swapsState.quotes;
+
+export const selectHasSwapsQuotes = (state) =>
+  Boolean(Object.values(state.metamask.swapsState.quotes || {}).length);
 
 export const getQuotesLastFetched = (state) =>
   state.metamask.swapsState.quotesLastFetched;
@@ -593,11 +598,6 @@ export const fetchSwapsLivenessAndFeatureFlags = () => {
       await dispatch(setSwapsFeatureFlags(swapsFeatureFlags));
       if (ALLOWED_SMART_TRANSACTIONS_CHAIN_IDS.includes(chainId)) {
         await dispatch(setCurrentSmartTransactionsError(undefined));
-        await dispatch(
-          fetchSmartTransactionsLiveness({
-            networkClientId: getSelectedNetworkClientId(state),
-          }),
-        );
         const transactions = await getTransactions({
           searchCriteria: {
             chainId,
@@ -952,11 +952,15 @@ export const signAndSendSwapsSmartTransaction = ({
     const { sourceTokenInfo = {}, destinationTokenInfo = {} } = metaData;
     const usedQuote = getUsedQuote(state);
     const selectedNetwork = getSelectedNetwork(state);
-    const swapsFeatureFlags = getFeatureFlagsByChainId(state);
+    const chainId = getCurrentChainId(state);
+    const featureFlags = getSmartTransactionsFeatureFlagsForChain(
+      state,
+      chainId,
+    );
 
     dispatch(
       setSmartTransactionsRefreshInterval(
-        swapsFeatureFlags?.smartTransactions?.batchStatusPollingInterval,
+        featureFlags?.batchStatusPollingInterval,
       ),
     );
 
@@ -1117,7 +1121,7 @@ export const signAndSendSwapsSmartTransaction = ({
 };
 
 export const signAndSendTransactions = (
-  history,
+  navigate,
   trackEvent,
   additionalTrackingParams,
 ) => {
@@ -1144,7 +1148,7 @@ export const signAndSendTransactions = (
     await dispatch(setSwapsLiveness(swapsLivenessForNetwork));
 
     if (!swapsLivenessForNetwork.swapsFeatureIsLive) {
-      await history.push(SWAPS_MAINTENANCE_ROUTE);
+      await navigate(SWAPS_MAINTENANCE_ROUTE);
       return;
     }
 
@@ -1156,7 +1160,7 @@ export const signAndSendTransactions = (
     await dispatch(stopPollingForQuotes());
 
     if (!hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     }
 
     const { fast: fastGasEstimate } = getSwapGasPriceEstimateData(state);
@@ -1307,7 +1311,7 @@ export const signAndSendTransactions = (
         },
       });
       await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
       return;
     }
 
@@ -1316,7 +1320,7 @@ export const signAndSendTransactions = (
     // For hardware wallets we go to the Awaiting Signatures page first and only after a user
     // completes 1 or 2 confirmations, we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SIGNATURES_ROUTE);
+      navigate(AWAITING_SIGNATURES_ROUTE);
     }
 
     if (approveTxParams) {
@@ -1363,7 +1367,7 @@ export const signAndSendTransactions = (
       } catch (e) {
         debugLog('Approve transaction failed', e);
         await dispatch(setSwapsErrorKey(SWAP_FAILED_ERROR));
-        history.push(SWAPS_ERROR_ROUTE);
+        navigate(SWAPS_ERROR_ROUTE);
         return;
       }
     }
@@ -1396,14 +1400,14 @@ export const signAndSendTransactions = (
         : SWAP_FAILED_ERROR;
       debugLog('Trade transaction failed', e);
       await dispatch(setSwapsErrorKey(errorKey));
-      history.push(SWAPS_ERROR_ROUTE);
+      navigate(SWAPS_ERROR_ROUTE);
       return;
     }
 
     // Only after a user confirms swapping on a hardware wallet (second `updateAndApproveTx` call above),
     // we redirect to the Awaiting Swap page.
     if (hardwareWalletUsed) {
-      history.push(AWAITING_SWAP_ROUTE);
+      navigate(AWAITING_SWAP_ROUTE);
     }
 
     await forceUpdateMetamaskState(dispatch);
@@ -1505,13 +1509,11 @@ export function cancelSwapsSmartTransaction(uuid) {
   };
 }
 
-export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
+export const useGetIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
   const sourceTokenAmount = calcTokenAmount(
     usedQuote?.sourceAmount,
     usedQuote?.sourceTokenInfo?.decimals,
   );
-  // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const sourceTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.sourceTokenInfo?.address,
     sourceTokenAmount || 0,
@@ -1528,7 +1530,6 @@ export const getIsEstimatedReturnLow = ({ usedQuote, rawNetworkFees }) => {
     usedQuote?.destinationTokenInfo?.decimals,
   );
   // Disabled because it's not a hook
-  // eslint-disable-next-line react-hooks/rules-of-hooks
   const destinationTokenFiatAmount = useTokenFiatAmount(
     usedQuote?.destinationTokenInfo?.address,
     destinationTokenAmount || 0,

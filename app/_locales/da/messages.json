@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Indtast adgangskode for at fortsætte"
   },
-  "ethereumPublicAddress": {
-    "message": "Offentlig Ethereum-adresse"
-  },
   "etherscanView": {
     "message": "Se konto på Etherscan"
   },
@@ -375,9 +372,6 @@
   "needImportFile": {
     "message": "Du skal vælge en fil, der skal importeres.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Kan ikke sende en negativ mængde ETH."
   },
   "networkName": {
     "message": "Netværksnavn"

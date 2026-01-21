@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Introduceți parola pentru a continua"
   },
-  "ethereumPublicAddress": {
-    "message": "Adresa publică Ethereum"
-  },
   "etherscanView": {
     "message": "Vizualizare cont pe Etherscan"
   },
@@ -378,9 +375,6 @@
   "needImportFile": {
     "message": "Trebuie să selectați un fișier pentru importare.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Nu se pot trimite sume negative de ETH."
   },
   "networkName": {
     "message": "Numele rețelei"

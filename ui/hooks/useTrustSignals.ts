@@ -1,3 +1,6 @@
+'use no memo';
+// TODO: Fix - Calling `useTrustSignals` from `useTrustSignal`, which is not a component, violates the rules of hooks.
+
 import { useSelector } from 'react-redux';
 import { NameType } from '@metamask/name-controller';
 import { getAddressSecurityAlertResponse } from '../selectors';
@@ -7,6 +10,7 @@ import {
   mapChainIdToSupportedEVMChain,
 } from '../../shared/lib/trust-signals';
 import { SecurityAlertResponse } from '../pages/confirmations/types/confirm';
+import { useI18nContext } from './useI18nContext';
 
 export type UseTrustSignalRequest = {
   value: string;
@@ -15,7 +19,7 @@ export type UseTrustSignalRequest = {
 };
 
 export enum TrustSignalDisplayState {
-  Loading = 'loading',
+  Loading = 'Loading',
   Malicious = 'malicious',
   Petname = 'petname',
   Verified = 'verified',
@@ -54,6 +58,8 @@ export function useTrustSignal(
 export function useTrustSignals(
   requests: UseTrustSignalRequest[],
 ): TrustSignalResult[] {
+  const t = useI18nContext();
+
   return useSelector((state) =>
     requests.map(({ value, type, chainId }) => {
       if (type !== NameType.ETHEREUM_ADDRESS) {
@@ -92,8 +98,12 @@ export function useTrustSignals(
         };
       }
 
-      const label = securityAlertResponse.label || null;
       const trustState = getTrustState(securityAlertResponse);
+
+      const label =
+        trustState === TrustSignalDisplayState.Malicious
+          ? t('nameModalTitleMalicious')
+          : securityAlertResponse.label || null;
 
       return {
         state: trustState,

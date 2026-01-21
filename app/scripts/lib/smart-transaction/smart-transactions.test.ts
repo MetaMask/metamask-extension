@@ -17,7 +17,6 @@ import {
   type SmartTransaction,
 } from '@metamask/smart-transactions-controller';
 import type {
-  TransactionControllerConfirmExternalTransactionAction,
   TransactionControllerGetNonceLockAction,
   TransactionControllerGetTransactionsAction,
   TransactionControllerUpdateTransactionAction,
@@ -88,7 +87,6 @@ function withRequest<ReturnValue>(
     MockAnyNamespace,
     | MessengerActions<SmartTransactionsControllerMessenger>
     | TransactionControllerGetNonceLockAction
-    | TransactionControllerConfirmExternalTransactionAction
     | TransactionControllerGetTransactionsAction
     | TransactionControllerUpdateTransactionAction
     | AllowedActions,
@@ -123,6 +121,24 @@ function withRequest<ReturnValue>(
   const endFlowSpy = jest.fn();
   messenger.registerActionHandler('ApprovalController:endFlow', endFlowSpy);
 
+  // Register RemoteFeatureFlagController:getState handler for the new controller
+  messenger.registerActionHandler(
+    'RemoteFeatureFlagController:getState',
+    jest.fn().mockReturnValue({
+      remoteFeatureFlags: {
+        smartTransactionsNetworks: {
+          default: { extensionActive: true },
+        },
+      },
+    }),
+  );
+
+  // Register ErrorReportingService:captureException handler
+  messenger.registerActionHandler(
+    'ErrorReportingService:captureException',
+    jest.fn(),
+  );
+
   const smartTransactionsControllerMessenger = new Messenger<
     'SmartTransactionsController',
     MessengerActions<SmartTransactionsControllerMessenger>,
@@ -136,11 +152,15 @@ function withRequest<ReturnValue>(
     messenger: smartTransactionsControllerMessenger,
     actions: [
       'TransactionController:getNonceLock',
-      'TransactionController:confirmExternalTransaction',
       'TransactionController:getTransactions',
       'TransactionController:updateTransaction',
+      'RemoteFeatureFlagController:getState',
+      'ErrorReportingService:captureException',
     ],
-    events: ['NetworkController:stateChange'],
+    events: [
+      'NetworkController:stateChange',
+      'RemoteFeatureFlagController:stateChange',
+    ],
   });
 
   const smartTransactionsController = new SmartTransactionsController({
@@ -148,7 +168,6 @@ function withRequest<ReturnValue>(
     trackMetaMetricsEvent: jest.fn(),
     getMetaMetricsProps: jest.fn(),
     clientId: ClientId.Extension,
-    getFeatureFlags: jest.fn(),
   });
 
   jest.spyOn(smartTransactionsController, 'getFees').mockResolvedValue({
@@ -202,12 +221,10 @@ function withRequest<ReturnValue>(
     featureFlags: {
       extensionActive: true,
       mobileActive: false,
-      smartTransactions: {
-        expectedDeadline: 45,
-        maxDeadline: 150,
-        extensionReturnTxHashAsap: false,
-        extensionReturnTxHashAsapBatch: false,
-      },
+      expectedDeadline: 45,
+      maxDeadline: 150,
+      extensionReturnTxHashAsap: false,
+      extensionReturnTxHashAsapBatch: false,
     },
     ...options,
   };
@@ -296,7 +313,7 @@ describe('submitSmartTransactionHook', () => {
   it('skips getting fees if the transaction is signed and sponsored', async () => {
     withRequest(async ({ request }) => {
       request.transactionMeta.isGasFeeSponsored = true;
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+      request.featureFlags.extensionReturnTxHashAsap = true;
 
       const result = await submitSmartTransactionHook(request);
 
@@ -312,7 +329,7 @@ describe('submitSmartTransactionHook', () => {
 
   it('returns a txHash asap if the feature flag requires it', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsap = true;
+      request.featureFlags.extensionReturnTxHashAsap = true;
       const result = await submitSmartTransactionHook(request);
       expect(result).toEqual({ transactionHash: txHash });
     });
@@ -672,6 +689,329 @@ describe('submitSmartTransactionHook', () => {
       },
     );
   });
+
+  describe('shouldShowStatusPage logic', () => {
+    it('does not show status page for bridge transaction type', async () => {
+      withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.bridge,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // Status page should not be shown for bridge transactions
+          expect(startFlowSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('does not show status page for shieldSubscriptionApprove transaction type', async () => {
+      withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.shieldSubscriptionApprove,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // Status page should not be shown for shieldSubscriptionApprove transactions
+          expect(startFlowSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).not.toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('shows status page for simpleSend transaction type', async () => {
+      withRequest(
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // Status page should be shown for simpleSend transactions
+          expect(startFlowSpy).toHaveBeenCalled();
+          expect(addRequestSpy).toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('shows status page for bridge transaction type when there are batch transactions', async () => {
+      withRequest(
+        {
+          options: {
+            transactionMeta: {
+              hash: txHash,
+              status: TransactionStatus.signed,
+              id: '1',
+              txParams: {
+                from: addressFrom,
+                to: '0x1678a085c290ebd122dc42cba69373b5953b831d',
+                maxFeePerGas: '0x2fd8a58d7',
+                maxPriorityFeePerGas: '0xaa0f8a94',
+                gas: '0x7b0d',
+                nonce: '0x4b',
+              },
+              type: TransactionType.bridge,
+              chainId: CHAIN_IDS.MAINNET,
+              networkClientId: 'testNetworkClientId',
+              time: 1624408066355,
+              defaultGasEstimates: {
+                gas: '0x7b0d',
+                gasPrice: '0x77359400',
+              },
+              securityProviderResponse: {
+                flagAsDangerous: 0,
+              },
+            },
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // Status page should be shown for bridge transactions with batch transactions
+          expect(startFlowSpy).toHaveBeenCalled();
+          expect(addRequestSpy).toHaveBeenCalled();
+        },
+      );
+    });
+
+    it('shows status page for simpleSend with batch transactions', async () => {
+      withRequest(
+        {
+          options: {
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: {
+                minedHash: txHash,
+              },
+            } as SmartTransaction);
+          });
+
+          await submitSmartTransactionHook(request);
+
+          // Status page should be shown for simpleSend with batch transactions
+          expect(startFlowSpy).toHaveBeenCalled();
+          expect(addRequestSpy).toHaveBeenCalled();
+        },
+      );
+    });
+  });
+
+  describe('extensionSkipSTXStatusPage feature flag', () => {
+    const baseFeatureFlags = {
+      extensionActive: true,
+      mobileActive: false,
+      expectedDeadline: 45,
+      maxDeadline: 150,
+      extensionReturnTxHashAsap: false,
+      extensionReturnTxHashAsapBatch: false,
+    };
+
+    // @ts-expect-error This function is missing from the Mocha type definitions
+    it.each([
+      { flag: true, shouldShow: false, desc: 'skips status page when true' },
+      { flag: false, shouldShow: true, desc: 'shows status page when false' },
+      {
+        flag: undefined,
+        shouldShow: true,
+        desc: 'shows status page when undefined (backwards compatible)',
+      },
+    ])(
+      '$desc',
+      async ({
+        flag,
+        shouldShow,
+      }: {
+        flag: boolean | undefined;
+        shouldShow: boolean;
+      }) => {
+        withRequest(
+          {
+            options: {
+              featureFlags: {
+                ...baseFeatureFlags,
+                extensionSkipSmartTransactionStatusPage: flag,
+              },
+            },
+          },
+          async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+            setImmediate(() => {
+              messenger.publish(
+                'SmartTransactionsController:smartTransaction',
+                {
+                  status: 'success',
+                  uuid,
+                  statusMetadata: { minedHash: txHash },
+                } as SmartTransaction,
+              );
+            });
+
+            const result = await submitSmartTransactionHook(request);
+
+            if (shouldShow) {
+              expect(startFlowSpy).toHaveBeenCalled();
+              expect(addRequestSpy).toHaveBeenCalled();
+            } else {
+              expect(startFlowSpy).not.toHaveBeenCalled();
+              expect(addRequestSpy).not.toHaveBeenCalled();
+            }
+            expect(result).toEqual({ transactionHash: txHash });
+          },
+        );
+      },
+    );
+
+    it('skips status page even with batch transactions when flag is true', async () => {
+      withRequest(
+        {
+          options: {
+            featureFlags: {
+              ...baseFeatureFlags,
+              extensionSkipSmartTransactionStatusPage: true,
+            },
+            transactions: [
+              {
+                id: '1',
+                signedTx: '0x1234',
+                params: {
+                  to: '0xf231d46dd78806e1dd93442cf33c7671f8538748',
+                  value: '0x0',
+                },
+              },
+            ],
+          },
+        },
+        async ({ request, messenger, startFlowSpy, addRequestSpy }) => {
+          setImmediate(() => {
+            messenger.publish('SmartTransactionsController:smartTransaction', {
+              status: 'success',
+              uuid,
+              statusMetadata: { minedHash: txHash },
+            } as SmartTransaction);
+          });
+
+          const result = await submitSmartTransactionHook(request);
+
+          expect(startFlowSpy).not.toHaveBeenCalled();
+          expect(addRequestSpy).not.toHaveBeenCalled();
+          expect(result).toEqual({ transactionHash: txHash });
+        },
+      );
+    });
+  });
 });
 
 describe('submitBatchSmartTransactionHook', () => {
@@ -922,7 +1262,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('returns txHashes asap if extensionReturnTxHashAsapBatch feature flag is enabled', async () => {
     withRequest(async ({ request }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = true;
+      request.featureFlags.extensionReturnTxHashAsapBatch = true;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {
@@ -942,7 +1282,7 @@ describe('submitBatchSmartTransactionHook', () => {
 
   it('waits for transaction hash if extensionReturnTxHashAsapBatch is false', async () => {
     withRequest(async ({ request, messenger }) => {
-      request.featureFlags.smartTransactions.extensionReturnTxHashAsapBatch = false;
+      request.featureFlags.extensionReturnTxHashAsapBatch = false;
       request.smartTransactionsController.submitSignedTransactions = jest.fn(
         async (_) => {
           return {

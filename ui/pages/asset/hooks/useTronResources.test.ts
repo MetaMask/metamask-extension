@@ -12,7 +12,7 @@ import { useTronResources } from './useTronResources';
 // Mock the selectors
 jest.mock('../../../selectors/assets', () => ({
   ...jest.requireActual('../../../selectors/assets'),
-  getAssetsBySelectedAccountGroup: jest.fn(),
+  getAssetsBySelectedAccountGroupWithTronResources: jest.fn(),
 }));
 
 jest.mock('../../../selectors/multichain', () => ({
@@ -66,7 +66,7 @@ describe('useTronResources', () => {
         `${chainId}/resource:max-bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -107,12 +107,12 @@ describe('useTronResources', () => {
       });
     });
 
-    it('returns zero values with default max of 1 when no balances exist', () => {
+    it('returns zero values with max of 0 when no balances exist', () => {
       const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
       const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -131,14 +131,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -148,7 +148,7 @@ describe('useTronResources', () => {
       const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -170,14 +170,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 250,
-        max: 1, // Defaults to 1 when max is 0
-        percentage: 25000, // 250 / 1 * 100
+        max: 0, // Actual max is 0 when not provided
+        percentage: 25000, // 250 / 1 * 100 (divisor is Math.max(1, 0) = 1)
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 150,
-        max: 1,
+        max: 0,
         percentage: 15000,
       });
     });
@@ -188,7 +188,7 @@ describe('useTronResources', () => {
         `${chainId}/resource:max-bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.MAX_ENERGY, maxEnergyAssetId),
@@ -231,7 +231,7 @@ describe('useTronResources', () => {
         `${chainId}/token:TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -261,7 +261,7 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 100,
-        max: 1,
+        max: 0,
         percentage: 10000,
       });
 
@@ -269,14 +269,14 @@ describe('useTronResources', () => {
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
 
     it('handles empty assets array', () => {
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [],
       });
@@ -292,21 +292,21 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
 
     it('handles chainId with no assets', () => {
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({});
 
       (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
@@ -320,14 +320,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -340,7 +340,7 @@ describe('useTronResources', () => {
         `${chainId}/resource:max-bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -374,7 +374,7 @@ describe('useTronResources', () => {
   describe('when account is undefined', () => {
     it('returns default values', () => {
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({});
 
       (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue(
@@ -386,14 +386,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -402,7 +402,7 @@ describe('useTronResources', () => {
   describe('when chainId is empty', () => {
     it('returns default values', () => {
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({});
 
       (multichainSelectors.getMultichainBalances as jest.Mock).mockReturnValue({
@@ -414,14 +414,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -433,7 +433,7 @@ describe('useTronResources', () => {
       const bandwidthAssetId = `${chainId}/resource:bandwidth` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),
@@ -452,14 +452,14 @@ describe('useTronResources', () => {
       expect(result.current.energy).toEqual({
         type: 'energy',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
 
       expect(result.current.bandwidth).toEqual({
         type: 'bandwidth',
         current: 0,
-        max: 1,
+        max: 0,
         percentage: 0,
       });
     });
@@ -470,7 +470,7 @@ describe('useTronResources', () => {
       const energyAssetId = `${chainId}/resource:energy` as CaipAssetId;
 
       (
-        assetsSelectors.getAssetsBySelectedAccountGroup as unknown as jest.Mock
+        assetsSelectors.getAssetsBySelectedAccountGroupWithTronResources as unknown as jest.Mock
       ).mockReturnValue({
         [chainId]: [
           createTronResourceAsset(TRON_RESOURCE.ENERGY, energyAssetId),

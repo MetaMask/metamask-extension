@@ -19,7 +19,6 @@ const ShieldIllustrationAnimation = ({
   containerClassName?: string;
   canvasClassName?: string;
 }) => {
-  const isTestEnvironment = Boolean(process.env.IN_TEST);
   const context = useRiveWasmContext();
   const { isWasmReady, error: wasmError } = context;
   const {
@@ -67,12 +66,16 @@ const ShieldIllustrationAnimation = ({
         rive.play();
       }
     }
+  }, [rive, isWasmReady, bufferLoading, buffer]);
+
+  // Stop animation on unmount
+  useEffect(() => {
     return () => {
       if (rive) {
-        rive.stop();
+        rive.cleanup();
       }
     };
-  }, [rive, isWasmReady, bufferLoading, buffer]);
+  }, []);
 
   // Don't render Rive component until WASM and buffer are ready to avoid errors
   if (
@@ -80,7 +83,6 @@ const ShieldIllustrationAnimation = ({
     bufferLoading ||
     !buffer ||
     status === 'loading' ||
-    isTestEnvironment ||
     status === 'failed'
   ) {
     return <Box className={containerClassName}></Box>;

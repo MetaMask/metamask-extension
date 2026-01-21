@@ -11,6 +11,7 @@ import {
 import { PPOMController } from '@metamask/ppom-validator';
 import { SmartTransactionsController } from '@metamask/smart-transactions-controller';
 import { TransactionController } from '@metamask/transaction-controller';
+import { TransactionPayController } from '@metamask/transaction-pay-controller';
 import { AccountsController } from '@metamask/accounts-controller';
 import {
   AccountTrackerController,
@@ -70,6 +71,7 @@ import { AnnouncementController } from '@metamask/announcement-controller';
 import { PhishingController } from '@metamask/phishing-controller';
 import { LoggingController } from '@metamask/logging-controller';
 import { ErrorReportingService } from '@metamask/error-reporting-service';
+import { StorageService } from '@metamask/storage-service';
 import { AddressBookController } from '@metamask/address-book-controller';
 import {
   DecryptMessageManager,
@@ -82,6 +84,11 @@ import {
   BackendWebSocketService,
 } from '@metamask/core-backend';
 import { ClaimsController, ClaimsService } from '@metamask/claims-controller';
+import { ConnectivityController } from '@metamask/connectivity-controller';
+import {
+  ProfileMetricsController,
+  ProfileMetricsService,
+} from '@metamask/profile-metrics-controller';
 import OnboardingController from '../controllers/onboarding';
 import { PreferencesController } from '../controllers/preferences-controller';
 import SwapsController from '../controllers/swaps';
@@ -129,6 +136,7 @@ export type Controller =
   | EncryptionPublicKeyManager
   | EnsController
   | ErrorReportingService
+  | StorageService
   | ExecutionService
   | GasFeeController
   | GatorPermissionsController
@@ -182,6 +190,7 @@ export type Controller =
   | TokenListController
   | TokensController
   | TransactionController
+  | TransactionPayController
   | InstitutionalSnapController
   | UserOperationController
   | UserStorageController
@@ -195,7 +204,10 @@ export type Controller =
   | AccountActivityService
   | MultichainAccountService
   | NetworkEnablementController
-  | ClaimsService;
+  | ClaimsService
+  | ProfileMetricsController
+  | ProfileMetricsService
+  | ConnectivityController;
 
 /**
  * Flat state object for all controllers supporting or required by modular initialization.
@@ -261,10 +273,12 @@ export type ControllerFlatState = AccountOrderController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
   TransactionController['state'] &
+  TransactionPayController['state'] &
   UserOperationController['state'] &
   UserStorageController['state'] &
   TokenRatesController['state'] &
   NftController['state'] &
   NftDetectionController['state'] &
   NetworkEnablementController['state'] &
-  AccountTrackerController['state'];
+  AccountTrackerController['state'] &
+  ProfileMetricsController['state'];

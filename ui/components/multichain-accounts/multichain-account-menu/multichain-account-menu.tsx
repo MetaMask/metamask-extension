@@ -1,5 +1,5 @@
-import React, { useMemo, useRef } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import React, { useCallback, useContext, useMemo, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   Box,
@@ -28,6 +28,12 @@ import {
   setAccountGroupHidden,
 } from '../../../store/actions';
 import { getAccountTree } from '../../../selectors/multichain-accounts/account-tree';
+import { trace, TraceName, TraceOperation } from '../../../../shared/lib/trace';
+import { MetaMetricsContext } from '../../../contexts/metametrics';
+import {
+  MetaMetricsEventCategory,
+  MetaMetricsEventName,
+} from '../../../../shared/constants/metametrics';
 import { MultichainAccountMenuProps } from './multichain-account-menu.types';
 
 export const MultichainAccountMenu = ({
@@ -42,6 +48,7 @@ export const MultichainAccountMenu = ({
   const dispatch = useDispatch();
   const popoverRef = useRef<HTMLDivElement>(null);
   const accountTree = useSelector(getAccountTree);
+  const trackEvent = useContext(MetaMetricsContext);
 
   // Get the account group metadata to check pinned/hidden state
   const accountGroupMetadata = useMemo(() => {
@@ -57,6 +64,28 @@ export const MultichainAccountMenu = ({
 
   const isPinned = accountGroupMetadata?.pinned ?? false;
   const isHidden = accountGroupMetadata?.hidden ?? false;
+
+  // Helper function to count pinned/hidden accounts from the account tree
+  const countAccountsByStatus = useCallback(
+    (status: 'pinned' | 'hidden', newValue: boolean): number => {
+      let count = 0;
+      const { wallets } = accountTree;
+      for (const wallet of Object.values(wallets)) {
+        for (const [groupId, group] of Object.entries(wallet.groups)) {
+          if (groupId === accountGroupId) {
+            // Use the new value for the current account
+            if (newValue) {
+              count += 1;
+            }
+          } else if (group.metadata?.[status]) {
+            count += 1;
+          }
+        }
+      }
+      return count;
+    },
+    [accountTree, accountGroupId],
+  );
 
   const togglePopover = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
@@ -81,6 +110,10 @@ export const MultichainAccountMenu = ({
     const handleAccountAddressesClick = (mouseEvent: React.MouseEvent) => {
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
+      trace({
+        name: TraceName.ShowAccountAddressList,
+        op: TraceOperation.AccountUi,
+      });
       const multichainAccountAddressesPageRoute = `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(accountGroupId)}`;
       navigate(multichainAccountAddressesPageRoute);
     };
@@ -89,12 +122,26 @@ export const MultichainAccountMenu = ({
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
+      const newPinnedState = !isPinned;
+
       // If account is hidden, unhide it first before pinning
       if (isHidden) {
         await dispatch(setAccountGroupHidden(accountGroupId, false));
       }
 
-      await dispatch(setAccountGroupPinned(accountGroupId, !isPinned));
+      await dispatch(setAccountGroupPinned(accountGroupId, newPinnedState));
+
+      // Track the Account Pinned event
+      trackEvent({
+        event: MetaMetricsEventName.AccountPinned,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          pinned: newPinnedState,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          pinned_count_after: countAccountsByStatus('pinned', newPinnedState),
+        },
+      });
+
       onToggle?.();
     };
 
@@ -102,12 +149,26 @@ export const MultichainAccountMenu = ({
       mouseEvent.stopPropagation();
       mouseEvent.preventDefault();
 
+      const newHiddenState = !isHidden;
+
       // If account is pinned, unpin it first before hiding
       if (isPinned) {
         await dispatch(setAccountGroupPinned(accountGroupId, false));
       }
 
-      await dispatch(setAccountGroupHidden(accountGroupId, !isHidden));
+      await dispatch(setAccountGroupHidden(accountGroupId, newHiddenState));
+
+      // Track the Account Hidden event
+      trackEvent({
+        event: MetaMetricsEventName.AccountHidden,
+        category: MetaMetricsEventCategory.Accounts,
+        properties: {
+          hidden: newHiddenState,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          hidden_count_after: countAccountsByStatus('hidden', newHiddenState),
+        },
+      });
+
       onToggle?.();
     };
 
@@ -164,6 +225,8 @@ export const MultichainAccountMenu = ({
     isHidden,
     dispatch,
     onToggle,
+    trackEvent,
+    countAccountsByStatus,
   ]);
 
   return (

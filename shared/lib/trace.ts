@@ -12,6 +12,7 @@ export enum TraceName {
   AccountOverviewNftsTab = 'Account Overview Nfts Tab',
   AccountOverviewActivityTab = 'Account Overview Activity Tab',
   AccountOverviewDeFiTab = 'Account Overview DeFi Tab',
+  AccountOverviewPerpsTab = 'Account Overview Perps Tab',
   AssetDetails = 'Asset Details',
   BackgroundConnect = 'Background Connect',
   BridgeBalancesUpdated = 'Bridge Balances Updated',
@@ -70,9 +71,6 @@ export enum TraceName {
   OnboardingOAuthProviderLogin = 'Onboarding - OAuth Provider Login',
   OnboardingOAuthBYOAServerGetAuthTokens = 'Onboarding - OAuth BYOA Server Get Auth Tokens',
   OnboardingOAuthSeedlessAuthenticate = 'Onboarding - OAuth Seedless Authenticate',
-  OnboardingSocialLoginError = 'Onboarding - Social Login Error',
-  OnboardingPasswordSetupError = 'Onboarding - Password Setup Error',
-  OnboardingPasswordLoginError = 'Onboarding - Password Login Error',
   OnboardingResetPasswordError = 'Onboarding - Reset Password Error',
   OnboardingCreateKeyAndBackupSrpError = 'Onboarding - Create Key and Backup SRP Error',
   OnboardingAddSrpError = 'Onboarding - Add SRP Error',
@@ -80,15 +78,27 @@ export enum TraceName {
   OnboardingOAuthProviderLoginError = 'Onboarding - OAuth Provider Login Error',
   OnboardingOAuthBYOAServerGetAuthTokensError = 'Onboarding - OAuth BYOA Server Get Auth Tokens Error',
   OnboardingOAuthSeedlessAuthenticateError = 'Onboarding - OAuth Seedless Authenticate Error',
+  // Accounts
+  ShowAccountList = 'Show Account List',
+  ShowAccountAddressList = 'Show Account Address List',
+  ShowAccountPrivateKeyList = 'Show Account Private Key List',
+  CreateMultichainAccount = 'Create Multichain Account',
+  DiscoverAccounts = 'Discover Accounts',
+  EvmDiscoverAccounts = 'EVM Discover Accounts',
 }
 
 /**
  * The operation names to use for the trace.
  */
 export enum TraceOperation {
+  AccountList = 'account.list',
   OnboardingUserJourney = 'onboarding.user_journey',
   OnboardingSecurityOp = 'onboarding.security_operation',
   OnboardingError = 'onboarding.error',
+  // Accounts
+  AccountCreate = 'account.create',
+  AccountUi = 'account.ui',
+  AccountDiscover = 'account.discover',
 }
 
 const log = createModuleLogger(sentryLogger, 'trace');

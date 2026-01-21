@@ -42,6 +42,8 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import { toggleNetworkMenu } from '../../store/actions';
@@ -52,6 +54,7 @@ import { getIsMetaMaskShieldFeatureEnabled } from '../../../shared/modules/envir
 import { getHasSubscribedToShield } from '../../selectors/subscription/subscription';
 import { SHIELD_QUERY_PARAMS } from '../../../shared/lib/deep-links/routes/shield';
 import Settings from './settings.component';
+import { CLAIMS_TAB_KEYS } from './transaction-shield-tab/types';
 
 const ROUTES_TO_I18N_KEYS = {
   [ABOUT_US_ROUTE]: 'about',
@@ -73,6 +76,8 @@ const ROUTES_TO_I18N_KEYS = {
   [SECURITY_ROUTE]: 'securityAndPrivacy',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL]: 'shieldClaim',
   [TRANSACTION_SHIELD_CLAIM_ROUTES.BASE]: 'shieldClaimsListTitle',
+  [TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE]: 'shieldPastPlansTitle',
+  [TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE]: 'shieldManagePlan',
   [TRANSACTION_SHIELD_ROUTE]: 'shieldTx',
 };
 
@@ -114,11 +119,23 @@ const mapStateToProps = (state, ownProps) => {
   const isShieldClaimNewPage = Boolean(
     pathname.match(TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL),
   );
-  const isShieldClaimViewPage = Boolean(
-    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL),
+  const isShieldClaimViewActivePage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_PENDING.FULL),
+  );
+  const isShieldClaimViewCompletedPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW_HISTORY.FULL),
+  );
+  const isShieldClaimEditDraftPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.EDIT_DRAFT.FULL),
   );
   const isShieldClaimBasePage = Boolean(
     pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE),
+  );
+  const isShieldManagePlanPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE),
+  );
+  const isShieldManagePastPlanPage = Boolean(
+    pathname.startsWith(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE),
   );
 
   const environmentType = getEnvironmentType();
@@ -134,8 +151,12 @@ const mapStateToProps = (state, ownProps) => {
     pathnameI18nKey = 'securitySrpWalletRecovery';
   }
 
-  // If pathname is `TRANSACTION_SHIELD_CLAIM_VIEW_ROUTE` rename the tab title to "Claim details"
-  if (pathname.startsWith(TRANSACTION_SHIELD_CLAIM_ROUTES.VIEW.FULL)) {
+  // If pathname is view claim route rename the tab title to "Claim details"
+  if (
+    isShieldClaimViewActivePage ||
+    isShieldClaimViewCompletedPage ||
+    isShieldClaimEditDraftPage
+  ) {
     pathnameI18nKey = 'shieldClaimsListTitle';
   }
 
@@ -151,11 +172,17 @@ const mapStateToProps = (state, ownProps) => {
   } else if (isRevealSrpListPage || isPasswordChangePage) {
     backRoute = SECURITY_ROUTE;
   } else if (isShieldClaimNewPage) {
-    backRoute = TRANSACTION_SHIELD_ROUTE;
-  } else if (isShieldClaimViewPage) {
     backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.BASE;
-  } else if (isShieldClaimBasePage) {
-    backRoute = TRANSACTION_SHIELD_CLAIM_ROUTES.NEW.FULL;
+  } else if (isShieldClaimViewActivePage || isShieldClaimEditDraftPage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.PENDING}`;
+  } else if (isShieldClaimViewCompletedPage) {
+    backRoute = `${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}?tab=${CLAIMS_TAB_KEYS.HISTORY}`;
+  } else if (
+    isShieldClaimBasePage ||
+    isShieldManagePlanPage ||
+    isShieldManagePastPlanPage
+  ) {
+    backRoute = TRANSACTION_SHIELD_ROUTE;
   }
 
   const addressName = getAddressBookEntryOrAccountName(

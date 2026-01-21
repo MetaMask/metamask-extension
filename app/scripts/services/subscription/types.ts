@@ -8,6 +8,8 @@ import {
   SubscriptionControllerUpdatePaymentMethodAction,
   SubscriptionControllerSubmitSponsorshipIntentsAction,
   SubscriptionControllerGetStateAction,
+  SubscriptionControllerLinkRewardsAction,
+  SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction,
 } from '@metamask/subscription-controller';
 import { AuthenticationControllerGetBearerToken } from '@metamask/profile-sync-controller/auth';
 import {
@@ -18,12 +20,21 @@ import { AccountsControllerGetStateAction } from '@metamask/accounts-controller'
 import { SmartTransactionsControllerGetStateAction } from '@metamask/smart-transactions-controller';
 import { NetworkControllerGetStateAction } from '@metamask/network-controller';
 import { KeyringControllerGetStateAction } from '@metamask/keyring-controller';
+import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feature-flag-controller';
 import ExtensionPlatform from '../../platforms/extension';
 import { WebAuthenticator } from '../oauth/types';
 import { PreferencesControllerGetStateAction } from '../../controllers/preferences-controller';
 import { SwapsControllerGetStateAction } from '../../controllers/swaps/swaps.types';
-import { AppStateControllerGetStateAction } from '../../controllers/app-state-controller';
+import {
+  AppStateControllerGetStateAction,
+  AppStateControllerSetPendingShieldCohortAction,
+} from '../../controllers/app-state-controller';
 import { MetaMetricsControllerTrackEventAction } from '../../controllers/metametrics-controller';
+import {
+  RewardsControllerGetHasAccountOptedInAction,
+  RewardsControllerGetSeasonMetadataAction,
+  RewardsControllerGetSeasonStatusAction,
+} from '../../controllers/rewards/rewards-controller.types';
 
 export const SERVICE_NAME = 'SubscriptionService';
 
@@ -44,16 +55,24 @@ export type SubscriptionServiceAction =
   | SubscriptionControllerSubmitSponsorshipIntentsAction
   | SubscriptionServiceSubmitSubscriptionSponsorshipIntentAction
   | SubscriptionControllerGetStateAction
+  | SubscriptionControllerLinkRewardsAction
+  | SubscriptionControllerSubmitShieldSubscriptionCryptoApprovalAction
   | TransactionControllerGetTransactionsAction
   | PreferencesControllerGetStateAction
   | AccountsControllerGetStateAction
   | SmartTransactionsControllerGetStateAction
   | SwapsControllerGetStateAction
   | NetworkControllerGetStateAction
+  | RemoteFeatureFlagControllerGetStateAction
   | AuthenticationControllerGetBearerToken
   | AppStateControllerGetStateAction
+  | AppStateControllerSetPendingShieldCohortAction
   | MetaMetricsControllerTrackEventAction
-  | KeyringControllerGetStateAction; // For metrics, to get the HD Keyrings metadata
+  | KeyringControllerGetStateAction // For metrics, to get the HD Keyrings metadata
+  // Rewards Integration
+  | RewardsControllerGetSeasonStatusAction // For rewards, to get the season status for claiming points with the shield subscription
+  | RewardsControllerGetSeasonMetadataAction // For rewards, to check if the season is active and can claim points
+  | RewardsControllerGetHasAccountOptedInAction; // For rewards, to check if the account has opted in to rewards
 
 export type SubscriptionServiceEvent = never;
 
@@ -72,4 +91,6 @@ export type SubscriptionServiceOptions = {
   platform: ExtensionPlatform;
 
   webAuthenticator: WebAuthenticator;
+
+  captureException: (error: unknown) => void;
 };

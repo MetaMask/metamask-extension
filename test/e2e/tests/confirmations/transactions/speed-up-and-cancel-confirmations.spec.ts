@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Hex } from '@metamask/utils';
 import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.utils';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../../constants';
-import { unlockWallet } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import { TestSuiteArguments } from './shared';
 
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 
 const ethInHexWei = (eth: number): Hex => decimalToPrefixedHex(eth * 10 ** 18);
 
@@ -30,7 +30,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {
@@ -86,7 +86,7 @@ describe('Speed Up and Cancel Transaction Tests', function () {
           title: this.test?.fullTitle(),
         },
         async ({ driver, localNodes }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+          await loginWithBalanceValidation(driver);
 
           // Create initial stuck transaction
           await createDappTransaction(driver, {

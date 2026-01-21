@@ -1,19 +1,19 @@
 import { Suite } from 'mocha';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
-import FixtureBuilder from '../../fixture-builder';
-import { DAPP_PATH } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { DAPP_PATH, PRIVATE_KEY_TWO, WINDOW_TITLES } from '../../constants';
 import { Anvil } from '../../seeder/anvil';
 import { Ganache } from '../../seeder/ganache';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
-import { PRIVATE_KEY_TWO, withFixtures, WINDOW_TITLES } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import TransactionConfirmation from '../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockSnapSimpleKeyringAndSite } from './snap-keyring-site-mocks';
@@ -64,7 +64,8 @@ describe('Snap Account Contract interaction', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const headerNavbar = new HeaderNavbar(driver);
-        await headerNavbar.checkAccountLabel('SSK Account');
+        // BUG #37591 - With BIP44 the account mame is not retained.
+        await headerNavbar.checkAccountLabel('Snap Account 1');
 
         // Open Dapp with contract
         const testDapp = new TestDapp(driver);

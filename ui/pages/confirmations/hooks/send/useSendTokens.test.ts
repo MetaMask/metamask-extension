@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { renderHookWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
 import { getAssetsBySelectedAccountGroup } from '../../../../selectors/assets';
 import * as useFiatFormatterModule from '../../../../hooks/useFiatFormatter';
@@ -136,13 +136,25 @@ describe('useSendTokens', () => {
     expect(testNetAsset?.chainId).toBe('0xaa36a7');
   });
 
-  it('excludes assets with zero balance and zero fiat', async () => {
+  it('excludes assets with zero balance and zero fiat by default', async () => {
     const { result } = renderHookWithProvider(() => useSendTokens(), mockState);
 
     const zeroBalanceAsset = result.current.find(
       (asset: Asset) => asset.symbol === 'ZERO',
     );
     expect(zeroBalanceAsset).toBeUndefined();
+  });
+
+  it('includes assets with zero balance when includeNoBalance is true', async () => {
+    const { result } = renderHookWithProvider(
+      () => useSendTokens({ includeNoBalance: true }),
+      mockState,
+    );
+
+    const zeroBalanceAsset = result.current.find(
+      (asset: Asset) => asset.symbol === 'ZERO',
+    );
+    expect(zeroBalanceAsset).toBeDefined();
   });
 
   it('sorts assets by fiat balance descending', async () => {

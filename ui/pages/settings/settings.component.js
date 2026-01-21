@@ -5,7 +5,7 @@ import {
   Route,
   matchPath,
   Navigate,
-} from 'react-router-dom-v5-compat';
+} from 'react-router-dom';
 import classnames from 'classnames';
 import TabBar from '../../components/app/tab-bar';
 
@@ -32,8 +32,9 @@ import {
   SECURITY_PASSWORD_CHANGE_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
   TRANSACTION_SHIELD_CLAIM_ROUTES,
+  TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE,
+  TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE,
 } from '../../helpers/constants/routes';
-
 import { getSettingsRoutes } from '../../helpers/utils/settings-search';
 import {
   ButtonIcon,
@@ -63,6 +64,7 @@ import { SnapIcon } from '../../components/app/snaps/snap-icon';
 import { SnapSettingsRenderer } from '../../components/app/snaps/snap-settings-page';
 import PasswordOutdatedModal from '../../components/app/password-outdated-modal';
 import ShieldEntryModal from '../../components/app/shield-entry-modal';
+import { toRelativeRoutePath } from '../routes/utils';
 import SettingsTab from './settings-tab';
 import AdvancedTab from './advanced-tab';
 import InfoTab from './info-tab';
@@ -77,6 +79,7 @@ import BackupAndSyncTab from './backup-and-sync-tab';
 import ChangePassword from './security-tab/change-password';
 import ClaimsArea from './transaction-shield-tab/claims-area';
 import TransactionShield from './transaction-shield-tab';
+import ManageShieldPlan from './transaction-shield-tab/manage-shield-plan';
 
 // Helper component for network routes that need side effects
 const NetworkRouteHandler = ({ onMount }) => {
@@ -372,6 +375,7 @@ class SettingsPage extends PureComponent {
               onClick={() => navigate(backRoute)}
               marginRight={2}
               size={ButtonIconSize.Md}
+              data-testid="settings-back-button"
             />
           )}
           <Text variant={TextVariant.headingSm}>{subheaderText}</Text>
@@ -501,25 +505,36 @@ class SettingsPage extends PureComponent {
   }
 
   renderContent() {
+    // Use toRelativeRoutePath to convert absolute paths to relative paths
+    // for nested <Routes> in React Router v6
     return (
       <RouterRoutes>
         <Route
-          path={GENERAL_ROUTE}
+          path={toRelativeRoutePath(GENERAL_ROUTE, SETTINGS_ROUTE)}
           element={
             <SettingsTab
               lastFetchedConversionDate={this.state.lastFetchedConversionDate}
             />
           }
         />
-        <Route path={ABOUT_US_ROUTE} element={<InfoTab />} />
         <Route
-          path={`${SNAP_SETTINGS_ROUTE}/:snapId`}
+          path={toRelativeRoutePath(ABOUT_US_ROUTE, SETTINGS_ROUTE)}
+          element={<InfoTab />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(SNAP_SETTINGS_ROUTE, SETTINGS_ROUTE)}/:snapId`}
           element={<SnapSettingsRenderer />}
         />
-        <Route path={ADVANCED_ROUTE} element={<AdvancedTab />} />
-        <Route path={BACKUPANDSYNC_ROUTE} element={<BackupAndSyncTab />} />
         <Route
-          path={ADD_NETWORK_ROUTE}
+          path={toRelativeRoutePath(ADVANCED_ROUTE, SETTINGS_ROUTE)}
+          element={<AdvancedTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(BACKUPANDSYNC_ROUTE, SETTINGS_ROUTE)}
+          element={<BackupAndSyncTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(ADD_NETWORK_ROUTE, SETTINGS_ROUTE)}
           element={
             <NetworkRouteHandler
               onMount={() =>
@@ -529,7 +544,7 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={NETWORKS_ROUTE}
+          path={toRelativeRoutePath(NETWORKS_ROUTE, SETTINGS_ROUTE)}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
@@ -537,43 +552,69 @@ class SettingsPage extends PureComponent {
           }
         />
         <Route
-          path={ADD_POPULAR_CUSTOM_NETWORK}
+          path={toRelativeRoutePath(ADD_POPULAR_CUSTOM_NETWORK, SETTINGS_ROUTE)}
           element={
             <NetworkRouteHandler
               onMount={() => this.props.toggleNetworkMenu()}
             />
           }
         />
-        <Route path={SECURITY_ROUTE} element={<SecurityTab />} />
         <Route
-          path={TRANSACTION_SHIELD_ROUTE}
+          path={toRelativeRoutePath(SECURITY_ROUTE, SETTINGS_ROUTE)}
+          element={<SecurityTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(TRANSACTION_SHIELD_ROUTE, SETTINGS_ROUTE)}
           element={<TransactionShield />}
         />
         <Route
-          path={`${TRANSACTION_SHIELD_CLAIM_ROUTES.BASE}/*`}
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_CLAIM_ROUTES.BASE, SETTINGS_ROUTE)}/*`}
           element={<ClaimsArea />}
         />
-        <Route path={EXPERIMENTAL_ROUTE} element={<ExperimentalTab />} />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE, SETTINGS_ROUTE)}/*`}
+          element={<ManageShieldPlan isPastPlan />}
+        />
+        <Route
+          path={toRelativeRoutePath(EXPERIMENTAL_ROUTE, SETTINGS_ROUTE)}
+          element={<ExperimentalTab />}
+        />
         {(process.env.ENABLE_SETTINGS_PAGE_DEV_OPTIONS ||
           process.env.IN_TEST) && (
           <Route
-            path={DEVELOPER_OPTIONS_ROUTE}
+            path={toRelativeRoutePath(DEVELOPER_OPTIONS_ROUTE, SETTINGS_ROUTE)}
             element={<DeveloperOptionsTab />}
           />
         )}
-        <Route path={CONTACT_LIST_ROUTE} element={<ContactListTab />} />
-        <Route path={CONTACT_ADD_ROUTE} element={<ContactListTab />} />
         <Route
-          path={`${CONTACT_EDIT_ROUTE}/:id`}
+          path={toRelativeRoutePath(CONTACT_LIST_ROUTE, SETTINGS_ROUTE)}
           element={<ContactListTab />}
         />
         <Route
-          path={`${CONTACT_VIEW_ROUTE}/:id`}
+          path={toRelativeRoutePath(CONTACT_ADD_ROUTE, SETTINGS_ROUTE)}
           element={<ContactListTab />}
         />
-        <Route path={REVEAL_SRP_LIST_ROUTE} element={<RevealSrpList />} />
         <Route
-          path={SECURITY_PASSWORD_CHANGE_ROUTE}
+          path={`${toRelativeRoutePath(CONTACT_EDIT_ROUTE, SETTINGS_ROUTE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={`${toRelativeRoutePath(CONTACT_VIEW_ROUTE, SETTINGS_ROUTE)}/:id`}
+          element={<ContactListTab />}
+        />
+        <Route
+          path={toRelativeRoutePath(REVEAL_SRP_LIST_ROUTE, SETTINGS_ROUTE)}
+          element={<RevealSrpList />}
+        />
+        <Route
+          path={toRelativeRoutePath(
+            SECURITY_PASSWORD_CHANGE_ROUTE,
+            SETTINGS_ROUTE,
+          )}
           element={<ChangePassword />}
         />
         <Route

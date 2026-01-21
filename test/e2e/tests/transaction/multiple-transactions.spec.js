@@ -1,7 +1,10 @@
 const assert = require('assert');
-const { withFixtures, regularDelayMs, unlockWallet } = require('../../helpers');
+const { withFixtures, regularDelayMs } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 
 describe('Multiple transactions', function () {
   it('creates multiple queued transactions, then confirms', async function () {
@@ -15,7 +18,7 @@ describe('Multiple transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // initiates a transaction from the dapp
         await driver.openNewPage(DAPP_URL);
@@ -53,15 +56,11 @@ describe('Multiple transactions', function () {
         await driver.clickElement(
           '[data-testid="account-overview__activity-tab"]',
         );
-        await driver.waitForSelector(
-          '.transaction-list__completed-transactions .activity-list-item:nth-of-type(2)',
+        const confirmedTxes = await driver.elementCountBecomesN(
+          '.transaction-status-label--confirmed',
+          2,
         );
-
-        const confirmedTxes = await driver.findElements(
-          '.transaction-list__completed-transactions .activity-list-item',
-        );
-
-        assert.equal(confirmedTxes.length, 2);
+        assert.equal(confirmedTxes, true);
       },
     );
   });
@@ -77,7 +76,7 @@ describe('Multiple transactions', function () {
         title: this.test.fullTitle(),
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // initiates a transaction from the dapp
         await driver.openNewPage(DAPP_URL);
@@ -112,7 +111,7 @@ describe('Multiple transactions', function () {
 
         // The previous isTransactionListEmpty wait already serves as the guard here for the assertElementNotPresent
         await driver.assertElementNotPresent(
-          '.transaction-list__completed-transactions .activity-list-item',
+          '.transaction-status-label--confirmed:nth-of-type(1)',
         );
       },
     );

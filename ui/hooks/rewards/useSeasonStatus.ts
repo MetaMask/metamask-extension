@@ -42,7 +42,7 @@ export const useSeasonStatus = ({
   const isUnlocked = useSelector(getIsUnlocked);
   const isRewardsEnabled = useSelector(selectRewardsEnabled);
 
-  const isLoading = useRef(false);
+  const isLoadingFor = useRef<CandidateSubscriptionId | null>(null);
 
   const fetchSeasonStatus = useCallback(async (): Promise<void> => {
     // Don't fetch if no subscriptionId or season metadata
@@ -59,11 +59,14 @@ export const useSeasonStatus = ({
       return;
     }
 
-    if (isLoading.current) {
+    if (
+      Boolean(isLoadingFor.current) &&
+      isLoadingFor.current === subscriptionId
+    ) {
       return;
     }
 
-    isLoading.current = true;
+    isLoadingFor.current = subscriptionId;
 
     dispatch(setSeasonStatusLoading(true));
 
@@ -97,7 +100,7 @@ export const useSeasonStatus = ({
         dispatch(setSeasonStatus(null));
       }
     } finally {
-      isLoading.current = false;
+      isLoadingFor.current = null;
       dispatch(setSeasonStatusLoading(false));
     }
   }, [subscriptionId, onAuthorizationError, isRewardsEnabled, dispatch]);

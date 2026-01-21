@@ -8,7 +8,7 @@ import {
   getKnownMethodData,
   getSelectedAddress,
   selectERC20TokensByChain,
-} from '../selectors/selectors';
+} from '../selectors';
 import {
   getStatusKey,
   getTransactionTypeTitle,
@@ -247,6 +247,7 @@ export function useTransactionDisplayData(transactionGroup) {
     token?.symbol,
     undefined,
     true,
+    initialTransaction?.chainId,
   );
 
   // used to append to the primary display value. initialized to either token.symbol or undefined

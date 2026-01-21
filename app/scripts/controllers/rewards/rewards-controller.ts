@@ -135,6 +135,12 @@ type CacheOptions<T> = {
   swrCallback?: (old: T, fresh: T) => void; // Callback triggered after SWR refresh, to invalidate cache
 };
 
+// when rewards went live on mobile, take this date for subscriptions we detect first on device.
+// candidate subscriptions are sorted by candidateAt, so subscriptions marked with this date will be the first ones to be detected on device. (for i.e. linking new accounts)
+const INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT = new Date(
+  '2025-10-27T00:00:00.000Z',
+);
+
 /**
  * Get a value, from cache if exist
  */
@@ -398,10 +404,6 @@ export class RewardsController extends BaseController<
       'RewardsController:getActualSubscriptionId',
       this.getActualSubscriptionId.bind(this),
     );
-    this.messenger.registerActionHandler(
-      'RewardsController:getFirstSubscriptionId',
-      this.getFirstSubscriptionId.bind(this),
-    );
   }
 
   /**
@@ -453,19 +455,6 @@ export class RewardsController extends BaseController<
   getActualSubscriptionId(account: CaipAccountId): string | null {
     const accountState = this.#getAccountState(account);
     return accountState?.subscriptionId || null;
-  }
-
-  /**
-   * Get the first subscription ID from the subscriptions map
-   *
-   * @returns The first subscription ID or null if no subscriptions exist
-   */
-  getFirstSubscriptionId(): string | null {
-    if (!this.state.rewardsSubscriptions) {
-      return null;
-    }
-    const subscriptionIds = Object.keys(this.state.rewardsSubscriptions);
-    return subscriptionIds.length > 0 ? subscriptionIds[0] : null;
   }
 
   /**
@@ -888,6 +877,13 @@ export class RewardsController extends BaseController<
         }
 
         if (subscription) {
+          if (!state.rewardsSubscriptions[subscription.id]?.candidateAt) {
+            const candidateAt =
+              Object.keys(state.rewardsSubscriptions ?? {}).length > 0
+                ? new Date()
+                : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
+            subscription.candidateAt = candidateAt.toISOString();
+          }
           state.rewardsSubscriptions[subscription.id] = subscription;
         }
       });
@@ -1537,6 +1533,16 @@ export class RewardsController extends BaseController<
       }
 
       state.rewardsAccounts[caipAccount] = accountState;
+      if (
+        optinResponse?.subscription?.id &&
+        !state.rewardsSubscriptions[optinResponse.subscription.id]?.candidateAt
+      ) {
+        const candidateAt =
+          Object.keys(state.rewardsSubscriptions ?? {}).length > 0
+            ? new Date()
+            : INITIAL_DEVICE_SUBSCRIPTION_CANDIDATE_AT;
+        optinResponse.subscription.candidateAt = candidateAt.toISOString();
+      }
       state.rewardsSubscriptions[optinResponse.subscription.id] =
         optinResponse.subscription;
     });
@@ -1635,7 +1641,26 @@ export class RewardsController extends BaseController<
 
     // Fallback to the first subscription ID from the subscriptions map
     const subscriptionIds = Object.keys(this.state.rewardsSubscriptions);
-    if (subscriptionIds.length > 0) {
+    if (subscriptionIds.length === 1) {
+      return subscriptionIds[0];
+    } else if (subscriptionIds.length > 1) {
+      const sortedSubscriptions = Object.values(
+        this.state.rewardsSubscriptions,
+      ).sort((subscriptionA, subscriptionB) => {
+        try {
+          const priorityA =
+            subscriptionA?.candidateAt || subscriptionA?.createdAt;
+          const priorityB =
+            subscriptionB?.candidateAt || subscriptionB?.createdAt;
+
+          return new Date(priorityA).getTime() - new Date(priorityB).getTime();
+        } catch {
+          return 0;
+        }
+      });
+      if (sortedSubscriptions.length > 0) {
+        return sortedSubscriptions[0].id;
+      }
       return subscriptionIds[0];
     }
 

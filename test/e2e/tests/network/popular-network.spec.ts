@@ -3,7 +3,7 @@ import { Suite } from 'mocha';
 import { toHex } from '@metamask/controller-utils';
 import { MockttpServer } from 'mockttp';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import AddEditNetworkModal from '../../page-objects/pages/dialog/add-edit-network';
 import AddNetworkRpcUrlModal from '../../page-objects/pages/dialog/add-network-rpc-url';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
@@ -77,7 +77,7 @@ describe('Popular Networks', function (this: Suite) {
 
         const selectNetworkDialog = new SelectNetwork(driver);
         await selectNetworkDialog.checkPageIsLoaded();
-        await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa4b1');
+        await selectNetworkDialog.clickAddButtonForPopularNetwork('0xa86a');
 
         // verify network is switched
         await new Homepage(driver).checkPageIsLoaded();

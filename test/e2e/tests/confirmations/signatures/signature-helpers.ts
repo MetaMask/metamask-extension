@@ -1,19 +1,16 @@
 import { strict as assert } from 'assert';
 import { MockedEndpoint } from 'mockttp';
-import {
-  WINDOW_TITLES,
-  getEventPayloads,
-  unlockWallet,
-} from '../../../helpers';
+import { getEventPayloads } from '../../../helpers';
 import { Driver } from '../../../webdriver/driver';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import { DAPP_URL } from '../../../constants';
-import Confirmation from '../../../page-objects/pages/confirmations/redesign/confirmation';
-import AccountDetailsModal from '../../../page-objects/pages/confirmations/redesign/accountDetailsModal';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
+import AccountDetailsModal from '../../../page-objects/pages/confirmations/accountDetailsModal';
 import {
   BlockaidReason,
   BlockaidResultType,
 } from '../../../../../shared/constants/security-provider';
+import { ResultType } from '../../../../../shared/lib/trust-signals';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 
 type EventPayload = {
@@ -100,6 +97,9 @@ type SignatureEventProperty = {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
   api_source?: string;
+  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  address_alert_response?: string;
 };
 
 const signatureAnonProperties = {
@@ -174,13 +174,16 @@ function getSignatureEventProperty(
     security_alert_source: securityAlertSource,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    ui_customizations: uiCustomizations,
+    ...(uiCustomizations.length > 0 && { ui_customizations: uiCustomizations }),
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     hd_entropy_index: 0,
     // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
     // eslint-disable-next-line @typescript-eslint/naming-convention
     api_source: requestedThrough,
+    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    address_alert_response: ResultType.Loading,
   };
 
   if (primaryType !== '') {
@@ -220,7 +223,7 @@ export async function assertSignatureConfirmedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   withAnonEvents = false,
   securityAlertReason,
   securityAlertResponse,
@@ -269,7 +272,7 @@ export async function assertSignatureRejectedMetrics({
   mockedEndpoints,
   signatureType,
   primaryType = '',
-  uiCustomizations = ['redesigned_confirmation'],
+  uiCustomizations = [],
   location,
   expectedProps = {},
   withAnonEvents = false,
@@ -375,11 +378,11 @@ function compareSecurityAlertProperties(
 ) {
   if (
     expectedProperties.security_alert_response &&
-    (expectedProperties.security_alert_response === 'loading' ||
+    (expectedProperties.security_alert_response === 'Loading' ||
       expectedProperties.security_alert_response === 'Benign')
   ) {
     if (
-      actualProperties.security_alert_response !== 'loading' &&
+      actualProperties.security_alert_response !== 'Loading' &&
       actualProperties.security_alert_response !== 'Benign'
     ) {
       assert.fail(
@@ -495,7 +498,7 @@ export async function openDappAndTriggerSignature(
 }
 
 export async function openDappAndTriggerDeploy(driver: Driver) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver);
   await testDapp.openTestDappPage({ url: DAPP_URL });
   await driver.clickElement('#deployNFTsButton');
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

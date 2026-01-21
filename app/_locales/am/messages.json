@@ -220,9 +220,6 @@
   "enterPasswordContinue": {
     "message": "ለመቀጠል የይለፍ ቃል ያስገቡ"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum ሕዝባዊ አድራሻ"
-  },
   "etherscanView": {
     "message": "መለያውን በ Etherscan ላይ ይመልከቱ"
   },
@@ -372,9 +369,6 @@
   "needImportFile": {
     "message": "የሚያስመጡትን ፋይል መምረጥ አለብዎት።",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "አሉታዊ የ ETH መጠኖችን መላክ አይቻልም።"
   },
   "networkName": {
     "message": "የአውታረ መረብ ስም"

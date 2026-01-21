@@ -1,6 +1,6 @@
 import { Suite } from 'mocha';
 import { withFixtures } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import ExperimentalSettings from '../../page-objects/pages/settings/experimental-settings';
@@ -22,9 +22,10 @@ describe('Add snap account experimental settings', function (this: Suite) {
         const headerNavbar = new HeaderNavbar(driver);
         await headerNavbar.openAccountMenu();
         const accountListPage = new AccountListPage(driver);
-        await accountListPage.openAddAccountModal();
+        await accountListPage.addMultichainWallet();
         await accountListPage.checkAddAccountSnapButtonNotPresent();
         await accountListPage.closeAccountModal();
+        await accountListPage.closeMultichainAccountsPage();
 
         // Navigate to experimental settings and enable Add account Snap.
         await headerNavbar.openSettingsPage();
@@ -40,7 +41,7 @@ describe('Add snap account experimental settings', function (this: Suite) {
         );
         // Make sure the "Add account Snap" button is visible.
         await headerNavbar.openAccountMenu();
-        await accountListPage.openAddAccountModal();
+        await accountListPage.addMultichainWallet();
         await accountListPage.checkAddAccountSnapButtonIsDisplayed();
       },
     );

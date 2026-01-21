@@ -6,7 +6,7 @@ import {
   getEventPayloads,
   withFixtures,
 } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
@@ -222,9 +222,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               transaction_speed_up: false,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              ui_customizations: null,
               category: 'Transactions',
               locale: 'en',
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -271,9 +268,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               transaction_speed_up: false,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              ui_customizations: null,
               category: 'Transactions',
               locale: 'en',
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
@@ -345,9 +339,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
                 transaction_speed_up: false,
                 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
                 // eslint-disable-next-line @typescript-eslint/naming-convention
-                ui_customizations: null,
-                // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-                // eslint-disable-next-line @typescript-eslint/naming-convention
                 gas_used: '5208',
                 category: 'Transactions',
                 locale: 'en',
@@ -396,9 +387,6 @@ describe('Transaction Finalized Event', function (this: Suite) {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
               // eslint-disable-next-line @typescript-eslint/naming-convention
               transaction_speed_up: false,
-              // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              ui_customizations: null,
               category: 'Transactions',
               locale: 'en',
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860

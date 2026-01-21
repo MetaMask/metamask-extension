@@ -6,7 +6,10 @@ import {
 import { isEvmAccountType, EthAccountType } from '@metamask/keyring-api';
 import { AccountId } from '@metamask/accounts-controller';
 import { createSelector } from 'reselect';
-import { AccountGroupObject } from '@metamask/account-tree-controller';
+import {
+  type AccountWalletObject,
+  type AccountGroupObject,
+} from '@metamask/account-tree-controller';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   type Hex,
@@ -34,6 +37,7 @@ import { getMultichainNetworkConfigurationsByChainId } from '../multichain/netwo
 import { isTestNetwork } from '../../helpers/utils/network-helper';
 import {
   AccountGroupWithInternalAccounts,
+  AccountListStats,
   AccountTreeState,
   ConsolidatedWallets,
   MultichainAccountGroupScopeToCaipAccountId,
@@ -906,3 +910,67 @@ export const getIconSeedAddressesByAccountGroups = (
 
   return seedAddresses;
 };
+
+/**
+ * Retrieve wallet IDs from account tree state by type.
+ * In case no type is provided it returns all wallet IDs.
+ *
+ * @param state - Redux state.
+ * @param state.metamask - MetaMask state object.
+ * @param state.metamask.accountTree - Account tree state object.
+ * @param walletId - The ID of the wallet to retrieve.
+ * @returns Wallet object from account tree state.
+ */
+export const getWalletIdsByType = createSelector(
+  (state: MultichainAccountsState) => state.metamask?.accountTree?.wallets,
+  (_, walletType?: AccountWalletType) => walletType,
+  (
+    wallets: Record<AccountWalletId, AccountWalletObject>,
+    walletType?: AccountWalletType,
+  ): AccountWalletId[] => {
+    if (!wallets) {
+      return [];
+    }
+
+    if (!walletType) {
+      // return all wallet IDs if no type is specified
+      return Object.keys(wallets) as AccountWalletId[];
+    }
+
+    return Object.entries(wallets)
+      .filter(([, wallet]) => wallet.type === walletType)
+      .map(([walletId]) => walletId) as AccountWalletId[];
+  },
+);
+
+/**
+ * Get account list statistics (pinned count, hidden count, total accounts).
+ * Used for analytics tracking in the account list views.
+ *
+ * @param accountTree - Account tree state.
+ * @returns Object with pinnedCount, hiddenCount, and totalAccounts.
+ */
+export const getAccountListStats = createSelector(
+  getAccountTree,
+  (accountTree: AccountTreeState): AccountListStats => {
+    let pinnedCount = 0;
+    let hiddenCount = 0;
+    let totalAccounts = 0;
+
+    if (accountTree?.wallets) {
+      for (const wallet of Object.values(accountTree.wallets)) {
+        for (const group of Object.values(wallet.groups || {})) {
+          totalAccounts += 1;
+          if (group.metadata?.pinned) {
+            pinnedCount += 1;
+          }
+          if (group.metadata?.hidden) {
+            hiddenCount += 1;
+          }
+        }
+      }
+    }
+
+    return { pinnedCount, hiddenCount, totalAccounts };
+  },
+);

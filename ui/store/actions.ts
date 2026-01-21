@@ -81,6 +81,7 @@ import {
 
 import {
   Claim,
+  ClaimDraft,
   CreateClaimRequest,
   SubmitClaimConfig,
 } from '@metamask/claims-controller';
@@ -109,6 +110,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
@@ -120,10 +122,6 @@ import {
   computeEstimatedGasLimit,
   initializeSendState,
   resetSendState,
-  // NOTE: Until the send duck is typescript that this is importing a typedef
-  // that does not have an explicit export statement. lets see if it breaks the
-  // compiler
-  DraftTransaction,
   SEND_STAGES,
 } from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
@@ -163,6 +161,7 @@ import {
   getErrorMessage,
   isErrorWithMessage,
   logErrorWithMessage,
+  createSentryError,
 } from '../../shared/modules/error';
 import { ThemeType } from '../../shared/constants/preferences';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -203,6 +202,8 @@ import {
   DefaultSubscriptionPaymentOptions,
   ShieldSubscriptionMetricsPropsFromUI,
 } from '../../shared/types';
+// eslint-disable-next-line import/no-restricted-paths
+import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -266,10 +267,12 @@ export function startOAuthLogin(
     }
 
     try {
-      const oauth2LoginResult = await submitRequestToBackground(
-        'startOAuthLogin',
-        [authConnection],
-      );
+      const [oauth2LoginResult] = await Promise.all([
+        submitRequestToBackground<OAuthLoginResult>('startOAuthLogin', [
+          authConnection,
+        ]),
+        submitRequestToBackground('preloadToprfNodeDetails'), // fetch the toprf node details for seedless authentication in parallel
+      ]);
 
       let seedlessAuthSuccess = false;
       let isNewUser = false;
@@ -283,18 +286,6 @@ export function startOAuthLogin(
         ]));
         seedlessAuthSuccess = true;
       } catch (error) {
-        const errorMessage =
-          error instanceof Error ? error.message : 'Unknown error';
-
-        bufferedTrace?.({
-          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        bufferedEndTrace?.({
-          name: TraceName.OnboardingOAuthSeedlessAuthenticateError,
-        });
-
         trackEvent?.({
           event: MetaMetricsEventName.SocialLoginFailed,
           category: MetaMetricsEventCategory.Onboarding,
@@ -314,6 +305,13 @@ export function startOAuthLogin(
             error_category: 'seedless_auth',
           },
         });
+
+        captureException(
+          createSentryError(
+            TraceName.OnboardingOAuthSeedlessAuthenticateError,
+            error as Error,
+          ),
+        );
 
         throw error;
       } finally {
@@ -374,7 +372,7 @@ export function resetOAuthLoginState() {
  */
 export function createNewVaultAndSyncWithSocial(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       const primaryKeyring = await createNewVault(password);
@@ -409,18 +407,23 @@ export function createNewVaultAndSyncWithSocial(
  * Starts polling for the subscriptions.
  */
 export function subscriptionsStartPolling(): ThunkAction<
-  void,
+  string | undefined,
   MetaMaskReduxState,
   unknown,
   AnyAction
 > {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
-      await submitRequestToBackground('subscriptionsStartPolling');
+      const pollingToken = await submitRequestToBackground(
+        'subscriptionsStartPolling',
+        [],
+      );
+      return pollingToken;
     } catch (error) {
       log.error('[subscriptionsStartPolling] error', error);
       dispatch(displayWarning(error));
     }
+    return undefined;
   };
 }
 
@@ -508,7 +511,16 @@ export function getSubscriptions(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground('getSubscriptions');
+    try {
+      const subscriptions = await submitRequestToBackground('getSubscriptions');
+      return subscriptions;
+    } catch (error) {
+      log.error('[getSubscriptions] error', error);
+      captureException(
+        createSentryError('Failed to fetch subscriptions', error),
+      );
+      throw error;
+    }
   };
 }
 
@@ -524,9 +536,18 @@ export function getSubscriptionPricing(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<PricingResponse>(
-      'getSubscriptionPricing',
-    );
+    try {
+      const pricing = await submitRequestToBackground<PricingResponse>(
+        'getSubscriptionPricing',
+      );
+      return pricing;
+    } catch (error) {
+      log.error('[getSubscriptionPricing] error', error);
+      captureException(
+        createSentryError('Failed to fetch subscription pricing', error),
+      );
+      throw error;
+    }
   };
 }
 
@@ -541,10 +562,22 @@ export function getSubscriptionPricing(): ThunkAction<
 export async function getSubscriptionCryptoApprovalAmount(
   params: GetCryptoApproveTransactionRequest,
 ): Promise<GetCryptoApproveTransactionResponse> {
-  return await submitRequestToBackground<string>(
-    'getSubscriptionCryptoApprovalAmount',
-    [params],
-  );
+  try {
+    const cryptoApprovalAmount = await submitRequestToBackground<string>(
+      'getSubscriptionCryptoApprovalAmount',
+      [params],
+    );
+    return cryptoApprovalAmount;
+  } catch (error) {
+    log.error('[getSubscriptionCryptoApprovalAmount] error', error);
+    captureException(
+      createSentryError(
+        'Failed to get subscription crypto approval amount',
+        error,
+      ),
+    );
+    throw error;
+  }
 }
 
 /**
@@ -572,8 +605,11 @@ export function startSubscriptionWithCard(params: {
       );
 
       return subscriptions;
-    } catch (error) {
-      console.error('[startSubscriptionWithCard] error', error);
+    } catch (err) {
+      log.error('[startSubscriptionWithCard] error', err);
+      const error = new Error(
+        `Failed to start subscription with card, ${getErrorMessage(err)}`,
+      );
       throw error;
     }
   };
@@ -595,24 +631,6 @@ export function updateSubscriptionCardPaymentMethod(params: {
   };
 }
 
-export function startSubscriptionWithCrypto(params: {
-  products: ProductType[];
-  isTrialRequested: boolean;
-  recurringInterval: RecurringInterval;
-  billingCycles: number;
-  chainId: Hex;
-  payerAddress: Hex;
-  tokenSymbol: string;
-  rawTransaction: Hex;
-}): ThunkAction<Subscription[], MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    return await submitRequestToBackground<Subscription[]>(
-      'startSubscriptionWithCrypto',
-      [params],
-    );
-  };
-}
-
 export function updateSubscriptionCryptoPaymentMethod(
   params: Extract<UpdatePaymentMethodOpts, { paymentType: 'crypto' }>,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
@@ -626,8 +644,19 @@ export function updateSubscriptionCryptoPaymentMethod(
 export function cancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('cancelSubscription', [params]);
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('cancelSubscription', [params]);
+    } catch (error) {
+      log.error('[cancelSubscription] error', error);
+      dispatch(displayWarning(error));
+      captureException(
+        createSentryError('Failed to cancel subscription', error),
+      );
+
+      // rethrow the original error
+      throw error;
+    }
   };
 }
 
@@ -635,7 +664,16 @@ export function unCancelSubscription(params: {
   subscriptionId: string;
 }): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    await submitRequestToBackground('unCancelSubscription', [params]);
+    try {
+      await submitRequestToBackground('unCancelSubscription', [params]);
+    } catch (error) {
+      log.error('[unCancelSubscription] error', error);
+      const unCancelSubscriptionError = new Error(
+        `Failed to uncancel subscription, ${getErrorMessage(error)}`,
+      );
+      captureException(unCancelSubscriptionError);
+      throw unCancelSubscriptionError;
+    }
   };
 }
 
@@ -646,11 +684,23 @@ export function getSubscriptionBillingPortalUrl(): ThunkAction<
   AnyAction
 > {
   return async (_dispatch: MetaMaskReduxDispatch) => {
-    const res = await submitRequestToBackground<BillingPortalResponse>(
-      'getSubscriptionBillingPortalUrl',
-      [],
-    );
-    return res;
+    try {
+      const billingPortalUrl = await submitRequestToBackground(
+        'getSubscriptionBillingPortalUrl',
+      );
+      return billingPortalUrl;
+    } catch (error) {
+      log.error('[getSubscriptionBillingPortalUrl] error', error);
+      captureException(
+        createSentryError(
+          'Failed to get subscription billing portal url',
+          error,
+        ),
+      );
+
+      // rethrow the original error
+      throw error;
+    }
   };
 }
 
@@ -773,6 +823,33 @@ export function setShieldSubscriptionMetricsProps(
 }
 
 /**
+ * Links the reward to the existing shield subscription.
+ *
+ * @param subscriptionId - Shield subscription ID to link the reward to.
+ * @param rewardPoints - The number of reward points which user will receive after linking the reward to the subscription.
+ * @returns Promise<void> - The reward subscription ID or undefined if the season is not active or the primary account is not opted in to rewards.
+ */
+export function linkRewardToShieldSubscription(
+  subscriptionId: string,
+  rewardPoints: number,
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async (dispatch: MetaMaskReduxDispatch) => {
+    try {
+      await submitRequestToBackground('linkRewardToShieldSubscription', [
+        subscriptionId,
+        rewardPoints,
+      ]);
+
+      // refetch the subscriptions
+      await dispatch(getSubscriptions());
+    } catch (error) {
+      dispatch(displayWarning(error));
+      throw error;
+    }
+  };
+}
+
+/**
  * Fetches and restores the seed phrase from the metadata store using the social login and restore the vault using the seed phrase.
  *
  * @param password - The password.
@@ -780,7 +857,7 @@ export function setShieldSubscriptionMetricsProps(
  */
 export function restoreSocialBackupAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch) => {
     try {
       // restore the vault using the seed phrase
@@ -1072,7 +1149,7 @@ export function generateNewMnemonicAndAddToVault(): ThunkAction<
 }
 export function createNewVaultAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1097,7 +1174,7 @@ export function createNewVaultAndGetSeedPhrase(
 
 export function unlockAndGetSeedPhrase(
   password: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+): ThunkAction<Promise<string>, MetaMaskReduxState, unknown, AnyAction> {
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
   // eslint-disable-next-line @typescript-eslint/no-misused-promises
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -1728,42 +1805,6 @@ export function updateEditableParams(
   };
 }
 
-/**
- * Appends new send flow history to a transaction
- * TODO: Not a thunk, but rather a wrapper around a background call
- *
- * @param txId - the id of the transaction to update
- * @param currentSendFlowHistoryLength - sendFlowHistory entries currently
- * @param sendFlowHistory - the new send flow history to append to the
- * transaction
- * @returns
- */
-export function updateTransactionSendFlowHistory(
-  txId: string,
-  currentSendFlowHistoryLength: number,
-  sendFlowHistory: DraftTransaction['history'],
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionSendFlowHistory',
-        [txId, currentSendFlowHistoryLength, sendFlowHistory],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export async function backupUserData(): Promise<{
   filename: string;
   data: string;
@@ -1918,7 +1959,6 @@ export function updateTransaction(
  * @param txParams - The transaction parameters
  * @param options
  * @param options.networkClientId - ID of the network client to use for the transaction.
- * @param options.sendFlowHistory - The history of the send flow at time of creation.
  * @param options.type - The type of the transaction being added.
  * @returns
  */
@@ -1926,7 +1966,6 @@ export function addTransactionAndRouteToConfirmationPage(
   txParams: TransactionParams,
   options?: {
     networkClientId: NetworkClientId;
-    sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
   },
 ): ThunkAction<
@@ -2866,7 +2905,7 @@ export function setSelectedAccount(
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
+    const activeTabOrigin = getOriginOfCurrentTab(state);
     const prevAccount = getSelectedInternalAccount(state);
     const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
@@ -4419,15 +4458,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
+export async function setDefaultHomeActiveTabName(
   value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+): Promise<void> {
+  try {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
-  };
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
@@ -4713,7 +4751,7 @@ export function toggleAccountMenu() {
 
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
-  isMultiRpcOnboarding: boolean;
+  isMultiRpcOnboarding?: boolean;
   isAccessedFromDappConnectedSitePopover?: boolean;
 }) {
   return {
@@ -4722,15 +4760,14 @@ export function toggleNetworkMenu(payload?: {
   };
 }
 
-export function setAccountDetailsAddress(address: string) {
+export function closeNetworkMenu() {
   return {
-    type: actionConstants.SET_ACCOUNT_DETAILS_ADDRESS,
-    payload: address,
+    type: actionConstants.CLOSE_NETWORK_MENU,
   };
 }
 
 export function setParticipateInMetaMetrics(
-  participationPreference: boolean,
+  participationPreference: boolean | null,
 ): ThunkAction<
   Promise<[boolean, string]>,
   MetaMaskReduxState,
@@ -4780,6 +4817,19 @@ export function setDataCollectionForMarketing(
       type: actionConstants.SET_DATA_COLLECTION_FOR_MARKETING,
       value: dataCollectionPreference,
     });
+  };
+}
+
+export function setPna25Acknowledged(
+  acknowledged: boolean,
+  delayCollection = false,
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    log.debug(`background.setPna25Acknowledged`);
+    await submitRequestToBackground('setPna25Acknowledged', [
+      acknowledged,
+      delayCollection,
+    ]);
   };
 }
 
@@ -5089,7 +5139,7 @@ export function setIsIpfsGatewayEnabled(
 }
 
 export function setUseAddressBarEnsResolution(
-  val: string,
+  val: boolean,
 ): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
   return (dispatch: MetaMaskReduxDispatch) => {
     log.debug(`background.setUseAddressBarEnsResolution`);
@@ -6285,13 +6335,15 @@ export async function tokenBalancesStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-export async function updateBalancesFoAccounts(
+export function updateBalancesFoAccounts(
   chainIds: string[],
   queryAllAccounts: boolean,
-): Promise<void> {
-  await submitRequestToBackground('updateBalances', [
-    { chainIds, queryAllAccounts },
-  ]);
+): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
+  return async () => {
+    await submitRequestToBackground('updateBalances', [
+      { chainIds, queryAllAccounts },
+    ]);
+  };
 }
 
 /**
@@ -6727,13 +6779,16 @@ export function cancelSmartTransaction(
 // TODO: Not a thunk but rather a wrapper around a background call
 export function fetchSmartTransactionsLiveness({
   networkClientId,
+  chainId,
 }: {
+  /** @deprecated Use `chainId` instead. */
   networkClientId?: string;
+  chainId?: string;
 } = {}) {
   return async () => {
     try {
       await submitRequestToBackground('fetchSmartTransactionsLiveness', [
-        { networkClientId },
+        { networkClientId, chainId },
       ]);
     } catch (err) {
       logErrorWithMessage(err);
@@ -8057,6 +8112,7 @@ export async function submitShieldClaim(
 
     return ClaimSubmitToastType.Success;
   } catch (error) {
+    captureException(createSentryError('Failed to submit shield claim', error));
     if (error instanceof SubmitClaimError) {
       throw error;
     }
@@ -8095,4 +8151,26 @@ export async function generateClaimSignature(
     chainId,
     walletAddress,
   ]);
+}
+
+/**
+ * Saves a claim draft.
+ *
+ * @param draft - The draft to save.
+ * @returns The saved draft.
+ */
+export async function saveClaimDraft(
+  draft: Partial<ClaimDraft>,
+): Promise<ClaimDraft> {
+  return await submitRequestToBackground<ClaimDraft>('saveClaimDraft', [draft]);
+}
+
+/**
+ * Deletes a claim draft.
+ *
+ * @param draftId - The ID of the draft to delete.
+ * @returns The deleted draft.
+ */
+export async function deleteClaimDraft(draftId: string): Promise<void> {
+  return await submitRequestToBackground<void>('deleteClaimDraft', [draftId]);
 }

@@ -32,6 +32,7 @@ import {
 } from '../../../test/jest/mocks';
 import { ETH_EOA_METHODS } from '../../../shared/constants/eth-methods';
 import { mockNetworkState } from '../../../test/stub/networks';
+import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
 import * as Utils from './swap-and-send-utils';
 import sendReducer, {
   initialState,
@@ -94,9 +95,9 @@ jest.mock('lodash', () => ({
 }));
 
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -109,16 +110,12 @@ describe('Send Slice', () => {
 
   let addTransactionAndRouteToConfirmationPageStub;
   let addTransactionAndWaitForPublishStub;
-  let setDefaultHomeActiveTabNameStub;
 
   beforeEach(() => {
     setBackgroundConnection({
       addPollingTokenToAppState: jest.fn(),
       addTransaction: jest.fn((_u, _v) => {
         return Promise.resolve({ transactionMeta: null });
-      }),
-      updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) => {
-        return Promise.resolve();
       }),
     });
 
@@ -147,9 +144,6 @@ describe('Send Slice', () => {
     addTransactionAndWaitForPublishStub = jest
       .spyOn(Actions, 'addTransactionAndWaitForPublish')
       .mockImplementation(({ id }) => Promise.resolve({ id }));
-    setDefaultHomeActiveTabNameStub = jest
-      .spyOn(Actions, 'setDefaultHomeActiveTabName')
-      .mockImplementation(() => ({ type: '' }));
     jest
       .spyOn(Actions, 'estimateGas')
       .mockImplementation(() => Promise.resolve('0x0'));
@@ -3052,9 +3046,6 @@ describe('Send Slice', () => {
           setBackgroundConnection({
             addPollingTokenToAppState: jest.fn(() => Promise.resolve()),
             addTransaction: jest.fn((_u, _v) => Promise.reject(ERROR)),
-            updateTransactionSendFlowHistory: jest.fn((_x, _y, _z) =>
-              Promise.resolve(),
-            ),
           });
 
           await expect(
@@ -3141,11 +3132,12 @@ describe('Send Slice', () => {
           const store = mockStore(swapAndSendState);
 
           store.clearActions();
+          mockUseNavigate.mockClear();
           await store.dispatch(signTransaction(mockUseNavigate));
 
-          expect(
-            setDefaultHomeActiveTabNameStub.mock.calls[0][0],
-          ).toStrictEqual('activity');
+          expect(mockUseNavigate).toHaveBeenCalledWith(
+            `${DEFAULT_ROUTE}?tab=activity`,
+          );
 
           expect(
             addTransactionAndWaitForPublishStub.mock.calls[0][0].data,

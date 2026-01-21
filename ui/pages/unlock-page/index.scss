@@ -29,7 +29,11 @@
       height: 180px;
 
       &--popup {
-        margin-bottom: 0;
+        margin-bottom: 24px;
+
+        @include design-system.screen-md-max {
+          margin-bottom: 0;
+        }
       }
     }
 

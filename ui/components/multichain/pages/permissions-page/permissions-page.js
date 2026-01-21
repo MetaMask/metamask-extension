@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { isSnapId } from '@metamask/snaps-utils';
 import { Content, Header, Page } from '../page';
@@ -11,6 +11,9 @@ import {
   Text,
 } from '../../../component-library';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useTheme } from '../../../../hooks/useTheme';
+import { TabEmptyState } from '../../../ui/tab-empty-state';
+import { ThemeType } from '../../../../../shared/constants/preferences';
 import {
   BackgroundColor,
   BlockSize,
@@ -19,7 +22,6 @@ import {
   FlexDirection,
   JustifyContent,
   TextAlign,
-  TextColor,
   TextVariant,
 } from '../../../../helpers/constants/design-system';
 import {
@@ -32,8 +34,9 @@ import { getMergedConnectionsListWithGatorPermissions } from '../../../../select
 import { isGatorPermissionsRevocationFeatureEnabled } from '../../../../../shared/modules/environment';
 import { ConnectionListItem } from './connection-list-item';
 
-export const PermissionsPage = () => {
+const PermissionsPage = () => {
   const t = useI18nContext();
+  const theme = useTheme();
   const navigate = useNavigate();
   const headerRef = useRef();
   const [totalConnections, setTotalConnections] = useState(0);
@@ -113,27 +116,29 @@ export const PermissionsPage = () => {
             flexDirection={FlexDirection.Column}
             justifyContent={JustifyContent.center}
             height={BlockSize.Full}
-            gap={2}
             padding={4}
           >
-            <Text
-              variant={TextVariant.bodyMdMedium}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptyContent')}
-            </Text>
-            <Text
-              variant={TextVariant.bodyMd}
-              color={TextColor.textAlternative}
-              backgroundColor={BackgroundColor.backgroundDefault}
-              textAlign={TextAlign.Center}
-            >
-              {t('permissionsPageEmptySubContent')}
-            </Text>
+            <TabEmptyState
+              icon={
+                <img
+                  src={
+                    theme === ThemeType.dark
+                      ? '/images/empty-state-permissions-dark.png'
+                      : '/images/empty-state-permissions-light.png'
+                  }
+                  alt={t('permissionsPageEmptyDescription')}
+                  width={72}
+                  height={72}
+                />
+              }
+              description={t('permissionsPageEmptyDescription')}
+              className="mx-auto"
+            />
           </Box>
         )}
       </Content>
     </Page>
   );
 };
+
+export default PermissionsPage;

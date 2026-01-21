@@ -1,13 +1,13 @@
 const {
   default: Confirmation,
-} = require('../../page-objects/pages/confirmations/redesign/confirmation');
+} = require('../../page-objects/pages/confirmations/confirmation');
 const {
   createDappTransaction,
 } = require('../../page-objects/flows/transaction');
 
 const { withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixture-builder');
+const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   loginWithBalanceValidation,
 } = require('../../page-objects/flows/login.flow');

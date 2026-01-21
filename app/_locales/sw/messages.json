@@ -223,9 +223,6 @@
   "enterPasswordContinue": {
     "message": "Ingiza nenosiri ili uendelee"
   },
-  "ethereumPublicAddress": {
-    "message": "Anwani ya Umma ya Ethereum"
-  },
   "etherscanView": {
     "message": "Tazama akaunti kwenye Etherscan"
   },
@@ -369,9 +366,6 @@
   "needImportFile": {
     "message": "Unapaswa kuchagua faili la kuhamisha.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Haiwezi kutuma viwango hasi vya ETH."
   },
   "networkName": {
     "message": "Jina la mtandao"

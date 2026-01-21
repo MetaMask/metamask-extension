@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Norėdami tęsti, įveskite slaptažodį"
   },
-  "ethereumPublicAddress": {
-    "message": "„Ethereum“ viešasis adresas"
-  },
   "etherscanView": {
     "message": "Peržiūrėti paskyrą „Etherscan“ programoje"
   },
@@ -387,9 +384,6 @@
   "needImportFile": {
     "message": "Turite pasirinkti failą, kurį pageidaujate importuoti.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Neigiamų ETH sumų siųsti negalima."
   },
   "networkName": {
     "message": "Tinklo pavadinimas"

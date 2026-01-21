@@ -1,5 +1,5 @@
 import { readdirSync } from 'node:fs';
-import { parse, join, relative, sep } from 'node:path';
+import { parse, join, sep } from 'node:path';
 import type { EntryObject, Stats } from 'webpack';
 import type TerserPluginType from 'terser-webpack-plugin';
 
@@ -20,7 +20,7 @@ export const __HMR_READY__ = Boolean(process.env.__HMR_READY__) || false;
 /**
  * Target browsers
  */
-export const Browsers = ['brave', 'chrome', 'firefox'] as const;
+export const Browsers = ['chrome', 'firefox'] as const;
 export type Browser = (typeof Browsers)[number];
 
 const slash = `\\${sep}`;
@@ -54,6 +54,16 @@ export const TREZOR_MODULE_RE = new RegExp(
 );
 
 /**
+ * Regular expression to match React files in the top-level `ui/` directory
+ * Uses a platform-specific path separator: `/` on Unix-like systems and `\` on
+ * Windows.
+ */
+export const UI_DIR_RE = new RegExp(
+  `^${join(__dirname, '..', '..', '..', 'ui').replaceAll(sep, slash)}${slash}(?:components|contexts|hooks|layouts|pages)${slash}.*$`,
+  'u',
+);
+
+/**
  * No Operation. A function that does nothing and returns nothing.
  *
  * @returns `undefined`
@@ -80,6 +90,7 @@ export const extensionToJs = (filename: string) =>
  * that were added to it.
  */
 export function collectEntries(manifest: Manifest, appRoot: string) {
+  const htmlPages = join(appRoot, 'html', 'pages');
   const entry: EntryObject = {};
   /**
    * Scripts that must be self-contained and not split into chunks.
@@ -105,9 +116,8 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
   }
 
   function addHtml(filename: string) {
-    assertValidEntryFileName(filename, appRoot);
     const parsedFileName = parse(filename).name;
-    entry[parsedFileName] = join(appRoot, filename);
+    entry[parsedFileName] = join(htmlPages, filename);
   }
 
   // add content_scripts to entries
@@ -144,7 +154,7 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     }
   }
 
-  for (const filename of readdirSync(appRoot)) {
+  for (const filename of readdirSync(htmlPages)) {
     // ignore non-htm/html files
     if (/\.html?$/iu.test(filename)) {
       // ignore background.html for MV2 as it was already handled above.
@@ -172,38 +182,6 @@ export function collectEntries(manifest: Manifest, appRoot: string) {
     return !name || !selfContainedScripts.has(name);
   }
   return { entry, canBeChunked };
-}
-
-/**
- * @param filename
- * @param appRoot
- * @throws Throws an `Error` if the file is an invalid entrypoint filename
- * (a file starting with "_")
- */
-function assertValidEntryFileName(filename: string, appRoot: string) {
-  if (!filename.startsWith('_')) {
-    return;
-  }
-
-  const relativeFile = relative(process.cwd(), join(appRoot, filename));
-  const error = `Invalid Entrypoint Filename Detected\nPath: ${relativeFile}`;
-  const reason = `Filenames at the root of the extension directory starting with "_" are reserved for use by the browser.`;
-  const newFile = filename.slice(1);
-  const solutions = [
-    `Rename this file to remove the underscore, e.g., '${filename}' to '${newFile}'`,
-    `Move this file to a subdirectory and, if necessary, add it manually to the build 😱`,
-  ];
-  const context = `This file was included in the build automatically by our build script, which adds all HTML files at the root of '${appRoot}'.`;
-
-  const message = `${error}
-  Reason: ${reason}
-
-  Suggested Actions:
-  ${solutions.map((solution) => ` •  ${solution}`).join('\n')}
-  ${`\n ${context}`}
-  `;
-
-  throw new Error(message);
 }
 
 /**

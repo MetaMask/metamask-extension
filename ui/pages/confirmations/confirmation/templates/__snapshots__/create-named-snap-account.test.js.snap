@@ -3,7 +3,7 @@
 exports[`create-named-snap-account confirmation matches snapshot 1`] = `
 <div>
   <div
-    class="confirmation-page"
+    class="confirmation-page h-full"
   >
     <div
       class="mm-box"

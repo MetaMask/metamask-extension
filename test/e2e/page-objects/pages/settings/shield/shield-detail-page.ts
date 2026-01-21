@@ -4,16 +4,6 @@ import { Driver } from '../../../../webdriver/driver';
 export default class ShieldDetailPage {
   private readonly driver: Driver;
 
-  // Page identification
-  private readonly pageTitle = {
-    text: 'Transaction Shield',
-    tag: 'h4',
-  };
-
-  // Main page container
-  private readonly pageContainer = '[data-testid="transaction-shield-page"]';
-
-  // Locators (alphabetically ordered)
   private readonly addFundsModal = '[data-testid="add-funds-modal"]';
 
   private readonly billingAccount =
@@ -23,6 +13,9 @@ export default class ShieldDetailPage {
     css: '[data-testid="shield-detail-billing-details-title"]',
     text,
   });
+
+  private readonly managePlanButton =
+    '[data-testid="shield-detail-manage-plan-button"]';
 
   private readonly cancelButton =
     '[data-testid="shield-tx-membership-cancel-button"]';
@@ -67,12 +60,29 @@ export default class ShieldDetailPage {
     text,
   });
 
-  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
+  private readonly pageContainer = '[data-testid="transaction-shield-page"]';
+
+  private readonly pageTitle = {
+    text: 'Transaction Shield',
+    tag: 'h4',
+  };
 
   private readonly paymentMethodElement = (text: string) => ({
     css: '[data-testid="shield-detail-payment-method"]',
     text,
   });
+
+  private readonly paymentMethodButton =
+    '[data-testid="shield-detail-payment-method-button"]';
+
+  private readonly paymentMethodTokenButtonByText = (text: string) => ({
+    css: '[data-testid="shield-payment-method-token-button"]',
+    text,
+  });
+
+  private readonly shieldPaymentModal = '[data-testid="shield-payment-modal"]';
+
+  private readonly pausedTag = '[data-testid="shield-detail-paused-tag"]';
 
   private readonly renewButton =
     '[data-testid="shield-tx-membership-uncancel-button"]';
@@ -154,6 +164,14 @@ export default class ShieldDetailPage {
   async clickViewBenefitsButton(): Promise<void> {
     console.log('Clicking View Full Benefits button');
     await this.driver.clickElement(this.viewBenefitsButton);
+  }
+
+  /**
+   * Click the Manage Plan button
+   */
+  async clickManagePlanButton(): Promise<void> {
+    console.log('Clicking Manage Plan button');
+    await this.driver.clickElement(this.managePlanButton);
   }
 
   /**
@@ -269,5 +287,61 @@ export default class ShieldDetailPage {
   async checkNotificationShieldBannerRemoved(): Promise<void> {
     console.log('Checking notification shield banner is removed');
     await this.driver.assertElementNotPresent(this.notificationShieldBanner);
+  }
+
+  async validateShieldDetailPage(options?: {
+    customerId?: string;
+    membershipStatus?: string;
+    nextBillingDate?: string;
+    charges?: string;
+    paymentMethod?: string;
+    expectTrialTag?: boolean;
+  }): Promise<void> {
+    const {
+      customerId = 'test_customer_id',
+      membershipStatus = 'Active plan',
+      nextBillingDate = 'Nov 3',
+      charges = '$80',
+      paymentMethod = 'Card',
+      expectTrialTag = true,
+    } = options || {};
+
+    await this.checkPageIsLoaded();
+
+    await this.checkCustomerId(customerId);
+
+    if (expectTrialTag) {
+      await this.checkTrialTagDisplayed();
+    }
+
+    await this.checkMembershipStatus(membershipStatus);
+
+    await this.checkNextBillingDate(nextBillingDate);
+
+    await this.checkCharges(charges);
+
+    await this.checkPaymentMethod(paymentMethod);
+  }
+
+  /**
+   * Click on the payment method button to open the payment modal
+   */
+  async clickPaymentMethod(): Promise<void> {
+    console.log('Clicking on payment method button');
+    await this.driver.waitForSelector(this.paymentMethodButton);
+    await this.driver.clickElement(this.paymentMethodButton);
+    await this.driver.waitForSelector(this.shieldPaymentModal);
+  }
+
+  /**
+   * Select payment method token in the payment modal
+   *
+   * @param paymentMethodText - The full payment method text to select (e.g., 'Pay with USDT', 'Pay with USDC')
+   */
+  async selectPaymentMethodInModal(paymentMethodText: string): Promise<void> {
+    console.log(`Selecting payment method: ${paymentMethodText}`);
+    await this.driver.clickElement(
+      this.paymentMethodTokenButtonByText(paymentMethodText),
+    );
   }
 }

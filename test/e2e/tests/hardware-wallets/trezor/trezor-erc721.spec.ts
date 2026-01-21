@@ -1,14 +1,15 @@
 import { Suite } from 'mocha';
 import TestDappPage from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
-import { DAPP_URL, WINDOW_TITLES, withFixtures } from '../../../helpers';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { KNOWN_PUBLIC_KEY_ADDRESSES } from '../../../../stub/keyring-bridge';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import CreateContractModal from '../../../page-objects/pages/dialog/create-contract';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import NFTListPage from '../../../page-objects/pages/home/nft-list';
-import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/set-approval-for-all-transaction-confirmation';
+import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import { SMART_CONTRACTS } from '../../../seeder/smart-contracts';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -34,12 +35,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         // deploy action
         const testDappPage = new TestDappPage(driver);
@@ -76,12 +72,7 @@ describe('Trezor Hardware', function (this: Suite) {
           KNOWN_PUBLIC_KEY_ADDRESSES[0].address as `0x${string}`,
           '0x100000000000000000000',
         );
-        await loginWithBalanceValidation(
-          driver,
-          undefined,
-          undefined,
-          '1208925.8196',
-        );
+        await loginWithBalanceValidation(driver, undefined, undefined, '1.21M');
 
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry
@@ -102,14 +93,14 @@ describe('Trezor Hardware', function (this: Suite) {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.goToNftTab();
-        const nftListPage = new NFTListPage(driver);
-        // Check that NFT image is displayed in NFT tab on homepagexp
-        await nftListPage.checkNftImageIsDisplayed();
         await homePage.goToActivityList();
         const activityListPage = new ActivityListPage(driver);
         await activityListPage.checkTransactionActivityByText('Deposit');
         await activityListPage.checkWaitForTransactionStatus('confirmed');
+        await homePage.goToNftTab();
+        const nftListPage = new NFTListPage(driver);
+        // Check that NFT image is displayed in NFT tab on homepagexp
+        await nftListPage.checkNftImageIsDisplayed();
       },
     );
   });
@@ -148,7 +139,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
 
         const contractAddress =
@@ -204,7 +195,7 @@ describe('Trezor Hardware', function (this: Suite) {
           driver,
           undefined,
           undefined,
-          balance?.toString(),
+          `${((balance ?? 0) / 1_000_000).toFixed(2)}M`.toString(),
         );
         const contractAddress = await (
           contractRegistry as ContractAddressRegistry

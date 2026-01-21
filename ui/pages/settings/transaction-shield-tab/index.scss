@@ -1,36 +1,31 @@
 .transaction-shield-page {
-  &__row {
-    margin-bottom: 1px;
+  @include design-system.screen-sm-min {
+    padding: 16px;
+  }
 
-    &:first-child {
-      border-top-left-radius: 8px;
-      border-top-right-radius: 8px;
-    }
+  &__error-content {
+    margin-top: 120px;
+  }
 
-    &:last-child {
-      border-bottom-left-radius: 8px;
-      border-bottom-right-radius: 8px;
-      margin-bottom: 0;
+  &__divider {
+    padding-inline: 16px;
+
+    @include design-system.screen-sm-min {
+      padding-inline: 0;
     }
   }
 
   &__membership {
-    background-size: 85px;
-    height: 85px;
-    background-image: url('/images/shield-membership-shadow.png');
-    background-repeat: no-repeat;
-    background-position: right -10px center;
-
-    .transaction-shield-page__membership-text {
-      color: var(--color-accent03-light);
-    }
+    height: 128px;
+    position: relative;
+    overflow: hidden;
 
     &--active {
       background-color: var(--color-accent03-dark);
     }
 
     &--loading {
-      background: var(--color-border-muted);
+      background-color: var(--color-border-muted);
     }
 
     &--inactive {
@@ -39,29 +34,24 @@
       &-light {
         background-color: var(--shield-membership-inactive-light);
       }
-
-      .transaction-shield-page__membership-text {
-        color: var(--color-text-default);
-      }
     }
   }
 
-  .warning-button:hover {
-    color: var(--color-warning-default);
+  &__membership-text {
+    color: var(--color-accent04-light);
   }
 
-  &__notification-banner {
-    margin-inline: 0;
-
-    @include design-system.screen-sm-max {
-      margin-inline: -16px;
-    }
+  &__membership--inactive &__membership-text {
+    color: var(--color-text-default);
   }
 
-  &-shield-illustration {
+  &-shield-banner {
     &__container {
-      height: 85px;
-      width: 85px;
+      position: absolute;
+      top: -6px;
+      right: 0;
+      height: 140px;
+      width: 140px;
     }
 
     &__canvas {
@@ -92,5 +82,15 @@
 
   &__account--selected {
     background-color: var(--color-primary-muted);
+  }
+}
+
+.button-row {
+  min-height: 60px;
+}
+
+.manage-plan-page {
+  @include design-system.screen-sm-min {
+    padding: 16px;
   }
 }

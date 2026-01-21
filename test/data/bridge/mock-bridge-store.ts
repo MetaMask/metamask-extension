@@ -1,12 +1,15 @@
 import {
   getDefaultBridgeControllerState,
   formatChainIdToCaip,
+  FeatureFlagResponse,
+  BridgeControllerState,
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
+import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -118,24 +121,23 @@ export const MOCK_EVM_ACCOUNT_2 = {
 };
 
 export const createBridgeMockStore = ({
-  featureFlagOverrides = {},
+  featureFlagOverrides = { bridgeConfig: {} },
   bridgeSliceOverrides = {},
   bridgeStateOverrides = {},
   bridgeStatusStateOverrides = {},
   metamaskStateOverrides = {},
   stateOverrides = {},
 }: {
-  // featureFlagOverrides?: Partial<BridgeControllerState['bridgeFeatureFlags']>;
-  // bridgeStateOverrides?: Partial<BridgeControllerState>;
+  featureFlagOverrides?: {
+    bridgeConfig: Partial<FeatureFlagResponse>;
+    smartTransactionsNetworks?: SmartTransactionsNetworks;
+  };
+  bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
   // TODO replace these with correct types
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  featureFlagOverrides?: Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeSliceOverrides?: Record<string, any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  bridgeStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   bridgeStatusStateOverrides?: Record<string, any>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -343,16 +345,23 @@ export const createBridgeMockStore = ({
           },
         },
       ],
+      smartTransactionsState: {
+        liveness: false,
+        livenessByChainId: { '0x1': true },
+      },
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
           ...featureFlagOverrides,
+          smartTransactionsNetworks: {
+            '0x1': { extensionActive: true },
+            ...featureFlagOverrides?.smartTransactionsNetworks,
+          },
           bridgeConfig: {
             minimumVersion: '0.0.0',
             support: false,
             refreshRate: 5000,
             maxRefreshCount: 5,
-            ...featureFlagOverrides?.extensionConfig,
             ...featureFlagOverrides?.bridgeConfig,
             chains: {
               [formatChainIdToCaip('0x1')]: {
@@ -361,9 +370,7 @@ export const createBridgeMockStore = ({
               },
               ...Object.fromEntries(
                 Object.entries(
-                  featureFlagOverrides?.extensionConfig?.chains ??
-                    featureFlagOverrides?.bridgeConfig?.chains ??
-                    {},
+                  featureFlagOverrides?.bridgeConfig?.chains ?? {},
                 ).map(([chainId, config]) => [
                   formatChainIdToCaip(chainId),
                   config,

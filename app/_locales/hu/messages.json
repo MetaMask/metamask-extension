@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "A folytatáshoz adja meg a jelszót"
   },
-  "ethereumPublicAddress": {
-    "message": "Ethereum nyilvános címe"
-  },
   "etherscanView": {
     "message": "Fiók megtekintése Etherscanen"
   },
@@ -384,9 +381,6 @@
   "needImportFile": {
     "message": "Ki kell választania az importálni kívánt fájlt.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Nem lehet negatív mennyiségű ETH-t küldeni."
   },
   "networkName": {
     "message": "Hálózat neve"

@@ -5,7 +5,10 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkController,
+  NetworkControllerMessenger,
+} from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
@@ -14,7 +17,6 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   NetworkControllerInitMessenger,
-  NetworkControllerMessenger,
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
 } from './messengers';
@@ -127,19 +129,19 @@ describe('NetworkControllerInit', () => {
               },
             ],
           },
-          "0x18c6": {
+          "0x18c7": {
             "blockExplorerUrls": [
-              "https://megaexplorer.xyz",
+              "https://megaeth-testnet-v2.blockscout.com",
             ],
-            "chainId": "0x18c6",
+            "chainId": "0x18c7",
             "defaultBlockExplorerUrlIndex": 0,
             "defaultRpcEndpointIndex": 0,
-            "name": "Mega Testnet",
+            "name": "MegaETH Testnet",
             "nativeCurrency": "MegaETH",
             "rpcEndpoints": [
               {
                 "failoverUrls": [],
-                "networkClientId": "megaeth-testnet",
+                "networkClientId": "megaeth-testnet-v2",
                 "type": "custom",
                 "url": "https://carrot.megaeth.com/rpc",
               },

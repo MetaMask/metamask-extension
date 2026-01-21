@@ -2,13 +2,17 @@ import { strict as assert } from 'assert';
 import { Mockttp } from 'mockttp';
 import { Driver } from '../../webdriver/driver';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, sentryRegEx } from '../../helpers';
+import {
+  DAPP_PATH,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
+import { withFixtures, sentryRegEx } from '../../helpers';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import PreinstalledExampleSettings from '../../page-objects/pages/settings/preinstalled-example-settings';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
-import { DAPP_PATH, MOCK_META_METRICS_ID } from '../../constants';
 import { mockTestSnapsSite } from '../../mock-response-data/snaps/snap-local-sites/test-snaps-site-mocks';
 import { TEST_SNAPS_WEBSITE_URL } from '../../snaps/enums';
 

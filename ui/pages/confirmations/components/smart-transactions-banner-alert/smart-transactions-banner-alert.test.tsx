@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 import { TransactionType } from '@metamask/transaction-controller';
 import { ConfirmContext, ConfirmContextType } from '../../context/confirm';
 import type { Confirmation, SignatureRequestType } from '../../types/confirm';
-import { renderWithProvider } from '../../../../../test/jest/rendering';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../../store/store';
 import { AlertTypes } from '../../../../../shared/constants/alerts';
 import { setAlertEnabledness } from '../../../../store/actions';
@@ -158,8 +158,8 @@ describe('SmartTransactionsBannerAlert', () => {
         ...mockState.metamask,
         ...mockNetworkState({
           id: 'network-configuration-id-2',
-          chainId: CHAIN_IDS.POLYGON,
-          rpcUrl: 'https://polygon-rpc.com',
+          chainId: CHAIN_IDS.OPTIMISM, // OPTIMISM is not in the allowed STX chain IDs
+          rpcUrl: 'https://optimism-rpc.com',
         }),
       },
     };

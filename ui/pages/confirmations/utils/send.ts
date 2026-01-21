@@ -5,7 +5,7 @@ import {
   TransactionType,
 } from '@metamask/transaction-controller';
 import { addHexPrefix } from 'ethereumjs-util';
-import { NavigateFunction } from 'react-router-dom-v5-compat';
+import { NavigateFunction } from 'react-router-dom';
 
 import { Numeric, NumericBase } from '../../../../shared/modules/Numeric';
 import {
@@ -66,11 +66,6 @@ export const fromTokenMinimalUnits = (
   addHexPrefix(
     fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString(),
   );
-
-export const fromTokenMinimalUnitsHexNumeric = (
-  value: string,
-  decimals?: number | string,
-) => fromTokenMinUnitsNumeric(value, 16, decimals);
 
 export const toTokenMinimalUnitNumeric = (
   value: string,

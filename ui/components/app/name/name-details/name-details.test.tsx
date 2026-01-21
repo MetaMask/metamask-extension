@@ -9,7 +9,7 @@ import {
   MetaMetricsEventName,
 } from '../../../../../shared/constants/metametrics';
 import { CHAIN_IDS } from '../../../../../shared/constants/network';
-import { renderWithProvider } from '../../../../../test/lib/render-helpers';
+import { renderWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { MetaMetricsContext } from '../../../../contexts/metametrics';
 import { getDomainResolutions } from '../../../../ducks/domains';
@@ -940,7 +940,7 @@ describe('NameDetails', () => {
         store,
       );
 
-      expect(getByText('Address Needs Review')).toBeInTheDocument();
+      expect(getByText('Address needs review')).toBeInTheDocument();
     });
 
     it('renders verified state correctly', () => {

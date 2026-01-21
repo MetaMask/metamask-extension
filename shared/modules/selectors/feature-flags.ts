@@ -30,6 +30,7 @@ export type SmartTransactionNetwork = {
   sentinelUrl?: string;
   extensionReturnTxHashAsap?: boolean;
   extensionReturnTxHashAsapBatch?: boolean;
+  extensionSkipSmartTransactionStatusPage?: boolean;
   batchStatusPollingInterval?: number;
 };
 
@@ -49,6 +50,12 @@ export type FeatureFlagsMetaMaskState = {
   };
 };
 
+/**
+ * @param state
+ * @param chainId
+ * @deprecated Use selectSmartTransactionsFeatureFlagsForChain instead
+ * Will be removed in a future release.
+ */
 export function getFeatureFlagsByChainId(
   state: ProviderConfigState & FeatureFlagsMetaMaskState,
   chainId?: string,
@@ -63,18 +70,32 @@ export function getFeatureFlagsByChainId(
   }
   const smartTransactionsNetworks =
     state.metamask.remoteFeatureFlags?.smartTransactionsNetworks;
-  const defaultConfig = smartTransactionsNetworks?.default;
-  const extensionReturnTxHashAsap =
-    defaultConfig?.extensionReturnTxHashAsap ?? false;
-  const extensionReturnTxHashAsapBatch =
-    defaultConfig?.extensionReturnTxHashAsapBatch ?? false;
+  const defaultConfig = smartTransactionsNetworks?.default ?? {};
+  const chainSpecificConfig =
+    smartTransactionsNetworks?.[effectiveChainId as Hex] ?? {};
+
+  // Merge with fallback precedence: chainSpecific > default > hardcoded defaults (false)
+  // TODO: this is temporary until we deprecate this file and implement a better flag system.
+  const remoteFlags = {
+    extensionReturnTxHashAsap:
+      chainSpecificConfig.extensionReturnTxHashAsap ??
+      defaultConfig.extensionReturnTxHashAsap ??
+      false,
+    extensionReturnTxHashAsapBatch:
+      chainSpecificConfig.extensionReturnTxHashAsapBatch ??
+      defaultConfig.extensionReturnTxHashAsapBatch ??
+      false,
+    extensionSkipSmartTransactionStatusPage:
+      chainSpecificConfig.extensionSkipSmartTransactionStatusPage ??
+      defaultConfig.extensionSkipSmartTransactionStatusPage ??
+      false,
+  };
 
   return {
     smartTransactions: {
       ...featureFlags.smartTransactions,
       ...featureFlags[networkName].smartTransactions,
-      extensionReturnTxHashAsap,
-      extensionReturnTxHashAsapBatch,
+      ...remoteFlags,
     },
   };
 }

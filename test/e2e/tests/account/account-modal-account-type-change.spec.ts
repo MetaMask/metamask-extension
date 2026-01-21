@@ -3,12 +3,13 @@ import { Anvil } from '@viem/anvil';
 
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AccountDetailsModal from '../../page-objects/pages/dialog/account-details-modal';
-import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/redesign/batch-confirmation';
-import FixtureBuilder from '../../fixture-builder';
+import Eip7702AndSendCalls from '../../page-objects/pages/confirmations/batch-confirmation';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import { Driver } from '../../webdriver/driver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockEip7702FeatureFlag } from '../confirmations/helpers';
 
@@ -45,7 +46,7 @@ describe.skip('Switch Modal - Switch Account', function (this: Suite) {
 
         const upgradeAndBatchTxConfirmation = new Eip7702AndSendCalls(driver);
         await upgradeAndBatchTxConfirmation.checkExpectedTxTypeIsDisplayed(
-          "You're switching to a smart account",
+          "You're switching to a smart account.",
         );
         await upgradeAndBatchTxConfirmation.checkExpectedInteractingWithIsDisplayed(
           'Account 1',

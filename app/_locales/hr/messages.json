@@ -229,9 +229,6 @@
   "enterPasswordContinue": {
     "message": "Upišite lozinku za nastavak"
   },
-  "ethereumPublicAddress": {
-    "message": "Javna adresa Ethereum"
-  },
   "etherscanView": {
     "message": "Prikaži račun na Etherscanu"
   },
@@ -384,9 +381,6 @@
   "needImportFile": {
     "message": "Morate odabrati datoteku za uvoz.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Ne mogu se slati negativne vrijednosti ETH-a."
   },
   "networkName": {
     "message": "Naziv mreže"

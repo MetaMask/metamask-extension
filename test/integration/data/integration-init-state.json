@@ -1,10 +1,27 @@
 {
+  "accountGroupsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
+      "name": {
+        "value": "Account 1",
+        "lastUpdatedAt": 0
+      },
+      "pinned": {
+        "value": false,
+        "lastUpdatedAt": 0
+      },
+      "hidden": {
+        "value": false,
+        "lastUpdatedAt": 0
+      }
+    }
+  },
   "accountTree": {
     "selectedAccountGroup": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
     "wallets": {
       "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
         "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ",
         "type": "entropy",
+        "status": "ready",
         "groups": {
           "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0": {
             "id": "entropy:01JKAF3DSGM3AB87EM9N0K41AJ/0",
@@ -32,26 +49,19 @@
       }
     }
   },
+  "accountWalletsMetadata": {
+    "entropy:01JKAF3DSGM3AB87EM9N0K41AJ": {
+      "name": {
+        "value": "Wallet 1",
+        "lastUpdatedAt": 0
+      }
+    }
+  },
   "accountsAssets": {},
   "accountsByChainId": {
     "0xaa36a7": {
       "0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc": {
         "balance": "0x15f6f0b9d4f8d000"
-      },
-      "0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B": {
-        "balance": "0x0"
-      },
-      "0xc42EDfCC21eD14dDA456AA0756C153F7985D8813": {
-        "balance": "0x0"
-      },
-      "0xeB9e64B93097bc15F01F13eae97015c57ab64823": {
-        "balance": "0x0"
-      },
-      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-        "balance": "0x0"
-      },
-      "0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D": {
-        "balance": "0x0"
       }
     }
   },
@@ -78,6 +88,7 @@
     "unconnectedAccount": true
   },
   "allIgnoredAssets": {},
+  "allIgnoredTokens": {},
   "allNftContracts": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0x1": [
@@ -438,6 +449,7 @@
     }
   },
   "hadAdvancedGasFeesSetPriorToMigration92_3": false,
+  "hasAccountTreeSyncingSyncedAtLeastOnce": true,
   "hasDismissedOpenSeaToBlockaidBanner": false,
   "hiddenAccountList": [],
   "identities": {
@@ -473,7 +485,8 @@
           "name": "Test Account",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -493,7 +506,8 @@
           "name": "Test Account 2",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -513,7 +527,8 @@
           "name": "Ledger Hardware 2",
           "keyring": {
             "type": "Ledger Hardware"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -533,7 +548,8 @@
           "name": "Test Account 3",
           "keyring": {
             "type": "HD Key Tree"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -553,7 +569,8 @@
           "name": "Test Account 4",
           "keyring": {
             "type": "Custody test"
-          }
+          },
+          "importTime": 0
         },
         "options": {},
         "methods": [
@@ -574,9 +591,11 @@
           "keyring": {
             "type": "Snap Keyring"
           },
+          "importTime": 0,
           "snap": {
             "id": "snap-id",
-            "name": "snap-name"
+            "name": "snap-name",
+            "enabled": true
           }
         },
         "options": {},
@@ -595,6 +614,7 @@
   },
   "ipfsGateway": "dweb.link",
   "isAccountMenuOpen": false,
+  "isAccountTreeSyncingInProgress": false,
   "isEvmSelected": true,
   "isInitialized": true,
   "isIpfsGatewayEnabled": true,
@@ -629,6 +649,7 @@
       "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
     }
   ],
+  "marketData": {},
   "multichainNetworkConfigurationsByChainId": {
     "bip122:000000000019d6689c085ae165831e93": {
       "chainId": "bip122:000000000019d6689c085ae165831e93",
@@ -822,6 +843,14 @@
   "remoteFeatureFlags": {
     "bridgeConfig": {
       "support": true
+    },
+    "smartTransactionsNetworks": {
+      "0x1": {
+        "extensionActive": true
+      },
+      "0xaa36a7": {
+        "extensionActive": true
+      }
     }
   },
   "securityAlertsEnabled": true,
@@ -840,6 +869,10 @@
   "smartTransactionsState": {
     "fees": {},
     "liveness": true,
+    "livenessByChainId": {
+      "0x1": true,
+      "0xaa36a7": true
+    },
     "smartTransactions": {
       "0x1": [],
       "0xaa36a7": []

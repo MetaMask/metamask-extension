@@ -2,7 +2,14 @@ import type { AddNetworkFields } from '@metamask/network-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
 import { BtcScope, SolScope, TrxScope } from '@metamask/keyring-api';
 import { capitalize, pick } from 'lodash';
-import { Hex, hexToNumber } from '@metamask/utils';
+import {
+  CaipChainId,
+  Hex,
+  hexToNumber,
+  KnownCaipNamespace,
+  toCaipChainId,
+} from '@metamask/utils';
+import { NON_EVM_TESTNET_IDS } from '@metamask/multichain-network-controller';
 import { MultichainNetworks } from './multichain/networks';
 
 /**
@@ -88,6 +95,7 @@ export const NETWORK_TYPES = {
   LINEA_SEPOLIA: 'linea-sepolia',
   LINEA_MAINNET: 'linea-mainnet',
   MEGAETH_TESTNET: 'megaeth-testnet',
+  MEGAETH_TESTNET_V2: 'megaeth-testnet-v2',
   MONAD_TESTNET: 'monad-testnet',
 } as const;
 
@@ -183,6 +191,7 @@ export const CHAIN_IDS = {
   MODE_SEPOLIA: '0x397',
   MODE: '0x868b',
   MEGAETH_TESTNET: '0x18c6',
+  MEGAETH_TESTNET_V2: '0x18c7',
   MEGAETH_MAINNET: '0x10e6',
   XRPLEVM_TESTNET: '0x161c28',
   LENS: '0xe8',
@@ -208,6 +217,12 @@ export const CHAIN_IDS = {
   INJECTIVE: '0x6f0',
   MONAD: '0x8f',
   HYPE: '0x3e7',
+  X_LAYER: '0xc4',
+  ETHERLINK: '0xa729',
+  MSU: '0x10b3e',
+  BOB: '0xed88',
+  ROOTSTOCK: '0x1e',
+  ROOTSTOCK_TESTNET: '0x1f',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
@@ -332,7 +347,8 @@ export const OP_BNB_DISPLAY_NAME = 'opBNB';
 export const BERACHAIN_DISPLAY_NAME = 'Berachain';
 export const METACHAIN_ONE_DISPLAY_NAME = 'Metachain One Mainnet';
 export const MEGAETH_TESTNET_DISPLAY_NAME = 'Mega Testnet';
-export const MEGAETH_MAINNET_DISPLAY_NAME = 'Mega Mainnet';
+export const MEGAETH_TESTNET_V2_DISPLAY_NAME = 'MegaETH Testnet';
+export const MEGAETH_MAINNET_DISPLAY_NAME = 'MegaETH';
 export const LISK_DISPLAY_NAME = 'Lisk';
 export const LISK_SEPOLIA_DISPLAY_NAME = 'Lisk Sepolia';
 export const INK_SEPOLIA_DISPLAY_NAME = 'Ink Sepolia';
@@ -370,6 +386,12 @@ export const PLASMA_DISPLAY_NAME = 'Plasma';
 export const LUKSO_DISPLAY_NAME = 'Lukso';
 export const INJECTIVE_DISPLAY_NAME = 'Injective';
 export const HYPEREVM_DISPLAY_NAME = 'HyperEVM';
+export const X_LAYER_DISPLAY_NAME = 'X Layer';
+export const ETHERLINK_DISPLAY_NAME = 'Etherlink';
+export const MSU_DISPLAY_NAME = 'MapleStory Universe';
+export const BOB_DISPLAY_NAME = 'BOB';
+export const ROOTSTOCK_DISPLAY_NAME = 'Rootstock Mainnet';
+export const ROOTSTOCK_TESTNET_DISPLAY_NAME = 'Rootstock Testnet';
 
 // If `network.ts` is being run in the Node.js environment, `infura-project-id.ts` will not be imported,
 // so we need to look at process.env.INFURA_PROJECT_ID instead.
@@ -403,6 +425,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
+export const MEGAETH_TESTNET_V2_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
 
 /**
@@ -455,6 +478,12 @@ export const CURRENCY_SYMBOLS = {
   LUKSO: 'LYX',
   INJECTIVE: 'INJ',
   HYPE: 'HYPE',
+  X_LAYER: 'OKB',
+  ETHERLINK: 'XTZ',
+  MSU: 'NXPC',
+  BOB: 'ETH',
+  ROOTSTOCK: 'RBTC',
+  ROOTSTOCK_TESTNET: 'tRBTC',
 } as const;
 
 // Non-EVM currency symbols
@@ -628,6 +657,7 @@ export const SHAPE_SEPOLIA_IMAGE_URL = './images/shape-sepolia.svg';
 export const SHAPE_IMAGE_URL = './images/shape.svg';
 export const UNICHAIN_IMAGE_URL = './images/unichain.svg';
 export const MEGAETH_TESTNET_IMAGE_URL = './images/MegaETH-logo-testnet.png';
+export const MEGAETH_TESTNET_V2_IMAGE_URL = './images/MegaETH-logo-testnet.png';
 export const MEGAETH_MAINNET_IMAGE_URL = './images/MegaETH-logo-mainnet.png';
 export const SOLANA_IMAGE_URL = './images/solana-logo.svg';
 export const SOLANA_TESTNET_IMAGE_URL = './images/solana-testnet-logo.svg';
@@ -677,6 +707,15 @@ export const LUKSO_IMAGE_URL = './images/lukso.svg';
 export const LUKSO_NATIVE_TOKEN_IMAGE_URL = './images/lukso-native.svg';
 export const INJECTIVE_IMAGE_URL = './images/injective.svg';
 export const HYPEREVM_IMAGE_URL = './images/hyperevm.svg';
+export const X_LAYER_IMAGE_URL = './images/x-layer.svg';
+export const X_LAYER_NATIVE_TOKEN_IMAGE_URL = './images/x-layer-native.svg';
+export const ETHERLINK_IMAGE_URL = './images/etherlink.svg';
+export const ETHERLINK_NATIVE_TOKEN_IMAGE_URL = './images/etherlink-native.svg';
+export const MSU_IMAGE_URL = './images/msu.svg';
+export const MSU_NATIVE_TOKEN_IMAGE_URL = './images/msu-native.svg';
+export const BOB_IMAGE_URL = './images/bob.svg';
+export const ROOTSTOCK_IMAGE_URL = './images/rootstock.svg';
+export const ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL = './images/rootstock-native.svg';
 
 export const INFURA_PROVIDER_TYPES = [
   NETWORK_TYPES.MAINNET,
@@ -690,12 +729,16 @@ export const TEST_CHAINS: Hex[] = [
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.LOCALHOST,
   CHAIN_IDS.MEGAETH_TESTNET,
+  CHAIN_IDS.MEGAETH_TESTNET_V2,
   CHAIN_IDS.MONAD_TESTNET,
 ];
 
-export const CAIP_FORMATTED_EVM_TEST_CHAINS = TEST_CHAINS.map(
-  (chainId) => `eip155:${hexToNumber(chainId)}`,
-);
+export const CAIP_FORMATTED_TEST_CHAINS: CaipChainId[] = [
+  ...TEST_CHAINS.map((chainId) =>
+    toCaipChainId(KnownCaipNamespace.Eip155, hexToNumber(chainId).toString()),
+  ),
+  ...NON_EVM_TESTNET_IDS,
+];
 
 export const MAINNET_CHAINS = [
   { chainId: CHAIN_IDS.MAINNET, rpcUrl: MAINNET_RPC_URL },
@@ -722,6 +765,7 @@ export const TEST_NETWORK_TICKER_MAP: {
   [NETWORK_TYPES.LINEA_GOERLI]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.LINEA_SEPOLIA]: `Linea${CURRENCY_SYMBOLS.ETH}`,
   [NETWORK_TYPES.MEGAETH_TESTNET]: 'MegaETH',
+  [NETWORK_TYPES.MEGAETH_TESTNET_V2]: 'MegaETH',
   [NETWORK_TYPES.MONAD_TESTNET]: 'MON',
 };
 
@@ -756,6 +800,11 @@ export const BUILT_IN_NETWORKS = {
     chainId: CHAIN_IDS.MEGAETH_TESTNET,
     ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
     blockExplorerUrl: 'https://megaexplorer.xyz',
+  },
+  [NETWORK_TYPES.MEGAETH_TESTNET_V2]: {
+    chainId: CHAIN_IDS.MEGAETH_TESTNET_V2,
+    ticker: TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET_V2],
+    blockExplorerUrl: 'https://megaeth-testnet-v2.blockscout.com',
   },
   [NETWORK_TYPES.MONAD_TESTNET]: {
     chainId: CHAIN_IDS.MONAD_TESTNET,
@@ -812,6 +861,7 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LISK]: LISK_DISPLAY_NAME,
   [CHAIN_IDS.LISK_SEPOLIA]: LISK_SEPOLIA_DISPLAY_NAME,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_DISPLAY_NAME,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: MEGAETH_TESTNET_V2_DISPLAY_NAME,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_DISPLAY_NAME,
   [CHAIN_IDS.LENS]: LENS_DISPLAY_NAME,
   [CHAIN_IDS.PLUME]: PLUME_DISPLAY_NAME,
@@ -839,6 +889,13 @@ export const NETWORK_TO_NAME_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_DISPLAY_NAME,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_DISPLAY_NAME,
   [CHAIN_IDS.HYPE]: HYPEREVM_DISPLAY_NAME,
+  [CHAIN_IDS.CRONOS]: CRONOS_DISPLAY_NAME,
+  [CHAIN_IDS.X_LAYER]: X_LAYER_DISPLAY_NAME,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_DISPLAY_NAME,
+  [CHAIN_IDS.MSU]: MSU_DISPLAY_NAME,
+  [CHAIN_IDS.BOB]: BOB_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_DISPLAY_NAME,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_TESTNET_DISPLAY_NAME,
 } as const;
 
 export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
@@ -968,6 +1025,8 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
     CHAINLIST_CURRENCY_SYMBOLS_MAP.SHAPE_SEPOLIA,
   [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET]:
     TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET],
+  [CHAINLIST_CHAIN_IDS_MAP.MEGAETH_TESTNET_V2]:
+    TEST_NETWORK_TICKER_MAP[NETWORK_TYPES.MEGAETH_TESTNET_V2],
   [CHAIN_IDS.MEGAETH_MAINNET]: CURRENCY_SYMBOLS.ETH,
   [CHAIN_IDS.LENS]: CURRENCY_SYMBOLS.LENS,
   [CHAIN_IDS.PLUME]: CURRENCY_SYMBOLS.PLUME,
@@ -997,6 +1056,12 @@ export const CHAIN_ID_TO_CURRENCY_SYMBOL_MAP = {
   [CHAIN_IDS.LUKSO]: CURRENCY_SYMBOLS.LUKSO,
   [CHAIN_IDS.INJECTIVE]: CURRENCY_SYMBOLS.INJECTIVE,
   [CHAIN_IDS.HYPE]: CURRENCY_SYMBOLS.HYPE,
+  [CHAIN_IDS.X_LAYER]: CURRENCY_SYMBOLS.X_LAYER,
+  [CHAIN_IDS.ETHERLINK]: CURRENCY_SYMBOLS.ETHERLINK,
+  [CHAIN_IDS.MSU]: CURRENCY_SYMBOLS.MSU,
+  [CHAIN_IDS.BOB]: CURRENCY_SYMBOLS.BOB,
+  [CHAIN_IDS.ROOTSTOCK]: CURRENCY_SYMBOLS.ROOTSTOCK,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: CURRENCY_SYMBOLS.ROOTSTOCK_TESTNET,
 } as const;
 
 /**
@@ -1030,6 +1095,7 @@ export const CHAIN_ID_TO_TYPE_MAP = {
   [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.LOCALHOST]: NETWORK_TYPES.LOCALHOST,
   [CHAIN_IDS.MEGAETH_TESTNET]: NETWORK_TYPES.MEGAETH_TESTNET,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: NETWORK_TYPES.MEGAETH_TESTNET_V2,
   [CHAIN_IDS.MONAD_TESTNET]: NETWORK_TYPES.MONAD_TESTNET,
 } as const;
 
@@ -1042,6 +1108,7 @@ export const CHAIN_ID_TO_RPC_URL_MAP = {
   [CHAIN_IDS.LINEA_MAINNET]: LINEA_MAINNET_RPC_URL,
   [CHAIN_IDS.LOCALHOST]: LOCALHOST_RPC_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_RPC_URL,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: MEGAETH_TESTNET_V2_RPC_URL,
   [CHAIN_IDS.MONAD_TESTNET]: MONAD_TESTNET_RPC_URL,
 } as const;
 
@@ -1062,6 +1129,7 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.GNOSIS]: GNOSIS_TOKEN_IMAGE_URL,
   [CHAIN_IDS.ZKSYNC_ERA]: ZK_SYNC_ERA_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: MEGAETH_TESTNET_V2_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_MAINNET]: MEGAETH_MAINNET_IMAGE_URL,
   [CHAIN_IDS.NEAR]: NEAR_IMAGE_URL,
   [CHAIN_IDS.NEAR_TESTNET]: NEAR_IMAGE_URL,
@@ -1174,6 +1242,12 @@ export const CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP: Record<string, string> = {
   [CHAIN_IDS.LUKSO]: LUKSO_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
+  [CHAIN_IDS.X_LAYER]: X_LAYER_IMAGE_URL,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_IMAGE_URL,
+  [CHAIN_IDS.MSU]: MSU_IMAGE_URL,
+  [CHAIN_IDS.BOB]: BOB_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_IMAGE_URL,
 } as const;
 
 export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
@@ -1184,6 +1258,7 @@ export const CHAIN_ID_TO_ETHERS_NETWORK_NAME_MAP = {
   [CHAIN_IDS.MAINNET]: NETWORK_NAMES.HOMESTEAD,
   [CHAIN_IDS.LINEA_MAINNET]: NETWORK_TYPES.LINEA_MAINNET,
   [CHAIN_IDS.MEGAETH_TESTNET]: NETWORK_TYPES.MEGAETH_TESTNET,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: NETWORK_TYPES.MEGAETH_TESTNET_V2,
   [CHAIN_IDS.MONAD_TESTNET]: NETWORK_TYPES.MONAD_TESTNET,
 } as const;
 
@@ -1211,6 +1286,7 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.MOONRIVER]: MOONRIVER_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MOONBEAM]: MOONBEAM_TOKEN_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_TESTNET]: MEGAETH_TESTNET_IMAGE_URL,
+  [CHAIN_IDS.MEGAETH_TESTNET_V2]: MEGAETH_TESTNET_V2_IMAGE_URL,
   [CHAIN_IDS.MEGAETH_MAINNET]: ETH_TOKEN_IMAGE_URL,
   [CHAINLIST_CHAIN_IDS_MAP.IOTEX_MAINNET]: IOTEX_TOKEN_IMAGE_URL,
   [CHAIN_IDS.B3]: B3_IMAGE_URL,
@@ -1257,6 +1333,13 @@ export const CHAIN_ID_TOKEN_IMAGE_MAP = {
   [CHAIN_IDS.LUKSO]: LUKSO_NATIVE_TOKEN_IMAGE_URL,
   [CHAIN_IDS.INJECTIVE]: INJECTIVE_IMAGE_URL,
   [CHAIN_IDS.HYPE]: HYPEREVM_IMAGE_URL,
+  [CHAIN_IDS.CRONOS]: CRONOS_IMAGE_URL,
+  [CHAIN_IDS.X_LAYER]: X_LAYER_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ETHERLINK]: ETHERLINK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.MSU]: MSU_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.BOB]: ETH_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
+  [CHAIN_IDS.ROOTSTOCK_TESTNET]: ROOTSTOCK_NATIVE_TOKEN_IMAGE_URL,
   [MultichainNetworks.SOLANA]: SOLANA_IMAGE_URL,
   [MultichainNetworks.SOLANA_TESTNET]: SOLANA_TESTNET_IMAGE_URL,
   [MultichainNetworks.SOLANA_DEVNET]: SOLANA_DEVNET_IMAGE_URL,
@@ -1280,6 +1363,7 @@ export const CHAIN_ID_PORTFOLIO_LANDING_PAGE_URL_MAP: Record<
   [CHAIN_IDS.MONAD]: 'https://app.metamask.io/explore/networks/monad',
   [MultichainNetworks.SOLANA]:
     'https://app.metamask.io/explore/networks/solana',
+  [MultichainNetworks.TRON]: 'https://app.metamask.io/explore/networks/tron',
 } as const;
 
 export const INFURA_BLOCKED_KEY = 'countryBlocked';
@@ -1407,6 +1491,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
+  'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1547,6 +1632,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],
@@ -1581,6 +1667,20 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     ],
     defaultRpcEndpointIndex: 0,
     blockExplorerUrls: ['https://basescan.org'],
+    defaultBlockExplorerUrlIndex: 0,
+  },
+  {
+    chainId: CHAIN_IDS.MEGAETH_MAINNET,
+    name: MEGAETH_MAINNET_DISPLAY_NAME,
+    nativeCurrency: CURRENCY_SYMBOLS.ETH,
+    rpcEndpoints: [
+      {
+        url: `https://mainnet.megaeth.com/rpc`,
+        type: RpcEndpointType.Custom,
+      },
+    ],
+    defaultRpcEndpointIndex: 0,
+    blockExplorerUrls: ['https://explorer.megaeth.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];
@@ -1685,6 +1785,7 @@ export const TEST_NETWORKS = [
   LINEA_GOERLI_DISPLAY_NAME,
   LINEA_SEPOLIA_DISPLAY_NAME,
   MEGAETH_TESTNET_DISPLAY_NAME,
+  MEGAETH_TESTNET_V2_DISPLAY_NAME,
   MONAD_TESTNET_DISPLAY_NAME,
 ];
 
@@ -1695,6 +1796,7 @@ export const TEST_NETWORK_IDS = [
   CHAIN_IDS.LINEA_SEPOLIA,
   CHAIN_IDS.ARBITRUM_SEPOLIA,
   CHAIN_IDS.MEGAETH_TESTNET,
+  CHAIN_IDS.MEGAETH_TESTNET_V2,
   CHAIN_IDS.MONAD_TESTNET,
 ];
 

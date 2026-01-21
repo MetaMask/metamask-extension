@@ -24,6 +24,8 @@ export type SubscriptionDto = {
     address: string;
     chainId: number;
   }[];
+  createdAt: string;
+  candidateAt?: string;
 };
 
 export type MobileLoginDto = {
@@ -641,14 +643,6 @@ export type RewardsControllerGetHasAccountOptedInAction = {
 export type RewardsControllerGetActualSubscriptionIdAction = {
   type: 'RewardsController:getActualSubscriptionId';
   handler: (account: CaipAccountId) => string | null;
-};
-
-/**
- * Action for getting the first subscription ID
- */
-export type RewardsControllerGetFirstSubscriptionIdAction = {
-  type: 'RewardsController:getFirstSubscriptionId';
-  handler: () => string | null;
 };
 
 /**

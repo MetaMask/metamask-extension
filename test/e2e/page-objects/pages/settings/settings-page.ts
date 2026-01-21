@@ -17,7 +17,7 @@ class SettingsPage {
   };
 
   private readonly developerOptionsButton = {
-    text: 'Developer Options',
+    text: 'Developer options',
     css: '.tab-bar__tab__content__title',
   };
 
@@ -75,8 +75,16 @@ class SettingsPage {
     await this.driver.waitForSelector(this.settingsPageTitle);
   }
 
+  async waitForTransactionShieldButtonReady(): Promise<void> {
+    console.log('Waiting for Transaction Shield button to be ready');
+    await this.driver.findClickableElement(this.transactionShieldButton);
+    await this.driver.waitForElementToStopMoving(this.transactionShieldButton);
+    console.log('Transaction Shield button is ready');
+  }
+
   async goToTransactionShieldPage(): Promise<void> {
     console.log('Navigating to Transaction Shield page');
+    await this.waitForTransactionShieldButtonReady();
     await this.driver.clickElement(this.transactionShieldButton);
   }
 
@@ -130,7 +138,7 @@ class SettingsPage {
   }
 
   async goToDeveloperOptions(): Promise<void> {
-    console.log('Navigating to Developer Options page');
+    console.log('Navigating to Developer options page');
     await this.driver.clickElement(this.developerOptionsButton);
   }
 

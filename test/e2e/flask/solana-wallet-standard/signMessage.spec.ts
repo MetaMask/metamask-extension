@@ -1,5 +1,6 @@
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, veryLargeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { largeDelayMs, veryLargeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   account1,
@@ -9,9 +10,7 @@ import {
   DEFAULT_SOLANA_TEST_DAPP_FIXTURE_OPTIONS,
 } from './testHelpers';
 
-// BUG #37690 Sending a transaction on TestDapp with BIP44 on fails with exception
-// eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('Solana Wallet Standard - Sign Message', function () {
+describe('Solana Wallet Standard - Sign Message', function () {
   describe('Sign a message', function () {
     it('Should sign a message', async function () {
       await withSolanaAccountSnap(

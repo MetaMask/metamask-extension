@@ -1,13 +1,13 @@
 import { Suite } from 'mocha';
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import AddTokensModal from '../../page-objects/pages/dialog/add-tokens';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { DAPP_URL } from '../../constants';
 import ContractAddressRegistry from '../../seeder/contract-address-registry';
 import { Anvil } from '../../seeder/anvil';
 

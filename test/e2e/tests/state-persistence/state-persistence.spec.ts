@@ -1,0 +1,442 @@
+import assert from 'node:assert/strict';
+import { WALLET_PASSWORD, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
+import AccountListPage from '../../page-objects/pages/account-list-page';
+import HeaderNavbar from '../../page-objects/pages/header-navbar';
+import HomePage from '../../page-objects/pages/home/homepage';
+import { PAGES, type Driver } from '../../webdriver/driver';
+import LoginPage from '../../page-objects/pages/login-page';
+
+type DataStorage = {
+  meta: {
+    version: string;
+    storageKind?: 'data';
+    platformSplitStateGradualRolloutAttempted?: true;
+  };
+  data: Record<string, Record<string, unknown>>;
+};
+
+type SplitStateStorage = Record<string, unknown> & {
+  meta: { version: string; storageKind?: 'split' };
+  manifest?: ('meta' | string)[];
+};
+
+type StoredState = SplitStateStorage | DataStorage;
+
+const SPLIT_FLAG = {
+  value: { enabled: 1, maxAccounts: 9999999, maxNetworks: 9999999 },
+};
+const MIGRATION_OVERRIDE_KEYS = [
+  'splitStateMigrationEnabled',
+  'splitStateMigrationMaxAccounts',
+  'splitStateMigrationMaxNetworks',
+];
+const BASE_MANIFEST_TESTING_FLAGS = { forceExtensionStore: true };
+
+/**
+ * Builds fixture options with consistent manifest testing flags.
+ *
+ * @param testContext - Mocha test context used to set the title.
+ * @param manifestTestingOverrides - Optional manifest testing overrides.
+ * @returns Options for withFixtures.
+ */
+const getFixtureOptions = (
+  testContext: Mocha.Context,
+  manifestTestingOverrides: Record<string, unknown> = {},
+) => ({
+  ignoredConsoleErrors: [/getSubscriptions/u],
+  title: testContext.test?.title,
+  manifestFlags: {
+    testing: {
+      ...BASE_MANIFEST_TESTING_FLAGS,
+      ...manifestTestingOverrides,
+    },
+  },
+});
+
+const pausePersistence = async (driver: Driver) => {
+  const result = await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+    browser.runtime
+      .sendMessage({ type: 'STOP_PERSISTENCE' })
+      .then((response) => callback({ response }))
+      .catch((error) =>
+        callback({
+          error: error?.message ?? error?.toString?.() ?? error,
+        }),
+      );
+  `);
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+
+  return (result?.response ?? {}) as { status: 'PERSISTENCE_STOPPED' };
+};
+
+/**
+ * Seeds the split-state migration flags directly into extension storage.
+ *
+ * @param driver - WebDriver instance.
+ */
+const setLocalStorageFlags = async (driver: Driver) => {
+  const migrationFlags = JSON.stringify({
+    splitStateMigrationEnabled: SPLIT_FLAG.value.enabled.toString(),
+    splitStateMigrationMaxAccounts: SPLIT_FLAG.value.maxAccounts.toString(),
+    splitStateMigrationMaxNetworks: SPLIT_FLAG.value.maxNetworks.toString(),
+  });
+
+  const result = await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+
+    browser.storage.local
+      .set(${migrationFlags})
+      .then(() => callback({ ok: true }))
+      .catch((error) =>
+        callback({
+          error: error?.message ?? error?.toString?.() ?? error,
+        }),
+      );
+  `);
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+};
+
+/**
+ * Reads extension storage from the opened page.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed storage snapshot.
+ */
+const readStorage = async (driver: Driver) => {
+  const result = await driver.executeAsyncScript(`
+    const callback = arguments[arguments.length - 1];
+    const browser = globalThis.browser ?? globalThis.chrome;
+
+    browser.storage.local
+      .get(null)
+      .then((value) => callback({ value }))
+      .catch((error) =>
+        callback({
+          error: error?.message ?? error?.toString?.() ?? error,
+        }),
+      );
+  `);
+
+  if (result?.error) {
+    throw new Error(result.error);
+  }
+
+  return (result?.value ?? {}) as StoredState;
+};
+
+/**
+ * Validates the expected shape of split state storage.
+ *
+ * @param storage - Parsed storage snapshot.
+ */
+const assertSplitStateStorage = (storage: SplitStateStorage) => {
+  assert.ok(
+    Array.isArray(storage.manifest),
+    'manifest should be written in split state storage',
+  );
+  assert.equal(
+    storage.meta?.storageKind,
+    'split',
+    'meta.storageKind should be split',
+  );
+  assert.ok(
+    !('data' in storage),
+    `data key should be removed in split state; keys: ${Object.keys(storage).join(', ')}`,
+  );
+  assert.ok(
+    storage.manifest.includes('meta'),
+    `meta should be part of the manifest; manifest: ${JSON.stringify(storage.manifest)}`,
+  );
+
+  for (const key of storage.manifest) {
+    assert.ok(
+      key === 'manifest' || key in storage,
+      `manifest key ${key} should be present in storage`,
+    );
+  }
+
+  if (typeof storage['temp-cronjob-storage'] === 'undefined') {
+    // temp-cronjob-storage is a temporary key added in a hotfix and is
+    // supposed to be removed at some point. Once it is removed from the codebase,
+    // this block should be removed, which is why removing it causes this test
+    // to fail.
+    assert.fail(
+      'Yay! You removed temp-cronjob-storage from the db. Now update this test by removing this block.',
+    );
+  } else {
+    delete storage['temp-cronjob-storage']; // <- don't forget to delete this line if you remove temp-cronjob-storage
+  }
+
+  for (const key of Object.keys(storage)) {
+    if (MIGRATION_OVERRIDE_KEYS.includes(key)) {
+      continue; // these are testing-only keys
+    }
+    assert.ok(
+      key === 'manifest' || storage.manifest.includes(key),
+      `storage key ${key} should be present in manifest`,
+    );
+  }
+
+  // sanity check
+  assert(
+    storage.manifest.includes('KeyringController'),
+    'KeyringController should be in the manifest',
+  );
+  assert(
+    typeof storage.KeyringController !== 'undefined',
+    'KeyringController should be in storage',
+  );
+};
+
+/**
+ * Validates the expected shape of data state storage.
+ *
+ * @param storage - Parsed storage snapshot.
+ */
+const assertDataStateStorage = (storage: DataStorage) => {
+  assert.ok(storage.meta, 'meta should be present in data storage');
+  assert.ok('data' in storage, 'data key should be present in data storage');
+  const keyringLength = Object.keys(storage.data.KeyringController).length;
+  assert.ok(
+    keyringLength > 0,
+    `KeyringController should contain persisted data; length=${keyringLength}`,
+  );
+  assert.ok(
+    !('manifest' in storage),
+    'manifest should NOT be present in data storage',
+  );
+  assert.equal(
+    storage.meta?.storageKind,
+    'data',
+    `meta.storageKind should be data for data storage`,
+  );
+};
+
+/**
+ * Ensures the split state storage is present and valid.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed split state storage snapshot.
+ */
+const expectSplitStateStorage = async (driver: Driver) => {
+  const storage = await readStorage(driver);
+  console.log('split storage:', Object.keys(storage));
+  assertSplitStateStorage(storage as SplitStateStorage);
+  return storage;
+};
+
+/**
+ * Ensures the data state storage is present and valid.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Parsed data state storage snapshot.
+ */
+const expectDataStateStorage = async (driver: Driver) => {
+  const storage = await readStorage(driver);
+  console.log('data storage:', Object.keys(storage));
+  assertDataStateStorage(storage as DataStorage);
+  return storage;
+};
+
+/**
+ * Waits for the extension to reload and the home screen to appear.
+ *
+ * @param driver - WebDriver instance.
+ */
+async function waitForRestart(driver: Driver) {
+  await driver.waitUntil(
+    async () => {
+      await driver.navigate(PAGES.HOME, { waitForControllers: false });
+      const title = await driver.driver.getTitle();
+      // the browser will return an error message for our UI's HOME page until
+      // the extension has restarted
+      return title === WINDOW_TITLES.ExtensionInFullScreenView;
+    },
+    // reload and check title as quickly a possible
+    { interval: 100, timeout: 10000 },
+  );
+  await driver.assertElementNotPresent('.loading-logo', { timeout: 10000 });
+}
+
+/**
+ * Ensures the home page is rendered and idle.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Home page object after it is ready.
+ */
+const ensureHomeReady = async (driver: Driver) => {
+  const homePage = new HomePage(driver);
+  await homePage.checkPageIsLoaded();
+  await homePage.waitForLoadingOverlayToDisappear();
+  return homePage;
+};
+
+/**
+ * Reloads the extension, and waits for restart.
+ *
+ * @param driver - WebDriver instance.
+ * @returns Result object from the executed script.
+ */
+const reloadExtension = async (driver: Driver) => {
+  const extensionWindow = await driver.driver.getWindowHandle();
+  const blankWindow = await driver.openNewPage('about:blank');
+
+  await driver.switchToWindow(extensionWindow);
+  await pausePersistence(driver);
+  await driver.executeScript(
+    `(globalThis.browser ?? globalThis.chrome).runtime.reload()`,
+  );
+
+  await driver.switchToWindow(blankWindow);
+
+  // get a new tab ready to use (required for Firefox)
+  await driver.openNewPage('about:blank');
+
+  await waitForRestart(driver);
+};
+
+/**
+ * Reloads the extension, unlocks, and waits for home readiness.
+ *
+ * @param driver - WebDriver instance.
+ */
+const reloadAndUnlock = async (driver: Driver) => {
+  await reloadExtension(driver);
+  const loginPage = new LoginPage(driver);
+  await loginPage.checkPageIsLoaded();
+  await loginPage.loginToHomepage(WALLET_PASSWORD);
+  await ensureHomeReady(driver);
+};
+
+/**
+ * Onboard the user.
+ *
+ * @param driver - The WebDriver instance.
+ */
+async function onboard(driver: Driver) {
+  await completeCreateNewWalletOnboardingFlow({
+    driver,
+    password: WALLET_PASSWORD,
+    skipSRPBackup: true,
+  });
+}
+
+/**
+ * Completes the onboarding process and syncs the keyring.
+ *
+ * @param driver - The WebDriver instance.
+ */
+async function completeOnboardingAndSync(driver: Driver) {
+  await onboard(driver);
+  await ensureHomeReady(driver);
+  await driver.delay(5000); // ensure things have settled before proceeding
+}
+
+/**
+ * Asserts that the specified account is visible in the account list.
+ *
+ * @param headerNavbar - The header navigation bar instance.
+ * @param accountListPage - The account list page instance.
+ * @param accountName - The name of the account to check.
+ */
+const assertAccountVisible = async (
+  headerNavbar: HeaderNavbar,
+  accountListPage: AccountListPage,
+  accountName: string,
+) => {
+  await headerNavbar.openAccountMenu();
+  await accountListPage.checkAccountDisplayedInAccountList(accountName);
+  await accountListPage.closeMultichainAccountsPage();
+};
+
+describe('State Persistence', function () {
+  this.timeout(120000);
+
+  describe('split state', function () {
+    it('should default to the split state storage', async function () {
+      await withFixtures(getFixtureOptions(this), async ({ driver }) => {
+        await completeOnboardingAndSync(driver);
+        await expectSplitStateStorage(driver);
+      });
+    });
+
+    it('should update from data state to split state', async function () {
+      const accountName = 'Account 2';
+
+      await withFixtures(
+        getFixtureOptions(this, { storageKind: 'data' }),
+        async ({ driver }) => {
+          const headerNavbar = new HeaderNavbar(driver);
+          const accountListPage = new AccountListPage(driver);
+
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('completeOnboardingAndSync');
+          await completeOnboardingAndSync(driver);
+          console.log('expectDataStateStorage');
+          await expectDataStateStorage(driver);
+
+          console.log('headerNavbar.checkPageIsLoaded');
+          await headerNavbar.checkPageIsLoaded();
+          console.log('headerNavbar.openAccountMenu');
+          await headerNavbar.openAccountMenu();
+          console.log('accountListPage.checkPageIsLoaded');
+          await accountListPage.checkPageIsLoaded();
+          console.log('accountListPage.addMultichainAccount');
+          await accountListPage.addMultichainAccount();
+          console.log('accountListPage.renameAccount');
+          await accountListPage.closeMultichainAccountsPage();
+          console.log('accountListPage.renameAccount');
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
+          );
+
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectDataStateStorage');
+          await expectDataStateStorage(driver);
+
+          console.log('pausePersistence');
+          await pausePersistence(driver);
+          console.log('setLocalStorageFlags');
+          await setLocalStorageFlags(driver);
+          console.log('reloadAndUnlock');
+          await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible');
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
+          );
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('expectSplitStateStorage');
+          await expectSplitStateStorage(driver);
+
+          console.log('reloadAndUnlock 2');
+          await reloadAndUnlock(driver);
+          await driver.delay(5000); // wait for any background migrations to finish
+          console.log('assertAccountVisible 2');
+          await assertAccountVisible(
+            headerNavbar,
+            accountListPage,
+            accountName,
+          );
+          console.log('expectSplitStateStorage 2');
+          await expectSplitStateStorage(driver);
+        },
+      );
+    });
+  });
+});

@@ -2,7 +2,7 @@ import { strict as assert } from 'assert';
 import { Suite } from 'mocha';
 import { MockedEndpoint, Mockttp } from 'mockttp';
 import { MOCK_META_METRICS_ID } from '../../constants';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';

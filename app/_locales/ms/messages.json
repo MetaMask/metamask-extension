@@ -226,9 +226,6 @@
   "enterPasswordContinue": {
     "message": "Masukkan kata laluan untuk teruskan"
   },
-  "ethereumPublicAddress": {
-    "message": "Alamat Awam Ethereum"
-  },
   "etherscanView": {
     "message": "Lihat akaun di Etherscan"
   },
@@ -374,9 +371,6 @@
   "needImportFile": {
     "message": "Anda mesti pilih fail untuk diimport.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Tidak boleh hantar amaun ETH negatif."
   },
   "networkName": {
     "message": "Nama Rangkaian"

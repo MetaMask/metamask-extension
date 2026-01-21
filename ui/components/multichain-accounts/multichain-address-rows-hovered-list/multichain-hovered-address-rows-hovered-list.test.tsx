@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from '@testing-library/react';
-import { Provider } from 'react-redux';
+import { screen, fireEvent, waitFor, act } from '@testing-library/react';
 import configureStore from 'redux-mock-store';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
@@ -16,6 +9,7 @@ import {
   toAccountWalletId,
 } from '@metamask/account-api';
 import { CaipChainId } from '@metamask/utils';
+import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import { MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE } from '../../../helpers/constants/routes';
 import {
   getInternalAccountListSpreadByScopesByGroupId,
@@ -26,14 +20,13 @@ import { selectBalanceForAllWallets } from '../../../selectors/assets';
 import { MultichainHoveredAddressRowsList } from './multichain-hovered-address-rows-hovered-list';
 
 const mockStore = configureStore([]);
-const mockPush = jest.fn();
-
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockPush,
-  }),
-}));
+const mockUseNavigate = jest.fn();
+jest.mock('react-router-dom', () => {
+  return {
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => mockUseNavigate,
+  };
+});
 
 jest.mock('../../../selectors/multichain-accounts/account-tree', () => ({
   ...jest.requireActual('../../../selectors/multichain-accounts/account-tree'),
@@ -82,12 +75,6 @@ const TEST_IDS = {
   MULTICHAIN_ADDRESS_ROW: 'multichain-address-row',
   AVATAR_GROUP: 'avatar-group',
   HOVER_TRIGGER: 'hover-trigger',
-} as const;
-
-const CSS_CLASSES = {
-  FONT_BOLD: 'font-bold',
-  ARROW_RIGHT: 'arrow-right',
-  AVATAR_NETWORK: 'avatar-network',
 } as const;
 
 const mockWalletEntropySource = '01K437Z7EJ0VCMFDE9TQKRV60A';
@@ -323,14 +310,19 @@ const createMockBalance = (
   },
 });
 
-const renderComponent = (groupId: AccountGroupId = GROUP_ID_MOCK) => {
+const renderComponent = (
+  groupId: AccountGroupId = GROUP_ID_MOCK,
+  onViewAllClick?: () => void,
+) => {
   const store = mockStore(createMockState());
-  return render(
-    <Provider store={store}>
-      <MultichainHoveredAddressRowsList groupId={groupId}>
-        <div data-testid="hover-trigger">Hover Me</div>
-      </MultichainHoveredAddressRowsList>
-    </Provider>,
+  return renderWithProvider(
+    <MultichainHoveredAddressRowsList
+      groupId={groupId}
+      onViewAllClick={onViewAllClick}
+    >
+      <div data-testid="hover-trigger">Hover Me</div>
+    </MultichainHoveredAddressRowsList>,
+    store,
   );
 };
 
@@ -599,10 +591,23 @@ describe('MultichainHoveredAddressRowsList', () => {
     expect(addressRows.length).toBe(4);
 
     const groupNames = addressRows.map((row) => {
-      const nameElement = row.querySelector(
-        `p[class*="${CSS_CLASSES.FONT_BOLD}"]`,
-      );
-      return nameElement?.textContent || '';
+      // Find the Text element containing the network name
+      // It's the first Text element after the network group avatar
+      const textElements = row.querySelectorAll('p');
+      // The network name is typically the first text element in the row
+      // We'll find it by checking which text matches our expected network names
+      for (const textEl of textElements) {
+        const text = textEl.textContent?.trim() || '';
+        if (
+          text === TEST_STRINGS.EVM_NETWORKS ||
+          text === TEST_STRINGS.BITCOIN_NETWORK ||
+          text === TEST_STRINGS.SOLANA_NETWORK ||
+          text === TEST_STRINGS.TRON_NETWORK
+        ) {
+          return text;
+        }
+      }
+      return '';
     });
 
     expect(groupNames).toEqual([
@@ -700,7 +705,7 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       fireEvent.click(viewAllButton);
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
@@ -740,8 +745,31 @@ describe('MultichainHoveredAddressRowsList', () => {
 
       fireEvent.click(viewAllButton);
 
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockUseNavigate).toHaveBeenCalledWith(
         `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(SPECIAL_GROUP_ID)}`,
+      );
+    });
+
+    it('calls onViewAllClick callback before navigation', async () => {
+      const mockOnViewAllClick = jest.fn();
+      renderComponent(GROUP_ID_MOCK, mockOnViewAllClick);
+
+      const triggerElement = screen.getByTestId(TEST_IDS.HOVER_TRIGGER);
+      fireEvent.mouseEnter(triggerElement.parentElement as HTMLElement);
+      await waitFor(() => {
+        expect(
+          screen.getByTestId(TEST_IDS.MULTICHAIN_ADDRESS_ROWS_LIST),
+        ).toBeInTheDocument();
+      });
+
+      const buttons = screen.getAllByRole('button');
+      const viewAllButton = buttons[buttons.length - 1];
+
+      fireEvent.click(viewAllButton);
+
+      expect(mockOnViewAllClick).toHaveBeenCalledTimes(1);
+      expect(mockUseNavigate).toHaveBeenCalledWith(
+        `${MULTICHAIN_ACCOUNT_ADDRESS_LIST_PAGE_ROUTE}/${encodeURIComponent(GROUP_ID_MOCK)}`,
       );
     });
   });

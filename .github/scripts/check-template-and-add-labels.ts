@@ -27,11 +27,13 @@ import { retrievePullRequest } from './shared/pull-request';
 
 const knownBots = [
   'metamaskbot',
+  'metamaskbotv2',
   'dependabot',
   'github-actions',
   'sentry-io',
   'devin-ai-integration',
   'runway-github',
+  'copilot',
 ];
 
 main().catch((error: Error): void => {
@@ -101,7 +103,10 @@ async function main(): Promise<void> {
 
   // If labelable's author is a bot we skip the rest of the script, including the template checks as bots don't use templates.
   // Exception: For issues created the 'sentry-io' bot, we don't skip the rest of the script because there's a specific handling for those issues.
-  if (knownBots.includes(labelable.author) && labelable.author !== 'sentry-io') {
+  if (
+    knownBots.includes(labelable.author) &&
+    labelable.author !== 'sentry-io'
+  ) {
     console.log(
       `${
         labelable.type === LabelableType.PullRequest ? 'PR' : 'Issue'
@@ -167,7 +172,6 @@ async function main(): Promise<void> {
         await addNeedsTriageLabelToIssue(octokit, labelable);
       }
       await checkAndRemoveNeedsTriageIfFullyLabeled(octokit, labelable);
-
     } else {
       const errorMessage =
         "Issue body does not match any of expected templates ('general-issue.yml' or 'bug-report.yml').\n\nMake sure issue's body includes all section titles.\n\nSections titles are listed here: https://github.com/MetaMask/metamask-extension/blob/main/.github/scripts/shared/template.ts#L14-L37";
@@ -181,16 +185,17 @@ async function main(): Promise<void> {
       core.setFailed(errorMessage);
       process.exit(1);
     }
-
   } else if (labelable.type === LabelableType.PullRequest) {
     // Check changelog entry for all PRs (regardless of template match)
     const hasNoChangelogLabel = labelable.labels?.some(
-      (label) => label.name === "no-changelog"
+      (label) => label.name === 'no-changelog',
     );
 
     // Require changelog entry
     if (hasNoChangelogLabel) {
-      console.log(`PR ${labelable.number} has "no-changelog" label. Skipping changelog entry check.`);
+      console.log(
+        `PR ${labelable.number} has "no-changelog" label. Skipping changelog entry check.`,
+      );
     } else if (!hasChangelogEntry(labelable.body)) {
       const errorMessage = `PR is missing a valid "CHANGELOG entry:" line.`;
       console.log(errorMessage);
@@ -267,21 +272,15 @@ function extractTemplateTypeFromBody(body: string): TemplateType {
 function extractRegressionStageFromBugReportIssueBody(
   body: string,
 ): RegressionStage | undefined {
-  const detectionStageRegex = /### Detection stage\s*\n\s*(.*)/i;
+  const detectionStageRegex = /### Where was this bug found\?\s*\n\s*(.*)/i;
   const match = body.match(detectionStageRegex);
   const extractedAnswer = match ? match[1].trim() : undefined;
 
   switch (extractedAnswer) {
-    case 'On a feature branch':
-      return RegressionStage.DevelopmentFeature;
-    case 'On main branch':
-      return RegressionStage.DevelopmentMain;
-    case 'During release testing':
-      return RegressionStage.Testing;
-    case 'In public beta':
-      return RegressionStage.Beta;
-    case 'In production (default)':
+    case 'Live version (from official store)':
       return RegressionStage.Production;
+    case 'Internal release testing':
+      return RegressionStage.Testing;
     default:
       return undefined;
   }
@@ -409,25 +408,41 @@ async function userBelongsToMetaMaskOrg(
 // This function checks if the PR description has a changelog entry
 function hasChangelogEntry(body: string): boolean {
   // Remove HTML comments (including multiline)
-  const uncommentedBody = body.replace(/<!--[\s\S]*?-->/g, "");
+  let uncommentedBody = body;
+  let prevBody;
+  let iterationCount = 0;
+  const MAX_ITERATIONS = 100;
+  do {
+    prevBody = uncommentedBody;
+    uncommentedBody = uncommentedBody.replace(/<!--[\s\S]*?-->/g, '');
+    iterationCount++;
+    if (iterationCount >= MAX_ITERATIONS) {
+      console.warn(
+        `Reached maximum HTML comment removal iterations (${MAX_ITERATIONS}). Input may be malformed or malicious.`,
+      );
+      break;
+    }
+  } while (uncommentedBody !== prevBody);
 
   // Split body into lines
   const lines = uncommentedBody.split(/\r?\n/);
 
   // Find the line starting with "CHANGELOG entry:"
-  const changelogLine = lines.find(line => line.trim().startsWith("CHANGELOG entry:"));
+  const changelogLine = lines.find((line) =>
+    line.trim().startsWith('CHANGELOG entry:'),
+  );
 
   if (!changelogLine) {
-    console.log("Changelog entry line missing");
+    console.log('Changelog entry line missing');
     return false;
   }
 
   // Extract everything after the prefix, tolerating extra spaces after the colon
   const match = changelogLine.match(/^\s*CHANGELOG entry:\s*(.*)$/);
-  const entry = match?.[1]?.trim() ?? "";
+  const entry = match?.[1]?.trim() ?? '';
 
-  if (entry === "") {
-    console.log("Changelog entry is empty");
+  if (entry === '') {
+    console.log('Changelog entry is empty');
     return false;
   }
 

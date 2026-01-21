@@ -4,7 +4,6 @@ import { waitFor } from '@testing-library/react';
 import mockState from '../../../../../test/data/mock-state.json';
 import { EVM_ASSET, SOLANA_ASSET } from '../../../../../test/data/send/assets';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
-import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import * as SendUtils from '../../utils/send';
 import * as MultichainTransactionUtils from '../../utils/multichain-snaps';
 import * as SendContext from '../../context/send';
@@ -15,15 +14,10 @@ const MOCK_ADDRESS_2 = '0xd12662965960f3855a09f85396459429a595d741';
 const MOCK_ADDRESS_3 = '4Nd1m5PztHZbA1FtdYzWxTjLdQdHZr4sqoZKxK3x3hJv';
 const MOCK_ADDRESS_4 = '9xQeWvG816bUx9EPjHmaT23yvVM2ZWbrrpZb9PusVFin';
 
-jest.mock('../../../../store/actions', () => ({
-  ...jest.requireActual('../../../../store/actions'),
-  setDefaultHomeActiveTabName: jest.fn(),
-}));
-
 const mockUseNavigate = jest.fn();
-jest.mock('react-router-dom-v5-compat', () => {
+jest.mock('react-router-dom', () => {
   return {
-    ...jest.requireActual('react-router-dom-v5-compat'),
+    ...jest.requireActual('react-router-dom'),
     useNavigate: () => mockUseNavigate,
   };
 });
@@ -43,21 +37,6 @@ function renderHook() {
 }
 
 describe('useSendQueryParams', () => {
-  const mockSetDefaultHomeActiveTabName = jest.mocked(
-    setDefaultHomeActiveTabName,
-  );
-
-  beforeEach(() => {
-    mockSetDefaultHomeActiveTabName.mockImplementation(
-      () => () =>
-        ({}) as unknown as ReturnType<typeof setDefaultHomeActiveTabName>,
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
   it('result returns method handleCancel to cancel send', () => {
     const result = renderHook();
     result.handleCancel();
@@ -116,9 +95,8 @@ describe('useSendQueryParams', () => {
     result.handleSubmit(MOCK_ADDRESS_4);
 
     await waitFor(() => {
-      expect(mockSetDefaultHomeActiveTabName).toHaveBeenCalledWith('activity');
       expect(mockSubmitNonEvmTransaction).toHaveBeenCalled();
-      expect(mockUseNavigate).toHaveBeenCalledWith('/');
+      expect(mockUseNavigate).toHaveBeenCalledWith('/?tab=activity');
     });
   });
 });

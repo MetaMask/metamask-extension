@@ -50,10 +50,27 @@ jest.mock('../info/approve/hooks/use-is-nft', () => ({
 
 jest.mock('../../../../../store/actions', () => ({
   getContractMethodData: jest.fn().mockReturnValue({ type: 'dummy' }),
-  setAccountDetailsAddress: jest.fn().mockReturnValue({ type: 'dummy' }),
 }));
 
 describe('ConfirmTitle', () => {
+  it('should render a skeleton loader when there is no current confirmation', () => {
+    const mockStateWithNoConfirmation = {
+      ...getMockPersonalSignConfirmState(),
+      metamask: {
+        ...getMockPersonalSignConfirmState().metamask,
+        pendingApprovals: {},
+        unapprovedPersonalMsgs: {},
+      },
+    };
+    const mockStore = configureMockStore([])(mockStateWithNoConfirmation);
+    const { container } = renderWithConfirmContextProvider(
+      <ConfirmTitle />,
+      mockStore,
+    );
+
+    expect(container.querySelector('.mm-skeleton')).toBeInTheDocument();
+  });
+
   it('should render the title and description for a personal signature', () => {
     const mockStore = configureMockStore([])(getMockPersonalSignConfirmState);
     const { getByText } = renderWithConfirmContextProvider(
@@ -110,7 +127,7 @@ describe('ConfirmTitle', () => {
 
     expect(getByText('Account update')).toBeInTheDocument();
     expect(
-      getByText("You're switching to a smart account"),
+      getByText("You're switching to a smart account."),
     ).toBeInTheDocument();
   });
 

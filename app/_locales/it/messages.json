@@ -638,9 +638,6 @@
     "message": "MetaMask ha riscontrato un errore",
     "description": "Title of generic error page"
   },
-  "ethereumPublicAddress": {
-    "message": "Indirizzo pubblico Ethereum "
-  },
   "etherscanView": {
     "message": "Vedi account su Etherscan"
   },
@@ -862,9 +859,6 @@
   "needImportFile": {
     "message": "Devi selezionare un file da importare.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Non puoi inviare una quantità di ETH negativa."
   },
   "networkName": {
     "message": "Nome Rete"
@@ -1221,7 +1215,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Troviamo i migliori prezzi dalle sorgenti di liquidità migliori, sempre. Una tassa del $1% è automaticamente aggiunta ad ogni quotazione, ciò serve a supportare lo sviluppo in modo da rendere MetaMask sempre migliore.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNewQuoteIn": {
     "message": "Nuove quotazioni in $1",

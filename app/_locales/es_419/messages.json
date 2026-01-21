@@ -685,9 +685,6 @@
   "ethGasPriceFetchWarning": {
     "message": "Se muestra el precio del gas de respaldo, ya que el servicio para calcular el precio del gas principal no se encuentra disponible en este momento."
   },
-  "ethereumPublicAddress": {
-    "message": "Dirección pública de Ethereum"
-  },
   "etherscan": {
     "message": "Etherscan"
   },
@@ -1105,9 +1102,6 @@
     "message": "Debe seleccionar un archivo para la importación.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "No se pueden enviar cantidades negativas de ETH."
-  },
   "networkDetails": {
     "message": "Detalles de la red"
   },
@@ -1233,19 +1227,6 @@
   },
   "onboardingImportWallet": {
     "message": "Importar una cartera existente"
-  },
-  "onboardingPinExtensionDescription": {
-    "message": "Ancle MetaMask en su navegador para que sea accesible y las confirmaciones de las transacciones se vean fácilmente."
-  },
-  "onboardingPinExtensionDescription2": {
-    "message": "Para abrir MetaMask haga clic en la extensión y acceda a su cartera con 1 clic."
-  },
-  "onboardingPinExtensionDescription3": {
-    "message": "Haga clic en el icono de la extensión del navegador para tener acceso instantáneo",
-    "description": "$1 is the browser name"
-  },
-  "onboardingPinExtensionTitle": {
-    "message": "¡Su instalación de MetaMask ha finalizado!"
   },
   "onlyConnectTrust": {
     "message": "Conéctese solo con sitios de confianza.",
@@ -1711,7 +1692,7 @@
   },
   "swapIncludesMMFee": {
     "message": "Incluye una tasa de MetaMask del $1%.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapMaxSlippage": {
     "message": "Desfase máximo"
@@ -1721,7 +1702,7 @@
   },
   "swapMetaMaskFeeDescription": {
     "message": "Buscamos el mejor precio en las fuentes de liquidez más importantes, todo el tiempo. Se incorpora de manera automática a esta cotización una cuota del $1 %.",
-    "description": "Provides information about the fee that metamask takes for swaps. $1 is a decimal number."
+    "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
   },
   "swapNQuotesWithDot": {
     "message": "$1 cotizaciones.",

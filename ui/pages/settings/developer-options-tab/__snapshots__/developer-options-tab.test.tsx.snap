@@ -158,7 +158,7 @@ exports[`Develop options tab should match snapshot 1`] = `
               style="display: flex; width: 52px; align-items: center; justify-content: flex-start; position: relative; cursor: pointer; background-color: transparent; border: 0px; padding: 0px; user-select: none;"
             >
               <div
-                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(139, 153, 255);"
+                style="width: 40px; height: 24px; padding: 0px; border-radius: 26px; display: flex; align-items: center; justify-content: center; background-color: rgb(68, 89, 255);"
               >
                 <div
                   style="font-size: 11px; display: flex; align-items: center; justify-content: center; font-family: 'Helvetica Neue', Helvetica, sans-serif; position: relative; color: rgb(250, 250, 250); margin-top: auto; margin-bottom: auto; line-height: 0; opacity: 1; width: 26px; height: 20px; left: 4px;"
@@ -503,6 +503,85 @@ exports[`Develop options tab should match snapshot 1`] = `
             />
           </div>
         </div>
+      </div>
+    </div>
+    <hr />
+    <div>
+      <p
+        class="text-default text-s-body-md leading-s-body-md tracking-s-body-md md:text-l-body-md md:leading-l-body-md md:tracking-l-body-md font-regular font-default"
+      >
+        Split State Migration
+      </p>
+      <div
+        style="margin-top: 8px; margin-bottom: 8px;"
+      >
+        <strong>
+          Current storage kind: 
+          unknown
+        </strong>
+      </div>
+      <hr />
+      <h2>
+        Split State Migration Flags
+      </h2>
+      <div>
+        <span>
+          Migration Enabled flag:
+        </span>
+        <div>
+          <label>
+            <input
+              checked=""
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            Unset (uses remote feature flags)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            0 (Off)
+          </label>
+        </div>
+        <div>
+          <label>
+            <input
+              name="split-state-migration-enabled"
+              type="radio"
+            />
+            1 (On)
+          </label>
+        </div>
+      </div>
+      <div>
+        <label>
+          <span>
+            Max Accounts flag:
+          </span>
+          <input
+            max="99999999"
+            min="0"
+            type="number"
+            value=""
+          />
+        </label>
+      </div>
+      <div>
+        <label>
+          <span>
+            Max Networks flag:
+          </span>
+          <input
+            max="99999999"
+            min="0"
+            type="number"
+            value=""
+          />
+        </label>
       </div>
     </div>
   </div>

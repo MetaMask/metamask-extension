@@ -1,10 +1,10 @@
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import FixtureBuilder from '../../fixture-builder';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { MockedEndpoint, Mockttp } from '../../mock-e2e';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { Driver } from '../../webdriver/driver';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockDialogSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 
@@ -603,21 +603,16 @@ export async function mockDeFiPositionFeatureFlag(mockServer: Mockttp) {
             {
               assetsDefiPositionsEnabled: true,
             },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
-            },
           ],
         };
       }),
     await mockServer
-      .forGet('https://price.api.cx.metamask.io/v2/chains/1/spot-prices')
+      .forGet('https://price.api.cx.metamask.io/v3/spot-prices')
       .thenCallback(() => {
         return {
           statusCode: 200,
           json: {
-            '0x0000000000000000000000000000000000000000': {
+            'eip155:1/slip44:60': {
               price: 1700,
               marketCap: 382623505141,
               pricePercentChange1d: 0,
@@ -649,11 +644,6 @@ export async function mockNoDeFiPositionFeatureFlag(mockServer: Mockttp) {
           json: [
             {
               assetsDefiPositionsEnabled: true,
-            },
-            {
-              sendRedesign: {
-                enabled: false,
-              },
             },
           ],
         };

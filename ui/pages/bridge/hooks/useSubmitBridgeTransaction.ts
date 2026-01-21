@@ -1,5 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { isNonEvmChainId } from '@metamask/bridge-controller';
+import { useNavigate } from 'react-router-dom';
+import {
+  getQuotesReceivedProperties,
+  isNonEvmChainId,
+} from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
 import {
   AWAITING_SIGNATURES_ROUTE,
@@ -7,16 +11,16 @@ import {
   DEFAULT_ROUTE,
   PREPARE_SWAP_ROUTE,
 } from '../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../store/actions';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
 import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
+  getBridgeQuotes,
   getFromAccount,
   getIsStxEnabled,
+  getWarningLabels,
 } from '../../../ducks/bridge/selectors';
 import { captureException } from '../../../../shared/lib/sentry';
-import { useSafeNavigation } from '../../../hooks/useSafeNavigation';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -52,13 +56,15 @@ const isHardwareWalletUserRejection = (error: unknown): boolean => {
 };
 
 export default function useSubmitBridgeTransaction() {
-  const { navigate } = useSafeNavigation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const hardwareWalletUsed = useSelector(isHardwareWallet);
 
   const smartTransactionsEnabled = useSelector(getIsStxEnabled);
 
   const fromAccount = useSelector(getFromAccount);
+  const { recommendedQuote } = useSelector(getBridgeQuotes);
+  const warnings = useSelector(getWarningLabels);
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -80,10 +86,21 @@ export default function useSubmitBridgeTransaction() {
       if (isNonEvmSource) {
         // Submit the transaction first, THEN navigate
         await dispatch(
-          submitBridgeTx(fromAccount.address, quoteResponse, false),
+          submitBridgeTx(
+            fromAccount.address,
+            quoteResponse,
+            false,
+            getQuotesReceivedProperties(
+              quoteResponse,
+              warnings,
+              true,
+              recommendedQuote,
+            ),
+          ),
         );
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+        navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+          state: { stayOnHomePage: true },
+        });
         return;
       }
 
@@ -92,6 +109,12 @@ export default function useSubmitBridgeTransaction() {
           fromAccount.address,
           quoteResponse,
           smartTransactionsEnabled,
+          getQuotesReceivedProperties(
+            quoteResponse,
+            warnings,
+            true,
+            recommendedQuote,
+          ),
         ),
       );
     } catch (e) {
@@ -100,14 +123,14 @@ export default function useSubmitBridgeTransaction() {
         dispatch(setWasTxDeclined(true));
         navigate(`${CROSS_CHAIN_SWAP_ROUTE}${PREPARE_SWAP_ROUTE}`);
       } else {
-        await dispatch(setDefaultHomeActiveTabName('activity'));
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       }
       return;
     }
-    // Route user to activity tab on Home page
-    await dispatch(setDefaultHomeActiveTabName('activity'));
-    navigate(DEFAULT_ROUTE, { state: { stayOnHomePage: true } });
+
+    navigate(`${DEFAULT_ROUTE}?tab=activity`, {
+      state: { stayOnHomePage: true },
+    });
   };
 
   return {

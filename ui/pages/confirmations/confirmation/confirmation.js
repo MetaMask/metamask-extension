@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom-v5-compat';
+import { useNavigate, useParams } from 'react-router-dom';
 import { isEqual } from 'lodash';
 import { produce } from 'immer';
 import log from 'loglevel';
@@ -18,7 +18,12 @@ import {
   NETWORKS_BYPASSING_VALIDATION,
 } from '@metamask/controller-utils';
 import { DIALOG_APPROVAL_TYPES } from '@metamask/snaps-rpc-methods';
-import { CHAIN_SPEC_URL } from '../../../../shared/constants/network';
+import {
+  CHAIN_SPEC_URL,
+  BUILT_IN_NETWORKS,
+  FEATURED_RPCS,
+} from '../../../../shared/constants/network';
+import { MultichainNetworks } from '../../../../shared/constants/multichain/networks';
 import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 import {
   MetaMetricsEventCategory,
@@ -34,7 +39,7 @@ import {
   getUnapprovedTxCount,
   getApprovalFlows,
   getTotalUnapprovedCount,
-  useSafeChainsListValidationSelector,
+  getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
 } from '../../../selectors';
@@ -225,7 +230,6 @@ function Header({ confirmation, isSnapCustomUIDialog, onCancel }) {
 
 export default function ConfirmationPage({
   redirectToHomeOnZeroConfirmations = true,
-  params: routeParams,
 }) {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
@@ -238,15 +242,14 @@ export default function ConfirmationPage({
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
   const useSafeChainsListValidation = useSelector(
-    useSafeChainsListValidationSelector,
+    getUseSafeChainsListValidation,
   );
   const networkConfigurationsByChainId = useSelector(
     getNetworkConfigurationsByChainId,
   );
   const [approvalFlowLoadingText, setApprovalFlowLoadingText] = useState(null);
 
-  const urlParams = useParams();
-  const { id } = routeParams || urlParams;
+  const { id } = useParams();
 
   const pendingRoutedConfirmation = pendingConfirmations.find(
     (confirmation) => confirmation.id === id,
@@ -357,6 +360,17 @@ export default function ConfirmationPage({
     }
   }, [templatedValues]);
 
+  const [lastConfirmationType, setLastConfirmationType] = useState(null);
+
+  useEffect(() => {
+    if (pendingConfirmation?.type) {
+      setLastConfirmationType(pendingConfirmation.type);
+    }
+  }, [pendingConfirmation?.type]);
+
+  // send-tron.spec expects Activity tab
+  const shouldShowActivity = SNAP_DIALOG_TYPE.includes(lastConfirmationType);
+
   useEffect(() => {
     // If the number of pending confirmations reduces to zero when the user
     // return them to the default route. Otherwise, if the number of pending
@@ -367,7 +381,11 @@ export default function ConfirmationPage({
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
       redirectToHomeOnZeroConfirmations
     ) {
-      navigate(DEFAULT_ROUTE);
+      const to = shouldShowActivity
+        ? `${DEFAULT_ROUTE}?tab=activity`
+        : DEFAULT_ROUTE;
+
+      navigate(to);
     }
   }, [
     pendingConfirmations,
@@ -375,6 +393,7 @@ export default function ConfirmationPage({
     totalUnapprovedCount,
     navigate,
     redirectToHomeOnZeroConfirmations,
+    shouldShowActivity,
   ]);
 
   useEffect(() => {
@@ -476,6 +495,23 @@ export default function ConfirmationPage({
       pendingConfirmation?.requestData?.fromNetworkConfiguration?.chainId &&
       pendingConfirmation?.requestData?.toNetworkConfiguration?.chainId
     ) {
+      // Check if the destination network is custom (not built-in, featured, or multichain)
+      const toChainId =
+        pendingConfirmation.requestData.toNetworkConfiguration.chainId;
+
+      const isBuiltInNetwork = Object.values(BUILT_IN_NETWORKS).some(
+        (builtInNetwork) => builtInNetwork.chainId === toChainId,
+      );
+      const isFeaturedRpc = FEATURED_RPCS.some(
+        (featuredRpc) => featuredRpc.chainId === toChainId,
+      );
+      const isMultichainProviderConfig = Object.values(MultichainNetworks).some(
+        (multichainNetwork) => multichainNetwork === toChainId,
+      );
+
+      const isCustomNetwork =
+        !isBuiltInNetwork && !isFeaturedRpc && !isMultichainProviderConfig;
+
       trackEvent({
         category: MetaMetricsEventCategory.Network,
         event: MetaMetricsEventName.NavNetworkSwitched,
@@ -485,6 +521,7 @@ export default function ConfirmationPage({
             pendingConfirmation.requestData.fromNetworkConfiguration.chainId,
           to_network:
             pendingConfirmation.requestData.toNetworkConfiguration.chainId,
+          custom_network: isCustomNetwork,
           referrer: {
             url: window.location.origin,
           },
@@ -517,7 +554,7 @@ export default function ConfirmationPage({
         confirmationId={pendingConfirmation.id}
         onSubmit={!templatedValues.hideSubmitButton && handleSubmit}
       >
-        <div className="confirmation-page">
+        <div className="confirmation-page h-full">
           <Header
             confirmation={pendingConfirmation}
             isSnapCustomUIDialog={isSnapCustomUIDialog}
@@ -617,7 +654,4 @@ export default function ConfirmationPage({
 
 ConfirmationPage.propTypes = {
   redirectToHomeOnZeroConfirmations: PropTypes.bool,
-  params: PropTypes.shape({
-    id: PropTypes.string,
-  }),
 };

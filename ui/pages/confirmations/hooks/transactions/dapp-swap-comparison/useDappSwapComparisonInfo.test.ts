@@ -8,6 +8,7 @@ import {
 } from '../../../../../../test/data/confirmations/contract-interaction';
 import { renderHookWithConfirmContextProvider } from '../../../../../../test/lib/confirmations/render-helpers';
 import { TokenStandAndDetails } from '../../../../../store/actions';
+import { getRemoteFeatureFlags } from '../../../../../selectors/remote-feature-flags';
 import * as Utils from '../../../../../helpers/utils/util';
 import * as TokenUtils from '../../../utils/token';
 import { Confirmation } from '../../../types/confirm';
@@ -29,11 +30,12 @@ jest.mock('../../../../../store/controller-actions/bridge-controller', () => ({
   fetchQuotes: jest.fn(),
 }));
 
+jest.mock('../../../../../selectors/remote-feature-flags');
+
 const mockUseDappSwapComparisonLatencyMetricsResponse = {
   requestDetectionLatency: '1200',
-  swapComparisonLatency: '1500',
   updateRequestDetectionLatency: jest.fn(),
-  updateSwapComparisonLatency: jest.fn(),
+  updateSwapComparisonLatency: jest.fn().mockReturnValue('1500'),
 };
 
 jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
@@ -41,15 +43,25 @@ jest.mock('./useDappSwapComparisonLatencyMetrics', () => ({
     mockUseDappSwapComparisonLatencyMetricsResponse,
 }));
 
-async function runHook() {
+const mockGetRemoteFeatureFlags = jest.mocked(getRemoteFeatureFlags);
+
+async function runHook(args: Record<string, unknown> = {}) {
   const response = renderHookWithConfirmContextProvider(
     () => useDappSwapComparisonInfo(),
     getMockConfirmStateForTransaction(mockSwapConfirmation as Confirmation, {
       metamask: {
         dappSwapComparisonData: {
-          'f8172040-b3d0-11f0-a882-3f99aa2e9f0c': {
+          '1234567': {
             quotes: mockBridgeQuotes,
             latency: 3600,
+            commands: '0x0a100604',
+            swapInfo: {
+              srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+              destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+              srcTokenAmount: '0x0de0b6b3a7640000',
+              destTokenAmountMin: '0x0de0b6b3a7640000',
+            },
+            ...args,
           },
         },
       },
@@ -64,9 +76,17 @@ async function runHook() {
 }
 
 describe('useDappSwapComparisonInfo', () => {
+  beforeEach(() => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapQa: { enabled: true },
+      dappSwapUi: { enabled: true, threshold: 0.01 },
+    });
+  });
+
   it('initially call updateTransactionEventFragment with loading', async () => {
     await runHook();
-    expect(mockUpdateTransactionEventFragment).toHaveBeenLastCalledWith(
+    expect(mockUpdateTransactionEventFragment).toHaveBeenNthCalledWith(
+      1,
       {
         properties: {
           swap_dapp_comparison: 'loading',
@@ -102,9 +122,8 @@ describe('useDappSwapComparisonInfo', () => {
           swap_dapp_commands: '0x0a100604',
           swap_comparison_total_latency_ms: '1500',
           swap_dapp_from_token_simulated_value_usd: '1',
-          swap_dapp_minimum_received_value_usd: '0.000000000000972677317872',
+          swap_dapp_minimum_received_value_usd: '0.999804',
           swap_dapp_network_fee_usd: '0.01119466650091628514',
-          swap_dapp_request_detection_latency_ms: '1200',
           swap_dapp_to_token_simulated_value_usd: '0.000000000000996995550564',
           swap_mm_from_token_simulated_value_usd: '1',
           swap_mm_minimum_received_value_usd: '0.00000000000097267931748',
@@ -145,16 +164,21 @@ describe('useDappSwapComparisonInfo', () => {
 
     const {
       fiatRates,
-      gasDifference,
       selectedQuote,
       selectedQuoteValueDifference,
       sourceTokenAmount,
       tokenAmountDifference,
       tokenDetails,
-    } = await runHook();
+    } = await runHook({
+      swapInfo: {
+        srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+        destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        srcTokenAmount: '0x0de0b6b3a7640000',
+        destTokenAmountMin: '0x0',
+      },
+    });
     expect(selectedQuote).toEqual(mockBridgeQuotes[3]);
     expect(selectedQuoteValueDifference).toBe(0.012494042894187605);
-    expect(gasDifference).toBe(0.005686377458187605);
     expect(tokenAmountDifference).toBe(0.006807665436);
     expect(sourceTokenAmount).toBe('0x0de0b6b3a7640000');
     expect(tokenDetails).toEqual({
@@ -172,5 +196,43 @@ describe('useDappSwapComparisonInfo', () => {
       '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
       '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
     });
+  });
+
+  it('return quote calculation values as zero if dappSwapUi is not enabled', async () => {
+    mockGetRemoteFeatureFlags.mockReturnValue({
+      dappSwapQa: { enabled: true },
+      dappSwapUi: { enabled: false, threshold: 0.01 },
+    });
+    jest.spyOn(Utils, 'fetchTokenExchangeRates').mockResolvedValue({
+      '0x0000000000000000000000000000000000000000': 4052.27,
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': 0.999804,
+      '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798': 1,
+    });
+    jest.spyOn(TokenUtils, 'fetchAllTokenDetails').mockResolvedValue({
+      '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913': {
+        symbol: 'USDC',
+        decimals: '6',
+      } as TokenStandAndDetails,
+      '0xfd086bc7cd5c481dcc9c85ebe478a1c0b69fcbb9': {
+        symbol: 'USDT',
+        decimals: '6',
+      } as TokenStandAndDetails,
+    });
+
+    const {
+      selectedQuote,
+      selectedQuoteValueDifference,
+      tokenAmountDifference,
+    } = await runHook({
+      swapInfo: {
+        srcTokenAddress: '0xfdcc3dd6671eab0709a4c0f3f53de9a333d80798',
+        destTokenAddress: '0x833589fcd6edb6e08f4c7c32d4f71b54bda02913',
+        srcTokenAmount: '0x0de0b6b3a7640000',
+        destTokenAmountMin: '0x0',
+      },
+    });
+    expect(selectedQuote).toEqual(mockBridgeQuotes[3]);
+    expect(selectedQuoteValueDifference).toBe(0);
+    expect(tokenAmountDifference).toBe(0);
   });
 });

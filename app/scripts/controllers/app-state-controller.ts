@@ -11,7 +11,12 @@ import {
   AcceptRequest,
   AddApprovalRequest,
 } from '@metamask/approval-controller';
-import { DeferredPromise, Json, createDeferredPromise } from '@metamask/utils';
+import {
+  DeferredPromise,
+  Hex,
+  Json,
+  createDeferredPromise,
+} from '@metamask/utils';
 import type { QrScanRequest, SerializedUR } from '@metamask/eth-qr-keyring';
 import type { Messenger } from '@metamask/messenger';
 import { Browser } from 'webextension-polyfill';
@@ -20,6 +25,7 @@ import {
   KeyringControllerUnlockEvent,
 } from '@metamask/keyring-controller';
 import { QuoteResponse } from '@metamask/bridge-controller';
+import { ProfileMetricsControllerSkipInitialDelayAction } from '@metamask/profile-metrics-controller';
 
 import { MINUTE } from '../../../shared/constants/time';
 import { AUTO_LOCK_TIMEOUT_ALARM } from '../../../shared/constants/alarms';
@@ -61,6 +67,19 @@ import type {
   PreferencesControllerStateChangeEvent,
 } from './preferences-controller';
 
+export type DappSwapComparisonData = {
+  quotes?: QuoteResponse[];
+  latency?: number;
+  commands?: string;
+  error?: string;
+  swapInfo?: {
+    srcTokenAddress: Hex;
+    destTokenAddress: Hex;
+    srcTokenAmount: Hex;
+    destTokenAmountMin: Hex;
+  };
+};
+
 export type AppStateControllerState = {
   activeQrCodeScanRequest: QrScanRequest | null;
   addressSecurityAlertResponses: Record<string, CachedScanAddressResponse>;
@@ -101,12 +120,14 @@ export type AppStateControllerState = {
   networkConnectionBanner: NetworkConnectionBanner;
   newPrivacyPolicyToastClickedOrClosed: boolean | null;
   newPrivacyPolicyToastShownDate: number | null;
+  pna25Acknowledged: boolean;
   nftsDetectionNoticeDismissed: boolean;
   nftsDropdownState: Json;
   notificationGasPollTokens: string[];
   onboardingDate: number | null;
   outdatedBrowserWarningLastShown: number | null;
   popupGasPollTokens: string[];
+  sidePanelGasPollTokens: string[];
   productTour?: string;
   recoveryPhraseReminderHasBeenShown: boolean;
   recoveryPhraseReminderLastShown: number;
@@ -133,7 +154,7 @@ export type AppStateControllerState = {
   pendingShieldCohortTxType: string | null;
   defaultSubscriptionPaymentOptions?: DefaultSubscriptionPaymentOptions;
   dappSwapComparisonData?: {
-    [uniqueId: string]: { quotes?: QuoteResponse[]; latency?: number };
+    [uniqueId: string]: DappSwapComparisonData;
   };
 
   /**
@@ -146,6 +167,12 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * Whether to show the storage error toast.
+   * This is set to true when set operations fail (storage.local or IndexedDB).
+   */
+  showStorageErrorToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -173,6 +200,11 @@ export type AppStateControllerSetCanTrackWalletFundsObtainedAction = {
   handler: AppStateController['setCanTrackWalletFundsObtained'];
 };
 
+export type AppStateControllerSetPendingShieldCohortAction = {
+  type: 'AppStateController:setPendingShieldCohort';
+  handler: AppStateController['setPendingShieldCohort'];
+};
+
 /**
  * Actions exposed by the {@link AppStateController}.
  */
@@ -180,7 +212,8 @@ export type AppStateControllerActions =
   | AppStateControllerGetStateAction
   | AppStateControllerGetUnlockPromiseAction
   | AppStateControllerRequestQrCodeScanAction
-  | AppStateControllerSetCanTrackWalletFundsObtainedAction;
+  | AppStateControllerSetCanTrackWalletFundsObtainedAction
+  | AppStateControllerSetPendingShieldCohortAction;
 
 /**
  * Actions that this controller is allowed to call.
@@ -189,7 +222,8 @@ export type AllowedActions =
   | AddApprovalRequest
   | AcceptRequest
   | KeyringControllerGetStateAction
-  | PreferencesControllerGetStateAction;
+  | PreferencesControllerGetStateAction
+  | ProfileMetricsControllerSkipInitialDelayAction;
 
 /**
  * Event emitted when the state of the {@link AppStateController} changes.
@@ -227,7 +261,8 @@ export type AppStateControllerMessenger = Messenger<
 type PollingTokenType =
   | 'popupGasPollTokens'
   | 'notificationGasPollTokens'
-  | 'fullScreenGasPollTokens';
+  | 'fullScreenGasPollTokens'
+  | 'sidePanelGasPollTokens';
 
 type AppStateControllerInitState = Partial<
   Omit<
@@ -269,11 +304,13 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   lastViewedUserSurvey: null,
   newPrivacyPolicyToastClickedOrClosed: null,
   newPrivacyPolicyToastShownDate: null,
+  pna25Acknowledged: false,
   nftsDetectionNoticeDismissed: false,
   notificationGasPollTokens: [],
   onboardingDate: null,
   outdatedBrowserWarningLastShown: null,
   popupGasPollTokens: [],
+  sidePanelGasPollTokens: [],
   productTour: 'accountIcon',
   recoveryPhraseReminderHasBeenShown: false,
   recoveryPhraseReminderLastShown: new Date().getTime(),
@@ -297,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  showStorageErrorToast: false,
   ...getInitialStateOverrides(),
 });
 
@@ -466,6 +504,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: true,
     usedInUi: true,
   },
+  pna25Acknowledged: {
+    includeInStateLogs: true,
+    persist: true,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
   nftsDetectionNoticeDismissed: {
     includeInStateLogs: true,
     persist: true,
@@ -497,6 +541,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     usedInUi: true,
   },
   popupGasPollTokens: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
+  sidePanelGasPollTokens: {
     includeInStateLogs: true,
     persist: false,
     includeInDebugSnapshot: true,
@@ -670,6 +720,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showStorageErrorToast: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -750,6 +806,11 @@ export class AppStateController extends BaseController<
     this.messenger.registerActionHandler(
       'AppStateController:setCanTrackWalletFundsObtained',
       this.setCanTrackWalletFundsObtained.bind(this),
+    );
+
+    this.messenger.registerActionHandler(
+      'AppStateController:setPendingShieldCohort',
+      this.setPendingShieldCohort.bind(this),
     );
 
     this.#approvalRequestId = null;
@@ -874,6 +935,15 @@ export class AppStateController extends BaseController<
     });
   }
 
+  setPna25Acknowledged(acknowledged: boolean, disableDelay = false): void {
+    this.update((state) => {
+      state.pna25Acknowledged = acknowledged;
+    });
+    if (disableDelay && acknowledged) {
+      this.messenger.call('ProfileMetricsController:skipInitialDelay');
+    }
+  }
+
   setShieldPausedToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldPausedToastLastClickedOrClosed = time;
@@ -883,6 +953,18 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets whether to show the storage error toast.
+   * This is called when set operations fail (storage.local or IndexedDB).
+   *
+   * @param show - Whether to show the toast
+   */
+  setShowStorageErrorToast(show: boolean): void {
+    this.update((state) => {
+      state.showStorageErrorToast = show;
     });
   }
 
@@ -1173,6 +1255,7 @@ export class AppStateController extends BaseController<
       'popupGasPollTokens',
       'notificationGasPollTokens',
       'fullScreenGasPollTokens',
+      'sidePanelGasPollTokens',
     ];
 
     return validTokenTypes.includes(pollingTokenType);
@@ -1186,6 +1269,7 @@ export class AppStateController extends BaseController<
       state.popupGasPollTokens = [];
       state.notificationGasPollTokens = [];
       state.fullScreenGasPollTokens = [];
+      state.sidePanelGasPollTokens = [];
     });
   }
 
@@ -1572,6 +1656,15 @@ export class AppStateController extends BaseController<
     });
   }
 
+  /**
+   * Clears the active tab information by setting appActiveTab to undefined.
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
+    });
+  }
+
   setShowShieldEntryModalOnce(showShieldEntryModalOnce: boolean | null): void {
     this.update((state) => {
       state.showShieldEntryModalOnce = showShieldEntryModalOnce;
@@ -1636,22 +1729,22 @@ export class AppStateController extends BaseController<
 
   setDappSwapComparisonData(
     uniqueId: string,
-    info: { quotes?: QuoteResponse[]; latency?: number },
+    info: DappSwapComparisonData,
   ): void {
     this.update((state) => {
       state.dappSwapComparisonData = {
         ...state.dappSwapComparisonData,
-        [uniqueId]: info,
+        [uniqueId]: {
+          ...(state.dappSwapComparisonData?.[uniqueId] ?? {}),
+          ...info,
+        },
       };
     });
   }
 
-  getDappSwapComparisonData(uniqueId: string):
-    | {
-        quotes?: QuoteResponse[];
-        latency?: number;
-      }
-    | undefined {
+  getDappSwapComparisonData(
+    uniqueId: string,
+  ): DappSwapComparisonData | undefined {
     return this.state.dappSwapComparisonData?.[uniqueId] ?? undefined;
   }
 }

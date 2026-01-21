@@ -125,7 +125,7 @@ export const RecipientInput = ({
                   confusableCharacters={recipientConfusableCharacters}
                 />
               ) : (
-                <Text variant={TextVariant.bodyMd}>
+                <Text variant={TextVariant.bodyMd} className="break-all">
                   {recipientName ?? resolvedAddress}
                 </Text>
               )}
@@ -162,7 +162,7 @@ export const RecipientInput = ({
             ) : null
           }
           onChange={onToChange}
-          placeholder={t('recipientPlaceholder')}
+          placeholder={t('recipientPlaceholderText')}
           ref={recipientInputRef}
           value={to}
           width={BlockSize.Full}

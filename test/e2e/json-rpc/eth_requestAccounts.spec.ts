@@ -1,10 +1,11 @@
 import { strict as assert } from 'assert';
-import { WINDOW_TITLES, withFixtures } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
-import FixtureBuilder from '../fixture-builder';
+import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import LoginPage from '../page-objects/pages/login-page';
-import ConnectAccountConfirmation from '../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../page-objects/pages/confirmations/connect-account-confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 
 describe('eth_requestAccounts', function () {

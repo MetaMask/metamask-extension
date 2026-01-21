@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { WINDOW_TITLES } from '../../../constants';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/redesign/deploy-confirmation';
+import ContractDeploymentConfirmation from '../../../page-objects/pages/confirmations/deploy-confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import TestDapp from '../../../page-objects/pages/test-dapp';
-import FixtureBuilder from '../../../fixture-builder';
+import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { TestSuiteArguments } from './shared';
 

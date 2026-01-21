@@ -46,7 +46,10 @@ import { useNetworkItemCallbacks } from '../../hooks/useNetworkItemCallbacks';
 import { useNetworkManagerState } from '../../hooks/useNetworkManagerState';
 import { AdditionalNetworksInfo } from '../additional-networks-info';
 import { getMultichainIsEvm } from '../../../../../selectors/multichain';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../../selectors/multichain/networks';
+import {
+  getAllEnabledNetworksForAllNamespaces,
+  getSelectedMultichainNetworkConfiguration,
+} from '../../../../../selectors/multichain/networks';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import {
   getOrderedNetworksList,
@@ -54,9 +57,11 @@ import {
   getIsMultichainAccountsState2Enabled,
   getSelectedInternalAccount,
   getGasFeesSponsoredNetworkEnabled,
+  getUseExternalServices,
 } from '../../../../../selectors';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../../../../selectors/multichain-accounts/account-tree';
 import { selectAdditionalNetworksBlacklistFeatureFlag } from '../../../../../selectors/network-blacklist/network-blacklist';
+import { isEvmChainId } from '../../../../../../shared/lib/asset-utils';
 
 const DefaultNetworks = memo(() => {
   const t = useI18nContext();
@@ -82,6 +87,13 @@ const DefaultNetworks = memo(() => {
   const isMultichainAccountsState2Enabled = useSelector(
     getIsMultichainAccountsState2Enabled,
   );
+
+  const useExternalServices = useSelector(getUseExternalServices);
+
+  // Get the currently selected network to allow it through when BFT is OFF
+  const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
+  const selectedNonEvmChainId =
+    !isEvmNetworkSelected && currentNetwork ? currentNetwork.chainId : null;
 
   // extract the evm account of the selected account group
   const evmAccountGroup = useSelector((state) =>
@@ -145,10 +157,25 @@ const DefaultNetworks = memo(() => {
     useNetworkManagerState({ showDefaultNetworks: true });
 
   // Memoize sorted networks to avoid expensive sorting on every render
-  const orderedNetworks = useMemo(
-    () => sortNetworks(nonTestNetworks, orderedNetworksList),
-    [nonTestNetworks, orderedNetworksList],
-  );
+  const orderedNetworks = useMemo(() => {
+    // Filter nonTestNetworks object based on basic functionality toggle
+    // Exception: Keep the currently selected non-EVM chain visible
+    const filteredNetworks = useExternalServices
+      ? nonTestNetworks
+      : Object.fromEntries(
+          Object.entries(nonTestNetworks).filter(
+            ([, network]) =>
+              isEvmChainId(network.chainId as `0x${string}`) ||
+              network.chainId === selectedNonEvmChainId,
+          ),
+        );
+    return sortNetworks(filteredNetworks, orderedNetworksList);
+  }, [
+    nonTestNetworks,
+    orderedNetworksList,
+    useExternalServices,
+    selectedNonEvmChainId,
+  ]);
 
   // Memoize the featured networks calculation
   const featuredNetworksNotYetEnabled = useMemo(() => {
@@ -157,15 +184,22 @@ const DefaultNetworks = memo(() => {
       ({ chainId }) => !evmNetworks[chainId],
     );
 
+    // Apply basic functionality toggle filter to exclude non-EVM networks when BFT is OFF
+    const bftFilteredNetworks = useExternalServices
+      ? availableNetworks
+      : availableNetworks.filter(({ chainId }) =>
+          isEvmChainId(chainId as `0x${string}`),
+        );
+
     // Apply blacklist filter to exclude blacklisted networks
     const filteredNetworks = getFilteredFeaturedNetworks(
       blacklistedChainIds,
-      availableNetworks,
+      bftFilteredNetworks,
     );
 
     // Sort alphabetically
     return filteredNetworks.sort((a, b) => a.name.localeCompare(b.name));
-  }, [evmNetworks, blacklistedChainIds]);
+  }, [evmNetworks, blacklistedChainIds, useExternalServices]);
 
   const isAllPopularNetworksSelected = useMemo(
     () => allEnabledNetworksForAllNamespaces.length > 1,
@@ -229,6 +263,11 @@ const DefaultNetworks = memo(() => {
           if (evmAccountGroup && network.isEvm) {
             return true;
           }
+          // When basic functionality toggle is OFF, only show EVM networks
+          // Exception: Keep the currently selected non-EVM chain visible
+          if (!useExternalServices) {
+            return network.chainId === selectedNonEvmChainId;
+          }
           if (solAccountGroup && network.chainId === SolScope.Mainnet) {
             return true;
           }
@@ -244,6 +283,11 @@ const DefaultNetworks = memo(() => {
       return orderedNetworks.filter((network) => {
         if (isEvmNetworkSelected) {
           return network.isEvm;
+        }
+        // When basic functionality toggle is OFF, only show EVM networks
+        // Exception: Keep the currently selected non-EVM chain visible
+        if (!useExternalServices) {
+          return network.chainId === selectedNonEvmChainId;
         }
         if (selectedAccount.scopes.includes(SolScope.Mainnet)) {
           return network.chainId === SolScope.Mainnet;
@@ -287,6 +331,7 @@ const DefaultNetworks = memo(() => {
           name={network.name}
           iconSrc={iconSrc}
           iconSize={AvatarNetworkSize.Md}
+          focus={false}
           rpcEndpoint={
             hasMultiRpcOptions(network)
               ? getRpcDataByChainId(network.chainId, evmNetworks)
@@ -325,6 +370,8 @@ const DefaultNetworks = memo(() => {
     dispatch,
     selectedAccount,
     enabledChainIds,
+    useExternalServices,
+    selectedNonEvmChainId,
   ]);
 
   // Memoize the additional network list items
@@ -405,6 +452,7 @@ const DefaultNetworks = memo(() => {
               iconSrc={IconName.Global}
               iconSize={IconSize.Xl}
               selected={isAllPopularNetworksSelected}
+              focus={false}
             />
           </Box>
         ) : null}

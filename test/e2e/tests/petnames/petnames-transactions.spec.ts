@@ -1,11 +1,11 @@
-import { withFixtures, WINDOW_TITLES } from '../../helpers';
-import FixtureBuilder from '../../fixture-builder';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import Confirmation from '../../page-objects/pages/confirmations/redesign/confirmation';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { Driver } from '../../webdriver/driver';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';
@@ -119,10 +119,11 @@ async function createWalletSendTransaction(
   recipientAddress: string,
   driver: Driver,
 ): Promise<void> {
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient(recipientAddress);
-  await sendToPage.goToNextScreen();
+  await createInternalTransaction({
+    driver,
+    chainId: '0x539',
+    symbol: 'ETH',
+    recipientAddress,
+    amount: '1',
+  });
 }

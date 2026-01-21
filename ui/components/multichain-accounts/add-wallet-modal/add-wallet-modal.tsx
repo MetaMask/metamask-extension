@@ -1,5 +1,5 @@
 import React, { useCallback, useContext } from 'react';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxAlignItems,
@@ -158,7 +158,14 @@ export const AddWalletModal: React.FC<AddWalletModalProps> = ({
         getEnvironmentType() === ENVIRONMENT_TYPE_POPUP ||
         getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL
       ) {
-        global.platform.openExtensionInBrowser?.(option.route);
+        // Keep sidepanel open when opening hardware wallet in expanded view
+        const keepWindowOpen =
+          getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
+        global.platform.openExtensionInBrowser?.(
+          option.route,
+          null,
+          keepWindowOpen,
+        );
       } else {
         navigate(option.route);
       }

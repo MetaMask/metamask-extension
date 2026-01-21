@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { Mockttp } from 'mockttp';
-import { unlockWallet } from '../../../helpers';
+import { WINDOW_TITLES } from '../../../constants';
+import { withFixtures } from '../../../helpers';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
 import { Driver } from '../../../webdriver/driver';
@@ -9,7 +10,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';
-import TransactionConfirmation from '../../../page-objects/pages/confirmations/redesign/transaction-confirmation';
+import TransactionConfirmation from '../../../page-objects/pages/confirmations/transaction-confirmation';
 import AdvancedSettings from '../../../page-objects/pages/settings/advanced-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import {
@@ -19,11 +20,10 @@ import {
 } from './shared';
 
 const { hexToNumber } = require('@metamask/utils');
-const { WINDOW_TITLES, withFixtures } = require('../../../helpers');
 const {
   KNOWN_PUBLIC_KEY_ADDRESSES,
 } = require('../../../../stub/keyring-bridge');
-const FixtureBuilder = require('../../../fixture-builder');
+const FixtureBuilder = require('../../../fixtures/fixture-builder');
 const { SMART_CONTRACTS } = require('../../../seeder/smart-contracts');
 const { CHAIN_IDS } = require('../../../../../shared/constants/network');
 
@@ -124,7 +124,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           const contractAddress =
             await contractRegistry?.getContractAddress(smartContract);
 
-          await loginWithBalanceValidation(driver, localNodes?.[0]);
+          await loginWithBalanceValidation(
+            driver,
+            undefined,
+            undefined,
+            '1.21M',
+          );
           const testDapp = new TestDapp(driver);
           await testDapp.openTestDappPage({ contractAddress });
           await testDapp.checkPageIsLoaded();
@@ -167,8 +172,12 @@ describe('Confirmation Redesign Contract Interaction Component', function () {
           title: this.test?.fullTitle(),
           testSpecificMock: mockOptimismOracle,
         },
-        async ({ driver, contractRegistry }: TestSuiteArguments) => {
-          await unlockWallet(driver);
+        async ({
+          driver,
+          contractRegistry,
+          localNodes,
+        }: TestSuiteArguments) => {
+          await loginWithBalanceValidation(driver, localNodes?.[0]);
           await createLayer2Transaction(driver);
 
           const contractAddress = await (

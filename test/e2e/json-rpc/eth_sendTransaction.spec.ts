@@ -1,10 +1,12 @@
 import { strict as assert } from 'assert';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
-import FixtureBuilder from '../fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
+import FixtureBuilder from '../fixtures/fixture-builder';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import LoginPage from '../page-objects/pages/login-page';
+import TransactionConfirmation from '../page-objects/pages/confirmations/transaction-confirmation';
 
 describe('eth_sendTransaction', function () {
   const expectedHash =
@@ -161,8 +163,10 @@ describe('eth_sendTransaction', function () {
         await loginPage.checkPageIsLoaded();
         await loginPage.loginToHomepage();
 
-        const confirmation = new Confirmation(driver);
+        const confirmation = new TransactionConfirmation(driver);
         await confirmation.checkPageIsLoaded();
+        await confirmation.checkSiteSuggestedGas('~15 sec');
+        await confirmation.checkNoInLineAlertIsDisplayed();
         await confirmation.clickFooterConfirmButtonAndAndWaitForWindowToClose();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         await testDapp.checkPageIsLoaded();

@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom-v5-compat';
+import { useNavigate } from 'react-router-dom';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { isEvmAccountType } from '@metamask/keyring-api';
 import { CaipAssetType } from '@metamask/utils';
@@ -53,9 +53,12 @@ import { useRedesignedSendFlow } from '../../confirmations/hooks/useRedesignedSe
 const TokenButtons = ({
   token,
   account,
+  disableSendForNonEvm = false,
 }: {
   token: Asset & { type: AssetType.token };
   account: InternalAccount;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 }) => {
   const dispatch = useDispatch();
   const t = useContext(I18nContext);
@@ -255,7 +258,10 @@ const TokenButtons = ({
         }
         label={t('send')}
         data-testid="eth-overview-send"
-        disabled={token.isERC721}
+        disabled={
+          token.isERC721 ||
+          (disableSendForNonEvm && !isEvm && !isExternalServicesEnabled)
+        }
       />
 
       <IconButton
