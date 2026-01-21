@@ -50,11 +50,6 @@ const PerpsHomePage: React.FC = () => {
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
-  // Guard: redirect if perps feature is disabled
-  if (!isPerpsEnabled) {
-    return <Navigate to={DEFAULT_ROUTE} replace />;
-  }
-
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
     return mockPositions.filter((pos) => !pos.coin.includes(':')).slice(0, 3);
@@ -97,6 +92,11 @@ const PerpsHomePage: React.FC = () => {
     },
     [navigate],
   );
+
+  // Guard: redirect if perps feature is disabled
+  if (!isPerpsEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
 
   return (
     <Box
@@ -184,7 +184,7 @@ const PerpsHomePage: React.FC = () => {
             />
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-            {positions.map((position, index) => {
+            {positions.map((position) => {
               const displaySymbol = getDisplayName(position.coin);
               const isLong = parseFloat(position.size) >= 0;
               const pnlValue = parseFloat(position.unrealizedPnl);
@@ -266,7 +266,7 @@ const PerpsHomePage: React.FC = () => {
             />
           </Box>
           <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-            {openOrders.map((order, index) => {
+            {openOrders.map((order) => {
               const displaySymbol = getDisplayName(order.symbol);
               const orderTypeLabel =
                 order.orderType === 'limit'
