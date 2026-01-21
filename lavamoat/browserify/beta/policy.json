@@ -1023,7 +1023,7 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/signature-controller>@metamask/network-controller>@metamask/connectivity-controller": {
+    "@metamask/connectivity-controller": {
       "packages": {
         "@metamask/base-controller": true
       }
@@ -1195,7 +1195,7 @@
         "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
       }
     },
-    "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
+    "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1716,7 +1716,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1745,7 +1745,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1774,7 +1774,7 @@
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -2341,7 +2341,7 @@
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/transaction-controller>@metamask/gas-fee-controller": true,
         "@metamask/metamask-eth-abis": true,
-        "@metamask/transaction-controller>@metamask/network-controller": true,
+        "@metamask/network-controller": true,
         "@metamask/transaction-controller>@metamask/nonce-tracker": true,
         "@metamask/rpc-errors": true,
         "@metamask/utils": true,
