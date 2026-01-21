@@ -298,6 +298,7 @@
       }
     },
     "appActiveTab": {
+      "favIconUrl": "null",
       "host": "string",
       "href": "string",
       "id": "number",
@@ -344,6 +345,7 @@
     },
     "completedOnboarding": "boolean",
     "connectedStatusPopoverHasBeenShown": "boolean",
+    "connectivityStatus": "string",
     "conversionRates": {},
     "coverageResults": {},
     "cryptocurrencies": ["string"],
@@ -382,12 +384,18 @@
     "domains": {},
     "drafts": [],
     "enabledNetworkMap": {
+      "bip122": {
+        "bip122:000000000019d6689c085ae165831e93": "boolean"
+      },
       "eip155": {
         "0x539": "boolean",
         "0x18c7": "boolean"
       },
       "solana": {
         "solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp": "boolean"
+      },
+      "tron": {
+        "tron:728126428": "boolean"
       }
     },
     "enableEnforcedSimulations": "boolean",
@@ -859,9 +867,6 @@
       "feature3": {
         "name": "string",
         "value": "string"
-      },
-      "sendRedesign": {
-        "enabled": "boolean"
       }
     },
     "rewardsAccounts": {},
@@ -1085,7 +1090,8 @@
     },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
-      "install_date_ext": "string"
+      "install_date_ext": "string",
+      "storage_kind": "string"
     },
     "transactionBatches": [],
     "transactionData": {},

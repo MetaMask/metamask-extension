@@ -749,6 +749,9 @@
   "back": {
     "message": "Back"
   },
+  "backToHome": {
+    "message": "Back to home"
+  },
   "backup": {
     "message": "Backup"
   },
@@ -1298,9 +1301,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -3256,6 +3256,9 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
+  "insufficientBalanceToCoverFees": {
+    "message": "Insufficient balance to cover fees"
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
@@ -3991,9 +3994,6 @@
   "needImportFile": {
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
@@ -4746,6 +4746,14 @@
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
   },
+  "payWith": {
+    "message": "Pay with",
+    "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithModalTitle": {
+    "message": "Pay with",
+    "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
+  },
   "pending": {
     "message": "Pending"
   },
@@ -5055,32 +5063,111 @@
   "perps": {
     "message": "Perps"
   },
+  "perps24hVolume": {
+    "message": "24h Volume"
+  },
+  "perpsAutoClose": {
+    "message": "Auto close"
+  },
   "perpsBuy": {
     "message": "buy"
   },
   "perpsCloseAll": {
     "message": "Close all"
   },
+  "perpsClosedShort": {
+    "message": "Closed short"
+  },
+  "perpsDetails": {
+    "message": "Details"
+  },
+  "perpsDirection": {
+    "message": "Direction"
+  },
+  "perpsDisclaimer": {
+    "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+  },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsEntryPrice": {
+    "message": "Entry price"
+  },
+  "perpsFundingPayments": {
+    "message": "Funding payments"
+  },
+  "perpsFundingRate": {
+    "message": "Funding Rate"
+  },
+  "perpsIncreasedPosition": {
+    "message": "Increased position"
+  },
+  "perpsLearnBasics": {
+    "message": "Learn the basics of perps"
+  },
+  "perpsLiquidationPrice": {
+    "message": "Liquidation price"
+  },
+  "perpsLong": {
+    "message": "Long"
+  },
+  "perpsMargin": {
+    "message": "Margin"
   },
   "perpsMarket": {
     "message": "Market"
   },
+  "perpsMarketNotFound": {
+    "message": "Market not found"
+  },
+  "perpsMarketNotFoundDescription": {
+    "message": "The market \"$1\" could not be found.",
+    "description": "$1 is the market symbol that was not found"
+  },
+  "perpsOpenInterest": {
+    "message": "Open Interest"
+  },
   "perpsOpenOrders": {
     "message": "Open Orders"
+  },
+  "perpsOpenedLong": {
+    "message": "Opened long"
+  },
+  "perpsOrders": {
+    "message": "Orders"
+  },
+  "perpsPnl": {
+    "message": "P&L"
+  },
+  "perpsPosition": {
+    "message": "Position"
   },
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsRecentActivity": {
+    "message": "Recent Activity"
+  },
+  "perpsReturn": {
+    "message": "Return"
+  },
   "perpsSell": {
     "message": "sell"
+  },
+  "perpsShort": {
+    "message": "Short"
+  },
+  "perpsSize": {
+    "message": "Size"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
   },
   "perpsStartTrading": {
     "message": "Start trading"
+  },
+  "perpsStats": {
+    "message": "Stats"
   },
   "perpsTotalBalance": {
     "message": "Total Balance"
@@ -8513,6 +8600,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
