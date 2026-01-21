@@ -195,7 +195,7 @@ async function main(): Promise<void> {
     updateSnapshot,
     updatePrivacySnapshot,
     multiProvider,
-    performance,
+    performance: runPerformanceTests,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -246,7 +246,7 @@ async function main(): Promise<void> {
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
     testPaths = await getTestPathsForTestDir(testDir);
-  } else if (performance) {
+  } else if (runPerformanceTests) {
     const testDir = path.join(__dirname, '../performance-tests');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {

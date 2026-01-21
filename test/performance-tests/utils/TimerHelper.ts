@@ -13,6 +13,7 @@ class TimerHelper {
 
   /**
    * Creates a new timer with optional threshold
+   *
    * @param id - Timer description/identifier
    * @param threshold - Threshold in ms (effective threshold = base + 10% margin)
    */
@@ -61,6 +62,7 @@ class TimerHelper {
 
   /**
    * Measures the execution time of an async action
+   *
    * @param action - Async function to measure
    * @returns Returns this for chaining
    */

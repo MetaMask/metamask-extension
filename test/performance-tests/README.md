@@ -8,14 +8,14 @@ The performance tests use a **power user profile** with pre-loaded wallet state 
 
 ## Test Scenarios
 
-| Folder | Scenario | Description |
-|--------|----------|-------------|
-| `onboarding/` | Wallet Creation | Measures onboarding flow for new wallet creation |
-| `onboarding/` | Wallet Import | Measures onboarding flow when importing an existing wallet via SRP |
-| `login/` | Import SRP from Home | Measures importing a second SRP after login |
-| `login/` | Send Transactions | Measures the send flow performance for native tokens |
-| `login/` | Swap | Measures swap page load and quote fetching times |
-| `login/` | Asset Details | Measures asset details page load time (EVM & Solana) |
+| Folder        | Scenario             | Description                                                        |
+| ------------- | -------------------- | ------------------------------------------------------------------ |
+| `onboarding/` | Wallet Creation      | Measures onboarding flow for new wallet creation                   |
+| `onboarding/` | Wallet Import        | Measures onboarding flow when importing an existing wallet via SRP |
+| `login/`      | Import SRP from Home | Measures importing a second SRP after login                        |
+| `login/`      | Send Transactions    | Measures the send flow performance for native tokens               |
+| `login/`      | Swap                 | Measures swap page load and quote fetching times                   |
+| `login/`      | Asset Details        | Measures asset details page load time (EVM & Solana)               |
 
 ## Timer System
 
@@ -86,10 +86,7 @@ Reports are saved to `test/test-results/power-user-scenarios/` as JSON files:
 
 ```json
 {
-  "testName": "measures swap flow performance with quote fetching",
-  "testFile": "swap.spec.ts",
-  "timestamp": "2025-01-21T10:30:00.000Z",
-  "thresholdMarginPercent": 10,
+  "hasThresholds": true,
   "steps": [
     {
       "name": "Time to open swap page from home",
@@ -103,9 +100,12 @@ Reports are saved to `test/test-results/power-user-scenarios/` as JSON files:
       }
     }
   ],
+  "testFile": "swap.spec.ts",
+  "testName": "measures swap flow performance with quote fetching",
+  "thresholdMarginPercent": 10,
+  "timestamp": "2025-01-21T10:30:00.000Z",
   "total": 3.8,
   "totalThreshold": 16500,
-  "hasThresholds": true,
   "totalValidation": {
     "passed": true,
     "exceeded": null,
@@ -136,11 +136,19 @@ describe('Swap Performance', function () {
 
   it('measures swap flow performance', async function () {
     await withFixtures(
-      { /* fixture config */ },
+      {
+        /* fixture config */
+      },
       async ({ driver }: { driver: Driver }) => {
         // Create timers with thresholds (in ms)
-        const timerOpenSwapPage = new TimerHelper('Time to open swap page', 5000);
-        const timerQuoteFetching = new TimerHelper('Time to fetch quotes', 10000);
+        const timerOpenSwapPage = new TimerHelper(
+          'Time to open swap page',
+          5000,
+        );
+        const timerQuoteFetching = new TimerHelper(
+          'Time to fetch quotes',
+          10000,
+        );
 
         // Login
         await driver.navigate();
@@ -193,6 +201,7 @@ yarn test:e2e:single test/performance-tests/login/swap.spec.ts --browser=chrome
 ```
 
 **Available options:**
+
 - `--retries <n>` - Number of retries on failure
 - `--browser <chrome|firefox>` - Browser to use (default: chrome)
 - `--debug` - Enable debug logging (default: true)
@@ -202,17 +211,20 @@ yarn test:e2e:single test/performance-tests/login/swap.spec.ts --browser=chrome
 Performance tests run automatically on every push to `main` branch via the `.github/workflows/run-performance-tests.yml` workflow.
 
 **Workflow features:**
+
 - Builds the test extension
 - Runs all performance tests sequentially for accurate timing measurements
 - Uploads test artifacts with timing results
 - Displays performance summary in the job logs
 
 **View results:**
+
 1. Go to the GitHub Actions tab
 2. Find the "Performance Tests" workflow
 3. Download the `performance-tests-results` artifact for detailed timing data
 
 **Required secrets:**
+
 - `INFURA_PROJECT_ID` - Required for all tests
 - `E2E_POWER_USER_SRP` - Optional, for power user tests
 - `TEST_SRP_2` - Optional, for import SRP tests
@@ -220,6 +232,7 @@ Performance tests run automatically on every push to `main` branch via the `.git
 ## Prerequisites
 
 These tests require:
+
 - `INFURA_PROJECT_ID` environment variable set in `.metamaskrc`
 - For some tests: `E2E_POWER_USER_SRP` or `TEST_SRP_2` environment variables
 
@@ -237,6 +250,7 @@ Performance tests are integrated with the existing e2e test infrastructure:
 - **Fixtures:** Reuses fixtures and helpers from `test/e2e/`
 
 The npm script `test:e2e:performance` is defined as:
+
 ```json
 "test:e2e:performance": "SELENIUM_BROWSER=chrome tsx test/e2e/run-all.ts --performance"
 ```

@@ -45,6 +45,8 @@ export class PerformanceTracker {
 
   /**
    * Add multiple timers at once
+   *
+   * @param timers
    */
   addTimers(...timers: TimerHelper[]): void {
     timers.forEach((timer) => {
@@ -54,6 +56,8 @@ export class PerformanceTracker {
 
   /**
    * Add a single timer to the tracker
+   *
+   * @param timer
    */
   addTimer(timer: TimerHelper): void {
     if (this.timers.find((existingTimer) => existingTimer.id === timer.id)) {
@@ -71,6 +75,9 @@ export class PerformanceTracker {
 
   /**
    * Generate and save the performance report
+   *
+   * @param testName
+   * @param testFilePath
    */
   generateReport(testName: string, testFilePath: string): PerformanceMetrics {
     const metrics: PerformanceMetrics = {
@@ -94,14 +101,20 @@ export class PerformanceTracker {
       const durationInSeconds = timer.getDurationInSeconds();
 
       if (duration !== null && !isNaN(duration) && duration > 0) {
-        const hasThreshold = timer.threshold !== null;
-        const passed = !hasThreshold || duration <= timer.threshold!;
-        const exceeded =
-          hasThreshold && !passed ? duration - timer.threshold! : null;
-        const percentOver =
-          exceeded !== null
-            ? ((exceeded / timer.threshold!) * 100).toFixed(1)
-            : null;
+        const threshold = timer.threshold;
+        const hasThreshold = threshold !== null;
+
+        let passed = true;
+        let exceeded: number | null = null;
+        let percentOver: string | null = null;
+
+        if (hasThreshold) {
+          passed = duration <= threshold;
+          if (!passed) {
+            exceeded = duration - threshold;
+            percentOver = `${((exceeded / threshold) * 100).toFixed(1)}%`;
+          }
+        }
 
         const stepObject: StepMetric = {
           name: timer.id,
@@ -112,7 +125,7 @@ export class PerformanceTracker {
             ? {
                 passed,
                 exceeded,
-                percentOver: percentOver ? `${percentOver}%` : null,
+                percentOver,
               }
             : null,
         };
@@ -120,8 +133,8 @@ export class PerformanceTracker {
 
         totalSeconds += durationInSeconds;
 
-        if (timer.threshold !== null) {
-          totalThresholdMs += timer.threshold;
+        if (threshold !== null) {
+          totalThresholdMs += threshold;
         } else {
           allHaveThresholds = false;
         }
@@ -136,18 +149,19 @@ export class PerformanceTracker {
     if (allHaveThresholds && totalThresholdMs > 0) {
       const totalDurationMs = totalSeconds * 1000;
       const totalPassed = totalDurationMs <= totalThresholdMs;
-      const totalExceeded = !totalPassed
-        ? totalDurationMs - totalThresholdMs
-        : null;
-      const totalPercentOver =
-        totalExceeded !== null
-          ? ((totalExceeded / totalThresholdMs) * 100).toFixed(1)
-          : null;
+
+      let totalExceeded: number | null = null;
+      let totalPercentOver: string | null = null;
+
+      if (!totalPassed) {
+        totalExceeded = totalDurationMs - totalThresholdMs;
+        totalPercentOver = `${((totalExceeded / totalThresholdMs) * 100).toFixed(1)}%`;
+      }
 
       metrics.totalValidation = {
         passed: totalPassed,
         exceeded: totalExceeded,
-        percentOver: totalPercentOver ? `${totalPercentOver}%` : null,
+        percentOver: totalPercentOver,
       };
     }
 
@@ -188,11 +202,10 @@ export class PerformanceTracker {
     console.log('📊 Performance Summary:');
     metrics.steps.forEach((step) => {
       const durationSeconds = step.duration / 1000;
-      const status = step.validation
-        ? step.validation.passed
-          ? '✅'
-          : '❌'
-        : '⏱️';
+      let status = '⏱️';
+      if (step.validation) {
+        status = step.validation.passed ? '✅' : '❌';
+      }
       const thresholdInfo = step.threshold
         ? ` (threshold: ${step.threshold}ms)`
         : '';
