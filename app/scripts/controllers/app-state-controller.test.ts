@@ -1106,15 +1106,6 @@ describe('AppStateController', () => {
         );
       });
     });
-
-    it('does not update the state when deferred deep link is not available', async () => {
-      await withController(async ({ controller }) => {
-        // @ts-expect-error Passing null is intentional here for testing purposes
-        controller.setDeferredDeepLink(null);
-
-        expect(controller.state.deferredDeepLink).toBeUndefined();
-      });
-    });
   });
 });
 
