@@ -8859,6 +8859,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@metamask/tx-categorize@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@metamask/tx-categorize@npm:0.1.0"
+  dependencies:
+    axios: "npm:^1.8.4"
+    bloom-filters: "npm:^3.0.1"
+    i18next: "npm:^24.2.3"
+    i18next-fs-backend: "npm:^2.6.0"
+  checksum: 10/98976d78568d302dd13f09c19da9678de57cf7293d519a7babccf538d8fef945be835f64d3bb0303f11051367e4d59120c4c8b0e0cdc63a6f586b7918cda96d4
+  languageName: node
+  linkType: hard
+
 "@metamask/user-operation-controller@npm:^40.0.0":
   version: 40.0.0
   resolution: "@metamask/user-operation-controller@npm:40.0.0"
@@ -16805,6 +16817,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/seedrandom@npm:^3.0.8":
+  version: 3.0.8
+  resolution: "@types/seedrandom@npm:3.0.8"
+  checksum: 10/9651de4ecb5ad060053678d6a42403dd78222bcca80016417c23b58b4f739e544b7197a78b97d6862cf417ea80fd2df612cc50ca0fa387fbe794e326a382ab0b
+  languageName: node
+  linkType: hard
+
 "@types/selenium-webdriver@npm:^4.1.28":
   version: 4.1.28
   resolution: "@types/selenium-webdriver@npm:4.1.28"
@@ -19903,6 +19922,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"base64-arraybuffer@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "base64-arraybuffer@npm:1.0.2"
+  checksum: 10/15e6400d2d028bf18be4ed97702b11418f8f8779fb8c743251c863b726638d52f69571d4cc1843224da7838abef0949c670bde46936663c45ad078e89fee5c62
+  languageName: node
+  linkType: hard
+
 "base64-js@npm:^1.0.2, base64-js@npm:^1.3.1, base64-js@npm:^1.5.1":
   version: 1.5.1
   resolution: "base64-js@npm:1.5.1"
@@ -20190,6 +20216,22 @@ __metadata:
   version: 2.0.0
   resolution: "blo@npm:2.0.0"
   checksum: 10/a03c33f46349ee114825f3615e45038bc165cb74fdb38959dbc84e96841b33f24bd79aa732cbfe967877dfae2c684878d57bfa8a9f28618059028072de8f5a5e
+  languageName: node
+  linkType: hard
+
+"bloom-filters@npm:^3.0.1":
+  version: 3.0.4
+  resolution: "bloom-filters@npm:3.0.4"
+  dependencies:
+    "@types/seedrandom": "npm:^3.0.8"
+    base64-arraybuffer: "npm:^1.0.2"
+    is-buffer: "npm:^2.0.5"
+    lodash: "npm:^4.17.21"
+    long: "npm:^5.2.0"
+    reflect-metadata: "npm:^0.1.13"
+    seedrandom: "npm:^3.0.5"
+    xxhashjs: "npm:^0.2.2"
+  checksum: 10/a29b9ea97d2cc090467ee7bfd44ce4e3184062e150f007fc318b14d7f16796fd581c7880804a10cf39addde5a2de2a77d74aa41ab6c4b4856b8535d24a43121e
   languageName: node
   linkType: hard
 
@@ -22699,6 +22741,13 @@ __metadata:
   version: 3.1.3
   resolution: "csstype@npm:3.1.3"
   checksum: 10/f593cce41ff5ade23f44e77521e3a1bcc2c64107041e1bf6c3c32adc5187d0d60983292fda326154d20b01079e24931aa5b08e4467cc488b60bb1e7f6d478ade
+  languageName: node
+  linkType: hard
+
+"cuint@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "cuint@npm:0.2.2"
+  checksum: 10/c1b98971f4a1b32ce71ec82eac87df87b54ee85d982e3967a6dd89f19ffd3ebbbdb82e3738e489f475611b6ed126c0deba05ed9ecffea0a721a4d43773ce0670
   languageName: node
   linkType: hard
 
@@ -29059,6 +29108,27 @@ __metadata:
   languageName: node
   linkType: hard
 
+"i18next-fs-backend@npm:^2.6.0":
+  version: 2.6.1
+  resolution: "i18next-fs-backend@npm:2.6.1"
+  checksum: 10/2c93cab111cee0472a2ff462cdaa3cac32a1d464fb7d8cb7a6c7171ac2fdaf39a6ba9e82a2700334389519cb228f2aef29dc44871635320140da65b5dfaadcbe
+  languageName: node
+  linkType: hard
+
+"i18next@npm:^24.2.3":
+  version: 24.2.3
+  resolution: "i18next@npm:24.2.3"
+  dependencies:
+    "@babel/runtime": "npm:^7.26.10"
+  peerDependencies:
+    typescript: ^5
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10/6c73d964f2a98b1aa2c2717fe6da66fc265bcbbc5fcd52b2bfff51ff013d30d4f7d7449c4eb7f464d27af43e2e73f2e7f1d46a144d731bd3bdb1385d4c199e4c
+  languageName: node
+  linkType: hard
+
 "iconv-lite@npm:0.4.24":
   version: 0.4.24
   resolution: "iconv-lite@npm:0.4.24"
@@ -32896,10 +32966,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"long@npm:5.2.5, long@npm:^5.0.0":
+"long@npm:5.2.5":
   version: 5.2.5
   resolution: "long@npm:5.2.5"
   checksum: 10/972589d04a564ef4c066069d5ed06db14cd63de2a08d4f6c989512fa414bc2239479564e3a85de3efd42eb533ce142cdcaa28f12f4ecd051670015d36cbbb10b
+  languageName: node
+  linkType: hard
+
+"long@npm:^5.0.0, long@npm:^5.2.0":
+  version: 5.3.2
+  resolution: "long@npm:5.3.2"
+  checksum: 10/b6b55ddae56fcce2864d37119d6b02fe28f6dd6d9e44fd22705f86a9254b9321bd69e9ffe35263b4846d54aba197c64882adcb8c543f2383c1e41284b321ea64
   languageName: node
   linkType: hard
 
@@ -33656,6 +33733,7 @@ __metadata:
     "@metamask/transaction-controller": "npm:^62.8.0"
     "@metamask/transaction-pay-controller": "npm:^10.2.0"
     "@metamask/tron-wallet-snap": "npm:^1.19.1"
+    "@metamask/tx-categorize": "npm:^0.1.0"
     "@metamask/user-operation-controller": "npm:^40.0.0"
     "@metamask/utils": "npm:^11.4.2"
     "@ngraveio/bc-ur": "npm:^1.1.13"
@@ -38909,6 +38987,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"reflect-metadata@npm:^0.1.13":
+  version: 0.1.14
+  resolution: "reflect-metadata@npm:0.1.14"
+  checksum: 10/fcab9c17ec3b9fea0e2f748c2129aceb57c24af6d8d13842b8a77c8c79dde727d7456ce293e76e8d7b267d1dbf93eea4c5b3c9101299a789a075824f2e40f1ee
+  languageName: node
+  linkType: hard
+
 "reflect.getprototypeof@npm:^1.0.6, reflect.getprototypeof@npm:^1.0.9":
   version: 1.0.10
   resolution: "reflect.getprototypeof@npm:1.0.10"
@@ -40390,6 +40475,13 @@ __metadata:
   version: 3.0.1
   resolution: "secure-compare@npm:3.0.1"
   checksum: 10/0a8d8d3e54d5772d2cf1c02325f01fc7366d0bd33f964a08a84fe3ee5f34d46435a6ae729c1d239c750e160ef9b58c764d3efb945a1d07faf47978a8e4161594
+  languageName: node
+  linkType: hard
+
+"seedrandom@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "seedrandom@npm:3.0.5"
+  checksum: 10/acad5e516c04289f61c2fb9848f449b95f58362b75406b79ec51e101ec885293fc57e3675d2f39f49716336559d7190f7273415d185fead8cd27b171ebf7d8fb
   languageName: node
   linkType: hard
 
@@ -45836,6 +45928,15 @@ __metadata:
   version: 4.0.2
   resolution: "xtend@npm:4.0.2"
   checksum: 10/ac5dfa738b21f6e7f0dd6e65e1b3155036d68104e67e5d5d1bde74892e327d7e5636a076f625599dc394330a731861e87343ff184b0047fef1360a7ec0a5a36a
+  languageName: node
+  linkType: hard
+
+"xxhashjs@npm:^0.2.2":
+  version: 0.2.2
+  resolution: "xxhashjs@npm:0.2.2"
+  dependencies:
+    cuint: "npm:^0.2.2"
+  checksum: 10/974dba1b7dd10f550714456366135fc70ba809e6e4db26e18a760a1f57e18dbc7fa6732738abc3f8fee27bb6a28d185240356ff4a57d7ce54282049e1da99886
   languageName: node
   linkType: hard
 
