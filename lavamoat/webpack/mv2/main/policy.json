@@ -10,11 +10,6 @@
         "SuppressedError": true
       }
     },
-    "@date-io/luxon": {
-      "packages": {
-        "luxon": true
-      }
-    },
     "@ensdomains/content-hash": {
       "globals": {
         "Buffer.from": true,
@@ -565,18 +560,6 @@
         "@open-rpc/test-coverage>isomorphic-fetch": true
       }
     },
-    "@keystonehq/bc-ur-registry-eth": {
-      "globals": {
-        "Buffer.from": true
-      },
-      "packages": {
-        "@ethereumjs/tx>@ethereumjs/util": true,
-        "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": true,
-        "buffer": true,
-        "@metamask/eth-qr-keyring>hdkey": true,
-        "uuid": true
-      }
-    },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth": {
       "globals": {
         "Buffer.from": true
@@ -587,18 +570,6 @@
         "buffer": true,
         "@metamask/eth-qr-keyring>hdkey": true,
         "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>uuid": true
-      }
-    },
-    "@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
-      "globals": {
-        "Buffer": true,
-        "define": true
-      },
-      "packages": {
-        "@ngraveio/bc-ur": true,
-        "ethereumjs-util>ethereum-cryptography>bs58check": true,
-        "buffer": true,
-        "tslib": true
       }
     },
     "@metamask/eth-qr-keyring>@keystonehq/bc-ur-registry-eth>@keystonehq/bc-ur-registry": {
@@ -699,92 +670,6 @@
         "console.error": true
       }
     },
-    "@material-ui/core": {
-      "globals": {
-        "addEventListener": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "getComputedStyle": true,
-        "getSelection": true,
-        "performance.now": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "setInterval": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/styles": true,
-        "@material-ui/core>@material-ui/system": true,
-        "@material-ui/core>@material-ui/utils": true,
-        "@material-ui/core>clsx": true,
-        "@material-ui/core>popper.js": true,
-        "prop-types": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux>react-is": true,
-        "react-transition-group": true
-      }
-    },
-    "@material-ui/pickers": {
-      "globals": {
-        "addEventListener": true,
-        "innerHeight": true,
-        "orientation": true,
-        "removeEventListener": true,
-        "screen": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core": true,
-        "@material-ui/pickers>clsx": true,
-        "prop-types": true,
-        "react": true,
-        "react-transition-group": true,
-        "@material-ui/pickers>rifm": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true,
-        "document.createComment": true,
-        "document.head": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/utils": true,
-        "react-redux>hoist-non-react-statics": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-camel-case": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-default-unit": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-global": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-nested": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-props-sort": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-rule-value-function": true,
-        "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer": true,
-        "@material-ui/core>@material-ui/styles>jss": true,
-        "prop-types": true,
-        "react": true
-      }
-    },
-    "@material-ui/core>@material-ui/system": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/utils": true,
-        "prop-types": true
-      }
-    },
-    "@material-ui/core>@material-ui/utils": {
-      "packages": {
-        "@babel/runtime": true
-      }
-    },
     "@metamask/abi-utils": {
       "packages": {
         "@metamask/superstruct": true,
@@ -861,7 +746,6 @@
     "@metamask/assets-controllers": {
       "globals": {
         "AbortController": true,
-        "Intl.NumberFormat": true,
         "URL": true,
         "URLSearchParams": true,
         "clearInterval": true,
@@ -879,7 +763,6 @@
         "@ethersproject/contracts": true,
         "@ethersproject/providers": true,
         "@metamask/assets-controllers>@metamask/abi-utils": true,
-        "@metamask/account-api": true,
         "@metamask/base-controller": true,
         "@metamask/contract-metadata": true,
         "@metamask/controller-utils": true,
@@ -897,7 +780,6 @@
         "immer": true,
         "lodash": true,
         "@metamask/assets-controllers>multiformats": true,
-        "reselect": true,
         "@metamask/assets-controllers>single-call-balance-checker-abi": true,
         "uuid": true
       }
@@ -1085,24 +967,6 @@
         "@noble/hashes": true
       }
     },
-    "@metamask/design-system-react": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@metamask/design-system-react>@metamask/design-system-shared": true,
-        "@metamask/jazzicon": true,
-        "@metamask/design-system-react>@radix-ui/react-slot": true,
-        "@metamask/design-system-react>blo": true,
-        "react": true,
-        "@metamask/design-system-react>tailwind-merge": true
-      }
-    },
-    "@metamask/design-system-react>@metamask/design-system-shared": {
-      "packages": {
-        "@metamask/utils": true
-      }
-    },
     "@metamask/eip-5792-middleware": {
       "packages": {
         "@metamask/keyring-controller": true,
@@ -1128,18 +992,6 @@
         "@metamask/controller-utils": true,
         "@metamask/utils": true,
         "punycode": true
-      }
-    },
-    "@metamask/eth-token-tracker>@metamask/eth-block-tracker": {
-      "globals": {
-        "clearTimeout": true,
-        "console.error": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/safe-event-emitter": true,
-        "@metamask/utils": true,
-        "@metamask/ppom-validator>json-rpc-random-id": true
       }
     },
     "@metamask/network-controller>@metamask/eth-block-tracker": {
@@ -1325,22 +1177,6 @@
         "@metamask/eth-snap-keyring>uuid": true
       }
     },
-    "@metamask/eth-token-tracker": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@ethersproject/bignumber": true,
-        "@ethersproject/contracts": true,
-        "@ethersproject/providers": true,
-        "@metamask/eth-token-tracker>@metamask/eth-block-tracker": true,
-        "@metamask/safe-event-emitter": true,
-        "bn.js": true,
-        "@metamask/eth-token-tracker>deep-equal": true,
-        "human-standard-token-abi": true
-      }
-    },
     "@metamask/eth-trezor-keyring": {
       "globals": {
         "Buffer.from": true,
@@ -1460,16 +1296,6 @@
         "@metamask/utils": true
       }
     },
-    "@metamask/jazzicon": {
-      "globals": {
-        "document.createElement": true,
-        "document.createElementNS": true
-      },
-      "packages": {
-        "@metamask/jazzicon>color": true,
-        "@metamask/jazzicon>mersenne-twister": true
-      }
-    },
     "@metamask/json-rpc-engine": {
       "packages": {
         "@metamask/rpc-errors": true,
@@ -1574,20 +1400,6 @@
       "packages": {
         "@metamask/base-controller": true,
         "uuid": true
-      }
-    },
-    "@metamask/logo": {
-      "globals": {
-        "addEventListener": true,
-        "document.body.appendChild": true,
-        "document.createElementNS": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "requestAnimationFrame": true
-      },
-      "packages": {
-        "@metamask/logo>gl-mat4": true,
-        "@metamask/logo>gl-vec3": true
       }
     },
     "@metamask/message-manager": {
@@ -2490,16 +2302,6 @@
         "@open-rpc/schema-utils-js>is-url": true
       }
     },
-    "@popperjs/core": {
-      "globals": {
-        "Element": true,
-        "HTMLElement": true,
-        "ShadowRoot": true,
-        "document": true,
-        "navigator.userAgent": true,
-        "navigator.userAgentData": true
-      }
-    },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/codegen": {
       "globals": {
         "console.log": true
@@ -2512,17 +2314,6 @@
       "packages": {
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/aspromise": true,
         "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs>@protobufjs/inquire": true
-      }
-    },
-    "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": {
-      "packages": {
-        "react": true
-      }
-    },
-    "@metamask/design-system-react>@radix-ui/react-slot": {
-      "packages": {
-        "@metamask/design-system-react>@radix-ui/react-slot>@radix-ui/react-compose-refs": true,
-        "react": true
       }
     },
     "@reduxjs/toolkit": {
@@ -2542,80 +2333,6 @@
         "redux": true,
         "redux-thunk": true,
         "@reduxjs/toolkit>reselect": true
-      }
-    },
-    "react-router-dom>@remix-run/router": {
-      "globals": {
-        "AbortController": true,
-        "DOMException": true,
-        "FormData": true,
-        "Headers": true,
-        "Request": true,
-        "Response": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "console": true,
-        "document.defaultView": true
-      }
-    },
-    "@rive-app/react-canvas>@rive-app/canvas": {
-      "globals": {
-        "AudioContext": true,
-        "Blob": true,
-        "DOMMatrix": true,
-        "FinalizationRegistry": true,
-        "HTMLCanvasElement": true,
-        "Image": true,
-        "Iterator": true,
-        "MouseEvent": true,
-        "Path2D": true,
-        "Request": true,
-        "ResizeObserver": true,
-        "TextDecoder": true,
-        "URL.createObjectURL": true,
-        "URL.revokeObjectURL": true,
-        "WebAssembly": true,
-        "XMLHttpRequest": true,
-        "cancelAnimationFrame": true,
-        "clearInterval": true,
-        "clearTimeout": true,
-        "console": true,
-        "crypto": true,
-        "define": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "fetch": true,
-        "h": "write",
-        "importScripts": true,
-        "location.href": true,
-        "navigator": true,
-        "performance.now": true,
-        "prompt": true,
-        "readline": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true,
-        "webkitAudioContext": true
-      }
-    },
-    "@rive-app/react-canvas": {
-      "globals": {
-        "IntersectionObserver": true,
-        "ResizeObserver": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "devicePixelRatio": true,
-        "document.documentElement.clientHeight": true,
-        "document.documentElement.clientWidth": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "matchMedia": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@rive-app/react-canvas>@rive-app/canvas": true,
-        "react": true
       }
     },
     "@scure/base": {
@@ -2912,24 +2629,6 @@
         "@metamask/profile-sync-controller>siwe>@stablelib/random>@stablelib/wipe": true
       }
     },
-    "@tanstack/react-virtual": {
-      "globals": {
-        "document": true,
-        "scrollY": true
-      },
-      "packages": {
-        "@tanstack/react-virtual>@tanstack/virtual-core": true,
-        "react": true,
-        "react-dom": true
-      }
-    },
-    "@tanstack/react-virtual>@tanstack/virtual-core": {
-      "globals": {
-        "console.info": true,
-        "console.warn": true,
-        "requestAnimationFrame": true
-      }
-    },
     "@toruslabs/eccrypto": {
       "globals": {
         "Buffer.alloc": true,
@@ -3136,40 +2835,6 @@
         "tslib": true
       }
     },
-    "@zxing/browser": {
-      "globals": {
-        "HTMLElement": true,
-        "HTMLImageElement": true,
-        "HTMLVideoElement": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "navigator": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@zxing/library": true
-      }
-    },
-    "@zxing/library": {
-      "globals": {
-        "HTMLImageElement": true,
-        "HTMLVideoElement": true,
-        "TextDecoder": true,
-        "TextEncoder": true,
-        "URL.createObjectURL": true,
-        "btoa": true,
-        "console.log": true,
-        "console.warn": true,
-        "document": true,
-        "navigator": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@zxing/library>ts-custom-error": true
-      }
-    },
     "readable-stream>abort-controller": {
       "globals": {
         "AbortController": true
@@ -3209,12 +2874,6 @@
     "@metamask/controller-utils>@spruceid/siwe-parser>apg-js": {
       "packages": {
         "buffer": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>array-buffer-byte-length": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "string.prototype.matchall>es-abstract>is-array-buffer": true
       }
     },
     "crypto-browserify>public-encrypt>parse-asn1>asn1.js": {
@@ -3394,11 +3053,6 @@
       },
       "packages": {
         "buffer": true
-      }
-    },
-    "@metamask/design-system-react>blo": {
-      "globals": {
-        "btoa": true
       }
     },
     "bn.js": {
@@ -3605,28 +3259,6 @@
         "chalk>supports-color": true
       }
     },
-    "chart.js": {
-      "globals": {
-        "Intl.NumberFormat": true,
-        "MutationObserver": true,
-        "OffscreenCanvas": true,
-        "Path2D": true,
-        "ResizeObserver": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "removeEventListener": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "chart.js>@kurkle/color": true,
-        "@swc/helpers": true
-      }
-    },
     "@ensdomains/content-hash>cids": {
       "packages": {
         "@ensdomains/content-hash>cids>multibase": true,
@@ -3641,20 +3273,6 @@
         "koa>content-disposition>safe-buffer": true,
         "stream-browserify": true,
         "browserify>string_decoder": true
-      }
-    },
-    "classnames": {
-      "globals": {
-        "classNames": "write",
-        "define": true
-      }
-    },
-    "@metamask/jazzicon>color>clone": {
-      "globals": {
-        "Buffer": true
-      },
-      "packages": {
-        "buffer": true
       }
     },
     "remote-redux-devtools>socketcluster-client>clone": {
@@ -3682,23 +3300,6 @@
     "chalk>ansi-styles>color-convert": {
       "packages": {
         "jest-canvas-mock>moo-color>color-name": true
-      }
-    },
-    "@metamask/jazzicon>color>color-convert": {
-      "packages": {
-        "@metamask/jazzicon>color>color-convert>color-name": true
-      }
-    },
-    "@metamask/jazzicon>color>color-string": {
-      "packages": {
-        "jest-canvas-mock>moo-color>color-name": true
-      }
-    },
-    "@metamask/jazzicon>color": {
-      "packages": {
-        "@metamask/jazzicon>color>clone": true,
-        "@metamask/jazzicon>color>color-convert": true,
-        "@metamask/jazzicon>color>color-string": true
       }
     },
     "@metamask/snaps-controllers>concat-stream": {
@@ -3822,27 +3423,6 @@
         "msCrypto": true
       }
     },
-    "react-beautiful-dnd>css-box-model": {
-      "globals": {
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true
-      },
-      "packages": {
-        "react-beautiful-dnd>css-box-model>tiny-invariant": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer>css-vendor": {
-      "globals": {
-        "document.createElement": true,
-        "document.documentElement": true,
-        "getComputedStyle": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/styles>jss>is-in-browser": true
-      }
-    },
     "currency-formatter": {
       "packages": {
         "currency-formatter>accounting": true,
@@ -3861,28 +3441,6 @@
       "packages": {
         "mocha>ms": true,
         "process": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>array-buffer-byte-length": true,
-        "string.prototype.matchall>call-bind": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "browserify>util>is-arguments": true,
-        "string.prototype.matchall>es-abstract>is-array-buffer": true,
-        "@metamask/eth-token-tracker>deep-equal>is-date-object": true,
-        "string.prototype.matchall>es-abstract>is-regex": true,
-        "string.prototype.matchall>es-abstract>is-shared-array-buffer": true,
-        "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "@ngraveio/bc-ur>assert>object-is": true,
-        "@lavamoat/webpack>json-stable-stringify>object-keys": true,
-        "gulp>vinyl-fs>object.assign": true,
-        "string.prototype.matchall>regexp.prototype.flags": true,
-        "string.prototype.matchall>side-channel": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection": true,
-        "browserify>util>which-typed-array": true
       }
     },
     "string.prototype.matchall>define-properties>define-data-property": {
@@ -3916,11 +3474,6 @@
         "crypto-browserify>randombytes": true
       }
     },
-    "dompurify": {
-      "globals": {
-        "console.warn": true
-      }
-    },
     "eslint-plugin-react>es-iterator-helpers>has-proto>dunder-proto": {
       "packages": {
         "string.prototype.matchall>call-bind>call-bind-apply-helpers": true,
@@ -3936,23 +3489,6 @@
         "pumpify>inherits": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-assert": true,
         "@toruslabs/eccrypto>elliptic>minimalistic-crypto-utils": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>es-get-iterator": {
-      "globals": {
-        "process": true
-      },
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>get-intrinsic": true,
-        "string.prototype.matchall>has-symbols": true,
-        "browserify>util>is-arguments": true,
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "string.prototype.matchall>es-abstract>is-set": true,
-        "eslint-plugin-react>array-includes>is-string": true,
-        "@lavamoat/webpack>json-stable-stringify>isarray": true,
-        "process": true,
-        "string.prototype.matchall>es-abstract>stop-iteration-iterator": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>eth-eip712-util-browser": {
@@ -4278,30 +3814,9 @@
         "@metamask/notification-services-controller>firebase>@firebase/messaging": true
       }
     },
-    "react-focus-lock>focus-lock": {
-      "globals": {
-        "HTMLIFrameElement": true,
-        "Node.DOCUMENT_FRAGMENT_NODE": true,
-        "Node.DOCUMENT_NODE": true,
-        "Node.DOCUMENT_POSITION_CONTAINED_BY": true,
-        "Node.DOCUMENT_POSITION_CONTAINS": true,
-        "Node.ELEMENT_NODE": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "getComputedStyle": true,
-        "setTimeout": true
-      }
-    },
     "browserify>util>which-typed-array>for-each": {
       "packages": {
         "string.prototype.matchall>es-abstract>is-callable": true
-      }
-    },
-    "fuse.js": {
-      "globals": {
-        "console": true,
-        "define": true
       }
     },
     "string.prototype.matchall>get-intrinsic": {
@@ -4433,11 +3948,6 @@
         "ganache>secp256k1": true
       }
     },
-    "he": {
-      "globals": {
-        "define": true
-      }
-    },
     "@toruslabs/eccrypto>elliptic>hmac-drbg": {
       "packages": {
         "ethers>@ethersproject/sha2>hash.js": true,
@@ -4454,11 +3964,6 @@
       "packages": {
         "stream-http": true,
         "browserify>url": true
-      }
-    },
-    "humanize-duration": {
-      "globals": {
-        "define": true
       }
     },
     "@metamask/notification-services-controller>firebase>@firebase/app>idb": {
@@ -4482,46 +3987,15 @@
         "eth-ens-namehash>idna-uts46-hx>punycode": true
       }
     },
-    "string.prototype.matchall>internal-slot": {
-      "packages": {
-        "string.prototype.matchall>es-errors": true,
-        "eslint-plugin-react>hasown": true,
-        "string.prototype.matchall>side-channel": true
-      }
-    },
     "browserify>util>is-arguments": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
-    "string.prototype.matchall>es-abstract>is-array-buffer": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>call-bound": true,
-        "string.prototype.matchall>get-intrinsic": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": {
-      "packages": {
-        "string.prototype.matchall>es-abstract>unbox-primitive>has-bigints": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
-      }
-    },
     "string.prototype.matchall>es-abstract>is-callable": {
       "globals": {
         "document": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>is-date-object": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "browserify>util>is-generator-function": {
@@ -4533,21 +4007,10 @@
         "string.prototype.matchall>es-abstract>safe-regex-test": true
       }
     },
-    "@material-ui/core>@material-ui/styles>jss>is-in-browser": {
-      "globals": {
-        "document": true
-      }
-    },
     "@ngraveio/bc-ur>assert>is-nan": {
       "packages": {
         "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>define-properties": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
       }
     },
     "string.prototype.matchall>es-abstract>is-regex": {
@@ -4558,33 +4021,9 @@
         "eslint-plugin-react>hasown": true
       }
     },
-    "string.prototype.matchall>es-abstract>is-shared-array-buffer": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true
-      }
-    },
-    "eslint-plugin-react>array-includes>is-string": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "axios>form-data>es-set-tostringtag>has-tostringtag": true
-      }
-    },
-    "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "string.prototype.matchall>has-symbols": true,
-        "string.prototype.matchall>es-abstract>safe-regex-test": true
-      }
-    },
     "browserify>util>is-typed-array": {
       "packages": {
         "browserify>util>which-typed-array": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": {
-      "packages": {
-        "string.prototype.matchall>call-bound": true,
-        "string.prototype.matchall>get-intrinsic": true
       }
     },
     "eth-lattice-keyring>gridplus-sdk>borc>iso-url": {
@@ -4638,55 +4077,6 @@
     "@metamask/message-manager>jsonschema": {
       "packages": {
         "browserify>url": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-camel-case": {
-      "packages": {
-        "@material-ui/core>@material-ui/styles>jss-plugin-camel-case>hyphenate-style-name": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-default-unit": {
-      "globals": {
-        "CSS": true
-      },
-      "packages": {
-        "@material-ui/core>@material-ui/styles>jss": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-global": {
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/styles>jss": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-nested": {
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-rule-value-function": {
-      "packages": {
-        "@material-ui/core>@material-ui/styles>jss": true,
-        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer": {
-      "packages": {
-        "@material-ui/core>@material-ui/styles>jss-plugin-vendor-prefixer>css-vendor": true,
-        "@material-ui/core>@material-ui/styles>jss": true
-      }
-    },
-    "@material-ui/core>@material-ui/styles>jss": {
-      "globals": {
-        "CSS": true,
-        "document.createElement": true,
-        "document.querySelector": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "@material-ui/core>@material-ui/styles>jss>is-in-browser": true,
-        "@material-ui/core>@material-ui/styles>jss>tiny-warning": true
       }
     },
     "ethereumjs-util>ethereum-cryptography>keccak": {
@@ -4755,33 +4145,6 @@
         "define": true
       }
     },
-    "lottie-web": {
-      "globals": {
-        "Blob": true,
-        "Howl": true,
-        "OffscreenCanvas": true,
-        "URL.createObjectURL": true,
-        "Worker": true,
-        "XMLHttpRequest": true,
-        "bodymovin": "write",
-        "clearInterval": true,
-        "console": true,
-        "define": true,
-        "document.body": true,
-        "document.createElement": true,
-        "document.createElementNS": true,
-        "document.getElementsByClassName": true,
-        "document.getElementsByTagName": true,
-        "document.querySelectorAll": true,
-        "document.readyState": true,
-        "location.origin": true,
-        "location.pathname": true,
-        "navigator": true,
-        "requestAnimationFrame": true,
-        "setInterval": true,
-        "setTimeout": true
-      }
-    },
     "luxon": {
       "globals": {
         "Intl": true
@@ -4803,32 +4166,6 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "@storybook/addon-docs>remark-external-links>mdast-util-definitions": {
-      "packages": {
-        "react-markdown>unist-util-visit": true
-      }
-    },
-    "react-markdown>remark-parse>mdast-util-from-markdown": {
-      "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown>mdast-util-to-string": true,
-        "react-markdown>remark-parse>mdast-util-from-markdown>micromark": true,
-        "react-syntax-highlighter>refractor>parse-entities": true,
-        "react-markdown>vfile>unist-util-stringify-position": true
-      }
-    },
-    "react-markdown>remark-rehype>mdast-util-to-hast": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "@storybook/addon-docs>remark-external-links>mdast-util-definitions": true,
-        "react-markdown>remark-rehype>mdast-util-to-hast>mdurl": true,
-        "react-markdown>remark-rehype>mdast-util-to-hast>unist-builder": true,
-        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-generated": true,
-        "react-markdown>remark-rehype>mdast-util-to-hast>unist-util-position": true,
-        "react-markdown>unist-util-visit": true
-      }
-    },
     "eth-lattice-keyring>@ethereumjs/util>micro-ftch": {
       "globals": {
         "Buffer.concat": true,
@@ -4846,11 +4183,6 @@
         "stream-http": true,
         "browserify>url": true,
         "browserify>util": true
-      }
-    },
-    "react-markdown>remark-parse>mdast-util-from-markdown>micromark": {
-      "packages": {
-        "react-syntax-highlighter>refractor>parse-entities": true
       }
     },
     "crypto-browserify>diffie-hellman>miller-rabin": {
@@ -4929,9 +4261,7 @@
     },
     "gulp>vinyl-fs>object.assign": {
       "packages": {
-        "string.prototype.matchall>call-bind": true,
         "string.prototype.matchall>call-bound": true,
-        "string.prototype.matchall>define-properties": true,
         "string.prototype.matchall>es-object-atoms": true,
         "string.prototype.matchall>has-symbols": true,
         "@lavamoat/webpack>json-stable-stringify>object-keys": true
@@ -4951,19 +4281,6 @@
         "koa>content-disposition>safe-buffer": true
       }
     },
-    "react-syntax-highlighter>refractor>parse-entities": {
-      "globals": {
-        "document.createElement": true
-      }
-    },
-    "path-browserify": {
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "process": true
-      }
-    },
     "crypto-browserify>pbkdf2": {
       "globals": {
         "crypto": true,
@@ -4979,38 +4296,6 @@
         "koa>content-disposition>safe-buffer": true,
         "addons-linter>sha.js": true,
         "addons-linter>sha.js>to-buffer": true
-      }
-    },
-    "@material-ui/core>popper.js": {
-      "globals": {
-        "MSInputMethodContext": true,
-        "Node.DOCUMENT_POSITION_FOLLOWING": true,
-        "cancelAnimationFrame": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "getComputedStyle": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "navigator": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      }
-    },
-    "react-tippy>popper.js": {
-      "globals": {
-        "MSInputMethodContext": true,
-        "Node.DOCUMENT_POSITION_FOLLOWING": true,
-        "cancelAnimationFrame": true,
-        "console.warn": true,
-        "devicePixelRatio": true,
-        "document": true,
-        "getComputedStyle": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "navigator.userAgent": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
       }
     },
     "process": {
@@ -5031,11 +4316,6 @@
       "packages": {
         "eth-method-registry>@metamask/ethjs-query>promise-to-callback>is-fn": true,
         "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": true
-      }
-    },
-    "react-markdown>property-information": {
-      "packages": {
-        "watchify>xtend": true
       }
     },
     "@trezor/connect-web>@trezor/connect>@trezor/protobuf>protobufjs": {
@@ -5071,20 +4351,6 @@
         "define": true
       }
     },
-    "qrcode-generator": {
-      "globals": {
-        "define": true
-      }
-    },
-    "qrcode.react": {
-      "globals": {
-        "Path2D": true,
-        "devicePixelRatio": true
-      },
-      "packages": {
-        "react": true
-      }
-    },
     "mockttp>express>qs": {
       "packages": {
         "string.prototype.matchall>side-channel": true
@@ -5093,12 +4359,6 @@
     "@metamask/snaps-controllers>tar-stream>streamx>queue-tick": {
       "globals": {
         "queueMicrotask": true
-      }
-    },
-    "react-beautiful-dnd>raf-schd": {
-      "globals": {
-        "cancelAnimationFrame": true,
-        "requestAnimationFrame": true
       }
     },
     "crypto-browserify>randombytes": {
@@ -5128,56 +4388,6 @@
     "react": {
       "packages": {
         "react>object-assign": true
-      }
-    },
-    "react-beautiful-dnd": {
-      "globals": {
-        "Element.prototype": true,
-        "__REDUX_DEVTOOLS_EXTENSION_COMPOSE__": true,
-        "cancelAnimationFrame": true,
-        "clearTimeout": true,
-        "console": true,
-        "document": true,
-        "getComputedStyle": true,
-        "pageXOffset": true,
-        "pageYOffset": true,
-        "requestAnimationFrame": true,
-        "scrollBy": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-beautiful-dnd>css-box-model": true,
-        "react-beautiful-dnd>memoize-one": true,
-        "react-beautiful-dnd>raf-schd": true,
-        "react": true,
-        "react-dom": true,
-        "react-redux": true,
-        "redux": true,
-        "react-beautiful-dnd>use-memo-one": true
-      }
-    },
-    "react-chartjs-2": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "chart.js": true,
-        "react": true
-      }
-    },
-    "react-focus-lock>react-clientside-effect": {
-      "packages": {
-        "@babel/runtime": true,
-        "react": true
-      }
-    },
-    "react-compiler-runtime": {
-      "globals": {
-        "console.error": true
-      },
-      "packages": {
-        "react": true
       }
     },
     "react-devtools-core": {
@@ -5254,71 +4464,6 @@
         "react-dom>scheduler": true
       }
     },
-    "react-popper>react-fast-compare": {
-      "globals": {
-        "Element": true,
-        "console.warn": true
-      }
-    },
-    "react-focus-lock": {
-      "globals": {
-        "addEventListener": true,
-        "console.error": true,
-        "console.warn": true,
-        "document": true,
-        "removeEventListener": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-focus-lock>focus-lock": true,
-        "prop-types": true,
-        "react": true,
-        "react-focus-lock>react-clientside-effect": true,
-        "react-focus-lock>use-callback-ref": true,
-        "react-focus-lock>use-sidecar": true
-      }
-    },
-    "react-idle-timer": {
-      "globals": {
-        "clearTimeout": true,
-        "document": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true
-      }
-    },
-    "react-markdown": {
-      "globals": {
-        "console.warn": true
-      },
-      "packages": {
-        "react-markdown>comma-separated-tokens": true,
-        "prop-types": true,
-        "react-markdown>property-information": true,
-        "react": true,
-        "react-redux>react-is": true,
-        "react-markdown>remark-parse": true,
-        "react-markdown>remark-rehype": true,
-        "react-markdown>space-separated-tokens": true,
-        "react-markdown>style-to-object": true,
-        "react-markdown>unified": true,
-        "react-markdown>unist-util-visit": true,
-        "react-markdown>vfile": true
-      }
-    },
-    "react-popper": {
-      "globals": {
-        "document": true
-      },
-      "packages": {
-        "@popperjs/core": true,
-        "react": true,
-        "react-popper>react-fast-compare": true
-      }
-    },
     "react-redux": {
       "globals": {
         "document": true
@@ -5330,109 +4475,6 @@
         "react": true,
         "react-dom": true,
         "react-redux>react-is": true
-      }
-    },
-    "react-router-dom": {
-      "globals": {
-        "FormData": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "__reactRouterVersion": "write",
-        "addEventListener": true,
-        "confirm": true,
-        "document": true,
-        "history.scrollRestoration": true,
-        "location.href": true,
-        "removeEventListener": true,
-        "scrollTo": true,
-        "scrollY": true,
-        "sessionStorage.getItem": true,
-        "sessionStorage.setItem": true,
-        "setTimeout": true
-      },
-      "meta": {
-        "webpack-optimization": [
-          "Dependency 'react-router-dom>react-router' reexports from 'react-router-dom>@remix-run/router' and webpack collapsed that to a direct import."
-        ]
-      },
-      "packages": {
-        "react-router-dom>@remix-run/router": true,
-        "react": true,
-        "react-dom": true,
-        "react-router-dom>react-router": true
-      }
-    },
-    "react-router-dom>react-router": {
-      "globals": {
-        "console.error": true,
-        "console.warn": true
-      },
-      "packages": {
-        "react-router-dom>@remix-run/router": true,
-        "react": true
-      }
-    },
-    "react-simple-file-input": {
-      "globals": {
-        "File": true,
-        "FileReader": true,
-        "console.warn": true
-      },
-      "packages": {
-        "prop-types": true,
-        "react": true
-      }
-    },
-    "react-tippy": {
-      "globals": {
-        "Element": true,
-        "MSStream": true,
-        "MutationObserver": true,
-        "addEventListener": true,
-        "clearTimeout": true,
-        "console.error": true,
-        "console.warn": true,
-        "define": true,
-        "document": true,
-        "getComputedStyle": true,
-        "innerHeight": true,
-        "innerWidth": true,
-        "navigator.maxTouchPoints": true,
-        "navigator.msMaxTouchPoints": true,
-        "navigator.userAgent": true,
-        "performance": true,
-        "requestAnimationFrame": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "react-tippy>popper.js": true,
-        "react": true,
-        "react-dom": true
-      }
-    },
-    "react-toggle-button": {
-      "globals": {
-        "clearTimeout": true,
-        "console.warn": true,
-        "define": true,
-        "performance": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "react": true
-      }
-    },
-    "react-transition-group": {
-      "globals": {
-        "Element": true,
-        "setTimeout": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react-transition-group>dom-helpers": true,
-        "prop-types": true,
-        "react": true,
-        "react-dom": true
       }
     },
     "readable-stream": {
@@ -5694,26 +4736,6 @@
         "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": true
       }
     },
-    "string.prototype.matchall>regexp.prototype.flags": {
-      "packages": {
-        "string.prototype.matchall>call-bind": true,
-        "string.prototype.matchall>define-properties": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>es-abstract>get-proto": true,
-        "string.prototype.matchall>gopd": true,
-        "string.prototype.matchall>set-function-name": true
-      }
-    },
-    "react-markdown>remark-parse": {
-      "packages": {
-        "react-markdown>remark-parse>mdast-util-from-markdown": true
-      }
-    },
-    "react-markdown>remark-rehype": {
-      "packages": {
-        "react-markdown>remark-rehype>mdast-util-to-hast": true
-      }
-    },
     "remote-redux-devtools": {
       "globals": {
         "console.log": true,
@@ -5727,11 +4749,6 @@
         "remote-redux-devtools>redux-devtools-instrument": true,
         "remote-redux-devtools>rn-host-detect": true,
         "remote-redux-devtools>socketcluster-client": true
-      }
-    },
-    "react-markdown>vfile>replace-ext": {
-      "packages": {
-        "path-browserify": true
       }
     },
     "reselect": {
@@ -5749,17 +4766,6 @@
       },
       "packages": {
         "buffer": true
-      }
-    },
-    "@material-ui/pickers>rifm": {
-      "globals": {
-        "console.error": true,
-        "document.addEventListener": true,
-        "document.removeEventListener": true
-      },
-      "packages": {
-        "@babel/runtime": true,
-        "react": true
       }
     },
     "ethereumjs-util>create-hash>ripemd160": {
@@ -5892,14 +4898,6 @@
         "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
       }
     },
-    "string.prototype.matchall>set-function-name": {
-      "packages": {
-        "string.prototype.matchall>define-properties>define-data-property": true,
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>set-function-name>functions-have-names": true,
-        "eslint-plugin-react>es-iterator-helpers>has-property-descriptors": true
-      }
-    },
     "eth-method-registry>@metamask/ethjs-query>promise-to-callback>set-immediate-shim": {
       "globals": {
         "setImmediate": true,
@@ -5983,15 +4981,6 @@
         "remote-redux-devtools>socketcluster-client>uuid": true
       }
     },
-    "string.prototype.matchall>es-abstract>stop-iteration-iterator": {
-      "globals": {
-        "StopIteration": true
-      },
-      "packages": {
-        "string.prototype.matchall>es-errors": true,
-        "string.prototype.matchall>internal-slot": true
-      }
-    },
     "stream-browserify": {
       "packages": {
         "webpack>events": true,
@@ -6046,11 +5035,6 @@
     "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>strip-hex-prefix": {
       "packages": {
         "eth-method-registry>@metamask/ethjs-query>@metamask/ethjs-format>is-hex-prefixed": true
-      }
-    },
-    "react-markdown>style-to-object": {
-      "packages": {
-        "react-markdown>style-to-object>inline-style-parser": true
       }
     },
     "mockttp>@httptoolkit/subscriptions-transport-ws>symbol-observable": {
@@ -6135,26 +5119,6 @@
         "require": true
       }
     },
-    "react-markdown>unified": {
-      "packages": {
-        "react-markdown>unified>bail": true,
-        "react-markdown>unified>extend": true,
-        "react-markdown>unified>is-buffer": true,
-        "mocha>yargs-unparser>is-plain-obj": true,
-        "react-markdown>unified>trough": true,
-        "react-markdown>vfile": true
-      }
-    },
-    "react-markdown>unist-util-visit>unist-util-visit-parents": {
-      "packages": {
-        "react-markdown>unist-util-visit>unist-util-is": true
-      }
-    },
-    "react-markdown>unist-util-visit": {
-      "packages": {
-        "react-markdown>unist-util-visit>unist-util-visit-parents": true
-      }
-    },
     "uri-js": {
       "globals": {
         "define": true
@@ -6164,21 +5128,6 @@
       "packages": {
         "browserify>url>punycode": true,
         "mockttp>express>qs": true
-      }
-    },
-    "react-focus-lock>use-callback-ref": {
-      "packages": {
-        "react": true
-      }
-    },
-    "react-beautiful-dnd>use-memo-one": {
-      "packages": {
-        "react": true
-      }
-    },
-    "react-focus-lock>use-sidecar": {
-      "packages": {
-        "tslib": true
       }
     },
     "@storybook/react>util-deprecate": {
@@ -6247,23 +5196,6 @@
         "@metamask/snaps-utils>validate-npm-package-name>builtins": true
       }
     },
-    "react-markdown>vfile>vfile-message": {
-      "packages": {
-        "react-markdown>vfile>unist-util-stringify-position": true
-      }
-    },
-    "react-markdown>vfile": {
-      "globals": {
-        "process.cwd": true
-      },
-      "packages": {
-        "react-markdown>vfile>is-buffer": true,
-        "path-browserify": true,
-        "process": true,
-        "react-markdown>vfile>replace-ext": true,
-        "react-markdown>vfile>vfile-message": true
-      }
-    },
     "@ensdomains/content-hash>multihashes>web-encoding": {
       "globals": {
         "TextDecoder": true,
@@ -6292,23 +5224,6 @@
         "XMLHttpRequest": true,
         "console.warn": true,
         "setTimeout": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive": {
-      "packages": {
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-bigint": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-boolean-object": true,
-        "@metamask/eth-token-tracker>deep-equal>which-boxed-primitive>is-number-object": true,
-        "eslint-plugin-react>array-includes>is-string": true,
-        "string.prototype.matchall>es-abstract>es-to-primitive>is-symbol": true
-      }
-    },
-    "@metamask/eth-token-tracker>deep-equal>which-collection": {
-      "packages": {
-        "@metamask/eth-token-tracker>deep-equal>es-get-iterator>is-map": true,
-        "string.prototype.matchall>es-abstract>is-set": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakmap": true,
-        "@metamask/eth-token-tracker>deep-equal>which-collection>is-weakset": true
       }
     },
     "browserify>util>which-typed-array": {
