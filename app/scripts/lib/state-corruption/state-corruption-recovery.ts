@@ -201,8 +201,6 @@ export class CorruptionHandler {
     // Extract cause message if available (e.g., Firefox's "Error: An unexpected error occurred")
     // This helps users and customer support debug issues
     const causeMessage = maybeGetCauseMessage(error);
-    // Determine the type of vault corruption for tracking
-    const corruptionType = getVaultCorruptionType(error);
 
     // send the `error` to the UI for this port
     const sent = tryPostMessage(port, METHOD_DISPLAY_STATE_CORRUPTION_ERROR, {
@@ -218,6 +216,9 @@ export class CorruptionHandler {
     if (!sent) {
       return Promise.resolve();
     }
+
+    // Determine the type of vault corruption for tracking.
+    const corruptionType = getVaultCorruptionType(error);
 
     // Track that the restore wallet screen was viewed directly to Segment.
     // This bypasses MetaMetricsController (not yet initialized) and uses the backup state.
