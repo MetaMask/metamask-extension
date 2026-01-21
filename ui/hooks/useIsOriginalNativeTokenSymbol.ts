@@ -63,13 +63,13 @@ export function useIsOriginalNativeTokenSymbol(
           setIsOriginalNativeSymbol(false);
         }
       }
-
-      return () => {
-        isMounted = false;
-      };
     }
 
     getNativeTokenSymbol(chainId);
+
+    return () => {
+      isMounted = false;
+    };
   }, [
     isOriginalNativeSymbol,
     chainId,
