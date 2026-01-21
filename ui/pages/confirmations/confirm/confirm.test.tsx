@@ -41,6 +41,7 @@ jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
 
 jest.mock('../../../hooks/useAsync', () => ({
   useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+  useAsyncResultOrThrow: () => ({ value: null, pending: false }),
 }));
 
 const mockUseNavigate = jest.fn();
