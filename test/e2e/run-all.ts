@@ -155,6 +155,10 @@ async function main(): Promise<void> {
             description: `run multi injected provider e2e tests`,
             type: 'boolean',
           })
+          .option('performance', {
+            description: `run performance e2e tests`,
+            type: 'boolean',
+          })
           .option('build-type', {
             description: `Sets the build-type to test for. This may filter out tests.`,
             type: 'string',
@@ -191,6 +195,7 @@ async function main(): Promise<void> {
     updateSnapshot,
     updatePrivacySnapshot,
     multiProvider,
+    performance,
   } = argv as {
     browser?: 'chrome' | 'firefox';
     debug?: boolean;
@@ -201,6 +206,7 @@ async function main(): Promise<void> {
     updateSnapshot?: boolean;
     updatePrivacySnapshot?: boolean;
     multiProvider?: boolean;
+    performance?: boolean;
   };
 
   let testPaths: string[];
@@ -239,6 +245,9 @@ async function main(): Promise<void> {
     );
 
     const testDir = path.join(__dirname, 'multi-injected-provider');
+    testPaths = await getTestPathsForTestDir(testDir);
+  } else if (performance) {
+    const testDir = path.join(__dirname, '../performance-tests');
     testPaths = await getTestPathsForTestDir(testDir);
   } else {
     const testDir = path.join(__dirname, 'tests');
