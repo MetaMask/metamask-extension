@@ -2011,10 +2011,6 @@
     "message": "MetaMask'in bir yönlendirme kodu eklemesine izin verin. Bu işlem kalıcıdır. Site, kendi koşullarına göre indirimler sunar. MetaMask bu işlemden bir ücret kazanır.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralSubtitle": {
-    "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Daha sonra tekrar ziyaret etmeyi deneyin."
   },
@@ -3002,6 +2998,10 @@
   },
   "honeypotTitle": {
     "message": "Bal Tuzağı"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "MetaMask yönlendirme kodu ile işlemlerde %4'e varan tasarruf edin.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "Kimlik"

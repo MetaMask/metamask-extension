@@ -2011,10 +2011,6 @@
     "message": "Cho phép MetaMask thêm mã giới thiệu. Hành động này là vĩnh viễn. Trang web cung cấp chiết khấu theo điều khoản của họ. MetaMask nhận được một khoản phí.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralSubtitle": {
-    "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Hãy thử truy cập lại sau."
   },
@@ -3002,6 +2998,10 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot (Bẫy trong bẫy)"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Tiết kiệm đến 4% khi giao dịch với mã giới thiệu MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"

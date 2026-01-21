@@ -2011,10 +2011,6 @@
     "message": "Pahintulutan ang MetaMask na maglagay ng referral code. Permanente ito. Mag-aalok ng diskwento ang site batay sa kanilang mga tuntunin. May bayad ang MetaMask.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralSubtitle": {
-    "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Subukang bisitahin muli mamaya."
   },
@@ -3002,6 +2998,10 @@
   },
   "honeypotTitle": {
     "message": "Honey Pot"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Makatipid ng hanggang 4% sa mga trade na gumagamit ng referral code ng MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"

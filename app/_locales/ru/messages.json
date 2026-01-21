@@ -2011,10 +2011,6 @@
     "message": "Разрешите MetaMask добавлять реферальный код. Это действие нельзя отменить. Сайт предлагает скидки в соответствии со своими условиями. MetaMask получает комиссию.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralSubtitle": {
-    "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
-  },
   "defiTabErrorContent": {
     "message": "Попробуйте зайти еще раз позже."
   },
@@ -3002,6 +2998,10 @@
   },
   "honeypotTitle": {
     "message": "Ловушка"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Экономьте до 4% на сделках с реферальным кодом MetaMask.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "Ид."

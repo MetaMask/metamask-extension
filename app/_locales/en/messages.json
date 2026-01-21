@@ -725,6 +725,10 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
+  "asterdexReferralSubtitle": {
+    "message": "Get 4% back on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Asterdex referral confirmation screen"
+  },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
@@ -2095,10 +2099,6 @@
     "message": "Allow MetaMask to add a referral code. This is permanent. The site offers discounts per their terms. MetaMask earns a fee.",
     "description": "The text for the checkbox label in the DeFi referral confirmation screen"
   },
-  "defiReferralSubtitle": {
-    "message": "Save up to 4% on trades with a MetaMask referral code.",
-    "description": "The subtitle of the DeFi referral confirmation screen"
-  },
   "defiReferralTitle": {
     "message": "MetaMask x $1",
     "description": "The title of the DeFi referral confirmation screen. $1 is the name of the partner"
@@ -3142,6 +3142,10 @@
   },
   "honeypotTitle": {
     "message": "Honey pot"
+  },
+  "hyperliquidReferralSubtitle": {
+    "message": "Save up to 4% on trades with a MetaMask referral code.",
+    "description": "The subtitle of the Hyperliquid referral confirmation screen"
   },
   "id": {
     "message": "ID"

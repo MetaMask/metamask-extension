@@ -49,13 +49,11 @@ describe('DefiReferralConsent', () => {
           screen.getByText(`MetaMask x ${partnerName}`),
         ).toBeInTheDocument();
         expect(
-          screen.getByText(
-            'Save up to 4% on trades with a MetaMask referral code.',
-          ),
+          screen.getByText('MetaMask referral code.'),
         ).toBeInTheDocument();
       });
 
-      it('renders the partner image with correct alt text', () => {
+      it('renders the correct partner image', () => {
         const store = mockStore(mockState);
 
         renderWithProvider(<DefiReferralConsent {...props} />, store);
