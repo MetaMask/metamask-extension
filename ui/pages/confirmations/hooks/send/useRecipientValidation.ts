@@ -90,10 +90,6 @@ export const useRecipientValidation = () => {
   const debouncedValidateRecipient = useMemo(
     () =>
       debounce(async (toAddress: string) => {
-        console.log(
-          `[ENS Debug] useRecipientValidation debounced callback triggered for: "${toAddress}"`,
-        );
-
         abortControllerRef.current?.abort();
         abortControllerRef.current = new AbortController();
 

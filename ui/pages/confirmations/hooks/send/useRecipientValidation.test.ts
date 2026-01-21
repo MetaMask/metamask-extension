@@ -281,7 +281,7 @@ describe('useRecipientValidation', () => {
         validateName: mockValidateName,
       });
 
-      const { result, rerender } = renderHook();
+      const { rerender } = renderHook();
 
       mockUseSendContext.mockReturnValue({
         asset: EVM_ASSET,

@@ -105,30 +105,17 @@ export async function fetchResolutions({ domain, chainId, state }) {
   const cacheKey = `${domain}:${chainId}`;
   const cached = resolutionCache.get(cacheKey);
 
-  console.log(
-    `[ENS Debug] fetchResolutions called for domain="${domain}" chainId="${chainId}" cacheKey="${cacheKey}"`,
-  );
-
   if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
-    console.log(`[ENS Debug] CACHE HIT for ${cacheKey}`);
     if (cached.result) {
       return cached.result;
     }
-    console.log(`[ENS Debug] Returning cached promise for ${cacheKey}`);
     return cached.promise;
   }
-
-  console.log(`[ENS Debug] CACHE MISS for ${cacheKey} - making new request`);
 
   const promise = (async () => {
     const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
     const subjects = getPermissionSubjects(state);
     const nameLookupSnaps = getNameLookupSnapsIds(state);
-
-    console.log(
-      `[ENS Debug] Found ${nameLookupSnaps.length} name lookup snaps:`,
-      nameLookupSnaps,
-    );
 
     const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
       const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
@@ -150,24 +137,12 @@ export async function fetchResolutions({ domain, chainId, state }) {
       return true;
     });
 
-    console.log(
-      `[ENS Debug] Filtered to ${filteredNameLookupSnapsIds.length} snaps:`,
-      filteredNameLookupSnapsIds,
-    );
-
     if (domain.length === 0) {
       return [];
     }
 
-    console.log(
-      `[ENS Debug] About to call ${filteredNameLookupSnapsIds.length} snaps in parallel`,
-    );
-
     const results = await Promise.allSettled(
       filteredNameLookupSnapsIds.map((snapId) => {
-        console.log(
-          `[ENS Debug] ⚡ Making API call via snap: "${snapId}" for domain "${domain}"`,
-        );
         return handleSnapRequest({
           snapId,
           origin: 'metamask',
@@ -182,14 +157,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
           },
         });
       }),
-    );
-
-    console.log(
-      `[ENS Debug] ✅ Got ${results.length} results from snap calls:`,
-      results.map((r, i) => ({
-        snap: filteredNameLookupSnapsIds[i],
-        status: r.status,
-      })),
     );
 
     const filteredResults = results.reduce(

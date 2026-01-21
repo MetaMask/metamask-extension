@@ -37,29 +37,21 @@ export const useNameValidation = () => {
 
   const validateName = useCallback(
     async (chainId: string, to: string) => {
-      console.log(
-        `[ENS Debug] useNameValidation.validateName called: to="${to}", chainId="${chainId}", isEvmSendType=${isEvmSendType}`,
-      );
-
       if (!isValidDomainName(to)) {
         return {
           error: 'nameResolutionFailedError',
         };
       }
 
-      if (isEvmSendType) {
-        console.log(
-          `[ENS Debug] Calling lookupDomainName for EVM chain: ${to}`,
-        );
-      } else {
-        console.log(
-          `[ENS Debug] Calling fetchResolutions for non-EVM chain: ${to}`,
-        );
-      }
+      let resolutions: Resolution[];
 
-      const resolutions = isEvmSendType
-        ? await dispatch(lookupDomainName(to, chainId))
-        : await fetchResolutions(formatChainIdToCaip(chainId), to);
+      if (isEvmSendType) {
+        resolutions = (await dispatch(
+          lookupDomainName(to, chainId),
+        )) as unknown as Resolution[];
+      } else {
+        resolutions = await fetchResolutions(formatChainIdToCaip(chainId), to);
+      }
 
       return processResolutions(resolutions, to);
     },
