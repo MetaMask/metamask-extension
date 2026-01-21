@@ -94,7 +94,48 @@ const PerpsMarketDetailPage: React.FC = () => {
   );
   const chartRef = useRef<PerpsCandlestickChartRef>(null);
 
-  // Handle candle period change
+  /**
+   * Handle candle period change
+   *
+   * TODO: When integrating live data, this handler must trigger a NEW API call
+   * for candle data at the selected interval. Key implementation notes:
+   *
+   * 1. RE-FETCH, DON'T AGGREGATE: Each interval change should call the candle
+   *    API with the new interval parameter (e.g., candleSnapshot({ interval: '1h' })).
+   *    The server returns pre-aggregated candles - do NOT fetch 1m candles and
+   *    aggregate client-side.
+   *
+   * 2. CACHE KEY PER INTERVAL: Use separate cache keys for each interval
+   *    (e.g., "BTC-1h", "BTC-15m") since they are different data sets.
+   *
+   * 3. DATA FLOW ON INTERVAL CHANGE:
+   *    User taps interval → Update selectedPeriod state
+   *                       → Hook re-runs with new interval in dependency array
+   *                       → New API call: candleSnapshot({ symbol, interval: newPeriod })
+   *                       → Chart re-renders with new data
+   *                       → Call applyZoom() to reset view
+   *
+   * 4. LIVE CANDLE UPDATES VIA WEBSOCKET:
+   *    Two-phase data loading:
+   *    - Phase 1: Fetch historical candles (includes partial "forming" candle at end)
+   *    - Phase 2: Subscribe to WebSocket for real-time updates
+   *
+   *    WebSocket update logic (compare timestamps):
+   *    | Condition                          | Action                              |
+   *    |------------------------------------|-------------------------------------|
+   *    | lastCandle.time === newCandle.time | REPLACE last candle (still forming) |
+   *    | lastCandle.time !== newCandle.time | APPEND new candle (previous closed)  |
+   *
+   *    Example timeline:
+   *    Initial:    [c1, c2, c3, c4, c5(partial)]  ← c5 is forming
+   *    WS update:  [c1, c2, c3, c4, c5(updated)]  ← REPLACE (same time)
+   *    WS update:  [c1, c2, c3, c4, c5, c6(new)]  ← APPEND (new time)
+   *
+   *    Key: Always create NEW arrays for immutable updates to trigger React re-renders.
+   *
+   * 5. MOBILE REFERENCE: See usePerpsLiveCandles hook, CandleStreamChannel,
+   *    and HyperLiquidClientService.subscribeToCandles() in the mobile app.
+   */
   const handlePeriodChange = useCallback((period: CandlePeriod) => {
     setSelectedPeriod(period);
     // Apply default zoom when period changes
