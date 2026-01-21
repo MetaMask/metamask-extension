@@ -11,7 +11,6 @@ type Props<TItem> = {
   listFooterComponent?: ReactNode;
   overscan?: number;
   renderItem: (info: { item: TItem; index: number }) => ReactNode;
-  scrollContainer?: HTMLElement | null;
 };
 
 export const VirtualizedList = <TItem,>({
@@ -23,10 +22,9 @@ export const VirtualizedList = <TItem,>({
   listFooterComponent,
   overscan = 5,
   renderItem,
-  scrollContainer,
 }: Props<TItem>) => {
-  const scrollContainerFromContext = useScrollContainer();
-  const scrollElement = scrollContainer ?? scrollContainerFromContext;
+  const scrollContainerRef = useScrollContainer();
+  const scrollElement = scrollContainerRef?.current ?? null;
   const disabled = !scrollElement || process.env.IN_TEST;
 
   const virtualizer = useVirtualizer({

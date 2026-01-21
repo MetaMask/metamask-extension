@@ -26,11 +26,10 @@ export const ScrollContainer = ({
 };
 
 /**
- * Hook to access the scroll container element from any child component
+ * Hook to access the scroll container ref from any child component
  *
- * @returns The scroll container element or null
+ * @returns The scroll container ref or null
  */
 export const useScrollContainer = () => {
-  const scrollRef = useContext(ScrollContainerContext);
-  return scrollRef?.current ?? null;
+  return useContext(ScrollContainerContext);
 };
