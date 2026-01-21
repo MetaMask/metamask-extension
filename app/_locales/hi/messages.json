@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "अकाउंट या वॉलेट जोड़ें"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask में अकाउंट जोड़ें"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask का इस्तेमाल करके, आपके द्वारा प्राप्त किए गए टोकन जोड़ें"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "वॉलेट जोड़ें"
-  },
-  "addingAccount": {
-    "message": "अकाउंट जोड़ा जा रहा है"
   },
   "additionalNetworks": {
     "message": "अतिरिक्त नेटवर्क"
@@ -3887,9 +3881,6 @@
   "needImportFile": {
     "message": "इंपोर्ट करने के लिए आपको एक फाइल को चुनना होगा।",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "ETH के नेगेटिव अमाउंट नहीं भेज सकते।"
   },
   "negativeOrZeroAmountToken": {
     "message": "नेगेटिव या ज़ीरो वैल्यू के एसेट नहीं भेज सकते।"

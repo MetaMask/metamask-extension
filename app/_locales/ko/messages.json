@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "계정 또는 지갑 추가"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask에 계정 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "지갑 추가"
-  },
-  "addingAccount": {
-    "message": "계정 추가"
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
@@ -3890,9 +3884,6 @@
   "needImportFile": {
     "message": "반드시 가져올 파일을 선택해야 합니다.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "음수 ETH 양은 전송할 수 없습니다."
   },
   "negativeOrZeroAmountToken": {
     "message": "마이너스 또는 금액이 0인 자산은 보낼 수 없습니다."

@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Añadir una cuenta o una billetera"
   },
-  "addAccountToMetaMask": {
-    "message": "Agregar cuenta a MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Agregar los tokens que adquirió con MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Agregar billetera"
-  },
-  "addingAccount": {
-    "message": "Añadiendo cuenta"
   },
   "additionalNetworks": {
     "message": "Redes adicionales"
@@ -3887,9 +3881,6 @@
   "needImportFile": {
     "message": "Debe seleccionar un archivo para la importación.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "No se pueden enviar cantidades negativas de ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "No se pueden enviar montos negativos o nulos de activos."

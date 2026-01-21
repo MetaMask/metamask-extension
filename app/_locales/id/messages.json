@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Tambahkan akun atau dompet"
   },
-  "addAccountToMetaMask": {
-    "message": "Tambahkan akun ke MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Tambahkan dompet"
-  },
-  "addingAccount": {
-    "message": "Menambahkan akun"
   },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
@@ -3893,9 +3887,6 @@
   "needImportFile": {
     "message": "Anda harus memilih file untuk diimpor.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Tidak dapat mengirim jumlah negatif ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Tidak dapat mengirim aset dalam jumlah negatif atau nol."

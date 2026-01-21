@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Hesap veya cüzdan ekle"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask'e hesap ekleyin"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Cüzdan ekle"
-  },
-  "addingAccount": {
-    "message": "Hesap ekleniyor"
   },
   "additionalNetworks": {
     "message": "İlave ağlar"
@@ -3893,9 +3887,6 @@
   "needImportFile": {
     "message": "İçe aktarılacak dosyayı seçmelisiniz.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Negatif tutarlarda ETH gönderilemez."
   },
   "negativeOrZeroAmountToken": {
     "message": "Eksi veya sıfır tutarlarda varlık gönderilemez."

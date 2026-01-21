@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Thêm tài khoản hoặc ví"
   },
-  "addAccountToMetaMask": {
-    "message": "Thêm tài khoản vào MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Thêm ví"
-  },
-  "addingAccount": {
-    "message": "Thêm tài khoản"
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
@@ -3893,9 +3887,6 @@
   "needImportFile": {
     "message": "Bạn phải chọn tập tin để nhập.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Không thể gửi số lượng ETH âm."
   },
   "negativeOrZeroAmountToken": {
     "message": "Không thể gửi số lượng tài sản âm hoặc bằng 0."

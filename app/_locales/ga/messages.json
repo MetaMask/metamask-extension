@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Cuir cuntas nó sparán leis"
   },
-  "addAccountToMetaMask": {
-    "message": "Cuir cuntas le MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Cuir na comharthaí leis atá faighte agat ag baint úsáide as MetaMask"
   },
@@ -327,9 +324,6 @@
   },
   "addWallet": {
     "message": "Cuir sparán leis"
-  },
-  "addingAccount": {
-    "message": "Cuntas á chur leis"
   },
   "additionalNetworks": {
     "message": "Líonraí breise"
@@ -3654,9 +3648,6 @@
   "needImportFile": {
     "message": "Ní mór duit comhad a roghnú le hallmhairiú.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Ní féidir méideanna diúltacha ETH a sheoladh."
   },
   "negativeOrZeroAmountToken": {
     "message": "Ní féidir méideanna diúltacha ná nialasacha sócmhainne a sheoladh."

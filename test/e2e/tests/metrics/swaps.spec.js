@@ -4,10 +4,12 @@ const { toHex } = require('@metamask/controller-utils');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
 const {
   withFixtures,
-  unlockWallet,
   getEventPayloads,
   assertInAnyOrder,
 } = require('../../helpers');
+const {
+  loginWithBalanceValidation,
+} = require('../../page-objects/flows/login.flow');
 const {
   buildQuote,
   reviewQuote,
@@ -109,7 +111,7 @@ describe.skip('Swap Eth for another Token', function () {
         testSpecificMock: mockSegmentAndMetaswapRequests,
       },
       async ({ driver, mockedEndpoint: mockedEndpoints }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         await getQuoteAndSwapTokens(driver);
 

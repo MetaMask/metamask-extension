@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Ajouter un compte ou un portefeuille"
   },
-  "addAccountToMetaMask": {
-    "message": "Ajouter un compte à MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Ajouter un portefeuille"
-  },
-  "addingAccount": {
-    "message": "Ajouter un compte"
   },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
@@ -3887,9 +3881,6 @@
   "needImportFile": {
     "message": "Vous devez sélectionner un fichier à importer.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Vous ne pouvez envoyer des montants négatifs d’ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Impossible d’envoyer des montants négatifs ou nuls."

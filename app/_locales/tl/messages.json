@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Magdagdag ng account o wallet"
   },
-  "addAccountToMetaMask": {
-    "message": "Idagdag ang account sa MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Magdagdag ng wallet"
-  },
-  "addingAccount": {
-    "message": "Idinaragdag ang account"
   },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
@@ -3893,9 +3887,6 @@
   "needImportFile": {
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Hindi makakapagpadala ng mga negatibong halaga ng ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."

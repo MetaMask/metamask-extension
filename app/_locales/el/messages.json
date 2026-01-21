@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Προσθήκη λογαριασμού ή πορτοφολιού"
   },
-  "addAccountToMetaMask": {
-    "message": "Προσθήκη λογαριασμού στο MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Προσθήκη πορτοφολιού"
-  },
-  "addingAccount": {
-    "message": "Προσθήκη λογαριασμού"
   },
   "additionalNetworks": {
     "message": "Πρόσθετα δίκτυα"
@@ -3893,9 +3887,6 @@
   "needImportFile": {
     "message": "Πρέπει να επιλέξετε ένα αρχείο για εισαγωγή.",
     "description": "User is important an account and needs to add a file to continue"
-  },
-  "negativeETH": {
-    "message": "Δεν μπορεί να γίνει αποστολή αρνητικών ποσών στο ETH."
   },
   "negativeOrZeroAmountToken": {
     "message": "Δεν είναι δυνατή η αποστολή αρνητικών ή μηδενικών ποσών περιουσιακών στοιχείων."

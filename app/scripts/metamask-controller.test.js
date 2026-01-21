@@ -4805,6 +4805,7 @@ describe('MetaMaskController', () => {
           category: 'Referrals',
           properties: {
             opt_in: true,
+            url: HYPERLIQUID_ORIGIN,
           },
         });
       });
@@ -4829,6 +4830,7 @@ describe('MetaMaskController', () => {
           category: 'Referrals',
           properties: {
             opt_in: false,
+            url: HYPERLIQUID_ORIGIN,
           },
         });
       });
