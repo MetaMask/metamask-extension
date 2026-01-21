@@ -1,6 +1,6 @@
 import React from 'react';
 import { Provider, useSelector } from 'react-redux';
-import { AssetListItem } from './asset';
+import { BridgeAsset } from './asset';
 import { getFromToken } from '../../../../../ducks/bridge/selectors';
 import { MultichainNetworks } from '../../../../../../shared/constants/multichain/networks';
 import { CHAIN_IDS } from '../../../../../../shared/constants/network';
@@ -10,7 +10,7 @@ import { createBridgeMockStore } from '../../../../../../test/data/bridge/mock-b
 
 const storybook = {
   title: 'Pages/Bridge/AssetPicker',
-  component: AssetListItem,
+  component: BridgeAsset,
 };
 
 const mockFeatureFlags = {
@@ -42,8 +42,8 @@ export const AssetListItemStory = () => {
   return (
     token && (
       <>
-        <AssetListItem asset={token} selected={true} />
-        <AssetListItem asset={token} selected={false} />
+        <BridgeAsset asset={token} selected={true} />
+        <BridgeAsset asset={token} selected={false} />
       </>
     )
   );

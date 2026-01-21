@@ -7,7 +7,7 @@ import { useTokenSearchResults } from '../../../../../hooks/bridge/useTokenSearc
 import { BackgroundColor } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Column } from '../../../layout';
-import { AssetListItem } from './asset';
+import { BridgeAsset } from './asset';
 import { LoadingSkeleton } from './loading-skeleton';
 
 export const BridgeAssetList = ({
@@ -24,7 +24,7 @@ export const BridgeAssetList = ({
   onAssetChange: (asset: BridgeToken) => void;
   selectedAssetId: CaipAssetType;
 } & React.ComponentProps<typeof Column> &
-  Pick<React.ComponentProps<typeof AssetListItem>, 'isDestination'> &
+  Pick<React.ComponentProps<typeof BridgeAsset>, 'isDestination'> &
   Pick<
     Parameters<typeof useTokenSearchResults>[0],
     'searchQuery' | 'accountAddress' | 'chainIds'
@@ -126,7 +126,7 @@ export const BridgeAssetList = ({
         const token = filteredTokenList[index];
         if (token) {
           return (
-            <AssetListItem
+            <BridgeAsset
               key={key.toString()}
               ref={virtualizer.measureElement}
               style={style}
