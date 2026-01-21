@@ -430,7 +430,15 @@ describe('MetaMaskController', () => {
       .persist()
       .get('/v1/flags')
       .query(true)
-      .reply(200, JSON.stringify([]));
+      .reply(
+        200,
+        JSON.stringify([
+          {
+            // Required by validation in controller
+            smartTransactionsNetworks: {},
+          },
+        ]),
+      );
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
