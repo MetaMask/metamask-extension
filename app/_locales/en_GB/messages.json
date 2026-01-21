@@ -5076,7 +5076,7 @@
     "message": "Add funds to start trading perpetual contracts with leverage"
   },
   "perpsAddToFavorites": {
-    "message": "Add to favourites"
+    "message": "Add to favorites"
   },
   "perpsAutoClose": {
     "message": "Auto close"
@@ -5210,7 +5210,7 @@
     "message": "Trade perps"
   },
   "perpsUnrealizedPnl": {
-    "message": "Unrealised P&L"
+    "message": "Unrealized P&L"
   },
   "perpsWithdraw": {
     "message": "Withdraw"
