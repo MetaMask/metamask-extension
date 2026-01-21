@@ -46,7 +46,7 @@ const makeExpirySet = () => {
     destroy() {
       clearInterval(timerId);
       map.clear();
-    }
+    },
   };
 };
 
