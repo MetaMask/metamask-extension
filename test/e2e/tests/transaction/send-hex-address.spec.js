@@ -1,3 +1,9 @@
+const {
+  createInternalTransaction,
+} = require('../../page-objects/flows/transaction');
+const {
+  default: SendPage,
+} = require('../../page-objects/pages/send/send-page');
 const { withFixtures } = require('../../helpers');
 const { SMART_CONTRACTS } = require('../../seeder/smart-contracts');
 const FixtureBuilder = require('../../fixtures/fixture-builder');
@@ -21,18 +27,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        // Send ETH
-        await driver.clickElement('[data-testid="coin-overview-send"]');
-        // Paste address without hex prefix
-        await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          nonHexPrefixedAddress,
-        );
-        await driver.findElement({
-          css: '.ens-input__selected-input__title',
-          text: '0x2f318...5C970',
+        await createInternalTransaction({
+          driver,
+          recipientAddress: nonHexPrefixedAddress,
         });
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -65,18 +63,10 @@ describe('Send ETH to a 40 character hexadecimal address', function () {
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        // Send ETH
-        await driver.clickElement('[data-testid="coin-overview-send"]');
-        // Type address without hex prefix
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          nonHexPrefixedAddress,
-        );
-        await driver.findElement({
-          css: '.ens-input__selected-input__title',
-          text: '0x2f318...5C970',
+        await createInternalTransaction({
+          driver,
+          recipientAddress: nonHexPrefixedAddress,
         });
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
 
         // Confirm transaction
         await driver.clickElement({ text: 'Confirm', tag: 'button' });
@@ -124,32 +114,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
         await driver.clickElement('[data-testid="coin-overview-send"]');
         // Paste address without hex prefix
-        await driver.pasteIntoField(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          nonHexPrefixedAddress,
-        );
-        await driver.findElement({
-          css: '.ens-input__selected-input__title',
-          text: '0x2f318...5C970',
-        });
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-        // Confirm transaction
-        await driver.findElement({
-          css: 'h2',
-          text: '0 ETH',
-        });
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-        await driver.clickElement(
-          '[data-testid="account-overview__activity-tab"]',
-        );
-        await driver.findElement('.transaction-status-label--confirmed');
-        const sendTransactionListItem = await driver.findElement(
-          '.transaction-status-label--confirmed',
-        );
-        await sendTransactionListItem.click();
-        await driver.clickElement({ text: 'Activity log', tag: 'summary' });
+        const sendPage = new SendPage(driver);
+        await sendPage.fillRecipient(nonHexPrefixedAddress);
+        await sendPage.pressContinueButton();
 
         // Verify address in activity log
         await driver.findElement({
@@ -185,16 +152,10 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         await driver.clickElement('[data-testid="coin-overview-send"]');
 
         // Type address without hex prefix
-        await driver.fill(
-          'input[placeholder="Enter public address (0x) or domain name"]',
-          nonHexPrefixedAddress,
-        );
-        await driver.findElement({
-          css: '.ens-input__selected-input__title',
-          text: '0x2f318...5C970',
-        });
-
-        await driver.clickElement({ text: 'Continue', tag: 'button' });
+        const sendPage = new SendPage(driver);
+        await sendPage.fillRecipient(nonHexPrefixedAddress);
+        await sendPage.fillAmount('0');
+        await sendPage.pressContinueButton();
 
         // Confirm transaction
         await driver.findElement({

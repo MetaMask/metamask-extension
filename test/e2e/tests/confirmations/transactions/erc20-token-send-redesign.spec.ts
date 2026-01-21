@@ -7,10 +7,9 @@ import { Anvil } from '../../../seeder/anvil';
 import WatchAssetConfirmation from '../../../page-objects/pages/confirmations/watch-asset-confirmation';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
-import HomePage from '../../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../../page-objects/pages/send/send-token-page';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockedSourcifyTokenSend,
@@ -130,17 +129,12 @@ async function createWalletInitiatedTransactionAndAssertDetails(
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.ExtensionInFullScreenView);
 
-  const homePage = new HomePage(driver);
-  await homePage.startSendFlow();
-
-  const sendToPage = new SendTokenPage(driver);
-  await sendToPage.checkPageIsLoaded();
-  await sendToPage.fillRecipient('0x2f318C334780961FB129D2a6c30D0763d9a5C970');
-  await sendToPage.fillAmount('1');
-
-  await sendToPage.clickAssetPickerButton();
-  await sendToPage.chooseTokenToSend('TST');
-  await sendToPage.goToNextScreen();
+  await createInternalTransaction({
+    driver,
+    symbol: 'TST',
+    recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+    amount: '1',
+  });
 
   const tokenTransferTransactionConfirmation =
     new TokenTransferTransactionConfirmation(driver);

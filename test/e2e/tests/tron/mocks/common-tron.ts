@@ -21,9 +21,6 @@ export const BIP44_STAGE_TWO = {
     featureVersion: '2',
     minimumVersion: '12.19.0',
   },
-  sendRedesign: {
-    enabled: false,
-  },
   bitcoinAccounts: {
     enabled: true,
     minimumVersion: '13.6.0',
