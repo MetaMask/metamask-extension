@@ -1766,4 +1766,13 @@ export class AppStateController extends BaseController<
       state.deferredDeepLink = deferredDeepLink;
     });
   }
+
+  /**
+   * Removes deferred deep link data.
+   */
+  removeDeferredDeepLink(): void {
+    this.update((state) => {
+      state.deferredDeepLink = undefined;
+    });
+  }
 }

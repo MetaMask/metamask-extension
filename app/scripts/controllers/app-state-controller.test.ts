@@ -1099,11 +1099,28 @@ describe('AppStateController', () => {
           createdAt: 1765465337256,
           referringLink: 'https://link.metamask.io/deep-link',
         };
+
         controller.setDeferredDeepLink(mockDeepLinkData);
 
         expect(controller.state.deferredDeepLink).toStrictEqual(
           mockDeepLinkData,
         );
+      });
+    });
+  });
+
+  describe('removeDeferredDeepLink', () => {
+    it('removes the deferred deep link data from state', async () => {
+      await withController(async ({ controller }) => {
+        const mockDeepLinkData = {
+          createdAt: 1765465337256,
+          referringLink: 'https://link.metamask.io/deep-link',
+        };
+
+        controller.setDeferredDeepLink(mockDeepLinkData);
+        controller.removeDeferredDeepLink();
+
+        expect(controller.state.deferredDeepLink).toBeUndefined();
       });
     });
   });

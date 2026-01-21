@@ -47,10 +47,18 @@ jest.mock('../../../../shared/lib/deep-links/utils');
 jest.mock('../../../hooks/useSidePanelEnabled');
 
 // Mock background connection to prevent "Background connection not initialized" warnings
+const mockRemoveDeferredDeepLink = jest.fn().mockResolvedValue(undefined);
 const backgroundConnectionMock = new Proxy(
-  {},
   {
-    get: () => jest.fn().mockResolvedValue(undefined),
+    removeDeferredDeepLink: mockRemoveDeferredDeepLink,
+  },
+  {
+    get: (target, prop) => {
+      if (prop in target) {
+        return target[prop as keyof typeof target];
+      }
+      return jest.fn().mockResolvedValue(undefined);
+    },
   },
 );
 
@@ -190,6 +198,7 @@ describe('Wallet Ready Page', () => {
           windowId: 1,
         });
         expect(mockAssign).toHaveBeenCalledWith(externalUrl);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
     });
 
@@ -229,6 +238,7 @@ describe('Wallet Ready Page', () => {
         // The side panel should NOT be opened when a deferred deep link has the 'Navigate' type
         expect(browserMock.sidePanel.open).not.toHaveBeenCalled();
         expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
     });
 
@@ -313,6 +323,7 @@ describe('Wallet Ready Page', () => {
 
       await waitFor(() => {
         expect(windowOpenSpy).toHaveBeenCalledWith(externalUrl, '_blank');
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
 
       windowOpenSpy.mockRestore();
@@ -346,6 +357,7 @@ describe('Wallet Ready Page', () => {
 
       await waitFor(() => {
         expect(mockUseNavigate).toHaveBeenCalledWith(testRoute);
+        expect(mockRemoveDeferredDeepLink).toHaveBeenCalled();
       });
     });
 

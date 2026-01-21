@@ -62,6 +62,7 @@ import {
   setCompletedOnboarding,
   setCompletedOnboardingWithSidepanel,
   setUseSidePanelAsDefault,
+  removeDeferredDeepLink,
 } from '../../../store/actions';
 import { LottieAnimation } from '../../../components/component-library/lottie-animation';
 import { useSidePanelEnabled } from '../../../hooks/useSidePanelEnabled';
@@ -202,8 +203,10 @@ export default function CreationSuccessful() {
       ) {
         navigate(deferredDeepLinkResult.route);
       }
+
+      dispatch(removeDeferredDeepLink());
     },
-    [navigate],
+    [dispatch, navigate],
   );
 
   const handleOnDoneNavigation = useCallback(
@@ -221,11 +224,13 @@ export default function CreationSuccessful() {
         } else {
           navigate(DEFAULT_ROUTE);
         }
+
+        dispatch(removeDeferredDeepLink());
       } else {
         navigate(DEFAULT_ROUTE);
       }
     },
-    [navigate],
+    [dispatch, navigate],
   );
 
   const onDone = useCallback(async () => {

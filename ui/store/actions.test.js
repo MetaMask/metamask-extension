@@ -4157,4 +4157,21 @@ describe('Actions', () => {
       ).toBe(true);
     });
   });
+
+  describe('#removeDeferredDeepLink', () => {
+    afterEach(() => {
+      sinon.restore();
+    });
+
+    it('calls removeDeferredDeepLink in the background', async () => {
+      const store = mockStore();
+
+      background.removeDeferredDeepLink = sinon.stub().resolves();
+
+      setBackgroundConnection(background);
+
+      await store.dispatch(actions.removeDeferredDeepLink());
+      expect(background.removeDeferredDeepLink.callCount).toStrictEqual(1);
+    });
+  });
 });
