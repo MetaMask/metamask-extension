@@ -86,7 +86,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  toggleAccountMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
@@ -118,7 +117,6 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
-import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
@@ -386,9 +384,6 @@ export default function Routes() {
   const theme = useTheme();
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
-  );
-  const isAccountMenuOpen = useAppSelector(
-    (state) => state.appState.isAccountMenuOpen,
   );
 
   const isImportTokensModalOpen = useAppSelector(
@@ -865,13 +860,6 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const accountListMenu = (
-    <MultichainAccountListMenu
-      onClose={() => dispatch(toggleAccountMenu())}
-      privacyMode={privacyMode}
-    />
-  );
-
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
@@ -887,8 +875,6 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-
-      {isAccountMenuOpen ? accountListMenu : null}
 
       <NetworkConfirmationPopover />
       {isImportNftsModalOpen ? (
