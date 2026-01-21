@@ -3,6 +3,7 @@
  */
 
 import { readFileSync } from 'node:fs';
+import { cpus } from 'node:os';
 import { join } from 'node:path';
 import { argv, exit } from 'node:process';
 import {
@@ -33,7 +34,7 @@ import {
 import { transformManifest } from './utils/plugins/ManifestPlugin/helpers';
 import { parseArgv, getDryRunMessage } from './utils/cli';
 import { getCodeFenceLoader } from './utils/loaders/codeFenceLoader';
-import { getSwcLoader } from './utils/loaders/swcLoader';
+import { getSwcLoader } from './utils/loaders/getSwcLoader';
 import { getVariables, resolveEnvironment } from './utils/config';
 import { getReactCompilerLoader } from './utils/loaders/reactCompilerLoader';
 import { ManifestPlugin } from './utils/plugins/ManifestPlugin';
@@ -335,21 +336,50 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
+      // UI TypeScript files - parallelized with thread-loader
       {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:ts|mts|tsx)$/u,
         include: UI_DIR_RE,
-        use: [reactCompilerLoader],
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workers: Math.max(1, cpus().length - 1),
+              workerParallelJobs: 50,
+            },
+          },
+          reactCompilerLoader,
+          tsxLoader,
+          codeFenceLoader,
+        ],
       },
-      // own typescript, and own typescript with jsx
+      // UI JavaScript files - parallelized with thread-loader
+      {
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:js|mjs|jsx)$/u,
+        include: UI_DIR_RE,
+        use: [
+          {
+            loader: 'thread-loader',
+            options: {
+              workers: Math.max(1, cpus().length - 1),
+              workerParallelJobs: 50,
+            },
+          },
+          reactCompilerLoader,
+          jsxLoader,
+          codeFenceLoader,
+        ],
+      },
+      // non-UI typescript (background scripts, shared, etc.)
       {
         test: /\.(?:ts|mts|tsx)$/u,
-        exclude: NODE_MODULES_RE,
+        exclude: [NODE_MODULES_RE, UI_DIR_RE],
         use: [tsxLoader, codeFenceLoader],
       },
-      // own javascript, and own javascript with jsx
+      // non-UI javascript (background scripts, shared, etc.)
       {
         test: /\.(?:js|mjs|jsx)$/u,
-        exclude: NODE_MODULES_RE,
+        exclude: [NODE_MODULES_RE, UI_DIR_RE],
         use: [jsxLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
