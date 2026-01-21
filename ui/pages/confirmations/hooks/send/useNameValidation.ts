@@ -6,6 +6,7 @@ import { isValidDomainName } from '../../../../helpers/utils/util';
 import { useSnapNameResolution } from '../../../../hooks/snaps/useSnapNameResolution';
 import { findConfusablesInRecipient } from '../../utils/sendValidations';
 import { lookupDomainName } from '../../../../ducks/domains';
+import type { MetaMaskReduxDispatch } from '../../../../store/store';
 import { useSendType } from './useSendType';
 
 type Resolution = {
@@ -15,7 +16,7 @@ type Resolution = {
 
 export const useNameValidation = () => {
   const { fetchResolutions } = useSnapNameResolution();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<MetaMaskReduxDispatch>();
   const { isEvmSendType } = useSendType();
 
   const processResolutions = useCallback(
@@ -36,8 +37,14 @@ export const useNameValidation = () => {
   );
 
   const validateName = useCallback(
-    async (chainId: string, to: string) => {
+    async (chainId: string, to: string, signal?: AbortSignal) => {
       if (!isValidDomainName(to)) {
+        return {
+          error: 'nameResolutionFailedError',
+        };
+      }
+
+      if (signal?.aborted) {
         return {
           error: 'nameResolutionFailedError',
         };
@@ -47,10 +54,14 @@ export const useNameValidation = () => {
 
       if (isEvmSendType) {
         resolutions = (await dispatch(
-          lookupDomainName(to, chainId),
-        )) as unknown as Resolution[];
+          lookupDomainName(to, chainId, signal),
+        )) as Resolution[];
       } else {
-        resolutions = await fetchResolutions(formatChainIdToCaip(chainId), to);
+        resolutions = await fetchResolutions(
+          formatChainIdToCaip(chainId),
+          to,
+          signal,
+        );
       }
 
       return processResolutions(resolutions, to);

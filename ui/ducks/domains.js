@@ -101,21 +101,38 @@ export function initializeDomainSlice() {
 const resolutionCache = new Map();
 const CACHE_TTL_MS = 60000;
 
-export async function fetchResolutions({ domain, chainId, state }) {
+function enrichResolutionsWithAddressBook(resolutions, state) {
+  return resolutions.map((resolution) => ({
+    ...resolution,
+    addressBookEntryName: getAddressBookEntry(state, resolution.resolvedAddress)
+      ?.name,
+  }));
+}
+
+export async function fetchResolutions({ domain, chainId, state, signal }) {
   const cacheKey = `${domain}:${chainId}`;
   const cached = resolutionCache.get(cacheKey);
 
+  if (signal?.aborted) {
+    return [];
+  }
+
   if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
     if (cached.result) {
-      return cached.result;
+      return enrichResolutionsWithAddressBook(cached.result, state);
     }
-    return cached.promise;
+    const cachedResolutions = await cached.promise;
+    return enrichResolutionsWithAddressBook(cachedResolutions, state);
   }
 
   const promise = (async () => {
     const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
     const subjects = getPermissionSubjects(state);
     const nameLookupSnaps = getNameLookupSnapsIds(state);
+
+    if (signal?.aborted) {
+      return [];
+    }
 
     const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
       const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
@@ -169,10 +186,6 @@ export async function fetchResolutions({ domain, chainId, state }) {
                 state,
                 filteredNameLookupSnapsIds[idx],
               )?.name,
-              addressBookEntryName: getAddressBookEntry(
-                state,
-                resolution.resolvedAddress,
-              )?.name,
             }),
           );
           return successfulResolutions.concat(resolutions);
@@ -188,7 +201,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
       result: filteredResults,
     });
 
-    return filteredResults;
+    return enrichResolutionsWithAddressBook(filteredResults, state);
   })();
 
   resolutionCache.set(cacheKey, {
@@ -199,7 +212,7 @@ export async function fetchResolutions({ domain, chainId, state }) {
   return promise;
 }
 
-export function lookupDomainName(domainName, chainId) {
+export function lookupDomainName(domainName, chainId, signal) {
   return async (dispatch, getState) => {
     const trimmedDomainName = domainName.trim();
     let state = getState();
@@ -215,6 +228,7 @@ export function lookupDomainName(domainName, chainId) {
       domain: trimmedDomainName,
       chainId: `eip155:${chainIdInt}`,
       state,
+      signal,
     });
 
     // Due to the asynchronous nature of looking up domains, we could reach this point

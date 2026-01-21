@@ -44,8 +44,15 @@ export const useRecipientValidation = () => {
   }, []);
 
   const validateRecipient = useCallback(
-    async (toAddress): Promise<RecipientValidationResult> => {
+    async (
+      toAddress: string,
+      signal?: AbortSignal,
+    ): Promise<RecipientValidationResult> => {
       if (!toAddress || !chainId) {
+        return {};
+      }
+
+      if (signal?.aborted) {
         return {};
       }
 
@@ -69,7 +76,7 @@ export const useRecipientValidation = () => {
         if (!isDomainReadyForResolution(toAddress)) {
           return {};
         }
-        return await validateName(chainId, toAddress);
+        return await validateName(chainId, toAddress, signal);
       }
 
       return {
@@ -93,7 +100,10 @@ export const useRecipientValidation = () => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = new AbortController();
 
-        const validationResult = await validateRecipient(toAddress);
+        const validationResult = await validateRecipient(
+          toAddress,
+          abortControllerRef.current.signal,
+        );
 
         if (
           !unmountedRef.current &&
