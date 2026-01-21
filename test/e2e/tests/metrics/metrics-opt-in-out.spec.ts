@@ -1,13 +1,13 @@
 import { strict as assert } from 'assert';
-import { Mockttp } from "mockttp";
-import { getEventPayloads, withFixtures } from "../../helpers";
-import FixtureBuilder from "../../fixtures/fixture-builder";
-import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from "../../constants";
-import { Browser } from "selenium-webdriver";
-import OnboardingMetricsPage from "../../page-objects/pages/onboarding/onboarding-metrics-page";
-import OnboardingPasswordPage from "../../page-objects/pages/onboarding/onboarding-password-page";
-import SecureWalletPage from "../../page-objects/pages/onboarding/secure-wallet-page";
-import StartOnboardingPage from "../../page-objects/pages/onboarding/start-onboarding-page";
+import { Mockttp } from 'mockttp';
+import { Browser } from 'selenium-webdriver';
+import { getEventPayloads, withFixtures } from '../../helpers';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { MOCK_META_METRICS_ID, WALLET_PASSWORD } from '../../constants';
+import OnboardingMetricsPage from '../../page-objects/pages/onboarding/onboarding-metrics-page';
+import OnboardingPasswordPage from '../../page-objects/pages/onboarding/onboarding-password-page';
+import SecureWalletPage from '../../page-objects/pages/onboarding/secure-wallet-page';
+import StartOnboardingPage from '../../page-objects/pages/onboarding/start-onboarding-page';
 
 /**
  * Mocks the segment API multiple times for specific payloads that we expect to
@@ -106,7 +106,7 @@ describe('Metrics Opt In/Out events', function () {
     );
   });
 
-  it('should be tracked when the user opts in to metrics', async function () {
+  it('should be tracked when the user opts out of metrics', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder({ onboarding: true })
@@ -156,4 +156,4 @@ describe('Metrics Opt In/Out events', function () {
       },
     );
   });
-})
+});
