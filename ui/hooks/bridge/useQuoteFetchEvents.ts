@@ -25,7 +25,6 @@ export const useQuoteFetchEvents = () => {
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
   const warnings = useSelector(getWarningLabels);
-  const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
@@ -38,7 +37,6 @@ export const useQuoteFetchEvents = () => {
             warnings,
             isTxSubmittable,
             recommendedQuote,
-            fromTokenBalanceInUsd,
           ),
         ),
       );

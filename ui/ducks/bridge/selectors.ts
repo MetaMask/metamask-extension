@@ -651,19 +651,6 @@ export const getFromTokenConversionRate = createSelector(
   },
 );
 
-export const getFromTokenBalanceInUsd = createSelector(
-  [
-    (state) => Number(getFromTokenBalance(state)),
-    (state) => Number(getFromTokenConversionRate(state)?.usd),
-  ],
-  (fromTokenBalance, fromTokenConversionRate) => {
-    if (isNaN(fromTokenBalance) || isNaN(fromTokenConversionRate)) {
-      return undefined;
-    }
-    return fromTokenBalance * fromTokenConversionRate;
-  },
-);
-
 export const getIsQuoteExpired = (
   { metamask }: BridgeAppState,
   currentTimeInMs: number,

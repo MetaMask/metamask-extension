@@ -121,7 +121,10 @@ import {
   requestPermittedChainsPermissionIncremental,
   getCaip25PermissionFromLegacyPermissions,
 } from '@metamask/chain-agnostic-permission';
-import { BRIDGE_STATUS_CONTROLLER_NAME } from '@metamask/bridge-status-controller';
+import {
+  BRIDGE_STATUS_CONTROLLER_NAME,
+  BridgeStatusAction,
+} from '@metamask/bridge-status-controller';
 
 import {
   SeedlessOnboardingControllerErrorMessage,
@@ -3311,9 +3314,9 @@ export default class MetamaskController extends EventEmitter {
       ),
 
       // Bridge Tx submission
-      submitTx: this.controllerMessenger.call.bind(
+      [BridgeStatusAction.SUBMIT_TX]: this.controllerMessenger.call.bind(
         this.controllerMessenger,
-        `${BRIDGE_STATUS_CONTROLLER_NAME}:${'submitTx'}`,
+        `${BRIDGE_STATUS_CONTROLLER_NAME}:${BridgeStatusAction.SUBMIT_TX}`,
       ),
 
       // Smart Transactions

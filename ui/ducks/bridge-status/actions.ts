@@ -4,6 +4,7 @@ import {
   UnifiedSwapBridgeEventName,
   type RequiredEventContextFromClient,
 } from '@metamask/bridge-controller';
+import { BridgeStatusAction } from '@metamask/bridge-status-controller';
 import { forceUpdateMetamaskState } from '../../store/actions';
 import { submitRequestToBackground } from '../../store/background-connection';
 import { MetaMaskReduxDispatch } from '../../store/store';
@@ -11,7 +12,7 @@ import { MetaMaskReduxDispatch } from '../../store/store';
 // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
 // eslint-disable-next-line @typescript-eslint/naming-convention
 const callBridgeStatusControllerMethod = <T extends unknown[]>(
-  bridgeAction: 'submitTx',
+  bridgeAction: BridgeStatusAction,
   args?: T,
 ) => {
   return async (dispatch: MetaMaskReduxDispatch) => {
@@ -45,7 +46,12 @@ export const submitBridgeTx = (
           boolean,
           RequiredEventContextFromClient[UnifiedSwapBridgeEventName.QuotesReceived],
         ]
-      >('submitTx', [accountAddress, quote, isStxSupportedInClient, context]),
+      >(BridgeStatusAction.SUBMIT_TX, [
+        accountAddress,
+        quote,
+        isStxSupportedInClient,
+        context,
+      ]),
     );
   };
 };

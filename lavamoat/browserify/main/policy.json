@@ -976,7 +976,6 @@
     "@metamask/bridge-status-controller": {
       "globals": {
         "URLSearchParams": true,
-        "console.error": true,
         "console.warn": true,
         "setTimeout": true
       },

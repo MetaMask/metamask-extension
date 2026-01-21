@@ -31,12 +31,6 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isSingleSwapBridgeButtonEnabled: true,
     },
   },
-  chainRanking: [
-    { chainId: 'eip155:1', name: 'Ethereum' },
-    { chainId: 'eip155:42161', name: 'Arbitrum' },
-    { chainId: 'eip155:59144', name: 'Linea' },
-    { chainId: 'eip155:8453', name: 'Base' },
-  ],
 };
 
 export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
