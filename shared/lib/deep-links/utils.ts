@@ -7,8 +7,6 @@ import {
 } from './types';
 import { parse } from './parse';
 
-const CookieReadingTimeout = 5000;
-
 /**
  * Extracts the deferred deep link cookie value.
  *
@@ -16,12 +14,6 @@ const CookieReadingTimeout = 5000;
  */
 export function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null> {
   return new Promise((resolve) => {
-    // Make sure that promise resolves after timeout in case when the extension API doesn't respond
-    const timeoutId = setTimeout(() => {
-      log.error('Timed out while trying to retrieve deferred deeplink cookie.');
-      resolve(null);
-    }, CookieReadingTimeout);
-
     try {
       browser.cookies
         .get({
@@ -29,8 +21,6 @@ export function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null
           name: 'deferred_deeplink',
         })
         .then((cookie) => {
-          clearTimeout(timeoutId);
-
           if (!cookie) {
             resolve(null);
             return;
@@ -69,12 +59,10 @@ export function getDeferredDeepLinkFromCookie(): Promise<DeferredDeepLink | null
           }
         })
         .catch((error) => {
-          clearTimeout(timeoutId);
           log.error('Failed to retrieve cookie with browser API.', error);
           resolve(null);
         });
     } catch (error) {
-      clearTimeout(timeoutId);
       log.error(
         'Failed to use browser API for deferred deep link cookies.',
         error,

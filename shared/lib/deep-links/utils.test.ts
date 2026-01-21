@@ -111,29 +111,6 @@ describe('Deep link utils', () => {
       );
     });
 
-    it('resolves null after timeout if cookie promise never resolves', async () => {
-      jest.useFakeTimers();
-
-      (mockBrowser.cookies.get as jest.Mock).mockImplementation(
-        () =>
-          new Promise(() => {
-            // intentionally never resolves
-          }),
-      );
-
-      const resultPromise = getDeferredDeepLinkFromCookie();
-      jest.advanceTimersByTime(5000);
-
-      const result = await resultPromise;
-
-      expect(result).toBeNull();
-      expect(logErrorSpy).toHaveBeenCalledWith(
-        'Timed out while trying to retrieve deferred deeplink cookie.',
-      );
-
-      jest.useRealTimers();
-    });
-
     it('returns null when browser API throws an error in promise rejection', async () => {
       (mockBrowser.cookies.get as jest.Mock).mockRejectedValue(
         new Error('Browser API not available'),
