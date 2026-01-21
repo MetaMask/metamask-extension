@@ -178,7 +178,7 @@ export const createBridgeMockStore = ({
   stateOverrides = {},
 }: {
   featureFlagOverrides?: {
-    bridgeConfig: Partial<FeatureFlagResponse> & {
+    bridgeConfig: Partial<Omit<FeatureFlagResponse, 'chainRanking'>> & {
       chainRanking?: { chainId: CaipChainId; name?: string }[];
     };
     smartTransactionsNetworks?: SmartTransactionsNetworks;
@@ -629,79 +629,72 @@ export const createBridgeMockStore = ({
         liveness: false,
         livenessByChainId: { '0x1': true },
       },
-      ...{
-        ...getDefaultBridgeControllerState(),
-        remoteFeatureFlags: {
-          ...featureFlagOverrides,
-          smartTransactionsNetworks: {
-            '0x1': { extensionActive: true },
-            ...featureFlagOverrides?.smartTransactionsNetworks,
-          },
-          bridgeConfig: {
-            minimumVersion: '0.0.0',
-            support: false,
-            refreshRate: 5000,
-            maxRefreshCount: 5,
-            bip44DefaultPairs: {
-              bip122: {
-                other: {},
-                standard: {
-                  'bip122:000000000019d6689c085ae165831e93/slip44:0':
-                    'eip155:1/slip44:60',
-                },
-              },
-              eip155: {
-                other: {},
-                standard: {
-                  'eip155:1/slip44:60':
-                    // USDC instead of MUSD
-                    'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
-                },
-              },
-              solana: {
-                other: {},
-                standard: {
-                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501':
-                    'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
-                },
+      ...getDefaultBridgeControllerState(),
+      remoteFeatureFlags: {
+        ...featureFlagOverrides,
+        smartTransactionsNetworks: {
+          '0x1': { extensionActive: true },
+          ...featureFlagOverrides?.smartTransactionsNetworks,
+        },
+        bridgeConfig: {
+          minimumVersion: '0.0.0',
+          support: false,
+          refreshRate: 5000,
+          maxRefreshCount: 5,
+          bip44DefaultPairs: {
+            bip122: {
+              other: {},
+              standard: {
+                'bip122:000000000019d6689c085ae165831e93/slip44:0':
+                  'eip155:1/slip44:60',
               },
             },
-            ...featureFlagOverrides?.bridgeConfig,
-            chainRanking: [
-              { chainId: formatChainIdToCaip('0x1') },
-              ...Object.keys(
-                featureFlagOverrides?.bridgeConfig?.chains ?? [],
-              ).map((chainId) => ({
-                chainId: formatChainIdToCaip(chainId),
-              })),
-            ],
-            chains: {
-              [formatChainIdToCaip('0x1')]: {
-                isActiveSrc: true,
-                isActiveDest: true,
+            eip155: {
+              other: {},
+              standard: {
+                'eip155:1/slip44:60':
+                  // USDC instead of MUSD
+                  'eip155:1/erc20:0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
               },
-              ...Object.fromEntries(
-                Object.entries(
-                  featureFlagOverrides?.bridgeConfig?.chains ?? {},
-                ).map(([chainId, config]) => [
-                  formatChainIdToCaip(chainId),
-                  config,
-                ]),
-              ),
             },
-            chainRanking: [
-              { chainId: 'eip155:1', name: 'Ethereum' },
-              ...Object.entries(
-                featureFlagOverrides?.bridgeConfig?.chains ?? {},
-              ).map(([chainId]) => ({
-                chainId: formatChainIdToCaip(chainId),
-                name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[
-                  formatChainIdToCaip(chainId)
-                ],
-              })),
-              ...(featureFlagOverrides?.bridgeConfig?.chainRanking ?? []),
-            ],
+            solana: {
+              other: {},
+              standard: {
+                'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/slip44:501':
+                  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp/token:EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v',
+              },
+            },
           },
+          ...featureFlagOverrides?.bridgeConfig,
+          chains: {
+            'eip155:1': {
+              isActiveSrc: true,
+              isActiveDest: true,
+              isSingleSwapBridgeButtonEnabled: true,
+            },
+            // ...Object.fromEntries(
+            //   Object.entries(
+            //     featureFlagOverrides?.bridgeConfig?.chains ?? {},
+            //   ).map(([chainId, config]) => [
+            //     formatChainIdToCaip(chainId),
+            //     config,
+            //   ]),
+            // ),
+          },
+          chainRanking: featureFlagOverrides?.bridgeConfig?.chainRanking?.map(
+            (c) => ({
+              ...c,
+              name:
+                c.name ??
+                NETWORK_TO_SHORT_NETWORK_NAME_MAP[c.chainId] ??
+                'Test',
+            }),
+          ) ?? [
+            {
+              chainId: formatChainIdToCaip(1),
+              name: 'Ethereum',
+            },
+          ],
         },
       },
       ...bridgeStateOverrides,

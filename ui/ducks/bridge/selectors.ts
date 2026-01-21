@@ -45,9 +45,8 @@ import {
 } from '@metamask/account-tree-controller';
 import { getHardwareWalletType } from '../../selectors/selectors';
 import {
+  ALL_ALLOWED_BRIDGE_CHAIN_IDS,
   ALLOWED_BRIDGE_CHAIN_IDS,
-  ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP,
-  NETWORK_TO_SHORT_NETWORK_NAME_MAP,
 } from '../../../shared/constants/bridge';
 import { createDeepEqualSelector } from '../../../shared/modules/selectors/util';
 import { CHAIN_IDS, FEATURED_RPCS } from '../../../shared/constants/network';
@@ -154,16 +153,7 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
     });
-    return {
-      ...validatedFlags,
-      chainRanking:
-        // @ts-expect-error - chainRanking is not typed yet. remove this after updating controller types
-        (bridgeConfig?.chainRanking as {
-          chainId: CaipChainId;
-          name?: string;
-        }[]) ??
-        ALLOWED_BRIDGE_CHAIN_IDS_IN_CAIP.map((chainId) => ({ chainId })),
-    };
+    return validatedFlags;
   },
 );
 
@@ -233,7 +223,7 @@ export const getFromChains = createDeepEqualSelector(
       ) {
         filteredNetworks.push({
           chainId,
-          name: name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId],
+          name,
         });
       }
     });
@@ -293,7 +283,9 @@ export const getToChains = createDeepEqualSelector(
     const allChains: Record<CaipChainId, BridgeNetwork> = {
       ...allBridgeableNetworks,
       ...Object.fromEntries(
-        FEATURED_RPCS.map((rpc) => {
+        FEATURED_RPCS.filter(({ chainId }) =>
+          ALL_ALLOWED_BRIDGE_CHAIN_IDS.includes(chainId),
+        ).map((rpc) => {
           const caipChainId = formatChainIdToCaip(rpc.chainId);
           return [
             caipChainId,
@@ -309,7 +301,7 @@ export const getToChains = createDeepEqualSelector(
       if (allChains[chainId]) {
         filteredChains.push({
           ...allChains[chainId],
-          name: name ?? NETWORK_TO_SHORT_NETWORK_NAME_MAP[chainId],
+          name,
         });
       }
     });

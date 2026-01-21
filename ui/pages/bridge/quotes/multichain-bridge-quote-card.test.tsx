@@ -226,11 +226,11 @@ describe('MultichainBridgeQuoteCard', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: false, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
         },
       },
       bridgeSliceOverrides: {
@@ -302,10 +302,10 @@ describe('MultichainBridgeQuoteCard', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+          ],
         },
       },
       bridgeSliceOverrides: { fromTokenInputValue: '1' },
@@ -331,10 +331,10 @@ describe('MultichainBridgeQuoteCard', () => {
     const mockStore = createBridgeMockStore({
       featureFlagOverrides: {
         bridgeConfig: {
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+          ],
         },
       },
       bridgeSliceOverrides: { fromTokenInputValue: '1' },
@@ -363,11 +363,11 @@ describe('MultichainBridgeQuoteCard', () => {
           bridgeConfig: {
             maxRefreshCount: 5,
             refreshRate: 30000,
-            chains: {
-              [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-              [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-              [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-            },
+            chainRanking: [
+              { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+              { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+            ],
           },
         },
         bridgeSliceOverrides: {
@@ -599,11 +599,11 @@ describe('MultichainBridgeQuoteCard', () => {
         bridgeConfig: {
           maxRefreshCount: 5,
           refreshRate: 30000,
-          chains: {
-            [CHAIN_IDS.MAINNET]: { isActiveSrc: true, isActiveDest: false },
-            [CHAIN_IDS.OPTIMISM]: { isActiveSrc: true, isActiveDest: true },
-            [CHAIN_IDS.POLYGON]: { isActiveSrc: true, isActiveDest: true },
-          },
+          chainRanking: [
+            { chainId: formatChainIdToCaip(CHAIN_IDS.MAINNET) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.OPTIMISM) },
+            { chainId: formatChainIdToCaip(CHAIN_IDS.POLYGON) },
+          ],
         },
       },
       bridgeSliceOverrides: {

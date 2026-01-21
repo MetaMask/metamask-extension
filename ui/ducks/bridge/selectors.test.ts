@@ -234,6 +234,7 @@ describe('Bridge selectors', () => {
         10,
       ].map((c) => ({
         chainId: formatChainIdToCaip(c),
+        name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[formatChainIdToCaip(c)],
       }));
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
@@ -392,6 +393,7 @@ describe('Bridge selectors', () => {
         10,
       ].map((c) => ({
         chainId: formatChainIdToCaip(c),
+        name: NETWORK_TO_SHORT_NETWORK_NAME_MAP[formatChainIdToCaip(c)],
       }));
       const state = createBridgeMockStore({
         metamaskStateOverrides: {
