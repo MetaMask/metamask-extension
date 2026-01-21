@@ -31666,6 +31666,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-schema@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "json-schema@npm:0.4.0"
+  checksum: 10/8b3b64eff4a807dc2a3045b104ed1b9335cd8d57aa74c58718f07f0f48b8baa3293b00af4dcfbdc9144c3aafea1e97982cc27cc8e150fc5d93c540649507a458
+  languageName: node
+  linkType: hard
+
 "json-stable-stringify-without-jsonify@npm:^1.0.1":
   version: 1.0.1
   resolution: "json-stable-stringify-without-jsonify@npm:1.0.1"
@@ -33793,6 +33800,7 @@ __metadata:
     jest-junit: "npm:^14.0.1"
     jest-preview: "npm:^0.3.1"
     jsdom: "npm:^16.7.0"
+    json-schema: "npm:^0.4.0"
     json-schema-to-ts: "npm:^3.0.1"
     jsonwebtoken: "npm:^9.0.2"
     koa: "npm:^3.1.1"
