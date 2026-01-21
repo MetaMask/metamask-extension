@@ -28,7 +28,6 @@ describe('Multiple transactions', function () {
 
         // creates first transaction
         await testDapp.clickSimpleSendButton();
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
@@ -76,7 +75,6 @@ describe('Multiple transactions', function () {
 
         // creates first transaction
         await testDapp.clickSimpleSendButton();
-        await driver.waitUntilXWindowHandles(3);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
         // creates second transaction
