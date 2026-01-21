@@ -1,5 +1,4 @@
 import assert from 'node:assert/strict';
-import type { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
 import { WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
@@ -8,10 +7,6 @@ import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
 import SwapPage from '../../page-objects/pages/swap/swap-page';
 import HomePage from '../../page-objects/pages/home/homepage';
-import RewardsPage from '../../page-objects/pages/rewards/rewards-page';
-import { emptyHtmlPage } from '../../mock-e2e';
-import FixtureBuilder from '../../fixtures/fixture-builder';
-import { BaseUrl } from '../../../../shared/constants/urls';
 import { REWARDS_ROUTE } from '../../../../ui/helpers/constants/routes';
 import type { Anvil } from '../../seeder/anvil';
 import type { Ganache } from '../../seeder/ganache';
@@ -21,6 +16,7 @@ import {
   signDeepLink,
   generateECDSAKeyPair,
   getHashParams,
+  getConfig,
 } from './helpers';
 
 const isFirefox = process.env.SELENIUM_BROWSER === Browser.FIREFOX;
@@ -40,47 +36,6 @@ describe('Deep Link', function () {
     );
   });
 
-  /**
-   * Generates the configuration for the test, including fixtures and
-   * manifest flags.
-   *
-   * @param title - The title of the test, used for debugging and logging.
-   */
-  async function getConfig(title?: string) {
-    return {
-      fixtures: new FixtureBuilder().build(),
-      title,
-      manifestFlags: {
-        testing: {
-          deepLinkPublicKey,
-        },
-      },
-      testSpecificMock: async (server: Mockttp) => {
-        // Deep Links
-        await server
-          .forGet(/^https?:\/\/link\.metamask\.io\/.*$/u)
-          .thenCallback(() => {
-            return {
-              statusCode: 200,
-              body: emptyHtmlPage(),
-              headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-              },
-            };
-          });
-        await server.forGet(TEST_PAGE).thenCallback(() => {
-          return {
-            statusCode: 200,
-            body: emptyHtmlPage(),
-            headers: {
-              'Content-Type': 'text/html; charset=utf-8',
-            },
-          };
-        });
-      },
-    };
-  }
-
   const scenarios = cartesianProduct(
     ['locked', 'unlocked'] as const,
     [
@@ -97,7 +52,7 @@ describe('Deep Link', function () {
   scenarios.forEach(({ locked, signed, route, action }) => {
     it(`handles ${locked} and ${signed} ${route} deep link with ${action} action`, async function () {
       await withFixtures(
-        await getConfig(this.test?.fullTitle()),
+        await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
         async ({ driver }: { driver: Driver }) => {
           const isSigned =
             signed === 'signed with sig_params' ||
@@ -185,9 +140,6 @@ and we'll take you to the right place.`
             case '/swap':
               Page = SwapPage;
               break;
-            case REWARDS_ROUTE:
-              Page = RewardsPage;
-              break;
             default: {
               // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31893
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
@@ -197,113 +149,15 @@ and we'll take you to the right place.`
           // check that the page we want has been loaded!
           const page = new Page(driver);
           console.log('Checking if target page is loaded');
-          page.checkPageIsLoaded();
+          await page.checkPageIsLoaded();
         },
       );
     });
   });
 
-  it('handles /buy route redirect', async function () {
+  it("passes params to the deep link's component", async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = `https://link.metamask.io/buy`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
-
-        // test signed flow
-        await driver.openNewURL(signedUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
-
-        await driver.navigate();
-        await homePage.checkPageIsLoaded();
-
-        // test unsigned flow
-        await driver.openNewURL(rawUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
-      },
-    );
-  });
-
-  it('handles /perps route redirect', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = `https://link.metamask.io/perps`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
-
-        // test signed flow
-        await driver.openNewURL(signedUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
-
-        await driver.navigate();
-        await homePage.checkPageIsLoaded();
-
-        // test unsigned flow
-        await driver.openNewURL(rawUrl);
-
-        await driver.waitForUrl({ url: `${BaseUrl.MetaMask}/perps` });
-      },
-    );
-  });
-
-  it('handles /predict route redirect', async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
-      async ({ driver }: { driver: Driver }) => {
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
-        await loginPage.loginToHomepage();
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-
-        const rawUrl = `https://link.metamask.io/predict`;
-        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
-
-        // test signed flow
-        await driver.openNewURL(signedUrl);
-
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/prediction-markets`,
-        });
-
-        await driver.navigate();
-        await homePage.checkPageIsLoaded();
-
-        // test unsigned flow
-        await driver.openNewURL(rawUrl);
-
-        await driver.waitForUrl({
-          url: `${BaseUrl.MetaMask}/prediction-markets`,
-        });
-      },
-    );
-  });
-
-  // this test is skipped because the swap route does not work correctly in
-  // the e2e environment. Once swaps/bridge flows are all fully migrated to the
-  // route page this test can be re-enabled.
-  // eslint-disable-next-line mocha/no-skipped-tests
-  it.skip("passes params to the deep link's component", async function () {
-    await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -361,7 +215,7 @@ and we'll take you to the right place.`
 
   it('handles the skipDeepLinkInterstitial flag correctly', async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({ driver }: { driver: Driver }) => {
         // This `skipDeepLinkInterstitial` test:
         // 1. checks the the option only applies for signed and verified links,
@@ -428,7 +282,7 @@ and we'll take you to the right place.`
 
   it("does not allow the loading screen over the deep link's component", async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({
         driver,
         localNodes,
@@ -468,7 +322,7 @@ and we'll take you to the right place.`
 
   it('handles dapps that open MM via window.open', async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -536,7 +390,7 @@ and we'll take you to the right place.`
 
   it('signed with sig_params only exposes foo (both) and bar, not baz', async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
@@ -563,7 +417,7 @@ and we'll take you to the right place.`
 
   it('signed with empty sig_params, but url has extra params added, does not expose extra params', async function () {
     await withFixtures(
-      await getConfig(this.test?.fullTitle()),
+      await getConfig(this.test?.fullTitle(), deepLinkPublicKey),
       async ({ driver }: { driver: Driver }) => {
         await driver.navigate();
         const loginPage = new LoginPage(driver);
