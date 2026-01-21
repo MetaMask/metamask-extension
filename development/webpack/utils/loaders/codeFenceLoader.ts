@@ -1,6 +1,6 @@
 import type { LoaderContext, RuleSetRule } from 'webpack';
+import type { JSONSchema7 } from 'json-schema';
 import { validate } from 'schema-utils';
-import { type JSONSchema7 } from 'schema-utils/declarations/validate';
 import { removeFencedCode, type FeatureLabels } from '@metamask/build-utils';
 
 const schema: JSONSchema7 = {
@@ -15,12 +15,16 @@ const schema: JSONSchema7 = {
       required: ['active', 'all'],
       properties: {
         active: {
-          description: 'Features that should be included in the output.',
-          type: 'object',
+          description:
+            'Features that should be included in the output. Can be Set (direct) or array (serialized through thread-loader).',
+          type: 'array',
+          items: { type: 'string' },
         },
         all: {
-          description: 'All features that can be toggled.',
-          type: 'object',
+          description:
+            'All features that can be toggled. Can be Set (direct) or array (serialized through thread-loader).',
+          type: 'array',
+          items: { type: 'string' },
         },
       },
       additionalProperties: false,
@@ -31,16 +35,38 @@ const schema: JSONSchema7 = {
 
 export type CodeFenceLoaderOptions = { features: FeatureLabels };
 
-type Context = LoaderContext<CodeFenceLoaderOptions>;
+// When passed through thread-loader, options are serialized to JSON.
+// Sets become arrays, so we need to reconstruct them.
+type SerializedFeatureLabels = {
+  active: Set<string> | string[];
+  all: Set<string> | string[];
+};
+type SerializedCodeFenceLoaderOptions = { features: SerializedFeatureLabels };
+
+// Type for the serialized loader configuration (used with thread-loader)
+type SerializedLoaderOptions = {
+  features: { active: string[]; all: string[] };
+};
+
+type Context = LoaderContext<SerializedCodeFenceLoaderOptions>;
 function codeFenceLoader(this: Context, content: string, map?: string) {
   const options = this.getOptions();
   validate(schema, options, { name: 'codeFenceLoader' });
+
+  // Reconstruct Sets if they were serialized to arrays by thread-loader
+  const features: FeatureLabels = {
+    active:
+      options.features.active instanceof Set
+        ? options.features.active
+        : new Set(options.features.active),
+    all:
+      options.features.all instanceof Set
+        ? options.features.all
+        : new Set(options.features.all),
+  };
+
   try {
-    const result = removeFencedCode(
-      this.resourcePath,
-      content,
-      options.features,
-    );
+    const result = removeFencedCode(this.resourcePath, content, features);
     this.callback(null, result[0], map);
   } catch (error: unknown) {
     this.callback(error as Error);
@@ -49,11 +75,17 @@ function codeFenceLoader(this: Context, content: string, map?: string) {
 
 export default codeFenceLoader;
 
-export type Loader = RuleSetRule & { options: CodeFenceLoaderOptions };
+export type Loader = RuleSetRule & { options: SerializedLoaderOptions };
 
 export function getCodeFenceLoader(features: FeatureLabels): Loader {
+  // Convert Sets to arrays for JSON serialization through thread-loader
   return {
-    loader: __filename,
-    options: { features },
+    loader: require.resolve('./codeFenceLoader'),
+    options: {
+      features: {
+        active: Array.from(features.active),
+        all: Array.from(features.all),
+      },
+    },
   };
 }
