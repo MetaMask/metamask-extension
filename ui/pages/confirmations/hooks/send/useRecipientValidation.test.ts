@@ -56,6 +56,7 @@ describe('useRecipientValidation', () => {
       recipientError: undefined,
       recipientWarning: undefined,
       recipientResolvedLookup: undefined,
+      resolutionProtocol: undefined,
       toAddressValidated: undefined,
     });
   });
@@ -81,6 +82,7 @@ describe('useRecipientValidation', () => {
         recipientError: 'invalidAddress',
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
+        resolutionProtocol: undefined,
         toAddressValidated: '0x123',
       });
       expect(mockT).toHaveBeenCalledWith('invalidAddress');
@@ -150,7 +152,8 @@ describe('useRecipientValidation', () => {
         recipientError: undefined,
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
-        toAddressValidated: '',
+        resolutionProtocol: undefined,
+        toAddressValidated: undefined,
       });
     });
   });
@@ -170,6 +173,7 @@ describe('useRecipientValidation', () => {
         recipientError: undefined,
         recipientResolvedLookup: undefined,
         recipientWarning: undefined,
+        resolutionProtocol: undefined,
         toAddressValidated: undefined,
       });
     });
@@ -317,7 +321,11 @@ describe('useRecipientValidation', () => {
 
       await waitFor(() => {
         expect(mockValidateName).toHaveBeenCalledTimes(1);
-        expect(mockValidateName).toHaveBeenCalledWith('0x1', 'vitalik.eth');
+        expect(mockValidateName).toHaveBeenCalledWith(
+          '0x1',
+          'vitalik.eth',
+          expect.any(Object),
+        );
       });
     });
   });
@@ -345,9 +353,10 @@ describe('useRecipientValidation', () => {
         expect(mockValidateName).not.toHaveBeenCalled();
         expect(result.current).toEqual({
           recipientConfusableCharacters: undefined,
-          recipientError: undefined,
+          recipientError: 'invalidAddress',
           recipientResolvedLookup: undefined,
           recipientWarning: undefined,
+          resolutionProtocol: undefined,
           toAddressValidated: 'v.e',
         });
       });
@@ -372,7 +381,11 @@ describe('useRecipientValidation', () => {
       const { result } = renderHook();
 
       await waitFor(() => {
-        expect(mockValidateName).toHaveBeenCalledWith('0x1', 'vitalik.eth');
+        expect(mockValidateName).toHaveBeenCalledWith(
+          '0x1',
+          'vitalik.eth',
+          expect.any(Object),
+        );
         expect(result.current.recipientResolvedLookup).toBe('0x123');
       });
     });
