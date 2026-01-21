@@ -8,8 +8,9 @@ import { withBtcAccountSnap } from './common-btc';
 
 // To be reactivated once we use a regtest network instead of mocked data
 // eslint-disable-next-line mocha/no-skipped-tests
-describe.skip('BTC Account - Send', function (this: Suite) {
+describe('BTC Account - Send', function (this: Suite) {
   const recipientAddress = 'bc1qsqvczpxkgvp3lw230p7jffuuqnw9pp4j5tawmf';
+  this.timeout(120000000000);
   it('fields validation', async function () {
     await withBtcAccountSnap(async (driver) => {
       const homePage = new BitcoinHomepage(driver);
@@ -51,7 +52,6 @@ describe.skip('BTC Account - Send', function (this: Suite) {
       assert.equal(await bitcoinSendPage.checkContinueButtonIsDisabled(), true);
     }, this.test?.fullTitle());
   });
-
   it('can complete the send flow', async function () {
     const sendAmount = '0.5';
     const expectedFee = '281';

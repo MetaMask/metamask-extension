@@ -65,13 +65,34 @@ function formatNonEvmAssetCurrencyDisplay({
   inputValue,
   conversionRate,
 }) {
+  // DEBUG: Log para ver valores de Bitcoin/Non-EVM
+  console.log(
+    '[DEBUG NonEVM Currency Display]',
+    JSON.stringify(
+      {
+        tokenSymbol,
+        inputValue,
+        isNativeCurrency,
+        isUserPreferredCurrency,
+        currency,
+        currentCurrency,
+        nativeCurrency,
+        conversionRate,
+      },
+      null,
+      2,
+    ),
+  );
+
   if (isNativeCurrency || (!isUserPreferredCurrency && !nativeCurrency)) {
     // NOTE: We use the value coming from the MultichainBalancesController here (and thus, the non-EVM
     // account Snap).
     // We use `Numeric` here, so we handle those amount the same way than for EVMs (it's worth
     // noting that if `inputValue` is not properly defined, the amount will be set to '0', see
     // `Numeric` constructor for that)
-    return new Numeric(inputValue, 10).toString();
+    const result = new Numeric(inputValue, 10).toString();
+    console.log('[DEBUG NonEVM] Native currency result:', result);
+    return result;
   } else if (isUserPreferredCurrency && conversionRate) {
     const amount =
       getTokenFiatAmount(
@@ -168,11 +189,31 @@ export function useCurrencyDisplay(
     currencyRates?.[chainNativeCurrency]?.conversionRate ?? conversionRate;
 
   const value = useMemo(() => {
+    // DEBUG: Log general del hook
+    console.log(
+      '[DEBUG useCurrencyDisplay]',
+      JSON.stringify(
+        {
+          inputValue,
+          displayValue,
+          isEvm,
+          isTransactionOnEvmChain,
+          nativeCurrency,
+          currency,
+          chainId,
+          accountType: account?.type,
+        },
+        null,
+        2,
+      ),
+    );
+
     if (displayValue) {
       return displayValue;
     }
 
     if (!isTransactionOnEvmChain && !isAggregatedFiatOverviewBalance) {
+      console.log('[DEBUG] Processing NON-EVM balance (Bitcoin/Solana/Tron)');
       return formatNonEvmAssetCurrencyDisplay({
         tokenSymbol: chainNativeCurrency,
         isNativeCurrency,
