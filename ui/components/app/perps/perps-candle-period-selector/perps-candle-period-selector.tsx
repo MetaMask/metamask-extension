@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
+  twMerge,
   Box,
   Text,
   Icon,
@@ -71,7 +72,10 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         return (
           <ButtonBase
             key={period.value}
-            className={`rounded-lg ${isSelected ? 'bg-background-muted' : ''}`}
+            className={twMerge(
+              '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg',
+              isSelected && 'bg-background-muted',
+            )}
             onClick={() => {
               onPeriodChange?.(period.value);
             }}
@@ -92,7 +96,10 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       {/* More Button with Popover */}
       <ButtonBase
         ref={moreButtonRef}
-        className={`rounded-lg flex items-center gap-1 ${isMorePeriodSelected ? 'bg-background-muted' : ''}`}
+        className={twMerge(
+          '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg flex items-center gap-1',
+          isMorePeriodSelected && 'bg-background-muted',
+        )}
         onClick={() => setIsMoreOpen(!isMoreOpen)}
         data-testid="perps-candle-period-more"
       >
@@ -132,7 +139,10 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
             return (
               <ButtonBase
                 key={period.value}
-                className={`rounded-lg w-full text-left ${isSelected ? 'bg-background-muted' : ''}`}
+                className={twMerge(
+                  '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg text-left',
+                  isSelected && 'bg-background-muted',
+                )}
                 onClick={() => handleMorePeriodSelect(period.value)}
                 data-testid={`perps-candle-period-more-${period.value}`}
               >
