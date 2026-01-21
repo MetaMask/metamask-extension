@@ -665,7 +665,7 @@ export default function UnifiedTransactionList({
       const bridgeHistoryItem =
         bridgeHistoryItems[id] ||
         Object.values(bridgeHistoryItems).find(
-          (item) => item.approvalTxId === id,
+          (historyItem) => historyItem.approvalTxId === id,
         );
 
       if (bridgeHistoryItem?.quote) {
