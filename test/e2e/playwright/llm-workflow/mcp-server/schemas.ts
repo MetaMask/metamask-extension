@@ -455,12 +455,51 @@ export const getContractAddressInputSchema = z.object({
 
 export const listDeployedContractsInputSchema = z.object({});
 
+const tabRoles = ['extension', 'notification', 'dapp', 'other'] as const;
+const closableTabRoles = ['notification', 'dapp', 'other'] as const;
+
+export const switchToTabInputSchema = z
+  .object({
+    role: z
+      .enum(tabRoles)
+      .describe('Tab role to switch to (extension, notification, dapp, other)')
+      .optional(),
+    url: z
+      .string()
+      .min(1)
+      .describe('URL prefix to match for tab switching')
+      .optional(),
+  })
+  .refine((data) => data.role || data.url, {
+    message: 'Either role or url must be provided',
+  });
+
+export const closeTabInputSchema = z
+  .object({
+    role: z
+      .enum(closableTabRoles)
+      .describe(
+        'Tab role to close (notification, dapp, other). Cannot close extension.',
+      )
+      .optional(),
+    url: z
+      .string()
+      .min(1)
+      .describe('URL prefix to match for tab closing')
+      .optional(),
+  })
+  .refine((data) => data.role || data.url, {
+    message: 'Either role or url must be provided',
+  });
+
 const batchableTools = [
   'mm_click',
   'mm_type',
   'mm_wait_for',
   'mm_navigate',
   'mm_wait_for_notification',
+  'mm_switch_to_tab',
+  'mm_close_tab',
   'mm_list_testids',
   'mm_accessibility_snapshot',
   'mm_describe_screen',
@@ -506,6 +545,8 @@ export const toolSchemas = {
   mm_get_state: getStateInputSchema,
   mm_navigate: navigateInputSchema,
   mm_wait_for_notification: waitForNotificationInputSchema,
+  mm_switch_to_tab: switchToTabInputSchema,
+  mm_close_tab: closeTabInputSchema,
   mm_list_testids: listTestIdsInputSchema,
   mm_accessibility_snapshot: accessibilitySnapshotInputSchema,
   mm_describe_screen: describeScreenInputSchema,
@@ -580,3 +621,5 @@ export type KnowledgeSessionsInputZ = z.infer<
 export type KnowledgeScopeZ = z.infer<typeof knowledgeScopeSchema>;
 export type KnowledgeFiltersZ = z.infer<typeof knowledgeFiltersSchema>;
 export type RunStepsInputZ = z.infer<typeof runStepsInputSchema>;
+export type SwitchToTabInputZ = z.infer<typeof switchToTabInputSchema>;
+export type CloseTabInputZ = z.infer<typeof closeTabInputSchema>;

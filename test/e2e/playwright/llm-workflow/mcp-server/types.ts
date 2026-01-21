@@ -73,6 +73,9 @@ export type {
   KnowledgeSummarizeInput,
   KnowledgeSessionsInput,
   RunStepsInput,
+  TabRole,
+  SwitchToTabInput,
+  CloseTabInput,
 } from './types/tool-inputs';
 
 export type {
@@ -92,6 +95,9 @@ export type {
   WaitForResult,
   StepResult,
   RunStepsResult,
+  TabInfo,
+  SwitchToTabResult,
+  CloseTabResult,
 } from './types/tool-outputs';
 
 export type {

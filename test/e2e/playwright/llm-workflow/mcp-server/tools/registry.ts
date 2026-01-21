@@ -4,7 +4,12 @@ import { handleBuild } from './build';
 import { handleLaunch } from './launch';
 import { handleCleanup } from './cleanup';
 import { handleGetState } from './state';
-import { handleNavigate, handleWaitForNotification } from './navigation';
+import {
+  handleNavigate,
+  handleWaitForNotification,
+  handleSwitchToTab,
+  handleCloseTab,
+} from './navigation';
 import {
   handleListTestIds,
   handleAccessibilitySnapshot,
@@ -40,6 +45,8 @@ export const toolHandlers: Record<string, ToolHandler> = {
   mm_get_state: ((_, options) => handleGetState(options)) as ToolHandler,
   mm_navigate: handleNavigate as ToolHandler,
   mm_wait_for_notification: handleWaitForNotification as ToolHandler,
+  mm_switch_to_tab: handleSwitchToTab as ToolHandler,
+  mm_close_tab: handleCloseTab as ToolHandler,
   mm_list_testids: handleListTestIds as ToolHandler,
   mm_accessibility_snapshot: handleAccessibilitySnapshot as ToolHandler,
   mm_describe_screen: handleDescribeScreen as ToolHandler,

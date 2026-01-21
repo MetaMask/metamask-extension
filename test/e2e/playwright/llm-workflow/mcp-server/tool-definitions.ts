@@ -151,7 +151,7 @@ export const TOOL_DEFINITIONS = [
   {
     name: 'mm_wait_for_notification',
     description:
-      'Wait for MetaMask notification popup to appear (e.g., after dapp interaction).',
+      'Wait for MetaMask notification popup to appear (e.g., after dapp interaction). Sets the notification page as the active page for subsequent interactions.',
     inputSchema: {
       type: 'object',
       properties: {
@@ -160,6 +160,48 @@ export const TOOL_DEFINITIONS = [
           minimum: 1000,
           maximum: 60000,
           default: 15000,
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_switch_to_tab',
+    description:
+      'Switch the active page to a different tracked tab. Use this to direct mm_click, mm_type, and other interaction tools to a specific page.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        role: {
+          type: 'string',
+          enum: ['extension', 'notification', 'dapp', 'other'],
+          description: 'Tab role to switch to',
+        },
+        url: {
+          type: 'string',
+          minLength: 1,
+          description: 'URL prefix to match for tab switching',
+        },
+      },
+      additionalProperties: false,
+    },
+  },
+  {
+    name: 'mm_close_tab',
+    description:
+      'Close a specific tab by role or URL. Cannot close the extension home page. If closing the active tab, automatically switches to extension home.',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        role: {
+          type: 'string',
+          enum: ['notification', 'dapp', 'other'],
+          description: 'Tab role to close (cannot close extension)',
+        },
+        url: {
+          type: 'string',
+          minLength: 1,
+          description: 'URL prefix to match for tab closing',
         },
       },
       additionalProperties: false,

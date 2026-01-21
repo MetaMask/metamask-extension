@@ -1,5 +1,10 @@
 import type { SmartContractName } from './seeding';
 
+/**
+ * Tab role classification for multi-tab management
+ */
+export type TabRole = 'extension' | 'notification' | 'dapp' | 'other';
+
 export type HandlerOptions = {
   signal?: AbortSignal;
 };
@@ -119,4 +124,14 @@ export type RunStepsInput = {
   }[];
   stopOnError?: boolean;
   includeObservations?: 'none' | 'failures' | 'all';
+};
+
+export type SwitchToTabInput = {
+  role?: TabRole;
+  url?: string;
+};
+
+export type CloseTabInput = {
+  role?: 'notification' | 'dapp' | 'other';
+  url?: string;
 };

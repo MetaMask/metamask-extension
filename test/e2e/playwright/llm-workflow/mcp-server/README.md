@@ -43,30 +43,32 @@ Set the working directory to the MetaMask extension repository root.
 
 ## Available Tools
 
-| Tool                        | Description                                    |
-| --------------------------- | ---------------------------------------------- |
-| `mm_build`                  | Build extension using `yarn build:test`        |
-| `mm_launch`                 | Launch MetaMask in headed Chrome               |
-| `mm_cleanup`                | Stop browser and all services                  |
-| `mm_get_state`              | Get current extension state                    |
-| `mm_navigate`               | Navigate to home, settings, or URL             |
-| `mm_wait_for_notification`  | Wait for notification popup                    |
-| `mm_list_testids`           | List visible data-testid attributes            |
-| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)            |
-| `mm_describe_screen`        | Combined state + testIds + a11y snapshot       |
-| `mm_screenshot`             | Take and save screenshot                       |
-| `mm_click`                  | Click element by a11yRef, testId, or selector  |
-| `mm_type`                   | Type text into element                         |
-| `mm_wait_for`               | Wait for element to be visible                 |
-| `mm_knowledge_last`         | Get last N step records                        |
-| `mm_knowledge_search`       | Search step records (cross-session by default) |
-| `mm_knowledge_summarize`    | Generate session recipe                        |
-| `mm_knowledge_sessions`     | List recent sessions with metadata             |
-| `mm_seed_contract`          | Deploy a single smart contract to Anvil        |
-| `mm_seed_contracts`         | Deploy multiple smart contracts                |
-| `mm_get_contract_address`   | Get deployed address of a contract             |
-| `mm_list_contracts`         | List all deployed contracts in session         |
-| `mm_run_steps`              | Execute multiple tools in sequence             |
+| Tool                        | Description                                           |
+| --------------------------- | ----------------------------------------------------- |
+| `mm_build`                  | Build extension using `yarn build:test`               |
+| `mm_launch`                 | Launch MetaMask in headed Chrome                      |
+| `mm_cleanup`                | Stop browser and all services                         |
+| `mm_get_state`              | Get current extension state (includes tab info)       |
+| `mm_navigate`               | Navigate to home, settings, notification, or URL      |
+| `mm_wait_for_notification`  | Wait for notification popup and set it as active page |
+| `mm_switch_to_tab`          | Switch active page to a different tab                 |
+| `mm_close_tab`              | Close a tab (notification, dapp, or other)            |
+| `mm_list_testids`           | List visible data-testid attributes                   |
+| `mm_accessibility_snapshot` | Get a11y tree with refs (e1, e2...)                   |
+| `mm_describe_screen`        | Combined state + testIds + a11y snapshot              |
+| `mm_screenshot`             | Take and save screenshot                              |
+| `mm_click`                  | Click element by a11yRef, testId, or selector         |
+| `mm_type`                   | Type text into element                                |
+| `mm_wait_for`               | Wait for element to be visible                        |
+| `mm_knowledge_last`         | Get last N step records                               |
+| `mm_knowledge_search`       | Search step records (cross-session by default)        |
+| `mm_knowledge_summarize`    | Generate session recipe                               |
+| `mm_knowledge_sessions`     | List recent sessions with metadata                    |
+| `mm_seed_contract`          | Deploy a single smart contract to Anvil               |
+| `mm_seed_contracts`         | Deploy multiple smart contracts                       |
+| `mm_get_contract_address`   | Get deployed address of a contract                    |
+| `mm_list_contracts`         | List all deployed contracts in session                |
+| `mm_run_steps`              | Execute multiple tools in sequence                    |
 
 ## Smart Contract Seeding
 
@@ -212,6 +214,79 @@ Returns a summary with individual step results:
 7. mm_cleanup         → End session
 ```
 
+## Multi-Tab Management
+
+The server tracks multiple browser tabs and provides an **active page** concept. All interaction tools (`mm_click`, `mm_type`, `mm_wait_for`) and discovery tools (`mm_describe_screen`, `mm_list_testids`) operate on the active page.
+
+### Active Page Switching
+
+| Action                                     | Active Page Becomes        |
+| ------------------------------------------ | -------------------------- |
+| `mm_launch`                                | Extension home page        |
+| `mm_navigate({ screen: 'home' })`          | Extension home page        |
+| `mm_navigate({ screen: 'url', url: '…' })` | The new URL page (new tab) |
+| `mm_navigate({ screen: 'notification' })`  | The notification page      |
+| `mm_wait_for_notification`                 | The notification page      |
+| `mm_switch_to_tab({ role: '…' })`          | The specified tab          |
+
+### Tab Roles
+
+| Role           | Description                                       |
+| -------------- | ------------------------------------------------- |
+| `extension`    | Main extension page (`home.html`)                 |
+| `notification` | Confirmation/approval pages (`notification.html`) |
+| `dapp`         | External dapp pages (any non-extension URL)       |
+| `other`        | Other extension or browser pages                  |
+
+### Switching Tabs
+
+```json
+mm_switch_to_tab({ "role": "dapp" })
+mm_switch_to_tab({ "role": "notification" })
+mm_switch_to_tab({ "url": "https://test-dapp.io" })
+```
+
+### Closing Tabs
+
+```json
+mm_close_tab({ "role": "notification" })
+mm_close_tab({ "role": "dapp" })
+```
+
+Cannot close extension home. If closing active tab, automatically switches to extension.
+
+### Tab Info in State
+
+`mm_get_state` returns:
+
+```json
+{
+  "state": { ... },
+  "tabs": {
+    "active": { "url": "...", "role": "notification" },
+    "tracked": [
+      { "role": "extension", "url": "..." },
+      { "role": "dapp", "url": "..." },
+      { "role": "notification", "url": "..." }
+    ]
+  }
+}
+```
+
+### Example: Dapp Connection with Popup Interaction
+
+```
+1. mm_launch
+2. mm_navigate({ screen: 'url', url: 'https://test-dapp.io' })  → Opens dapp in new tab
+3. mm_click({ testId: 'connectButton' })                        → Triggers notification
+4. mm_wait_for_notification                                     → Active = notification ✅
+5. mm_describe_screen                                           → Shows notification elements
+6. mm_click({ testId: 'confirm-btn' })                          → Clicks on notification
+7. mm_switch_to_tab({ role: 'dapp' })                           → Active = dapp
+8. mm_describe_screen                                           → Shows connected dapp
+9. mm_cleanup
+```
+
 ## Target Selection
 
 For `mm_click`, `mm_type`, and `mm_wait_for`, specify exactly ONE of:
@@ -339,6 +414,7 @@ mm_knowledge_summarize({ "scope": { "sessionId": "mm-..." } })
 | `MM_SCREENSHOT_FAILED`       | Screenshot capture failed             |
 | `MM_SEED_FAILED`             | Contract deployment failed            |
 | `MM_CONTRACT_NOT_FOUND`      | Contract not deployed in session      |
+| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)      |
 
 ## Response Format
 

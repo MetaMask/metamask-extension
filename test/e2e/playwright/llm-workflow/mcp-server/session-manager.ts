@@ -6,10 +6,17 @@ import {
   type SessionState,
   type LaunchInput,
   type SessionMetadata,
+  type TabRole,
   ErrorCodes,
   generateSessionId,
 } from './types';
 import { knowledgeStore } from './knowledge-store';
+
+export type TrackedPage = {
+  role: TabRole;
+  url: string;
+  page: Page;
+};
 
 const DEFAULT_ANVIL_PORT = 8545;
 const DEFAULT_FIXTURE_SERVER_PORT = 12345;
@@ -19,6 +26,8 @@ export class SessionManager {
     state: SessionState;
     launcher: MetaMaskExtensionLauncher;
   } | null = null;
+
+  private activePage: Page | undefined;
 
   private refMap: Map<string, string> = new Map();
 
@@ -55,7 +64,49 @@ export class SessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
+    if (this.activePage) {
+      return this.activePage;
+    }
     return this.activeSession.launcher.getPage();
+  }
+
+  setActivePage(page: Page): void {
+    this.activePage = page;
+    this.clearRefMap();
+  }
+
+  getTrackedPages(): TrackedPage[] {
+    if (!this.activeSession) {
+      return [];
+    }
+
+    const context = this.getContext();
+    const { extensionId } = this.activeSession.state;
+
+    return context.pages().map((page) => ({
+      role: this.classifyPageRole(page, extensionId),
+      url: page.url(),
+      page,
+    }));
+  }
+
+  classifyPageRole(page: Page, extensionId?: string): TabRole {
+    const url = page.url();
+    if (!extensionId) {
+      return 'other';
+    }
+
+    const extPrefix = `chrome-extension://${extensionId}`;
+    if (url.includes('notification.html')) {
+      return 'notification';
+    }
+    if (url.startsWith(extPrefix)) {
+      return 'extension';
+    }
+    if (url.startsWith('http')) {
+      return 'dapp';
+    }
+    return 'other';
   }
 
   getContext(): BrowserContext {
@@ -142,6 +193,8 @@ export class SessionManager {
       launcher,
     };
 
+    this.activePage = launcher.getPage();
+
     const sessionMetadata: SessionMetadata = {
       schemaVersion: 1,
       sessionId,
@@ -184,6 +237,7 @@ export class SessionManager {
 
     await this.activeSession.launcher.cleanup();
     this.activeSession = null;
+    this.activePage = undefined;
     this.sessionMetadata = undefined;
     this.clearRefMap();
     return true;
@@ -194,6 +248,8 @@ export class SessionManager {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
     await this.activeSession.launcher.navigateToHome();
+    const extensionPage = this.activeSession.launcher.getPage();
+    this.setActivePage(extensionPage);
   }
 
   async navigateToSettings(): Promise<void> {
@@ -201,22 +257,57 @@ export class SessionManager {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
     await this.activeSession.launcher.navigateToSettings();
+    const extensionPage = this.activeSession.launcher.getPage();
+    this.setActivePage(extensionPage);
   }
 
-  async navigateToUrl(url: string): Promise<void> {
+  async navigateToUrl(url: string): Promise<Page> {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    const page = this.activeSession.launcher.getPage();
-    await page.goto(url);
-    await page.waitForLoadState('domcontentloaded');
+    const context = this.getContext();
+    const newPage = await context.newPage();
+    await newPage.goto(url);
+    await newPage.waitForLoadState('domcontentloaded');
+    this.setActivePage(newPage);
+    return newPage;
+  }
+
+  async navigateToNotification(): Promise<Page> {
+    if (!this.activeSession) {
+      throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
+    }
+
+    const context = this.getContext();
+    const { extensionId } = this.activeSession.state;
+    const notificationUrl = `chrome-extension://${extensionId}/notification.html`;
+
+    const existingNotification = context
+      .pages()
+      .find((p) => p.url().includes('notification.html'));
+
+    if (existingNotification) {
+      await existingNotification.bringToFront();
+      await existingNotification.waitForLoadState('domcontentloaded');
+      this.setActivePage(existingNotification);
+      return existingNotification;
+    }
+
+    const newPage = await context.newPage();
+    await newPage.goto(notificationUrl);
+    await newPage.waitForLoadState('domcontentloaded');
+    this.setActivePage(newPage);
+    return newPage;
   }
 
   async waitForNotificationPage(timeoutMs: number): Promise<Page> {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    return this.activeSession.launcher.waitForNotificationPage(timeoutMs);
+    const notificationPage =
+      await this.activeSession.launcher.waitForNotificationPage(timeoutMs);
+    this.setActivePage(notificationPage);
+    return notificationPage;
   }
 
   async screenshot(options: {

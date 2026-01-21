@@ -129,13 +129,15 @@ When implementing UI changes, follow this cycle:
 
 ### Interaction
 
-| Tool                       | Description                              |
-| -------------------------- | ---------------------------------------- |
-| `mm_click`                 | Click element by a11yRef, testId, or CSS |
-| `mm_type`                  | Type text into element                   |
-| `mm_wait_for`              | Wait for element to become visible       |
-| `mm_navigate`              | Navigate to home, settings, notification |
-| `mm_wait_for_notification` | Wait for notification popup to appear    |
+| Tool                       | Description                                            |
+| -------------------------- | ------------------------------------------------------ |
+| `mm_click`                 | Click element by a11yRef, testId, or CSS               |
+| `mm_type`                  | Type text into element                                 |
+| `mm_wait_for`              | Wait for element to become visible                     |
+| `mm_navigate`              | Navigate to home, settings, notification, or URL       |
+| `mm_wait_for_notification` | Wait for notification popup and set it as active page  |
+| `mm_switch_to_tab`         | Switch active page to a different tab (by role or URL) |
+| `mm_close_tab`             | Close a tab (notification, dapp, or other)             |
 
 ### Screenshots
 
@@ -247,6 +249,120 @@ Or provide a custom fixture object directly.
 
 ---
 
+## Multi-Tab Management
+
+The MCP server supports managing multiple browser tabs, enabling interaction with notification popups (confirmation windows) while preserving dapp state.
+
+### Active Page Concept
+
+Interaction tools (`mm_click`, `mm_type`, `mm_wait_for`) and discovery tools (`mm_describe_screen`, `mm_list_testids`, `mm_accessibility_snapshot`) operate on the **active page**. The active page changes automatically based on navigation actions:
+
+| Action                                     | Active Page Becomes        |
+| ------------------------------------------ | -------------------------- |
+| `mm_launch`                                | Extension home page        |
+| `mm_navigate({ screen: 'home' })`          | Extension home page        |
+| `mm_navigate({ screen: 'url', url: '…' })` | The new URL page (new tab) |
+| `mm_navigate({ screen: 'notification' })`  | The notification page      |
+| `mm_wait_for_notification`                 | The notification page      |
+| `mm_switch_to_tab({ role: '…' })`          | The specified tab          |
+
+### Tab Roles
+
+Pages are classified by role:
+
+| Role           | Description                                       |
+| -------------- | ------------------------------------------------- |
+| `extension`    | Main extension page (`home.html`)                 |
+| `notification` | Confirmation/approval pages (`notification.html`) |
+| `dapp`         | External dapp pages (any non-extension URL)       |
+| `other`        | Other extension or browser pages                  |
+
+### Tab Tracking in State
+
+`mm_get_state` returns tab information:
+
+```json
+{
+  "state": { ... },
+  "tabs": {
+    "active": {
+      "url": "chrome-extension://…/notification.html",
+      "role": "notification"
+    },
+    "tracked": [
+      { "role": "extension", "url": "chrome-extension://…/home.html" },
+      { "role": "dapp", "url": "https://metamask.github.io/test-dapp/" },
+      { "role": "notification", "url": "chrome-extension://…/notification.html" }
+    ]
+  }
+}
+```
+
+### Switching Tabs
+
+Use `mm_switch_to_tab` to change the active page:
+
+```json
+// Switch by role
+mm_switch_to_tab({ "role": "dapp" })
+mm_switch_to_tab({ "role": "notification" })
+mm_switch_to_tab({ "role": "extension" })
+
+// Switch by URL prefix
+mm_switch_to_tab({ "url": "https://metamask.github.io" })
+```
+
+### Closing Tabs
+
+Use `mm_close_tab` to close a tab:
+
+```json
+// Close notification tab
+mm_close_tab({ "role": "notification" })
+
+// Close dapp tab
+mm_close_tab({ "role": "dapp" })
+
+// Close by URL
+mm_close_tab({ "url": "https://metamask.github.io" })
+```
+
+**Notes:**
+
+- Cannot close the extension home page
+- If closing the active tab, automatically switches to extension home
+
+### Example: Dapp Connection Flow
+
+```
+1. mm_launch                                    → Active: extension home
+2. mm_navigate({ screen: 'url', url: 'https://test-dapp.io' })
+                                                → Active: dapp (new tab)
+3. mm_click({ testId: 'connectButton' })        → Triggers notification popup
+4. mm_wait_for_notification                     → Active: notification page ✅
+5. mm_describe_screen                           → Shows notification elements
+6. mm_click({ testId: 'confirm-btn' })          → Clicks on notification page
+7. mm_switch_to_tab({ role: 'dapp' })           → Active: dapp
+8. mm_describe_screen                           → Shows dapp (connected state)
+9. mm_cleanup
+```
+
+### Example: Transaction Signing Flow
+
+```
+1. mm_launch
+2. mm_navigate({ screen: 'url', url: 'https://test-dapp.io' })
+3. mm_click({ testId: 'sendButton' })           → Triggers tx notification
+4. mm_wait_for_notification                     → Active: notification
+5. mm_describe_screen                           → See tx details, gas, confirm
+6. mm_click({ testId: 'confirm-footer-button' }) → Confirm transaction
+7. mm_switch_to_tab({ role: 'dapp' })
+8. mm_describe_screen                           → Verify tx submitted
+9. mm_cleanup
+```
+
+---
+
 ## Knowledge Store
 
 Every tool invocation is recorded for learning and debugging.
@@ -346,6 +462,7 @@ test-artifacts/llm-knowledge/
 | `MM_CLICK_FAILED`            | Click operation failed                |
 | `MM_TYPE_FAILED`             | Type operation failed                 |
 | `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
+| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)      |
 
 ---
 

@@ -1,6 +1,7 @@
 import type { ExtensionState } from '../../types';
 import type { TestIdItem, A11yNodeTrimmed } from './discovery';
 import type { PriorKnowledgeV1 } from './knowledge';
+import type { TabRole } from './tool-inputs';
 
 export type BuildResult = {
   buildType: 'build:test';
@@ -19,6 +20,10 @@ export type CleanupResult = {
 
 export type GetStateResult = {
   state: ExtensionState;
+  tabs?: {
+    active: TabInfo;
+    tracked: TabInfo[];
+  };
 };
 
 export type NavigateResult = {
@@ -105,4 +110,19 @@ export type RunStepsResult = {
     failed: number;
     durationMs: number;
   };
+};
+
+export type TabInfo = {
+  role: TabRole;
+  url: string;
+};
+
+export type SwitchToTabResult = {
+  switched: boolean;
+  activeTab: TabInfo;
+};
+
+export type CloseTabResult = {
+  closed: boolean;
+  closedUrl: string;
 };

@@ -33,6 +33,21 @@ export async function handleGetState(
 
     sessionManager.setRefMap(refMap);
 
+    const trackedPages = sessionManager.getTrackedPages();
+    const activePage = sessionManager.getPage();
+    const activeTabInfo = trackedPages.find((p) => p.page === activePage);
+
+    const tabs = {
+      active: {
+        role: activeTabInfo?.role ?? 'other',
+        url: activePage.url(),
+      },
+      tracked: trackedPages.map((p) => ({
+        role: p.role,
+        url: p.url,
+      })),
+    };
+
     await knowledgeStore.recordStep({
       sessionId,
       toolName: 'mm_get_state',
@@ -42,7 +57,7 @@ export async function handleGetState(
     });
 
     return createSuccessResponse<GetStateResult>(
-      { state },
+      { state, tabs },
       sessionId,
       startTime,
     );

@@ -41,9 +41,11 @@ The MetaMask MCP server provides tools for browser automation:
 | `mm_build`                  | Build extension using `yarn build:test`                     |
 | `mm_launch`                 | Launch MetaMask in headed Chrome                            |
 | `mm_cleanup`                | Stop browser and all services                               |
-| `mm_get_state`              | Get current extension state                                 |
-| `mm_navigate`               | Navigate to home, settings, or URL                          |
-| `mm_wait_for_notification`  | Wait for notification popup                                 |
+| `mm_get_state`              | Get current extension state (includes tab info)             |
+| `mm_navigate`               | Navigate to home, settings, notification, or URL            |
+| `mm_wait_for_notification`  | Wait for notification popup and set it as active page       |
+| `mm_switch_to_tab`          | Switch active page to a different tab (by role or URL)      |
+| `mm_close_tab`              | Close a tab (notification, dapp, or other)                  |
 | `mm_list_testids`           | List visible data-testid attributes                         |
 | `mm_accessibility_snapshot` | Get trimmed a11y tree with refs (e1, e2...)                 |
 | `mm_describe_screen`        | Combined state + testIds + a11y snapshot (+ priorKnowledge) |
@@ -203,13 +205,27 @@ Options:
 
 ### 6. Handle Notifications (Dapp flows)
 
-Wait for notification popup:
+When a dapp triggers a notification (connect, sign, send), wait for it:
 
 ```
 mm_wait_for_notification { "timeoutMs": 10000 }
 ```
 
-Then use `mm_describe_screen` to see notification content and interact with it.
+This automatically sets the notification as the **active page**, so subsequent `mm_click`, `mm_type`, and `mm_describe_screen` calls operate on the notification popup.
+
+**Dapp connection flow example:**
+
+```
+mm_navigate { "screen": "url", "url": "https://test-dapp.io" }  → Opens dapp in new tab, sets as active
+mm_click { "testId": "connectButton" }                          → Triggers notification
+mm_wait_for_notification                                        → Active page = notification
+mm_describe_screen                                              → Shows notification elements
+mm_click { "testId": "confirm-btn" }                            → Clicks on notification
+mm_switch_to_tab { "role": "dapp" }                             → Switch back to dapp
+mm_describe_screen                                              → Verify connected state
+```
+
+**Tab roles:** `extension` (home), `notification` (popups), `dapp` (external sites), `other`
 
 ### 7. Navigate
 
@@ -337,6 +353,7 @@ The MCP server is a long-lived process. If you update the MCP server code (inclu
 | `MM_LAUNCH_FAILED`           | Browser launch failed                 |
 | `MM_INVALID_INPUT`           | Invalid tool parameters               |
 | `MM_TARGET_NOT_FOUND`        | Element not found                     |
+| `MM_TAB_NOT_FOUND`           | Tab not found (for switch/close)      |
 | `MM_CLICK_FAILED`            | Click operation failed                |
 | `MM_TYPE_FAILED`             | Type operation failed                 |
 | `MM_WAIT_TIMEOUT`            | Wait timeout exceeded                 |
