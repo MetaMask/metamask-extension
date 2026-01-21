@@ -261,4 +261,120 @@ describe('useRecipientValidation', () => {
       expect(result.current.recipientError).toEqual('invalidAddress');
     });
   });
+
+  describe('debouncing', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('debounces validation calls when address changes rapidly', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      const { result, rerender } = renderHook();
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'v',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+      rerender();
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vi',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+      rerender();
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vit',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+      rerender();
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vitalik.eth',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+      rerender();
+
+      expect(mockValidateName).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(500);
+
+      await waitFor(() => {
+        expect(mockValidateName).toHaveBeenCalledTimes(1);
+        expect(mockValidateName).toHaveBeenCalledWith('0x1', 'vitalik.eth');
+      });
+    });
+  });
+
+  describe('domain completeness check', () => {
+    it('does not validate partial domains', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'v.e',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(mockValidateName).not.toHaveBeenCalled();
+        expect(result.current).toEqual({
+          recipientConfusableCharacters: undefined,
+          recipientError: undefined,
+          recipientResolvedLookup: undefined,
+          recipientWarning: undefined,
+          toAddressValidated: 'v.e',
+        });
+      });
+    });
+
+    it('validates complete domains', async () => {
+      const mockValidateName = jest.fn().mockResolvedValue({
+        resolvedLookup: '0x123',
+        protocol: 'ens',
+      });
+
+      jest.spyOn(NameValidation, 'useNameValidation').mockReturnValue({
+        validateName: mockValidateName,
+      });
+
+      mockUseSendContext.mockReturnValue({
+        asset: EVM_ASSET,
+        to: 'vitalik.eth',
+        chainId: '0x1',
+      } as unknown as ReturnType<typeof useSendContext>);
+
+      const { result } = renderHook();
+
+      await waitFor(() => {
+        expect(mockValidateName).toHaveBeenCalledWith('0x1', 'vitalik.eth');
+        expect(result.current.recipientResolvedLookup).toBe('0x123');
+      });
+    });
+  });
 });

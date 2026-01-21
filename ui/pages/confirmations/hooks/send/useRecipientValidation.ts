@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce } from 'lodash';
 
 import {
   isSolanaAddress,
@@ -6,7 +7,10 @@ import {
   isTronAddress,
 } from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { isValidDomainName } from '../../../../helpers/utils/util';
+import {
+  isValidDomainName,
+  isDomainReadyForResolution,
+} from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../types/send';
 import {
@@ -19,9 +23,8 @@ import { useSendContext } from '../../context/send';
 import { useSendType } from './useSendType';
 import { useNameValidation } from './useNameValidation';
 
-// Avoid creating multiple instance of this hook in send flow,
-// as ens validation is very expensive operation. And result can slow-down
-// and result in bugs if multiple instances are created.
+const VALIDATION_DEBOUNCE_MS = 500;
+
 export const useRecipientValidation = () => {
   const t = useI18nContext();
   const { asset, chainId, to } = useSendContext();
@@ -31,10 +34,12 @@ export const useRecipientValidation = () => {
   const [result, setResult] = useState<RecipientValidationResult>({});
   const prevAddressValidated = useRef<string>();
   const unmountedRef = useRef(false);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
     return () => {
       unmountedRef.current = true;
+      abortControllerRef.current?.abort();
     };
   }, []);
 
@@ -61,6 +66,9 @@ export const useRecipientValidation = () => {
       }
 
       if (isValidDomainName(toAddress)) {
+        if (!isDomainReadyForResolution(toAddress)) {
+          return {};
+        }
         return await validateName(chainId, toAddress);
       }
 
@@ -79,23 +87,45 @@ export const useRecipientValidation = () => {
     ],
   );
 
+  const debouncedValidateRecipient = useMemo(
+    () =>
+      debounce(async (toAddress: string) => {
+        console.log(
+          `[ENS Debug] useRecipientValidation debounced callback triggered for: "${toAddress}"`,
+        );
+
+        abortControllerRef.current?.abort();
+        abortControllerRef.current = new AbortController();
+
+        const validationResult = await validateRecipient(toAddress);
+
+        if (
+          !unmountedRef.current &&
+          prevAddressValidated.current === toAddress
+        ) {
+          setResult({
+            ...validationResult,
+            toAddressValidated: toAddress,
+          });
+        }
+      }, VALIDATION_DEBOUNCE_MS),
+    [validateRecipient],
+  );
+
   useEffect(() => {
     if (prevAddressValidated.current === to) {
       return;
     }
 
-    (async () => {
-      prevAddressValidated.current = to;
-      const validationResult = await validateRecipient(to);
+    prevAddressValidated.current = to;
+    debouncedValidateRecipient(to);
+  }, [to, debouncedValidateRecipient]);
 
-      if (!unmountedRef.current && prevAddressValidated.current === to) {
-        setResult({
-          ...validationResult,
-          toAddressValidated: to,
-        });
-      }
-    })();
-  }, [setResult, to, validateRecipient]);
+  useEffect(() => {
+    return () => {
+      debouncedValidateRecipient.cancel();
+    };
+  }, [debouncedValidateRecipient]);
 
   return {
     recipientConfusableCharacters: result?.confusableCharacters,

@@ -98,82 +98,138 @@ export function initializeDomainSlice() {
   };
 }
 
+const resolutionCache = new Map();
+const CACHE_TTL_MS = 60000;
+
 export async function fetchResolutions({ domain, chainId, state }) {
-  const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
-  const subjects = getPermissionSubjects(state);
-  const nameLookupSnaps = getNameLookupSnapsIds(state);
+  const cacheKey = `${domain}:${chainId}`;
+  const cached = resolutionCache.get(cacheKey);
 
-  const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
-    const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
-    const chainIdCaveat = getChainIdsCaveat(permission);
-    const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
+  console.log(
+    `[ENS Debug] fetchResolutions called for domain="${domain}" chainId="${chainId}" cacheKey="${cacheKey}"`,
+  );
 
-    if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
-      return false;
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    console.log(`[ENS Debug] CACHE HIT for ${cacheKey}`);
+    if (cached.result) {
+      return cached.result;
     }
-
-    if (lookupMatchersCaveat) {
-      const { tlds, schemes } = lookupMatchersCaveat;
-      return (
-        tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
-        schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
-      );
-    }
-
-    return true;
-  });
-
-  // previous logic would switch request args based on the domain property to determine
-  // if this should have been a domain request or a reverse resolution request
-  // since reverse resolution is not supported in the send screen flow,
-  // the logic was changed to cancel the request, because otherwise a snap can erroneously
-  // check for the domain property without checking domain length and return faulty results.
-  if (domain.length === 0) {
-    return [];
+    console.log(`[ENS Debug] Returning cached promise for ${cacheKey}`);
+    return cached.promise;
   }
 
-  const results = await Promise.allSettled(
-    filteredNameLookupSnapsIds.map((snapId) => {
-      return handleSnapRequest({
-        snapId,
-        origin: 'metamask',
-        handler: 'onNameLookup',
-        request: {
-          jsonrpc: '2.0',
-          method: ' ',
-          params: {
-            domain,
-            chainId,
-          },
-        },
-      });
-    }),
-  );
+  console.log(`[ENS Debug] CACHE MISS for ${cacheKey} - making new request`);
 
-  const filteredResults = results.reduce(
-    (successfulResolutions, result, idx) => {
-      if (result.status !== 'rejected' && result.value !== null) {
-        const resolutions = result.value.resolvedAddresses.map(
-          (resolution) => ({
-            ...resolution,
-            resolvingSnap: getSnapMetadata(
-              state,
-              filteredNameLookupSnapsIds[idx],
-            )?.name,
-            addressBookEntryName: getAddressBookEntry(
-              state,
-              resolution.resolvedAddress,
-            )?.name,
-          }),
-        );
-        return successfulResolutions.concat(resolutions);
+  const promise = (async () => {
+    const NAME_LOOKUP_PERMISSION = 'endowment:name-lookup';
+    const subjects = getPermissionSubjects(state);
+    const nameLookupSnaps = getNameLookupSnapsIds(state);
+
+    console.log(
+      `[ENS Debug] Found ${nameLookupSnaps.length} name lookup snaps:`,
+      nameLookupSnaps,
+    );
+
+    const filteredNameLookupSnapsIds = nameLookupSnaps.filter((snapId) => {
+      const permission = subjects[snapId]?.permissions[NAME_LOOKUP_PERMISSION];
+      const chainIdCaveat = getChainIdsCaveat(permission);
+      const lookupMatchersCaveat = getLookupMatchersCaveat(permission);
+
+      if (chainIdCaveat && !chainIdCaveat.includes(chainId)) {
+        return false;
       }
-      return successfulResolutions;
-    },
-    [],
-  );
 
-  return filteredResults;
+      if (lookupMatchersCaveat) {
+        const { tlds, schemes } = lookupMatchersCaveat;
+        return (
+          tlds?.some((tld) => domain.endsWith(`.${tld}`)) ||
+          schemes?.some((scheme) => domain.startsWith(`${scheme}:`))
+        );
+      }
+
+      return true;
+    });
+
+    console.log(
+      `[ENS Debug] Filtered to ${filteredNameLookupSnapsIds.length} snaps:`,
+      filteredNameLookupSnapsIds,
+    );
+
+    if (domain.length === 0) {
+      return [];
+    }
+
+    console.log(
+      `[ENS Debug] About to call ${filteredNameLookupSnapsIds.length} snaps in parallel`,
+    );
+
+    const results = await Promise.allSettled(
+      filteredNameLookupSnapsIds.map((snapId) => {
+        console.log(
+          `[ENS Debug] ⚡ Making API call via snap: "${snapId}" for domain "${domain}"`,
+        );
+        return handleSnapRequest({
+          snapId,
+          origin: 'metamask',
+          handler: 'onNameLookup',
+          request: {
+            jsonrpc: '2.0',
+            method: ' ',
+            params: {
+              domain,
+              chainId,
+            },
+          },
+        });
+      }),
+    );
+
+    console.log(
+      `[ENS Debug] ✅ Got ${results.length} results from snap calls:`,
+      results.map((r, i) => ({
+        snap: filteredNameLookupSnapsIds[i],
+        status: r.status,
+      })),
+    );
+
+    const filteredResults = results.reduce(
+      (successfulResolutions, result, idx) => {
+        if (result.status !== 'rejected' && result.value !== null) {
+          const resolutions = result.value.resolvedAddresses.map(
+            (resolution) => ({
+              ...resolution,
+              resolvingSnap: getSnapMetadata(
+                state,
+                filteredNameLookupSnapsIds[idx],
+              )?.name,
+              addressBookEntryName: getAddressBookEntry(
+                state,
+                resolution.resolvedAddress,
+              )?.name,
+            }),
+          );
+          return successfulResolutions.concat(resolutions);
+        }
+        return successfulResolutions;
+      },
+      [],
+    );
+
+    resolutionCache.set(cacheKey, {
+      promise,
+      timestamp: Date.now(),
+      result: filteredResults,
+    });
+
+    return filteredResults;
+  })();
+
+  resolutionCache.set(cacheKey, {
+    promise,
+    timestamp: Date.now(),
+  });
+
+  return promise;
 }
 
 export function lookupDomainName(domainName, chainId) {
@@ -198,7 +254,7 @@ export function lookupDomainName(domainName, chainId) {
     // while a new lookup has started, if so we don't use the found result.
     state = getState();
     if (trimmedDomainName !== state[name].domainName) {
-      return;
+      return resolutions;
     }
 
     await dispatch(
@@ -209,6 +265,8 @@ export function lookupDomainName(domainName, chainId) {
         domainName: trimmedDomainName,
       }),
     );
+
+    return resolutions;
   };
 }
 

@@ -8,46 +8,62 @@ import { findConfusablesInRecipient } from '../../utils/sendValidations';
 import { lookupDomainName } from '../../../../ducks/domains';
 import { useSendType } from './useSendType';
 
+type Resolution = {
+  resolvedAddress?: string;
+  protocol?: string;
+};
+
 export const useNameValidation = () => {
   const { fetchResolutions } = useSnapNameResolution();
   const dispatch = useDispatch();
   const { isEvmSendType } = useSendType();
 
-  const validateName = useCallback(
-    async (chainId: string, to: string) => {
-      if (isValidDomainName(to)) {
-        const resolutions = await fetchResolutions(
-          formatChainIdToCaip(chainId),
-          to,
-        );
-
-        if (resolutions.length === 0) {
-          return {
-            error: 'nameResolutionFailedError',
-          };
-        }
-
-        const resolvedLookup = resolutions[0]?.resolvedAddress;
-        const protocol = resolutions[0]?.protocol;
-
-        // In order to display the ENS name component we need to initiate reverse lookup by calling lookupDomainName
-        // so the domain resolution will be available in the store then Name component will use it in the confirmation
-        if (isEvmSendType) {
-          dispatch(lookupDomainName(to, chainId));
-        }
-
+  const processResolutions = useCallback(
+    (resolutions: Resolution[], domain: string) => {
+      if (!resolutions || resolutions.length === 0) {
         return {
-          resolvedLookup,
-          protocol,
-          ...findConfusablesInRecipient(to),
+          error: 'nameResolutionFailedError',
         };
       }
 
       return {
-        error: 'nameResolutionFailedError',
+        resolvedLookup: resolutions[0]?.resolvedAddress,
+        protocol: resolutions[0]?.protocol,
+        ...findConfusablesInRecipient(domain),
       };
     },
-    [dispatch, fetchResolutions],
+    [],
+  );
+
+  const validateName = useCallback(
+    async (chainId: string, to: string) => {
+      console.log(
+        `[ENS Debug] useNameValidation.validateName called: to="${to}", chainId="${chainId}", isEvmSendType=${isEvmSendType}`,
+      );
+
+      if (!isValidDomainName(to)) {
+        return {
+          error: 'nameResolutionFailedError',
+        };
+      }
+
+      if (isEvmSendType) {
+        console.log(
+          `[ENS Debug] Calling lookupDomainName for EVM chain: ${to}`,
+        );
+      } else {
+        console.log(
+          `[ENS Debug] Calling fetchResolutions for non-EVM chain: ${to}`,
+        );
+      }
+
+      const resolutions = isEvmSendType
+        ? await dispatch(lookupDomainName(to, chainId))
+        : await fetchResolutions(formatChainIdToCaip(chainId), to);
+
+      return processResolutions(resolutions, to);
+    },
+    [dispatch, fetchResolutions, isEvmSendType, processResolutions],
   );
 
   return {
