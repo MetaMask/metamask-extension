@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { I18nContext } from '../../../../../contexts/i18n';
-import Confusable from '../../../../ui/confusable';
+import { I18nContext } from '../../../contexts/i18n';
+import Confusable from '../../ui/confusable';
 import {
   Box,
   AvatarIcon,
@@ -9,7 +9,7 @@ import {
   BadgeWrapper,
   IconName,
   Text,
-} from '../../../../component-library';
+} from '../../component-library';
 import {
   AlignItems,
   Display,
@@ -18,10 +18,10 @@ import {
   IconColor,
   TextColor,
   TextVariant,
-} from '../../../../../helpers/constants/design-system';
-import Tooltip from '../../../../ui/tooltip';
-import { shortenAddress } from '../../../../../helpers/utils/util';
-import { PreferredAvatar } from '../../../../app/preferred-avatar';
+} from '../../../helpers/constants/design-system';
+import Tooltip from '../../ui/tooltip';
+import { shortenAddress } from '../../../helpers/utils/util';
+import { PreferredAvatar } from '../../app/preferred-avatar';
 
 type DomainInputResolutionCellArgs = {
   address: string;
