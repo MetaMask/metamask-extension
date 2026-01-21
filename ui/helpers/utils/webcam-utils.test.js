@@ -1,3 +1,5 @@
+// eslint-disable-next-line import/no-restricted-paths -- Required to mock background utility used by webcam-utils
+import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import {
   ENVIRONMENT_TYPE_POPUP,
   ENVIRONMENT_TYPE_SIDEPANEL,
@@ -5,7 +7,6 @@ import {
   PLATFORM_FIREFOX,
   PLATFORM_CHROME,
 } from '../../../shared/constants/app';
-import { getEnvironmentType } from '../../../app/scripts/lib/util';
 import { getBrowserName } from '../../../shared/modules/browser-runtime.utils';
 import WebcamUtils from './webcam-utils';
 
@@ -84,7 +85,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: true,
             environmentReady: true,
           });
@@ -95,7 +96,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: false,
             environmentReady: true,
           });
@@ -112,7 +113,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: true,
             environmentReady: true,
           });
@@ -123,7 +124,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: false,
             environmentReady: false,
           });
@@ -135,7 +136,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: true,
             environmentReady: false,
           });
@@ -152,7 +153,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: true,
             environmentReady: true,
           });
@@ -163,7 +164,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: false,
             environmentReady: false,
           });
@@ -175,7 +176,7 @@ describe('WebcamUtils', () => {
 
           const result = await WebcamUtils.checkStatus();
 
-          expect(result).toEqual({
+          expect(result).toStrictEqual({
             permissions: true,
             environmentReady: false,
           });
