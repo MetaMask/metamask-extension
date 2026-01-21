@@ -700,9 +700,6 @@
     "message": "您必須選擇一個檔案來匯入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "不能送出負值的以太幣。"
-  },
   "networkDetails": {
     "message": "網路詳細資料"
   },
@@ -711,9 +708,6 @@
   },
   "networkNameDefinition": {
     "message": "對應這個網路的名稱。"
-  },
-  "networkNameTestnet": {
-    "message": "測試網路"
   },
   "networkURL": {
     "message": "網路 URL"
@@ -1101,9 +1095,6 @@
   },
   "tokenSymbol": {
     "message": "代幣代號"
-  },
-  "tooltipApproveButton": {
-    "message": "我了解了"
   },
   "total": {
     "message": "總量"

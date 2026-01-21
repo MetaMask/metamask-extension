@@ -881,9 +881,6 @@
   "insufficientFunds": {
     "message": "Não há fundos suficientes."
   },
-  "insufficientFundsForGas": {
-    "message": "Fundos insuficientes para o gás"
-  },
   "insufficientTokens": {
     "message": "Tokens insuficientes."
   },
@@ -1102,9 +1099,6 @@
     "message": "É preciso selecionar um arquivo para importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Não é possível enviar valores negativos de ETH."
-  },
   "networkDetails": {
     "message": "Detalhes da rede"
   },
@@ -1114,9 +1108,6 @@
   "networkName": {
     "message": "Nome da rede"
   },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
   "networkNameDefinition": {
     "message": "O nome associado a essa rede."
   },
@@ -1125,9 +1116,6 @@
   },
   "networkNamePolygon": {
     "message": "Polygon"
-  },
-  "networkNameTestnet": {
-    "message": "Testnet"
   },
   "networkStatus": {
     "message": "Status da rede"
@@ -1238,9 +1226,6 @@
   "openFullScreenForLedgerWebHid": {
     "message": "Abra a MetaMask em tela cheia para conectar sua ledger por meio do WebHID.",
     "description": "Shown to the user on the confirm screen when they are viewing MetaMask in a popup window but need to connect their ledger via webhid."
-  },
-  "optional": {
-    "message": "Opcional"
   },
   "origin": {
     "message": "Origem"
@@ -1680,18 +1665,8 @@
     "message": "A troca de $1 para $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "As taxas de gás são estimadas e oscilam com base no tráfego da rede e na complexidade da transação."
-  },
-  "swapGasFeesLearnMore": {
-    "message": "Saiba mais sobre as taxas de gás"
-  },
   "swapGasFeesSplit": {
     "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
-  },
-  "swapGasFeesSummary": {
-    "message": "As taxas de gás são pagas aos mineradores de criptoativos que processam as transações na rede de $1. A MetaMask não lucra com taxas de gás.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
@@ -1886,9 +1861,6 @@
   },
   "tokenSymbol": {
     "message": "Símbolo do token"
-  },
-  "tooltipApproveButton": {
-    "message": "Estou ciente"
   },
   "total": {
     "message": "Total"

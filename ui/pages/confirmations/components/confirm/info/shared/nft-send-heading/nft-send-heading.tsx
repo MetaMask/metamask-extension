@@ -24,7 +24,7 @@ import {
 import { useConfirmContext } from '../../../../../context/confirm';
 import { useAssetDetails } from '../../../../../hooks/useAssetDetails';
 import { useNftImageUrl } from '../../../../../hooks/useNftImageUrl';
-import { ellipsify } from '../../../../../send-legacy/send.utils';
+import { ellipsify } from '../../../../../send-utils/send.utils';
 import useFetchNftDetailsFromTokenURI from '../../../../../../../hooks/useFetchNftDetailsFromTokenURI';
 
 export const generateTokenIdDisplay = (tokenId: string) => {
