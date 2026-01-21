@@ -13,18 +13,18 @@ import {
   ButtonBaseSize,
 } from '@metamask/design-system-react';
 
-export type DropdownOption<T extends string> = {
-  id: T;
+export type DropdownOption<OptionId extends string> = {
+  id: OptionId;
   label: string;
 };
 
-export type DropdownProps<T extends string> = {
+export type DropdownProps<OptionId extends string> = {
   /** Available options */
-  options: DropdownOption<T>[];
+  options: DropdownOption<OptionId>[];
   /** Currently selected option ID */
-  selectedId: T;
+  selectedId: OptionId;
   /** Callback when selection changes */
-  onChange: (id: T) => void;
+  onChange: (id: OptionId) => void;
   /** Test ID prefix for testing */
   testId: string;
 };
@@ -38,12 +38,12 @@ export type DropdownProps<T extends string> = {
  * @param props.onChange - Callback when selection changes
  * @param props.testId - Test ID prefix for testing
  */
-export function Dropdown<T extends string>({
+export const Dropdown = <OptionId extends string>({
   options,
   selectedId,
   onChange,
   testId,
-}: DropdownProps<T>) {
+}: DropdownProps<OptionId>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState(-1);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -87,7 +87,7 @@ export function Dropdown<T extends string>({
   }, []);
 
   const handleSelect = useCallback(
-    (option: DropdownOption<T>) => {
+    (option: DropdownOption<OptionId>) => {
       onChange(option.id);
       setIsOpen(false);
       setFocusedIndex(-1);
@@ -96,22 +96,19 @@ export function Dropdown<T extends string>({
     [onChange],
   );
 
-  const handleTriggerKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      switch (event.key) {
-        case 'Enter':
-        case ' ':
-        case 'ArrowDown':
-        case 'ArrowUp':
-          event.preventDefault();
-          setIsOpen(true);
-          break;
-        default:
-          break;
-      }
-    },
-    [],
-  );
+  const handleTriggerKeyDown = useCallback((event: React.KeyboardEvent) => {
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+      case 'ArrowDown':
+      case 'ArrowUp':
+        event.preventDefault();
+        setIsOpen(true);
+        break;
+      default:
+        break;
+    }
+  }, []);
 
   const handleOptionKeyDown = useCallback(
     (event: React.KeyboardEvent, index: number) => {
@@ -182,7 +179,9 @@ export function Dropdown<T extends string>({
           flexDirection={BoxFlexDirection.Column}
           role="listbox"
           aria-activedescendant={
-            focusedIndex >= 0 ? `${testId}-option-${options[focusedIndex]?.id}` : undefined
+            focusedIndex >= 0
+              ? `${testId}-option-${options[focusedIndex]?.id}`
+              : undefined
           }
           data-testid={`${testId}-menu`}
         >
@@ -223,6 +222,6 @@ export function Dropdown<T extends string>({
       )}
     </Box>
   );
-}
+};
 
 export default Dropdown;
