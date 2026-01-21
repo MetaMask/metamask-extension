@@ -10,7 +10,6 @@ import {
   PREVIOUS_ROUTE,
   SEND_ROUTE,
 } from '../../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { SendPages } from '../../constants/send';
 import { sendMultichainTransactionForReview } from '../../utils/multichain-snaps';
 import { addLeadingZeroIfNeeded, submitEvmTransaction } from '../../utils/send';
@@ -54,7 +53,6 @@ export const useSendActions = () => {
       navigate(route);
     } else {
       navigate(`${SEND_ROUTE}/${SendPages.LOADER}`);
-      await dispatch(setDefaultHomeActiveTabName('activity'));
       try {
         await sendMultichainTransactionForReview(
           fromAccount as InternalAccount,
@@ -65,7 +63,7 @@ export const useSendActions = () => {
             amount: addLeadingZeroIfNeeded(value || ('0' as string)) as string,
           },
         );
-        navigate(DEFAULT_ROUTE);
+        navigate(`${DEFAULT_ROUTE}?tab=activity`);
       } catch (error) {
         // intentional empty catch
       }
