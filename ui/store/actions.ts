@@ -4458,15 +4458,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
+export async function setDefaultHomeActiveTabName(
   value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+): Promise<void> {
+  try {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
-  };
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
@@ -4823,10 +4822,14 @@ export function setDataCollectionForMarketing(
 
 export function setPna25Acknowledged(
   acknowledged: boolean,
+  delayCollection = false,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     log.debug(`background.setPna25Acknowledged`);
-    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
+    await submitRequestToBackground('setPna25Acknowledged', [
+      acknowledged,
+      delayCollection,
+    ]);
   };
 }
 

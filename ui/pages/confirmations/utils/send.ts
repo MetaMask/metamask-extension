@@ -67,11 +67,6 @@ export const fromTokenMinimalUnits = (
     fromTokenMinimalUnitsNumeric(value, decimals).toBase(16).toString(),
   );
 
-export const fromTokenMinimalUnitsHexNumeric = (
-  value: string,
-  decimals?: number | string,
-) => fromTokenMinUnitsNumeric(value, 16, decimals);
-
 export const toTokenMinimalUnitNumeric = (
   value: string,
   decimals: number | string = 0,
