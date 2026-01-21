@@ -169,6 +169,10 @@ export function getVariables(
   const variables = loadConfigVars(activeBuild, buildConfig);
   const version = getExtensionVersion(type, activeBuild, args.releaseVersion);
   const isDevBuild = env === 'development';
+  const buildEnvVarDeclarations = [
+    ...Object.keys(activeBuild.env ?? {}),
+    ...Object.keys(buildConfig.env ?? {}),
+  ];
 
   // Resolve the MetaMask environment using proper detection logic
   const environment = resolveEnvironment({ ...args, env });
@@ -249,7 +253,13 @@ export function getVariables(
   // the `PPOM_URI` shouldn't be JSON stringified, as it's actually code
   safeVariables.PPOM_URI = variables.get('PPOM_URI') as string;
 
-  return { variables, safeVariables, version, environment };
+  return {
+    variables,
+    safeVariables,
+    version,
+    environment,
+    buildEnvVarDeclarations,
+  };
 }
 
 /**

@@ -58,7 +58,8 @@ const codeFenceLoader = getCodeFenceLoader(features);
 const browsersListPath = join(context, '../.browserslistrc');
 // read .browserslist now to stop it from searching for the file over and over
 const browsersListQuery = readFileSync(browsersListPath, 'utf8');
-const { variables, safeVariables, version } = getVariables(args, buildTypes);
+const { variables, safeVariables, version, buildEnvVarDeclarations } =
+  getVariables(args, buildTypes);
 const webAccessibleResources =
   args.devtool === 'source-map'
     ? ['scripts/inpage.js.map', 'scripts/contentscript.js.map']
@@ -223,6 +224,7 @@ if (args.reactCompilerVerbose) {
 
 // #endregion plugins
 
+const buildYmlDeclarations = new Set(buildEnvVarDeclarations);
 const swcConfig = { args, browsersListQuery, isDevelopment };
 const tsxLoader = getSwcLoader('typescript', true, safeVariables, swcConfig);
 const jsxLoader = getSwcLoader('ecmascript', true, safeVariables, swcConfig);
@@ -233,6 +235,10 @@ const reactCompilerLoader = getReactCompilerLoader(
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
 );
+const envValidationLoader = {
+  loader: require.resolve('./utils/loaders/envValidationLoader'),
+  options: { declarations: buildYmlDeclarations },
+};
 
 const config = {
   entry,
@@ -344,13 +350,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, codeFenceLoader],
+        use: [tsxLoader, envValidationLoader, codeFenceLoader],
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, codeFenceLoader],
+        use: [jsxLoader, envValidationLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
