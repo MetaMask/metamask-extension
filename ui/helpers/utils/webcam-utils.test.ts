@@ -18,9 +18,16 @@ jest.mock('../../../shared/modules/browser-runtime.utils', () => ({
   getBrowserName: jest.fn(),
 }));
 
+const mockGetEnvironmentType = getEnvironmentType as jest.MockedFunction<
+  typeof getEnvironmentType
+>;
+const mockGetBrowserName = getBrowserName as jest.MockedFunction<
+  typeof getBrowserName
+>;
+
 describe('WebcamUtils', () => {
   const mockEnumerateDevices = jest.fn();
-  let originalNavigator;
+  let originalNavigator: Navigator;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -40,7 +47,7 @@ describe('WebcamUtils', () => {
       configurable: true,
     });
 
-    getBrowserName.mockReturnValue(PLATFORM_CHROME);
+    mockGetBrowserName.mockReturnValue(PLATFORM_CHROME);
   });
 
   afterEach(() => {
@@ -56,7 +63,7 @@ describe('WebcamUtils', () => {
     describe('when no webcam is found', () => {
       it('throws NO_WEBCAM_FOUND error', async () => {
         mockEnumerateDevices.mockResolvedValue([]);
-        getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+        mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
 
         await expect(WebcamUtils.checkStatus()).rejects.toMatchObject({
           message: 'No webcam found',
@@ -77,7 +84,7 @@ describe('WebcamUtils', () => {
 
       describe('in fullscreen mode', () => {
         beforeEach(() => {
-          getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
+          mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_FULLSCREEN);
         });
 
         it('returns environmentReady true with permissions', async () => {
@@ -105,7 +112,7 @@ describe('WebcamUtils', () => {
 
       describe('in popup mode', () => {
         beforeEach(() => {
-          getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
+          mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_POPUP);
         });
 
         it('returns environmentReady true when permissions are granted', async () => {
@@ -131,7 +138,7 @@ describe('WebcamUtils', () => {
         });
 
         it('returns environmentReady false in Firefox even with permissions', async () => {
-          getBrowserName.mockReturnValue(PLATFORM_FIREFOX);
+          mockGetBrowserName.mockReturnValue(PLATFORM_FIREFOX);
           mockEnumerateDevices.mockResolvedValue([webcamWithPermission]);
 
           const result = await WebcamUtils.checkStatus();
@@ -145,7 +152,7 @@ describe('WebcamUtils', () => {
 
       describe('in sidepanel mode', () => {
         beforeEach(() => {
-          getEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
+          mockGetEnvironmentType.mockReturnValue(ENVIRONMENT_TYPE_SIDEPANEL);
         });
 
         it('returns environmentReady true when permissions are granted', async () => {
@@ -171,7 +178,7 @@ describe('WebcamUtils', () => {
         });
 
         it('returns environmentReady false in Firefox even with permissions', async () => {
-          getBrowserName.mockReturnValue(PLATFORM_FIREFOX);
+          mockGetBrowserName.mockReturnValue(PLATFORM_FIREFOX);
           mockEnumerateDevices.mockResolvedValue([webcamWithPermission]);
 
           const result = await WebcamUtils.checkStatus();
