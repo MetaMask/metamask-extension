@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "添加账户或钱包"
   },
-  "addAccountToMetaMask": {
-    "message": "将账户添加到 MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "添加钱包"
-  },
-  "addingAccount": {
-    "message": "添加账户"
   },
   "additionalNetworks": {
     "message": "其他网络"

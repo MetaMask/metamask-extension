@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Thêm tài khoản hoặc ví"
   },
-  "addAccountToMetaMask": {
-    "message": "Thêm tài khoản vào MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Thêm ví"
-  },
-  "addingAccount": {
-    "message": "Thêm tài khoản"
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
