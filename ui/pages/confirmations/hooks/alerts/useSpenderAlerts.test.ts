@@ -31,7 +31,7 @@ jest.mock('../../context/confirm', () => ({
 jest.mock('../../../../hooks/useTrustSignals', () => ({
   useTrustSignal: jest.fn(),
   TrustSignalDisplayState: {
-    Loading: 'loading',
+    Loading: 'Loading',
     Malicious: 'malicious',
     Petname: 'petname',
     Verified: 'verified',

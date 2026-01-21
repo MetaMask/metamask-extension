@@ -29,8 +29,8 @@ describe('Vault Corruption', function () {
     // to access the storage API here
     const browser = globalThis.browser ?? globalThis.chrome;
 
-    // corrupt the primary database by deleting the data key
-    browser.storage.local.set({ data: null }, () => {
+    // corrupt the primary database by deleting the KeyringController key
+    browser.storage.local.set({ KeyringController: null }, () => {
       ${code}
     });
 `;

@@ -8,7 +8,6 @@ import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow'
 import { DAPP_PATH, WINDOW_TITLES } from '../constants';
 import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendPage from '../page-objects/pages/send/send-page';
 
@@ -24,7 +23,6 @@ describe('Name lookup', function () {
         }).build(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockLookupSnap(mockServer),
-          await mockSendRedesignFeatureFlag(mockServer),
         ],
         title: this.test?.fullTitle(),
       },

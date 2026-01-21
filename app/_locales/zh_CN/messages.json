@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "添加账户或钱包"
   },
-  "addAccountToMetaMask": {
-    "message": "将账户添加到 MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "添加您通过MetaMask获得的代币"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "添加钱包"
-  },
-  "addingAccount": {
-    "message": "添加账户"
   },
   "additionalNetworks": {
     "message": "其他网络"
@@ -1271,9 +1265,6 @@
   },
   "close": {
     "message": "关闭"
-  },
-  "closeExtension": {
-    "message": "关闭扩展程序"
   },
   "closeSlide": {
     "message": "关闭 $1",
@@ -3891,9 +3882,6 @@
     "message": "您必须选择一个文件来导入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "不能发负值的 ETH。"
-  },
   "negativeOrZeroAmountToken": {
     "message": "发送的资产金额不能为负数或零。"
   },
@@ -6218,41 +6206,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "您的计划在暂停期间处于未激活状态。若选择取消，该计划将立即终止。"
   },
-  "shieldTxDetails1Description": {
-    "message": "为受保障交易中的资产提供安全保障"
-  },
   "shieldTxDetails1Title": {
     "message": "最高 $10,000 的交易保护"
   },
-  "shieldTxDetails2Description": {
-    "message": "随时获取更快捷的专属支持"
-  },
-  "shieldTxDetails2Title": {
-    "message": "优先支持"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "链接"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "注册"
-  },
   "shieldTxMembershipActive": {
     "message": "已激活的计划"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "账单详情"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "账单账户"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "费用"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "下次账单日期"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支付方式"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "管理计费"
@@ -6267,9 +6225,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "您的计划将于 $1 到期。请立即续订以延续权益。",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "重新尝试付款"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "您的计划因卡片支付失败已被暂停。"
@@ -6296,9 +6251,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "联系支持团队"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "更新卡片信息"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "免费试用"
   },
@@ -6319,9 +6271,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "提交索赔"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "查看完整权益"
   },
   "show": {
     "message": "显示"

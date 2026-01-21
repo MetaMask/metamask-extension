@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Thêm tài khoản hoặc ví"
   },
-  "addAccountToMetaMask": {
-    "message": "Thêm tài khoản vào MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Thêm token mà bạn đã mua bằng MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Thêm ví"
-  },
-  "addingAccount": {
-    "message": "Thêm tài khoản"
   },
   "additionalNetworks": {
     "message": "Mạng bổ sung"
@@ -1277,9 +1271,6 @@
   },
   "close": {
     "message": "Đóng"
-  },
-  "closeExtension": {
-    "message": "Đóng tiện ích mở rộng"
   },
   "closeSlide": {
     "message": "Đóng $1",
@@ -3897,9 +3888,6 @@
     "message": "Bạn phải chọn tập tin để nhập.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Không thể gửi số lượng ETH âm."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Không thể gửi số lượng tài sản âm hoặc bằng 0."
   },
@@ -6233,41 +6221,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Gói của bạn không hoạt động trong lúc tạm dừng. Nếu bạn hủy, gói sẽ kết thúc ngay lập tức."
   },
-  "shieldTxDetails1Description": {
-    "message": "Bảo vệ tài sản trong các giao dịch được bảo hiểm"
-  },
   "shieldTxDetails1Title": {
     "message": "Bảo vệ giao dịch lên đến $10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Nhận dịch vụ hỗ trợ chuyên biệt, nhanh chóng bất cứ khi nào bạn cần"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Hỗ trợ ưu tiên"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Liên kết"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Đăng ký"
-  },
   "shieldTxMembershipActive": {
     "message": "Gói đang hoạt động"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Chi tiết thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Tài khoản thanh toán"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Phí"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Lần thanh toán tiếp theo"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Phương thức thanh toán"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Quản lý thanh toán"
@@ -6282,9 +6240,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Gói của bạn sẽ kết thúc vào $1. Gia hạn ngay để tiếp tục hưởng quyền lợi.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Thử lại thanh toán"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Gói của bạn đã bị tạm dừng do thanh toán bằng thẻ thất bại."
@@ -6311,9 +6266,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Liên hệ bộ phận hỗ trợ"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Cập nhật chi tiết thẻ"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Dùng thử miễn phí"
   },
@@ -6334,9 +6286,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Gửi yêu cầu bồi thường"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Xem toàn bộ quyền lợi"
   },
   "show": {
     "message": "Hiển thị"

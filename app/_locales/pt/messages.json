@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Adicionar conta ou carteira"
   },
-  "addAccountToMetaMask": {
-    "message": "Adicionar conta à MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Adicione os tokens que você adquiriu usando a MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Adicionar carteira"
-  },
-  "addingAccount": {
-    "message": "Adicionando conta"
   },
   "additionalNetworks": {
     "message": "Redes adicionais"
@@ -1277,9 +1271,6 @@
   },
   "close": {
     "message": "Fechar"
-  },
-  "closeExtension": {
-    "message": "Fechar extensão"
   },
   "closeSlide": {
     "message": "Encerrar $1",
@@ -3897,9 +3888,6 @@
     "message": "É preciso selecionar um arquivo para importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Não é possível enviar valores negativos de ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Não é possível enviar valores negativos ou zerados de ativos."
   },
@@ -6233,41 +6221,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Seu plano não estará ativo enquanto estiver pausado. Se você cancelar, seu plano será encerrado imediatamente."
   },
-  "shieldTxDetails1Description": {
-    "message": "Garanta a segurança dos ativos em transações cobertas"
-  },
   "shieldTxDetails1Title": {
     "message": "Proteção de transações de até US$10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Receba suporte mais rápido e dedicado a qualquer momento"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Suporte prioritário"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Inscrever-se"
-  },
   "shieldTxMembershipActive": {
     "message": "Plano ativo"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detalhes da cobrança"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Conta de cobrança"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Encargos"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Próxima cobrança"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Método de pagamento"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Gerenciar cobrança"
@@ -6282,9 +6240,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Seu plano termina em $1. Renove agora para continuar aproveitando seus benefícios.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Repetir pagamento"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Seu plano foi pausado devido a uma falha no pagamento com cartão."
@@ -6311,9 +6266,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Falar com o suporte"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Atualizar dados do cartão"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Teste grátis"
   },
@@ -6334,9 +6286,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Enviar uma reclamação"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Ver todos os benefícios"
   },
   "show": {
     "message": "Mostrar"

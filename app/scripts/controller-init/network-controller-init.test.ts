@@ -5,7 +5,10 @@ import {
   Messenger,
   MockAnyNamespace,
 } from '@metamask/messenger';
-import { NetworkController } from '@metamask/network-controller';
+import {
+  NetworkController,
+  NetworkControllerMessenger,
+} from '@metamask/network-controller';
 import {
   RemoteFeatureFlagControllerGetStateAction,
   RemoteFeatureFlagControllerState,
@@ -14,7 +17,6 @@ import { ControllerInitRequest } from './types';
 import { buildControllerInitRequestMock } from './test/utils';
 import {
   NetworkControllerInitMessenger,
-  NetworkControllerMessenger,
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
 } from './messengers';
@@ -141,7 +143,7 @@ describe('NetworkControllerInit', () => {
                 "failoverUrls": [],
                 "networkClientId": "megaeth-testnet-v2",
                 "type": "custom",
-                "url": "https://timothy.megaeth.com/rpc",
+                "url": "https://carrot.megaeth.com/rpc",
               },
             ],
           },

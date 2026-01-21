@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Hesap veya cüzdan ekle"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask'e hesap ekleyin"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Cüzdan ekle"
-  },
-  "addingAccount": {
-    "message": "Hesap ekleniyor"
   },
   "additionalNetworks": {
     "message": "İlave ağlar"
@@ -1277,9 +1271,6 @@
   },
   "close": {
     "message": "Kapat"
-  },
-  "closeExtension": {
-    "message": "Uzantıyı kapat"
   },
   "closeSlide": {
     "message": "Kapat: $1",
@@ -3897,9 +3888,6 @@
     "message": "İçe aktarılacak dosyayı seçmelisiniz.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Negatif tutarlarda ETH gönderilemez."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Eksi veya sıfır tutarlarda varlık gönderilemez."
   },
@@ -6233,41 +6221,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Duraklatıldığı zaman planınız artık aktif olmaz. İptal ederseniz planınız hemen sona erer."
   },
-  "shieldTxDetails1Description": {
-    "message": "Kapsanan işlemlerde varlıkları korur"
-  },
   "shieldTxDetails1Title": {
     "message": "$10.000 tutara kadar işlem koruması"
   },
-  "shieldTxDetails2Description": {
-    "message": "Her zaman daha hızlı, özel destek alın"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Öncelikli destek"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Bağlantı"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Kaydol"
-  },
   "shieldTxMembershipActive": {
     "message": "Aktif plan"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Faturalandırma bilgileri"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Faturalandırılacak hesap"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Ücretler"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Sonraki faturalandırma"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Ödeme yöntemi"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Ücretlendirmeyi yönet"
@@ -6282,9 +6240,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Planınız $1 tarihinde sona eriyor. Faydalarınızı devam ettirmek için şimdi yenileyin.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Ödemeyi tekrar dene"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Başarısız bir kart ödemesinden dolayı planınız duraklatıldı."
@@ -6311,9 +6266,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Destek ile iletişime geçin"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Kart bilgilerini güncelle"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Ücretsiz deneme"
   },
@@ -6334,9 +6286,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Bir talep gönder"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Tüm faydaları görüntüle"
   },
   "show": {
     "message": "Göster"
