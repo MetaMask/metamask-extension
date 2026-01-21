@@ -10,7 +10,6 @@
     "url": "https://metamask.github.io/test-dapp/"
   },
   "appState": {
-    "isAccountMenuOpen": false,
     "confirmationExchangeRates": {},
     "nextNonce": 71,
     "welcomeScreenSeen": false,
