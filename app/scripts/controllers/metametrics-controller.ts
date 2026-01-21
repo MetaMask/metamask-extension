@@ -917,15 +917,28 @@ export default class MetaMetricsController extends BaseController<
   ): Promise<string | null> {
     const { metaMetricsId: existingMetaMetricsId } = this.state;
 
-    const metaMetricsId =
-      participateInMetaMetrics && !existingMetaMetricsId
-        ? this.generateMetaMetricsId()
-        : existingMetaMetricsId;
+    // regardless of the Opt In/Out status, we want to generate metaMetricsId if it doesn't exist
+    // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
+    const metaMetricsId = existingMetaMetricsId ?? this.generateMetaMetricsId();
 
     this.update((state) => {
       state.participateInMetaMetrics = participateInMetaMetrics;
       state.metaMetricsId = metaMetricsId;
     });
+
+    if (participateInMetaMetrics !== null) {
+      const event = participateInMetaMetrics
+        ? MetaMetricsEventName.MetricsOptIn
+        : MetaMetricsEventName.MetricsOptOut;
+      // Regardless of the Opt In/Out status, we want to track the event to the user's id
+      // The intention is to track the number of users in the analytics
+      this.#track(
+        this.#buildEventPayload({
+          event,
+          category: MetaMetricsEventCategory.App,
+        }),
+      );
+    }
 
     if (participateInMetaMetrics) {
       this.trackEventsAfterMetricsOptIn();
@@ -1695,12 +1708,16 @@ export default class MetaMetricsController extends BaseController<
     });
   }
 
-  /*
+  /**
    * Method below submits the request to analytics SDK.
    * It will also add event to controller store
    * and pass a callback to remove it from store once request is submitted to segment
    * Saving segmentApiCalls in controller store in MV3 ensures that events are tracked
    * even if service worker terminates before events are submitted to segment.
+   *
+   * @param eventType - The type of event to track
+   * @param payload - The payload to track
+   * @param callback - The callback to call when the event is submitted
    */
   #submitSegmentAPICall(
     eventType: SegmentEventType,
@@ -1712,7 +1729,13 @@ export default class MetaMetricsController extends BaseController<
       latestNonAnonymousEventTimestamp,
       participateInMetaMetrics,
     } = this.state;
-    if (!participateInMetaMetrics || !metaMetricsId) {
+
+    const userOptedOut = !participateInMetaMetrics || !metaMetricsId;
+    const isMetricsOptOutEvent =
+      payload.event === MetaMetricsEventName.MetricsOptOut;
+
+    // Block all events if user opted out, except MetricsOptOut which is always sent
+    if (userOptedOut && !isMetricsOptOutEvent) {
       return;
     }
 
