@@ -175,7 +175,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
       return true;
     } catch (error) {
-      if (error instanceof HardwareWalletError && error.code) {
+      if (error instanceof HardwareWalletError && error.code !== undefined) {
         // Emit appropriate device events with the properly reconstructed error
         const deviceEvent = getDeviceEventForError(
           error.code,
