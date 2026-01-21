@@ -71,15 +71,15 @@ describe('Bridge tests', function (this: Suite) {
         await bridgeTransaction({
           driver,
           quote: {
-            amount: '10',
-            tokenFrom: 'USDC',
-            tokenTo: 'DAI',
+            amount: '25',
+            tokenFrom: 'DAI',
+            tokenTo: 'ETH',
             fromChain: 'Ethereum',
             toChain: 'Linea',
             unapproved: true,
           },
           expectedTransactionsCount: 6,
-          expectedDestAmount: '9.9',
+          expectedDestAmount: '0.0157',
         });
       },
     );

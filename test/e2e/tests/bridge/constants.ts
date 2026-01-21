@@ -1,8 +1,4 @@
-import {
-  ChainId,
-  formatChainIdToCaip,
-  type FeatureFlagResponse,
-} from '@metamask/bridge-controller';
+import { type FeatureFlagResponse } from '@metamask/bridge-controller';
 import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };

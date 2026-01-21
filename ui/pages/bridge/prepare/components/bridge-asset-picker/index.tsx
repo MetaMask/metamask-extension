@@ -234,7 +234,7 @@ export const BridgeAssetPicker = ({
           />
           <TextField
             autoFocus
-            data-testid="asset-picker-modal-search-input"
+            testId={'bridge-asset-picker-search-input'}
             placeholder={t('enterTokenNameOrAddress')}
             value={searchQuery}
             onChange={(e) => {

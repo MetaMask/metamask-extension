@@ -61,7 +61,7 @@ export const AssetListItem = ({
       className={`bridge-asset${selected ? '--selected' : ''}`}
       height={BlockSize.Max}
       width={BlockSize.Full}
-      data-testid="multichain-token-list-item"
+      data-testid={`bridge-asset`}
     >
       {selected && (
         <Box

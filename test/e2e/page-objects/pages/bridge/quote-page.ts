@@ -22,7 +22,7 @@ class BridgeQuotePage {
     '[data-testid="multichain-asset-picker__network"]';
 
   public assetPrickerSearchInput =
-    '[data-testid="asset-picker-modal-search-input"]';
+    '[data-testid="bridge-asset-picker-search-input"]';
 
   private sourceAmount = '[data-testid="from-amount"]';
 
@@ -30,7 +30,7 @@ class BridgeQuotePage {
 
   private lineaNetwork = '[data-testid="Linea"]';
 
-  public tokenButton = '[data-testid="multichain-token-list-button"]';
+  public tokenButton = '[data-testid="bridge-asset"]';
 
   private submitButton = { text: 'Swap', tag: 'button' };
 
@@ -49,8 +49,6 @@ class BridgeQuotePage {
 
   private confirmButton =
     '[data-testid="confirm-sign-and-send-transaction-confirm-snap-footer-button"]';
-
-  private selectAllButton = { text: 'Select all', tag: 'button' };
 
   private noOptionAvailable = {
     text: `This trade route isn't available right now. Try changing the amount, network, or token and we'll find the best option.`,
@@ -74,9 +72,7 @@ class BridgeQuotePage {
       await this.driver.clickElement(this.sourceAssetPickerButton);
       if (quote.fromChain) {
         await this.driver.clickElement(this.networkSelector);
-        await this.driver.clickElement(this.selectAllButton);
         await this.driver.clickElement(`[data-testid="${quote.fromChain}"]`);
-        await this.driver.clickElementAndWaitToDisappear(this.applyButton);
       }
       if (quote.tokenFrom) {
         await this.driver.fill(this.assetPrickerSearchInput, quote.tokenFrom);

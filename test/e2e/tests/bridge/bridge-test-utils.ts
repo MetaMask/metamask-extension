@@ -275,6 +275,55 @@ async function mockGetTokenArbitrum(mockServer: Mockttp) {
     });
 }
 
+async function mockGetPopularTokens(mockServer: Mockttp) {
+  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: [],
+    };
+  });
+}
+
+async function mockSearchTokens(mockServer: Mockttp) {
+  return await mockServer.forPost(/getTokens\/search/u).thenCallback(() => {
+    return {
+      statusCode: 200,
+      json: {
+        data: [
+          {
+            name: 'USD Coin',
+            symbol: 'USDC',
+            chainId: 'eip155:42161',
+            assetId:
+              'eip155:42161/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'.toLowerCase(),
+            decimals: 6,
+          },
+          {
+            name: 'USD Coin',
+            symbol: 'USDC',
+            chainId: 'eip155:1',
+            assetId:
+              'eip155:1/erc20:0xaf88d065e77c8cC2239327C5EDb3A432268e5831'.toLowerCase(),
+            decimals: 6,
+          },
+          {
+            name: 'Dai Stablecoin',
+            symbol: 'DAI',
+            chainId: 'eip155:59144',
+            assetId:
+              'eip155:59144/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'.toLowerCase(),
+            decimals: 6,
+          },
+        ],
+        pageInfo: {
+          hasNextPage: false,
+          endCursor: null,
+        },
+      },
+    };
+  });
+}
+
 async function mockETHtoETH(mockServer: Mockttp) {
   return await mockServer
     .forGet(/getQuote/u)
@@ -849,6 +898,8 @@ export const getBridgeFixtures = (
         await mockTokensEthereum(mockServer),
         await mockTokensLinea(mockServer),
         await mockGetTokenArbitrum(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockSearchTokens(mockServer),
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
