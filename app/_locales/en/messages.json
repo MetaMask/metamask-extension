@@ -995,6 +995,9 @@
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
+  "bridgeFee": {
+    "message": "Bridge fee"
+  },
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
   },
@@ -2611,6 +2614,9 @@
   "estimatedPointsRow": {
     "message": "Est. points"
   },
+  "estimatedTime": {
+    "message": "Estimated time"
+  },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
   },
@@ -3728,6 +3734,9 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
+  "metamaskFee": {
+    "message": "MetaMask fee"
+  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -3760,6 +3769,9 @@
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
+  },
+  "minute": {
+    "message": "min"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -5958,6 +5970,9 @@
   "searchYourAccounts": {
     "message": "Search your accounts",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
+  },
+  "second": {
+    "message": "sec"
   },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
@@ -8316,6 +8331,9 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionFee": {
+    "message": "Transaction fee"
   },
   "transactionFlowNetwork": {
     "message": "Network"
