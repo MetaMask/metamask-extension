@@ -62,16 +62,9 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
  * window.
  *
  * @param driver - WebDriver instance used to interact with the browser.
- * @param accountName - The name of the account to approve. Defaults to 'Account 1'.
  */
-export async function approveAccount(driver: Driver, accountName?: string) {
+export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  if (accountName) {
-    await driver.clickElement({
-      text: accountName,
-    });
-  }
 
   await driver.clickElement({
     text: 'Connect',

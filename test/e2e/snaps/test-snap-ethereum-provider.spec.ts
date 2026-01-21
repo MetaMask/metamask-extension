@@ -178,8 +178,7 @@ describe('Test Snap ethereum_provider', function () {
 
         // Test getting accounts.
         await testSnaps.scrollAndClickButton('getAccountsButton');
-        // Do not need to specify an account because the selected account is already preselected in the UI
-        await approveAccount(driver, undefined);
+        await approveAccount(driver);
         await testSnaps.checkMessageResultSpan(
           'addressResultSpan',
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
