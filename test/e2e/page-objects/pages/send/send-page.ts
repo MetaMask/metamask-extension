@@ -49,10 +49,6 @@ class SendPage {
     this.driver = driver;
   }
 
-  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.networkFilterToggle);
-  }
-
   async checkInsufficientFundsError(): Promise<void> {
     console.log('Checking for insufficient funds error');
     await this.driver.findElement(this.insufficientFundsError);
@@ -66,6 +62,17 @@ class SendPage {
   async checkInvalidAddressError(): Promise<void> {
     console.log('Checking for invalid address error');
     await this.driver.findElement(this.invalidAddressError);
+  }
+
+  async checkNetworkFilterToggleIsDisplayed(): Promise<void> {
+    await this.driver.waitForSelector(this.networkFilterToggle);
+  }
+
+  async checkSendFormIsLoaded(): Promise<void> {
+    await this.driver.waitForMultipleSelectors([
+      this.amountInput,
+      this.inputRecipient,
+    ]);
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
@@ -187,19 +194,40 @@ class SendPage {
     await this.driver.clickElement(this.tokenAsset(chainId, symbol));
   }
 
-  async typeAmount(amount: string): Promise<void> {
-    console.log(`Typing amount: ${amount}`);
-    const inputElement = await this.driver.findElement(this.amountInput);
-    for (const char of amount) {
-      await inputElement.sendKeys(char);
-    }
+  async selectNft(nftName: string): Promise<void> {
+    console.log(`Selecting nft ${nftName}`);
+    await this.driver.clickElement({ text: nftName });
   }
 
-  async checkSendFormIsLoaded(): Promise<void> {
-    await this.driver.waitForMultipleSelectors([
-      this.amountInput,
-      this.inputRecipient,
-    ]);
+  async checkWarningMessage(warningText: string): Promise<void> {
+    console.log(`Checking if warning message "${warningText}" is displayed`);
+    await this.driver.waitForSelector({
+      text: warningText,
+    });
+    console.log('Warning message validation successful');
+  }
+
+  /**
+   * Verifies that an ENS domain correctly resolves to the specified Ethereum address on the send token screen.
+   *
+   * @param ensDomain - The ENS domain name expected to resolve (e.g., "test.eth").
+   * @param address - The Ethereum address to which the ENS domain is expected to resolve.
+   * @returns A promise that resolves if the ENS domain successfully resolves to the specified address on send token screen.
+   */
+  async checkEnsAddressResolution(
+    ensDomain: string,
+    address: string,
+  ): Promise<void> {
+    console.log(
+      `Check ENS domain resolution: '${ensDomain}' should resolve to address '${address}' on the send token screen.`,
+    );
+    // check if ens domain is resolved as expected address
+    await this.driver.waitForSelector({
+      text: ensDomain,
+    });
+    await this.driver.waitForSelector({
+      text: address,
+    });
   }
 }
 
