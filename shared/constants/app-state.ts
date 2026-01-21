@@ -11,6 +11,8 @@ export enum AccountOverviewTabKey {
   Perps = 'perps',
 }
 
+export type AccountOverviewTab = `${AccountOverviewTabKey}`;
+
 export const ACCOUNT_OVERVIEW_TAB_KEY_TO_METAMETRICS_EVENT_NAME_MAP = {
   [AccountOverviewTabKey.Tokens]: MetaMetricsEventName.TokenScreenOpened,
   [AccountOverviewTabKey.DeFi]: MetaMetricsEventName.DeFiScreenOpened,
