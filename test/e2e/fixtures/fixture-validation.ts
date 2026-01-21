@@ -86,8 +86,6 @@ export const computeSchemaDiff = (
   return { newKeys, missingKeys, typeMismatches };
 };
 
-export { getFixtureIgnoredKeys };
-
 /**
  * Get a nested value from an object using a dot-separated path
  *
