@@ -915,7 +915,10 @@ export default class MetaMetricsController extends BaseController<
   async setParticipateInMetaMetrics(
     participateInMetaMetrics: boolean | null,
   ): Promise<string | null> {
-    const { metaMetricsId: existingMetaMetricsId } = this.state;
+    const {
+      metaMetricsId: existingMetaMetricsId,
+      participateInMetaMetrics: existingMetricsOptInOutStatus,
+    } = this.state;
 
     // regardless of the Opt In/Out status, we want to generate metaMetricsId if it doesn't exist
     // this is to assign the id to the `Metrics Opt Out` event (in which participateInMetaMetrics is null/false)
@@ -926,7 +929,10 @@ export default class MetaMetricsController extends BaseController<
       state.metaMetricsId = metaMetricsId;
     });
 
-    if (participateInMetaMetrics !== null) {
+    // Only track the MetricsOptIn/Out event if the status has changed
+    const metricsOptInOutStatusChanged =
+      participateInMetaMetrics !== existingMetricsOptInOutStatus;
+    if (participateInMetaMetrics !== null && metricsOptInOutStatusChanged) {
       const event = participateInMetaMetrics
         ? MetaMetricsEventName.MetricsOptIn
         : MetaMetricsEventName.MetricsOptOut;
