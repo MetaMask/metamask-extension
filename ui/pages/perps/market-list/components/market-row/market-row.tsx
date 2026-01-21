@@ -76,11 +76,21 @@ export const MarketRow: React.FC<MarketRowProps> = ({
     [market, displayMetric],
   );
 
-  // Determine if price change is positive or negative
-  const isPositiveChange = market.change24hPercent?.startsWith('+') ?? false;
-  const changeColor = isPositiveChange
-    ? TextColor.SuccessDefault
-    : TextColor.ErrorDefault;
+  // Determine the appropriate color for price change
+  const getChangeColor = (): TextColor => {
+    const change = market.change24hPercent;
+    if (!change || change === '--' || change === 'N/A') {
+      return TextColor.TextAlternative; // Neutral for missing/placeholder data
+    }
+    if (change.startsWith('+')) {
+      return TextColor.SuccessDefault; // Green for positive
+    }
+    if (change.startsWith('-')) {
+      return TextColor.ErrorDefault; // Red for negative
+    }
+    return TextColor.TextAlternative; // Neutral for zero (e.g., '0%', '0.00%')
+  };
+  const changeColor = getChangeColor();
 
   const handleClick = useCallback(() => {
     if (onPress) {
