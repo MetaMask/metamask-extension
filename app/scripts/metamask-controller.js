@@ -183,6 +183,7 @@ import {
 import { isEqualCaseInsensitive } from '../../shared/modules/string-utils';
 import { parseStandardTokenTransactionData } from '../../shared/modules/transaction.utils';
 import { STATIC_MAINNET_TOKEN_LIST } from '../../shared/constants/tokens';
+import { START_UI_SYNC } from '../../shared/constants/ui-initialization';
 import { getTokenValueParam } from '../../shared/lib/metamask-controller-utils';
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { convertNetworkId } from '../../shared/modules/network.utils';
@@ -5380,7 +5381,7 @@ export default class MetamaskController extends EventEmitter {
     // Message startUISync is used to start syncing state with UI
     // Sending this message after login is completed helps to ensure that incomplete state without
     // account details are not flushed to UI.
-    this.emit('startUISync');
+    this.emit('startUiSync');
     this.startUISync = true;
     this.memStore.subscribe(this.sendUpdate.bind(this));
   }
@@ -6857,7 +6858,7 @@ export default class MetamaskController extends EventEmitter {
       // send notification to client-side
       outStream.write({
         jsonrpc: '2.0',
-        method: 'startUISync',
+        method: START_UI_SYNC,
         params: [initialState],
       });
     };

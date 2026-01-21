@@ -21,6 +21,7 @@ import {
 } from '../shared/constants/app';
 import { getBrowserName } from '../shared/modules/browser-runtime.utils';
 import { COPY_OPTIONS } from '../shared/constants/copy';
+import { START_UI_SYNC } from '../shared/constants/ui-initialization';
 import { switchDirection } from '../shared/lib/switch-direction';
 import { setupLocale } from '../shared/lib/error-utils';
 import { trace, TraceName } from '../shared/lib/trace';
@@ -53,8 +54,6 @@ export {
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
-const METHOD_START_UI_SYNC = 'startUISync';
-
 log.setLevel(global.METAMASK_DEBUG ? 'debug' : 'warn', false);
 
 /**
@@ -78,7 +77,7 @@ export const connectToBackground = (
     if (method === 'sendUpdate') {
       const store = await reduxStore.promise;
       store.dispatch(actions.updateMetamaskState(data.params[0]));
-    } else if (method === METHOD_START_UI_SYNC) {
+    } else if (method === START_UI_SYNC) {
       await handleStartUISync(data.params[0]);
     } else {
       throw new Error(
