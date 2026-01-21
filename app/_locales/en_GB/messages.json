@@ -5203,11 +5203,11 @@
   "perpsStats": {
     "message": "Stats"
   },
-  "perpsTradePerps": {
-    "message": "Trade perps"
-  },
   "perpsTotalBalance": {
     "message": "Total Balance"
+  },
+  "perpsTradePerps": {
+    "message": "Trade perps"
   },
   "perpsUnrealizedPnl": {
     "message": "Unrealised P&L"
