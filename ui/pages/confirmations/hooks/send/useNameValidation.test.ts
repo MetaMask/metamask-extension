@@ -79,15 +79,14 @@ describe('useNameValidation', () => {
     useSendTypeMock.mockReturnValue({
       isEvmSendType: true,
     } as unknown as ReturnType<typeof useSendType>);
-    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
-      fetchResolutions: () =>
-        Promise.resolve([
-          {
-            resolvedAddress: 'dummy_address',
-            protocol: 'dummy_protocol',
-          } as unknown as AddressResolution,
-        ]),
-    });
+    lookupDomainNameMock.mockReturnValue(() =>
+      Promise.resolve([
+        {
+          resolvedAddress: 'dummy_address',
+          protocol: 'dummy_protocol',
+        },
+      ]),
+    );
     const { result } = renderHookWithProvider(
       () => useNameValidation(),
       mockState,
@@ -104,6 +103,7 @@ describe('useNameValidation', () => {
     expect(lookupDomainNameMock).toHaveBeenCalledWith(
       'test.eth',
       '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      undefined,
     );
   });
 
