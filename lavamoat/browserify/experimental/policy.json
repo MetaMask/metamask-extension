@@ -826,7 +826,7 @@
         "@metamask/keyring-utils": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
-        "@ethereumjs/tx>ethereum-cryptography": true,
+        "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography": true,
         "lodash": true,
         "uuid": true
       }
@@ -1213,34 +1213,6 @@
       }
     },
     "@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
-      "globals": {
-        "setTimeout": true
-      },
-      "packages": {
-        "@metamask/eth-sig-util": true,
-        "@metamask/json-rpc-engine": true,
-        "@metamask/rpc-errors": true,
-        "@metamask/superstruct": true,
-        "@metamask/utils": true,
-        "@metamask/json-rpc-engine>klona": true,
-        "@metamask/eth-json-rpc-middleware>safe-stable-stringify": true
-      }
-    },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": {
       "globals": {
         "setTimeout": true
       },
@@ -1680,7 +1652,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller": true,
+        "@metamask/bridge-controller>@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1693,7 +1665,7 @@
       "packages": {
         "@metamask/base-controller": true,
         "@metamask/keyring-api": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller": true,
+        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/network-controller": true,
         "@metamask/superstruct": true,
         "@metamask/utils": true,
         "lodash": true
@@ -1750,7 +1722,7 @@
         "uuid": true
       }
     },
-    "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller": {
+    "@metamask/bridge-controller>@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
         "URL": true,
@@ -1758,11 +1730,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -1779,7 +1750,7 @@
         "uuid": true
       }
     },
-    "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller": {
+    "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/network-controller": {
       "globals": {
         "Intl.NumberFormat": true,
         "URL": true,
@@ -1787,11 +1758,10 @@
       },
       "packages": {
         "@metamask/base-controller": true,
-        "@metamask/connectivity-controller": true,
         "@metamask/controller-utils": true,
         "@metamask/network-controller>@metamask/eth-block-tracker": true,
         "@metamask/network-controller>@metamask/eth-json-rpc-infura": true,
-        "@metamask/transaction-pay-controller>@metamask/bridge-controller>@metamask/multichain-network-controller>@metamask/network-controller>@metamask/eth-json-rpc-middleware": true,
+        "@metamask/eth-json-rpc-middleware": true,
         "@metamask/eth-json-rpc-provider": true,
         "@metamask/controller-utils>@metamask/eth-query": true,
         "@metamask/json-rpc-engine": true,
@@ -2568,6 +2538,12 @@
       }
     },
     "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
+      "globals": {
+        "TextEncoder": true,
+        "crypto": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": {
       "globals": {
         "TextEncoder": true,
         "crypto": true
@@ -3957,6 +3933,15 @@
       },
       "packages": {
         "@metamask/assets-controllers>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
+      }
+    },
+    "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography": {
+      "globals": {
+        "TextDecoder": true,
+        "crypto": true
+      },
+      "packages": {
+        "@metamask/multichain-account-service>@metamask/accounts-controller>ethereum-cryptography>@noble/hashes": true
       }
     },
     "@metamask/keyring-controller>@metamask/eth-hd-keyring>ethereum-cryptography": {
