@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 import type { Mockttp } from 'mockttp';
 import { Browser } from 'selenium-webdriver';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import DeepLink from '../../page-objects/pages/deep-link-page';
 import LoginPage from '../../page-objects/pages/login-page';
@@ -228,6 +229,40 @@ and we'll take you to the right place.`
         await driver.openNewURL(rawUrl);
 
         await driver.waitForUrl({ url: `${BaseUrl.Portfolio}/buy` });
+      },
+    );
+  });
+
+  it('handles /card-onboarding route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/card-onboarding`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/card`,
+        });
+
+        await driver.navigate();
+        await homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/card`,
+        });
       },
     );
   });

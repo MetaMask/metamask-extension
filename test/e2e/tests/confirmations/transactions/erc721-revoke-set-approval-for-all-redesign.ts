@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires */
 import { TransactionEnvelopeType } from '@metamask/transaction-controller';
-import { DAPP_URL } from '../../../constants';
-import { unlockWallet, WINDOW_TITLES } from '../../../helpers';
+import { Anvil } from '../../../seeder/anvil';
+import { DAPP_URL, WINDOW_TITLES } from '../../../constants';
 import { Mockttp } from '../../../mock-e2e';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import SetApprovalForAllTransactionConfirmation from '../../../page-objects/pages/confirmations/set-approval-for-all-transaction-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
@@ -47,8 +48,9 @@ async function mocks(server: Mockttp) {
 async function createTransactionAndAssertDetails(
   driver: Driver,
   contractRegistry?: ContractAddressRegistry,
+  localNodes?: Anvil[],
 ) {
-  await unlockWallet(driver);
+  await loginWithBalanceValidation(driver, localNodes?.[0]);
 
   const contractAddress = await (
     contractRegistry as ContractAddressRegistry

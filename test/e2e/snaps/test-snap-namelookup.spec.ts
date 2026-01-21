@@ -5,12 +5,11 @@ import { Driver } from '../webdriver/driver';
 import HomePage from '../page-objects/pages/home/homepage';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import { openTestSnapClickButtonAndInstall } from '../page-objects/flows/install-test-snap.flow';
-import { mockSendRedesignFeatureFlag } from '../tests/send/common';
 import { mockLookupSnap } from '../mock-response-data/snaps/snap-binary-mocks';
 import SendPage from '../page-objects/pages/send/send-page';
-import { DAPP_PATH } from '../constants';
 
 describe('Name lookup', function () {
   it('validate the recipient address appears in the send flow', async function () {
@@ -24,7 +23,6 @@ describe('Name lookup', function () {
         }).build(),
         testSpecificMock: async (mockServer: Mockttp) => [
           await mockLookupSnap(mockServer),
-          await mockSendRedesignFeatureFlag(mockServer),
         ],
         title: this.test?.fullTitle(),
       },
