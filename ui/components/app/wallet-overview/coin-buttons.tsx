@@ -63,20 +63,24 @@ import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
 
-const TabOpenedToast = ({ onClose }: { onClose: () => void }) => (
-  <ToastContainer>
-    <Toast
-      startAdornment={
-        <Icon name={IconName.Export} color={IconColor.iconDefault} />
-      }
-      text="Continue in your browser tab"
-      description="We've opened a new tab for buying."
-      onClose={onClose}
-      autoHideTime={3000}
-      onAutoHideToast={onClose}
-    />
-  </ToastContainer>
-);
+const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
+  const t = useContext(I18nContext);
+
+  return (
+    <ToastContainer>
+      <Toast
+        startAdornment={
+          <Icon name={IconName.Export} color={IconColor.iconDefault} />
+        }
+        text={t('buyTabOpenedToastText')}
+        description={t('buyTabOpenedToastDescription')}
+        onClose={onClose}
+        autoHideTime={3000}
+        onAutoHideToast={onClose}
+      />
+    </ToastContainer>
+  );
+};
 
 type CoinButtonsProps = {
   account: InternalAccount;
