@@ -30,21 +30,7 @@ import {
 } from '../../components/app/perps/mocks';
 import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
-
-/**
- * Extract display name from symbol (strips DEX prefix for HIP-3 markets)
- * e.g., "xyz:TSLA" -> "TSLA", "BTC" -> "BTC"
- *
- * @param symbol - The symbol to extract display name from
- * @returns The display name without DEX prefix
- */
-const getDisplayName = (symbol: string): string => {
-  const colonIndex = symbol.indexOf(':');
-  if (colonIndex > 0 && colonIndex < symbol.length - 1) {
-    return symbol.substring(colonIndex + 1);
-  }
-  return symbol;
-};
+import { getDisplayName } from '../../components/app/perps/utils';
 
 /**
  * Get CSS class modifier for list item based on position in list
