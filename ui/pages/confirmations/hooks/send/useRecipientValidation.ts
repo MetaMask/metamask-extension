@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { debounce } from 'lodash';
 
 import {
@@ -35,9 +35,13 @@ export const useRecipientValidation = () => {
 
   // Use ref to hold the latest validation function to avoid recreating the debounced function
   // when dependencies change. This prevents pending validations from being cancelled.
-  const validateRecipientRef = useRef<
-    (toAddress: string, signal?: AbortSignal) => Promise<RecipientValidationResult>
-  >();
+  const validateRecipientRef =
+    useRef<
+      (
+        toAddress: string,
+        signal?: AbortSignal,
+      ) => Promise<RecipientValidationResult>
+    >();
 
   useEffect(() => {
     return () => {
