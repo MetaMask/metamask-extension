@@ -95,9 +95,15 @@ describe('Dropdown', () => {
       const button = screen.getByTestId('test-dropdown-button');
       fireEvent.click(button);
 
-      expect(screen.getByTestId('test-dropdown-option-option1')).toBeInTheDocument();
-      expect(screen.getByTestId('test-dropdown-option-option2')).toBeInTheDocument();
-      expect(screen.getByTestId('test-dropdown-option-option3')).toBeInTheDocument();
+      expect(
+        screen.getByTestId('test-dropdown-option-option1'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('test-dropdown-option-option2'),
+      ).toBeInTheDocument();
+      expect(
+        screen.getByTestId('test-dropdown-option-option3'),
+      ).toBeInTheDocument();
     });
 
     it('calls onChange when option is selected', () => {
@@ -136,11 +142,18 @@ describe('Dropdown', () => {
       const button = screen.getByTestId('test-dropdown-button');
       fireEvent.click(button);
 
-      // The selected option should have a checkmark icon
+      // The selected option should have aria-selected="true" and contain a checkmark icon
       const selectedOption = screen.getByTestId('test-dropdown-option-option1');
-      const checkIcon = selectedOption.querySelector('[data-icon-name="check"]');
-      // If no data attribute, check for the icon by structure
-      expect(selectedOption).toBeInTheDocument();
+      expect(selectedOption).toHaveAttribute('aria-selected', 'true');
+      // Check icon is rendered as an SVG within the selected option
+      expect(selectedOption.querySelector('svg')).toBeInTheDocument();
+
+      // Non-selected options should not have checkmark
+      const nonSelectedOption = screen.getByTestId(
+        'test-dropdown-option-option2',
+      );
+      expect(nonSelectedOption).toHaveAttribute('aria-selected', 'false');
+      expect(nonSelectedOption.querySelector('svg')).not.toBeInTheDocument();
     });
   });
 
