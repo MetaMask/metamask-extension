@@ -6834,7 +6834,7 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         handleUpdate();
       },
-      getStatePatches: () => patchStore.flushPendingPatches(),
+      getStatePatches: () => patchStore?.flushPendingPatches() ?? [],
     };
 
     this.on('update', handleUpdate);
