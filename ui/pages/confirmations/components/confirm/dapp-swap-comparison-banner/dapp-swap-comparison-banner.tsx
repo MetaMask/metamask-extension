@@ -51,7 +51,7 @@ const SwapTabs = React.memo(
 
     return (
       <Tabs
-        activeTabKey={activeTabKey}
+        activeTab={activeTabKey}
         onTabClick={onTabClick}
         tabListProps={{
           className: 'dapp-swap__tabs',

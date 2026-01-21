@@ -232,7 +232,7 @@ const ClaimsList = () => {
   return (
     <Tabs
       data-testid="claims-list-page"
-      activeTabKey={activeTab}
+      activeTab={activeTab}
       onTabClick={setActiveTab}
       className="h-full flex flex-col overflow-y-hidden"
       tabListProps={{

@@ -6,7 +6,7 @@ const meta: Meta<typeof Tabs> = {
   title: 'Components/UI/Tabs',
   component: Tabs,
   argTypes: {
-    activeTabKey: {
+    activeTab: {
       control: 'text',
     },
     onTabClick: {

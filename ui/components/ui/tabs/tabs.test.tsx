@@ -39,9 +39,9 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
-  it('renders with activeTabKey', () => {
+  it('renders with activeTab', () => {
     const { getByText, queryByText } = renderTabs({
-      activeTabKey: 'tab2',
+      activeTab: 'tab2',
     });
 
     expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
@@ -114,7 +114,7 @@ describe('Tabs', () => {
 
   it('renders disabled tab with proper styling', () => {
     const { getByText } = render(
-      <Tabs activeTabKey="tab1" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -130,7 +130,7 @@ describe('Tabs', () => {
 
   it('does not switch to disabled tab when clicked', () => {
     const { getByText, queryByText } = render(
-      <Tabs activeTabKey="tab1" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -149,7 +149,7 @@ describe('Tabs', () => {
   it('does not call onTabClick when disabled tab is clicked', () => {
     const onTabClick = jest.fn();
     const { getByText } = render(
-      <Tabs activeTabKey="tab1" onTabClick={onTabClick}>
+      <Tabs activeTab="tab1" onTabClick={onTabClick}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>

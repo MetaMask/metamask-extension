@@ -25,7 +25,7 @@ export const NetworkTabs = ({ initialTab }: { initialTab: string }) => {
       <ModalBody style={{ padding: 0 }}>
         <Tabs
           style={{ padding: 0 }}
-          activeTabKey={activeTab}
+          activeTab={activeTab}
           onTabClick={setActiveTab}
           tabListProps={{
             className: 'network-manager__tab-list px-4',

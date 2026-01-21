@@ -31,7 +31,7 @@ export const AssetPickerModalTabs = ({
   if (visibleTabs.length > 1) {
     return (
       <Tabs
-        activeTabKey={activeTab}
+        activeTab={activeTab}
         onTabClick={setActiveTab}
         tabListProps={{ className: 'px-4' }}
       >
