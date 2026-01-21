@@ -10,6 +10,15 @@ jest.mock('react-router-dom', () => {
   };
 });
 
+// Mock async hooks to prevent React Act warnings from async state updates
+jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  useIsNFT: () => ({ isNFT: false, pending: false }),
+}));
+
+jest.mock('../../../hooks/useAsync', () => ({
+  useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+}));
+
 describe('useConfirmationAlerts', () => {
   it('returns empty array if no alerts', () => {
     const { result } = renderHookWithConfirmContextProvider(

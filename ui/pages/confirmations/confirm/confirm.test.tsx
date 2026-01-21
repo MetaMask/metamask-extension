@@ -34,6 +34,15 @@ jest.mock('../hooks/gas/useIsGaslessLoading', () => ({
   },
 }));
 
+// Mock async hooks to prevent React Act warnings from async state updates
+jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  useIsNFT: () => ({ isNFT: false, pending: false }),
+}));
+
+jest.mock('../../../hooks/useAsync', () => ({
+  useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
+}));
+
 const mockUseNavigate = jest.fn();
 jest.mock('react-router-dom', () => {
   const actual = jest.requireActual('react-router-dom');
