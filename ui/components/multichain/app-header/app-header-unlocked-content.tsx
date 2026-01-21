@@ -355,9 +355,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     CopyButton,
-    isMultichainAccountsState2Enabled,
     navigate,
-    dispatch,
     trackEvent,
     accountListStats,
   ]);
