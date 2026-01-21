@@ -9,7 +9,7 @@ exports[`AdditionalNetworksInfo renders correctly 1`] = `
       class="mm-box mm-box--display-flex mm-box--justify-content-space-between"
     >
       <div
-        class="mm-box mm-box--display-inline-flex mm-box--align-items-center"
+        class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
       >
         <p
           class="mm-box mm-text mm-text--body-md-medium mm-box--color-text-alternative"
@@ -17,7 +17,7 @@ exports[`AdditionalNetworksInfo renders correctly 1`] = `
           Additional networks
         </p>
         <div
-          class="mm-box"
+          class="mm-box mm-box--display-flex mm-box--justify-content-center mm-box--align-items-center"
         >
           <span
             class="mm-box add-network__warning-icon mm-icon mm-icon--size-md mm-box--margin-left-2 mm-box--display-inline-block mm-box--color-icon-alternative"

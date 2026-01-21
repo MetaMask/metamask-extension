@@ -66,8 +66,9 @@ export const AdditionalNetworksInfo = memo(() => {
       <Box display={Display.Flex} justifyContent={JustifyContent.spaceBetween}>
         {/* Container for the "Additional Networks" text and info icon */}
         <Box
-          display={Display.InlineFlex}
+          display={Display.Flex}
           alignItems={AlignItems.center}
+          justifyContent={JustifyContent.center}
           ref={setBoxRef}
         >
           {/* Label text - uses translation key "additionalNetworks" */}
@@ -79,7 +80,11 @@ export const AdditionalNetworksInfo = memo(() => {
           </Text>
 
           {/* Info icon with hover trigger for popover */}
-          <Box>
+          <Box
+            display={Display.Flex}
+            alignItems={AlignItems.center}
+            justifyContent={JustifyContent.center}
+          >
             <Icon
               onMouseEnter={handleMouseEnter}
               className="add-network__warning-icon"
