@@ -6878,7 +6878,7 @@ export default class MetamaskController extends EventEmitter {
         );
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
-        patchStore.destroy();
+        patchStore?.destroy();
       }
     };
 
