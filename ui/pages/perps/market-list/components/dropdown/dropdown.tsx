@@ -169,6 +169,7 @@ export const Dropdown = <OptionId extends string>({
           name={isOpen ? IconName.ArrowUp : IconName.ArrowDown}
           size={IconSize.Xs}
           color={IconColor.IconAlternative}
+          className="ml-auto"
         />
       </ButtonBase>
 
