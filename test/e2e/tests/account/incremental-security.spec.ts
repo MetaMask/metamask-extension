@@ -46,6 +46,9 @@ describe('Incremental Security', function (this: Suite) {
             },
           })
           .build(),
+        localNodeOptions: {
+          chainId: 1,
+        },
         testSpecificMock: mockSpotPrices,
 
         title: this.test?.fullTitle(),
