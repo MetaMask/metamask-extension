@@ -107,7 +107,6 @@
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",
-    "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
     "txAlertStatus": "number",
