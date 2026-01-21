@@ -49,7 +49,7 @@ jobs:
     name: Locales changed only checks
     needs:
       - get-requirements
-    if: ${{ needs.get-requirements.outputs.locales-only == 'true' }}
+    if: ${{ needs.get-requirements.outputs.locales-only == 'true' && github.event_name == 'merge_group' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -689,6 +689,10 @@ jobs:
         run: |
           # Locales-only path
           if [[ "${{ needs.get-requirements.outputs.locales-only }}" == "true" ]]; then
+            if [[ "${{ github.event_name != 'merge_group' }}" ]]; then
+              echo "Locales-only in the Merge Queue, skipped everything"
+              exit 0
+            fi
             if [[ "${{ needs.all-jobs-completed-locales.outputs.PASSED }}" != "true" ]]; then
               echo "Locales-only checks failed"
               exit 1

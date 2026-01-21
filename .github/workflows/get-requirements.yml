@@ -100,7 +100,7 @@ jobs:
           if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
             echo "locales-only=true" >> "$GITHUB_OUTPUT"
           else
-            echo "locales-only=false" >> "$GITHUB_OUTPUT"
+            echo "locales-only=true" >> "$GITHUB_OUTPUT"
           fi
 
       # skip-everything is a shortcut for up-to-date == 'true' || locales-only == 'true'
