@@ -4760,12 +4760,6 @@ export async function forceUpdateMetamaskState(
   return dispatch(updateMetamaskState(pendingPatches));
 }
 
-export function toggleAccountMenu() {
-  return {
-    type: actionConstants.TOGGLE_ACCOUNT_MENU,
-  };
-}
-
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding?: boolean;
