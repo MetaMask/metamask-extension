@@ -10,7 +10,10 @@ import {
   AvatarTokenSize,
 } from '@metamask/design-system-react';
 import { PerpsTokenLogo } from '../../../../../components/app/perps/perps-token-logo';
-import { getDisplaySymbol } from '../../../../../components/app/perps/utils';
+import {
+  getDisplaySymbol,
+  getChangeColor,
+} from '../../../../../components/app/perps/utils';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
 import type { SortField } from '../../../utils/sortMarkets';
 
@@ -75,15 +78,9 @@ export const MarketRow: React.FC<MarketRowProps> = ({
   const changeColor = useMemo(() => {
     const change = market.change24hPercent;
     if (!change || change === '--' || change === 'N/A') {
-      return TextColor.TextAlternative; // Neutral for missing/placeholder data
+      return TextColor.TextAlternative;
     }
-    if (change.startsWith('+')) {
-      return TextColor.SuccessDefault; // Green for positive
-    }
-    if (change.startsWith('-')) {
-      return TextColor.ErrorDefault; // Red for negative
-    }
-    return TextColor.TextAlternative; // Neutral for zero (e.g., '0%', '0.00%')
+    return getChangeColor(change);
   }, [market.change24hPercent]);
 
   const handleClick = useCallback(() => {
