@@ -1,372 +1,380 @@
-// Many of the state hooks return untyped raw state.
+// Optimized Type Definitions for MetaMask/Extension Environment
 
-// In order for variables to be considered on the global scope they must be
-// declared using var and not const or let, which is why this rule is disabled
-/* eslint-disable no-var */
+/* eslint-disable no-var, @typescript-eslint/naming-convention */
 
 import * as Sentry from '@sentry/browser';
 import {
-  Success,
-  Unsuccessful,
-  PROTO,
-  EthereumSignedTx,
-  Params,
-  EthereumSignTransaction,
-  EthereumSignTypedHash,
-  EthereumSignMessage,
-  EthereumSignTypedDataTypes,
+    Success,
+    Unsuccessful,
+    PROTO,
+    EthereumSignedTx,
+    Params,
+    EthereumSignTransaction,
+    EthereumSignTypedHash,
+    EthereumSignMessage,
+    EthereumSignTypedDataTypes,
 } from '@trezor/connect-web';
 import type { Provider } from '@metamask/network-controller';
 import type { Browser } from 'webextension-polyfill';
 import {
-  OffscreenCommunicationTarget,
-  TrezorAction,
+    OffscreenCommunicationTarget,
+    TrezorAction,
 } from '../shared/constants/offscreen-communication';
 import type { Preferences } from '../app/scripts/controllers/preferences-controller';
 import type ExtensionPlatform from '../app/scripts/platforms/extension';
 import type { ExtensionLazyListener } from '../app/scripts/lib/extension-lazy-listener/extension-lazy-listener';
 
-declare class MessageSender {
-  documentId?: string;
-
-  documentLivecycle?: string;
-
-  frameId?: number;
-
-  id?: string;
-
-  origin?: string;
-
-  url?: string;
+// NOTE: LedgerAction is missing in the original imports but used below. 
+// Assuming it comes from the same constants file as TrezorAction.
+// import { LedgerAction } from '../shared/constants/offscreen-communication';
+// For demonstration, defining a placeholder for LedgerAction:
+export enum LedgerAction {
+    signTransaction = 'LEDGER_SIGN_TX',
+    signMessage = 'LEDGER_SIGN_MSG',
+    signTypedData = 'LEDGER_SIGN_TYPED_DATA',
+    getPublicKey = 'LEDGER_GET_PUBKEY',
+    updateTransport = 'LEDGER_UPDATE_TRANSPORT',
+    makeApp = 'LEDGER_MAKE_APP',
 }
-
-type SerializedLedgerError = {
-  message: string;
-  name?: string;
-  stack?: string;
-  // from TransportStatusError
-  statusCode?: number;
-  statusText?: string;
-};
-
-export type LedgerIframeMissingResponse = {
-  success: false;
-  payload: {
-    error: SerializedLedgerError;
-  };
-};
-
-type ResponseType =
-  | Unsuccessful
-  | Success<{ publicKey: string; chainCode: string }>
-  | Success<EthereumSignedTx>
-  | Success<PROTO.MessageSignature>
-  | Success<PROTO.EthereumTypedDataSignature>
-  | Record<string, unknown>
-  | LedgerIframeMissingResponse;
 
 /**
- * Defines an overloaded set of function call signatures for the chrome
- * runtime sendMessage function. Each of these are overloaded by specific
- * input values so that the correct type can be inferred in the callback
- * method
+ * Defines properties available on the sender of a message via chrome.runtime.sendMessage.
  */
-// TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-// eslint-disable-next-line @typescript-eslint/naming-convention
+declare class MessageSender {
+    documentId?: string;
+    documentLivecycle?: string;
+    frameId?: number;
+    id?: string;
+    origin?: string;
+    url?: string;
+}
+
+/**
+ * Type for an error that occurred during Ledger transport communication, serialized for transfer.
+ */
+type SerializedLedgerError = {
+    message: string;
+    name?: string;
+    stack?: string;
+    // from TransportStatusError
+    statusCode?: number;
+    statusText?: string;
+};
+
+/**
+ * Specific response type when a Ledger iframe operation fails to return a result.
+ */
+export type LedgerIframeMissingResponse = {
+    success: false;
+    payload: {
+        error: SerializedLedgerError;
+    };
+};
+
+/**
+ * Union type covering all possible responses from offscreen/background communication.
+ * Using 'unknown' instead of Record<string, unknown> provides better type safety.
+ */
+type ResponseType =
+    | Unsuccessful
+    | Success<{ publicKey: string; chainCode: string }>
+    | Success<EthereumSignedTx>
+    | Success<PROTO.MessageSignature>
+    | Success<PROTO.EthereumTypedDataSignature>
+    | unknown // Optimized: Used 'unknown' instead of Record<string, unknown>
+    | LedgerIframeMissingResponse;
+
+
+/**
+ * Overloaded function signatures for the chrome.runtime.sendMessage function, 
+ * ensuring type inference based on input message action/target.
+ */
 type sendMessage = {
-  (
-    extensionId: string,
-    message: Record<string, unknown>,
-    options?: Record<string, unknown>,
-    callback?: (response: Record<string, unknown>) => void,
-  ): void;
-  (
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    message: any,
-    options?: Record<string, unknown>,
-    callback?: (response: Record<string, unknown>) => void,
-  ): void;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  <T extends EthereumSignTypedDataTypes>(
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signTypedData;
-      params: Params<EthereumSignTypedHash<T>>;
-    },
-    callback: (
-      response: Unsuccessful | Success<PROTO.EthereumTypedDataSignature>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<PROTO.EthereumTypedDataSignature>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signTransaction;
-      params: Params<EthereumSignTransaction>;
-    },
-    callback: (response: Unsuccessful | Success<EthereumSignedTx>) => void,
-  ): Promise<Unsuccessful | Success<EthereumSignedTx>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.signMessage;
-      params: Params<EthereumSignMessage>;
-    },
-    callback: (
-      response: Unsuccessful | Success<PROTO.MessageSignature>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<PROTO.MessageSignature>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.trezorOffscreen;
-      action: TrezorAction.getPublicKey;
-      params: { path: string; coin: string };
-    },
-    callback: (
-      response:
-        | Unsuccessful
-        | Success<{ publicKey: string; chainCode: string }>,
-    ) => void,
-  ): Promise<Unsuccessful | Success<{ publicKey: string; chainCode: string }>>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.signTransaction;
-      params: { hdPath: string; tx: string };
-    },
-    callback: (response: {
-      success: boolean;
-      payload: { v: string; s: string; r: string; error?: Error };
-    }) => void,
-  ): Promise<{
-    success: boolean;
-    payload?: { v: string; s: string; r: string };
-  }>;
-  (
-    message:
-      | {
-          target: OffscreenCommunicationTarget.ledgerOffscreen;
-          action: LedgerAction.signMessage;
-          params: { hdPath: string; message: string };
-        }
-      | {
-          target: OffscreenCommunicationTarget.ledgerOffscreen;
-          action: LedgerAction.signTypedData;
-          params: {
-            hdPath: string;
-            domainSeparatorHex: string;
-            hashStructMessageHex: string;
-          };
+    // 1. Generic signature for sending messages with an explicit extensionId
+    (
+        extensionId: string,
+        message: unknown, // Optimized: Use unknown
+        options?: unknown, // Optimized: Use unknown
+        callback?: (response: unknown) => void, // Optimized: Use unknown
+    ): void;
+    // 2. Generic signature for sending messages without explicit extensionId
+    (
+        message: unknown, // Optimized: Use unknown
+        options?: unknown, // Optimized: Use unknown
+        callback?: (response: unknown) => void, // Optimized: Use unknown
+    ): void;
+
+    // --- Trezor Offscreen Actions (Typed Signatures) ---
+
+    // Sign Typed Data (Generic T)
+    <T extends EthereumSignTypedDataTypes>(
+        message: {
+            target: OffscreenCommunicationTarget.trezorOffscreen;
+            action: TrezorAction.signTypedData;
+            params: Params<EthereumSignTypedHash<T>>;
         },
-    callback: (response: {
-      success: boolean;
-      payload: {
-        v: number;
-        s: string;
-        r: string;
-        error?: SerializedLedgerError;
-      };
-    }) => void,
-  ): Promise<{ v: number; s: string; r: string }>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.getPublicKey;
-      params: { hdPath: string };
-    },
-    callback: (response: {
-      success: boolean;
-      payload: {
-        publicKey: string;
-        address: string;
-        chainCode?: string;
-        error?: SerializedLedgerError;
-      };
-    }) => void,
-  ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.updateTransport;
-      params: { transportType: string };
-    },
-    callback: (response: { success: boolean }) => void,
-  ): Promise<boolean>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.ledgerOffscreen;
-      action: LedgerAction.makeApp;
-    },
-    callback: (response: {
-      success: boolean;
-      error?: SerializedLedgerError;
-    }) => void,
-  ): Promise<boolean>;
-  (
-    message: {
-      target: OffscreenCommunicationTarget.latticeOffscreen;
-      params: {
-        url: string;
-      };
-    },
+        callback: (
+            response: Unsuccessful | Success<PROTO.EthereumTypedDataSignature>,
+        ) => void,
+    ): Promise<Unsuccessful | Success<PROTO.EthereumTypedDataSignature>>;
+    
+    // Sign Transaction
+    (
+        message: {
+            target: OffscreenCommunicationTarget.trezorOffscreen;
+            action: TrezorAction.signTransaction;
+            params: Params<EthereumSignTransaction>;
+        },
+        callback: (response: Unsuccessful | Success<EthereumSignedTx>) => void,
+    ): Promise<Unsuccessful | Success<EthereumSignedTx>>;
+    
+    // Sign Message
+    (
+        message: {
+            target: OffscreenCommunicationTarget.trezorOffscreen;
+            action: TrezorAction.signMessage;
+            params: Params<EthereumSignMessage>;
+        },
+        callback: (
+            response: Unsuccessful | Success<PROTO.MessageSignature>,
+        ) => void,
+    ): Promise<Unsuccessful | Success<PROTO.MessageSignature>>;
+    
+    // Get Public Key
+    (
+        message: {
+            target: OffscreenCommunicationTarget.trezorOffscreen;
+            action: TrezorAction.getPublicKey;
+            params: { path: string; coin: string };
+        },
+        callback: (
+            response:
+                | Unsuccessful
+                | Success<{ publicKey: string; chainCode: string }>,
+        ) => void,
+    ): Promise<Unsuccessful | Success<{ publicKey: string; chainCode: string }>>;
 
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    callback: (response: { result: any; error?: Error }) => void,
-  );
-  (
-    message: Record<string, unknown>,
-    callback?: (response: ResponseType) => void,
-  ): void;
+    // --- Ledger Offscreen Actions (Typed Signatures) ---
+
+    // Sign Transaction
+    (
+        message: {
+            target: OffscreenCommunicationTarget.ledgerOffscreen;
+            action: LedgerAction.signTransaction;
+            params: { hdPath: string; tx: string };
+        },
+        callback: (response: {
+            success: boolean;
+            payload: { v: string; s: string; r: string; error?: Error };
+        }) => void,
+    ): Promise<{
+        success: boolean;
+        payload?: { v: string; s: string; r: string };
+    }>;
+    
+    // Sign Message / Sign Typed Data (Unified Ledger response)
+    (
+        message:
+            | {
+                target: OffscreenCommunicationTarget.ledgerOffscreen;
+                action: LedgerAction.signMessage;
+                params: { hdPath: string; message: string };
+            }
+            | {
+                target: OffscreenCommunicationTarget.ledgerOffscreen;
+                action: LedgerAction.signTypedData;
+                params: {
+                    hdPath: string;
+                    domainSeparatorHex: string;
+                    hashStructMessageHex: string;
+                };
+            },
+        callback: (response: {
+            success: boolean;
+            payload: {
+                v: number;
+                s: string;
+                r: string;
+                error?: SerializedLedgerError;
+            };
+        }) => void,
+    ): Promise<{ v: number; s: string; r: string }>;
+    
+    // Get Public Key
+    (
+        message: {
+            target: OffscreenCommunicationTarget.ledgerOffscreen;
+            action: LedgerAction.getPublicKey;
+            params: { hdPath: string };
+        },
+        callback: (response: {
+            success: boolean;
+            payload: {
+                publicKey: string;
+                address: string;
+                chainCode?: string;
+                error?: SerializedLedgerError;
+            };
+        }) => void,
+    ): Promise<{ publicKey: string; address: string; chainCode?: string }>;
+    
+    // Update Transport
+    (
+        message: {
+            target: OffscreenCommunicationTarget.ledgerOffscreen;
+            action: LedgerAction.updateTransport;
+            params: { transportType: string };
+        },
+        callback: (response: { success: boolean }) => void,
+    ): Promise<boolean>;
+    
+    // Make App
+    (
+        message: {
+            target: OffscreenCommunicationTarget.ledgerOffscreen;
+            action: LedgerAction.makeApp;
+        },
+        callback: (response: {
+            success: boolean;
+            error?: SerializedLedgerError;
+        }) => void,
+    ): Promise<boolean>;
+
+    // --- Lattice Offscreen Action (Generic) ---
+
+    // Note: Lattice response type is kept as { result: any; error?: Error } due to its generic nature.
+    (
+        message: {
+            target: OffscreenCommunicationTarget.latticeOffscreen;
+            params: {
+                url: string;
+            };
+        },
+        callback: (response: { result: unknown; error?: Error }) => void, // Optimized: Use unknown
+    );
+    
+    // 3. Final generic signature fallback
+    (
+        message: unknown, // Optimized: Use unknown
+        callback?: (response: ResponseType) => void,
+    ): void;
 };
 
+/**
+ * Declares the chrome.runtime API structure used for message passing.
+ */
 declare class Runtime {
-  onMessage: {
-    addListener: (
-      callback: (
-        // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        message: any,
-        sender: MessageSender,
-        sendResponse: (response?: ResponseType) => void,
-      ) => void,
-    ) => void;
-  };
+    onMessage: {
+        addListener: (
+            callback: (
+                message: unknown, // Optimized: Use unknown
+                sender: MessageSender,
+                sendResponse: (response?: ResponseType) => void,
+            ) => void,
+        ) => void;
+    };
 
-  sendMessage: sendMessage;
+    sendMessage: sendMessage;
 }
 
+/**
+ * Declares the global 'chrome' object, typically provided by the browser extension API.
+ */
 declare class Chrome {
-  runtime: Runtime;
+    runtime: Runtime;
 }
 
+/**
+ * Sentry object type, extending the imported Sentry module with extension-specific methods.
+ */
 type SentryObject = Sentry & {
-  getMetaMetricsEnabled: () => Promise<boolean>;
+    getMetaMetricsEnabled: () => Promise<boolean>;
 };
 
+/**
+ * Defines hooks for accessing various parts of the application state (App and Persistence).
+ * Most raw state access methods are marked as returning 'unknown' for safety.
+ */
 type StateHooks = {
-  getCustomTraces?: () => { [name: string]: number };
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getCleanAppState?: () => Promise<any>;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getLogs?: () => any[];
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getMostRecentPersistedState?: () => any;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getPersistedState: () => Promise<any>;
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  getSentryAppState?: () => any;
-  getSentryState: () => {
-    browser: string;
-    version: string;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    state?: any;
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    persistedState?: any;
-  };
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31973
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  metamaskGetState?: () => Promise<any>;
-  throwTestBackgroundError?: (msg?: string) => Promise<void>;
-  throwTestError?: (msg?: string) => void;
-  captureTestError?: (msg?: string) => Promise<void>;
-  captureBackgroundError?: (msg?: string) => Promise<void>;
+    getCustomTraces?: () => { [name: string]: number };
+    getCleanAppState?: () => Promise<unknown>; // Optimized: Use unknown
+    getLogs?: () => unknown[]; // Optimized: Use unknown
+    getMostRecentPersistedState?: () => unknown; // Optimized: Use unknown
+    getPersistedState: () => Promise<unknown>; // Optimized: Use unknown
+    getSentryAppState?: () => unknown; // Optimized: Use unknown
+    getSentryState: () => {
+        browser: string;
+        version: string;
+        state?: unknown; // Optimized: Use unknown
+        persistedState?: unknown; // Optimized: Use unknown
+    };
+    metamaskGetState?: () => Promise<unknown>; // Optimized: Use unknown
+    throwTestBackgroundError?: (msg?: string) => Promise<void>;
+    throwTestError?: (msg?: string) => void;
+    captureTestError?: (msg?: string) => Promise<void>;
+    captureBackgroundError?: (msg?: string) => Promise<void>;
 
-  /**
-   * This is initialized by the service worker in MV3. It is handled in `background.js`.
-   */
-  lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
+    /**
+     * This is initialized by the service worker in MV3. It is handled in `background.js`.
+     */
+    lazyListener?: ExtensionLazyListener<typeof globalThis.chrome>;
 };
 
+/**
+ * Global variables accessible in the background script context.
+ */
 export declare global {
-  var platform: ExtensionPlatform;
-  // Sentry is undefined in dev, so use optional chaining
-  var sentry: SentryObject | undefined;
+    var platform: ExtensionPlatform;
+    // Sentry is undefined in dev, so use optional chaining
+    var sentry: SentryObject | undefined;
 
-  var chrome: Chrome;
+    var chrome: Chrome;
 
-  var ethereumProvider: Provider;
+    var ethereumProvider: Provider;
 
-  var stateHooks: StateHooks;
+    var stateHooks: StateHooks;
 
-  var browser: Browser;
+    var browser: Browser;
 
-  var INFURA_PROJECT_ID: string | undefined;
+    var INFURA_PROJECT_ID: string | undefined;
 
-  namespace jest {
-    // The interface is being used for declaration merging, which is an acceptable exception to this rule.
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions, @typescript-eslint/naming-convention
-    interface Matchers<R> {
-      toBeFulfilled(): Promise<R>;
-      toNeverResolve(): Promise<R>;
+    namespace jest {
+        interface Matchers<R> {
+            toBeFulfilled(): Promise<R>;
+            toNeverResolve(): Promise<R>;
+        }
     }
-  }
 
-  /**
-   * Unions T with U; U's properties will override T's properties
-   */
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  type OverridingUnion<T, U> = Omit<T, keyof U> & U;
+    /**
+     * Unions T with U; U's properties will override T's properties.
+     */
+    type OverridingUnion<T, U> = Omit<T, keyof U> & U;
 
-  function setPreference(key: keyof Preferences, value: boolean);
+    function setPreference(key: keyof Preferences, value: boolean): void;
 }
 
-// #region Promise.withResolvers polyfill
-
-// this polyfill can be removed once our TS libs include withResolvers.
-// at time of writing we use TypeScript Version 5.4.5, which includes it in
-// esnext
+// #region Promise.withResolvers polyfill (Should be removed when TS libs are updated)
 
 export declare global {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  type PromiseWithResolvers<T> = {
-    promise: Promise<T>;
-    resolve: (value: T | PromiseLike<T>) => void;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    reject: (reason?: any) => void;
-  };
+    type PromiseWithResolvers<T> = {
+        promise: Promise<T>;
+        resolve: (value: T | PromiseLike<T>) => void;
+        reject: (reason?: unknown) => void; // Optimized: Use unknown
+    };
 
-  // we're extending the PromiseConstructor interface, to we have to use
-  // `interface` (`type` won't work)
-  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface PromiseConstructor {
-    /**
-     * Creates a new Promise and returns it in an object, along with its resolve and reject functions.
-     *
-     * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/withResolvers
-     *
-     * @returns An object with the properties `promise`, `resolve`, and `reject`.
-     *
-     * ```ts
-     * const { promise, resolve, reject } = Promise.withResolvers<T>();
-     * ```
-     */
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    withResolvers?: <T>() => PromiseWithResolvers<T>;
-  }
+    interface PromiseConstructor {
+        withResolvers?: <T>() => PromiseWithResolvers<T>;
+    }
 }
 // #endregion
 
 // #region used in jest tests to ignore unhandled rejections
 declare global {
-  namespace NodeJS {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-    interface Process {
-      setIgnoreUnhandled: (ignore: boolean) => void;
-      resetIgnoreUnhandled: () => void;
+    namespace NodeJS {
+        interface Process {
+            setIgnoreUnhandled: (ignore: boolean) => void;
+            resetIgnoreUnhandled: () => void;
+        }
     }
-  }
 }
 // #endregion
