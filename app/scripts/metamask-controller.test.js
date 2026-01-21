@@ -426,6 +426,14 @@ describe('MetaMaskController', () => {
           lastFetchedAt: 0,
         }),
       );
+    nock('https://client-config.api.cx.metamask.io')
+      .persist()
+      .get('/v1/flags')
+      .query(true)
+      .reply(
+        200,
+        JSON.stringify([]),
+      );
 
     globalThis.sentry = {
       withIsolationScope: jest.fn(),
