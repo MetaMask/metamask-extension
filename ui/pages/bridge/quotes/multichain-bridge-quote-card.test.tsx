@@ -3,7 +3,7 @@ import React from 'react';
 import {
   QuoteResponse,
   RequestStatus,
-  formatChainIdToCaip,
+  getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { zeroAddress } from 'ethereumjs-util';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -17,6 +17,7 @@ import { toAssetId } from '../../../../shared/lib/asset-utils';
 import { BridgeCTAInfoText } from '../prepare/bridge-cta-info-text';
 import { useRewards } from '../../../hooks/bridge/useRewards';
 import { createMockInternalAccount } from '../../../../test/jest/mocks';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { MultichainBridgeQuoteCard } from './multichain-bridge-quote-card';
 
 jest.mock('../../../hooks/bridge/useRewards', () => ({
@@ -55,7 +56,7 @@ describe('MultichainBridgeQuoteCard', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -132,7 +133,7 @@ describe('MultichainBridgeQuoteCard', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -224,7 +225,7 @@ describe('MultichainBridgeQuoteCard', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
         slippage: 1,
       },
       bridgeStateOverrides: {
@@ -361,7 +362,7 @@ describe('MultichainBridgeQuoteCard', () => {
         },
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
-          toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+          toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
         },
         bridgeStateOverrides: {
           quoteRequest: {
@@ -597,7 +598,7 @@ describe('MultichainBridgeQuoteCard', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.POLYGON),
+        toToken: toBridgeToken(getNativeAssetForChainId(CHAIN_IDS.POLYGON)),
       },
       bridgeStateOverrides: {
         quoteRequest: {
