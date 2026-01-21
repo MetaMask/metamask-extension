@@ -303,14 +303,15 @@
         "terser-webpack-plugin>@jridgewell/trace-mapping>@jridgewell/sourcemap-codec": true
       }
     },
-    "lavamoat>@lavamoat/aa": {
+    "@lavamoat/webpack>@lavamoat/aa": {
       "builtin": {
         "node:fs.lstatSync": true,
         "node:fs.readFileSync": true,
         "node:fs.realpathSync": true,
         "node:path.dirname": true,
         "node:path.join": true,
-        "node:path.relative": true
+        "node:path.relative": true,
+        "node:path.sep": true
       },
       "packages": {
         "depcheck>resolve": true
@@ -332,7 +333,7 @@
       },
       "packages": {
         "@lavamoat/webpack>@babel/parser": true,
-        "lavamoat>@lavamoat/aa": true,
+        "@lavamoat/webpack>@lavamoat/aa": true,
         "browserify>browser-resolve": true,
         "lavamoat>lavamoat-core": true,
         "webpack": true

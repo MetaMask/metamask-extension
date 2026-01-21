@@ -283,7 +283,7 @@
     "@keystonehq/bc-ur-registry-eth": "^0.21.0",
     "@lavamoat/lavadome-react": "0.0.20",
     "@lavamoat/snow": "^2.0.4",
-    "@lavamoat/webpack": "1.5.6",
+    "@lavamoat/webpack": "1.5.7",
     "@ledgerhq/errors": "^6.21.0",
     "@material-ui/core": "^4.12.4",
     "@material-ui/pickers": "^3.3.11",
