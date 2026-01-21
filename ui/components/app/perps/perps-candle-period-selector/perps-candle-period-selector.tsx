@@ -59,9 +59,11 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
-      gap={1}
+      gap={0}
       paddingTop={2}
       paddingBottom={2}
+      paddingLeft={4}
+      paddingRight={4}
       data-testid="perps-candle-period-selector"
     >
       {/* Default Candle Period Buttons */}
@@ -73,8 +75,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
           <ButtonBase
             key={period.value}
             className={twMerge(
-              '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg',
-              isSelected && 'bg-background-muted',
+              '!py-1.5 h-auto !min-w-12 rounded-lg bg-transparent hover:bg-hover active:bg-pressed',
+              isSelected && 'bg-muted',
             )}
             onClick={() => {
               onPeriodChange?.(period.value);
@@ -97,8 +99,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       <ButtonBase
         ref={moreButtonRef}
         className={twMerge(
-          '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg flex items-center gap-1',
-          isMorePeriodSelected && 'bg-background-muted',
+          '!py-1.5 h-auto !min-w-12 rounded-lg flex items-center gap-1 bg-transparent hover:bg-hover active:bg-pressed',
+          isMorePeriodSelected && 'bg-muted',
         )}
         onClick={() => setIsMoreOpen(!isMoreOpen)}
         data-testid="perps-candle-period-more"
@@ -140,8 +142,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
               <ButtonBase
                 key={period.value}
                 className={twMerge(
-                  '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg text-left',
-                  isSelected && 'bg-background-muted',
+                  '!px-2 !py-1.5 h-auto !min-w-16 rounded-lg text-left bg-transparent hover:bg-hover active:bg-pressed',
+                  isSelected && 'bg-muted',
                 )}
                 onClick={() => handleMorePeriodSelect(period.value)}
                 data-testid={`perps-candle-period-more-${period.value}`}
