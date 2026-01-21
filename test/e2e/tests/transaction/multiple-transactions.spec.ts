@@ -3,7 +3,7 @@ import TransactionConfirmation from '../../page-objects/pages/confirmations/tran
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { withFixtures } from '../../helpers';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
@@ -36,8 +36,12 @@ describe('Multiple transactions', function () {
         // confirms second transaction
         const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkPageNumbers(1, 2);
         await transactionConfirmation.clickFooterConfirmButton();
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkNavigationIsNotPresent();
 
         // confirms first transaction
@@ -80,10 +84,14 @@ describe('Multiple transactions', function () {
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         // rejects second transaction
-         const transactionConfirmation = new TransactionConfirmation(driver);
+        const transactionConfirmation = new TransactionConfirmation(driver);
         await transactionConfirmation.checkPageIsLoaded();
         await transactionConfirmation.checkPageNumbers(1, 2);
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.clickFooterCancelButton();
+        await transactionConfirmation.checkPageIsLoaded();
+        await transactionConfirmation.checkGasFee('0.0002');
         await transactionConfirmation.checkNavigationIsNotPresent();
 
         // rejects first transaction
