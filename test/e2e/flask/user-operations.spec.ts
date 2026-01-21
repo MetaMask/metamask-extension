@@ -12,7 +12,7 @@ import {
   VERIFYING_PAYMASTER,
   WINDOW_TITLES,
 } from '../constants';
-import { withFixtures, unlockWallet, convertETHToHexGwei } from '../helpers';
+import { withFixtures, convertETHToHexGwei } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
 import { Driver } from '../webdriver/driver';
 import { Bundler } from '../bundler';
@@ -21,6 +21,7 @@ import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
 import { createInternalTransaction } from '../page-objects/flows/transaction';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 
 enum TransactionDetailRowIndex {
   Nonce = 0,
@@ -217,7 +218,8 @@ async function withAccountSnap(
       driver: Driver;
       bundlerServer: Bundler;
     }) => {
-      await unlockWallet(driver);
+      // Todo: use POM and consolidate balance check when balance is 0 ('fund your wallet' is displayed)
+      await loginWithoutBalanceValidation(driver);
       await installExampleSnap(driver);
 
       await setSnapConfig(driver, {

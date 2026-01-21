@@ -9,7 +9,7 @@ import {
   isWritable,
 } from '../../helpers/file';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import BridgeQuotePage from '../page-objects/pages/bridge/quote-page';
 import HomePage from '../page-objects/pages/home/homepage';
@@ -53,7 +53,7 @@ async function loadNewAccount(): Promise<{
       title: testTitle,
     },
     async ({ driver }: { driver: Driver }) => {
-      await unlockWallet(driver);
+      await loginWithBalanceValidation(driver);
 
       const headerNavbar = new HeaderNavbar(driver);
       await headerNavbar.openAccountMenu();

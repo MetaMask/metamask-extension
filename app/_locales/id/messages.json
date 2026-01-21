@@ -3885,9 +3885,6 @@
     "message": "Anda harus memilih file untuk diimpor.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Tidak dapat mengirim jumlah negatif ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Tidak dapat mengirim aset dalam jumlah negatif atau nol."
   },

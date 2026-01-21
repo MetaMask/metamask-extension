@@ -50,7 +50,9 @@ describe('Send ETH', function () {
     );
   });
 
-  it('it should be possible to send Max ETH', async function () {
+  // https://github.com/MetaMask/MetaMask-planning/issues/6679
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('it should be possible to send Max ETH', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),

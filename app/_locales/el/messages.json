@@ -3885,9 +3885,6 @@
     "message": "Πρέπει να επιλέξετε ένα αρχείο για εισαγωγή.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Δεν μπορεί να γίνει αποστολή αρνητικών ποσών στο ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Δεν είναι δυνατή η αποστολή αρνητικών ή μηδενικών ποσών περιουσιακών στοιχείων."
   },

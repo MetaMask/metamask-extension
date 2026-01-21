@@ -700,9 +700,6 @@
     "message": "您必須選擇一個檔案來匯入。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "不能送出負值的以太幣。"
-  },
   "networkDetails": {
     "message": "網路詳細資料"
   },

@@ -73,12 +73,21 @@ class TransactionConfirmation extends Confirmation {
   private readonly headerAccountName: RawLocator =
     '[data-testid="header-account-name"]';
 
+  private readonly inlineAlert: RawLocator = {
+    testId: 'inline-alert',
+  };
+
   private readonly networkName: RawLocator =
     '[data-testid="confirmation__details-network-name"]';
 
   private readonly saveButton: RawLocator = { tag: 'button', text: 'Save' };
 
   private readonly senderAccount: RawLocator = '[data-testid="sender-address"]';
+
+  private readonly siteSuggestedGasFee = (estimatedTime: string) => ({
+    testId: 'gas-timing-time',
+    text: estimatedTime,
+  });
 
   private readonly walletInitiatedHeadingTitle: RawLocator = {
     css: 'h4',
@@ -305,6 +314,15 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
+  async checkNoInLineAlertIsDisplayed() {
+    console.log(
+      `Checking no in line alert is displayed on transaction confirmation page.`,
+    );
+    await this.driver.assertElementNotPresent(this.inlineAlert, {
+      waitAtLeastGuard: 1000,
+    });
+  }
+
   async checkSendAmount(amount: string) {
     console.log(
       `Checking send amount ${amount} on transaction confirmation page.`,
@@ -313,6 +331,13 @@ class TransactionConfirmation extends Confirmation {
       text: amount,
       tag: 'h2',
     });
+  }
+
+  async checkSiteSuggestedGas(time: string) {
+    console.log(
+      `Check Site suggested time ${time} on transaction confirmation page.`,
+    );
+    await this.driver.waitForSelector(this.siteSuggestedGasFee(time));
   }
 
   async checkWalletInitiatedHeadingTitle() {
@@ -567,15 +592,15 @@ class TransactionConfirmation extends Confirmation {
     });
   }
 
-  async validateSendFees(): Promise<void> {
+  async validateSendFees(gasFee: string, fiatFee: string): Promise<void> {
     // Wait for both fields to be present and have the expected values
     await this.driver.waitForSelector({
       css: this.gasFeeField,
-      text: '0.0004',
+      text: gasFee,
     });
     await this.driver.waitForSelector({
       css: this.fiatFeeField,
-      text: '$0.75',
+      text: fiatFee,
     });
     console.log('Send fees validation successful');
   }

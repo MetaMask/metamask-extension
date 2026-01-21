@@ -3879,9 +3879,6 @@
     "message": "インポートするファイルの選択が必要です。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "負の額のETHを送金することはできません。"
-  },
   "negativeOrZeroAmountToken": {
     "message": "資産をマイナスまたはゼロの金額で送ることはできません。"
   },
