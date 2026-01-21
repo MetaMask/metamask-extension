@@ -203,9 +203,6 @@
   "addAccountOrWallet": {
     "message": "Προσθήκη λογαριασμού ή πορτοφολιού"
   },
-  "addAccountToMetaMask": {
-    "message": "Προσθήκη λογαριασμού στο MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Προσθέστε τα tokens που αποκτήσατε χρησιμοποιώντας το MetaMask"
   },
@@ -342,9 +339,6 @@
   },
   "addWallet": {
     "message": "Προσθήκη πορτοφολιού"
-  },
-  "addingAccount": {
-    "message": "Προσθήκη λογαριασμού"
   },
   "additionalNetworks": {
     "message": "Πρόσθετα δίκτυα"
@@ -679,14 +673,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Δεν μπορέσαμε να ανακτήσουμε ιστορικά δεδομένα"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Επιλογές περιουσιακών στοιχείων"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Περιουσιακά στοιχεία"
@@ -3162,9 +3150,6 @@
   "insufficientFunds": {
     "message": "Ανεπαρκές ποσό."
   },
-  "insufficientFundsForGas": {
-    "message": "Ανεπαρκή κεφάλαια για το τέλος συναλλαγής"
-  },
   "insufficientFundsSend": {
     "message": "Ανεπαρκές ποσό"
   },
@@ -3931,18 +3916,6 @@
   "networkName": {
     "message": "Όνομα δικτύου"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Βάση"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3958,26 +3931,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Επιλογές δικτύου"
@@ -4539,9 +4500,6 @@
   },
   "openWallet": {
     "message": "Άνοιγμα πορτοφολιού"
-  },
-  "optional": {
-    "message": "Προαιρετικά"
   },
   "options": {
     "message": "Eπιλογές"
@@ -5829,24 +5787,11 @@
   "sendBugReport": {
     "message": "Στείλτε μας μια αναφορά σφαλμάτων."
   },
-  "sendNoContactsConversionText": {
-    "message": "κάντε κλικ εδώ"
-  },
-  "sendNoContactsDescription": {
-    "message": "Οι επαφές σας επιτρέπουν να στέλνετε με ασφάλεια συναλλαγές σε άλλο λογαριασμό πολλές φορές. Για να δημιουργήσετε μια επαφή, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Δεν έχετε ακόμα επαφές"
-  },
   "sendSelectReceiveAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για λήψη"
   },
   "sendSelectSendAsset": {
     "message": "Επιλέξτε περιουσιακό στοιχείο για αποστολή"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Κάνοντας κλικ σε αυτό το κουμπί θα ξεκινήσει αμέσως η συναλλαγή ανταλλαγής. Ελέγξτε τις λεπτομέρειες της συναλλαγής σας πριν συνεχίσετε."
   },
   "sendingAsset": {
     "message": "Αποστολή $1"
@@ -5857,10 +5802,6 @@
   "sendingNativeAsset": {
     "message": "Αποστολή $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Προειδοποίηση: πρόκειται να στείλετε ένα συμβόλαιο token το οποίο ίσως καταλήξει σε απώλεια χρημάτων. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Εστάλη"
@@ -7266,9 +7207,6 @@
     "message": "Η ανταλλαγή από $1 έως $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Τα τέλη συναλλαγών είναι κατ' εκτίμηση και αυξομειώνονται ανάλογα με την κίνηση του δικτύου και την πολυπλοκότητα των συναλλαγών."
-  },
   "swapGasFeesExplanation": {
     "message": "Το MetaMask δεν κερδίζει χρήματα από τα τέλη συναλλαγών. Αυτές οι χρεώσεις είναι εκτιμήσεις και μπορούν να αλλάξουν ανάλογα με το πόσο απασχολημένο είναι το δίκτυο και πόσο περίπλοκη είναι μια συναλλαγή. Μάθετε περισσότερα $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7280,9 +7218,6 @@
   "swapGasFeesIncluded": {
     "message": " Περιλαμβάνεται"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Μάθετε περισσότερα για τα τέλη συναλλαγών"
-  },
   "swapGasFeesSplit": {
     "message": "Τα τέλη συναλλαγών στην προηγούμενη οθόνη κατανέμονται μεταξύ αυτών των δύο συναλλαγών."
   },
@@ -7291,10 +7226,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Αυτά τα τέλη δικτύου παρέχονται από το MetaMask, ώστε να μπορείτε να κάνετε ανταλλαγή χωρίς $1 στον λογαριασμό σας."
-  },
-  "swapGasFeesSummary": {
-    "message": "Τα τέλη συναλλαγών καταβάλλονται σε κρυπτονομίσματα στους αναλυτές που επεξεργάζονται συναλλαγές στο δίκτυο $1. Το MetaMask δεν επωφελείται από τα τέλη συναλλαγών.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Αυτή η προσφορά ενσωματώνει τα τέλη συναλλαγών προσαρμόζοντας το ποσό των tokens που έχετε στείλει ή λάβει. Μπορείτε να λάβετε ETH σε ξεχωριστή συναλλαγή στη λίστα δραστηριοτήτων σας."
@@ -7312,10 +7243,6 @@
   "swapIncludesMMFee": {
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Η παράθεση αντικατοπτρίζει την χρέωση τελών $1% στο MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Περιλαμβάνει μια χρέωση $1% στο MetaMask - $2",
@@ -7568,9 +7495,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Επιτρέπετε σε αυτόν τον ιστότοπο να αλλάξει το δίκτυο;"
   },
-  "switchInputCurrency": {
-    "message": "Εναλλαγή νομίσματος εισόδου"
-  },
   "switchNetwork": {
     "message": "Αλλαγή δικτύου"
   },
@@ -7726,9 +7650,6 @@
   },
   "tokensInCollection": {
     "message": "Token στη συλλογή"
-  },
-  "tooltipApproveButton": {
-    "message": "Κατανοώ"
   },
   "tooltipSatusConnected": {
     "message": "συνδεδεμένο"
@@ -8283,9 +8204,6 @@
   "youSent": {
     "message": "Στείλατε",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Οι λογαριασμοί σας"
   },
   "yourActivity": {
     "message": "Η δραστηριότητά σας"

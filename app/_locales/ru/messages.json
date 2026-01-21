@@ -203,9 +203,6 @@
   "addAccountOrWallet": {
     "message": "Добавить счет или кошелек"
   },
-  "addAccountToMetaMask": {
-    "message": "Добавить счет в MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Добавьте токены, которые вы приобрели с помощью MetaMask"
   },
@@ -342,9 +339,6 @@
   },
   "addWallet": {
     "message": "Добавить кошелек"
-  },
-  "addingAccount": {
-    "message": "Добавление счет..."
   },
   "additionalNetworks": {
     "message": "Дополнительные сети"
@@ -679,14 +673,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Мы не смогли получить никаких исторических данных"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Параметры актива"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Активы"
@@ -3162,9 +3150,6 @@
   "insufficientFunds": {
     "message": "Недостаточно средств."
   },
-  "insufficientFundsForGas": {
-    "message": "Недостаточно средств для оплаты газа"
-  },
   "insufficientFundsSend": {
     "message": "Недостаточно средств"
   },
@@ -3931,18 +3916,6 @@
   "networkName": {
     "message": "Имя сети"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Основа"
-  },
   "networkNameBitcoin": {
     "message": "Биткойн"
   },
@@ -3958,26 +3931,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Тестнет"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Параметры сети"
@@ -4539,9 +4500,6 @@
   },
   "openWallet": {
     "message": "Открыть кошелек"
-  },
-  "optional": {
-    "message": "Необязательно"
   },
   "options": {
     "message": "Параметры"
@@ -5832,24 +5790,11 @@
   "sendBugReport": {
     "message": "Отправьте нам отчет об ошибке."
   },
-  "sendNoContactsConversionText": {
-    "message": "нажмите здесь"
-  },
-  "sendNoContactsDescription": {
-    "message": "Контакты позволяют безопасно отправлять транзакции в другой счет несколько раз. Чтобы создать контакт, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "У вас пока нет контактов"
-  },
   "sendSelectReceiveAsset": {
     "message": "Выберите актив для получения"
   },
   "sendSelectSendAsset": {
     "message": "Выберите актив для отправки"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Нажатие этой кнопки немедленно инициирует транзакцию обмена. Прежде чем продолжить, проверьте детали транзакции."
   },
   "sendingAsset": {
     "message": "Отправка $1..."
@@ -5860,10 +5805,6 @@
   "sendingNativeAsset": {
     "message": "Идет отправка $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Предупреждение: вы собираетесь отправить контракт на токены, что может привести к потере средств. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Отправлено"
@@ -7269,9 +7210,6 @@
     "message": "Своп $1 на $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Плата за газ является примерной и будет меняться в зависимости от сетевого трафика и сложности транзакции."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask не получает плату за газ. Сумма этой платы являются приблизительной и может меняться в зависимости от загруженности сети и сложности транзакции. Узнайте подробнее $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7283,9 +7221,6 @@
   "swapGasFeesIncluded": {
     "message": " Включен"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Подробнее о плате за газ"
-  },
   "swapGasFeesSplit": {
     "message": "Плата за газ, указанная на предыдущем экране, распределяется между этими двумя транзакциями."
   },
@@ -7294,10 +7229,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Эту комиссию сети оплачивает MetaMask, поэтому вы можете выполнять свопы, не имея на счету $1."
-  },
-  "swapGasFeesSummary": {
-    "message": "Плата за газ переводится криптомайнерам, которые обрабатывают транзакции в сети $1. MetaMask не получает прибыли от платы за газ.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Эта котировка включает в себя плату за газ путем корректировки суммы отправленных или полученных токенов. Вы можете получить ETH в отдельной транзакции в вашем списке активности."
@@ -7315,10 +7246,6 @@
   "swapIncludesMMFee": {
     "message": "Включает комиссию MetaMask в размере $1%.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Котировка с учетом комиссии MetaMask в размере $1 %",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Включает комиссию MetaMask в размере $1% — $2.",
@@ -7571,9 +7498,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Разрешить этому сайту сменить сеть?"
   },
-  "switchInputCurrency": {
-    "message": "Изменить входную валюту"
-  },
   "switchNetwork": {
     "message": "Сменить сеть"
   },
@@ -7729,9 +7653,6 @@
   },
   "tokensInCollection": {
     "message": "Токены в коллекции"
-  },
-  "tooltipApproveButton": {
-    "message": "Я понимаю"
   },
   "tooltipSatusConnected": {
     "message": "подключен"
@@ -8286,9 +8207,6 @@
   "youSent": {
     "message": "Вы отправили",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Ваши счета"
   },
   "yourActivity": {
     "message": "Ваша деятельность"

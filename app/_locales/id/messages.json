@@ -203,9 +203,6 @@
   "addAccountOrWallet": {
     "message": "Tambahkan akun atau dompet"
   },
-  "addAccountToMetaMask": {
-    "message": "Tambahkan akun ke MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Tambahkan token yang Anda peroleh menggunakan MetaMask"
   },
@@ -342,9 +339,6 @@
   },
   "addWallet": {
     "message": "Tambahkan dompet"
-  },
-  "addingAccount": {
-    "message": "Menambahkan akun"
   },
   "additionalNetworks": {
     "message": "Jaringan tambahan"
@@ -679,14 +673,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Kami tidak dapat mengambil data historis"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFT"
-  },
   "assetOptions": {
     "message": "Opsi aset"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Aset"
@@ -3162,9 +3150,6 @@
   "insufficientFunds": {
     "message": "Dana tidak cukup."
   },
-  "insufficientFundsForGas": {
-    "message": "Dana untuk gas tidak cukup"
-  },
   "insufficientFundsSend": {
     "message": "Dana tidak cukup"
   },
@@ -3931,18 +3916,6 @@
   "networkName": {
     "message": "Nama jaringan"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Dasar"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3958,26 +3931,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Opsi jaringan"
@@ -4539,9 +4500,6 @@
   },
   "openWallet": {
     "message": "Buka dompet"
-  },
-  "optional": {
-    "message": "Opsional"
   },
   "options": {
     "message": "Opsi"
@@ -5832,24 +5790,11 @@
   "sendBugReport": {
     "message": "Kirimkan laporan masalah."
   },
-  "sendNoContactsConversionText": {
-    "message": "klik di sini"
-  },
-  "sendNoContactsDescription": {
-    "message": "Kontak memungkinkan Anda untuk mengirim transaksi dengan aman ke akun lain beberapa kali. Untuk membuat kontak, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Anda belum memiliki kontak"
-  },
   "sendSelectReceiveAsset": {
     "message": "Pilih aset yang akan diterima"
   },
   "sendSelectSendAsset": {
     "message": "Pilih aset yang akan dikirim"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Mengklik tombol ini akan langsung memulai transaksi swap. Tinjau detail transaksi sebelum melanjutkan."
   },
   "sendingAsset": {
     "message": "Mengirim $1"
@@ -5860,10 +5805,6 @@
   "sendingNativeAsset": {
     "message": "Mengirim $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Peringatan: Anda akan mengirim kontrak token yang berpotensi mengakibatkan hilangnya dana. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Terkirim"
@@ -7269,9 +7210,6 @@
     "message": "Pertukaran dari $1 ke $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Biaya gas diperkirakan dan akan berfluktuasi berdasarkan lalu lintas jaringan dan kompleksitas transaksi."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask tidak menghasilkan uang dari biaya gas. Biaya ini merupakan estimasi dan dapat berubah berdasarkan seberapa sibuk jaringan dan seberapa rumit transaksinya. Pelajari selengkapnya $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7283,9 +7221,6 @@
   "swapGasFeesIncluded": {
     "message": " Termasuk"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Pelajari selengkapnya seputar biaya gas"
-  },
   "swapGasFeesSplit": {
     "message": "Biaya gas pada layar sebelumnya dibagi antara kedua transaksi ini."
   },
@@ -7294,10 +7229,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Biaya jaringan ini dibayar oleh MetaMask, jadi Anda dapat melakukan swap tanpa $1 di akun Anda."
-  },
-  "swapGasFeesSummary": {
-    "message": "Biaya gas dibayarkan kepada penambang kripto yang memproses transaksi di jaringan $1. MetaMask tidak mengambil keuntungan dari biaya gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Kuotasi ini mencakup biaya gas dengan menyesuaikan jumlah token yang dikirim atau diterima. Anda mungkin akan menerima ETH dalam transaksi terpisah pada daftar aktivitas Anda."
@@ -7315,10 +7246,6 @@
   "swapIncludesMMFee": {
     "message": "Termasuk $1% biaya MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Kuotasi mencerminkan biaya MetaMask sebesar $1%",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Termasuk $1% biaya MetaMask – $2",
@@ -7571,9 +7498,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Izinkan situs ini untuk beralih jaringan?"
   },
-  "switchInputCurrency": {
-    "message": "Ganti mata uang input"
-  },
   "switchNetwork": {
     "message": "Alihkan jaringan"
   },
@@ -7729,9 +7653,6 @@
   },
   "tokensInCollection": {
     "message": "Token dalam koleksi"
-  },
-  "tooltipApproveButton": {
-    "message": "Saya mengerti"
   },
   "tooltipSatusConnected": {
     "message": "terhubung"
@@ -8286,9 +8207,6 @@
   "youSent": {
     "message": "Anda mengirim",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Akun Anda"
   },
   "yourActivity": {
     "message": "Aktivitas Anda"
