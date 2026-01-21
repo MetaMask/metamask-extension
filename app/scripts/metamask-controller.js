@@ -482,6 +482,7 @@ export default class MetamaskController extends EventEmitter {
     this.sendUpdate = debounce(
       this.privateSendUpdate.bind(this),
       MILLISECOND * 200,
+      { maxWait: MILLISECOND * 1000 },
     );
     this.opts = opts;
     this.requestSafeReload =
