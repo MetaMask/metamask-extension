@@ -381,7 +381,7 @@ describe('Snap Keyring Methods', () => {
       expect(mockEndFlow).toHaveBeenCalledTimes(0);
     });
 
-    it('still accepts accountNameSuggestion and displayAccountNameSuggestion params', async () => {
+    it('still accepts accountNameSuggestion and displayAccountNameSuggestion params (for retro-compatibility)', async () => {
       const builder = createSnapKeyringBuilder();
       await expect(
         builder().handleKeyringSnapMessage(mockSnapId, {

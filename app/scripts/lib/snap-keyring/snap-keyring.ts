@@ -181,7 +181,6 @@ class SnapKeyringImpl implements SnapKeyringCallbacks {
   }): Promise<void> {
     // If the confirmation dialog is skipped (preinstalled snap without confirmations),
     // don't enter the approval flow at all to avoid unnecessary loader/flow UI.
-    // Just compute the name and signal acceptance.
     if (skipApprovalFlow) {
       return await handleUserInput(true);
     }
