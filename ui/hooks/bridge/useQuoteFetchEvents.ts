@@ -7,7 +7,6 @@ import {
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
-  getFromTokenBalanceInUsd,
   getWarningLabels,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
