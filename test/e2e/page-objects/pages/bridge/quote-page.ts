@@ -41,7 +41,7 @@ class BridgeQuotePage {
 
   private backButton = '[aria-label="Back"]';
 
-  private networkSelector = '[data-testid="multichain-asset-picker__network"]';
+  private networkSelector = '[data-testid="avatar-group"]';
 
   private networkFees = '[data-testid="network-fees"]';
 
