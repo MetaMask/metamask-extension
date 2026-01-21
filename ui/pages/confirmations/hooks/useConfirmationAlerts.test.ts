@@ -10,14 +10,15 @@ jest.mock('react-router-dom', () => {
   };
 });
 
-// Mock async hooks to prevent React Act warnings from async state updates
+// Mock async hooks used by useSpenderAlerts to prevent React Act warnings
 jest.mock('../components/confirm/info/approve/hooks/use-is-nft', () => ({
+  ...jest.requireActual('../components/confirm/info/approve/hooks/use-is-nft'),
   useIsNFT: () => ({ isNFT: false, pending: false }),
 }));
 
 jest.mock('../../../hooks/useAsync', () => ({
+  ...jest.requireActual('../../../hooks/useAsync'),
   useAsyncResult: () => ({ value: null, pending: false, error: undefined }),
-  useAsyncResultOrThrow: () => ({ value: null, pending: false }),
 }));
 
 describe('useConfirmationAlerts', () => {
