@@ -216,6 +216,12 @@ describe('Perps Utils', () => {
       expect(result[0].name).toBe('Bitcoin');
     });
 
+    it('trims leading and trailing whitespace', () => {
+      const result = filterMarketsByQuery(markets, '  btc  ');
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('BTC');
+    });
+
     it('returns all markets for empty query', () => {
       expect(filterMarketsByQuery(markets, '')).toHaveLength(4);
       expect(filterMarketsByQuery(markets, '   ')).toHaveLength(4);

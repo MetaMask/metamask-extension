@@ -20,6 +20,7 @@ import {
   mockHip3Markets,
 } from '../../../components/app/perps/mocks';
 import type { PerpsMarketData } from '../../../components/app/perps/types';
+import { filterMarketsByQuery } from '../../../components/app/perps/utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../helpers/constants/routes';
 import { sortMarkets } from '../utils/sortMarkets';
 import { MarketRow, type SortField } from './components/market-row';
@@ -42,28 +43,6 @@ const allMarkets: PerpsMarketData[] = [
   ...mockCryptoMarkets,
   ...mockHip3Markets,
 ];
-
-/**
- * Filter markets based on search query
- *
- * @param markets - Array of markets to filter
- * @param query - Search query string
- * @returns Filtered array of markets
- */
-const filterMarkets = (
-  markets: PerpsMarketData[],
-  query: string,
-): PerpsMarketData[] => {
-  if (!query.trim()) {
-    return markets;
-  }
-  const lowerQuery = query.toLowerCase();
-  return markets.filter(
-    (market) =>
-      market.symbol.toLowerCase().includes(lowerQuery) ||
-      market.name.toLowerCase().includes(lowerQuery),
-  );
-};
 
 type StockMarketType = 'equity' | 'commodity';
 
@@ -148,7 +127,7 @@ export const MarketListView: React.FC = () => {
 
     if (searchQuery.trim()) {
       // Searching: search across ALL markets, ignore filters
-      markets = filterMarkets(allMarkets, searchQuery);
+      markets = filterMarketsByQuery(allMarkets, searchQuery);
     } else {
       // Not searching: apply filters
       markets = filterByType(allMarkets, selectedFilter, stockSubFilter);
