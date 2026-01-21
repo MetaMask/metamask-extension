@@ -6,17 +6,15 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import ContactsPage from '../../page-objects/pages/settings/contacts-settings';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import {
   loginWithBalanceValidation,
   loginWithoutBalanceValidation,
 } from '../../page-objects/flows/login.flow';
-import AssetPicker from '../../page-objects/pages/asset-picker';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer
@@ -52,15 +50,15 @@ describe('Address Book', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.startSendFlow();
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
-        await sendTokenPage.selectContactItem('Test Name 1');
-        await sendTokenPage.fillAmount('2');
-        await sendTokenPage.goToNextScreen();
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '2',
+        });
+
         await new TransactionConfirmation(driver).clickFooterConfirmButton();
 
         const activityList = new ActivityListPage(driver);
@@ -78,10 +76,10 @@ describe('Address Book', function (this: Suite) {
           .withNetworkControllerOnMainnet()
           .withAddressBookController({
             addressBook: {
-              '0x1': {
+              '0x539': {
                 '0x2f318C334780961FB129D2a6c30D0763d9a5C970': {
                   address: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-                  chainId: '0x1',
+                  chainId: '0x539',
                   isEns: false,
                   memo: '',
                   name: 'Test Name 1',
@@ -91,7 +89,7 @@ describe('Address Book', function (this: Suite) {
           })
           .withEnabledNetworks({
             eip155: {
-              '0x1': true,
+              '0x539': true,
               '0xe708': true,
             },
           })
@@ -101,26 +99,23 @@ describe('Address Book', function (this: Suite) {
       },
       async ({ driver }) => {
         await loginWithoutBalanceValidation(driver);
-        const homePage = new HomePage(driver);
-        await homePage.checkPageIsLoaded();
-        await homePage.startSendFlow();
-
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
-
-        await sendTokenPage.selectContactItem('Test Name 1');
-
-        const assetPicker = new AssetPicker(driver);
-        await assetPicker.openAssetPicker('source');
-
-        await sendTokenPage.clickMultichainAssetPickerNetwork();
-
         const networkSelector = new NetworkManager(driver);
-
         await networkSelector.selectNetworkByChainId('0xe708');
 
-        // dest should be cleared
-        await sendTokenPage.checkPageIsLoaded();
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '2',
+        });
+
+        await new TransactionConfirmation(driver).clickFooterConfirmButton();
+
+        const activityList = new ActivityListPage(driver);
+        await activityList.checkConfirmedTxNumberDisplayedInActivity(1);
+        await activityList.checkTxAction({ action: 'Sent' });
+        await activityList.checkTxAmountInActivity(`-2 ETH`, 1);
       },
     );
   });

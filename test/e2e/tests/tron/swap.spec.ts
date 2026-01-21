@@ -39,7 +39,6 @@ describe('Swap on Tron', function () {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
             bridgeConfig,
           },
         },
@@ -83,7 +82,6 @@ describe('Swap on Tron', function () {
         manifestFlags: {
           remoteFeatureFlags: {
             tronAccounts: { enabled: true, minimumVersion: '13.6.0' },
-            sendRedesign: { enabled: true },
             bridgeConfig,
           },
         },

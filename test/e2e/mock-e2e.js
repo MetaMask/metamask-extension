@@ -1093,11 +1093,6 @@ async function setupMocking(
               },
             ],
           },
-          {
-            sendRedesign: {
-              enabled: false,
-            },
-          },
         ],
       };
     });

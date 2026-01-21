@@ -1,5 +1,4 @@
 import { type FeatureFlagResponse } from '@metamask/bridge-controller';
-import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
 
@@ -42,7 +41,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
     enabled: true,
     minimumVersion: '13.2.0',
   },
-  ...LEGACY_SEND_FEATURE_FLAG,
 };
 
 export const LOCATOR = {
