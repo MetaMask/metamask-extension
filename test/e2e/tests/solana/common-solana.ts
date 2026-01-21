@@ -1670,9 +1670,6 @@ export async function withSolanaAccountSnap(
           bridgeConfig: showSnapConfirmation
             ? featureFlagsWithSnapConfirmation
             : featureFlags,
-          sendRedesign: {
-            enabled: true,
-          },
         },
       },
       testSpecificMock: async (mockServer: Mockttp) => {
