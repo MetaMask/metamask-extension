@@ -2,7 +2,6 @@ import React from 'react';
 import {
   QuoteResponse,
   RequestStatus,
-  formatChainIdToCaip,
   getNativeAssetForChainId,
 } from '@metamask/bridge-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
@@ -11,6 +10,7 @@ import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-
 import { CHAIN_IDS } from '../../../../shared/constants/network';
 import mockBridgeQuotesNativeErc20 from '../../../../test/data/bridge/mock-quotes-native-erc20.json';
 import * as bridgeSelectors from '../../../ducks/bridge/selectors';
+import { toBridgeToken } from '../../../ducks/bridge/utils';
 import { BridgeCTAButton } from './bridge-cta-button';
 
 describe('BridgeCTAButton', () => {
@@ -52,9 +52,9 @@ describe('BridgeCTAButton', () => {
       },
       bridgeSliceOverrides: {
         fromTokenInputValue: null,
-        // fromToken: 'ETH',
-        // toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
     });
     const { getByText } = renderWithProvider(
@@ -85,8 +85,9 @@ describe('BridgeCTAButton', () => {
           symbol: 'ETH',
           assetId: getNativeAssetForChainId(1).assetId,
         },
-        toToken: null,
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -119,7 +120,6 @@ describe('BridgeCTAButton', () => {
           assetId: getNativeAssetForChainId(1).assetId,
         },
         toToken: null,
-        toChainId: null,
       },
     });
     const { getByText, container } = renderWithProvider(
@@ -148,8 +148,9 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
         fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
@@ -189,8 +190,9 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
         fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
         quotes: [],
@@ -247,8 +249,9 @@ describe('BridgeCTAButton', () => {
         bridgeSliceOverrides: {
           fromTokenInputValue: '1',
           fromToken: 'ETH',
-          toToken: 'ETH',
-          toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+          toToken: toBridgeToken(
+            getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+          ),
         },
         bridgeStateOverrides: {
           quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],
@@ -303,8 +306,9 @@ describe('BridgeCTAButton', () => {
       bridgeSliceOverrides: {
         fromTokenInputValue: '1',
         fromToken: 'ETH',
-        toToken: 'ETH',
-        toChainId: formatChainIdToCaip(CHAIN_IDS.LINEA_MAINNET),
+        toToken: toBridgeToken(
+          getNativeAssetForChainId(CHAIN_IDS.LINEA_MAINNET),
+        ),
       },
       bridgeStateOverrides: {
         quotes: mockBridgeQuotesNativeErc20 as unknown as QuoteResponse[],

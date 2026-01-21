@@ -4,11 +4,9 @@ import { zeroAddress } from 'ethereumjs-util';
 import {
   BridgeBackgroundAction,
   BridgeUserAction,
-  formatChainIdToCaip,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { createBridgeMockStore } from '../../../test/data/bridge/mock-bridge-store';
-import { CHAIN_IDS } from '../../../shared/constants/network';
 import { setBackgroundConnection } from '../../store/background-connection';
 import { MultichainNetworks } from '../../../shared/constants/multichain/networks';
 import { SlippageValue } from '../../pages/bridge/utils/slippage-service';
@@ -18,7 +16,6 @@ import {
   setFromTokenInputValue,
   setToToken,
   resetInputFields,
-  setToChainId,
   updateQuoteRequestParams,
   resetBridgeState,
   setWasTxDeclined,
@@ -48,23 +45,6 @@ describe('Ducks - Bridge', () => {
       expect(actions[0].type).toStrictEqual('bridge/setSlippage');
       const newState = bridgeReducer(state, actions[0]);
       expect(newState.slippage).toStrictEqual(actionPayload);
-    });
-  });
-
-  describe('setToChainId', () => {
-    it('calls the "bridge/setToChainId" action', () => {
-      const state = store.getState().bridge;
-      const actionPayload = CHAIN_IDS.OPTIMISM;
-
-      store.dispatch(setToChainId(actionPayload as never) as never);
-
-      // Check redux state
-      const actions = store.getActions();
-      expect(actions[0].type).toStrictEqual('bridge/setToChainId');
-      const newState = bridgeReducer(state, actions[0]);
-      expect(newState.toChainId).toStrictEqual(
-        formatChainIdToCaip(actionPayload),
-      );
     });
   });
 
@@ -134,7 +114,6 @@ describe('Ducks - Bridge', () => {
       const newState = bridgeReducer(state, actions[0]);
       expect(newState).toStrictEqual({
         selectedQuote: null,
-        toChainId: null,
         fromToken: null,
         toToken: null,
         slippage: SlippageValue.BridgeDefault,
@@ -243,7 +222,6 @@ describe('Ducks - Bridge', () => {
         selectedQuote: null,
         slippage: SlippageValue.BridgeDefault,
         sortOrder: 'cost_ascending',
-        toChainId: null,
         toToken: null,
         txAlert: null,
         txAlertStatus: RequestStatus.FETCHED,

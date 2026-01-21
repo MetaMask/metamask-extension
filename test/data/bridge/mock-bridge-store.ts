@@ -6,6 +6,7 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { getAddress } from 'ethers/lib/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
@@ -180,7 +181,6 @@ export const createBridgeMockStore = ({
       topAssets: [],
     },
     bridge: {
-      toChainId: null,
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
@@ -232,6 +232,16 @@ export const createBridgeMockStore = ({
       marketData: {
         '0x1': {
           '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            currency: 'usd',
+            price: 2.3,
+          },
+          [getAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+            currency: 'usd',
+            price: 2.3,
+          },
+        },
+        '0xa': {
+          [getAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
             currency: 'usd',
             price: 2.3,
           },
@@ -366,7 +376,7 @@ export const createBridgeMockStore = ({
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
-                isActiveDest: false,
+                isActiveDest: true,
               },
               ...Object.fromEntries(
                 Object.entries(

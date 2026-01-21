@@ -141,14 +141,12 @@ export const safeAmountForCalc = (
 export const isQuoteExpiredOrInvalid = ({
   activeQuote,
   toToken,
-  toChainId,
   fromChainId,
   isQuoteExpired,
   insufficientBal,
 }: {
   activeQuote: QuoteResponse | null;
   toToken: BridgeToken | null;
-  toChainId?: Hex | CaipChainId;
   fromChainId?: Hex | CaipChainId;
   isQuoteExpired: boolean;
   insufficientBal?: boolean;
@@ -192,8 +190,8 @@ export const isQuoteExpiredOrInvalid = ({
     const quoteDestChainIdCaip = destChainId
       ? formatChainIdToCaip(destChainId)
       : '';
-    const selectedDestChainIdCaip = toChainId
-      ? formatChainIdToCaip(toChainId)
+    const selectedDestChainIdCaip = toToken?.chainId
+      ? formatChainIdToCaip(toToken.chainId)
       : '';
 
     const addressMatch =
