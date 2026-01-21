@@ -17,7 +17,6 @@ import {
 
 type AppState = {
   customNonceValue: string;
-  isAccountMenuOpen: boolean;
   isNetworkMenuOpen: boolean;
   nextNonce: string | null;
   pendingTokens: {
@@ -154,7 +153,6 @@ export type AppSliceState = {
 // default state
 const initialState: AppState = {
   customNonceValue: '',
-  isAccountMenuOpen: false,
   isNetworkMenuOpen: false,
   nextNonce: null,
   pendingTokens: {},
