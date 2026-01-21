@@ -216,7 +216,10 @@ describe('useSpenderAlerts', () => {
       setupDefaultMocks();
       const mockTransaction = buildApproveTransaction();
       setupConfirmContext(mockTransaction);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -233,7 +236,10 @@ describe('useSpenderAlerts', () => {
       setupDefaultMocks();
       const mockTransaction = buildApproveTransaction();
       setupConfirmContext(mockTransaction);
-      setupTrustSignal(TrustSignalDisplayState.Warning, 'Potentially suspicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Warning,
+        'Potentially suspicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -281,7 +287,10 @@ describe('useSpenderAlerts', () => {
       setupDefaultMocks();
       const mockSignatureRequest = buildPermitSignatureRequest();
       setupConfirmContext(mockSignatureRequest);
-      setupTrustSignal(TrustSignalDisplayState.Warning, 'Suspicious activity detected');
+      setupTrustSignal(
+        TrustSignalDisplayState.Warning,
+        'Suspicious activity detected',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -318,11 +327,17 @@ describe('useSpenderAlerts', () => {
         type: TransactionType.tokenMethodSetApprovalForAll,
         chainId: '0x1',
         txParams: {
-          data: buildSetApproveForAllTransactionData(MOCK_SPENDER_ADDRESS, false),
+          data: buildSetApproveForAllTransactionData(
+            MOCK_SPENDER_ADDRESS,
+            false,
+          ),
         },
       };
       setupConfirmContext(mockTransaction);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -337,7 +352,10 @@ describe('useSpenderAlerts', () => {
       });
       setupConfirmContext(mockTransaction);
       mockUseIsNFT.mockReturnValue({ isNFT: false, pending: false });
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -348,7 +366,10 @@ describe('useSpenderAlerts', () => {
       setupDefaultMocks();
       const mockSignatureRequest = buildPermitSignatureRequest({ value: '0' });
       setupConfirmContext(mockSignatureRequest);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -373,7 +394,10 @@ describe('useSpenderAlerts', () => {
         msgParams: { data: mockPermitData },
       };
       setupConfirmContext(mockSignatureRequest);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -384,7 +408,10 @@ describe('useSpenderAlerts', () => {
       setupDefaultMocks();
       const mockTransaction = buildApproveTransaction({ amount: 1000 });
       setupConfirmContext(mockTransaction);
-      setupTrustSignal(TrustSignalDisplayState.Warning, 'Potentially suspicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Warning,
+        'Potentially suspicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -400,7 +427,10 @@ describe('useSpenderAlerts', () => {
       });
       setupConfirmContext(mockTransaction);
       mockUseIsNFT.mockReturnValue({ isNFT: true, pending: false });
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -416,7 +446,10 @@ describe('useSpenderAlerts', () => {
       });
       setupConfirmContext(mockTransaction);
       mockUseIsNFT.mockReturnValue({ isNFT: false, pending: true });
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -427,14 +460,20 @@ describe('useSpenderAlerts', () => {
     it('returns empty array for Permit2 ERC20 revocation', () => {
       setupDefaultMocks();
       const tokenAddress = '0x3333333333333333333333333333333333333333';
-      const mockTransaction = buildPermit2Transaction({ tokenAddress, amount: 0 });
+      const mockTransaction = buildPermit2Transaction({
+        tokenAddress,
+        amount: 0,
+      });
       setupConfirmContext(mockTransaction);
       mockUseAsyncResult.mockReturnValue({
         value: { standard: 'ERC20' },
         pending: false,
         error: undefined,
       } as ReturnType<typeof useAsyncResult>);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -444,14 +483,20 @@ describe('useSpenderAlerts', () => {
     it('returns alert for Permit2 NFT approval', () => {
       setupDefaultMocks();
       const tokenAddress = '0x4444444444444444444444444444444444444444';
-      const mockTransaction = buildPermit2Transaction({ tokenAddress, amount: 0 });
+      const mockTransaction = buildPermit2Transaction({
+        tokenAddress,
+        amount: 0,
+      });
       setupConfirmContext(mockTransaction);
       mockUseAsyncResult.mockReturnValue({
         value: { standard: 'ERC721' },
         pending: false,
         error: undefined,
       } as ReturnType<typeof useAsyncResult>);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
@@ -462,14 +507,20 @@ describe('useSpenderAlerts', () => {
     it('returns alert while Permit2 token details are pending', () => {
       setupDefaultMocks();
       const tokenAddress = '0x3333333333333333333333333333333333333333';
-      const mockTransaction = buildPermit2Transaction({ tokenAddress, amount: 0 });
+      const mockTransaction = buildPermit2Transaction({
+        tokenAddress,
+        amount: 0,
+      });
       setupConfirmContext(mockTransaction);
       mockUseAsyncResult.mockReturnValue({
         value: undefined,
         pending: true,
         error: undefined,
       } as ReturnType<typeof useAsyncResult>);
-      setupTrustSignal(TrustSignalDisplayState.Malicious, 'Known malicious address');
+      setupTrustSignal(
+        TrustSignalDisplayState.Malicious,
+        'Known malicious address',
+      );
 
       const { result } = renderHook(() => useSpenderAlerts());
 
