@@ -13,7 +13,3 @@ export type {
 } from './usePerpsMarkets';
 
 export { usePerpsSearch } from './usePerpsSearch';
-
-export { usePerpsSorting } from './usePerpsSorting';
-
-export { usePerpsMarketListView } from './usePerpsMarketListView';

@@ -87,6 +87,24 @@ describe('sortMarkets', () => {
       expect(result[1].symbol).toBe('A'); // +2.5%
       expect(result[2].symbol).toBe('C'); // +5.2%
     });
+
+    it('handles placeholder values like -- and N/A without NaN issues', () => {
+      const markets = [
+        createMockMarket({ symbol: 'A', change24hPercent: '+2.5%' }),
+        createMockMarket({ symbol: 'B', change24hPercent: '--' }),
+        createMockMarket({ symbol: 'C', change24hPercent: 'N/A' }),
+        createMockMarket({ symbol: 'D', change24hPercent: '-1.0%' }),
+      ];
+
+      const result = sortMarkets({ markets, sortBy: 'priceChange', direction: 'desc' });
+
+      // Valid percentages should sort correctly, placeholders treated as 0
+      expect(result[0].symbol).toBe('A'); // +2.5%
+      // B, C (placeholders = 0) and D (-1.0%) - order among equals may vary
+      expect(result.map((m) => m.symbol)).toContain('B');
+      expect(result.map((m) => m.symbol)).toContain('C');
+      expect(result.map((m) => m.symbol)).toContain('D');
+    });
   });
 
   describe('sort by openInterest', () => {

@@ -40,13 +40,15 @@ export const sortMarkets = ({
 
       case MARKET_SORTING_CONFIG.SORT_FIELDS.PRICE_CHANGE: {
         // Use 24h price change percentage (e.g., '+2.5%', '-1.8%')
-        // Parse and remove % sign
-        const changeA = parseFloat(
+        // Parse and remove % sign, handle placeholder values like '--' or 'N/A'
+        const parsedA = parseFloat(
           a.change24hPercent?.replace(/[%+]/g, '') || '0',
         );
-        const changeB = parseFloat(
+        const parsedB = parseFloat(
           b.change24hPercent?.replace(/[%+]/g, '') || '0',
         );
+        const changeA = Number.isNaN(parsedA) ? 0 : parsedA;
+        const changeB = Number.isNaN(parsedB) ? 0 : parsedB;
         compareValue = changeA - changeB;
         break;
       }

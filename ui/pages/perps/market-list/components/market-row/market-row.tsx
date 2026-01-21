@@ -77,7 +77,7 @@ export const MarketRow: React.FC<MarketRowProps> = ({
   );
 
   // Determine if price change is positive or negative
-  const isPositiveChange = market.change24hPercent.startsWith('+');
+  const isPositiveChange = market.change24hPercent?.startsWith('+') ?? false;
   const changeColor = isPositiveChange
     ? TextColor.SuccessDefault
     : TextColor.ErrorDefault;

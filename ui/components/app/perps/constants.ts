@@ -26,11 +26,10 @@ export const PERPS_CONSTANTS = {
 
 /**
 * Market sorting configuration
-* Controls sorting behavior and presets for the trending markets view
+* Controls sorting behavior for the markets view
 */
 export const MARKET_SORTING_CONFIG = {
-  // Default sort settings
-  DEFAULT_SORT_OPTION_ID: 'volume' as const,
+  // Default sort direction
   DEFAULT_DIRECTION: 'desc' as const,
 
   // Available sort fields (only includes fields supported by PerpsMarketData)
@@ -40,62 +39,4 @@ export const MARKET_SORTING_CONFIG = {
     OPEN_INTEREST: 'openInterest',
     FUNDING_RATE: 'fundingRate',
   } as const,
-
-  // Sort button presets for filter chips (simplified buttons without direction)
-  SORT_BUTTON_PRESETS: [
-    { field: 'volume', labelKey: 'perps.sort.volume' },
-    { field: 'priceChange', labelKey: 'perps.sort.price_change' },
-    { field: 'fundingRate', labelKey: 'perps.sort.funding_rate' },
-  ] as const,
-
-  // Sort options for the bottom sheet
-  // Each option combines field + direction into a single selectable item
-  // Only Price Change has both directions as separate options
-  SORT_OPTIONS: [
-    {
-      id: 'volume',
-      labelKey: 'perps.sort.volume',
-      field: 'volume',
-      direction: 'desc',
-    },
-    {
-      id: 'priceChange-desc',
-      labelKey: 'perps.sort.price_change_high_to_low',
-      field: 'priceChange',
-      direction: 'desc',
-    },
-    {
-      id: 'priceChange-asc',
-      labelKey: 'perps.sort.price_change_low_to_high',
-      field: 'priceChange',
-      direction: 'asc',
-    },
-    {
-      id: 'openInterest',
-      labelKey: 'perps.sort.open_interest',
-      field: 'openInterest',
-      direction: 'desc',
-    },
-    {
-      id: 'fundingRate',
-      labelKey: 'perps.sort.funding_rate',
-      field: 'fundingRate',
-      direction: 'desc',
-    },
-  ] as const,
 } as const;
-
-/**
- * Type for valid sort option IDs
- * Derived from SORT_OPTIONS to ensure type safety
- * Valid values: 'volume' | 'priceChange-desc' | 'priceChange-asc' | 'openInterest' | 'fundingRate'
- */
-export type SortOptionId =
-  (typeof MARKET_SORTING_CONFIG.SORT_OPTIONS)[number]['id'];
-
-/**
- * Type for sort button presets (filter chips)
- * Derived from SORT_BUTTON_PRESETS to ensure type safety
- */
-export type SortButtonPreset =
-  (typeof MARKET_SORTING_CONFIG.SORT_BUTTON_PRESETS)[number];

@@ -34,7 +34,6 @@ export {
   PERPS_CONSTANTS,
   MARKET_SORTING_CONFIG,
 } from './constants';
-export type { SortOptionId, SortButtonPreset } from './constants';
 export type {
   PerpsMarketData,
   MarketType,
