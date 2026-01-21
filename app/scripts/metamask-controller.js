@@ -160,7 +160,6 @@ import { KeyringType } from '../../shared/constants/keyring';
 import { RestrictedMethods } from '../../shared/constants/permissions';
 import { MILLISECOND, MINUTE, SECOND } from '../../shared/constants/time';
 import {
-  HYPERLIQUID_APPROVAL_TYPE,
   ORIGIN_METAMASK,
   POLLING_TOKEN_ENVIRONMENT_TYPES,
   MESSAGE_TYPE,
@@ -225,11 +224,8 @@ import {
   getShieldGatewayConfig,
   updatePreferencesAndMetricsForShieldSubscription,
 } from '../../shared/modules/shield';
-import {
-  HYPERLIQUID_ORIGIN,
-  METAMASK_REFERRAL_CODE,
-} from '../../shared/constants/referrals';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
+import { createSentryError } from '../../shared/modules/error';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -274,9 +270,9 @@ import {
 } from './lib/util';
 import createMetamaskMiddleware from './lib/createMetamaskMiddleware';
 import {
-  createHyperliquidReferralMiddleware,
-  HyperliquidPermissionTriggerType,
-} from './lib/createHyperliquidReferralMiddleware';
+  createDefiReferralMiddleware,
+  ReferralTriggerType,
+} from './lib/createDefiReferralMiddleware';
 
 import {
   diffMap,
@@ -396,6 +392,7 @@ import {
   SubscriptionControllerInit,
   SubscriptionServiceInit,
 } from './controller-init/subscription';
+import { ConnectivityControllerInit } from './controller-init/connectivity';
 import { AccountTrackerControllerInit } from './controller-init/account-tracker-controller-init';
 import { OnboardingControllerInit } from './controller-init/onboarding-controller-init';
 import { RemoteFeatureFlagControllerInit } from './controller-init/remote-feature-flag-controller-init';
@@ -658,6 +655,7 @@ export default class MetamaskController extends EventEmitter {
       SeedlessOnboardingController: SeedlessOnboardingControllerInit,
       SubscriptionController: SubscriptionControllerInit,
       SubscriptionService: SubscriptionServiceInit,
+      ConnectivityController: ConnectivityControllerInit,
       NetworkOrderController: NetworkOrderControllerInit,
       ShieldController: ShieldControllerInit,
       ClaimsController: ClaimsControllerInit,
@@ -2674,6 +2672,7 @@ export default class MetamaskController extends EventEmitter {
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
       attemptLedgerTransportCreation:
         this.attemptLedgerTransportCreation.bind(this),
+      getAppNameAndVersion: this.getAppNameAndVersion.bind(this),
 
       // qr hardware devices
       completeQrCodeScan:
@@ -3984,17 +3983,12 @@ export default class MetamaskController extends EventEmitter {
 
       await this.syncKeyringEncryptionKey();
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingCreateKeyAndBackupSrpError,
-      });
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          TraceName.OnboardingCreateKeyAndBackupSrpError,
+          error,
+        ),
+      );
 
       log.error('[createSeedPhraseBackup] error', error);
       throw error;
@@ -4025,18 +4019,7 @@ export default class MetamaskController extends EventEmitter {
 
       return allSeedPhrases;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-
-      this.metaMetricsController.bufferedTrace?.({
-        name: TraceName.OnboardingFetchSrpsError,
-        op: TraceOperation.OnboardingError,
-        tags: { errorMessage },
-      });
-      this.metaMetricsController.bufferedEndTrace?.({
-        name: TraceName.OnboardingFetchSrpsError,
-      });
-
+      log.error('error while fetching all seed phrases', error);
       throw error;
     } finally {
       this.metaMetricsController.bufferedEndTrace?.({
@@ -4175,17 +4158,9 @@ export default class MetamaskController extends EventEmitter {
               });
           });
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingResetPasswordError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingResetPasswordError,
-        });
+        this.controllerMessenger?.captureException?.(
+          createSentryError(TraceName.OnboardingResetPasswordError, err),
+        );
 
         // lock app again on error after submitPassword succeeded
         // here we skip the seedless operation lock as we are already in the seedless operation lock
@@ -4223,19 +4198,30 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<boolean | undefined>} true if the password is outdated, false otherwise, undefined if the flow is not seedless
    */
   async checkIsSeedlessPasswordOutdated(skipCache = false) {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
-    const { completedOnboarding } = this.onboardingController.state;
+    try {
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
+      const { completedOnboarding } = this.onboardingController.state;
 
-    if (!isSocialLoginFlow || !completedOnboarding) {
-      // this is only available for seedless onboarding flow and completed onboarding
-      return false;
+      if (!isSocialLoginFlow || !completedOnboarding) {
+        // this is only available for seedless onboarding flow and completed onboarding
+        return false;
+      }
+
+      const isPasswordOutdated =
+        await this.seedlessOnboardingController.checkIsPasswordOutdated({
+          skipCache,
+        });
+      return isPasswordOutdated;
+    } catch (error) {
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          'Failed to check if seedless password is outdated',
+          error,
+        ),
+      );
+      throw error;
     }
-
-    const isPasswordOutdated =
-      await this.seedlessOnboardingController.checkIsPasswordOutdated({
-        skipCache,
-      });
-    return isPasswordOutdated;
   }
 
   /**
@@ -4244,57 +4230,68 @@ export default class MetamaskController extends EventEmitter {
    * @returns {Promise<void>}
    */
   async syncSeedPhrases() {
-    const isSocialLoginFlow = this.onboardingController.getIsSocialLoginFlow();
+    try {
+      const isSocialLoginFlow =
+        this.onboardingController.getIsSocialLoginFlow();
 
-    if (!isSocialLoginFlow) {
-      throw new Error(
-        'Syncing seed phrases is only available for social login flow',
-      );
-    }
-
-    // 1. fetch all seed phrases
-    const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
-    if (!rootSecret) {
-      throw new Error('No root SRP found');
-    }
-
-    for (const secret of otherSecrets) {
-      // import SRP secret
-      // Get the SRP hash, and find the hash in the local state
-      const srpHash =
-        this.seedlessOnboardingController.getSecretDataBackupState(
-          secret.data,
-          secret.type,
+      if (!isSocialLoginFlow) {
+        throw new Error(
+          'Syncing seed phrases is only available for social login flow',
         );
-
-      if (!srpHash) {
-        // import private key secret
-        if (secret.type === SecretType.PrivateKey) {
-          await this.importAccountWithStrategy(
-            'privateKey',
-            [bytesToHex(secret.data)],
-            {
-              shouldCreateSocialBackup: false,
-              shouldSelectAccount: false,
-            },
-          );
-          continue;
-        }
-
-        // If SRP is not in the local state, import it to the vault
-        // convert the seed phrase to a mnemonic (string)
-        const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
-          secret.data,
-        );
-        const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
-
-        // import the new mnemonic to the current vault
-        await this.importMnemonicToVault(mnemonicToRestore, {
-          shouldCreateSocialBackup: false,
-          shouldSelectAccount: false,
-          shouldImportSolanaAccount: true,
-        });
       }
+
+      // 1. fetch all seed phrases
+      const [rootSecret, ...otherSecrets] = await this.fetchAllSecretData();
+      if (!rootSecret) {
+        throw new Error('No root SRP found');
+      }
+
+      for (const secret of otherSecrets) {
+        // import SRP secret
+        // Get the SRP hash, and find the hash in the local state
+        const srpHash =
+          this.seedlessOnboardingController.getSecretDataBackupState(
+            secret.data,
+            secret.type,
+          );
+
+        if (!srpHash) {
+          // import private key secret
+          if (secret.type === SecretType.PrivateKey) {
+            await this.importAccountWithStrategy(
+              'privateKey',
+              [bytesToHex(secret.data)],
+              {
+                shouldCreateSocialBackup: false,
+                shouldSelectAccount: false,
+              },
+            );
+            continue;
+          }
+
+          // If SRP is not in the local state, import it to the vault
+          // convert the seed phrase to a mnemonic (string)
+          const encodedSrp = this._convertEnglishWordlistIndicesToCodepoints(
+            secret.data,
+          );
+          const mnemonicToRestore = Buffer.from(encodedSrp).toString('utf8');
+
+          // import the new mnemonic to the current vault
+          await this.importMnemonicToVault(mnemonicToRestore, {
+            shouldCreateSocialBackup: false,
+            shouldSelectAccount: false,
+            shouldImportSolanaAccount: true,
+          });
+        }
+      }
+    } catch (error) {
+      log.error('error while syncing seed phrases', error);
+
+      this.controllerMessenger?.captureException?.(
+        createSentryError('Error while syncing seed phrases', error),
+      );
+
+      throw error;
     }
   }
 
@@ -4331,17 +4328,9 @@ export default class MetamaskController extends EventEmitter {
         );
         addNewSeedPhraseBackupSuccess = true;
       } catch (err) {
-        const errorMessage =
-          err instanceof Error ? err.message : 'Unknown error';
-
-        this.metaMetricsController.bufferedTrace?.({
-          name: TraceName.OnboardingAddSrpError,
-          op: TraceOperation.OnboardingError,
-          tags: { errorMessage },
-        });
-        this.metaMetricsController.bufferedEndTrace?.({
-          name: TraceName.OnboardingAddSrpError,
-        });
+        this.controllerMessenger?.captureException?.(
+          createSentryError(TraceName.OnboardingAddSrpError, err),
+        );
 
         throw err;
       } finally {
@@ -4397,6 +4386,13 @@ export default class MetamaskController extends EventEmitter {
             await this.keyringController.exportEncryptionKey();
           await this.seedlessOnboardingController.storeKeyringEncryptionKey(
             revertedKeyringEncKey,
+          );
+
+          this.controllerMessenger?.captureException?.(
+            createSentryError(
+              'error while changing password for social login flow',
+              err,
+            ),
           );
           throw err;
         }
@@ -4791,6 +4787,14 @@ export default class MetamaskController extends EventEmitter {
       if (error instanceof RecoveryError) {
         throw new JsonRpcError(-32603, error.message, error.data);
       }
+
+      this.controllerMessenger?.captureException?.(
+        createSentryError(
+          'Failed to restore social backup and get seed phrase',
+          error,
+        ),
+      );
+
       throw error;
     }
   }
@@ -5436,7 +5440,14 @@ export default class MetamaskController extends EventEmitter {
   async attemptLedgerTransportCreation() {
     return await this.#withKeyringForDevice(
       { name: HardwareDeviceNames.ledger },
-      async (keyring) => keyring.attemptMakeApp(),
+      async (keyring) => await keyring.attemptMakeApp(),
+    );
+  }
+
+  async getAppNameAndVersion() {
+    return await this.#withKeyringForDevice(
+      { name: HardwareDeviceNames.ledger },
+      async (keyring) => await keyring.getAppNameAndVersion(),
     );
   }
 
@@ -5892,43 +5903,45 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles Hyperliquid referral approval flow.
+   * Handles DeFi referral approval flow for a partner.
    * Shows approval confirmation screen if needed and manages referral URL redirection.
    * This can be triggered by connection permission grants or existing connections.
    *
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
-   * @param {HyperliquidPermissionTriggerType} triggerType - The trigger type.
+   * @param {ReferralTriggerType} triggerType - The trigger type.
    */
-  async handleHyperliquidReferral(tabId, triggerType) {
-    const isHyperliquidReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
-        ?.extensionUxDefiReferral;
+  async handleDefiReferral(partner, tabId, triggerType) {
+    const isReferralEnabled =
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
+        partner.featureFlagKey
+      ];
 
-    if (!isHyperliquidReferralEnabled) {
+    if (!isReferralEnabled) {
       return;
     }
 
-    // Only continue if Hyperliquid has permitted accounts
-    const permittedAccounts = this.getPermittedAccounts(HYPERLIQUID_ORIGIN);
+    // Only continue if the partner has permitted accounts
+    const permittedAccounts = this.getPermittedAccounts(partner.origin);
     if (permittedAccounts.length === 0) {
       return;
     }
 
     // Only continue if there is no pending approval
     const hasPendingApproval = this.approvalController.has({
-      origin: HYPERLIQUID_ORIGIN,
-      type: HYPERLIQUID_APPROVAL_TYPE,
+      origin: partner.origin,
+      type: partner.approvalType,
     });
 
     if (hasPendingApproval) {
       return;
     }
 
-    // First account is the active Hyperliquid account
+    // First account is the active permitted account for this partner
     const activePermittedAccount = permittedAccounts[0];
 
     const referralStatusByAccount =
-      this.preferencesController.state.referrals.hyperliquid;
+      this.preferencesController.state.referrals[partner.id];
     const permittedAccountStatus =
       referralStatusByAccount[activePermittedAccount];
     const declinedAccounts = Object.keys(referralStatusByAccount).filter(
@@ -5948,31 +5961,33 @@ export default class MetamaskController extends EventEmitter {
           event: MetaMetricsEventName.ReferralViewed,
           category: MetaMetricsEventCategory.Referrals,
           properties: {
-            url: HYPERLIQUID_ORIGIN,
+            url: partner.origin,
             trigger_type: triggerType,
           },
         });
 
         const approvalResponse = await this.approvalController.add({
-          origin: HYPERLIQUID_ORIGIN,
-          type: HYPERLIQUID_APPROVAL_TYPE,
+          origin: partner.origin,
+          type: partner.approvalType,
           requestData: { selectedAddress: activePermittedAccount },
-          shouldShowRequest:
-            triggerType === HyperliquidPermissionTriggerType.NewConnection,
+          shouldShowRequest: triggerType === ReferralTriggerType.NewConnection,
         });
 
         if (approvalResponse?.approved) {
-          this._handleHyperliquidApprovedAccount(
+          this._handleDefiReferralApprovedAccount(
+            partner,
             activePermittedAccount,
             permittedAccounts,
             declinedAccounts,
           );
-          await this._handleHyperliquidReferralRedirect(
+          await this._handleDefiReferralRedirect(
+            partner,
             tabId,
             activePermittedAccount,
           );
         } else {
           this.preferencesController.addReferralDeclinedAccount(
+            partner.id,
             activePermittedAccount,
           );
         }
@@ -5983,6 +5998,7 @@ export default class MetamaskController extends EventEmitter {
           category: MetaMetricsEventCategory.Referrals,
           properties: {
             opt_in: Boolean(approvalResponse?.approved),
+            url: partner.origin,
           },
         });
       } catch (error) {
@@ -5995,7 +6011,8 @@ export default class MetamaskController extends EventEmitter {
     }
 
     if (shouldRedirect) {
-      await this._handleHyperliquidReferralRedirect(
+      await this._handleDefiReferralRedirect(
+        partner,
         tabId,
         activePermittedAccount,
       );
@@ -6003,25 +6020,31 @@ export default class MetamaskController extends EventEmitter {
   }
 
   /**
-   * Handles redirection to the Hyperliquid referral page.
+   * Handles redirection to the DeFi partner's referral page.
    *
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    * @param {string} permittedAccount - The permitted account.
    */
-  async _handleHyperliquidReferralRedirect(tabId, permittedAccount) {
-    await this._updateHyperliquidReferralUrl(tabId);
-    // Mark this account as having been shown the Hyperliquid referral page
-    this.preferencesController.addReferralPassedAccount(permittedAccount);
+  async _handleDefiReferralRedirect(partner, tabId, permittedAccount) {
+    await this._updateDefiReferralUrl(partner, tabId);
+    // Mark this account as having been shown the referral page
+    this.preferencesController.addReferralPassedAccount(
+      partner.id,
+      permittedAccount,
+    );
   }
 
   /**
    * Handles referral states for permitted accounts after user approval.
    *
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {string} activePermittedAccount - The active permitted account.
    * @param {string[]} permittedAccounts - The permitted accounts.
    * @param {string[]} declinedAccounts - The previously declined permitted accounts.
    */
-  _handleHyperliquidApprovedAccount(
+  _handleDefiReferralApprovedAccount(
+    partner,
     activePermittedAccount,
     permittedAccounts,
     declinedAccounts,
@@ -6030,9 +6053,13 @@ export default class MetamaskController extends EventEmitter {
       // If there are no previously declined permitted accounts then
       // we approve all permitted accounts so that the user is not
       // shown the approval screen unnecessarily when switching
-      this.preferencesController.setAccountsReferralApproved(permittedAccounts);
+      this.preferencesController.setAccountsReferralApproved(
+        partner.id,
+        permittedAccounts,
+      );
     } else {
       this.preferencesController.addReferralApprovedAccount(
+        partner.id,
         activePermittedAccount,
       );
       // If there are any previously declined accounts then
@@ -6040,25 +6067,32 @@ export default class MetamaskController extends EventEmitter {
       // so they have the option to participate again in future
       permittedAccounts.forEach((account) => {
         if (declinedAccounts.includes(account)) {
-          this.preferencesController.removeReferralDeclinedAccount(account);
+          this.preferencesController.removeReferralDeclinedAccount(
+            partner.id,
+            account,
+          );
         }
       });
     }
   }
 
   /**
-   * Updates the browser tab URL to the Hyperliquid referral page.
+   * Updates the browser tab URL to the DeFi partner's referral page.
    *
+   * @param {import('../../../shared/constants/defi-referrals').DefiReferralPartnerConfig} partner - The partner configuration.
    * @param {number} tabId - The browser tab ID to update.
    */
-  async _updateHyperliquidReferralUrl(tabId) {
+  async _updateDefiReferralUrl(partner, tabId) {
     try {
       const { url } = await browser.tabs.get(tabId);
       const { search } = new URL(url || '');
-      const newUrl = `${HYPERLIQUID_ORIGIN}/join/${METAMASK_REFERRAL_CODE}${search}`;
+      const newUrl = `${partner.referralUrl}${search}`;
       await browser.tabs.update(tabId, { url: newUrl });
     } catch (error) {
-      log.error('Failed to update URL to Hyperliquid referral page: ', error);
+      log.error(
+        `Failed to update URL to ${partner.name} referral page: `,
+        error,
+      );
     }
   }
 
@@ -7277,10 +7311,10 @@ export default class MetamaskController extends EventEmitter {
         }),
       );
 
-      // Add Hyperliquid permission monitoring middleware
+      // Add Defi referral partner permission monitoring middleware
       engine.push(
-        createHyperliquidReferralMiddleware(
-          this.handleHyperliquidReferral.bind(this),
+        createDefiReferralMiddleware((partner, referralTabId, triggerType) =>
+          this.handleDefiReferral(partner, referralTabId, triggerType),
         ),
       );
     }
@@ -8543,6 +8577,13 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
+  /**
+   * Updates the pinned accounts list
+   *
+   * @deprecated This method is deprecated and will be removed in the future.
+   * use AccountTreeController.setAccountGroupPinned instead
+   * @param {AccountAddress[]} pinnedAccountList - The list of accounts to update in the state.
+   */
   updateAccountsList = (pinnedAccountList) => {
     try {
       this.accountOrderController.updateAccountsList(pinnedAccountList);
@@ -8574,6 +8615,13 @@ export default class MetamaskController extends EventEmitter {
     await this.lookupSelectedNetworks();
   };
 
+  /**
+   * Updates the hidden accounts list
+   *
+   * @deprecated This method is deprecated and will be removed in the future.
+   * use AccountTreeController.setAccountGroupHidden instead
+   * @param {AccountAddress[]} hiddenAccountList - The list of accounts to update in the state.
+   */
   updateHiddenAccountsList = (hiddenAccountList) => {
     try {
       this.accountOrderController.updateHiddenAccountsList(hiddenAccountList);

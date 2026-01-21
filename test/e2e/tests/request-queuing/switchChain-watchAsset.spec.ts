@@ -1,11 +1,11 @@
 import { Suite } from 'mocha';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
-import { DAPP_URL } from '../../constants';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
-import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/redesign/review-permissions-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
+import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 
 describe('Request Queue SwitchChain -> WatchAsset', function (this: Suite) {

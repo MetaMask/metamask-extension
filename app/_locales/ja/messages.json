@@ -1272,9 +1272,6 @@
   "close": {
     "message": "閉じる"
   },
-  "closeExtension": {
-    "message": "拡張機能を閉じる"
-  },
   "closeSlide": {
     "message": "$1を閉じる",
     "description": "Aria label for close button on carousel slides. $1 is the slide title"
@@ -3891,9 +3888,6 @@
     "message": "インポートするファイルの選択が必要です。",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "負の額のETHを送金することはできません。"
-  },
   "negativeOrZeroAmountToken": {
     "message": "資産をマイナスまたはゼロの金額で送ることはできません。"
   },
@@ -6218,41 +6212,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "一時停止中、プランはご利用いただけません。キャンセルすると、プランは直ちに終了します。"
   },
-  "shieldTxDetails1Description": {
-    "message": "対象となるトランザクションの資産を保護します"
-  },
   "shieldTxDetails1Title": {
     "message": "最大$10,000のトランザクション保護"
   },
-  "shieldTxDetails2Description": {
-    "message": "いつでもすぐに専任のサポートを受けられます"
-  },
-  "shieldTxDetails2Title": {
-    "message": "優先サポート"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "リンク"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "サインアップ"
-  },
   "shieldTxMembershipActive": {
     "message": "有効なプラン"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "請求の詳細"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "請求アカウント\n\nCharges"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "請求額"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "次回の請求"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "支払方法"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "請求を管理"
@@ -6267,9 +6231,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "プランは$1に終了します。特典を継続するには、今すぐ更新してください。",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "支払いを再試行"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "カード決済が失敗したため、プランが一時停止されています。"
@@ -6296,9 +6257,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "サポートへのお問い合わせ"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "カード情報を更新"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "無料トライアル"
   },
@@ -6319,9 +6277,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "請求を送信"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "特典をすべて見る"
   },
   "show": {
     "message": "表示"

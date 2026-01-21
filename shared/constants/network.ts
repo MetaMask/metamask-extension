@@ -425,7 +425,7 @@ export const LINEA_MAINNET_RPC_URL = getRpcUrl({
 });
 export const LOCALHOST_RPC_URL = 'http://localhost:8545';
 export const MEGAETH_TESTNET_RPC_URL = 'https://carrot.megaeth.com/rpc';
-export const MEGAETH_TESTNET_V2_RPC_URL = 'https://timothy.megaeth.com/rpc';
+export const MEGAETH_TESTNET_V2_RPC_URL = 'https://carrot.megaeth.com/rpc';
 export const MONAD_TESTNET_RPC_URL = 'https://testnet-rpc.monad.xyz';
 
 /**
@@ -1491,6 +1491,7 @@ export const QUICKNODE_ENDPOINT_URLS_BY_INFURA_NETWORK_NAME = {
   'base-mainnet': () => process.env.QUICKNODE_BASE_URL,
   'bsc-mainnet': () => process.env.QUICKNODE_BSC_URL,
   'sei-mainnet': () => process.env.QUICKNODE_SEI_URL,
+  'monad-mainnet': () => process.env.QUICKNODE_MONAD_URL,
 };
 
 export function getFailoverUrlsForInfuraNetwork(
@@ -1631,6 +1632,7 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     rpcEndpoints: [
       {
         url: `https://monad-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: getFailoverUrlsForInfuraNetwork('monad-mainnet'),
         type: RpcEndpointType.Custom,
       },
     ],

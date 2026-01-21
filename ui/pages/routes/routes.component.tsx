@@ -63,6 +63,7 @@ import {
   REWARDS_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -156,10 +157,10 @@ const OnboardingFlow = mmLazy(
   (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
-  (() => import('../lock/index.js')) as unknown as DynamicImportType,
+  (() => import('../lock/index.ts')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
-  (() => import('../unlock-page/index.js')) as unknown as DynamicImportType,
+  (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
 );
 const RestoreVaultPage = mmLazy(
   (() =>
@@ -326,6 +327,12 @@ const NonEvmBalanceCheck = mmLazy(
 
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
+);
+const PerpsMarketDetailPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-market-detail-page.tsx'
+    )) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -779,6 +786,12 @@ export default function Routes() {
       createRouteWithLayout({
         path: REWARDS_ROUTE,
         component: RewardsPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+        component: PerpsMarketDetailPage,
         layout: RootLayout,
         authenticated: true,
       }),
