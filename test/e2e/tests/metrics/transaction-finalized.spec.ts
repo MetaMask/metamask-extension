@@ -33,7 +33,6 @@ const isFloatString = (str: unknown): boolean =>
  */
 async function testSpecificMock(mockServer: Mockttp) {
   // Mock feature flags - not included in returned array so getEventPayloads won't wait for it
-  // Important: This is using the redesigned send flow
   await mockServer
     .forGet(FEATURE_FLAGS_URL)
     .withQuery({

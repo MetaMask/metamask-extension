@@ -11,7 +11,6 @@ import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionToAddress } from '../../page-objects/flows/send-transaction.flow';
 import { CHAIN_IDS } from '../../../../shared/constants/network';
-import { mockSendRedesignFeatureFlag } from '../send/common';
 
 describe('MetaMask Responsive UI', function (this: Suite) {
   const driverOptions = { constrainWindowSize: true };
@@ -76,7 +75,6 @@ describe('MetaMask Responsive UI', function (this: Suite) {
           })
           .build(),
         driverOptions,
-        testSpecificMock: mockSendRedesignFeatureFlag,
         title: this.test?.fullTitle(),
       },
       async ({ driver }) => {
