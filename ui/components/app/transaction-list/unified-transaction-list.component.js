@@ -659,12 +659,23 @@ export default function UnifiedTransactionList({
         return true;
       }
 
-      // For bridge transactions, check bridgeHistoryItems
-      const bridgeHistoryItem = bridgeHistoryItems[id];
-      if (bridgeHistoryItem?.quote?.srcAsset?.address) {
-        return isEqualCaseInsensitive(
-          bridgeHistoryItem.quote.srcAsset.address,
-          tokenAddress,
+      // For bridge transactions, find the bridge history item
+      // - Bridge tx: lookup by tx ID
+      // - Approval tx: search by approval ID (stored in approvalTxId field)
+      const bridgeHistoryItem =
+        bridgeHistoryItems[id] ||
+        Object.values(bridgeHistoryItems).find(
+          (item) => item.approvalTxId === id,
+        );
+
+      if (bridgeHistoryItem?.quote) {
+        const { srcAsset, destAsset } = bridgeHistoryItem.quote;
+        // Check if token is either source OR destination
+        return (
+          (srcAsset?.address &&
+            isEqualCaseInsensitive(srcAsset.address, tokenAddress)) ||
+          (destAsset?.address &&
+            isEqualCaseInsensitive(destAsset.address, tokenAddress))
         );
       }
 
