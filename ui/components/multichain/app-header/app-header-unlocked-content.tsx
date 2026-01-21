@@ -38,10 +38,7 @@ import {
   MetaMetricsEventCategory,
 } from '../../../../shared/constants/metametrics';
 import { useI18nContext } from '../../../hooks/useI18nContext';
-import {
-  setShowSupportDataConsentModal,
-  toggleAccountMenu,
-} from '../../../store/actions';
+import { setShowSupportDataConsentModal } from '../../../store/actions';
 import ConnectedStatusIndicator from '../../app/connected-status-indicator';
 import { AccountPicker } from '../account-picker';
 import { GlobalMenu } from '../global-menu';
@@ -297,15 +294,11 @@ export const AppHeaderUnlockedContent = ({
   // TODO: [Multichain-Accounts-MUL-849] Delete this method once multichain accounts is released
   const AppContent = useMemo(() => {
     const handleAccountMenuClick = () => {
-      if (isMultichainAccountsState2Enabled) {
-        trace({
-          name: TraceName.ShowAccountList,
-          op: TraceOperation.AccountUi,
-        });
-        navigate(ACCOUNT_LIST_PAGE_ROUTE);
-      } else {
-        dispatch(toggleAccountMenu());
-      }
+      trace({
+        name: TraceName.ShowAccountList,
+        op: TraceOperation.AccountUi,
+      });
+      navigate(ACCOUNT_LIST_PAGE_ROUTE);
     };
 
     return (
@@ -362,9 +355,7 @@ export const AppHeaderUnlockedContent = ({
     accountName,
     disableAccountPicker,
     CopyButton,
-    isMultichainAccountsState2Enabled,
     navigate,
-    dispatch,
     trackEvent,
     accountListStats,
   ]);
