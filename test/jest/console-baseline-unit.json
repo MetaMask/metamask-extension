@@ -1031,11 +1031,6 @@
       "error: Warning: React does not recognize": 1,
       "warn: ⚠️ React Router Future Flag": 2
     },
-    "ui/components/multichain/create-named-snap-account/create-named-snap-account.test.tsx": {
-      "Reselect: Identity function warnings": 1,
-      "Reselect: Input stability warnings": 2,
-      "warn: ⚠️ React Router Future Flag": 2
-    },
     "ui/pages/confirmations/hooks/alerts/transactions/useSigningOrSubmittingAlerts.test.ts": {
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 5,
@@ -2036,12 +2031,6 @@
       "MetaMask: Background connection not initialized": 20,
       "warn: ⚠️ React Router Future Flag": 2,
       "React: Act warnings (component updates not wrapped)": 2
-    },
-    "ui/pages/confirmations/confirmation/templates/create-named-snap-account.test.js": {
-      "Reselect: Identity function warnings": 7,
-      "React: PropTypes validation failures": 2,
-      "Reselect: Input stability warnings": 4,
-      "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/hooks/alerts/transactions/usePendingTransactionAlerts.test.ts": {
       "Reselect: Input stability warnings": 2,

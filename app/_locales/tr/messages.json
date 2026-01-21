@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Hesap veya cüzdan ekle"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask'e hesap ekleyin"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask kullanarak elde ettiğiniz tokenleri ekleyin"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Cüzdan ekle"
-  },
-  "addingAccount": {
-    "message": "Hesap ekleniyor"
   },
   "additionalNetworks": {
     "message": "İlave ağlar"

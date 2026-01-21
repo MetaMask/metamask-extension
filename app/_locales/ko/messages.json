@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "계정 또는 지갑 추가"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask에 계정 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "지갑 추가"
-  },
-  "addingAccount": {
-    "message": "계정 추가"
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
