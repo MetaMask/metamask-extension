@@ -1,6 +1,6 @@
 import type { LoaderContext } from 'webpack';
 
-const PROCESS_ENV_REGEX = /process\.env\.([A-Z_][A-Z0-9_]*)/g;
+const PROCESS_ENV_REGEX = /process\.env\.([A-Z_][A-Z0-9_]*)/gu;
 
 export type EnvValidationLoaderOptions = {
   declarations: Set<string>;
@@ -22,7 +22,7 @@ export type EnvValidationLoaderOptions = {
  * @param source - The source code content of the file being processed.
  * @returns The unmodified source code (this loader only validates, doesn't transform).
  * @throws Emits a webpack error (via `this.emitError`) if any `process.env.*` references
- *         are found that aren't included in the `declarations` set.
+ * are found that aren't included in the `declarations` set.
  */
 export default function envValidationLoader(
   this: LoaderContext<EnvValidationLoaderOptions>,
