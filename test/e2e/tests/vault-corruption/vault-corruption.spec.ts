@@ -1,12 +1,14 @@
 import assert from 'node:assert/strict';
-import { withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { PAGES, type Driver } from '../../webdriver/driver';
 import {
-  clickRecover,
+  completeCreateNewWalletOnboardingFlow,
+  completeVaultRecoveryOnboardingFlow,
+} from '../../page-objects/flows/onboarding.flow';
+import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
+import {
   onboardThenTriggerCorruption,
   getConfig,
-  onboard,
-  onboardAfterRecovery,
   getFirstAddress,
 } from './helpers';
 
@@ -87,10 +89,15 @@ describe('Vault Corruption', function () {
         );
 
         // start recovery
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // onboard again
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
 
         // make sure the address is the same as before
         assert.equal(
@@ -112,10 +119,15 @@ describe('Vault Corruption', function () {
         );
 
         // start reset
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // Now onboard again, like a first-time user :-(
-        await onboard(driver);
+        await completeCreateNewWalletOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+          skipSRPBackup: true,
+        });
 
         // make sure the account is different than the first time we onboarded
         const newFirstAddress = await getFirstAddress(driver);
@@ -141,10 +153,12 @@ describe('Vault Corruption', function () {
           breakPrimaryDatabaseOnlyScript,
         );
 
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+
         // click recover but dismiss the prompt
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
         // make sure the button can be clicked yet again; dismiss again
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
 
         // reload to make sure the UI is still in the same Vault Corrupted state
         await driver.navigate(PAGES.HOME, {
@@ -152,13 +166,17 @@ describe('Vault Corruption', function () {
         });
 
         // make sure the button can be clicked yet again; dismiss the prompt
-        await clickRecover({ driver, confirm: false });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: false });
         // actually recover the vault this time just to make sure
         // it all still works after dismissing the prompt previously
-        await clickRecover({ driver, confirm: true });
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // verify that the UI has completed recovery this time
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
         assert.equal(
           restoredFirstAddress,
           initialFirstAddress,
@@ -179,10 +197,15 @@ describe('Vault Corruption', function () {
         );
 
         // start recovery
-        await clickRecover({ driver, confirm: true });
+        const vaultRecoveryPage = new VaultRecoveryPage(driver);
+        await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
         // onboard again
-        const restoredFirstAddress = await onboardAfterRecovery(driver);
+        await completeVaultRecoveryOnboardingFlow({
+          driver,
+          password: WALLET_PASSWORD,
+        });
+        const restoredFirstAddress = await getFirstAddress(driver);
 
         // make sure the address is the same as before
         assert.equal(

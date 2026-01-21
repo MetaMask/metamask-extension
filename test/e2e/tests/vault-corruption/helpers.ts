@@ -1,9 +1,6 @@
 import { WALLET_PASSWORD } from '../../constants';
 import { type Driver } from '../../webdriver/driver';
-import {
-  completeCreateNewWalletOnboardingFlow,
-  completeVaultRecoveryOnboardingFlow,
-} from '../../page-objects/flows/onboarding.flow';
+import { completeCreateNewWalletOnboardingFlow } from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import AccountListPage from '../../page-objects/pages/account-list-page';
@@ -82,47 +79,6 @@ export async function getFirstAddress(
 }
 
 /**
- * Onboard the user.
- *
- * @param driver - The WebDriver instance.
- */
-export async function onboard(driver: Driver): Promise<void> {
-  await completeCreateNewWalletOnboardingFlow({
-    driver,
-    password: WALLET_PASSWORD,
-    skipSRPBackup: true,
-  });
-}
-
-/**
- * Recovers the vault and returns the first account's address.
- *
- * @param driver - The WebDriver instance.
- */
-export async function onboardAfterRecovery(driver: Driver): Promise<string> {
-  // Log back in to the wallet and complete onboarding
-  await completeVaultRecoveryOnboardingFlow({
-    driver,
-    password: WALLET_PASSWORD,
-  });
-
-  // now that we are re-onboarded, get the first account's address
-  return await getFirstAddress(driver);
-}
-
-/**
- * Since reloading the background restarts the extension the UI isn't
- * available immediately. So we just keep reloading the UI until it is. This
- * is a bit of a hack, but I can't figure out a better way.
- *
- * @param driver - The WebDriver instance.
- */
-async function waitForVaultRestorePage(driver: Driver): Promise<void> {
-  const vaultRecoveryPage = new VaultRecoveryPage(driver);
-  await vaultRecoveryPage.waitForPageAfterExtensionReload();
-}
-
-/**
  * Breaks the databases and then begins recovery. Only returns once the
  * background page has reloaded and the UI is available again.
  *
@@ -142,7 +98,11 @@ export async function onboardThenTriggerCorruption(
   // we do -- and that will close the whole browser 😱
   await driver.openNewPage('about:blank');
 
-  await onboard(driver);
+  await completeCreateNewWalletOnboardingFlow({
+    driver,
+    password: WALLET_PASSWORD,
+    skipSRPBackup: true,
+  });
 
   const homePage = new HomePage(driver);
   await homePage.checkPageIsLoaded();
@@ -165,25 +125,10 @@ export async function onboardThenTriggerCorruption(
   await driver.openNewPage('about:blank');
 
   // wait for the background page to reload
-  await waitForVaultRestorePage(driver);
+  // Since reloading the background restarts the extension the UI isn't
+  // available immediately. So we just keep reloading the UI until it is.
+  const vaultRecoveryPage = new VaultRecoveryPage(driver);
+  await vaultRecoveryPage.waitForPageAfterExtensionReload();
 
   return firstAddress;
-}
-
-/**
- * Click the recovery/reset button then confirm or dismiss the action.
- *
- * @param options - The options.
- * @param options.driver - The WebDriver instance.
- * @param options.confirm - Whether to confirm the action or not.
- */
-export async function clickRecover({
-  driver,
-  confirm,
-}: {
-  driver: Driver;
-  confirm: boolean;
-}): Promise<void> {
-  const vaultRecoveryPage = new VaultRecoveryPage(driver);
-  await vaultRecoveryPage.clickRecoveryButton({ confirm });
 }

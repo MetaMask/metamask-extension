@@ -1,13 +1,16 @@
 import assert from 'node:assert/strict';
-import { withFixtures } from '../../helpers';
+import { WALLET_PASSWORD, withFixtures } from '../../helpers';
 import { type Driver } from '../../webdriver/driver';
+import {
+  completeCreateNewWalletOnboardingFlow,
+  completeVaultRecoveryOnboardingFlow,
+} from '../../page-objects/flows/onboarding.flow';
 import HomePage from '../../page-objects/pages/home/homepage';
+import VaultRecoveryPage from '../../page-objects/pages/vault-recovery-page';
 import {
   onboardThenTriggerCorruption,
-  clickRecover,
   getConfig,
-  onboardAfterRecovery,
-  onboard,
+  getFirstAddress,
 } from './helpers';
 
 /**
@@ -55,10 +58,15 @@ describe('Storage Operations Failure Recovery', function () {
           );
 
           // Phase 2: Start recovery
-          await clickRecover({ driver, confirm: true });
+          const vaultRecoveryPage = new VaultRecoveryPage(driver);
+          await vaultRecoveryPage.clickRecoveryButton({ confirm: true });
 
           // Phase 3: Complete vault recovery onboarding
-          const restoredFirstAddress = await onboardAfterRecovery(driver);
+          await completeVaultRecoveryOnboardingFlow({
+            driver,
+            password: WALLET_PASSWORD,
+          });
+          const restoredFirstAddress = await getFirstAddress(driver);
 
           // Phase 4: Verify address is preserved
           assert.equal(
@@ -85,7 +93,11 @@ describe('Storage Operations Failure Recovery', function () {
         }),
         async ({ driver }: { driver: Driver }) => {
           // Complete onboarding - writes fail immediately but onboarding still completes
-          await onboard(driver);
+          await completeCreateNewWalletOnboardingFlow({
+            driver,
+            password: WALLET_PASSWORD,
+            skipSRPBackup: true,
+          });
 
           // Wait for homepage to be ready
           const homePage = new HomePage(driver);
