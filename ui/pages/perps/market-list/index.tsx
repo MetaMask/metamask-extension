@@ -65,6 +65,19 @@ const filterMarkets = (
   );
 };
 
+type StockMarketType = 'equity' | 'commodity';
+
+const STOCK_SUB_FILTER_ALLOWED_TYPES = {
+  all: new Set<StockMarketType>(['equity', 'commodity']),
+  stocks: new Set<StockMarketType>(['equity']),
+  commodities: new Set<StockMarketType>(['commodity']),
+} satisfies Record<StockSubFilter, ReadonlySet<StockMarketType>>;
+
+const isStockMarketType = (
+  marketType: PerpsMarketData['marketType'],
+): marketType is StockMarketType =>
+  marketType === 'equity' || marketType === 'commodity';
+
 /**
  * Filter markets by market type
  *
@@ -78,26 +91,26 @@ const filterByType = (
   filter: MarketFilter,
   stockSubFilter: StockSubFilter,
 ): PerpsMarketData[] => {
-  if (filter === 'all') {
-    return markets;
-  }
-  if (filter === 'crypto') {
-    return markets.filter((m) => !m.marketType || m.marketType === 'crypto');
-  }
-  if (filter === 'stocks') {
-    if (stockSubFilter === 'all') {
-      return markets.filter(
-        (m) => m.marketType === 'equity' || m.marketType === 'commodity',
-      );
+  switch (filter) {
+    case 'all': {
+      return markets;
     }
-    if (stockSubFilter === 'stocks') {
-      return markets.filter((m) => m.marketType === 'equity');
+    case 'crypto': {
+      return markets.filter((m) => !m.marketType || m.marketType === 'crypto');
     }
-    if (stockSubFilter === 'commodities') {
-      return markets.filter((m) => m.marketType === 'commodity');
+    case 'stocks': {
+      const allowedMarketTypes = STOCK_SUB_FILTER_ALLOWED_TYPES[stockSubFilter];
+      return markets.filter((m) => {
+        if (!isStockMarketType(m.marketType)) {
+          return false;
+        }
+        return allowedMarketTypes.has(m.marketType);
+      });
+    }
+    default: {
+      return markets;
     }
   }
-  return markets;
 };
 
 /**
