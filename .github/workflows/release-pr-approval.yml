@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - release/*
+  pull_request_review:
+    branches:
+      - release/*
 
 jobs:
   release-pr-approval:
