@@ -3439,6 +3439,9 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/market-list/components/market-row/market-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
     },

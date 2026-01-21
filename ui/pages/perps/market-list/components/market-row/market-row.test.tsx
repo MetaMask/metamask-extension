@@ -15,15 +15,19 @@ const mockStore = configureStore({
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
 ): PerpsMarketData => ({
-  symbol: 'BTC',
-  name: 'Bitcoin',
-  price: '$50,000',
-  change24hPercent: '+2.5%',
-  volume: '$1.2B',
-  maxLeverage: '50x',
-  openInterest: '$500M',
-  fundingRate: 0.01,
-  ...overrides,
+  symbol: overrides.symbol ?? 'BTC',
+  name: overrides.name ?? 'Bitcoin',
+  maxLeverage: overrides.maxLeverage ?? '50x',
+  price: overrides.price ?? '$50,000',
+  change24h: overrides.change24h ?? '+$1,250.00',
+  change24hPercent: overrides.change24hPercent ?? '+2.5%',
+  volume: overrides.volume ?? '$1.2B',
+  openInterest: 'openInterest' in overrides ? overrides.openInterest : '$500M',
+  nextFundingTime: overrides.nextFundingTime,
+  fundingIntervalHours: overrides.fundingIntervalHours,
+  fundingRate: 'fundingRate' in overrides ? overrides.fundingRate : 0.01,
+  marketSource: overrides.marketSource,
+  marketType: overrides.marketType,
 });
 
 describe('MarketRow', () => {

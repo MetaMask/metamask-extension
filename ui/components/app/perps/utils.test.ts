@@ -17,12 +17,19 @@ import type { PerpsMarketData } from './types';
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
 ): PerpsMarketData => ({
-  symbol: 'BTC',
-  name: 'Bitcoin',
-  price: '$50,000',
-  change24hPercent: '+2.5%',
-  volume: '$1.2B',
-  ...overrides,
+  symbol: overrides.symbol ?? 'BTC',
+  name: overrides.name ?? 'Bitcoin',
+  maxLeverage: overrides.maxLeverage ?? '50x',
+  price: overrides.price ?? '$50,000',
+  change24h: overrides.change24h ?? '+$1,250.00',
+  change24hPercent: overrides.change24hPercent ?? '+2.5%',
+  volume: overrides.volume ?? '$1.2B',
+  openInterest: overrides.openInterest,
+  nextFundingTime: overrides.nextFundingTime,
+  fundingIntervalHours: overrides.fundingIntervalHours,
+  fundingRate: overrides.fundingRate,
+  marketSource: overrides.marketSource,
+  marketType: overrides.marketType,
 });
 
 describe('Perps Utils', () => {

@@ -4,14 +4,19 @@ import { sortMarkets } from './sortMarkets';
 const createMockMarket = (
   overrides: Partial<PerpsMarketData> = {},
 ): PerpsMarketData => ({
-  symbol: 'BTC',
-  name: 'Bitcoin',
-  price: '$50,000',
-  change24hPercent: '+2.5%',
-  volume: '$1.2B',
-  openInterest: '$500M',
-  fundingRate: 0.01,
-  ...overrides,
+  symbol: overrides.symbol ?? 'BTC',
+  name: overrides.name ?? 'Bitcoin',
+  maxLeverage: overrides.maxLeverage ?? '50x',
+  price: overrides.price ?? '$50,000',
+  change24h: overrides.change24h ?? '+$1,250.00',
+  change24hPercent: overrides.change24hPercent ?? '+2.5%',
+  volume: overrides.volume ?? '$1.2B',
+  openInterest: 'openInterest' in overrides ? overrides.openInterest : '$500M',
+  nextFundingTime: overrides.nextFundingTime,
+  fundingIntervalHours: overrides.fundingIntervalHours,
+  fundingRate: 'fundingRate' in overrides ? overrides.fundingRate : 0.01,
+  marketSource: overrides.marketSource,
+  marketType: overrides.marketType,
 });
 
 describe('sortMarkets', () => {
@@ -37,7 +42,11 @@ describe('sortMarkets', () => {
         createMockMarket({ symbol: 'C', volume: '$100K' }),
       ];
 
-      const result = sortMarkets({ markets, sortBy: 'volume', direction: 'asc' });
+      const result = sortMarkets({
+        markets,
+        sortBy: 'volume',
+        direction: 'asc',
+      });
 
       expect(result[0].symbol).toBe('C'); // $100K
       expect(result[1].symbol).toBe('A'); // $500M
@@ -67,7 +76,11 @@ describe('sortMarkets', () => {
         createMockMarket({ symbol: 'C', change24hPercent: '+5.2%' }),
       ];
 
-      const result = sortMarkets({ markets, sortBy: 'priceChange', direction: 'desc' });
+      const result = sortMarkets({
+        markets,
+        sortBy: 'priceChange',
+        direction: 'desc',
+      });
 
       expect(result[0].symbol).toBe('C'); // +5.2%
       expect(result[1].symbol).toBe('A'); // +2.5%
@@ -81,7 +94,11 @@ describe('sortMarkets', () => {
         createMockMarket({ symbol: 'C', change24hPercent: '+5.2%' }),
       ];
 
-      const result = sortMarkets({ markets, sortBy: 'priceChange', direction: 'asc' });
+      const result = sortMarkets({
+        markets,
+        sortBy: 'priceChange',
+        direction: 'asc',
+      });
 
       expect(result[0].symbol).toBe('B'); // -1.8%
       expect(result[1].symbol).toBe('A'); // +2.5%
@@ -96,7 +113,11 @@ describe('sortMarkets', () => {
         createMockMarket({ symbol: 'D', change24hPercent: '-1.0%' }),
       ];
 
-      const result = sortMarkets({ markets, sortBy: 'priceChange', direction: 'desc' });
+      const result = sortMarkets({
+        markets,
+        sortBy: 'priceChange',
+        direction: 'desc',
+      });
 
       // Valid percentages should sort correctly, placeholders treated as 0
       expect(result[0].symbol).toBe('A'); // +2.5%
