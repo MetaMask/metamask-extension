@@ -22,7 +22,6 @@ import {
 } from '@metamask/design-system-react';
 import {
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { Content, Header, Page } from '../../page';
@@ -129,10 +128,7 @@ export const ReviewGatorPermissionsPage = () => {
 
   const handleRevokeClick = useCallback(
     async (
-      permission: StoredGatorPermissionSanitized<
-        Signer,
-        PermissionTypesWithCustom
-      >,
+      permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
     ) => {
       const { context } = permission.permissionResponse;
 
@@ -165,10 +161,7 @@ export const ReviewGatorPermissionsPage = () => {
   );
 
   const renderGatorPermissions = (
-    permissions: StoredGatorPermissionSanitized<
-      Signer,
-      PermissionTypesWithCustom
-    >[],
+    permissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[],
   ) =>
     permissions.map((permission) => (
       <ReviewGatorPermissionItem

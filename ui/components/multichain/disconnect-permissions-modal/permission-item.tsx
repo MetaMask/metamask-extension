@@ -68,7 +68,7 @@ export const PermissionItem: React.FC<PermissionItemProps> = ({
     [locale],
   );
 
-  const signerAddress = permission.permission.permissionResponse.address;
+  const signerAddress = permission.permission.permissionResponse.from;
 
   // Always call useDisplayName hook (hooks must be called unconditionally)
   const displayNameResult = useDisplayName({
