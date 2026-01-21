@@ -1624,7 +1624,6 @@ const state = {
     coverageResults: {},
   },
   appState: {
-    isAccountMenuOpen: false,
     welcomeScreenSeen: false,
     pendingTokens: {},
     confirmationExchangeRates: {},
