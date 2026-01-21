@@ -1,9 +1,6 @@
 import { useEffect, useMemo, useRef } from 'react';
 import type { Hex, Json } from '@metamask/utils';
-import {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
+import { TransactionMeta } from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
@@ -11,6 +8,7 @@ import type { TransactionPaymentToken } from '@metamask/transaction-pay-controll
 import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../utils/transaction-pay';
 import { updateEventFragment } from '../../../../store/actions';
+import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../shared/constants/transaction';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayQuotes,
@@ -35,7 +33,7 @@ export function useTransactionPayMetrics() {
   );
 
   const transactionId = transactionMeta?.id ?? '';
-  const { chainId, type } = transactionMeta ?? {};
+  const { chainId } = transactionMeta ?? {};
   const primaryRequiredToken = requiredTokens.find((t) => !t.skipIfBalance);
   const sendingValue = Number(primaryRequiredToken?.amountHuman ?? '0');
 
@@ -69,16 +67,13 @@ export function useTransactionPayMetrics() {
       props.mm_pay_payment_token_list_size = availableTokens.length;
     }
 
-    if (payToken && type === TransactionType.perpsDeposit) {
-      props.mm_pay_use_case = 'perps_deposit';
-      props.simulation_sending_assets_total_value = sendingValue;
-    }
-
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [TransactionType.predictDeposit])
+      hasTransactionType(transactionMeta, [
+        EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
+      ])
     ) {
-      props.mm_pay_use_case = 'predict_deposit';
+      props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;
     }
 
@@ -114,7 +109,6 @@ export function useTransactionPayMetrics() {
     strategy,
     totals,
     transactionMeta,
-    type,
   ]);
 
   useEffect(() => {

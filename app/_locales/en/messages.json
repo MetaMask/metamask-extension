@@ -1962,6 +1962,9 @@
   "dataUnavailable": {
     "message": "data unavailable"
   },
+  "date": {
+    "message": "Date"
+  },
   "dateCreated": {
     "message": "Date created"
   },
@@ -2650,6 +2653,12 @@
   },
   "etherscanViewOn": {
     "message": "View on Etherscan"
+  },
+  "exampleCustomAmountActivityTitle": {
+    "message": "Custom amount"
+  },
+  "exampleCustomAmountTitle": {
+    "message": "Custom amount"
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
@@ -4712,6 +4721,9 @@
   "paidByMetaMask": {
     "message": "Paid by MetaMask"
   },
+  "paidWith": {
+    "message": "Paid with"
+  },
   "participateInMetaMetrics": {
     "message": "Participate in MetaMetrics"
   },
@@ -5112,6 +5124,9 @@
   "perpsDisclaimer": {
     "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
   },
+  "perpsDepositTitle": {
+    "message": "Perps deposit"
+  },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
   },
@@ -5313,6 +5328,15 @@
   },
   "popularNetworks": {
     "message": "Popular networks"
+  },
+  "predictClaimTitle": {
+    "message": "Predict claim"
+  },
+  "predictDepositTitle": {
+    "message": "Predict deposit"
+  },
+  "predictWithdrawTitle": {
+    "message": "Predict withdraw"
   },
   "preparingSwap": {
     "message": "Preparing swap..."
@@ -5564,6 +5588,9 @@
   },
   "received": {
     "message": "Received"
+  },
+  "receivedTotal": {
+    "message": "Received total"
   },
   "receivingAddress": {
     "message": "Receiving address",
@@ -8365,6 +8392,9 @@
   },
   "transactionDetailMultiLayerTotalSubtitle": {
     "message": "Amount + fees"
+  },
+  "transactionDetails": {
+    "message": "Transaction details"
   },
   "transactionDropped": {
     "message": "Transaction dropped at $2."

@@ -15,6 +15,7 @@ import { useTransactionDisplayData } from '../../../hooks/useTransactionDisplayD
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import CancelSpeedupPopover from '../cancel-speedup-popover';
 import TransactionListItemDetails from '../transaction-list-item-details';
+import { TransactionDetailsModal } from '../../../pages/confirmations/components/activity';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../../helpers/constants/routes';
 import { useShouldShowSpeedUp } from '../../../hooks/useShouldShowSpeedUp';
 import TransactionStatusLabel from '../transaction-status-label/transaction-status-label';
@@ -42,7 +43,10 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
+import {
+  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
+  TransactionGroupCategory,
+} from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import {
   TransactionModalContextProvider,
@@ -68,6 +72,8 @@ import {
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
 import { mapTransactionTypeToCategory } from './helpers';
+
+const PAY_TRANSACTION_TYPES = [EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE];
 
 function TransactionListItemInner({
   transactionGroup,
@@ -385,32 +391,40 @@ function TransactionListItemInner({
           </Box>
         )}
       </ActivityListItem>
-      {showDetails && (
-        <TransactionListItemDetails
-          title={title}
-          onClose={toggleShowDetails}
-          transactionGroup={transactionGroup}
-          primaryCurrency={primaryCurrency}
-          senderAddress={senderAddress}
-          recipientAddress={recipientAddress}
-          onRetry={retryTransaction}
-          // showRetry={showRetry}
-          showSpeedUp={isSpeedUpButtonVisible}
-          isEarliestNonce={isEarliestNonce}
-          onCancel={cancelTransaction}
-          transactionStatus={() => (
-            <TransactionStatusLabel
-              isPending={isPending}
-              isEarliestNonce={isEarliestNonce}
-              error={error}
-              date={date}
-              status={displayedStatusKey}
-              statusOnly
-            />
-          )}
-          chainId={chainId}
-        />
-      )}
+      {showDetails &&
+        (PAY_TRANSACTION_TYPES.includes(
+          transactionGroup.initialTransaction.type,
+        ) ? (
+          <TransactionDetailsModal
+            transactionMeta={transactionGroup.initialTransaction}
+            onClose={toggleShowDetails}
+          />
+        ) : (
+          <TransactionListItemDetails
+            title={title}
+            onClose={toggleShowDetails}
+            transactionGroup={transactionGroup}
+            primaryCurrency={primaryCurrency}
+            senderAddress={senderAddress}
+            recipientAddress={recipientAddress}
+            onRetry={retryTransaction}
+            // showRetry={showRetry}
+            showSpeedUp={isSpeedUpButtonVisible}
+            isEarliestNonce={isEarliestNonce}
+            onCancel={cancelTransaction}
+            transactionStatus={() => (
+              <TransactionStatusLabel
+                isPending={isPending}
+                isEarliestNonce={isEarliestNonce}
+                error={error}
+                date={date}
+                status={displayedStatusKey}
+                statusOnly
+              />
+            )}
+            chainId={chainId}
+          />
+        ))}
       {!supportsEIP1559 && showRetryEditGasPopover && (
         <EditGasPopover
           onClose={() => setShowRetryEditGasPopover(false)}

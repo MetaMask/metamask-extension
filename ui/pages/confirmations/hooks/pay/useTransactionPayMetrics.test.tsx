@@ -2,7 +2,6 @@ import { renderHook } from '@testing-library/react-hooks';
 import { Provider } from 'react-redux';
 import configureStore from 'redux-mock-store';
 import React from 'react';
-import { TransactionType } from '@metamask/transaction-controller';
 import {
   TransactionPayQuote,
   TransactionPayRequiredToken,
@@ -11,6 +10,7 @@ import {
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
+import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../shared/constants/transaction';
 import { useTransactionPayMetrics } from './useTransactionPayMetrics';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -53,7 +53,7 @@ const QUOTE_MOCK = {
 
 const mockStore = configureStore([]);
 
-function createWrapper(type: TransactionType = TransactionType.perpsDeposit) {
+function createWrapper(type: string = EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE) {
   const state = {
     metamask: {
       TransactionPayController: {
@@ -162,27 +162,14 @@ describe('useTransactionPayMetrics', () => {
     expect(result.error).toBeUndefined();
   });
 
-  it('renders with perps deposit type', () => {
+  it('renders with custom amount type', () => {
     useTransactionPayTokenMock.mockReturnValue({
       payToken: PAY_TOKEN_MOCK,
       setPayToken: jest.fn(),
     } as ReturnType<typeof useTransactionPayToken>);
 
     const { result } = renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.perpsDeposit),
-    });
-
-    expect(result.error).toBeUndefined();
-  });
-
-  it('renders with predict deposit type', () => {
-    useTransactionPayTokenMock.mockReturnValue({
-      payToken: PAY_TOKEN_MOCK,
-      setPayToken: jest.fn(),
-    } as ReturnType<typeof useTransactionPayToken>);
-
-    const { result } = renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(TransactionType.predictDeposit),
+      wrapper: createWrapper(EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE),
     });
 
     expect(result.error).toBeUndefined();
