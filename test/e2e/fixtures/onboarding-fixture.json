@@ -197,7 +197,8 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2025-11-25"
+        "install_date_ext": "2025-11-25",
+        "storage_kind": "split"
       }
     },
     "MetaMetricsDataDeletionController": {
