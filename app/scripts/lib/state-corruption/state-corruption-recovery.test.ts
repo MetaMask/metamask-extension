@@ -119,7 +119,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
           'Corrupted',
           // `backup` is not always a `Backup`, but in reality that is also true
           backupHasErr ? (backup as Backup) : null,
-          VaultCorruptionType.UnaccessibleDatabase,
+          VaultCorruptionType.InaccessibleDatabase,
           cause,
         );
 

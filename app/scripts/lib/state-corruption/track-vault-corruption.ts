@@ -99,7 +99,7 @@ function getMetaMetricsFromBackup(backup: Backup | null): {
  *
  * @param backup - The backup state from IndexedDB containing MetaMetricsController state.
  * @param eventName - The MetaMetrics event name to track.
- * @param corruptionType - The type of vault corruption (missing_vault_in_database, unaccessible_database).
+ * @param corruptionType - The type of vault corruption (missing_vault_in_database, inaccessible_database).
  */
 export function trackVaultCorruptionEvent(
   backup: Backup | null,

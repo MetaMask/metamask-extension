@@ -52,7 +52,7 @@ export class PersistenceError extends Error {
 
   /**
    * The type of vault corruption that occurred.
-   * - UnaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
+   * - InaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
    * - MissingVaultInDatabase: The database was accessible but the vault was missing
    */
   corruptionType: VaultCorruptionType;
@@ -624,7 +624,7 @@ export class PersistenceManager {
               // We do this here (before throwing) because MetaMetricsController
               // is not initialized yet, so we use the backup state for consent/ID.
               const corruptionType = localStoreError
-                ? VaultCorruptionType.UnaccessibleDatabase
+                ? VaultCorruptionType.InaccessibleDatabase
                 : VaultCorruptionType.MissingVaultInDatabase;
               trackVaultCorruptionEvent(
                 backup,

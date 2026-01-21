@@ -34,7 +34,7 @@ describe('trackVaultCorruptionEvent', () => {
     trackVaultCorruptionEvent(
       backup,
       MetaMetricsEventName.VaultCorruptionDetected,
-      VaultCorruptionType.UnaccessibleDatabase,
+      VaultCorruptionType.InaccessibleDatabase,
     );
 
     expect(mockSegment.track).toHaveBeenCalledWith({
@@ -42,7 +42,7 @@ describe('trackVaultCorruptionEvent', () => {
       event: MetaMetricsEventName.VaultCorruptionDetected,
       properties: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_type: VaultCorruptionType.UnaccessibleDatabase,
+        error_type: VaultCorruptionType.InaccessibleDatabase,
         category: MetaMetricsEventCategory.Error,
       },
       context: {
