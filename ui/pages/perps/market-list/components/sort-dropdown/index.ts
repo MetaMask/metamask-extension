@@ -3,5 +3,4 @@ export type {
   SortDropdownProps,
   SortOptionId,
   SortOption,
-  SortDirection,
 } from './sort-dropdown';

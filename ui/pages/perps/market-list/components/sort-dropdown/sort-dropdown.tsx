@@ -1,9 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { Dropdown, type DropdownOption } from '../dropdown';
-import type { SortField } from '../market-row';
-
-export type SortDirection = 'asc' | 'desc';
+import type { SortField, SortDirection } from '../../../utils/sortMarkets';
 
 export type SortOptionId =
   | 'volume'
@@ -20,7 +18,12 @@ export type SortOption = {
 };
 
 export const SORT_OPTIONS: SortOption[] = [
-  { id: 'volume', labelKey: 'perpsSortVolume', field: 'volume', direction: 'desc' },
+  {
+    id: 'volume',
+    labelKey: 'perpsSortVolume',
+    field: 'volume',
+    direction: 'desc',
+  },
   {
     id: 'priceChangeHigh',
     labelKey: 'perpsSortPriceChangeHighToLow',

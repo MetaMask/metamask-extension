@@ -37,7 +37,6 @@ export {
 export type {
   PerpsMarketData,
   MarketType,
-  MarketTypeFilter,
   Position,
   Order,
   OrderType,

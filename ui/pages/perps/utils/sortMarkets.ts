@@ -1,6 +1,8 @@
 import type { PerpsMarketData } from '../../../components/app/perps/types';
-import { MARKET_SORTING_CONFIG } from '../../../components/app/perps/constants';
-import { parseVolume } from '../../../hooks/perps/usePerpsMarkets';
+import {
+  MARKET_SORTING_CONFIG,
+  PERPS_CONSTANTS,
+} from '../../../components/app/perps/constants';
 
 export type SortField =
   | 'volume'
@@ -9,15 +11,78 @@ export type SortField =
   | 'openInterest';
 export type SortDirection = 'asc' | 'desc';
 
-interface SortMarketsParams {
+const multipliers: Record<string, number> = {
+  K: 1e3,
+  M: 1e6,
+  B: 1e9,
+  T: 1e12,
+} as const;
+
+// Pre-compiled regex for better performance
+const VOLUME_SUFFIX_REGEX = /\$?([\d.,]+)([KMBT])?/u;
+
+// Helper function to remove commas
+const removeCommas = (str: string): string => {
+  let result = '';
+  for (const char of str) {
+    if (char !== ',') {
+      result += char;
+    }
+  }
+  return result;
+};
+
+/**
+ * Parse volume strings with magnitude suffixes (e.g., '$1.2B', '$850M')
+ * Returns numeric value for sorting
+ *
+ * @param volumeStr - The volume string to parse
+ * @returns Numeric value for sorting
+ */
+export const parseVolume = (volumeStr: string | undefined): number => {
+  if (!volumeStr) {
+    return -1;
+  }
+
+  // Handle special cases
+  if (volumeStr === PERPS_CONSTANTS.FALLBACK_PRICE_DISPLAY) {
+    return -1;
+  }
+  if (volumeStr === '$<1') {
+    return 0.5;
+  }
+
+  // Handle suffixed values (e.g., "$1.5M", "$2.3B", "$500K")
+  const suffixMatch = VOLUME_SUFFIX_REGEX.exec(volumeStr);
+  if (suffixMatch) {
+    const [, numberPart, suffix] = suffixMatch;
+    const baseValue = Number.parseFloat(removeCommas(numberPart));
+
+    if (Number.isNaN(baseValue)) {
+      return -1;
+    }
+
+    return suffix ? baseValue * multipliers[suffix] : baseValue;
+  }
+
+  return -1;
+};
+
+type SortMarketsParams = {
   markets: PerpsMarketData[];
   sortBy: SortField;
   direction?: SortDirection;
-}
+};
 
 /**
  * Sorts markets based on the specified criteria
  * Uses object parameters pattern for maintainability
+ *
+ * @param options - Sort options
+ * @param options.markets - Markets to sort
+ * @param options.sortBy - Field to sort by
+ * @param options.direction - Sort direction
+ * @returns Sorted markets
  */
 export const sortMarkets = ({
   markets,
@@ -42,10 +107,10 @@ export const sortMarkets = ({
         // Use 24h price change percentage (e.g., '+2.5%', '-1.8%')
         // Parse and remove % sign, handle placeholder values like '--' or 'N/A'
         const parsedA = parseFloat(
-          a.change24hPercent?.replace(/[%+]/g, '') || '0',
+          a.change24hPercent?.replace(/[%+]/gu, '') || '0',
         );
         const parsedB = parseFloat(
-          b.change24hPercent?.replace(/[%+]/g, '') || '0',
+          b.change24hPercent?.replace(/[%+]/gu, '') || '0',
         );
         const changeA = Number.isNaN(parsedA) ? 0 : parsedA;
         const changeB = Number.isNaN(parsedB) ? 0 : parsedB;

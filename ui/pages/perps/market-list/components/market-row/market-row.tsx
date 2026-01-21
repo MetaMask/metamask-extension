@@ -12,12 +12,7 @@ import {
 import { PerpsTokenLogo } from '../../../../../components/app/perps/perps-token-logo';
 import { getDisplaySymbol } from '../../../../../components/app/perps/utils';
 import type { PerpsMarketData } from '../../../../../components/app/perps/types';
-
-export type SortField =
-  | 'volume'
-  | 'priceChange'
-  | 'fundingRate'
-  | 'openInterest';
+import type { SortField } from '../../../utils/sortMarkets';
 
 export type MarketRowProps = {
   /** Market data to display */
@@ -127,7 +122,10 @@ export const MarketRow: React.FC<MarketRowProps> = ({
         >
           <Text fontWeight={FontWeight.Medium}>{displaySymbol}</Text>
           <span className="shrink-0 rounded-md bg-background-muted px-1.5">
-            <Text variant={TextVariant.BodyXs} color={TextColor.TextAlternative}>
+            <Text
+              variant={TextVariant.BodyXs}
+              color={TextColor.TextAlternative}
+            >
               {market.maxLeverage}
             </Text>
           </span>

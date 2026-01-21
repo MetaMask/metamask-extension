@@ -23,14 +23,17 @@ import {
 import type { PerpsMarketData } from '../../../components/app/perps/types';
 import { filterMarketsByQuery } from '../../../components/app/perps/utils';
 import { PERPS_MARKET_DETAIL_ROUTE } from '../../../helpers/constants/routes';
-import { sortMarkets } from '../utils/sortMarkets';
-import { MarketRow, type SortField } from './components/market-row';
+import {
+  sortMarkets,
+  type SortField,
+  type SortDirection,
+} from '../utils/sortMarkets';
+import { MarketRow } from './components/market-row';
 import { MarketRowSkeleton } from './components/market-row-skeleton';
 import {
   SortDropdown,
   SORT_OPTIONS,
   type SortOptionId,
-  type SortDirection,
 } from './components/sort-dropdown';
 import { SearchInput } from './components/search-input';
 import { FilterSelect, type MarketFilter } from './components/filter-select';
