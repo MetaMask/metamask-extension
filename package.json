@@ -738,6 +738,7 @@
     "tailwindcss": "patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch",
     "terser": "^5.7.0",
     "terser-webpack-plugin": "^5.3.14",
+    "thread-loader": "^4.0.4",
     "through2": "^4.0.2",
     "ts-node": "^10.9.2",
     "tsx": "^4.20.6",

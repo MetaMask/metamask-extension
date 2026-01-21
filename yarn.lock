@@ -31570,6 +31570,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"json-parse-better-errors@npm:^1.0.2":
+  version: 1.0.2
+  resolution: "json-parse-better-errors@npm:1.0.2"
+  checksum: 10/5553232045359b767b0f2039a6777fede1a8d7dca1a0ffb1f9ef73a7519489ae7f566b2e040f2b4c38edb8e35e37ae07af7f0a52420902f869ee0dbf5dc6c784
+  languageName: node
+  linkType: hard
+
 "json-parse-even-better-errors@npm:^2.3.0, json-parse-even-better-errors@npm:^2.3.1":
   version: 2.3.1
   resolution: "json-parse-even-better-errors@npm:2.3.1"
@@ -32532,6 +32539,13 @@ __metadata:
     pinkie-promise: "npm:^2.0.0"
     strip-bom: "npm:^2.0.0"
   checksum: 10/bb16e169d87df38806f5ffa7efa3287921839fdfee2c20c8525f53b53ba43d14b56b6881901c04190f7da4a4ba6e0c9784d212e83ee3a32d49bb986b5a6094cb
+  languageName: node
+  linkType: hard
+
+"loader-runner@npm:^4.1.0":
+  version: 4.3.1
+  resolution: "loader-runner@npm:4.3.1"
+  checksum: 10/d77127497c3f91fdba351e3e91156034e6e590e9f050b40df6c38ac16c54b5c903f7e2e141e09fefd046ee96b26fb50773c695ebc0aa205a4918683b124b04ba
   languageName: node
   linkType: hard
 
@@ -33874,6 +33888,7 @@ __metadata:
     tailwindcss: "patch:tailwindcss@npm%3A3.4.17#~/.yarn/patches/tailwindcss-npm-3.4.17-403059edc1.patch"
     terser: "npm:^5.7.0"
     terser-webpack-plugin: "npm:^5.3.14"
+    thread-loader: "npm:^4.0.4"
     through2: "npm:^4.0.2"
     ts-mixer: "patch:ts-mixer@npm%3A6.0.4#~/.yarn/patches/ts-mixer-npm-6.0.4-5d9747bdf5.patch"
     ts-node: "npm:^10.9.2"
@@ -42626,6 +42641,20 @@ __metadata:
   dependencies:
     any-promise: "npm:^1.0.0"
   checksum: 10/486e1283a867440a904e36741ff1a177faa827cf94d69506f7e3ae4187b9afdf9ec368b3d8da225c192bfe2eb943f3f0080594156bf39f21b57cd1411e2e7f6d
+  languageName: node
+  linkType: hard
+
+"thread-loader@npm:^4.0.4":
+  version: 4.0.4
+  resolution: "thread-loader@npm:4.0.4"
+  dependencies:
+    json-parse-better-errors: "npm:^1.0.2"
+    loader-runner: "npm:^4.1.0"
+    neo-async: "npm:^2.6.2"
+    schema-utils: "npm:^4.2.0"
+  peerDependencies:
+    webpack: ^5.0.0
+  checksum: 10/268fdc2aa836a414f0af2213c5dd743efe8b3fae6a60942a086505937648c4e8c26ec88c27538e42afc629b1b5f9d0a622fc1b09b8633b288841a9ce3921ccec
   languageName: node
   linkType: hard
 
