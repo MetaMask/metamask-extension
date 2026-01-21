@@ -49,11 +49,6 @@ async function testSpecificMock(mockServer: Mockttp) {
           {
             extensionUxPna25: true,
           },
-          {
-            sendRedesign: {
-              enabled: true,
-            },
-          },
         ],
       };
     });
@@ -209,10 +204,8 @@ describe('Transaction Finalized Event', function (this: Suite) {
         await activityList.clickOnActivity(1);
         await activityList.clickCopyTransactionHashButton();
         const txHash = await driver.getClipboardContent();
-        console.log('txHash', txHash);
 
         const events = await getEventPayloads(driver, mockedEndpoints);
-        console.log('events', events);
 
         const transactionSubmittedWithSensitivePropertiesAssertions = [
           messageIdStartsWithTransactionSubmitted,

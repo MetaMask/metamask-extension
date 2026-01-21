@@ -32,10 +32,9 @@ export const sendRedesignedTransactionToAddress = async ({
     amount,
   });
 
-  // confirm transaction when user lands on confirm transaction screen
-  await activityListPage.checkTransactionActivityByText('Sent');
-  await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
-  await activityListPage.checkTxAmountInActivity(`-${amount} ETH`);
+    // confirm transaction when user lands on confirm transaction screen
+    const transactionConfirmationPage = new TransactionConfirmation(driver);
+    await transactionConfirmationPage.clickFooterConfirmButton();
 };
 
 /**
