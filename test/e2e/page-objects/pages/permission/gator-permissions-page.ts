@@ -7,15 +7,15 @@ import { Driver } from '../../../webdriver/driver';
 class GatorPermissionsPage {
   private driver: Driver;
 
-  private readonly gatorPermissionsPage =
-    '[data-testid="gator-permissions-page"]';
+  private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
 
   private readonly backButton =
     '[data-testid="gator-permissions-page"] button[aria-label="Back"]';
 
-  private readonly sitesButton = { text: 'Sites', tag: 'p' };
+  private readonly gatorPermissionsPage =
+    '[data-testid="gator-permissions-page"]';
 
-  private readonly assetsButton = { text: 'Token transfer', tag: 'p' };
+  private readonly sitesButton = { text: 'Sites', tag: 'p' };
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -38,6 +38,14 @@ class GatorPermissionsPage {
   }
 
   /**
+   * Click on Assets/Token transfer to navigate to Token Transfer page
+   */
+  async clickAssets(): Promise<void> {
+    console.log('Click Assets on Gator Permissions page');
+    await this.driver.clickElement(this.assetsButton);
+  }
+
+  /**
    * Click the back button to navigate to home
    */
   async clickBackButton(): Promise<void> {
@@ -51,14 +59,6 @@ class GatorPermissionsPage {
   async clickSites(): Promise<void> {
     console.log('Click Sites on Gator Permissions page');
     await this.driver.clickElement(this.sitesButton);
-  }
-
-  /**
-   * Click on Assets/Token transfer to navigate to Token Transfer page
-   */
-  async clickAssets(): Promise<void> {
-    console.log('Click Assets on Gator Permissions page');
-    await this.driver.clickElement(this.assetsButton);
   }
 }
 
