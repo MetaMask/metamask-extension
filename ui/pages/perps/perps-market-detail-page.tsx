@@ -144,9 +144,10 @@ const PerpsMarketDetailPage: React.FC = () => {
     }
   }, []);
 
-  // Navigation handlers
+  // Navigation handlers - use history back to return to wherever user came from
+  // (perps home page or perps tab)
   const handleBackClick = useCallback(() => {
-    navigate(DEFAULT_ROUTE);
+    navigate(-1);
   }, [navigate]);
 
   // No-op handler for order cards - orders on detail page are already
