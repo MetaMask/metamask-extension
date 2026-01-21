@@ -399,6 +399,9 @@
     "ui/pages/onboarding-flow/recovery-phrase/confirm-recovery-phrase.test.js": {
       "React: Missing key props in lists": 1
     },
+    "ui/pages/perps/perps-market-detail-page.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/swaps/loading-swaps-quotes/loading-swaps-quotes.test.js": {
       "Reselect: Identity function warnings": 1,
       "warn: ⚠️ React Router Future Flag": 2
@@ -1721,6 +1724,9 @@
     "ui/pages/confirmations/hooks/useDecodedSignatureMetrics.test.ts": {
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/tokens/useTokenFiatRates.test.ts": {
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/components/app/snaps/snap-ui-renderer/snap-ui-renderer.test.js": {
@@ -3447,6 +3453,27 @@
     },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
+    },
+    "ui/pages/confirmations/components/transactions/custom-amount/custom-amount.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/bridge-time-row/bridge-time-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/total-row/total-row.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/rows/bridge-fee-row/bridge-fee-row.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/pay-token-amount/pay-token-amount.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
     }
   },
   "generated": "2025-12-15T13:34:23.962Z",
