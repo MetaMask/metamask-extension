@@ -265,12 +265,6 @@ export default function reduceApp(
         customNonceValue: action.value,
       };
 
-    case actionConstants.TOGGLE_ACCOUNT_MENU:
-      return {
-        ...appState,
-        isAccountMenuOpen: !appState.isAccountMenuOpen,
-      };
-
     case actionConstants.SET_NEXT_NONCE: {
       return {
         ...appState,
