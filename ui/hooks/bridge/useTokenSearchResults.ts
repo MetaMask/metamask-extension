@@ -61,7 +61,7 @@ export const useTokenSearchResults = ({
       cursor?: string,
     ) => {
       setIsSearchResultsLoading(true);
-      abortControllerRef.current.abort();
+      abortControllerRef.current.abort('Asset balances changed');
       abortControllerRef.current = new AbortController();
 
       fetchTokensBySearchQuery({
@@ -120,7 +120,7 @@ export const useTokenSearchResults = ({
 
   useEffect(() => {
     // Reset state on search query change
-    abortControllerRef.current.abort();
+    abortControllerRef.current.abort('Search query changed');
     setSearchResultsWithBalance([]);
     setSearchResultCursor(undefined);
     setHasMoreResults(false);
@@ -135,7 +135,7 @@ export const useTokenSearchResults = ({
   useEffect(() => {
     const debouncedFn = debouncedFetchSearchResults.current;
     return () => {
-      abortControllerRef.current.abort();
+      abortControllerRef.current.abort('Page unmounted');
       debouncedFn.cancel();
     };
   }, []);

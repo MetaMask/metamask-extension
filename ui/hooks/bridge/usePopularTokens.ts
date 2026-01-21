@@ -43,7 +43,7 @@ export const usePopularTokens = ({
 
   const { value: tokenList, pending: isTokenListLoading } =
     useAsyncResult(async () => {
-      abortControllerRef.current?.abort();
+      abortControllerRef.current?.abort('Asset balances changed');
       abortControllerRef.current = new AbortController();
       const response = await fetchPopularTokens({
         chainIds: Array.from(chainIds),
@@ -69,7 +69,7 @@ export const usePopularTokens = ({
 
   useEffect(() => {
     return () => {
-      abortControllerRef.current?.abort();
+      abortControllerRef.current?.abort('Page unmounted');
     };
   }, []);
 
