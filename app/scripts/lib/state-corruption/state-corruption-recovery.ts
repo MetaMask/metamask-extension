@@ -183,6 +183,28 @@ export class CorruptionHandler {
   #hasTrackedScreenViewed = false;
 
   /**
+   * Shared promise that all callers await. This prevents Promise accumulation
+   * when multiple tabs connect during vault corruption. All callers resolve/reject
+   * together when repair completes.
+   */
+  #repairPromise: Promise<void> | null = null;
+
+  #resolveRepair: (() => void) | null = null;
+
+  #rejectRepair: ((error: Error) => void) | null = null;
+
+  /**
+   * Resets the shared repair promise state. Called after repair completes
+   * (success or failure) to allow future corruption incidents to create
+   * a new promise.
+   */
+  #resetRepairPromise(): void {
+    this.#repairPromise = null;
+    this.#resolveRepair = null;
+    this.#rejectRepair = null;
+  }
+
+  /**
    * Handles a state corruption error by sending a message to the UI and
    * initiating a repair process if requested by the UI port.
    *
@@ -241,71 +263,85 @@ export class CorruptionHandler {
       );
     }
 
-    // if we successfully sent the error to the UI, listen for a "restore"
-    // method call back to us
-    return new Promise((resolve, reject) => {
-      // remove from `connectedPorts` if the port disconnects. this is
-      // automatically called when the UI closes
-      const onDisconnect = () => {
-        connectedPorts.delete(port);
-        resolve();
-      };
+    // Set up port-specific handlers
 
-      /**
-       * Listens for a message from the UI to restore the vault. If the message
-       * is received, it will call the `repair` function with the backup and
-       * reload the UI. It will also unregister the listener from all UI windows
-       * to prevent multiple restore requests.
-       *
-       * @param message - The message sent from the UI to the background.
-       */
-      const restoreVaultListener = async (message: Message) => {
-        if (message?.data?.method === METHOD_REPAIR_DATABASE) {
-          // only allow the restore process once, unregister
-          // `restoreVaultListener` listeners from all UI windows
-          connectedPorts.forEach((connectedPort) =>
-            connectedPort.onMessage.removeListener(restoreVaultListener),
-          );
+    /**
+     * Listens for a message from the UI to restore the vault. If the message
+     * is received, it will call the `repair` function with the backup and
+     * reload the UI. It will also unregister the listener from all UI windows
+     * to prevent multiple restore requests.
+     *
+     * @param message - The message sent from the UI to the background.
+     */
+    const restoreVaultListener = async (message: Message) => {
+      if (message?.data?.method === METHOD_REPAIR_DATABASE) {
+        // only allow the restore process once, unregister
+        // `restoreVaultListener` listeners from all UI windows
+        connectedPorts.forEach((connectedPort) =>
+          connectedPort.onMessage.removeListener(restoreVaultListener),
+        );
 
-          // Track that the user clicked the restore button.
-          trackVaultCorruptionEvent(
-            backup,
-            MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
-            corruptionType,
-          );
+        // Track that the user clicked the restore button.
+        trackVaultCorruptionEvent(
+          backup,
+          MetaMetricsEventName.VaultCorruptionRestoreWalletButtonPressed,
+          corruptionType,
+        );
 
-          try {
-            await requestRepair(async function repairDatabase() {
-              // this callback might be ignored if another repair request
-              // is already in progress.
+        try {
+          const didRepair = await requestRepair(async () => {
+            // this callback might be ignored if another repair request
+            // is already in progress.
 
-              try {
-                await repairCallback(backup);
-              } finally {
-                // always reload the UI because if `initBackground` worked, the UI
-                // will redirect to the login screen, and if it didn't work, it'll
-                // show them a new error message (which could be the same as the
-                // vault error that sent them here in the first place, but hopefully
-                // not!)
-                connectedPorts.forEach((connectedPort) => {
-                  // as each page reloads, it will remove itself from the
-                  // `connectedPorts` on disconnection.
-                  tryPostMessage(connectedPort, RELOAD_WINDOW);
-                });
-              }
-            });
-            // Reset the flag so future corruption incidents can be tracked
+            try {
+              await repairCallback(backup);
+            } finally {
+              // always reload the UI because if `initBackground` worked, the UI
+              // will redirect to the login screen, and if it didn't work, it'll
+              // show them a new error message (which could be the same as the
+              // vault error that sent them here in the first place, but hopefully
+              // not!)
+              connectedPorts.forEach((connectedPort) => {
+                // as each page reloads, it will remove itself from the
+                // `connectedPorts` on disconnection.
+                tryPostMessage(connectedPort, RELOAD_WINDOW);
+              });
+            }
+          });
+          // Only resolve if we actually performed the repair (got the lock)
+          // If another caller already has the lock, they'll handle resolve/reject
+          if (didRepair) {
+            // Reset flags so future corruption incidents can be tracked
             this.#hasTrackedScreenViewed = false;
-            resolve();
-          } catch (e) {
-            reject(e);
+            this.#resolveRepair?.();
+            this.#resetRepairPromise();
           }
+        } catch (e) {
+          this.#rejectRepair?.(e as Error);
+          this.#resetRepairPromise();
         }
-      };
+      }
+    };
 
-      connectedPorts.add(port);
-      port.onDisconnect.addListener(onDisconnect);
-      port.onMessage.addListener(restoreVaultListener);
-    });
+    // Clean up when port disconnects (but don't resolve - we wait for repair)
+    const onDisconnect = () => {
+      connectedPorts.delete(port);
+      port.onMessage.removeListener(restoreVaultListener);
+    };
+
+    // Add port to connected set and set up listeners
+    connectedPorts.add(port);
+    port.onDisconnect.addListener(onDisconnect);
+    port.onMessage.addListener(restoreVaultListener);
+
+    // Create shared promise only once - all callers await the same promise
+    if (!this.#repairPromise) {
+      this.#repairPromise = new Promise<void>((resolve, reject) => {
+        this.#resolveRepair = resolve;
+        this.#rejectRepair = reject;
+      });
+    }
+
+    return this.#repairPromise;
   }
 }
