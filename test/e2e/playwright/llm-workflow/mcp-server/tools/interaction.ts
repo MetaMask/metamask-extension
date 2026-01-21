@@ -20,6 +20,7 @@ import {
   classifyClickError,
   classifyTypeError,
   classifyWaitError,
+  isPageClosedError,
 } from './error-classification';
 
 export async function handleClick(
@@ -60,12 +61,23 @@ export async function handleClick(
         context.refMap,
         timeoutMs,
       );
-      await locator.click();
 
-      return {
-        clicked: true,
-        target: `${targetType}:${targetValue}`,
-      };
+      try {
+        await locator.click();
+        return {
+          clicked: true,
+          target: `${targetType}:${targetValue}`,
+        };
+      } catch (clickError) {
+        if (isPageClosedError(clickError)) {
+          return {
+            clicked: true,
+            target: `${targetType}:${targetValue}`,
+            pageClosedAfterClick: true,
+          };
+        }
+        throw clickError;
+      }
     },
 
     getTarget: () => ({ [targetType]: targetValue }),

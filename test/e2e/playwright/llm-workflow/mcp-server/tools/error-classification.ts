@@ -9,7 +9,20 @@ const ERROR_PATTERNS = {
   ],
   timeout: ['Timeout', 'exceeded', 'timed out'],
   navigation: ['Navigation failed', 'net::ERR'],
+  pageClosed: [
+    'Target page, context or browser has been closed',
+    'page has been closed',
+    'context has been closed',
+    'browser has been closed',
+    'Target closed',
+    'Session closed',
+  ],
 } as const;
+
+export function isPageClosedError(error: unknown): boolean {
+  const message = error instanceof Error ? error.message : String(error);
+  return ERROR_PATTERNS.pageClosed.some((pattern) => message.includes(pattern));
+}
 
 export function classifyInteractionError(
   error: unknown,

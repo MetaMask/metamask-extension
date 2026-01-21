@@ -194,6 +194,56 @@ describe('Interaction Tools', () => {
         5000,
       );
     });
+
+    it('returns success with pageClosedAfterClick when page closes after click', async () => {
+      mockLocator.click.mockRejectedValueOnce(
+        new Error('Target page, context or browser has been closed'),
+      );
+
+      const result = await handleClick({ testId: 'confirm-button' });
+
+      expect(result.ok).toBe(true);
+      if (result.ok) {
+        expect(result.result.clicked).toBe(true);
+        expect(result.result.pageClosedAfterClick).toBe(true);
+        expect(result.result.target).toBe('testId:confirm-button');
+      }
+    });
+
+    it('returns success with pageClosedAfterClick for various page closed error messages', async () => {
+      const pageClosedErrors = [
+        'Target page, context or browser has been closed',
+        'page has been closed',
+        'context has been closed',
+        'browser has been closed',
+        'Target closed',
+        'Session closed',
+      ];
+
+      for (const errorMessage of pageClosedErrors) {
+        mockLocator.click.mockRejectedValueOnce(new Error(errorMessage));
+
+        const result = await handleClick({ testId: 'button' });
+
+        expect(result.ok).toBe(true);
+        if (result.ok) {
+          expect(result.result.pageClosedAfterClick).toBe(true);
+        }
+      }
+    });
+
+    it('returns error for non-page-closed click failures', async () => {
+      mockLocator.click.mockRejectedValueOnce(
+        new Error('Element is not clickable'),
+      );
+
+      const result = await handleClick({ testId: 'disabled-button' });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok) {
+        expect(result.error.code).toBe(ErrorCodes.MM_CLICK_FAILED);
+      }
+    });
   });
 
   describe('handleType', () => {

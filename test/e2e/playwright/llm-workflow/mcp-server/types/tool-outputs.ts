@@ -73,6 +73,12 @@ export type ScreenshotResult = {
 export type ClickResult = {
   clicked: boolean;
   target: string;
+  /**
+   * True if the page closed after the click was dispatched.
+   * This is a SUCCESS case - the click triggered the page to close
+   * (e.g., clicking Confirm/Cancel on notification popups).
+   */
+  pageClosedAfterClick?: boolean;
 };
 
 export type TypeResult = {
