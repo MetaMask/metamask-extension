@@ -281,19 +281,14 @@ const PerpsCandlestickChart = forwardRef<
 
         chartRef.current.timeScale().setVisibleLogicalRange({ from, to });
 
-        // Scroll to real time when period changes
+        // Handle period change: scroll to real time and notify parent
         if (periodChanged) {
           chartRef.current.timeScale().scrollToRealTime();
+          // Notify parent component to fetch new data for the selected period
+          onPeriodDataRequest?.(selectedPeriod);
         }
       }
-    }, [candleData, selectedPeriod]);
-
-    // Request data when period changes
-    useEffect(() => {
-      if (onPeriodDataRequest && selectedPeriod !== previousPeriodRef.current) {
-        onPeriodDataRequest(selectedPeriod);
-      }
-    }, [selectedPeriod, onPeriodDataRequest]);
+    }, [candleData, selectedPeriod, onPeriodDataRequest]);
 
     return (
       <Box
