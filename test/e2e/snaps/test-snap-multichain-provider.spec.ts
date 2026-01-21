@@ -52,12 +52,12 @@ describe('Test Snap multichain provider', function () {
             chainId: '0xaa36a7',
             account: 'eip155:11155111:0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
             signMessageSignature: '"0xf63c587cd42e7775e2e815a579f9744ea62944f263b3e69fad48535ba98a5ea107bc878088a99942733a59a89ef1d590eafdb467d59cf76564158d7e78351b751b"',
-            signTypedDataSignature: '"0xc5e2569197039a20eb3d58eac7dc198a88ec934c1ba6fa2dd0b33bc291d4561631f8e885fc8b43db665d29352e3c732f21b536076c952065fbac4a86672c45aa1b"',
+            signTypedDataSignature: '"0x35bb09b05a3f7e4a0965fbf35b48d9d51efa5f7d030bdf4c18f4ad958941d20213a3e0ef731c1ee7619248331f5c259829581da38e9112624c1f8639e954572d1c"',
           },
           {
             chainName: 'Solana' as const,
             account: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp:4tE76eixEgyJDrdykdWJR1XBkzUk4cLMvqjR2xVJUxer',
-            signMessageSignature: '"0xf63c587cd42e7775e2e815a579f9744ea62944f263b3e69fad48535ba98a5ea107bc878088a99942733a59a89ef1d590eafdb467d59cf76564158d7e78351b751b"',
+            signMessageSignature: '"5RH4BJB99CvWqPhXAtUwLQGJePeeXFLQKbztFbiasAe4mEGmr4moV2g2XEEwWMSsZKQGiV1UHxVGuVMenXAcfKfi"',
           },
         ];
 
@@ -91,6 +91,7 @@ describe('Test Snap multichain provider', function () {
 
           if (test.signTypedDataSignature) {
             // Test signing typed data.
+            await testSnaps.fillMessage('signTypedDataMultichainInput', '');
             await testSnaps.fillMessage('signTypedDataMultichainInput', 'bar');
             await testSnaps.scrollAndClickButton('signTypedDataMultichainButton');
             await approvePersonalSignMessage(driver);
