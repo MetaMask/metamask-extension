@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Ajouter un compte ou un portefeuille"
   },
-  "addAccountToMetaMask": {
-    "message": "Ajouter un compte à MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Ajouter les jetons que vous avez acquis par l’intermédiaire de MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Ajouter un portefeuille"
-  },
-  "addingAccount": {
-    "message": "Ajouter un compte"
   },
   "additionalNetworks": {
     "message": "Réseaux supplémentaires"
