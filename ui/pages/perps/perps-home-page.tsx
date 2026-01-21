@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { Navigate, useNavigate } from 'react-router-dom';
 import {
   AvatarTokenSize,
   Box,
@@ -17,6 +18,7 @@ import {
   FontWeight,
   TextColor,
 } from '@metamask/design-system-react';
+import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
@@ -46,6 +48,12 @@ const LIST_ITEM_RADIUS =
 const PerpsHomePage: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
+
+  // Guard: redirect if perps feature is disabled
+  if (!isPerpsEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
 
   // Filter positions (only crypto for now, limit to 3)
   const positions = useMemo(() => {
