@@ -7,6 +7,7 @@ import {
 import {
   METHOD_DISPLAY_STATE_CORRUPTION_ERROR,
   METHOD_REPAIR_DATABASE,
+  VaultCorruptionType,
 } from '../../../../shared/constants/state-corruption';
 import { RELOAD_WINDOW } from '../../../../shared/constants/start-up-errors';
 import {
@@ -118,6 +119,7 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
           'Corrupted',
           // `backup` is not always a `Backup`, but in reality that is also true
           backupHasErr ? (backup as Backup) : null,
+          VaultCorruptionType.UnaccessibleDatabase,
           cause,
         );
 

@@ -52,8 +52,7 @@ export class PersistenceError extends Error {
 
   /**
    * The type of vault corruption that occurred.
-   * - UnaccessibleDatabase: The storage system threw an error (e.g., Firefox's
-   *   "An unexpected error occurred")
+   * - UnaccessibleDatabase: The storage system threw an error (e.g., Firefox's "An unexpected error occurred")
    * - MissingVaultInDatabase: The database was accessible but the vault was missing
    */
   corruptionType: VaultCorruptionType;
