@@ -13,13 +13,16 @@ const getMockUseLocation = () => ({
   state: null,
   key: mockLocationKey,
 });
-const mockUseParams = { id: 'test-id' };
+
+// Track current params values - returns NEW object each call to test memoization
+let mockParamsValues: Record<string, string> = { id: 'test-id' };
+const getMockUseParams = () => ({ ...mockParamsValues });
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => mockUseNavigate,
   useLocation: () => getMockUseLocation(),
-  useParams: () => mockUseParams,
+  useParams: () => getMockUseParams(),
 }));
 
 type BaseTestComponentProps = {
@@ -50,6 +53,8 @@ const TestComponent: React.FC<TestComponentProps> = ({
 describe('withRouterHooks HOC', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockLocationKey = 'default-key';
+    mockParamsValues = { id: 'test-id' };
   });
 
   it('wraps component and provides router hooks as props', () => {
@@ -125,6 +130,8 @@ describe('withRouterHooks HOC', () => {
 
   describe('memoization behavior', () => {
     it('maintains stable params reference when values are unchanged', () => {
+      // Note: getMockUseParams() returns a NEW object each call, so this test
+      // verifies that useShallowEqualityCheck stabilizes references when values match
       const paramsReferences: ReturnType<typeof useParams>[] = [];
 
       const TestComponentForMemo: React.FC<
@@ -141,16 +148,50 @@ describe('withRouterHooks HOC', () => {
         </MemoryRouter>,
       );
 
-      // Force re-render with different prop
+      // Force re-render with different prop - getMockUseParams() returns new object
       rerender(
         <MemoryRouter>
           <WrappedComponent renderCount={2} />
         </MemoryRouter>,
       );
 
-      // Params should be the same reference on both renders
+      // Params should be the same reference on both renders despite mock returning new objects
       expect(paramsReferences).toHaveLength(2);
       expect(paramsReferences[0]).toBe(paramsReferences[1]);
+    });
+
+    it('updates params reference when values change', () => {
+      // Complementary test: verify memoization correctly detects value changes
+      const paramsReferences: ReturnType<typeof useParams>[] = [];
+
+      const TestComponentForMemo: React.FC<
+        TestComponentProps & { renderCount?: number }
+      > = ({ params }) => {
+        paramsReferences.push(params);
+        return <div>Memoization test</div>;
+      };
+
+      const WrappedComponent = withRouterHooks(TestComponentForMemo);
+      const { rerender } = render(
+        <MemoryRouter>
+          <WrappedComponent renderCount={1} />
+        </MemoryRouter>,
+      );
+
+      // Change params values
+      mockParamsValues = { id: 'different-id' };
+
+      rerender(
+        <MemoryRouter>
+          <WrappedComponent renderCount={2} />
+        </MemoryRouter>,
+      );
+
+      // Params should be different references when values change
+      expect(paramsReferences).toHaveLength(2);
+      expect(paramsReferences[0]).toEqual({ id: 'test-id' });
+      expect(paramsReferences[1]).toEqual({ id: 'different-id' });
+      expect(paramsReferences[0]).not.toBe(paramsReferences[1]);
     });
 
     it('maintains stable location reference when values are unchanged', () => {
@@ -233,35 +274,40 @@ describe('withRouterHooks HOC', () => {
     it('correctly distinguishes params with comma-containing values (no memoization collision)', () => {
       // This test verifies the fix for the memoization collision bug where
       // { a: 'x,y', b: 'z' } and { a: 'x', b: 'y,z' } would both produce
-      // the same comma-joined string 'x,y,z'
-      const paramsSet1 = { a: 'x,y', b: 'z' };
-      const paramsSet2 = { a: 'x', b: 'y,z' };
+      // the same comma-joined string 'x,y,z' with naive serialization.
+      // We change the mock values (not props) to exercise useShallowEqualityCheck.
       const paramsReceived: ReturnType<typeof useParams>[] = [];
 
-      const TestComponentForMemo: React.FC<TestComponentProps> = ({
-        params,
-      }) => {
+      const TestComponentForMemo: React.FC<
+        TestComponentProps & { renderCount?: number }
+      > = ({ params }) => {
         paramsReceived.push(params);
         return <div>Comma collision test</div>;
       };
 
+      // Set up first params with comma in 'a' value
+      mockParamsValues = { a: 'x,y', b: 'z' };
+
       const WrappedComponent = withRouterHooks(TestComponentForMemo);
       const { rerender } = render(
         <MemoryRouter>
-          <WrappedComponent params={paramsSet1} />
+          <WrappedComponent renderCount={1} />
         </MemoryRouter>,
       );
+
+      // Change to different params that would collide with naive comma-join
+      mockParamsValues = { a: 'x', b: 'y,z' };
 
       rerender(
         <MemoryRouter>
-          <WrappedComponent params={paramsSet2} />
+          <WrappedComponent renderCount={2} />
         </MemoryRouter>,
       );
 
-      // Verify that the params are different references (not stale)
+      // Verify that the params are different references (memoization detected the change)
       expect(paramsReceived).toHaveLength(2);
-      expect(paramsReceived[0]).toBe(paramsSet1);
-      expect(paramsReceived[1]).toBe(paramsSet2);
+      expect(paramsReceived[0]).toEqual({ a: 'x,y', b: 'z' });
+      expect(paramsReceived[1]).toEqual({ a: 'x', b: 'y,z' });
       expect(paramsReceived[0]).not.toBe(paramsReceived[1]);
     });
 
