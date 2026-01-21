@@ -8,10 +8,10 @@
   --shadow-bridge-picker: 0 0 2px 0 var(--color-border-muted), 0 0 16px 0 rgba(226, 228, 233, 0.16);
 }
 
-.bridge-asset{
+.bridge-asset {
   &:hover:not(&--selected) {
-      background: var(--color-background-default-hover);
-    }
+    background: var(--color-background-default-hover);
+  }
 }
 
 .bridge-network-list-popover {
