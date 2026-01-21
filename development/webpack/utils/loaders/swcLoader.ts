@@ -1,11 +1,9 @@
 import { sep } from 'node:path';
 import type { LoaderContext } from 'webpack';
-import { type JSONSchema7 } from 'schema-utils/declarations/validate';
+import type { JSONSchema7 } from 'json-schema';
 import { validate } from 'schema-utils';
 import type { FromSchema } from 'json-schema-to-ts';
 import { transform, type Options } from '@swc/core';
-import { type Args } from '../cli';
-import { __HMR_READY__ } from '../helpers';
 
 // the schema here is limited to only the options we actually use
 // there are loads more options available to SWC we could add.
@@ -197,59 +195,4 @@ export default function swcLoader(this: Context, src: string, srcMap?: string) {
 
   const cb = this.async();
   transform(src, options).then(({ code, map }) => cb(null, code, map), cb);
-}
-
-export type SwcConfig = {
-  args: Pick<Args, 'watch'>;
-  browsersListQuery: string;
-  isDevelopment: boolean;
-};
-
-/**
- * Gets the Speedy Web Compiler (SWC) loader for the given syntax.
- *
- * @param syntax - The syntax to use, either 'typescript' or 'ecmascript'.
- * @param enableJsx - Whether to enable JSX support.
- * @param envs - Environment variables to inject into the code.
- * @param swcConfig - The SWC configuration object containing browsers list and development mode.
- * @param type - The module type to use, either 'es6' or 'commonjs'. Defaults to 'es6'.
- */
-export function getSwcLoader(
-  syntax: 'typescript' | 'ecmascript',
-  enableJsx: boolean,
-  envs: Record<string, string>,
-  swcConfig: SwcConfig,
-  type: 'es6' | 'commonjs' = 'es6',
-) {
-  return {
-    loader: __filename,
-    options: {
-      env: {
-        targets: swcConfig.browsersListQuery,
-      },
-      jsc: {
-        externalHelpers: true,
-        transform: {
-          react: {
-            development: swcConfig.isDevelopment,
-            refresh:
-              __HMR_READY__ && swcConfig.isDevelopment && swcConfig.args.watch,
-          },
-          optimizer: {
-            globals: {
-              envs,
-            },
-          },
-        },
-        parser: {
-          syntax,
-          [syntax === 'typescript' ? 'tsx' : 'jsx']: enableJsx,
-          importAttributes: true,
-        },
-      },
-      module: {
-        type,
-      },
-    } as const satisfies SwcLoaderOptions,
-  };
 }
