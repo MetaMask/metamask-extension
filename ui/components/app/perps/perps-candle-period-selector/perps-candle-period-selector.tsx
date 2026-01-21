@@ -59,10 +59,8 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       alignItems={BoxAlignItems.Center}
       justifyContent={BoxJustifyContent.Center}
       gap={1}
-      paddingTop={3}
-      paddingBottom={3}
-      paddingLeft={4}
-      paddingRight={4}
+      paddingTop={2}
+      paddingBottom={2}
       data-testid="perps-candle-period-selector"
     >
       {/* Default Candle Period Buttons */}
@@ -73,7 +71,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         return (
           <ButtonBase
             key={period.value}
-            className={`perps-candle-period-button ${isSelected ? 'perps-candle-period-button--selected' : ''}`}
+            className={`rounded-lg ${isSelected ? 'bg-background-muted' : ''}`}
             onClick={() => {
               onPeriodChange?.(period.value);
             }}
@@ -94,7 +92,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
       {/* More Button with Popover */}
       <ButtonBase
         ref={moreButtonRef}
-        className={`perps-candle-period-button perps-candle-period-button--more ${isMorePeriodSelected ? 'perps-candle-period-button--selected' : ''}`}
+        className={`rounded-lg flex items-center gap-1 ${isMorePeriodSelected ? 'bg-background-muted' : ''}`}
         onClick={() => setIsMoreOpen(!isMoreOpen)}
         data-testid="perps-candle-period-more"
       >
@@ -124,7 +122,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
         onClickOutside={() => setIsMoreOpen(false)}
         onPressEscKey={() => setIsMoreOpen(false)}
         padding={0}
-        className="perps-candle-period-popover rounded-lg bg-default"
+        className="rounded-lg bg-default"
       >
         <Box flexDirection={BoxFlexDirection.Column} padding={2} gap={1}>
           {MORE_CANDLE_PERIODS.map((period) => {
@@ -134,7 +132,7 @@ const PerpsCandlePeriodSelector: React.FC<PerpsCandlePeriodSelectorProps> = ({
             return (
               <ButtonBase
                 key={period.value}
-                className={`perps-candle-period-option ${isSelected ? 'perps-candle-period-option--selected' : ''}`}
+                className={`rounded-lg w-full text-left ${isSelected ? 'bg-background-muted' : ''}`}
                 onClick={() => handleMorePeriodSelect(period.value)}
                 data-testid={`perps-candle-period-more-${period.value}`}
               >

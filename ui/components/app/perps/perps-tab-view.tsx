@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -9,8 +10,8 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
-import log from 'loglevel';
 import { useI18nContext } from '../../../hooks/useI18nContext';
+import { PERPS_HOME_ROUTE } from '../../../helpers/constants/routes';
 import { mockPositions, mockOrders } from './mocks';
 import { PositionCard } from './position-card';
 import { OrderCard } from './order-card';
@@ -24,18 +25,17 @@ import { PerpsEmptyState } from './perps-empty-state';
  */
 export const PerpsTabView: React.FC = () => {
   const t = useI18nContext();
+  const navigate = useNavigate();
   const hasPositions = mockPositions.length > 0;
   const hasOrders = mockOrders.length > 0;
   const hasNoPositionsOrOrders = !hasPositions && !hasOrders;
 
   const handleManageBalancePress = () => {
-    // TODO: Navigate to manage balance screen
-    log.info('handleManageBalancePress');
+    navigate(PERPS_HOME_ROUTE);
   };
 
   const handleNewTrade = () => {
-    // TODO: Navigate to trading view or tutorial for first-time users
-    log.info('handleNewTrade');
+    navigate(PERPS_HOME_ROUTE);
   };
 
   return (

@@ -32,51 +32,11 @@ import { PerpsTokenLogo } from '../../components/app/perps/perps-token-logo';
 import { PerpsMarketBalanceActions } from '../../components/app/perps/perps-market-balance-actions';
 import { getDisplayName } from '../../components/app/perps/utils';
 
-/**
- * Get CSS class modifier for list item based on position in list
- *
- * @param index - Current item index
- * @param totalLength - Total number of items in list
- * @returns CSS class modifier string
- */
-const getListItemPositionClass = (
-  index: number,
-  totalLength: number,
-): string => {
-  if (totalLength === 1) {
-    return 'perps-activity-item--first perps-activity-item--last';
-  }
-  if (index === 0) {
-    return 'perps-activity-item--first';
-  }
-  if (index === totalLength - 1) {
-    return 'perps-activity-item--last';
-  }
-  return '';
-};
-
-/**
- * Get border radius style for list item based on position in list
- *
- * @param index - Current item index
- * @param totalLength - Total number of items in list
- * @returns Border radius CSS value
- */
-const getListItemBorderRadius = (
-  index: number,
-  totalLength: number,
-): string => {
-  if (totalLength === 1) {
-    return '12px';
-  }
-  if (index === 0) {
-    return '12px 12px 0 0';
-  }
-  if (index === totalLength - 1) {
-    return '0 0 12px 12px';
-  }
-  return '0';
-};
+// Tailwind classes for list item styling
+const LIST_ITEM_BASE =
+  'flex items-center gap-3 px-4 py-3 bg-background-muted cursor-pointer hover:bg-hover active:bg-pressed';
+const LIST_ITEM_RADIUS =
+  'rounded-none first:rounded-t-xl last:rounded-b-xl only:rounded-xl';
 
 /**
  * PerpsHomePage component
@@ -225,7 +185,7 @@ const PerpsHomePage: React.FC = () => {
               return (
                 <Box
                   key={position.coin}
-                  className={`perps-activity-item ${getListItemPositionClass(index, positions.length)}`}
+                  className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                   role="button"
                   tabIndex={0}
                   onClick={() => handlePositionClick(position.coin)}
@@ -239,21 +199,29 @@ const PerpsHomePage: React.FC = () => {
                     symbol={position.coin}
                     size={AvatarTokenSize.Md}
                   />
-                  <Box className="perps-activity-item__left">
-                    <Text className="perps-activity-item__action">
+                  <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
                       {displaySymbol} |{' '}
                       {isLong ? t('perpsLong') : t('perpsShort')}
                     </Text>
-                    <Text className="perps-activity-item__amount">
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
                     </Text>
                   </Box>
                   <Text
-                    className={`perps-activity-item__pnl ${
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                    color={
                       isProfit
-                        ? 'perps-activity-item__pnl--profit'
-                        : 'perps-activity-item__pnl--loss'
-                    }`}
+                        ? TextColor.SuccessDefault
+                        : TextColor.ErrorDefault
+                    }
                   >
                     {isProfit ? '+' : ''}${position.unrealizedPnl}
                   </Text>
@@ -306,7 +274,7 @@ const PerpsHomePage: React.FC = () => {
               return (
                 <Box
                   key={order.orderId}
-                  className={`perps-activity-item ${getListItemPositionClass(index, openOrders.length)}`}
+                  className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                   role="button"
                   tabIndex={0}
                 >
@@ -314,11 +282,17 @@ const PerpsHomePage: React.FC = () => {
                     symbol={order.symbol}
                     size={AvatarTokenSize.Md}
                   />
-                  <Box className="perps-activity-item__left">
-                    <Text className="perps-activity-item__action">
+                  <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                    <Text
+                      variant={TextVariant.BodySm}
+                      fontWeight={FontWeight.Medium}
+                    >
                       {displaySymbol} | {orderTypeLabel} {sideLabel}
                     </Text>
-                    <Text className="perps-activity-item__amount">
+                    <Text
+                      variant={TextVariant.BodyXs}
+                      color={TextColor.TextAlternative}
+                    >
                       {order.size} {displaySymbol}
                     </Text>
                   </Box>
@@ -353,18 +327,12 @@ const PerpsHomePage: React.FC = () => {
           />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-          {cryptoMarkets.map((market, index) => {
+          {cryptoMarkets.map((market) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
               <Box
                 key={market.symbol}
-                className="perps-activity-item"
-                style={{
-                  borderRadius: getListItemBorderRadius(
-                    index,
-                    cryptoMarkets.length,
-                  ),
-                }}
+                className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                 role="button"
                 tabIndex={0}
                 onClick={() => handleMarketClick(market.symbol)}
@@ -378,11 +346,17 @@ const PerpsHomePage: React.FC = () => {
                   symbol={market.symbol}
                   size={AvatarTokenSize.Md}
                 />
-                <Box className="perps-activity-item__left">
-                  <Text className="perps-activity-item__action">
+                <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
                     {market.name}
                   </Text>
-                  <Text className="perps-activity-item__amount">
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
                     {getDisplayName(market.symbol)}-USD
                   </Text>
                 </Box>
@@ -431,18 +405,12 @@ const PerpsHomePage: React.FC = () => {
           />
         </Box>
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
-          {hip3Markets.map((market, index) => {
+          {hip3Markets.map((market) => {
             const isPositiveChange = market.change24hPercent.startsWith('+');
             return (
               <Box
                 key={market.symbol}
-                className="perps-activity-item"
-                style={{
-                  borderRadius: getListItemBorderRadius(
-                    index,
-                    hip3Markets.length,
-                  ),
-                }}
+                className={`${LIST_ITEM_BASE} ${LIST_ITEM_RADIUS}`}
                 role="button"
                 tabIndex={0}
                 onClick={() => handleMarketClick(market.symbol)}
@@ -456,11 +424,17 @@ const PerpsHomePage: React.FC = () => {
                   symbol={market.symbol}
                   size={AvatarTokenSize.Md}
                 />
-                <Box className="perps-activity-item__left">
-                  <Text className="perps-activity-item__action">
+                <Box className="flex-1 min-w-0 flex flex-col gap-1">
+                  <Text
+                    variant={TextVariant.BodySm}
+                    fontWeight={FontWeight.Medium}
+                  >
                     {market.name}
                   </Text>
-                  <Text className="perps-activity-item__amount">
+                  <Text
+                    variant={TextVariant.BodyXs}
+                    color={TextColor.TextAlternative}
+                  >
                     {getDisplayName(market.symbol)}-USD
                   </Text>
                 </Box>
@@ -511,50 +485,77 @@ const PerpsHomePage: React.FC = () => {
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Activity Item 1 - Opened long */}
           <Box
-            className="perps-activity-item perps-activity-item--first"
+            className={`${LIST_ITEM_BASE} rounded-t-xl`}
             role="button"
             tabIndex={0}
           >
             <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
-            <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">
+            <Box className="flex-1 min-w-0 flex flex-col gap-1">
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {t('perpsOpenedLong')}
               </Text>
-              <Text className="perps-activity-item__amount">2.5 ETH</Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                2.5 ETH
+              </Text>
             </Box>
-            <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
               +$125.00
             </Text>
           </Box>
 
           {/* Activity Item 2 - Closed short */}
-          <Box className="perps-activity-item" role="button" tabIndex={0}>
+          <Box className={LIST_ITEM_BASE} role="button" tabIndex={0}>
             <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
-            <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">
+            <Box className="flex-1 min-w-0 flex flex-col gap-1">
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {t('perpsClosedShort')}
               </Text>
-              <Text className="perps-activity-item__amount">0.5 BTC</Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                0.5 BTC
+              </Text>
             </Box>
-            <Text className="perps-activity-item__pnl perps-activity-item__pnl--loss">
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.ErrorDefault}
+            >
               -$32.50
             </Text>
           </Box>
 
           {/* Activity Item 3 - Increased position */}
           <Box
-            className="perps-activity-item perps-activity-item--last"
+            className={`${LIST_ITEM_BASE} rounded-b-xl`}
             role="button"
             tabIndex={0}
           >
             <PerpsTokenLogo symbol="SOL" size={AvatarTokenSize.Md} />
-            <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">
+            <Box className="flex-1 min-w-0 flex flex-col gap-1">
+              <Text variant={TextVariant.BodySm} fontWeight={FontWeight.Medium}>
                 {t('perpsIncreasedPosition')}
               </Text>
-              <Text className="perps-activity-item__amount">50 SOL</Text>
+              <Text
+                variant={TextVariant.BodyXs}
+                color={TextColor.TextAlternative}
+              >
+                50 SOL
+              </Text>
             </Box>
-            <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
+            <Text
+              variant={TextVariant.BodySm}
+              fontWeight={FontWeight.Medium}
+              color={TextColor.SuccessDefault}
+            >
               +$45.20
             </Text>
           </Box>
@@ -566,7 +567,7 @@ const PerpsHomePage: React.FC = () => {
         <Box flexDirection={BoxFlexDirection.Column} style={{ gap: '1px' }}>
           {/* Contact support */}
           <Box
-            className="perps-activity-item perps-activity-item--first"
+            className={`${LIST_ITEM_BASE} rounded-t-xl`}
             role="button"
             tabIndex={0}
             onClick={() => {
@@ -591,7 +592,7 @@ const PerpsHomePage: React.FC = () => {
 
           {/* Learn the basics of perps */}
           <Box
-            className="perps-activity-item perps-activity-item--last"
+            className={`${LIST_ITEM_BASE} rounded-b-xl`}
             role="button"
             tabIndex={0}
             onClick={() => {
