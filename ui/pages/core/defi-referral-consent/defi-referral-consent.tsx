@@ -97,7 +97,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           {t('defiReferralTitle', [partnerName])}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t('defiReferralSubtitle')}{' '}
+          {t(`${partnerId}ReferralSubtitle`)}{' '}
           <PartnerLink
             text={`${t('learnMoreUpperCase')}.`}
             url={learnMoreUrl}
