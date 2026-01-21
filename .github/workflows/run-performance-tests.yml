@@ -104,8 +104,8 @@ jobs:
               if [ -f "$file" ]; then
                 echo ""
                 echo "📁 $(basename "$file")"
-                cat "$file" | jq -r '.steps[] | "  ⏱️  \(.name): \(.duration / 1000)s"' 2>/dev/null || true
-                echo "  📈 Total: $(cat "$file" | jq -r '.total' 2>/dev/null || echo 'N/A')s"
+                jq -r '.steps[] | "  ⏱️  \(.name): \(.duration / 1000)s"' "$file" 2>/dev/null || true
+                echo "  📈 Total: $(jq -r '.total' "$file" 2>/dev/null || echo 'N/A')s"
               fi
             done
           else
