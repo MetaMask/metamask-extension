@@ -5,7 +5,7 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import { WINDOW_TITLES } from '../../constants';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 
 describe('Multiple transactions', function () {
@@ -16,7 +16,6 @@ describe('Multiple transactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
@@ -63,7 +62,6 @@ describe('Multiple transactions', function () {
         fixtures: new FixtureBuilder()
           .withPermissionControllerConnectedToTestDapp()
           .build(),
-        localNodeOptions: { hardfork: 'london' },
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver }) => {
