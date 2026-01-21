@@ -398,7 +398,7 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermission,
         permissionResponse: {
           ...mockGatorPermission.permissionResponse,
-          from: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
 
@@ -764,7 +764,7 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermissions[0],
         permissionResponse: {
           ...mockGatorPermissions[0].permissionResponse,
-          from: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
 

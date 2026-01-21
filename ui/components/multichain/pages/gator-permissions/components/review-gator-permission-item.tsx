@@ -163,15 +163,15 @@ export const ReviewGatorPermissionItem = ({
   const t = useI18nContext();
 
   const { permissionResponse, siteOrigin } = gatorPermission;
-  const { chainId } = permissionResponse;
   const {
-    permission: { type: permissionType, data },
+    chainId,
+    permission: {
+      type: permissionType,
+      data: { justification, tokenAddress },
+    },
     context: permissionContext,
+    from: permissionAccount = '0x',
   } = permissionResponse;
-  const { justification, tokenAddress } = data;
-
-  // `from` is the delegator address (the account granting the permission)
-  const permissionAccount = permissionResponse.from || '0x';
 
   const [isExpanded, setIsExpanded] = useState(false);
   const pendingRevocations = useSelector(getPendingRevocations);
@@ -276,9 +276,7 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              permissionResponse.rules as GatorPermissionRule[] | undefined,
-            ),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
           streamRate: {
@@ -333,9 +331,7 @@ export const ReviewGatorPermissionItem = ({
 
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              permissionResponse.rules as GatorPermissionRule[] | undefined,
-            ),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
         },
@@ -365,9 +361,7 @@ export const ReviewGatorPermissionItem = ({
         expandedDetails: {
           expirationDate: {
             translationKey: 'gatorPermissionsExpirationDate',
-            value: getExpirationDate(
-              permissionResponse.rules as GatorPermissionRule[] | undefined,
-            ),
+            value: getExpirationDate(permissionResponse.rules),
             testId: 'review-gator-permission-expiration-date',
           },
         },
