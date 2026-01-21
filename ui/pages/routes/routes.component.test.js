@@ -2,7 +2,6 @@ import React from 'react';
 import configureMockStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
 import { BtcAccountType, SolAccountType } from '@metamask/keyring-api';
-import { SEND_STAGES } from '../../ducks/send';
 import {
   CONFIRMATION_V_NEXT_ROUTE,
   DEFAULT_ROUTE,
@@ -75,12 +74,6 @@ jest.mock('react-redux', () => {
   };
 });
 
-jest.mock('../../ducks/send', () => ({
-  ...jest.requireActual('../../ducks/send'),
-  resetSendState: () => ({ type: 'XXX' }),
-  getGasPrice: jest.fn(),
-}));
-
 jest.mock('../../ducks/domains', () => ({
   ...jest.requireActual('../../ducks/domains'),
   initializeDomainSlice: () => ({ type: 'XXX' }),
@@ -104,10 +97,6 @@ jest.mock(
 jest.mock('../../hooks/useMultiPolling', () => ({
   __esModule: true,
   default: jest.fn(),
-}));
-
-jest.mock('../confirmations/hooks/useRedesignedSendFlow', () => ({
-  useRedesignedSendFlow: jest.fn().mockReturnValue({ enabled: false }),
 }));
 
 jest.mock('../../contexts/shield/shield-subscription', () => ({
@@ -209,10 +198,6 @@ describe('Routes Component', () => {
               },
             },
           },
-        },
-        send: {
-          ...mockSendState.send,
-          stage: SEND_STAGES.INACTIVE,
         },
         localeMessages: {
           currentLocale: 'en',

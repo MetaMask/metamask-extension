@@ -1,4 +1,3 @@
-import { draftTransactionInitialState } from '../ui/ducks/send';
 import { KeyringType } from '../shared/constants/keyring';
 import { NetworkStatus } from '@metamask/network-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
@@ -694,27 +693,6 @@ const state = {
     balances: {},
     conversionRates: {},
     networkConfigurationsByChainId: {},
-    send: {
-      gasLimit: '0xcb28',
-      gasPrice: null,
-      gasTotal: null,
-      tokenBalance: '8.7a73149c048545a3fe58',
-      from: '',
-      to: '0xb19ac54efa18cc3a14a5b821bfec73d284bf0c5e',
-      amount: '3782dace9d900000',
-      memo: '',
-      errors: {},
-      maxModeOn: false,
-      editingTransactionId: null,
-      toNickname: 'Account 2',
-      domainResolution: null,
-      domainResolutionError: '',
-      token: {
-        address: '0xaD6D458402F60fD3Bd25163575031ACDce07538D',
-        symbol: 'DAI',
-        decimals: 18,
-      },
-    },
     useBlockie: false,
     featureFlags: {},
     slides: [],
@@ -1699,26 +1677,6 @@ const state = {
   },
   history: {
     mostRecentOverviewPage: '/',
-  },
-  send: {
-    toDropdownOpen: false,
-    gasButtonGroupShown: true,
-    errors: {},
-    asset: {
-      type: 'NATIVE',
-      balance: '0x0',
-      details: null,
-    },
-    gas: { error: 'gas' },
-    amount: {
-      error: 'amount',
-    },
-    currentTransactionUUID: 'test-uuid',
-    draftTransactions: {
-      'test-uuid': {
-        ...draftTransactionInitialState,
-      },
-    },
   },
   confirmTransaction: {
     txData: {
