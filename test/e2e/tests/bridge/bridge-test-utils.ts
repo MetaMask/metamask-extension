@@ -16,7 +16,6 @@ import AccountListPage from '../../page-objects/pages/account-list-page';
 import HomePage from '../../page-objects/pages/home/homepage';
 import { MOCK_META_METRICS_ID } from '../../constants';
 import { mockSegment } from '../metrics/mocks/segment';
-import { LEGACY_SEND_FEATURE_FLAG } from '../send/common';
 import {
   ETH_CONVERSION_RATE_USD,
   MOCK_CURRENCY_RATES,
@@ -425,7 +424,7 @@ async function mockFeatureFlags(
       return {
         ok: true,
         statusCode: 200,
-        json: [{ bridgeConfig: featureFlags, ...LEGACY_SEND_FEATURE_FLAG }],
+        json: [{ bridgeConfig: featureFlags }],
       };
     });
 }
@@ -1002,7 +1001,6 @@ export const getQuoteNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...LEGACY_SEND_FEATURE_FLAG,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -1050,7 +1048,6 @@ export const getBridgeNegativeCasesFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...LEGACY_SEND_FEATURE_FLAG,
       },
       testing: { disableSmartTransactionsOverride: true },
     },
@@ -1095,7 +1092,6 @@ export const getInsufficientFundsFixtures = (
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
-        ...LEGACY_SEND_FEATURE_FLAG,
       },
     },
     smartContract: SMART_CONTRACTS.HST,
