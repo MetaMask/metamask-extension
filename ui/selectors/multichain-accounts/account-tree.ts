@@ -102,44 +102,40 @@ export const getWalletsWithAccounts = createDeepEqualSelector(
 
     const { wallets } = accountTree;
 
-    return Object.entries(wallets).reduce(
-      (consolidatedWallets: ConsolidatedWallets, [walletId, wallet]) => {
-        consolidatedWallets[walletId as AccountWalletId] = {
-          id: walletId as AccountWalletId,
+    return Object.values(wallets).reduce(
+      (consolidatedWallets: ConsolidatedWallets, wallet) => {
+        consolidatedWallets[wallet.id] = {
+          id: wallet.id,
           type: wallet.type,
           metadata: wallet.metadata,
           groups: {},
         };
 
-        Object.entries(wallet.groups).forEach(
-          ([groupId, group]: [AccountGroupId, AccountGroupObject]) => {
-            const accountsFromGroup = group.accounts.map((accountId) => {
-              const accountWithMetadata = { ...accountsById[accountId] };
+        Object.values(wallet.groups).forEach((group: AccountGroupObject) => {
+          const accountsFromGroup = group.accounts.map((accountId) => {
+            const accountWithMetadata = { ...accountsById[accountId] };
 
-              // Set flags for pinned, hidden, and active accounts
-              accountWithMetadata.pinned = pinnedAccountsSet.has(
-                accountWithMetadata.address,
-              );
-              accountWithMetadata.hidden = hiddenAccountsSet.has(
-                accountWithMetadata.address,
-              );
-              accountWithMetadata.active =
-                selectedAccount.id === accountWithMetadata.id &&
-                connectedAccountIdsSet.has(accountWithMetadata.id);
+            // Set flags for pinned, hidden, and active accounts
+            accountWithMetadata.pinned = pinnedAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.hidden = hiddenAccountsSet.has(
+              accountWithMetadata.address,
+            );
+            accountWithMetadata.active =
+              selectedAccount.id === accountWithMetadata.id &&
+              connectedAccountIdsSet.has(accountWithMetadata.id);
 
-              return accountWithMetadata;
-            });
+            return accountWithMetadata;
+          });
 
-            consolidatedWallets[walletId as AccountWalletId].groups[
-              groupId as AccountGroupId
-            ] = {
-              id: groupId as AccountGroupId,
-              type: group.type,
-              metadata: group.metadata,
-              accounts: accountsFromGroup,
-            };
-          },
-        );
+          consolidatedWallets[wallet.id].groups[group.id] = {
+            id: group.id,
+            type: group.type,
+            metadata: group.metadata,
+            accounts: accountsFromGroup,
+          };
+        });
 
         return consolidatedWallets;
       },
