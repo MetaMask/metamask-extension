@@ -4461,15 +4461,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
+export async function setDefaultHomeActiveTabName(
   value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+): Promise<void> {
+  try {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
-  };
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
