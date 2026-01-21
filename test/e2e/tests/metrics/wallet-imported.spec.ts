@@ -24,7 +24,6 @@ describe('Wallet Created Events - Imported Account', function () {
     ];
 
     const eventsFirefox = [
-      'Metrics Opt In',
       'App Installed',
       'App Installed',
       'App Installed',

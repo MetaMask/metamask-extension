@@ -929,6 +929,9 @@ export default class MetaMetricsController extends BaseController<
       state.metaMetricsId = metaMetricsId;
     });
 
+    console.log('participateInMetaMetrics', participateInMetaMetrics);
+    console.log('existingMetricsOptInOutStatus', existingMetricsOptInOutStatus);
+
     // Only track the MetricsOptIn/Out event if the status has changed
     const metricsOptInOutStatusChanged =
       participateInMetaMetrics !== existingMetricsOptInOutStatus;
@@ -943,7 +946,9 @@ export default class MetaMetricsController extends BaseController<
           event,
           category: MetaMetricsEventCategory.App,
         }),
-      );
+      ).catch((err) => {
+        this.#captureException(err);
+      });
     }
 
     if (participateInMetaMetrics) {
