@@ -3271,9 +3271,6 @@
     "message": "JSON 文件",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "账户名称"
   },

@@ -3277,9 +3277,6 @@
     "message": "File JSON",
     "description": "format for importing an account"
   },
-  "keycardShell": {
-    "message": "Keycard Shell"
-  },
   "keyringAccountName": {
     "message": "Nama akun"
   },
