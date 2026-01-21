@@ -255,7 +255,8 @@ const PerpsHomePage: React.FC = () => {
                   />
                   <Box className="perps-activity-item__left">
                     <Text className="perps-activity-item__action">
-                      {displaySymbol} | {isLong ? t('perpsLong') : t('perpsShort')}
+                      {displaySymbol} |{' '}
+                      {isLong ? t('perpsLong') : t('perpsShort')}
                     </Text>
                     <Text className="perps-activity-item__amount">
                       {Math.abs(parseFloat(position.size))} {displaySymbol}
@@ -306,8 +307,11 @@ const PerpsHomePage: React.FC = () => {
             {openOrders.map((order, index) => {
               const displaySymbol = getDisplayName(order.symbol);
               const orderTypeLabel =
-                order.orderType === 'limit' ? t('perpsLimit') : t('perpsMarket');
-              const sideLabel = order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
+                order.orderType === 'limit'
+                  ? t('perpsLimit')
+                  : t('perpsMarket');
+              const sideLabel =
+                order.side === 'buy' ? t('perpsBuy') : t('perpsSell');
               const orderValue =
                 order.orderType === 'limit'
                   ? `$${(parseFloat(order.size) * parseFloat(order.price)).toFixed(2)}`
@@ -527,7 +531,9 @@ const PerpsHomePage: React.FC = () => {
           >
             <PerpsTokenLogo symbol="ETH" size={AvatarTokenSize.Md} />
             <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">{t('perpsOpenedLong')}</Text>
+              <Text className="perps-activity-item__action">
+                {t('perpsOpenedLong')}
+              </Text>
               <Text className="perps-activity-item__amount">2.5 ETH</Text>
             </Box>
             <Text className="perps-activity-item__pnl perps-activity-item__pnl--profit">
@@ -539,7 +545,9 @@ const PerpsHomePage: React.FC = () => {
           <Box className="perps-activity-item" role="button" tabIndex={0}>
             <PerpsTokenLogo symbol="BTC" size={AvatarTokenSize.Md} />
             <Box className="perps-activity-item__left">
-              <Text className="perps-activity-item__action">{t('perpsClosedShort')}</Text>
+              <Text className="perps-activity-item__action">
+                {t('perpsClosedShort')}
+              </Text>
               <Text className="perps-activity-item__amount">0.5 BTC</Text>
             </Box>
             <Text className="perps-activity-item__pnl perps-activity-item__pnl--loss">
