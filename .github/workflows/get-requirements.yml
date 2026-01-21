@@ -125,14 +125,14 @@ jobs:
       - name: Compute needs-releases flag
         id: set-needs-releases
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        run: echo "needs-releases=false" >> "$GITHUB_OUTPUT"
+        run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Do not run benchmarks on a fork
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' && env.IS_FORK == 'false' }}
-        run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
+        run: echo "needs-benchmarks=false" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
