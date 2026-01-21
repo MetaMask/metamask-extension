@@ -5066,6 +5066,21 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCommodities": {
+    "message": "Commodities"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
+  "perpsFilterStocksOnly": {
+    "message": "Stocks"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
@@ -5097,6 +5112,12 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
+  "perpsMarkets": {
+    "message": "Markets"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
+  },
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
@@ -5123,6 +5144,9 @@
   },
   "perpsReturn": {
     "message": "Return"
+  },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
   },
   "perpsSell": {
     "message": "sell"
