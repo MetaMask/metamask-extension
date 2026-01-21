@@ -355,7 +355,7 @@ export default function Routes() {
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
