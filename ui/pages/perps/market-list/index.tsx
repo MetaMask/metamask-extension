@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { useNavigate, Navigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -22,7 +23,11 @@ import {
 } from '../../../components/app/perps/mocks';
 import type { PerpsMarketData } from '../../../components/app/perps/types';
 import { filterMarketsByQuery } from '../../../components/app/perps/utils';
-import { PERPS_MARKET_DETAIL_ROUTE } from '../../../helpers/constants/routes';
+import {
+  DEFAULT_ROUTE,
+  PERPS_MARKET_DETAIL_ROUTE,
+} from '../../../helpers/constants/routes';
+import { getIsPerpsEnabled } from '../../../selectors/perps/feature-flags';
 import {
   sortMarkets,
   type SortField,
@@ -102,6 +107,7 @@ const filterByType = (
 export const MarketListView: React.FC = () => {
   const t = useI18nContext();
   const navigate = useNavigate();
+  const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   // State
   const [isLoading, setIsLoading] = useState(true);
@@ -180,6 +186,11 @@ export const MarketListView: React.FC = () => {
     },
     [navigate],
   );
+
+  // Guard: redirect if perps feature is disabled
+  if (!isPerpsEnabled) {
+    return <Navigate to={DEFAULT_ROUTE} replace />;
+  }
 
   return (
     <Box
