@@ -84,11 +84,14 @@ function publish_tag() {
     fi
 
     # 4. Create the ref (this effectively "pushes" the tag)
-    gh api \
+    if ! gh api \
         --method POST \
         "/repos/${GITHUB_REPOSITORY}/git/refs" \
         -f ref="refs/tags/${tag_name}" \
-        -f sha="${tag_sha}"
+        -f sha="${tag_sha}"; then
+        printf 'Error: Failed to create ref for tag %s\n' "${tag_name}" >&2
+        return 1
+    fi
 
     printf '%s\n' "${build_name} tag ${tag_name} created successfully via API."
 }
