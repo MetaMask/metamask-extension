@@ -690,7 +690,7 @@ jobs:
         run: |
           # Locales-only path
           if [[ "${{ needs.get-requirements.outputs.locales-only }}" == "true" ]]; then
-            if [[ "${{ github.event_name == 'merge_group' }}" ]]; then
+            if [[ "${{ github.event_name }}" == "merge_group" ]]; then
               echo "Locales-only in the Merge Queue, skipped everything"
               exit 0
             fi

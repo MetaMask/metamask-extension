@@ -1,4 +1,4 @@
-name: Get workflow and job requirements
+name: Get workflow and job requirementss
 
 on:
   workflow_call:
