@@ -14,6 +14,12 @@ import '@testing-library/jest-dom';
 
 const mockStore = configureStore([thunk]);
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const initialState = {
   metamask: {
@@ -74,7 +80,7 @@ const setup = (props: any) => {
   const store = mockStore(initialState);
   return render(
     <Provider store={store}>
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <UpdateModal {...props} />
       </MetaMetricsContext.Provider>
     </Provider>,

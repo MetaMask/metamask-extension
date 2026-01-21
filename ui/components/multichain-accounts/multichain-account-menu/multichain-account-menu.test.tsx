@@ -22,6 +22,12 @@ jest.mock('../../../../shared/lib/trace', () => {
 });
 
 const mockTrackEvent = jest.fn();
+const mockMetaMetricsContext = {
+  trackEvent: mockTrackEvent,
+  bufferedTrace: jest.fn(),
+  bufferedEndTrace: jest.fn(),
+  onboardingParentContext: { current: null },
+};
 
 const popoverOpenSelector = '.mm-popover--open';
 const menuButtonSelector = '.multichain-account-cell-popover-menu-button';
@@ -94,7 +100,7 @@ describe('MultichainAccountMenu', () => {
   ) => {
     const store = configureStore(state);
     return renderWithProvider(
-      <MetaMetricsContext.Provider value={mockTrackEvent}>
+      <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
         <MultichainAccountMenu {...props} />
       </MetaMetricsContext.Provider>,
       store,
@@ -515,7 +521,7 @@ describe('MultichainAccountMenu', () => {
     it('calls trace ShowAccountAddressList when clicking Addresses', async () => {
       const store = configureStore(mockDefaultState);
       renderWithProvider(
-        <MetaMetricsContext.Provider value={mockTrackEvent}>
+        <MetaMetricsContext.Provider value={mockMetaMetricsContext}>
           <MultichainAccountMenu
             accountGroupId={groupId}
             isRemovable={false}
