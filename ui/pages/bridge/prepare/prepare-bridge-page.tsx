@@ -21,7 +21,6 @@ import {
   setFromToken,
   setFromTokenInputValue,
   setSelectedQuote,
-  setToChainId,
   setToToken,
   updateQuoteRequestParams,
   resetBridgeState,
@@ -79,7 +78,7 @@ import {
   formatTokenAmount,
   isQuoteExpiredOrInvalid as isQuoteExpiredOrInvalidUtil,
 } from '../utils/quote';
-import { isNetworkAdded } from '../../../ducks/bridge/utils';
+import { getDefaultToToken, isNetworkAdded } from '../../../ducks/bridge/utils';
 import MascotBackgroundAnimation from '../../swaps/mascot-background-animation/mascot-background-animation';
 import { Column } from '../layout';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
@@ -178,7 +177,6 @@ const PrepareBridgePage = ({
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
     activeQuote: unvalidatedQuote,
     toToken,
-    toChainId: toChain?.chainId,
     fromChainId: fromChain?.chainId,
     isQuoteExpired,
     insufficientBal: quoteRequest.insufficientBal,
@@ -670,7 +668,16 @@ const PrepareBridgePage = ({
                 ) {
                   enableMissingNetwork(networkConfig.chainId);
                 }
-                dispatch(setToChainId(networkConfig.chainId));
+                fromToken &&
+                  dispatch(
+                    // Reset toToken to default, based on selected fromToken
+                    setToToken(
+                      getDefaultToToken(
+                        formatChainIdToCaip(networkConfig.chainId),
+                        fromToken,
+                      ),
+                    ),
+                  );
               },
               header: t('yourNetworks'),
               shouldDisableNetwork: ({ chainId }) =>

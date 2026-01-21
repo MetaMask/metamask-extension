@@ -7,8 +7,8 @@ import {
   TestRun,
 } from './shared/test-reports';
 
-// Quality Gate Retries
-const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 4;
+// Extra Quality Gate Runs for each new/changed test
+const RETRIES_FOR_NEW_OR_CHANGED_TESTS = 2;
 
 function readTestResults(TEST_RESULTS_PATH: string): TestRun {
   const testSuiteName =

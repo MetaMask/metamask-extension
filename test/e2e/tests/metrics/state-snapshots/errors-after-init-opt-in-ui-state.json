@@ -20,7 +20,6 @@
     "importNftsModal": "object",
     "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
-    "isAccountMenuOpen": false,
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",
@@ -318,8 +317,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
-      "sendRedesign": { "enabled": false }
+      "feature3": { "name": "groupC", "value": "valueC" }
     },
     "rewardsAccounts": "object",
     "rewardsActiveAccount": null,
@@ -440,7 +438,6 @@
   },
   "ramps": "object",
   "rewards": "object",
-  "send": "object",
   "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }

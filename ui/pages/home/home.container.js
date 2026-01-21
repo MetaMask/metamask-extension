@@ -34,7 +34,6 @@ import { getInfuraBlocked } from '../../../shared/modules/selectors/networks';
 import {
   attemptCloseNotificationPopup,
   setConnectedStatusPopoverHasBeenShown,
-  setDefaultHomeActiveTabName,
   setWeb3ShimUsageAlertDismissed,
   setAlertEnabledness,
   setRecoveryPhraseReminderHasBeenShown,
@@ -97,7 +96,6 @@ const mapStateToProps = (state) => {
   const {
     seedPhraseBackedUp,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     dataCollectionForMarketing,
     participateInMetaMetrics,
     firstTimeFlowType,
@@ -126,7 +124,6 @@ const mapStateToProps = (state) => {
     ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountCreation,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.confirmAccountRemoval,
-    SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showNameSnapAccount,
     SNAP_MANAGE_ACCOUNTS_CONFIRMATION_TYPES.showSnapAccountRedirect,
     ///: END:ONLY_INCLUDE_IF
   ]);
@@ -154,7 +151,6 @@ const mapStateToProps = (state) => {
     participateInMetaMetrics,
     hasApprovalFlows: getApprovalFlows(state)?.length > 0,
     connectedStatusPopoverHasBeenShown,
-    defaultHomeActiveTabName,
     firstTimeFlowType,
     completedOnboarding,
     isMainnet: getIsMainnet(state),
@@ -201,7 +197,6 @@ const mapDispatchToProps = (dispatch) => {
     attemptCloseNotificationPopup: () => attemptCloseNotificationPopup(),
     setConnectedStatusPopoverHasBeenShown: () =>
       dispatch(setConnectedStatusPopoverHasBeenShown()),
-    onTabClick: (name) => dispatch(setDefaultHomeActiveTabName(name)),
     setWeb3ShimUsageAlertDismissed: (origin) =>
       setWeb3ShimUsageAlertDismissed(origin),
     disableWeb3ShimUsageAlert: () =>
