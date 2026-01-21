@@ -39,13 +39,13 @@ describe('Power user persona', function () {
         extendedTimeoutMultiplier: 3,
       },
       async ({ driver }: { driver: Driver }) => {
-        const timerLogin = new TimerHelper('Time to login and reach home page', {
-          chrome: 15000,
-          firefox: 20000,
-        });
+        const timerLogin = new TimerHelper(
+          'Time to login and reach home page',
+          15000,
+        );
         const timerAccountListLoad = new TimerHelper(
           'Time to load account list with all accounts',
-          { chrome: 10000, firefox: 12000 },
+          10000,
         );
 
         // Measure: Login flow

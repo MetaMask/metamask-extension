@@ -42,11 +42,11 @@ describe('Unified Bridge & Swap Performance', function () {
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSwapPage = new TimerHelper(
           'Time to open swap page from home',
-          { chrome: 5000, firefox: 6000 },
+          5000,
         );
         const timerQuoteFetching = new TimerHelper(
           'Time to fetch and display swap quotes',
-          { chrome: 10000, firefox: 12000 },
+          10000,
         );
 
         // Login flow

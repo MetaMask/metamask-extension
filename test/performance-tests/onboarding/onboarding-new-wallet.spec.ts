@@ -49,27 +49,27 @@ describe('MetaMask onboarding', function () {
       async ({ driver }: { driver: Driver }) => {
         const timerCreateWalletToSocial = new TimerHelper(
           'Time since the user clicks on "Create new wallet" button until "Social sign up" is visible',
-          { chrome: 2000, firefox: 3000 },
+          2000,
         );
         const timerSrpButtonToPassword = new TimerHelper(
           'Time since the user clicks on "use SRP" button until "Metamask password" form is visible',
-          { chrome: 2000, firefox: 3000 },
+          2000,
         );
         const timerPasswordToRecovery = new TimerHelper(
           'Time since the user clicks on "Create password" button until "Recovery Phrase" screen is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerSkipToMetrics = new TimerHelper(
           'Time since the user clicks on "Skip" button until "Metrics" screen is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerAgreeToComplete = new TimerHelper(
           'Time since the user clicks on "I agree" button until "Onboarding Success" screen is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerDoneToAssetList = new TimerHelper(
           'Time since the user clicks on "Done" button until asset list is loaded',
-          { chrome: 15000, firefox: 20000 },
+          15000,
         );
 
         await driver.navigate();

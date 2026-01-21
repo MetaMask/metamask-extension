@@ -41,11 +41,8 @@ describe('My Performance Test', function () {
   setupPerformanceReporting();
 
   it('measures something', async function () {
-    // Create a timer with browser-specific thresholds (in ms)
-    const timer = new TimerHelper(
-      'Time to complete action',
-      { chrome: 5000, firefox: 6000 }  // thresholds
-    );
+    // Create a timer with optional threshold in ms
+    const timer = new TimerHelper('Time to complete action', 5000);
 
     // Measure an async action using the measure() method
     await timer.measure(async () => {
@@ -141,15 +138,9 @@ describe('Swap Performance', function () {
     await withFixtures(
       { /* fixture config */ },
       async ({ driver }: { driver: Driver }) => {
-        // Create timers with thresholds
-        const timerOpenSwapPage = new TimerHelper(
-          'Time to open swap page',
-          { chrome: 5000, firefox: 6000 }
-        );
-        const timerQuoteFetching = new TimerHelper(
-          'Time to fetch quotes',
-          { chrome: 10000, firefox: 12000 }
-        );
+        // Create timers with thresholds (in ms)
+        const timerOpenSwapPage = new TimerHelper('Time to open swap page', 5000);
+        const timerQuoteFetching = new TimerHelper('Time to fetch quotes', 10000);
 
         // Login
         await driver.navigate();

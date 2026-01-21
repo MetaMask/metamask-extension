@@ -10,7 +10,7 @@ import { performanceTracker } from './PerformanceTracker';
  *   setupPerformanceReporting();
  *
  *   it('measures something', async function () {
- *     const timer = new TimerHelper('My timer', { chrome: 1000, firefox: 1200 });
+ *     const timer = new TimerHelper('My timer', 5000); // 5 second threshold
  *     await timer.measure(async () => {
  *       // actions to measure
  *     });
@@ -48,4 +48,3 @@ export function setupPerformanceReporting(): void {
 // Re-export for convenience
 export { performanceTracker } from './PerformanceTracker';
 export { default as TimerHelper } from './TimerHelper';
-export type { BrowserThreshold } from './TimerHelper';

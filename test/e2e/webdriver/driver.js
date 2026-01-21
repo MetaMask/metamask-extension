@@ -353,7 +353,6 @@ class Driver {
   }
 
   async delay(time) {
-    console.log(`Delaying for ${time} milliseconds`);
     await new Promise((resolve) => setTimeout(resolve, time));
   }
 

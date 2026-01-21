@@ -45,15 +45,15 @@ describe('Import SRP Home', function () {
       async ({ driver }: { driver: Driver }) => {
         const timerLogin = new TimerHelper(
           'Time to login and reach home page',
-          { chrome: 10000, firefox: 12000 },
+          10000,
         );
         const timerOpenAccountMenu = new TimerHelper(
           'Time to open account menu after login',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerHomeAfterImport = new TimerHelper(
           'Time to return to home page after import with new wallet visible',
-          { chrome: 30000, firefox: 35000 },
+          30000,
         );
 
         // Measure: Login flow

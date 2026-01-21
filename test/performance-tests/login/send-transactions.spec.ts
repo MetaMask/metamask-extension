@@ -45,15 +45,15 @@ describe('Send Transactions Performance', function () {
       async ({ driver }: { driver: Driver }) => {
         const timerOpenSendPage = new TimerHelper(
           'Time to open send page from home',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerAssetPicker = new TimerHelper(
           'Time to select the token until the send form is loaded',
-          { chrome: 2000, firefox: 3000 },
+          2000,
         );
         const timerReviewTransaction = new TimerHelper(
           'Time to review the transaction until the confirmation page is loaded',
-          { chrome: 5000, firefox: 6000 },
+          5000,
         );
 
         // Login flow

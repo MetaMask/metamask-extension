@@ -55,31 +55,31 @@ describe('MetaMask onboarding', function () {
 
         const timerImportWalletToSocial = new TimerHelper(
           'Time since the user clicks on "Import wallet" button until "Social" screen is visible',
-          { chrome: 2000, firefox: 3000 },
+          2000,
         );
         const timerSrpButtonToForm = new TimerHelper(
           'Time since the user clicks on "use SRP" button until "SRP" form is visible',
-          { chrome: 2000, firefox: 3000 },
+          2000,
         );
         const timerConfirmToPassword = new TimerHelper(
           'Time since the user clicks on "Confirm" button until "Password" form is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerPasswordToMetrics = new TimerHelper(
           'Time since the user clicks on "Continue" button on Password form until "Help improve Metamask" screen is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerMetricsToComplete = new TimerHelper(
           'Time since the user clicks on "Continue" button until "Wallet is ready" screen is visible',
-          { chrome: 3000, firefox: 4000 },
+          3000,
         );
         const timerDoneToHome = new TimerHelper(
           'Time since the user clicks on "Done" button until "Home" screen is visible',
-          { chrome: 15000, firefox: 20000 },
+          15000,
         );
         const timerAccountListLoad = new TimerHelper(
           'Time since the user opens "account list" until the account list is loaded',
-          { chrome: 5000, firefox: 6000 },
+          5000,
         );
 
         await driver.navigate();

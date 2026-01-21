@@ -43,7 +43,7 @@ describe('Power user persona', function () {
       async ({ driver }: { driver: Driver }) => {
         const timerAssetDetails = new TimerHelper(
           'Time since the user clicks on the asset until the price chart is shown',
-          { chrome: 5000, firefox: 6000 },
+          5000,
         );
 
         // Login flow
