@@ -169,6 +169,11 @@ export const ROUTES = [
     trackInAnalytics: true,
   },
   {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
+  {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
     trackInAnalytics: true,

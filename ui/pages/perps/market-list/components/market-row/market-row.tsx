@@ -77,7 +77,7 @@ export const MarketRow: React.FC<MarketRowProps> = ({
   );
 
   // Determine the appropriate color for price change
-  const getChangeColor = (): TextColor => {
+  const changeColor = useMemo(() => {
     const change = market.change24hPercent;
     if (!change || change === '--' || change === 'N/A') {
       return TextColor.TextAlternative; // Neutral for missing/placeholder data
@@ -89,8 +89,7 @@ export const MarketRow: React.FC<MarketRowProps> = ({
       return TextColor.ErrorDefault; // Red for negative
     }
     return TextColor.TextAlternative; // Neutral for zero (e.g., '0%', '0.00%')
-  };
-  const changeColor = getChangeColor();
+  }, [market.change24hPercent]);
 
   const handleClick = useCallback(() => {
     if (onPress) {

@@ -13,6 +13,7 @@ import {
   IconSize,
   IconColor,
   TextColor,
+  ButtonBase,
 } from '@metamask/design-system-react';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import {
@@ -190,10 +191,9 @@ export const MarketListView: React.FC = () => {
         alignItems={BoxAlignItems.Center}
         gap={3}
       >
-        <button
-          type="button"
+        <ButtonBase
           onClick={handleBack}
-          className="flex items-center justify-center rounded-full p-1 hover:bg-hover active:bg-pressed"
+          className="rounded-full p-1 bg-transparent min-w-0 h-auto hover:bg-hover active:bg-pressed"
           data-testid="back-button"
           aria-label={t('back')}
         >
@@ -202,7 +202,7 @@ export const MarketListView: React.FC = () => {
             size={IconSize.Md}
             color={IconColor.IconDefault}
           />
-        </button>
+        </ButtonBase>
         <Text fontWeight={FontWeight.Medium}>{t('perpsMarkets')}</Text>
       </Box>
 
