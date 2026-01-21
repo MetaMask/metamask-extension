@@ -51,7 +51,7 @@ const MAXIMUM_CHARACTERS_WITHOUT_TOOLTIP = 20;
 export const NetworkListItem = ({
   name,
   iconSrc,
-  iconSize = AvatarNetworkSize.Md,
+  iconSize = AvatarIconSize.Md,
   iconColor,
   rpcEndpoint,
   chainId,
@@ -206,7 +206,7 @@ export const NetworkListItem = ({
       {isIconSrc(iconSrc) ? (
         <AvatarIcon
           iconName={iconSrc}
-          size={(iconSize as AvatarIconSize) || AvatarIconSize.Md}
+          size={iconSize as AvatarIconSize}
           color={iconColor ?? TextColor.primaryDefault}
           backgroundColor={BackgroundColor.primaryMuted}
         />
