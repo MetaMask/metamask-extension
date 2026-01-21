@@ -633,7 +633,7 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
+        <Tabs onTabClick={() => null} activeTabKey="accounts">
           <Tab
             className="multichain-connect-page__tab flex-1"
             name={t('accounts')}

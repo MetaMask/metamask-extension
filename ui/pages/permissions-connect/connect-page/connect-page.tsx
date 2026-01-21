@@ -543,7 +543,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs defaultActiveTabKey="accounts">
+        <Tabs activeTabKey="accounts">
           <Tab
             name={t('accounts')}
             tabKey="accounts"

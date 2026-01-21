@@ -1,4 +1,4 @@
-import React, { ReactElement } from 'react';
+import React, { ReactElement, useState } from 'react';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { Tab, Tabs } from '../../../ui/tabs';
 
@@ -26,12 +26,13 @@ export const AssetPickerModalTabs = ({
   visibleTabs?: TabName[];
 }) => {
   const t = useI18nContext();
+  const [activeTab, setActiveTab] = useState(defaultActiveTabKey);
 
   if (visibleTabs.length > 1) {
     return (
       <Tabs
-        defaultActiveTabKey={defaultActiveTabKey}
-        onTabClick={() => null}
+        activeTabKey={activeTab}
+        onTabClick={setActiveTab}
         tabListProps={{ className: 'px-4' }}
       >
         {visibleTabs.map((tabName) => {

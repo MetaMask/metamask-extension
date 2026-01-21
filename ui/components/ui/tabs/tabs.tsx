@@ -9,7 +9,6 @@ import {
 import { TabsProps, TabChild } from './tabs.types';
 
 export const Tabs = <TKey extends string = string>({
-  defaultActiveTabKey,
   activeTabKey,
   onTabClick,
   children,
@@ -47,7 +46,7 @@ export const Tabs = <TKey extends string = string>({
   );
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
-    Math.max(findChildByKey(defaultActiveTabKey), 0),
+    Math.max(findChildByKey(activeTabKey), 0),
   );
 
   useEffect(() => {
