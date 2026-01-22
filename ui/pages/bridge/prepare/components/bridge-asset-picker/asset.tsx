@@ -40,11 +40,13 @@ export const BridgeAsset = React.forwardRef(
       asset,
       selected,
       isDestination,
+      dataIndex,
       ...buttonProps
     }: React.ComponentProps<typeof Row> & {
       asset: BridgeToken;
       selected: boolean;
       isDestination?: boolean;
+      dataIndex: number;
     },
     ref?: PolymorphicRef<Element>,
   ) => {
@@ -56,6 +58,7 @@ export const BridgeAsset = React.forwardRef(
       <Row
         ref={ref}
         key={asset.assetId}
+        data-index={dataIndex}
         {...buttonProps}
         padding={4}
         borderRadius={BorderRadius.none}
