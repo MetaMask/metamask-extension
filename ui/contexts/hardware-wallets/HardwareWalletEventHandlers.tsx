@@ -85,8 +85,7 @@ export const useDeviceEventHandlers = ({
           oldState.status === ConnectionStatus.ErrorState
         ) {
           if (
-            oldState.reason !== newState.reason ||
-            oldState.error?.message !== newState.error?.message
+oldState.error?.message !== newState.error?.message
           ) {
             return newState;
           }
@@ -97,7 +96,6 @@ export const useDeviceEventHandlers = ({
           oldState.status === ConnectionStatus.AwaitingApp
         ) {
           if (
-            oldState.reason !== newState.reason ||
             oldState.appName !== newState.appName
           ) {
             return newState;
@@ -228,7 +226,6 @@ export const useDeviceEventHandlers = ({
         // Handle structured hardware wallet errors
         updateConnectionState({
           status: ConnectionStatus.ErrorState,
-          reason: disconnectError.message,
           error: disconnectError,
         });
       } else {

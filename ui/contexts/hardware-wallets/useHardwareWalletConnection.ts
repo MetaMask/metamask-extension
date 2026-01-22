@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect } from 'react';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
@@ -14,8 +14,6 @@ import {
 } from './types';
 import { getHardwareWalletDeviceId } from './webConnectionUtils';
 import { type HardwareWalletRefs } from './HardwareWalletStateManager';
-
-type IsLatestAttempt = () => boolean;
 
 type UseHardwareWalletConnectionParams = {
   refs: HardwareWalletRefs;
@@ -42,7 +40,6 @@ export const useHardwareWalletConnection = ({
   handleDisconnect,
 }: UseHardwareWalletConnectionParams) => {
   const { setDeviceId } = setters;
-  const connectionIdCounterRef = useRef(0);
 
   const resetAdapterForFreshConnection = useCallback(() => {
     if (refs.isConnectingRef.current || refs.adapterRef.current) {
@@ -51,6 +48,12 @@ export const useHardwareWalletConnection = ({
     }
   }, [refs]);
 
+  /**
+   * Begins a new connection attempt by aborting any previous attempt
+   * and creating a fresh AbortController.
+   *
+   * @returns The AbortSignal for this attempt - use to check if aborted
+   */
   const beginConnectionAttempt = useCallback(() => {
     // Abort any previous connection attempt
     refs.abortControllerRef.current?.abort();
@@ -58,20 +61,9 @@ export const useHardwareWalletConnection = ({
     // Create a new AbortController for this attempt
     const abortController = new AbortController();
     refs.abortControllerRef.current = abortController;
-
-    connectionIdCounterRef.current += 1;
-    const connectionId = connectionIdCounterRef.current;
-    refs.currentConnectionIdRef.current = connectionId;
     refs.isConnectingRef.current = true;
 
-    const isLatestAttempt: IsLatestAttempt = () =>
-      refs.currentConnectionIdRef.current === connectionId;
-
-    return {
-      connectionId,
-      isLatestAttempt,
-      abortSignal: abortController.signal,
-    };
+    return abortController.signal;
   }, [refs]);
 
   const resolveOrDiscoverDeviceId = useCallback(
@@ -144,30 +136,24 @@ export const useHardwareWalletConnection = ({
       walletType: targetWalletType,
       deviceId: targetDeviceId,
       abortSignal,
-      isLatestAttempt,
     }: {
       walletType: HardwareWalletType;
       deviceId: string;
-      abortSignal?: AbortSignal;
-      isLatestAttempt: IsLatestAttempt;
+      abortSignal: AbortSignal;
     }): Promise<void> => {
-      if (abortSignal?.aborted) {
-        return;
-      }
-
-      if (!isLatestAttempt()) {
+      if (abortSignal.aborted) {
         return;
       }
 
       const adapterOptions: HardwareWalletAdapterOptions = {
         onDisconnect: handleDisconnect,
         onAwaitingConfirmation: () => {
-          if (!abortSignal?.aborted && isLatestAttempt()) {
+          if (!abortSignal.aborted) {
             updateConnectionState(ConnectionState.awaitingConfirmation());
           }
         },
         onDeviceLocked: () => {
-          if (!abortSignal?.aborted && isLatestAttempt()) {
+          if (!abortSignal.aborted) {
             updateConnectionState(
               ConnectionState.error(
                 createHardwareWalletError(
@@ -180,7 +166,7 @@ export const useHardwareWalletConnection = ({
           }
         },
         onAppNotOpen: () => {
-          if (!abortSignal?.aborted && isLatestAttempt()) {
+          if (!abortSignal.aborted) {
             updateConnectionState(ConnectionState.awaitingApp());
           }
         },
@@ -192,7 +178,7 @@ export const useHardwareWalletConnection = ({
         adapterOptions,
       );
 
-      if (!isLatestAttempt()) {
+      if (abortSignal.aborted) {
         adapter.destroy();
         return;
       }
@@ -200,15 +186,13 @@ export const useHardwareWalletConnection = ({
       refs.adapterRef.current = adapter;
       await adapter.connect(targetDeviceId);
 
-      if (!isLatestAttempt()) {
+      if (abortSignal.aborted) {
         adapter.destroy();
         refs.adapterRef.current = null;
         return;
       }
 
-      if (!abortSignal?.aborted) {
-        updateConnectionState(ConnectionState.connected());
-      }
+      updateConnectionState(ConnectionState.connected());
     },
     [handleDeviceEvent, handleDisconnect, updateConnectionState, refs],
   );
@@ -217,19 +201,13 @@ export const useHardwareWalletConnection = ({
     ({
       error,
       abortSignal,
-      isLatestAttempt,
       walletType,
     }: {
       error: unknown;
-      abortSignal?: AbortSignal;
-      isLatestAttempt: IsLatestAttempt;
+      abortSignal: AbortSignal;
       walletType: HardwareWalletType;
     }) => {
-      if (!isLatestAttempt()) {
-        return;
-      }
-
-      if (!abortSignal?.aborted) {
+      if (!abortSignal.aborted) {
         if (isHardwareWalletErrorWithCode(error)) {
           updateConnectionState(getConnectionStateFromError(error));
         } else {
@@ -252,8 +230,8 @@ export const useHardwareWalletConnection = ({
   );
 
   const finalizeConnectionAttempt = useCallback(
-    (isLatestAttempt: IsLatestAttempt) => {
-      if (isLatestAttempt()) {
+    (abortSignal: AbortSignal) => {
+      if (!abortSignal.aborted) {
         refs.isConnectingRef.current = false;
       }
     },
@@ -271,13 +249,13 @@ export const useHardwareWalletConnection = ({
     }
 
     resetAdapterForFreshConnection();
-    const { isLatestAttempt, abortSignal } = beginConnectionAttempt();
+    const abortSignal = beginConnectionAttempt();
 
     const discoveredDeviceId = await resolveOrDiscoverDeviceId({
       walletType: effectiveType,
       abortSignal,
     });
-    if (!discoveredDeviceId || !isLatestAttempt()) {
+    if (!discoveredDeviceId || abortSignal.aborted) {
       return;
     }
 
@@ -288,17 +266,15 @@ export const useHardwareWalletConnection = ({
         walletType: effectiveType,
         deviceId: discoveredDeviceId,
         abortSignal,
-        isLatestAttempt,
       });
     } catch (error) {
       handleConnectError({
         error,
         abortSignal,
-        isLatestAttempt,
         walletType: effectiveType,
       });
     } finally {
-      finalizeConnectionAttempt(isLatestAttempt);
+      finalizeConnectionAttempt(abortSignal);
     }
   }, [
     beginConnectionAttempt,
@@ -324,7 +300,6 @@ export const useHardwareWalletConnection = ({
     } finally {
       refs.adapterRef.current?.destroy();
       refs.adapterRef.current = null;
-      refs.currentConnectionIdRef.current = null;
       refs.isConnectingRef.current = false;
       if (!abortSignal?.aborted) {
         updateConnectionState(ConnectionState.disconnected());
@@ -349,8 +324,6 @@ export const useHardwareWalletConnection = ({
     async (targetDeviceId?: string): Promise<boolean> => {
       let effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
 
-      const { isLatestAttempt, abortSignal } = beginConnectionAttempt();
-
       if (!refs.adapterRef.current?.isConnected()) {
         const currentWalletType = refs.walletTypeRef.current;
 
@@ -371,7 +344,10 @@ export const useHardwareWalletConnection = ({
         }
       }
 
-      if (!isLatestAttempt() || abortSignal.aborted) {
+      // Get abort signal after connect() - it may have created a new one
+      const abortSignal = refs.abortControllerRef.current?.signal;
+
+      if (abortSignal?.aborted) {
         return false;
       }
 
@@ -379,7 +355,7 @@ export const useHardwareWalletConnection = ({
       if (adapter?.ensureDeviceReady && effectiveDeviceId) {
         try {
           const result = await adapter.ensureDeviceReady(effectiveDeviceId);
-          if (!isLatestAttempt() || abortSignal.aborted) {
+          if (abortSignal?.aborted) {
             return false;
           }
           if (result) {
@@ -387,7 +363,7 @@ export const useHardwareWalletConnection = ({
           }
           return result;
         } catch (error) {
-          if (!isLatestAttempt() || abortSignal.aborted) {
+          if (abortSignal?.aborted) {
             return false;
           }
           if (isHardwareWalletError(error)) {
@@ -405,7 +381,7 @@ export const useHardwareWalletConnection = ({
 
       return false;
     },
-    [beginConnectionAttempt, connect, updateConnectionState, refs, setDeviceId],
+    [connect, updateConnectionState, refs, setDeviceId],
   );
 
   return {
@@ -427,5 +403,5 @@ function isHardwareWalletErrorWithCode(
     return false;
   }
 
-  return Object.prototype.hasOwnProperty.call(ErrorCode, error.code);
+  return Object.prototype.hasOwnProperty.call(error, 'code');
 }

@@ -44,7 +44,7 @@ describe('useHardwareWalletConnection', () => {
     mockHandleDisconnect = jest.fn();
 
     mockRefs = {
-      abortControllerRef: { current: new AbortController() },
+      abortControllerRef: { current: null },
       adapterRef: { current: null },
       isConnectingRef: { current: false },
       hasAutoConnectedRef: { current: false },
@@ -223,19 +223,77 @@ describe('useHardwareWalletConnection', () => {
       expect(mockAdapter.destroyMock).toHaveBeenCalled();
     });
 
-    it('aborts when AbortController is aborted', async () => {
-      (mockRefs.abortControllerRef.current as AbortController).abort();
+    it('aborts previous connection when new connection starts', async () => {
+      let resolveFirstDiscovery: (value: string) => void;
+      const firstDiscoveryPromise = new Promise<string>((resolve) => {
+        resolveFirstDiscovery = resolve;
+      });
+
       (
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
-      ).mockResolvedValue('device-123');
+      ).mockImplementationOnce(() => firstDiscoveryPromise);
 
       const { result } = setupHook();
+
+      // Start first connection (will wait on device discovery)
+      const firstConnect = act(async () => {
+        await result.current.connect();
+      });
+
+      // Start second connection immediately - this should abort the first
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockResolvedValueOnce('device-456');
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
 
       await act(async () => {
         await result.current.connect();
       });
 
-      expect(mockUpdateConnectionState).not.toHaveBeenCalled();
+      // Now resolve the first discovery - but it should be aborted
+      resolveFirstDiscovery!('device-123');
+      await firstConnect;
+
+      // Only the second connection should have completed successfully
+      expect(mockAdapter.connectMock).toHaveBeenCalledWith('device-456');
+      expect(mockAdapter.connectMock).not.toHaveBeenCalledWith('device-123');
+    });
+
+    it('creates new AbortController for each connection attempt', async () => {
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockResolvedValue('device-123');
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
+
+      const { result } = setupHook();
+
+      // AbortController should be null initially
+      expect(mockRefs.abortControllerRef.current).toBeNull();
+
+      await act(async () => {
+        await result.current.connect();
+      });
+
+      // After connect, AbortController should be created
+      expect(mockRefs.abortControllerRef.current).toBeInstanceOf(AbortController);
     });
 
     it('handles unknown wallet type', async () => {
@@ -305,7 +363,7 @@ describe('useHardwareWalletConnection', () => {
       expect(mockRefs.adapterRef.current).toBeNull();
     });
 
-    it('aborts when AbortController is aborted', async () => {
+    it('does not update state when AbortController is aborted', async () => {
       const mockAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,
         onAwaitingConfirmation: jest.fn(),
@@ -315,7 +373,10 @@ describe('useHardwareWalletConnection', () => {
       });
       mockRefs.adapterRef.current = mockAdapter;
 
-      (mockRefs.abortControllerRef.current as AbortController).abort();
+      // Set up an aborted controller
+      const abortController = new AbortController();
+      abortController.abort();
+      mockRefs.abortControllerRef.current = abortController;
 
       const { result } = setupHook();
 
@@ -370,8 +431,11 @@ describe('useHardwareWalletConnection', () => {
       );
     });
 
-    it('aborts when AbortController is aborted', () => {
-      (mockRefs.abortControllerRef.current as AbortController).abort();
+    it('does not update state when AbortController is aborted', () => {
+      // Set up an aborted controller
+      const abortController = new AbortController();
+      abortController.abort();
+      mockRefs.abortControllerRef.current = abortController;
 
       const { result } = setupHook();
 
@@ -495,14 +559,28 @@ describe('useHardwareWalletConnection', () => {
       );
     });
 
-    it('aborts when AbortController is aborted', async () => {
-      (mockRefs.abortControllerRef.current as AbortController).abort();
+    it('does not update state when AbortController is aborted', async () => {
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockAdapter.isConnectedMock.mockReturnValue(true);
+      mockRefs.adapterRef.current = mockAdapter;
+
+      // Set up an aborted controller (simulating abort during operation)
+      const abortController = new AbortController();
+      abortController.abort();
+      mockRefs.abortControllerRef.current = abortController;
 
       const { result } = setupHook();
 
       const ready = await result.current.ensureDeviceReady('device-123');
 
       expect(ready).toBe(false);
+      expect(mockAdapter.ensureDeviceReadyMock).not.toHaveBeenCalled();
     });
 
     it('handles connection failure during ensureDeviceReady', async () => {
