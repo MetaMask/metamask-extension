@@ -1,5 +1,4 @@
 import { Driver } from '../../../webdriver/driver';
-import { clickNestedButton } from '../../../helpers';
 import { tEn } from '../../../../lib/i18n-helpers';
 
 class PrivacySettings {
@@ -333,7 +332,7 @@ class PrivacySettings {
 
   async checkSrpQrCodeIsDisplayed(): Promise<void> {
     console.log('Check SRP QR code is displayed on privacy settings page');
-    await clickNestedButton(this.driver, 'QR');
+    await this.driver.clickNestedButton('QR');
     await this.driver.waitForSelector(this.revealSrpQrCodeImage);
   }
 
