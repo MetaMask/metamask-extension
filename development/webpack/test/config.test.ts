@@ -6,6 +6,7 @@ import { version } from '../../../package.json';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
+import { VARIABLES_REQUIRED_IN_PRODUCTION } from '../utils/constants';
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
@@ -126,6 +127,88 @@ describe('./utils/config.ts', () => {
       assert.strictEqual(variables.get('TESTING_NULL'), null);
       assert.strictEqual(variables.get('TESTING_MISC'), 'MISC');
       assert.strictEqual(variables.get('TESTING_EMPTY_STRING'), null);
+    });
+
+    it('should return buildEnvVarDeclarations with keys from activeBuild.env and buildConfig.env', () => {
+      mockRc();
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv([], buildTypes);
+      const { buildEnvVarDeclarations } = config.getVariables(args, buildTypes);
+
+      assert.ok(Array.isArray(buildEnvVarDeclarations));
+      assert.ok(buildEnvVarDeclarations.length > 0);
+
+      // Verify it includes keys from the main build type's env (e.g., INFURA_PROD_PROJECT_ID)
+      assert.ok(
+        buildEnvVarDeclarations.includes('INFURA_PROD_PROJECT_ID'),
+        'should include build type specific env vars',
+      );
+
+      // Verify it includes keys from the global buildConfig.env (e.g., SENTRY_DSN)
+      assert.ok(
+        buildEnvVarDeclarations.includes('SENTRY_DSN'),
+        'should include global config env vars',
+      );
+    });
+
+    it('should throw when production environment is missing required variables', () => {
+      mockRc();
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(
+        ['--env', 'production', '--targetEnvironment', 'production'],
+        buildTypes,
+      );
+
+      assert.throws(
+        () => config.getVariables(args, buildTypes),
+        (error: Error) => {
+          assert.ok(
+            error.message.includes(
+              'Some variables required to build production target are not defined',
+            ),
+          );
+          // Check that missing variables are listed in the error
+          const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
+          for (const varName of requiredVars) {
+            assert.ok(
+              error.message.includes(varName),
+              `Error should mention missing variable: ${varName}`,
+            );
+          }
+          return true;
+        },
+      );
+    });
+
+    it('should not throw when all required production variables are defined', () => {
+      const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
+      const rcVars: Record<string, string> = {};
+      for (const varName of requiredVars) {
+        rcVars[varName] = 'test-value';
+      }
+      mockRc(rcVars);
+
+      const buildTypes = loadBuildTypesConfig();
+      const { args } = parseArgv(
+        ['--env', 'production', '--targetEnvironment', 'production'],
+        buildTypes,
+      );
+
+      assert.doesNotThrow(() => config.getVariables(args, buildTypes));
+    });
+
+    it('should not validate production variables when environment is not production', () => {
+      mockRc();
+      const buildTypes = loadBuildTypesConfig();
+
+      const { args: devArgs } = parseArgv([], buildTypes);
+      assert.doesNotThrow(() => config.getVariables(devArgs, buildTypes));
+
+      const { args: stagingArgs } = parseArgv(
+        ['--env', 'production', '--targetEnvironment', 'staging'],
+        buildTypes,
+      );
+      assert.doesNotThrow(() => config.getVariables(stagingArgs, buildTypes));
     });
   });
 });
