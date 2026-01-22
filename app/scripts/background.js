@@ -1345,7 +1345,7 @@ export function setupController(
     if (newControllerState === null || typeof newControllerState !== 'object') {
       captureException(
         new Error(
-          `Invalid controller state for '${key}' of type '${typeof newControllerState}'`,
+          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
         ),
       );
       continue;
