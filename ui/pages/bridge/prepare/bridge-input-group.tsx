@@ -60,6 +60,7 @@ export const BridgeInputGroup = ({
   accountAddress,
   disabledChainId,
   containerProps = {},
+  isDestination,
 }: {
   amountInFiat?: string;
   onAmountChange?: (value: string) => void;
@@ -227,6 +228,7 @@ export const BridgeInputGroup = ({
           }}
           chains={networks}
           accountAddress={accountAddress}
+          isDestination={isDestination}
         />
         <SelectedAssetButton
           onClick={() => setIsAssetPickerOpen(true)}

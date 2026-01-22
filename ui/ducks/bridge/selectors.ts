@@ -16,6 +16,7 @@ import {
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
+  type FeatureFlagsPlatformConfig,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -153,7 +154,9 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
     const validatedFlags = selectBridgeFeatureFlags({
       remoteFeatureFlags: { bridgeConfig },
     });
-    return validatedFlags;
+    return validatedFlags as FeatureFlagsPlatformConfig & {
+      chainRanking: { chainId: CaipChainId; name: string }[];
+    };
   },
 );
 

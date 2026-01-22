@@ -424,6 +424,7 @@ const PrepareBridgePage = ({
             setShowBlockExplorerToast(true);
             setToastTriggerCounter((prev) => prev + 1);
           }}
+          isDestination={false}
         />
 
         <Column
