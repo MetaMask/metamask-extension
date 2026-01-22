@@ -48,4 +48,25 @@ describe(`migration #${VERSION}`, () => {
     expect(versionedData.data).toStrictEqual(oldStorage.data);
     expect(changedKeys.size).toBe(0);
   });
+
+  it('handles state when seedPhrase property does not exist', async () => {
+    const oldStorage = {
+      meta: { version: OLD_VERSION },
+      data: {
+        PreferencesController: {
+          showTestNetworks: true,
+        },
+      },
+    };
+
+    const versionedData = cloneDeep(oldStorage);
+    const changedKeys = new Set<string>();
+
+    await migrate(versionedData, changedKeys);
+
+    expect(versionedData.meta.version).toBe(VERSION);
+    expect('seedPhrase' in versionedData.data).toBe(false);
+    expect(versionedData.data).toStrictEqual(oldStorage.data);
+    expect(changedKeys.size).toBe(0);
+  });
 });
