@@ -34,7 +34,7 @@ describe('Create Snap Account', function (this: Suite) {
         const newCustomAccountLabel = 'Custom name';
         await createSnapAccount(driver, { accountName: newCustomAccountLabel });
 
-        // Check snap account is displayed after adding the custom snap account.
+        // Check snap account is displayed after adding the snap account.
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

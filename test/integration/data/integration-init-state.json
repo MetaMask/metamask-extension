@@ -62,21 +62,6 @@
     "0xaa36a7": {
       "0x0DCD5D886577d5081B0c52e242Ef29E70Be3E7bc": {
         "balance": "0x15f6f0b9d4f8d000"
-      },
-      "0xEC1Adf982415D2Ef5ec55899b9Bfb8BC0f29251B": {
-        "balance": "0x0"
-      },
-      "0xc42EDfCC21eD14dDA456AA0756C153F7985D8813": {
-        "balance": "0x0"
-      },
-      "0xeB9e64B93097bc15F01F13eae97015c57ab64823": {
-        "balance": "0x0"
-      },
-      "0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281": {
-        "balance": "0x0"
-      },
-      "0xb552685e3d2790eFd64a175B00D51F02cdaFEe5D": {
-        "balance": "0x0"
       }
     }
   },
@@ -103,6 +88,7 @@
     "unconnectedAccount": true
   },
   "allIgnoredAssets": {},
+  "allIgnoredTokens": {},
   "allNftContracts": {
     "0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc": {
       "0x1": [
@@ -627,7 +613,6 @@
     "selectedAccount": "cf8dace4-9439-4bd4-b3a8-88c821c8fcb3"
   },
   "ipfsGateway": "dweb.link",
-  "isAccountMenuOpen": false,
   "isAccountTreeSyncingInProgress": false,
   "isEvmSelected": true,
   "isInitialized": true,
@@ -663,6 +648,7 @@
       "accounts": ["0xca8f1F0245530118D0cf14a06b01Daf8f76Cf281"]
     }
   ],
+  "marketData": {},
   "multichainNetworkConfigurationsByChainId": {
     "bip122:000000000019d6689c085ae165831e93": {
       "chainId": "bip122:000000000019d6689c085ae165831e93",

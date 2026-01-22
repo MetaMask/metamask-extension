@@ -233,6 +233,40 @@ and we'll take you to the right place.`
     );
   });
 
+  it('handles /card-onboarding route redirect', async function () {
+    await withFixtures(
+      await getConfig(this.test?.fullTitle()),
+      async ({ driver }: { driver: Driver }) => {
+        await driver.navigate();
+        const loginPage = new LoginPage(driver);
+        await loginPage.checkPageIsLoaded();
+        await loginPage.loginToHomepage();
+        const homePage = new HomePage(driver);
+        await homePage.checkPageIsLoaded();
+
+        const rawUrl = `https://link.metamask.io/card-onboarding`;
+        const signedUrl = await signDeepLink(keyPair.privateKey, rawUrl);
+
+        // test signed flow
+        await driver.openNewURL(signedUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/card`,
+        });
+
+        await driver.navigate();
+        await homePage.checkPageIsLoaded();
+
+        // test unsigned flow
+        await driver.openNewURL(rawUrl);
+
+        await driver.waitForUrl({
+          url: `${BaseUrl.MetaMask}/card`,
+        });
+      },
+    );
+  });
+
   it('handles /perps route redirect', async function () {
     await withFixtures(
       await getConfig(this.test?.fullTitle()),

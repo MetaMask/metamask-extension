@@ -88,6 +88,9 @@ class SnapSimpleKeyringPage {
 
   private readonly snapConnectedMessage = '#snapConnected';
 
+  private readonly snapInstallScrollButton =
+    '[data-testid="snap-install-scroll"]';
+
   private readonly useSyncApprovalToggle =
     '[data-testid="use-sync-flow-toggle"]';
 
