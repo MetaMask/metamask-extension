@@ -2429,15 +2429,12 @@ export const getSnapInsights = createDeepEqualSelector(
   (insights, id) => insights?.[id],
 );
 
-// Constant empty object to avoid creating new references
-const EMPTY_ALLOWED_ANNOUNCEMENT_IDS = {};
-
 /**
  * Get an object of announcement IDs and if they are allowed or not.
  *
  * @returns {object}
  */
-const getAllowedAnnouncementIds = () => EMPTY_ALLOWED_ANNOUNCEMENT_IDS;
+const getAllowedAnnouncementIds = () => EMPTY_OBJECT;
 
 /**
  * Get the announcements object from state
