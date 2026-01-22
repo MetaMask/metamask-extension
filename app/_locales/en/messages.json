@@ -5047,8 +5047,24 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favorites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5058,6 +5074,9 @@
   },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5073,6 +5092,12 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
   },
   "perpsFilterAll": {
     "message": "All"
@@ -5101,6 +5126,12 @@
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5122,6 +5153,9 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMore": {
+    "message": "More"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -5192,8 +5226,20 @@
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."

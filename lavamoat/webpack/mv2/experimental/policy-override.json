@@ -230,6 +230,11 @@
         "navigator": false,
         "navigator.userAgent": true
       }
+    },
+    "lightweight-charts": {
+      "globals": {
+        "fetch": false
+      }
     }
   }
 }
