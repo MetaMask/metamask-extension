@@ -3,6 +3,7 @@ import { renderHookWithConfirmContextProvider } from '../../../../../test/lib/co
 import useAlerts from '../../../../hooks/useAlerts';
 import { Severity } from '../../../../helpers/constants/design-system';
 import { Alert } from '../../../../ducks/confirm-alerts/confirm-alerts';
+import { AlertsName } from '../alerts/constants';
 import { useTransactionCustomAmountAlerts } from './useTransactionCustomAmountAlerts';
 
 jest.mock('../../../../hooks/useAlerts');
@@ -55,10 +56,12 @@ describe('useTransactionCustomAmountAlerts', () => {
     useAlertsMock.mockReturnValue(createMockUseAlertsReturnValue());
   });
 
-  it('returns empty object when no alerts', () => {
+  it('returns base state when no alerts', () => {
     const { result } = runHook();
 
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      hideResults: false,
+    });
   });
 
   it('returns alertMessage from first blocking alert message', () => {
@@ -82,6 +85,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Test alert message',
+      hideResults: false,
     });
   });
 
@@ -106,6 +110,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Test alert reason',
+      hideResults: false,
     });
   });
 
@@ -126,7 +131,9 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     const { result } = runHook();
 
-    expect(result.current).toStrictEqual({});
+    expect(result.current).toStrictEqual({
+      hideResults: false,
+    });
   });
 
   it('returns first blocking alert when multiple alerts exist', () => {
@@ -162,6 +169,57 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'First blocking alert',
+      hideResults: false,
+    });
+  });
+
+  it('sets hideResults to true when InsufficientPayTokenBalance alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.InsufficientPayTokenBalance,
+            message: 'Insufficient funds',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'Insufficient funds',
+      hideResults: true,
+    });
+  });
+
+  it('sets hideResults to true when SigningOrSubmitting alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.SigningOrSubmitting,
+            message: 'Transaction in progress',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'Transaction in progress',
+      hideResults: true,
     });
   });
 });

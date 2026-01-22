@@ -231,8 +231,9 @@ function CenterContainerSkeleton() {
 
 function BottomContainer() {
   const isResultReady = useIsResultReady();
+  const { hideResults } = useTransactionCustomAmountAlerts();
 
-  if (!isResultReady) {
+  if (!isResultReady || hideResults) {
     return null;
   }
 
