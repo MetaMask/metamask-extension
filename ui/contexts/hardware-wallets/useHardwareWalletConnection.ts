@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
@@ -42,6 +42,7 @@ export const useHardwareWalletConnection = ({
   handleDisconnect,
 }: UseHardwareWalletConnectionParams) => {
   const { setDeviceId } = setters;
+  const connectionIdCounterRef = useRef(0);
 
   const resetAdapterForFreshConnection = useCallback(() => {
     if (refs.isConnectingRef.current || refs.adapterRef.current) {
@@ -51,14 +52,26 @@ export const useHardwareWalletConnection = ({
   }, [refs]);
 
   const beginConnectionAttempt = useCallback(() => {
-    const connectionId = Date.now();
+    // Abort any previous connection attempt
+    refs.abortControllerRef.current?.abort();
+
+    // Create a new AbortController for this attempt
+    const abortController = new AbortController();
+    refs.abortControllerRef.current = abortController;
+
+    connectionIdCounterRef.current += 1;
+    const connectionId = connectionIdCounterRef.current;
     refs.currentConnectionIdRef.current = connectionId;
     refs.isConnectingRef.current = true;
 
     const isLatestAttempt: IsLatestAttempt = () =>
       refs.currentConnectionIdRef.current === connectionId;
 
-    return { connectionId, isLatestAttempt };
+    return {
+      connectionId,
+      isLatestAttempt,
+      abortSignal: abortController.signal,
+    };
   }, [refs]);
 
   const resolveOrDiscoverDeviceId = useCallback(
@@ -248,8 +261,6 @@ export const useHardwareWalletConnection = ({
   );
 
   const connect = useCallback(async (): Promise<void> => {
-    const abortSignal = refs.abortControllerRef.current?.signal;
-
     const effectiveType = refs.walletTypeRef.current;
     if (!effectiveType) {
       updateConnectionState(
@@ -260,13 +271,13 @@ export const useHardwareWalletConnection = ({
     }
 
     resetAdapterForFreshConnection();
-    const { isLatestAttempt } = beginConnectionAttempt();
+    const { isLatestAttempt, abortSignal } = beginConnectionAttempt();
 
     const discoveredDeviceId = await resolveOrDiscoverDeviceId({
       walletType: effectiveType,
       abortSignal,
     });
-    if (!discoveredDeviceId) {
+    if (!discoveredDeviceId || !isLatestAttempt()) {
       return;
     }
 
@@ -337,11 +348,8 @@ export const useHardwareWalletConnection = ({
   const ensureDeviceReady = useCallback(
     async (targetDeviceId?: string): Promise<boolean> => {
       let effectiveDeviceId = targetDeviceId || refs.deviceIdRef.current;
-      const abortSignal = refs.abortControllerRef.current?.signal;
 
-      if (abortSignal?.aborted) {
-        return false;
-      }
+      const { isLatestAttempt, abortSignal } = beginConnectionAttempt();
 
       if (!refs.adapterRef.current?.isConnected()) {
         const currentWalletType = refs.walletTypeRef.current;
@@ -363,33 +371,41 @@ export const useHardwareWalletConnection = ({
         }
       }
 
-      if (!abortSignal?.aborted) {
-        const adapter = refs.adapterRef.current;
-        if (adapter?.ensureDeviceReady && effectiveDeviceId) {
-          try {
-            const result = await adapter.ensureDeviceReady(effectiveDeviceId);
-            if (result) {
-              updateConnectionState(ConnectionState.ready());
-            }
-            return result;
-          } catch (error) {
-            if (isHardwareWalletError(error)) {
-              updateConnectionState(getConnectionStateFromError(error));
-            } else {
-              const fallbackError =
-                error instanceof Error
-                  ? error
-                  : new Error('Device verification failed');
-              updateConnectionState(ConnectionState.error(fallbackError));
-            }
+      if (!isLatestAttempt() || abortSignal.aborted) {
+        return false;
+      }
+
+      const adapter = refs.adapterRef.current;
+      if (adapter?.ensureDeviceReady && effectiveDeviceId) {
+        try {
+          const result = await adapter.ensureDeviceReady(effectiveDeviceId);
+          if (!isLatestAttempt() || abortSignal.aborted) {
             return false;
           }
+          if (result) {
+            updateConnectionState(ConnectionState.ready());
+          }
+          return result;
+        } catch (error) {
+          if (!isLatestAttempt() || abortSignal.aborted) {
+            return false;
+          }
+          if (isHardwareWalletError(error)) {
+            updateConnectionState(getConnectionStateFromError(error));
+          } else {
+            const fallbackError =
+              error instanceof Error
+                ? error
+                : new Error('Device verification failed');
+            updateConnectionState(ConnectionState.error(fallbackError));
+          }
+          return false;
         }
       }
 
       return false;
     },
-    [connect, updateConnectionState, refs, setDeviceId],
+    [beginConnectionAttempt, connect, updateConnectionState, refs, setDeviceId],
   );
 
   return {
@@ -411,5 +427,5 @@ function isHardwareWalletErrorWithCode(
     return false;
   }
 
-  return Object.prototype.hasOwnProperty.call(error, 'code');
+  return Object.prototype.hasOwnProperty.call(ErrorCode, error.code);
 }
