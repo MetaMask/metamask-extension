@@ -3,7 +3,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import AssetListPage from '../../page-objects/pages/home/asset-list';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SendTokenPage from '../../page-objects/pages/send/send-token-page';
+import SendPage from '../../page-objects/pages/send/send-page';
 import TokenOverviewPage from '../../page-objects/pages/token-overview-page';
 import TokenTransferTransactionConfirmation from '../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -45,13 +45,12 @@ describe('Send ERC20', function () {
         await tokenOverviewPage.checkPageIsLoaded();
         await tokenOverviewPage.clickSend();
 
-        const sendTokenPage = new SendTokenPage(driver);
-        await sendTokenPage.checkPageIsLoaded();
-        await sendTokenPage.fillRecipient(
+        const sendPage = new SendPage(driver);
+        await sendPage.fillRecipient(
           '0x5cfe73b6021e818b776b421b1c4db2474086a7e1',
         );
-        await sendTokenPage.fillAmount('10');
-        await sendTokenPage.goToNextScreen();
+        await sendPage.fillAmount('10');
+        await sendPage.pressContinueButton();
 
         // Check transaction in the Activity list
         const tokenTransferTransactionConfirmation =

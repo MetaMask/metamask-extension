@@ -109,6 +109,7 @@
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
+  "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currencyRates": {
@@ -321,8 +322,7 @@
     "remoteFeatureFlags": {
       "feature1": true,
       "feature2": false,
-      "feature3": { "name": "groupC", "value": "valueC" },
-      "sendRedesign": { "enabled": false }
+      "feature3": { "name": "groupC", "value": "valueC" }
     }
   },
   "RewardsController": {

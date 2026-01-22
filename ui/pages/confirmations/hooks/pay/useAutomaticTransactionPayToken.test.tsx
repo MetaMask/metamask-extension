@@ -5,11 +5,12 @@ import React from 'react';
 import type { TransactionPayRequiredToken } from '@metamask/transaction-pay-controller';
 import type { Hex } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
+import { Asset } from '../../types/send';
 import { useAutomaticTransactionPayToken } from './useAutomaticTransactionPayToken';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import { useTransactionPayRequiredTokens } from './useTransactionPayData';
 import { useTransactionPayAvailableTokens } from './useTransactionPayAvailableTokens';
-import type { TransactionPayAsset, SetPayTokenRequest } from './types';
+import type { SetPayTokenRequest } from './types';
 
 jest.mock('./useTransactionPayToken');
 jest.mock('./useTransactionPayData');
@@ -113,7 +114,7 @@ describe('useAutomaticTransactionPayToken', () => {
         address: TOKEN_ADDRESS_1_MOCK,
         chainId: CHAIN_ID_1_MOCK,
       },
-    ] as TransactionPayAsset[]);
+    ] as Asset[]);
 
     renderHookWithProvider();
 
@@ -124,9 +125,7 @@ describe('useAutomaticTransactionPayToken', () => {
   });
 
   it('selects target token if no tokens with balance', () => {
-    useTransactionPayAvailableTokensMock.mockReturnValue(
-      [] as TransactionPayAsset[],
-    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider();
 
@@ -151,7 +150,7 @@ describe('useAutomaticTransactionPayToken', () => {
         address: TOKEN_ADDRESS_1_MOCK,
         chainId: CHAIN_ID_1_MOCK,
       },
-    ] as TransactionPayAsset[]);
+    ] as Asset[]);
 
     renderHookWithProvider({ disable: true });
 
@@ -172,7 +171,7 @@ describe('useAutomaticTransactionPayToken', () => {
         address: TOKEN_ADDRESS_2_MOCK,
         chainId: CHAIN_ID_2_MOCK,
       },
-    ] as TransactionPayAsset[]);
+    ] as Asset[]);
 
     renderHookWithProvider({
       preferredToken: {
@@ -188,9 +187,7 @@ describe('useAutomaticTransactionPayToken', () => {
   });
 
   it('selects target token when preferred payment token provided but no tokens available', () => {
-    useTransactionPayAvailableTokensMock.mockReturnValue(
-      [] as TransactionPayAsset[],
-    );
+    useTransactionPayAvailableTokensMock.mockReturnValue([] as Asset[]);
 
     renderHookWithProvider({
       preferredToken: {
@@ -215,7 +212,7 @@ describe('useAutomaticTransactionPayToken', () => {
         address: TOKEN_ADDRESS_2_MOCK,
         chainId: CHAIN_ID_2_MOCK,
       },
-    ] as TransactionPayAsset[]);
+    ] as Asset[]);
 
     renderHookWithProvider({
       preferredToken: {

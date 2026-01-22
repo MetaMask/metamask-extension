@@ -6,7 +6,7 @@ import { TX_SENTINEL_URL } from '../../../../../shared/constants/transaction';
 import { decimalToHex } from '../../../../../shared/modules/conversion.utils';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { WINDOW_TITLES } from '../../../constants';
-import { unlockWallet, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import { mockMultiNetworkBalancePolling } from '../../../mock-balance-polling/mock-balance-polling';
 import { createDappTransaction } from '../../../page-objects/flows/transaction';
 import GasFeeTokenModal from '../../../page-objects/pages/confirmations/gas-fee-token-modal';
@@ -16,6 +16,7 @@ import HomePage from '../../../page-objects/pages/home/homepage';
 import { Driver } from '../../../webdriver/driver';
 import { mockSmartTransactionBatchRequests } from '../../smart-transactions/mocks';
 import { mockSpotPrices } from '../../tokens/utils/mocks';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { mockSmartTransactionsRemoteFlags } from '../../smart-transactions/remote-flags';
 
 const TRANSACTION_HASH =
@@ -65,7 +66,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '20 ETH',
+        );
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
@@ -126,7 +132,12 @@ describe('Gas Fee Tokens - Smart Transactions', function (this: Suite) {
         title: this.test?.fullTitle(),
       },
       async ({ driver }: { driver: Driver; localNodes: Anvil }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(
+          driver,
+          undefined,
+          undefined,
+          '20 ETH',
+        );
         await createDappTransaction(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 

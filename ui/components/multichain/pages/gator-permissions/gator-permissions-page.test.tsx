@@ -13,7 +13,7 @@ mockState.metamask.gatorPermissionsMapSerialized = JSON.stringify({
       {
         permissionResponse: {
           chainId: MOCK_CHAIN_ID,
-          address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+          from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
           permission: {
             type: 'native-token-periodic',
             isAdjustmentAllowed: false,
@@ -26,9 +26,7 @@ mockState.metamask.gatorPermissionsMapSerialized = JSON.stringify({
             },
           },
           context: '0x00000000',
-          signerMeta: {
-            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-          },
+          delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
         },
         siteOrigin: 'http://localhost:8000',
       },

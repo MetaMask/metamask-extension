@@ -4149,3 +4149,13 @@ export const selectNonZeroUnusedApprovalsAllowList = createSelector(
 export function getNetworkConnectionBanner(state) {
   return state.metamask.networkConnectionBanner;
 }
+
+/**
+ * Check if the device is offline.
+ *
+ * @param {MetaMaskReduxState} state - The Redux state
+ * @returns {boolean} True if the device is offline
+ */
+export function getIsDeviceOffline(state) {
+  return state.metamask.connectivityStatus === 'offline';
+}
