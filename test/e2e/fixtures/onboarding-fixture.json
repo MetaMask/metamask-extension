@@ -81,7 +81,7 @@
       "trezorModel": null,
       "updateModalLastDismissedAt": null,
       "pna25Acknowledged": false,
-      "recoveryPhraseReminderLastShown": 1768838265839
+      "recoveryPhraseReminderLastShown": 7952515200000
     },
     "AuthenticationController": {
       "isSignedIn": false
