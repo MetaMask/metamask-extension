@@ -209,9 +209,6 @@
   "addAccountOrWallet": {
     "message": "Add account or wallet"
   },
-  "addAccountToMetaMask": {
-    "message": "Add account to MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -348,9 +345,6 @@
   },
   "addWallet": {
     "message": "Add wallet"
-  },
-  "addingAccount": {
-    "message": "Adding account"
   },
   "additionalNetworks": {
     "message": "Additional networks"
@@ -700,14 +694,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFTs"
-  },
   "assetOptions": {
     "message": "Asset options"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Assets"
@@ -994,6 +982,9 @@
   },
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
+  },
+  "bridgeFee": {
+    "message": "Bridge fee"
   },
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
@@ -2028,6 +2019,9 @@
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },
+  "deepLink_theCardOnboardingPage": {
+    "message": "the MetaMask Card onboarding page"
+  },
   "deepLink_theHomePage": {
     "message": "the home page"
   },
@@ -2610,6 +2604,9 @@
   },
   "estimatedPointsRow": {
     "message": "Est. points"
+  },
+  "estimatedTime": {
+    "message": "Estimated time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -3262,9 +3259,6 @@
   "insufficientFunds": {
     "message": "Insufficient funds."
   },
-  "insufficientFundsForGas": {
-    "message": "Insufficient funds for gas"
-  },
   "insufficientFundsSend": {
     "message": "Insufficient funds"
   },
@@ -3728,6 +3722,9 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
+  "metamaskFee": {
+    "message": "MetaMask fee"
+  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -3760,6 +3757,9 @@
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
+  },
+  "minute": {
+    "message": "min"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -4035,18 +4035,6 @@
   "networkName": {
     "message": "Network name"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -4062,26 +4050,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Network options"
@@ -4652,9 +4628,6 @@
   },
   "openWallet": {
     "message": "Open wallet"
-  },
-  "optional": {
-    "message": "Optional"
   },
   "options": {
     "message": "Options"
@@ -5959,6 +5932,9 @@
     "message": "Search your accounts",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "second": {
+    "message": "sec"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -6129,24 +6105,11 @@
   "sendBugReport": {
     "message": "Send us a bug report."
   },
-  "sendNoContactsConversionText": {
-    "message": "click here"
-  },
-  "sendNoContactsDescription": {
-    "message": "Contacts allow you to safely send transactions to another account multiple times.  To create a contact, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "You don't have any contacts yet"
-  },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
   },
   "sendSelectSendAsset": {
     "message": "Select asset to send"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -6157,10 +6120,6 @@
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Sent"
@@ -7802,9 +7761,6 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Gas fees are estimated and will fluctuate based on network traffic and transaction complexity."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7816,9 +7772,6 @@
   "swapGasFeesIncluded": {
     "message": " Included"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Learn more about gas fees"
-  },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
   },
@@ -7827,10 +7780,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
-  },
-  "swapGasFeesSummary": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "This quote incorporates gas fees by adjusting the token amount sent or received. You may receive ETH in a separate transaction on your activity list."
@@ -7848,10 +7797,6 @@
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Quote reflects $1% MetaMask fee",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Includes a $1% MetaMask fee – $2",
@@ -8104,9 +8049,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
-  "switchInputCurrency": {
-    "message": "Switch input currency"
-  },
   "switchNetwork": {
     "message": "Switch network"
   },
@@ -8263,9 +8205,6 @@
   "tokensInCollection": {
     "message": "Tokens in collection"
   },
-  "tooltipApproveButton": {
-    "message": "I understand"
-  },
   "tooltipSatusConnected": {
     "message": "connected"
   },
@@ -8316,6 +8255,9 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionFee": {
+    "message": "Transaction fee"
   },
   "transactionFlowNetwork": {
     "message": "Network"
@@ -8840,9 +8782,6 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Your accounts"
   },
   "yourActivity": {
     "message": "Your activity"
