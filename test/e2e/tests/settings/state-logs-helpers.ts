@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { Driver } from '../../webdriver/driver';
+import { shouldIgnoreKey } from '../../helpers';
 
 export type StateLogsPrimitiveType =
   | 'array'
@@ -199,49 +200,6 @@ const getIgnoredKeys = (): string[] => [
   'metamask.networksMetadata',
   'metamask.appActiveTab', // Firefox doesn't support sidepanel and tabs may not be available at startup in E2E tests
 ];
-
-export const shouldIgnoreKey = (
-  key: string,
-  ignoredKeys: string[],
-): boolean => {
-  const hasNonZeroArrayIndex = key.split('.').some((part) => {
-    const matches = part.match(/\[(\d+)\]/gu);
-    return (
-      matches?.some((match) => {
-        const index = Number(match.slice(1, -1));
-        return Number.isNaN(index) === false && index !== 0;
-      }) ?? false
-    );
-  });
-  if (hasNonZeroArrayIndex) {
-    return true;
-  }
-
-  // Ignore entropy keys in account tree (dynamic entropy IDs)
-  if (key.match(/entropy:[A-Z0-9]+/u)) {
-    return true;
-  }
-
-  // Check if any part of the key path should be ignored
-  const keyParts = key.split('.');
-  const shouldIgnore = ignoredKeys.some((ignoredKey) => {
-    const ignoredParts = ignoredKey.split('.');
-
-    // Ignore if the ignored key is an exact prefix of the current key
-    // OR if the current key exactly matches the ignored key
-    // OR if the current key starts with the ignored key (for nested properties)
-    const isExactPrefix = ignoredParts.every(
-      (part, index) => keyParts[index] === part,
-    );
-    const isExactMatch = key === ignoredKey;
-    const startsWithIgnoredKey =
-      key.startsWith(`${ignoredKey}.`) || key.startsWith(`${ignoredKey}[`);
-
-    return isExactPrefix || isExactMatch || startsWithIgnoredKey;
-  });
-
-  return shouldIgnore;
-};
 
 const findMissingKeys = (
   current: StateLogsTypeMap,

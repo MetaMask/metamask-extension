@@ -1,20 +1,37 @@
 import path from 'path';
 import fs from 'fs-extra';
+import { get, set, unset } from 'lodash';
+import { shouldIgnoreKey } from '../helpers';
 import {
   createTypeMap,
-  shouldIgnoreKey,
   type StateLogsTypeMap,
 } from '../tests/settings/state-logs-helpers';
 
+/**
+ * Represents the differences between two fixture schemas.
+ * Used to track what has changed between an existing fixture and a new state.
+ */
 export type FixtureSchemaDiff = {
+  /** Keys that exist in the new state but not in the baseline fixture */
   newKeys: string[];
+  /** Keys that exist in the baseline fixture but not in the new state */
   missingKeys: string[];
+  /** Keys that exist in both but have different types */
   typeMismatches: string[];
 };
 
+/**
+ * A JSON-like object type for representing fixture data.
+ */
 type JsonLike = Record<string, unknown>;
 
-// These are properties that change frequently or are impractical to include in (making the diff file unreadable)
+/**
+ * Returns a list of keys to ignore when comparing fixture schemas.
+ * These are properties that change frequently or are impractical to include
+ * (making the diff file unreadable).
+ *
+ * @returns Array of dot-separated key paths to ignore
+ */
 const getFixtureIgnoredKeys = (): string[] => [
   // Permissions
   'data.PermissionController.subjectMetadata',
@@ -29,9 +46,23 @@ const getFixtureIgnoredKeys = (): string[] => [
   'localeMessages',
 ];
 
+/**
+ * Removes duplicates from an array and sorts it alphabetically.
+ *
+ * @param values - Array of strings to deduplicate and sort
+ * @returns Sorted array with unique values
+ */
 const sortUnique = (values: string[]): string[] =>
   Array.from(new Set(values)).sort();
 
+/**
+ * Validates that a value is a JSON object (not null, not an array).
+ *
+ * @param value - The value to validate
+ * @param context - Description of the value for error messages
+ * @returns The value cast as JsonLike
+ * @throws Error if the value is not a valid JSON object
+ */
 const ensureJsonObject = (value: unknown, context: string): JsonLike => {
   if (!value || typeof value !== 'object' || Array.isArray(value)) {
     throw new Error(`${context} must be a JSON object`);
@@ -39,12 +70,31 @@ const ensureJsonObject = (value: unknown, context: string): JsonLike => {
   return value as JsonLike;
 };
 
+/**
+ * Converts a JSON object to a type map for schema comparison.
+ *
+ * @param value - The JSON object to convert
+ * @returns A map of dot-separated paths to their primitive types
+ */
 const toTypeMap = (value: JsonLike): StateLogsTypeMap => createTypeMap(value);
 
+/**
+ * Checks if a key should be ignored when comparing fixture schemas.
+ *
+ * @param key - The dot-separated key path to check
+ * @returns True if the key should be ignored
+ */
 const shouldIgnoreFixtureKey = (key: string): boolean => {
   return shouldIgnoreKey(key, getFixtureIgnoredKeys());
 };
 
+/**
+ * Reads and parses a JSON fixture file from disk.
+ *
+ * @param relativePath - Path to the fixture file (relative to cwd or absolute)
+ * @returns The parsed JSON object
+ * @throws Error if the file doesn't exist or isn't a valid JSON object
+ */
 export const readFixtureFile = async (
   relativePath: string,
 ): Promise<JsonLike> => {
@@ -55,6 +105,14 @@ export const readFixtureFile = async (
   return ensureJsonObject(contents, `Fixture at ${filePath}`);
 };
 
+/**
+ * Computes the schema differences between a baseline fixture and a candidate state.
+ * Identifies new keys, missing keys, and type mismatches.
+ *
+ * @param baseline - The existing baseline fixture to compare against
+ * @param candidate - The new candidate state to compare
+ * @returns An object containing arrays of new keys, missing keys, and type mismatches
+ */
 export const computeSchemaDiff = (
   baseline: JsonLike,
   candidate: JsonLike,
@@ -84,85 +142,6 @@ export const computeSchemaDiff = (
   );
 
   return { newKeys, missingKeys, typeMismatches };
-};
-
-/**
- * Get a nested value from an object using a dot-separated path
- *
- * @param obj - The object to get the value from
- * @param keyPath - The dot-separated path to the value
- * @returns The value at the path, or undefined if not found
- */
-const getNestedValue = (obj: JsonLike, keyPath: string): unknown => {
-  const parts = keyPath.split('.');
-  let current: unknown = obj;
-
-  for (const part of parts) {
-    if (current === null || current === undefined) {
-      return undefined;
-    }
-    if (typeof current !== 'object') {
-      return undefined;
-    }
-    current = (current as JsonLike)[part];
-  }
-
-  return current;
-};
-
-/**
- * Set a nested value in an object using a dot-separated path
- *
- * @param obj - The object to set the value in
- * @param keyPath - The dot-separated path to the value
- * @param value - The value to set
- */
-const setNestedValue = (
-  obj: JsonLike,
-  keyPath: string,
-  value: unknown,
-): void => {
-  const parts = keyPath.split('.');
-  let current: JsonLike = obj;
-
-  for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i];
-    if (
-      !(part in current) ||
-      typeof current[part] !== 'object' ||
-      current[part] === null
-    ) {
-      current[part] = {};
-    }
-    current = current[part] as JsonLike;
-  }
-
-  current[parts[parts.length - 1]] = value;
-};
-
-/**
- * Delete a nested value from an object using a dot-separated path
- *
- * @param obj - The object to delete the value from
- * @param keyPath - The dot-separated path to the value
- */
-const deleteNestedValue = (obj: JsonLike, keyPath: string): void => {
-  const parts = keyPath.split('.');
-  let current: JsonLike = obj;
-
-  for (let i = 0; i < parts.length - 1; i++) {
-    const part = parts[i];
-    if (
-      !(part in current) ||
-      typeof current[part] !== 'object' ||
-      current[part] === null
-    ) {
-      return; // Path doesn't exist, nothing to delete
-    }
-    current = current[part] as JsonLike;
-  }
-
-  delete current[parts[parts.length - 1]];
 };
 
 /**
@@ -221,9 +200,9 @@ export const mergeFixtureChanges = (
     processedPaths.add(leafPath);
 
     // Get the value at the exact path from the new state
-    const value = getNestedValue(newState, leafPath);
+    const value = get(newState, leafPath);
     if (value !== undefined) {
-      setNestedValue(merged, leafPath, value);
+      set(merged, leafPath, value);
     }
   }
 
@@ -249,16 +228,16 @@ export const mergeFixtureChanges = (
     // Otherwise, it's an array path that was transformed by getLeafKeyPath.
     if (leafPath === keyPath) {
       // Regular property (not array), just delete it
-      deleteNestedValue(merged, leafPath);
+      unset(merged, leafPath);
     } else {
       // Array path: update the array from newState instead of deleting it entirely.
       // This handles the case where array items changed but the array still exists.
-      const value = getNestedValue(newState, leafPath);
+      const value = get(newState, leafPath);
       if (value === undefined) {
         // Array no longer exists in newState, delete it
-        deleteNestedValue(merged, leafPath);
+        unset(merged, leafPath);
       } else {
-        setNestedValue(merged, leafPath, value);
+        set(merged, leafPath, value);
       }
     }
   }
@@ -274,15 +253,24 @@ export const mergeFixtureChanges = (
     }
 
     const leafPath = getLeafKeyPath(keyPath);
-    const value = getNestedValue(newState, leafPath);
+    const value = get(newState, leafPath);
     if (value !== undefined) {
-      setNestedValue(merged, leafPath, value);
+      set(merged, leafPath, value);
     }
   }
 
   return merged;
 };
 
+/**
+ * Checks if a schema diff contains any differences.
+ *
+ * @param schemaDiff - The schema diff to check
+ * @param schemaDiff.newKeys - Keys that exist in the new state but not in the baseline
+ * @param schemaDiff.missingKeys - Keys that exist in the baseline but not in the new state
+ * @param schemaDiff.typeMismatches - Keys with different types between baseline and new state
+ * @returns True if there are any new keys, missing keys, or type mismatches
+ */
 export const hasSchemaDifferences = ({
   newKeys,
   missingKeys,
@@ -290,6 +278,17 @@ export const hasSchemaDifferences = ({
 }: FixtureSchemaDiff): boolean =>
   newKeys.length > 0 || missingKeys.length > 0 || typeMismatches.length > 0;
 
+/**
+ * Formats a schema diff into a human-readable string for display.
+ * Groups differences by type (new, missing, type mismatch) and includes
+ * instructions for updating the fixture.
+ *
+ * @param schemaDiff - The schema diff to format
+ * @param schemaDiff.newKeys - Keys that exist in the new state but not in the baseline
+ * @param schemaDiff.missingKeys - Keys that exist in the baseline but not in the new state
+ * @param schemaDiff.typeMismatches - Keys with different types between baseline and new state
+ * @returns A formatted string describing the differences, or empty string if none
+ */
 export const formatSchemaDiff = ({
   newKeys,
   missingKeys,
