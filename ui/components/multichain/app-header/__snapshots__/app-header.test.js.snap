@@ -212,7 +212,6 @@ exports[`App Header unlocked state matches snapshot: unlocked 1`] = `
                 </div>
               </div>
               <svg
-                aria-label="Copy address"
                 class="inline-block w-3 h-3 text-icon-alternative"
                 fill="currentColor"
                 viewBox="0 0 24 24"
