@@ -706,5 +706,71 @@ describe('useNetworkConnectionBanner', () => {
       // Toast should NOT be shown when update fails
       expect(mockSetShowInfuraSwitchToast).not.toHaveBeenCalled();
     });
+
+    it('returns fresh network details from selector to prevent stale Switch to Infura button', async () => {
+      const networkConfig = {
+        '0xa4b1': {
+          name: 'Arbitrum One',
+          chainId: '0xa4b1' as const,
+          nativeCurrency: 'ETH',
+          rpcEndpoints: [
+            {
+              networkClientId: 'custom-arbitrum',
+              url: 'https://custom.arbitrum.rpc',
+              type: RpcEndpointType.Custom,
+            },
+            {
+              networkClientId: 'arbitrum-mainnet' as const,
+              url: 'https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}',
+              type: RpcEndpointType.Infura,
+            },
+          ],
+          defaultRpcEndpointIndex: 0,
+          blockExplorerUrls: ['https://arbiscan.io'],
+          defaultBlockExplorerUrlIndex: 0,
+        },
+      };
+
+      mockGetNetworkConfigurationsByChainId.mockReturnValue(
+        networkConfig as unknown as ReturnType<
+          typeof mockGetNetworkConfigurationsByChainId
+        >,
+      );
+
+      // Banner state still has old custom endpoint details (stale)
+      mockGetNetworkConnectionBanner.mockReturnValue({
+        status: 'unavailable',
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+      });
+
+      // But selector now returns Infura endpoint (fresh data after switch)
+      mockSelectFirstUnavailableEvmNetwork.mockReturnValue({
+        networkName: 'Arbitrum One',
+        networkClientId: 'arbitrum-mainnet',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: true,
+        infuraEndpointIndex: undefined,
+      });
+
+      const { result } = renderHookWithProviderTyped(
+        () => useNetworkConnectionBanner(),
+        mockState,
+      );
+
+      // Hook should return fresh data from selector, not stale Redux state
+      // This prevents showing "Switch to Infura" when already on Infura
+      expect(result.current).toStrictEqual(
+        expect.objectContaining({
+          status: 'unavailable',
+          isInfuraEndpoint: true,
+          infuraEndpointIndex: undefined,
+          networkClientId: 'arbitrum-mainnet',
+        }),
+      );
+    });
   });
 });

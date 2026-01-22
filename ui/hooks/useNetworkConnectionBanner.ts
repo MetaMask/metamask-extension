@@ -203,7 +203,6 @@ export const useNetworkConnectionBanner =
     // If the first unavailable network does not change but the status changes, start the degraded or unavailable timer
     // If the first unavailable network changes, reset all timers and change the status
     // If the device is offline, don't show network banners - the issue is device connectivity, not the network
-
     useEffect(() => {
       // When device is offline, clear timers and reset banner state
       // We don't want to show network degraded/unavailable banners when the real issue
@@ -288,6 +287,26 @@ export const useNetworkConnectionBanner =
       networkConfigurationsByChainId,
       dispatch,
     ]);
+
+    // When in degraded/unavailable status, use fresh selector data for network details
+    // to prevent stale "Switch to Infura" button after switching endpoints
+    if (
+      (networkConnectionBannerState.status === 'degraded' ||
+        networkConnectionBannerState.status === 'unavailable') &&
+      firstUnavailableEvmNetwork
+    ) {
+      return {
+        ...networkConnectionBannerState,
+        // Override with fresh data from selector
+        networkClientId: firstUnavailableEvmNetwork.networkClientId,
+        networkName: firstUnavailableEvmNetwork.networkName,
+        chainId: firstUnavailableEvmNetwork.chainId,
+        isInfuraEndpoint: firstUnavailableEvmNetwork.isInfuraEndpoint,
+        infuraEndpointIndex: firstUnavailableEvmNetwork.infuraEndpointIndex,
+        trackNetworkBannerEvent,
+        switchToInfura,
+      };
+    }
 
     return {
       ...networkConnectionBannerState,
