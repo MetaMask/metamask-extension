@@ -6810,11 +6810,11 @@ export default class MetamaskController extends EventEmitter {
    * @param {*} outStream - The stream to provide our API over.
    */
   setupControllerConnection(outStream) {
-    let patchStore;
+    const patchStore = new PatchStore(this.memStore);
     let uiReady = false;
 
     const handleUpdate = () => {
-      if (!isStreamWritable(outStream) || !uiReady || !patchStore) {
+      if (!isStreamWritable(outStream) || !uiReady) {
         return;
       }
 
@@ -6834,7 +6834,7 @@ export default class MetamaskController extends EventEmitter {
         uiReady = true;
         handleUpdate();
       },
-      getStatePatches: () => patchStore?.flushPendingPatches() ?? [],
+      getStatePatches: () => patchStore.flushPendingPatches(),
     };
 
     this.on('update', handleUpdate);
@@ -6853,7 +6853,7 @@ export default class MetamaskController extends EventEmitter {
       // Start tracking patches immediately after retrieving initial state for this UI connection
       // to ensure we don't miss any patches, or include extra patches.
       const initialState = this.getState();
-      patchStore = new PatchStore(this.memStore);
+      patchStore.init();
 
       // send notification to client-side
       outStream.write({
@@ -6878,7 +6878,7 @@ export default class MetamaskController extends EventEmitter {
         );
         outStream.mmFinished = true;
         this.removeListener('update', handleUpdate);
-        patchStore?.destroy();
+        patchStore.destroy();
       }
     };
 
