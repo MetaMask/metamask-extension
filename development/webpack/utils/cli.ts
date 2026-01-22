@@ -375,7 +375,15 @@ function getOptions(
       group: toOrange('Security:'),
       type: 'boolean',
     },
-
+    validateEnv: {
+      array: false,
+      default: isProduction,
+      defaultDescription: prodDefaultDesc,
+      description:
+        'Validate environment variables against builds.yml declarations',
+      group: toOrange('Build options:'),
+      type: 'boolean',
+    },
     targetEnvironment: {
       array: false,
       choices: environmentOptions,
@@ -388,7 +396,6 @@ function getOptions(
       group: toOrange('Build options:'),
       type: 'string',
     },
-
     dryRun: {
       array: false,
       default: false,
@@ -434,6 +441,7 @@ Snow: ${args.snow}
 Sentry: ${args.sentry}
 React Compiler verbose: ${args.reactCompilerVerbose}
 React Compiler debug: ${args.reactCompilerDebug}
+Validate Env: ${args.validateEnv}
 Manifest version: ${args.manifest_version}
 Release version: ${args.releaseVersion}
 Browsers: ${args.browser.join(', ')}

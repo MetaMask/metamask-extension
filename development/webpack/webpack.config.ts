@@ -235,10 +235,12 @@ const reactCompilerLoader = getReactCompilerLoader(
   args.reactCompilerVerbose,
   args.reactCompilerDebug,
 );
-const envValidationLoader = {
-  loader: require.resolve('./utils/loaders/envValidationLoader'),
-  options: { declarations: buildYmlDeclarations },
-};
+const envValidationLoader = args.validateEnv
+  ? {
+      loader: require.resolve('./utils/loaders/envValidationLoader'),
+      options: { declarations: buildYmlDeclarations },
+    }
+  : null;
 
 const config = {
   entry,
@@ -350,13 +352,13 @@ const config = {
       {
         test: /\.(?:ts|mts|tsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [tsxLoader, envValidationLoader, codeFenceLoader],
+        use: [tsxLoader, envValidationLoader, codeFenceLoader].filter(Boolean),
       },
       // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
         exclude: NODE_MODULES_RE,
-        use: [jsxLoader, envValidationLoader, codeFenceLoader],
+        use: [jsxLoader, envValidationLoader, codeFenceLoader].filter(Boolean),
       },
       // vendor javascript. We must transform all npm modules to ensure browser
       // compatibility.
