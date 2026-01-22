@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.14.2]
 
+### Fixed
+
+- Prevent crash during initialization when some controller has invalid state (#39465)
+
 ## [13.14.1]
 
 ### Changed
