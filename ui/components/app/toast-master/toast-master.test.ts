@@ -10,6 +10,7 @@ import {
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
   selectRemoveNftMessage,
+  selectShowInfuraSwitchToast,
 } from './selectors';
 
 const createMockSurveyState = (surveyLinkLastClickedOrClosed?: number) => ({
@@ -473,5 +474,35 @@ describe('#selectRemoveNftMessage', () => {
     };
     const result = selectRemoveNftMessage(mockStateData);
     expect(result).toBe('');
+  });
+});
+
+describe('#selectShowInfuraSwitchToast', () => {
+  it('returns true when showInfuraSwitchToast is true', () => {
+    const mockStateData = {
+      appState: {
+        showInfuraSwitchToast: true,
+      },
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when showInfuraSwitchToast is false', () => {
+    const mockStateData = {
+      appState: {
+        showInfuraSwitchToast: false,
+      },
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
+    expect(result).toBe(false);
+  });
+
+  it('returns false when showInfuraSwitchToast is undefined', () => {
+    const mockStateData = {
+      appState: {},
+    };
+    const result = selectShowInfuraSwitchToast(mockStateData);
+    expect(result).toBe(false);
   });
 });

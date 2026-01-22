@@ -130,6 +130,9 @@ export const SENTRY_BACKGROUND_STATE = {
   BridgeStatusController: {
     txHistory: false,
   },
+  ConnectivityController: {
+    connectivityStatus: true,
+  },
   CronjobController: {
     events: false,
   },
@@ -417,7 +420,6 @@ export const SENTRY_UI_STATE = {
   history: true,
   appState: {
     customNonceValue: true,
-    isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,

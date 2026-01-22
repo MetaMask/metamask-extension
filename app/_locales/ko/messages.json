@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "계정 또는 지갑 추가"
   },
-  "addAccountToMetaMask": {
-    "message": "MetaMask에 계정 추가"
-  },
   "addAcquiredTokens": {
     "message": "MetaMask를 이용해 얻은 토큰 추가"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "지갑 추가"
-  },
-  "addingAccount": {
-    "message": "계정 추가"
   },
   "additionalNetworks": {
     "message": "추가 네트워크"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "과거 데이터를 불러올 수 없습니다"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "NFT $1개"
-  },
   "assetOptions": {
     "message": "자산 옵션"
-  },
-  "assetSingleNFTBalance": {
-    "message": "NFT $1개"
   },
   "assets": {
     "message": "자산"
@@ -3162,9 +3150,6 @@
   "insufficientFunds": {
     "message": "자금 부족."
   },
-  "insufficientFundsForGas": {
-    "message": "가스 자금 부족"
-  },
   "insufficientFundsSend": {
     "message": "자금 부족"
   },
@@ -3891,9 +3876,6 @@
     "message": "반드시 가져올 파일을 선택해야 합니다.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "음수 ETH 양은 전송할 수 없습니다."
-  },
   "negativeOrZeroAmountToken": {
     "message": "마이너스 또는 금액이 0인 자산은 보낼 수 없습니다."
   },
@@ -3934,18 +3916,6 @@
   "networkName": {
     "message": "네트워크 이름"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "기본"
-  },
   "networkNameBitcoin": {
     "message": "비트코인"
   },
@@ -3961,26 +3931,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "솔라나"
   },
-  "networkNameTestnet": {
-    "message": "테스트넷"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "네트워크 옵션"
@@ -4542,9 +4500,6 @@
   },
   "openWallet": {
     "message": "지갑 열기"
-  },
-  "optional": {
-    "message": "선택 사항"
   },
   "options": {
     "message": "옵션"
@@ -5835,24 +5790,11 @@
   "sendBugReport": {
     "message": "버그 리포트 전송."
   },
-  "sendNoContactsConversionText": {
-    "message": "여기를 클릭하세요"
-  },
-  "sendNoContactsDescription": {
-    "message": "연락처를 사용하면 다른 계정으로 여러 번 트랜잭션을 안전하게 전송할 수 있습니다. 연락처를 만들려면, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "아직 연락처가 없습니다"
-  },
   "sendSelectReceiveAsset": {
     "message": "수취할 자산 선택"
   },
   "sendSelectSendAsset": {
     "message": "전송할 자산 선택"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "이 버튼을 클릭하면 즉시 스왑 트랜젝션이 시작됩니다. 계속하기 전에 트랜젝션 세부 정보를 검토하세요."
   },
   "sendingAsset": {
     "message": "$1 전송하기"
@@ -5863,10 +5805,6 @@
   "sendingNativeAsset": {
     "message": "$1 전송하기",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "경고: 자금 손실이 발생할 수 있는 토큰 계약으로 전송하게 됩니다. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "전송 완료"
@@ -7272,9 +7210,6 @@
     "message": "$1을(를) $2(으)로 스왑",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "가스비는 예상치이며 네트워크 트래픽과 트랜잭션 복잡도에 따라 변동됩니다."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask는 가스비로 수익을 얻지 않습니다. 이 가스비는 추정치이며 네트워크의 혼잡도와 거래의 복잡성에 따라 변할 수 있습니다. 자세히 알아보기 $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7286,9 +7221,6 @@
   "swapGasFeesIncluded": {
     "message": " 포함됨"
   },
-  "swapGasFeesLearnMore": {
-    "message": "가스비에 대해 더 자세히 알아보기"
-  },
   "swapGasFeesSplit": {
     "message": "이전 화면의 가스비는 이 두 트랜잭션으로 나뉩니다."
   },
@@ -7297,10 +7229,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "이 네트워크 수수료는 MetaMask가 지불하므로 계정에 $1이(가) 없어도 스왑할 수 있습니다."
-  },
-  "swapGasFeesSummary": {
-    "message": "가스비는 $1 네트워크에서 트랜잭션을 처리하는 암호화폐 채굴자에게 지급됩니다. MetaMask는 가스 요금으로 수익을 창출하지 않습니다.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "이 견적은 가스비가 포함되어 있으며 보내거나 받는 토큰 수량이 조정됩니다. ETH는 활동 목록에서 별도의 거래로 표시될 수 있습니다."
@@ -7318,10 +7246,6 @@
   "swapIncludesMMFee": {
     "message": "$1%의 MetaMask 요금이 포함됩니다.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "견적에는 $1%의 MetaMask 수수료가 반영됩니다",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "$1% MetaMask 요금 - $2 포함",
@@ -7574,9 +7498,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "이 사이트가 네트워크를 전환하도록 허용하시겠습니까?"
   },
-  "switchInputCurrency": {
-    "message": "입력 통화 전환"
-  },
   "switchNetwork": {
     "message": "네트워크 변경"
   },
@@ -7732,9 +7653,6 @@
   },
   "tokensInCollection": {
     "message": "컬렉션에 보유 중인 토큰"
-  },
-  "tooltipApproveButton": {
-    "message": "견적은 다음 기간 전에 만료됨을"
   },
   "tooltipSatusConnected": {
     "message": "연결됨"
@@ -8289,9 +8207,6 @@
   "youSent": {
     "message": "보냄:",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "계정"
   },
   "yourActivity": {
     "message": "내 활동"
