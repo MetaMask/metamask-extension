@@ -1,38 +1,18 @@
-import React, { useMemo } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { Hex } from '@metamask/utils';
 import { Text, Box } from '../../../../../components/component-library';
 import {
   Display,
   FlexDirection,
   AlignItems,
-  JustifyContent,
   TextVariant,
-  BorderRadius,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
-import { ARBITRUM_USDC, POLYGON_USDCE } from '../constants';
-
-function getTokenSymbol(
-  chainId: string | undefined,
-  tokenAddress: string | undefined,
-): string | undefined {
-  if (!chainId || !tokenAddress) {
-    return undefined;
-  }
-
-  const normalizedAddress = tokenAddress.toLowerCase();
-
-  if (normalizedAddress === ARBITRUM_USDC.address.toLowerCase()) {
-    return ARBITRUM_USDC.symbol;
-  }
-
-  if (normalizedAddress === POLYGON_USDCE.address.toLowerCase()) {
-    return POLYGON_USDCE.symbol;
-  }
-
-  return undefined;
-}
+import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
+import { TokenIcon } from '../../token-icon';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsPaidWithRow() {
@@ -42,12 +22,18 @@ export function TransactionDetailsPaidWithRow() {
   const { metamaskPay } = transactionMeta;
   const { chainId, tokenAddress } = metamaskPay || {};
 
-  const tokenSymbol = useMemo(
-    () => getTokenSymbol(chainId, tokenAddress),
-    [chainId, tokenAddress],
+  const token = useSelector((state) =>
+    tokenAddress && chainId
+      ? getTokenByAccountAndAddressAndChainId(
+          state,
+          undefined,
+          tokenAddress as Hex,
+          chainId as Hex,
+        )
+      : null,
   );
 
-  if (!chainId || !tokenAddress || !tokenSymbol) {
+  if (!chainId || !tokenAddress || !token) {
     return null;
   }
 
@@ -62,21 +48,12 @@ export function TransactionDetailsPaidWithRow() {
         alignItems={AlignItems.center}
         gap={2}
       >
-        <Box
-          display={Display.Flex}
-          alignItems={AlignItems.center}
-          justifyContent={JustifyContent.center}
-          style={{
-            width: '16px',
-            height: '16px',
-            minWidth: '16px',
-          }}
-          borderRadius={BorderRadius.full}
-          as="img"
-          src="./images/usdc-logo.svg"
-          alt={tokenSymbol}
+        <TokenIcon
+          chainId={chainId as Hex}
+          tokenAddress={tokenAddress as Hex}
+          size="sm"
         />
-        <Text variant={TextVariant.bodyMd}>{tokenSymbol}</Text>
+        <Text variant={TextVariant.bodyMd}>{token.symbol}</Text>
       </Box>
     </TransactionDetailsRow>
   );

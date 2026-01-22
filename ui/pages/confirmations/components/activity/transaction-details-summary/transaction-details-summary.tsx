@@ -21,8 +21,8 @@ import { useTransactionDetails } from '../transaction-details-context';
 import { formatTransactionDateTime } from '../utils';
 import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../../shared/constants/transaction';
 import { getTransactions } from '../../../../../selectors/transactions';
-import { getNetworkNameByChainId } from '../../../../swaps/swaps.util';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
+import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 import { BlockExplorerLink } from '../block-explorer-link';
 import { TransactionStatusIcon } from '../transaction-status-icon';
 
@@ -78,6 +78,12 @@ export function TransactionDetailsSummary() {
       : null,
   );
 
+  const relayDepositNetworkConfig = useSelector((state) =>
+    relayDepositChainId
+      ? selectNetworkConfigurationByChainId(state, relayDepositChainId)
+      : null,
+  );
+
   const targetTokenAddress = txParams?.to as Hex | undefined;
   const targetToken = useSelector((state) =>
     targetTokenAddress && chainId
@@ -88,6 +94,10 @@ export function TransactionDetailsSummary() {
           chainId,
         )
       : null,
+  );
+
+  const targetNetworkConfig = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
   );
 
   const lines = useMemo(() => {
@@ -111,13 +121,14 @@ export function TransactionDetailsSummary() {
       title: getLineTitleForRequiredTransaction(
         tx,
         relayDepositToken?.symbol,
+        relayDepositNetworkConfig?.name,
         t,
       ),
     }));
 
     if (isExampleType) {
       const targetSymbol = targetToken?.symbol;
-      const targetNetworkName = getNetworkNameByChainId(chainId);
+      const targetNetworkName = targetNetworkConfig?.name;
 
       result.push({
         chainId,
@@ -145,7 +156,9 @@ export function TransactionDetailsSummary() {
     transactionMeta,
     requiredTransactions,
     relayDepositToken?.symbol,
+    relayDepositNetworkConfig?.name,
     targetToken?.symbol,
+    targetNetworkConfig?.name,
     chainId,
     isExampleType,
     t,
@@ -162,7 +175,6 @@ export function TransactionDetailsSummary() {
       <Box
         display={Display.Flex}
         flexDirection={FlexDirection.Column}
-        gap={1}
         paddingLeft={2}
       >
         {lines.map((line, index) => (
@@ -184,13 +196,12 @@ export function TransactionDetailsSummary() {
 function getLineTitleForRequiredTransaction(
   transactionMeta: TransactionMeta,
   tokenSymbol: string | undefined,
+  networkName: string | undefined,
   t: TranslateFunction,
 ): string {
-  const { type, chainId } = transactionMeta;
+  const { type } = transactionMeta;
 
   if (type === TransactionType.relayDeposit) {
-    const networkName = getNetworkNameByChainId(chainId);
-
     if (tokenSymbol && networkName) {
       return t('bridgeSend', [tokenSymbol, networkName]);
     }
@@ -240,45 +251,44 @@ function SummaryLine({
   const { time: timeString, date } = formatTransactionDateTime(time);
 
   return (
-    <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+    <Box display={Display.Flex} flexDirection={FlexDirection.Column}>
       <Box
         display={Display.Flex}
-        flexDirection={FlexDirection.Column}
+        flexDirection={FlexDirection.Row}
         alignItems={AlignItems.center}
-        style={{ width: '20px' }}
-      >
-        <TransactionStatusIcon status={status} />
-        {!isLast && (
-          <Box
-            backgroundColor={BackgroundColor.iconAlternative}
-            style={{
-              width: '2px',
-              flex: 1,
-              minHeight: '16px',
-              marginTop: '4px',
-              marginBottom: '4px',
-            }}
-          />
-        )}
-      </Box>
-      <Box
-        display={Display.Flex}
-        flexDirection={FlexDirection.Column}
-        paddingLeft={2}
-        style={{ flex: 1 }}
+        justifyContent={JustifyContent.spaceBetween}
       >
         <Box
           display={Display.Flex}
           flexDirection={FlexDirection.Row}
-          justifyContent={JustifyContent.spaceBetween}
           alignItems={AlignItems.center}
+          gap={2}
         >
+          <TransactionStatusIcon status={status} />
           <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
-          <BlockExplorerLink chainId={chainId} hash={hash} />
+        </Box>
+        <BlockExplorerLink chainId={chainId} hash={hash} />
+      </Box>
+      <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
+        <Box
+          display={Display.Flex}
+          justifyContent={JustifyContent.center}
+          style={{ width: '16px' }}
+        >
+          {!isLast && (
+            <Box
+              backgroundColor={BackgroundColor.iconAlternative}
+              style={{
+                width: '2px',
+                minHeight: '16px',
+              }}
+            />
+          )}
         </Box>
         <Text
           variant={TextVariant.bodySm}
           color={TextColor.textAlternative}
+          paddingLeft={2}
           paddingBottom={isLast ? 0 : 2}
         >
           {timeString} • {date}
