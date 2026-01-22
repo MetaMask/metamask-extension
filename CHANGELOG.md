@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [13.14.2]
+
+### Fixed
+
+- Prevent crash during initialization when some controller has invalid state (#39465)
+
 ## [13.14.1]
 
 ### Changed
@@ -1597,7 +1603,8 @@ authorized by the user.` error until the user fully revoked dapp
 - This changelog was split off with 12.22.0
 - All older changes can be found in [docs/CHANGELOG_older.md](https://github.com/MetaMask/metamask-extension/blob/main/docs/CHANGELOG_older.md)
 
-[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...HEAD
+[Unreleased]: https://github.com/MetaMask/metamask-extension/compare/v13.14.2...HEAD
+[13.14.2]: https://github.com/MetaMask/metamask-extension/compare/v13.14.1...v13.14.2
 [13.14.1]: https://github.com/MetaMask/metamask-extension/compare/v13.14.0...v13.14.1
 [13.14.0]: https://github.com/MetaMask/metamask-extension/compare/v13.13.2...v13.14.0
 [13.13.2]: https://github.com/MetaMask/metamask-extension/compare/v13.13.1...v13.13.2
