@@ -8,12 +8,19 @@ import { AlertsName } from '../alerts/constants';
 
 const ALERTS_HIDE_RESULTS: string[] = [
   AlertsName.InsufficientPayTokenBalance,
+  AlertsName.PayHardwareAccount,
+  AlertsName.SigningOrSubmitting,
+];
+
+const ALERTS_DISABLE_UPDATE: string[] = [
+  AlertsName.PayHardwareAccount,
   AlertsName.SigningOrSubmitting,
 ];
 
 export function useTransactionCustomAmountAlerts(): {
   alertMessage?: string;
   hideResults: boolean;
+  disableUpdate: boolean;
 } {
   const { currentConfirmation } = useConfirmContext<TransactionMeta>();
   const transactionId = currentConfirmation?.id ?? '';
@@ -29,11 +36,17 @@ export function useTransactionCustomAmountAlerts(): {
     [blockingAlerts],
   );
 
+  const disableUpdate = useMemo(
+    () => blockingAlerts.some((a) => ALERTS_DISABLE_UPDATE.includes(a.key)),
+    [blockingAlerts],
+  );
+
   const firstAlert = blockingAlerts?.[0];
 
   if (!firstAlert) {
     return {
       hideResults,
+      disableUpdate,
     };
   }
 
@@ -43,5 +56,6 @@ export function useTransactionCustomAmountAlerts(): {
   return {
     alertMessage,
     hideResults,
+    disableUpdate,
   };
 }

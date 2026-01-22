@@ -548,6 +548,12 @@
   "alertNoPayTokenQuotesTitle": {
     "message": "No quotes"
   },
+  "alertPayHardwareAccountMessage": {
+    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+  },
+  "alertPayHardwareAccountTitle": {
+    "message": "Wallet not supported"
+  },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
   },
@@ -3384,6 +3390,9 @@
   },
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
+  },
+  "isSigningOrSubmittingPayToken": {
+    "message": "You have a pending transaction on this network. Wait for it to complete or select a token on another network."
   },
   "jazzicons": {
     "message": "Jazzicons"

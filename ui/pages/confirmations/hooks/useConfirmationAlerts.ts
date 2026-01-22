@@ -14,6 +14,7 @@ import { useNoGasPriceAlerts } from './alerts/transactions/useNoGasPriceAlerts';
 import { useNoPayTokenQuotesAlert } from './alerts/transactions/useNoPayTokenQuotesAlert';
 import { useNonContractAddressAlerts } from './alerts/transactions/useNonContractAddressAlerts';
 import { usePendingTransactionAlerts } from './alerts/transactions/usePendingTransactionAlerts';
+import { usePayHardwareAccountAlert } from './alerts/transactions/usePayHardwareAccountAlert';
 import { useResimulationAlert } from './alerts/transactions/useResimulationAlert';
 import { useSigningOrSubmittingAlerts } from './alerts/transactions/useSigningOrSubmittingAlerts';
 import useBlockaidAlerts from './alerts/useBlockaidAlerts';
@@ -53,6 +54,7 @@ function useTransactionAlerts(): Alert[] {
   const noPayTokenQuotesAlerts = useNoPayTokenQuotesAlert();
   const nonContractAddressAlerts = useNonContractAddressAlerts();
   const pendingTransactionAlerts = usePendingTransactionAlerts();
+  const payHardwareAccountAlerts = usePayHardwareAccountAlert();
   const resimulationAlert = useResimulationAlert();
   const shieldCoverageAlert = useShieldCoverageAlert();
   const signingOrSubmittingAlerts = useSigningOrSubmittingAlerts();
@@ -73,6 +75,7 @@ function useTransactionAlerts(): Alert[] {
       ...noPayTokenQuotesAlerts,
       ...nonContractAddressAlerts,
       ...pendingTransactionAlerts,
+      ...payHardwareAccountAlerts,
       ...resimulationAlert,
       ...shieldCoverageAlert,
       ...signingOrSubmittingAlerts,
@@ -92,6 +95,7 @@ function useTransactionAlerts(): Alert[] {
       noPayTokenQuotesAlerts,
       nonContractAddressAlerts,
       pendingTransactionAlerts,
+      payHardwareAccountAlerts,
       resimulationAlert,
       shieldCoverageAlert,
       signingOrSubmittingAlerts,

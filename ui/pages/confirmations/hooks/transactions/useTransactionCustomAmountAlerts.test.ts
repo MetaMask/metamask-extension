@@ -60,6 +60,7 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
+      disableUpdate: false,
       hideResults: false,
     });
   });
@@ -85,6 +86,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Test alert message',
+      disableUpdate: false,
       hideResults: false,
     });
   });
@@ -110,6 +112,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Test alert reason',
+      disableUpdate: false,
       hideResults: false,
     });
   });
@@ -132,6 +135,7 @@ describe('useTransactionCustomAmountAlerts', () => {
     const { result } = runHook();
 
     expect(result.current).toStrictEqual({
+      disableUpdate: false,
       hideResults: false,
     });
   });
@@ -169,6 +173,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'First blocking alert',
+      disableUpdate: false,
       hideResults: false,
     });
   });
@@ -194,6 +199,7 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Insufficient funds',
+      disableUpdate: false,
       hideResults: true,
     });
   });
@@ -219,6 +225,33 @@ describe('useTransactionCustomAmountAlerts', () => {
 
     expect(result.current).toStrictEqual({
       alertMessage: 'Transaction in progress',
+      disableUpdate: true,
+      hideResults: true,
+    });
+  });
+
+  it('sets disableUpdate to true when PayHardwareAccount alert exists', () => {
+    useAlertsMock.mockReturnValue(
+      createMockUseAlertsReturnValue({
+        alerts: [
+          createMockAlert({
+            key: AlertsName.PayHardwareAccount,
+            message: 'Hardware wallet not supported',
+            isBlocking: true,
+            severity: Severity.Danger,
+          }),
+        ],
+        hasDangerAlerts: true,
+        hasAlerts: true,
+        hasUnconfirmedDangerAlerts: true,
+      }),
+    );
+
+    const { result } = runHook();
+
+    expect(result.current).toStrictEqual({
+      alertMessage: 'Hardware wallet not supported',
+      disableUpdate: true,
       hideResults: true,
     });
   });
