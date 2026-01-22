@@ -79,7 +79,7 @@ const Info = () => {
 
       [EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE]: () =>
         // Dynamically import to avoid loading hooks at module initialization
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        // eslint-disable-next-line @typescript-eslint/no-require-imports, @typescript-eslint/no-var-requires
         require('../../developer/example-custom-amount-confirmation')
           .ExampleCustomAmountConfirmation,
     }),
