@@ -4,8 +4,14 @@
 // "chunks" via `importScripts`; but in this case `ExtensionLazyListener` is so
 // small we won't ever have a problem with these two files being "split".
 import { ExtensionLazyListener } from './lib/extension-lazy-listener/extension-lazy-listener';
+import {
+  APP_INIT_LIVENESS_METHOD,
+  APP_INIT_LIVENESS_PING_METHOD,
+} from '../../shared/constants/background-liveness-check';
 
 const { chrome } = globalThis;
+
+const APP_INIT_LIVENESS_STREAM_NAME = 'app-init-liveness';
 
 // this needs to be run early so we can begin listening to these browser events
 // as soon as possible
@@ -28,6 +34,42 @@ let scriptsLoadInitiated = false;
 const testMode = process.env.IN_TEST;
 
 const loadTimeLogs = [];
+
+chrome.runtime.onConnect.addListener((port) => {
+  port.onMessage.addListener((message) => {
+    const { data } = message || {};
+    if (!data || data.method !== APP_INIT_LIVENESS_PING_METHOD) {
+      return;
+    }
+    try {
+      port.postMessage({
+        data: {
+          method: APP_INIT_LIVENESS_METHOD,
+        },
+        name: APP_INIT_LIVENESS_STREAM_NAME,
+      });
+    } catch (error) {
+      console.error(
+        'MetaMask - app-init liveness check: Failed to reply to ping',
+        error,
+      );
+    }
+  });
+
+  try {
+    port.postMessage({
+      data: {
+        method: APP_INIT_LIVENESS_METHOD,
+      },
+      name: APP_INIT_LIVENESS_STREAM_NAME,
+    });
+  } catch (error) {
+    console.error(
+      'MetaMask - app-init liveness check: Failed to message to port',
+      error,
+    );
+  }
+});
 // eslint-disable-next-line import/unambiguous
 function tryImport(...fileNames) {
   try {

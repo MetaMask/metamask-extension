@@ -16,9 +16,24 @@ import type MetamaskController from '../metamask-controller';
 
 const JSON_RPC_VERSION = '2.0' as const;
 
-const SIXTEEN_SECONDS_AS_MILLISECONDS = 16000;
+const DEFAULT_GET_STATE_TIMEOUT_MS = 16000;
+const GET_STATE_TIMEOUT_ERROR_MESSAGE =
+  "Background 'getState' call exceeded timeout";
+
+const getNowMs = () =>
+  typeof performance !== 'undefined' && typeof performance.now === 'function'
+    ? performance.now()
+    : Date.now();
 
 type Timer = ReturnType<typeof setTimeout>;
+
+type PendingRequest<Api extends FunctionRegistry<Api>> = {
+  resolve: (value: Awaited<ReturnType<Api[keyof Api]>>) => void;
+  reject: (error: Error) => void;
+  timer?: Timer;
+  method: Extract<keyof Api, string>;
+  startTimeMs?: number;
+};
 
 /**
  * A JSON-RPC 2.0 request object, types with our request types.
@@ -115,17 +130,12 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
 
   readonly #uncaughtErrorChannel = new SafeEventEmitter();
 
+  #getStateTimeoutMs = DEFAULT_GET_STATE_TIMEOUT_MS;
+
   /**
    * A map of requests that are currently pending.
    */
-  readonly requests = new Map<
-    number,
-    {
-      resolve: (value: Awaited<ReturnType<Api[keyof Api]>>) => void;
-      reject: (error: Error) => void;
-      timer?: Timer;
-    }
-  >();
+  readonly requests = new Map<number, PendingRequest<Api>>();
 
   /**
    * Creates a new MetaRPCClient instance.
@@ -173,6 +183,55 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   };
 
   /**
+   * Overrides the timeout for the `getState` RPC call and updates in-flight
+   * `getState` requests to use the new timeout budget.
+   *
+   * @param timeoutMs - The timeout in milliseconds.
+   */
+  setGetStateTimeout(timeoutMs: number) {
+    if (!Number.isInteger(timeoutMs) || timeoutMs < 1) {
+      throw new Error('Must specify positive integer timeout.');
+    }
+    this.#getStateTimeoutMs = timeoutMs;
+    this.#updatePendingGetStateTimeouts(timeoutMs);
+  }
+
+  #setGetStateTimeoutForRequest(
+    id: number,
+    request: PendingRequest<Api>,
+    timeoutMs: number,
+  ) {
+    if (request.timer) {
+      clearTimeout(request.timer);
+    }
+    request.timer = setTimeout(() => {
+      this.requests.delete(id);
+      request.reject(new Error(GET_STATE_TIMEOUT_ERROR_MESSAGE));
+    }, timeoutMs);
+  }
+
+  #updatePendingGetStateTimeouts(timeoutMs: number) {
+    const nowMs = getNowMs();
+    for (const [id, request] of this.requests) {
+      if (request.method !== 'getState' || request.startTimeMs === undefined) {
+        continue;
+      }
+      const elapsedMs = nowMs - request.startTimeMs;
+      const remainingMs = timeoutMs - elapsedMs;
+      if (remainingMs <= 0) {
+        if (request.timer) {
+          clearTimeout(request.timer);
+        }
+        this.requests.delete(id);
+        request.reject(new Error(GET_STATE_TIMEOUT_ERROR_MESSAGE));
+        continue;
+      }
+
+      this.#setGetStateTimeoutForRequest(id, request, remainingMs);
+    }
+  }
+
+  /**
    * Sends a JSON-RPC request over the connection stream and returns a promise
    * that resolves to the result of the method call.
    *
@@ -182,14 +241,20 @@ export class MetaRPCClient<Api extends FunctionRegistry<Api>> {
   async send(payload: JsonRpcApiRequest<Api>) {
     return new Promise<Awaited<ReturnType<Api[typeof payload.method]>>>(
       (resolve, reject) => {
-        let timer: Timer | undefined;
+        const request: PendingRequest<Api> = {
+          resolve,
+          reject,
+          method: payload.method,
+        };
         if (payload.method === 'getState') {
-          timer = setTimeout(() => {
-            this.requests.delete(payload.id);
-            reject(new Error(`Background 'getState' call exceeded timeout`));
-          }, SIXTEEN_SECONDS_AS_MILLISECONDS);
+          request.startTimeMs = getNowMs();
+          this.#setGetStateTimeoutForRequest(
+            payload.id,
+            request,
+            this.#getStateTimeoutMs,
+          );
         }
-        this.requests.set(payload.id, { resolve, reject, timer });
+        this.requests.set(payload.id, request);
         this.#connectionStream.write(payload);
       },
     );

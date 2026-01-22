@@ -3,7 +3,10 @@ import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
-import { BACKGROUND_LIVENESS_METHOD } from '../../../shared/constants/background-liveness-check';
+import {
+  APP_INIT_LIVENESS_METHOD,
+  BACKGROUND_LIVENESS_METHOD,
+} from '../../../shared/constants/background-liveness-check';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
@@ -17,7 +20,16 @@ import {
 // This should be long enough that it doesn't trigger when the popup is opened soon after startup.
 // The extension can take a few seconds to start up after a reload.
 // changed from 10_000 to 15_000 on 11/26/2025 in order to measure effect.
-const BACKGROUND_CONNECTION_TIMEOUT = 15_000; // 15 Seconds
+export const DEFAULT_BACKGROUND_CONNECTION_TIMEOUT = 15_000; // 15 Seconds
+export const EXTENDED_BACKGROUND_CONNECTION_TIMEOUT = 30_000; // 30 Seconds
+const BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE =
+  'Background connection unresponsive';
+
+type CriticalStartupErrorHandlerOptions = {
+  onAppInitAlive?: () => void;
+  onBackgroundAlive?: () => void;
+  onLivenessTimeout?: (error: ErrorLike) => void;
+};
 
 type Message = {
   data: {
@@ -33,7 +45,23 @@ export class CriticalStartupErrorHandler {
 
   #livenessCheckTimeoutId?: NodeJS.Timeout;
 
+  #livenessTimeoutReject?: (error: Error) => void;
+
+  #livenessCheckStartTimeMs?: number;
+
+  #livenessTimeoutMs = DEFAULT_BACKGROUND_CONNECTION_TIMEOUT;
+
+  #appInitAliveReceived = false;
+
+  #backgroundAliveReceived = false;
+
   #onLivenessCheckCompleted?: () => void;
+
+  #onAppInitAlive?: () => void;
+
+  #onBackgroundAlive?: () => void;
+
+  #onLivenessTimeout?: (error: ErrorLike) => void;
 
   /**
    * Creates an instance of CriticalStartupErrorHandler.
@@ -42,10 +70,18 @@ export class CriticalStartupErrorHandler {
    *
    * @param port - The port to listen for messages on.
    * @param container - The container element to display the error in.
+   * @param options - Optional callbacks for instrumentation hooks.
    */
-  constructor(port: browser.Runtime.Port, container: HTMLElement) {
+  constructor(
+    port: browser.Runtime.Port,
+    container: HTMLElement,
+    options: CriticalStartupErrorHandlerOptions = {},
+  ) {
     this.#port = port;
     this.#container = container;
+    this.#onAppInitAlive = options.onAppInitAlive;
+    this.#onBackgroundAlive = options.onBackgroundAlive;
+    this.#onLivenessTimeout = options.onLivenessTimeout;
   }
 
   /**
@@ -53,20 +89,24 @@ export class CriticalStartupErrorHandler {
    */
   async #startLivenessCheck() {
     const { promise: livenessCheck, resolve: onLivenessCheckCompleted } =
-      createDeferredPromise();
+      createDeferredPromise<void>();
+    const { promise: timeoutPromise, reject: onLivenessTimeout } =
+      createDeferredPromise<never>();
     // This is called later in `#handle` when the response is received.
     this.#onLivenessCheckCompleted = onLivenessCheckCompleted;
+    this.#livenessTimeoutReject = onLivenessTimeout;
+    this.#livenessCheckStartTimeMs = performance.now();
+    this.#livenessTimeoutMs = DEFAULT_BACKGROUND_CONNECTION_TIMEOUT;
 
-    const timeoutPromise = new Promise((_resolve, reject) => {
-      this.#livenessCheckTimeoutId = setTimeout(
-        () => reject(new Error('Background connection unresponsive')),
-        BACKGROUND_CONNECTION_TIMEOUT,
-      );
-    });
+    this.#setLivenessTimeout(this.#livenessTimeoutMs);
+    if (this.#appInitAliveReceived) {
+      this.#extendLivenessTimeout();
+    }
 
     try {
       await Promise.race([livenessCheck, timeoutPromise]);
     } catch (error) {
+      this.#onLivenessTimeout?.(error as ErrorLike);
       await displayCriticalError(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
@@ -77,6 +117,41 @@ export class CriticalStartupErrorHandler {
     } finally {
       clearTimeout(this.#livenessCheckTimeoutId);
     }
+  }
+
+  #setLivenessTimeout(timeoutMs: number) {
+    clearTimeout(this.#livenessCheckTimeoutId);
+    this.#livenessCheckTimeoutId = setTimeout(() => {
+      this.#livenessTimeoutReject?.(
+        new Error(BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE),
+      );
+    }, timeoutMs);
+  }
+
+  #extendLivenessTimeout() {
+    if (
+      this.#backgroundAliveReceived ||
+      this.#livenessTimeoutMs === EXTENDED_BACKGROUND_CONNECTION_TIMEOUT
+    ) {
+      return;
+    }
+
+    this.#livenessTimeoutMs = EXTENDED_BACKGROUND_CONNECTION_TIMEOUT;
+    if (this.#livenessCheckStartTimeMs === undefined) {
+      return;
+    }
+
+    const elapsedMs = performance.now() - this.#livenessCheckStartTimeMs;
+    const remainingMs =
+      EXTENDED_BACKGROUND_CONNECTION_TIMEOUT - elapsedMs;
+    if (remainingMs <= 0) {
+      this.#livenessTimeoutReject?.(
+        new Error(BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE),
+      );
+      return;
+    }
+
+    this.#setLivenessTimeout(remainingMs);
   }
 
   /**
@@ -97,9 +172,15 @@ export class CriticalStartupErrorHandler {
       return;
     }
     const { method } = data;
-    // Currently, we only handle BACKGROUND_LIVENESS_METHOD, RELOAD_WINDOW, and the state
+    // Currently, we handle app-init liveness, background liveness, RELOAD_WINDOW, and the state
     // corruption error message, but we will be adding more in the future.
-    if (method === BACKGROUND_LIVENESS_METHOD) {
+    if (method === APP_INIT_LIVENESS_METHOD) {
+      this.#appInitAliveReceived = true;
+      this.#onAppInitAlive?.();
+      this.#extendLivenessTimeout();
+    } else if (method === BACKGROUND_LIVENESS_METHOD) {
+      this.#backgroundAliveReceived = true;
+      this.#onBackgroundAlive?.();
       if (this.#onLivenessCheckCompleted) {
         this.#onLivenessCheckCompleted();
       } else {
