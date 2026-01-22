@@ -176,13 +176,6 @@ export class CorruptionHandler {
   connectedPorts = new Set<chrome.runtime.Port>();
 
   /**
-   * Tracks whether we've already fired the "screen viewed" event.
-   * This prevents duplicate events when multiple tabs connect while
-   * the corruption screen is displayed.
-   */
-  #hasTrackedScreenViewed = false;
-
-  /**
    * Handles a state corruption error by sending a message to the UI and
    * initiating a repair process if requested by the UI port.
    *
@@ -231,26 +224,25 @@ export class CorruptionHandler {
     // This bypasses MetaMetricsController (not yet initialized) and uses the backup state.
     // Note: VaultCorruptionDetected is tracked earlier in persistence-manager.ts
     // when the PersistenceError is thrown.
-    // Only track once to avoid duplicate events when multiple tabs connect.
-    if (!this.#hasTrackedScreenViewed) {
-      this.#hasTrackedScreenViewed = true;
-      trackVaultCorruptionEvent(
-        backup,
-        MetaMetricsEventName.VaultCorruptionRestoreWalletScreenViewed,
-        corruptionType,
-      );
-    }
+    trackVaultCorruptionEvent(
+      backup,
+      MetaMetricsEventName.VaultCorruptionRestoreWalletScreenViewed,
+      corruptionType,
+    );
 
     // if we successfully sent the error to the UI, listen for a "restore"
     // method call back to us
     return new Promise((resolve, reject) => {
+      connectedPorts.add(port);
+      port.onDisconnect.addListener(onDisconnect);
+      port.onMessage.addListener(restoreVaultListener);
+
       // remove from `connectedPorts` if the port disconnects. this is
       // automatically called when the UI closes
-      const onDisconnect = () => {
+      function onDisconnect() {
         connectedPorts.delete(port);
         resolve();
-      };
-
+      }
       /**
        * Listens for a message from the UI to restore the vault. If the message
        * is received, it will call the `repair` function with the backup and
@@ -259,7 +251,7 @@ export class CorruptionHandler {
        *
        * @param message - The message sent from the UI to the background.
        */
-      const restoreVaultListener = async (message: Message) => {
+      async function restoreVaultListener(message: Message) {
         if (message?.data?.method === METHOD_REPAIR_DATABASE) {
           // only allow the restore process once, unregister
           // `restoreVaultListener` listeners from all UI windows
@@ -294,18 +286,12 @@ export class CorruptionHandler {
                 });
               }
             });
-            // Reset the flag so future corruption incidents can be tracked
-            this.#hasTrackedScreenViewed = false;
             resolve();
           } catch (e) {
             reject(e);
           }
         }
-      };
-
-      connectedPorts.add(port);
-      port.onDisconnect.addListener(onDisconnect);
-      port.onMessage.addListener(restoreVaultListener);
+      }
     });
   }
 }
