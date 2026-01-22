@@ -1191,6 +1191,14 @@
   "buyNow": {
     "message": "Buy now"
   },
+  "buyTabOpenedToastDescription": {
+    "message": "We've opened a new tab for buying.",
+    "description": "Toast description shown after opening the buy flow in a new tab"
+  },
+  "buyTabOpenedToastText": {
+    "message": "Continue in your browser tab",
+    "description": "Toast title shown after opening the buy flow in a new tab"
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -8091,6 +8099,10 @@
   "switchNetwork": {
     "message": "Switch network"
   },
+  "switchToMetaMaskDefaultRpc": {
+    "message": "Switch to MetaMask default RPC",
+    "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
+  },
   "switchToPopup": {
     "message": "Switch to popup"
   },
@@ -8572,6 +8584,10 @@
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
+  },
+  "updatedToMetaMaskDefault": {
+    "message": "Updated to MetaMask default",
+    "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
   },
   "uploadDropFile": {
     "message": "Drop your file here"
