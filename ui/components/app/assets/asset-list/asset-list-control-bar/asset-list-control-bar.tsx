@@ -417,7 +417,12 @@ const AssetListControlBar = ({
           justifyContent={JustifyContent.flexEnd}
         >
           {showSortControl && (
-            <Tooltip title={t('sortBy')} position="bottom" distance={20}>
+            <Tooltip
+              title={t('sortBy')}
+              position="bottom"
+              distance={20}
+              disabled={isTokenSortPopoverOpen}
+            >
               <ButtonBase
                 data-testid="sort-by-popover-toggle"
                 className="asset-list-control-bar__button"
