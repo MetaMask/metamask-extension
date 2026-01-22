@@ -160,50 +160,16 @@ describe('CorruptionHandler.handleStateCorruptionError', () => {
         // wait for all port listeners to be called, since they are async
         await waitForMicrotask();
 
-        // With the shared Promise pattern:
-        // - Early-disconnected ports return Promise.resolve() immediately (fulfilled)
-        // - All connected ports share the same Promise, so they all resolve/reject together
-
-        // First, check early-disconnected ports (they resolve immediately with undefined)
-        // These are at indices [clickedUiCount, clickedUiCount + earlyDisconnectUiCount)
-        for (
-          let idx = clickedUiCount;
-          idx < clickedUiCount + earlyDisconnectUiCount;
-          idx++
-        ) {
-          const earlyResult = handledResults[
-            idx
-          ] as PromiseFulfilledResult<void>;
-          expect(earlyResult.status).toBe('fulfilled');
-          expect(earlyResult.value).toEqual(undefined);
-        }
-
-        // Now check connected ports - they all share the same Promise
-        // Connected ports are: [0, clickedUiCount) and [clickedUiCount + earlyDisconnectUiCount, uiCount)
-        const connectedIndices = [
-          ...Array.from({ length: clickedUiCount }, (_, idx) => idx),
-          ...Array.from(
-            { length: uiCount - clickedUiCount - earlyDisconnectUiCount },
-            (_, idx) => clickedUiCount + earlyDisconnectUiCount + idx,
-          ),
-        ];
-
+        // if `repairValue` is an `Error` object, the very _first_ UI should
+        // reject with it, all other UIs should return `undefined`.
         if (repairValue instanceof Error) {
-          // All connected ports should reject with the same error
-          for (const idx of connectedIndices) {
-            const rejectedResult = handledResults[idx] as PromiseRejectedResult;
-            expect(rejectedResult.status).toBe('rejected');
-            expect(rejectedResult.reason).toEqual(repairValue);
-          }
-        } else {
-          // All connected ports should fulfill
-          for (const idx of connectedIndices) {
-            const fulfilledResult = handledResults[
-              idx
-            ] as PromiseFulfilledResult<void>;
-            expect(fulfilledResult.status).toBe('fulfilled');
-            expect(fulfilledResult.value).toEqual(undefined);
-          }
+          const firstResult = handledResults.shift() as PromiseRejectedResult;
+          expect(firstResult.status).toBe('rejected');
+          expect(firstResult.reason).toEqual(repairValue);
+        }
+        for (const handledResult of handledResults as PromiseFulfilledResult<void>[]) {
+          expect(handledResult.status).toBe('fulfilled');
+          expect(handledResult.value).toEqual(undefined);
         }
 
         // check that all UIs should have "restarted" (which was simulated by
