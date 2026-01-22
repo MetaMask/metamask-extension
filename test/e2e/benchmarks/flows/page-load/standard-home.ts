@@ -7,7 +7,8 @@ import { capitalize } from 'lodash';
 import get from 'lodash/get';
 import { retry } from '../../../../../development/lib/retry';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
+import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
 import type {
   BenchmarkResults,
   Metrics,
@@ -38,7 +39,7 @@ async function measurePageStandard(
       title,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       for (let i = 0; i < pageLoads; i++) {
         clearNetworkReport();

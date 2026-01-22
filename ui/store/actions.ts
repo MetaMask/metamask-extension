@@ -110,6 +110,7 @@ import {
   getSelectedInternalAccount,
   getMetaMaskHdKeyrings,
   getAllPermittedAccountsForCurrentTab,
+  getOriginOfCurrentTab,
   getIsSocialLoginFlow,
   getFirstTimeFlowType,
 } from '../selectors';
@@ -117,16 +118,6 @@ import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../shared/modules/selectors/networks';
-import {
-  computeEstimatedGasLimit,
-  initializeSendState,
-  resetSendState,
-  // NOTE: Until the send duck is typescript that this is importing a typedef
-  // that does not have an explicit export statement. lets see if it breaks the
-  // compiler
-  DraftTransaction,
-  SEND_STAGES,
-} from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
   getUnconnectedAccountAlertEnabledness,
@@ -207,6 +198,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -419,7 +411,9 @@ export function subscriptionsStartPolling(): ThunkAction<
     try {
       const pollingToken = await submitRequestToBackground(
         'subscriptionsStartPolling',
-        [],
+        // We need to provide the polling input when start polling
+        // Otherwise, stop polling won't work with `undefined` input.
+        [SUBSCRIPTIONS_POLLING_INPUT],
       );
       return pollingToken;
     } catch (error) {
@@ -1808,42 +1802,6 @@ export function updateEditableParams(
   };
 }
 
-/**
- * Appends new send flow history to a transaction
- * TODO: Not a thunk, but rather a wrapper around a background call
- *
- * @param txId - the id of the transaction to update
- * @param currentSendFlowHistoryLength - sendFlowHistory entries currently
- * @param sendFlowHistory - the new send flow history to append to the
- * transaction
- * @returns
- */
-export function updateTransactionSendFlowHistory(
-  txId: string,
-  currentSendFlowHistoryLength: number,
-  sendFlowHistory: DraftTransaction['history'],
-): ThunkAction<
-  Promise<TransactionMeta>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
-  return async () => {
-    let updatedTransaction: TransactionMeta;
-    try {
-      updatedTransaction = await submitRequestToBackground(
-        'updateTransactionSendFlowHistory',
-        [txId, currentSendFlowHistoryLength, sendFlowHistory],
-      );
-    } catch (error) {
-      logErrorWithMessage(error);
-      throw error;
-    }
-
-    return updatedTransaction;
-  };
-}
-
 export async function backupUserData(): Promise<{
   filename: string;
   data: string;
@@ -1998,7 +1956,6 @@ export function updateTransaction(
  * @param txParams - The transaction parameters
  * @param options
  * @param options.networkClientId - ID of the network client to use for the transaction.
- * @param options.sendFlowHistory - The history of the send flow at time of creation.
  * @param options.type - The type of the transaction being added.
  * @returns
  */
@@ -2006,7 +1963,6 @@ export function addTransactionAndRouteToConfirmationPage(
   txParams: TransactionParams,
   options?: {
     networkClientId: NetworkClientId;
-    sendFlowHistory?: DraftTransaction['history'];
     type?: TransactionType;
   },
 ): ThunkAction<
@@ -2130,12 +2086,9 @@ export function updateAndApproveTx(
   unknown,
   AnyAction
 > {
-  return (dispatch: MetaMaskReduxDispatch, getState) => {
+  return (dispatch: MetaMaskReduxDispatch) => {
     !dontShowLoadingIndicator &&
       dispatch(showLoadingIndication(loadingIndicatorMessage));
-
-    const getIsSendActive = () =>
-      Boolean(getState().send.stage !== SEND_STAGES.INACTIVE);
 
     return new Promise((resolve, reject) => {
       const actionId = generateActionId();
@@ -2145,10 +2098,6 @@ export function updateAndApproveTx(
         [String(txMeta.id), { txMeta, actionId }, { waitForResult: true }],
         (err) => {
           dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-
-          if (!getIsSendActive()) {
-            dispatch(resetSendState());
-          }
 
           if (err) {
             dispatch(goHome());
@@ -2163,9 +2112,6 @@ export function updateAndApproveTx(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
-        if (!getIsSendActive()) {
-          dispatch(resetSendState());
-        }
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(updateCustomNonce(''));
@@ -2468,7 +2414,6 @@ export function cancelTx(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
-        dispatch(resetSendState());
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -2519,7 +2464,6 @@ export function cancelTxs(
       await Promise.all(cancellations);
 
       await forceUpdateMetamaskState(dispatch);
-      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -2703,12 +2647,6 @@ export function updateMetamaskState(
         type: actionConstants.CHAIN_CHANGED,
         payload: newProviderConfig.chainId,
       });
-      // We dispatch this action to ensure that the send state stays up to date
-      // after the chain changes. This async thunk will fail gracefully in the
-      // event that we are not yet on the send flow with a draftTransaction in
-      // progress.
-
-      dispatch(initializeSendState({ chainHasChanged: true }));
     }
 
     return newState;
@@ -2946,7 +2884,7 @@ export function setSelectedAccount(
     const state = getState();
     const unconnectedAccountAccountAlertIsEnabled =
       getUnconnectedAccountAlertEnabledness(state);
-    const activeTabOrigin = state.activeTab.origin;
+    const activeTabOrigin = getOriginOfCurrentTab(state);
     const prevAccount = getSelectedInternalAccount(state);
     const nextAccount = getInternalAccountByAddress(state, address);
     const permittedAccountsForCurrentTab =
@@ -4206,11 +4144,6 @@ export function qrCodeDetected(
       type: actionConstants.QR_CODE_DETECTED,
       value: qrCodeData,
     });
-
-    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
-    // action and update its state. Address changes need to recompute gasLimit
-    // so we fire this method so that the send page gasLimit can be recomputed
-    dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -4499,15 +4432,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
+export async function setDefaultHomeActiveTabName(
   value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+): Promise<void> {
+  try {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
-  };
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
@@ -4785,12 +4717,6 @@ export async function forceUpdateMetamaskState(
   return dispatch(updateMetamaskState(pendingPatches));
 }
 
-export function toggleAccountMenu() {
-  return {
-    type: actionConstants.TOGGLE_ACCOUNT_MENU,
-  };
-}
-
 export function toggleNetworkMenu(payload?: {
   isAddingNewNetwork: boolean;
   isMultiRpcOnboarding?: boolean;
@@ -4864,10 +4790,14 @@ export function setDataCollectionForMarketing(
 
 export function setPna25Acknowledged(
   acknowledged: boolean,
+  delayCollection = false,
 ): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async () => {
     log.debug(`background.setPna25Acknowledged`);
-    await submitRequestToBackground('setPna25Acknowledged', [acknowledged]);
+    await submitRequestToBackground('setPna25Acknowledged', [
+      acknowledged,
+      delayCollection,
+    ]);
   };
 }
 

@@ -13,7 +13,6 @@ import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -140,47 +139,41 @@ describe('useRevokeGatorPermissions', () => {
     '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
   const mockNetworkClientId = 'mock-network-client-id';
 
-  const mockGatorPermission: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      chainId: mockChainId,
-      address: mockSelectedAccountAddress,
-      // expiry: 1750291200,
-      permission: {
-        type: 'native-token-stream',
-        isAdjustmentAllowed: false,
-        data: {
-          maxAmount: '0x22b1c8c1227a0000',
-          initialAmount: '0x6f05b59d3b20000',
-          amountPerSecond: '0x6f05b59d3b20000',
-          startTime: 1747699200,
-          justification:
-            'This is a very important request for streaming allowance for some very important thing',
+  const mockGatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        chainId: mockChainId,
+        from: mockSelectedAccountAddress,
+        // expiry: 1750291200,
+        permission: {
+          type: 'native-token-stream',
+          isAdjustmentAllowed: false,
+          data: {
+            maxAmount: '0x22b1c8c1227a0000',
+            initialAmount: '0x6f05b59d3b20000',
+            amountPerSecond: '0x6f05b59d3b20000',
+            startTime: 1747699200,
+            justification:
+              'This is a very important request for streaming allowance for some very important thing',
+          },
         },
-      },
-      context: mockPermissionContext,
-      signerMeta: {
+        context: mockPermissionContext,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'http://localhost:8000',
-  };
+      siteOrigin: 'http://localhost:8000',
+    };
 
-  const mockGatorPermissions: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >[] = [
-    mockGatorPermission,
-    {
-      ...mockGatorPermission,
-      permissionResponse: {
-        ...mockGatorPermission.permissionResponse,
-        context: mockPermissionContext2,
+  const mockGatorPermissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] =
+    [
+      mockGatorPermission,
+      {
+        ...mockGatorPermission,
+        permissionResponse: {
+          ...mockGatorPermission.permissionResponse,
+          context: mockPermissionContext2,
+        },
       },
-    },
-  ];
+    ];
 
   // Type the mock delegation to match what decodeDelegations returns from @metamask/delegation-core'
   const mockDelegation = {
@@ -405,7 +398,7 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermission,
         permissionResponse: {
           ...mockGatorPermission.permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
 
@@ -771,7 +764,7 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermissions[0],
         permissionResponse: {
           ...mockGatorPermissions[0].permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
 

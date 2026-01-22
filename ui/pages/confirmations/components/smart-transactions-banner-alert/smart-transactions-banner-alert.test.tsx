@@ -158,8 +158,8 @@ describe('SmartTransactionsBannerAlert', () => {
         ...mockState.metamask,
         ...mockNetworkState({
           id: 'network-configuration-id-2',
-          chainId: CHAIN_IDS.POLYGON,
-          rpcUrl: 'https://polygon-rpc.com',
+          chainId: CHAIN_IDS.OPTIMISM, // OPTIMISM is not in the allowed STX chain IDs
+          rpcUrl: 'https://optimism-rpc.com',
         }),
       },
     };

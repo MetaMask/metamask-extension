@@ -143,7 +143,12 @@
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
-      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+      "enabledNetworkMap": {
+        "bip122": "object",
+        "eip155": "object",
+        "solana": "object",
+        "tron": "object"
+      }
     },
     "NetworkOrderController": {
       "orderedNetworkList": {
@@ -251,8 +256,7 @@
       "remoteFeatureFlags": {
         "feature1": true,
         "feature2": false,
-        "feature3": { "name": "groupC", "value": "valueC" },
-        "sendRedesign": { "enabled": false }
+        "feature3": { "name": "groupC", "value": "valueC" }
       }
     },
     "RewardsController": {
@@ -312,5 +316,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 186 }
+  "meta": { "version": 189 }
 }
