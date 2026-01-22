@@ -9,6 +9,7 @@ import {
   selectShowSurveyToast,
   selectShowCopyAddressToast,
   selectShowConnectAccountGroupToast,
+  selectRemoveNftMessage,
 } from './selectors';
 
 const createMockSurveyState = (surveyLinkLastClickedOrClosed?: number) => ({
@@ -432,5 +433,45 @@ describe('#selectShowConnectAccountGroupToast', () => {
       mockAccountGroup,
     );
     expect(result).toBe(false);
+  });
+});
+
+describe('#selectRemoveNftMessage', () => {
+  it('returns "success" when removeNftMessage is "success"', () => {
+    const mockStateData = {
+      appState: {
+        removeNftMessage: 'success',
+      },
+    };
+    const result = selectRemoveNftMessage(mockStateData);
+    expect(result).toBe('success');
+  });
+
+  it('returns "error" when removeNftMessage is "error"', () => {
+    const mockStateData = {
+      appState: {
+        removeNftMessage: 'error',
+      },
+    };
+    const result = selectRemoveNftMessage(mockStateData);
+    expect(result).toBe('error');
+  });
+
+  it('returns empty string when removeNftMessage is empty', () => {
+    const mockStateData = {
+      appState: {
+        removeNftMessage: '',
+      },
+    };
+    const result = selectRemoveNftMessage(mockStateData);
+    expect(result).toBe('');
+  });
+
+  it('returns empty string when removeNftMessage is undefined', () => {
+    const mockStateData = {
+      appState: {},
+    };
+    const result = selectRemoveNftMessage(mockStateData);
+    expect(result).toBe('');
   });
 });
