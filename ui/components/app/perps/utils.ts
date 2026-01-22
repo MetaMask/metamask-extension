@@ -312,16 +312,12 @@ export const groupTransactionsByDate = (
  * @returns Filtered array of transactions
  * @example
  * filterTransactionsByType(transactions, 'trade') => [... only trade transactions]
- * filterTransactionsByType(transactions, 'all') => [... all transactions]
+ * filterTransactionsByType(transactions, 'deposit') => [... deposits and withdrawals]
  */
 export const filterTransactionsByType = (
   transactions: PerpsTransaction[],
   filter: PerpsTransactionFilter,
 ): PerpsTransaction[] => {
-  if (filter === 'all') {
-    return transactions;
-  }
-
   if (filter === 'deposit') {
     // Include both deposits and withdrawals
     return transactions.filter(

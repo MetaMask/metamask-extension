@@ -176,9 +176,4 @@ export type PerpsTransaction = {
   };
 };
 
-export type PerpsTransactionFilter =
-  | 'all'
-  | 'trade'
-  | 'order'
-  | 'funding'
-  | 'deposit';
+export type PerpsTransactionFilter = 'trade' | 'order' | 'funding' | 'deposit';
