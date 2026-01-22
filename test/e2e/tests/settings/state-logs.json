@@ -35,7 +35,6 @@
     },
     "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
-    "isAccountMenuOpen": "boolean",
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",
@@ -108,7 +107,6 @@
     "selectedQuote": "null",
     "slippage": "number",
     "sortOrder": "string",
-    "toChainId": "null",
     "toToken": "null",
     "txAlert": "null",
     "txAlertStatus": "number",
@@ -867,9 +865,6 @@
       "feature3": {
         "name": "string",
         "value": "string"
-      },
-      "sendRedesign": {
-        "enabled": "boolean"
       }
     },
     "rewardsAccounts": {},
@@ -1093,7 +1088,8 @@
     },
     "tracesBeforeMetricsOptIn": [],
     "traits": {
-      "install_date_ext": "string"
+      "install_date_ext": "string",
+      "storage_kind": "string"
     },
     "transactionBatches": [],
     "transactionData": {},
@@ -1169,28 +1165,6 @@
       "isOpen": "boolean",
       "title": "string"
     }
-  },
-  "send": {
-    "amountMode": "string",
-    "currentTransactionUUID": "null",
-    "disabledSwapAndSendNetworks": [],
-    "draftTransactions": {},
-    "eip1559support": "boolean",
-    "gasEstimateIsLoading": "boolean",
-    "gasEstimatePollToken": "null",
-    "gasIsSetInModal": "boolean",
-    "gasLimitMinimum": "string",
-    "gasPriceEstimate": "string",
-    "gasTotalForLayer1": "null",
-    "prevSwapAndSendInput": "null",
-    "recipientInput": "string",
-    "recipientMode": "string",
-    "selectedAccount": {
-      "address": "null",
-      "balance": "string"
-    },
-    "stage": "string",
-    "swapsBlockedTokens": []
   },
   "smartAccounts": {
     "toggleStates": {}
