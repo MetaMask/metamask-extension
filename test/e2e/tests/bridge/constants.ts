@@ -27,6 +27,13 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
       isActiveDest: true,
     },
   },
+  // @ts-expect-error - chainRanking is not in the type yet
+  chainRanking: [
+    { chainId: 'eip155:1', name: 'Ethereum' },
+    { chainId: 'eip155:42161', name: 'Arbitrum' },
+    { chainId: 'eip155:59144', name: 'Linea' },
+    { chainId: 'eip155:8453', name: 'Base' },
+  ],
 };
 
 export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {

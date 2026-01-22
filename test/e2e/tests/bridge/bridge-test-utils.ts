@@ -278,7 +278,15 @@ async function mockGetPopularTokens(mockServer: Mockttp) {
   return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => {
     return {
       statusCode: 200,
-      json: [],
+      json: [
+        {
+          name: 'Ether',
+          symbol: 'ETH',
+          chainId: 'eip155:1',
+          assetId: 'eip155:1/slip44:60',
+          decimals: 18,
+        },
+      ],
     };
   });
 }
@@ -335,6 +343,13 @@ async function mockSearchTokens(mockServer: Mockttp) {
             chainId: 'eip155:59144',
             assetId:
               'eip155:59144/erc20:0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f'.toLowerCase(),
+            decimals: 18,
+          },
+          {
+            name: 'Ether',
+            symbol: 'ETH',
+            chainId: 'eip155:1',
+            assetId: 'eip155:1/slip44:60',
             decimals: 18,
           },
         ],
@@ -1111,6 +1126,7 @@ export const getInsufficientFundsFixtures = (
       await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
       await mockSearchTokens(mockServer),
+      await mockGetPopularTokens(mockServer),
       await mockETHtoWETH(mockServer),
       await mockPriceSpotPrices(mockServer),
     ],
