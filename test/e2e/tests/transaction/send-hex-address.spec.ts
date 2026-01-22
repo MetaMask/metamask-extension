@@ -93,51 +93,51 @@ describe('Hexadecimal address prefix normalization', function () {
     });
 
     it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
-    await withFixtures(
-      {
-        dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesDisabled()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
-          .withTokensControllerERC20()
-          .build(),
-        smartContract,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      await withFixtures(
+        {
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilder()
+            .withPreferencesControllerPetnamesDisabled()
+            .withEnabledNetworks({ eip155: { '0x539': true } })
+            .withTokensControllerERC20()
+            .build(),
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, localNodes }) => {
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
-        // Send TST
-        const homePage = new HomePage(driver);
-        await homePage.goToTokensTab();
-        const assetList = new AssetList(driver);
-        await assetList.clickMultichainTokenListButton();
-        const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.clickOnSendButton();
+          // Send TST
+          const homePage = new HomePage(driver);
+          await homePage.goToTokensTab();
+          const assetList = new AssetList(driver);
+          await assetList.clickMultichainTokenListButton();
+          const nonEvmHomepage = new NonEvmHomepage(driver);
+          await nonEvmHomepage.clickOnSendButton();
 
-        // Type address without hex prefix
-        const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(nonHexPrefixedAddress);
-        await sendPage.fillAmount('0');
-        await sendPage.pressContinueButton();
+          // Type address without hex prefix
+          const sendPage = new SendPage(driver);
+          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.fillAmount('0');
+          await sendPage.pressContinueButton();
 
-        // Confirm transaction
-        const transactionConfirmation = new TransactionConfirmation(driver);
-        await transactionConfirmation.checkSendAmount('0 ETH');
-        const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterConfirmButton();
-        await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
-        await activityListPage.clickConfirmedTransaction();
-        const transactionDetailsPage = new TransactionDetailsPage(driver);
+          // Confirm transaction
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkSendAmount('0 ETH');
+          const confirmation = new Confirmation(driver);
+          await confirmation.clickFooterConfirmButton();
+          await homePage.goToActivityList();
+          const activityListPage = new ActivityListPage(driver);
+          await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
+          await activityListPage.clickConfirmedTransaction();
+          const transactionDetailsPage = new TransactionDetailsPage(driver);
 
-        // Verify address in activity log
-        await transactionDetailsPage.checkAddressInActivityLog(
-          hexAbbreviatedAddress,
-        );
-      },
-    );
+          // Verify address in activity log
+          await transactionDetailsPage.checkAddressInActivityLog(
+            hexAbbreviatedAddress,
+          );
+        },
+      );
     });
   });
 });
