@@ -324,6 +324,10 @@ class HomePage {
     console.log('Balance is displayed in correct format');
   }
 
+  async waitForPrimaryCurrency(): Promise<void> {
+    await this.driver.waitForSelector(this.balance);
+  }
+
   async checkBasicFunctionalityOffWarnigMessageIsDisplayed(): Promise<void> {
     console.log(
       'Check if basic functionality off warning message is displayed on homepage',
