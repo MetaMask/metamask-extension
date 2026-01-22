@@ -665,7 +665,6 @@ export const createBridgeMockStore = ({
                   formatChainIdToCaip(chainId)
                 ],
               })),
-              ...(featureFlagOverrides?.bridgeConfig?.chainRanking ?? []),
             ],
           },
         },

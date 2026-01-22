@@ -132,7 +132,6 @@ export const STATUS_TO_COLOR_MAP: Record<
   TextColor
 > = {
   [StatusTypes.PENDING]: TextColor.warningDefault,
-  [StatusTypes.SUBMITTED]: TextColor.warningDefault,
   [StatusTypes.COMPLETE]: TextColor.successDefault,
   [StatusTypes.FAILED]: TextColor.errorDefault,
   [StatusTypes.UNKNOWN]: TextColor.errorDefault,
