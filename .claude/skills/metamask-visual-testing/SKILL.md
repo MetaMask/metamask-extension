@@ -225,6 +225,8 @@ mm_switch_to_tab { "role": "dapp" }                             → Switch back 
 mm_describe_screen                                              → Verify connected state
 ```
 
+**Note:** Notification popups typically close automatically after clicking confirm or cancel. After the action, switch to another tab (e.g., `mm_switch_to_tab { "role": "dapp" }`) to continue interacting.
+
 **Tab roles:** `extension` (home), `notification` (popups), `dapp` (external sites), `other`
 
 ### 7. Navigate
