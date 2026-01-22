@@ -4,18 +4,18 @@ Prevents new console warnings/errors from being introduced. Baseline is tracked 
 
 ## Quick Reference
 
-| Command                                              | Description                            |
-| ---------------------------------------------------------- | ------------------------------------------------------------- |
-| `yarn test:unit`                                           | Run tests with baseline enforcement                           |
-| `yarn test:unit:update-baseline`                           | Update baseline (ratchet mode - only increases)               |
-| `yarn test:unit:update-baseline path/to/file`              | Update baseline (ratchet mode - only increases, single file)  |
-| `yarn test:unit:update-baseline:strict`                    | Update baseline (strict mode - allows decreases)              |
-| `yarn test:unit:update-baseline:strict path/to/file`       | Update baseline (strict mode - allows decreases, single file) |
-| `yarn test:integration`                                    | Run integration tests with enforcement                        |
-| `yarn test:integration:update-baseline`                    | Update integration baseline (ratchet mode - only increases)   |
-| `yarn test:integration:update-baseline path/to/file`       | Update baseline (ratchet mode - only increases, single file)  |
-| `yarn test:integration:update-baseline:strict`             | Update baseline (strict mode - allows decreases)              |
-| `yarn test:integration:update-baseline:strict path/to/file`| Update baseline (strict mode - allows decreases, single file) |
+| Command                                                     | Description                                                   |
+| ----------------------------------------------------------- | ------------------------------------------------------------- |
+| `yarn test:unit`                                            | Run tests with baseline enforcement                           |
+| `yarn test:unit:update-baseline`                            | Update baseline (ratchet mode - only increases)               |
+| `yarn test:unit:update-baseline path/to/file`               | Update baseline (ratchet mode - only increases, single file)  |
+| `yarn test:unit:update-baseline:strict`                     | Update baseline (strict mode - allows decreases)              |
+| `yarn test:unit:update-baseline:strict path/to/file`        | Update baseline (strict mode - allows decreases, single file) |
+| `yarn test:integration`                                     | Run integration tests with enforcement                        |
+| `yarn test:integration:update-baseline`                     | Update integration baseline (ratchet mode - only increases)   |
+| `yarn test:integration:update-baseline path/to/file`        | Update baseline (ratchet mode - only increases, single file)  |
+| `yarn test:integration:update-baseline:strict`              | Update baseline (strict mode - allows decreases)              |
+| `yarn test:integration:update-baseline:strict path/to/file` | Update baseline (strict mode - allows decreases, single file) |
 
 ## How It Works
 
@@ -30,6 +30,7 @@ Prevents new console warnings/errors from being introduced. Baseline is tracked 
 - **Strict mode**: `yarn test:*:update-baseline:strict` syncs baseline to strictly match current test run (allows decreases). Use this when you've intentionally fixed warnings and want to lock in the improvement.
 
 **Important**: Baseline decreases should be intentional. If you see improvements, either:
+
 - Edit the baseline file manually, OR
 - Use `:strict` mode (with caution) to sync the exact current state
 
