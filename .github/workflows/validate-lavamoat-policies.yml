@@ -84,7 +84,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack build policy
-        run: yarn webpack:lavamoat:generate:build
+        run: yarn webpack:tsc && yarn webpack:lavamoat:generate:build
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
@@ -111,7 +111,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack MV2 policy
-        run: yarn webpack:lavamoat:generate:mv2
+        run: yarn webpack:tsc && yarn webpack:lavamoat:generate:mv2
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
@@ -138,7 +138,7 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Validate LavaMoat webpack MV3 policy
-        run: yarn webpack:lavamoat:generate:mv3
+        run: yarn webpack:tsc && yarn webpack:lavamoat:generate:mv3
         env:
           INFURA_PROD_PROJECT_ID: 00000000000
           SEGMENT_PROD_WRITE_KEY: 00000000000
