@@ -47,7 +47,7 @@ import {
   getSubscriptionDurationInDays,
   getSubscriptionPaymentData,
 } from '../../../shared/lib/shield';
-import { generateERC20ApprovalData } from '../../pages/confirmations/send-legacy/send.utils';
+import { generateERC20ApprovalData } from '../../pages/confirmations/send-utils/send.utils';
 import { decimalToHex } from '../../../shared/modules/conversion.utils';
 import { CONFIRM_TRANSACTION_ROUTE } from '../../helpers/constants/routes';
 import { getInternalAccountBySelectedAccountGroupAndCaip } from '../../selectors/multichain-accounts/account-tree';
