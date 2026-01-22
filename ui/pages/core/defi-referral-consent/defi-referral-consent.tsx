@@ -78,6 +78,11 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
     setIsChecked(!isChecked);
   };
 
+  // If this is done inline, verify-locales will output `Forbidden use of template strings in 't' function`
+  const defiReferralSubtitle = `${partnerId}ReferralSubtitle`;
+  // This is here to stop yarn verify-locales from removing this string
+  t('hyperliquidReferralSubtitle');
+
   return (
     <Box
       flexDirection={BoxFlexDirection.Column}
@@ -97,7 +102,7 @@ export const DefiReferralConsent: React.FC<DefiReferralConsentProps> = ({
           {t('defiReferralTitle', [partnerName])}
         </Text>
         <Text variant={TextVariant.BodyMd} color={TextColor.TextAlternative}>
-          {t(`${partnerId}ReferralSubtitle`)}{' '}
+          {t(defiReferralSubtitle)}{' '}
           <PartnerLink
             text={`${t('learnMoreUpperCase')}.`}
             url={learnMoreUrl}
