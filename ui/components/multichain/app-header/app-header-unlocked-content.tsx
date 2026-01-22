@@ -289,7 +289,6 @@ export const AppHeaderUnlockedContent = ({
                 name={IconName.Copy}
                 size={IconSize.Xs}
                 color={IconColor.IconAlternative}
-                aria-label={t('copyAddressShort')}
               />
             </MultichainHoveredAddressRowsList>
           </Box>
@@ -303,7 +302,6 @@ export const AppHeaderUnlockedContent = ({
     selectedMultichainAccountId,
     navigate,
     isMultichainAccountsState2Enabled,
-    t,
     trackEvent,
     accountListStats,
   ]);
