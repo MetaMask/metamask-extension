@@ -54,7 +54,6 @@ const setup = ({
     subscriptionEnv: SubscriptionEnv.PRD,
     gatewayUrl: gatewayUrl ?? undefined,
     ruleEngineUrl: 'https://ruleset-engine.api.cx.metamask.io',
-    claimUrl: 'https://claims.api.cx.metamask.io',
   });
 
   return {

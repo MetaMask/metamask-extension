@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Magdagdag ng account o wallet"
   },
-  "addAccountToMetaMask": {
-    "message": "Idagdag ang account sa MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Idagdag ang mga token na nakuha mo gamit ang MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Magdagdag ng wallet"
-  },
-  "addingAccount": {
-    "message": "Idinaragdag ang account"
   },
   "additionalNetworks": {
     "message": "Mga karagdagang network"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Hindi ako makakuha ng anumang dating data"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 na NFT"
-  },
   "assetOptions": {
     "message": "Mga opsyon ng asset"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Mga Asset"
@@ -3165,9 +3153,6 @@
   "insufficientFunds": {
     "message": "Hindi sapat ang mga pondo."
   },
-  "insufficientFundsForGas": {
-    "message": "Di sapat na pondo para sa gas"
-  },
   "insufficientFundsSend": {
     "message": "Hindi sapat ang mga pondo"
   },
@@ -3894,9 +3879,6 @@
     "message": "Dapat kang pumili ng file na ii-import.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Hindi makakapagpadala ng mga negatibong halaga ng ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Hindi maaaring magpadala ng negatibo o zero na halaga ng asset."
   },
@@ -3937,18 +3919,6 @@
   "networkName": {
     "message": "Pangalan ng Network"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3964,26 +3934,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Mga pagpipilian na network"
@@ -4545,9 +4503,6 @@
   },
   "openWallet": {
     "message": "Buksan ang wallet"
-  },
-  "optional": {
-    "message": "Opsyonal"
   },
   "options": {
     "message": "Mga Opsyon"
@@ -5838,24 +5793,11 @@
   "sendBugReport": {
     "message": "Padalhan kami ng ulat ng bug."
   },
-  "sendNoContactsConversionText": {
-    "message": "mag-click dito"
-  },
-  "sendNoContactsDescription": {
-    "message": "Nagbibigay-daan sa iyo ang mga kontak na ligtas na magpadala ng mga transaksyon sa ibang account nang maraming beses. Para gumawa ng kontak, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Wala ka pang anumang mga kontak"
-  },
   "sendSelectReceiveAsset": {
     "message": "Piliin ang asset na tatanggapin"
   },
   "sendSelectSendAsset": {
     "message": "Piliin ang asset na ipapadala"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Ang pag-click sa button na ito ay kaagad na magpapasimula sa iyong swap na transaksyon. Mangyaring suriin ang detalye ng iyong mga transaksyon bago magpatuloy."
   },
   "sendingAsset": {
     "message": "Nagpapadala ng $1"
@@ -5866,10 +5808,6 @@
   "sendingNativeAsset": {
     "message": "Ipinapadala ang $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Babala: magpapadala ka sa isang kontrata ng token na maaaring magresulta sa pagkawala ng mga pondo. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Ipinadala"
@@ -7269,9 +7207,6 @@
     "message": "Ang pag-swap ng $1 sa $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Ang mga bayad sa gas ay tinatantya at magbabago batay sa trapiko sa network at pagiging kumplikado ng transaksyon."
-  },
   "swapGasFeesExplanation": {
     "message": "Hindi kumikita ang MetaMask mula sa mga bayad sa gas. Ang mga bayarin na ito ay pagtatantiya at maaaring mabago batay sa kung gaano kaabala ang network at kung gaano kakumplikado ang transaksyon. Alamin pa ang $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7283,9 +7218,6 @@
   "swapGasFeesIncluded": {
     "message": " Kasama na"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Matuto pa tungkol sa mga bayad sa gas"
-  },
   "swapGasFeesSplit": {
     "message": "Ang mga bayad sa gas sa nakaraang screen ay hinati sa dalawang transaksyon."
   },
@@ -7294,10 +7226,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "MetaMask ang nagbabayad ng bayad sa network na ito, kaya puwede kang mag-swap kahit wala kang $1 sa account mo."
-  },
-  "swapGasFeesSummary": {
-    "message": "Ang mga bayad sa gas ay binabayaran sa mga minero ng crypto na nagpoproseso ng mga transaksyon sa $1 na network. Ang MetaMask ay hindi kumikita mula sa mga bayad sa gas.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Isinasama sa quote na ito ang mga bayad sa gas sa pamamagitan ng pagsasaayos sa halaga ng token na ipinapadala o natatanggap. Maaari mong matanggap ang ETH sa hiwalay na transaksyon sa iyong listahan ng aktibidad."
@@ -7315,10 +7243,6 @@
   "swapIncludesMMFee": {
     "message": "Kabilang ang $1% na bayad sa MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Kasama sa quote ang $1% bayad sa MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Kabilang ang $1% na bayad sa MetaMask – $2",
@@ -7571,9 +7495,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Payagan ang site na ito para lumipat ng network?"
   },
-  "switchInputCurrency": {
-    "message": "Palitan ang input currency"
-  },
   "switchNetwork": {
     "message": "Lumipat ng network"
   },
@@ -7729,9 +7650,6 @@
   },
   "tokensInCollection": {
     "message": "Mga token sa koleksyon"
-  },
-  "tooltipApproveButton": {
-    "message": "Nauunawaan ko"
   },
   "tooltipSatusConnected": {
     "message": "nakakonekta"
@@ -8286,9 +8204,6 @@
   "youSent": {
     "message": "Nagpadala ka ng",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Ang iyong mga account"
   },
   "yourActivity": {
     "message": "Iyong aktibidad"
