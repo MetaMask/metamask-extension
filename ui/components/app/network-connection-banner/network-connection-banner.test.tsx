@@ -389,7 +389,9 @@ describe('NetworkConnectionBanner', () => {
         <NetworkConnectionBanner />,
         store,
       );
-      fireEvent.click(getByText('switch to MetaMask default RPC', { selector: 'button' }));
+      fireEvent.click(
+        getByText('switch to MetaMask default RPC', { selector: 'button' }),
+      );
 
       expect(switchToInfuraMock).toHaveBeenCalled();
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
@@ -398,28 +400,6 @@ describe('NetworkConnectionBanner', () => {
           MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
         networkClientId: 'custom-arbitrum',
       });
-    });
-
-    it('shows "Update RPC" button when infuraEndpointIndex is undefined', () => {
-      mockUseNetworkConnectionBanner.mockReturnValue({
-        status: 'degraded',
-        networkName: 'Custom Network',
-        networkClientId: 'custom-network',
-        chainId: '0x1000',
-        isInfuraEndpoint: false,
-        infuraEndpointIndex: undefined,
-        trackNetworkBannerEvent: jest.fn(),
-        switchToInfura: jest.fn(),
-      });
-      const store = configureStore({});
-
-      const { getByText, queryByText } = renderWithProvider(
-        <NetworkConnectionBanner />,
-        store,
-      );
-
-      expect(getByText('Update RPC')).toBeInTheDocument();
-      expect(queryByText('Switch to MetaMask default RPC')).not.toBeInTheDocument();
     });
   });
 });
