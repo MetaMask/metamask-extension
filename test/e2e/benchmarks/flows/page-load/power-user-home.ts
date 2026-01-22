@@ -8,12 +8,15 @@ import get from 'lodash/get';
 import { Mockttp } from 'mockttp';
 import { generateWalletState } from '../../../../../app/scripts/fixtures/generate-wallet-state';
 import { retry } from '../../../../../development/lib/retry';
-import { withFixtures } from '../../../helpers';
-import { unlockWallet } from '../../../helpers';
+import { unlockWallet, withFixtures } from '../../../helpers';
 import AccountListPage from '../../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import { mockNotificationServices } from '../../../tests/notifications/mocks';
-import type { BenchmarkResults, Metrics, StatisticalResult } from '../../utils/types';
+import type {
+  BenchmarkResults,
+  Metrics,
+  StatisticalResult,
+} from '../../utils/types';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -36,7 +39,9 @@ async function measurePagePowerUser(
   await withFixtures(
     {
       title,
-      fixtures: (await generateWalletState(WITH_STATE_POWER_USER, true)).build(),
+      fixtures: (
+        await generateWalletState(WITH_STATE_POWER_USER, true)
+      ).build(),
       manifestFlags: {
         testing: {
           disableSync: true,
@@ -98,9 +103,14 @@ function calculateResult(calc: (array: number[]) => number) {
 const minResult = calculateResult((array: number[]) => Math.min(...array));
 const maxResult = calculateResult((array: number[]) => Math.max(...array));
 const meanResult = calculateResult((array: number[]) => calculateMean(array));
-const stdDevResult = calculateResult((array: number[]) => calculateStdDev(array));
+const stdDevResult = calculateResult((array: number[]) =>
+  calculateStdDev(array),
+);
 
-function pResult(array: Record<string, number[]>, p: number): StatisticalResult {
+function pResult(
+  array: Record<string, number[]>,
+  p: number,
+): StatisticalResult {
   return calculateResult((arr: number[]) => {
     const sorted = [...arr].sort((a, b) => a - b);
     return calculatePercentile(sorted, p);

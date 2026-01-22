@@ -44,14 +44,21 @@ const PRESETS: Record<string, string[]> = {
   ],
 
   // Playwright benchmarks
-  'page-load-benchmark': ['test/e2e/playwright/benchmark/page-load-benchmark.spec.ts'],
+  'page-load-benchmark': [
+    'test/e2e/playwright/benchmark/page-load-benchmark.spec.ts',
+  ],
 };
 
 PRESETS.all = Object.values(PRESETS).flat();
 
 async function runBenchmarkFile(
   filePath: string,
-  options: { iterations: number; retries: number; browserLoads: number; pageLoads: number },
+  options: {
+    iterations: number;
+    retries: number;
+    browserLoads: number;
+    pageLoads: number;
+  },
 ): Promise<unknown> {
   const absolutePath = path.resolve(filePath);
   const fileName = path.basename(filePath, path.extname(filePath));
@@ -69,20 +76,23 @@ async function runBenchmarkFile(
 
   if (typeof benchmark.run === 'function') {
     return benchmark.run(options);
-  } else if (typeof benchmark.default === 'function') {
-    return benchmark.default(options);
-  } else {
-    const runFn = Object.values(benchmark).find(
-      (v) => typeof v === 'function' && (v as Function).name.startsWith('run'),
-    );
-    if (runFn) {
-      return (runFn as Function)(options);
-    }
-    throw new Error(`No run function found in ${filePath}`);
   }
+  if (typeof benchmark.default === 'function') {
+    return benchmark.default(options);
+  }
+
+  const runFn = Object.values(benchmark).find(
+    (v): v is (...args: unknown[]) => unknown =>
+      typeof v === 'function' &&
+      (v as { name?: string }).name?.startsWith('run'),
+  );
+  if (runFn) {
+    return runFn(options);
+  }
+  throw new Error(`No run function found in ${filePath}`);
 }
 
-async function runPlaywrightBenchmark(filePath: string): Promise<void> {
+async function runPlaywrightBenchmark(_filePath: string): Promise<void> {
   return new Promise((resolve, reject) => {
     const args = ['playwright', 'test', '--project', 'benchmark'];
 
@@ -132,7 +142,8 @@ async function main(): Promise<void> {
     })
     .option('pageLoads', {
       default: 10,
-      description: 'Number of page loads per browser (for page load benchmarks)',
+      description:
+        'Number of page loads per browser (for page load benchmarks)',
       type: 'number',
     })
     .option('retries', {

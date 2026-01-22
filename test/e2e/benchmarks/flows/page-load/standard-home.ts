@@ -8,7 +8,11 @@ import get from 'lodash/get';
 import { retry } from '../../../../../development/lib/retry';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { unlockWallet, withFixtures } from '../../../helpers';
-import type { BenchmarkResults, Metrics, StatisticalResult } from '../../utils/types';
+import type {
+  BenchmarkResults,
+  Metrics,
+  StatisticalResult,
+} from '../../utils/types';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
@@ -66,9 +70,14 @@ function calculateResult(calc: (array: number[]) => number) {
 const minResult = calculateResult((array: number[]) => Math.min(...array));
 const maxResult = calculateResult((array: number[]) => Math.max(...array));
 const meanResult = calculateResult((array: number[]) => calculateMean(array));
-const stdDevResult = calculateResult((array: number[]) => calculateStdDev(array));
+const stdDevResult = calculateResult((array: number[]) =>
+  calculateStdDev(array),
+);
 
-function pResult(array: Record<string, number[]>, p: number): StatisticalResult {
+function pResult(
+  array: Record<string, number[]>,
+  p: number,
+): StatisticalResult {
   return calculateResult((arr: number[]) => {
     const sorted = [...arr].sort((a, b) => a - b);
     return calculatePercentile(sorted, p);
