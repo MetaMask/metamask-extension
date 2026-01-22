@@ -5946,9 +5946,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async handleDefiReferral(partner, tabId, triggerType) {
     const isReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
-        partner.featureFlagKey
-      ];
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferralPartners?.[partner.id];
 
     if (!isReferralEnabled) {
       return;
