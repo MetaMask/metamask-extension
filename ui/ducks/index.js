@@ -2,7 +2,6 @@ import { combineReducers } from 'redux';
 import { AlertTypes } from '../../shared/constants/alerts';
 import metamaskReducer from './metamask/metamask';
 import localeMessagesReducer from './locale/locale';
-import sendReducer from './send/send';
 import domainReducer from './domains';
 import appStateReducer from './app/app';
 import confirmTransactionReducer from './confirm-transaction/confirm-transaction.duck';
@@ -24,7 +23,6 @@ export default combineReducers({
   appState: appStateReducer,
   DNS: domainReducer,
   history: historyReducer,
-  send: sendReducer,
   confirmAlerts: confirmAlertsReducer,
   confirmTransaction: confirmTransactionReducer,
   swaps: swapsReducer,

@@ -420,7 +420,6 @@ export const SENTRY_UI_STATE = {
   history: true,
   appState: {
     customNonceValue: true,
-    isAccountMenuOpen: true,
     isNetworkMenuOpen: true,
     nextNonce: true,
     pendingTokens: false,
