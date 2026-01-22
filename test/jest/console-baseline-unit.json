@@ -2422,9 +2422,6 @@
     "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
-    "ui/hooks/useNftCollectionsMetadata.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
-    },
     "ui/selectors/metamask-notifications/metamask-notifications.test.ts": {
       "Reselect: Input stability warnings": 5
     },
