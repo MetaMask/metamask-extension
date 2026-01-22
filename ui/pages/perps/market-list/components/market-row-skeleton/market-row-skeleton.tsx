@@ -1,9 +1,13 @@
 import React from 'react';
 import {
   Box,
+  BoxBackgroundColor,
   BoxFlexDirection,
   BoxAlignItems,
 } from '@metamask/design-system-react';
+
+import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { BorderRadius } from '../../../../../helpers/constants/design-system';
 
 /**
  * MarketRowSkeleton component displays a loading skeleton for market rows
@@ -12,14 +16,18 @@ import {
 export const MarketRowSkeleton: React.FC = () => {
   return (
     <Box
-      className="animate-pulse bg-default px-4 py-3"
+      className="px-4 py-3"
+      backgroundColor={BoxBackgroundColor.BackgroundMuted}
       flexDirection={BoxFlexDirection.Row}
       alignItems={BoxAlignItems.Center}
       gap={3}
       data-testid="market-row-skeleton"
     >
       {/* Token Logo Skeleton */}
-      <div className="h-10 w-10 shrink-0 rounded-full bg-muted" />
+      <Skeleton
+        className="h-10 w-10 shrink-0"
+        borderRadius={BorderRadius.pill}
+      />
 
       {/* Left side: Symbol and metric */}
       <Box
@@ -33,10 +41,10 @@ export const MarketRowSkeleton: React.FC = () => {
           alignItems={BoxAlignItems.Center}
           gap={2}
         >
-          <div className="h-4 w-12 rounded bg-muted" />
-          <div className="h-3 w-8 rounded bg-muted" />
+          <Skeleton className="h-4 w-12" />
+          <Skeleton className="h-3 w-8" />
         </Box>
-        <div className="h-3 w-16 rounded bg-muted" />
+        <Skeleton className="h-3 w-16" />
       </Box>
 
       {/* Right side: Price and change */}
@@ -46,8 +54,8 @@ export const MarketRowSkeleton: React.FC = () => {
         alignItems={BoxAlignItems.End}
         gap={1}
       >
-        <div className="h-4 w-20 rounded bg-muted" />
-        <div className="h-3 w-12 rounded bg-muted" />
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-3 w-12" />
       </Box>
     </Box>
   );
