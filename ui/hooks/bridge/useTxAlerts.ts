@@ -16,7 +16,7 @@ export const useTxAlerts = () => {
   const dispatch = useDispatch();
 
   const fromChain = useSelector(getFromChain);
-  const { activeQuote, isLoading } = useSelector(getBridgeQuotes);
+  const { activeQuote } = useSelector(getBridgeQuotes);
   const { trade } = activeQuote ?? {};
   const account = useSelector(getFromAccount);
   const abortController = useRef<AbortController | null>(new AbortController());
@@ -36,8 +36,7 @@ export const useTxAlerts = () => {
       typeof trade === 'string' &&
       fromChain?.chainId &&
       isSolanaChainId(fromChain.chainId) &&
-      account?.address &&
-      !isLoading
+      account?.address
     ) {
       // Create a new abort controller for the new request
       abortController.current = new AbortController();
@@ -52,5 +51,5 @@ export const useTxAlerts = () => {
     } else {
       dispatch(setTxAlerts(null));
     }
-  }, [trade, fromChain?.chainId, account?.address, isLoading]);
+  }, [trade, fromChain?.chainId, account?.address]);
 };
