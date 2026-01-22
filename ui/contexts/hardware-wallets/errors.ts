@@ -170,6 +170,10 @@ export function parseErrorByType(
       code: ErrorCode.DeviceStateEthAppClosed,
     },
     {
+      patterns: ['permission denied', 'hid permission denied', 'webhid permission denied', 'usb permission denied'],
+      code: ErrorCode.AuthenticationSecurityCondition,
+    },
+    {
       patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
       code: ErrorCode.UserRejected,
     },

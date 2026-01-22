@@ -262,7 +262,9 @@ describe('LedgerAdapter', () => {
       ]);
 
       // Simulate slow connection
-      let resolveTransport: () => void;
+      let resolveTransport: () => void = () => {
+        // no-op
+      };
       const slowTransportPromise = new Promise<void>((resolve) => {
         resolveTransport = resolve;
       });
@@ -275,7 +277,7 @@ describe('LedgerAdapter', () => {
       const secondConnect = adapter.connect(deviceId);
 
       // Resolve the transport
-      resolveTransport!();
+      resolveTransport();
 
       await firstConnect;
       await secondConnect;
@@ -370,7 +372,9 @@ describe('LedgerAdapter', () => {
       ]);
 
       // Simulate a connection that never completes
-      let resolveTransport: () => void;
+      let resolveTransport: () => void = () => {
+        // no-op
+      };
       const slowTransportPromise = new Promise<void>((resolve) => {
         resolveTransport = resolve;
       });
@@ -383,7 +387,7 @@ describe('LedgerAdapter', () => {
       adapter.destroy();
 
       // Resolve the pending transport to avoid hanging test
-      resolveTransport!();
+      resolveTransport();
       await connectPromise;
 
       // Reset mock and try new connection - should work
