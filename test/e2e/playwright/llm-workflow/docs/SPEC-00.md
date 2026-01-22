@@ -26,7 +26,6 @@ It also defines a **persistent per-repo learning system** (“knowledge store”
   - records step metadata + discovery snapshots
   - **screenshots are opt-in** (not captured or stored by default)
 
-
 ### Not in scope (v1)
 
 - `yarn start:test` watcher support (long-running build loop).
