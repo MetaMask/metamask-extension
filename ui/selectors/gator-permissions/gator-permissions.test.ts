@@ -5,7 +5,6 @@ import type {
   NativeTokenStreamPermission,
   PermissionTypesWithCustom,
   StoredGatorPermissionSanitized,
-  Signer,
 } from '@metamask/gator-permissions-controller';
 import { Hex } from '@metamask/utils';
 import { SnapId } from '@metamask/snaps-sdk';
@@ -48,17 +47,14 @@ type MockGatorPermissionsStorageEntriesConfig = {
  */
 function createMockGatorPermissionsSanitizedEntries(
   amount: number,
-  mockStorageEntry: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >,
-): StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>[] {
+  mockStorageEntry: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
+): StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] {
   return Array.from(
     { length: amount },
     (_, _index: number) =>
       ({
         ...mockStorageEntry,
-      }) as StoredGatorPermissionSanitized<Signer, PermissionTypesWithCustom>,
+      }) as StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
   );
 }
 
@@ -97,7 +93,7 @@ function mockGatorPermissionsStorageEntriesFactory(
         {
           permissionResponse: {
             chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+            from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
             permission: {
               type: 'custom',
               isAdjustmentAllowed: false,
@@ -108,9 +104,7 @@ function mockGatorPermissionsStorageEntriesFactory(
               },
             },
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         },
@@ -119,7 +113,7 @@ function mockGatorPermissionsStorageEntriesFactory(
         {
           permissionResponse: {
             chainId: MOCK_CHAIN_ID_POLYGON,
-            address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+            from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
             permission: {
               type: 'custom',
               isAdjustmentAllowed: false,
@@ -130,9 +124,7 @@ function mockGatorPermissionsStorageEntriesFactory(
               },
             },
             context: '0x00000000',
-            signerMeta: {
-              delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-            },
+            delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
           },
           siteOrigin: 'http://localhost:8000',
         },
@@ -142,110 +134,92 @@ function mockGatorPermissionsStorageEntriesFactory(
 
   // Create entries for each chainId
   Object.entries(config).forEach(([chainId, options]) => {
-    const mockNativeTokenStreamStorageEntry: StoredGatorPermissionSanitized<
-      Signer,
-      NativeTokenStreamPermission
-    > = {
-      permissionResponse: {
-        chainId: chainId as Hex,
-        address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-        permission: {
-          type: 'native-token-stream',
-          isAdjustmentAllowed: false,
-          data: {
-            maxAmount: '0x22b1c8c1227a0000',
-            initialAmount: '0x6f05b59d3b20000',
-            amountPerSecond: '0x6f05b59d3b20000',
-            startTime: 1747699200,
-            justification:
-              'This is a very important request for streaming allowance for some very important thing',
+    const mockNativeTokenStreamStorageEntry: StoredGatorPermissionSanitized<NativeTokenStreamPermission> =
+      {
+        permissionResponse: {
+          chainId: chainId as Hex,
+          from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+          permission: {
+            type: 'native-token-stream',
+            isAdjustmentAllowed: false,
+            data: {
+              maxAmount: '0x22b1c8c1227a0000',
+              initialAmount: '0x6f05b59d3b20000',
+              amountPerSecond: '0x6f05b59d3b20000',
+              startTime: 1747699200,
+              justification:
+                'This is a very important request for streaming allowance for some very important thing',
+            },
           },
-        },
-        context: '0x00000000',
-        signerMeta: {
+          context: '0x00000000',
           delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
         },
-      },
-      siteOrigin: options.siteOrigin,
-    };
+        siteOrigin: options.siteOrigin,
+      };
 
-    const mockNativeTokenPeriodicStorageEntry: StoredGatorPermissionSanitized<
-      Signer,
-      NativeTokenPeriodicPermission
-    > = {
-      permissionResponse: {
-        chainId: chainId as Hex,
-        address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-        permission: {
-          type: 'native-token-periodic',
-          isAdjustmentAllowed: false,
-          data: {
-            periodAmount: '0x22b1c8c1227a0000',
-            periodDuration: 1747699200,
-            startTime: 1747699200,
-            justification:
-              'This is a very important request for streaming allowance for some very important thing',
+    const mockNativeTokenPeriodicStorageEntry: StoredGatorPermissionSanitized<NativeTokenPeriodicPermission> =
+      {
+        permissionResponse: {
+          chainId: chainId as Hex,
+          from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+          permission: {
+            type: 'native-token-periodic',
+            isAdjustmentAllowed: false,
+            data: {
+              periodAmount: '0x22b1c8c1227a0000',
+              periodDuration: 1747699200,
+              startTime: 1747699200,
+              justification:
+                'This is a very important request for streaming allowance for some very important thing',
+            },
           },
-        },
-        context: '0x00000000',
-        signerMeta: {
+          context: '0x00000000',
           delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
         },
-      },
-      siteOrigin: options.siteOrigin,
-    };
+        siteOrigin: options.siteOrigin,
+      };
 
-    const mockErc20TokenStreamStorageEntry: StoredGatorPermissionSanitized<
-      Signer,
-      Erc20TokenStreamPermission
-    > = {
-      permissionResponse: {
-        chainId: chainId as Hex,
-        address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-        permission: {
-          type: 'erc20-token-stream',
-          isAdjustmentAllowed: false,
-          data: {
-            initialAmount: '0x22b1c8c1227a0000',
-            maxAmount: '0x6f05b59d3b20000',
-            amountPerSecond: '0x6f05b59d3b20000',
-            startTime: 1747699200,
-            tokenAddress: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
-            justification:
-              'This is a very important request for streaming allowance for some very important thing',
+    const mockErc20TokenStreamStorageEntry: StoredGatorPermissionSanitized<Erc20TokenStreamPermission> =
+      {
+        permissionResponse: {
+          chainId: chainId as Hex,
+          from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+          permission: {
+            type: 'erc20-token-stream',
+            isAdjustmentAllowed: false,
+            data: {
+              initialAmount: '0x22b1c8c1227a0000',
+              maxAmount: '0x6f05b59d3b20000',
+              amountPerSecond: '0x6f05b59d3b20000',
+              startTime: 1747699200,
+              tokenAddress: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+              justification:
+                'This is a very important request for streaming allowance for some very important thing',
+            },
           },
-        },
-        context: '0x00000000',
-        signerMeta: {
+          context: '0x00000000',
           delegationManager: '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
         },
-      },
-      siteOrigin: options.siteOrigin,
-    };
+        siteOrigin: options.siteOrigin,
+      };
 
     mockGatorPermissionsMap['native-token-stream'][chainId as Hex] =
       createMockGatorPermissionsSanitizedEntries(
         options.nativeTokenStream,
         mockNativeTokenStreamStorageEntry,
-      ) as StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenStreamPermission
-      >[];
+      ) as StoredGatorPermissionSanitized<NativeTokenStreamPermission>[];
 
     mockGatorPermissionsMap['native-token-periodic'][chainId as Hex] =
       createMockGatorPermissionsSanitizedEntries(
         options.nativeTokenPeriodic,
         mockNativeTokenPeriodicStorageEntry,
-      ) as StoredGatorPermissionSanitized<
-        Signer,
-        NativeTokenPeriodicPermission
-      >[];
+      ) as StoredGatorPermissionSanitized<NativeTokenPeriodicPermission>[];
 
     mockGatorPermissionsMap['erc20-token-stream'][chainId as Hex] =
       createMockGatorPermissionsSanitizedEntries(
         options.erc20TokenStream,
         mockErc20TokenStreamStorageEntry,
-      ) as StoredGatorPermissionSanitized<Signer, Erc20TokenStreamPermission>[];
+      ) as StoredGatorPermissionSanitized<Erc20TokenStreamPermission>[];
   });
 
   return mockGatorPermissionsMap;
@@ -1936,10 +1910,7 @@ describe('Gator Permissions Selectors', () => {
 
       const permissionTypes = result.map(
         (
-          permission: StoredGatorPermissionSanitized<
-            Signer,
-            PermissionTypesWithCustom
-          >,
+          permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
         ) => permission.permissionResponse.permission.type,
       );
       expect(permissionTypes).toContain('native-token-stream');
@@ -1956,7 +1927,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     permission: {
                       type: 'native-token-stream',
                       data: {
@@ -1968,10 +1939,8 @@ describe('Gator Permissions Selectors', () => {
                       },
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -1983,7 +1952,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     permission: {
                       type: 'erc20-token-stream',
                       data: {
@@ -1997,10 +1966,8 @@ describe('Gator Permissions Selectors', () => {
                       },
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -2012,7 +1979,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     permission: {
                       type: 'native-token-periodic',
                       data: {
@@ -2023,10 +1990,8 @@ describe('Gator Permissions Selectors', () => {
                       },
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -2084,7 +2049,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     permission: {
                       type: 'native-token-stream',
                       data: {
@@ -2096,10 +2061,8 @@ describe('Gator Permissions Selectors', () => {
                       },
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -2111,7 +2074,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     permission: {
                       type: 'erc20-token-stream',
                       data: {
@@ -2125,10 +2088,8 @@ describe('Gator Permissions Selectors', () => {
                       },
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -2195,10 +2156,7 @@ describe('Gator Permissions Selectors', () => {
 
       const permissionTypes = result.map(
         (
-          permission: StoredGatorPermissionSanitized<
-            Signer,
-            PermissionTypesWithCustom
-          >,
+          permission: StoredGatorPermissionSanitized<PermissionTypesWithCustom>,
         ) => permission.permissionResponse.permission.type,
       );
       expect(permissionTypes).toContain('native-token-stream');
@@ -2233,7 +2191,7 @@ describe('Gator Permissions Selectors', () => {
                 {
                   permissionResponse: {
                     chainId: MOCK_CHAIN_ID_MAINNET as Hex,
-                    address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                    from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                     expiry: 1750291200,
                     permission: {
                       type: 'native-token-stream',
@@ -2247,10 +2205,8 @@ describe('Gator Permissions Selectors', () => {
                       rules: {},
                     },
                     context: '0x00000000',
-                    signerMeta: {
-                      delegationManager:
-                        '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                    },
+                    delegationManager:
+                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                   },
                   siteOrigin: 'http://localhost:8000',
                 },
@@ -2660,26 +2616,22 @@ describe('Gator Permissions Selectors', () => {
               {
                 permissionResponse: {
                   chainId: MOCK_CHAIN_ID_MAINNET,
-                  address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                  from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                   permission: { type: 'native-token-stream' },
                   context: '0x00000000',
-                  signerMeta: {
-                    delegationManager:
-                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                  },
+                  delegationManager:
+                    '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                 },
                 siteOrigin: 'https://example.com',
               },
               {
                 permissionResponse: {
                   chainId: MOCK_CHAIN_ID_MAINNET,
-                  address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                  from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                   permission: { type: 'native-token-stream' },
                   context: '0x00000001',
-                  signerMeta: {
-                    delegationManager:
-                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                  },
+                  delegationManager:
+                    '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                 },
                 siteOrigin: 'https://other-origin.com',
               },
@@ -2756,26 +2708,22 @@ describe('Gator Permissions Selectors', () => {
               {
                 permissionResponse: {
                   chainId: MOCK_CHAIN_ID_MAINNET,
-                  address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                  from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                   permission: { type: 'native-token-stream' },
                   context: '0x00000000',
-                  signerMeta: {
-                    delegationManager:
-                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                  },
+                  delegationManager:
+                    '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                 },
                 siteOrigin: 'https://example.com',
               },
               {
                 permissionResponse: {
                   chainId: MOCK_CHAIN_ID_MAINNET,
-                  address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                  from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                   permission: { type: 'native-token-stream' },
                   context: '0x00000001',
-                  signerMeta: {
-                    delegationManager:
-                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                  },
+                  delegationManager:
+                    '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                 },
                 siteOrigin: 'https://other-origin.com',
               },
@@ -2787,13 +2735,11 @@ describe('Gator Permissions Selectors', () => {
               {
                 permissionResponse: {
                   chainId: MOCK_CHAIN_ID_MAINNET,
-                  address: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
+                  from: '0xB68c70159E9892DdF5659ec42ff9BD2bbC23e778',
                   permission: { type: 'native-token-periodic' },
                   context: '0x00000002',
-                  signerMeta: {
-                    delegationManager:
-                      '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
-                  },
+                  delegationManager:
+                    '0xdb9B1e94B5b69Df7e401DDbedE43491141047dB3',
                 },
                 siteOrigin: 'https://example.com',
               },
