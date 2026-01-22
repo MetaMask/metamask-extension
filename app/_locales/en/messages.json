@@ -725,10 +725,6 @@
   "assetsDescription": {
     "message": "Autodetect tokens in your wallet, display NFTs, and get batched account balance updates"
   },
-  "asterdexReferralSubtitle": {
-    "message": "Get 4% back on trades with a MetaMask referral code.",
-    "description": "The subtitle of the Asterdex referral confirmation screen"
-  },
   "attemptToCancelSwapForFree": {
     "message": "Attempt to cancel swap for free"
   },
