@@ -35,6 +35,7 @@ describe('Send NFTs', function () {
         await homepage.startSendFlow();
 
         const sendPage = new SendPage(driver);
+        await sendPage.checkPageIsLoaded();
         await sendPage.selectNft('Test Dapp NFTs #1');
         await sendPage.fillRecipient(
           '0x1234567890123456789012345678901234567890',
