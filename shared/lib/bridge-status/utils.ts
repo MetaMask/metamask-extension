@@ -1,13 +1,32 @@
-import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
+import {
+  isCrossChain,
+  isTronChainId,
+  StatusTypes,
+} from '@metamask/bridge-controller';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 
-export function isBridgeComplete({
-  status,
-  quote,
-}: BridgeHistoryItem): boolean {
+const isTronSameChainSwap = ({
+  srcChainId,
+  destChainId,
+}: BridgeHistoryItem['quote']): boolean => {
+  return (
+    !isCrossChain(srcChainId, destChainId) && isTronChainId(srcChainId)
+  );
+};
+
+export function isBridgeLikeSwap(bridgeHistoryItem: BridgeHistoryItem): boolean {
+  const { quote } = bridgeHistoryItem;
+  return (
+    isCrossChain(quote.srcChainId, quote.destChainId) ||
+    isTronSameChainSwap(quote)
+  );
+}
+
+export function isBridgeComplete(bridgeHistoryItem: BridgeHistoryItem): boolean {
+  const { status } = bridgeHistoryItem;
   return Boolean(
-    isCrossChain(quote.srcChainId, quote.destChainId) &&
+    isBridgeLikeSwap(bridgeHistoryItem) &&
       status.srcChain.txHash &&
       status.status === StatusTypes.COMPLETE,
   );
@@ -15,10 +34,11 @@ export function isBridgeComplete({
 
 export function isBridgeFailed(
   transaction: Transaction,
-  { quote, status }: BridgeHistoryItem,
+  bridgeHistoryItem: BridgeHistoryItem,
 ) {
+  const { status } = bridgeHistoryItem;
   const bridgeFailed = Boolean(
-    isCrossChain(quote.srcChainId, quote.destChainId) &&
+    isBridgeLikeSwap(bridgeHistoryItem) &&
       status.status === StatusTypes.FAILED,
   );
 

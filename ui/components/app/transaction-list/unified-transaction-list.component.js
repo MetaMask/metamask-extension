@@ -5,7 +5,7 @@ import React, {
   Fragment,
   useEffect,
 } from 'react';
-import { isCrossChain } from '@metamask/bridge-controller';
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -637,8 +637,31 @@ export default function UnifiedTransactionList({
     evmChainIds,
     enabledNonEvmChainIds,
   ]);
-  const groupedUnifiedActivityItems =
-    groupAnyTransactionsByDate(unifiedActivityItems);
+
+  const filteredUnifiedActivityItems = useMemo(() => {
+    if (!swapReceiveTxHashes?.size) {
+      return unifiedActivityItems;
+    }
+
+    return unifiedActivityItems.filter((item) => {
+      if (item.kind !== TransactionKind.NON_EVM) {
+        return true;
+      }
+
+      const isReceiveType =
+        item.transaction?.type === KeyringTransactionType.Receive;
+      if (!isReceiveType) {
+        return true;
+      }
+
+      const txIdOrHash = item.id || item.transaction?.id;
+      return !(txIdOrHash && swapReceiveTxHashes.has(txIdOrHash));
+    });
+  }, [swapReceiveTxHashes, unifiedActivityItems]);
+
+  const groupedUnifiedActivityItems = groupAnyTransactionsByDate(
+    filteredUnifiedActivityItems,
+  );
 
   // Extract pending EVM transaction groups for earliest nonce calculation
   const pendingEvmTransactionGroups = useMemo(() => {
@@ -695,23 +718,9 @@ export default function UnifiedTransactionList({
       if (item.kind === TransactionKind.NON_EVM) {
         const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
 
-        // Filter out receive transactions that are part of a known swap
-        const isReceiveType =
-          item.transaction?.type === KeyringTransactionType.Receive;
-        const txIdOrHash = item.id || item.transaction?.id;
-        const isPartOfKnownSwap =
-          txIdOrHash && swapReceiveTxHashes.has(txIdOrHash);
-
-        if (isReceiveType && isPartOfKnownSwap) {
-          return null;
-        }
-
         if (
           matchedBridgeHistoryItem &&
-          isCrossChain(
-            matchedBridgeHistoryItem.quote?.srcChainId,
-            matchedBridgeHistoryItem.quote?.destChainId,
-          )
+          isBridgeLikeSwap(matchedBridgeHistoryItem)
         ) {
           return (
             <MultichainBridgeTransactionListItem
@@ -764,7 +773,6 @@ export default function UnifiedTransactionList({
     },
     [
       bridgeHistoryItems,
-      swapReceiveTxHashes,
       multichainNetworkConfig,
       toggleShowDetails,
       earliestNonceByChain,
@@ -857,10 +865,7 @@ export default function UnifiedTransactionList({
     <>
       {selectedTransaction &&
         (selectedBridgeHistoryItem &&
-        isCrossChain(
-          selectedBridgeHistoryItem.quote.srcChainId,
-          selectedBridgeHistoryItem.quote.destChainId,
-        ) ? (
+        isBridgeLikeSwap(selectedBridgeHistoryItem) ? (
           <MultichainBridgeTransactionDetailsModal
             transaction={selectedTransaction}
             bridgeHistoryItem={selectedBridgeHistoryItem}

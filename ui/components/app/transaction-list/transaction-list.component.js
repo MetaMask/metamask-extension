@@ -8,7 +8,7 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
-import { isCrossChain } from '@metamask/bridge-controller';
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -551,10 +551,7 @@ export default function TransactionList({
       <>
         {selectedTransaction &&
           (selectedBridgeHistoryItem &&
-          isCrossChain(
-            selectedBridgeHistoryItem.quote.srcChainId,
-            selectedBridgeHistoryItem.quote.destChainId,
-          ) ? (
+          isBridgeLikeSwap(selectedBridgeHistoryItem) ? (
             <MultichainBridgeTransactionDetailsModal
               transaction={selectedTransaction}
               bridgeHistoryItem={selectedBridgeHistoryItem}
@@ -592,10 +589,7 @@ export default function TransactionList({
 
                         if (
                           matchedBridgeHistoryItem &&
-                          isCrossChain(
-                            matchedBridgeHistoryItem.quote?.srcChainId,
-                            matchedBridgeHistoryItem.quote?.destChainId,
-                          )
+                          isBridgeLikeSwap(matchedBridgeHistoryItem)
                         ) {
                           return (
                             <MultichainBridgeTransactionListItem

@@ -4,8 +4,9 @@ import { capitalize } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import { type Transaction, TransactionStatus } from '@metamask/keyring-api';
 import { type BridgeHistoryItem } from '@metamask/bridge-status-controller';
-import { StatusTypes } from '@metamask/bridge-controller';
+import { isCrossChain, StatusTypes } from '@metamask/bridge-controller';
 import {
+  isBridgeLikeSwap,
   isBridgeComplete,
   isBridgeFailed,
 } from '../../../../shared/lib/bridge-status/utils';
@@ -70,6 +71,11 @@ const MultichainBridgeTransactionListItem: React.FC<
 
   const { type, from } = transaction;
   const sourceAsset = from?.[0]?.asset;
+  const isTronSameChainSwap =
+    !isCrossChain(
+      bridgeHistoryItem.quote.srcChainId,
+      bridgeHistoryItem.quote.destChainId,
+    ) && isBridgeLikeSwap(bridgeHistoryItem);
 
   const isBridgeFullyComplete = isBridgeComplete(bridgeHistoryItem);
   const isBridgeFailedOrSourceFailed = isBridgeFailed(
@@ -109,9 +115,20 @@ const MultichainBridgeTransactionListItem: React.FC<
       ? NETWORK_TO_SHORT_NETWORK_NAME_MAP[destNetwork.chainId]
       : undefined) ?? destNetwork?.chainId;
 
-  const title = displayChainName
-    ? `${t('bridgeTo')} ${displayChainName}`
-    : capitalize(type);
+  const swapTitle = (() => {
+    const sourceSymbol = bridgeHistoryItem.quote.srcAsset.symbol;
+    const destSymbol = bridgeHistoryItem.quote.destAsset.symbol;
+    if (sourceSymbol && destSymbol) {
+      return `${t('swap')} ${sourceSymbol} ${t('to').toLowerCase()} ${destSymbol}`;
+    }
+    return t('swap');
+  })();
+
+  const title = isTronSameChainSwap
+    ? swapTitle
+    : displayChainName
+      ? `${t('bridgeTo')} ${displayChainName}`
+      : capitalize(type);
 
   return (
     <ActivityListItem
@@ -136,7 +153,11 @@ const MultichainBridgeTransactionListItem: React.FC<
           positionObj={{ right: -4, top: -4 }}
         >
           <TransactionIcon
-            category={TransactionGroupCategory.bridge}
+            category={
+              isTronSameChainSwap
+                ? TransactionGroupCategory.swap
+                : TransactionGroupCategory.bridge
+            }
             status={
               KEYRING_TRANSACTION_STATUS_KEY[transaction.status] ??
               TransactionStatus.Submitted
