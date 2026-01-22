@@ -27,11 +27,12 @@ function createEmptyObservation(): StepRecordObservation {
 
 /**
  * Observation collection policy for tool execution.
- * - 'none': Skip observation collection (for knowledge queries, build, etc.)
- * - 'default': Collect state, testIds, a11y nodes, update refMap
+ * - 'none': Collect state only (no testIds, no a11y) - fastest
+ * - 'default': Collect state, testIds, a11y nodes, update refMap - current behavior
  * - 'custom': Tool provides its own observation via executeResult
+ * - 'failures': Collect state only on success, full observation on failure - balanced
  */
-export type ObservationPolicy = 'none' | 'default' | 'custom';
+export type ObservationPolicy = 'none' | 'default' | 'custom' | 'failures';
 
 /**
  * Context passed to the execute function.
@@ -121,6 +122,25 @@ function isToolExecuteResult<TResult>(
   );
 }
 
+async function collectFullObservation(
+  page: Page,
+): Promise<StepRecordObservation> {
+  const state = await sessionManager.getExtensionState();
+  const testIds: TestIdItem[] = await collectTestIds(page, 50);
+  const {
+    nodes,
+    refMap: newRefMap,
+  }: { nodes: A11yNodeTrimmed[]; refMap: Map<string, string> } =
+    await collectTrimmedA11ySnapshot(page);
+  sessionManager.setRefMap(newRefMap);
+  return createDefaultObservation(state, testIds, nodes);
+}
+
+async function collectMinimalObservation(): Promise<StepRecordObservation> {
+  const state = await sessionManager.getExtensionState();
+  return createDefaultObservation(state, [], []);
+}
+
 /**
  * Execute a tool with standardized validation, observation, and recording.
  *
@@ -139,10 +159,11 @@ export async function runTool<TInput, TResult>(
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
   const requiresSession = config.requiresSession ?? true;
-  const observationPolicy = config.observationPolicy ?? 'default';
+
+  const effectivePolicy =
+    config.options?.observationPolicy ?? config.observationPolicy ?? 'default';
 
   try {
-    // 1. Session validation
     if (requiresSession && !sessionManager.hasActiveSession()) {
       return createErrorResponse(
         ErrorCodes.MM_NO_ACTIVE_SESSION,
@@ -153,7 +174,6 @@ export async function runTool<TInput, TResult>(
       );
     }
 
-    // 2. Build execution context
     const context: ToolExecutionContext = {
       sessionId,
       page: requiresSession ? sessionManager.getPage() : (undefined as never),
@@ -161,10 +181,8 @@ export async function runTool<TInput, TResult>(
       startTime,
     };
 
-    // 3. Execute tool action
     const executeResult = await config.execute(context);
 
-    // 4. Extract result and optional custom observation
     let result: TResult;
     let customObservation: StepRecordObservation | undefined;
 
@@ -175,24 +193,19 @@ export async function runTool<TInput, TResult>(
       result = executeResult;
     }
 
-    // 5. Collect observation (if policy requires)
     let observation: StepRecordObservation | undefined;
 
-    if (observationPolicy === 'custom' && customObservation) {
+    if (effectivePolicy === 'custom' && customObservation) {
       observation = customObservation;
-    } else if (observationPolicy === 'default' && requiresSession) {
-      const state = await sessionManager.getExtensionState();
-      const testIds: TestIdItem[] = await collectTestIds(context.page, 50);
-      const {
-        nodes,
-        refMap: newRefMap,
-      }: { nodes: A11yNodeTrimmed[]; refMap: Map<string, string> } =
-        await collectTrimmedA11ySnapshot(context.page);
-      sessionManager.setRefMap(newRefMap);
-      observation = createDefaultObservation(state, testIds, nodes);
+    } else if (effectivePolicy === 'default' && requiresSession) {
+      observation = await collectFullObservation(context.page);
+    } else if (
+      (effectivePolicy === 'none' || effectivePolicy === 'failures') &&
+      requiresSession
+    ) {
+      observation = await collectMinimalObservation();
     }
 
-    // 6. Record step (if session exists)
     if (sessionId) {
       const recordInput = config.sanitizeInputForRecording
         ? config.sanitizeInputForRecording(config.input)
@@ -216,7 +229,25 @@ export async function runTool<TInput, TResult>(
       message: error instanceof Error ? error.message : String(error),
     };
 
-    // Record failed step
+    let failureObservation: StepRecordObservation = createEmptyObservation();
+
+    if (requiresSession && sessionManager.hasActiveSession()) {
+      if (effectivePolicy === 'failures' || effectivePolicy === 'default') {
+        try {
+          const page = sessionManager.getPage();
+          failureObservation = await collectFullObservation(page);
+        } catch {
+          failureObservation = await collectMinimalObservation();
+        }
+      } else if (effectivePolicy === 'none') {
+        try {
+          failureObservation = await collectMinimalObservation();
+        } catch {
+          // empty catch: already have empty observation as fallback
+        }
+      }
+    }
+
     if (sessionId) {
       const recordInput = config.sanitizeInputForRecording
         ? config.sanitizeInputForRecording(config.input)
@@ -231,7 +262,7 @@ export async function runTool<TInput, TResult>(
           ok: false,
           error: { code: errorInfo.code, message: errorInfo.message },
         },
-        observation: createEmptyObservation(),
+        observation: failureObservation,
         durationMs: Date.now() - startTime,
       });
     }

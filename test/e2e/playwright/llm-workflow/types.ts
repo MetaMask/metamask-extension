@@ -53,6 +53,8 @@ export type ScreenshotOptions = {
   fullPage?: boolean;
   selector?: string;
   timestamp?: boolean;
+  /** Optional page to capture. Defaults to extension page if not provided. */
+  page?: Page;
 };
 
 export type ScreenshotResult = {

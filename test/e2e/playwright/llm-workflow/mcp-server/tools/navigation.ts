@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test';
 import type {
   NavigateInput,
   NavigateResult,
@@ -9,6 +10,8 @@ import type {
   CloseTabResult,
   McpResponse,
   HandlerOptions,
+  ObservationPolicyOverride,
+  StepRecordObservation,
 } from '../types';
 import {
   createSuccessResponse,
@@ -19,9 +22,31 @@ import { sessionManager } from '../session-manager';
 import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
 import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
+async function collectObservationWithPolicy(
+  page: Page,
+  policy: ObservationPolicyOverride | undefined,
+  isFailure: boolean,
+): Promise<StepRecordObservation> {
+  const effectivePolicy = policy ?? 'default';
+  const shouldCollectFull =
+    effectivePolicy === 'default' ||
+    (effectivePolicy === 'failures' && isFailure);
+
+  const state = await sessionManager.getExtensionState();
+
+  if (shouldCollectFull) {
+    const testIds = await collectTestIds(page, 50);
+    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
+    sessionManager.setRefMap(refMap);
+    return createDefaultObservation(state, testIds, nodes);
+  }
+
+  return createDefaultObservation(state, [], []);
+}
+
 export async function handleNavigate(
   input: NavigateInput,
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<NavigateResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -70,18 +95,18 @@ export async function handleNavigate(
     }
 
     const page = sessionManager.getPage();
-    const state = await sessionManager.getExtensionState();
-    const testIds = await collectTestIds(page, 50);
-    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
-
-    sessionManager.setRefMap(refMap);
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
 
     await knowledgeStore.recordStep({
       sessionId: sessionId ?? '',
       toolName: 'mm_navigate',
       input: { screen: input.screen, url: input.url },
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
     });
 
@@ -107,7 +132,7 @@ export async function handleNavigate(
 
 export async function handleWaitForNotification(
   input: WaitForNotificationInput,
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<WaitForNotificationResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -128,19 +153,18 @@ export async function handleWaitForNotification(
       await sessionManager.waitForNotificationPage(timeoutMs);
     const pageUrl = notificationPage.url();
 
-    const state = await sessionManager.getExtensionState();
-    const testIds = await collectTestIds(notificationPage, 50);
-    const { nodes, refMap } =
-      await collectTrimmedA11ySnapshot(notificationPage);
-
-    sessionManager.setRefMap(refMap);
+    const observation = await collectObservationWithPolicy(
+      notificationPage,
+      options?.observationPolicy,
+      false,
+    );
 
     await knowledgeStore.recordStep({
       sessionId: sessionId ?? '',
       toolName: 'mm_wait_for_notification',
       input: { timeoutMs },
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
     });
 
@@ -166,7 +190,7 @@ export async function handleWaitForNotification(
 
 export async function handleSwitchToTab(
   input: SwitchToTabInput,
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<SwitchToTabResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -223,11 +247,11 @@ export async function handleSwitchToTab(
     sessionManager.setActivePage(targetPage.page);
 
     const page = sessionManager.getPage();
-    const testIds = await collectTestIds(page, 50);
-    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
-    sessionManager.setRefMap(refMap);
-
-    const state = await sessionManager.getExtensionState();
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
 
     const updatedTrackedPages = sessionManager.getTrackedPages();
     const activeTabInfo = updatedTrackedPages.find(
@@ -239,7 +263,7 @@ export async function handleSwitchToTab(
       toolName: 'mm_switch_to_tab',
       input,
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
     });
 
@@ -268,7 +292,7 @@ export async function handleSwitchToTab(
 
 export async function handleCloseTab(
   input: CloseTabInput,
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<CloseTabResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -340,17 +364,18 @@ export async function handleCloseTab(
     await targetPage.page.close();
 
     const page = sessionManager.getPage();
-    const testIds = await collectTestIds(page, 50);
-    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
-    sessionManager.setRefMap(refMap);
-    const state = await sessionManager.getExtensionState();
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
 
     await knowledgeStore.recordStep({
       sessionId: sessionId ?? '',
       toolName: 'mm_close_tab',
       input,
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
     });
 

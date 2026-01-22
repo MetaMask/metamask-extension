@@ -172,6 +172,21 @@ When implementing UI changes, follow this cycle:
 - When next step depends on intermediate state
 - Debugging or investigating issues
 
+**Options:**
+
+| Option                | Default | Description                                    |
+| --------------------- | ------- | ---------------------------------------------- |
+| `stopOnError`         | `false` | Stop executing on first failure                |
+| `includeObservations` | `all`   | Observation mode: `all`, `none`, or `failures` |
+
+**Observation Modes:**
+
+| Value      | Behavior                                                  | Use When                            |
+| ---------- | --------------------------------------------------------- | ----------------------------------- |
+| `all`      | Full observation (state + testIds + a11y) after each step | Default. Exploration, debugging     |
+| `none`     | Minimal observation (state only) - fastest                | Known deterministic flows           |
+| `failures` | Minimal on success, full on failure - balanced            | Production flows with error capture |
+
 **Example:**
 
 ```json
@@ -183,6 +198,27 @@ mm_run_steps({
   "stopOnError": true
 })
 ```
+
+**Fast mode example:**
+
+```json
+mm_run_steps({
+  "includeObservations": "none",
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "..." } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } }
+  ],
+  "stopOnError": true
+})
+```
+
+**Important:** When using `none` or `failures`, `a11yRef` targets become stale (refMap not refreshed). Prefer `testId` targets in fast mode. If you need `a11yRef`, call `mm_accessibility_snapshot` or `mm_describe_screen` first.
+
+**Recommended fast workflow:**
+
+1. `mm_describe_screen` (heavy, once) to discover targets
+2. `mm_run_steps { "includeObservations": "none", ... }` with `testId` targets
+3. `mm_describe_screen` again after major navigation or when `a11yRef` is needed
 
 ---
 

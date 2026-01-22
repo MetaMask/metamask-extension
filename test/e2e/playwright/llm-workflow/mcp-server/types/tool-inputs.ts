@@ -5,8 +5,21 @@ import type { SmartContractName } from './seeding';
  */
 export type TabRole = 'extension' | 'notification' | 'dapp' | 'other';
 
+/**
+ * Observation policy for tool execution.
+ * - 'default': Full observation (state + testIds + a11y) - current behavior
+ * - 'none': Minimal observation (state only) - fastest
+ * - 'failures': Minimal on success, full on failure - balanced
+ */
+export type ObservationPolicyOverride = 'default' | 'none' | 'failures';
+
 export type HandlerOptions = {
   signal?: AbortSignal;
+  /**
+   * Override observation policy for this tool execution.
+   * Used by mm_run_steps to propagate includeObservations setting.
+   */
+  observationPolicy?: ObservationPolicyOverride;
 };
 
 export type BuildInput = {

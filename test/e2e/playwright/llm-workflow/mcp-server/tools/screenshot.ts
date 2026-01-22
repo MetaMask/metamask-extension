@@ -1,8 +1,11 @@
+import type { Page } from '@playwright/test';
 import type {
   ScreenshotInput,
   ScreenshotResult,
   McpResponse,
   HandlerOptions,
+  ObservationPolicyOverride,
+  StepRecordObservation,
 } from '../types';
 import {
   createSuccessResponse,
@@ -13,9 +16,31 @@ import { sessionManager } from '../session-manager';
 import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
 import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
+async function collectObservationWithPolicy(
+  page: Page,
+  policy: ObservationPolicyOverride | undefined,
+  isFailure: boolean,
+): Promise<StepRecordObservation> {
+  const effectivePolicy = policy ?? 'default';
+  const shouldCollectFull =
+    effectivePolicy === 'default' ||
+    (effectivePolicy === 'failures' && isFailure);
+
+  const state = await sessionManager.getExtensionState();
+
+  if (shouldCollectFull) {
+    const testIds = await collectTestIds(page, 50);
+    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
+    sessionManager.setRefMap(refMap);
+    return createDefaultObservation(state, testIds, nodes);
+  }
+
+  return createDefaultObservation(state, [], []);
+}
+
 export async function handleScreenshot(
   input: ScreenshotInput,
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<ScreenshotResult>> {
   const startTime = Date.now();
   const sessionId = sessionManager.getSessionId();
@@ -38,11 +63,11 @@ export async function handleScreenshot(
     });
 
     const page = sessionManager.getPage();
-    const state = await sessionManager.getExtensionState();
-    const testIds = await collectTestIds(page, 50);
-    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
-
-    sessionManager.setRefMap(refMap);
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
 
     await knowledgeStore.recordStep({
       sessionId: sessionId ?? '',
@@ -53,7 +78,7 @@ export async function handleScreenshot(
         selector: input.selector,
       },
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
       screenshotPath: result.path,
       screenshotDimensions: { width: result.width, height: result.height },

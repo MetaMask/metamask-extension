@@ -1,4 +1,11 @@
-import type { GetStateResult, McpResponse, HandlerOptions } from '../types';
+import type { Page } from '@playwright/test';
+import type {
+  GetStateResult,
+  McpResponse,
+  HandlerOptions,
+  ObservationPolicyOverride,
+  StepRecordObservation,
+} from '../types';
 import {
   createSuccessResponse,
   createErrorResponse,
@@ -8,8 +15,30 @@ import { sessionManager } from '../session-manager';
 import { knowledgeStore, createDefaultObservation } from '../knowledge-store';
 import { collectTestIds, collectTrimmedA11ySnapshot } from '../discovery';
 
+async function collectObservationWithPolicy(
+  page: Page,
+  policy: ObservationPolicyOverride | undefined,
+  isFailure: boolean,
+): Promise<StepRecordObservation> {
+  const effectivePolicy = policy ?? 'default';
+  const shouldCollectFull =
+    effectivePolicy === 'default' ||
+    (effectivePolicy === 'failures' && isFailure);
+
+  const state = await sessionManager.getExtensionState();
+
+  if (shouldCollectFull) {
+    const testIds = await collectTestIds(page, 50);
+    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
+    sessionManager.setRefMap(refMap);
+    return createDefaultObservation(state, testIds, nodes);
+  }
+
+  return createDefaultObservation(state, [], []);
+}
+
 export async function handleGetState(
-  _options?: HandlerOptions,
+  options?: HandlerOptions,
 ): Promise<McpResponse<GetStateResult>> {
   const startTime = Date.now();
 
@@ -28,10 +57,11 @@ export async function handleGetState(
     const sessionId = sessionManager.getSessionId() ?? '';
     const page = sessionManager.getPage();
 
-    const testIds = await collectTestIds(page, 50);
-    const { nodes, refMap } = await collectTrimmedA11ySnapshot(page);
-
-    sessionManager.setRefMap(refMap);
+    const observation = await collectObservationWithPolicy(
+      page,
+      options?.observationPolicy,
+      false,
+    );
 
     const trackedPages = sessionManager.getTrackedPages();
     const activePage = sessionManager.getPage();
@@ -52,7 +82,7 @@ export async function handleGetState(
       sessionId,
       toolName: 'mm_get_state',
       outcome: { ok: true },
-      observation: createDefaultObservation(state, testIds, nodes),
+      observation,
       durationMs: Date.now() - startTime,
     });
 

@@ -177,9 +177,41 @@ mm_run_steps {
 
 ### Options
 
-| Option        | Default | Description                     |
-| ------------- | ------- | ------------------------------- |
-| `stopOnError` | `false` | Stop executing on first failure |
+| Option                | Default | Description                                    |
+| --------------------- | ------- | ---------------------------------------------- |
+| `stopOnError`         | `false` | Stop executing on first failure                |
+| `includeObservations` | `all`   | Observation mode: `all`, `none`, or `failures` |
+
+### Observation Modes
+
+Control observation collection per step for improved throughput:
+
+| Value      | Behavior                                                  | Use When                            |
+| ---------- | --------------------------------------------------------- | ----------------------------------- |
+| `all`      | Full observation (state + testIds + a11y) after each step | Default. Exploration, debugging     |
+| `none`     | Minimal observation (state only) - fastest                | Known deterministic flows           |
+| `failures` | Minimal on success, full on failure - balanced            | Production flows with error capture |
+
+**Example: Fast mode**
+
+```json
+mm_run_steps {
+  "includeObservations": "none",
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "..." } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } }
+  ],
+  "stopOnError": true
+}
+```
+
+**Important:** When using `none` or `failures`, `a11yRef` targets become stale (refMap not refreshed). Prefer `testId` targets. If you need `a11yRef`, call `mm_accessibility_snapshot` or `mm_describe_screen` first.
+
+### Recommended Fast Workflow
+
+1. **Describe once:** `mm_describe_screen` to discover targets
+2. **Batch steps:** `mm_run_steps { "includeObservations": "none", ... }` with `testId` targets
+3. **Describe on churn:** Call `mm_describe_screen` again after major navigation or when `a11yRef` is needed
 
 ### Response
 

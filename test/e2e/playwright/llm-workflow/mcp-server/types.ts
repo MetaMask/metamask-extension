@@ -52,6 +52,7 @@ export {
 } from './types/seeding';
 
 export type {
+  ObservationPolicyOverride,
   HandlerOptions,
   BuildInput,
   LaunchInput,

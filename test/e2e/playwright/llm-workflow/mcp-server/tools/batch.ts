@@ -4,6 +4,7 @@ import type {
   RunStepsInput,
   RunStepsResult,
   StepResult,
+  ObservationPolicyOverride,
 } from '../types';
 import { toolSchemas, safeValidateToolInput, type ToolName } from '../schemas';
 import {
@@ -13,6 +14,20 @@ import {
 } from '../types';
 import { sessionManager } from '../session-manager';
 import { toolHandlers } from './registry';
+
+function mapIncludeObservationsToPolicy(
+  value: 'none' | 'failures' | 'all' | undefined,
+): ObservationPolicyOverride {
+  switch (value) {
+    case 'none':
+      return 'none';
+    case 'failures':
+      return 'failures';
+    case 'all':
+    default:
+      return 'default';
+  }
+}
 
 export async function handleRunSteps(
   input: RunStepsInput,
@@ -31,7 +46,8 @@ export async function handleRunSteps(
     );
   }
 
-  const { steps: stepInputs, stopOnError = false } = input;
+  const { steps: stepInputs, stopOnError = false, includeObservations } = input;
+  const observationPolicy = mapIncludeObservationsToPolicy(includeObservations);
   const stepResults: StepResult[] = [];
   let succeeded = 0;
   let failed = 0;
@@ -90,7 +106,11 @@ export async function handleRunSteps(
     }
 
     try {
-      const response = await handler(args, options);
+      const stepOptions: HandlerOptions = {
+        ...options,
+        observationPolicy,
+      };
+      const response = await handler(args, stepOptions);
 
       const result: StepResult = {
         tool,

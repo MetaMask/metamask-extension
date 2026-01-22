@@ -309,7 +309,31 @@ mm_run_steps {
 ### Options
 
 - `stopOnError: true` (default: false) - Stop executing on first failure
+- `includeObservations`: Controls observation collection per step (see below)
 - Returns a summary with `succeeded`/`failed` counts and individual step results
+
+### Observation Modes (includeObservations)
+
+| Value      | Behavior                                                  | Use When                            |
+| ---------- | --------------------------------------------------------- | ----------------------------------- |
+| `all`      | Full observation (state + testIds + a11y) after each step | Default. Exploration, debugging     |
+| `none`     | Minimal observation (state only) - fastest                | Known deterministic flows           |
+| `failures` | Minimal on success, full on failure - balanced            | Production flows with error capture |
+
+**Example: Fast mode for known flows**
+
+```
+mm_run_steps {
+  "includeObservations": "none",
+  "steps": [
+    { "tool": "mm_type", "args": { "testId": "unlock-password", "text": "correct horse battery staple" } },
+    { "tool": "mm_click", "args": { "testId": "unlock-submit" } }
+  ],
+  "stopOnError": true
+}
+```
+
+**Important:** When using `includeObservations: "none"` or `"failures"`, the a11y snapshot is not collected and `refMap` is not refreshed. This means `a11yRef` targets (e.g., `e5`) become stale. **Prefer `testId` targets in fast mode.** If you need `a11yRef`, call `mm_accessibility_snapshot` or `mm_describe_screen` first.
 
 ### Pattern: Discover First, Then Batch
 
@@ -317,6 +341,14 @@ mm_run_steps {
 2. Use `mm_knowledge_search` to find prior successful sequences
 3. Use `mm_run_steps` to execute the known sequence efficiently
 4. Use `mm_describe_screen` again to verify the end state
+
+### Recommended Fast Workflow
+
+For maximum throughput on known, deterministic flows:
+
+1. **Describe once:** `mm_describe_screen` to discover targets
+2. **Batch steps:** `mm_run_steps { "includeObservations": "none", ... }` with `testId` targets
+3. **Describe on churn:** Call `mm_describe_screen` again after major navigation or if you need fresh `a11yRef` targets
 
 ## Error Recovery
 

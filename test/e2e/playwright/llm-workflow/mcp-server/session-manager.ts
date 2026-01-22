@@ -60,14 +60,27 @@ export class SessionManager {
     return this.activeSession.launcher.getSeeder();
   }
 
+  private isActivePageValid(): boolean {
+    return Boolean(this.activePage && !this.activePage.isClosed());
+  }
+
+  private fallbackToExtensionPage(): Page {
+    const extensionPage = (
+      this.activeSession as { launcher: MetaMaskExtensionLauncher }
+    ).launcher.getPage();
+    this.activePage = extensionPage;
+    this.clearRefMap();
+    return extensionPage;
+  }
+
   getPage(): Page {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    if (this.activePage) {
-      return this.activePage;
+    if (this.isActivePageValid()) {
+      return this.activePage as Page;
     }
-    return this.activeSession.launcher.getPage();
+    return this.fallbackToExtensionPage();
   }
 
   setActivePage(page: Page): void {
@@ -83,11 +96,14 @@ export class SessionManager {
     const context = this.getContext();
     const { extensionId } = this.activeSession.state;
 
-    return context.pages().map((page) => ({
-      role: this.classifyPageRole(page, extensionId),
-      url: page.url(),
-      page,
-    }));
+    return context
+      .pages()
+      .filter((page) => !page.isClosed())
+      .map((page) => ({
+        role: this.classifyPageRole(page, extensionId),
+        url: page.url(),
+        page,
+      }));
   }
 
   classifyPageRole(page: Page, extensionId?: string): TabRole {
@@ -318,7 +334,11 @@ export class SessionManager {
     if (!this.activeSession) {
       throw new Error(ErrorCodes.MM_NO_ACTIVE_SESSION);
     }
-    return this.activeSession.launcher.screenshot(options);
+
+    return this.activeSession.launcher.screenshot({
+      ...options,
+      page: this.getPage(),
+    });
   }
 
   private resolveFixturePreset(presetName: string): FixtureData {

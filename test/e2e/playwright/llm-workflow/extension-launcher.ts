@@ -468,8 +468,9 @@ export class MetaMaskExtensionLauncher {
   }
 
   async screenshot(options: ScreenshotOptions): Promise<ScreenshotResult> {
-    if (!this.extensionPage) {
-      throw new Error('Extension page not initialized');
+    const page = options.page ?? this.extensionPage;
+    if (!page) {
+      throw new Error('No page available for screenshot');
     }
 
     const timestamp = options.timestamp === false ? '' : `-${Date.now()}`;
@@ -479,10 +480,10 @@ export class MetaMaskExtensionLauncher {
     let screenshotBuffer: Buffer;
 
     if (options.selector) {
-      const element = this.extensionPage.locator(options.selector);
+      const element = page.locator(options.selector);
       screenshotBuffer = await element.screenshot({ path: filepath });
     } else {
-      screenshotBuffer = await this.extensionPage.screenshot({
+      screenshotBuffer = await page.screenshot({
         path: filepath,
         fullPage: options.fullPage !== false,
       });
