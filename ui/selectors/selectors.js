@@ -216,10 +216,6 @@ export function getNextSuggestedNonce(state) {
   return Number(state.appState.nextNonce);
 }
 
-export function getShowWhatsNewPopup(state) {
-  return state.appState.showWhatsNewPopup;
-}
-
 export function getShowPermittedNetworkToastOpen(state) {
   return state.appState.showPermittedNetworkToastOpen;
 }
@@ -2427,48 +2423,6 @@ export const getSnapInsights = createDeepEqualSelector(
   getAllSnapInsights,
   (_, id) => id,
   (insights, id) => insights?.[id],
-);
-
-/**
- * Get an object of announcement IDs and if they are allowed or not.
- *
- * @returns {object}
- */
-const getAllowedAnnouncementIds = () => EMPTY_OBJECT;
-
-/**
- * Get the announcements object from state
- *
- * @param {object} state - the redux state object
- * @returns {object} The announcements object
- */
-const getAnnouncementsObject = (state) => state.metamask.announcements;
-
-/**
- * @typedef {object} Announcement
- * @property {number} id - A unique identifier for the announcement
- * @property {string} date - A date in YYYY-MM-DD format, identifying when the notification was first committed
- */
-
-/**
- * Announcements are managed by the announcement controller and referenced by
- * `state.metamask.announcements`. This function returns a list of announcements
- * the can be shown to the user. This list includes all announcements that do not
- * have a truthy `isShown` property.
- *
- * The returned announcements are sorted by date.
- *
- * @param {object} state - the redux state object
- * @returns {Announcement[]} An array of announcements that can be shown to the user
- */
-
-export const getSortedAnnouncementsToShow = createSelector(
-  getAnnouncementsObject,
-  getAllowedAnnouncementIds,
-  (announcements, allowedIds) =>
-    Object.values(announcements)
-      .filter((a) => !a.isShown && allowedIds[a.id])
-      .sort((a, b) => new Date(b.date) - new Date(a.date)),
 );
 
 /**
