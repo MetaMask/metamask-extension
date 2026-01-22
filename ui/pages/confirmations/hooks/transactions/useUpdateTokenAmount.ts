@@ -12,7 +12,14 @@ import { updateAtomicBatchData } from '../../../../store/controller-actions/tran
 import { useTransactionPayRequiredTokens } from '../pay/useTransactionPayData';
 
 const ERC20_ABI = ['function transfer(address to, uint256 amount)'];
-const erc20Interface = new Interface(ERC20_ABI);
+let erc20Interface: Interface | null = null;
+
+function getErc20Interface(): Interface {
+  if (!erc20Interface) {
+    erc20Interface = new Interface(ERC20_ABI);
+  }
+  return erc20Interface;
+}
 
 function calcTokenValue(value: string, decimals: number): BigNumber {
   const multiplier = new BigNumber(10).pow(decimals);
@@ -89,7 +96,7 @@ export function useUpdateTokenAmount() {
       const transactionData = parseStandardTokenTransactionData(data);
       const recipient = transactionData?.args?._to as string;
 
-      const newData = erc20Interface.encodeFunctionData('transfer', [
+      const newData = getErc20Interface().encodeFunctionData('transfer', [
         recipient,
         `0x${newAmountRaw.toString(16)}`,
       ]) as Hex;
