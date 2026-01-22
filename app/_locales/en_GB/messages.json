@@ -3854,6 +3854,10 @@
   "moreQuotes": {
     "message": "More quotes"
   },
+  "multichainProviderAccess": {
+    "message": "Grant Multichain provider access to $1",
+    "description": "The parameter is the name of the requesting origin"
+  },
   "multichainAccountAddressCopied": {
     "message": "Address copied",
     "description": "Message displayed when the multichain account address is copied to clipboard"
@@ -4962,6 +4966,14 @@
   "permission_manageStateDescription": {
     "message": "Allow $1 to store, update, and retrieve data securely with encryption. Other snaps cannot access this information.",
     "description": "An extended description for the `snap_manageState` permission. $1 is the snap name."
+  },
+  "permission_multichainProvider": {
+    "message": "Access the Multichain provider.",
+    "description": "The description for the `endowment:multichain-provider` permission"
+  },
+  "permission_multichainProviderDescription": {
+    "message": "Allow $1 to communicate with MetaMask directly, in order for it to read data from the blockchain and suggest messages and transactions.",
+    "description": "An extended description for the `endowment:multichain-provider` permission. $1 is the snap name."
   },
   "permission_nameLookup": {
     "message": "Provide domain and address lookups.",
