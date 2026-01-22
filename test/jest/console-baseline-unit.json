@@ -26,6 +26,13 @@
       "error: Warning: A component is changing": 2,
       "Test errors: Uncaught TypeErrors": 1
     },
+    "ui/pages/bridge/prepare/bridge-input-group.test.tsx": {
+      "Reselect: Input stability warnings": 1,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/bridge/prepare/components/bridge-asset-picker/asset.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 6,
