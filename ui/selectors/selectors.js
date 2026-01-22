@@ -3233,8 +3233,12 @@ export function getManageInstitutionalWallets(state) {
 export const getIsDefiPositionsEnabled = createSelector(
   getRemoteFeatureFlags,
   (remoteFeatureFlags) =>
-    remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
-    DEFAULT_FEATURE_FLAG_VALUES[FeatureFlagNames.AssetsDefiPositionsEnabled],
+    Boolean(
+      remoteFeatureFlags[FeatureFlagNames.AssetsDefiPositionsEnabled] ??
+        DEFAULT_FEATURE_FLAG_VALUES[
+          FeatureFlagNames.AssetsDefiPositionsEnabled
+        ],
+    ),
 );
 
 /**
