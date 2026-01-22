@@ -23,6 +23,7 @@ import { useI18nContext } from '../../hooks/useI18nContext';
 import {
   DEFAULT_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
 } from '../../helpers/constants/routes';
 import {
   mockPositions,
@@ -76,8 +77,8 @@ const PerpsHomePage: React.FC = () => {
   }, [navigate]);
 
   const handleSearchClick = useCallback(() => {
-    // TODO: Handle search
-  }, []);
+    navigate(PERPS_MARKET_LIST_ROUTE);
+  }, [navigate]);
 
   const handlePositionClick = useCallback(
     (coin: string) => {
@@ -324,6 +325,15 @@ const PerpsHomePage: React.FC = () => {
           alignItems={BoxAlignItems.Center}
           gap={1}
           paddingBottom={2}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          onClick={handleSearchClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleSearchClick();
+            }
+          }}
         >
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             {t('perpsExploreCrypto')}
@@ -402,6 +412,15 @@ const PerpsHomePage: React.FC = () => {
           alignItems={BoxAlignItems.Center}
           gap={1}
           paddingBottom={2}
+          className="cursor-pointer"
+          role="button"
+          tabIndex={0}
+          onClick={handleSearchClick}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              handleSearchClick();
+            }
+          }}
         >
           <Text variant={TextVariant.HeadingSm} fontWeight={FontWeight.Medium}>
             {t('perpsExploreStocksAndCommodities')}

@@ -5091,6 +5091,21 @@
   "perpsExploreStocksAndCommodities": {
     "message": "Explore stocks and commodities"
   },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCommodities": {
+    "message": "Commodities"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
+  "perpsFilterStocksOnly": {
+    "message": "Stocks"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
@@ -5128,8 +5143,14 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
+  "perpsMarkets": {
+    "message": "Markets"
+  },
   "perpsMore": {
     "message": "More"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
@@ -5158,6 +5179,9 @@
   "perpsReturn": {
     "message": "Return"
   },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
+  },
   "perpsSell": {
     "message": "sell"
   },
@@ -5166,6 +5190,21 @@
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSortFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortPriceChangeHighToLow": {
+    "message": "Price change: high to low"
+  },
+  "perpsSortPriceChangeLowToHigh": {
+    "message": "Price change: low to high"
+  },
+  "perpsSortVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"

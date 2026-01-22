@@ -13,3 +13,4 @@ export type {
   PerpsMarketDetailPageProps,
   PerpsMarketDetailState,
 } from './perps-market-detail-page.types';
+export { MarketListView } from './market-list';

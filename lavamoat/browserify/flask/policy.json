@@ -1418,6 +1418,7 @@
         "@metamask/delegation-core": true,
         "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },

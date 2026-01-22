@@ -853,6 +853,24 @@ class Driver {
   }
 
   /**
+   * Clicks a nested button element by its text content.
+   * First attempts to click a button with the exact text, then falls back
+   * to finding an element containing the text and clicking its parent button.
+   *
+   * @param {string} buttonText - The text content of the button to click
+   * @returns {Promise<void>}
+   */
+  async clickNestedButton(buttonText) {
+    try {
+      await this.clickElement({ text: buttonText, tag: 'button' });
+    } catch (error) {
+      await this.clickElement({
+        xpath: `//*[contains(text(),"${buttonText}")]/parent::button`,
+      });
+    }
+  }
+
+  /**
    * Can fix instances where a normal click produces ElementClickInterceptedError
    *
    * @param rawLocator

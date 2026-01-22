@@ -1,5 +1,4 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import {
   Box,
   BoxFlexDirection,
@@ -10,6 +9,7 @@ import {
   TextColor,
   FontWeight,
 } from '@metamask/design-system-react';
+import { useNavigate } from 'react-router-dom';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { PERPS_HOME_ROUTE } from '../../../helpers/constants/routes';
 import { mockPositions, mockOrders } from './mocks';
