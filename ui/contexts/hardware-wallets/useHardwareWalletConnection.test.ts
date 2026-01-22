@@ -15,14 +15,6 @@ import { MockHardwareWalletAdapter } from './__mocks__/MockHardwareWalletAdapter
 jest.mock('./webConnectionUtils');
 jest.mock('./adapters/factory');
 
-/**
- * Connection error reasons enum
- */
-enum ConnectionErrorReason {
-  Locked = 'locked',
-  ConnectionFailed = 'connection_failed',
-}
-
 describe('useHardwareWalletConnection', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
@@ -156,7 +148,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -175,7 +166,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -228,7 +218,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
       expect(mockAdapter.destroyMock).toHaveBeenCalled();
@@ -261,7 +250,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -480,7 +468,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.ConnectionFailed,
         }),
       );
     });
@@ -575,7 +562,6 @@ describe('useHardwareWalletConnection', () => {
       expect(mockUpdateConnectionState).toHaveBeenCalledWith(
         expect.objectContaining({
           status: ConnectionStatus.ErrorState,
-          reason: ConnectionErrorReason.Locked,
         }),
       );
     });

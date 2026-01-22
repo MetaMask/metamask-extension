@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import { ErrorCode, type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   getConnectionStateFromError,
   createHardwareWalletError,
@@ -62,37 +62,47 @@ export const useHardwareWalletConnection = ({
   }, [refs]);
 
   const resolveOrDiscoverDeviceId = useCallback(
-    async (targetWalletType: HardwareWalletType): Promise<string | null> => {
+    async ({
+      walletType,
+      abortSignal,
+    }: {
+      walletType: HardwareWalletType;
+      abortSignal?: AbortSignal;
+    }): Promise<string | null> => {
       const existingDeviceId = refs.deviceIdRef.current;
       if (existingDeviceId) {
         return existingDeviceId;
       }
 
       try {
-        const discoveredId = await getHardwareWalletDeviceId(targetWalletType);
+        const discoveredId = await getHardwareWalletDeviceId(walletType);
         if (!discoveredId) {
-          const error = createHardwareWalletError(
-            ErrorCode.DeviceDisconnected,
-            targetWalletType,
-            `No ${targetWalletType} device found. Please ensure your device is connected and unlocked.`,
-          );
-          updateConnectionState(getConnectionStateFromError(error));
+          if (!abortSignal?.aborted) {
+            const error = createHardwareWalletError(
+              ErrorCode.DeviceDisconnected,
+              walletType,
+              `No ${walletType} device found. Please ensure your device is connected and unlocked.`,
+            );
+            updateConnectionState(getConnectionStateFromError(error));
+          }
           refs.isConnectingRef.current = false;
           return null;
         }
 
         return discoveredId;
       } catch (error) {
-        updateConnectionState(
-          getConnectionStateFromError(
-            createHardwareWalletError(
-              ErrorCode.ConnectionClosed,
-              targetWalletType,
-              `Failed to discover ${targetWalletType} device: ${error instanceof Error ? error.message : String(error)}`,
-              { cause: error instanceof Error ? error : undefined },
+        if (!abortSignal?.aborted) {
+          updateConnectionState(
+            getConnectionStateFromError(
+              createHardwareWalletError(
+                ErrorCode.ConnectionClosed,
+                walletType,
+                `Failed to discover ${walletType} device: ${error instanceof Error ? error.message : String(error)}`,
+                { cause: error instanceof Error ? error : undefined },
+              ),
             ),
-          ),
-        );
+          );
+        }
         refs.isConnectingRef.current = false;
         return null;
       }
@@ -128,6 +138,10 @@ export const useHardwareWalletConnection = ({
       abortSignal?: AbortSignal;
       isLatestAttempt: IsLatestAttempt;
     }): Promise<void> => {
+      if (abortSignal?.aborted) {
+        return;
+      }
+
       if (!isLatestAttempt()) {
         return;
       }
@@ -142,13 +156,19 @@ export const useHardwareWalletConnection = ({
         onDeviceLocked: () => {
           if (!abortSignal?.aborted && isLatestAttempt()) {
             updateConnectionState(
-              ConnectionState.error('locked', new Error('Device is locked')),
+              ConnectionState.error(
+                createHardwareWalletError(
+                  ErrorCode.AuthenticationDeviceLocked,
+                  targetWalletType,
+                  'Device is locked',
+                ),
+              ),
             );
           }
         },
         onAppNotOpen: () => {
           if (!abortSignal?.aborted && isLatestAttempt()) {
-            updateConnectionState(ConnectionState.awaitingApp('not_open'));
+            updateConnectionState(ConnectionState.awaitingApp());
           }
         },
         onDeviceEvent: handleDeviceEvent,
@@ -185,10 +205,12 @@ export const useHardwareWalletConnection = ({
       error,
       abortSignal,
       isLatestAttempt,
+      walletType,
     }: {
       error: unknown;
       abortSignal?: AbortSignal;
       isLatestAttempt: IsLatestAttempt;
+      walletType: HardwareWalletType;
     }) => {
       if (!isLatestAttempt()) {
         return;
@@ -198,13 +220,15 @@ export const useHardwareWalletConnection = ({
         if (isHardwareWalletErrorWithCode(error)) {
           updateConnectionState(getConnectionStateFromError(error));
         } else {
-          const fallbackError =
+          const fallbackError = createHardwareWalletError(
+            ErrorCode.ConnectionClosed,
+            walletType,
             error instanceof Error
-              ? error
-              : new Error('Failed to connect to hardware wallet');
-          updateConnectionState(
-            ConnectionState.error('connection_failed', fallbackError),
+              ? error.message
+              : 'Failed to connect to hardware wallet',
+            { cause: error instanceof Error ? error : undefined },
           );
+          updateConnectionState(ConnectionState.error(fallbackError));
         }
       }
 
@@ -229,10 +253,7 @@ export const useHardwareWalletConnection = ({
     const effectiveType = refs.walletTypeRef.current;
     if (!effectiveType) {
       updateConnectionState(
-        ConnectionState.error(
-          'connection_failed',
-          new Error('Hardware wallet type is unknown'),
-        ),
+        ConnectionState.error(new Error('Hardware wallet type is unknown')),
       );
       refs.isConnectingRef.current = false;
       return;
@@ -241,7 +262,10 @@ export const useHardwareWalletConnection = ({
     resetAdapterForFreshConnection();
     const { isLatestAttempt } = beginConnectionAttempt();
 
-    const discoveredDeviceId = await resolveOrDiscoverDeviceId(effectiveType);
+    const discoveredDeviceId = await resolveOrDiscoverDeviceId({
+      walletType: effectiveType,
+      abortSignal,
+    });
     if (!discoveredDeviceId) {
       return;
     }
@@ -256,7 +280,12 @@ export const useHardwareWalletConnection = ({
         isLatestAttempt,
       });
     } catch (error) {
-      handleConnectError({ error, abortSignal, isLatestAttempt });
+      handleConnectError({
+        error,
+        abortSignal,
+        isLatestAttempt,
+        walletType: effectiveType,
+      });
     } finally {
       finalizeConnectionAttempt(isLatestAttempt);
     }
@@ -344,18 +373,14 @@ export const useHardwareWalletConnection = ({
             }
             return result;
           } catch (error) {
-            if (error && typeof error === 'object' && 'code' in error) {
-              updateConnectionState(
-                getConnectionStateFromError(error as HardwareWalletError),
-              );
+            if (isHardwareWalletError(error)) {
+              updateConnectionState(getConnectionStateFromError(error));
             } else {
               const fallbackError =
                 error instanceof Error
                   ? error
                   : new Error('Device verification failed');
-              updateConnectionState(
-                ConnectionState.error('connection_failed', fallbackError),
-              );
+              updateConnectionState(ConnectionState.error(fallbackError));
             }
             return false;
           }
@@ -374,6 +399,10 @@ export const useHardwareWalletConnection = ({
     ensureDeviceReady,
   };
 };
+
+function isHardwareWalletError(error: unknown): error is HardwareWalletError {
+  return error instanceof HardwareWalletError;
+}
 
 function isHardwareWalletErrorWithCode(
   error: unknown,

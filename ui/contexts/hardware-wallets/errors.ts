@@ -151,7 +151,7 @@ export function parseErrorByType(
 
   // Parse hardware wallet error codes using mappings from keyring-utils
   for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-    if (errorMessageLower.includes(errorCode)) {
+    if (errorMessageLower.includes(errorCode.toLowerCase())) {
       return createHardwareWalletError(mapping.code, walletType, errorMessage, {
         cause,
       });
@@ -165,15 +165,11 @@ export function parseErrorByType(
       code: ErrorCode.AuthenticationDeviceLocked,
     },
     {
-      patterns: ['app'],
-      code: ErrorCode.DeviceStateEthAppClosed,
-    },
-    {
       patterns: ['permission.*denied'],
       code: ErrorCode.AuthenticationSecurityCondition,
     },
     {
-      patterns: ['webhid', 'hid'],
+      patterns: ['webhid', 'hid', 'usb', 'webusb'],
       code: ErrorCode.ConnectionTransportMissing,
     },
     {
@@ -231,22 +227,22 @@ export function getConnectionStateFromError(
   switch (error.code) {
     case ErrorCode.AuthenticationDeviceLocked:
     case ErrorCode.AuthenticationDeviceBlocked:
-      return ConnectionState.error('locked', error);
+      return ConnectionState.error(error);
     case ErrorCode.DeviceStateEthAppClosed:
-      return ConnectionState.awaitingApp('not_open');
+      return ConnectionState.awaitingApp();
     case ErrorCode.ConnectionTransportMissing:
-      return ConnectionState.error('webhid_not_available', error);
+      return ConnectionState.error(error);
     case ErrorCode.AuthenticationSecurityCondition:
-      return ConnectionState.error('webhid_permission_denied', error);
+      return ConnectionState.error(error);
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
-      return ConnectionState.error('connection_failed', error);
+      return ConnectionState.error(error);
     case ErrorCode.UserRejected:
     case ErrorCode.UserCancelled:
-      return ConnectionState.error('user_rejected', error);
+      return ConnectionState.error(error);
     case ErrorCode.ConnectionTimeout:
-      return ConnectionState.error('timeout', error);
+      return ConnectionState.error(error);
     default:
-      return ConnectionState.error('unknown', error);
+      return ConnectionState.error(error);
   }
 }
