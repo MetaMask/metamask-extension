@@ -224,7 +224,7 @@ describe('useHardwareWalletConnection', () => {
     });
 
     it('aborts previous connection when new connection starts', async () => {
-      let resolveFirstDiscovery: (value: string) => void;
+      let resolveFirstDiscovery: ((value: string) => void) | undefined;
       const firstDiscoveryPromise = new Promise<string>((resolve) => {
         resolveFirstDiscovery = resolve;
       });
@@ -260,7 +260,9 @@ describe('useHardwareWalletConnection', () => {
       });
 
       // Now resolve the first discovery - but it should be aborted
-      resolveFirstDiscovery!('device-123');
+      if (resolveFirstDiscovery) {
+        resolveFirstDiscovery('device-123');
+      }
       await firstConnect;
 
       // Only the second connection should have completed successfully
@@ -293,7 +295,9 @@ describe('useHardwareWalletConnection', () => {
       });
 
       // After connect, AbortController should be created
-      expect(mockRefs.abortControllerRef.current).toBeInstanceOf(AbortController);
+      expect(mockRefs.abortControllerRef.current).toBeInstanceOf(
+        AbortController,
+      );
     });
 
     it('handles unknown wallet type', async () => {
