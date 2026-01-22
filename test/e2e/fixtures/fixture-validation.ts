@@ -46,11 +46,12 @@ const getFixtureIgnoredKeys = (): string[] => [
   'data.SubjectMetadataController.subjectMetadata',
   // Locale-related keys
   'localeMessages',
-  // Timestamps that change on every run
+  // Timestamps and dates that change on every run
   'data.AppStateController.newPrivacyPolicyToastShownDate',
   'data.AppStateController.onboardingDate',
   'data.AppStateController.recoveryPhraseReminderLastShown',
   'data.MetaMetricsController.tracesBeforeMetricsOptIn',
+  'data.MetaMetricsController.traits.install_date_ext',
   // Environment-specific values that differ per machine
   'data.AppStateController.browserEnvironment.os',
 ];
