@@ -75,6 +75,9 @@ export function useTransactionCustomAmount({
 
   useEffect(() => {
     debounceSetAmountDelayed(amountHuman);
+    return () => {
+      debounceSetAmountDelayed.cancel();
+    };
   }, [amountHuman, debounceSetAmountDelayed]);
 
   useEffect(() => {
