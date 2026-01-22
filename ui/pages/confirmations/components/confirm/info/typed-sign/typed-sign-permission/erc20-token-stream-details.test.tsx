@@ -29,10 +29,7 @@ describe('Erc20TokenStreamDetails', () => {
       justification: 'Test justification',
     },
     chainId: '0x1',
-    signer: {
-      type: 'account',
-      data: { address: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829' },
-    },
+    to: '0xCdD6132d1a6efA06bce1A89b0fEa6b08304A3829',
   } as const;
 
   const mockPermission =

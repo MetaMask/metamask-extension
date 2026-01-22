@@ -10,6 +10,11 @@ class SendPage {
     tag: 'button',
   };
 
+  private readonly header = {
+    tag: 'h4',
+    text: 'Send',
+  };
+
   private readonly hexDataInput = '[placeholder="Enter hex data (optional)"]';
 
   private readonly inputRecipient =
@@ -30,6 +35,10 @@ class SendPage {
   private readonly maxButton = {
     text: 'Max',
     tag: 'button',
+  };
+
+  private readonly networkPicker = {
+    testId: 'send-network-filter-toggle',
   };
 
   private readonly recipientModalButton =
@@ -73,6 +82,18 @@ class SendPage {
       this.amountInput,
       this.inputRecipient,
     ]);
+  async checkPageIsLoaded(): Promise<void> {
+    console.log('Checking if send page is loaded');
+    try {
+      await this.driver.waitForMultipleSelectors([
+        this.header,
+        this.networkPicker,
+      ]);
+    } catch (e) {
+      console.log('Timeout while waiting for send page to be loaded', e);
+      throw e;
+    }
+    console.log('Send page is loaded');
   }
 
   async checkSolanaNetworkIsPresent(): Promise<void> {
@@ -196,6 +217,7 @@ class SendPage {
 
   async selectNft(nftName: string): Promise<void> {
     console.log(`Selecting nft ${nftName}`);
+    await this.driver.waitForElementToStopMoving({ text: nftName });
     await this.driver.clickElement({ text: nftName });
   }
 

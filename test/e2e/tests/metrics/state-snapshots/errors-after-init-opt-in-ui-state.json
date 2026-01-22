@@ -20,7 +20,6 @@
     "importNftsModal": "object",
     "importTokensModalOpen": "boolean",
     "isAccessedFromDappConnectedSitePopover": "boolean",
-    "isAccountMenuOpen": false,
     "isAddingNewNetwork": "boolean",
     "isLoading": "boolean",
     "isMultiRpcOnboarding": "boolean",
@@ -439,7 +438,6 @@
   },
   "ramps": "object",
   "rewards": "object",
-  "send": "object",
   "smartAccounts": "object",
   "swaps": "object",
   "unconnectedAccount": { "state": "CLOSED" }
