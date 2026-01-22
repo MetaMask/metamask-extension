@@ -9,6 +9,7 @@ import {
   TextColor,
   JustifyContent,
   AlignItems,
+  TextAlign,
 } from '../../helpers/constants/design-system';
 import {
   Box,
@@ -140,6 +141,7 @@ export const SnapAccountCard = ({
                     variant={TextVariant.bodyMdMedium}
                     isHidden={privacyMode}
                     data-testid="account-balance"
+                    textAlign={TextAlign.End}
                     ellipsis
                   >
                     {formattedBalance}
