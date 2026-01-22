@@ -3,7 +3,6 @@ import type { Provider } from '@metamask/network-controller';
 import { act } from '@testing-library/react';
 import * as reactRouterUtils from 'react-router-dom';
 import { userEvent } from '@testing-library/user-event';
-import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
 import { renderWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import configureStore from '../../../store/store';
 import { createBridgeMockStore } from '../../../../test/data/bridge/mock-bridge-store';
@@ -44,7 +43,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.OPTIMISM]: {
               isActiveSrc: true,
@@ -103,7 +102,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
             [CHAIN_IDS.LINEA_MAINNET]: {
               isActiveSrc: true,
@@ -124,8 +123,8 @@ describe('PrepareBridgePage', () => {
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
       bridgeStateOverrides: {
         quoteRequest: {
@@ -196,8 +195,8 @@ describe('PrepareBridgePage', () => {
           symbol: 'UNI',
           address: '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984',
           decimals: 6,
+          chainId: CHAIN_IDS.LINEA_MAINNET,
         },
-        toChainId: toEvmCaipChainId(CHAIN_IDS.LINEA_MAINNET),
       },
     });
 
@@ -219,7 +218,7 @@ describe('PrepareBridgePage', () => {
           chains: {
             [CHAIN_IDS.MAINNET]: {
               isActiveSrc: true,
-              isActiveDest: false,
+              isActiveDest: true,
             },
           },
         },
