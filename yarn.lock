@@ -33610,6 +33610,7 @@ __metadata:
     "@metamask/permissions-kernel-snap": "npm:^0.6.0"
     "@metamask/phishing-controller": "npm:^15.0.0"
     "@metamask/phishing-warning": "npm:^5.1.0"
+    "@metamask/polling-controller": "npm:^16.0.2"
     "@metamask/post-message-stream": "npm:^10.0.0"
     "@metamask/ppom-validator": "npm:0.39.0"
     "@metamask/preferences-controller": "npm:^21.0.0"

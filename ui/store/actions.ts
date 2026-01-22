@@ -6347,6 +6347,27 @@ export function updateBalancesFoAccounts(
   };
 }
 
+export async function staticAssetsStartPolling(
+  chainIds: string[],
+): Promise<string> {
+  const pollingToken = await submitRequestToBackground(
+    'staticAssetsStartPolling',
+    [{ chainIds }],
+  );
+  await addPollingTokenToAppState(pollingToken);
+  return pollingToken;
+}
+
+export async function staticAssetsStopPollingByPollingToken(
+  pollingToken: string,
+) {
+  await submitRequestToBackground('staticAssetsStopPollingByPollingToken', [
+    pollingToken,
+  ]);
+  await removePollingTokenFromAppState(pollingToken);
+}
+
+
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
