@@ -157,7 +157,7 @@ export const BridgeAssetList = ({
           <LoadingSkeleton
             key={key.toString()}
             ref={virtualizer.measureElement}
-            dataIndex={index}
+            data-index={index}
             style={style}
             skeletonProps={{
               isLoading: true,
