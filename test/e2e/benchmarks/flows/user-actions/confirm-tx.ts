@@ -6,7 +6,7 @@
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
-import HomePage from '../../../page-objects/pages/home/homepage';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction';
 import { Driver } from '../../../webdriver/driver';
 
 export async function run(): Promise<{
@@ -26,18 +26,11 @@ export async function run(): Promise<{
     async ({ driver }: { driver: Driver }) => {
       await loginWithBalanceValidation(driver);
 
-      const homePage = new HomePage(driver);
-      await homePage.startSendFlow();
-
-      await driver.fill(
-        'input[placeholder="Enter public address (0x) or domain name"]',
-        '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-      );
-
-      await driver.fill('.unit-input__input', '1');
-
-      await driver.waitForSelector({ text: 'Continue', tag: 'button' });
-      await driver.clickElement({ text: 'Continue', tag: 'button' });
+      await createInternalTransaction({
+        driver,
+        recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+        amount: '1',
+      });
 
       const timestampBeforeAction = new Date();
 
