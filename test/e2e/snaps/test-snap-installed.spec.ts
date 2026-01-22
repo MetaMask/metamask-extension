@@ -75,11 +75,13 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectDialogsButton',
+        );
 
         // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectDialogsButton',
+        await testSnaps.checkConnectDialogsButtonText(
           'Reconnect to Dialogs Snap',
         );
 
@@ -103,18 +105,15 @@ describe('Test Snap installed', function () {
         });
 
         // Click to connect to errors snap and validate the install snaps result
-        await testSnaps.scrollAndClickButton('connectErrorsButton');
+        await testSnaps.clickConnectErrorsButton();
         await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
         );
 
         // Click Send error button and validate the message result
-        await testSnaps.scrollAndClickButton('sendErrorButton');
-        await testSnaps.checkMessageResultSpan(
-          'errorResultSpan',
-          '"Hello, world!"',
-        );
+        await testSnaps.clickSendErrorButton();
+        await testSnaps.checkErrorResult('"Hello, world!"');
       },
     );
   });

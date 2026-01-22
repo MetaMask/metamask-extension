@@ -32,15 +32,14 @@ describe('Test Snap get preferences', function () {
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'getPreferencesConnectButton',
+          'clickConnectPreferencesButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'getPreferencesConnectButton',
+        await testSnaps.checkConnectPreferencesButtonText(
           'Reconnect to Preferences Snap',
         );
 
         // Click submit button, delayed needed processing and validate the results
-        await testSnaps.scrollAndClickButton('getPreferencesSubmitButton');
+        await testSnaps.clickGetPreferencesSubmitButton();
         await driver.delay(1000);
         await testSnaps.checkPreferencesResult({
           locale: 'en',

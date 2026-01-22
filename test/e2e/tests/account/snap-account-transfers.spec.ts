@@ -13,8 +13,10 @@ import ActivityListPage from '../../page-objects/pages/home/activity-list';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import HomePage from '../../page-objects/pages/home/homepage';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
-import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import {
+  installSnapSimpleKeyring,
+  importSnapAccount,
+} from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { sendRedesignedTransactionWithSnapAccount } from '../../page-objects/flows/send-transaction.flow';
 import { mockPriceApi } from '../tokens/utils/mocks';
@@ -54,12 +56,9 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(
-          PRIVATE_KEY_TWO,
-        );
+        // import snap account with private key using flow
+        await importSnapAccount(driver, PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -115,12 +114,9 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(
-          PRIVATE_KEY_TWO,
-        );
+        // import snap account with private key using flow
+        await importSnapAccount(driver, PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
@@ -173,12 +169,9 @@ describe.skip('Snap Account Transfers', function (this: Suite) {
         await homePage.checkPageIsLoaded();
 
         await installSnapSimpleKeyring(driver, false);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
 
-        // Import snap account with private key on snap simple keyring page.
-        await snapSimpleKeyringPage.importAccountWithPrivateKey(
-          PRIVATE_KEY_TWO,
-        );
+        // Import snap account with private key using flow
+        await importSnapAccount(driver, PRIVATE_KEY_TWO);
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );

@@ -29,12 +29,11 @@ describe('Test Snap Lifecycle Hooks', function () {
         // Open a new tab and navigate to test snaps page and click life cycle hooks
         await openTestSnapClickButtonAndInstall(
           driver,
-          'connectLifeCycleButton',
+          'clickConnectLifeCycleButton',
           { withExtraScreen: true },
         );
         // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectLifeCycleButton',
+        await testSnaps.checkConnectLifeCycleButtonText(
           'Reconnect to Lifecycle Hooks Snap',
         );
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

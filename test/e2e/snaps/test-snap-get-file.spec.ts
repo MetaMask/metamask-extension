@@ -28,32 +28,25 @@ describe('Test Snap Get File', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectGetFileButton');
-        await testSnaps.checkInstallationComplete(
-          'connectGetFileButton',
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectGetFileButton',
+        );
+        await testSnaps.checkConnectGetFileButtonText(
           'Reconnect to Get File Snap',
         );
 
         // click on get file and check correct result
-        await testSnaps.scrollAndClickButton('sendGetFileTextButton');
-        await testSnaps.checkMessageResultSpan(
-          'fileResultSpan',
-          jsonTextValidation,
-        );
+        await testSnaps.clickSendGetFileTextButton();
+        await testSnaps.checkFileResult(jsonTextValidation);
 
         // click on get base64 and await correct result
-        await testSnaps.scrollAndClickButton('sendGetFileBase64Button');
-        await testSnaps.checkMessageResultSpan(
-          'fileResultSpan',
-          base64TextFile,
-        );
+        await testSnaps.clickSendGetFileBase64Button();
+        await testSnaps.checkFileResult(base64TextFile);
 
         // click on get hex text and await correct result
-        await testSnaps.scrollAndClickButton('sendGetFileHexButton');
-        await testSnaps.checkMessageResultSpan(
-          'fileResultSpan',
-          hexEncodedFileValidation,
-        );
+        await testSnaps.clickSendGetFileHexButton();
+        await testSnaps.checkFileResult(hexEncodedFileValidation);
       },
     );
   });

@@ -37,45 +37,37 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // Navigate to `test-snaps` page, and install the Snap.
         await openTestSnapClickButtonAndInstall(
           driver,
-          'connectGetEntropyButton',
+          'clickConnectGetEntropyButton',
         );
-        await testSnaps.fillMessage('entropyMessageInput', '1234');
-        await testSnaps.clickButton('signEntropyMessageButton');
+        await testSnaps.fillEntropyMessageInput('1234');
+        await testSnaps.clickSignEntropyMessageButton();
         await switchAndApproveDialogSwitchToTestSnap(driver);
 
         // check the results of the message signature
-        await testSnaps.checkMessageResultSpan(
-          'entropySignResultSpan',
-          publicKeyGenerated,
-        );
+        await testSnaps.checkEntropySignResult(publicKeyGenerated);
 
         // Select entropy source SRP 1, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource(
-          'getEntropyDropDown',
-          'SRP 1 (primary)',
-        );
-        await testSnaps.fillMessage('entropyMessageInput', '5678');
-        await testSnaps.clickButton('signEntropyMessageButton');
+        await testSnaps.selectGetEntropySource('SRP 1 (primary)');
+        await testSnaps.fillEntropyMessageInput('5678');
+        await testSnaps.clickSignEntropyMessageButton();
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.checkMessageResultSpan(
-          'entropySignResultSpan',
+        await testSnaps.checkEntropySignResult(
           publicKeyGeneratedWithEntropySourceSRP1,
         );
 
         // Select entropy source SRP 2, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource('getEntropyDropDown', 'SRP 2');
+        await testSnaps.selectGetEntropySource('SRP 2');
 
-        await testSnaps.scrollAndClickButton('signEntropyMessageButton');
+        await testSnaps.clickSignEntropyMessageButton();
         await switchAndApproveDialogSwitchToTestSnap(driver);
-        await testSnaps.checkMessageResultSpan(
-          'entropySignResultSpan',
+        await testSnaps.checkEntropySignResult(
           publicKeyGeneratedWithEntropySourceSRP2,
         );
 
         // Select entropy source invalid, enter a message, sign, approve and validate the result
-        await testSnaps.selectEntropySource('getEntropyDropDown', 'Invalid');
+        await testSnaps.selectGetEntropySource('Invalid');
 
-        await testSnaps.scrollAndClickButton('signEntropyMessageButton');
+        await testSnaps.clickSignEntropyMessageButton();
 
         const snapInstall = new SnapInstall(driver);
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);

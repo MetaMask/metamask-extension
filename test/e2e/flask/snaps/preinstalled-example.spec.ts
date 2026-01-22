@@ -86,16 +86,13 @@ describe('Preinstalled example Snap', function () {
         // We cannot go to localhost directly because snap permissions doen't allow localhost (but they do metamask.github.io).
         // So instead, we go to the real URL and we use a proxy it so the responses come from the localhost test-snap server.
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
-        await testSnaps.clickButton('getSettingsStateButton');
+        await testSnaps.clickGetSettingsStateButton();
         const jsonTextValidation = JSON.stringify(
           { setting1: true, setting2: 'option2', setting3: 'option2' },
           null,
           2,
         );
-        await testSnaps.checkMessageResultSpan(
-          'rpcResultSpan',
-          jsonTextValidation,
-        );
+        await testSnaps.checkRpcResult(jsonTextValidation);
       },
     );
   });
@@ -120,7 +117,7 @@ describe('Preinstalled example Snap', function () {
 
         // This test clicks this button without connecting and functions as E2E
         // for the initialConnections functionality.
-        await testSnaps.scrollAndClickButton('showPreinstalledDialogButton');
+        await testSnaps.clickShowPreinstalledDialogButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await driver.waitForSelector({
@@ -162,7 +159,7 @@ describe('Preinstalled example Snap', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to track an error.
-        await testSnaps.scrollAndClickButton('trackErrorButton');
+        await testSnaps.clickTrackErrorButton();
 
         // Wait for the mocked Sentry endpoint to be called.
         await driver.wait(async () => {
@@ -211,7 +208,7 @@ describe('Preinstalled example Snap', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to track an event.
-        await testSnaps.scrollAndClickButton('trackEventButton');
+        await testSnaps.clickTrackEventButton();
 
         // Wait for the mocked Sentry endpoint to be called.
         await driver.wait(async () => {
@@ -262,9 +259,9 @@ describe('Preinstalled example Snap', function () {
         await driver.openNewPage(TEST_SNAPS_WEBSITE_URL);
 
         // Click the button to start and end a trace.
-        await testSnaps.scrollAndClickButton('startTraceButton');
+        await testSnaps.clickStartTraceButton();
         await driver.delay(100);
-        await testSnaps.scrollAndClickButton('endTraceButton');
+        await testSnaps.clickEndTraceButton();
 
         // Wait for the mocked Sentry endpoint to be called.
         await driver.wait(async () => {

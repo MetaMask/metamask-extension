@@ -32,23 +32,25 @@ describe('Test Snap RPC', function () {
 
         const testSnaps = new TestSnaps(driver);
         const snapInstall = new SnapInstall(driver);
-        await openTestSnapClickButtonAndInstall(driver, 'connectBip32Button', {
-          withWarning: true,
-          withExtraScreen: true,
-        });
-        await testSnaps.scrollAndClickButton('connectJsonRpcButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectBip32Button',
+          {
+            withWarning: true,
+            withExtraScreen: true,
+          },
+        );
+        await testSnaps.clickConnectJsonRpcButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickConnectButton();
         await snapInstall.clickConfirmButton();
         await snapInstall.clickOkButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkInstallationComplete(
-          'connectJsonRpcButton',
+        await testSnaps.checkConnectJsonRpcButtonText(
           'Reconnect to JSON-RPC Snap',
         );
-        await testSnaps.scrollAndClickButton('sendRpcButton');
-        await testSnaps.checkMessageResultSpan(
-          'rpcResultSpan',
+        await testSnaps.clickSendRpcButton();
+        await testSnaps.checkRpcResult(
           '"0x033e98d696ae15caef75fa8dd204a7c5c08d1272b2218ba3c20feeb4c691eec366"',
         );
       },

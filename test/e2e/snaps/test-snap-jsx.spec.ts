@@ -23,16 +23,16 @@ describe('Test Snap JSX', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Open the test snaps page
-        await openTestSnapClickButtonAndInstall(driver, 'connectjsxButton');
-        await testSnaps.checkInstallationComplete(
-          'connectjsxButton',
-          'Reconnect to JSX Snap',
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectJsxButton',
         );
+        await testSnaps.checkConnectJsxButtonText('Reconnect to JSX Snap');
 
-        await testSnaps.clickButton('displayJsxButton');
+        await testSnaps.clickDisplayJsxButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await testSnaps.checkCount('0');
-        await testSnaps.clickButton('incrementButton');
+        await testSnaps.clickIncrementButton();
         await testSnaps.checkCount('1');
       },
     );

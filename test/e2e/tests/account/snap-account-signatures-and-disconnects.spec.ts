@@ -5,9 +5,11 @@ import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
-import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
+import {
+  installSnapSimpleKeyring,
+  createSnapAccount,
+} from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
   signTypedDataV3WithSnapAccount,
@@ -36,8 +38,7 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
         await installSnapSimpleKeyring(driver, false);
-        const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
-        const newPublicKey = await snapSimpleKeyringPage.createNewAccount();
+        const newPublicKey = await createSnapAccount(driver);
 
         // Check snap account is displayed after adding the snap account.
         await driver.switchToWindowWithTitle(

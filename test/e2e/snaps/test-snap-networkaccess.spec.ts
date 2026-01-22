@@ -37,28 +37,24 @@ describe('Test Snap networkAccess', function () {
         // Open the test snaps page and install the snap network access
         await openTestSnapClickButtonAndInstall(
           driver,
-          'connectNetworkAccessButton',
+          'clickConnectNetworkAccessButton',
           {
             url: TEST_SNAPS_WEBSITE_URL,
           },
         );
-        await testSnaps.checkInstallationComplete(
-          'connectNetworkAccessButton',
+        await testSnaps.checkConnectNetworkAccessButtonText(
           'Reconnect to Network Access Snap',
         );
 
         // click on alert dialog and validate the message
-        await testSnaps.fillNetworkInput(
+        await testSnaps.fillNetworkUrlInput(
           'https://metamask.github.io/snaps/test-snaps/2.28.1/test-data.json',
         );
-        await testSnaps.clickButton('sendNetworkAccessTestButton');
+        await testSnaps.clickSendNetworkAccessTestButton();
         await driver.delay(500);
-        await testSnaps.checkMessageResultSpan(
-          'networkAccessResultSpan',
-          '"hello": "world"',
-        );
+        await testSnaps.checkNetworkAccessResult('"hello": "world"');
 
-        await testSnaps.clickButton('startWebSocket');
+        await testSnaps.clickStartWebSocketButton();
         await driver.delay(500);
 
         await testSnaps.waitForWebSocketUpdate({
@@ -67,7 +63,7 @@ describe('Test Snap networkAccess', function () {
           blockNumber: 'number',
         });
 
-        await testSnaps.clickButton('stopWebSocket');
+        await testSnaps.clickStopWebSocketButton();
 
         await testSnaps.waitForWebSocketUpdate({
           open: false,

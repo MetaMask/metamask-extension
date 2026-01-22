@@ -30,10 +30,9 @@ describe('Test Snap Cronjob Duration', function () {
         // Navigate to `test-snaps` page, and install cronjob duration Snap.
         await openTestSnapClickButtonAndInstall(
           driver,
-          'connectCronjobDurationButton',
+          'clickConnectCronjobDurationButton',
         );
-        await testSnaps.checkInstallationComplete(
-          'connectCronjobDurationButton',
+        await testSnaps.checkConnectCronjobDurationButtonText(
           'Reconnect to Cronjob Duration Snap',
         );
 

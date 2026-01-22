@@ -22,18 +22,20 @@ describe('Test Snap WASM', function () {
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap
-        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectWasmButton',
+        );
 
         // Check installation success
-        await testSnaps.checkInstallationComplete(
-          'connectWasmButton',
+        await testSnaps.checkConnectWasmButtonText(
           'Reconnect to WebAssembly Snap',
         );
 
         // Enter number for test to input field and validate the result
-        await testSnaps.fillMessage('wasmInput', '23');
-        await testSnaps.clickButton('sendWasmMessageButton');
-        await testSnaps.checkMessageResultSpan('wasmResultSpan', '28657');
+        await testSnaps.fillWasmInput('23');
+        await testSnaps.clickSendWasmMessageButton();
+        await testSnaps.checkWasmResult('28657');
       },
     );
   });

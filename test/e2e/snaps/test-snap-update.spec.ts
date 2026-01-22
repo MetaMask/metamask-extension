@@ -37,14 +37,16 @@ describe('Test Snap update', function () {
         const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect update, complete installation and validate
-        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
-        await testSnaps.checkInstallationComplete(
-          'connectUpdateButton',
+        await openTestSnapClickButtonAndInstall(
+          driver,
+          'clickConnectUpdateButton',
+        );
+        await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );
 
         // Click update snap and check the installation status
-        await testSnaps.scrollAndClickButton('connectUpdateNewButton');
+        await testSnaps.clickConnectUpdateNewButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await driver.waitForSelector({ text: 'Update request' });
         await snapInstall.checkPageIsLoaded();
@@ -53,7 +55,7 @@ describe('Test Snap update', function () {
 
         // Switch to test snap page and validate the version text
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestSnaps);
-        await testSnaps.checkMessageResultSpan('updateVersionSpan', '"2.1.3"');
+        await testSnaps.checkUpdateVersionSpan('"2.1.3"');
       },
     );
   });

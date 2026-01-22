@@ -1,10 +1,10 @@
 import { Driver } from '../../webdriver/driver';
 import { WINDOW_TITLES } from '../../constants';
-import SnapSimpleKeyringPage from '../pages/snap-simple-keyring-page';
 import TestDapp from '../pages/test-dapp';
 import PersonalSignConfirmation from '../pages/confirmations/personal-sign-confirmation';
 import SignTypedDataConfirmation from '../pages/confirmations/sign-typed-data-confirmation';
 import PermitConfirmation from '../pages/confirmations/permit-confirmation';
+import { approveOrRejectSnapAccountTransaction } from './snap-simple-keyring.flow';
 
 /**
  * This function initiates the steps for a personal sign with snap account on test dapp.
@@ -34,10 +34,10 @@ export const personalSignWithSnapAccount = async (
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-      true,
-    );
+      isSignatureRequest: true,
+    });
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
     await testDapp.checkSuccessPersonalSign(publicAddress);
@@ -76,10 +76,10 @@ export const signTypedDataWithSnapAccount = async (
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-      true,
-    );
+      isSignatureRequest: true,
+    });
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
     await testDapp.checkSuccessSignTypedData(publicAddress);
@@ -119,10 +119,10 @@ export const signTypedDataV3WithSnapAccount = async (
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-      true,
-    );
+      isSignatureRequest: true,
+    });
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
     await testDapp.checkSuccessSignTypedDataV3(publicAddress);
@@ -162,10 +162,10 @@ export const signTypedDataV4WithSnapAccount = async (
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-      true,
-    );
+      isSignatureRequest: true,
+    });
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
     await testDapp.checkSuccessSignTypedDataV4(publicAddress);
@@ -204,10 +204,10 @@ export const signPermitWithSnapAccount = async (
     await confirmation.clickFooterConfirmButton();
     await driver.delay(2000);
     await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await new SnapSimpleKeyringPage(driver).approveRejectSnapAccountTransaction(
+    await approveOrRejectSnapAccountTransaction(driver, {
       approveTransaction,
-      true,
-    );
+      isSignatureRequest: true,
+    });
   }
   if ((!isSyncFlow && approveTransaction) || isSyncFlow) {
     await testDapp.checkSuccessSignPermit(publicAddress);
