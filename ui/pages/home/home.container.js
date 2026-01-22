@@ -19,7 +19,6 @@ import {
   getIsSigningQRHardwareTransaction,
   getNewNftAddedMessage,
   getNewTokensImported,
-  getRemoveNftMessage,
   getApprovalFlows,
   getNewTokensImportedError,
   hasPendingApprovals,
@@ -172,7 +171,6 @@ const mapStateToProps = (state) => {
     editedNetwork: getEditedNetwork(state),
     isSigningQRHardwareTransaction: getIsSigningQRHardwareTransaction(state),
     newNftAddedMessage: getNewNftAddedMessage(state),
-    removeNftMessage: getRemoveNftMessage(state),
     newTokensImported: getNewTokensImported(state),
     newTokensImportedError: getNewTokensImportedError(state),
     newNetworkAddedConfigurationId: appState.newNetworkAddedConfigurationId,
@@ -220,10 +218,6 @@ const mapDispatchToProps = (dispatch) => {
     setNewNftAddedMessage: (message) => {
       dispatch(setRemoveNftMessage(''));
       dispatch(setNewNftAddedMessage(message));
-    },
-    setRemoveNftMessage: (message) => {
-      dispatch(setNewNftAddedMessage(''));
-      dispatch(setRemoveNftMessage(message));
     },
     setNewTokensImported: (newTokens) => {
       dispatch(setNewTokensImported(newTokens));

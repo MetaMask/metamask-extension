@@ -41,6 +41,7 @@ import { CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP } from '../../../../shared/constants/
 import {
   addPermittedAccount,
   hidePermittedNetworkToast,
+  setRemoveNftMessage,
 } from '../../../store/actions';
 import {
   AvatarNetwork,
@@ -96,6 +97,7 @@ import {
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectRemoveNftMessage,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -144,6 +146,7 @@ export function ToastMaster() {
         <PermittedNetworkToast />
         <NewSrpAddedToast />
         <CopyAddressToast />
+        <RemoveNftToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
       </ToastContainer>
@@ -575,6 +578,42 @@ function CopyAddressToast() {
         dataTestId="copy-address-toast"
       />
     )
+  );
+}
+
+function RemoveNftToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const removeNftMessage = useSelector(selectRemoveNftMessage);
+  const autoHideToastDelay = 5 * SECOND;
+
+  const isSuccess = removeNftMessage === 'success';
+  const isError = removeNftMessage === 'error';
+
+  const handleClose = () => {
+    dispatch(setRemoveNftMessage(''));
+  };
+
+  if (!isSuccess && !isError) {
+    return null;
+  }
+
+  return (
+    <Toast
+      key="remove-nft-toast"
+      dataTestId="remove-nft-toast"
+      text={isSuccess ? t('removeNftMessage') : t('removeNftErrorMessage')}
+      startAdornment={
+        <Icon
+          name={isSuccess ? IconName.CheckBold : IconName.Danger}
+          color={isSuccess ? IconColor.successDefault : IconColor.errorDefault}
+        />
+      }
+      onClose={handleClose}
+      autoHideTime={autoHideToastDelay}
+      onAutoHideToast={handleClose}
+    />
   );
 }
 

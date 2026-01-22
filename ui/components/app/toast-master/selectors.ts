@@ -36,6 +36,7 @@ type State = {
       | 'showPasswordChangeToast'
       | 'showCopyAddressToast'
       | 'showClaimSubmitToast'
+      | 'removeNftMessage'
     >
   >;
   metamask: Partial<
@@ -305,4 +306,14 @@ export function selectShowPna25Modal(state: Pick<State, 'metamask'>): boolean {
 
   // Only show banner if explicitly false (existing users who haven't acknowledged)
   return pna25Acknowledged === false;
+}
+
+/**
+ * Retrieves the remove NFT message state for the toast
+ *
+ * @param state - Redux state object.
+ * @returns The remove NFT message string or empty string
+ */
+export function selectRemoveNftMessage(state: Pick<State, 'appState'>): string {
+  return state.appState.removeNftMessage || '';
 }
