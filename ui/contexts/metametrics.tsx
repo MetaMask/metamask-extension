@@ -295,8 +295,6 @@ type LegacyMetaMetricsProviderProps = {
 export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
   static contextType = MetaMetricsContext;
 
-  declare context: MetaMetricsContextValue;
-
   // eslint-disable-next-line react/static-property-placement
   static childContextTypes = {
     // This has to be different than the type name for the old metametrics file
@@ -308,7 +306,7 @@ export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProvid
   };
 
   getChildContext(): LegacyChildContext {
-    const { context } = this;
+    const context = this.context as MetaMetricsContextValue;
     return {
       trackEvent: context.trackEvent,
       bufferedTrace: context.bufferedTrace,
