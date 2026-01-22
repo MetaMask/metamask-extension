@@ -9,20 +9,18 @@ import { retry } from '../../../../../development/lib/retry';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { withFixtures } from '../../../helpers';
 import { loginWithoutBalanceValidation } from '../../../page-objects/flows/login.flow';
-import type {
-  BenchmarkResults,
-  Metrics,
-  StatisticalResult,
-} from '../../utils/types';
+import type { BenchmarkResults, Metrics } from '../../utils/types';
 import {
   ALL_METRICS,
   DEFAULT_NUM_BROWSER_LOADS,
   DEFAULT_NUM_PAGE_LOADS,
 } from '../../utils/constants';
 import {
-  calculateMean,
-  calculateStdDev,
-  calculatePercentile,
+  calcMaxResult,
+  calcMeanResult,
+  calcMinResult,
+  calcPResult,
+  calcStdDevResult,
 } from '../../utils/statistics';
 
 async function measurePageStandard(
@@ -53,36 +51,6 @@ async function measurePageStandard(
     },
   );
   return { metrics, title, persona };
-}
-
-// Helper to apply a calculation across all metrics
-function calculateResult(calc: (array: number[]) => number) {
-  return (result: Record<string, number[]>): StatisticalResult => {
-    const calculatedResult: StatisticalResult = {};
-    for (const key of Object.keys(result)) {
-      if (result[key].length > 0) {
-        calculatedResult[key] = calc(result[key]);
-      }
-    }
-    return calculatedResult;
-  };
-}
-
-const minResult = calculateResult((array: number[]) => Math.min(...array));
-const maxResult = calculateResult((array: number[]) => Math.max(...array));
-const meanResult = calculateResult((array: number[]) => calculateMean(array));
-const stdDevResult = calculateResult((array: number[]) =>
-  calculateStdDev(array),
-);
-
-function pResult(
-  array: Record<string, number[]>,
-  p: number,
-): StatisticalResult {
-  return calculateResult((arr: number[]) => {
-    const sorted = [...arr].sort((a, b) => a - b);
-    return calculatePercentile(sorted, p);
-  })(array);
 }
 
 export async function run(options: {
@@ -127,12 +95,12 @@ export async function run(options: {
   results[reportingPageName] = {
     testTitle,
     persona: resultPersona,
-    mean: meanResult(result),
-    min: minResult(result),
-    max: maxResult(result),
-    stdDev: stdDevResult(result),
-    p75: pResult(result, 75),
-    p95: pResult(result, 95),
+    mean: calcMeanResult(result),
+    min: calcMinResult(result),
+    max: calcMaxResult(result),
+    stdDev: calcStdDevResult(result),
+    p75: calcPResult(result, 75),
+    p95: calcPResult(result, 95),
   };
 
   return results;

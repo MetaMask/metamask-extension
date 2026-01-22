@@ -84,7 +84,7 @@ async function runBenchmarkFile(
   const runFn = Object.values(benchmark).find(
     (v): v is (...args: unknown[]) => unknown =>
       typeof v === 'function' &&
-      (v as { name?: string }).name?.startsWith('run'),
+      Boolean((v as { name?: string }).name?.startsWith('run')),
   );
   if (runFn) {
     return runFn(options);

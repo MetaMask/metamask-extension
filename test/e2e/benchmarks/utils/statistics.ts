@@ -8,9 +8,7 @@
  * - Sanity checks for metric validation
  */
 
-import type { TimerStatistics } from './types';
-
-// ==================== Configuration ====================
+import type { StatisticalResult, TimerStatistics } from './types';
 
 /**
  * CV (Coefficient of Variation) thresholds for data quality assessment
@@ -45,8 +43,6 @@ export const MIN_METRIC_DURATION_MS = 1;
  */
 export const MAX_EXCLUSION_RATE = 0.5; // 50%
 
-// ==================== Basic Statistics ====================
-
 export const calculateMean = (values: number[]): number => {
   if (values.length === 0) {
     return 0;
@@ -74,7 +70,46 @@ export const calculatePercentile = (
   return sortedValues[Math.min(index, sortedValues.length - 1)];
 };
 
-// ==================== Outlier Detection ====================
+/**
+ * Higher-order function to apply a calculation across all metrics in a result object
+ * Used by page-load benchmarks to transform Record<string, number[]> to StatisticalResult
+ *
+ * @param calc - Calculation function to apply to each metric array
+ */
+export function calculateResult(calc: (array: number[]) => number) {
+  return (result: Record<string, number[]>): StatisticalResult => {
+    const calculatedResult: StatisticalResult = {};
+    for (const key of Object.keys(result)) {
+      if (result[key].length > 0) {
+        calculatedResult[key] = calc(result[key]);
+      }
+    }
+    return calculatedResult;
+  };
+}
+
+export const calcMinResult = calculateResult((array: number[]) =>
+  Math.min(...array),
+);
+export const calcMaxResult = calculateResult((array: number[]) =>
+  Math.max(...array),
+);
+export const calcMeanResult = calculateResult((array: number[]) =>
+  calculateMean(array),
+);
+export const calcStdDevResult = calculateResult((array: number[]) =>
+  calculateStdDev(array),
+);
+
+export function calcPResult(
+  array: Record<string, number[]>,
+  p: number,
+): StatisticalResult {
+  return calculateResult((arr: number[]) => {
+    const sorted = [...arr].sort((a, b) => a - b);
+    return calculatePercentile(sorted, p);
+  })(array);
+}
 
 /**
  * Calculate z-score for a value given mean and standard deviation
@@ -196,8 +231,6 @@ export const assessDataQuality = (
   return 'unreliable';
 };
 
-// ==================== Sanity Checks ====================
-
 export type SanityCheckResult = {
   valid: boolean;
   reason?: string;
@@ -269,8 +302,6 @@ export const filterBySanityChecks = (
 
   return { filtered, excludedCount, reasons };
 };
-
-// ==================== Main Statistics Calculation ====================
 
 export const calculateTimerStatistics = (
   timerId: string,
