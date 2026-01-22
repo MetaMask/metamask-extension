@@ -19,7 +19,6 @@ import { useSafeChains } from '../../../pages/settings/networks-tab/networks-for
 import {
   getDefaultHomeActiveTabName,
   getEnabledChainIds,
-  getIsMultichainAccountsState2Enabled,
 } from '../../../selectors';
 import { getIsPerpsEnabled } from '../../../selectors/perps';
 import { getAllEnabledNetworksForAllNamespaces } from '../../../selectors/multichain/networks';
@@ -142,11 +141,6 @@ export const AccountOverviewTabs = ({
 
   const { safeChains } = useSafeChains();
 
-  const isBIP44FeatureFlagEnabled = useSelector(
-    getIsMultichainAccountsState2Enabled,
-  );
-  const showUnifiedTransactionList = isBIP44FeatureFlagEnabled;
-
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
 
   return (
@@ -219,11 +213,7 @@ export const AccountOverviewTabs = ({
             tabKey={AccountOverviewTabKey.Activity}
             data-testid="account-overview__activity-tab"
           >
-            {showUnifiedTransactionList ? (
-              <UnifiedTransactionList />
-            ) : (
-              <TransactionList />
-            )}
+            <UnifiedTransactionList />
           </Tab>
         )}
       </Tabs>
