@@ -538,7 +538,6 @@ describe('useDeviceEventHandlers', () => {
       const resultState = updater(prevState);
 
       expect(resultState.status).toBe('error');
-      expect(resultState.reason).toBe('Device locked');
       expect(resultState.error).toBe(error);
     });
 

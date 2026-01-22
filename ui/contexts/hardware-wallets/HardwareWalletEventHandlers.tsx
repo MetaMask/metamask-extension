@@ -84,9 +84,7 @@ export const useDeviceEventHandlers = ({
           newState.status === ConnectionStatus.ErrorState &&
           oldState.status === ConnectionStatus.ErrorState
         ) {
-          if (
-oldState.error?.message !== newState.error?.message
-          ) {
+          if (oldState.error?.message !== newState.error?.message) {
             return newState;
           }
         }
@@ -95,9 +93,7 @@ oldState.error?.message !== newState.error?.message
           newState.status === ConnectionStatus.AwaitingApp &&
           oldState.status === ConnectionStatus.AwaitingApp
         ) {
-          if (
-            oldState.appName !== newState.appName
-          ) {
+          if (oldState.appName !== newState.appName) {
             return newState;
           }
         }
