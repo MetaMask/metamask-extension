@@ -1,47 +1,17 @@
 import React from 'react';
 import { TransactionStatus } from '@metamask/transaction-controller';
-import {
-  Box,
-  Icon,
-  IconName,
-  IconSize,
-  Text,
-} from '../../../../../components/component-library';
+import { Box, Text } from '../../../../../components/component-library';
 import {
   AlignItems,
   Display,
   FlexDirection,
-  IconColor,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { TransactionDetailsRow } from '../transaction-details-row';
 import { useTransactionDetails } from '../transaction-details-context';
-
-function getStatusIcon(status: TransactionStatus): IconName {
-  switch (status) {
-    case TransactionStatus.confirmed:
-      return IconName.Confirmation;
-    case TransactionStatus.failed:
-    case TransactionStatus.dropped:
-      return IconName.Close;
-    default:
-      return IconName.Clock;
-  }
-}
-
-function getStatusIconColor(status: TransactionStatus): IconColor {
-  switch (status) {
-    case TransactionStatus.confirmed:
-      return IconColor.successDefault;
-    case TransactionStatus.failed:
-    case TransactionStatus.dropped:
-      return IconColor.errorDefault;
-    default:
-      return IconColor.warningDefault;
-  }
-}
+import { TransactionStatusIcon } from '../transaction-status-icon';
 
 function getStatusTextColor(status: TransactionStatus): TextColor {
   switch (status) {
@@ -84,12 +54,7 @@ export function TransactionDetailsStatusRow() {
         alignItems={AlignItems.center}
         gap={1}
       >
-        <Icon
-          name={getStatusIcon(status)}
-          color={getStatusIconColor(status)}
-          size={IconSize.Sm}
-          data-testid={`status-icon-${status}`}
-        />
+        <TransactionStatusIcon status={status} />
         <Text
           variant={TextVariant.bodyMdMedium}
           color={getStatusTextColor(status)}

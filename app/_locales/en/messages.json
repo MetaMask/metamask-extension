@@ -971,6 +971,9 @@
     "message": "Approve $1 for bridge",
     "description": "Used in the transaction display list to describe a transaction that is an approve call on a token that is to be bridged. $1 is the symbol of a token that has been approved."
   },
+  "bridgeApprovalLoading": {
+    "message": "Approving for bridge"
+  },
   "bridgeApprovalWarning": {
     "message": "You're allowing access to $1 $2. The contract won't access any additional funds."
   },
@@ -1067,6 +1070,20 @@
   "bridgeQuoteExpired": {
     "message": "Your quote timed out."
   },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceive": {
+    "message": "Receive $1 on $2",
+    "description": "Summary line showing token received on destination chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
+  "bridgeReceiveLoading": {
+    "message": "Receiving on destination chain"
+  },
   "bridgeSelectDestinationAccount": {
     "message": "Select a destination account"
   },
@@ -1081,6 +1098,20 @@
   },
   "bridgeSelectTokenAndAmount": {
     "message": "Select token and amount"
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSend": {
+    "message": "Send $1 from $2",
+    "description": "Summary line showing token sent from source chain. $1 is the token symbol, $2 is the network name."
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
+  },
+  "bridgeSendLoading": {
+    "message": "Sending from source chain"
   },
   "bridgeSolanaAccountCreated": {
     "message": "Solana account created"
@@ -2655,10 +2686,10 @@
     "message": "View on Etherscan"
   },
   "exampleCustomAmountActivityTitle": {
-    "message": "Custom amount"
+    "message": "Example deposit"
   },
   "exampleCustomAmountTitle": {
-    "message": "Custom amount"
+    "message": "Example deposit"
   },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
@@ -7776,6 +7807,9 @@
   },
   "suggestedTokenName": {
     "message": "Suggested name:"
+  },
+  "summary": {
+    "message": "Summary"
   },
   "supplied": {
     "message": "Supplied"

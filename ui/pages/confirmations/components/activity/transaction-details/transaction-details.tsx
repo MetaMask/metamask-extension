@@ -13,6 +13,7 @@ import { TransactionDetailsPaidWithRow } from '../transaction-details-paid-with-
 import { TransactionDetailsNetworkFeeRow } from '../transaction-details-network-fee-row';
 import { TransactionDetailsBridgeFeeRow } from '../transaction-details-bridge-fee-row';
 import { TransactionDetailsTotalRow } from '../transaction-details-total-row';
+import { TransactionDetailsSummary } from '../transaction-details-summary';
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetails() {
@@ -51,6 +52,18 @@ export function TransactionDetails() {
         <TransactionDetailsNetworkFeeRow />
         <TransactionDetailsBridgeFeeRow />
         <TransactionDetailsTotalRow />
+      </Box>
+
+      <ConfirmInfoRowDivider />
+
+      <Box
+        display={Display.Flex}
+        flexDirection={FlexDirection.Column}
+        gap={3}
+        paddingTop={2}
+        paddingBottom={2}
+      >
+        <TransactionDetailsSummary />
       </Box>
     </Box>
   );
