@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [13.15.0]
 
+### Uncategorized
+
+- release(cp) chore: bump `@metamask/json-rpc-engine` to `^10.2.1` (#39295)
+- Null (#39233)
+- Setup perps codeowners on extension (#39138)
+- Bump assets controllers to v95 (#39095)
+
 ### Added
 
 - Add MSU network and native token logos. Add Etherlink network and native token logos. (#38938)
@@ -30,6 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Null (#38726)
 - Remove migration 171 error logging (#38739)
 - Fixed a memory leak that would cause increased memory usage over time (#39171)
 - Updated asset list for send flow (#39218)
