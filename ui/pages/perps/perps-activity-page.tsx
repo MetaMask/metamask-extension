@@ -14,8 +14,8 @@ import {
   IconName,
   IconSize,
   IconColor,
-  ButtonBase,
 } from '@metamask/design-system-react';
+import { ButtonFilter } from '../../components/component-library';
 import { getIsPerpsEnabled } from '../../selectors/perps/feature-flags';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import { DEFAULT_ROUTE } from '../../helpers/constants/routes';
@@ -27,9 +27,8 @@ import {
 } from '../../components/app/perps/utils';
 import type { PerpsTransactionFilter } from '../../components/app/perps/types';
 
-// Filter tab configuration
+// Filter tab configuration (matches mobile PerpsTransactionsView)
 const FILTER_TABS: { key: PerpsTransactionFilter; labelKey: string }[] = [
-  { key: 'all', labelKey: 'perpsAll' },
   { key: 'trade', labelKey: 'perpsTrades' },
   { key: 'order', labelKey: 'perpsOrders' },
   { key: 'funding', labelKey: 'perpsFunding' },
@@ -46,7 +45,7 @@ const PerpsActivityPage: React.FC = () => {
   const navigate = useNavigate();
   const isPerpsEnabled = useSelector(getIsPerpsEnabled);
   const [activeFilter, setActiveFilter] =
-    useState<PerpsTransactionFilter>('all');
+    useState<PerpsTransactionFilter>('trade');
 
   // Filter and group transactions
   const filteredTransactions = useMemo(
@@ -116,34 +115,16 @@ const PerpsActivityPage: React.FC = () => {
           gap={2}
           className="overflow-x-auto"
         >
-          {FILTER_TABS.map((tab) => {
-            const isActive = activeFilter === tab.key;
-            return (
-              <ButtonBase
-                key={tab.key}
-                onClick={() => setActiveFilter(tab.key)}
-                className={`
-                  px-4 py-2 rounded-full whitespace-nowrap
-                  ${
-                    isActive
-                      ? 'bg-primary-default text-primary-inverse'
-                      : 'bg-muted hover:bg-muted-hover active:bg-muted-pressed'
-                  }
-                `}
-                data-testid={`perps-activity-filter-${tab.key}`}
-              >
-                <Text
-                  variant={TextVariant.BodySm}
-                  fontWeight={FontWeight.Medium}
-                  color={
-                    isActive ? TextColor.PrimaryInverse : TextColor.TextDefault
-                  }
-                >
-                  {t(tab.labelKey)}
-                </Text>
-              </ButtonBase>
-            );
-          })}
+          {FILTER_TABS.map((tab) => (
+            <ButtonFilter
+              key={tab.key}
+              isActive={activeFilter === tab.key}
+              onClick={() => setActiveFilter(tab.key)}
+              data-testid={`perps-activity-filter-${tab.key}`}
+            >
+              {t(tab.labelKey)}
+            </ButtonFilter>
+          ))}
         </Box>
       </Box>
 
