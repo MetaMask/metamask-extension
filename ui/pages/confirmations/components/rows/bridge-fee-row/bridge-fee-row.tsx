@@ -1,16 +1,16 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionPayTotals } from '@metamask/transaction-pay-controller';
-import { Box, Text } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
+import { Text } from '../../../../../components/component-library';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
+} from '../../../../../components/app/confirm/info/row/row';
 import {
   useIsTransactionPayLoading,
   useTransactionPayQuotes,
@@ -44,8 +44,8 @@ export function BridgeFeeRow() {
   if (isLoading) {
     return (
       <>
-        <BridgeFeeRowSkeleton testId="bridge-fee-row-skeleton" />
-        <BridgeFeeRowSkeleton testId="metamask-fee-row-skeleton" />
+        <ConfirmInfoRowSkeleton data-testid="bridge-fee-row-skeleton" />
+        <ConfirmInfoRowSkeleton data-testid="metamask-fee-row-skeleton" />
       </>
     );
   }
@@ -57,6 +57,7 @@ export function BridgeFeeRow() {
       <ConfirmInfoRow
         data-testid="bridge-fee-row"
         label={t('transactionFee')}
+        rowVariant={ConfirmInfoRowSize.Small}
         tooltip={
           hasQuotes && totals
             ? renderTooltipContent(t, totals, formatFiat)
@@ -72,28 +73,17 @@ export function BridgeFeeRow() {
         </Text>
       </ConfirmInfoRow>
       {hasQuotes && (
-        <ConfirmInfoRow data-testid="metamask-fee-row" label={t('metamaskFee')}>
+        <ConfirmInfoRow
+          data-testid="metamask-fee-row"
+          label={t('metamaskFee')}
+          rowVariant={ConfirmInfoRowSize.Small}
+        >
           <Text variant={TextVariant.bodyMd} color={TextColor.textAlternative}>
             {metamaskFeeUsd}
           </Text>
         </ConfirmInfoRow>
       )}
     </>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function BridgeFeeRowSkeleton({ testId }: { testId: string }) {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      data-testid={testId}
-    >
-      <Skeleton width={100} height={20} />
-      <Skeleton width={80} height={20} />
-    </Box>
   );
 }
 
