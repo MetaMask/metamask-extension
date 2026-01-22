@@ -86,6 +86,15 @@ class HomePage {
     testId: 'refreshList',
   };
 
+  private readonly storageErrorToast = '[data-testid="storage-error-toast"]';
+
+  private readonly storageErrorToastBackupButton = {
+    text: 'Back up Secret Recovery Phrase',
+    tag: 'span',
+  };
+
+  private readonly revealSrpPasswordInput = '[data-testid="input-password"]';
+
   private readonly surveyToast = '[data-testid="survey-toast"]';
 
   private readonly tokensTab = {
@@ -212,6 +221,27 @@ class HomePage {
       text: surveyName,
     });
     await this.driver.clickElement(this.closeSurveyToastBannerButton);
+  }
+
+  /**
+   * Checks if the storage error toast is displayed.
+   * This toast appears when storage.local.set() operations fail.
+   */
+  async checkStorageErrorToastIsDisplayed(): Promise<void> {
+    console.log('Check storage error toast is displayed on homepage');
+    await this.driver.waitForSelector(this.storageErrorToast);
+  }
+
+  /**
+   * Clicks the "Back up Secret Recovery Phrase" button on the storage error toast
+   * and verifies navigation to the reveal SRP page.
+   */
+  async clickStorageErrorToastBackupButton(): Promise<void> {
+    console.log(
+      'Click backup button on storage error toast to navigate to reveal SRP page',
+    );
+    await this.driver.clickElement(this.storageErrorToastBackupButton);
+    await this.driver.waitForSelector(this.revealSrpPasswordInput);
   }
 
   async closeUseNetworkNotificationModal(): Promise<void> {

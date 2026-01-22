@@ -1171,6 +1171,39 @@ export default class MetamaskController extends EventEmitter {
           context,
         );
       },
+      processGetSupportedExecutionPermissions: async (req, context) => {
+        const enabledTypes = getEnabledAdvancedPermissions();
+
+        const result = await forwardRequestToSnap(
+          {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+            handleRequest: this.handleSnapRequest.bind(this),
+          },
+          [],
+          req,
+          context,
+        );
+
+        // Filter the result to only include permission types that are enabled
+        if (!result || typeof result !== 'object') {
+          return result;
+        }
+
+        return Object.fromEntries(
+          Object.entries(result).filter(([key]) => enabledTypes.includes(key)),
+        );
+      },
+      processGetGrantedExecutionPermissions: async (req, context) => {
+        return forwardRequestToSnap(
+          {
+            snapId: process.env.PERMISSIONS_KERNEL_SNAP_ID,
+            handleRequest: this.handleSnapRequest.bind(this),
+          },
+          [],
+          req,
+          context,
+        );
+      },
     });
 
     // ensure isClientOpenAndUnlocked is updated when memState updates
@@ -8532,6 +8565,9 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.setLocked();
       }
       await this.keyringController.setLocked();
+
+      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;
