@@ -74,6 +74,14 @@ describe('Wallet State', function () {
                 console.log(`     ~ ${entry}`),
               );
             }
+            if (schemaDiff.valueMismatches.length > 0) {
+              console.log(
+                `  📝 Value changes: ${schemaDiff.valueMismatches.length}`,
+              );
+              schemaDiff.valueMismatches.forEach((entry) =>
+                console.log(`     ↔ ${entry}`),
+              );
+            }
 
             // Merge only the changes into the existing fixture
             finalState = mergeFixtureChanges(

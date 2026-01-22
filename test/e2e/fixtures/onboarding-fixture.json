@@ -36,8 +36,8 @@
       "announcements": {}
     },
     "AppMetadataController": {
-      "currentAppVersion": "13.12.0",
-      "currentMigrationVersion": 184,
+      "currentAppVersion": "13.16.0",
+      "currentMigrationVersion": 188,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -165,7 +165,7 @@
       "nonRPCGasFeeApisDisabled": false
     },
     "GatorPermissionsController": {
-      "gatorPermissionsMapSerialized": "{\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
+      "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
       "isGatorPermissionsEnabled": false
     },
     "LoggingController": {
@@ -197,7 +197,7 @@
         }
       ],
       "traits": {
-        "install_date_ext": "2025-11-25",
+        "install_date_ext": "2026-01-22",
         "storage_kind": "split"
       }
     },
@@ -2004,7 +2004,7 @@
         "npm:@metamask/message-signing-snap": "mainnet",
         "npm:@metamask/solana-wallet-snap": "mainnet",
         "npm:@metamask/tron-wallet-snap": "mainnet",
-        "npm:@metamask/permissions-kernel-snap": "sepolia"
+        "npm:@metamask/permissions-kernel-snap": "mainnet"
       }
     },
     "ShieldController": {
@@ -2135,7 +2135,7 @@
     "KeyringController": {}
   },
   "meta": {
-    "version": 184,
+    "version": 188,
     "storageKind": "split"
   }
 }
