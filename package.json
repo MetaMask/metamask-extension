@@ -9,9 +9,11 @@
   "scripts": {
     "webpack": "tsx ./development/webpack/launch.ts",
     "webpack:clearcache": "./development/clear-webpack-cache.js",
-    "webpack:lavamoat": "tsc -p ./development/webpack/tsconfig.json --noCheck && lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
+    "webpack:lavamoat": "tsc -p ./development/webpack/tsconfig.json --noCheck && NODE_OPTIONS=--no-deprecation lavamoat --policy lavamoat/webpack/build/policy.json --override lavamoat/webpack/build/policy-override.json ./development/.webpack/launch.js",
     "webpack:lavamoat:build": "yarn webpack:lavamoat -- --env production --no-cache",
-    "webpack:lavamoat:generate": "yarn webpack:lavamoat --writeAutoPolicy -- --env production --no-cache",
+    "webpack:lavamoat:generate:build": "yarn webpack:lavamoat --writeAutoPolicy -- --env production --no-cache",
+    "webpack:lavamoat:generate:mv2": "concurrently 'yarn webpack:lavamoat:build --generatePolicy -v 2' 'yarn webpack:lavamoat:build --generatePolicy -v 2 --type flask' 'yarn webpack:lavamoat:build --generatePolicy -v 2 --type beta' 'yarn webpack:lavamoat:build --generatePolicy -v 2 --type experimental'",
+    "webpack:lavamoat:generate:mv3": "concurrently 'yarn webpack:lavamoat:build --generatePolicy' 'yarn webpack:lavamoat:build --generatePolicy --type flask' 'yarn webpack:lavamoat:build --generatePolicy --type beta' 'yarn webpack:lavamoat:build --generatePolicy --type experimental'",
     "foundryup": "yarn mm-foundryup",
     "postinstall": "yarn webpack:clearcache && yarn foundryup",
     "env:e2e": "SEGMENT_HOST='https://api.segment.io' SEGMENT_WRITE_KEY='FAKE' yarn",
