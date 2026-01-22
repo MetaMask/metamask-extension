@@ -229,7 +229,7 @@ export class CriticalStartupErrorHandler {
     clearTimeout(this.#livenessCheckTimeoutId);
     clearTimeout(this.#startUiSyncTimeoutId);
 
-    // This may be called before the `START_SYNC_UI` message is received
+    // This may be called before the `START_UI_SYNC` message is received
     // If so, we can resolve the promise here. This also ensures it doesn't leak memory.
     if (this.#onStartUiSyncCompleted) {
       this.#onStartUiSyncCompleted();
