@@ -3,10 +3,7 @@ import { isObject, hasProperty, createDeferredPromise } from '@metamask/utils';
 import log from 'loglevel';
 import { METHOD_DISPLAY_STATE_CORRUPTION_ERROR } from '../../../shared/constants/state-corruption';
 import type { ErrorLike } from '../../../shared/constants/errors';
-import {
-  BACKGROUND_LIVENESS_METHOD,
-  START_UI_SYNC,
-} from '../../../shared/constants/ui-initialization';
+import { BACKGROUND_LIVENESS_METHOD } from '../../../shared/constants/ui-initialization';
 import {
   DISPLAY_GENERAL_STARTUP_ERROR,
   RELOAD_WINDOW,
@@ -45,6 +42,8 @@ export class CriticalStartupErrorHandler {
 
   #onStartUiSyncCompleted?: () => void;
 
+  #startUiSyncCompleted = false;
+
   /**
    * Creates an instance of CriticalStartupErrorHandler.
    * This class listens for critical startup errors from the background script
@@ -56,6 +55,16 @@ export class CriticalStartupErrorHandler {
   constructor(port: browser.Runtime.Port, container: HTMLElement) {
     this.#port = port;
     this.#container = container;
+  }
+
+  /**
+   * Declare that the start UI sync message has been received.
+   */
+  startUiSyncReceived() {
+    this.#startUiSyncCompleted = true;
+    if (this.#onStartUiSyncCompleted) {
+      this.#onStartUiSyncCompleted();
+    }
   }
 
   /**
@@ -76,7 +85,9 @@ export class CriticalStartupErrorHandler {
 
     try {
       await Promise.race([livenessCheck, livenessCheckTimeoutPromise]);
-      await this.#startSyncUICheck();
+      if (!this.#startUiSyncCompleted) {
+        await this.#startSyncUICheck();
+      }
     } catch (error) {
       await displayCriticalErrorMessage(
         this.#container,
@@ -147,10 +158,6 @@ export class CriticalStartupErrorHandler {
           CriticalErrorTranslationKey.TroubleStarting,
           new Error('Unreachable error, liveness check not initialized'),
         );
-      }
-    } else if (method === START_UI_SYNC) {
-      if (this.#onStartUiSyncCompleted) {
-        this.#onStartUiSyncCompleted();
       }
     } else if (method === RELOAD_WINDOW) {
       // This is a special case where we want to reload the page

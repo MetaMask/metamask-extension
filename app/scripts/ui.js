@@ -117,6 +117,7 @@ async function start() {
 
   async function handleStartUISync(initialState) {
     endTrace({ name: TraceName.BackgroundConnect });
+    criticalErrorHandler.startUiSyncReceived();
 
     // this means we've received a message from the background, and so
     // background startup has succeed, so we don't need to listen for error
