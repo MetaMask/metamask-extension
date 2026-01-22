@@ -134,3 +134,51 @@ export type AccountState = {
   unrealizedPnl: string; // Unrealized profit/loss across all positions
   returnOnEquity: string; // Return on equity percentage
 };
+
+// Transaction history types
+export type PerpsTransactionType =
+  | 'trade'
+  | 'order'
+  | 'funding'
+  | 'deposit'
+  | 'withdrawal';
+
+export type PerpsTransactionStatus = 'confirmed' | 'pending' | 'failed';
+
+export type PerpsTransaction = {
+  id: string;
+  type: PerpsTransactionType;
+  symbol: string;
+  title: string; // "Opened Long", "Funding Payment"
+  subtitle: string; // "2.5 ETH @ $2,850.00"
+  timestamp: number;
+  status: PerpsTransactionStatus;
+  // Type-specific data
+  fill?: {
+    size: string;
+    price: string;
+    fee: string;
+    side: 'buy' | 'sell';
+    realizedPnl?: string;
+  };
+  order?: {
+    orderId: string;
+    orderType: OrderType;
+    status: Order['status'];
+  };
+  funding?: {
+    amount: string;
+    rate: string;
+  };
+  depositWithdrawal?: {
+    amount: string;
+    txHash?: string;
+  };
+};
+
+export type PerpsTransactionFilter =
+  | 'all'
+  | 'trade'
+  | 'order'
+  | 'funding'
+  | 'deposit';
