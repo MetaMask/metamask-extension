@@ -1098,11 +1098,8 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "We can't verify this token."
+  "bridgeTokenNotFound": {
+    "message": "No tokens match \"$1\""
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
@@ -8791,9 +8788,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourNetworks": {
-    "message": "Your networks"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"

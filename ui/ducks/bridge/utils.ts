@@ -52,8 +52,11 @@ export const isTronEnergyOrBandwidthResource = (
  * @param chainId - The chain ID to convert to a hex string
  * @returns The hex string representation of the chain ID. Undefined if the chain ID is not EVM.
  */
-export const getMaybeHexChainId = (chainId: string) => {
-  return isNonEvmChainId(chainId) ? chainId : formatChainIdToHex(chainId);
+export const getMaybeHexChainId = (chainId?: string) => {
+  if (!chainId) {
+    return undefined;
+  }
+  return isNonEvmChainId(chainId) ? undefined : formatChainIdToHex(chainId);
 };
 
 /**

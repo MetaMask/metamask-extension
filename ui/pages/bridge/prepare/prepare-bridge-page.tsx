@@ -142,6 +142,9 @@ const PrepareBridgePage = ({
   const isQuoteExpired = useSelector((state) =>
     getIsQuoteExpired(state as BridgeAppState, Date.now()),
   );
+
+  const wasTxDeclined = useSelector(getWasTxDeclined);
+
   // Determine if the current quote is expired or does not match the currently
   // selected destination asset/chain.
   const isQuoteExpiredOrInvalid = isQuoteExpiredOrInvalidUtil({
@@ -153,8 +156,6 @@ const PrepareBridgePage = ({
   const activeQuote = isQuoteExpiredOrInvalid ? undefined : unvalidatedQuote;
 
   const selectedAccount = useSelector(getFromAccount);
-
-  const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const gasIncluded7702 = useGasIncluded7702({
     isSwap,
@@ -536,7 +537,6 @@ const PrepareBridgePage = ({
 
           <BridgeInputGroup
             header={getToInputHeader()}
-            isDestination={true}
             accountAddress={
               selectedDestinationAccount?.address ?? selectedAccount.address
             }
@@ -600,6 +600,7 @@ const PrepareBridgePage = ({
               setShowBlockExplorerToast(true);
               setToastTriggerCounter((prev) => prev + 1);
             }}
+            isDestination={true}
           />
 
           <Column

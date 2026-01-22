@@ -150,9 +150,9 @@ export const setFromToken = (token: TokenPayload) => {
     const isNonEvm = isNonEvmChainId(chainId);
 
     const currentChainId = getMultichainProviderConfig(getState()).chainId;
-    const shouldSetNetwork = currentChainId
-      ? currentChainId !== getMaybeHexChainId(chainId)
-      : true;
+    const shouldSetNetwork = ![chainId, getMaybeHexChainId(chainId)].some(
+      (c) => c && c === currentChainId,
+    );
     // Set the src network
     if (shouldSetNetwork) {
       // If the source chain changes, enable All Networks view so the user

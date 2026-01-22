@@ -100,9 +100,9 @@ class BridgeQuotePage {
         await this.driver.clickElement(this.mutlichainAssetPicker);
 
         // Now select the destination network
-        await this.driver.clickElementAndWaitToDisappear(
-          `[data-testid="${quote.toChain}"]`,
-        );
+        await this.driver.clickElementAndWaitToDisappear({
+          text: quote.toChain,
+        });
       }
       if (quote.tokenTo) {
         await this.driver.fill(this.assetPrickerSearchInput, quote.tokenTo);

@@ -26,8 +26,8 @@ export type BridgeToken = BridgeAssetV2 &
  * This is the minimal network configuration used by the Swap UI
  */
 export type BridgeNetwork = {
-  chainId: CaipChainId;
   name: string;
+  chainId: CaipChainId;
 };
 
 export type BridgeState = {

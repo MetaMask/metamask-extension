@@ -17,6 +17,7 @@ import {
   isCrossChain,
   RequestStatus,
   type FeatureFlagsPlatformConfig,
+  isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
 import type { AccountsControllerState } from '@metamask/accounts-controller';
@@ -160,6 +161,28 @@ const getBridgeFeatureFlags = createDeepEqualSelector(
   },
 );
 
+const getChainRanking = (state: BridgeAppState) => {
+  return (
+    getBridgeFeatureFlags(state)?.chainRanking ??
+    ([
+      { chainId: 'eip155:1', name: 'Ethereum' },
+      { chainId: 'eip155:56', name: 'BNB' },
+      { chainId: 'bip122:000000000019d6689c085ae165831e93', name: 'BTC' },
+      { chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp', name: 'Solana' },
+      { chainId: 'tron:728126428', name: 'Tron' },
+      { chainId: 'eip155:8453', name: 'Base' },
+      { chainId: 'eip155:42161', name: 'Arbitrum' },
+      { chainId: 'eip155:59144', name: 'Linea' },
+      { chainId: 'eip155:137', name: 'Polygon' },
+      { chainId: 'eip155:43114', name: 'Avalanche' },
+      { chainId: 'eip155:10', name: 'Optimism' },
+      { chainId: 'eip155:143', name: 'Monad' },
+      { chainId: 'eip155:1329', name: 'Sei' },
+      { chainId: 'eip155:324', name: 'zkSync' },
+    ] as const)
+  );
+};
+
 export const getPriceImpactThresholds = createDeepEqualSelector(
   [
     (state: BridgeAppState) =>
@@ -167,10 +190,6 @@ export const getPriceImpactThresholds = createDeepEqualSelector(
   ],
   (priceImpactThreshold) => priceImpactThreshold,
 );
-
-const getChainRanking = (state: BridgeAppState) => {
-  return getBridgeFeatureFlags(state)?.chainRanking;
-};
 
 export const getFromChains = createDeepEqualSelector(
   [
@@ -280,6 +299,13 @@ export const getFromToken = createSelector(
   },
 );
 
+const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
+// For compatibility with old code
+export const getFromChain = createSelector(
+  [getFromChainId, getAllBridgeableNetworks],
+  (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
+);
+
 export const getToChains = createDeepEqualSelector(
   [getAllBridgeableNetworks, getChainRanking],
   (allBridgeableNetworks, chainRanking) => {
@@ -323,32 +349,8 @@ export const getTopAssetsFromFeatureFlags = (
   return bridgeFeatureFlags?.chains[formatChainIdToCaip(chainId)]?.topAssets;
 };
 
-const getFromChainId = (state: BridgeAppState) => getFromToken(state).chainId;
-// For compatibility with old code
-export const getFromChain = createSelector(
-  [getFromChainId, getAllBridgeableNetworks],
-  (fromChainId, allBridgeableNetworks) => allBridgeableNetworks[fromChainId],
-);
-
 export const getBip44DefaultPairsConfig = (state: BridgeAppState) =>
   getBridgeFeatureFlags(state).bip44DefaultPairs;
-
-// Returns a mapping from src assetId to default dest assetId
-export const getBip44DefaultPairs = createSelector(
-  [getBip44DefaultPairsConfig],
-  (bip44DefaultPairsConfig) => {
-    if (!bip44DefaultPairsConfig) {
-      return {};
-    }
-    return Object.fromEntries(
-      Object.values(bip44DefaultPairsConfig)
-        .filter((s) => s !== undefined)
-        .flatMap(({ other, standard }) =>
-          Object.entries({ ...other, ...standard }),
-        ),
-    );
-  },
-);
 
 export const getToToken = createSelector(
   [getFromToken, (state: BridgeAppState) => state.bridge.toToken],
@@ -394,12 +396,9 @@ export const getFromAccount = createSelector(
     (state: BridgeAppState) => state,
     getSelectedInternalAccount,
   ],
-  (fromChainId, state, selectedInternalAccount) => {
-    return (
-      getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
-      selectedInternalAccount
-    );
-  },
+  (fromChainId, state, selectedInternalAccount) =>
+    getInternalAccountBySelectedAccountGroupAndCaip(state, fromChainId) ??
+    selectedInternalAccount,
 );
 
 export const getToAccounts = createSelector(
@@ -781,15 +780,15 @@ export const getWasTxDeclined = (state: BridgeAppState): boolean => {
 };
 
 export const getIsToOrFromNonEvm = createSelector(
-  [getFromChainId, (state: BridgeAppState) => getToToken(state)?.chainId],
-  (fromChainId, toChainId) => {
-    if (!fromChainId || !toChainId) {
+  [getFromChainId, getToChain],
+  (fromChainId, toChain) => {
+    if (!fromChainId || !toChain?.chainId) {
       return false;
     }
 
     // Parse the CAIP chain IDs to get their namespaces
     const { namespace: fromNamespace } = parseCaipChainId(fromChainId);
-    const { namespace: toNamespace } = parseCaipChainId(toChainId);
+    const { namespace: toNamespace } = parseCaipChainId(toChain.chainId);
 
     // Return true if chains are in different namespaces
     // This covers EVM <> non-EVM as well as non-EVM <> non-EVM (e.g., Solana <> Bitcoin)
@@ -845,7 +844,6 @@ export const selectNoFeeAssets = createSelector(
   },
 );
 
-// TODO this is blroken
 const getIsGasIncludedSwapSupported = createSelector(
   [
     (state: BridgeAppState) => getFromChain(state)?.chainId,
@@ -853,8 +851,7 @@ const getIsGasIncludedSwapSupported = createSelector(
       isSendBundleSupportedForChain,
   ],
   (fromChainId, isSendBundleSupportedForChain) => {
-    const hexChainId = getMaybeHexChainId(fromChainId);
-    if (!hexChainId) {
+    if (isNonEvmChainId(fromChainId)) {
       return false;
     }
     return isSendBundleSupportedForChain;

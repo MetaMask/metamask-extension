@@ -310,7 +310,23 @@ async function mockSearchTokens(mockServer: Mockttp) {
             symbol: 'DAI',
             chainId: 'eip155:59144',
             assetId:
-              'eip155:59144/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'.toLowerCase(),
+              'eip155:59144/erc20:0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5'.toLowerCase(),
+            decimals: 6,
+          },
+          {
+            name: 'Uniswap',
+            symbol: 'UNI',
+            chainId: 'eip155:42161',
+            assetId:
+              'eip155:42161/erc20:0xda10009cbd5d07dd0cecc66161fc93d7c9000da1'.toLowerCase(),
+            decimals: 10,
+          },
+          {
+            name: 'Tether',
+            symbol: 'USDT',
+            chainId: 'eip155:1',
+            assetId:
+              'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase(),
             decimals: 6,
           },
         ],
@@ -1169,6 +1185,8 @@ export const getBridgeL2Fixtures = (
       await mockTokensArbitrum(mockServer),
       await mockTokensEthereum(mockServer),
       await mockTokensLinea(mockServer),
+      await mockGetPopularTokens(mockServer),
+      await mockSearchTokens(mockServer),
       await mockGetTokenArbitrum(mockServer),
       await mockL2toMainnet(mockServer),
       await mockNativeL2toL2(mockServer),

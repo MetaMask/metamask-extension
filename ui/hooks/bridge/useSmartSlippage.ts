@@ -21,7 +21,6 @@ import { getFromToken, getToToken } from '../../ducks/bridge/selectors';
  */
 export function useSmartSlippage(): void {
   const dispatch = useDispatch();
-
   const fromToken = useSelector(getFromToken);
   const toToken = useSelector(getToToken);
 
