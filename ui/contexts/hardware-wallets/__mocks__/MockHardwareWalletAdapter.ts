@@ -10,8 +10,6 @@ import type {
 export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
   private connected: boolean = false;
 
-  private deviceIdValue: string | null = null;
-
   private options: HardwareWalletAdapterOptions;
 
   public connectMock = jest.fn();
@@ -30,21 +28,18 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
     this.options = options;
 
     // Setup default implementations
-    this.connectMock.mockImplementation(async (deviceId: string) => {
-      this.deviceIdValue = deviceId;
+    this.connectMock.mockImplementation(async (_deviceId: string) => {
       this.connected = true;
     });
 
     this.disconnectMock.mockImplementation(async () => {
       this.connected = false;
-      this.deviceIdValue = null;
     });
 
     this.isConnectedMock.mockImplementation(() => this.connected);
 
     this.destroyMock.mockImplementation(() => {
       this.connected = false;
-      this.deviceIdValue = null;
     });
 
     this.ensureDeviceReadyMock.mockResolvedValue(true);
@@ -108,22 +103,18 @@ export class MockHardwareWalletAdapter implements HardwareWalletAdapter {
   reset(): void {
     // Reset internal state
     this.connected = false;
-    this.deviceIdValue = null;
     // Reset mocks
     this.resetMocks();
     // Reset mock implementations to defaults
-    this.connectMock.mockImplementation(async (deviceId: string) => {
-      this.deviceIdValue = deviceId;
+    this.connectMock.mockImplementation(async (_deviceId: string) => {
       this.connected = true;
     });
     this.disconnectMock.mockImplementation(async () => {
       this.connected = false;
-      this.deviceIdValue = null;
     });
     this.isConnectedMock.mockImplementation(() => this.connected);
     this.destroyMock.mockImplementation(() => {
       this.connected = false;
-      this.deviceIdValue = null;
     });
     this.ensureDeviceReadyMock.mockResolvedValue(true);
   }
