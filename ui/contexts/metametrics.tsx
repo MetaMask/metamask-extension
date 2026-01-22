@@ -122,7 +122,7 @@ type MetaMetricsProviderProps = {
   children: ReactNode;
 };
 
-// @eslint-disable-next-line @typescript-eslint/naming-convention
+// eslint-disable-next-line @typescript-eslint/naming-convention
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
