@@ -39,7 +39,7 @@ class SendPage {
 
   private readonly networkPicker = {
     testId: 'send-network-filter-toggle',
-  }
+  };
 
   private readonly recipientModalButton =
     '[data-testid="open-recipient-modal-btn"]';
