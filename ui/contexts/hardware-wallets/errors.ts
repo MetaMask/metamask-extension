@@ -77,7 +77,7 @@ const ERROR_PROPERTIES_MAP = (() => {
         map.set(mapping.code, {
           severity: mapping.severity ?? Severity.Err,
           category: mapping.category ?? Category.Unknown,
-          userMessage: mapping.userMessage ?? 'An error occurred.',
+          userMessage: mapping.userMessage ?? 'An error occurred',
         });
       }
     }
@@ -123,7 +123,7 @@ function getErrorProperties(code: ErrorCode): {
     ERROR_PROPERTIES_MAP.get(code) ?? {
       severity: Severity.Err,
       category: Category.Unknown,
-      userMessage: 'An unknown error occurred.',
+      userMessage: 'An unknown error occurred',
     }
   );
 }
