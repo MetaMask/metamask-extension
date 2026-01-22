@@ -9,44 +9,35 @@ import {
   TextColor,
   JustifyContent,
   AlignItems,
-  TextAlign,
 } from '../../helpers/constants/design-system';
-import { Box, Text, Tag } from '../../components/component-library';
+import {
+  Box,
+  Text,
+  Tag,
+  SensitiveText,
+} from '../../components/component-library';
+import { Skeleton } from '../../components/component-library/skeleton';
 import { PreferredAvatar } from '../../components/app/preferred-avatar';
 import { getSnapName, shortenAddress } from '../../helpers/utils/util';
 import { selectAccountGroupNameByInternalAccount } from '../confirmations/selectors/accounts';
 import { MultichainAccountsState } from '../../selectors/multichain-accounts/account-tree.types';
+import { getAccountGroupsByAddress } from '../../selectors/multichain-accounts/account-tree';
+import { selectBalanceByAccountGroup } from '../../selectors/assets';
 import {
   getMetaMaskAccountsOrdered,
   getMetaMaskKeyrings,
   getSnapsMetadata,
-  getShouldHideZeroBalanceTokens,
-  getIsTokenNetworkFilterEqualCurrentNetwork,
-  getShowFiatInTestnets,
-  getChainIdsToPoll,
+  getPreferences,
 } from '../../selectors';
-import {
-  getMultichainBalances,
-  getMultichainIsTestnet,
-  getMultichainNetwork,
-  getMultichainShouldShowFiat,
-} from '../../selectors/multichain';
-import { getMultichainAggregatedBalance } from '../../selectors/assets';
 import { MergedInternalAccount } from '../../selectors/selectors.types';
 import { KeyringType } from '../../../shared/constants/keyring';
-import UserPreferencedCurrencyDisplay from '../../components/app/user-preferenced-currency-display/user-preferenced-currency-display.component';
-import { PRIMARY } from '../../helpers/constants/common';
 import { AccountNetworkIndicator } from '../../components/multichain/account-network-indicator';
-import { MULTICHAIN_NETWORK_TO_ASSET_TYPES } from '../../../shared/constants/multichain/assets';
-import { useMultichainSelector } from '../../hooks/useMultichainSelector';
-import { useGetFormattedTokensPerChain } from '../../hooks/useGetFormattedTokensPerChain';
-import { useAccountTotalCrossChainFiatBalance } from '../../hooks/useAccountTotalCrossChainFiatBalance';
 import { getAccountLabels } from '../../helpers/utils/accounts';
+import { useFormatters } from '../../hooks/useFormatters';
+import { getCurrentCurrency } from '../../ducks/metamask/metamask';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { normalizeSafeAddress } from '../../../app/scripts/lib/multichain/address';
-
-const MAXIMUM_CURRENCY_DECIMALS = 3;
 
 // Component to display snap account information (avatar, address, account group name, balance, network indicator, and snap name)
 export const SnapAccountCard = ({
@@ -66,9 +57,18 @@ export const SnapAccountCard = ({
     selectAccountGroupNameByInternalAccount(state, address),
   );
 
+  // Get the account group ID for this new account and its balance.
+  const accountGroups = useSelector((state: MultichainAccountsState) =>
+    getAccountGroupsByAddress(state, [address]),
+  );
+  const accountGroupId = accountGroups[0]?.id;
+  const accountGroupBalance = useSelector((state) =>
+    accountGroupId ? selectBalanceByAccountGroup(accountGroupId)(state) : null,
+  );
+
+  // Get account group labels (e.g., Snap name) for display.
   const snapMetadata = useSelector(getSnapsMetadata);
   const keyrings = useSelector(getMetaMaskKeyrings);
-
   const accountLabels = useMemo(
     () =>
       getAccountLabels(
@@ -82,71 +82,17 @@ export const SnapAccountCard = ({
     [account, keyrings, snapMetadata],
   );
 
-  const { isEvmNetwork, chainId: multichainChainId } = useMultichainSelector(
-    getMultichainNetwork,
-    account,
-  );
+  // Format the balance using the account group's aggregated balance.
+  const { privacyMode } = useSelector(getPreferences);
+  const fallbackCurrency = useSelector(getCurrentCurrency);
+  const { formatCurrency } = useFormatters();
 
-  const isTestnet = useMultichainSelector(getMultichainIsTestnet, account);
-  const isMainnet = !isTestnet;
-  const shouldShowFiat = useMultichainSelector(
-    getMultichainShouldShowFiat,
-    account,
-  );
-  const showFiatInTestnets = useSelector(getShowFiatInTestnets);
-  const showFiat =
-    shouldShowFiat && (isMainnet || (isTestnet && showFiatInTestnets));
-
-  const multichainAggregatedBalance = useSelector((state) =>
-    getMultichainAggregatedBalance(state, account),
-  );
-
-  const multichainBalances = useSelector(getMultichainBalances);
-  const accountMultichainBalances = multichainBalances?.[account.id];
-  const accountMultichainNativeBalance =
-    accountMultichainBalances?.[
-      // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-      `${MULTICHAIN_NETWORK_TO_ASSET_TYPES[multichainChainId]}`
-    ]?.amount;
-
-  const shouldHideZeroBalanceTokens = useSelector(
-    getShouldHideZeroBalanceTokens,
-  );
-  const isTokenNetworkFilterEqualCurrentNetwork = useSelector(
-    getIsTokenNetworkFilterEqualCurrentNetwork,
-  );
-  const allChainIDs = useSelector(getChainIdsToPoll);
-  const { formattedTokensWithBalancesPerChain } = useGetFormattedTokensPerChain(
-    account,
-    shouldHideZeroBalanceTokens,
-    isTokenNetworkFilterEqualCurrentNetwork,
-    allChainIDs,
-  );
-  const { totalFiatBalance } = useAccountTotalCrossChainFiatBalance(
-    account,
-    formattedTokensWithBalancesPerChain,
-  );
-
-  let balanceToTranslate;
-  if (isEvmNetwork) {
-    balanceToTranslate =
-      !shouldShowFiat || isTestnet || !process.env.PORTFOLIO_VIEW
-        ? account.balance
-        : totalFiatBalance;
-  } else {
-    balanceToTranslate =
-      !shouldShowFiat || isTestnet
-        ? accountMultichainNativeBalance
-        : multichainAggregatedBalance;
-  }
-
-  const getIsAggregatedFiatOverviewBalanceProp = () => {
-    const isAggregatedFiatOverviewBalance =
-      (!isTestnet && process.env.PORTFOLIO_VIEW && shouldShowFiat) ||
-      (!isEvmNetwork && shouldShowFiat);
-
-    return isAggregatedFiatOverviewBalance;
-  };
+  const total = accountGroupBalance?.totalBalanceInUserCurrency;
+  const currency = accountGroupBalance?.userCurrency ?? fallbackCurrency;
+  const isBalanceLoading = total === undefined || currency === undefined;
+  const formattedBalance = isBalanceLoading
+    ? null
+    : formatCurrency(total, currency);
 
   return (
     <Box
@@ -188,26 +134,17 @@ export const SnapAccountCard = ({
                     {accountGroupName}
                   </Text>
                 </Box>
-                <Text
-                  as="div"
-                  className="multichain-account-list-item__asset"
-                  display={Display.Flex}
-                  flexDirection={FlexDirection.Row}
-                  alignItems={AlignItems.center}
-                  justifyContent={JustifyContent.flexEnd}
-                  ellipsis
-                  textAlign={TextAlign.End}
-                >
-                  <UserPreferencedCurrencyDisplay
-                    account={account}
-                    ethNumberOfDecimals={MAXIMUM_CURRENCY_DECIMALS}
-                    value={balanceToTranslate as string | undefined}
-                    type={PRIMARY}
-                    showFiat={showFiat}
-                    isAggregatedFiatOverviewBalance={getIsAggregatedFiatOverviewBalanceProp()}
-                    data-testid="first-currency-display"
-                  />
-                </Text>
+                <Skeleton isLoading={isBalanceLoading}>
+                  <SensitiveText
+                    className="multichain-account-list-item__asset"
+                    variant={TextVariant.bodyMdMedium}
+                    isHidden={privacyMode}
+                    data-testid="account-balance"
+                    ellipsis
+                  >
+                    {formattedBalance}
+                  </SensitiveText>
+                </Skeleton>
               </Box>
             </Box>
             <Box
