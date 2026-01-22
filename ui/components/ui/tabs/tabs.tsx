@@ -47,7 +47,7 @@ export const Tabs = <TKey extends string = string>({
   );
 
   const [activeTabIndex, setActiveTabIndex] = useState<number>(() =>
-    Math.max(findChildByKey(defaultActiveTabKey), 0),
+    Math.max(findChildByKey(activeTabKey ?? defaultActiveTabKey), 0),
   );
 
   useEffect(() => {
