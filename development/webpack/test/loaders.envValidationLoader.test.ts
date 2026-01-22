@@ -43,8 +43,7 @@ describe('envValidationLoader', () => {
     });
 
     it('passes source unchanged when multiple env vars are declared', () => {
-      const source =
-        'const url = process.env.API_URL + process.env.NODE_ENV;';
+      const source = 'const url = process.env.API_URL + process.env.NODE_ENV;';
       const { context, emittedErrors } = createMockContext(
         new Set(['API_URL', 'NODE_ENV']),
       );
@@ -81,8 +80,7 @@ describe('envValidationLoader', () => {
     });
 
     it('deduplicates multiple references to the same undeclared var', () => {
-      const source =
-        'const x = process.env.SAME_VAR + process.env.SAME_VAR;';
+      const source = 'const x = process.env.SAME_VAR + process.env.SAME_VAR;';
       const { context, emittedErrors } = createMockContext(new Set());
 
       const result = envValidationLoader.call(context, source);
@@ -95,8 +93,7 @@ describe('envValidationLoader', () => {
     });
 
     it('only reports undeclared vars when mixed with declared vars', () => {
-      const source =
-        'const x = process.env.DECLARED + process.env.UNDECLARED;';
+      const source = 'const x = process.env.DECLARED + process.env.UNDECLARED;';
       const { context, emittedErrors } = createMockContext(
         new Set(['DECLARED']),
       );
