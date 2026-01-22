@@ -17,8 +17,8 @@ import React, {
 import { useLocation, matchPath } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import type { Span } from '@sentry/types';
-
 import { omit } from 'lodash';
+
 import { captureException, captureMessage } from '../../shared/lib/sentry';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
@@ -41,9 +41,9 @@ import {
   generateActionId,
   submitRequestToBackground,
 } from '../store/background-connection';
-
 import { trackMetaMetricsEvent, trackMetaMetricsPage } from '../store/actions';
 import type {
+  TraceName,
   TraceRequest,
   EndTraceRequest,
   TraceCallback,
@@ -79,13 +79,29 @@ export type UITraceMethod = <Result>(
 export type UIEndTraceMethod = (request: EndTraceRequest) => void;
 
 /**
+ * Serialized parent context for RPC communication.
+ * Used when passing trace context across process boundaries.
+ */
+export type SerializedTraceParentContext = {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  _name: TraceName;
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  _id?: string;
+};
+
+/**
+ * Parent context for traces - can be a Sentry Span or serialized format for RPC
+ */
+export type TraceParentContext = Span | SerializedTraceParentContext | null;
+
+/**
  * The value provided by MetaMetricsContext
  */
 export type MetaMetricsContextValue = {
   trackEvent: UITrackEventMethod;
   bufferedTrace: UITraceMethod;
   bufferedEndTrace: UIEndTraceMethod;
-  onboardingParentContext: MutableRefObject<Span | null>;
+  onboardingParentContext: MutableRefObject<TraceParentContext>;
 };
 
 const defaultContextValue: MetaMetricsContextValue = {
@@ -128,7 +144,7 @@ export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const context = useSegmentContext();
   const isMetricsEnabled = useSelector(getParticipateInMetaMetrics);
 
-  const onboardingParentContext = useRef<Span | null>(null);
+  const onboardingParentContext = useRef<TraceParentContext>(null);
 
   // Sometimes we want to track context properties inside the event's "properties" object.
   const addContextPropsIntoEventProperties = useCallback(
@@ -330,7 +346,7 @@ export type WithMetaMetricsProps = MetaMetricsContextValue;
  * @param WrappedComponent - Component to wrap
  * @returns Wrapped component with MetaMetrics context
  */
-export function withMetaMetrics<Props extends WithMetaMetricsProps>(
+export function withMetaMetrics<Props extends Record<string, unknown>>(
   WrappedComponent: ComponentType<Props>,
 ): ComponentType<Omit<Props, keyof WithMetaMetricsProps>> {
   const WithMetaMetrics = (props: Omit<Props, keyof WithMetaMetricsProps>) => {
