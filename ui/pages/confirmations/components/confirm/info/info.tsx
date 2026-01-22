@@ -10,6 +10,8 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { ExampleCustomAmountConfirmation } from '../../developer/example-custom-amount-confirmation';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
 import NativeTransferInfo from './native-transfer/native-transfer';
