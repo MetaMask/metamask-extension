@@ -524,7 +524,7 @@ function InfuraSwitchToast() {
       <Toast
         key="infura-switch-toast"
         dataTestId="infura-switch-toast"
-        text={t('defaultSwitchedToInfura')}
+        text={t('updatedToMetaMaskDefault')}
         startAdornment={
           <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
         }

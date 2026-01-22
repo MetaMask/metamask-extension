@@ -220,7 +220,7 @@ export function selectClaimSubmitToast(
 }
 
 /**
- * Retrieves user preference to see the "Default switched to Infura" toast
+ * Retrieves user preference to see the "Updated to MetaMask default" toast
  *
  * @param state - Redux state object.
  * @returns Boolean preference value

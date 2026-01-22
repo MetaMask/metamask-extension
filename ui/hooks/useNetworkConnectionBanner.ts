@@ -289,7 +289,7 @@ export const useNetworkConnectionBanner =
     ]);
 
     // When in degraded/unavailable status, use fresh selector data for network details
-    // to prevent stale "Switch to Infura" button after switching endpoints
+    // to prevent stale "Switch to MetaMask default RPC" button after switching endpoints
     if (
       (networkConnectionBannerState.status === 'degraded' ||
         networkConnectionBannerState.status === 'unavailable') &&

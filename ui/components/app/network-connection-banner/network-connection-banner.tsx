@@ -104,7 +104,7 @@ const SwitchToInfuraButton = ({
   isLowerCase: boolean;
   switchToInfura: () => Promise<void>;
 }) => {
-  const switchToInfuraText = t('switchToInfura');
+  const switchToInfuraText = t('switchToMetaMaskDefaultRpc');
 
   return (
     <ButtonLink
@@ -155,7 +155,7 @@ const getBannerContent = (
 
     let secondaryMessage: React.ReactNode = null;
     if (!networkConnectionBanner.isInfuraEndpoint) {
-      // For custom endpoints, show either "Switch to Infura" or "Update RPC"
+      // For custom endpoints, show either "Switch to MetaMask default RPC" or "Update RPC"
       const buttonContent = hasInfuraEndpoint ? (
         <SwitchToInfuraButton
           t={t}
@@ -194,7 +194,7 @@ const getBannerContent = (
     // Already on Infura, just show connectivity message
     secondaryMessageContent = t('checkNetworkConnectivity');
   } else if (hasInfuraEndpoint) {
-    // Has Infura endpoint available, show "Switch to Infura"
+    // Has Infura endpoint available, show "Switch to MetaMask default RPC"
     secondaryMessageContent = t('checkNetworkConnectivityOr', [
       <SwitchToInfuraButton
         key="switchToInfura"

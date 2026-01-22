@@ -707,7 +707,7 @@ describe('useNetworkConnectionBanner', () => {
       expect(mockSetShowInfuraSwitchToast).not.toHaveBeenCalled();
     });
 
-    it('returns fresh network details from selector to prevent stale Switch to Infura button', async () => {
+    it('returns fresh network details from selector to prevent stale Switch to MetaMask default RPC button', async () => {
       const networkConfig = {
         '0xa4b1': {
           name: 'Arbitrum One',
@@ -762,7 +762,7 @@ describe('useNetworkConnectionBanner', () => {
       );
 
       // Hook should return fresh data from selector, not stale Redux state
-      // This prevents showing "Switch to Infura" when already on Infura
+      // This prevents showing "Switch to MetaMask default RPC" when already on Infura
       expect(result.current).toStrictEqual(
         expect.objectContaining({
           status: 'unavailable',

@@ -2058,10 +2058,6 @@
   "defaultSettingsTitle": {
     "message": "Default privacy settings"
   },
-  "defaultSwitchedToInfura": {
-    "message": "Default switched to Infura",
-    "description": "Toast message confirming that the default RPC endpoint has been switched to Infura"
-  },
   "defi": {
     "message": "DeFi"
   },
@@ -8056,9 +8052,9 @@
   "switchNetwork": {
     "message": "Switch network"
   },
-  "switchToInfura": {
-    "message": "Switch to Infura",
-    "description": "Button text to switch the default RPC endpoint to Infura"
+  "switchToMetaMaskDefaultRpc": {
+    "message": "Switch to MetaMask default RPC",
+    "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
   },
   "switchToPopup": {
     "message": "Switch to popup"
@@ -8541,6 +8537,10 @@
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
+  },
+  "updatedToMetaMaskDefault": {
+    "message": "Updated to MetaMask default",
+    "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
   },
   "uploadDropFile": {
     "message": "Drop your file here"

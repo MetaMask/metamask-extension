@@ -290,7 +290,7 @@ describe('NetworkConnectionBanner', () => {
   });
 
   describe('when a custom network has an Infura endpoint available', () => {
-    it('renders "Switch to Infura" button instead of "Update RPC" for degraded status', () => {
+    it('renders "Switch to MetaMask default RPC" button instead of "Update RPC" for degraded status', () => {
       const switchToInfuraMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'degraded',
@@ -309,11 +309,11 @@ describe('NetworkConnectionBanner', () => {
         store,
       );
 
-      expect(getByText('Switch to Infura')).toBeInTheDocument();
+      expect(getByText('Switch to MetaMask default RPC')).toBeInTheDocument();
       expect(queryByText('Update RPC')).not.toBeInTheDocument();
     });
 
-    it('renders "switch to Infura" button instead of "update RPC" for unavailable status', () => {
+    it('renders "switch to MetaMask default RPC" button instead of "update RPC" for unavailable status', () => {
       const switchToInfuraMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unavailable',
@@ -333,14 +333,14 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(
-        getByText('switch to Infura', { selector: 'button' }),
+        getByText('switch to MetaMask default RPC', { selector: 'button' }),
       ).toBeInTheDocument();
       expect(
         queryByText('update RPC', { selector: 'button' }),
       ).not.toBeInTheDocument();
     });
 
-    it('calls switchToInfura when "Switch to Infura" button is clicked (degraded)', () => {
+    it('calls switchToInfura when "Switch to MetaMask default RPC" button is clicked (degraded)', () => {
       const switchToInfuraMock = jest.fn();
       const trackNetworkBannerEventMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
@@ -359,7 +359,7 @@ describe('NetworkConnectionBanner', () => {
         <NetworkConnectionBanner />,
         store,
       );
-      fireEvent.click(getByText('Switch to Infura'));
+      fireEvent.click(getByText('Switch to MetaMask default RPC'));
 
       expect(switchToInfuraMock).toHaveBeenCalled();
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
@@ -370,7 +370,7 @@ describe('NetworkConnectionBanner', () => {
       });
     });
 
-    it('calls switchToInfura when "switch to Infura" button is clicked (unavailable)', () => {
+    it('calls switchToInfura when "switch to MetaMask default RPC" button is clicked (unavailable)', () => {
       const switchToInfuraMock = jest.fn();
       const trackNetworkBannerEventMock = jest.fn();
       mockUseNetworkConnectionBanner.mockReturnValue({
@@ -389,7 +389,7 @@ describe('NetworkConnectionBanner', () => {
         <NetworkConnectionBanner />,
         store,
       );
-      fireEvent.click(getByText('switch to Infura', { selector: 'button' }));
+      fireEvent.click(getByText('switch to MetaMask default RPC', { selector: 'button' }));
 
       expect(switchToInfuraMock).toHaveBeenCalled();
       expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
@@ -419,7 +419,7 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(getByText('Update RPC')).toBeInTheDocument();
-      expect(queryByText('Switch to Infura')).not.toBeInTheDocument();
+      expect(queryByText('Switch to MetaMask default RPC')).not.toBeInTheDocument();
     });
   });
 });
