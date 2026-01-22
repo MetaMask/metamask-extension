@@ -166,7 +166,7 @@
     },
     "GatorPermissionsController": {
       "gatorPermissionsMapSerialized": "{\"erc20-token-revocation\":{},\"native-token-stream\":{},\"native-token-periodic\":{},\"erc20-token-stream\":{},\"erc20-token-periodic\":{},\"other\":{}}",
-      "isGatorPermissionsEnabled": false
+      "isGatorPermissionsEnabled": true
     },
     "LoggingController": {
       "logs": {}
