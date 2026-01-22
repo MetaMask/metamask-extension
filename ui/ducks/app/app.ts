@@ -134,6 +134,7 @@ type AppState = {
   showPasswordChangeToast: PasswordChangeToastType | null;
   showCopyAddressToast: boolean;
   showClaimSubmitToast: ClaimSubmitToastType | null;
+  showInfuraSwitchToast: boolean;
   shieldEntryModal?: {
     show: boolean;
     shouldSubmitEvents: boolean;
@@ -244,6 +245,7 @@ const initialState: AppState = {
   showPasswordChangeToast: null,
   showCopyAddressToast: false,
   showClaimSubmitToast: null,
+  showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
 };
 
@@ -784,6 +786,12 @@ export default function reduceApp(
       return {
         ...appState,
         showClaimSubmitToast: action.payload,
+      };
+
+    case actionConstants.SET_SHOW_INFURA_SWITCH_TOAST:
+      return {
+        ...appState,
+        showInfuraSwitchToast: action.payload,
       };
 
     case actionConstants.SET_SHOW_SUPPORT_DATA_CONSENT_MODAL:

@@ -96,6 +96,7 @@ import {
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
   selectShowStorageErrorToast,
+  selectShowInfuraSwitchToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -106,6 +107,7 @@ import {
   setShowPasswordChangeToast,
   setShowCopyAddressToast,
   setShowClaimSubmitToast,
+  setShowInfuraSwitchToast,
   setShieldPausedToastLastClickedOrClosed,
   setShieldEndingToastLastClickedOrClosed,
 } from './utils';
@@ -143,6 +145,7 @@ export function ToastMaster() {
         <NftEnablementToast />
         <PermittedNetworkToast />
         <NewSrpAddedToast />
+        <InfuraSwitchToast />
         <CopyAddressToast />
         <ShieldPausedToast />
         <ShieldEndingToast />
@@ -504,6 +507,30 @@ function NewSrpAddedToast() {
         onClose={() => dispatch(setShowNewSrpAddedToast(false))}
         autoHideTime={autoHideDelay}
         onAutoHideToast={() => dispatch(setShowNewSrpAddedToast(false))}
+      />
+    )
+  );
+}
+
+function InfuraSwitchToast() {
+  const t = useI18nContext();
+  const dispatch = useDispatch();
+
+  const showInfuraSwitchToast = useSelector(selectShowInfuraSwitchToast);
+  const autoHideDelay = 5 * SECOND;
+
+  return (
+    showInfuraSwitchToast && (
+      <Toast
+        key="infura-switch-toast"
+        dataTestId="infura-switch-toast"
+        text={t('updatedToMetaMaskDefault')}
+        startAdornment={
+          <Icon name={IconName.CheckBold} color={IconColor.iconDefault} />
+        }
+        onClose={() => dispatch(setShowInfuraSwitchToast(false))}
+        autoHideTime={autoHideDelay}
+        onAutoHideToast={() => dispatch(setShowInfuraSwitchToast(false))}
       />
     )
   );
