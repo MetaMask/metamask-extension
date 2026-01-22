@@ -102,16 +102,17 @@ const bridgeSlice = createSlice({
   reducers: {
     setFromToken: (state, { payload }: { payload: TokenPayload }) => {
       const currentFromToken = state.fromToken;
+      const newFromToken = toBridgeToken(payload);
       // Set toToken to previous fromToken if new fromToken is the same as the current toToken
       if (
-        currentFromToken?.assetId &&
         state.toToken?.assetId &&
-        currentFromToken.assetId.toLowerCase() ===
+        newFromToken?.assetId &&
+        newFromToken.assetId.toLowerCase() ===
           state.toToken.assetId.toLowerCase()
       ) {
         state.toToken = currentFromToken;
       }
-      state.fromToken = toBridgeToken(payload);
+      state.fromToken = newFromToken;
       state.fromTokenBalance = initialState.fromTokenBalance;
       state.fromTokenExchangeRate = initialState.fromTokenExchangeRate;
       state.fromNativeBalance = initialState.fromNativeBalance;
