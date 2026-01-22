@@ -8,7 +8,6 @@ import React, {
   ///: END:ONLY_INCLUDE_IF
   useEffect,
 } from 'react';
-import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
@@ -19,6 +18,7 @@ import {
 } from '@metamask/keyring-api';
 ///: END:ONLY_INCLUDE_IF
 import { KnownCaipNamespace, parseCaipChainId } from '@metamask/utils';
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import {
   nonceSortedCompletedTransactionsSelector,
   nonceSortedCompletedTransactionsSelectorAllChains,

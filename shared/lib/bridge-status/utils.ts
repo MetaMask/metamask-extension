@@ -10,12 +10,12 @@ const isTronSameChainSwap = ({
   srcChainId,
   destChainId,
 }: BridgeHistoryItem['quote']): boolean => {
-  return (
-    !isCrossChain(srcChainId, destChainId) && isTronChainId(srcChainId)
-  );
+  return !isCrossChain(srcChainId, destChainId) && isTronChainId(srcChainId);
 };
 
-export function isBridgeLikeSwap(bridgeHistoryItem: BridgeHistoryItem): boolean {
+export function isBridgeLikeSwap(
+  bridgeHistoryItem: BridgeHistoryItem,
+): boolean {
   const { quote } = bridgeHistoryItem;
   return (
     isCrossChain(quote.srcChainId, quote.destChainId) ||
@@ -23,7 +23,9 @@ export function isBridgeLikeSwap(bridgeHistoryItem: BridgeHistoryItem): boolean 
   );
 }
 
-export function isBridgeComplete(bridgeHistoryItem: BridgeHistoryItem): boolean {
+export function isBridgeComplete(
+  bridgeHistoryItem: BridgeHistoryItem,
+): boolean {
   const { status } = bridgeHistoryItem;
   return Boolean(
     isBridgeLikeSwap(bridgeHistoryItem) &&
@@ -38,8 +40,7 @@ export function isBridgeFailed(
 ) {
   const { status } = bridgeHistoryItem;
   const bridgeFailed = Boolean(
-    isBridgeLikeSwap(bridgeHistoryItem) &&
-      status.status === StatusTypes.FAILED,
+    isBridgeLikeSwap(bridgeHistoryItem) && status.status === StatusTypes.FAILED,
   );
 
   return bridgeFailed || transaction.status === TransactionStatus.Failed;

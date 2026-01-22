@@ -5,13 +5,13 @@ import React, {
   Fragment,
   useEffect,
 } from 'react';
-import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
 import { TransactionType } from '@metamask/transaction-controller';
 import { useVirtualizer } from '@tanstack/react-virtual';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { TransactionType as KeyringTransactionType } from '@metamask/keyring-api';
+import { isBridgeLikeSwap } from '../../../../shared/lib/bridge-status/utils';
 ///: END:ONLY_INCLUDE_IF
 import {
   nonceSortedCompletedTransactionsSelectorAllChains,

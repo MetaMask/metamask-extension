@@ -124,11 +124,15 @@ const MultichainBridgeTransactionListItem: React.FC<
     return t('swap');
   })();
 
-  const title = isTronSameChainSwap
-    ? swapTitle
-    : displayChainName
-      ? `${t('bridgeTo')} ${displayChainName}`
-      : capitalize(type);
+  const title = (() => {
+    if (isTronSameChainSwap) {
+      return swapTitle;
+    }
+    if (displayChainName) {
+      return `${t('bridgeTo')} ${displayChainName}`;
+    }
+    return capitalize(type);
+  })();
 
   return (
     <ActivityListItem
