@@ -51,6 +51,9 @@ describe('Ducks - Bridge', () => {
 
   describe('setFromToken', () => {
     it('calls the "bridge/setFromToken" action', () => {
+      setBackgroundConnection({
+        setActiveNetwork: jest.fn(),
+      } as never);
       const state = store.getState().bridge;
       const actionPayload = {
         symbol: 'SYMBOL',

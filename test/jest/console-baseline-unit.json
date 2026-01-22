@@ -33,6 +33,9 @@
     "ui/pages/bridge/prepare/components/bridge-asset-picker/asset.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/ducks/bridge/asset-selectors.test.ts": {
+      "Reselect: Input stability warnings": 1
+    },
     "ui/pages/confirmations/components/confirm/info/shared/gas-fee-token-modal/gas-fee-token-modal.test.tsx": {
       "Reselect: Input stability warnings": 3,
       "Reselect: Identity function warnings": 6,
