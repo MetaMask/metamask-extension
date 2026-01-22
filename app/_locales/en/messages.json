@@ -1191,6 +1191,14 @@
   "buyNow": {
     "message": "Buy now"
   },
+  "buyTabOpenedToastDescription": {
+    "message": "We've opened a new tab for buying.",
+    "description": "Toast description shown after opening the buy flow in a new tab"
+  },
+  "buyTabOpenedToastText": {
+    "message": "Continue in your browser tab",
+    "description": "Toast title shown after opening the buy flow in a new tab"
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -5066,6 +5074,21 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCommodities": {
+    "message": "Commodities"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
+  "perpsFilterStocksOnly": {
+    "message": "Stocks"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
@@ -5097,6 +5120,12 @@
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
   },
+  "perpsMarkets": {
+    "message": "Markets"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
+  },
   "perpsOpenInterest": {
     "message": "Open Interest"
   },
@@ -5124,6 +5153,9 @@
   "perpsReturn": {
     "message": "Return"
   },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
+  },
   "perpsSell": {
     "message": "sell"
   },
@@ -5132,6 +5164,21 @@
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSortFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortPriceChangeHighToLow": {
+    "message": "Price change: high to low"
+  },
+  "perpsSortPriceChangeLowToHigh": {
+    "message": "Price change: low to high"
+  },
+  "perpsSortVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -8052,6 +8099,10 @@
   "switchNetwork": {
     "message": "Switch network"
   },
+  "switchToMetaMaskDefaultRpc": {
+    "message": "Switch to MetaMask default RPC",
+    "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
+  },
   "switchToPopup": {
     "message": "Switch to popup"
   },
@@ -8533,6 +8584,10 @@
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
+  },
+  "updatedToMetaMaskDefault": {
+    "message": "Updated to MetaMask default",
+    "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
   },
   "uploadDropFile": {
     "message": "Drop your file here"
