@@ -16,46 +16,47 @@ const hexPrefixedAddress = '0x2f318C334780961FB129D2a6c30D0763d9a5C970';
 const hexAbbreviatedAddress = '0x2f318...5C970';
 const nonHexPrefixedAddress = hexPrefixedAddress.substring(2);
 
-describe('Send ETH to a 40 character hexadecimal address', function () {
-  it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
-    await withFixtures(
-      {
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesDisabled()
-          .build(),
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver }) => {
-        await loginWithBalanceValidation(driver);
+describe('Hexadecimal address prefix normalization', function () {
+  describe('Send ETH', function () {
+    it('should ensure the address is prefixed with 0x when pasted and should send ETH to a valid hexadecimal address', async function () {
+      await withFixtures(
+        {
+          fixtures: new FixtureBuilder()
+            .withPreferencesControllerPetnamesDisabled()
+            .build(),
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver }) => {
+          await loginWithBalanceValidation(driver);
 
-        await createInternalTransaction({
-          driver,
-          recipientAddress: nonHexPrefixedAddress,
-        });
+          await createInternalTransaction({
+            driver,
+            recipientAddress: nonHexPrefixedAddress,
+          });
 
-        // Confirm transaction
-        const confirmation = new Confirmation(driver);
-        await confirmation.clickFooterConfirmButton();
-        const homePage = new HomePage(driver);
-        await homePage.goToActivityList();
-        const activityListPage = new ActivityListPage(driver);
-        await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
-        await activityListPage.clickConfirmedTransaction();
-        const transactionDetailsPage = new TransactionDetailsPage(driver);
+          // Confirm transaction
+          const confirmation = new Confirmation(driver);
+          await confirmation.clickFooterConfirmButton();
+          const homePage = new HomePage(driver);
+          await homePage.goToActivityList();
+          const activityListPage = new ActivityListPage(driver);
+          await activityListPage.checkConfirmedTxNumberDisplayedInActivity();
+          await activityListPage.clickConfirmedTransaction();
+          const transactionDetailsPage = new TransactionDetailsPage(driver);
 
-        // Verify address in activity log
-        await transactionDetailsPage.checkAddressInActivityLog(
-          hexAbbreviatedAddress,
-        );
-      },
-    );
+          // Verify address in activity log
+          await transactionDetailsPage.checkAddressInActivityLog(
+            hexAbbreviatedAddress,
+          );
+        },
+      );
+    });
   });
-});
 
-describe('Send ERC20 to a 40 character hexadecimal address', function () {
-  const smartContract = SMART_CONTRACTS.HST;
+  describe('Send ERC20', function () {
+    const smartContract = SMART_CONTRACTS.HST;
 
-  it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
+    it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -89,9 +90,9 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
       },
     );
-  });
+    });
 
-  it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
+    it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
@@ -137,5 +138,6 @@ describe('Send ERC20 to a 40 character hexadecimal address', function () {
         );
       },
     );
+    });
   });
 });

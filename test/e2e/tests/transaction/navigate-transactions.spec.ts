@@ -134,7 +134,7 @@ describe('Navigate transactions', function () {
     );
   });
 
-  it.only('should reject and remove all unapproved transactions', async function () {
+  it('should reject and remove all unapproved transactions', async function () {
     await withFixtures(
       {
         dappOptions: { numberOfTestDapps: 1 },
