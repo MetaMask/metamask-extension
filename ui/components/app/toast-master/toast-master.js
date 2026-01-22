@@ -20,6 +20,7 @@ import {
 } from '../../../helpers/constants/design-system';
 import {
   DEFAULT_ROUTE,
+  REVEAL_SEED_ROUTE,
   REVIEW_PERMISSIONS,
   SETTINGS_ROUTE,
   TRANSACTION_SHIELD_ROUTE,
@@ -94,6 +95,7 @@ import {
   selectClaimSubmitToast,
   selectShowShieldPausedToast,
   selectShowShieldEndingToast,
+  selectShowStorageErrorToast,
 } from './selectors';
 import {
   setNewPrivacyPolicyToastClickedOrClosed,
@@ -114,14 +116,22 @@ export function ToastMaster() {
     getIsMultichainAccountsState2Enabled,
   );
 
+  // Check if storage error toast should be shown (needed for conditional rendering on other screens)
+  // The selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const shouldShowStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
   // Get current pathname from React Router
   const currentPathname = location?.pathname ?? DEFAULT_ROUTE;
   const onHomeScreen = currentPathname === DEFAULT_ROUTE;
   const onSettingsScreen = currentPathname.startsWith(SETTINGS_ROUTE);
 
+  // Storage error toast should show on ALL screens
+  const storageErrorToast = <StorageErrorToast />;
+
   if (onHomeScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <SurveyToast />
         {isMultichainAccountsFeatureState2Enabled ? (
           <ConnectAccountGroupToast />
@@ -143,10 +153,17 @@ export function ToastMaster() {
   if (onSettingsScreen) {
     return (
       <ToastContainer>
+        {storageErrorToast}
         <PasswordChangeToast />
         <ClaimSubmitToast />
       </ToastContainer>
     );
+  }
+
+  // On other screens, only render ToastContainer if storage error toast should show
+  // ToastContainer provides essential CSS styling (position: fixed, z-index, etc.)
+  if (shouldShowStorageErrorToast) {
+    return <ToastContainer>{storageErrorToast}</ToastContainer>;
   }
 
   return null;
@@ -820,6 +837,50 @@ function ShieldEndingToast() {
           />
         }
         onClose={() => setShieldEndingToastLastClickedOrClosed(Date.now())}
+      />
+    )
+  );
+}
+
+function StorageErrorToast() {
+  const t = useI18nContext();
+  const navigate = useNavigate();
+  const [isDismissed, setIsDismissed] = useState(false);
+
+  // Selector includes all conditions: flag is true, onboarding complete, and unlocked
+  const showStorageErrorToast = useSelector(selectShowStorageErrorToast);
+
+  const handleRevealSrpClick = () => {
+    setIsDismissed(true);
+    navigate(REVEAL_SEED_ROUTE);
+  };
+
+  const handleClose = () => {
+    setIsDismissed(true);
+  };
+
+  // Only show toast if selector returns true and user hasn't dismissed it
+  const shouldShow = showStorageErrorToast && !isDismissed;
+
+  return (
+    shouldShow && (
+      <Toast
+        key="database-corruption-toast"
+        dataTestId="storage-error-toast"
+        startAdornment={
+          <Icon
+            name={IconName.Danger}
+            color={IconColor.errorDefault}
+            size={IconSize.Lg}
+          />
+        }
+        text={t('storageErrorTitle')}
+        description={t('storageErrorDescription')}
+        actionText={t('storageErrorAction')}
+        onActionClick={handleRevealSrpClick}
+        borderRadius={BorderRadius.LG}
+        textVariant={TextVariant.bodyMd}
+        onClose={handleClose}
       />
     )
   );

@@ -206,9 +206,6 @@
   "addAccountOrWallet": {
     "message": "Adicionar conta ou carteira"
   },
-  "addAccountToMetaMask": {
-    "message": "Adicionar conta à MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Adicione os tokens que você adquiriu usando a MetaMask"
   },
@@ -345,9 +342,6 @@
   },
   "addWallet": {
     "message": "Adicionar carteira"
-  },
-  "addingAccount": {
-    "message": "Adicionando conta"
   },
   "additionalNetworks": {
     "message": "Redes adicionais"
@@ -682,14 +676,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "Não foi possível obter dados históricos"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "NFTs de $1"
-  },
   "assetOptions": {
     "message": "Opções do ativo"
-  },
-  "assetSingleNFTBalance": {
-    "message": "NFT de $1"
   },
   "assets": {
     "message": "Ativos"
@@ -1277,9 +1265,6 @@
   },
   "close": {
     "message": "Fechar"
-  },
-  "closeExtension": {
-    "message": "Fechar extensão"
   },
   "closeSlide": {
     "message": "Encerrar $1",
@@ -3168,9 +3153,6 @@
   "insufficientFunds": {
     "message": "Não há fundos suficientes."
   },
-  "insufficientFundsForGas": {
-    "message": "Fundos insuficientes para o gás"
-  },
   "insufficientFundsSend": {
     "message": "Fundos insuficientes"
   },
@@ -3897,9 +3879,6 @@
     "message": "É preciso selecionar um arquivo para importar.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Não é possível enviar valores negativos de ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Não é possível enviar valores negativos ou zerados de ativos."
   },
@@ -3940,18 +3919,6 @@
   "networkName": {
     "message": "Nome da rede"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -3967,26 +3934,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Opções da rede"
@@ -4548,9 +4503,6 @@
   },
   "openWallet": {
     "message": "Carteira aberta"
-  },
-  "optional": {
-    "message": "Opcional"
   },
   "options": {
     "message": "Opções"
@@ -5841,24 +5793,11 @@
   "sendBugReport": {
     "message": "Envie-nos um relatório de bugs."
   },
-  "sendNoContactsConversionText": {
-    "message": "clique aqui"
-  },
-  "sendNoContactsDescription": {
-    "message": "Contatos permitem que você envie transações de forma segura para outra conta diversas vezes. Para criar um contato, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "Você ainda não tem nenhum contato"
-  },
   "sendSelectReceiveAsset": {
     "message": "Selecionar ativo para receber"
   },
   "sendSelectSendAsset": {
     "message": "Selecionar ativo para enviar"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Clicar neste botão iniciará imediatamente sua transação de swap. Confira os detalhes da sua transação antes de prosseguir."
   },
   "sendingAsset": {
     "message": "Enviando $1"
@@ -5869,10 +5808,6 @@
   "sendingNativeAsset": {
     "message": "Enviando $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Aviso: você está prestes a enviar a um contrato de token que pode resultar em perda de fundos. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Enviado"
@@ -6233,41 +6168,11 @@
   "shieldTxCancelWhenPausedDetails": {
     "message": "Seu plano não estará ativo enquanto estiver pausado. Se você cancelar, seu plano será encerrado imediatamente."
   },
-  "shieldTxDetails1Description": {
-    "message": "Garanta a segurança dos ativos em transações cobertas"
-  },
   "shieldTxDetails1Title": {
     "message": "Proteção de transações de até US$10.000"
   },
-  "shieldTxDetails2Description": {
-    "message": "Receba suporte mais rápido e dedicado a qualquer momento"
-  },
-  "shieldTxDetails2Title": {
-    "message": "Suporte prioritário"
-  },
-  "shieldTxDetails3DescriptionLinkReward": {
-    "message": "Link"
-  },
-  "shieldTxDetails3DescriptionSignUp": {
-    "message": "Inscrever-se"
-  },
   "shieldTxMembershipActive": {
     "message": "Plano ativo"
-  },
-  "shieldTxMembershipBillingDetails": {
-    "message": "Detalhes da cobrança"
-  },
-  "shieldTxMembershipBillingDetailsBillingAccount": {
-    "message": "Conta de cobrança"
-  },
-  "shieldTxMembershipBillingDetailsCharges": {
-    "message": "Encargos"
-  },
-  "shieldTxMembershipBillingDetailsNextBilling": {
-    "message": "Próxima cobrança"
-  },
-  "shieldTxMembershipBillingDetailsPaymentMethod": {
-    "message": "Método de pagamento"
   },
   "shieldTxMembershipBillingDetailsViewBillingHistory": {
     "message": "Gerenciar cobrança"
@@ -6282,9 +6187,6 @@
   "shieldTxMembershipErrorInsufficientFunds": {
     "message": "Seu plano termina em $1. Renove agora para continuar aproveitando seus benefícios.",
     "description": "The $1 is the date subscription ends"
-  },
-  "shieldTxMembershipErrorInsufficientToken": {
-    "message": "Repetir pagamento"
   },
   "shieldTxMembershipErrorPausedCard": {
     "message": "Seu plano foi pausado devido a uma falha no pagamento com cartão."
@@ -6311,9 +6213,6 @@
   "shieldTxMembershipErrorPausedUnexpectedAction": {
     "message": "Falar com o suporte"
   },
-  "shieldTxMembershipErrorUpdateCard": {
-    "message": "Atualizar dados do cartão"
-  },
   "shieldTxMembershipFreeTrial": {
     "message": "Teste grátis"
   },
@@ -6334,9 +6233,6 @@
   },
   "shieldTxMembershipSubmitCase": {
     "message": "Enviar uma reclamação"
-  },
-  "shieldTxMembershipViewFullBenefits": {
-    "message": "Ver todos os benefícios"
   },
   "show": {
     "message": "Mostrar"
@@ -7317,9 +7213,6 @@
     "message": "A troca de $1 por $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "As taxas de gás são estimadas e oscilam com base no tráfego da rede e na complexidade da transação."
-  },
   "swapGasFeesExplanation": {
     "message": "A MetaMask não ganha dinheiro com taxas de gás. Essas taxas são estimativas e podem mudar de acordo com a carga de atividade da rede e a complexidade da transação. Saiba mais $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7331,9 +7224,6 @@
   "swapGasFeesIncluded": {
     "message": " incluídas"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Saiba mais sobre as taxas de gás"
-  },
   "swapGasFeesSplit": {
     "message": "As taxas de gás da tela anterior estão divididas entre essas duas transações."
   },
@@ -7342,10 +7232,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "Essa taxa de rede é paga pela MetaMask, portanto, você pode realizar swaps sem precisar ter $1 em sua conta."
-  },
-  "swapGasFeesSummary": {
-    "message": "As taxas de gás são pagas aos mineradores de criptoativos que processam as transações na rede de $1. A MetaMask não lucra com taxas de gás.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "Essa cotação incorpora as taxas de gás ajustando a quantidade de tokens enviada ou recebida. Você poderá receber ETH numa transação separada em sua lista de atividades."
@@ -7363,10 +7249,6 @@
   "swapIncludesMMFee": {
     "message": "Inclui uma taxa de $1% da MetaMask.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "A cotação reflete a taxa de $1% da MetaMask",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Inclui uma taxa de $1% da MetaMask – $2",
@@ -7619,9 +7501,6 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Permitir que esse site alterne a rede?"
   },
-  "switchInputCurrency": {
-    "message": "Alternar moeda de entrada"
-  },
   "switchNetwork": {
     "message": "Alternar rede"
   },
@@ -7777,9 +7656,6 @@
   },
   "tokensInCollection": {
     "message": "Tokens na coleção"
-  },
-  "tooltipApproveButton": {
-    "message": "Estou ciente"
   },
   "tooltipSatusConnected": {
     "message": "conectado"
@@ -8334,9 +8210,6 @@
   "youSent": {
     "message": "Você enviou",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Suas contas"
   },
   "yourActivity": {
     "message": "Sua atividade"

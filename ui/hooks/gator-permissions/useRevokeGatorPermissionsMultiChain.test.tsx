@@ -13,7 +13,6 @@ import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import {
@@ -24,7 +23,7 @@ import {
   encodeDisableDelegation,
   getDelegationHashOffchain,
 } from '../../../shared/lib/delegation/delegation';
-import { getMemoizedInternalAccountByAddress } from '../../selectors/accounts';
+import { getInternalAccountByAddress } from '../../selectors';
 import {
   checkDelegationDisabled,
   submitDirectRevocation,
@@ -59,7 +58,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors/accounts', () => ({
   ...jest.requireActual('../../selectors/accounts'),
-  getMemoizedInternalAccountByAddress: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
 }));
 
 jest.mock(
@@ -101,8 +100,8 @@ const mockGetDelegationHashOffchain =
     typeof getDelegationHashOffchain
   >;
 const mockGetMemoizedInternalAccountByAddress =
-  getMemoizedInternalAccountByAddress as jest.MockedFunction<
-    typeof getMemoizedInternalAccountByAddress
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
   >;
 const mockCheckDelegationDisabled =
   checkDelegationDisabled as jest.MockedFunction<
@@ -126,45 +125,37 @@ describe('useRevokeGatorPermissionsMultiChain', () => {
   const mockNetworkClientId1 = 'mock-network-client-id-1';
   const mockNetworkClientId2 = 'mock-network-client-id-2';
 
-  const mockPermission1: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      permission: {
-        type: 'custom' as const,
-        data: {},
-        isAdjustmentAllowed: false,
-      },
-      chainId: mockChainId1,
-      address: mockSelectedAccountAddress as Hex,
-      context: mockPermissionContext1,
-      signerMeta: {
+  const mockPermission1: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        permission: {
+          type: 'custom' as const,
+          data: {},
+          isAdjustmentAllowed: false,
+        },
+        chainId: mockChainId1,
+        from: mockSelectedAccountAddress as Hex,
+        context: mockPermissionContext1,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'example.com',
-  };
+      siteOrigin: 'example.com',
+    };
 
-  const mockPermission2: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      permission: {
-        type: 'custom' as const,
-        data: {},
-        isAdjustmentAllowed: false,
-      },
-      chainId: mockChainId2,
-      address: mockSelectedAccountAddress as Hex,
-      context: mockPermissionContext2,
-      signerMeta: {
+  const mockPermission2: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        permission: {
+          type: 'custom' as const,
+          data: {},
+          isAdjustmentAllowed: false,
+        },
+        chainId: mockChainId2,
+        from: mockSelectedAccountAddress as Hex,
+        context: mockPermissionContext2,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'example.com',
-  };
+      siteOrigin: 'example.com',
+    };
 
   const mockTransactionMeta1: TransactionMeta = {
     id: 'tx-id-1',

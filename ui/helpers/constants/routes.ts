@@ -17,6 +17,10 @@ export const ADVANCED_ROUTE = '/settings/advanced';
 export const DEVELOPER_OPTIONS_ROUTE = '/settings/developer-options';
 export const EXPERIMENTAL_ROUTE = '/settings/experimental';
 export const TRANSACTION_SHIELD_ROUTE = '/settings/transaction-shield';
+export const TRANSACTION_SHIELD_MANAGE_PLAN_ROUTE =
+  '/settings/transaction-shield/manage-plan';
+export const TRANSACTION_SHIELD_MANAGE_PAST_PLAN_ROUTE =
+  '/settings/transaction-shield/manage-past-plan';
 export const TRANSACTION_SHIELD_CLAIMS = '/settings/transaction-shield/claims';
 // Transaction Shield Claims routes
 export const TRANSACTION_SHIELD_CLAIM_ROUTES = {
@@ -102,15 +106,6 @@ export const CONNECTED_ROUTE = '/connected';
 export const CONNECTED_ACCOUNTS_ROUTE = '/connected/accounts';
 export const CONFIRM_TRANSACTION_ROUTE = '/confirm-transaction';
 export const CONFIRMATION_V_NEXT_ROUTE = '/confirmation';
-export const CONFIRM_SEND_ETHER_PATH = '/send-ether';
-export const CONFIRM_SEND_TOKEN_PATH = '/send-token';
-export const CONFIRM_DEPLOY_CONTRACT_PATH = '/deploy-contract';
-export const CONFIRM_APPROVE_PATH = '/approve';
-export const CONFIRM_SET_APPROVAL_FOR_ALL_PATH = '/set-approval-for-all';
-export const CONFIRM_TRANSFER_FROM_PATH = '/transfer-from';
-export const CONFIRM_SAFE_TRANSFER_FROM_PATH = '/safe-transfer-from';
-export const CONFIRM_TOKEN_METHOD_PATH = '/token-method';
-export const CONFIRM_INCREASE_ALLOWANCE_PATH = '/increase-allowance';
 export const SIGNATURE_REQUEST_PATH = '/signature-request';
 export const DECRYPT_MESSAGE_REQUEST_PATH = '/decrypt-message-request';
 export const ENCRYPTION_PUBLIC_KEY_REQUEST_PATH =
@@ -153,6 +148,11 @@ export const ONBOARDING_EXPERIMENTAL_AREA = '/onboarding/experimental-area';
 export const DEEP_LINK_ROUTE = '/link';
 export const DEFI_ROUTE = '/defi';
 
+// Perps routes
+export const PERPS_ROUTE = '/perps';
+export const PERPS_MARKET_DETAIL_ROUTE = '/perps/market';
+export const PERPS_MARKET_LIST_ROUTE = '/perps/market-list';
+
 export const SHIELD_PLAN_ROUTE = '/shield-plan';
 export const REWARDS_ROUTE = '/rewards';
 
@@ -162,6 +162,17 @@ export const ROUTES = [
   { path: UNLOCK_ROUTE, label: 'Unlock Page', trackInAnalytics: true },
   { path: LOCK_ROUTE, label: 'Lock Page', trackInAnalytics: true },
   { path: REWARDS_ROUTE, label: 'Rewards Page', trackInAnalytics: true },
+  { path: PERPS_ROUTE, label: 'Perps', trackInAnalytics: true },
+  {
+    path: PERPS_MARKET_LIST_ROUTE,
+    label: 'Perps Market List',
+    trackInAnalytics: true,
+  },
+  {
+    path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+    label: 'Perps Market Detail',
+    trackInAnalytics: true,
+  },
   {
     path: ACCOUNT_LIST_PAGE_ROUTE,
     label: 'Account List Page',
@@ -436,51 +447,6 @@ export const ROUTES = [
   {
     path: `${CONFIRMATION_V_NEXT_ROUTE}/:id`,
     label: 'New Confirmation Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_ETHER_PATH}`,
-    label: 'Confirm Send Ether Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SEND_TOKEN_PATH}`,
-    label: 'Confirm Send Token Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_DEPLOY_CONTRACT_PATH}`,
-    label: 'Confirm Deploy Contract Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_APPROVE_PATH}`,
-    label: 'Confirm Approve Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SET_APPROVAL_FOR_ALL_PATH}`,
-    label: 'Confirm Set Approval For All Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_SAFE_TRANSFER_FROM_PATH}`,
-    label: 'Confirm Safe Transfer From Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_TOKEN_METHOD_PATH}`,
-    label: 'Confirm Token Method Transaction Page',
-    trackInAnalytics: true,
-  },
-  {
-    path: `${CONFIRM_TRANSACTION_ROUTE}/:id${CONFIRM_INCREASE_ALLOWANCE_PATH}`,
-    label: 'Confirm Increase Allowance Transaction Page',
     trackInAnalytics: true,
   },
   {

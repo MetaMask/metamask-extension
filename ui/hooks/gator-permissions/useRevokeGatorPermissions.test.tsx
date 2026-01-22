@@ -13,7 +13,6 @@ import { decodeDelegations } from '@metamask/delegation-core';
 import { ApprovalRequest } from '@metamask/approval-controller';
 import {
   PermissionTypesWithCustom,
-  Signer,
   StoredGatorPermissionSanitized,
 } from '@metamask/gator-permissions-controller';
 import { RpcEndpointType } from '@metamask/network-controller';
@@ -27,6 +26,7 @@ import {
 } from '../../../shared/lib/delegation/delegation';
 import {
   getInternalAccounts,
+  getInternalAccountByAddress,
   selectDefaultRpcEndpointByChainId,
 } from '../../selectors';
 import {
@@ -72,6 +72,7 @@ jest.mock('../../../shared/lib/delegation', () => ({
 // Mock the selectors
 jest.mock('../../selectors', () => ({
   getInternalAccounts: jest.fn(),
+  getInternalAccountByAddress: jest.fn(),
   selectDefaultRpcEndpointByChainId: jest.fn(),
 }));
 
@@ -116,6 +117,10 @@ const mockCheckDelegationDisabled =
 const mockGetInternalAccounts = getInternalAccounts as jest.MockedFunction<
   typeof getInternalAccounts
 >;
+const mockGetInternalAccountByAddress =
+  getInternalAccountByAddress as jest.MockedFunction<
+    typeof getInternalAccountByAddress
+  >;
 const mockSelectDefaultRpcEndpointByChainId =
   selectDefaultRpcEndpointByChainId as jest.MockedFunction<
     typeof selectDefaultRpcEndpointByChainId
@@ -134,47 +139,41 @@ describe('useRevokeGatorPermissions', () => {
     '0x4f71DA06987BfeDE90aF0b33E1e3e4ffDCEE7a63';
   const mockNetworkClientId = 'mock-network-client-id';
 
-  const mockGatorPermission: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  > = {
-    permissionResponse: {
-      chainId: mockChainId,
-      address: mockSelectedAccountAddress,
-      // expiry: 1750291200,
-      permission: {
-        type: 'native-token-stream',
-        isAdjustmentAllowed: false,
-        data: {
-          maxAmount: '0x22b1c8c1227a0000',
-          initialAmount: '0x6f05b59d3b20000',
-          amountPerSecond: '0x6f05b59d3b20000',
-          startTime: 1747699200,
-          justification:
-            'This is a very important request for streaming allowance for some very important thing',
+  const mockGatorPermission: StoredGatorPermissionSanitized<PermissionTypesWithCustom> =
+    {
+      permissionResponse: {
+        chainId: mockChainId,
+        from: mockSelectedAccountAddress,
+        // expiry: 1750291200,
+        permission: {
+          type: 'native-token-stream',
+          isAdjustmentAllowed: false,
+          data: {
+            maxAmount: '0x22b1c8c1227a0000',
+            initialAmount: '0x6f05b59d3b20000',
+            amountPerSecond: '0x6f05b59d3b20000',
+            startTime: 1747699200,
+            justification:
+              'This is a very important request for streaming allowance for some very important thing',
+          },
         },
-      },
-      context: mockPermissionContext,
-      signerMeta: {
+        context: mockPermissionContext,
         delegationManager: mockDelegationManagerAddress,
       },
-    },
-    siteOrigin: 'http://localhost:8000',
-  };
+      siteOrigin: 'http://localhost:8000',
+    };
 
-  const mockGatorPermissions: StoredGatorPermissionSanitized<
-    Signer,
-    PermissionTypesWithCustom
-  >[] = [
-    mockGatorPermission,
-    {
-      ...mockGatorPermission,
-      permissionResponse: {
-        ...mockGatorPermission.permissionResponse,
-        context: mockPermissionContext2,
+  const mockGatorPermissions: StoredGatorPermissionSanitized<PermissionTypesWithCustom>[] =
+    [
+      mockGatorPermission,
+      {
+        ...mockGatorPermission,
+        permissionResponse: {
+          ...mockGatorPermission.permissionResponse,
+          context: mockPermissionContext2,
+        },
       },
-    },
-  ];
+    ];
 
   // Type the mock delegation to match what decodeDelegations returns from @metamask/delegation-core'
   const mockDelegation = {
@@ -272,23 +271,23 @@ describe('useRevokeGatorPermissions', () => {
     mockAddTransaction.mockResolvedValue(mockTransactionMeta as never);
 
     // Setup selector mocks
-    mockGetInternalAccounts.mockReturnValue([
-      {
-        id: 'mock-account-id',
-        address: mockSelectedAccountAddress,
-        type: 'eip155:eoa',
-        options: {},
-        metadata: {
-          name: 'Mock Account',
-          importTime: Date.now(),
-          keyring: {
-            type: 'hd',
-          },
+    const mockAccount = {
+      id: 'mock-account-id',
+      address: mockSelectedAccountAddress,
+      type: 'eip155:eoa' as const,
+      options: {},
+      metadata: {
+        name: 'Mock Account',
+        importTime: Date.now(),
+        keyring: {
+          type: 'hd',
         },
-        scopes: ['eip155:1'],
-        methods: ['eth_sendTransaction'],
       },
-    ]);
+      scopes: ['eip155:1' as const],
+      methods: ['eth_sendTransaction'],
+    };
+    mockGetInternalAccounts.mockReturnValue([mockAccount]);
+    mockGetInternalAccountByAddress.mockReturnValue(mockAccount);
     mockSelectDefaultRpcEndpointByChainId.mockReturnValue({
       url: 'https://mainnet.infura.io/v3/test',
       networkClientId: mockNetworkClientId,
@@ -399,9 +398,12 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermission,
         permissionResponse: {
           ...mockGatorPermission.permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(undefined);
 
       const { result } = renderHook(
         () =>
@@ -762,9 +764,12 @@ describe('useRevokeGatorPermissions', () => {
         ...mockGatorPermissions[0],
         permissionResponse: {
           ...mockGatorPermissions[0].permissionResponse,
-          address: differentAccountAddress as `0x${string}`,
+          from: differentAccountAddress as Hex,
         },
       };
+
+      // Return undefined for the different address that doesn't exist
+      mockGetInternalAccountByAddress.mockReturnValue(undefined);
 
       const { result } = renderHook(
         () =>

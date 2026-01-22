@@ -61,6 +61,10 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
+  DECRYPT_MESSAGE_REQUEST_PATH,
+  ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
 import {
@@ -83,7 +87,6 @@ import {
   hideIpfsModal,
   setCurrentCurrency,
   setLastActiveTime,
-  toggleAccountMenu,
   hideImportTokensModal,
   hideDeprecatedNetworkModal,
   automaticallySwitchNetwork,
@@ -115,7 +118,6 @@ import { BasicConfigurationModal } from '../../components/app/basic-configuratio
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import KeyringSnapRemovalResult from '../../components/app/modals/keyring-snap-removal-modal';
 ///: END:ONLY_INCLUDE_IF
-import { MultichainAccountListMenu } from '../../components/multichain-accounts/multichain-account-list-menu';
 
 import { DeprecatedNetworkModal } from '../settings/deprecated-network-modal/DeprecatedNetworkModal';
 import NetworkConfirmationPopover from '../../components/multichain/network-list-menu/network-confirmation-popover/network-confirmation-popover';
@@ -154,10 +156,10 @@ const OnboardingFlow = mmLazy(
   (() => import('../onboarding-flow/index.ts')) as unknown as DynamicImportType,
 );
 const Lock = mmLazy(
-  (() => import('../lock/index.js')) as unknown as DynamicImportType,
+  (() => import('../lock/index.ts')) as unknown as DynamicImportType,
 );
 const UnlockPage = mmLazy(
-  (() => import('../unlock-page/index.js')) as unknown as DynamicImportType,
+  (() => import('../unlock-page/index.ts')) as unknown as DynamicImportType,
 );
 const RestoreVaultPage = mmLazy(
   (() =>
@@ -194,10 +196,22 @@ const SnapList = mmLazy(
 const SnapView = mmLazy(
   (() => import('../snaps/snap-view/index.js')) as unknown as DynamicImportType,
 );
-const ConfirmTransaction = mmLazy(
+const ConfirmEncryptionPublicKey = mmLazy(
   (() =>
     import(
-      '../confirmations/confirm-transaction/index.js'
+      '../confirm-encryption-public-key/index.js'
+    )) as unknown as DynamicImportType,
+);
+const ConfirmDecryptMessage = mmLazy(
+  (() =>
+    import(
+      '../confirm-decrypt-message/index.js'
+    )) as unknown as DynamicImportType,
+);
+const Confirm = mmLazy(
+  (() =>
+    import(
+      '../confirmations/confirm/confirm.tsx'
     )) as unknown as DynamicImportType,
 );
 const SendPage = mmLazy(
@@ -313,6 +327,16 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
+const PerpsMarketDetailPage = mmLazy(
+  (() =>
+    import(
+      '../perps/perps-market-detail-page.tsx'
+    )) as unknown as DynamicImportType,
+);
+const MarketListView = mmLazy(
+  (() =>
+    import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
+);
 // End Lazy Routes
 
 const MemoizedReviewPermissionsWrapper = React.memo(() => (
@@ -336,7 +360,7 @@ export default function Routes() {
   const loadingMessage = useAppSelector(
     (state) => state.appState.loadingMessage,
   );
-  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT, privacyMode } =
+  const { autoLockTimeLimit = DEFAULT_AUTO_LOCK_TIME_LIMIT } =
     useAppSelector(getPreferences);
   const completedOnboarding = useAppSelector(getCompletedOnboarding);
 
@@ -365,9 +389,6 @@ export default function Routes() {
   const theme = useTheme();
   const showExtensionInFullSizeView = useAppSelector(
     getShowExtensionInFullSizeView,
-  );
-  const isAccountMenuOpen = useAppSelector(
-    (state) => state.appState.isAccountMenuOpen,
   );
 
   const isImportTokensModalOpen = useAppSelector(
@@ -571,8 +592,20 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${DECRYPT_MESSAGE_REQUEST_PATH}`,
+        component: ConfirmDecryptMessage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: `${CONFIRM_TRANSACTION_ROUTE}/:id?${ENCRYPTION_PUBLIC_KEY_REQUEST_PATH}`,
+        component: ConfirmEncryptionPublicKey,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
         path: `${CONFIRM_TRANSACTION_ROUTE}/:id?/*`,
-        component: ConfirmTransaction,
+        component: Confirm,
         layout: RootLayout,
         authenticated: true,
       }),
@@ -757,6 +790,18 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
+        path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
+        component: PerpsMarketDetailPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_MARKET_LIST_ROUTE,
+        component: MarketListView,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
         path: DEFAULT_ROUTE,
         component: Home,
         layout: RootLayout,
@@ -826,13 +871,6 @@ export default function Routes() {
     // is already a fullscreen interface.
     !isShowingDeepLinkRoute;
 
-  const accountListMenu = (
-    <MultichainAccountListMenu
-      onClose={() => dispatch(toggleAccountMenu())}
-      privacyMode={privacyMode}
-    />
-  );
-
   const isSidepanel = getEnvironmentType() === ENVIRONMENT_TYPE_SIDEPANEL;
 
   return (
@@ -848,8 +886,6 @@ export default function Routes() {
       <QRHardwarePopover />
       <Modal />
       <Alert visible={alertOpen} msg={alertMessage} />
-
-      {isAccountMenuOpen ? accountListMenu : null}
 
       <NetworkConfirmationPopover />
       {isImportNftsModalOpen ? (

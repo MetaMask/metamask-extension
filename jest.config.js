@@ -15,6 +15,14 @@ module.exports = {
   // Jest doesn't support Prettier 3 yet, so we use Prettier 2
   prettierPath: require.resolve('prettier-2'),
   reporters: [
+    // Console baseline reporter MUST be first to capture raw console messages
+    // before jest-clean-console-reporter processes them
+    [
+      '<rootDir>/test/jest/console-baseline-reporter.js',
+      {
+        testType: 'unit',
+      },
+    ],
     [
       'jest-clean-console-reporter',
       {
@@ -47,6 +55,7 @@ module.exports = {
     '<rootDir>/test/unit-global/**/*.test.(js|ts|tsx)',
     '<rootDir>/test/e2e/helpers.test.js',
     '<rootDir>/test/e2e/helpers/**/*.test.(js|ts|tsx)',
+    '<rootDir>/test/e2e/benchmarks/**/*.test.(js|ts|tsx)',
   ],
   testPathIgnorePatterns: ['<rootDir>/development/webpack/'],
   testTimeout: 5500,
@@ -59,4 +68,7 @@ module.exports = {
     customExportConditions: ['node', 'node-addons'],
   },
   workerIdleMemoryLimit: '500MB',
+  // Ensure console output is buffered (not streamed) so reporters can access testResult.console
+  // Without this, Jest uses verbose mode for single-file runs which bypasses buffering
+  verbose: false,
 };

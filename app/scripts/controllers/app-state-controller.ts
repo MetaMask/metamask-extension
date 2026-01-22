@@ -167,6 +167,12 @@ export type AppStateControllerState = {
    * Whether the wallet reset is in progress.
    */
   isWalletResetInProgress: boolean;
+
+  /**
+   * Whether to show the storage error toast.
+   * This is set to true when set operations fail (storage.local or IndexedDB).
+   */
+  showStorageErrorToast: boolean;
 };
 
 const controllerName = 'AppStateController';
@@ -328,6 +334,7 @@ const getDefaultAppStateControllerState = (): AppStateControllerState => ({
   pendingShieldCohortTxType: null,
   isWalletResetInProgress: false,
   dappSwapComparisonData: {},
+  showStorageErrorToast: false,
   ...getInitialStateOverrides(),
 });
 
@@ -713,6 +720,12 @@ const controllerMetadata: StateMetadata<AppStateControllerState> = {
     includeInDebugSnapshot: false,
     usedInUi: true,
   },
+  showStorageErrorToast: {
+    includeInStateLogs: true,
+    persist: false,
+    includeInDebugSnapshot: true,
+    usedInUi: true,
+  },
 };
 
 export class AppStateController extends BaseController<
@@ -940,6 +953,18 @@ export class AppStateController extends BaseController<
   setShieldEndingToastLastClickedOrClosed(time: number): void {
     this.update((state) => {
       state.shieldEndingToastLastClickedOrClosed = time;
+    });
+  }
+
+  /**
+   * Sets whether to show the storage error toast.
+   * This is called when set operations fail (storage.local or IndexedDB).
+   *
+   * @param show - Whether to show the toast
+   */
+  setShowStorageErrorToast(show: boolean): void {
+    this.update((state) => {
+      state.showStorageErrorToast = show;
     });
   }
 
@@ -1628,6 +1653,15 @@ export class AppStateController extends BaseController<
   }): void {
     this.update((state) => {
       state.appActiveTab = tabData;
+    });
+  }
+
+  /**
+   * Clears the active tab information by setting appActiveTab to undefined.
+   */
+  clearAppActiveTab(): void {
+    this.update((state) => {
+      state.appActiveTab = undefined;
     });
   }
 

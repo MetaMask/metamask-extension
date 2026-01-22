@@ -67,7 +67,7 @@ class FirefoxDriver {
     options.setPreference('browser.download.folderList', 2);
     options.setPreference(
       'browser.download.dir',
-      `${process.cwd()}/test-artifacts/downloads`,
+      path.join(process.cwd(), 'test-artifacts', 'downloads'),
     );
 
     if (isHeadless('SELENIUM')) {
