@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { debounce } from 'lodash';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { debounce, type DebouncedFunc } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import type { TransactionMeta } from '@metamask/transaction-controller';
 import type { Hex } from '@metamask/utils';
@@ -39,14 +39,21 @@ export function useTransactionCustomAmount({
   const { updateTokenAmount: updateTokenAmountCallback } =
     useUpdateTokenAmount();
 
-  const debounceSetAmountDelayed = useMemo(
-    () =>
-      debounce((value: string) => {
-        setAmountHumanDebounced(value);
-        updateTokenAmountCallback(value);
-      }, DEBOUNCE_DELAY),
-    [updateTokenAmountCallback],
+  const debounceRef = useRef<DebouncedFunc<(value: string) => void> | null>(
+    null,
   );
+
+  const debounceSetAmountDelayed = useMemo(() => {
+    debounceRef.current?.cancel();
+
+    const debouncedFn = debounce((value: string) => {
+      setAmountHumanDebounced(value);
+      updateTokenAmountCallback(value);
+    }, DEBOUNCE_DELAY);
+
+    debounceRef.current = debouncedFn;
+    return debouncedFn;
+  }, [updateTokenAmountCallback]);
 
   const primaryRequiredToken = useMemo(
     () => requiredTokens?.find((t) => !t.skipIfBalance),
@@ -75,10 +82,13 @@ export function useTransactionCustomAmount({
 
   useEffect(() => {
     debounceSetAmountDelayed(amountHuman);
-    return () => {
-      debounceSetAmountDelayed.cancel();
-    };
   }, [amountHuman, debounceSetAmountDelayed]);
+
+  useEffect(() => {
+    return () => {
+      debounceRef.current?.cancel();
+    };
+  }, []);
 
   useEffect(() => {
     if (amountHumanDebounced !== '0') {
