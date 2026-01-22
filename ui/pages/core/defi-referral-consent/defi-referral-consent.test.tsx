@@ -49,7 +49,7 @@ describe('DefiReferralConsent', () => {
           screen.getByText(`MetaMask x ${partnerName}`),
         ).toBeInTheDocument();
         expect(
-          screen.getByText('MetaMask referral code.'),
+          screen.getByText(/MetaMask referral code\./u),
         ).toBeInTheDocument();
       });
 
