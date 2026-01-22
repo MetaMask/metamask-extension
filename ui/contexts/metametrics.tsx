@@ -68,10 +68,10 @@ export type UITrackEventMethod = (
 /**
  * Method signature for starting a buffered trace
  */
-export type UITraceMethod = <T>(
+export type UITraceMethod = <Result>(
   request: TraceRequest,
-  fn?: TraceCallback<T>,
-) => Promise<T | undefined>;
+  fn?: TraceCallback<Result>,
+) => Promise<Result | undefined>;
 
 /**
  * Method signature for ending a buffered trace
@@ -122,6 +122,7 @@ type MetaMetricsProviderProps = {
   children: ReactNode;
 };
 
+// @eslint-disable-next-line @typescript-eslint/naming-convention
 export function MetaMetricsProvider({ children }: MetaMetricsProviderProps) {
   const location = useLocation();
   const context = useSegmentContext();
@@ -288,6 +289,7 @@ type LegacyMetaMetricsProviderProps = {
 
 /**
  * Legacy context provider for class components using the old context API
+ *
  * @deprecated Use MetaMetricsContext with useContext hook instead
  */
 export class LegacyMetaMetricsProvider extends Component<LegacyMetaMetricsProviderProps> {
