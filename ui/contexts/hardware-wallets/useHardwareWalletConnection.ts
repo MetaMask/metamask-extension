@@ -221,10 +221,10 @@ export const useHardwareWalletConnection = ({
           );
           updateConnectionState(ConnectionState.error(fallbackError));
         }
-      }
 
-      refs.adapterRef.current?.destroy();
-      refs.adapterRef.current = null;
+        refs.adapterRef.current?.destroy();
+        refs.adapterRef.current = null;
+      }
     },
     [updateConnectionState, refs],
   );
@@ -294,12 +294,21 @@ export const useHardwareWalletConnection = ({
 
   const disconnect = useCallback(async (): Promise<void> => {
     const abortSignal = refs.abortControllerRef.current?.signal;
+    // Capture the adapter reference at the start to prevent race conditions
+    // where connect() creates a new adapter while disconnect() is awaiting
+    const adapterToDisconnect = refs.adapterRef.current;
 
     try {
-      await refs.adapterRef.current?.disconnect();
+      await adapterToDisconnect?.disconnect();
     } finally {
-      refs.adapterRef.current?.destroy();
-      refs.adapterRef.current = null;
+      // Only destroy the adapter we captured at the start, not any new adapter
+      // that may have been created by a concurrent connect() call
+      adapterToDisconnect?.destroy();
+      // Only null out the adapter reference if it's still the same adapter
+      // we captured (i.e., no concurrent connect() replaced it)
+      if (refs.adapterRef.current === adapterToDisconnect) {
+        refs.adapterRef.current = null;
+      }
       refs.isConnectingRef.current = false;
       if (!abortSignal?.aborted) {
         updateConnectionState(ConnectionState.disconnected());

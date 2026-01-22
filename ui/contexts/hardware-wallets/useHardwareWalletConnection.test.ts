@@ -392,6 +392,97 @@ describe('useHardwareWalletConnection', () => {
       expect(mockAdapter.destroyMock).toHaveBeenCalled();
       expect(mockRefs.adapterRef.current).toBeNull();
     });
+
+    it('handles race condition when connect() is called during disconnect()', async () => {
+      const oldAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      const newAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = oldAdapter;
+
+      // Make disconnect() take some time to simulate async operation
+      oldAdapter.disconnectMock.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            // Simulate async delay
+            setTimeout(() => {
+              // During disconnect, a new adapter is set (simulating connect() call)
+              mockRefs.adapterRef.current = newAdapter;
+              resolve();
+            }, 10);
+          }),
+      );
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.disconnect();
+      });
+
+      // The old adapter should be destroyed
+      expect(oldAdapter.disconnectMock).toHaveBeenCalled();
+      expect(oldAdapter.destroyMock).toHaveBeenCalled();
+
+      // The new adapter should NOT be destroyed (race condition fix)
+      expect(newAdapter.destroyMock).not.toHaveBeenCalled();
+
+      // The adapter ref should now point to the new adapter
+      expect(mockRefs.adapterRef.current).toBe(newAdapter);
+    });
+
+    it('does not destroy adapter when it was replaced during disconnect()', async () => {
+      const oldAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      const newAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      mockRefs.adapterRef.current = oldAdapter;
+
+      oldAdapter.disconnectMock.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            setTimeout(() => {
+              // Replace adapter during disconnect
+              mockRefs.adapterRef.current = newAdapter;
+              resolve();
+            }, 10);
+          }),
+      );
+
+      const { result } = setupHook();
+
+      await act(async () => {
+        await result.current.disconnect();
+      });
+
+      // Verify old adapter is destroyed
+      expect(oldAdapter.destroyMock).toHaveBeenCalled();
+
+      // Verify new adapter is NOT destroyed
+      expect(newAdapter.destroyMock).not.toHaveBeenCalled();
+
+      // Verify adapter ref points to new adapter
+      expect(mockRefs.adapterRef.current).toBe(newAdapter);
+    });
   });
 
   describe('clearError', () => {
