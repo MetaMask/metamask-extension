@@ -7,6 +7,7 @@ import {
 } from '@metamask/bridge-controller';
 import {
   getBridgeQuotes,
+  getFromBalanceInCurrency,
   getWarningLabels,
 } from '../../ducks/bridge/selectors';
 import { trackUnifiedSwapBridgeEvent } from '../../ducks/bridge/actions';
@@ -24,6 +25,7 @@ export const useQuoteFetchEvents = () => {
   } = useSelector(getBridgeQuotes);
   const isTxSubmittable = useIsTxSubmittable();
   const warnings = useSelector(getWarningLabels);
+  const fromBalanceInCurrency = useSelector(getFromBalanceInCurrency);
 
   // Emitted each time quotes are fetched successfully
   useEffect(() => {
@@ -36,6 +38,7 @@ export const useQuoteFetchEvents = () => {
             warnings,
             isTxSubmittable,
             recommendedQuote,
+            fromBalanceInCurrency.usd.toNumber(),
           ),
         ),
       );

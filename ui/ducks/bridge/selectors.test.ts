@@ -31,6 +31,7 @@ import {
   getFromTokenBalance,
   getFromAccount,
   getIsGasIncluded,
+  getFromBalanceInCurrency,
 } from './selectors';
 import { toBridgeToken } from './utils';
 
@@ -1908,6 +1909,168 @@ describe('Bridge selectors', () => {
         usd: 1.4,
         valueInCurrency: 1.5,
       });
+    });
+  });
+
+  describe('getFromBalanceInCurrency', () => {
+    it('should return zero values when fromChain or fromToken is missing', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {},
+          currencyRates: {},
+        },
+        bridgeSliceOverrides: {
+          fromToken: null,
+        },
+      });
+
+      const result = getFromBalanceInCurrency(state as never);
+      expect(result.valueInCurrency.toNumber()).toBe(0);
+      expect(result.usd.toNumber()).toBe(0);
+    });
+
+    it('should return zero values when fromTokenBalance is null', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+            symbol: 'ETH',
+            chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          },
+          fromTokenBalance: null,
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromBalanceInCurrency(state as never);
+      expect(result.valueInCurrency.toNumber()).toBe(0);
+      expect(result.usd.toNumber()).toBe(0);
+    });
+
+    it('should return balance in currency for native EVM token', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          currencyRates: {
+            ETH: { conversionRate: 2000, usdConversionRate: 2500 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: zeroAddress(),
+            decimals: 18,
+            symbol: 'ETH',
+            chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          },
+          fromTokenBalance: '5000000000000000000', // 5 ETH in wei
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromBalanceInCurrency(state as never);
+      // 5 ETH * 2000 = 10000 in user currency
+      expect(result.valueInCurrency.toNumber()).toBe(10000);
+      // 5 ETH * 2500 = 12500 in USD
+      expect(result.usd.toNumber()).toBe(12500);
+    });
+
+    it('should return balance in currency for ERC20 token', () => {
+      const state = createBridgeMockStore({
+        metamaskStateOverrides: {
+          marketData: {
+            '0x1': {
+              [getAddress('0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48')]: {
+                price: 1.2,
+              },
+            },
+          },
+          currencyRates: {
+            ETH: { conversionRate: 1500, usdConversionRate: 2000 },
+          },
+          ...mockNetworkState({ chainId: '0x1' }),
+        },
+        bridgeSliceOverrides: {
+          fromToken: {
+            address: '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48',
+            decimals: 6,
+            symbol: 'USDC',
+            chainId: toEvmCaipChainId(CHAIN_IDS.MAINNET),
+          },
+          fromTokenBalance: '100000000', // 100 USDC
+        },
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              'eip155:1': { isActiveSrc: true, isActiveDest: false },
+            },
+          },
+        },
+      });
+
+      const result = getFromBalanceInCurrency(state as never);
+      // Token exchange rate is 1.2 * 1500 = 1800 valueInCurrency, 1.2 * 2000 = 2400 USD
+      // 100 USDC * 1800 = 180000 in user currency
+      expect(result.valueInCurrency.toNumber()).toBe(180000);
+      // 100 USDC * 2400 = 240000 in USD
+      expect(result.usd.toNumber()).toBe(240000);
+    });
+
+    it('should return balance in currency for Solana native token', () => {
+      const state = createBridgeMockStore({
+        featureFlagOverrides: {
+          bridgeConfig: {
+            chains: {
+              [MultichainNetworks.SOLANA]: {
+                isActiveSrc: true,
+                isActiveDest: true,
+              },
+            },
+          },
+        },
+        metamaskStateOverrides: {
+          internalAccounts: {
+            selectedAccount: 'bf13d52c-d6e8-40ea-9726-07d7149a3ca5',
+          },
+          balances: {
+            'bf13d52c-d6e8-40ea-9726-07d7149a3ca5': {
+              [getNativeAssetForChainId(MultichainNetworks.SOLANA).assetId]: {
+                amount: '10',
+              },
+            },
+          },
+          rates: {
+            sol: {
+              conversionRate: 150,
+              usdConversionRate: 140,
+            },
+          },
+        },
+      });
+
+      const result = getFromBalanceInCurrency(state as never);
+      // 10 SOL * 150 = 1500 in user currency
+      expect(result.valueInCurrency.toNumber()).toBe(1500);
+      // 10 SOL * 140 = 1400 in USD
+      expect(result.usd.toNumber()).toBe(1400);
     });
   });
 

@@ -736,6 +736,36 @@ export const getFromAmountInCurrency = createSelector(
   },
 );
 
+export const getFromBalanceInCurrency = createSelector(
+  [getFromToken, getFromChain, getFromTokenBalance, getFromTokenConversionRate],
+  (
+    fromToken,
+    fromChain,
+    fromTokenBalance,
+    {
+      valueInCurrency: fromTokenToCurrencyExchangeRate,
+      usd: fromTokenToUsdExchangeRate,
+    },
+  ) => {
+    if (fromToken?.symbol && fromChain?.chainId && fromTokenBalance) {
+      if (fromTokenToCurrencyExchangeRate) {
+        return {
+          valueInCurrency: new BigNumber(fromTokenBalance).mul(
+            new BigNumber(fromTokenToCurrencyExchangeRate.toString() ?? 1),
+          ),
+          usd: new BigNumber(fromTokenBalance).mul(
+            new BigNumber(fromTokenToUsdExchangeRate?.toString() ?? 1),
+          ),
+        };
+      }
+    }
+    return {
+      valueInCurrency: new BigNumber(0),
+      usd: new BigNumber(0),
+    };
+  },
+);
+
 export const getTxAlerts = (state: BridgeAppState) => state.bridge.txAlert;
 
 export const getValidationErrors = createDeepEqualSelector(
