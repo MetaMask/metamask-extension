@@ -19,7 +19,7 @@ import {
 // These tests should only be run on Flask for now.
 const FLASK_ONLY_TESTS: string[] = [];
 
-// This test  only be run manually or via specific workflow update-onboarding-fixutre.yml
+// This test should only be run manually or via specific workflow update-onboarding-fixture.yml
 const DIST_EXCLUDED_TESTS: string[] = ['wallet-fixture-export.spec.ts'];
 
 const getTestPathsForTestDir = async (testDir: string): Promise<string[]> => {

@@ -304,6 +304,13 @@ export const mergeFixtureChanges = (
     }
 
     const leafPath = getLeafKeyPath(keyPath);
+
+    // Skip if we've already processed this path (from newKeys or missingKeys)
+    if (processedPaths.has(leafPath)) {
+      continue;
+    }
+    processedPaths.add(leafPath);
+
     const value = get(newState, leafPath);
     if (value !== undefined) {
       set(merged, leafPath, value);
