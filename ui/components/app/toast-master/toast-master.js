@@ -866,6 +866,7 @@ function StorageErrorToast() {
     shouldShow && (
       <Toast
         key="database-corruption-toast"
+        dataTestId="storage-error-toast"
         startAdornment={
           <Icon
             name={IconName.Danger}
