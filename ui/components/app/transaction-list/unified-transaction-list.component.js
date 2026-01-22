@@ -101,6 +101,7 @@ import {
 import {
   selectBridgeHistoryForAccountGroup,
   selectBridgeHistoryItemForTxMetaId,
+  selectSwapReceiveTxHashes,
 } from '../../../ducks/bridge-status/selectors';
 import { getSelectedAccountGroupMultichainTransactions } from '../../../selectors/multichain-transactions';
 import { TransactionActivityEmptyState } from '../transaction-activity-empty-state';
@@ -448,6 +449,7 @@ export default function UnifiedTransactionList({
   const groupEvmAddress = accountGroupEvmAccount?.address?.toLowerCase();
 
   const bridgeHistoryItems = useSelector(selectBridgeHistoryForAccountGroup);
+  const swapReceiveTxHashes = useSelector(selectSwapReceiveTxHashes);
 
   const pendingFromSelectedAccount = useSelector(
     nonceSortedPendingTransactionsSelectorAllChains,
@@ -692,6 +694,18 @@ export default function UnifiedTransactionList({
     (item, index) => {
       if (item.kind === TransactionKind.NON_EVM) {
         const matchedBridgeHistoryItem = bridgeHistoryItems[item.id];
+
+        // Filter out receive transactions that are part of a known swap
+        const isReceiveType =
+          item.transaction?.type === KeyringTransactionType.Receive;
+        const txIdOrHash = item.id || item.transaction?.id;
+        const isPartOfKnownSwap =
+          txIdOrHash && swapReceiveTxHashes.has(txIdOrHash);
+
+        if (isReceiveType && isPartOfKnownSwap) {
+          return null;
+        }
+
         if (
           matchedBridgeHistoryItem &&
           isCrossChain(
@@ -750,6 +764,7 @@ export default function UnifiedTransactionList({
     },
     [
       bridgeHistoryItems,
+      swapReceiveTxHashes,
       multichainNetworkConfig,
       toggleShowDetails,
       earliestNonceByChain,
