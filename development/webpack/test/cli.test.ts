@@ -23,6 +23,7 @@ describe('./utils/cli.ts', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     manifest_version: 3,
     type: 'main',
+    validateEnv: false,
     lavamoat: false,
     lavamoatDebug: false,
     generatePolicy: false,
