@@ -27,6 +27,10 @@ const DEFAULT_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hour
 
 const CACHE_EXPIRATION_MS = 1 * 60 * 60 * 1000; // 1 hour
 
+const TOP_X = 10;
+
+const OCCURRENCE_FLOOR = 2;
+
 // eslint-disable-next-line @typescript-eslint/ban-types
 export type StaticAssetsControllerState = {};
 
@@ -106,9 +110,15 @@ type TopAsset = {
  * Fetch top assets for a chain from the API.
  *
  * @param chainId - The chain ID.
+ * @param topX - The number of top assets to fetch.
+ * @param occurrenceFloor - The occurrence floor.
  * @returns The top assets.
  */
-async function fetchTopAssets(chainId: string): Promise<TopAsset[]> {
+async function fetchTopAssets(
+  chainId: string,
+  topX: number,
+  occurrenceFloor: number,
+): Promise<TopAsset[]> {
   try {
     if (!isStrictHexString(chainId)) {
       return [];
@@ -118,8 +128,8 @@ async function fetchTopAssets(chainId: string): Promise<TopAsset[]> {
     const url = new URL(
       `https://tokens.api.cx.metamask.io/v3/chains/${caip2ChainId}/assets`,
     );
-    url.searchParams.set('first', '10');
-    url.searchParams.set('occurrenceFloor', '2');
+    url.searchParams.set('first', topX.toString());
+    url.searchParams.set('occurrenceFloor', occurrenceFloor.toString());
     url.searchParams.set('includeAggregators', 'true');
     url.searchParams.set('includeCoingeckoId', 'true');
     url.searchParams.set('includeIconUrl', 'true');
@@ -232,7 +242,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * @param topAsset - The top asset to transform.
    * @returns The transformed token.
    */
-  #transformTopAssets(topAsset: TopAsset): Token {
+  #transformTopAsset(topAsset: TopAsset): Token {
     return {
       address: parseCaipAssetType(topAsset.assetId).assetReference,
       decimals: topAsset.decimals,
@@ -253,20 +263,10 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     if (!(await this.#isValidChainId(chainId))) {
       return;
     }
-
-    console.log('[StaticAssetsController] addTokensByChainId:', chainId);
-
     const tokens = await this.#fetchTopAssets(chainId);
 
-    try {
-      if (tokens.length > 0) {
-        await this.#addTokensToTokensController(tokens, chainId);
-      }
-    } catch (error) {
-      console.error(
-        `[StaticAssetsController] Error adding tokens for chainId ${chainId}`,
-        error,
-      );
+    if (tokens.length > 0) {
+      await this.#addTokensToTokensController(tokens, chainId);
     }
   }
 
@@ -280,23 +280,30 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     tokens: Token[],
     chainId: string,
   ): Promise<void> {
-    if (!isStrictHexString(chainId)) {
-      return;
+    try {
+      if (!isStrictHexString(chainId)) {
+        return;
+      }
+
+      const filteredTokens = await this.#filterIgnoredTokens(tokens, chainId);
+
+      const networkClientId = await this.messenger.call(
+        'NetworkController:findNetworkClientIdByChainId',
+        chainId,
+      );
+
+      // filter out tokens that are already in the ignore
+      await this.messenger.call(
+        'TokensController:addTokens',
+        filteredTokens,
+        networkClientId,
+      );
+    } catch (error) {
+      console.error(
+        `[StaticAssetsController] Error adding tokens to TokensController for chainId ${chainId}`,
+        error,
+      );
     }
-
-    const filteredTokens = await this.#filterIgnoredTokens(tokens, chainId);
-
-    const networkClientId = await this.messenger.call(
-      'NetworkController:findNetworkClientIdByChainId',
-      chainId,
-    );
-
-    // filter out tokens that are already in the ignore
-    await this.messenger.call(
-      'TokensController:addTokens',
-      filteredTokens,
-      networkClientId,
-    );
   }
 
   /**
@@ -363,11 +370,11 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       }
       const tokens: Token[] = [];
 
-      const topAssets = await fetchTopAssets(chainId);
+      const topAssets = await fetchTopAssets(chainId, TOP_X, OCCURRENCE_FLOOR);
 
       topAssets.forEach((topAsset) => {
         try {
-          tokens.push(this.#transformTopAssets(topAsset));
+          tokens.push(this.#transformTopAsset(topAsset));
         } catch (error) {
           console.error(
             `[StaticAssetsController] Error transforming top asset ${topAsset.assetId} for chainId ${chainId}`,
@@ -378,7 +385,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
 
       // store the tokens to in-memory cache.
       this.#tokensCache[chainId] = {
-        data: tokens ?? [],
+        data: tokens,
         // The cache expiration time is the minimum of the cache expiration time and the interval length.
         // Although there is a chance that when the next interval is triggered, the cache is not expired yet,
         // but since the polling will be triggered if the user changes the selected account or the chains,
