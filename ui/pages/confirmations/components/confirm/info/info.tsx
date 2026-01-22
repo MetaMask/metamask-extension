@@ -10,7 +10,7 @@ import { SignatureRequestType } from '../../../types/confirm';
 import { AddEthereumChain } from '../../../external/add-ethereum-chain/add-ethereum-chain';
 import { ConfirmInfoSection } from '../../../../../components/app/confirm/info/row/section';
 import { Skeleton } from '../../../../../components/component-library/skeleton';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../developer/confirmations-developer-options';
+import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../shared/constants/transaction';
 import { ExampleCustomAmountConfirmation } from '../../developer/example-custom-amount-confirmation';
 import ApproveInfo from './approve/approve';
 import BaseTransactionInfo from './base-transaction-info/base-transaction-info';
