@@ -1,0 +1,4 @@
+# This file helps git to collapse multiple identities of the same person
+# Format: Proper Name <proper@email.com> Commit Name <commit@email.com>
+
+MetaMask Bot <bot@metamask.io> MetaMask Bot <metamaskbot@users.noreply.github.com>
