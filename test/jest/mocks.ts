@@ -15,11 +15,6 @@ import { KeyringTypes } from '@metamask/keyring-controller';
 import { v4 as uuidv4 } from 'uuid';
 import { keyringTypeToName } from '@metamask/accounts-controller';
 import { Json } from '@metamask/utils';
-import {
-  DraftTransaction,
-  draftTransactionInitialState,
-  initialState,
-} from '../../ui/ducks/send';
 import { MetaMaskReduxState } from '../../ui/store/store';
 import mockState from '../data/mock-state.json';
 import { isBtcMainnetAddress } from '../../shared/lib/multichain/accounts';
@@ -135,57 +130,6 @@ export const createGasFeeEstimatesForFeeMarket = () => {
     estimatedBaseFee: '50',
   };
 };
-
-export const INITIAL_SEND_STATE_FOR_EXISTING_DRAFT = {
-  ...initialState,
-  currentTransactionUUID: 'test-uuid',
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-    },
-  },
-};
-
-export const getInitialSendStateWithExistingTxState = (
-  draftTxState: DraftTransaction & { test: string },
-) => ({
-  ...INITIAL_SEND_STATE_FOR_EXISTING_DRAFT,
-  draftTransactions: {
-    'test-uuid': {
-      ...draftTransactionInitialState,
-      ...draftTxState,
-      amount: {
-        ...draftTransactionInitialState.amount,
-        ...draftTxState.amount,
-      },
-      sendAsset: {
-        ...draftTransactionInitialState.sendAsset,
-        ...draftTxState.sendAsset,
-      },
-      gas: {
-        ...draftTransactionInitialState.gas,
-        ...draftTxState.gas,
-      },
-      isSwapQuoteLoading: false,
-      quotes: draftTxState.quotes ?? null,
-      receiveAsset: {
-        ...draftTransactionInitialState.receiveAsset,
-        ...(draftTxState.receiveAsset ?? draftTxState.sendAsset),
-      },
-      swapQuotesError: null,
-      swapQuotesLatestRequestTimestamp: null,
-      timeToFetchQuotes: null,
-      recipient: {
-        ...draftTransactionInitialState.recipient,
-        ...draftTxState.recipient,
-      },
-      history: draftTxState.history ?? [],
-      userInputHexData: draftTxState.userInputHexData ?? null,
-      // Use this key if you want to console.log inside the send.js file.
-      test: draftTxState.test ?? 'yo',
-    },
-  },
-});
 
 export function createMockInternalAccount({
   id,
