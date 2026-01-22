@@ -135,7 +135,7 @@ jobs:
     needs:
       - prepare
     container:
-      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.11.0
+      image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
