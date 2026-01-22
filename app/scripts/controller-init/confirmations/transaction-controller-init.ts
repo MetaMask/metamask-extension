@@ -12,6 +12,10 @@ import {
   SmartTransactionsController,
   SmartTransactionStatuses,
 } from '@metamask/smart-transactions-controller';
+import {
+  TransactionPayControllerMessenger,
+  TransactionPayPublishHook,
+} from '@metamask/transaction-pay-controller';
 import { Hex } from '@metamask/utils';
 import { NetworkClientId } from '@metamask/network-controller';
 import { toHex } from '@metamask/controller-utils';
@@ -394,7 +398,18 @@ export async function publishHook({
     transactionMeta.chainId,
   );
 
-  if (!isSmartTransaction || !sendBundleSupport) {
+  const payResult = await new TransactionPayPublishHook({
+    isSmartTransaction: () => isSmartTransaction,
+    messenger: initMessenger as unknown as TransactionPayControllerMessenger,
+  }).getHook()(transactionMeta, signedTx as Hex);
+
+  if (payResult?.transactionHash) {
+    return payResult;
+  }
+
+  const { isExternalSign } = transactionMeta;
+
+  if (!isSmartTransaction || !sendBundleSupport || isExternalSign) {
     const hook = new Delegation7702PublishHook({
       isAtomicBatchSupported: transactionController.isAtomicBatchSupported.bind(
         transactionController,

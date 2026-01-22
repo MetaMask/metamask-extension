@@ -224,6 +224,7 @@ const migrations = [
   require('./186'),
   require('./187'),
   require('./188'),
+  require('./189'),
   require('./190'),
 ];
 
