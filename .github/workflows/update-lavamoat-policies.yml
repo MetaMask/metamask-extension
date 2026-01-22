@@ -205,6 +205,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
+      - update-lavamoat-webpack-policy-build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -242,6 +243,7 @@ jobs:
     timeout-minutes: 30
     needs:
       - prepare
+      - update-lavamoat-webpack-policy-build
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
