@@ -1191,6 +1191,14 @@
   "buyNow": {
     "message": "Buy now"
   },
+  "buyTabOpenedToastDescription": {
+    "message": "We've opened a new tab for buying.",
+    "description": "Toast description shown after opening the buy flow in a new tab"
+  },
+  "buyTabOpenedToastText": {
+    "message": "Continue in your browser tab",
+    "description": "Toast title shown after opening the buy flow in a new tab"
+  },
   "bytes": {
     "message": "Bytes"
   },
