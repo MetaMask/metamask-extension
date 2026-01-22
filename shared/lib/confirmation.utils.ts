@@ -1,5 +1,6 @@
 import { TransactionType } from '@metamask/transaction-controller';
 import { ApprovalType } from '@metamask/controller-utils';
+import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../constants/transaction';
 
 /* eslint-disable jsdoc/require-param, jsdoc/check-param-names */
 
@@ -26,7 +27,10 @@ const REDESIGN_USER_TRANSACTION_TYPES = [
 ];
 
 /** List of transaction types that support the redesigned confirmation flow for developers */
-const REDESIGN_DEV_TRANSACTION_TYPES = [...REDESIGN_USER_TRANSACTION_TYPES];
+const REDESIGN_DEV_TRANSACTION_TYPES = [
+  ...REDESIGN_USER_TRANSACTION_TYPES,
+  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
+];
 
 /**
  * Determines whether to use the redesigned confirmation flow for a given transaction
