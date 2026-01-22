@@ -96,8 +96,8 @@ class BridgeQuotePage {
 
       if (quote.toChain) {
         // We're in token picker, need to click network badge first
-        await this.driver.waitForSelector(this.mutlichainAssetPicker);
-        await this.driver.clickElement(this.mutlichainAssetPicker);
+        await this.driver.waitForSelector(this.networkSelector);
+        await this.driver.clickElement(this.networkSelector);
 
         // Now select the destination network
         await this.driver.clickElementAndWaitToDisappear({

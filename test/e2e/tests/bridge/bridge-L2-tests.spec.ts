@@ -43,7 +43,7 @@ describe('Bridge tests', function (this: Suite) {
           quote: {
             amount: '10',
             tokenFrom: 'DAI',
-            tokenTo: 'UNI',
+            tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Arbitrum',
           },
@@ -56,7 +56,7 @@ describe('Bridge tests', function (this: Suite) {
           quote: {
             amount: '10',
             tokenFrom: 'DAI',
-            tokenTo: 'USDT',
+            tokenTo: 'DAI',
             fromChain: 'Linea',
             toChain: 'Ethereum',
           },
