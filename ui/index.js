@@ -94,7 +94,7 @@ export default async function launchMetamaskUi(opts) {
 
   const store = await startApp(initialState, opts);
 
-  await backgroundConnection.startPatches();
+  await backgroundConnection.startSendingPatches();
 
   setupStateHooks(store);
 

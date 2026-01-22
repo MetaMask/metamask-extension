@@ -6830,7 +6830,7 @@ export default class MetamaskController extends EventEmitter {
     const api = {
       ...this.getApi(),
       ...this.controllerApi,
-      startPatches: () => {
+      startSendingPatches: () => {
         uiReady = true;
         handleUpdate();
       },
