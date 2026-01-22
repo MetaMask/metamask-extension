@@ -142,7 +142,6 @@
     "enabledNetworkMap": {},
     "seedPhraseBackedUp": null,
     "ensResolutionsByAddress": {},
-    "isAccountMenuOpen": false,
     "isUnlocked": true,
     "completedOnboarding": true,
     "showTestnetMessageInDropdown": true,
