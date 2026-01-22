@@ -21,7 +21,7 @@ describe('Test Snap multichain provider', function () {
         },
         fixtures: new FixtureBuilder().build(),
         testSpecificMock: async (mockServer: Mockttp) => {
-          // await mockMultichainProviderSnap(mockServer);
+          await mockMultichainProviderSnap(mockServer);
           await mockGenesisBlocks(mockServer);
         },
         title: this.test?.fullTitle(),
