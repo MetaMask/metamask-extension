@@ -13,8 +13,6 @@ import {
 } from '../types';
 import { reconstructHardwareWalletError } from '../rpcErrorUtils';
 
-const LOG_TAG = '[LedgerAdapter]';
-
 /**
  * Ledger adapter implementation
  * Verifies WebHID device presence AND ensures Ethereum app is open.
@@ -56,7 +54,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
       );
     } catch (error) {
-      console.error(LOG_TAG, 'Error checking device connection:', error);
       return false;
     }
   }
@@ -142,7 +139,6 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-    console.log(LOG_TAG, 'Destroying adapter');
 
     this.connected = false;
     this.currentDeviceId = null;
