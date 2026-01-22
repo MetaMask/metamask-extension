@@ -329,6 +329,14 @@ async function mockSearchTokens(mockServer: Mockttp) {
               'eip155:1/erc20:0x6b175474e89094c44da98b954eedeac495271d0f'.toLowerCase(),
             decimals: 6,
           },
+          {
+            name: 'Wrapped Ether',
+            symbol: 'WETH',
+            chainId: 'eip155:59144',
+            assetId:
+              'eip155:59144/erc20:0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f'.toLowerCase(),
+            decimals: 18,
+          },
         ],
         pageInfo: {
           hasNextPage: false,
@@ -1102,6 +1110,7 @@ export const getInsufficientFundsFixtures = (
     testSpecificMock: async (mockServer: Mockttp) => [
       await mockTokensLinea(mockServer),
       await mockTopAssetsLinea(mockServer),
+      await mockSearchTokens(mockServer),
       await mockETHtoWETH(mockServer),
       await mockPriceSpotPrices(mockServer),
     ],
