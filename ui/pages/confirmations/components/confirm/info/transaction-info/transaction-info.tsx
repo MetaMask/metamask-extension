@@ -9,21 +9,6 @@ import SetApprovalForAllInfo from '../set-approval-for-all-info/set-approval-for
 import ShieldSubscriptionApproveInfo from '../shield-subscription-approve/shield-subscription-approve';
 import TokenTransferInfo from '../token-transfer/token-transfer';
 
-const TRANSACTION_INFO_COMPONENTS: Record<string, React.ComponentType> = {
-  [TransactionType.batch]: BaseTransactionInfo,
-  [TransactionType.contractInteraction]: BaseTransactionInfo,
-  [TransactionType.deployContract]: BaseTransactionInfo,
-  [TransactionType.revokeDelegation]: BaseTransactionInfo,
-  [TransactionType.simpleSend]: NativeTransferInfo,
-  [TransactionType.shieldSubscriptionApprove]: ShieldSubscriptionApproveInfo,
-  [TransactionType.tokenMethodApprove]: ApproveInfo,
-  [TransactionType.tokenMethodIncreaseAllowance]: ApproveInfo,
-  [TransactionType.tokenMethodSafeTransferFrom]: NFTTokenTransferInfo,
-  [TransactionType.tokenMethodSetApprovalForAll]: SetApprovalForAllInfo,
-  [TransactionType.tokenMethodTransfer]: TokenTransferInfo,
-  [TransactionType.tokenMethodTransferFrom]: NFTTokenTransferInfo,
-};
-
 /**
  * Renders the appropriate info component for transaction-type confirmations.
  * Uses the transaction type from the unapproved transaction to determine
@@ -38,13 +23,36 @@ const TransactionInfo: React.FC = () => {
     return null;
   }
 
-  const InfoComponent = TRANSACTION_INFO_COMPONENTS[unapprovedTransaction.type];
+  switch (unapprovedTransaction.type) {
+    case TransactionType.batch:
+    case TransactionType.contractInteraction:
+    case TransactionType.deployContract:
+    case TransactionType.revokeDelegation:
+      return <BaseTransactionInfo />;
 
-  if (!InfoComponent) {
-    return null;
+    case TransactionType.simpleSend:
+      return <NativeTransferInfo />;
+
+    case TransactionType.shieldSubscriptionApprove:
+      return <ShieldSubscriptionApproveInfo />;
+
+    case TransactionType.tokenMethodApprove:
+    case TransactionType.tokenMethodIncreaseAllowance:
+      return <ApproveInfo />;
+
+    case TransactionType.tokenMethodSafeTransferFrom:
+    case TransactionType.tokenMethodTransferFrom:
+      return <NFTTokenTransferInfo />;
+
+    case TransactionType.tokenMethodSetApprovalForAll:
+      return <SetApprovalForAllInfo />;
+
+    case TransactionType.tokenMethodTransfer:
+      return <TokenTransferInfo />;
+
+    default:
+      return null;
   }
-
-  return <InfoComponent />;
 };
 
 export default TransactionInfo;

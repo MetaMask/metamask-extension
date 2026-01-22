@@ -1,22 +1,24 @@
-import { useConfirmContext } from '../context/confirm';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { oldestPendingConfirmationSelector } from '../../../selectors';
+import { selectUnapprovedMessage } from '../../../selectors/signatures';
 import { SignatureRequestType } from '../types/confirm';
-import { isSignatureTransactionType } from '../utils';
 
 /**
  * Returns the signature request for the current confirmation.
- * Returns undefined if the current confirmation is a transaction.
+ * Uses URL params or falls back to the oldest pending confirmation.
  *
  * @returns The signature request or undefined.
  */
 export function useSignatureRequest(): SignatureRequestType | undefined {
-  const { currentConfirmation } = useConfirmContext();
+  const { id: paramsConfirmationId } = useParams<{ id: string }>();
+  const oldestPendingApproval = useSelector(oldestPendingConfirmationSelector);
 
-  if (
-    !currentConfirmation ||
-    !isSignatureTransactionType(currentConfirmation)
-  ) {
-    return undefined;
-  }
+  const confirmationId = paramsConfirmationId ?? oldestPendingApproval?.id;
 
-  return currentConfirmation as SignatureRequestType;
+  const signatureMessage = useSelector((state) =>
+    selectUnapprovedMessage(state, confirmationId),
+  );
+
+  return signatureMessage as SignatureRequestType | undefined;
 }

@@ -1,5 +1,5 @@
 import { TransactionType } from '@metamask/transaction-controller';
-import { renderHookWithConfirmContextProvider } from '../../../../test/lib/confirmations/render-helpers';
+import { renderHookWithProvider } from '../../../../test/lib/render-helpers-navigate';
 import {
   getMockTypedSignConfirmState,
   getMockPersonalSignConfirmState,
@@ -9,11 +9,23 @@ import { unapprovedTypedSignMsgV4 } from '../../../../test/data/confirmations/ty
 import { unapprovedPersonalSignMsg } from '../../../../test/data/confirmations/personal_sign';
 import { useSignatureRequest } from './useSignatureRequest';
 
+const mockUseParams = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useParams: () => mockUseParams(),
+}));
+
 describe('useSignatureRequest', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('returns signature request for typed sign confirmation', () => {
+    mockUseParams.mockReturnValue({ id: unapprovedTypedSignMsgV4.id });
     const state = getMockTypedSignConfirmState();
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       () => useSignatureRequest(),
       state,
     );
@@ -27,9 +39,10 @@ describe('useSignatureRequest', () => {
   });
 
   it('returns signature request for personal sign confirmation', () => {
+    mockUseParams.mockReturnValue({ id: unapprovedPersonalSignMsg.id });
     const state = getMockPersonalSignConfirmState();
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       () => useSignatureRequest(),
       state,
     );
@@ -43,9 +56,10 @@ describe('useSignatureRequest', () => {
   });
 
   it('returns undefined for transaction confirmation', () => {
+    mockUseParams.mockReturnValue({});
     const state = getMockContractInteractionConfirmState();
 
-    const { result } = renderHookWithConfirmContextProvider(
+    const { result } = renderHookWithProvider(
       () => useSignatureRequest(),
       state,
     );
