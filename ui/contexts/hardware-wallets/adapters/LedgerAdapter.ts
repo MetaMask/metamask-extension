@@ -23,6 +23,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private connected = false;
 
+  private isConnecting = false;
+
   private currentDeviceId: string | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -65,6 +67,13 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @param deviceId - The device ID to connect to
    */
   async connect(deviceId: string): Promise<void> {
+    // Already connected or connection in progress - skip
+    if (this.connected || this.isConnecting) {
+      return;
+    }
+
+    this.isConnecting = true;
+
     try {
       // Step 1: Check WebHID availability
       if (!this.isWebHIDAvailable()) {
@@ -109,6 +118,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       });
 
       throw hwError;
+    } finally {
+      this.isConnecting = false;
     }
   }
 
@@ -139,8 +150,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
-
     this.connected = false;
+    this.isConnecting = false;
     this.currentDeviceId = null;
   }
 

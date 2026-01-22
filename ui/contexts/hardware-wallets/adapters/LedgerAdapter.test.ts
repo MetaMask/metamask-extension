@@ -240,6 +240,49 @@ describe('LedgerAdapter', () => {
         expect((error as HardwareWalletError).code).toBeDefined();
       }
     });
+
+    it('skips connection when already connected', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+
+      await adapter.connect(deviceId);
+      expect(adapter.isConnected()).toBe(true);
+
+      // Second call should return immediately without calling transport creation again
+      await adapter.connect(deviceId);
+
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
+    });
+
+    it('skips connection when connection is already in progress', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      // Simulate slow connection
+      let resolveTransport: () => void;
+      const slowTransportPromise = new Promise<void>((resolve) => {
+        resolveTransport = resolve;
+      });
+      mockAttemptLedgerTransportCreation.mockReturnValue(slowTransportPromise);
+
+      // Start first connection (will be pending)
+      const firstConnect = adapter.connect(deviceId);
+
+      // Start second connection while first is still in progress
+      const secondConnect = adapter.connect(deviceId);
+
+      // Resolve the transport
+      resolveTransport!();
+
+      await firstConnect;
+      await secondConnect;
+
+      // Transport creation should only be called once
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('disconnect', () => {
@@ -319,6 +362,35 @@ describe('LedgerAdapter', () => {
       adapter.destroy();
 
       expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('resets isConnecting state allowing new connections after destroy', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      // Simulate a connection that never completes
+      let resolveTransport: () => void;
+      const slowTransportPromise = new Promise<void>((resolve) => {
+        resolveTransport = resolve;
+      });
+      mockAttemptLedgerTransportCreation.mockReturnValue(slowTransportPromise);
+
+      // Start connection (will be pending)
+      const connectPromise = adapter.connect('test-device-id');
+
+      // Destroy while connecting
+      adapter.destroy();
+
+      // Resolve the pending transport to avoid hanging test
+      resolveTransport!();
+      await connectPromise;
+
+      // Reset mock and try new connection - should work
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect('test-device-id');
+
+      expect(adapter.isConnected()).toBe(true);
     });
   });
 
