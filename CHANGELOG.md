@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Show correct spending cap (#39098)
 - Token 2022 send (#39123)
 - Fix long ens name representation in send flow (#39035)
+- Fixed network selector on send flow (#39462)
 - Fix permission modal to show entire origin when it's too long (#39030)
 - Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
 - Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
