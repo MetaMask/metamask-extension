@@ -42,6 +42,7 @@ import {
   OffscreenCommunicationTarget,
   OffscreenCommunicationEvents,
 } from '../../shared/constants/offscreen-communication';
+import { captureException } from '../../shared/lib/sentry';
 import { getCurrentChainId } from '../../shared/modules/selectors/networks';
 import { createCaipStream } from '../../shared/modules/caip-stream';
 import getFetchWithTimeout from '../../shared/modules/fetch-with-timeout';
@@ -1237,6 +1238,14 @@ export function setupController(
   for (const key of Object.keys(currentState)) {
     const initialControllerState = initState[key] || {};
     const newControllerState = currentState[key];
+    if (newControllerState === null || typeof newControllerState !== 'object') {
+      captureException(
+        new Error(
+          `Invalid controller state for '${key}' of type '${newControllerState === null ? 'null' : typeof newControllerState}'`,
+        ),
+      );
+      continue;
+    }
     const newControllerStateKeys = Object.keys(newControllerState);
 
     // if the number of keys has changed, we need to persist the new state
