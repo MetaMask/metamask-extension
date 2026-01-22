@@ -336,9 +336,8 @@ const config = {
         dependency: 'url',
         type: 'asset/resource',
       },
-      // UI TypeScript files - parallelized with thread-loader
       {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:ts|mts|tsx)$/u,
+        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:m?[jt]s|[jt]sx)$/u,
         include: UI_DIR_RE,
         use: [
           {
@@ -349,37 +348,18 @@ const config = {
             },
           },
           reactCompilerLoader,
-          tsxLoader,
-          codeFenceLoader,
         ],
       },
-      // UI JavaScript files - parallelized with thread-loader
-      {
-        test: /^(?!.*\.(?:test|stories|container)\.)(?:.*)\.(?:js|mjs|jsx)$/u,
-        include: UI_DIR_RE,
-        use: [
-          {
-            loader: 'thread-loader',
-            options: {
-              workers: Math.max(1, cpus().length - 1),
-              workerParallelJobs: 50,
-            },
-          },
-          reactCompilerLoader,
-          jsxLoader,
-          codeFenceLoader,
-        ],
-      },
-      // non-UI typescript (background scripts, shared, etc.)
+      // own typescript, and own typescript with jsx
       {
         test: /\.(?:ts|mts|tsx)$/u,
-        exclude: [NODE_MODULES_RE, UI_DIR_RE],
+        exclude: NODE_MODULES_RE,
         use: [tsxLoader, codeFenceLoader],
       },
-      // non-UI javascript (background scripts, shared, etc.)
+      // own javascript, and own javascript with jsx
       {
         test: /\.(?:js|mjs|jsx)$/u,
-        exclude: [NODE_MODULES_RE, UI_DIR_RE],
+        exclude: NODE_MODULES_RE,
         use: [jsxLoader, codeFenceLoader],
       },
       // vendor javascript. We must transform all npm modules to ensure browser
