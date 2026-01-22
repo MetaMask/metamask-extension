@@ -25,7 +25,7 @@ const inputLocator = {
   backgroundEventDurationInput: '#backgroundEventDuration',
   cancelBackgroundEventInput: '#backgroundEventId',
   signMessageMultichainInput: '#signMessageMultichain',
-  signTypedDataMultichainInput: '#signTypedDataMultichain'
+  signTypedDataMultichainInput: '#signTypedDataMultichain',
 } satisfies Record<string, string>;
 
 export const buttonLocator = {
@@ -145,7 +145,7 @@ const spanLocator = {
   personalSignResultSpan: '#personalSignResult',
   preferencesResultSpan: '#preferencesResult',
   providerVersionResultSpan: '#ethproviderResult',
-    multichainProviderResultSpan: '#multichainProviderResult',
+  multichainProviderResultSpan: '#multichainProviderResult',
   sendManageStateResultSpan: '#sendManageStateResult',
   snapUIRenderer: '.snap-ui-renderer__content',
   sendUnencryptedManageStateResultSpan: '#sendUnencryptedManageStateResult',
@@ -169,7 +169,7 @@ const dropDownLocator = {
   bip44EntropyDropDown: '#bip44-entropy-selector',
   getEntropyDropDown: '#get-entropy-entropy-selector',
   networkDropDown: '#select-chain',
-  multichainNetworkDropdown: '#select-multichain-chain'
+  multichainNetworkDropdown: '#select-multichain-chain',
 } satisfies Record<string, string>;
 
 export class TestSnaps {

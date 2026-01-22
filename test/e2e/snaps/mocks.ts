@@ -1,4 +1,4 @@
-import { Mockttp } from "mockttp";
+import { Mockttp } from 'mockttp';
 
 /**
  * Mock real genesis blocks for the chains to not require hitting the network.
