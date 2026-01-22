@@ -57,39 +57,39 @@ describe('Hexadecimal address prefix normalization', function () {
     const smartContract = SMART_CONTRACTS.HST;
 
     it('should ensure the address is prefixed with 0x when pasted and should send TST to a valid hexadecimal address', async function () {
-    await withFixtures(
-      {
-        dappOptions: { numberOfTestDapps: 1 },
-        fixtures: new FixtureBuilder()
-          .withPreferencesControllerPetnamesDisabled()
-          .withTokensControllerERC20()
-          .withEnabledNetworks({ eip155: { '0x539': true } })
-          .build(),
-        smartContract,
-        title: this.test?.fullTitle(),
-      },
-      async ({ driver, localNodes }) => {
-        await loginWithBalanceValidation(driver, localNodes[0]);
+      await withFixtures(
+        {
+          dappOptions: { numberOfTestDapps: 1 },
+          fixtures: new FixtureBuilder()
+            .withPreferencesControllerPetnamesDisabled()
+            .withTokensControllerERC20()
+            .withEnabledNetworks({ eip155: { '0x539': true } })
+            .build(),
+          smartContract,
+          title: this.test?.fullTitle(),
+        },
+        async ({ driver, localNodes }) => {
+          await loginWithBalanceValidation(driver, localNodes[0]);
 
-        // Send TST
-        const homePage = new HomePage(driver);
-        await homePage.goToTokensTab();
-        const assetList = new AssetList(driver);
-        await assetList.clickMultichainTokenListButton();
-        const nonEvmHomepage = new NonEvmHomepage(driver);
-        await nonEvmHomepage.clickOnSendButton();
-        // Paste address without hex prefix
-        const sendPage = new SendPage(driver);
-        await sendPage.fillRecipient(nonHexPrefixedAddress);
-        await sendPage.pressContinueButton();
+          // Send TST
+          const homePage = new HomePage(driver);
+          await homePage.goToTokensTab();
+          const assetList = new AssetList(driver);
+          await assetList.clickMultichainTokenListButton();
+          const nonEvmHomepage = new NonEvmHomepage(driver);
+          await nonEvmHomepage.clickOnSendButton();
+          // Paste address without hex prefix
+          const sendPage = new SendPage(driver);
+          await sendPage.fillRecipient(nonHexPrefixedAddress);
+          await sendPage.pressContinueButton();
 
-        // Verify address in activity log
-        const transactionDetailsPage = new TransactionDetailsPage(driver);
-        await transactionDetailsPage.checkAddressInActivityLog(
-          hexAbbreviatedAddress,
-        );
-      },
-    );
+          // Verify address in activity log
+          const transactionDetailsPage = new TransactionDetailsPage(driver);
+          await transactionDetailsPage.checkAddressInActivityLog(
+            hexAbbreviatedAddress,
+          );
+        },
+      );
     });
 
     it('should ensure the address is prefixed with 0x when typed and should send TST to a valid hexadecimal address', async function () {
