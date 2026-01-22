@@ -1,5 +1,5 @@
 import { cloneDeep } from 'lodash';
-import { migrate, version } from './189';
+import { migrate, version } from './190';
 
 const VERSION = version;
 const OLD_VERSION = VERSION - 1;

@@ -1,7 +1,7 @@
 import { hasProperty } from '@metamask/utils';
 import type { Migrate } from './types';
 
-export const version = 189;
+export const version = 190;
 
 export const migrate = (async (versionedData, changedKeys) => {
   versionedData.meta.version = version;
