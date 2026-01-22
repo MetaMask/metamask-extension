@@ -15,9 +15,12 @@ permissions:
 
 jobs:
   build-test:
-    name: Build test extension
+    name: Build test extension (${{ matrix.browser }})
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      matrix:
+        browser: [chrome, firefox]
     steps:
       - name: Checkout and setup environment
         uses: MetaMask/action-checkout-and-setup@v1
@@ -27,28 +30,32 @@ jobs:
           use-yarn-hydrate: true
 
       - name: Build test extension
-        run: yarn build:test
+        run: yarn build:test${{ matrix.browser == 'firefox' && ':mv2' || '' }}
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: build-test-performance
+          name: build-test-performance-${{ matrix.browser }}
           path: |
             dist/
             builds/
 
   performance-tests:
-    name: Performance Tests
+    name: Performance Tests (${{ matrix.browser }})
     needs: build-test
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chrome, firefox]
     container:
       image: ghcr.io/metamask/metamask-extension-e2e-image:v24.13.0
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
     env:
-      SELENIUM_BROWSER: chrome
+      SELENIUM_BROWSER: ${{ matrix.browser }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
       E2E_POWER_USER_SRP: ${{ secrets.E2E_POWER_USER_SRP }}
       TEST_SRP_2: ${{ secrets.TEST_SRP_2 }}
@@ -75,21 +82,20 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: build-test-performance
+          name: build-test-performance-${{ matrix.browser }}
 
       - name: Configure Xvfb
         run: Xvfb -ac :99 -screen 0 1280x1024x16 &
 
       - name: Run all performance tests
-        # Tests run sequentially for accurate timing measurements
-        run: yarn test:e2e:performance --retries 1
+        run: yarn test:e2e:performance:${{ matrix.browser }} --retries 1
         timeout-minutes: 30
 
       - name: Upload test artifacts
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: performance-tests-results
+          name: performance-tests-results-${{ matrix.browser }}
           path: |
             ./test-artifacts
             ./test/test-results
@@ -97,7 +103,7 @@ jobs:
       - name: Display performance summary
         if: ${{ !cancelled() }}
         run: |
-          echo "📊 Performance Test Results"
+          echo "📊 Performance Test Results (${{ matrix.browser }})"
           echo "=========================="
           if [ -d "./test/test-results/power-user-scenarios" ]; then
             for file in ./test/test-results/power-user-scenarios/*.json; do

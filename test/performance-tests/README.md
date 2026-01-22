@@ -114,69 +114,6 @@ Reports are saved to `test/test-results/power-user-scenarios/` as JSON files:
 }
 ```
 
-## Complete Example: Swap Performance Test
-
-```typescript
-import { generateWalletState } from '../../../app/scripts/fixtures/generate-wallet-state';
-import { ALL_POPULAR_NETWORKS } from '../../../app/scripts/fixtures/with-networks';
-import { WITH_STATE_POWER_USER } from '../../e2e/benchmarks/constants';
-import { withFixtures } from '../../e2e/helpers';
-import HomePage from '../../e2e/page-objects/pages/home/homepage';
-import { Driver } from '../../e2e/webdriver/driver';
-import {
-  setupPerformanceReporting,
-  performanceTracker,
-  TimerHelper,
-} from '../utils/testSetup';
-import LoginPage from '../../e2e/page-objects/pages/login-page';
-import SwapPage from '../../e2e/page-objects/pages/swap/swap-page';
-
-describe('Swap Performance', function () {
-  setupPerformanceReporting();
-
-  it('measures swap flow performance', async function () {
-    await withFixtures(
-      {
-        /* fixture config */
-      },
-      async ({ driver }: { driver: Driver }) => {
-        // Create timers with thresholds (in ms)
-        const timerOpenSwapPage = new TimerHelper(
-          'Time to open swap page',
-          5000,
-        );
-        const timerQuoteFetching = new TimerHelper(
-          'Time to fetch quotes',
-          10000,
-        );
-
-        // Login
-        await driver.navigate();
-        const loginPage = new LoginPage(driver);
-        await loginPage.loginToHomepage();
-
-        // Measure: Open swap page
-        const homePage = new HomePage(driver);
-        await homePage.startSwapFlow();
-        await timerOpenSwapPage.measure(async () => {
-          const swapPage = new SwapPage(driver);
-          await swapPage.checkPageIsLoaded();
-        });
-        performanceTracker.addTimer(timerOpenSwapPage);
-
-        // Measure: Fetch quotes
-        const swapPage = new SwapPage(driver);
-        await swapPage.enterSwapAmount('1');
-        await timerQuoteFetching.measure(async () => {
-          await swapPage.checkQuoteIsDisplayed();
-        });
-        performanceTracker.addTimer(timerQuoteFetching);
-      },
-    );
-  });
-});
-```
-
 ## Running the Tests
 
 ### Locally
@@ -257,25 +194,3 @@ The npm script `test:e2e:performance` is defined as:
 
 This approach ensures consistency with the rest of the e2e tests and avoids code duplication.
 
-## File Structure
-
-```
-test/performance-tests/
-├── README.md
-├── power-user.spec.ts
-├── login/
-│   ├── asset-details-power-user.spec.ts
-│   ├── import-srp-home.spec.ts
-│   ├── send-transactions.spec.ts
-│   ├── solana-asset-details-power-user.spec.ts
-│   └── swap.spec.ts
-├── onboarding/
-│   ├── onboarding-import-wallet.spec.ts
-│   └── onboarding-new-wallet.spec.ts
-└── utils/
-    ├── commonMocks.ts
-    ├── PerformanceTracker.ts
-    ├── testSetup.ts
-    ├── TimerHelper.ts
-    └── Timers.ts
-```
