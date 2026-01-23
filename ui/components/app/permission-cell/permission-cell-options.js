@@ -66,8 +66,15 @@ export const PermissionCellOptions = ({
           <Box>
             {description && (
               <Box
-                onClick={handleDetailsOpen}
                 role="menuitem"
+                tabIndex={0}
+                onClick={handleDetailsOpen}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleDetailsOpen();
+                  }
+                }}
                 style={{
                   cursor: 'pointer',
                   padding: '8px 12px',
