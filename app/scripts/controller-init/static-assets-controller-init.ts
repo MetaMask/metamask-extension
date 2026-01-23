@@ -4,6 +4,7 @@ import {
   StaticAssetsControllerMessenger,
   StaticAssetsControllerInitMessenger,
 } from './messengers';
+import { CHAIN_IDS } from '../../../shared/constants/network';
 
 export const StaticAssetsControllerInit: ControllerInitFunction<
   StaticAssetsController,
@@ -13,10 +14,10 @@ export const StaticAssetsControllerInit: ControllerInitFunction<
 
   const controller = new StaticAssetsController({
     messenger: controllerMessenger,
-    interval: 10000, // 10 seconds
+    interval:  3 * 60 * 60 * 1000, // 3 hour
     supportedChains: [
-      '0x3e7', // hyperevm
-    ],
+      CHAIN_IDS.HYPE, // hyperevm
+    ]
   });
 
   return {

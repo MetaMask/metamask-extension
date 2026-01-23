@@ -5,8 +5,6 @@ import { Hex } from '@metamask/utils';
 import {
   tokenBalancesStartPolling,
   tokenBalancesStopPollingByPollingToken,
-  staticAssetsStartPolling,
-  staticAssetsStopPollingByPollingToken,
 } from '../store/actions';
 import { getTokenBalances } from '../ducks/metamask/metamask';
 import { hexToDecimal } from '../../shared/modules/conversion.utils';
@@ -27,15 +25,6 @@ export const useTokenBalances = ({ chainIds }: { chainIds?: Hex[] } = {}) => {
     stopPollingByPollingToken: tokenBalancesStopPollingByPollingToken,
     input: [pollableChains],
   });
-
-  useMultiPolling({
-    startPolling: staticAssetsStartPolling,
-    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    stopPollingByPollingToken: staticAssetsStopPollingByPollingToken,
-    input: [pollableChains],
-  });
-
 
   return { tokenBalances };
 };

@@ -1,12 +1,9 @@
-import type {
-  ControllerGetStateAction,
-} from '@metamask/base-controller';
+import type { ControllerGetStateAction } from '@metamask/base-controller';
 import { Messenger } from '@metamask/messenger';
 import type {
   NetworkControllerFindNetworkClientIdByChainIdAction,
   NetworkControllerNetworkAddedEvent,
 } from '@metamask/network-controller';
-import { AuthenticationController } from '@metamask/profile-sync-controller';
 import {
   AccountsControllerGetSelectedAccountAction,
   AccountsControllerSelectedEvmAccountChangeEvent,
@@ -19,7 +16,6 @@ import { RemoteFeatureFlagControllerGetStateAction } from '@metamask/remote-feat
 
 import { RootMessenger } from '../../lib/messenger';
 
-// Not exported from `@metamask/assets-controllers`.
 type TokensControllerGetStateAction = ControllerGetStateAction<
   'TokensController',
   TokensControllerState
@@ -29,11 +25,11 @@ type AllowedActions =
   | AccountsControllerGetSelectedAccountAction
   | NetworkControllerFindNetworkClientIdByChainIdAction
   | TokensControllerGetStateAction
-  | TokensControllerAddTokensAction
+  | TokensControllerAddTokensAction;
 
 type AllowedEvents =
   | AccountsControllerSelectedEvmAccountChangeEvent
-  | NetworkControllerNetworkAddedEvent
+  | NetworkControllerNetworkAddedEvent;
 
 export type StaticAssetsControllerMessenger = ReturnType<
   typeof getStaticAssetsControllerMessenger
@@ -100,9 +96,7 @@ export function getStaticAssetsControllerInitMessenger(
   });
   messenger.delegate({
     messenger: controllerInitMessenger,
-    actions: [
-      'RemoteFeatureFlagController:getState',
-    ],
+    actions: ['RemoteFeatureFlagController:getState'],
   });
   return controllerInitMessenger;
 }

@@ -20,10 +20,11 @@ import {
   Token,
 } from '@metamask/assets-controllers';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
+import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
-const DEFAULT_INTERVAL_MS = 3 * 60 * 60 * 1000; // 3 hour
+const DEFAULT_INTERVAL_MS = 6 * 60 * 60 * 1000; // 6 hour
 
 const CACHE_EXPIRATION_MS = 1 * 60 * 60 * 1000; // 1 hour
 
@@ -75,19 +76,6 @@ export type StaticAssetsControllerOptions = {
 };
 
 /**
- * The tokens cache type.
- *
- * This is the cache of the tokens for each chain.
- * The cache is stored in-memory and is not persisted to the state.
- */
-type TokensCache = {
-  [chainId: string]: {
-    data: Token[];
-    expiresAt: number;
-  };
-};
-
-/**
  * The top asset type.
  *
  * @see https://tokens.api.cx.metamask.io/v3/chains/eip155:999/assets
@@ -109,16 +97,21 @@ type TopAsset = {
 /**
  * Fetch top assets for a chain from the API.
  *
- * @param chainId - The chain ID.
- * @param topX - The number of top assets to fetch.
- * @param occurrenceFloor - The occurrence floor.
+ * @param params - The parameters for the fetch.
+ * @param params.chainId - The chain ID.
+ * @param params.topX - The number of top assets to fetch.
+ * @param params.occurrenceFloor - The occurrence floor.
  * @returns The top assets.
  */
-async function fetchTopAssets(
-  chainId: string,
-  topX: number,
-  occurrenceFloor: number,
-): Promise<TopAsset[]> {
+async function fetchTopAssets({
+  chainId,
+  topX,
+  occurrenceFloor,
+}: {
+  chainId: string;
+  topX: number;
+  occurrenceFloor: number;
+}): Promise<TopAsset[]> {
   try {
     if (!isStrictHexString(chainId)) {
       return [];
@@ -135,13 +128,24 @@ async function fetchTopAssets(
     url.searchParams.set('includeIconUrl', 'true');
     url.searchParams.set('includeMetadata', 'true');
     url.searchParams.set('includeOccurrences', 'true');
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.data;
+
+    const response = await fetchWithCache({
+      url: url.toString(),
+      fetchOptions: { method: 'GET' },
+      cacheOptions: { cacheRefreshTime: CACHE_EXPIRATION_MS },
+      functionName: 'fetchTopAssets',
+    });
+    return response.data;
   } catch (error) {
     console.error('Error fetching top assets:', error);
     return [];
   }
+}
+
+function buildImageUrl(assetId: CaipAssetType, extension: string): string {
+  const caipAssetType = parseCaipAssetType(assetId);
+  // Most of the token has migtated to v2, hence, we use v2 instead of v1.
+  return `https://static.cx.metamask.io/api/v2/tokenIcons/assets/${caipAssetType.chain.namespace}/${caipAssetType.chain.reference}/${caipAssetType.assetNamespace}/${caipAssetType.assetReference.toLowerCase()}.${extension}`;
 }
 
 /**
@@ -151,6 +155,7 @@ async function fetchTopAssets(
  */
 export class StaticAssetsController extends StaticIntervalPollingController<{
   chainIds: string[];
+  selectedAccountAddress: string;
 }>()<
   typeof CONTROLLER,
   StaticAssetsControllerState,
@@ -160,17 +165,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * The supported chains for the controller.
    */
   readonly #supportedChains: Set<string>;
-
-  /**
-   * The selected account ID to determine if the selected account has changed.
-   */
-  #selectedAccountId: string = '';
-
-  /**
-   * Cache of tokens for each chain.
-   * The cache is stored in-memory and is not persisted to the state.
-   */
-  #tokensCache: TokensCache = {};
 
   constructor({
     messenger,
@@ -185,34 +179,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     });
     this.#supportedChains = new Set(supportedChains);
     this.setIntervalLength(interval);
-    this.#registerEventListeners();
-  }
-
-  /**
-   * Constructor helper for registering this controller's messenger subscriptions to controller events.
-   * This controller will be polled when:
-   * - AccountsController:selectedEvmAccountChange event.
-   */
-  #registerEventListeners(): void {
-    // We need this event, as user can add a new account or change the selected account.
-    this.messenger.subscribe(
-      'AccountsController:selectedEvmAccountChange',
-      (selectedAccount) => {
-        const isSelectedAccountIdChanged =
-          this.#selectedAccountId !== selectedAccount.id;
-        if (isSelectedAccountIdChanged) {
-          this.#selectedAccountId = selectedAccount.id;
-          this._executePoll({
-            chainIds: Array.from(this.#supportedChains.values()),
-          }).catch((error) => {
-            console.error(
-              `[StaticAssetsController] Error executing poll via selectedEvmAccountChange event`,
-              error,
-            );
-          });
-        }
-      },
-    );
   }
 
   /**
@@ -220,20 +186,33 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param params - The parameters for the poll.
    * @param params.chainIds - The chain IDs to poll.
+   * @param params.selectedAccountAddress
    */
   override async _executePoll({
     chainIds,
+    selectedAccountAddress,
   }: {
     chainIds: string[];
+    selectedAccountAddress: string;
   }): Promise<void> {
-    chainIds.forEach((chainId) => {
-      this.#addTokensByChainId(chainId).catch((error) => {
-        console.error(
-          `[StaticAssetsController] Error adding tokens by chainId ${chainId}`,
-          error,
-        );
+    // Use Promise.allSettled to wait for all the promises to settle,
+    // even if some of chains are rejected.
+    const results = await Promise.allSettled(
+      chainIds.map((chainId) =>
+        this.#addTokensByChainId(chainId, selectedAccountAddress),
+      ),
+    );
+
+    if (results && results.length > 0) {
+      results.forEach((result) => {
+        if (result.status === 'rejected') {
+          console.error(
+            `[StaticAssetsController] Error adding tokens by chainId`,
+            result.reason,
+          );
+        }
       });
-    });
+    }
   }
 
   /**
@@ -243,13 +222,18 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * @returns The transformed token.
    */
   #transformTopAsset(topAsset: TopAsset): Token {
+    let { iconUrl } = topAsset;
+    if (iconUrl) {
+      const imgExtension = iconUrl.split('.').pop();
+      iconUrl = buildImageUrl(topAsset.assetId, imgExtension ?? 'png');
+    }
+
     return {
       address: parseCaipAssetType(topAsset.assetId).assetReference,
       decimals: topAsset.decimals,
       symbol: topAsset.symbol,
       aggregators: topAsset.aggregators ?? [],
-      image: topAsset.iconUrl,
-      isERC721: false,
+      image: iconUrl,
       name: topAsset.name,
     };
   }
@@ -258,15 +242,23 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * Fetch top assets for a chain and add them to the TokensController.
    *
    * @param chainId - The chain ID.
+   * @param selectedAccountAddress
    */
-  async #addTokensByChainId(chainId: string): Promise<void> {
+  async #addTokensByChainId(
+    chainId: string,
+    selectedAccountAddress: string,
+  ): Promise<void> {
     if (!(await this.#isValidChainId(chainId))) {
       return;
     }
     const tokens = await this.#fetchTopAssets(chainId);
 
     if (tokens.length > 0) {
-      await this.#addTokensToTokensController(tokens, chainId);
+      await this.#addTokensToTokensController(
+        tokens,
+        chainId,
+        selectedAccountAddress,
+      );
     }
   }
 
@@ -275,23 +267,31 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param tokens - The tokens to add.
    * @param chainId - The chain ID.
+   * @param selectedAccountAddress
    */
   async #addTokensToTokensController(
     tokens: Token[],
     chainId: string,
+    selectedAccountAddress: string,
   ): Promise<void> {
     try {
-      if (!isStrictHexString(chainId)) {
+      if (!isStrictHexString(chainId) || !selectedAccountAddress) {
         return;
       }
-
-      const filteredTokens = await this.#filterIgnoredTokens(tokens, chainId);
-
+      // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
+      // quit early if the network client id is not found
       const networkClientId = await this.messenger.call(
         'NetworkController:findNetworkClientIdByChainId',
         chainId,
       );
 
+      const filteredTokens = await this.#filterIgnoredTokens(
+        tokens,
+        chainId,
+        selectedAccountAddress,
+      );
+
+      console.log('add tokens to tokens controller', selectedAccountAddress);
       // filter out tokens that are already in the ignore
       await this.messenger.call(
         'TokensController:addTokens',
@@ -311,9 +311,14 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param tokens - The tokens to filter.
    * @param chainId - The chain ID.
+   * @param selectedAccountAddress
    * @returns The filtered tokens.
    */
-  async #filterIgnoredTokens(tokens: Token[], chainId: Hex): Promise<Token[]> {
+  async #filterIgnoredTokens(
+    tokens: Token[],
+    chainId: Hex,
+    selectedAccountAddress: string,
+  ): Promise<Token[]> {
     const tokensControllerState = await this.messenger.call(
       'TokensController:getState',
     );
@@ -325,23 +330,9 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
       return tokens;
     }
 
-    const selectedAccount = this.messenger.call(
-      'AccountsController:getSelectedAccount',
-    );
-
-    if (
-      !selectedAccount?.address ||
-      !(
-        selectedAccount.address in
-        tokensControllerState.allIgnoredTokens[chainId]
-      )
-    ) {
-      return tokens;
-    }
-
     const ignoredTokens =
       tokensControllerState.allIgnoredTokens[chainId]?.[
-        selectedAccount.address
+        selectedAccountAddress
       ] ?? [];
 
     // convert the ignored tokens to a set of lowercase addresses for lookup.
@@ -365,12 +356,13 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    */
   async #fetchTopAssets(chainId: string): Promise<Token[]> {
     try {
-      if (!this.#isCacheExpired(chainId)) {
-        return this.#tokensCache[chainId].data ?? [];
-      }
       const tokens: Token[] = [];
 
-      const topAssets = await fetchTopAssets(chainId, TOP_X, OCCURRENCE_FLOOR);
+      const topAssets = await fetchTopAssets({
+        chainId,
+        topX: TOP_X,
+        occurrenceFloor: OCCURRENCE_FLOOR,
+      });
 
       topAssets.forEach((topAsset) => {
         try {
@@ -383,20 +375,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
         }
       });
 
-      // store the tokens to in-memory cache.
-      this.#tokensCache[chainId] = {
-        data: tokens,
-        // The cache expiration time is the minimum of the cache expiration time and the interval length.
-        // Although there is a chance that when the next interval is triggered, the cache is not expired yet,
-        // but since the polling will be triggered if the user changes the selected account or the chains,
-        // hence the cache will be refreshed eventually.
-        expiresAt:
-          Date.now() +
-          Math.min(
-            CACHE_EXPIRATION_MS,
-            this.getIntervalLength() ?? DEFAULT_INTERVAL_MS,
-          ),
-      };
       return tokens;
     } catch (error) {
       console.error(
@@ -408,19 +386,6 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   }
 
   /**
-   * Check if the cache is expired.
-   *
-   * @param chainId - The chain ID.
-   * @returns Whether the cache is expired.
-   */
-  #isCacheExpired(chainId: string): boolean {
-    if (chainId in this.#tokensCache) {
-      return Date.now() > this.#tokensCache[chainId].expiresAt;
-    }
-    return true;
-  }
-
-  /**
    * Check if the chain ID is supported and if it has added to the network controller.
    *
    * @param chainId - The chain ID.
@@ -429,6 +394,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
   async #isValidChainId(chainId: string): Promise<boolean> {
     try {
       if (
+        // Only support EVM chains.
         !isStrictHexString(chainId) ||
         !this.#supportedChains.has(chainId) ||
         // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
