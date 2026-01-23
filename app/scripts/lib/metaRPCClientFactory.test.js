@@ -186,6 +186,31 @@ describe('metaRPCClientFactory', () => {
     jest.useRealTimers();
   });
 
+  it('updates the timeout for in-flight getState requests', async () => {
+    jest.useFakeTimers();
+    const streamTest = createThoughStream();
+    const metaRPCClient = metaRPCClientFactory(streamTest);
+
+    const requestPromise = metaRPCClient.getState('bad');
+
+    jest.advanceTimersByTime(10000);
+    metaRPCClient.setGetStateTimeout(30000);
+    jest.advanceTimersByTime(6000);
+
+    expect(metaRPCClient.requests.size).toBe(1);
+
+    metaRPCClient.requests.forEach((_, key) => {
+      streamTest.write({
+        jsonrpc: '2.0',
+        id: key,
+        result: 'ok',
+      });
+    });
+
+    await expect(requestPromise).resolves.toStrictEqual('ok');
+    jest.useRealTimers();
+  });
+
   it('should fail all pending actions with a DisconnectError when the stream ends', (done) => {
     const streamTest = createThoughStream();
     const metaRPCClient = metaRPCClientFactory(streamTest);

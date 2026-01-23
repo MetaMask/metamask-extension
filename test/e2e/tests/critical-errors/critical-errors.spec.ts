@@ -22,8 +22,9 @@ describe('Critical errors', function (this: Suite) {
       async ({ driver }) => {
         await driver.navigate(PAGES.HOME, { waitForControllers: false });
 
-        // Wait until 15 second timer expires
-        await driver.delay(15_000);
+        const timeoutMs = getManifestVersion() === 3 ? 30_000 : 15_000;
+        // Wait until liveness timer expires
+        await driver.delay(timeoutMs);
 
         const criticalErrorPage = new CriticalErrorPage(driver);
         await criticalErrorPage.checkPageIsLoaded();

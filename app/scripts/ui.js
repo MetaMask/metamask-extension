@@ -31,6 +31,7 @@ import log from 'loglevel';
 import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
+  EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
   connectToBackground,
   displayCriticalError,
   CriticalErrorTranslationKey,
@@ -46,6 +47,7 @@ import {
 import { isManifestV3 } from '../../shared/modules/mv3.utils';
 import { checkForLastErrorAndLog } from '../../shared/modules/browser-runtime.utils';
 import { endTrace, trace, TraceName } from '../../shared/lib/trace';
+import { APP_INIT_LIVENESS_PING_METHOD } from '../../shared/constants/background-liveness-check';
 import ExtensionPlatform from './platforms/extension';
 import { setupMultiplex } from './lib/stream-utils';
 import { getEnvironmentType, getPlatform } from './lib/util';
@@ -53,6 +55,7 @@ import metaRPCClientFactory from './lib/metaRPCClientFactory';
 
 const PHISHING_WARNING_PAGE_TIMEOUT = 1 * 1000; // 1 Second
 const PHISHING_WARNING_SW_STORAGE_KEY = 'phishing-warning-sw-registered';
+const APP_INIT_LIVENESS_STREAM_NAME = 'app-init-liveness';
 
 /**
  * @type {HTMLElement}
@@ -76,6 +79,7 @@ start().catch(log.error);
 
 async function start() {
   const startTime = performance.now();
+  const uiStartupStartTime = startTime;
 
   const traceContext = trace({
     name: TraceName.UIStartup,
@@ -102,21 +106,73 @@ async function start() {
   // setup stream to background
   const extensionPort = browser.runtime.connect({ name: windowType });
 
+  let appInitAliveMs;
+  let backgroundAliveMs;
+  let backgroundConnectTraceEnded = false;
+
+  const connectionStream = new ExtensionPortStream(extensionPort);
+  const subStreams = connectSubstreams(connectionStream);
+  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
+
+  const endBackgroundConnectTrace = (extraData) => {
+    if (backgroundConnectTraceEnded) {
+      return;
+    }
+    backgroundConnectTraceEnded = true;
+    const data = {
+      ...extraData,
+      ...(typeof appInitAliveMs === 'number' ? { appInitAliveMs } : {}),
+      ...(typeof backgroundAliveMs === 'number' ? { backgroundAliveMs } : {}),
+    };
+    endTrace({ name: TraceName.BackgroundConnect, data });
+  };
+
   // Set up error handlers as early as possible to ensure we are ready to
   // handle any errors that occur at any time
   const criticalErrorHandler = new CriticalStartupErrorHandler(
     extensionPort,
     container,
+    {
+      onAppInitAlive: () => {
+        appInitAliveMs = performance.now() - uiStartupStartTime;
+        backgroundConnection.setGetStateTimeout(
+          EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
+        );
+      },
+      onBackgroundAlive: () => {
+        backgroundAliveMs = performance.now() - uiStartupStartTime;
+      },
+      onLivenessTimeout: () => {
+        endBackgroundConnectTrace({
+          backgroundConnectTimedOut: true,
+          livenessTimeoutMs: performance.now() - uiStartupStartTime,
+        });
+      },
+    },
   );
   criticalErrorHandler.install();
-
-  const connectionStream = new ExtensionPortStream(extensionPort);
-  const subStreams = connectSubstreams(connectionStream);
-  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
   connectToBackground(backgroundConnection, handleStartUISync);
+  if (isManifestV3) {
+    try {
+      extensionPort.postMessage({
+        data: {
+          method: APP_INIT_LIVENESS_PING_METHOD,
+        },
+        name: APP_INIT_LIVENESS_STREAM_NAME,
+      });
+    } catch (error) {
+      log.error(
+        'MetaMask - app-init liveness ping: Failed to message to port',
+        error,
+      );
+    }
+  }
 
   async function handleStartUISync() {
-    endTrace({ name: TraceName.BackgroundConnect });
+    endBackgroundConnectTrace({
+      backgroundConnectTimedOut: false,
+      startUiSyncMs: performance.now() - uiStartupStartTime,
+    });
 
     // this means we've received a message from the background, and so
     // background startup has succeed, so we don't need to listen for error
@@ -329,6 +385,7 @@ function connectSubstreams(connectionStream) {
   const controllerSubstream = mx.createStream('controller');
   const providerSubstream = mx.createStream('provider');
   mx.ignoreStream('background-liveness');
+  mx.ignoreStream(APP_INIT_LIVENESS_STREAM_NAME);
 
   return {
     controller: controllerSubstream,

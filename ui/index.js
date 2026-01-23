@@ -47,7 +47,11 @@ import { setBackgroundConnection } from './store/background-connection';
 import { getStartupTraceTags } from './helpers/utils/tags';
 import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
-export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
+export {
+  CriticalStartupErrorHandler,
+  DEFAULT_BACKGROUND_CONNECTION_TIMEOUT,
+  EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
+} from './helpers/utils/critical-startup-error-handler';
 export {
   displayCriticalError,
   CriticalErrorTranslationKey,
