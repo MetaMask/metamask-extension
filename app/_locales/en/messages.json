@@ -472,6 +472,16 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayTokenBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertInsufficientPayTokenBalanceFeesNoTarget": {
+    "message": "Add less or use a different token."
+  },
+  "alertInsufficientPayTokenNative": {
+    "message": "Not enough $1 to cover fees. Use a token on another network or add more $1 to continue.",
+    "description": "$1 is the native currency symbol (e.g. ETH)"
+  },
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
@@ -531,6 +541,18 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertNoPayTokenQuotesMessage": {
+    "message": "This payment route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
+  "alertNoPayTokenQuotesTitle": {
+    "message": "No quotes"
+  },
+  "alertPayHardwareAccountMessage": {
+    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+  },
+  "alertPayHardwareAccountTitle": {
+    "message": "Wallet not supported"
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
@@ -3368,6 +3390,9 @@
   },
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
+  },
+  "isSigningOrSubmittingPayToken": {
+    "message": "You have a pending transaction on this network. Wait for it to complete or select a token on another network."
   },
   "jazzicons": {
     "message": "Jazzicons"
