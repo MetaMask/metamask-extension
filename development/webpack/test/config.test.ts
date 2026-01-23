@@ -182,10 +182,10 @@ describe('./utils/config.ts', () => {
       }
 
       // Some variables require more specific values because of additional validation
-      rcVars['SEEDLESS_ONBOARDING_ENABLED'] = 'false';
-      rcVars['INFURA_PROD_PROJECT_ID'] = 'dd98248f370d4063b81c0299f919dc11';
-      rcVars['INFURA_ENV_KEY_REF'] = 'INFURA_PROD_PROJECT_ID';
-      rcVars['SEGMENT_WRITE_KEY_REF'] = 'SEGMENT_PROD_WRITE_KEY';
+      rcVars.SEEDLESS_ONBOARDING_ENABLED = 'false';
+      rcVars.INFURA_PROD_PROJECT_ID = 'dd98248f370d4063b81c0299f919dc11';
+      rcVars.INFURA_ENV_KEY_REF = 'INFURA_PROD_PROJECT_ID';
+      rcVars.SEGMENT_WRITE_KEY_REF = 'SEGMENT_PROD_WRITE_KEY';
 
       mockRc(rcVars);
 
