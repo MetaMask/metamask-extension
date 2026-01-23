@@ -92,9 +92,9 @@ async function runBenchmarkFile(
   throw new Error(`No run function found in ${filePath}`);
 }
 
-async function runPlaywrightBenchmark(_filePath: string): Promise<void> {
+async function runPlaywrightBenchmark(filePath: string): Promise<void> {
   return new Promise((resolve, reject) => {
-    const args = ['playwright', 'test', '--project', 'benchmark'];
+    const args = ['playwright', 'test', filePath, '--project', 'benchmark'];
 
     const child = spawn('yarn', args, {
       stdio: 'inherit',
