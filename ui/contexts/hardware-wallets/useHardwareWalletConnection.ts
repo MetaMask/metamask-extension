@@ -205,7 +205,7 @@ export const useHardwareWalletConnection = ({
       walletType: HardwareWalletType;
     }) => {
       if (!abortSignal.aborted) {
-        if (isHardwareWalletErrorWithCode(error)) {
+        if (isHardwareWalletError(error)) {
           updateConnectionState(getConnectionStateFromError(error));
         } else {
           const fallbackError = createHardwareWalletError(
@@ -423,14 +423,4 @@ export const useHardwareWalletConnection = ({
 
 function isHardwareWalletError(error: unknown): error is HardwareWalletError {
   return error instanceof HardwareWalletError;
-}
-
-function isHardwareWalletErrorWithCode(
-  error: unknown,
-): error is HardwareWalletError {
-  if (!error || typeof error !== 'object') {
-    return false;
-  }
-
-  return Object.prototype.hasOwnProperty.call(error, 'code');
 }

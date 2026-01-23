@@ -223,27 +223,16 @@ describe('useHardwareWalletConnection', () => {
       expect(mockAdapter.destroyMock).toHaveBeenCalled();
     });
 
-    it('aborts previous connection when new connection starts', async () => {
-      let resolveFirstDiscovery: ((value: string) => void) | undefined;
-      const firstDiscoveryPromise = new Promise<string>((resolve) => {
-        resolveFirstDiscovery = resolve;
+    it('coalesces concurrent connection attempts into single promise', async () => {
+      let resolveDiscovery: ((value: string) => void) | undefined;
+      const discoveryPromise = new Promise<string>((resolve) => {
+        resolveDiscovery = resolve;
       });
 
       (
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
-      ).mockImplementationOnce(() => firstDiscoveryPromise);
+      ).mockImplementationOnce(() => discoveryPromise);
 
-      const { result } = setupHook();
-
-      // Start first connection (will wait on device discovery)
-      const firstConnect = act(async () => {
-        await result.current.connect();
-      });
-
-      // Start second connection immediately - this should abort the first
-      (
-        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
-      ).mockResolvedValueOnce('device-456');
       const mockAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,
         onAwaitingConfirmation: jest.fn(),
@@ -255,19 +244,28 @@ describe('useHardwareWalletConnection', () => {
         mockAdapter,
       );
 
+      const { result } = setupHook();
+
+      // Start first connection (will wait on device discovery)
+      const firstConnectPromise = result.current.connect();
+
+      // Start second connection - should return the same promise
+      const secondConnectPromise = result.current.connect();
+
+      // Both should be the same promise instance
+      expect(firstConnectPromise).toBe(secondConnectPromise);
+
+      // Resolve the discovery and let the connection complete
+      resolveDiscovery?.('device-123');
+
+      // Wait for both promises to complete
       await act(async () => {
-        await result.current.connect();
+        await firstConnectPromise;
       });
 
-      // Now resolve the first discovery - but it should be aborted
-      if (resolveFirstDiscovery) {
-        resolveFirstDiscovery('device-123');
-      }
-      await firstConnect;
-
-      // Only the second connection should have completed successfully
-      expect(mockAdapter.connectMock).toHaveBeenCalledWith('device-456');
-      expect(mockAdapter.connectMock).not.toHaveBeenCalledWith('device-123');
+      // The adapter should have connected only once
+      expect(mockAdapter.connectMock).toHaveBeenCalledTimes(1);
+      expect(mockAdapter.connectMock).toHaveBeenCalledWith('device-123');
     });
 
     it('creates new AbortController for each connection attempt', async () => {
@@ -366,20 +364,32 @@ describe('useHardwareWalletConnection', () => {
       expect(mockRefs.adapterRef.current).toBeNull();
     });
 
-    it('does not update state when AbortController is aborted', async () => {
-      const mockAdapter = new MockHardwareWalletAdapter({
+    it('does not update state when new connection started during disconnect', async () => {
+      const oldAdapter = new MockHardwareWalletAdapter({
         onDisconnect: mockHandleDisconnect,
         onAwaitingConfirmation: jest.fn(),
         onDeviceLocked: jest.fn(),
         onAppNotOpen: jest.fn(),
         onDeviceEvent: mockHandleDeviceEvent,
       });
-      mockRefs.adapterRef.current = mockAdapter;
+      mockRefs.adapterRef.current = oldAdapter;
 
-      // Set up an aborted controller
-      const abortController = new AbortController();
-      abortController.abort();
-      mockRefs.abortControllerRef.current = abortController;
+      // Set up an existing abort controller
+      const originalAbortController = new AbortController();
+      mockRefs.abortControllerRef.current = originalAbortController;
+
+      // During disconnect, simulate a new connection starting (replaces the abort controller)
+      oldAdapter.disconnectMock.mockImplementation(
+        () =>
+          new Promise<void>((resolve) => {
+            setTimeout(() => {
+              // Simulate a new connect() being called during disconnect,
+              // which creates a new abort controller
+              mockRefs.abortControllerRef.current = new AbortController();
+              resolve();
+            }, 10);
+          }),
+      );
 
       const { result } = setupHook();
 
@@ -387,9 +397,10 @@ describe('useHardwareWalletConnection', () => {
         await result.current.disconnect();
       });
 
+      // State should NOT be updated because the abort controller was replaced
+      // (indicating a new connection started during disconnect)
       expect(mockUpdateConnectionState).not.toHaveBeenCalled();
-      expect(mockAdapter.destroyMock).toHaveBeenCalled();
-      expect(mockRefs.adapterRef.current).toBeNull();
+      expect(oldAdapter.destroyMock).toHaveBeenCalled();
     });
 
     it('handles race condition when connect() is called during disconnect()', async () => {
