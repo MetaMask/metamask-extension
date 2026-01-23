@@ -129,11 +129,17 @@ When unsure about component APIs:
 3. Check GitHub source: https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components
 
 ### Box Component Quick Reference
+**Box is a special cross-platform primitive component.** It's designed to share UI code between web (renders `div`) and React Native (renders `View`) with the same component API. This is why Box has utility props while other components use `className`.
+
+**Box is the ONLY component with layout and color props:**
+
 - **Spacing**: Use `gap`, `padding`, `margin` props (0-12 for 0px-48px)
 - **Flexbox**: Use `flexDirection`, `alignItems`, `justifyContent` enum props
-- **Colors**: Use `backgroundColor` and `borderColor` props with enums (e.g., `BoxBackgroundColor.BackgroundDefault`)
-- **Borders**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
+- **Colors (Box ONLY)**: Use `backgroundColor` and `borderColor` props with enums
+- **Borders (Box ONLY)**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
 - **Tailwind**: Use `className` prop for utilities not covered by props
+
+All other components (ButtonBase, Text, Icon, Checkbox, etc.) use standard `className` for styling.
 
 ## Styling Rules (ENFORCE STRICTLY)
 
@@ -141,9 +147,10 @@ When unsure about component APIs:
 
 - Use `Box` component instead of `div` for layout
 - Use `Text` component with variants instead of raw text elements
-- Use `className` prop for Tailwind utilities
-- Use design system color tokens: `bg-default`, `text-primary`, `border-muted`
-- Use component props first: `variant`, `color`, `size`, etc.
+- Use `Box` color props (`backgroundColor`, `borderColor`) for Box component
+- Use `className` with Tailwind for ButtonBase, Text (text colors), Icon, and other components
+- Use design system color tokens: `bg-default`, `text-default`, `border-default`
+- Use component-specific props first: `variant`, `color`, `size`, etc.
 - Use Tailwind classes from `@metamask/design-system-tailwind-preset`
 
 ### ❌ NEVER SUGGEST:
@@ -154,6 +161,8 @@ When unsure about component APIs:
 - Arbitrary color values like `bg-[#3B82F6]` or `text-[#000000]`
 - Inline style objects unless for truly dynamic values
 - Custom CSS files for new components
+- `backgroundColor` prop on components other than Box (use `className` instead)
+- `borderColor` prop on components other than Box (use `className` instead)
 
 ## Code Pattern Templates
 
@@ -190,6 +199,16 @@ const MyComponent = () => {
 ### Interactive Element:
 
 ```tsx
+// Option 1: Using ButtonBase with className
+<ButtonBase
+  className="h-auto rounded-lg bg-muted py-4 px-4 hover:bg-muted-hover active:bg-muted-pressed"
+  onClick={handleClick}
+>
+  <Icon name={IconName.Bank} />
+  <Text fontWeight={FontWeight.Medium}>Button Text</Text>
+</ButtonBase>
+
+// Option 2: Using Box with asChild pattern
 <Box
   backgroundColor={BoxBackgroundColor.BackgroundMuted}
   paddingHorizontal={4}
@@ -225,8 +244,8 @@ const MyComponent = () => {
 
 ## Box Component Best Practices
 
-### Prefer Props Over className for Layout and Colors
-✅ **DO** - Use typed props for type safety and consistency:
+### Prefer Props Over className for Box Layout and Colors
+✅ **DO** - Use typed props for Box component:
 ```tsx
 <Box
   flexDirection={BoxFlexDirection.Row}
@@ -241,10 +260,12 @@ const MyComponent = () => {
 >
 ```
 
-❌ **DON'T** - Use className for properties that have dedicated props:
+❌ **DON'T** - Use className for Box properties that have dedicated props:
 ```tsx
 <Box className="flex flex-row items-center justify-between gap-3 p-4 m-2 bg-default border border-muted">
 ```
+
+**IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`). For other components (ButtonBase, Text, Icon, Checkbox, etc.), you MUST use `className`.
 
 ### When to Use className
 Use `className` for utilities **not covered by props**:
@@ -255,17 +276,20 @@ Use `className` for utilities **not covered by props**:
 - Interactive states with colors: `hover:bg-hover`, `active:bg-pressed`
 - Utilities not covered by props: `overflow-hidden`, `z-10`, `truncate`
 
-**DO NOT** use className for:
+**DO NOT** use className on Box for:
 - Background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
 - Border colors (use `borderColor` prop with `BoxBorderColor` enum)
 - Border width (use `borderWidth` prop: 0, 1, 2, 4, or 8)
 - Padding/margin when using standard spacing (use `padding`/`margin` props with 0-12)
 - Flexbox properties (use `flexDirection`, `alignItems`, `justifyContent` props)
 
-### Color Tokens
-Always use semantic color enums from design system:
+**Note**: Components other than Box (ButtonBase, Checkbox, etc.) don't have these props - use `className` for them.
+
+### Color Tokens - Component-Specific Rules
+
+**For Box component only:**
 ```tsx
-// ✅ Use Box color props with enums
+// ✅ Use backgroundColor and borderColor props with enums
 <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
 <Box backgroundColor={BoxBackgroundColor.BackgroundAlternative}>
 <Box
@@ -274,23 +298,29 @@ Always use semantic color enums from design system:
   borderWidth={1}
 >
 
-// ✅ Use Text/Icon color props with enums
-<Text color={TextColor.TextDefault}>
-<Text color={TextColor.TextAlternative}>
-<Icon color={IconColor.IconDefault}>
-
-// ✅ Interactive states can use className
+// ✅ Interactive states use className (hover/active/focus states)
 <Box
   backgroundColor={BoxBackgroundColor.BackgroundMuted}
   className="hover:bg-muted-hover active:bg-muted-pressed"
 >
 
-// ❌ NEVER use className for static background colors
-<Box className="bg-default">
-<Box className="bg-alternative">
+// ❌ DON'T use className for static Box background colors
+<Box className="bg-default">  {/* Use backgroundColor prop instead */}
+```
 
-// ❌ NEVER use arbitrary colors
+**For ButtonBase and other components:**
+```tsx
+// ✅ Use className for all colors (these components don't have color props)
+<ButtonBase className="bg-muted hover:bg-muted-hover active:bg-muted-pressed">
+<ButtonBase className="bg-transparent hover:bg-hover">
+
+// ✅ Text and Icon use their color prop for text/icon color
+<Text color={TextColor.TextDefault}>
+<Icon color={IconColor.IconDefault}>
+
+// ❌ NEVER use arbitrary colors on any component
 <Box className="bg-[#3B82F6]">
+<ButtonBase className="bg-[#FF0000]">
 <Box style={{ backgroundColor: '#FF0000' }}>
 ```
 
@@ -388,20 +418,22 @@ import {
 - [ ] No raw `div` components (use `Box`)
 - [ ] No raw text elements without variants (use `Text` with `TextVariant`)
 - [ ] No custom CSS files (use design system + Tailwind)
-- [ ] No arbitrary color values (use design system enums)
+- [ ] No arbitrary color values (use design system tokens)
 - [ ] No separate `.styles.ts` files for new components
-- [ ] Component props used before `className` for layout and colors
-- [ ] Box colors use `backgroundColor`/`borderColor` props with enums (not className)
-- [ ] All spacing uses numeric props when possible (0-12)
+- [ ] Box props used before `className` for layout and colors
+- [ ] Box colors use `backgroundColor`/`borderColor` props with enums (not className for static colors)
+- [ ] Other components (ButtonBase, Text, Icon, etc.) use `className` for background colors
+- [ ] All Box spacing uses numeric props when possible (0-12)
 
 ### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
 - Any `.scss` file → Design system components with props
 - Any `div` component → `Box` from design system
 - Any custom CSS → Design system props + Tailwind utilities
-- Any arbitrary color values → Design system enum values
-- `className="bg-*"` on Box → `backgroundColor` prop with `BoxBackgroundColor` enum
-- `className="border-*"` color on Box → `borderColor` prop with `BoxBorderColor` enum
-- Manual flex properties in className → Box component props
+- Any arbitrary color values → Design system semantic tokens
+- `className="bg-*"` on **Box** → `backgroundColor` prop with `BoxBackgroundColor` enum
+- `className="border-*"` color on **Box** → `borderColor` prop with `BoxBorderColor` enum
+- Manual flex properties in className on Box → Box component props
+- `backgroundColor` prop on ButtonBase/Text/etc → `className` (only Box has this prop)
 
 ### AI Agent Guidelines
 When suggesting code changes:
