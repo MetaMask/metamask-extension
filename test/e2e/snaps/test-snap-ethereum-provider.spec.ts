@@ -163,7 +163,7 @@ describe('Test Snap ethereum_provider', function () {
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectEthereumProviderButton',
+          'connectEthereumProviderButton',
         );
         await testSnaps.checkConnectEthereumProviderButtonText(
           'Reconnect to Ethereum Provider Snap',

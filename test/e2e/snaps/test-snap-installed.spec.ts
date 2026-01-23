@@ -77,7 +77,7 @@ describe('Test Snap installed', function () {
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectDialogsButton',
+          'connectDialogsButton',
         );
 
         // Check installation success

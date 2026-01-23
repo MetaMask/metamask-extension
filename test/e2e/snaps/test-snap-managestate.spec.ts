@@ -25,7 +25,7 @@ describe('Test Snap manageState', function () {
         // Navigate to test snaps page and connect manage state and validate installation
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectStateButton',
+          'connectStateButton',
         );
         await testSnaps.checkConnectStateButtonText('Reconnect to State Snap');
 
@@ -81,7 +81,7 @@ describe('Test Snap manageState', function () {
         // Navigate to test snaps page and connect manage state and validate installation
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectManageStateButton',
+          'connectManageStateButton',
         );
         await testSnaps.checkConnectManageStateButtonText(
           'Reconnect to Legacy State Snap',

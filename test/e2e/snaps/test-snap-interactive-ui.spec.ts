@@ -28,7 +28,7 @@ describe('Interactive UI Snap', function () {
         // Navigate to test snaps page, connect interactive UI snap and validate
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectInteractiveButton',
+          'connectInteractiveButton',
         );
         await testSnaps.checkConnectInteractiveButtonText(
           'Reconnect to Interactive UI Snap',

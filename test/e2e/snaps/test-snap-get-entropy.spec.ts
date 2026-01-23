@@ -37,7 +37,7 @@ describe('Test Snap getEntropy', function (this: Suite) {
         // Navigate to `test-snaps` page, and install the Snap.
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectGetEntropyButton',
+          'connectGetEntropyButton',
         );
         await testSnaps.fillEntropyMessageInput('1234');
         await testSnaps.clickSignEntropyMessageButton();

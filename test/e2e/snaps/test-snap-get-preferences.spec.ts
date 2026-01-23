@@ -32,7 +32,7 @@ describe('Test Snap get preferences', function () {
         const testSnaps = new TestSnaps(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectPreferencesButton',
+          'connectPreferencesButton',
         );
         await testSnaps.checkConnectPreferencesButtonText(
           'Reconnect to Preferences Snap',

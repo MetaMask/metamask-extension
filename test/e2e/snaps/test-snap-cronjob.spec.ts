@@ -25,7 +25,7 @@ describe('Test Snap Cronjob', function () {
         const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectCronJobsButton',
+          'connectCronJobsButton',
           {
             withExtraScreen: true,
           },

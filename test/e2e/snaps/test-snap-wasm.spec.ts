@@ -24,7 +24,7 @@ describe('Test Snap WASM', function () {
         // Navigate to test snaps page and connect to wasm snap
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectWasmButton',
+          'connectWasmButton',
         );
 
         // Check installation success

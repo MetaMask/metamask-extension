@@ -39,7 +39,7 @@ describe('Test Snap update', function () {
         // Navigate to test snaps page, connect update, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectUpdateButton',
+          'connectUpdateButton',
         );
         await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',

@@ -41,7 +41,7 @@ describe('Test Snap update via snaps component', function () {
 
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectUpdateButton',
+          'connectUpdateButton',
           {
             withExtraScreen: true,
           },

@@ -31,7 +31,7 @@ describe('Test Snap Client Status', function () {
         // Navigate to test snaps page and connect to client status snap and submit client status
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectClientStatusButton',
+          'connectClientStatusButton',
         );
         await testSnaps.clickSubmitClientStatusButton();
 

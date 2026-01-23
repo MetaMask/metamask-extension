@@ -345,147 +345,147 @@ export class TestSnaps {
   // Connect Button Methods
   // =====================
 
-  async clickConnectBip32Button(): Promise<void> {
+  async connectBip32Button(): Promise<void> {
     console.log('Clicking Connect BIP-32 button');
     await this.driver.clickElement(this.connectBip32Button);
   }
 
-  async clickConnectBip44Button(): Promise<void> {
+  async connectBip44Button(): Promise<void> {
     console.log('Clicking Connect BIP-44 button');
     await this.driver.clickElement(this.connectBip44Button);
   }
 
-  async clickConnectClientStatusButton(): Promise<void> {
+  async connectClientStatusButton(): Promise<void> {
     console.log('Clicking Connect Client Status button');
     await this.driver.clickElement(this.connectClientStatusButton);
   }
 
-  async clickConnectCronJobsButton(): Promise<void> {
+  async connectCronJobsButton(): Promise<void> {
     console.log('Clicking Connect Cron Jobs button');
     await this.driver.clickElement(this.connectCronJobsButton);
   }
 
-  async clickConnectCronjobDurationButton(): Promise<void> {
+  async connectCronjobDurationButton(): Promise<void> {
     console.log('Clicking Connect Cronjob Duration button');
     await this.driver.clickElement(this.connectCronjobDurationButton);
   }
 
-  async clickConnectDialogsButton(): Promise<void> {
+  async connectDialogsButton(): Promise<void> {
     console.log('Clicking Connect Dialogs button');
     await this.driver.clickElement(this.connectDialogsButton);
   }
 
-  async clickConnectErrorsButton(): Promise<void> {
+  async connectErrorsButton(): Promise<void> {
     console.log('Clicking Connect Errors button');
     await this.driver.clickElement(this.connectErrorsButton);
   }
 
-  async clickConnectGetEntropyButton(): Promise<void> {
+  async connectGetEntropyButton(): Promise<void> {
     console.log('Clicking Connect Get Entropy button');
     await this.driver.clickElement(this.connectGetEntropyButton);
   }
 
-  async clickConnectGetFileButton(): Promise<void> {
+  async connectGetFileButton(): Promise<void> {
     console.log('Clicking Connect Get File button');
     await this.driver.clickElement(this.connectGetFileButton);
   }
 
-  async clickConnectHomePageButton(): Promise<void> {
+  async connectHomePageButton(): Promise<void> {
     console.log('Clicking Connect Home Page button');
     await this.driver.clickElement(this.connectHomePageButton);
   }
 
-  async clickConnectJsxButton(): Promise<void> {
+  async connectJsxButton(): Promise<void> {
     console.log('Clicking Connect JSX button');
     await this.driver.clickElement(this.connectJsxButton);
   }
 
-  async clickConnectJsonRpcButton(): Promise<void> {
+  async connectJsonRpcButton(): Promise<void> {
     console.log('Clicking Connect JSON-RPC button');
     await this.driver.clickElement(this.connectJsonRpcButton);
   }
 
-  async clickConnectInteractiveButton(): Promise<void> {
+  async connectInteractiveButton(): Promise<void> {
     console.log('Clicking Connect Interactive UI button');
     await this.driver.clickElement(this.connectInteractiveButton);
   }
 
-  async clickConnectImagesButton(): Promise<void> {
+  async connectImagesButton(): Promise<void> {
     console.log('Clicking Connect Images button');
     await this.driver.clickElement(this.connectImagesButton);
   }
 
-  async clickConnectLifeCycleButton(): Promise<void> {
+  async connectLifeCycleButton(): Promise<void> {
     console.log('Clicking Connect LifeCycle button');
     await this.driver.clickElement(this.connectLifeCycleButton);
   }
 
-  async clickConnectNameLookUpButton(): Promise<void> {
+  async connectNameLookUpButton(): Promise<void> {
     console.log('Clicking Connect Name Lookup button');
     await this.driver.clickElement(this.connectNameLookUpButton);
   }
 
-  async clickConnectManageStateButton(): Promise<void> {
+  async connectManageStateButton(): Promise<void> {
     console.log('Clicking Connect Manage State button');
     await this.driver.clickElement(this.connectManageStateButton);
   }
 
-  async clickConnectStateButton(): Promise<void> {
+  async connectStateButton(): Promise<void> {
     console.log('Clicking Connect State button');
     await this.driver.clickElement(this.connectStateButton);
   }
 
-  async clickConnectPreinstalledButton(): Promise<void> {
+  async connectPreinstalledButton(): Promise<void> {
     console.log('Clicking Connect Preinstalled button');
     await this.driver.clickElement(this.connectPreinstalledButton);
   }
 
-  async clickConnectProtocolButton(): Promise<void> {
+  async connectProtocolButton(): Promise<void> {
     console.log('Clicking Connect Protocol button');
     await this.driver.clickElement(this.connectProtocolButton);
   }
 
-  async clickConnectTransactionInsightButton(): Promise<void> {
+  async connectTransactionInsightButton(): Promise<void> {
     console.log('Clicking Connect Transaction Insight button');
     await this.driver.clickElement(this.connectTransactionInsightButton);
   }
 
-  async clickConnectUpdateButton(): Promise<void> {
+  async connectUpdateButton(): Promise<void> {
     console.log('Clicking Connect Update button');
     await this.driver.clickElement(this.connectUpdateButton);
   }
 
-  async clickConnectUpdateNewButton(): Promise<void> {
+  async connectUpdateNewButton(): Promise<void> {
     console.log('Clicking Connect Update New button');
     await this.driver.clickElement(this.connectUpdateNewButton);
   }
 
-  async clickConnectWasmButton(): Promise<void> {
+  async connectWasmButton(): Promise<void> {
     console.log('Clicking Connect Wasm button');
     await this.driver.clickElement(this.connectWasmButton);
   }
 
-  async clickConnectNotificationButton(): Promise<void> {
+  async connectNotificationButton(): Promise<void> {
     console.log('Clicking Connect Notification button');
     await this.driver.clickElement(this.connectNotificationButton);
   }
 
-  async clickConnectEthereumProviderButton(): Promise<void> {
+  async connectEthereumProviderButton(): Promise<void> {
     console.log('Clicking Connect Ethereum Provider button');
     await this.driver.clickElement(this.connectEthereumProviderButton);
   }
 
-  async clickConnectNetworkAccessButton(): Promise<void> {
+  async connectNetworkAccessButton(): Promise<void> {
     console.log('Clicking Connect Network Access button');
     await this.driver.clickElement(this.connectNetworkAccessButton);
   }
 
-  async clickConnectBackgroundEventsButton(): Promise<void> {
+  async connectBackgroundEventsButton(): Promise<void> {
     console.log('Clicking Connect Background Events button');
     await this.driver.clickElement(this.connectBackgroundEventsButton);
   }
 
-  async clickConnectPreferencesButton(): Promise<void> {
+  async connectPreferencesButton(): Promise<void> {
     console.log('Clicking Connect Preferences button');
     await this.driver.clickElement(this.connectPreferencesButton);
   }

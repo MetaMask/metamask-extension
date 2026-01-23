@@ -37,7 +37,7 @@ describe('Test Snap networkAccess', function () {
         // Open the test snaps page and install the snap network access
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectNetworkAccessButton',
+          'connectNetworkAccessButton',
           {
             url: TEST_SNAPS_WEBSITE_URL,
           },

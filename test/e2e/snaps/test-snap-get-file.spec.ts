@@ -30,7 +30,7 @@ describe('Test Snap Get File', function () {
         // Navigate to test snaps page, connect to get-file snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectGetFileButton',
+          'connectGetFileButton',
         );
         await testSnaps.checkConnectGetFileButtonText(
           'Reconnect to Get File Snap',

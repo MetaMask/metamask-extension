@@ -26,7 +26,7 @@ describe('Test Snap Background Events', function () {
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectBackgroundEventsButton',
+          'connectBackgroundEventsButton',
         );
         await testSnaps.checkConnectBackgroundEventsButtonText(
           'Reconnect to Background Events Snap',
@@ -88,7 +88,7 @@ describe('Test Snap Background Events', function () {
         // Navigate to test snaps page, connect to background events Snap, complete installation and validate
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectBackgroundEventsButton',
+          'connectBackgroundEventsButton',
         );
 
         await testSnaps.checkConnectBackgroundEventsButtonText(
@@ -150,7 +150,7 @@ describe('Test Snap Background Events', function () {
 
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectBackgroundEventsButton',
+          'connectBackgroundEventsButton',
         );
         await testSnaps.checkConnectBackgroundEventsButtonText(
           'Reconnect to Background Events Snap',

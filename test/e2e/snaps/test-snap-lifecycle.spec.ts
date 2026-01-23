@@ -29,7 +29,7 @@ describe('Test Snap Lifecycle Hooks', function () {
         // Open a new tab and navigate to test snaps page and click life cycle hooks
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectLifeCycleButton',
+          'connectLifeCycleButton',
           { withExtraScreen: true },
         );
         // Check installation success

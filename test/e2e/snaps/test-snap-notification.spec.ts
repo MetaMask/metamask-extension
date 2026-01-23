@@ -31,7 +31,7 @@ describe('Test Snap Notification', function () {
         // Navigate to `test-snaps` page, and install notification Snap.
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectNotificationButton',
+          'connectNotificationButton',
         );
         await testSnaps.checkConnectNotificationButtonText(
           'Reconnect to Notifications Snap',
@@ -77,7 +77,7 @@ describe('Test Snap Notification', function () {
         // Navigate to `test-snaps` page, and install notification Snap.
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectNotificationButton',
+          'connectNotificationButton',
         );
         await testSnaps.checkConnectNotificationButtonText(
           'Reconnect to Notifications Snap',
