@@ -33,10 +33,8 @@ class SnapAccountConfirmationDialog {
 
   async checkConfirmationDialogIsLoaded(): Promise<void> {
     try {
-      await this.driver.waitForMultipleSelectors([
-        this.createAccountTitle,
-        this.cancelButton,
-      ]);
+      await this.driver.waitForSelector(this.createAccountTitle);
+      await this.driver.waitForSelector(this.cancelButton);
     } catch (e) {
       console.log(
         'Timeout while waiting for snap account confirmation dialog to load',
