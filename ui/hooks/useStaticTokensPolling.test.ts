@@ -3,7 +3,7 @@ import {
   staticAssetsStartPolling,
   staticAssetsStopPollingByPollingToken,
 } from '../store/actions';
-import useStaticTokensPolling from './useStaticTokensPolling';
+import useStaticTokensPollingHook from './useStaticTokensPolling';
 
 const mockUseMultiPolling = jest.fn();
 const mockUseSelector = jest.fn();
@@ -22,7 +22,7 @@ jest.mock('../store/actions', () => ({
   staticAssetsStopPollingByPollingToken: jest.fn(),
 }));
 
-describe('useStaticTokensPolling', () => {
+describe('useStaticTokensPollingHook', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseMultiPolling.mockClear();
@@ -37,7 +37,7 @@ describe('useStaticTokensPolling', () => {
       metamask: {},
     };
 
-    renderHookWithProvider(() => useStaticTokensPolling(), state);
+    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
 
     expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
     expect(mockUseMultiPolling).toHaveBeenCalledWith({
@@ -61,7 +61,7 @@ describe('useStaticTokensPolling', () => {
       metamask: {},
     };
 
-    renderHookWithProvider(() => useStaticTokensPolling(), state);
+    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
 
     expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
     expect(mockUseMultiPolling).toHaveBeenCalledWith({
@@ -85,7 +85,7 @@ describe('useStaticTokensPolling', () => {
       metamask: {},
     };
 
-    renderHookWithProvider(() => useStaticTokensPolling(), state);
+    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
 
     expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
     expect(mockUseMultiPolling).toHaveBeenCalledWith({
@@ -109,7 +109,7 @@ describe('useStaticTokensPolling', () => {
       metamask: {},
     };
 
-    renderHookWithProvider(() => useStaticTokensPolling(), state);
+    renderHookWithProvider(() => useStaticTokensPollingHook(), state);
 
     expect(mockUseMultiPolling).toHaveBeenCalledTimes(1);
     expect(mockUseMultiPolling).toHaveBeenCalledWith({
