@@ -164,6 +164,7 @@ export const useHardwareWalletStateManager = () => {
       resetConnectionRefs: () => {
         connectingPromiseRef.current = null;
         currentConnectionIdRef.current = null;
+        isConnectingRef.current = false;
       },
     }),
     [setDeviceId, setHardwareConnectionPermissionState, setConnectionState],
