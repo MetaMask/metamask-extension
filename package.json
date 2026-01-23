@@ -457,7 +457,7 @@
     "pify": "^5.0.0",
     "prop-types": "^15.6.1",
     "punycode": "^2.1.1",
-    "qrcode-generator": "2.0.4",
+    "qrcode-generator": "^2.0.4",
     "qrcode.react": "^4.2.0",
     "react": "^17.0.2",
     "react-beautiful-dnd": "^13.1.1",

@@ -33837,7 +33837,7 @@ __metadata:
     prop-types: "npm:^15.6.1"
     pumpify: "npm:^2.0.1"
     punycode: "npm:^2.1.1"
-    qrcode-generator: "npm:2.0.4"
+    qrcode-generator: "npm:^2.0.4"
     qrcode.react: "npm:^4.2.0"
     randomcolor: "npm:^0.5.4"
     react: "npm:^17.0.2"
@@ -37657,7 +37657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"qrcode-generator@npm:2.0.4":
+"qrcode-generator@npm:^2.0.4":
   version: 2.0.4
   resolution: "qrcode-generator@npm:2.0.4"
   checksum: 10/c488558bca2869d8837300da299a9653030dbb486ce6113153585b117fa0ab6822a03c8312cc794d41c2e3f8353dc64b950e8a3ffe90f89022593c4e7060cd53
