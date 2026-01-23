@@ -212,51 +212,6 @@ export function isResolvableName(name) {
   return false;
 }
 
-/**
- * Checks if a domain name is complete enough to warrant resolution via API calls.
- * This prevents premature resolution attempts on partial domains (e.g., "v", "vi", "vit")
- * which waste API calls and can cause rate limiting.
- *
- * @param {string} domain - The domain name to check
- * @returns {boolean} True if the domain appears complete enough for resolution
- */
-export function isDomainReadyForResolution(domain) {
-  if (!domain || !isValidDomainName(domain)) {
-    return false;
-  }
-
-  const hasPeriod = domain.includes('.');
-  if (!hasPeriod) {
-    return false;
-  }
-
-  const MIN_DOMAIN_LENGTH = 3;
-  if (domain.length < MIN_DOMAIN_LENGTH) {
-    return false;
-  }
-
-  const parts = domain.split('.');
-  const tld = parts[parts.length - 1]?.toLowerCase();
-
-  const BLOCKCHAIN_TLDS = [
-    'eth',
-    'crypto',
-    'sol',
-    'btc',
-    'com',
-    'org',
-    'net',
-    'xyz',
-    'io',
-    'app',
-  ];
-
-  const isCommonTld = BLOCKCHAIN_TLDS.includes(tld);
-  const hasMinimumTldLength = tld.length >= 2;
-
-  return isCommonTld || hasMinimumTldLength;
-}
-
 export function isOriginContractAddress(to, sendTokenAddress) {
   if (!to || !sendTokenAddress) {
     return false;
