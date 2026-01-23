@@ -40,6 +40,14 @@ export type ManifestFlags = {
      * The number of minutes to allow the E2E tests to run before timing out
      */
     timeoutMinutes?: number;
+    /**
+     * The user persona being tested (e.g., 'standard' or 'powerUser')
+     */
+    persona?: string;
+    /**
+     * The test title for Sentry metrics grouping
+     */
+    testTitle?: string;
   };
   /**
    * Sentry flags
@@ -88,9 +96,10 @@ export type ManifestFlags = {
      */
     disableSync?: boolean;
     /**
-     * Whether to simulate an unresponsive background by ignoring connections from the UI
+     * Simulate a delay to how quickly the background responds to the UI. Set this to `true` to
+     * make the background completely unresponsive.
      */
-    simulateUnresponsiveBackground?: boolean;
+    simulateDelayedBackgroundResponse?: number | true;
     /**
      * Number of milliseconds to wait before resolving the simulated slow
      * background loading promise.
@@ -104,6 +113,22 @@ export type ManifestFlags = {
      * Storage kind to use for tests involving PersistenceManager
      */
     storageKind?: 'data' | 'split';
+    /**
+     * Simulate browser.storage.local.get() failure for testing vault recovery
+     * when storage operations fail (e.g., Firefox database corruption).
+     * When enabled, PersistenceManager.get() will throw a PersistenceError
+     * if a backup exists in IndexedDB, triggering the vault recovery flow.
+     * The simulation only triggers after onboarding (when backup exists),
+     * allowing the initial wallet creation to complete normally.
+     */
+    simulateStorageGetFailure?: boolean;
+    /**
+     * Simulate browser.storage.local.set() failure for testing the storage
+     * error toast when write operations fail (e.g., Firefox database corruption).
+     * When enabled, PersistenceManager.set() and persist() will throw an error
+     * immediately, triggering the storage error toast notification.
+     */
+    simulateStorageSetFailure?: boolean;
   };
 };
 

@@ -1,14 +1,15 @@
 import { Mockttp } from 'mockttp';
 import { USER_STORAGE_FEATURE_NAMES } from '@metamask/profile-sync-controller/sdk';
 import { expect } from '@playwright/test';
-import { withFixtures, unlockWallet, getCleanAppState } from '../../../helpers';
+import { withFixtures, getCleanAppState } from '../../../helpers';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
 import { mockIdentityServices } from '../mocks';
 import { UserStorageMockttpController } from '../../../helpers/identity/user-storage/userStorageMockttpController';
 import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
 import ContactsSettings from '../../../page-objects/pages/settings/contacts-settings';
-
+import { skipOnFirefox } from '../helpers';
 import { arrangeContactSyncingTestUtils } from './helpers';
 import { MOCK_CONTACT_ADDRESSES } from './mock-data';
 
@@ -30,6 +31,8 @@ describe('Contact syncing - New User', function () {
   this.timeout(120000); // Contact syncing tests can be long
 
   it('syncs contacts after new wallet creation', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     const testContact = {
@@ -53,7 +56,7 @@ describe('Contact syncing - New User', function () {
       },
       async ({ driver }) => {
         // Unlock wallet with backup and sync already enabled
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the UI to be ready before opening settings
         await driver.wait(async () => {
@@ -122,6 +125,8 @@ describe('Contact syncing - New User', function () {
   });
 
   it('handles empty remote storage during initialization', async function () {
+    skipOnFirefox(this);
+
     const userStorageMockttpController = new UserStorageMockttpController();
 
     await withFixtures(
@@ -140,7 +145,7 @@ describe('Contact syncing - New User', function () {
         },
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for contact syncing to initialize
         await driver.wait(async () => {

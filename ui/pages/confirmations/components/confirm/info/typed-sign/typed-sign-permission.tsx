@@ -140,10 +140,10 @@ const TypedSignPermissionInfo: React.FC = () => {
           <ConfirmInfoRowUrl url={decodedPermission.origin} />
         </ConfirmInfoAlertRow>
 
-        {'address' in decodedPermission.signer.data && (
+        {decodedPermission.to && (
           <ConfirmInfoRow label={t('recipient')}>
             <ConfirmInfoRowAddress
-              address={decodedPermission.signer.data.address}
+              address={decodedPermission.to}
               chainId={chainId}
             />
           </ConfirmInfoRow>

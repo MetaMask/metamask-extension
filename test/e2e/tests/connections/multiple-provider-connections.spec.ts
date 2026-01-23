@@ -2,11 +2,12 @@
  * This test suite is for testing connecting to a dapp with different wallet providers (EVM and Solana).
  */
 import { SolScope } from '@metamask/keyring-api';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
 import {
   DAPP_HOST_ADDRESS,
   DEFAULT_FIXTURE_ACCOUNT as EVM_ADDRESS_ONE,
+  WINDOW_TITLES,
 } from '../../constants';
+import { withFixtures } from '../../helpers';
 import {
   BASE_DISPLAY_NAME,
   LINEA_MAINNET_DISPLAY_NAME,
@@ -21,7 +22,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SitePermissionPage from '../../page-objects/pages/permission/site-permission-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/redesign/connect-account-confirmation';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 import { withSolanaAccountSnap } from '../solana/common-solana';
 import FixtureBuilder from '../../fixtures/fixture-builder';

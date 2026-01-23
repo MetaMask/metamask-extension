@@ -1,6 +1,7 @@
 import { captureException } from '../../shared/lib/sentry';
 import {
   OFFSCREEN_LOAD_TIMEOUT,
+  OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../shared/constants/offscreen-communication';
 
@@ -98,4 +99,31 @@ export async function createOffscreen() {
   await Promise.race([loadPromise, timeoutPromise]);
 
   console.debug('Offscreen iframe loaded');
+}
+
+/**
+ * Sets up a listener for connectivity status messages from the offscreen document.
+ *
+ * **Note:** This function is only used in Manifest V3 (MV3). In Manifest V2 (MV2),
+ * connectivity status is detected using window event listeners in the background page.
+ * The function will return early if `chrome.offscreen` is not available.
+ *
+ * @param {Function} onConnectivityChange - Callback to invoke with the connectivity status.
+ * The callback receives a boolean indicating whether the device is online.
+ */
+export function addOffscreenConnectivityListener(onConnectivityChange) {
+  const { chrome } = globalThis;
+  if (!chrome.offscreen) {
+    return;
+  }
+
+  chrome.runtime.onMessage.addListener((message) => {
+    if (
+      message &&
+      message.target === OffscreenCommunicationTarget.extensionMain &&
+      message.event === OffscreenCommunicationEvents.connectivityChange
+    ) {
+      onConnectivityChange(message.isOnline);
+    }
+  });
 }
