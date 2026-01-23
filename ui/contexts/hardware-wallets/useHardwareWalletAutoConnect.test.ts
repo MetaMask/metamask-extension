@@ -34,6 +34,7 @@ const createMockRefs = (
   },
   adapterRef: { current: null },
   connectingPromiseRef: { current: null },
+  isConnectingRef: { current: false },
   hasAutoConnectedRef: { current: false },
   lastConnectedAccountRef: { current: null },
   currentConnectionIdRef: { current: null },
@@ -445,7 +446,7 @@ describe('useHardwareWalletAutoConnect', () => {
       setupAutoConnectHook(
         {},
         {
-          connectingPromiseRef: { current: new Promise(() => {}) },
+          isConnectingRef: { current: true },
         },
       );
 

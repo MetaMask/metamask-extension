@@ -39,6 +39,11 @@ export type HardwareWalletRefs = {
    * and concurrent callers should await this promise instead of starting a new connection.
    */
   connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
+  /**
+   * Flag to prevent concurrent connection attempts.
+   * Used to synchronously check-and-set before any async work.
+   */
+  isConnectingRef: React.MutableRefObject<boolean>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
@@ -81,6 +86,7 @@ export const useHardwareWalletStateManager = () => {
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const connectingPromiseRef = useRef<Promise<void> | null>(null);
+  const isConnectingRef = useRef(false);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
   const currentConnectionIdRef = useRef<number | null>(null);
@@ -115,6 +121,7 @@ export const useHardwareWalletStateManager = () => {
       adapterRef,
       abortControllerRef,
       connectingPromiseRef,
+      isConnectingRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
       currentConnectionIdRef,
