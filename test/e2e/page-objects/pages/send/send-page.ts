@@ -82,6 +82,8 @@ class SendPage {
       this.amountInput,
       this.inputRecipient,
     ]);
+  }
+
   async checkPageIsLoaded(): Promise<void> {
     console.log('Checking if send page is loaded');
     try {

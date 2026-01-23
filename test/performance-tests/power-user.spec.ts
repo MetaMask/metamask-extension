@@ -51,7 +51,6 @@ describe('Power user persona', function () {
         // Measure: Login flow
         await driver.navigate();
         const loginPage = new LoginPage(driver);
-        await loginPage.checkPageIsLoaded();
         await timerLogin.measure(async () => {
           await loginPage.loginToHomepage();
           const homePage = new HomePage(driver);

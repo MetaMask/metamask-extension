@@ -83,8 +83,6 @@ class SwapPage {
   private readonly transactionStatusDescription =
     '[data-testid="swap-smart-transaction-status-description"]';
 
-  private readonly swapAmount = '[data-testid="from-amount"]';
-
   private readonly swapButton = {
     tag: 'button',
     text: 'Swap',
@@ -114,7 +112,7 @@ class SwapPage {
   async checkPageIsLoaded(): Promise<void> {
     try {
       await this.driver.waitForMultipleSelectors([
-        this.swapAmount,
+        this.reviewFromAmount,
         this.destinationTokenButton,
       ]);
     } catch (e) {
@@ -153,7 +151,7 @@ class SwapPage {
 
   async enterSwapAmount(amount: string): Promise<void> {
     console.log('Entering swap amount');
-    const stxToggle = await this.driver.findElement(this.swapAmount);
+    const stxToggle = await this.driver.findElement(this.reviewFromAmount);
     stxToggle.sendKeys(amount);
   }
 

@@ -6,17 +6,6 @@ This folder contains end-to-end performance tests for MetaMask Extension. These 
 
 The performance tests use a **power user profile** with pre-loaded wallet state (multiple accounts, networks, and tokens) to simulate real-world usage patterns. Each test measures specific user interactions using a custom timer system with threshold validation.
 
-## Test Scenarios
-
-| Folder        | Scenario             | Description                                                        |
-| ------------- | -------------------- | ------------------------------------------------------------------ |
-| `onboarding/` | Wallet Creation      | Measures onboarding flow for new wallet creation                   |
-| `onboarding/` | Wallet Import        | Measures onboarding flow when importing an existing wallet via SRP |
-| `login/`      | Import SRP from Home | Measures importing a second SRP after login                        |
-| `login/`      | Send Transactions    | Measures the send flow performance for native tokens               |
-| `login/`      | Swap                 | Measures swap page load and quote fetching times                   |
-| `login/`      | Asset Details        | Measures asset details page load time (EVM & Solana)               |
-
 ## Timer System
 
 ### Architecture
