@@ -33,7 +33,7 @@ const createMockRefs = (
     current: overrides.abortControllerRef?.current ?? new AbortController(),
   },
   adapterRef: { current: null },
-  isConnectingRef: { current: false },
+  connectingPromiseRef: { current: null },
   hasAutoConnectedRef: { current: false },
   lastConnectedAccountRef: { current: null },
   currentConnectionIdRef: { current: null },
@@ -445,7 +445,7 @@ describe('useHardwareWalletAutoConnect', () => {
       setupAutoConnectHook(
         {},
         {
-          isConnectingRef: { current: true },
+          connectingPromiseRef: { current: new Promise(() => {}) },
         },
       );
 
