@@ -130,6 +130,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const [activeTab, setActiveTab] = useState('accounts');
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -543,7 +544,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs defaultActiveTabKey="accounts">
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
             name={t('accounts')}
             tabKey="accounts"

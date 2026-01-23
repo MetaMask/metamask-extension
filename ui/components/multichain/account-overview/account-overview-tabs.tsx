@@ -154,7 +154,7 @@ export const AccountOverviewTabs = ({
       <AssetListTokenDetection />
 
       <Tabs<AccountOverviewTab>
-        activeTabKey={activeTabKey}
+        activeTab={activeTabKey}
         onTabClick={handleTabClick}
         tabListProps={{
           className: 'px-4',
