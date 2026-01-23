@@ -16,7 +16,7 @@ export const DefaultStory = () => (
   <RemoveSnapAccount
     snapId="npm:@metamask/snap-simple-keyring"
     snapName="Test name"
-    publicAddress="0x64a845a5b02460acf8a3d84503b0d68d028b4bb4"
+    publicAddress="0x0dcd5d886577d5081b0c52e242ef29e70be3e7bc"
   />
 );
 
