@@ -86,12 +86,11 @@ describe('useBridgeQueryParams', () => {
     expect(result.current.location.search).toBe('?swaps=true');
     expect(result.current.location.pathname).toBe('/');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -155,7 +154,6 @@ describe('useBridgeQueryParams', () => {
     const {
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
       fromTokenBalance,
       fromNativeBalance,
@@ -163,7 +161,6 @@ describe('useBridgeQueryParams', () => {
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
       fromTokenBalance,
       fromNativeBalance,
@@ -210,12 +207,11 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('?swaps=true');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -263,12 +259,11 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -316,12 +311,11 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -340,12 +334,11 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();
@@ -395,13 +388,12 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect(fromTokenInputValue).toBeUndefined();
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -450,12 +442,11 @@ describe('useBridgeQueryParams', () => {
 
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).toHaveBeenCalledTimes(1);
@@ -491,12 +482,11 @@ describe('useBridgeQueryParams', () => {
     );
     expect(result.current.location.search).toBe('');
     expect(store).toBeDefined();
-    const { fromToken, toToken, toChainId, fromTokenInputValue } =
+    const { fromToken, toToken, fromTokenInputValue } =
       store?.getState().bridge ?? {};
     expect({
       fromToken,
       toToken,
-      toChainId,
       fromTokenInputValue,
     }).toMatchSnapshot();
     expect(fetchAssetMetadataForAssetIdsSpy).not.toHaveBeenCalled();

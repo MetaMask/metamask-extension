@@ -6,9 +6,11 @@ import {
 } from '@metamask/bridge-controller';
 import { DEFAULT_BRIDGE_STATUS_CONTROLLER_STATE } from '@metamask/bridge-status-controller';
 import { AVAILABLE_MULTICHAIN_NETWORK_CONFIGURATIONS } from '@metamask/multichain-network-controller';
+import { getAddress } from 'ethers/lib/utils';
 import { KeyringTypes } from '@metamask/keyring-controller';
 import { EthAccountType, EthScope } from '@metamask/keyring-api';
 import { ETH_SCOPE_EOA } from '@metamask/keyring-utils';
+import type { SmartTransactionsNetworks } from '../../../shared/modules/selectors/feature-flags';
 import { CHAIN_IDS } from '../../../shared/constants/network';
 import type { BridgeAppState } from '../../../ui/ducks/bridge/selectors';
 import { createSwapsMockStore } from '../../jest/mock-store';
@@ -127,7 +129,10 @@ export const createBridgeMockStore = ({
   metamaskStateOverrides = {},
   stateOverrides = {},
 }: {
-  featureFlagOverrides?: { bridgeConfig: Partial<FeatureFlagResponse> };
+  featureFlagOverrides?: {
+    bridgeConfig: Partial<FeatureFlagResponse>;
+    smartTransactionsNetworks?: SmartTransactionsNetworks;
+  };
   bridgeStateOverrides?: Partial<BridgeControllerState>;
   // bridgeStatusStateOverrides?: Partial<BridgeStatusState>;
   // metamaskStateOverrides?: Partial<BridgeAppState['metamask']>;
@@ -176,7 +181,6 @@ export const createBridgeMockStore = ({
       topAssets: [],
     },
     bridge: {
-      toChainId: null,
       sortOrder: 'cost_ascending',
       ...bridgeSliceOverrides,
     },
@@ -228,6 +232,16 @@ export const createBridgeMockStore = ({
       marketData: {
         '0x1': {
           '0x1f9840a85d5af5bf1d1762f925bdaddc4201f984': {
+            currency: 'usd',
+            price: 2.3,
+          },
+          [getAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
+            currency: 'usd',
+            price: 2.3,
+          },
+        },
+        '0xa': {
+          [getAddress('0x1f9840a85d5af5bf1d1762f925bdaddc4201f984')]: {
             currency: 'usd',
             price: 2.3,
           },
@@ -341,10 +355,18 @@ export const createBridgeMockStore = ({
           },
         },
       ],
+      smartTransactionsState: {
+        liveness: false,
+        livenessByChainId: { '0x1': true },
+      },
       ...{
         ...getDefaultBridgeControllerState(),
         remoteFeatureFlags: {
           ...featureFlagOverrides,
+          smartTransactionsNetworks: {
+            '0x1': { extensionActive: true },
+            ...featureFlagOverrides?.smartTransactionsNetworks,
+          },
           bridgeConfig: {
             minimumVersion: '0.0.0',
             support: false,
@@ -354,7 +376,7 @@ export const createBridgeMockStore = ({
             chains: {
               [formatChainIdToCaip('0x1')]: {
                 isActiveSrc: true,
-                isActiveDest: false,
+                isActiveDest: true,
               },
               ...Object.fromEntries(
                 Object.entries(
@@ -370,9 +392,6 @@ export const createBridgeMockStore = ({
       },
       ...bridgeStateOverrides,
       ...bridgeStatusStateOverrides,
-    },
-    send: {
-      swapsBlockedTokens: [],
     },
     DNS: {
       resolutions: [],

@@ -14,8 +14,15 @@ type SendAssets = {
   tokens: Asset[];
 };
 
-export const useSendAssets = (): SendAssets => {
-  const tokens = useSendTokens();
+type UseSendAssetsOptions = {
+  includeNoBalance?: boolean;
+};
+
+export const useSendAssets = (
+  options: UseSendAssetsOptions = {},
+): SendAssets => {
+  const { includeNoBalance = false } = options;
+  const tokens = useSendTokens({ includeNoBalance });
   const nfts = useSendNfts();
   const useExternalServices = useSelector(getUseExternalServices);
   const allMultichainNetworkConfigurations = useSelector(

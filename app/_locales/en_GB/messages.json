@@ -209,9 +209,6 @@
   "addAccountOrWallet": {
     "message": "Add account or wallet"
   },
-  "addAccountToMetaMask": {
-    "message": "Add account to MetaMask"
-  },
   "addAcquiredTokens": {
     "message": "Add the tokens you've acquired using MetaMask"
   },
@@ -348,9 +345,6 @@
   },
   "addWallet": {
     "message": "Add wallet"
-  },
-  "addingAccount": {
-    "message": "Adding account"
   },
   "additionalNetworks": {
     "message": "Additional networks"
@@ -700,14 +694,8 @@
   "assetChartNoHistoricalPrices": {
     "message": "We could not fetch any historical data"
   },
-  "assetMultipleNFTsBalance": {
-    "message": "$1 NFTs"
-  },
   "assetOptions": {
     "message": "Asset options"
-  },
-  "assetSingleNFTBalance": {
-    "message": "$1 NFT"
   },
   "assets": {
     "message": "Assets"
@@ -748,6 +736,9 @@
   },
   "back": {
     "message": "Back"
+  },
+  "backToHome": {
+    "message": "Back to home"
   },
   "backup": {
     "message": "Backup"
@@ -992,6 +983,9 @@
   "bridgeExplorerLinkViewOn": {
     "message": "View on $1"
   },
+  "bridgeFee": {
+    "message": "Bridge fee"
+  },
   "bridgeFetchNewQuotes": {
     "message": "Fetch a new one?"
   },
@@ -1197,6 +1191,14 @@
   "buyNow": {
     "message": "Buy now"
   },
+  "buyTabOpenedToastDescription": {
+    "message": "We've opened a new tab for buying.",
+    "description": "Toast description shown after opening the buy flow in a new tab"
+  },
+  "buyTabOpenedToastText": {
+    "message": "Continue in your browser tab",
+    "description": "Toast title shown after opening the buy flow in a new tab"
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -1298,9 +1300,6 @@
   },
   "close": {
     "message": "Close"
-  },
-  "closeExtension": {
-    "message": "Close extension"
   },
   "closeSlide": {
     "message": "Close $1",
@@ -2028,6 +2027,9 @@
   "deepLink_theBuyPage": {
     "message": "the buy page"
   },
+  "deepLink_theCardOnboardingPage": {
+    "message": "the MetaMask Card onboarding page"
+  },
   "deepLink_theHomePage": {
     "message": "the home page"
   },
@@ -2610,6 +2612,9 @@
   },
   "estimatedPointsRow": {
     "message": "Est. points"
+  },
+  "estimatedTime": {
+    "message": "Estimated time"
   },
   "ethGasPriceFetchWarning": {
     "message": "Backup gas price is provided as the main gas estimation service is unavailable right now."
@@ -3256,11 +3261,11 @@
   "insufficientBalance": {
     "message": "Insufficient balance."
   },
+  "insufficientBalanceToCoverFees": {
+    "message": "Insufficient balance to cover fees"
+  },
   "insufficientFunds": {
     "message": "Insufficient funds."
-  },
-  "insufficientFundsForGas": {
-    "message": "Insufficient funds for gas"
   },
   "insufficientFundsSend": {
     "message": "Insufficient funds"
@@ -3725,6 +3730,9 @@
     "message": "$1 is hosted on npm and $2 is this Snap’s unique identifier.",
     "description": "$1 is the snap name and $2 is the snap NPM id."
   },
+  "metamaskFee": {
+    "message": "MetaMask fee"
+  },
   "metamaskNotificationsAreOff": {
     "message": "Wallet notifications are currently not active."
   },
@@ -3757,6 +3765,9 @@
   },
   "minimumReceivedLabel": {
     "message": "Minimum received"
+  },
+  "minute": {
+    "message": "min"
   },
   "mismatchedChainLinkText": {
     "message": "verify the network details",
@@ -3992,9 +4003,6 @@
     "message": "You must select a file to import.",
     "description": "User is important an account and needs to add a file to continue"
   },
-  "negativeETH": {
-    "message": "Can not send negative amounts of ETH."
-  },
   "negativeOrZeroAmountToken": {
     "message": "Cannot send negative or zero amounts of asset."
   },
@@ -4035,18 +4043,6 @@
   "networkName": {
     "message": "Network name"
   },
-  "networkNameArbitrum": {
-    "message": "Arbitrum"
-  },
-  "networkNameAvalanche": {
-    "message": "Avalanche"
-  },
-  "networkNameBSC": {
-    "message": "BSC"
-  },
-  "networkNameBase": {
-    "message": "Base"
-  },
   "networkNameBitcoin": {
     "message": "Bitcoin"
   },
@@ -4062,26 +4058,14 @@
   "networkNameGoerli": {
     "message": "Goerli"
   },
-  "networkNameLinea": {
-    "message": "Linea"
-  },
-  "networkNameOpMainnet": {
-    "message": "OP"
-  },
   "networkNamePolygon": {
     "message": "Polygon"
   },
   "networkNameSolana": {
     "message": "Solana"
   },
-  "networkNameTestnet": {
-    "message": "Testnet"
-  },
   "networkNameTron": {
     "message": "Tron"
-  },
-  "networkNameZkSyncEra": {
-    "message": "zkSync Era"
   },
   "networkOptions": {
     "message": "Network options"
@@ -4653,9 +4637,6 @@
   "openWallet": {
     "message": "Open wallet"
   },
-  "optional": {
-    "message": "Optional"
-  },
   "options": {
     "message": "Options"
   },
@@ -4745,6 +4726,14 @@
   "pastePrivateKey": {
     "message": "Enter your private key string here:",
     "description": "For importing an account from a private key"
+  },
+  "payWith": {
+    "message": "Pay with",
+    "description": "Label for pay with row showing which token is used to pay transaction fees"
+  },
+  "payWithModalTitle": {
+    "message": "Pay with",
+    "description": "Title for the pay with modal that allows users to select which token to pay transaction fees with"
   },
   "pending": {
     "message": "Pending"
@@ -5055,26 +5044,175 @@
   "perps": {
     "message": "Perps"
   },
+  "perps24hVolume": {
+    "message": "24h Volume"
+  },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favorites"
+  },
+  "perpsAutoClose": {
+    "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
+  },
   "perpsBuy": {
     "message": "buy"
   },
   "perpsCloseAll": {
     "message": "Close all"
   },
+  "perpsClosedShort": {
+    "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
+  },
+  "perpsDetails": {
+    "message": "Details"
+  },
+  "perpsDirection": {
+    "message": "Direction"
+  },
+  "perpsDisclaimer": {
+    "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+  },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
+  },
+  "perpsEntryPrice": {
+    "message": "Entry price"
+  },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
+  },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCommodities": {
+    "message": "Commodities"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
+  "perpsFilterStocksOnly": {
+    "message": "Stocks"
+  },
+  "perpsFundingPayments": {
+    "message": "Funding payments"
+  },
+  "perpsFundingRate": {
+    "message": "Funding Rate"
+  },
+  "perpsIncreasedPosition": {
+    "message": "Increased position"
+  },
+  "perpsLearnBasics": {
+    "message": "Learn the basics of perps"
+  },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
+  },
+  "perpsLiquidationPrice": {
+    "message": "Liquidation price"
+  },
+  "perpsLong": {
+    "message": "Long"
+  },
+  "perpsMargin": {
+    "message": "Margin"
   },
   "perpsMarket": {
     "message": "Market"
   },
+  "perpsMarketNotFound": {
+    "message": "Market not found"
+  },
+  "perpsMarketNotFoundDescription": {
+    "message": "The market \"$1\" could not be found.",
+    "description": "$1 is the market symbol that was not found"
+  },
+  "perpsMarkets": {
+    "message": "Markets"
+  },
+  "perpsMore": {
+    "message": "More"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
+  },
+  "perpsOpenInterest": {
+    "message": "Open Interest"
+  },
   "perpsOpenOrders": {
     "message": "Open Orders"
+  },
+  "perpsOpenedLong": {
+    "message": "Opened long"
+  },
+  "perpsOrders": {
+    "message": "Orders"
+  },
+  "perpsPnl": {
+    "message": "P&L"
+  },
+  "perpsPosition": {
+    "message": "Position"
   },
   "perpsPositions": {
     "message": "Positions"
   },
+  "perpsRecentActivity": {
+    "message": "Recent Activity"
+  },
+  "perpsReturn": {
+    "message": "Return"
+  },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
+  },
   "perpsSell": {
     "message": "sell"
+  },
+  "perpsShort": {
+    "message": "Short"
+  },
+  "perpsSize": {
+    "message": "Size"
+  },
+  "perpsSortFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortPriceChangeHighToLow": {
+    "message": "Price change: high to low"
+  },
+  "perpsSortPriceChangeLowToHigh": {
+    "message": "Price change: low to high"
+  },
+  "perpsSortVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5082,11 +5220,26 @@
   "perpsStartTrading": {
     "message": "Start trading"
   },
+  "perpsStats": {
+    "message": "Stats"
+  },
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -5872,6 +6025,9 @@
     "message": "Search your accounts",
     "description": "Placeholder in a searchbar. Used on multichain account list page."
   },
+  "second": {
+    "message": "sec"
+  },
   "secretRecoveryPhrase": {
     "message": "Secret Recovery Phrase"
   },
@@ -6042,24 +6198,11 @@
   "sendBugReport": {
     "message": "Send us a bug report."
   },
-  "sendNoContactsConversionText": {
-    "message": "click here"
-  },
-  "sendNoContactsDescription": {
-    "message": "Contacts allow you to safely send transactions to another account multiple times.  To create a contact, $1",
-    "description": "$1 represents the action text 'click here'"
-  },
-  "sendNoContactsTitle": {
-    "message": "You don't have any contacts yet"
-  },
   "sendSelectReceiveAsset": {
     "message": "Select asset to receive"
   },
   "sendSelectSendAsset": {
     "message": "Select asset to send"
-  },
-  "sendSwapSubmissionWarning": {
-    "message": "Clicking this button will immediately initiate your swap transaction. Please review your transaction details before proceeding."
   },
   "sendingAsset": {
     "message": "Sending $1"
@@ -6070,10 +6213,6 @@
   "sendingNativeAsset": {
     "message": "Sending $1",
     "description": "$1 represents the native currency symbol for the current network (e.g. ETH or BNB)"
-  },
-  "sendingToTokenContractWarning": {
-    "message": "Warning: you are about to send to a token contract which could result in a loss of funds. $1",
-    "description": "$1 is a clickable link with text defined by the 'learnMoreUpperCase' key. The link will open to a support article regarding the known contract address warning"
   },
   "sent": {
     "message": "Sent"
@@ -7715,9 +7854,6 @@
     "message": "The swap of $1 to $2",
     "description": "Tells a user that they need to confirm on their hardware wallet a swap of 2 tokens. $1 is a source token and $2 is a destination token"
   },
-  "swapGasFeesDetails": {
-    "message": "Gas fees are estimated and will fluctuate based on network traffic and transaction complexity."
-  },
   "swapGasFeesExplanation": {
     "message": "MetaMask doesn't make money from gas fees. These fees are estimates and can change based on how busy the network is and how complex a transaction is. Learn more $1.",
     "description": "$1 is a link (text in link can be found at 'swapGasFeesSummaryLinkText')"
@@ -7729,9 +7865,6 @@
   "swapGasFeesIncluded": {
     "message": " Included"
   },
-  "swapGasFeesLearnMore": {
-    "message": "Learn more about gas fees"
-  },
   "swapGasFeesSplit": {
     "message": "Gas fees on the previous screen are split between these two transactions."
   },
@@ -7740,10 +7873,6 @@
   },
   "swapGasFeesSponsoredExplanation": {
     "message": "This network fee is paid by MetaMask, so you can transact without $1 in your account."
-  },
-  "swapGasFeesSummary": {
-    "message": "Gas fees are paid to crypto miners who process transactions on the $1 network. MetaMask does not profit from gas fees.",
-    "description": "$1 is the selected network, e.g. Ethereum or BSC"
   },
   "swapGasIncludedTooltipExplanation": {
     "message": "This quote incorporates gas fees by adjusting the token amount sent or received. You may receive ETH in a separate transaction on your activity list."
@@ -7761,10 +7890,6 @@
   "swapIncludesMMFee": {
     "message": "Includes a $1% MetaMask fee.",
     "description": "Provides information about the fee that MetaMask takes for swaps. $1 is a decimal number."
-  },
-  "swapIncludesMMFeeAlt": {
-    "message": "Quote reflects $1% MetaMask fee",
-    "description": "Provides information about the fee that MetaMask takes for swaps using the latest copy. $1 is a decimal number."
   },
   "swapIncludesMetaMaskFeeViewAllQuotes": {
     "message": "Includes a $1% MetaMask fee – $2",
@@ -8017,11 +8142,12 @@
   "switchEthereumChainConfirmationTitle": {
     "message": "Allow this site to switch the network?"
   },
-  "switchInputCurrency": {
-    "message": "Switch input currency"
-  },
   "switchNetwork": {
     "message": "Switch network"
+  },
+  "switchToMetaMaskDefaultRpc": {
+    "message": "Switch to MetaMask default RPC",
+    "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
   },
   "switchToPopup": {
     "message": "Switch to popup"
@@ -8176,9 +8302,6 @@
   "tokensInCollection": {
     "message": "Tokens in collection"
   },
-  "tooltipApproveButton": {
-    "message": "I understand"
-  },
   "tooltipSatusConnected": {
     "message": "connected"
   },
@@ -8229,6 +8352,9 @@
   },
   "transactionErrored": {
     "message": "Transaction encountered an error."
+  },
+  "transactionFee": {
+    "message": "Transaction fee"
   },
   "transactionFlowNetwork": {
     "message": "Network"
@@ -8505,6 +8631,10 @@
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
   },
+  "updatedToMetaMaskDefault": {
+    "message": "Updated to MetaMask default",
+    "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
+  },
   "uploadDropFile": {
     "message": "Drop your file here"
   },
@@ -8513,6 +8643,9 @@
   },
   "urlErrorMsg": {
     "message": "URLs require the appropriate HTTP/HTTPS prefix."
+  },
+  "urlUnknown": {
+    "message": "URL unknown"
   },
   "use4ByteResolution": {
     "message": "Decode smart contracts"
@@ -8750,9 +8883,6 @@
   "youSent": {
     "message": "You sent",
     "description": "Label indicating the amount and asset the user sent."
-  },
-  "yourAccounts": {
-    "message": "Your accounts"
   },
   "yourActivity": {
     "message": "Your activity"

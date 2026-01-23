@@ -339,7 +339,7 @@ const AssetPage = ({
       >
         <Box display={Display.Flex}>
           <ButtonIcon
-            color={IconColor.iconAlternative}
+            color={IconColor.iconDefault}
             marginRight={1}
             size={ButtonIconSize.Sm}
             ariaLabel={t('back')}
@@ -382,11 +382,7 @@ const AssetPage = ({
             }}
           />
         ) : (
-          <TokenButtons
-            token={updatedAsset}
-            account={selectedAccount}
-            disableSendForNonEvm
-          />
+          <TokenButtons token={updatedAsset} disableSendForNonEvm />
         )}
       </Box>
       <Box

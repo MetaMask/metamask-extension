@@ -6,7 +6,6 @@ import { Tab } from './tab/tab';
 describe('Tabs', () => {
   const renderTabs = (props = {}) => {
     const defaultProps = {
-      defaultActiveTabKey: '',
       onTabClick: () => null,
       subHeader: null,
     };
@@ -40,18 +39,9 @@ describe('Tabs', () => {
     expect(getByText('Tab 2 Content')).toBeInTheDocument();
   });
 
-  it('renders with defaultActiveTabKey', () => {
+  it('renders with activeTab', () => {
     const { getByText, queryByText } = renderTabs({
-      defaultActiveTabKey: 'tab2',
-    });
-
-    expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
-    expect(getByText('Tab 2 Content')).toBeInTheDocument();
-  });
-
-  it('renders with activeTabKey', () => {
-    const { getByText, queryByText } = renderTabs({
-      activeTabKey: 'tab2',
+      activeTab: 'tab2',
     });
 
     expect(queryByText('Tab 1 Content')).not.toBeInTheDocument();
@@ -109,7 +99,7 @@ describe('Tabs', () => {
 
   it('handles null children gracefully', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs onTabClick={() => null}>
         {null}
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
@@ -124,7 +114,7 @@ describe('Tabs', () => {
 
   it('renders disabled tab with proper styling', () => {
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -140,7 +130,7 @@ describe('Tabs', () => {
 
   it('does not switch to disabled tab when clicked', () => {
     const { getByText, queryByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={() => null}>
+      <Tabs activeTab="tab1" onTabClick={() => null}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
@@ -159,7 +149,7 @@ describe('Tabs', () => {
   it('does not call onTabClick when disabled tab is clicked', () => {
     const onTabClick = jest.fn();
     const { getByText } = render(
-      <Tabs defaultActiveTabKey="tab1" onTabClick={onTabClick}>
+      <Tabs activeTab="tab1" onTabClick={onTabClick}>
         <Tab tabKey="tab1" name="Tab 1">
           Tab 1 Content
         </Tab>
