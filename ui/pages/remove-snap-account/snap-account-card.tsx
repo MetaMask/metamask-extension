@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { InternalAccount } from '@metamask/keyring-internal-api';
 import {
   BlockSize,
   BorderRadius,
@@ -48,10 +49,13 @@ export const SnapAccountCard = ({
   address: string;
   remove?: boolean;
 }) => {
-  const accounts = useSelector(getMetaMaskAccountsOrdered);
+  const accounts: MergedInternalAccount[] = useSelector(
+    getMetaMaskAccountsOrdered,
+  );
   const account = accounts.find(
-    (internalAccount: { address: string }) =>
-      internalAccount.address === address,
+    (internalAccount) =>
+      normalizeSafeAddress(internalAccount.address) ===
+      normalizeSafeAddress(address),
   ) as MergedInternalAccount;
 
   const accountGroupName = useSelector((state: MultichainAccountsState) =>
