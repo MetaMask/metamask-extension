@@ -25,6 +25,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private isConnecting = false;
 
+  private pendingConnection: Promise<void> | null = null;
+
   private currentDeviceId: string | null = null;
 
   constructor(options: HardwareWalletAdapterOptions) {
@@ -67,60 +69,70 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @param deviceId - The device ID to connect to
    */
   async connect(deviceId: string): Promise<void> {
-    // Already connected or connection in progress - skip
-    if (this.connected || this.isConnecting) {
+    // Already connected - return immediately
+    if (this.connected) {
       return;
     }
 
-    this.isConnecting = true;
-
-    try {
-      // Step 1: Check WebHID availability
-      if (!this.isWebHIDAvailable()) {
-        throw createHardwareWalletError(
-          ErrorCode.ConnectionTransportMissing,
-          HardwareWalletType.Ledger,
-          'WebHID is not available',
-        );
-      }
-
-      // Step 2: Check if device is physically connected
-      const isDeviceConnected = await this.checkDeviceConnected();
-      if (!isDeviceConnected) {
-        throw createHardwareWalletError(
-          ErrorCode.DeviceDisconnected,
-          HardwareWalletType.Ledger,
-          'Ledger device not found. Please connect your Ledger device.',
-        );
-      }
-
-      // Step 3: Attempt to create a transport for the device
-      await attemptLedgerTransportCreation();
-
-      // Mark as connected - device is present AND app is open
-      this.connected = true;
-      this.currentDeviceId = deviceId;
-    } catch (error) {
-      // Clean up on error
-      this.connected = false;
-      this.currentDeviceId = null;
-
-      const hwError = reconstructHardwareWalletError(
-        error,
-        HardwareWalletType.Ledger,
-      );
-
-      const deviceEvent = getDeviceEventForError(hwError.code);
-
-      this.options.onDeviceEvent({
-        event: deviceEvent,
-        error: hwError,
-      });
-
-      throw hwError;
-    } finally {
-      this.isConnecting = false;
+    // Connection in progress - return the pending promise to reuse the same promise on multiple calls.
+    if (this.isConnecting && this.pendingConnection) {
+      return this.pendingConnection;
     }
+
+    // Start new connection
+    this.isConnecting = true;
+    this.pendingConnection = (async () => {
+      try {
+        // Step 1: Check WebHID availability
+        if (!this.isWebHIDAvailable()) {
+          throw createHardwareWalletError(
+            ErrorCode.ConnectionTransportMissing,
+            HardwareWalletType.Ledger,
+            'WebHID is not available',
+          );
+        }
+
+        // Step 2: Check if device is physically connected
+        const isDeviceConnected = await this.checkDeviceConnected();
+        if (!isDeviceConnected) {
+          throw createHardwareWalletError(
+            ErrorCode.DeviceDisconnected,
+            HardwareWalletType.Ledger,
+            'Ledger device not found. Please connect your Ledger device.',
+          );
+        }
+
+        // Step 3: Attempt to create a transport for the device
+        await attemptLedgerTransportCreation();
+
+        // Mark as connected - device is present AND app is open
+        this.connected = true;
+        this.currentDeviceId = deviceId;
+      } catch (error) {
+        // Clean up on error
+        this.connected = false;
+        this.currentDeviceId = null;
+
+        const hwError = reconstructHardwareWalletError(
+          error,
+          HardwareWalletType.Ledger,
+        );
+
+        const deviceEvent = getDeviceEventForError(hwError.code);
+
+        this.options.onDeviceEvent({
+          event: deviceEvent,
+          error: hwError,
+        });
+
+        throw hwError;
+      } finally {
+        this.isConnecting = false;
+        this.pendingConnection = null;
+      }
+    })();
+
+    return this.pendingConnection;
   }
 
   /**
