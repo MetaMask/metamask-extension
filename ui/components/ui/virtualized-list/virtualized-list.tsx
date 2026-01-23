@@ -1,11 +1,10 @@
-import React, { type CSSProperties, type ReactNode } from 'react';
+import React, { type ReactNode } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useScrollContainer } from '../../../contexts/scroll-container';
 
 type Props<TItem> = {
   data: TItem[];
   estimatedItemSize: number;
-  itemStyle?: CSSProperties;
   keyExtractor?: (item: TItem, index: number) => string;
   listEmptyComponent?: ReactNode;
   listFooterComponent?: ReactNode;
@@ -16,7 +15,6 @@ type Props<TItem> = {
 export const VirtualizedList = <TItem,>({
   data,
   estimatedItemSize,
-  itemStyle,
   keyExtractor,
   listEmptyComponent,
   listFooterComponent,
@@ -51,11 +49,7 @@ export const VirtualizedList = <TItem,>({
           const key = keyExtractor
             ? keyExtractor(item, index)
             : index.toString();
-          return (
-            <div key={key} style={itemStyle}>
-              {renderItem({ item, index })}
-            </div>
-          );
+          return <div key={key}>{renderItem({ item, index })}</div>;
         })}
         {listFooterComponent}
       </>
@@ -84,7 +78,6 @@ export const VirtualizedList = <TItem,>({
               className="absolute top-0 left-0 w-full"
               style={{
                 transform: `translateY(${virtualItem.start}px)`,
-                ...itemStyle,
               }}
             >
               {renderItem({ item, index: virtualItem.index })}

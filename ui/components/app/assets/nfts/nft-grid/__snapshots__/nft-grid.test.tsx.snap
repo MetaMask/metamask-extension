@@ -6,11 +6,9 @@ exports[`NftGrid matches the snapshot 1`] = `
     class="mm-box"
     style="margin: 16px;"
   >
-    <div
-      style="padding-bottom: 16px;"
-    >
+    <div>
       <div
-        class="mm-box nft-items__wrapper mm-box--display-grid mm-box--gap-4"
+        class="mm-box nft-items__wrapper grid gap-4 pb-4"
       />
     </div>
   </div>

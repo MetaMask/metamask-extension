@@ -135,10 +135,9 @@ export default function NftGrid({
       <VirtualizedList
         data={nftRows}
         estimatedItemSize={200}
-        itemStyle={{ paddingBottom: 16 }}
         listFooterComponent={loadingFooter}
         renderItem={({ item, index: rowIndex }) => (
-          <Box display={Display.Grid} gap={4} className="nft-items__wrapper">
+          <Box className="nft-items__wrapper grid gap-4 pb-4">
             {item.map((nft, index) => (
               <NFTGridItemErrorBoundary
                 key={`${rowIndex}-${index}`}
