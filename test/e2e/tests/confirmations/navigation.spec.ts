@@ -4,7 +4,7 @@ import { withFixtures } from '../../helpers';
 import { Driver } from '../../webdriver/driver';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
-import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../page-objects/flows/transaction.flow';
 import { TestSnaps } from '../../page-objects/pages/test-snaps';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
 import SignTypedData from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';

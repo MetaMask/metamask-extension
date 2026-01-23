@@ -5,7 +5,7 @@ import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow'
 import TestDapp from '../../page-objects/pages/test-dapp';
 import Confirmation from '../../page-objects/pages/confirmations/confirmation';
 import { Driver } from '../../webdriver/driver';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 
 const ADDRESS_MOCK = '0x0c54fccd2e384b4bb6f2e405bf5cbc15a017aafb';
 const ABBREVIATED_ADDRESS_MOCK = '0x0c54F...7AaFb';

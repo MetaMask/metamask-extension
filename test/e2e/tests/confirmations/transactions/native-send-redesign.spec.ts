@@ -6,7 +6,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import { Driver } from '../../../webdriver/driver';
-import { createInternalTransaction } from '../../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { withTransactionEnvelopeTypeFixtures } from '../helpers';
 import { TestSuiteArguments } from './shared';
 

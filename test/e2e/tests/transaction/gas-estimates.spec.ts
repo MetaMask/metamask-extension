@@ -1,6 +1,6 @@
 import { MockttpServer } from 'mockttp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { CHAIN_IDS } from '../../../../shared/constants/network';

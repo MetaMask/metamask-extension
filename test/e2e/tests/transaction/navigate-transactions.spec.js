@@ -3,7 +3,7 @@ const {
 } = require('../../page-objects/pages/confirmations/confirmation');
 const {
   createDappTransaction,
-} = require('../../page-objects/flows/transaction');
+} = require('../../page-objects/flows/transaction.flow');
 
 const { withFixtures } = require('../../helpers');
 const { DAPP_URL, WINDOW_TITLES } = require('../../constants');

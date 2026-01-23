@@ -4,7 +4,7 @@ import { decimalToPrefixedHex } from '../../../../../shared/modules/conversion.u
 import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../../constants';
 import { withFixtures } from '../../../helpers';
-import { createDappTransaction } from '../../../page-objects/flows/transaction';
+import { createDappTransaction } from '../../../page-objects/flows/transaction.flow';
 import Confirmation from '../../../page-objects/pages/confirmations/confirmation';
 import ActivityListPage from '../../../page-objects/pages/home/activity-list';
 import HomePage from '../../../page-objects/pages/home/homepage';

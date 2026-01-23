@@ -9,7 +9,7 @@ import { loginWithBalanceValidation } from '../../../page-objects/flows/login.fl
 import TokenTransferTransactionConfirmation from '../../../page-objects/pages/confirmations/token-transfer-confirmation';
 import TestDapp from '../../../page-objects/pages/test-dapp';
 import ContractAddressRegistry from '../../../seeder/contract-address-registry';
-import { createInternalTransaction } from '../../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../../page-objects/flows/transaction.flow';
 import { Driver } from '../../../webdriver/driver';
 import {
   mockedSourcifyTokenSend,

@@ -14,7 +14,7 @@ import {
 } from '../../page-objects/flows/login.flow';
 import NetworkManager from '../../page-objects/pages/network-manager';
 import { TOKENS_API_MOCK_RESULT } from '../../../data/mock-data';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 
 async function mockTokenList(mockServer: Mockttp) {
   return await mockServer

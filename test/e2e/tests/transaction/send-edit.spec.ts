@@ -1,6 +1,6 @@
 import { strict as assert } from 'assert';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { createInternalTransaction } from '../../page-objects/flows/transaction';
+import { createInternalTransaction } from '../../page-objects/flows/transaction.flow';
 import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';

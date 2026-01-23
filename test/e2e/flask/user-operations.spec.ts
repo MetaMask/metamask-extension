@@ -20,7 +20,7 @@ import { SWAP_TEST_ETH_USDC_TRADES_MOCK } from '../../data/mock-data';
 import { Mockttp } from '../mock-e2e';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { mockSnapAccountAbstractionKeyRingAndSite } from '../mock-response-data/snaps/snap-local-sites/account-abstraction-keyring-site-mocks';
-import { createInternalTransaction } from '../page-objects/flows/transaction';
+import { createInternalTransaction } from '../page-objects/flows/transaction.flow';
 import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 
 enum TransactionDetailRowIndex {

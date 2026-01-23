@@ -1,6 +1,6 @@
 const {
   createInternalTransaction,
-} = require('../../page-objects/flows/transaction');
+} = require('../../page-objects/flows/transaction.flow');
 const {
   default: SendPage,
 } = require('../../page-objects/pages/send/send-page');

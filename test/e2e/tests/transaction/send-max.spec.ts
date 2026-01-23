@@ -3,7 +3,7 @@ import { withFixtures } from '../../helpers';
 import {
   createInternalTransactionWithMaxAmount,
   reviewTransaction,
-} from '../../page-objects/flows/transaction';
+} from '../../page-objects/flows/transaction.flow';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { GAS_API_BASE_URL } from '../../../../shared/constants/swaps';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
