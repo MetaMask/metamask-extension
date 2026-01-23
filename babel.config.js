@@ -44,7 +44,7 @@ module.exports = function (api) {
           'development/build/transforms/import-meta-url.js',
         ),
         {
-          pattern: /^@rive-app\/canvas\/rive\.wasm$/u,
+          pattern: /^@rive-app\/canvas\/(rive)\.wasm$/u,
           rootPath: '/images/',
         },
         "import-meta-url-rive"
