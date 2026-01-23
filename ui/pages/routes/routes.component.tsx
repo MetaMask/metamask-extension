@@ -61,8 +61,10 @@ import {
   TOKEN_TRANSFER_ROUTE,
   REVIEW_GATOR_PERMISSIONS_ROUTE,
   REWARDS_ROUTE,
+  PERPS_MARKET_LIST_ROUTE,
   DECRYPT_MESSAGE_REQUEST_PATH,
   ENCRYPTION_PUBLIC_KEY_REQUEST_PATH,
+  PERPS_HOME_ROUTE,
   PERPS_MARKET_DETAIL_ROUTE,
 } from '../../helpers/constants/routes';
 import { getProviderConfig } from '../../../shared/modules/selectors/networks';
@@ -326,11 +328,19 @@ const NonEvmBalanceCheck = mmLazy(
 const ShieldPlan = mmLazy(
   (() => import('../shield-plan/index.ts')) as unknown as DynamicImportType,
 );
+const PerpsHomePage = mmLazy(
+  (() =>
+    import('../perps/perps-home-page.tsx')) as unknown as DynamicImportType,
+);
 const PerpsMarketDetailPage = mmLazy(
   (() =>
     import(
       '../perps/perps-market-detail-page.tsx'
     )) as unknown as DynamicImportType,
+);
+const MarketListView = mmLazy(
+  (() =>
+    import('../perps/market-list/index.tsx')) as unknown as DynamicImportType,
 );
 // End Lazy Routes
 
@@ -785,8 +795,20 @@ export default function Routes() {
         authenticated: true,
       }),
       createRouteWithLayout({
+        path: PERPS_HOME_ROUTE,
+        component: PerpsHomePage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
         path: `${PERPS_MARKET_DETAIL_ROUTE}/:symbol`,
         component: PerpsMarketDetailPage,
+        layout: RootLayout,
+        authenticated: true,
+      }),
+      createRouteWithLayout({
+        path: PERPS_MARKET_LIST_ROUTE,
+        component: MarketListView,
         layout: RootLayout,
         authenticated: true,
       }),
