@@ -157,7 +157,7 @@ describe('Navigate transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
         const homePage = new HomePage(driver);
-        await homePage.waitForPrimaryCurrency();
+        await homePage.checkExpectedBalanceIsDisplayed('25');
       },
     );
   });
