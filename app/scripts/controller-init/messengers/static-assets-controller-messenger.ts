@@ -62,10 +62,7 @@ export function getStaticAssetsControllerMessenger(
       'AccountsController:getSelectedAccount',
       'TokensController:addTokens',
     ],
-    events: [
-      'NetworkController:networkAdded',
-      'AccountsController:selectedEvmAccountChange',
-    ],
+    events: [],
   });
   return controllerMessenger;
 }

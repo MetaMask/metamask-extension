@@ -1,26 +1,21 @@
 import type { CaipAssetType, Hex } from '@metamask/utils';
 import { isStrictHexString, parseCaipAssetType } from '@metamask/utils';
-import type {
-  AccountsControllerGetSelectedAccountAction,
-  AccountsControllerSelectedEvmAccountChangeEvent,
-} from '@metamask/accounts-controller';
+import type { AccountsControllerGetSelectedAccountAction } from '@metamask/accounts-controller';
 import type {
   ControllerGetStateAction,
   ControllerStateChangeEvent,
 } from '@metamask/base-controller';
 import type { Messenger } from '@metamask/messenger';
-import type {
-  NetworkControllerFindNetworkClientIdByChainIdAction,
-  NetworkControllerNetworkAddedEvent,
-} from '@metamask/network-controller';
+import type { NetworkControllerFindNetworkClientIdByChainIdAction } from '@metamask/network-controller';
 import { StaticIntervalPollingController } from '@metamask/polling-controller';
-import {
+import type {
   TokensControllerAddTokensAction,
   TokensControllerGetStateAction,
   Token,
 } from '@metamask/assets-controllers';
 import { toEvmCaipChainId } from '@metamask/multichain-network-controller';
-import fetchWithCache from '../../../../shared/lib/fetch-with-cache';
+
+import fetchWithCache from '../../../shared/lib/fetch-with-cache';
 
 const CONTROLLER = 'StaticAssetsController' as const;
 
@@ -57,14 +52,10 @@ export type AllowedActions =
   | TokensControllerGetStateAction
   | NetworkControllerFindNetworkClientIdByChainIdAction;
 
-export type AllowedEvents =
-  | NetworkControllerNetworkAddedEvent
-  | AccountsControllerSelectedEvmAccountChangeEvent;
-
 export type StaticAssetsControllerMessenger = Messenger<
   typeof CONTROLLER,
   StaticAssetsControllerActions | AllowedActions,
-  StaticAssetsControllerEvents | AllowedEvents
+  StaticAssetsControllerEvents
 >;
 
 export type StaticAssetsControllerOptions = {
@@ -137,7 +128,7 @@ async function fetchTopAssets({
     });
     return response.data;
   } catch (error) {
-    console.error('Error fetching top assets:', error);
+    // we return an empty array if the fetch top assets fails
     return [];
   }
 }
@@ -186,33 +177,25 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param params - The parameters for the poll.
    * @param params.chainIds - The chain IDs to poll.
-   * @param params.selectedAccountAddress
+   * @param params.selectedAccountAddress - The selected account address.
    */
-  override async _executePoll({
+  async _executePoll({
     chainIds,
     selectedAccountAddress,
   }: {
     chainIds: string[];
     selectedAccountAddress: string;
   }): Promise<void> {
+    if (!selectedAccountAddress) {
+      return;
+    }
     // Use Promise.allSettled to wait for all the promises to settle,
     // even if some of chains are rejected.
-    const results = await Promise.allSettled(
+    await Promise.allSettled(
       chainIds.map((chainId) =>
         this.#addTokensByChainId(chainId, selectedAccountAddress),
       ),
     );
-
-    if (results && results.length > 0) {
-      results.forEach((result) => {
-        if (result.status === 'rejected') {
-          console.error(
-            `[StaticAssetsController] Error adding tokens by chainId`,
-            result.reason,
-          );
-        }
-      });
-    }
   }
 
   /**
@@ -242,7 +225,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * Fetch top assets for a chain and add them to the TokensController.
    *
    * @param chainId - The chain ID.
-   * @param selectedAccountAddress
+   * @param selectedAccountAddress - The selected account address.
    */
   async #addTokensByChainId(
     chainId: string,
@@ -267,7 +250,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param tokens - The tokens to add.
    * @param chainId - The chain ID.
-   * @param selectedAccountAddress
+   * @param selectedAccountAddress - The selected account address.
    */
   async #addTokensToTokensController(
     tokens: Token[],
@@ -275,7 +258,7 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
     selectedAccountAddress: string,
   ): Promise<void> {
     try {
-      if (!isStrictHexString(chainId) || !selectedAccountAddress) {
+      if (!isStrictHexString(chainId)) {
         return;
       }
       // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
@@ -291,8 +274,11 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
         selectedAccountAddress,
       );
 
-      console.log('add tokens to tokens controller', selectedAccountAddress);
-      // filter out tokens that are already in the ignore
+      // Since we only support EVM chains,
+      // we can safely expect the selectedAccountAddress will not change,
+      // even user switches account / switches network.
+      // Hence, even TokensController:addTokens internally will get the selected account address again,
+      // it will be the same address.
       await this.messenger.call(
         'TokensController:addTokens',
         filteredTokens,
@@ -311,8 +297,8 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    *
    * @param tokens - The tokens to filter.
    * @param chainId - The chain ID.
-   * @param selectedAccountAddress
-   * @returns The filtered tokens.
+   * @param selectedAccountAddress - The selected account address.
+   * @returns A promise that resolves to the filtered tokens.
    */
   async #filterIgnoredTokens(
     tokens: Token[],
@@ -335,6 +321,10 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
         selectedAccountAddress
       ] ?? [];
 
+    if (ignoredTokens.length === 0) {
+      return tokens;
+    }
+
     // convert the ignored tokens to a set of lowercase addresses for lookup.
     const ignoredTokensSet = new Set(
       ignoredTokens.map((token) => token.toLowerCase()),
@@ -352,49 +342,39 @@ export class StaticAssetsController extends StaticIntervalPollingController<{
    * If the cache is missed, fetch the top assets from the API.
    *
    * @param chainId - The chain ID.
-   * @returns The tokens.
+   * @returns A promise that resolves to the tokens.
    */
   async #fetchTopAssets(chainId: string): Promise<Token[]> {
-    try {
-      const tokens: Token[] = [];
+    const tokens: Token[] = [];
 
-      const topAssets = await fetchTopAssets({
-        chainId,
-        topX: TOP_X,
-        occurrenceFloor: OCCURRENCE_FLOOR,
-      });
+    const topAssets = await fetchTopAssets({
+      chainId,
+      topX: TOP_X,
+      occurrenceFloor: OCCURRENCE_FLOOR,
+    });
 
-      topAssets.forEach((topAsset) => {
-        try {
-          tokens.push(this.#transformTopAsset(topAsset));
-        } catch (error) {
-          console.error(
-            `[StaticAssetsController] Error transforming top asset ${topAsset.assetId} for chainId ${chainId}`,
-            error,
-          );
-        }
-      });
+    topAssets.forEach((topAsset) => {
+      try {
+        const formattedToken = this.#transformTopAsset(topAsset);
+        // in case of error, the token is not added to the tokens array.
+        tokens.push(formattedToken);
+      } catch (error) {
+        // we skip the token if the transformTopAsset function fails
+      }
+    });
 
-      return tokens;
-    } catch (error) {
-      console.error(
-        `[StaticAssetsController] Error fetching top assets for chainId ${chainId}`,
-        error,
-      );
-      return [];
-    }
+    return tokens;
   }
 
   /**
    * Check if the chain ID is supported and if it has added to the network controller.
    *
    * @param chainId - The chain ID.
-   * @returns Whether the chain ID is valid.
+   * @returns A promise that resolves to whether the chain ID is valid.
    */
   async #isValidChainId(chainId: string): Promise<boolean> {
     try {
       if (
-        // Only support EVM chains.
         !isStrictHexString(chainId) ||
         !this.#supportedChains.has(chainId) ||
         // findNetworkClientIdByChainId will throw an error if the chainId is not supported.
