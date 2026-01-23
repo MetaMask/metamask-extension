@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+authors:
+  - family-names: "Hamitsu"
+title: "metamask-extension"
+version: 1.0.0
+date-released: 2026-01-23
+url: "https://github.com/hamitsu/metamask-extension"
