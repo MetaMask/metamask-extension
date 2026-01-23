@@ -2723,6 +2723,12 @@
         "readable-stream": true
       }
     },
+    "lightweight-charts>fancy-canvas": {
+      "globals": {
+        "ResizeObserver": true,
+        "document.body": true
+      }
+    },
     "react-focus-lock>focus-lock": {
       "globals": {
         "HTMLIFrameElement": true,
@@ -3056,6 +3062,33 @@
       "packages": {
         "buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
+      }
+    },
+    "lightweight-charts": {
+      "globals": {
+        "Image": true,
+        "ResizeObserver": true,
+        "URL": true,
+        "cancelAnimationFrame": true,
+        "chrome": true,
+        "clearTimeout": true,
+        "devicePixelRatio": true,
+        "document.activeElement": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.documentElement": true,
+        "document.getElementById": true,
+        "document.getSelection": true,
+        "getComputedStyle": true,
+        "location.href": true,
+        "navigator": true,
+        "performance.now": true,
+        "queueMicrotask": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "lightweight-charts>fancy-canvas": true
       }
     },
     "currency-formatter>locale-currency": {

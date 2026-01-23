@@ -1,6 +1,8 @@
 import { waitFor } from '@testing-library/react';
 import React from 'react';
+import { TransactionType } from '@metamask/transaction-controller';
 import configureMockStore from 'redux-mock-store';
+import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../../shared/constants/transaction';
 import {
   getMockApproveConfirmState,
   getMockConfirmStateForTransaction,
@@ -271,6 +273,46 @@ describe('ConfirmTitle', () => {
 
       expect(getByText(alertMock.reason)).toBeInTheDocument();
       expect(getByText(alertMock2.reason)).toBeInTheDocument();
+    });
+
+    // @ts-expect-error This is missing from the Mocha type definitions
+    it.each([
+      TransactionType.perpsDeposit,
+      TransactionType.predictDeposit,
+      TransactionType.predictWithdraw,
+      EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
+    ])('hides alert banner for %s transaction type', (type: string) => {
+      const txId = `${type}-tx-id`;
+      const transaction = {
+        id: txId,
+        type: type as TransactionType,
+        chainId: '0x5',
+        txParams: { from: '0x123' },
+        status: 'unapproved',
+        time: Date.now(),
+      } as Confirmation;
+
+      const stateWithAlert = getMockConfirmStateForTransaction(transaction, {
+        metamask: {},
+        confirmAlerts: {
+          alerts: {
+            [txId]: [alertMock as Alert],
+          },
+          confirmed: {
+            [txId]: {
+              [alertMock.key]: false,
+            },
+          },
+        },
+      });
+
+      const mockStore = configureMockStore([])(stateWithAlert);
+      const { queryByText } = renderWithConfirmContextProvider(
+        <ConfirmTitle />,
+        mockStore,
+      );
+
+      expect(queryByText(alertMock.reason)).not.toBeInTheDocument();
     });
   });
 });

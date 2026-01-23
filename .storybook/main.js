@@ -49,9 +49,6 @@ module.exports = {
     config.resolve.alias['../../../store/actions'] = require.resolve(
       '../ui/__mocks__/actions.js',
     );
-    config.resolve.alias['./useNftCollectionsMetadata'] = require.resolve(
-      '../ui/__mocks__/useNftCollectionsMetadata.js',
-    );
     config.resolve.fallback = {
       child_process: false,
       constants: false,
