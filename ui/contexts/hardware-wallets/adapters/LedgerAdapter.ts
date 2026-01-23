@@ -1,5 +1,4 @@
 import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
-import { LEDGER_USB_VENDOR_ID } from '../../../../shared/constants/hardware-wallets';
 import {
   attemptLedgerTransportCreation,
   getAppNameAndVersion,
@@ -12,7 +11,11 @@ import {
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
-import { subscribeToWebHidEvents } from '../webConnectionUtils';
+import {
+  getConnectedLedgerDevices,
+  isWebHidAvailable,
+  subscribeToWebHidEvents,
+} from '../webConnectionUtils';
 
 /**
  * Ledger adapter implementation
@@ -65,32 +68,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
   }
 
   /**
-   * Check if WebHID is available
-   */
-  private isWebHIDAvailable(): boolean {
-    return (
-      typeof window !== 'undefined' &&
-      typeof window.navigator !== 'undefined' &&
-      'hid' in window.navigator
-    );
-  }
-
-  /**
    * Check if device is currently connected via WebHID
    */
   private async checkDeviceConnected(): Promise<boolean> {
-    if (!this.isWebHIDAvailable()) {
-      return false;
-    }
-
-    try {
-      const devices = await window.navigator.hid.getDevices();
-      return devices.some(
-        (device) => device.vendorId === Number(LEDGER_USB_VENDOR_ID),
-      );
-    } catch (error) {
-      return false;
-    }
+    const devices = await getConnectedLedgerDevices();
+    return devices.length > 0;
   }
 
   /**
@@ -136,7 +118,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
     this.pendingConnection = (async () => {
       try {
         // Step 1: Check WebHID availability
-        if (!this.isWebHIDAvailable()) {
+        if (!isWebHidAvailable()) {
           throw createHardwareWalletError(
             ErrorCode.ConnectionTransportMissing,
             HardwareWalletType.Ledger,
