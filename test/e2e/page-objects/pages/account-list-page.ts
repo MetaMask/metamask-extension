@@ -141,19 +141,19 @@ class AccountListPage {
   private readonly importAccountJsonPasswordInput =
     'input[id="json-password-box"]';
 
+  private readonly multichainAccountMenuAddresses = {
+    tag: 'p',
+    text: 'Addresses',
+  };
+
   private readonly multichainAccountMenuDetails = {
     tag: 'p',
     text: 'Account details',
   };
 
-  private readonly multichainAccountMenuRename = {
+  private readonly multichainAccountMenuHide = {
     tag: 'p',
-    text: 'Rename',
-  };
-
-  private readonly multichainAccountMenuAddresses = {
-    tag: 'p',
-    text: 'Addresses',
+    text: 'Hide account',
   };
 
   private readonly multichainAccountMenuPin = {
@@ -161,9 +161,9 @@ class AccountListPage {
     text: 'Pin to top',
   };
 
-  private readonly multichainAccountMenuHide = {
+  private readonly multichainAccountMenuRename = {
     tag: 'p',
-    text: 'Hide account',
+    text: 'Rename',
   };
 
   private readonly pinUnpinAccountButton =
@@ -984,6 +984,7 @@ class AccountListPage {
       this.multichainAccountMenuAddresses,
       this.multichainAccountMenuDetails,
       this.multichainAccountMenuHide,
+      this.multichainAccountMenuRename,
       this.multichainAccountMenuPin,
     ]);
   }
