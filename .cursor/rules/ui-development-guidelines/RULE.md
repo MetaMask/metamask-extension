@@ -157,12 +157,14 @@ All other components (ButtonBase, Text, Icon, Checkbox, etc.) use standard `clas
 
 - SASS files (`.scss`) - we are eliminating SASS
 - `StyleSheet.create()` or CSS-in-JS
-- Raw `div` or semantic HTML without design system wrappers
 - Arbitrary color values like `bg-[#3B82F6]` or `text-[#000000]`
 - Inline style objects unless for truly dynamic values
 - Custom CSS files for new components
 - `backgroundColor` prop on components other than Box (use `className` instead)
 - `borderColor` prop on components other than Box (use `className` instead)
+- Replacing `div` with `className` when there's no appropriate design system component
+
+**Note**: Using `div` with Tailwind `className` is acceptable when no design system component fits the use case.
 
 ## Code Pattern Templates
 
@@ -267,23 +269,30 @@ const MyComponent = () => {
 
 **IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`). For other components (ButtonBase, Text, Icon, Checkbox, etc.), you MUST use `className`.
 
-### When to Use className
-Use `className` for utilities **not covered by props**:
+### When to Use className on Box
+Box doesn't have props for everything - use `className` for:
 - Width and height: `w-full`, `h-20`, `w-96`
 - Complex positioning: `absolute`, `relative`, `top-0`, `left-0`
 - Border radius: `rounded-lg`, `rounded-full`
 - Shadows and opacity: `shadow-lg`, `opacity-50`
-- Interactive states with colors: `hover:bg-hover`, `active:bg-pressed`
+- **Interactive states**: `hover:bg-hover`, `active:bg-pressed`, `focus:ring`
 - Utilities not covered by props: `overflow-hidden`, `z-10`, `truncate`
 
-**DO NOT** use className on Box for:
-- Background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
-- Border colors (use `borderColor` prop with `BoxBorderColor` enum)
+**DO NOT** use className on Box for properties that have dedicated props:
+- Static background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
+- Static border colors (use `borderColor` prop with `BoxBorderColor` enum)
 - Border width (use `borderWidth` prop: 0, 1, 2, 4, or 8)
-- Padding/margin when using standard spacing (use `padding`/`margin` props with 0-12)
-- Flexbox properties (use `flexDirection`, `alignItems`, `justifyContent` props)
+- Padding/margin for standard spacing (use `padding`/`margin` props with 0-12)
+- Flexbox layout (use `flexDirection`, `alignItems`, `justifyContent` props)
 
-**Note**: Components other than Box (ButtonBase, Checkbox, etc.) don't have these props - use `className` for them.
+### When to Use Plain div
+Use `div` with `className` when:
+- No design system component fits the use case
+- The element is highly specific to a feature
+- You need DOM-specific props that Box doesn't support
+- It's a temporary/experimental pattern not yet in the design system
+
+**Always prefer design system components first**, but don't force Box where it doesn't make sense.
 
 ### Color Tokens - Component-Specific Rules
 
@@ -415,25 +424,30 @@ import {
 
 ### Before Committing Code, Verify:
 - [ ] No SASS files (`.scss`) created or modified
-- [ ] No raw `div` components (use `Box`)
+- [ ] Design system components used when appropriate (prefer over raw elements)
 - [ ] No raw text elements without variants (use `Text` with `TextVariant`)
 - [ ] No custom CSS files (use design system + Tailwind)
 - [ ] No arbitrary color values (use design system tokens)
 - [ ] No separate `.styles.ts` files for new components
-- [ ] Box props used before `className` for layout and colors
-- [ ] Box colors use `backgroundColor`/`borderColor` props with enums (not className for static colors)
-- [ ] Other components (ButtonBase, Text, Icon, etc.) use `className` for background colors
+- [ ] Box props used for static layout and colors (not className)
+- [ ] Box static colors use `backgroundColor`/`borderColor` props with enums
+- [ ] Box interactive states (hover/active/focus) use className
+- [ ] Other components (ButtonBase, Text, Icon, etc.) use `className` for styling
 - [ ] All Box spacing uses numeric props when possible (0-12)
 
 ### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
-- Any `.scss` file → Design system components with props
-- Any `div` component → `Box` from design system
+- Any `.scss` file → Design system components + Tailwind utilities
 - Any custom CSS → Design system props + Tailwind utilities
 - Any arbitrary color values → Design system semantic tokens
-- `className="bg-*"` on **Box** → `backgroundColor` prop with `BoxBackgroundColor` enum
-- `className="border-*"` color on **Box** → `borderColor` prop with `BoxBorderColor` enum
+- Static `className="bg-*"` on **Box** → `backgroundColor` prop with `BoxBackgroundColor` enum
+- Static `className="border-*"` color on **Box** → `borderColor` prop with `BoxBorderColor` enum
 - Manual flex properties in className on Box → Box component props
 - `backgroundColor` prop on ButtonBase/Text/etc → `className` (only Box has this prop)
+
+**However, these are OK:**
+- `div` with `className` when no design system component fits
+- `className` on Box for interactive states (`hover:`, `active:`, `focus:`)
+- `className` on Box for utilities without props (width, height, position, etc.)
 
 ### AI Agent Guidelines
 When suggesting code changes:
