@@ -211,9 +211,11 @@ class SwapPage {
   }
 
   async checkQuoteIsDisplayed(): Promise<void> {
-    await this.driver.waitForSelector(this.networkFees);
-    await this.driver.waitForSelector(this.slippageEditButton);
-    await this.driver.waitForSelector(this.minimumReceived);
+    await this.driver.waitForMultipleSelectors([
+      this.networkFees,
+      this.slippageEditButton,
+      this.minimumReceived,
+    ]);
   }
 
   async checkQuoteIsGasIncluded(): Promise<void> {
