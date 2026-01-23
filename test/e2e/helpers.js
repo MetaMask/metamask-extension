@@ -549,16 +549,6 @@ async function withFixtures(options, testSuite) {
   }
 }
 
-const clickNestedButton = async (driver, tabName) => {
-  try {
-    await driver.clickElement({ text: tabName, tag: 'button' });
-  } catch (error) {
-    await driver.clickElement({
-      xpath: `//*[contains(text(),"${tabName}")]/parent::button`,
-    });
-  }
-};
-
 /**
  * Simulates a WebSocket connection by executing a script in the browser context.
  *
@@ -771,7 +761,6 @@ module.exports = {
   getEventPayloads,
   assertInAnyOrder,
   getCleanAppState,
-  clickNestedButton,
   sentryRegEx,
   createWebSocketConnection,
   isSidePanelEnabled,
