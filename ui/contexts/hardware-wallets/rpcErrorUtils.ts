@@ -97,8 +97,8 @@ export function reconstructHardwareWalletError(
       error.message || error.data.userMessage || 'Hardware wallet error',
       {
         code: error.data.code,
-        severity: error.data.severity as Severity,
-        category: error.data.category as Category,
+        severity: (error.data.severity as Severity) ?? Severity.Err,
+        category: (error.data.category as Category) ?? Category.Unknown,
         userMessage: error.data.userMessage ?? '',
         metadata: {
           ...error.data.metadata,

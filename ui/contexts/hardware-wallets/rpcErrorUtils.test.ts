@@ -218,6 +218,25 @@ describe('rpcErrorUtils', () => {
       expect(result.message).toBe('Error');
     });
 
+    it('provides fallback values for missing severity and category', () => {
+      const jsonRpcError = new JsonRpcError(1234, 'Hardware wallet error', {
+        code: ErrorCode.DeviceDisconnected,
+        userMessage: 'Device disconnected',
+        // severity and category intentionally omitted
+      });
+
+      const result = reconstructHardwareWalletError(
+        jsonRpcError,
+        mockWalletType,
+      );
+
+      expect(result).toBeInstanceOf(HardwareWalletError);
+      expect(result.code).toBe(ErrorCode.DeviceDisconnected);
+      expect(result.severity).toBe(Severity.Err);
+      expect(result.category).toBe(Category.Unknown);
+      expect(result.userMessage).toBe('Device disconnected');
+    });
+
     it('falls back to generic error when data is not HardwareWalletError format', () => {
       const jsonRpcError = new JsonRpcError(1234, 'Some other error', {
         someOtherField: 'value',
