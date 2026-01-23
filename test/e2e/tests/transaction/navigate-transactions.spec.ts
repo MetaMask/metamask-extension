@@ -1,16 +1,13 @@
-const {
-  default: Confirmation,
-} = require('../../page-objects/pages/confirmations/confirmation');
-const {
-  createDappTransaction,
-} = require('../../page-objects/flows/transaction');
-
-const { withFixtures } = require('../../helpers');
-const { DAPP_URL, WINDOW_TITLES } = require('../../constants');
-const FixtureBuilder = require('../../fixtures/fixture-builder');
-const {
-  loginWithBalanceValidation,
-} = require('../../page-objects/flows/login.flow');
+import { Driver } from '../../webdriver/driver';
+import Confirmation from '../../page-objects/pages/confirmations/confirmation';
+import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
+import { createDappTransaction } from '../../page-objects/flows/transaction';
+import { withFixtures } from '../../helpers';
+import { DAPP_URL, WINDOW_TITLES } from '../../constants';
+import FixtureBuilder from '../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
+import TestDapp from '../../page-objects/pages/test-dapp';
+import HomePage from '../../page-objects/pages/home/homepage';
 
 const TRANSACTION_COUNT = 4;
 
@@ -23,10 +20,10 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
@@ -63,9 +60,9 @@ describe('Navigate transactions', function () {
           .withPreferencesControllerTxSimulationsDisabled()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
@@ -79,9 +76,9 @@ describe('Navigate transactions', function () {
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
 
-        // add transaction
+        const testDapp = new TestDapp(driver);
         await driver.openNewPage(DAPP_URL);
-        await driver.clickElement({ text: 'Send', tag: 'button' });
+        await testDapp.clickSimpleSendButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
         await navigation.checkPageNumbers(2, 5);
@@ -97,18 +94,17 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
-        // reject transaction
-        await driver.clickElement({ text: 'Cancel', tag: 'button' });
-
         const navigation = new Confirmation(driver);
+        await navigation.clickFooterCancelButton();
+
         await navigation.checkPageNumbers(1, 3);
       },
     );
@@ -122,18 +118,17 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
         dappOptions: { numberOfTestDapps: 1 },
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
-        // confirm transaction
-        await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
         const navigation = new Confirmation(driver);
+        await navigation.clickFooterConfirmButton();
+
         await navigation.checkPageNumbers(1, 3);
       },
     );
@@ -148,37 +143,36 @@ describe('Navigate transactions', function () {
           .withPermissionControllerConnectedToTestDapp()
           .build(),
         localNodeOptions: { hardfork: 'london' },
-        title: this.test.fullTitle(),
+        title: this.test?.fullTitle(),
       },
-      async ({ driver }) => {
+      async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
 
         await createRedesignedMultipleTransactions(driver, TRANSACTION_COUNT);
 
-        // reject transactions
-        await driver.clickElement({ text: 'Reject all', tag: 'button' });
+        const navigation = new Confirmation(driver);
+        await navigation.clickRejectAll();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,
         );
-        await driver.waitForSelector(
-          '[data-testid="eth-overview__primary-currency"]',
-        );
+        const homePage = new HomePage(driver);
+        await homePage.checkExpectedBalanceIsDisplayed('25');
       },
     );
   });
 });
 
-async function createRedesignedMultipleTransactions(driver, count) {
+async function createRedesignedMultipleTransactions(
+  driver: Driver,
+  count: number,
+) {
   for (let i = 0; i < count; i++) {
     await createDappTransaction(driver);
   }
 
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
-  // Wait until total amount is loaded to mitigate flakiness on reject
-  await driver.findElement({
-    tag: 'h2',
-    text: '0.001 ETH',
-  });
+  const transactionConfirmation = new TransactionConfirmation(driver);
+  await transactionConfirmation.checkSendAmount('0.001 ETH');
 }
