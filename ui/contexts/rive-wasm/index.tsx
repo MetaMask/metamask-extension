@@ -24,10 +24,14 @@ export const useRiveWasmReady = () => {
       setIsWasmReady(true);
       return true;
     }
-    RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
 
     // Preload the WASM
-    await RuntimeLoader.awaitInstance();
+    try {
+      RuntimeLoader.setWasmUrl(RIVE_WASM_URL.href);
+      await RuntimeLoader.awaitInstance();
+    } catch (e) {
+      throw new Error(`HTTP error! status while fetching rive.wasm`);
+    }
     setIsWasmReady(true);
     return true;
   }, [isWasmReady, setIsWasmReady]);
