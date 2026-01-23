@@ -30,6 +30,7 @@ export const useRecipientValidation = () => {
   const { validateName } = useNameValidation();
   const [result, setResult] = useState<RecipientValidationResult>({});
   const prevAddressValidated = useRef<string>();
+  const prevChainIdValidated = useRef<string>();
   const unmountedRef = useRef(false);
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -124,13 +125,18 @@ export const useRecipientValidation = () => {
   );
 
   useEffect(() => {
-    if (!to || prevAddressValidated.current === to) {
+    const addressUnchanged = prevAddressValidated.current === to;
+    const chainIdUnchanged = prevChainIdValidated.current === chainId;
+
+    // Skip if nothing changed or no address to validate
+    if (!to || (addressUnchanged && chainIdUnchanged)) {
       return;
     }
 
     prevAddressValidated.current = to;
+    prevChainIdValidated.current = chainId;
     debouncedValidateRecipient(to);
-  }, [to, debouncedValidateRecipient]);
+  }, [to, chainId, debouncedValidateRecipient]);
 
   useEffect(() => {
     return () => {
