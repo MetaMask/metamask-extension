@@ -173,7 +173,7 @@ describe('./utils/config.ts', () => {
 
     it('should not throw when all required production variables are defined', () => {
       const buildTypes = loadBuildTypesConfig();
-      const activeBuild = buildTypes.buildTypes['main'];
+      const activeBuild = buildTypes.buildTypes.main;
       const requiredVars = Object.keys(activeBuild.env ?? {});
 
       const rcVars: Record<string, string> = {};
