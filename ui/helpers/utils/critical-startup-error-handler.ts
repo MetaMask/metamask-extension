@@ -142,8 +142,7 @@ export class CriticalStartupErrorHandler {
     }
 
     const elapsedMs = performance.now() - this.#livenessCheckStartTimeMs;
-    const remainingMs =
-      EXTENDED_BACKGROUND_CONNECTION_TIMEOUT - elapsedMs;
+    const remainingMs = EXTENDED_BACKGROUND_CONNECTION_TIMEOUT - elapsedMs;
     if (remainingMs <= 0) {
       this.#livenessTimeoutReject?.(
         new Error(BACKGROUND_CONNECTION_TIMEOUT_ERROR_MESSAGE),

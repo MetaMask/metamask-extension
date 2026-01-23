@@ -109,8 +109,10 @@ async function start() {
   let appInitAliveMs;
   let backgroundAliveMs;
   let backgroundConnectTraceEnded = false;
-  let shouldExtendGetStateTimeout = false;
-  let backgroundConnection;
+
+  const connectionStream = new ExtensionPortStream(extensionPort);
+  const subStreams = connectSubstreams(connectionStream);
+  const backgroundConnection = metaRPCClientFactory(subStreams.controller);
 
   const endBackgroundConnectTrace = (extraData) => {
     if (backgroundConnectTraceEnded) {
@@ -133,13 +135,9 @@ async function start() {
     {
       onAppInitAlive: () => {
         appInitAliveMs = performance.now() - uiStartupStartTime;
-        if (backgroundConnection?.setGetStateTimeout) {
-          backgroundConnection.setGetStateTimeout(
-            EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
-          );
-        } else {
-          shouldExtendGetStateTimeout = true;
-        }
+        backgroundConnection.setGetStateTimeout(
+          EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
+        );
       },
       onBackgroundAlive: () => {
         backgroundAliveMs = performance.now() - uiStartupStartTime;
@@ -153,6 +151,7 @@ async function start() {
     },
   );
   criticalErrorHandler.install();
+  connectToBackground(backgroundConnection, handleStartUISync);
   if (isManifestV3) {
     try {
       extensionPort.postMessage({
@@ -168,16 +167,6 @@ async function start() {
       );
     }
   }
-
-  const connectionStream = new ExtensionPortStream(extensionPort);
-  const subStreams = connectSubstreams(connectionStream);
-  backgroundConnection = metaRPCClientFactory(subStreams.controller);
-  if (shouldExtendGetStateTimeout) {
-    backgroundConnection.setGetStateTimeout(
-      EXTENDED_BACKGROUND_CONNECTION_TIMEOUT,
-    );
-  }
-  connectToBackground(backgroundConnection, handleStartUISync);
 
   async function handleStartUISync() {
     endBackgroundConnectTrace({
