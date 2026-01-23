@@ -209,6 +209,11 @@ class AssetListPage {
     await this.driver.clickElement(this.sendButton);
   }
 
+  async clickMultichainTokenListButton(): Promise<void> {
+    console.log('Clicking on multichain token list button');
+    await this.driver.clickElement(this.multichainTokenListButton);
+  }
+
   /**
    * Dismisses the "Token imported" success message by clicking the close button
    */

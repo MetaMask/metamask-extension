@@ -1068,12 +1068,6 @@
   "bridgeTo": {
     "message": "इसपर ब्रिज करें"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "यदि आपने यह टोकन मैन्युअल रूप से जोड़ा है, तो सुनिश्चित करें कि आप ब्रिजिंग से पहले अपने फंड के जोखिमों से अवगत हैं।"
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "हम इस टोकन को वेरीफ़ाई नहीं कर सकते।"
-  },
   "bridgeTransactionProgress": {
     "message": "ट्रांसेक्शन 2 में से $1"
   },
@@ -8204,9 +8198,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "आपका NFT खतरे में हो सकता है"
-  },
-  "yourNetworks": {
-    "message": "आपके नेटवर्क"
   },
   "yourPrivateSeedPhrase": {
     "message": "आपका सीक्रेट रिकवरी फ्रेज"

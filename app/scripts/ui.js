@@ -32,7 +32,7 @@ import { ExtensionPortStream } from 'extension-port-stream';
 import launchMetaMaskUi, {
   CriticalStartupErrorHandler,
   connectToBackground,
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
   // TODO: Remove restricted import
   // eslint-disable-next-line import/no-restricted-paths
@@ -254,7 +254,7 @@ async function initializeUiWithTab(
       global.platform.openExtensionInBrowser();
     }
   } catch (error) {
-    await displayCriticalError(
+    await displayCriticalErrorMessage(
       container,
       CriticalErrorTranslationKey.TroubleStarting,
       error,
