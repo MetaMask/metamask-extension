@@ -167,6 +167,25 @@ describe('util', () => {
       expect(util.isResolvableName('simpleword')).toStrictEqual(false);
       expect(util.isResolvableName('no-special-chars')).toStrictEqual(false);
     });
+
+    it('should return false for URLs', () => {
+      expect(util.isResolvableName('http://localhost:3000')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('https://metamask.io')).toStrictEqual(false);
+      expect(util.isResolvableName('ftp://files.example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('mailto:test@example.com')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('file:///path/to/file')).toStrictEqual(
+        false,
+      );
+      expect(util.isResolvableName('wss://socket.example.com')).toStrictEqual(
+        false,
+      );
+    });
   });
 
   describe('isOriginContractAddress', () => {

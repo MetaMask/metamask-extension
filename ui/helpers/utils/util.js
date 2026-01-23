@@ -194,6 +194,29 @@ export function isResolvableName(name) {
     return false;
   }
 
+  // Reject URLs - check for common URL schemes early to avoid false positives
+  const URL_SCHEMES = [
+    'http',
+    'https',
+    'ftp',
+    'ftps',
+    'file',
+    'mailto',
+    'tel',
+    'sms',
+    'data',
+    'blob',
+    'javascript',
+    'ws',
+    'wss',
+  ];
+  if (trimmed.includes(':')) {
+    const scheme = trimmed.split(':')[0].toLowerCase();
+    if (URL_SCHEMES.includes(scheme)) {
+      return false;
+    }
+  }
+
   // Accept if it matches traditional domain name format
   if (isValidDomainName(trimmed)) {
     return true;
@@ -204,7 +227,7 @@ export function isResolvableName(name) {
     return true;
   }
 
-  // Accept scheme-based formats (contains : with text on both sides, but not just a port number)
+  // Accept scheme-based formats (e.g., ens:vitalik, lens:username)
   if (/^[a-zA-Z][a-zA-Z0-9]*:[^\s]+$/u.test(trimmed)) {
     return true;
   }
