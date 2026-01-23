@@ -7,7 +7,7 @@ import type { Variables } from '../../lib/variables';
 import type { BuildTypesConfig, BuildType } from '../../lib/build-type';
 import { type Args } from './cli';
 import { getExtensionVersion } from './version';
-import { ENVIRONMENT, VARIABLES_REQUIRED_IN_PRODUCTION } from './constants';
+import { ENVIRONMENT } from './constants';
 
 type Environment = (typeof ENVIRONMENT)[keyof typeof ENVIRONMENT];
 
@@ -179,22 +179,18 @@ export function getVariables(
 
   // Validate required production variables
   if (environment === ENVIRONMENT.PRODUCTION) {
-    const requiredVars =
-      VARIABLES_REQUIRED_IN_PRODUCTION[
-        type as keyof typeof VARIABLES_REQUIRED_IN_PRODUCTION
-      ];
-    if (requiredVars) {
-      const undefinedVariables = requiredVars.filter(
-        (variable) =>
-          !variables.has(variable) ||
-          variables.get(variable) === null ||
-          variables.get(variable) === undefined,
-      );
-      if (undefinedVariables.length !== 0) {
-        throw new AssertionError({
-          message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
-        });
-      }
+    const requiredVars = Object.keys(activeBuild.env ?? {});
+    const undefinedVariables = requiredVars.filter(
+      (variable) =>
+        !variables.has(variable) ||
+        variables.get(variable) === null ||
+        variables.get(variable) === undefined,
+    );
+
+    if (undefinedVariables.length !== 0) {
+      throw new AssertionError({
+        message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
+      });
     }
   }
 

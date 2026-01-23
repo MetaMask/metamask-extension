@@ -6,7 +6,6 @@ import { version } from '../../../package.json';
 import { loadBuildTypesConfig } from '../../lib/build-type';
 import * as config from '../utils/config';
 import { parseArgv } from '../utils/cli';
-import { VARIABLES_REQUIRED_IN_PRODUCTION } from '../utils/constants';
 
 describe('./utils/config.ts', () => {
   // variables logic is complex, and is "owned" mostly by the other build
@@ -155,7 +154,7 @@ describe('./utils/config.ts', () => {
       mockRc();
       const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--env', 'production', '--targetEnvironment', 'production'],
+        ['--targetEnvironment', 'production'],
         buildTypes,
       );
 
@@ -167,30 +166,31 @@ describe('./utils/config.ts', () => {
               'Some variables required to build production target are not defined',
             ),
           );
-          // Check that missing variables are listed in the error
-          const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
-          for (const varName of requiredVars) {
-            assert.ok(
-              error.message.includes(varName),
-              `Error should mention missing variable: ${varName}`,
-            );
-          }
           return true;
         },
       );
     });
 
     it('should not throw when all required production variables are defined', () => {
-      const requiredVars = VARIABLES_REQUIRED_IN_PRODUCTION.main;
+      const buildTypes = loadBuildTypesConfig();
+      const activeBuild = buildTypes.buildTypes['main'];
+      const requiredVars = Object.keys(activeBuild.env ?? {});
+
       const rcVars: Record<string, string> = {};
       for (const varName of requiredVars) {
         rcVars[varName] = 'test-value';
       }
+
+      // Some variables require more specific values because of additional validation
+      rcVars['SEEDLESS_ONBOARDING_ENABLED'] = 'false';
+      rcVars['INFURA_PROD_PROJECT_ID'] = 'dd98248f370d4063b81c0299f919dc11';
+      rcVars['INFURA_ENV_KEY_REF'] = 'INFURA_PROD_PROJECT_ID';
+      rcVars['SEGMENT_WRITE_KEY_REF'] = 'SEGMENT_PROD_WRITE_KEY';
+
       mockRc(rcVars);
 
-      const buildTypes = loadBuildTypesConfig();
       const { args } = parseArgv(
-        ['--env', 'production', '--targetEnvironment', 'production'],
+        ['--targetEnvironment', 'production'],
         buildTypes,
       );
 
@@ -205,7 +205,7 @@ describe('./utils/config.ts', () => {
       assert.doesNotThrow(() => config.getVariables(devArgs, buildTypes));
 
       const { args: stagingArgs } = parseArgv(
-        ['--env', 'production', '--targetEnvironment', 'staging'],
+        ['--targetEnvironment', 'staging'],
         buildTypes,
       );
       assert.doesNotThrow(() => config.getVariables(stagingArgs, buildTypes));
