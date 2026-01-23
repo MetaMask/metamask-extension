@@ -17,9 +17,10 @@ Always prioritize `@metamask/design-system-react` components and Tailwind CSS pa
 **Before writing any new component or choosing what to use, ask: "Does `@metamask/design-system-react` have this?"**
 
 1. **FIRST**: Use `@metamask/design-system-react` components
-   - **Always use for**: Box (layout), Text (typography), Button/ButtonBase/ButtonIcon, Icon, Checkbox
+   - **Always use for**: Box (layout), Text (typography), Button/ButtonIcon, Icon, Checkbox
    - **Always use for**: Avatar variants (AvatarAccount, AvatarBase, AvatarFavicon, AvatarGroup, AvatarIcon, AvatarNetwork, AvatarToken)
    - **Always use for**: Badge variants (BadgeCount, BadgeIcon, BadgeNetwork, BadgeStatus, BadgeWrapper)
+   - **ButtonBase**: Only for highly custom button patterns (prefer Button component)
    - **Rule**: If it exists in the design system, you MUST use it
 
 2. **SECOND**: Use `ui/components/component-library` ONLY if design system lacks it
@@ -139,9 +140,11 @@ When unsure about component APIs:
 - **Borders (Box ONLY)**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
 - **Tailwind**: Use `className` prop for utilities not covered by props
 
-All other components (Button, ButtonBase, Text, Icon, Checkbox, etc.) have their own component-specific props:
+All other components (Button, Text, Icon, Checkbox, etc.) have their own component-specific props:
 - **Use component props FIRST**: `variant`, `size`, `color`, etc.
 - **Use `className` for additional utilities**: layout, spacing, positioning, etc.
+
+**Note on ButtonBase**: It's a low-level base component for highly custom buttons. Prefer the `Button` component with variants (Primary, Secondary, Tertiary) for standard use cases.
 
 ## Styling Rules (ENFORCE STRICTLY)
 
@@ -202,29 +205,47 @@ const MyComponent = () => {
 </Box>
 ```
 
-### Interactive Element:
+### Button Element:
 
 ```tsx
-// Option 1: Using ButtonBase with className
+// ✅ PREFER: Use Button component with variants
+<Button
+  variant={ButtonVariant.Primary}
+  size={ButtonSize.Lg}
+  onClick={handleClick}
+>
+  Button Text
+</Button>
+
+<Button
+  variant={ButtonVariant.Secondary}
+  startIconName={IconName.Bank}
+  onClick={handleClick}
+>
+  With Icon
+</Button>
+
+// ✅ For highly custom buttons: Use ButtonBase
 <ButtonBase
+  size={ButtonBaseSize.Md}
   className="h-auto rounded-lg bg-muted py-4 px-4 hover:bg-muted-hover active:bg-muted-pressed"
   onClick={handleClick}
 >
   <Icon name={IconName.Bank} />
-  <Text fontWeight={FontWeight.Medium}>Button Text</Text>
+  <Text fontWeight={FontWeight.Medium}>Custom Button</Text>
 </ButtonBase>
 
-// Option 2: Using Box with asChild pattern
+// ✅ For very custom interactive elements: Use Box with asChild
 <Box
   backgroundColor={BoxBackgroundColor.BackgroundMuted}
   paddingHorizontal={4}
   paddingVertical={2}
-  className="h-auto rounded-lg hover:bg-muted-hover active:bg-muted-pressed"
+  className="h-auto rounded-lg hover:bg-muted-hover active:bg-muted-pressed cursor-pointer"
   asChild
 >
   <button onClick={handleClick}>
     <Icon name={IconName.Bank} />
-    <Text fontWeight={FontWeight.Medium}>Button Text</Text>
+    <Text fontWeight={FontWeight.Medium}>Very Custom Element</Text>
   </button>
 </Box>
 ```
@@ -273,9 +294,14 @@ const MyComponent = () => {
 
 **IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`).
 
-For other components (Button, ButtonBase, Text, Icon, Checkbox, etc.):
+For other components (Button, Text, Icon, Checkbox, etc.):
 1. **Use component props FIRST**: `variant`, `size`, `color`, `startIconName`, etc.
 2. **Use `className` for additional utilities**: layout spacing (`mb-2`), width (`w-full`), positioning, etc.
+
+**Button Component Hierarchy**:
+- **Button**: Use for standard buttons (Primary, Secondary, Tertiary variants)
+- **ButtonIcon**: Use for icon-only buttons
+- **ButtonBase**: Only for highly custom button patterns that don't fit Button variants
 
 ### When to Use className on Box
 Box doesn't have props for everything - use `className` for:
@@ -325,14 +351,25 @@ Use `div` with `className` when:
 <Box className="bg-default">  {/* Use backgroundColor prop instead */}
 ```
 
-**For Button, ButtonBase, and other components:**
+**For Button, Text, Icon, and other components:**
 ```tsx
-// ✅ Use component props FIRST, then className for layout/utilities
-<Button variant={ButtonVariant.Primary} size={ButtonSize.Lg}>
+// ✅ Use Button with variant prop (preferred over ButtonBase)
+<Button
+  variant={ButtonVariant.Primary}
+  size={ButtonSize.Lg}
+  startIconName={IconName.Bank}
+>
+  Button Text
+</Button>
+
+// ✅ Use ButtonBase only for highly custom buttons
 <ButtonBase
   size={ButtonBaseSize.Md}
   className="bg-muted hover:bg-muted-hover active:bg-muted-pressed"
 >
+  <Icon name={IconName.Custom} />
+  <Text>Custom Button</Text>
+</ButtonBase>
 
 // ✅ Text uses variant and color props, className for layout
 <Text
@@ -351,7 +388,7 @@ Use `div` with `className` when:
 
 // ❌ NEVER use arbitrary colors on any component
 <Box className="bg-[#3B82F6]">
-<ButtonBase className="bg-[#FF0000]">
+<Button className="bg-[#FF0000]">
 <Box style={{ backgroundColor: '#FF0000' }}>
 ```
 
