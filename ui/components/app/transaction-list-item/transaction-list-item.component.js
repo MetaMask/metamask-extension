@@ -117,9 +117,14 @@ function TransactionListItemInner({
   };
 
   const {
-    initialTransaction: { id, txParams },
+    initialTransaction: { id, txParams, type, metamaskPay },
     primaryTransaction: { error, status },
   } = transactionGroup;
+
+  const badgeChainId =
+    type === TransactionType.perpsDeposit && metamaskPay?.chainId
+      ? metamaskPay.chainId
+      : chainId;
 
   const senderAddress = txParams?.from;
 
@@ -307,11 +312,11 @@ function TransactionListItemInner({
                 className="activity-tx__network-badge"
                 data-testid="activity-tx-network-badge"
                 size={AvatarNetworkSize.Xs}
-                name={NETWORK_TO_NAME_MAP[chainId]}
-                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[chainId]}
+                name={NETWORK_TO_NAME_MAP[badgeChainId]}
+                src={CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP[badgeChainId]}
                 borderColor={BackgroundColor.backgroundDefault}
                 borderWidth={2}
-                backgroundColor={getTestNetworkBackgroundColor(chainId)}
+                backgroundColor={getTestNetworkBackgroundColor(badgeChainId)}
               />
             }
             style={{ alignSelf: 'center' }}
