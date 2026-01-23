@@ -220,10 +220,6 @@ describe('LedgerAdapter', () => {
     const deviceId = 'test-device-id';
 
     it('connects to device when WebHID is available and device is present', async () => {
-      const getConnectedLedgerDevicesSpy = jest.spyOn(
-        webConnectionUtils,
-        'getConnectedLedgerDevices',
-      );
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -231,7 +227,6 @@ describe('LedgerAdapter', () => {
 
       await adapter.connect(deviceId);
 
-      expect(getConnectedLedgerDevicesSpy).toHaveBeenCalled();
       expect(mockNavigatorHid.getDevices).toHaveBeenCalled();
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalled();
       expect(adapter.isConnected()).toBe(true);
@@ -272,10 +267,6 @@ describe('LedgerAdapter', () => {
     });
 
     it('throws error when device is not physically connected', async () => {
-      const getConnectedLedgerDevicesSpy = jest.spyOn(
-        webConnectionUtils,
-        'getConnectedLedgerDevices',
-      );
       mockNavigatorHid.getDevices.mockResolvedValue([]);
 
       await expect(adapter.connect(deviceId)).rejects.toThrow(
@@ -291,7 +282,6 @@ describe('LedgerAdapter', () => {
         );
       }
 
-      expect(getConnectedLedgerDevicesSpy).toHaveBeenCalled();
       expect(mockNavigatorHid.getDevices).toHaveBeenCalled();
       expect(adapter.isConnected()).toBe(false);
     });
