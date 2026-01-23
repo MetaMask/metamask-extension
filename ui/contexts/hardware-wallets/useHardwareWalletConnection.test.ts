@@ -20,6 +20,7 @@ describe('useHardwareWalletConnection', () => {
     abortControllerRef: { current: AbortController | null };
     adapterRef: { current: HardwareWalletAdapter | null };
     connectingPromiseRef: { current: Promise<void> | null };
+    isConnectingRef: { current: boolean };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
     currentConnectionIdRef: { current: number | null };
@@ -47,6 +48,7 @@ describe('useHardwareWalletConnection', () => {
       abortControllerRef: { current: null },
       adapterRef: { current: null },
       connectingPromiseRef: { current: null },
+      isConnectingRef: { current: false },
       hasAutoConnectedRef: { current: false },
       lastConnectedAccountRef: { current: null },
       currentConnectionIdRef: { current: null },
@@ -335,6 +337,52 @@ describe('useHardwareWalletConnection', () => {
       });
 
       expect(existingAdapter.destroyMock).toHaveBeenCalled();
+    });
+
+    it('sets isConnectingRef to true during connection and resets to false after completion', async () => {
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockResolvedValue('device-123');
+      const mockAdapter = new MockHardwareWalletAdapter({
+        onDisconnect: mockHandleDisconnect,
+        onAwaitingConfirmation: jest.fn(),
+        onDeviceLocked: jest.fn(),
+        onAppNotOpen: jest.fn(),
+        onDeviceEvent: mockHandleDeviceEvent,
+      });
+      (createAdapterForHardwareWalletType as jest.Mock).mockReturnValue(
+        mockAdapter,
+      );
+
+      const { result } = setupHook();
+
+      // Initially, isConnectingRef should be false
+      expect(mockRefs.isConnectingRef.current).toBe(false);
+
+      await act(async () => {
+        await result.current.connect();
+      });
+
+      // After connection completes, isConnectingRef should be reset to false
+      expect(mockRefs.isConnectingRef.current).toBe(false);
+    });
+
+    it('resets isConnectingRef to false even when connection fails', async () => {
+      (
+        webConnectionUtils.getHardwareWalletDeviceId as jest.Mock
+      ).mockRejectedValue(new Error('Discovery failed'));
+
+      const { result } = setupHook();
+
+      // Initially, isConnectingRef should be false
+      expect(mockRefs.isConnectingRef.current).toBe(false);
+
+      await act(async () => {
+        await result.current.connect();
+      });
+
+      // After connection fails, isConnectingRef should still be reset to false
+      expect(mockRefs.isConnectingRef.current).toBe(false);
     });
   });
 

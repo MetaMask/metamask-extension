@@ -233,6 +233,10 @@ export const useHardwareWalletConnection = ({
       return refs.connectingPromiseRef.current;
     }
 
+    // Set flag to prevent auto-connect race conditions
+    // This must happen synchronously before any async work
+    refs.isConnectingRef.current = true;
+
     const connectionPromise = (async (): Promise<void> => {
       const effectiveType = refs.walletTypeRef.current;
       if (!effectiveType) {
@@ -282,6 +286,8 @@ export const useHardwareWalletConnection = ({
       if (refs.connectingPromiseRef.current === connectionPromise) {
         refs.connectingPromiseRef.current = null;
       }
+      // Reset flag to allow new connection attempts
+      refs.isConnectingRef.current = false;
     });
 
     return connectionPromise;
