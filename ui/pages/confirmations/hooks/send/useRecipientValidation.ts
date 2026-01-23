@@ -102,7 +102,7 @@ export const useRecipientValidation = () => {
   // Create debounced function only once - it calls through the ref to get latest validation logic
   const debouncedValidateRecipient = useMemo(
     () =>
-      debounce(async (toAddress: string) => {
+      debounce(async (toAddress: string, validationChainId: string) => {
         abortControllerRef.current?.abort();
         abortControllerRef.current = new AbortController();
 
@@ -113,7 +113,8 @@ export const useRecipientValidation = () => {
 
         if (
           !unmountedRef.current &&
-          prevAddressValidated.current === toAddress
+          prevAddressValidated.current === toAddress &&
+          prevChainIdValidated.current === validationChainId
         ) {
           setResult({
             ...validationResult,
@@ -129,13 +130,13 @@ export const useRecipientValidation = () => {
     const chainIdUnchanged = prevChainIdValidated.current === chainId;
 
     // Skip if nothing changed or no address to validate
-    if (!to || (addressUnchanged && chainIdUnchanged)) {
+    if (!to || !chainId || (addressUnchanged && chainIdUnchanged)) {
       return;
     }
 
     prevAddressValidated.current = to;
     prevChainIdValidated.current = chainId;
-    debouncedValidateRecipient(to);
+    debouncedValidateRecipient(to, chainId);
   }, [to, chainId, debouncedValidateRecipient]);
 
   useEffect(() => {

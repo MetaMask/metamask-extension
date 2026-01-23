@@ -39,15 +39,19 @@ export const useNameValidation = () => {
         };
       }
 
+      // Return empty result for aborted operations - not an error, just cancelled
       if (signal?.aborted) {
-        return {
-          error: 'nameResolutionFailedError',
-        };
+        return {};
       }
 
       const resolutions = (await dispatch(
         lookupDomainName(to, chainId, signal),
       )) as Resolution[];
+
+      // Check again after async operation - if aborted mid-execution, don't show error
+      if (signal?.aborted) {
+        return {};
+      }
 
       return processResolutions(resolutions, to);
     },
