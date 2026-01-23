@@ -8,6 +8,13 @@ import mockState from '../../../../../test/data/mock-state.json';
 import { mockNetworkState } from '../../../../../test/stub/networks';
 import { AssetPickerModalNftTab } from './asset-picker-modal-nft-tab';
 
+// Mock ResizeObserver for tests
+global.ResizeObserver = jest.fn().mockImplementation(() => ({
+  observe: jest.fn(),
+  unobserve: jest.fn(),
+  disconnect: jest.fn(),
+}));
+
 jest.mock('../../../../hooks/useGetAssetImageUrl', () => ({
   // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
   // eslint-disable-next-line @typescript-eslint/naming-convention
