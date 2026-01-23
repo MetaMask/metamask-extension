@@ -14,6 +14,7 @@ Always prioritize `@metamask/design-system-react` components and Tailwind CSS pa
 ## Component Hierarchy (STRICT ORDER)
 
 ### The Rule: Check Design System First
+
 **Before writing any new component or choosing what to use, ask: "Does `@metamask/design-system-react` have this?"**
 
 1. **FIRST**: Use `@metamask/design-system-react` components
@@ -44,6 +45,7 @@ Always prioritize `@metamask/design-system-react` components and Tailwind CSS pa
    - **NEVER**: Write SASS files - use Tailwind classes only
 
 ### Decision Tree
+
 ```
 Need a component?
   ├─ Is it Box, Text, Button, Icon, Avatar, Badge, or Checkbox?
@@ -64,6 +66,7 @@ Need a component?
 ```
 
 ### Why This Hierarchy Matters
+
 - **Consistency**: Design system ensures consistent look, feel, and behavior
 - **Maintenance**: Centralized updates benefit all consumers
 - **Accessibility**: Design system components built with accessibility in mind
@@ -118,6 +121,7 @@ import {
 ## Component Documentation Access
 
 ### Type Definitions & Documentation
+
 All `@metamask/design-system-react` components have comprehensive TypeScript definitions:
 
 - **Box**: `/node_modules/@metamask/design-system-react/dist/components/Box/*.d.cts`
@@ -125,11 +129,13 @@ All `@metamask/design-system-react` components have comprehensive TypeScript def
 - **Button**: `/node_modules/@metamask/design-system-react/dist/components/Button/*.d.cts`
 
 When unsure about component APIs:
+
 1. Read the `.d.cts` files for complete prop documentation
 2. Reference `ui/pages/design-system/design-system.stories.tsx` for usage examples
 3. Check GitHub source: https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components
 
 ### Box Component Quick Reference
+
 **Box is a special cross-platform primitive component.** It's designed to share UI code between web (renders `div`) and React Native (renders `View`) with the same component API. This is why Box has utility props while other components use `className`.
 
 **Box is the ONLY component with layout and color props:**
@@ -141,6 +147,7 @@ When unsure about component APIs:
 - **Tailwind**: Use `className` prop for utilities not covered by props
 
 All other components (Button, Text, Icon, Checkbox, etc.) have their own component-specific props:
+
 - **Use component props FIRST**: `variant`, `size`, `color`, etc.
 - **Use `className` for additional utilities**: layout, spacing, positioning, etc.
 
@@ -255,10 +262,7 @@ const MyComponent = () => {
 ```tsx
 <BadgeWrapper
   badge={
-    <BadgeNetwork
-      name="Ethereum"
-      src="https://example.com/ethereum-logo.png"
-    />
+    <BadgeNetwork name="Ethereum" src="https://example.com/ethereum-logo.png" />
   }
 >
   <AvatarToken
@@ -272,7 +276,9 @@ const MyComponent = () => {
 ## Box Component Best Practices
 
 ### Prefer Props Over className for Box Layout and Colors
+
 ✅ **DO** - Use typed props for Box component:
+
 ```tsx
 <Box
   flexDirection={BoxFlexDirection.Row}
@@ -288,6 +294,7 @@ const MyComponent = () => {
 ```
 
 ❌ **DON'T** - Use className for Box properties that have dedicated props:
+
 ```tsx
 <Box className="flex flex-row items-center justify-between gap-3 p-4 m-2 bg-default border border-muted">
 ```
@@ -295,16 +302,20 @@ const MyComponent = () => {
 **IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`).
 
 For other components (Button, Text, Icon, Checkbox, etc.):
+
 1. **Use component props FIRST**: `variant`, `size`, `color`, `startIconName`, etc.
 2. **Use `className` for additional utilities**: layout spacing (`mb-2`), width (`w-full`), positioning, etc.
 
 **Button Component Hierarchy**:
+
 - **Button**: Use for standard buttons (Primary, Secondary, Tertiary variants)
 - **ButtonIcon**: Use for icon-only buttons
 - **ButtonBase**: Only for highly custom button patterns that don't fit Button variants
 
 ### When to Use className on Box
+
 Box doesn't have props for everything - use `className` for:
+
 - Width and height: `w-full`, `h-20`, `w-96`
 - Complex positioning: `absolute`, `relative`, `top-0`, `left-0`
 - Border radius: `rounded-lg`, `rounded-full`
@@ -313,6 +324,7 @@ Box doesn't have props for everything - use `className` for:
 - Utilities not covered by props: `overflow-hidden`, `z-10`, `truncate`
 
 **DO NOT** use className on Box for properties that have dedicated props:
+
 - Static background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
 - Static border colors (use `borderColor` prop with `BoxBorderColor` enum)
 - Border width (use `borderWidth` prop: 0, 1, 2, 4, or 8)
@@ -320,7 +332,9 @@ Box doesn't have props for everything - use `className` for:
 - Flexbox layout (use `flexDirection`, `alignItems`, `justifyContent` props)
 
 ### When to Use Plain div
+
 Use `div` with `className` when:
+
 - No design system component fits the use case
 - The element is highly specific to a feature
 - You need DOM-specific props that Box doesn't support
@@ -331,6 +345,7 @@ Use `div` with `className` when:
 ### Color Tokens - Component-Specific Rules
 
 **For Box component only:**
+
 ```tsx
 // ✅ Use backgroundColor and borderColor props with enums
 <Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
@@ -352,6 +367,7 @@ Use `div` with `className` when:
 ```
 
 **For Button, Text, Icon, and other components:**
+
 ```tsx
 // ✅ Use Button with variant prop (preferred over ButtonBase)
 <Button
@@ -394,22 +410,24 @@ Use `div` with `className` when:
 
 ## Component Conversion Guide
 
-| DON'T Use                                  | USE Instead                                          |
-| ------------------------------------------ | ---------------------------------------------------- |
-| `<div>` (for layout)                       | `<Box>`                                              |
-| `<span>`, `<p>`, `<h1>`, etc.              | `<Text variant={TextVariant.BodyMd}>`                |
-| `<button>` (styled)                        | `<Button variant={ButtonVariant.Primary}>`           |
-| SASS files (`.scss`)                       | Design system props + Tailwind `className`           |
-| `style={{ backgroundColor: 'red' }}`       | Box: `backgroundColor={BoxBackgroundColor.ErrorDefault}` |
-| `style={{ display: 'flex' }}`              | Box: `flexDirection={BoxFlexDirection.Row}`          |
-| Manual padding/margin in CSS               | Box: `padding={4}` or `className="p-4"`              |
-| Custom CSS classes in `.scss`              | Component props + Tailwind utility classes           |
-| `className="text-lg font-bold"`            | `<Text variant={TextVariant.HeadingMd}>`             |
+| DON'T Use                            | USE Instead                                              |
+| ------------------------------------ | -------------------------------------------------------- |
+| `<div>` (for layout)                 | `<Box>`                                                  |
+| `<span>`, `<p>`, `<h1>`, etc.        | `<Text variant={TextVariant.BodyMd}>`                    |
+| `<button>` (styled)                  | `<Button variant={ButtonVariant.Primary}>`               |
+| SASS files (`.scss`)                 | Design system props + Tailwind `className`               |
+| `style={{ backgroundColor: 'red' }}` | Box: `backgroundColor={BoxBackgroundColor.ErrorDefault}` |
+| `style={{ display: 'flex' }}`        | Box: `flexDirection={BoxFlexDirection.Row}`              |
+| Manual padding/margin in CSS         | Box: `padding={4}` or `className="p-4"`                  |
+| Custom CSS classes in `.scss`        | Component props + Tailwind utility classes               |
+| `className="text-lg font-bold"`      | `<Text variant={TextVariant.HeadingMd}>`                 |
 
 ## Legacy Code Migration Guidelines
 
 ### Identifying Legacy Patterns
+
 🚫 **Anti-patterns to refactor when encountered:**
+
 - SASS files (`.scss`) - highest priority to eliminate
 - Separate `.styles.ts` or style objects
 - Raw `div` components instead of `Box`
@@ -418,11 +436,13 @@ Use `div` with `className` when:
 - Custom CSS classes that could be Tailwind utilities
 
 ### Migration Priority
+
 1. **High Priority**: Active components using SASS - convert to Tailwind
 2. **Medium Priority**: Frequently used shared components with style objects
 3. **Low Priority**: Stable legacy components with no active development
 
 ### Migration Steps
+
 1. Replace `div` → `Box` from design system
 2. Replace text elements → `Text` with appropriate `TextVariant`
 3. Convert SASS styles → Tailwind `className` props
@@ -433,6 +453,7 @@ Use `div` with `className` when:
 ### Example Migration
 
 **Before (SASS):**
+
 ```tsx
 // component.tsx
 import './component.scss';
@@ -458,6 +479,7 @@ import './component.scss';
 ```
 
 **After (Design System):**
+
 ```tsx
 import {
   Box,
@@ -466,7 +488,7 @@ import {
   FontWeight,
   BoxFlexDirection,
   BoxAlignItems,
-  BoxBackgroundColor
+  BoxBackgroundColor,
 } from '@metamask/design-system-react';
 
 <Box
@@ -478,12 +500,13 @@ import {
   <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Medium}>
     Title
   </Text>
-</Box>
+</Box>;
 ```
 
 ## Error Prevention & Code Review Checklist
 
 ### Before Committing Code, Verify:
+
 - [ ] No SASS files (`.scss`) created or modified
 - [ ] Design system components used when appropriate (prefer over raw elements)
 - [ ] No raw text elements without variants (use `Text` with `TextVariant`)
@@ -497,6 +520,7 @@ import {
 - [ ] All Box spacing uses numeric props when possible (0-12)
 
 ### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
+
 - Any `.scss` file → Design system components + Tailwind utilities
 - Any custom CSS → Design system props + Tailwind utilities
 - Any arbitrary color values → Design system semantic tokens
@@ -506,12 +530,15 @@ import {
 - `backgroundColor` prop on ButtonBase/Text/etc → `className` (only Box has this prop)
 
 **However, these are OK:**
+
 - `div` with `className` when no design system component fits
 - `className` on Box for interactive states (`hover:`, `active:`, `focus:`)
 - `className` on Box for utilities without props (width, height, position, etc.)
 
 ### AI Agent Guidelines
+
 When suggesting code changes:
+
 1. ALWAYS read component type definitions first for accurate API usage
 2. ALWAYS check `ui/pages/design-system/design-system.stories.tsx` for real-world patterns
 3. ALWAYS search for existing feature-specific components before building new ones
@@ -534,11 +561,13 @@ Before suggesting any UI solution:
 ## Tailwind Configuration
 
 The extension uses:
+
 - `@metamask/design-system-tailwind-preset` for design tokens
 - `@metamask/design-tokens` for color and spacing values
 - Custom `tailwind.config.js` that extends the preset
 
 All Tailwind colors are mapped to design tokens. Use semantic class names:
+
 - `bg-default`, `bg-alternative`, `bg-muted`
 - `text-default`, `text-alternative`, `text-muted`
 - `border-default`, `border-muted`
@@ -547,6 +576,7 @@ All Tailwind colors are mapped to design tokens. Use semantic class names:
 ## Reference Examples
 
 Always reference the patterns from:
+
 - `ui/pages/design-system/design-system.stories.tsx` for design system usage
 - `ui/components/component-library/` for component-library patterns
 - `ui/components/multichain/` for feature component examples
