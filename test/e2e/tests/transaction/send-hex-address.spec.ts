@@ -83,10 +83,11 @@ describe('Hexadecimal address prefix normalization', function () {
           await sendPage.fillRecipient(nonHexPrefixedAddress);
           await sendPage.pressContinueButton();
 
-          // Verify address in activity log
-          const transactionDetailsPage = new TransactionDetailsPage(driver);
-          await transactionDetailsPage.checkAddressInActivityLog(
+          // Verify address on confirmation screen
+          const transactionConfirmation = new TransactionConfirmation(driver);
+          await transactionConfirmation.checkNameIsDisplayed(
             hexAbbreviatedAddress,
+            false,
           );
         },
       );
