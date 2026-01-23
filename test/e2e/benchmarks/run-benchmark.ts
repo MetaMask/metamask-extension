@@ -16,8 +16,65 @@ import {
   getFirstParentDirectoryThatExists,
   isWritable,
 } from '../../helpers/file';
+import { runBenchmarkWithIterations } from './utils';
+import type {
+  BenchmarkFunction,
+  BenchmarkResults,
+  BenchmarkSummary,
+  StatisticalResult,
+} from './utils/types';
 
-// ==================== Presets (file paths) ====================
+/**
+ * Convert BenchmarkSummary (from runBenchmarkWithIterations) to BenchmarkResults format
+ * for consistent output with send-to-sentry.ts
+ *
+ * @param summary
+ * @param testTitle
+ * @param persona
+ */
+function convertSummaryToResults(
+  summary: BenchmarkSummary,
+  testTitle: string,
+  persona?: string,
+): BenchmarkResults {
+  const mean: StatisticalResult = {};
+  const min: StatisticalResult = {};
+  const max: StatisticalResult = {};
+  const stdDev: StatisticalResult = {};
+  const p75: StatisticalResult = {};
+  const p95: StatisticalResult = {};
+
+  for (const timer of summary.timers) {
+    mean[timer.id] = timer.mean;
+    min[timer.id] = timer.min;
+    max[timer.id] = timer.max;
+    stdDev[timer.id] = timer.stdDev;
+    p75[timer.id] = timer.p75;
+    p95[timer.id] = timer.p95;
+  }
+
+  return {
+    testTitle,
+    persona,
+    mean,
+    min,
+    max,
+    stdDev,
+    p75,
+    p95,
+  };
+}
+
+/**
+ * Check if a benchmark file supports iterations (performance or user-actions)
+ *
+ * @param filePath
+ */
+function supportsIterations(filePath: string): boolean {
+  return (
+    filePath.includes('/performance/') || filePath.includes('/user-actions/')
+  );
+}
 
 const BENCHMARK_DIR = 'test/e2e/benchmarks/flows';
 
@@ -74,22 +131,48 @@ async function runBenchmarkFile(
 
   const benchmark = await import(absolutePath);
 
+  let runFn: BenchmarkFunction | undefined;
   if (typeof benchmark.run === 'function') {
-    return benchmark.run(options);
-  }
-  if (typeof benchmark.default === 'function') {
-    return benchmark.default(options);
+    runFn = benchmark.run;
+  } else if (typeof benchmark.default === 'function') {
+    runFn = benchmark.default;
+  } else {
+    runFn = Object.values(benchmark).find(
+      (v): v is BenchmarkFunction =>
+        typeof v === 'function' &&
+        Boolean((v as { name?: string }).name?.startsWith('run')),
+    );
   }
 
-  const runFn = Object.values(benchmark).find(
-    (v): v is (...args: unknown[]) => unknown =>
-      typeof v === 'function' &&
-      Boolean((v as { name?: string }).name?.startsWith('run')),
-  );
-  if (runFn) {
-    return runFn(options);
+  if (!runFn) {
+    throw new Error(`No run function found in ${filePath}`);
   }
-  throw new Error(`No run function found in ${filePath}`);
+
+  // For benchmarks that support iterations, use runBenchmarkWithIterations to run multiple times
+  if (supportsIterations(filePath) && options.iterations > 0) {
+    const testTitle = benchmark.testTitle || fileName;
+    const { persona } = benchmark;
+
+    console.log(
+      `Running ${fileName} with ${options.iterations} iterations (retries: ${options.retries})`,
+    );
+
+    const summary = await runBenchmarkWithIterations(
+      fileName,
+      runFn,
+      options.iterations,
+      options.retries,
+    );
+
+    console.log(
+      `Completed: ${summary.successfulRuns}/${summary.iterations} successful runs`,
+    );
+
+    return convertSummaryToResults(summary, testTitle, persona);
+  }
+
+  // For other benchmarks, run once with options
+  return runFn(options);
 }
 
 async function runPlaywrightBenchmark(filePath: string): Promise<void> {
@@ -132,7 +215,8 @@ async function main(): Promise<void> {
     .option('iterations', {
       alias: 'i',
       default: 10,
-      description: 'Number of iterations (for performance benchmarks)',
+      description:
+        'Number of iterations (for performance and user-action benchmarks)',
       type: 'number',
     })
     .option('browserLoads', {

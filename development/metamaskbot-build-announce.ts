@@ -7,6 +7,12 @@ const benchmarkPlatforms = ['chrome', 'firefox'];
 const buildTypes = ['browserify', 'webpack'];
 const pageTypes = ['standardHome', 'powerUserHome'];
 
+// Map camelCase page names to dash-separated filenames used in CI
+const pageTypeToFileName: Record<string, string> = {
+  standardHome: 'standard-home',
+  powerUserHome: 'power-user-home',
+};
+
 /**
  * The threshold for whether to highlight a change in bundle size, in bytes.
  */
@@ -158,8 +164,14 @@ async function start(): Promise<void> {
   const bundleSizeStatsUrl = `${HOST_URL}/bundle-size/bundle_size.json`;
   const bundleSizeStatsLink = `<a href="${bundleSizeStatsUrl}">Bundle Size Stats</a>`;
 
-  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-userActions.json`;
+  const userActionsStatsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-user-actions.json`;
   const userActionsStatsLink = `<a href="${userActionsStatsUrl}">User Actions Stats</a>`;
+
+  const performanceOnboardingUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performance-onboarding.json`;
+  const performanceOnboardingLink = `<a href="${performanceOnboardingUrl}">Performance Onboarding</a>`;
+
+  const performanceAssetsUrl = `${HOST_URL}/benchmarks/benchmark-chrome-browserify-performance-assets.json`;
+  const performanceAssetsLink = `<a href="${performanceAssetsUrl}">Performance Assets</a>`;
 
   const allArtifactsUrl = `https://github.com/${OWNER}/${REPOSITORY}/actions/runs/${RUN_ID}#artifacts`;
 
@@ -178,6 +190,7 @@ async function start(): Promise<void> {
   contentRows.push(
     `bundle size: ${bundleSizeStatsLink}`,
     `user-actions-benchmark: ${userActionsStatsLink}`,
+    `performance-benchmark: ${performanceOnboardingLink}, ${performanceAssetsLink}`,
     `storybook: ${storybookLink}`,
     `typescript migration: ${tsMigrationDashboardLink}`,
     `<a href="${allArtifactsUrl}">all artifacts</a>`,
@@ -199,7 +212,8 @@ async function start(): Promise<void> {
     for (const buildType of buildTypes) {
       benchmarkResults[platform][buildType] = {};
       for (const page of pageTypes) {
-        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${page}.json`;
+        const pageFileName = pageTypeToFileName[page] || page;
+        const benchmarkUrl = `${HOST_URL}/benchmarks/benchmark-${platform}-${buildType}-${pageFileName}.json`;
         try {
           const benchmarkResponse = await fetch(benchmarkUrl);
           if (!benchmarkResponse.ok) {
@@ -258,8 +272,15 @@ async function start(): Promise<void> {
             const pageBenchmark = buildBenchmark[page];
             const measures = Object.keys(pageBenchmark);
             for (const measure of measures) {
-              allMeasures.add(measure);
               const measureBenchmark = pageBenchmark[measure];
+              // Skip non-object properties (e.g., testTitle, persona are strings)
+              if (
+                typeof measureBenchmark !== 'object' ||
+                measureBenchmark === null
+              ) {
+                continue;
+              }
+              allMeasures.add(measure);
               const metrics = Object.keys(measureBenchmark);
               for (const metric of metrics) {
                 allMetrics.add(metric);
@@ -286,18 +307,25 @@ async function start(): Promise<void> {
 
                 // if this platform-buildType-page exists in the data (the benchmark didn't crash)
                 if (benchmarkResults[platform][buildType][page]) {
-                  const individualMetricString =
-                    benchmarkResults[platform][buildType][page][measure][
-                      metric
-                    ];
+                  const measureData =
+                    benchmarkResults[platform][buildType][page][measure];
 
-                  const individualMetricNumber = Math.round(
-                    parseFloat(individualMetricString),
-                  );
+                  // Skip if measure data is not an object (e.g., testTitle, persona)
+                  if (
+                    typeof measureData === 'object' &&
+                    measureData !== null &&
+                    metric in measureData
+                  ) {
+                    const individualMetricString = measureData[metric];
 
-                  // If it's a number, output it
-                  if (!isNaN(individualMetricNumber)) {
-                    output = individualMetricNumber.toString();
+                    const individualMetricNumber = Math.round(
+                      parseFloat(individualMetricString),
+                    );
+
+                    // If it's a number, output it
+                    if (!isNaN(individualMetricNumber)) {
+                      output = individualMetricNumber.toString();
+                    }
                   }
                 }
                 metricData += `<td align="right">${output}</td>`;
