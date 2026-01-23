@@ -223,7 +223,7 @@ export const CHAIN_IDS = {
   BOB: '0xed88',
   ROOTSTOCK: '0x1e',
   ROOTSTOCK_TESTNET: '0x1f',
-  TEMPO_TESTNET: '0xA5BF',
+  TEMPO_TESTNET: '0xa5bf',
 } as const;
 
 export const CHAINLIST_CHAIN_IDS_MAP = {
