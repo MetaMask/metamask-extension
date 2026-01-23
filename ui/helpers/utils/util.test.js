@@ -114,6 +114,61 @@ describe('util', () => {
     });
   });
 
+  describe('isResolvableName', () => {
+    // Traditional domain names (should match isValidDomainName behavior)
+    it('should return true for valid domain names', () => {
+      expect(util.isResolvableName('vitalik.eth')).toStrictEqual(true);
+      expect(util.isResolvableName('foo.bar')).toStrictEqual(true);
+      expect(util.isResolvableName('wallet.crypto')).toStrictEqual(true);
+    });
+
+    // Email-like formats (0xName, Clusters, etc.)
+    it('should return true for email-like names', () => {
+      expect(util.isResolvableName('yulia@beast')).toStrictEqual(true);
+      expect(util.isResolvableName('user@domain')).toStrictEqual(true);
+      expect(util.isResolvableName('test@example')).toStrictEqual(true);
+    });
+
+    // Scheme-based formats
+    it('should return true for scheme-based names', () => {
+      expect(util.isResolvableName('ens:vitalik')).toStrictEqual(true);
+      expect(util.isResolvableName('lens:username')).toStrictEqual(true);
+      expect(util.isResolvableName('cb:example')).toStrictEqual(true);
+    });
+
+    // Invalid inputs
+    it('should return false for empty or invalid inputs', () => {
+      expect(util.isResolvableName('')).toStrictEqual(false);
+      expect(util.isResolvableName(null)).toStrictEqual(false);
+      expect(util.isResolvableName(undefined)).toStrictEqual(false);
+      expect(util.isResolvableName('a')).toStrictEqual(false); // Too short
+    });
+
+    it('should return false for Ethereum addresses', () => {
+      expect(
+        util.isResolvableName('0x1234567890123456789012345678901234567890'),
+      ).toStrictEqual(false);
+      expect(
+        util.isResolvableName('0xAbCdEf1234567890123456789012345678901234'),
+      ).toStrictEqual(false);
+    });
+
+    it('should return false for pure numbers', () => {
+      expect(util.isResolvableName('12345')).toStrictEqual(false);
+      expect(util.isResolvableName('0')).toStrictEqual(false);
+    });
+
+    it('should return false for invalid email-like formats', () => {
+      expect(util.isResolvableName('@domain')).toStrictEqual(false);
+      expect(util.isResolvableName('user@')).toStrictEqual(false);
+    });
+
+    it('should return false for names without recognizable format', () => {
+      expect(util.isResolvableName('simpleword')).toStrictEqual(false);
+      expect(util.isResolvableName('no-special-chars')).toStrictEqual(false);
+    });
+  });
+
   describe('isDomainReadyForResolution', () => {
     it('should return true for complete ENS domain', () => {
       expect(util.isDomainReadyForResolution('vitalik.eth')).toStrictEqual(

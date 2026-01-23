@@ -163,6 +163,56 @@ export function isValidDomainName(address) {
 }
 
 /**
+ * Checks if a name could potentially be resolved by name resolution services or Snaps.
+ * This is more permissive than isValidDomainName to allow resolver Snaps to handle
+ * various name formats like email-like names (yulia@beast), scheme-based names (ens:vitalik),
+ * or other custom formats.
+ *
+ * @param {string} name - The name to check
+ * @returns {boolean} True if the name could potentially be resolved
+ */
+export function isResolvableName(name) {
+  // Must be a non-empty string
+  if (!name || typeof name !== 'string') {
+    return false;
+  }
+
+  const trimmed = name.trim();
+
+  // Minimum length of 2 characters
+  if (trimmed.length < 2) {
+    return false;
+  }
+
+  // Reject if it looks like an Ethereum address (0x followed by 40 hex chars)
+  if (/^0x[a-fA-F0-9]{40}$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Reject pure numbers
+  if (/^\d+$/u.test(trimmed)) {
+    return false;
+  }
+
+  // Accept if it matches traditional domain name format
+  if (isValidDomainName(trimmed)) {
+    return true;
+  }
+
+  // Accept email-like formats (contains @ with text on both sides)
+  if (/^[^\s@]+@[^\s@]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  // Accept scheme-based formats (contains : with text on both sides, but not just a port number)
+  if (/^[a-zA-Z][a-zA-Z0-9]*:[^\s]+$/u.test(trimmed)) {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Checks if a domain name is complete enough to warrant resolution via API calls.
  * This prevents premature resolution attempts on partial domains (e.g., "v", "vi", "vit")
  * which waste API calls and can cause rate limiting.

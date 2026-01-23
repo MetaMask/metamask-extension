@@ -7,7 +7,7 @@ import {
   isTronAddress,
 } from '../../../../../shared/lib/multichain/accounts';
 import { isValidHexAddress } from '../../../../../shared/modules/hexstring-utils';
-import { isDomainReadyForResolution } from '../../../../helpers/utils/util';
+import { isResolvableName } from '../../../../helpers/utils/util';
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { RecipientValidationResult } from '../../types/send';
 import {
@@ -80,7 +80,7 @@ export const useRecipientValidation = () => {
         return validateTronAddress(toAddress);
       }
 
-      if (isDomainReadyForResolution(toAddress)) {
+      if (isResolvableName(toAddress)) {
         return await validateName(chainId, toAddress, signal);
       }
 
