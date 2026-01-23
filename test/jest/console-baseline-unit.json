@@ -2204,7 +2204,8 @@
       "warn: Migration 183.1: currencyRates not found": 1,
       "error: Error: Migration 184: NetworkController missing": 1,
       "error: Error: Migration 186: Invalid NetworkController": 1,
-      "warn: Migration 186: Missing or invalid": 1
+      "warn: Migration 186: Missing or invalid": 1,
+      "error: Error: Migration 189: Invalid NetworkController": 1
     },
     "ui/components/app/modals/visit-support-data-consent-modal/visit-support-data.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2,
@@ -3621,6 +3622,6 @@
       "error: Migration 113: Invalid PreferencesController state:": 1
     }
   },
-  "generated": "2026-01-19T19:30:31.623Z",
+  "generated": "2026-01-23T14:09:50.811Z",
   "nodeVersion": "v24.13.0"
 }
