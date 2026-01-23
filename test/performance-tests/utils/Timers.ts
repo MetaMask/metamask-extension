@@ -47,7 +47,7 @@ class Timers {
       throw new Error(`Timer with id "${id}" does not exist.`);
     }
     const timer = this.timers.get(id) as TimerData;
-    timer.end = Date.now();
+    timer.end = performance.now();
     timer.duration = timer.end - (timer.start as number);
   }
 
