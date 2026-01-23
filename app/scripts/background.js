@@ -511,11 +511,18 @@ const corruptionHandler = new CorruptionHandler();
  * @param {browser.Runtime.Port} port - The port provided by a new context.
  */
 const handleOnConnect = async (port) => {
-  if (
-    inTest &&
-    getManifestFlags().testing?.simulateUnresponsiveBackground === true
-  ) {
-    return;
+  if (inTest) {
+    const simulatedDelay =
+      getManifestFlags().testing?.simulateDelayedBackgroundResponse;
+    if (simulatedDelay === true) {
+      return;
+    } else if (typeof simulatedDelay === 'number') {
+      await new Promise((resolve) => setTimeout(resolve, simulatedDelay));
+    } else if (simulatedDelay !== undefined) {
+      log.error(
+        `Unrecognized value for 'simulateDelayedBackgroundResponse': '${simulatedDelay}'`,
+      );
+    }
   }
 
   try {
