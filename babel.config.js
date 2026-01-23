@@ -36,7 +36,7 @@ module.exports = function (api) {
             /^@metamask\/([^/]+)\/dist\/preinstalled-snap\.json(\.gz)?$/u,
           rootPath: '/snaps/',
         },
-        "import-meta-url-snaps"
+        'import-meta-url-snaps'
       ],
       [
         path.resolve(
@@ -47,7 +47,7 @@ module.exports = function (api) {
           pattern: /^@rive-app\/canvas\/(rive)\.wasm$/u,
           rootPath: '/images/',
         },
-        "import-meta-url-rive"
+        'import-meta-url-rive'
       ],
     ],
     presets: [
