@@ -223,6 +223,13 @@ jobs:
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
+      - name: Restore webpack build policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/build
+          key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
+
       - name: Update LavaMoat webpack MV2 policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv2
         env:
@@ -260,6 +267,13 @@ jobs:
           is-high-risk-environment: false
           skip-allow-scripts: true
           use-yarn-hydrate: true
+
+      - name: Restore webpack build policy
+        uses: actions/cache/restore@v4
+        with:
+          path: lavamoat/webpack/build
+          key: cache-webpack-build-${{ needs.prepare.outputs.COMMIT_SHA }}
+          fail-on-cache-miss: true
 
       - name: Update LavaMoat webpack MV3 policy
         run: yarn webpack:tsc && yarn webpack:lavamoat:policy:mv3
