@@ -1,4 +1,4 @@
-import { StaticAssetsController } from '../lib/static-assets-controller/static-assets-controller';
+import { StaticAssetsController } from '../controllers/static-assets-controller';
 import { ControllerInitFunction } from './types';
 import {
   StaticAssetsControllerMessenger,
