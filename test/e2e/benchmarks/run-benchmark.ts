@@ -18,7 +18,6 @@ import {
 } from '../../helpers/file';
 import { runBenchmarkWithIterations } from './utils';
 import type {
-  BenchmarkFunction,
   BenchmarkResults,
   BenchmarkSummary,
   StatisticalResult,
@@ -131,22 +130,11 @@ async function runBenchmarkFile(
 
   const benchmark = await import(absolutePath);
 
-  let runFn: BenchmarkFunction | undefined;
-  if (typeof benchmark.run === 'function') {
-    runFn = benchmark.run;
-  } else if (typeof benchmark.default === 'function') {
-    runFn = benchmark.default;
-  } else {
-    runFn = Object.values(benchmark).find(
-      (v): v is BenchmarkFunction =>
-        typeof v === 'function' &&
-        Boolean((v as { name?: string }).name?.startsWith('run')),
-    );
-  }
-
-  if (!runFn) {
+  if (typeof benchmark.run !== 'function') {
     throw new Error(`No run function found in ${filePath}`);
   }
+
+  const { run: runFn } = benchmark;
 
   // For benchmarks that support iterations, use runBenchmarkWithIterations to run multiple times
   if (supportsIterations(filePath) && options.iterations > 0) {
@@ -171,7 +159,7 @@ async function runBenchmarkFile(
     return convertSummaryToResults(summary, testTitle, persona);
   }
 
-  // For other benchmarks, run once with options
+  // For other benchmarks (page-load), run once with options
   return runFn(options);
 }
 
