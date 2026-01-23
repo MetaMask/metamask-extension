@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import log from 'loglevel';
 
+import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import {
   getChainIdsCaveat,
   getLookupMatchersCaveat,
@@ -244,10 +245,10 @@ export function lookupDomainName(domainName, chainId, signal) {
     state = getState();
     log.info(`Resolvers attempting to resolve name: ${trimmedDomainName}`);
     const finalChainId = chainId || getCurrentChainId(state);
-    const chainIdInt = parseInt(finalChainId, 16);
+    const caipChainId = formatChainIdToCaip(finalChainId);
     const resolutions = await fetchResolutions({
       domain: trimmedDomainName,
-      chainId: `eip155:${chainIdInt}`,
+      chainId: caipChainId,
       state,
       signal,
     });
@@ -262,8 +263,7 @@ export function lookupDomainName(domainName, chainId, signal) {
     await dispatch(
       lookupEnd({
         resolutions,
-        chainId,
-        network: chainIdInt,
+        chainId: caipChainId,
         domainName: trimmedDomainName,
       }),
     );

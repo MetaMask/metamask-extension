@@ -1,13 +1,10 @@
-import { formatChainIdToCaip } from '@metamask/bridge-controller';
 import { useDispatch } from 'react-redux';
 import { useCallback } from 'react';
 
 import { isResolvableName } from '../../../../helpers/utils/util';
-import { useSnapNameResolution } from '../../../../hooks/snaps/useSnapNameResolution';
 import { findConfusablesInRecipient } from '../../utils/sendValidations';
 import { lookupDomainName } from '../../../../ducks/domains';
 import type { MetaMaskReduxDispatch } from '../../../../store/store';
-import { useSendType } from './useSendType';
 
 type Resolution = {
   resolvedAddress?: string;
@@ -15,9 +12,7 @@ type Resolution = {
 };
 
 export const useNameValidation = () => {
-  const { fetchResolutions } = useSnapNameResolution();
   const dispatch = useDispatch<MetaMaskReduxDispatch>();
-  const { isEvmSendType } = useSendType();
 
   const processResolutions = useCallback(
     (resolutions: Resolution[], domain: string) => {
@@ -50,23 +45,13 @@ export const useNameValidation = () => {
         };
       }
 
-      let resolutions: Resolution[];
-
-      if (isEvmSendType) {
-        resolutions = (await dispatch(
-          lookupDomainName(to, chainId, signal),
-        )) as Resolution[];
-      } else {
-        resolutions = await fetchResolutions(
-          formatChainIdToCaip(chainId),
-          to,
-          signal,
-        );
-      }
+      const resolutions = (await dispatch(
+        lookupDomainName(to, chainId, signal),
+      )) as Resolution[];
 
       return processResolutions(resolutions, to);
     },
-    [dispatch, fetchResolutions, isEvmSendType, processResolutions],
+    [dispatch, processResolutions],
   );
 
   return {

@@ -1,14 +1,9 @@
-import { AddressResolution } from '@metamask/snaps-sdk';
-
 import mockState from '../../../../../test/data/mock-state.json';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import { lookupDomainName } from '../../../../ducks/domains';
 // eslint-disable-next-line import/no-namespace
-import * as SnapNameResolution from '../../../../hooks/snaps/useSnapNameResolution';
-// eslint-disable-next-line import/no-namespace
 import * as SendValidationUtils from '../../utils/sendValidations';
 import { useNameValidation } from './useNameValidation';
-import { useSendType } from './useSendType';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -16,30 +11,15 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn().mockReturnValue((callback: any) => callback?.()),
 }));
 
-jest.mock('@metamask/bridge-controller', () => ({
-  ...jest.requireActual('@metamask/bridge-controller'),
-  formatChainIdToCaip: jest.fn(),
-}));
-
 jest.mock('../../../../ducks/domains', () => ({
   lookupDomainName: jest.fn(),
 }));
 
-jest.mock('./useSendType', () => ({
-  useSendType: jest.fn().mockReturnValue({
-    isEvmSendType: false,
-  }),
-}));
-
 describe('useNameValidation', () => {
   const lookupDomainNameMock = jest.mocked(lookupDomainName);
-  const useSendTypeMock = jest.mocked(useSendType);
 
   beforeEach(() => {
     jest.clearAllMocks();
-    useSendTypeMock.mockReturnValue({
-      isEvmSendType: false,
-    } as unknown as ReturnType<typeof useSendType>);
   });
 
   it('return function to validate name', () => {
@@ -51,34 +31,6 @@ describe('useNameValidation', () => {
   });
 
   it('return resolved address when name is resolved', async () => {
-    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
-      fetchResolutions: () =>
-        Promise.resolve([
-          {
-            resolvedAddress: 'dummy_address',
-            protocol: 'dummy_protocol',
-          } as unknown as AddressResolution,
-        ]),
-    });
-    const { result } = renderHookWithProvider(
-      () => useNameValidation(),
-      mockState,
-    );
-    expect(
-      await result.current.validateName(
-        '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        'test.sol',
-      ),
-    ).toStrictEqual({
-      protocol: 'dummy_protocol',
-      resolvedLookup: 'dummy_address',
-    });
-  });
-
-  it('dispatch lookupDomainName when name is resolved', async () => {
-    useSendTypeMock.mockReturnValue({
-      isEvmSendType: true,
-    } as unknown as ReturnType<typeof useSendType>);
     lookupDomainNameMock.mockReturnValue(() =>
       Promise.resolve([
         {
@@ -94,15 +46,39 @@ describe('useNameValidation', () => {
     expect(
       await result.current.validateName(
         '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
-        'test.eth',
+        'test.sol',
       ),
     ).toStrictEqual({
       protocol: 'dummy_protocol',
       resolvedLookup: 'dummy_address',
     });
     expect(lookupDomainNameMock).toHaveBeenCalledWith(
-      'test.eth',
+      'test.sol',
       '5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+      undefined,
+    );
+  });
+
+  it('dispatch lookupDomainName for EVM domain names', async () => {
+    lookupDomainNameMock.mockReturnValue(() =>
+      Promise.resolve([
+        {
+          resolvedAddress: 'dummy_address',
+          protocol: 'dummy_protocol',
+        },
+      ]),
+    );
+    const { result } = renderHookWithProvider(
+      () => useNameValidation(),
+      mockState,
+    );
+    expect(await result.current.validateName('0x1', 'test.eth')).toStrictEqual({
+      protocol: 'dummy_protocol',
+      resolvedLookup: 'dummy_address',
+    });
+    expect(lookupDomainNameMock).toHaveBeenCalledWith(
+      'test.eth',
+      '0x1',
       undefined,
     );
   });
@@ -114,15 +90,14 @@ describe('useNameValidation', () => {
         error: 'dummy_error',
         warning: 'dummy_warning',
       });
-    jest.spyOn(SnapNameResolution, 'useSnapNameResolution').mockReturnValue({
-      fetchResolutions: () =>
-        Promise.resolve([
-          {
-            resolvedAddress: 'dummy_address',
-            protocol: 'dummy_protocol',
-          } as unknown as AddressResolution,
-        ]),
-    });
+    lookupDomainNameMock.mockReturnValue(() =>
+      Promise.resolve([
+        {
+          resolvedAddress: 'dummy_address',
+          protocol: 'dummy_protocol',
+        },
+      ]),
+    );
     const { result } = renderHookWithProvider(
       () => useNameValidation(),
       mockState,
