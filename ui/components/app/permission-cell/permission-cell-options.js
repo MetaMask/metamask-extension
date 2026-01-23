@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import Box from '../../ui/box';
 import { useI18nContext } from '../../../hooks/useI18nContext';
 import { IconName, ButtonIcon, Text } from '../../component-library';
-import { Menu, MenuItem } from '../../ui/menu';
+
 import {
   TextColor,
   TextVariant,
@@ -20,7 +20,7 @@ export const PermissionCellOptions = ({
 }) => {
   const t = useI18nContext();
   const dispatch = useDispatch();
-  const ref = useRef(false);
+  const ref = useRef(null);
   const [showOptions, setShowOptions] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
 
@@ -62,21 +62,44 @@ export const PermissionCellOptions = ({
         data-testid={permissionName}
       />
       {showOptions && (
-        <Menu anchorElement={ref.current} onHide={handleClose}>
-          {description && (
-            <MenuItem onClick={handleDetailsOpen}>
-              <Text
-                variant={TextVariant.bodySm}
+        <Popover referenceElement={ref.current} onClose={handleClose}>
+          <Box>
+            {description && (
+              <Box
+                onClick={handleDetailsOpen}
+                role="menuitem"
                 style={{
-                  whiteSpace: 'nowrap',
+                  cursor: 'pointer',
+                  padding: '8px 12px',
                 }}
               >
-                {t('details')}
-              </Text>
-            </MenuItem>
-          )}
+                <Text
+                  variant={TextVariant.bodySm}
+                  style={{
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {t('details')}
+                </Text>
+              </Box>
+            )}
+          </Box>
           {isRevokable && (
-            <MenuItem onClick={handleRevokePermission}>
+            <Box
+              role="menuitem"
+              tabIndex={0}
+              onClick={handleRevokePermission}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleRevokePermission();
+                }
+              }}
+              style={{
+                cursor: 'pointer',
+                padding: '8px 12px',
+              }}
+            >
               <Text
                 variant={TextVariant.bodySm}
                 color={TextColor.errorDefault}
@@ -86,9 +109,9 @@ export const PermissionCellOptions = ({
               >
                 {t('revokePermission')}
               </Text>
-            </MenuItem>
+            </Box>
           )}
-        </Menu>
+        </Popover>
       )}
       {showDetails && (
         <Popover title={t('details')} onClose={handleDetailsClose}>
