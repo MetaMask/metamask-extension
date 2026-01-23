@@ -114,4 +114,22 @@ describe('useNameValidation', () => {
       resolvedLookup: 'dummy_address',
     });
   });
+
+  it('returns error when resolver returns zero address', async () => {
+    lookupDomainNameMock.mockReturnValue(() =>
+      Promise.resolve([
+        {
+          resolvedAddress: '0x0000000000000000000000000000000000000000',
+          protocol: 'dummy_protocol',
+        },
+      ]),
+    );
+    const { result } = renderHookWithProvider(
+      () => useNameValidation(),
+      mockState,
+    );
+    expect(await result.current.validateName('0x1', 'test.eth')).toStrictEqual({
+      error: 'nameResolutionZeroAddressError',
+    });
+  });
 });
