@@ -472,6 +472,16 @@
   "alertDisableTooltip": {
     "message": "This can be changed in \"Settings > Alerts\""
   },
+  "alertInsufficientPayTokenBalance": {
+    "message": "Insufficient funds"
+  },
+  "alertInsufficientPayTokenBalanceFeesNoTarget": {
+    "message": "Add less or use a different token."
+  },
+  "alertInsufficientPayTokenNative": {
+    "message": "Not enough $1 to cover fees. Use a token on another network or add more $1 to continue.",
+    "description": "$1 is the native currency symbol (e.g. ETH)"
+  },
   "alertMessageAddressMismatchWarning": {
     "message": "Attackers sometimes mimic sites by making small changes to the site address. Make sure you're interacting with the intended site before you continue."
   },
@@ -531,6 +541,18 @@
   },
   "alertModalReviewAllAlerts": {
     "message": "Review all alerts"
+  },
+  "alertNoPayTokenQuotesMessage": {
+    "message": "This payment route isn't available right now. Try changing the amount, network, or token and we'll find the best option."
+  },
+  "alertNoPayTokenQuotesTitle": {
+    "message": "No quotes"
+  },
+  "alertPayHardwareAccountMessage": {
+    "message": "Hardware wallets aren't supported.\nSwitch wallets to continue."
+  },
+  "alertPayHardwareAccountTitle": {
+    "message": "Wallet not supported"
   },
   "alertReasonChangeInSimulationResults": {
     "message": "Results have changed"
@@ -1098,11 +1120,8 @@
   "bridgeTo": {
     "message": "Bridge to"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "If you added this token manually, make sure you are aware of the risks to your funds before you bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "We can't verify this token."
+  "bridgeTokenNotFound": {
+    "message": "No tokens match \"$1\""
   },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 of 2"
@@ -3369,6 +3388,9 @@
   "isSigningOrSubmitting": {
     "message": "A previous transaction is still being signed or submitted"
   },
+  "isSigningOrSubmittingPayToken": {
+    "message": "You have a pending transaction on this network. Wait for it to complete or select a token on another network."
+  },
   "jazzicons": {
     "message": "Jazzicons"
   },
@@ -3958,6 +3980,9 @@
   },
   "nameResolutionFailedError": {
     "message": "No address resolution found for this name."
+  },
+  "nameResolutionZeroAddressError": {
+    "message": "Name resolver returned a zero address. This is likely an error."
   },
   "nameSetPlaceholder": {
     "message": "Choose a nickname...",
@@ -5047,8 +5072,24 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favorites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5058,6 +5099,9 @@
   },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5073,6 +5117,12 @@
   },
   "perpsEntryPrice": {
     "message": "Entry price"
+  },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
   },
   "perpsFilterAll": {
     "message": "All"
@@ -5101,6 +5151,12 @@
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
   },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
+  },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
   },
@@ -5122,6 +5178,9 @@
   },
   "perpsMarkets": {
     "message": "Markets"
+  },
+  "perpsMore": {
+    "message": "More"
   },
   "perpsNoMarketsFound": {
     "message": "No markets found"
@@ -5192,8 +5251,20 @@
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -8846,9 +8917,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Your NFT may be at risk"
-  },
-  "yourNetworks": {
-    "message": "Your networks"
   },
   "yourPrivateSeedPhrase": {
     "message": "Your Secret Recovery Phrase"

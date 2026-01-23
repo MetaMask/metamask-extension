@@ -1,6 +1,6 @@
 {
   "name": "metamask-crx",
-  "version": "13.16.0",
+  "version": "13.17.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -447,6 +447,7 @@
     "jest-junit": "^14.0.1",
     "labeled-stream-splicer": "^2.0.2",
     "lavamoat-browserify": "^19.0.2",
+    "lightweight-charts": "^5.1.0",
     "localforage": "^1.9.0",
     "lodash": "^4.17.21",
     "loglevel": "^1.8.1",
