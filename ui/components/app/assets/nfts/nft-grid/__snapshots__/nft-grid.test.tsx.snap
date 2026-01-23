@@ -7,7 +7,7 @@ exports[`NftGrid matches the snapshot 1`] = `
     style="margin: 16px;"
   >
     <div
-      class="mm-box nft-items__wrapper mm-box--display-grid mm-box--gap-4"
+      class="mm-box grid gap-4 grid-cols-3"
     />
   </div>
 </DocumentFragment>
