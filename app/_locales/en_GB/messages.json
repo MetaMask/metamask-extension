@@ -5129,6 +5129,12 @@
   "perpsContactSupport": {
     "message": "Contact support"
   },
+  "perpsDepositActivityTitle": {
+    "message": "Funded Perps"
+  },
+  "perpsDepositTitle": {
+    "message": "Funded perps account"
+  },
   "perpsDetails": {
     "message": "Details"
   },
@@ -5137,12 +5143,6 @@
   },
   "perpsDisclaimer": {
     "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
-  },
-  "perpsDepositActivityTitle": {
-    "message": "Funded Perps"
-  },
-  "perpsDepositTitle": {
-    "message": "Funded perps account"
   },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
