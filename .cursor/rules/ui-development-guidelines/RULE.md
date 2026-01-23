@@ -108,6 +108,8 @@ import {
   BoxFlexDirection,
   BoxJustifyContent,
   BoxFlexWrap,
+  BoxBackgroundColor,
+  BoxBorderColor,
   // ... other design system components
 } from '@metamask/design-system-react';
 ```
@@ -127,10 +129,11 @@ When unsure about component APIs:
 3. Check GitHub source: https://github.com/MetaMask/metamask-design-system/tree/main/packages/design-system-react/src/components
 
 ### Box Component Quick Reference
-- **Spacing**: Use `gap`, `padding`, `margin` props or Tailwind classes
+- **Spacing**: Use `gap`, `padding`, `margin` props (0-12 for 0px-48px)
 - **Flexbox**: Use `flexDirection`, `alignItems`, `justifyContent` enum props
-- **Colors**: Use `className` with semantic Tailwind tokens (e.g., `bg-default`, `text-primary`)
-- **Tailwind**: Use `className` prop for all Tailwind utilities
+- **Colors**: Use `backgroundColor` and `borderColor` props with enums (e.g., `BoxBackgroundColor.BackgroundDefault`)
+- **Borders**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
+- **Tailwind**: Use `className` prop for utilities not covered by props
 
 ## Styling Rules (ENFORCE STRICTLY)
 
@@ -159,7 +162,11 @@ When unsure about component APIs:
 ```tsx
 const MyComponent = () => {
   return (
-    <Box className="w-full bg-default p-4">
+    <Box
+      backgroundColor={BoxBackgroundColor.BackgroundDefault}
+      padding={4}
+      className="w-full"
+    >
       <Text variant={TextVariant.HeadingMd}>Title</Text>
     </Box>
   );
@@ -174,7 +181,7 @@ const MyComponent = () => {
   alignItems={BoxAlignItems.Center}
   justifyContent={BoxJustifyContent.Between}
   gap={3}
-  className="p-4"
+  padding={4}
 >
   <Text variant={TextVariant.BodyMd}>Content</Text>
 </Box>
@@ -183,13 +190,18 @@ const MyComponent = () => {
 ### Interactive Element:
 
 ```tsx
-<ButtonBase
-  className="h-auto rounded-lg bg-muted px-4 py-2 hover:bg-muted-hover active:bg-muted-pressed"
-  onClick={handleClick}
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+  paddingHorizontal={4}
+  paddingVertical={2}
+  className="h-auto rounded-lg hover:bg-muted-hover active:bg-muted-pressed"
+  asChild
 >
-  <Icon name={IconName.Bank} />
-  <Text fontWeight={FontWeight.Medium}>Button Text</Text>
-</ButtonBase>
+  <button onClick={handleClick}>
+    <Icon name={IconName.Bank} />
+    <Text fontWeight={FontWeight.Medium}>Button Text</Text>
+  </button>
+</Box>
 ```
 
 ### Using Avatars and Badges:
@@ -213,7 +225,7 @@ const MyComponent = () => {
 
 ## Box Component Best Practices
 
-### Prefer Props Over className for Layout
+### Prefer Props Over className for Layout and Colors
 ✅ **DO** - Use typed props for type safety and consistency:
 ```tsx
 <Box
@@ -223,35 +235,61 @@ const MyComponent = () => {
   gap={3}
   padding={4}
   margin={2}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
+  borderColor={BoxBorderColor.BorderMuted}
+  borderWidth={1}
 >
 ```
 
 ❌ **DON'T** - Use className for properties that have dedicated props:
 ```tsx
-<Box className="flex flex-row items-center justify-between gap-3 p-4 m-2">
+<Box className="flex flex-row items-center justify-between gap-3 p-4 m-2 bg-default border border-muted">
 ```
 
 ### When to Use className
-Use `className` for:
+Use `className` for utilities **not covered by props**:
 - Width and height: `w-full`, `h-20`, `w-96`
 - Complex positioning: `absolute`, `relative`, `top-0`, `left-0`
-- Borders: `rounded-lg`, `border`, `border-t`
+- Border radius: `rounded-lg`, `rounded-full`
 - Shadows and opacity: `shadow-lg`, `opacity-50`
-- Background and text colors: `bg-default`, `text-primary`
+- Interactive states with colors: `hover:bg-hover`, `active:bg-pressed`
 - Utilities not covered by props: `overflow-hidden`, `z-10`, `truncate`
 
+**DO NOT** use className for:
+- Background colors (use `backgroundColor` prop with `BoxBackgroundColor` enum)
+- Border colors (use `borderColor` prop with `BoxBorderColor` enum)
+- Border width (use `borderWidth` prop: 0, 1, 2, 4, or 8)
+- Padding/margin when using standard spacing (use `padding`/`margin` props with 0-12)
+- Flexbox properties (use `flexDirection`, `alignItems`, `justifyContent` props)
+
 ### Color Tokens
-Always use semantic color tokens from `@metamask/design-system-tailwind-preset`:
+Always use semantic color enums from design system:
 ```tsx
-// ✅ Semantic tokens
-<Box className="bg-default">
-<Box className="bg-alternative">
-<Box className="bg-muted hover:bg-muted-hover active:bg-muted-pressed">
-<Text color={TextColor.TextPrimary}>
+// ✅ Use Box color props with enums
+<Box backgroundColor={BoxBackgroundColor.BackgroundDefault}>
+<Box backgroundColor={BoxBackgroundColor.BackgroundAlternative}>
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+  borderColor={BoxBorderColor.BorderMuted}
+  borderWidth={1}
+>
+
+// ✅ Use Text/Icon color props with enums
+<Text color={TextColor.TextDefault}>
 <Text color={TextColor.TextAlternative}>
 <Icon color={IconColor.IconDefault}>
 
-// ❌ Arbitrary colors
+// ✅ Interactive states can use className
+<Box
+  backgroundColor={BoxBackgroundColor.BackgroundMuted}
+  className="hover:bg-muted-hover active:bg-muted-pressed"
+>
+
+// ❌ NEVER use className for static background colors
+<Box className="bg-default">
+<Box className="bg-alternative">
+
+// ❌ NEVER use arbitrary colors
 <Box className="bg-[#3B82F6]">
 <Box style={{ backgroundColor: '#FF0000' }}>
 ```
@@ -319,14 +357,23 @@ import './component.scss';
 }
 ```
 
-**After (Tailwind):**
+**After (Design System):**
 ```tsx
-import { Box, Text, TextVariant, FontWeight, BoxFlexDirection, BoxAlignItems } from '@metamask/design-system-react';
+import {
+  Box,
+  Text,
+  TextVariant,
+  FontWeight,
+  BoxFlexDirection,
+  BoxAlignItems,
+  BoxBackgroundColor
+} from '@metamask/design-system-react';
 
 <Box
   flexDirection={BoxFlexDirection.Row}
   alignItems={BoxAlignItems.Center}
-  className="p-4 bg-default"
+  padding={4}
+  backgroundColor={BoxBackgroundColor.BackgroundDefault}
 >
   <Text variant={TextVariant.HeadingMd} fontWeight={FontWeight.Medium}>
     Title
@@ -340,18 +387,21 @@ import { Box, Text, TextVariant, FontWeight, BoxFlexDirection, BoxAlignItems } f
 - [ ] No SASS files (`.scss`) created or modified
 - [ ] No raw `div` components (use `Box`)
 - [ ] No raw text elements without variants (use `Text` with `TextVariant`)
-- [ ] No custom CSS files (use Tailwind classes)
-- [ ] No arbitrary color values (use design system tokens)
+- [ ] No custom CSS files (use design system + Tailwind)
+- [ ] No arbitrary color values (use design system enums)
 - [ ] No separate `.styles.ts` files for new components
-- [ ] Component props used before `className` for layout
-- [ ] All colors use semantic tokens from Tailwind preset
+- [ ] Component props used before `className` for layout and colors
+- [ ] Box colors use `backgroundColor`/`borderColor` props with enums (not className)
+- [ ] All spacing uses numeric props when possible (0-12)
 
 ### When You See These Patterns, IMMEDIATELY Suggest Alternatives:
-- Any `.scss` file → Tailwind classes in `className`
+- Any `.scss` file → Design system components with props
 - Any `div` component → `Box` from design system
-- Any custom CSS → Tailwind utility classes
-- Any arbitrary color values → Design system tokens
-- Manual flex properties → Box component props + className
+- Any custom CSS → Design system props + Tailwind utilities
+- Any arbitrary color values → Design system enum values
+- `className="bg-*"` on Box → `backgroundColor` prop with `BoxBackgroundColor` enum
+- `className="border-*"` color on Box → `borderColor` prop with `BoxBorderColor` enum
+- Manual flex properties in className → Box component props
 
 ### AI Agent Guidelines
 When suggesting code changes:
