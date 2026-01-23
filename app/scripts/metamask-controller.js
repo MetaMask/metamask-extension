@@ -2889,8 +2889,6 @@ export default class MetamaskController extends EventEmitter {
           nftController,
         ),
 
-      getNFTContractInfo: nftController.getNFTContractInfo.bind(nftController),
-
       isNftOwner: nftController.isNftOwner.bind(nftController),
 
       // AddressController
@@ -5943,9 +5941,8 @@ export default class MetamaskController extends EventEmitter {
    */
   async handleDefiReferral(partner, tabId, triggerType) {
     const isReferralEnabled =
-      this.remoteFeatureFlagController?.state?.remoteFeatureFlags?.[
-        partner.featureFlagKey
-      ];
+      this.remoteFeatureFlagController?.state?.remoteFeatureFlags
+        ?.extensionUxDefiReferralPartners?.[partner.id];
 
     if (!isReferralEnabled) {
       return;
@@ -8562,6 +8559,9 @@ export default class MetamaskController extends EventEmitter {
         await this.seedlessOnboardingController.setLocked();
       }
       await this.keyringController.setLocked();
+
+      // stop polling for the subscriptions when the wallet is locked manually and window/side-panel is still open
+      this.subscriptionController.stopAllPolling();
     } catch (error) {
       log.error('Error setting locked state', error);
       throw error;

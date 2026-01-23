@@ -657,6 +657,7 @@ describe('Multichain network selectors', () => {
         networkClientId: 'mainnet',
         chainId: '0x1',
         isInfuraEndpoint: true,
+        infuraEndpointIndex: undefined,
       });
     });
 
@@ -724,6 +725,7 @@ describe('Multichain network selectors', () => {
         networkClientId: 'AAAA-BBBB-CCCC-DDDD',
         chainId: '0x1000',
         isInfuraEndpoint: false,
+        infuraEndpointIndex: undefined,
       });
     });
 
@@ -861,6 +863,154 @@ describe('Multichain network selectors', () => {
       expect(
         selectFirstUnavailableEvmNetwork(mockStateWithMissingNetworkConfig),
       ).toBeNull();
+    });
+
+    it('returns infuraEndpointIndex when custom network has an Infura endpoint available', () => {
+      const mockStateWithCustomAndInfuraEndpoints = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0xa4b1': true,
+            },
+          },
+          networksMetadata: {
+            'custom-arbitrum': {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0xa4b1': {
+              chainId: '0xa4b1' as const,
+              name: 'Arbitrum One',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom as const,
+                  url: 'https://custom.arbitrum.rpc',
+                  networkClientId: 'custom-arbitrum' as const,
+                },
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://arbitrum-mainnet.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'arbitrum-mainnet' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'custom-arbitrum',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(
+          mockStateWithCustomAndInfuraEndpoints as Parameters<
+            typeof selectFirstUnavailableEvmNetwork
+          >[0],
+        ),
+      ).toStrictEqual({
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+      });
+    });
+
+    it('returns undefined infuraEndpointIndex when custom network has no Infura endpoint', () => {
+      const mockStateWithOnlyCustomEndpoint = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1000': true,
+            },
+          },
+          networksMetadata: {
+            'custom-network': {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1000': {
+              chainId: '0x1000' as const,
+              name: 'Custom Network',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Custom as const,
+                  url: 'https://custom.network.rpc',
+                  networkClientId: 'custom-network' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'custom-network',
+        },
+      };
+
+      expect(
+        selectFirstUnavailableEvmNetwork(mockStateWithOnlyCustomEndpoint),
+      ).toStrictEqual({
+        networkName: 'Custom Network',
+        networkClientId: 'custom-network',
+        chainId: '0x1000',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: undefined,
+      });
+    });
+
+    it('does not return infuraEndpointIndex when already using Infura endpoint', () => {
+      const mockStateWithInfuraAsDefault = {
+        metamask: {
+          enabledNetworkMap: {
+            [KnownCaipNamespace.Eip155]: {
+              '0x1': true,
+            },
+          },
+          networksMetadata: {
+            mainnet: {
+              EIPS: {},
+              status: NetworkStatus.Unavailable,
+            },
+          },
+          networkConfigurationsByChainId: {
+            '0x1': {
+              chainId: '0x1' as const,
+              name: 'Ethereum Mainnet',
+              nativeCurrency: 'ETH',
+              rpcEndpoints: [
+                {
+                  type: RpcEndpointType.Infura as const,
+                  url: 'https://mainnet.infura.io/v3/{infuraProjectId}' as const,
+                  networkClientId: 'mainnet' as const,
+                },
+              ],
+              defaultRpcEndpointIndex: 0,
+              blockExplorerUrls: [],
+              defaultBlockExplorerUrlIndex: 0,
+            },
+          },
+          selectedNetworkClientId: 'mainnet',
+        },
+      };
+
+      const result = selectFirstUnavailableEvmNetwork(
+        mockStateWithInfuraAsDefault,
+      );
+      expect(result).toStrictEqual({
+        networkName: 'Ethereum Mainnet',
+        networkClientId: 'mainnet',
+        chainId: '0x1',
+        isInfuraEndpoint: true,
+        infuraEndpointIndex: undefined,
+      });
     });
   });
 });

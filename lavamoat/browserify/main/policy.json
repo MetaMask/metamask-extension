@@ -1418,6 +1418,7 @@
         "@metamask/delegation-core": true,
         "@metamask/gator-permissions-controller>@metamask/delegation-deployments": true,
         "@metamask/snaps-utils": true,
+        "@metamask/transaction-controller": true,
         "@metamask/utils": true
       }
     },
@@ -4035,6 +4036,12 @@
         "@metamask/providers>extension-port-stream>readable-stream": true
       }
     },
+    "lightweight-charts>fancy-canvas": {
+      "globals": {
+        "ResizeObserver": true,
+        "document.body": true
+      }
+    },
     "fast-json-patch": {
       "globals": {
         "addEventListener": true,
@@ -4452,6 +4459,34 @@
       "packages": {
         "browserify>buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
+      }
+    },
+    "lightweight-charts": {
+      "globals": {
+        "Image": true,
+        "ResizeObserver": true,
+        "URL": true,
+        "cancelAnimationFrame": true,
+        "chrome": true,
+        "clearTimeout": true,
+        "devicePixelRatio": true,
+        "document.activeElement": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.documentElement": true,
+        "document.getElementById": true,
+        "document.getSelection": true,
+        "fetch": false,
+        "getComputedStyle": true,
+        "location.href": true,
+        "navigator": true,
+        "performance.now": true,
+        "queueMicrotask": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "lightweight-charts>fancy-canvas": true
       }
     },
     "currency-formatter>locale-currency": {

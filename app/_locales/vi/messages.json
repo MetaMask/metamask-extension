@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Cầu nối đến"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Nếu bạn đã thêm token này theo cách thủ công, hãy đảm bảo rằng bạn nhận thức được các rủi ro đối với tiền của mình trước khi thực hiện cầu nối."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Chúng tôi không thể xác minh token này."
-  },
   "bridgeTransactionProgress": {
     "message": "Giao dịch $1/2"
   },
@@ -8219,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT của bạn có thể gặp rủi ro"
-  },
-  "yourNetworks": {
-    "message": "Mạng của bạn"
   },
   "yourPrivateSeedPhrase": {
     "message": "Cụm từ khôi phục bí mật của bạn"

@@ -48,6 +48,7 @@ describe('NetworkConnectionBanner', () => {
         chainId: '0x1',
         isInfuraEndpoint: false,
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -70,6 +71,7 @@ describe('NetworkConnectionBanner', () => {
         chainId: '0x1',
         isInfuraEndpoint: true,
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -93,6 +95,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           isInfuraEndpoint: false,
           trackNetworkBannerEvent: jest.fn(),
+          switchToInfura: jest.fn(),
         });
         const store = configureStore({});
 
@@ -118,6 +121,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           isInfuraEndpoint: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
+          switchToInfura: jest.fn(),
         });
         const store = configureStore({});
 
@@ -146,6 +150,7 @@ describe('NetworkConnectionBanner', () => {
         chainId: '0x1',
         isInfuraEndpoint: false,
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -173,6 +178,7 @@ describe('NetworkConnectionBanner', () => {
         chainId: '0x1',
         isInfuraEndpoint: true,
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -201,6 +207,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           isInfuraEndpoint: false,
           trackNetworkBannerEvent: jest.fn(),
+          switchToInfura: jest.fn(),
         });
         const store = configureStore({});
 
@@ -226,6 +233,7 @@ describe('NetworkConnectionBanner', () => {
           chainId: '0x1',
           isInfuraEndpoint: false,
           trackNetworkBannerEvent: trackNetworkBannerEventMock,
+          switchToInfura: jest.fn(),
         });
         const store = configureStore({});
 
@@ -250,6 +258,7 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'unknown',
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -267,6 +276,7 @@ describe('NetworkConnectionBanner', () => {
       mockUseNetworkConnectionBanner.mockReturnValue({
         status: 'available',
         trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: jest.fn(),
       });
       const store = configureStore({});
 
@@ -276,6 +286,120 @@ describe('NetworkConnectionBanner', () => {
       );
 
       expect(container.firstChild).not.toBeInTheDocument();
+    });
+  });
+
+  describe('when a custom network has an Infura endpoint available', () => {
+    it('renders "Switch to MetaMask default RPC" button instead of "Update RPC" for degraded status', () => {
+      const switchToInfuraMock = jest.fn();
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'degraded',
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+        trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: switchToInfuraMock,
+      });
+      const store = configureStore({});
+
+      const { getByText, queryByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+
+      expect(getByText('Switch to MetaMask default RPC')).toBeInTheDocument();
+      expect(queryByText('Update RPC')).not.toBeInTheDocument();
+    });
+
+    it('renders "switch to MetaMask default RPC" button instead of "update RPC" for unavailable status', () => {
+      const switchToInfuraMock = jest.fn();
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'unavailable',
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+        trackNetworkBannerEvent: jest.fn(),
+        switchToInfura: switchToInfuraMock,
+      });
+      const store = configureStore({});
+
+      const { getByText, queryByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+
+      expect(
+        getByText('switch to MetaMask default RPC', { selector: 'button' }),
+      ).toBeInTheDocument();
+      expect(
+        queryByText('update RPC', { selector: 'button' }),
+      ).not.toBeInTheDocument();
+    });
+
+    it('calls switchToInfura when "Switch to MetaMask default RPC" button is clicked (degraded)', () => {
+      const switchToInfuraMock = jest.fn();
+      const trackNetworkBannerEventMock = jest.fn();
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'degraded',
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+        trackNetworkBannerEvent: trackNetworkBannerEventMock,
+        switchToInfura: switchToInfuraMock,
+      });
+      const store = configureStore({});
+
+      const { getByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+      fireEvent.click(getByText('Switch to MetaMask default RPC'));
+
+      expect(switchToInfuraMock).toHaveBeenCalled();
+      expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
+        bannerType: 'degraded',
+        eventName:
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+        networkClientId: 'custom-arbitrum',
+      });
+    });
+
+    it('calls switchToInfura when "switch to MetaMask default RPC" button is clicked (unavailable)', () => {
+      const switchToInfuraMock = jest.fn();
+      const trackNetworkBannerEventMock = jest.fn();
+      mockUseNetworkConnectionBanner.mockReturnValue({
+        status: 'unavailable',
+        networkName: 'Arbitrum One',
+        networkClientId: 'custom-arbitrum',
+        chainId: '0xa4b1',
+        isInfuraEndpoint: false,
+        infuraEndpointIndex: 1,
+        trackNetworkBannerEvent: trackNetworkBannerEventMock,
+        switchToInfura: switchToInfuraMock,
+      });
+      const store = configureStore({});
+
+      const { getByText } = renderWithProvider(
+        <NetworkConnectionBanner />,
+        store,
+      );
+      fireEvent.click(
+        getByText('switch to MetaMask default RPC', { selector: 'button' }),
+      );
+
+      expect(switchToInfuraMock).toHaveBeenCalled();
+      expect(trackNetworkBannerEventMock).toHaveBeenCalledWith({
+        bannerType: 'unavailable',
+        eventName:
+          MetaMetricsEventName.NetworkConnectionBannerSwitchToInfuraClicked,
+        networkClientId: 'custom-arbitrum',
+      });
     });
   });
 });

@@ -21,7 +21,6 @@ import {
 import {
   AssetsContractController,
   BalanceMap,
-  Collection,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
@@ -198,6 +197,7 @@ import {
 } from '../../shared/types';
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -410,7 +410,9 @@ export function subscriptionsStartPolling(): ThunkAction<
     try {
       const pollingToken = await submitRequestToBackground(
         'subscriptionsStartPolling',
-        [],
+        // We need to provide the polling input when start polling
+        // Otherwise, stop polling won't work with `undefined` input.
+        [SUBSCRIPTIONS_POLLING_INPUT],
       );
       return pollingToken;
     } catch (error) {
@@ -3492,18 +3494,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
     nft,
     false,
     networkClientId,
-  ]);
-}
-
-export async function getNFTContractInfo(
-  contractAddresses: string[],
-  chainId: string,
-): Promise<{
-  collections: Collection[];
-}> {
-  return await submitRequestToBackground('getNFTContractInfo', [
-    contractAddresses,
-    chainId,
   ]);
 }
 

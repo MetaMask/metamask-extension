@@ -1,10 +1,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
+  formatChainIdToCaip,
   getQuotesReceivedProperties,
+  isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { QuoteMetadata, QuoteResponse } from '@metamask/bridge-controller';
+import { isHardwareWallet } from '../../../../shared/modules/selectors';
+import { captureException } from '../../../../shared/lib/sentry';
 import {
   AWAITING_SIGNATURES_ROUTE,
   CROSS_CHAIN_SWAP_ROUTE,
@@ -13,7 +17,6 @@ import {
 } from '../../../helpers/constants/routes';
 import { submitBridgeTx } from '../../../ducks/bridge-status/actions';
 import { setWasTxDeclined } from '../../../ducks/bridge/actions';
-import { isHardwareWallet } from '../../../../shared/modules/selectors';
 import {
   getBridgeQuotes,
   getFromAccount,
@@ -21,7 +24,7 @@ import {
   getIsStxEnabled,
   getWarningLabels,
 } from '../../../ducks/bridge/selectors';
-import { captureException } from '../../../../shared/lib/sentry';
+import { useEnableMissingNetwork } from './useEnableMissingNetwork';
 
 const ALLOWANCE_RESET_ERROR = 'Eth USDT allowance reset failed';
 const APPROVAL_TX_ERROR = 'Approve transaction failed';
@@ -67,6 +70,7 @@ export default function useSubmitBridgeTransaction() {
   const { recommendedQuote } = useSelector(getBridgeQuotes);
   const warnings = useSelector(getWarningLabels);
   const fromTokenBalanceInUsd = useSelector(getFromTokenBalanceInUsd);
+  const enableMissingNetwork = useEnableMissingNetwork();
 
   const submitBridgeTransaction = async (
     quoteResponse: QuoteResponse & QuoteMetadata,
@@ -76,6 +80,19 @@ export default function useSubmitBridgeTransaction() {
         'Failed to submit bridge transaction: No selected account',
       );
     }
+
+    // If bridging, enable All Networks view so the user can see their bridging activity
+    if (
+      isCrossChain(
+        quoteResponse.quote.srcChainId,
+        quoteResponse.quote.destChainId,
+      )
+    ) {
+      enableMissingNetwork(
+        formatChainIdToCaip(quoteResponse.quote.destChainId),
+      );
+    }
+
     if (hardwareWalletUsed) {
       navigate(`${CROSS_CHAIN_SWAP_ROUTE}${AWAITING_SIGNATURES_ROUTE}`);
     }
