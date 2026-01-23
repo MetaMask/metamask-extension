@@ -87,25 +87,6 @@ const ERROR_PROPERTIES_MAP = (() => {
   // Extract from Ledger
   extractFromMappings(LEDGER_ERROR_MAPPINGS);
 
-  // Add custom properties for specific error codes not in mappings
-  map.set(ErrorCode.AuthenticationSecurityCondition, {
-    severity: Severity.Err,
-    category: Category.Authentication,
-    userMessage: 'Permission to access the device was denied',
-  });
-
-  map.set(ErrorCode.UserRejected, {
-    severity: Severity.Warning,
-    category: Category.UserAction,
-    userMessage: 'Operation rejected by user',
-  });
-
-  map.set(ErrorCode.UserCancelled, {
-    severity: Severity.Warning,
-    category: Category.UserAction,
-    userMessage: 'Operation cancelled by user',
-  });
-
   return map;
 })();
 
@@ -151,13 +132,23 @@ export function parseErrorByType(
   const cause = error instanceof Error ? error : undefined;
 
   // Parse hardware wallet error codes using mappings from keyring-utils
-  for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-    if (errorMessageLower.includes(errorCode.toLowerCase())) {
-      return createHardwareWalletError(mapping.code, walletType, errorMessage, {
-        cause,
-      });
+  // Only check Ledger mappings for Ledger wallets
+  if (walletType === HardwareWalletType.Ledger) {
+    for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
+      if (errorMessageLower.includes(errorCode.toLowerCase())) {
+        return createHardwareWalletError(
+          mapping.code,
+          walletType,
+          errorMessage,
+          {
+            cause,
+          },
+        );
+      }
     }
   }
+
+  // TODO: Add mappings for other hardware wallets
 
   // Default to unknown error
   return createHardwareWalletError(
