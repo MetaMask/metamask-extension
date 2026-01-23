@@ -17,6 +17,7 @@ describe('useDeviceEventHandlers', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
     connectingPromiseRef: { current: Promise<void> | null };
+    isConnectingRef: { current: boolean };
     adapterRef: { current: HardwareWalletAdapter | null };
     currentConnectionIdRef: { current: number | null };
     hasAutoConnectedRef: { current: boolean };
@@ -39,6 +40,7 @@ describe('useDeviceEventHandlers', () => {
     mockRefs = {
       abortControllerRef: { current: new AbortController() },
       connectingPromiseRef: { current: null },
+      isConnectingRef: { current: false },
       adapterRef: { current: null },
       currentConnectionIdRef: { current: null },
       hasAutoConnectedRef: { current: false },
