@@ -360,17 +360,13 @@ export const useHardwareWalletConnection = ({
           return false;
         }
 
-        try {
-          if (effectiveDeviceId) {
-            refs.deviceIdRef.current = effectiveDeviceId;
-            setDeviceId(effectiveDeviceId);
-          }
-          await connect();
-          // Update effectiveDeviceId to use newly discovered device ID if connect() found one
-          effectiveDeviceId = refs.deviceIdRef.current;
-        } catch (error) {
-          return false;
+        if (effectiveDeviceId) {
+          refs.deviceIdRef.current = effectiveDeviceId;
+          setDeviceId(effectiveDeviceId);
         }
+        await connect();
+        // Update effectiveDeviceId to use newly discovered device ID if connect() found one
+        effectiveDeviceId = refs.deviceIdRef.current;
       }
 
       // Get abort signal after connect() - it may have created a new one
