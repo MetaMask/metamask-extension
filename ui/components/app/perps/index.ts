@@ -27,5 +27,18 @@ export {
   getStatusColor,
   getDisplaySymbol,
   getAssetIconUrl,
+  filterMarketsByQuery,
 } from './utils';
-export { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+export {
+  HYPERLIQUID_ASSET_ICONS_BASE_URL,
+  PERPS_CONSTANTS,
+  MARKET_SORTING_CONFIG,
+} from './constants';
+export type {
+  PerpsMarketData,
+  MarketType,
+  Position,
+  Order,
+  OrderType,
+  AccountState,
+} from './types';

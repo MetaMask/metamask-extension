@@ -439,6 +439,29 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
             metadata !== undefined &&
             metadata.status !== NetworkStatus.Available
           ) {
+            const isInfuraEndpoint = getIsMetaMaskInfuraEndpointUrl(
+              rpcEndpoint.url,
+              infuraProjectId ?? '',
+            );
+
+            // For custom endpoints (non-Infura), check if there's an Infura
+            // endpoint available for this network that we can switch to
+            let infuraEndpointIndex: number | undefined;
+            if (!isInfuraEndpoint) {
+              infuraEndpointIndex = rpcEndpoints.findIndex(
+                (endpoint, index) =>
+                  index !== defaultRpcEndpointIndex &&
+                  getIsMetaMaskInfuraEndpointUrl(
+                    endpoint.url,
+                    infuraProjectId ?? '',
+                  ),
+              );
+              // If no Infura endpoint found, set to undefined
+              if (infuraEndpointIndex === -1) {
+                infuraEndpointIndex = undefined;
+              }
+            }
+
             return {
               networkClientId: rpcEndpoint.networkClientId,
               chainId,
@@ -446,10 +469,10 @@ export const selectFirstUnavailableEvmNetwork = createSelector(
               // We have to use this function to check whether the endpoint is
               // an Infura endpoint because some Infura endpoint URLs use the
               // wrong type.
-              isInfuraEndpoint: getIsMetaMaskInfuraEndpointUrl(
-                rpcEndpoint.url,
-                infuraProjectId ?? '',
-              ),
+              isInfuraEndpoint,
+              // Index of an available Infura endpoint (for custom networks that
+              // have one) that can be used to switch to Infura
+              infuraEndpointIndex,
             };
           }
         }

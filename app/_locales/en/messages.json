@@ -1191,6 +1191,14 @@
   "buyNow": {
     "message": "Buy now"
   },
+  "buyTabOpenedToastDescription": {
+    "message": "We've opened a new tab for buying.",
+    "description": "Toast description shown after opening the buy flow in a new tab"
+  },
+  "buyTabOpenedToastText": {
+    "message": "Continue in your browser tab",
+    "description": "Toast title shown after opening the buy flow in a new tab"
+  },
   "bytes": {
     "message": "Bytes"
   },
@@ -5039,8 +5047,24 @@
   "perps24hVolume": {
     "message": "24h Volume"
   },
+  "perpsActivity": {
+    "message": "Activity"
+  },
+  "perpsAddFunds": {
+    "message": "Add funds"
+  },
+  "perpsAddFundsDescription": {
+    "message": "Add funds to start trading perpetual contracts with leverage"
+  },
+  "perpsAddToFavorites": {
+    "message": "Add to favorites"
+  },
   "perpsAutoClose": {
     "message": "Auto close"
+  },
+  "perpsAvailable": {
+    "message": "$1 available",
+    "description": "$1 is the available balance amount"
   },
   "perpsBuy": {
     "message": "buy"
@@ -5050,6 +5074,9 @@
   },
   "perpsClosedShort": {
     "message": "Closed short"
+  },
+  "perpsContactSupport": {
+    "message": "Contact support"
   },
   "perpsDetails": {
     "message": "Details"
@@ -5066,6 +5093,27 @@
   "perpsEntryPrice": {
     "message": "Entry price"
   },
+  "perpsExploreCrypto": {
+    "message": "Explore crypto"
+  },
+  "perpsExploreStocksAndCommodities": {
+    "message": "Explore stocks and commodities"
+  },
+  "perpsFilterAll": {
+    "message": "All"
+  },
+  "perpsFilterCommodities": {
+    "message": "Commodities"
+  },
+  "perpsFilterCrypto": {
+    "message": "Crypto"
+  },
+  "perpsFilterStocks": {
+    "message": "Stocks"
+  },
+  "perpsFilterStocksOnly": {
+    "message": "Stocks"
+  },
   "perpsFundingPayments": {
     "message": "Funding payments"
   },
@@ -5077,6 +5125,12 @@
   },
   "perpsLearnBasics": {
     "message": "Learn the basics of perps"
+  },
+  "perpsLearnMore": {
+    "message": "Learn more"
+  },
+  "perpsLimit": {
+    "message": "Limit"
   },
   "perpsLiquidationPrice": {
     "message": "Liquidation price"
@@ -5096,6 +5150,15 @@
   "perpsMarketNotFoundDescription": {
     "message": "The market \"$1\" could not be found.",
     "description": "$1 is the market symbol that was not found"
+  },
+  "perpsMarkets": {
+    "message": "Markets"
+  },
+  "perpsMore": {
+    "message": "More"
+  },
+  "perpsNoMarketsFound": {
+    "message": "No markets found"
   },
   "perpsOpenInterest": {
     "message": "Open Interest"
@@ -5124,6 +5187,9 @@
   "perpsReturn": {
     "message": "Return"
   },
+  "perpsSearchMarkets": {
+    "message": "Search markets"
+  },
   "perpsSell": {
     "message": "sell"
   },
@@ -5132,6 +5198,21 @@
   },
   "perpsSize": {
     "message": "Size"
+  },
+  "perpsSortFundingRate": {
+    "message": "Funding rate"
+  },
+  "perpsSortOpenInterest": {
+    "message": "Open interest"
+  },
+  "perpsSortPriceChangeHighToLow": {
+    "message": "Price change: high to low"
+  },
+  "perpsSortPriceChangeLowToHigh": {
+    "message": "Price change: low to high"
+  },
+  "perpsSortVolume": {
+    "message": "Volume"
   },
   "perpsStartNewTrade": {
     "message": "Start a new trade"
@@ -5145,8 +5226,20 @@
   "perpsTotalBalance": {
     "message": "Total Balance"
   },
+  "perpsTradePerps": {
+    "message": "Trade perps"
+  },
   "perpsUnrealizedPnl": {
     "message": "Unrealized P&L"
+  },
+  "perpsWithdraw": {
+    "message": "Withdraw"
+  },
+  "perpsYourOrders": {
+    "message": "Your orders"
+  },
+  "perpsYourPositions": {
+    "message": "Your positions"
   },
   "personalAddressDetected": {
     "message": "Personal address detected. Input the token contract address."
@@ -8052,6 +8145,10 @@
   "switchNetwork": {
     "message": "Switch network"
   },
+  "switchToMetaMaskDefaultRpc": {
+    "message": "Switch to MetaMask default RPC",
+    "description": "Button text to switch the default RPC endpoint to MetaMask default RPC"
+  },
   "switchToPopup": {
     "message": "Switch to popup"
   },
@@ -8533,6 +8630,10 @@
   },
   "updatedRpcForNetworks": {
     "message": "Network RPCs Updated"
+  },
+  "updatedToMetaMaskDefault": {
+    "message": "Updated to MetaMask default",
+    "description": "Toast message confirming that the default RPC endpoint has been updated to MetaMask default"
   },
   "uploadDropFile": {
     "message": "Drop your file here"
