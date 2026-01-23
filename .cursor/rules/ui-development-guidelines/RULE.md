@@ -139,19 +139,23 @@ When unsure about component APIs:
 - **Borders (Box ONLY)**: Use `borderWidth` prop (0, 1, 2, 4, or 8) and `borderColor` enum
 - **Tailwind**: Use `className` prop for utilities not covered by props
 
-All other components (ButtonBase, Text, Icon, Checkbox, etc.) use standard `className` for styling.
+All other components (Button, ButtonBase, Text, Icon, Checkbox, etc.) have their own component-specific props:
+- **Use component props FIRST**: `variant`, `size`, `color`, etc.
+- **Use `className` for additional utilities**: layout, spacing, positioning, etc.
 
 ## Styling Rules (ENFORCE STRICTLY)
 
 ### ✅ ALWAYS DO:
 
 - Use `Box` component instead of `div` for layout
-- Use `Text` component with variants instead of raw text elements
+- Use `Text` component with `variant` prop instead of raw text elements
+- Use component-specific props FIRST: `variant`, `size`, `color`, etc.
 - Use `Box` color props (`backgroundColor`, `borderColor`) for Box component
-- Use `className` with Tailwind for ButtonBase, Text (text colors), Icon, and other components
+- Use `className` for additional utilities: layout, spacing, positioning
 - Use design system color tokens: `bg-default`, `text-default`, `border-default`
-- Use component-specific props first: `variant`, `color`, `size`, etc.
 - Use Tailwind classes from `@metamask/design-system-tailwind-preset`
+
+**Priority Order**: Component Props → Box Utility Props → className for extras
 
 ### ❌ NEVER SUGGEST:
 
@@ -267,7 +271,11 @@ const MyComponent = () => {
 <Box className="flex flex-row items-center justify-between gap-3 p-4 m-2 bg-default border border-muted">
 ```
 
-**IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`). For other components (ButtonBase, Text, Icon, Checkbox, etc.), you MUST use `className`.
+**IMPORTANT**: Only Box has utility props like `backgroundColor`, `borderColor`, and layout props. This is because Box is a special cross-platform primitive (web `div` / React Native `View`).
+
+For other components (Button, ButtonBase, Text, Icon, Checkbox, etc.):
+1. **Use component props FIRST**: `variant`, `size`, `color`, `startIconName`, etc.
+2. **Use `className` for additional utilities**: layout spacing (`mb-2`), width (`w-full`), positioning, etc.
 
 ### When to Use className on Box
 Box doesn't have props for everything - use `className` for:
@@ -317,15 +325,29 @@ Use `div` with `className` when:
 <Box className="bg-default">  {/* Use backgroundColor prop instead */}
 ```
 
-**For ButtonBase and other components:**
+**For Button, ButtonBase, and other components:**
 ```tsx
-// ✅ Use className for all colors (these components don't have color props)
-<ButtonBase className="bg-muted hover:bg-muted-hover active:bg-muted-pressed">
-<ButtonBase className="bg-transparent hover:bg-hover">
+// ✅ Use component props FIRST, then className for layout/utilities
+<Button variant={ButtonVariant.Primary} size={ButtonSize.Lg}>
+<ButtonBase
+  size={ButtonBaseSize.Md}
+  className="bg-muted hover:bg-muted-hover active:bg-muted-pressed"
+>
 
-// ✅ Text and Icon use their color prop for text/icon color
-<Text color={TextColor.TextDefault}>
-<Icon color={IconColor.IconDefault}>
+// ✅ Text uses variant and color props, className for layout
+<Text
+  variant={TextVariant.BodyMd}
+  color={TextColor.TextDefault}
+  className="mb-2"
+>
+
+// ✅ Icon uses name, size, and color props, className for positioning
+<Icon
+  name={IconName.Bank}
+  size={IconSize.Md}
+  color={IconColor.IconDefault}
+  className="mr-2"
+>
 
 // ❌ NEVER use arbitrary colors on any component
 <Box className="bg-[#3B82F6]">
@@ -335,15 +357,17 @@ Use `div` with `className` when:
 
 ## Component Conversion Guide
 
-| DON'T Use                                  | USE Instead                                |
-| ------------------------------------------ | ------------------------------------------ |
-| `<div>`                                    | `<Box>`                                    |
-| `<span>`, `<p>`, `<h1>`, etc.              | `<Text variant={TextVariant.BodyMd}>`      |
-| SASS files (`.scss`)                       | Tailwind `className="..."`                 |
-| `style={{ backgroundColor: 'red' }}`       | `className="bg-error-default"`             |
-| `style={{ display: 'flex' }}`              | `flexDirection={BoxFlexDirection.Row}`     |
-| Manual padding/margin in CSS               | `className="p-4 m-2"`                      |
-| Custom CSS classes in `.scss`              | Tailwind utility classes                   |
+| DON'T Use                                  | USE Instead                                          |
+| ------------------------------------------ | ---------------------------------------------------- |
+| `<div>` (for layout)                       | `<Box>`                                              |
+| `<span>`, `<p>`, `<h1>`, etc.              | `<Text variant={TextVariant.BodyMd}>`                |
+| `<button>` (styled)                        | `<Button variant={ButtonVariant.Primary}>`           |
+| SASS files (`.scss`)                       | Design system props + Tailwind `className`           |
+| `style={{ backgroundColor: 'red' }}`       | Box: `backgroundColor={BoxBackgroundColor.ErrorDefault}` |
+| `style={{ display: 'flex' }}`              | Box: `flexDirection={BoxFlexDirection.Row}`          |
+| Manual padding/margin in CSS               | Box: `padding={4}` or `className="p-4"`              |
+| Custom CSS classes in `.scss`              | Component props + Tailwind utility classes           |
+| `className="text-lg font-bold"`            | `<Text variant={TextVariant.HeadingMd}>`             |
 
 ## Legacy Code Migration Guidelines
 
