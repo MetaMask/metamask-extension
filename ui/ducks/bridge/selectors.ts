@@ -16,7 +16,6 @@ import {
   type QuoteWarning,
   isCrossChain,
   RequestStatus,
-  type FeatureFlagsPlatformConfig,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
 import type { RemoteFeatureFlagControllerState } from '@metamask/remote-feature-flag-controller';
