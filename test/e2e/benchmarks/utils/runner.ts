@@ -44,7 +44,7 @@ async function runWithRetries(
         }
         return result;
       },
-      { retries, delay: 0 },
+      { retries, delay: 1000 },
     );
   } catch {
     return lastResult;
