@@ -55,6 +55,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fix permission modal to show entire origin when it's too long (#39030)
 - Show notice that the account isn't connected when switching accounts - in side panel view (#39063)
 - Fixed Ledger hardware wallet connection failures during swap transactions (#39082)
+- Fixed misleading "Network Degraded" banners and false-positive RPC endpoint metrics when the device has no internet connection (#39016)
+- Prevent poisoning of backups, re-enable split state storage migration (#39301)
 
 ## [13.14.2]
 
