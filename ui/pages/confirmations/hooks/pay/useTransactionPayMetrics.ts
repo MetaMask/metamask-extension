@@ -1,6 +1,9 @@
 import { useEffect, useMemo, useRef } from 'react';
 import type { Hex, Json } from '@metamask/utils';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { TransactionPayStrategy } from '@metamask/transaction-pay-controller';
 import { getNativeTokenAddress } from '@metamask/assets-controllers';
 import { BigNumber } from 'bignumber.js';
@@ -8,7 +11,6 @@ import type { TransactionPaymentToken } from '@metamask/transaction-pay-controll
 import { useConfirmContext } from '../../context/confirm';
 import { hasTransactionType } from '../../utils/transaction-pay';
 import { updateEventFragment } from '../../../../store/actions';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../shared/constants/transaction';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
   useTransactionPayQuotes,
@@ -69,9 +71,7 @@ export function useTransactionPayMetrics() {
 
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [
-        EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
-      ])
+      hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
     ) {
       props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;

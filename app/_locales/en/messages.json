@@ -2685,12 +2685,6 @@
   "etherscanViewOn": {
     "message": "View on Etherscan"
   },
-  "exampleCustomAmountActivityTitle": {
-    "message": "Example deposit"
-  },
-  "exampleCustomAmountTitle": {
-    "message": "Example deposit"
-  },
   "existingChainId": {
     "message": "The information you have entered is associated with an existing chain ID."
   },
@@ -5154,6 +5148,9 @@
   },
   "perpsDisclaimer": {
     "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
+  },
+  "perpsDepositActivityTitle": {
+    "message": "Perps deposit"
   },
   "perpsDepositTitle": {
     "message": "Perps deposit"

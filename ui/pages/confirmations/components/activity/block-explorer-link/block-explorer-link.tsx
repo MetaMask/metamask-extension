@@ -9,9 +9,12 @@ import { IconColor } from '../../../../../helpers/constants/design-system';
 import { IconName } from '../../../../../components/component-library/icon';
 import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 
+const HYPERLIQUID_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
+
 type BlockExplorerLinkProps = {
   chainId: Hex;
   hash: string | undefined;
+  isHyperliquid?: boolean;
 };
 
 function getBlockExplorerTxUrl(
@@ -26,7 +29,11 @@ function getBlockExplorerTxUrl(
 }
 
 // eslint-disable-next-line @typescript-eslint/naming-convention
-export function BlockExplorerLink({ chainId, hash }: BlockExplorerLinkProps) {
+export function BlockExplorerLink({
+  chainId,
+  hash,
+  isHyperliquid = false,
+}: BlockExplorerLinkProps) {
   const networkConfiguration = useSelector((state) =>
     selectNetworkConfigurationByChainId(state, chainId),
   );
@@ -35,13 +42,20 @@ export function BlockExplorerLink({ chainId, hash }: BlockExplorerLinkProps) {
     if (!networkConfiguration) {
       return undefined;
     }
+
+    if (isHyperliquid) {
+      return HYPERLIQUID_EXPLORER_URL;
+    }
+
     const { defaultBlockExplorerUrlIndex, blockExplorerUrls } =
       networkConfiguration;
+
     if (defaultBlockExplorerUrlIndex === undefined) {
       return undefined;
     }
+
     return blockExplorerUrls?.[defaultBlockExplorerUrlIndex];
-  }, [networkConfiguration]);
+  }, [isHyperliquid, networkConfiguration]);
 
   const explorerTxUrl = getBlockExplorerTxUrl(blockExplorerUrl, hash);
 

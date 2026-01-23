@@ -7,10 +7,10 @@ import {
   TransactionPayRequiredToken,
   TransactionPayStrategy,
 } from '@metamask/transaction-pay-controller';
+import { TransactionType } from '@metamask/transaction-controller';
 import type { Json } from '@metamask/utils';
 import { ConfirmContext } from '../../context/confirm';
 import { Asset } from '../../types/send';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../shared/constants/transaction';
 import { useTransactionPayMetrics } from './useTransactionPayMetrics';
 import { useTransactionPayToken } from './useTransactionPayToken';
 import {
@@ -53,7 +53,7 @@ const QUOTE_MOCK = {
 
 const mockStore = configureStore([]);
 
-function createWrapper(type: string = EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE) {
+function createWrapper(type: string = TransactionType.perpsDeposit) {
   const state = {
     metamask: {
       TransactionPayController: {
@@ -169,7 +169,7 @@ describe('useTransactionPayMetrics', () => {
     } as ReturnType<typeof useTransactionPayToken>);
 
     const { result } = renderHook(() => useTransactionPayMetrics(), {
-      wrapper: createWrapper(EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE),
+      wrapper: createWrapper(TransactionType.perpsDeposit),
     });
 
     expect(result.error).toBeUndefined();

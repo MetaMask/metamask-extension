@@ -35,7 +35,7 @@ import { getIntlLocale } from '../ducks/locale/locale';
 import { NETWORK_TO_SHORT_NETWORK_NAME_MAP } from '../../shared/constants/bridge';
 import { calcTokenAmount } from '../../shared/lib/transactions-controller-utils';
 import { selectBridgeHistoryItemForTxMetaId } from '../ducks/bridge-status/selectors';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../shared/constants/transaction';
+
 import { useI18nContext } from './useI18nContext';
 import { useTokenFiatAmount } from './useTokenFiatAmount';
 import { useUserPreferencedCurrency } from './useUserPreferencedCurrency';
@@ -386,8 +386,8 @@ export function useTransactionDisplayData(transactionGroup) {
       new BigNumber(bridgeTokenDisplayData.sourceTokenAmountSent ?? 0),
     );
     secondaryDisplayValue = bridgeTokenDisplayData.displayCurrencyAmount;
-  } else if (type === EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE) {
-    title = t('exampleCustomAmountActivityTitle');
+  } else if (type === TransactionType.perpsDeposit) {
+    title = t('perpsDepositActivityTitle');
     prefix = '';
   } else {
     dispatch(

@@ -47,7 +47,7 @@ export function TransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {t('exampleCustomAmountTitle')}
+            {t('perpsDepositTitle')}
           </Text>
         </ModalHeader>
 

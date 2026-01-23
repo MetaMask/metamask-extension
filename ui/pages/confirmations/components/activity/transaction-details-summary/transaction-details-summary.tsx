@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
@@ -19,7 +20,6 @@ import {
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { useTransactionDetails } from '../transaction-details-context';
 import { formatTransactionDateTime } from '../utils';
-import { EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE } from '../../../../../../shared/constants/transaction';
 import { getTransactions } from '../../../../../selectors/transactions';
 import { getTokenByAccountAndAddressAndChainId } from '../../../../../selectors/assets';
 import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
@@ -28,24 +28,12 @@ import { TransactionStatusIcon } from '../transaction-status-icon';
 
 type TranslateFunction = (key: string, args?: string[]) => string;
 
-type SummaryLineData = {
-  chainId: Hex;
-  hash: string | undefined;
-  status: TransactionStatus;
-  time: number;
-  title: string;
-};
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
 export function TransactionDetailsSummary() {
   const t = useI18nContext() as TranslateFunction;
   const { transactionMeta } = useTransactionDetails();
   const allTransactions = useSelector(getTransactions);
+  const { requiredTransactionIds, metamaskPay } = transactionMeta;
 
-  const { requiredTransactionIds, metamaskPay, chainId, txParams } =
-    transactionMeta;
-  const isExampleType =
-    transactionMeta.type === EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE;
   const hasRequiredTransactions =
     requiredTransactionIds && requiredTransactionIds.length > 0;
 
@@ -53,6 +41,7 @@ export function TransactionDetailsSummary() {
     if (!hasRequiredTransactions) {
       return [];
     }
+
     return requiredTransactionIds
       .map((id) =>
         (allTransactions as TransactionMeta[]).find((tx) => tx.id === id),
@@ -60,109 +49,11 @@ export function TransactionDetailsSummary() {
       .filter((tx): tx is TransactionMeta => tx !== undefined);
   }, [hasRequiredTransactions, requiredTransactionIds, allTransactions]);
 
-  const relayDepositTransaction = requiredTransactions.find(
-    (tx) => tx.type === TransactionType.relayDeposit,
-  );
+  const transactions = useMemo(() => {
+    return [...requiredTransactions, transactionMeta];
+  }, [requiredTransactions, transactionMeta]);
 
-  const relayDepositTokenAddress = metamaskPay?.tokenAddress as Hex | undefined;
-  const relayDepositChainId = relayDepositTransaction?.chainId;
-
-  const relayDepositToken = useSelector((state) =>
-    relayDepositTokenAddress && relayDepositChainId
-      ? getTokenByAccountAndAddressAndChainId(
-          state,
-          undefined,
-          relayDepositTokenAddress,
-          relayDepositChainId,
-        )
-      : null,
-  );
-
-  const relayDepositNetworkConfig = useSelector((state) =>
-    relayDepositChainId
-      ? selectNetworkConfigurationByChainId(state, relayDepositChainId)
-      : null,
-  );
-
-  const targetTokenAddress = txParams?.to as Hex | undefined;
-  const targetToken = useSelector((state) =>
-    targetTokenAddress && chainId
-      ? getTokenByAccountAndAddressAndChainId(
-          state,
-          undefined,
-          targetTokenAddress,
-          chainId,
-        )
-      : null,
-  );
-
-  const targetNetworkConfig = useSelector((state) =>
-    selectNetworkConfigurationByChainId(state, chainId),
-  );
-
-  const lines = useMemo(() => {
-    if (!hasRequiredTransactions) {
-      return [
-        {
-          chainId,
-          hash: transactionMeta.hash,
-          status: transactionMeta.status,
-          time: transactionMeta.submittedTime ?? transactionMeta.time,
-          title: getLineTitle(transactionMeta, t),
-        },
-      ];
-    }
-
-    const result: SummaryLineData[] = requiredTransactions.map((tx) => ({
-      chainId: tx.chainId,
-      hash: tx.hash,
-      status: tx.status,
-      time: tx.submittedTime ?? tx.time,
-      title: getLineTitleForRequiredTransaction(
-        tx,
-        relayDepositToken?.symbol,
-        relayDepositNetworkConfig?.name,
-        t,
-      ),
-    }));
-
-    if (isExampleType) {
-      const targetSymbol = targetToken?.symbol;
-      const targetNetworkName = targetNetworkConfig?.name;
-
-      result.push({
-        chainId,
-        hash: transactionMeta.hash,
-        status: transactionMeta.status,
-        time: transactionMeta.submittedTime ?? transactionMeta.time,
-        title:
-          targetSymbol && targetNetworkName
-            ? t('bridgeReceive', [targetSymbol, targetNetworkName])
-            : t('bridgeReceiveLoading'),
-      });
-    } else {
-      result.push({
-        chainId,
-        hash: transactionMeta.hash,
-        status: transactionMeta.status,
-        time: transactionMeta.submittedTime ?? transactionMeta.time,
-        title: getLineTitle(transactionMeta, t),
-      });
-    }
-
-    return result;
-  }, [
-    hasRequiredTransactions,
-    transactionMeta,
-    requiredTransactions,
-    relayDepositToken?.symbol,
-    relayDepositNetworkConfig?.name,
-    targetToken?.symbol,
-    targetNetworkConfig?.name,
-    chainId,
-    isExampleType,
-    t,
-  ]);
+  const payTokenAddress = metamaskPay?.tokenAddress as Hex | undefined;
 
   return (
     <Box
@@ -177,15 +68,12 @@ export function TransactionDetailsSummary() {
         flexDirection={FlexDirection.Column}
         paddingLeft={2}
       >
-        {lines.map((line, index) => (
-          <SummaryLine
-            key={index}
-            chainId={line.chainId}
-            hash={line.hash}
-            status={line.status}
-            time={line.time}
-            title={line.title}
-            isLast={index === lines.length - 1}
+        {transactions.map((tx, index) => (
+          <TransactionSummaryLine
+            key={tx.id}
+            transactionMeta={tx}
+            payTokenAddress={payTokenAddress}
+            isLast={index === transactions.length - 1}
           />
         ))}
       </Box>
@@ -193,49 +81,179 @@ export function TransactionDetailsSummary() {
   );
 }
 
-function getLineTitleForRequiredTransaction(
-  transactionMeta: TransactionMeta,
-  tokenSymbol: string | undefined,
-  networkName: string | undefined,
-  t: TranslateFunction,
-): string {
+function TransactionSummaryLine({
+  transactionMeta,
+  payTokenAddress,
+  isLast,
+}: {
+  transactionMeta: TransactionMeta;
+  payTokenAddress: Hex | undefined;
+  isLast: boolean;
+}) {
   const { type } = transactionMeta;
 
   if (type === TransactionType.relayDeposit) {
-    if (tokenSymbol && networkName) {
-      return t('bridgeSend', [tokenSymbol, networkName]);
-    }
-
-    return t('bridgeSendLoading');
+    return (
+      <RelayDepositSummaryLine
+        transactionMeta={transactionMeta}
+        tokenAddress={payTokenAddress}
+      />
+    );
   }
 
-  return getLineTitle(transactionMeta, t);
+  if (type === TransactionType.perpsDeposit) {
+    return (
+      <ReceiveSummaryLine transactionMeta={transactionMeta} isLast={isLast} />
+    );
+  }
+
+  return (
+    <DefaultSummaryLine transactionMeta={transactionMeta} isLast={isLast} />
+  );
 }
 
-function getLineTitle(
-  transactionMeta: TransactionMeta,
-  t: TranslateFunction,
-): string {
-  const { type } = transactionMeta;
+function RelayDepositSummaryLine({
+  transactionMeta,
+  tokenAddress,
+}: {
+  transactionMeta: TransactionMeta;
+  tokenAddress: Hex | undefined;
+}) {
+  const t = useI18nContext() as TranslateFunction;
+  const { chainId } = transactionMeta;
 
+  const token = useSelector((state) =>
+    tokenAddress && chainId
+      ? getTokenByAccountAndAddressAndChainId(
+          state,
+          undefined,
+          tokenAddress,
+          chainId,
+        )
+      : null,
+  );
+
+  const networkConfig = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const tokenSymbol = token?.symbol;
+  const networkName = networkConfig?.name;
+
+  const title =
+    tokenSymbol && networkName
+      ? t('bridgeSend', [tokenSymbol, networkName])
+      : t('bridgeSendLoading');
+
+  return (
+    <SummaryLine
+      chainId={chainId}
+      hash={transactionMeta.hash}
+      status={transactionMeta.status}
+      time={transactionMeta.submittedTime ?? transactionMeta.time}
+      title={title}
+      isLast={false}
+    />
+  );
+}
+
+const HYPERLIQUID_NETWORK_NAME = 'Hyperliquid';
+
+function ReceiveSummaryLine({
+  transactionMeta,
+  isLast,
+}: {
+  transactionMeta: TransactionMeta;
+  isLast: boolean;
+}) {
+  const t = useI18nContext() as TranslateFunction;
+  const { type, chainId, txParams } = transactionMeta;
+  const isPerpsDeposit = type === TransactionType.perpsDeposit;
+
+  const targetTokenAddress = txParams?.to as Hex | undefined;
+
+  const token = useSelector((state) =>
+    targetTokenAddress && chainId
+      ? getTokenByAccountAndAddressAndChainId(
+          state,
+          undefined,
+          targetTokenAddress,
+          chainId,
+        )
+      : null,
+  );
+
+  const networkConfig = useSelector((state) =>
+    selectNetworkConfigurationByChainId(state, chainId),
+  );
+
+  const tokenSymbol = token?.symbol;
+  const networkName = isPerpsDeposit
+    ? HYPERLIQUID_NETWORK_NAME
+    : networkConfig?.name;
+
+  const title =
+    tokenSymbol && networkName
+      ? t('bridgeReceive', [tokenSymbol, networkName])
+      : t('bridgeReceiveLoading');
+
+  return (
+    <SummaryLine
+      chainId={chainId}
+      hash={transactionMeta.hash}
+      isHyperliquid={isPerpsDeposit}
+      status={transactionMeta.status}
+      time={transactionMeta.submittedTime ?? transactionMeta.time}
+      title={title}
+      isLast={isLast}
+    />
+  );
+}
+
+function DefaultSummaryLine({
+  transactionMeta,
+  isLast,
+}: {
+  transactionMeta: TransactionMeta;
+  isLast: boolean;
+}) {
+  const t = useI18nContext() as TranslateFunction;
+  const { type, chainId } = transactionMeta;
+
+  let title: string;
   switch (type) {
     case TransactionType.bridge:
-      return t('bridge');
+      title = t('bridge');
+      break;
     case TransactionType.bridgeApproval:
-      return t('bridgeApproval');
+      title = t('bridgeApproval');
+      break;
     case TransactionType.swap:
-      return t('swap');
+      title = t('swap');
+      break;
     case TransactionType.swapApproval:
-      return t('swapApproval');
+      title = t('swapApproval');
+      break;
     default:
-      return t('transaction');
+      title = t('transaction');
   }
+
+  return (
+    <SummaryLine
+      chainId={chainId}
+      hash={transactionMeta.hash}
+      status={transactionMeta.status}
+      time={transactionMeta.submittedTime ?? transactionMeta.time}
+      title={title}
+      isLast={isLast}
+    />
+  );
 }
 
-// eslint-disable-next-line @typescript-eslint/naming-convention
 function SummaryLine({
   chainId,
   hash,
+  isHyperliquid = false,
   isLast,
   status,
   time,
@@ -243,6 +261,7 @@ function SummaryLine({
 }: {
   chainId: Hex;
   hash: string | undefined;
+  isHyperliquid?: boolean;
   isLast: boolean;
   status: TransactionStatus;
   time: number;
@@ -267,7 +286,11 @@ function SummaryLine({
           <TransactionStatusIcon status={status} />
           <Text variant={TextVariant.bodyMdMedium}>{title}</Text>
         </Box>
-        <BlockExplorerLink chainId={chainId} hash={hash} />
+        <BlockExplorerLink
+          chainId={chainId}
+          hash={hash}
+          isHyperliquid={isHyperliquid}
+        />
       </Box>
       <Box display={Display.Flex} flexDirection={FlexDirection.Row}>
         <Box

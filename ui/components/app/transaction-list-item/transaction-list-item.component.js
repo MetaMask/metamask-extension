@@ -43,10 +43,7 @@ import {
   MetaMetricsEventCategory,
   MetaMetricsEventName,
 } from '../../../../shared/constants/metametrics';
-import {
-  EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE,
-  TransactionGroupCategory,
-} from '../../../../shared/constants/transaction';
+import { TransactionGroupCategory } from '../../../../shared/constants/transaction';
 import { EditGasModes } from '../../../../shared/constants/gas';
 import {
   TransactionModalContextProvider,
@@ -73,7 +70,7 @@ import {
 } from '../../../../shared/constants/network';
 import { mapTransactionTypeToCategory } from './helpers';
 
-const PAY_TRANSACTION_TYPES = [EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE];
+const PAY_TRANSACTION_TYPES = [TransactionType.perpsDeposit];
 
 function TransactionListItemInner({
   transactionGroup,
