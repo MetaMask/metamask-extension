@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Мост к"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Если вы добавили этот токен вручную. Убедитесь, что вы осознаете риски для своих средств, прежде чем использовать мост."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Мы не можем проверить этот токен."
-  },
   "bridgeTransactionProgress": {
     "message": "Транзакция $1 из 2"
   },
@@ -8219,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Ваш NFT могут быть в опасности"
-  },
-  "yourNetworks": {
-    "message": "Ваши сети"
   },
   "yourPrivateSeedPhrase": {
     "message": "Ваша секретная фраза для восстановления"

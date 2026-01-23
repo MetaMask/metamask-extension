@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Fazer ponte para"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Se você adicionou esse token manualmente, confirme que está ciente dos riscos para seus fundos antes de fazer a ponte."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Não foi possível confirmar esse token."
-  },
   "bridgeTransactionProgress": {
     "message": "Transação $1 de 2"
   },
@@ -8219,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Seu NFT pode estar em risco"
-  },
-  "yourNetworks": {
-    "message": "Suas redes"
   },
   "yourPrivateSeedPhrase": {
     "message": "Sua Frase de Recuperação Secreta"

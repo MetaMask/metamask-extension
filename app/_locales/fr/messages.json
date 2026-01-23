@@ -1068,12 +1068,6 @@
   "bridgeTo": {
     "message": "Établir une passerelle vers"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Si vous avez ajouté ce jeton manuellement, assurez-vous de bien comprendre les risques que cela peut représenter pour vos fonds avant d’établir une passerelle."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Nous ne pouvons pas vérifier ce jeton."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaction $1 sur 2"
   },
@@ -8210,9 +8204,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Il peut y avoir des risques associés à votre NFT"
-  },
-  "yourNetworks": {
-    "message": "Vos réseaux"
   },
   "yourPrivateSeedPhrase": {
     "message": "Votre phrase secrète de récupération"
