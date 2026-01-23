@@ -88,7 +88,6 @@
       "error: TypeError: Cannot convert undefined or": 2,
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "MetaMask: Chain processing errors": 2,
-      "Test errors: Fetch failures": 5,
       "ObjectMultiplex: Malformed chunk warnings": 1,
       "error: { name: 'controller', data: {": 1,
       "MetaMask: MetaMetrics invalid trait types": 2,
@@ -1033,7 +1032,22 @@
     },
     "ui/pages/confirmations/hooks/alerts/transactions/useSigningOrSubmittingAlerts.test.ts": {
       "Reselect: Input stability warnings": 2,
-      "Reselect: Identity function warnings": 5,
+      "Reselect: Identity function warnings": 4,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useInsufficientPayTokenBalanceAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/useNoPayTokenQuotesAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/alerts/transactions/usePayHardwareAccountAlert.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/settings/backup-and-sync-tab/backup-and-sync-tab.test.tsx": {
@@ -2422,9 +2436,6 @@
     "shared/modules/bridge-utils/security-alerts-api.util.test.ts": {
       "warn: Missing token alert translation for": 1
     },
-    "ui/hooks/useNftCollectionsMetadata.test.ts": {
-      "React: Act warnings (component updates not wrapped)": 3
-    },
     "ui/selectors/metamask-notifications/metamask-notifications.test.ts": {
       "Reselect: Input stability warnings": 5
     },
@@ -3440,6 +3451,21 @@
     "ui/pages/confirmations/components/rows/pay-with-row/pay-with-row.test.tsx": {
       "warn: ⚠️ React Router Future Flag": 2
     },
+    "ui/pages/perps/market-list/components/market-row/market-row.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/sort-dropdown/sort-dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/dropdown/dropdown.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/components/search-input/search-input.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/perps/market-list/index.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
     "ui/selectors/gator-permissions/gator-permissions.test.ts": {
       "MetaMask: Permission type warnings": 2
     },
@@ -3460,6 +3486,29 @@
       "warn: ⚠️ React Router Future Flag": 2
     },
     "ui/pages/confirmations/components/pay-token-amount/pay-token-amount.test.tsx": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/percentage-buttons/percentage-buttons.test.tsx": {
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useUpdateTokenAmount.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmount.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/hooks/transactions/useTransactionCustomAmountAlerts.test.ts": {
+      "Reselect: Input stability warnings": 2,
+      "Reselect: Identity function warnings": 3,
+      "warn: ⚠️ React Router Future Flag": 2
+    },
+    "ui/pages/confirmations/components/info/custom-amount-info/custom-amount-info.test.tsx": {
       "Reselect: Input stability warnings": 2,
       "Reselect: Identity function warnings": 3,
       "warn: ⚠️ React Router Future Flag": 2

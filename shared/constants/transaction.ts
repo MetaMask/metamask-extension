@@ -1,4 +1,7 @@
-import { TransactionStatus } from '@metamask/transaction-controller';
+import {
+  TransactionStatus,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import { Hex } from '@metamask/utils';
 
 /**
@@ -280,3 +283,9 @@ export const NATIVE_TOKEN_ADDRESS = '0x0'.padEnd(42, '0') as Hex;
 
 export const POLYGON_NATIVE_TOKEN_ADDRESS =
   '0x0000000000000000000000000000000000001010' as Hex;
+
+/**
+ * Developer-only transaction type for testing custom amount confirmations.
+ */
+export const EXAMPLE_CUSTOM_AMOUNT_TRANSACTION_TYPE =
+  'example-custom-amount' as TransactionType;

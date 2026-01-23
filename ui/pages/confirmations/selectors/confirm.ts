@@ -12,16 +12,15 @@ const ConfirmationApprovalTypes = [
   ApprovalType.EthSignTypedData,
   ApprovalType.Transaction,
 ];
-
-export function pendingConfirmationsSortedSelector(
-  state: ConfirmMetamaskState,
-) {
-  return getPendingApprovals(state)
-    .filter(({ type }) =>
-      ConfirmationApprovalTypes.includes(type as ApprovalType),
-    )
-    .sort((a1, a2) => a1.time - a2.time);
-}
+export const pendingConfirmationsSortedSelector = createSelector(
+  getPendingApprovals,
+  (approvals) =>
+    approvals
+      .filter(({ type }) =>
+        ConfirmationApprovalTypes.includes(type as ApprovalType),
+      )
+      .sort((a1, a2) => a1.time - a2.time),
+);
 
 const firstPendingConfirmationSelector = createSelector(
   pendingConfirmationsSortedSelector,

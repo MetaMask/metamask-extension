@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { renderHookWithProvider } from '../../../../../test/lib/render-helpers-navigate';
 import mockState from '../../../../../test/data/mock-state.json';
-import { getAllEnabledNetworksForAllNamespaces } from '../../../../selectors/multichain/networks';
+import { getAllMultichainNetworkConfigurations } from '../../../../selectors/multichain/networks';
 import { type Asset } from '../../types/send';
 import { useSendAssets } from './useSendAssets';
 import * as useSendTokensModule from './useSendTokens';
@@ -18,6 +18,23 @@ jest.mock('./useSendNfts');
 const mockUseSelector = jest.mocked(useSelector);
 const mockUseSendTokens = jest.spyOn(useSendTokensModule, 'useSendTokens');
 const mockUseSendNfts = jest.spyOn(useSendNftsModule, 'useSendNfts');
+
+// Mock network configurations with CAIP chain IDs
+// Note: 0x1 = 1 (Ethereum), 0x89 = 137 (Polygon), 0xaa36a7 = 11155111 (Sepolia)
+const mockMultichainNetworkConfigurations = {
+  'eip155:1': { chainId: 'eip155:1', name: 'Ethereum', isEvm: true },
+  'eip155:137': { chainId: 'eip155:137', name: 'Polygon', isEvm: true },
+  'eip155:11155111': {
+    chainId: 'eip155:11155111',
+    name: 'Sepolia',
+    isEvm: true,
+  },
+  'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp': {
+    chainId: 'solana:5eykt4UsFv8P8NJdTREpY1vzqKqZKvdp',
+    name: 'Solana',
+    isEvm: false,
+  },
+};
 
 // State with external services enabled (BFT ON)
 const mockStateWithExternalServices = {
@@ -37,14 +54,12 @@ const mockStateWithoutExternalServices = {
   },
 };
 
-const mockEnabledNetworks = ['0x1', '0x89', '0xaa36a7'];
-
 describe('useSendAssets', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockUseSelector.mockImplementation((selector) => {
-      if (selector === getAllEnabledNetworksForAllNamespaces) {
-        return mockEnabledNetworks;
+      if (selector === getAllMultichainNetworkConfigurations) {
+        return mockMultichainNetworkConfigurations;
       }
       return undefined;
     });

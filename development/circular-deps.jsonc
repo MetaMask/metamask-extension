@@ -10,26 +10,7 @@
   [
     "shared/modules/selectors/account.ts",
     "shared/modules/selectors/index.ts",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "shared/modules/selectors/index.ts",
-    "shared/modules/selectors/smart-transactions.ts",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "shared/modules/selectors/index.ts",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/ducks/metamask/metamask.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
@@ -42,13 +23,7 @@
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
     "ui/ducks/metamask/metamask.js",
-    "ui/ducks/send/index.js",
-    "ui/ducks/send/send.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
     "ui/selectors/index.js",
@@ -58,11 +33,15 @@
   [
     "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/custom-gas.js",
+    "ui/selectors/index.js",
+    "ui/store/actions.ts"
+  ],
+  [
+    "ui/ducks/alerts/unconnected-account.js",
+    "ui/ducks/metamask/metamask.js",
+    "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
@@ -70,69 +49,19 @@
   [
     "ui/ducks/alerts/unconnected-account.js",
     "ui/ducks/metamask/metamask.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
     "ui/selectors/confirm-transaction.js",
     "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
   [
     "ui/ducks/alerts/unconnected-account.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/custom-gas.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/confirm-transaction.js",
-    "ui/selectors/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/ducks/alerts/unconnected-account.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
+    "ui/ducks/metamask/metamask.js",
     "ui/selectors/index.js",
     "ui/selectors/selectors.js",
     "ui/store/actions.ts"
   ],
   ["ui/ducks/alerts/unconnected-account.js", "ui/store/actions.ts"],
-  [
-    "ui/ducks/confirm-transaction/confirm-transaction.duck.js",
-    "ui/ducks/metamask/metamask.js",
-    "ui/ducks/send/index.js",
-    "ui/ducks/send/send.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/ducks/metamask/metamask.js",
-    "ui/pages/confirmations/confirmation/ResultTemplate.ts",
-    "ui/pages/confirmations/confirmation/templates/error.js",
-    "ui/pages/confirmations/confirmation/templates/index.js",
-    "ui/selectors/selectors.js",
-    "ui/store/actions.ts"
-  ],
-  [
-    "ui/ducks/metamask/metamask.js",
-    "ui/selectors/multichain.ts",
-    "ui/selectors/selectors.js"
-  ],
   ["ui/ducks/metamask/metamask.js", "ui/selectors/selectors.js"],
+  ["ui/ducks/metamask/metamask.js", "ui/store/actions.ts"],
   ["ui/selectors/multichain.ts", "ui/selectors/selectors.js"]
 ]
