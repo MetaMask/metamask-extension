@@ -38,6 +38,10 @@ const VALID_ERROR_CODES = new Set<number>([
   ErrorCode.ConnectionTimeout,
 ]);
 
+function isValidErrorCode(code: unknown): code is ErrorCode {
+  return typeof code === 'number' && VALID_ERROR_CODES.has(code);
+}
+
 /**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
  *
@@ -55,7 +59,7 @@ export function isJsonRpcHardwareWalletError(
     error.data !== undefined &&
     typeof error.data === 'object' &&
     'code' in error.data &&
-    typeof error.data.code === 'number'
+    isValidErrorCode(error.data.code)
   );
 }
 
@@ -82,8 +86,7 @@ export function extractHardwareWalletErrorCode(
     error &&
     typeof error === 'object' &&
     'code' in error &&
-    typeof error.code === 'number' &&
-    VALID_ERROR_CODES.has(error.code)
+    isValidErrorCode(error.code)
   ) {
     return error.code as ErrorCode;
   }
@@ -118,11 +121,12 @@ export function reconstructHardwareWalletError(
         'Hardware wallet error occurred',
       {
         code: error.data.code,
-        severity: (error.data.severity as Severity) ?? Severity.Err,
-        category: (error.data.category as Category) ?? Category.Unknown,
-        userMessage: error.data.userMessage ?? 'Hardware wallet error occurred',
+        severity: (error?.data?.severity as Severity) ?? Severity.Err,
+        category: (error?.data?.category as Category) ?? Category.Unknown,
+        userMessage:
+          error?.data?.userMessage ?? 'Hardware wallet error occurred',
         metadata: {
-          ...error.data.metadata,
+          ...error?.data?.metadata,
           walletType,
         },
       },
