@@ -2,14 +2,19 @@ import { strict as assert } from 'assert';
 import { MockttpServer } from 'mockttp';
 import { SMART_CONTRACTS } from '../../seeder/smart-contracts';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
-import { withFixtures, WINDOW_TITLES, DAPP_URL } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { mockSpotPrices } from '../tokens/utils/mocks';
 import { Driver } from '../../webdriver/driver';
-import GasFeeModal from '../../page-objects/pages/confirmations/redesign/gas-fee-modal';
+import GasFeeModal from '../../page-objects/pages/confirmations/gas-fee-modal';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import ActivityListPage from '../../page-objects/pages/home/activity-list';
+import HomePage from '../../page-objects/pages/home/homepage';
+import SendPage from '../../page-objects/pages/send/send-page';
+import TestDapp from '../../page-objects/pages/test-dapp';
 import { Anvil } from '../../seeder/anvil';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 const PREFERENCES_STATE_MOCK = {
   preferences: {
@@ -30,72 +35,54 @@ describe('Send ETH', function () {
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.clickElement('[data-testid="eth-overview-send"]');
+          const homePage = new HomePage(driver);
+          const sendPage = new SendPage(driver);
+          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const activityListPage = new ActivityListPage(driver);
 
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
+          await homePage.startSendFlow();
+
+          await sendPage.selectToken('0x539', 'ETH');
+          await sendPage.fillRecipient(
             '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
           );
 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const inputAmount: any = await driver.findElement(
-            'input[placeholder="0"]',
+          // Type 1000 to trigger insufficient funds error
+          await sendPage.fillAmount('1000');
+          await sendPage.checkInsufficientFundsErrorDetailed();
+
+          // Remove last 3 characters
+          await sendPage.pressOnAmountInput('BACK_SPACE');
+          await sendPage.pressOnAmountInput('BACK_SPACE');
+          await sendPage.pressOnAmountInput('BACK_SPACE');
+
+          // Click max button and verify amount is greater than 24
+          await sendPage.clickMaxButton();
+          let inputValue = await sendPage.getAmountInputValue();
+          assert(
+            Number(inputValue) > 24,
+            `Expected amount > 24, got ${inputValue}`,
           );
 
-          await inputAmount.press('1');
-          await inputAmount.press('0');
-          await inputAmount.press('0');
-          await inputAmount.press('0');
+          // Click max/clear button again to clear the amount
+          await sendPage.clickMaxButton();
 
-          await driver.findElement({
-            css: '[data-testid="send-page-amount-error"]',
-            text: '. Insufficient funds.',
-          });
-
-          await inputAmount.press(driver.Key.BACK_SPACE);
-          await inputAmount.press(driver.Key.BACK_SPACE);
-          await inputAmount.press(driver.Key.BACK_SPACE);
-
-          await driver.clickElement('[data-testid="max-clear-button"]');
-
-          let inputValue = await inputAmount.getProperty('value');
-
-          assert(Number(inputValue) > 24);
-
-          await driver.clickElement('[data-testid="max-clear-button"]');
-
-          assert.equal(await inputAmount.isEnabled(), true);
-
-          await inputAmount.fill('1');
-
-          inputValue = await inputAmount.getProperty('value');
+          // Fill with 1 ETH
+          await sendPage.fillAmount('1');
+          inputValue = await sendPage.getAmountInputValue();
           assert.equal(inputValue, '1');
 
-          // Continue to next screen
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
+          await sendPage.pressContinueButton();
+          await sendTokenConfirmPage.clickOnConfirm();
 
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-          await driver.wait(async () => {
-            const confirmedTxes = await driver.findElements(
-              '.transaction-status-label--confirmed',
-            );
-            return confirmedTxes.length === 1;
-          }, 10000);
-
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '-1 ETH',
-          });
+          await activityListPage.openActivityTab();
+          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
 
-    /* eslint-disable-next-line mocha/max-top-level-suites */
-    it('finds the transaction in the transactions list using advanced gas modal', async function () {
+    it('displays the correct amount on the confirmation screen', async function () {
       await withFixtures(
         {
           fixtures: new FixtureBuilder().build(),
@@ -104,43 +91,23 @@ describe('Send ETH', function () {
         async ({ driver }: { driver: Driver }) => {
           await loginWithBalanceValidation(driver);
 
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
-            '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
-          );
+          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const activityListPage = new ActivityListPage(driver);
 
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const inputAmount: any = await driver.findElement(
-            'input[placeholder="0"]',
-          );
-          await inputAmount.press('1');
-
-          const inputValue = await inputAmount.getProperty('value');
-          assert.equal(inputValue, '1');
-
-          // Continue to next screen
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
-
-          // Transaction Amount
-          await driver.findElement({
-            css: 'h2',
-            text: '1 ETH',
+          await createInternalTransaction({
+            driver,
+            recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
+            amount: '1',
           });
 
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
+          // Verify transaction amount on confirmation screen
+          await sendTokenConfirmPage.checkTransactionAmount('1 ETH');
 
-          await driver.wait(async () => {
-            const confirmedTxes = await driver.findElements(
-              '.transaction-status-label--confirmed',
-            );
-            return confirmedTxes.length === 1;
-          }, 10000);
+          await sendTokenConfirmPage.clickOnConfirm();
 
-          await driver.waitForSelector({
-            css: '[data-testid="transaction-list-item-primary-currency"]',
-            text: '-1 ETH',
-          });
+          await activityListPage.openActivityTab();
+          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkTxAmountInActivity('-1 ETH');
         },
       );
     });
@@ -168,67 +135,23 @@ describe('Send ETH', function () {
             await contractRegistry.getContractAddress(smartContract);
           await loginWithBalanceValidation(driver, localNodes[0]);
 
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-          await driver.fill(
-            'input[placeholder="Enter public address (0x) or domain name"]',
-            contractAddress,
-          );
+          const homePage = new HomePage(driver);
+          const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
+          const activityListPage = new ActivityListPage(driver);
 
-          const inputAmount = await driver.findElement(
-            'input[placeholder="0"]',
-          );
-          await inputAmount.sendKeys('1');
-
-          // Continue to next screen
-          await driver.clickElement({ text: 'Continue', tag: 'button' });
-          await driver.clickElement({ text: 'Confirm', tag: 'button' });
-
-          // Go back to home screen to check txn
-          const balance = await driver.findElement(
-            '[data-testid="eth-overview__primary-currency"]',
-          );
-
-          assert.ok(/^[\d.]+\sETH$/u.test(await balance.getText()));
-
-          await driver.clickElement(
-            '[data-testid="account-overview__activity-tab"]',
-          );
-
-          await driver.findElement('.transaction-status-label--confirmed');
-
-          // The previous findElement already serves as the guard here for the assertElementNotPresent
-          await driver.assertElementNotPresent(
-            '.transaction-status-label--failed',
-          );
-        },
-      );
-    });
-
-    it('shows no error when cancel transaction when sending via QR code', async function () {
-      await withFixtures(
-        {
-          fixtures: new FixtureBuilder().build(),
-          title: this.test?.fullTitle(),
-        },
-        async ({ driver }: { driver: Driver }) => {
-          await loginWithBalanceValidation(driver);
-
-          await driver.clickElement('[data-testid="eth-overview-send"]');
-          // choose to scan via QR code
-          await driver.clickElement('[data-testid="ens-qr-scan-button"]');
-          await driver.findVisibleElement('[data-testid="qr-scanner-modal"]');
-          // cancel action will close the dialog and shut down camera initialization
-          await driver.waitForSelector({
-            css: '.qr-scanner__error',
-            text: "We couldn't access your camera. Please give it another try.",
+          await createInternalTransaction({
+            driver,
+            recipientAddress: contractAddress,
+            amount: '1',
           });
-          await driver.clickElementAndWaitToDisappear({
-            text: 'Cancel',
-            tag: 'button',
-          });
-          await driver.assertElementNotPresent(
-            '[data-testid="qr-scanner-modal"]',
-          );
+          await sendTokenConfirmPage.clickOnConfirm();
+
+          // Verify balance is displayed correctly (format: "X.XX ETH")
+          await homePage.checkBalanceIsDisplayed();
+
+          await activityListPage.openActivityTab();
+          await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+          await activityListPage.checkNoFailedTransactions();
         },
       );
     });
@@ -259,13 +182,14 @@ describe('Send ETH', function () {
           async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
 
+            const testDapp = new TestDapp(driver);
             const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
             const gasFeeModal = new GasFeeModal(driver);
             const activityListPage = new ActivityListPage(driver);
 
-            // initiates a send from the dapp
-            await driver.openNewPage(DAPP_URL);
-            await driver.clickElement({ text: 'Send', tag: 'button' });
+            // Initiate a send from the dapp
+            await testDapp.openTestDappPage();
+            await testDapp.clickSimpleSendButton();
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             // Open gas fee modal and set custom legacy gas values
@@ -278,32 +202,19 @@ describe('Send ETH', function () {
             await sendTokenConfirmPage.checkFirstGasFee('0.0021');
             await sendTokenConfirmPage.checkNativeCurrency('$3.57');
 
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Confirm',
-              tag: 'button',
-            });
+            await sendTokenConfirmPage.confirmAndWaitForWindowToClose();
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
 
-            // finds the transaction in the transactions list
+            // Find the transaction in the transactions list
             await activityListPage.openActivityTab();
-            await driver.waitForSelector(
-              '.transaction-status-label--confirmed',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-list-item-primary-currency"]',
-              text: '-0 ETH',
-            });
+            await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+            await activityListPage.checkTxAmountInActivity('-0 ETH');
 
-            // the transaction has the expected gas price
-            await driver.clickElement(
-              '[data-testid="transaction-list-item-primary-currency"]',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-breakdown__gas-price"]',
-              text: '100',
-            });
+            // Verify the transaction has the expected gas price
+            await activityListPage.clickOnActivity(1);
+            await activityListPage.checkGasPrice('100');
           },
         );
       });
@@ -330,17 +241,15 @@ describe('Send ETH', function () {
           async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
 
+            const testDapp = new TestDapp(driver);
             const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
             const gasFeeModal = new GasFeeModal(driver);
             const activityListPage = new ActivityListPage(driver);
+            const homePage = new HomePage(driver);
 
-            // initiates a transaction from the dapp
-            await driver.openNewPage(DAPP_URL);
-            await driver.clickElement({
-              text: 'Create Token',
-              tag: 'button',
-            });
-
+            // Initiate a transaction from the dapp
+            await testDapp.openTestDappPage();
+            await testDapp.clickCreateToken();
             await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
 
             // Open gas fee modal and set custom EIP-1559 gas values
@@ -353,51 +262,22 @@ describe('Send ETH', function () {
             await sendTokenConfirmPage.checkFirstGasFee('0.045');
             await sendTokenConfirmPage.checkNativeCurrency('$76.59');
 
-            await driver.clickElementAndWaitForWindowToClose({
-              text: 'Confirm',
-              tag: 'button',
-            });
+            await sendTokenConfirmPage.confirmAndWaitForWindowToClose();
             await driver.switchToWindowWithTitle(
               WINDOW_TITLES.ExtensionInFullScreenView,
             );
 
-            // Identify the transaction in the transactions list
-            await driver.waitForSelector(
-              '[data-testid="eth-overview__primary-currency"]',
-            );
+            // Verify balance is displayed (format only, not exact value since gas was consumed)
+            await homePage.checkBalanceIsDisplayed();
 
+            // Find the transaction in the transactions list
             await activityListPage.openActivityTab();
-            await driver.waitForSelector(
-              '.transaction-status-label--confirmed',
-            );
-            await driver.waitForSelector({
-              css: '[data-testid="transaction-list-item-primary-currency"]',
-              text: '-0 ETH',
-            });
+            await activityListPage.checkConfirmedTxNumberDisplayedInActivity(1);
+            await activityListPage.checkTxAmountInActivity('-0 ETH');
 
-            // the transaction has the expected gas value
-            await driver.clickElement(
-              '[data-testid="transaction-list-item-primary-currency"]',
-            );
-
-            await driver.waitForSelector({
-              xpath: "//div[contains(text(), 'Base fee')]",
-            });
-
-            const allFeeValues = await driver.findElements(
-              '.currency-display-component__text',
-            );
-
-            /**
-             * Below lines check that fee values are numeric.
-             * Because these values change for every e2e run,
-             * It's better to just check that the values are there and are numeric
-             */
-            assert.equal(allFeeValues.length > 0, true);
-
-            for (const feeValue of allFeeValues) {
-              assert.equal(/\d+\.?\d*/u.test(await feeValue.getText()), true);
-            }
+            // Verify the transaction has the expected gas values
+            await activityListPage.clickOnActivity(1);
+            await activityListPage.checkFeeValuesAreDisplayed();
           },
         );
       });
@@ -420,29 +300,29 @@ describe('Send ETH', function () {
           async ({ driver }: { driver: Driver }) => {
             await loginWithBalanceValidation(driver);
 
-            await driver.clickElement('[data-testid="eth-overview-send"]');
+            const homePage = new HomePage(driver);
+            const sendPage = new SendPage(driver);
+            const sendTokenConfirmPage = new SendTokenConfirmPage(driver);
 
-            await driver.fill(
-              'input[placeholder="Enter public address (0x) or domain name"]',
+            await homePage.startSendFlow();
+
+            await sendPage.selectToken('0x539', 'ETH');
+
+            await sendPage.fillRecipient(
               '0xc427D562164062a23a5cFf596A4a3208e72Acd28',
             );
 
-            await driver.fill(
-              'textarea[placeholder="Optional',
+            await sendPage.fillHexData(
               '0xa9059cbb0000000000000000000000002f318C334780961FB129D2a6c30D0763d9a5C970000000000000000000000000000000000000000000000000000000000000000a',
             );
 
-            await driver.findClickableElement({
-              text: 'Continue',
-              tag: 'button',
-            });
-            await driver.clickElement({ text: 'Continue', tag: 'button' });
+            await sendPage.pressContinueButton();
 
-            const recipientAddress = await driver.findElements({
-              text: '0xc427D...Acd28',
-            });
-
-            assert.equal(recipientAddress.length, 2);
+            // Verify the recipient address is displayed correctly (should show the actual recipient, not the one in the data)
+            await sendTokenConfirmPage.checkRecipientAddressDisplayedCount(
+              '0xc427D...Acd28',
+              1,
+            );
           },
         );
       });

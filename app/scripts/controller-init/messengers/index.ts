@@ -93,6 +93,7 @@ import {
   getSubscriptionControllerInitMessenger,
   getSubscriptionControllerMessenger,
 } from './subscription';
+import { getConnectivityControllerMessenger } from './connectivity';
 import { getGatorPermissionsControllerMessenger } from './gator-permissions/gator-permissions-controller-messenger';
 import { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 import { getUserStorageControllerInitMessenger } from './identity/user-storage-controller-messenger';
@@ -206,6 +207,7 @@ import {
 import { getClaimsServiceMessenger } from './claims/claims-service-messenger';
 import { getProfileMetricsControllerMessenger } from './profile-metrics-controller-messenger';
 import { getProfileMetricsServiceMessenger } from './profile-metrics-service-messenger';
+import { getStorageServiceMessenger } from './storage-service-messenger';
 
 export type { AccountOrderControllerMessenger } from './account-order-controller-messenger';
 export { getAccountOrderControllerMessenger } from './account-order-controller-messenger';
@@ -276,6 +278,8 @@ export {
 } from './ens-controller-messenger';
 export type { ErrorReportingServiceMessenger } from './error-reporting-service-messenger';
 export { getErrorReportingServiceMessenger } from './error-reporting-service-messenger';
+export type { StorageServiceMessenger } from './storage-service-messenger';
+export { getStorageServiceMessenger } from './storage-service-messenger';
 export type {
   GasFeeControllerMessenger,
   GasFeeControllerInitMessenger,
@@ -298,10 +302,7 @@ export type { MetaMetricsControllerMessenger } from './metametrics-controller-me
 export { getMetaMetricsControllerMessenger } from './metametrics-controller-messenger';
 export type { MetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
 export { getMetaMetricsDataDeletionControllerMessenger } from './metametrics-data-deletion-controller-messenger';
-export type {
-  NetworkControllerMessenger,
-  NetworkControllerInitMessenger,
-} from './network-controller-messenger';
+export type { NetworkControllerInitMessenger } from './network-controller-messenger';
 export {
   getNetworkControllerMessenger,
   getNetworkControllerInitMessenger,
@@ -463,6 +464,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getBridgeStatusControllerMessenger,
     getInitMessenger: noop,
   },
+  ConnectivityController: {
+    getMessenger: getConnectivityControllerMessenger,
+    getInitMessenger: noop,
+  },
   ClaimsController: {
     getMessenger: getClaimsControllerMessenger,
     getInitMessenger: getClaimsControllerInitMessenger,
@@ -509,6 +514,10 @@ export const CONTROLLER_MESSENGERS = {
   },
   ErrorReportingService: {
     getMessenger: getErrorReportingServiceMessenger,
+    getInitMessenger: noop,
+  },
+  StorageService: {
+    getMessenger: getStorageServiceMessenger,
     getInitMessenger: noop,
   },
   ExecutionService: {

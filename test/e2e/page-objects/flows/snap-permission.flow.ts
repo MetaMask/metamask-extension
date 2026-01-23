@@ -1,7 +1,7 @@
 import { Driver } from '../../webdriver/driver';
 import SnapInstall from '../pages/dialog/snap-install';
 import SnapInstallWarning from '../pages/dialog/snap-install-warning';
-import { WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
 
 /**
  * Grant permission to the snap installed with the optional warning dialog.
@@ -65,14 +65,6 @@ export async function completeSnapInstallSwitchToTestSnap(driver: Driver) {
  */
 export async function approveAccount(driver: Driver) {
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-
-  await driver.waitForSelector({
-    text: 'Connect with MetaMask',
-  });
-
-  await driver.clickElement({
-    text: 'Account 1',
-  });
 
   await driver.clickElement({
     text: 'Connect',

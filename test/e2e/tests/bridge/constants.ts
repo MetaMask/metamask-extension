@@ -1,5 +1,7 @@
-import { type FeatureFlagResponse } from '@metamask/bridge-controller';
-import { BIP44_STAGE_TWO } from '../multichain-accounts/feature-flag-mocks';
+import {
+  getNativeAssetForChainId,
+  type FeatureFlagResponse,
+} from '@metamask/bridge-controller';
 
 export const SSE_RESPONSE_HEADER = { 'Content-Type': 'text/event-stream' };
 
@@ -14,24 +16,27 @@ export const DEFAULT_BRIDGE_FEATURE_FLAGS: FeatureFlagResponse & {
     '1': {
       isActiveSrc: true,
       isActiveDest: true,
-      isSingleSwapBridgeButtonEnabled: true,
     },
     '42161': {
       isActiveSrc: true,
       isActiveDest: true,
-      isSingleSwapBridgeButtonEnabled: true,
     },
     '59144': {
       isActiveSrc: true,
       isActiveDest: true,
-      isSingleSwapBridgeButtonEnabled: true,
     },
     '8453': {
       isActiveSrc: true,
       isActiveDest: true,
-      isSingleSwapBridgeButtonEnabled: true,
     },
   },
+  // @ts-expect-error - chainRanking is not in the type yet
+  chainRanking: [
+    { chainId: 'eip155:1', name: 'Ethereum' },
+    { chainId: 'eip155:42161', name: 'Arbitrum' },
+    { chainId: 'eip155:59144', name: 'Linea' },
+    { chainId: 'eip155:8453', name: 'Base' },
+  ],
 };
 
 export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
@@ -42,7 +47,6 @@ export const BRIDGE_FEATURE_FLAGS_WITH_SSE_ENABLED: FeatureFlagResponse & {
     enabled: true,
     minimumVersion: '13.2.0',
   },
-  ...BIP44_STAGE_TWO,
 };
 
 export const LOCATOR = {
@@ -289,6 +293,7 @@ export const MOCK_TOKENS_ETHEREUM = [
     address: '0xdac17f958d2ee523a2206206994597c13d831ec7',
     name: 'Wrapped Ether',
   },
+  getNativeAssetForChainId(1),
 ];
 
 export const MOCK_TOKENS_LINEA = [
@@ -326,7 +331,7 @@ export const MOCK_TOKENS_LINEA = [
     occurrences: 7,
     iconUrl:
       'https://assets.coingecko.com/coins/images/31272/thumb/dai-stablecoin.png?1696530095',
-    address: '0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+    address: '0x6b175474e89094c44da98b954eedeac495271d0f',
     name: 'Bridged Dai Stablecoin  Linea ',
   },
   {
@@ -365,45 +370,11 @@ export const MOCK_TOKENS_LINEA = [
     address: '0xe5d7c2a44ffddf6b295a15c148167daaaf5cf34f',
     name: 'WETH',
   },
-  {
-    address: '0x0000000000000000000000000000000000000000',
-    symbol: 'ETH',
-    decimals: 18,
-    name: 'Ether',
-    iconUrl: '',
-    type: 'native',
-    aggregators: [],
-    occurrences: 100,
-    erc20Permit: false,
-  },
+  getNativeAssetForChainId(59144),
 ];
 
 export const MOCK_GET_TOKEN_ARBITRUM = [
-  {
-    address: '0x0000000000000000000000000000000000000000',
-    chainId: 42161,
-    assetId: 'eip155:42161/slip44:60',
-    symbol: 'ETH',
-    decimals: 18,
-    name: 'Ether',
-    coingeckoId: 'ethereum',
-    aggregators: [],
-    occurrences: 100,
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/native/60.png',
-    metadata: {
-      honeypotStatus: {},
-      isContractVerified: false,
-      erc20Permit: false,
-      description: {
-        en: 'Ethereum is a global, open-source platform for decentralized applications. In other words, the vision is to create a world computer that anyone can build applications in a decentralized manner; while all states and data are distributed and publicly accessible. Ethereum supports smart contracts in which developers can write code in order to program digital value. Examples of decentralized apps (dapps) that are built on Ethereum includes tokens, non-fungible tokens, decentralized finance apps, lending protocol, decentralized exchanges, and much more.On Ethereum, all transactions and smart contract executions require a small fee to be paid. This fee is called Gas. In technical terms, Gas refers to the unit of measure on the amount of computational effort required to execute an operation or a smart contract. The more complex the execution operation is, the more gas is required to fulfill that operation. Gas fees are paid entirely in Ether (ETH), which is the native coin of the blockchain. The price of gas can fluctuate from time to time depending on the network demand.',
-        ko: '이더리움(Ethereum/ETH)은 블록체인 기술에 기반한 클라우드 컴퓨팅 플랫폼 또는 프로그래밍 언어이다. 비탈릭 부테린이 개발하였다.비탈릭 부테린은 가상화폐인 비트코인에 사용된 핵심 기술인 블록체인(blockchain)에 화폐 거래 기록뿐 아니라 계약서 등의 추가 정보를 기록할 수 있다는 점에 착안하여, 전 세계 수많은 사용자들이 보유하고 있는 컴퓨팅 자원을 활용해 분산 네트워크를 구성하고, 이 플랫폼을 이용하여 SNS, 이메일, 전자투표 등 다양한 정보를 기록하는 시스템을 창안했다. 이더리움은 C++, 자바, 파이썬, GO 등 주요 프로그래밍 언어를 지원한다.이더리움을 사물 인터넷(IoT)에 적용하면 기계 간 금융 거래도 가능해진다. 예를 들어 고장난 청소로봇이 정비로봇에 돈을 내고 정비를 받고, 청소로봇은 돈을 벌기 위해 정비로봇의 집을 청소하는 것도 가능해진다.',
-        zh: 'Ethereum（以太坊）是一个平台和一种编程语言，使开发人员能够建立和发布下一代分布式应用。Ethereum 是使用甲醚作为燃料，以激励其网络的第一个图灵完备cryptocurrency。Ethereum（以太坊） 是由Vitalik Buterin的创建。该项目于2014年8月获得了美国1800万$比特币的价值及其crowdsale期间。在2016年，Ethereum（以太坊）的价格上涨超过50倍。',
-        ja: 'イーサリアム (Ethereum, ETH)・プロジェクトにより開発が進められている、分散型アプリケーション（DApps）やスマート・コントラクトを構築するためのプラットフォームの名称、及び関連するオープンソース・ソフトウェア・プロジェクトの総称である。イーサリアムでは、イーサリアム・ネットワークと呼ばれるP2Pのネットワーク上でスマート・コントラクトの履行履歴をブロックチェーンに記録していく。またイーサリアムは、スマート・コントラクトを記述するチューリング完全なプログラミング言語を持ち、ネットワーク参加者はこのネットワーク上のブロックチェーンに任意のDAppsやスマート・コントラクトを記述しそれを実行することが可能になる。ネットワーク参加者が「Ether」と呼ばれるイーサリアム内部通貨の報酬を目当てに、採掘と呼ばれるブロックチェーンへのスマート・コントラクトの履行結果の記録を行うことで、その正統性を保証していく。このような仕組みにより特定の中央管理組織に依拠せず、P2P全体を実行環境としてプログラムの実行とその結果を共有することが可能になった。',
-      },
-      createdAt: '2023-10-31T21:35:04.606Z',
-    },
-  },
+  getNativeAssetForChainId(42161),
   {
     address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     chainId: 42161,
@@ -484,25 +455,7 @@ export const MOCK_GET_TOKEN_ARBITRUM = [
 ];
 
 export const MOCK_LINEA_GET_TOKEN_ARBITRUM = [
-  {
-    address: '0x0000000000000000000000000000000000000000',
-    chainId: 42161,
-    assetId: 'eip155:42161/slip44:60',
-    symbol: 'ETH',
-    decimals: 18,
-    name: 'Ether',
-    coingeckoId: 'ethereum',
-    aggregators: [],
-    occurrences: 100,
-    iconUrl:
-      'https://static.cx.metamask.io/api/v2/tokenIcons/assets/eip155/42161/native/60.png',
-    metadata: {
-      honeypotStatus: {},
-      isContractVerified: false,
-      erc20Permit: false,
-      description: {},
-    },
-  },
+  getNativeAssetForChainId(42161),
   {
     address: '0xaf88d065e77c8cC2239327C5EDb3A432268e5831',
     chainId: 42161,
@@ -1021,10 +974,10 @@ export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
       srcChainId: 59144,
       srcTokenAmount: '9912500000000000000',
       srcAsset: {
-        address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         chainId: 59144,
         assetId:
-          'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'DAI',
         decimals: 18,
         name: 'Dai Stablecoin',
@@ -1106,10 +1059,10 @@ export const MOCK_BRIDGE_DAI_L2_TO_L2 = [
         metabridge: {
           amount: '87500000000000000',
           asset: {
-            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            address: '0x6b175474e89094c44da98b954eedeac495271d0f',
             chainId: 59144,
             assetId:
-              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+              'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
             symbol: 'DAI',
             decimals: 18,
             name: 'Dai Stablecoin',
@@ -1269,10 +1222,10 @@ export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
       srcChainId: 59144,
       srcTokenAmount: '9912500000000000000',
       srcAsset: {
-        address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
         chainId: 59144,
         assetId:
-          'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'DAI',
         decimals: 18,
         name: 'Dai Stablecoin',
@@ -1361,10 +1314,10 @@ export const MOCK_BRIDGE_DAI_L2_TO_MAINNET = [
         metabridge: {
           amount: '87500000000000000',
           asset: {
-            address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+            address: '0x6B175474E89094C44Da98b954EedeAC495271d0F',
             chainId: 59144,
             assetId:
-              'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+              'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
             symbol: 'DAI',
             decimals: 18,
             name: 'Dai Stablecoin',
@@ -2262,6 +2215,7 @@ export const MOCK_BRIDGE_DAI_TO_ETH_LINEA = [
   },
 ];
 
+// DAI to DAI
 export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
   {
     quote: {
@@ -2320,10 +2274,10 @@ export const MOCK_BRIDGE_USDC_TO_DAI_LINEA = [
       destTokenAmount: '9899595568570427284',
       minDestTokenAmount: '899595568570427284',
       destAsset: {
-        address: '0x4AF15ec2A0BD43Db75dd04E62FAA3B8EF36b00d5',
+        address: '0x6b175474e89094c44da98b954eedeac495271d0f',
         chainId: 59144,
         assetId:
-          'eip155:59144/erc20:0x4af15ec2a0bd43db75dd04e62faa3b8ef36b00d5',
+          'eip155:59144/erc20:0x6b175474e89094c44da98b954eedeac495271d0f',
         symbol: 'DAI',
         decimals: 18,
         name: 'Dai Stablecoin',

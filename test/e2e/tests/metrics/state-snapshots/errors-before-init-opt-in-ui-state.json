@@ -143,7 +143,12 @@
       "selectedNetworkClientId": "string"
     },
     "NetworkEnablementController": {
-      "enabledNetworkMap": { "eip155": "object", "solana": "object" }
+      "enabledNetworkMap": {
+        "bip122": "object",
+        "eip155": "object",
+        "solana": "object",
+        "tron": "object"
+      }
     },
     "NetworkOrderController": {
       "orderedNetworkList": {
@@ -249,12 +254,9 @@
     "RemoteFeatureFlagController": {
       "cacheTimestamp": "number",
       "remoteFeatureFlags": {
-        "enableMultichainAccountsState2": {
-          "enabled": true,
-          "featureVersion": "2",
-          "minimumVersion": "12.19.0"
-        },
-        "sendRedesign": { "enabled": false }
+        "feature1": true,
+        "feature2": false,
+        "feature3": { "name": "groupC", "value": "valueC" }
       }
     },
     "RewardsController": {
@@ -314,5 +316,5 @@
     "config": "object",
     "firstTimeInfo": "object"
   },
-  "meta": { "version": 185 }
+  "meta": { "version": 189 }
 }

@@ -8,7 +8,7 @@ import {
 } from '@metamask/utils';
 import { useSelector } from 'react-redux';
 import { useMemo } from 'react';
-import { getMemoizedInternalAccountByAddress } from '../../../../selectors';
+import { getInternalAccountByAddress } from '../../../../selectors';
 import { getMultiChainAssets } from '../../../../selectors/assets';
 import { TokenWithFiatAmount } from '../../assets/types';
 
@@ -72,7 +72,7 @@ export const useSnapAssetSelectorData = ({
   const parsedAccounts = addresses.map(parseCaipAccountId);
 
   const account = useSelector((state) =>
-    getMemoizedInternalAccountByAddress(state, parsedAccounts[0].address),
+    getInternalAccountByAddress(state, parsedAccounts[0].address),
   );
   const networks = useSelector(
     getMemoizedMultichainNetworkConfigurationsByChainId,

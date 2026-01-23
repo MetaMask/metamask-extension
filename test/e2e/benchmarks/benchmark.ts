@@ -13,8 +13,9 @@ import {
   isWritable,
 } from '../../helpers/file';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import { unlockWallet, withFixtures } from '../helpers';
+import { withFixtures } from '../helpers';
 import AccountListPage from '../page-objects/pages/account-list-page';
+import { loginWithoutBalanceValidation } from '../page-objects/flows/login.flow';
 import HeaderNavbar from '../page-objects/pages/header-navbar';
 import { PAGES } from '../webdriver/driver';
 import { mockNotificationServices } from '../tests/notifications/mocks';
@@ -36,16 +37,18 @@ const ALL_PAGES = Object.values(PAGES);
 async function measurePageStandard(
   pageName: string,
   pageLoads: number,
-): Promise<Metrics[]> {
+): Promise<{ metrics: Metrics[]; title: string; persona: string }> {
   const metrics: Metrics[] = [];
+  const title = 'measurePageStandard';
+  const persona = 'standard';
   await withFixtures(
     {
       fixtures: new FixtureBuilder().build(),
       disableServerMochaToBackground: true,
-      title: 'measurePageStandard',
+      title,
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       for (let i = 0; i < pageLoads; i++) {
         // Reset network report before next page load
@@ -62,17 +65,19 @@ async function measurePageStandard(
       }
     },
   );
-  return metrics;
+  return { metrics, title, persona };
 }
 
 async function measurePagePowerUser(
   pageName: string,
   pageLoads: number,
-): Promise<Metrics[]> {
+): Promise<{ metrics: Metrics[]; title: string; persona: string }> {
   const metrics: Metrics[] = [];
+  const title = 'measurePagePowerUser';
+  const persona = 'powerUser';
   await withFixtures(
     {
-      title: 'measurePagePowerUser',
+      title,
       fixtures: (
         await generateWalletState(WITH_STATE_POWER_USER, true)
       ).build(),
@@ -89,7 +94,7 @@ async function measurePagePowerUser(
       },
     },
     async ({ driver, getNetworkReport, clearNetworkReport }) => {
-      await unlockWallet(driver);
+      await loginWithoutBalanceValidation(driver);
 
       for (let i = 0; i < pageLoads; i++) {
         // Reset network report before next page load
@@ -124,28 +129,31 @@ async function measurePagePowerUser(
       }
     },
   );
-  return metrics;
+  return { metrics, title, persona };
 }
 
 function calculateResult(calc: (array: number[]) => number) {
   return (result: Record<string, number[]>): StatisticalResult => {
     const calculatedResult: StatisticalResult = {};
     for (const key of Object.keys(result)) {
-      calculatedResult[key] = calc(result[key]);
+      // Skip empty arrays (metric not available for any run)
+      if (result[key].length > 0) {
+        calculatedResult[key] = calc(result[key]);
+      }
     }
     return calculatedResult;
   };
 }
 
 const calculateSum = (array: number[]): number =>
-  array.reduce((sum, val) => sum + val);
+  array.reduce((sum, val) => sum + val, 0);
 const calculateMean = (array: number[]): number =>
-  calculateSum(array) / array.length;
+  array.length > 0 ? calculateSum(array) / array.length : 0;
 const minResult = calculateResult((array: number[]) => Math.min(...array));
 const maxResult = calculateResult((array: number[]) => Math.max(...array));
 const meanResult = calculateResult((array: number[]) => calculateMean(array));
 const standardDeviationResult = calculateResult((array: number[]) => {
-  if (array.length === 1) {
+  if (array.length <= 1) {
     return 0;
   }
   const average = calculateMean(array);
@@ -185,13 +193,21 @@ async function profilePageLoad(
 
   for (const pageName of pages) {
     let runResults: Metrics[] = [];
+    let testTitle = '';
+    let resultPersona = '';
 
     for (let i = 0; i < browserLoads; i += 1) {
       console.log('Starting browser load', i + 1, 'of', browserLoads);
-      const result = await retry({ retries }, () =>
+      const {
+        metrics,
+        title,
+        persona: fnPersona,
+      } = await retry({ retries }, () =>
         measurePageFunction(pageName, pageLoads),
       );
-      runResults = runResults.concat(result);
+      runResults = runResults.concat(metrics);
+      testTitle = title;
+      resultPersona = fnPersona;
     }
 
     if (runResults.some((result) => result.navigation.length > 1)) {
@@ -218,9 +234,11 @@ async function profilePageLoad(
         .sort((a, b) => a - b); // Sort the array as numbers, not strings
     }
 
-    const reportingPageName = `${persona}${capitalize(pageName)}`;
+    const reportingPageName = `${resultPersona}${capitalize(pageName)}`;
 
     results[reportingPageName] = {
+      testTitle,
+      persona: resultPersona,
       mean: meanResult(result),
       min: minResult(result),
       max: maxResult(result),
