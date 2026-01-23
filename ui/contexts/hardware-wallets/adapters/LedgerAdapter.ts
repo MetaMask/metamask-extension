@@ -5,13 +5,14 @@ import {
   getAppNameAndVersion,
 } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
+import { reconstructHardwareWalletError } from '../rpcErrorUtils';
 import {
   DeviceEvent,
   HardwareWalletType,
   type HardwareWalletAdapter,
   type HardwareWalletAdapterOptions,
 } from '../types';
-import { reconstructHardwareWalletError } from '../rpcErrorUtils';
+import { subscribeToWebHidEvents } from '../webConnectionUtils';
 
 /**
  * Ledger adapter implementation
@@ -29,8 +30,38 @@ export class LedgerAdapter implements HardwareWalletAdapter {
 
   private currentDeviceId: string | null = null;
 
+  private unsubscribeHidEvents: (() => void) | null = null;
+
   constructor(options: HardwareWalletAdapterOptions) {
     this.options = options;
+    this.setupHidEventListeners();
+  }
+
+  /**
+   * Set up WebHID event listeners for proactive disconnect detection.
+   * This allows the UI to immediately reflect when the device is unplugged,
+   * rather than waiting until the next operation attempt.
+   */
+  private setupHidEventListeners(): void {
+    this.unsubscribeHidEvents = subscribeToWebHidEvents(
+      HardwareWalletType.Ledger,
+      // onConnect - device plugged in (could be used for auto-reconnect in the future)
+      () => {
+        // Currently no-op: we don't auto-reconnect when device is plugged in
+        // The user will trigger connect through UI action
+      },
+      // onDisconnect - device unplugged
+      () => {
+        // Only emit disconnect if we were tracking a connection
+        if (this.connected || this.currentDeviceId) {
+          this.connected = false;
+          this.currentDeviceId = null;
+          this.options.onDeviceEvent({
+            event: DeviceEvent.Disconnected,
+          });
+        }
+      },
+    );
   }
 
   /**
@@ -74,7 +105,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
       return;
     }
 
-    // Already connected to a different device - disconnect first
+    // Already connected to a different device - disconnect firste
     if (this.connected && this.currentDeviceId !== deviceId) {
       await this.disconnect();
     }
@@ -183,6 +214,10 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
+    // Unsubscribe from WebHID events
+    this.unsubscribeHidEvents?.();
+    this.unsubscribeHidEvents = null;
+
     // Ledger iframe will clean up the connection after each transaction.
     // https://github.com/MetaMask/ledger-iframe-bridge/blob/1e02823f47306ae27fe941f2829ad8d142454a67/ledger-bridge.js#L143-L161
     this.connected = false;

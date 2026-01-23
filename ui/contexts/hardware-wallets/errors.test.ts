@@ -1,6 +1,6 @@
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
-import { parseErrorByType } from './errors';
-import { HardwareWalletType } from './types';
+import { getDeviceEventForError, parseErrorByType } from './errors';
+import { DeviceEvent, HardwareWalletType } from './types';
 
 describe('parseErrorByType', () => {
   describe('permission denied errors', () => {
@@ -69,5 +69,65 @@ describe('parseErrorByType', () => {
 
       expect(result.code).toBe(ErrorCode.UserRejected);
     });
+  });
+});
+
+describe('getDeviceEventForError', () => {
+  it('returns DeviceLocked for AuthenticationDeviceLocked error code', () => {
+    const result = getDeviceEventForError(ErrorCode.AuthenticationDeviceLocked);
+    expect(result).toBe(DeviceEvent.DeviceLocked);
+  });
+
+  it('returns DeviceLocked for AuthenticationDeviceBlocked error code', () => {
+    const result = getDeviceEventForError(
+      ErrorCode.AuthenticationDeviceBlocked,
+    );
+    expect(result).toBe(DeviceEvent.DeviceLocked);
+  });
+
+  it('returns AppNotOpen for DeviceStateEthAppClosed error code', () => {
+    const result = getDeviceEventForError(ErrorCode.DeviceStateEthAppClosed);
+    expect(result).toBe(DeviceEvent.AppNotOpen);
+  });
+
+  it('returns Disconnected for DeviceDisconnected error code', () => {
+    const result = getDeviceEventForError(ErrorCode.DeviceDisconnected);
+    expect(result).toBe(DeviceEvent.Disconnected);
+  });
+
+  it('returns Disconnected for ConnectionClosed error code', () => {
+    const result = getDeviceEventForError(ErrorCode.ConnectionClosed);
+    expect(result).toBe(DeviceEvent.Disconnected);
+  });
+
+  it('returns OperationTimeout for ConnectionTimeout error code', () => {
+    const result = getDeviceEventForError(ErrorCode.ConnectionTimeout);
+    expect(result).toBe(DeviceEvent.OperationTimeout);
+  });
+
+  it('returns ConnectionFailed for ConnectionTransportMissing error code', () => {
+    const result = getDeviceEventForError(ErrorCode.ConnectionTransportMissing);
+    expect(result).toBe(DeviceEvent.ConnectionFailed);
+  });
+
+  it('returns default ConnectionFailed for unknown error codes', () => {
+    const result = getDeviceEventForError(ErrorCode.Unknown);
+    expect(result).toBe(DeviceEvent.ConnectionFailed);
+  });
+
+  it('returns custom default event when provided for unknown error codes', () => {
+    const result = getDeviceEventForError(
+      ErrorCode.Unknown,
+      DeviceEvent.Disconnected,
+    );
+    expect(result).toBe(DeviceEvent.Disconnected);
+  });
+
+  it('ignores custom default for known error codes', () => {
+    const result = getDeviceEventForError(
+      ErrorCode.AuthenticationDeviceLocked,
+      DeviceEvent.Disconnected,
+    );
+    expect(result).toBe(DeviceEvent.DeviceLocked);
   });
 });

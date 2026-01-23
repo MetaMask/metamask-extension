@@ -7,6 +7,7 @@ import {
 } from '@metamask/hw-wallet-sdk';
 import { ConnectionState } from './connectionState';
 import {
+  DeviceEvent,
   HardwareWalletType,
   type HardwareWalletConnectionState,
 } from './types';
@@ -196,5 +197,34 @@ export function getConnectionStateFromError(
       return ConnectionState.error(error);
     default:
       return ConnectionState.error(error);
+  }
+}
+
+/**
+ * Map an error code to the appropriate device event
+ *
+ * @param code - The error code to map
+ * @param defaultEvent - The default event to return if no specific mapping exists
+ * @returns The corresponding DeviceEvent
+ */
+export function getDeviceEventForError(
+  code: ErrorCode,
+  defaultEvent: DeviceEvent = DeviceEvent.ConnectionFailed,
+): DeviceEvent {
+  switch (code) {
+    case ErrorCode.AuthenticationDeviceLocked:
+    case ErrorCode.AuthenticationDeviceBlocked:
+      return DeviceEvent.DeviceLocked;
+    case ErrorCode.DeviceStateEthAppClosed:
+      return DeviceEvent.AppNotOpen;
+    case ErrorCode.DeviceDisconnected:
+    case ErrorCode.ConnectionClosed:
+      return DeviceEvent.Disconnected;
+    case ErrorCode.ConnectionTimeout:
+      return DeviceEvent.OperationTimeout;
+    case ErrorCode.ConnectionTransportMissing:
+      return DeviceEvent.ConnectionFailed;
+    default:
+      return defaultEvent;
   }
 }

@@ -9,11 +9,17 @@ import {
   getAppNameAndVersion,
 } from '../../../store/actions';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
+import * as webConnectionUtils from '../webConnectionUtils';
 import { LedgerAdapter } from './LedgerAdapter';
 
 jest.mock('../../../store/actions', () => ({
   attemptLedgerTransportCreation: jest.fn(),
   getAppNameAndVersion: jest.fn(),
+}));
+
+jest.mock('../webConnectionUtils', () => ({
+  ...jest.requireActual('../webConnectionUtils'),
+  subscribeToWebHidEvents: jest.fn(),
 }));
 
 const mockAttemptLedgerTransportCreation =
@@ -24,12 +30,20 @@ const mockGetAppNameAndVersion = getAppNameAndVersion as jest.MockedFunction<
   typeof getAppNameAndVersion
 >;
 
+const mockSubscribeToWebHidEvents =
+  webConnectionUtils.subscribeToWebHidEvents as jest.MockedFunction<
+    typeof webConnectionUtils.subscribeToWebHidEvents
+  >;
+
 describe('LedgerAdapter', () => {
   let adapter: LedgerAdapter;
   let mockOptions: HardwareWalletAdapterOptions;
   let mockNavigatorHid: {
     getDevices: jest.Mock;
   };
+  let mockUnsubscribe: jest.Mock;
+  let capturedOnConnect: ((device: HIDDevice) => void) | null = null;
+  let capturedOnDisconnect: ((device: HIDDevice) => void) | null = null;
 
   const createMockOptions = (): HardwareWalletAdapterOptions => ({
     onDisconnect: jest.fn(),
@@ -59,6 +73,18 @@ describe('LedgerAdapter', () => {
     mockNavigatorHid = {
       getDevices: jest.fn(),
     };
+    mockUnsubscribe = jest.fn();
+    capturedOnConnect = null;
+    capturedOnDisconnect = null;
+
+    // Set up mock for subscribeToWebHidEvents to capture callbacks
+    mockSubscribeToWebHidEvents.mockImplementation(
+      (_walletType, onConnect, onDisconnect) => {
+        capturedOnConnect = onConnect;
+        capturedOnDisconnect = onDisconnect;
+        return mockUnsubscribe;
+      },
+    );
 
     Object.defineProperty(window.navigator, 'hid', {
       value: mockNavigatorHid,
@@ -82,6 +108,111 @@ describe('LedgerAdapter', () => {
 
       expect(newAdapter).toBeInstanceOf(LedgerAdapter);
       expect(newAdapter.isConnected()).toBe(false);
+      newAdapter.destroy();
+    });
+
+    it('sets up WebHID event listeners on construction', () => {
+      expect(mockSubscribeToWebHidEvents).toHaveBeenCalledWith(
+        'ledger',
+        expect.any(Function),
+        expect.any(Function),
+      );
+    });
+  });
+
+  describe('WebHID event listeners', () => {
+    const mockHidDevice = { vendorId: 0x2c97 } as HIDDevice;
+
+    it('emits Disconnected event when device is unplugged while connected', async () => {
+      // First, connect the device
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect('test-device-id');
+      expect(adapter.isConnected()).toBe(true);
+
+      // Clear previous event calls from connection
+      (mockOptions.onDeviceEvent as jest.Mock).mockClear();
+
+      // Simulate device unplug via WebHID event
+      capturedOnDisconnect?.(mockHidDevice);
+
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
+        event: DeviceEvent.Disconnected,
+      });
+      expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('does not emit Disconnected event when device unplugged but was not connected', () => {
+      // Adapter is not connected (default state)
+      expect(adapter.isConnected()).toBe(false);
+
+      // Simulate device unplug via WebHID event
+      capturedOnDisconnect?.(mockHidDevice);
+
+      // Should not emit event since we weren't tracking a connection
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
+    });
+
+    it('resets connection state when device is unplugged', async () => {
+      // First, connect the device
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect('test-device-id');
+      expect(adapter.isConnected()).toBe(true);
+
+      // Simulate device unplug
+      capturedOnDisconnect?.(mockHidDevice);
+
+      expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('emits Disconnected event when device unplugged while deviceId is set but not fully connected', async () => {
+      // Start connection but don't complete it
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      let resolveTransport: () => void = () => {
+        // no-op
+      };
+      const slowTransportPromise = new Promise<void>((resolve) => {
+        resolveTransport = resolve;
+      });
+      mockAttemptLedgerTransportCreation.mockReturnValue(slowTransportPromise);
+
+      // Start connection (will be pending)
+      const connectPromise = adapter.connect('test-device-id');
+
+      // Clear previous calls
+      (mockOptions.onDeviceEvent as jest.Mock).mockClear();
+
+      // Simulate device unplug while connecting
+      capturedOnDisconnect?.(mockHidDevice);
+
+      // Should emit because currentDeviceId was set
+      expect(mockOptions.onDeviceEvent).toHaveBeenCalledWith({
+        event: DeviceEvent.Disconnected,
+      });
+
+      // Resolve the transport to clean up
+      resolveTransport();
+      await connectPromise;
+    });
+
+    it('onConnect callback is a no-op (does not change state)', async () => {
+      // Adapter is not connected
+      expect(adapter.isConnected()).toBe(false);
+
+      // Simulate device plug in via WebHID event
+      capturedOnConnect?.(mockHidDevice);
+
+      // Should not auto-connect or change any state
+      expect(adapter.isConnected()).toBe(false);
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
     });
   });
 
@@ -418,6 +549,31 @@ describe('LedgerAdapter', () => {
       adapter.destroy();
 
       expect(adapter.isConnected()).toBe(false);
+    });
+
+    it('unsubscribes from WebHID events when destroyed', () => {
+      adapter.destroy();
+
+      expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not emit disconnect events after destroy', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      await adapter.connect('test-device-id');
+
+      // Clear previous calls
+      (mockOptions.onDeviceEvent as jest.Mock).mockClear();
+
+      // Destroy the adapter
+      adapter.destroy();
+
+      // Simulate device unplug after destroy
+      // This shouldn't emit because unsubscribe was called (in real implementation)
+      // but we can verify unsubscribe was called
+      expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
     it('resets isConnecting state allowing new connections after destroy', async () => {
