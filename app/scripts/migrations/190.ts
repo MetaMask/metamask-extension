@@ -4,10 +4,14 @@ import type { Migrate } from './types';
 export const version = 190;
 
 /**
- * Migration that removes `null` seedWords values from the persisted state.
+ * Migration that removes `null` seedWords and forgottenPassword values from the persisted state.
  *
  * If the `seedWords` property exists on the data object and its value is
  * `null`, this migration deletes the property and records `seedWords` in
+ * the set of changed keys.
+ *
+ * If the `forgottenPassword` property exists on the data object and its value is
+ * `null`, this migration deletes the property and records `forgottenPassword` in
  * the set of changed keys.
  *
  * @param versionedData - The versioned data object to migrate.
@@ -22,5 +26,13 @@ export const migrate = (async (versionedData, changedKeys) => {
   ) {
     delete versionedData.data.seedWords;
     changedKeys.add('seedWords');
+  }
+
+  if (
+    hasProperty(versionedData.data, 'forgottenPassword') &&
+    versionedData.data.forgottenPassword === null
+  ) {
+    delete versionedData.data.forgottenPassword;
+    changedKeys.add('forgottenPassword');
   }
 }) satisfies Migrate;
