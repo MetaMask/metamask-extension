@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import { BigNumber } from 'bignumber.js';
 import { Box, Text } from '../../../../../components/component-library';
-import { Skeleton } from '../../../../../components/component-library/skeleton';
 import {
-  Display,
-  FlexDirection,
-  JustifyContent,
   TextColor,
   TextVariant,
 } from '../../../../../helpers/constants/design-system';
-import { ConfirmInfoRow } from '../../../../../components/app/confirm/info/row/row';
+import {
+  ConfirmInfoRow,
+  ConfirmInfoRowSize,
+  ConfirmInfoRowSkeleton,
+} from '../../../../../components/app/confirm/info/row/row';
 import {
   useIsTransactionPayLoading,
   useTransactionPayTotals,
@@ -33,12 +33,12 @@ export function TotalRow() {
   }, [totals, formatFiat]);
 
   if (isLoading) {
-    return <TotalRowSkeleton />;
+    return <ConfirmInfoRowSkeleton data-testid="total-row-skeleton" />;
   }
 
   return (
     <Box data-testid="total-row">
-      <ConfirmInfoRow label={t('total')}>
+      <ConfirmInfoRow label={t('total')} rowVariant={ConfirmInfoRowSize.Small}>
         <Text
           variant={TextVariant.bodyMd}
           color={TextColor.textAlternative}
@@ -47,21 +47,6 @@ export function TotalRow() {
           {totalUsd}
         </Text>
       </ConfirmInfoRow>
-    </Box>
-  );
-}
-
-// eslint-disable-next-line @typescript-eslint/naming-convention
-function TotalRowSkeleton() {
-  return (
-    <Box
-      display={Display.Flex}
-      flexDirection={FlexDirection.Row}
-      justifyContent={JustifyContent.spaceBetween}
-      data-testid="total-row-skeleton"
-    >
-      <Skeleton width={80} height={20} />
-      <Skeleton width={100} height={20} />
     </Box>
   );
 }
