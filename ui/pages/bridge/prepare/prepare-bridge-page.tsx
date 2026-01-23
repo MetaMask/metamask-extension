@@ -471,11 +471,42 @@ const PrepareBridgePage = ({
           onAmountChange={(e) => {
             dispatch(setFromTokenInputValue(e));
           }}
+          onAssetPickerOpen={() => {
+            // TODO: Remove once bridge-controller is updated with AssetPickerOpened event
+            dispatch(
+              trackUnifiedSwapBridgeEvent(
+                // @ts-expect-error - AssetPickerOpened doesn't exist yet in UnifiedSwapBridgeEventName
+                UnifiedSwapBridgeEventName.AssetPickerOpened,
+                {
+                  location: 'source',
+                },
+              ),
+            );
+          }}
           onAssetChange={(token) => {
             const bridgeToken = {
               ...token,
               address: token.address ?? zeroAddress(),
             };
+            // TODO: Remove once bridge-controller is updated with AssetSelected event
+            dispatch(
+              trackUnifiedSwapBridgeEvent(
+                // @ts-expect-error - AssetSelected doesn't exist yet in UnifiedSwapBridgeEventName
+                UnifiedSwapBridgeEventName.AssetSelected,
+                {
+                  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_symbol: token.symbol,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  token_address: token.address,
+                  // eslint-disable-next-line @typescript-eslint/naming-convention
+                  chain_id: token.chainId
+                    ? formatChainIdToCaip(token.chainId)
+                    : null,
+                  location: 'source',
+                },
+              ),
+            );
             dispatch(setFromToken(bridgeToken));
           }}
           networkProps={{
@@ -649,11 +680,42 @@ const PrepareBridgePage = ({
           <BridgeInputGroup
             header={getToInputHeader()}
             token={toToken}
+            onAssetPickerOpen={() => {
+              // TODO: Remove once bridge-controller is updated with AssetPickerOpened event
+              dispatch(
+                trackUnifiedSwapBridgeEvent(
+                  // @ts-expect-error - AssetPickerOpened doesn't exist yet in UnifiedSwapBridgeEventName
+                  UnifiedSwapBridgeEventName.AssetPickerOpened,
+                  {
+                    location: 'destination',
+                  },
+                ),
+              );
+            }}
             onAssetChange={(token) => {
               const bridgeToken = {
                 ...token,
                 address: token.address ?? zeroAddress(),
               };
+              // TODO: Remove once bridge-controller is updated with AssetSelected event
+              dispatch(
+                trackUnifiedSwapBridgeEvent(
+                  // @ts-expect-error - AssetSelected doesn't exist yet in UnifiedSwapBridgeEventName
+                  UnifiedSwapBridgeEventName.AssetSelected,
+                  {
+                    // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31860
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_symbol: token.symbol,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    token_address: token.address,
+                    // eslint-disable-next-line @typescript-eslint/naming-convention
+                    chain_id: token.chainId
+                      ? formatChainIdToCaip(token.chainId)
+                      : null,
+                    location: 'destination',
+                  },
+                ),
+              );
               dispatch(setToToken(bridgeToken));
             }}
             networkProps={{

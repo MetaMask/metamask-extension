@@ -62,6 +62,7 @@ export const BridgeInputGroup = ({
   onMaxButtonClick,
   isMultiselectEnabled,
   onBlockExplorerClick,
+  onAssetPickerOpen,
   buttonProps,
   containerProps = {},
   isDestinationToken = false,
@@ -76,6 +77,7 @@ export const BridgeInputGroup = ({
   >;
   onMaxButtonClick?: (value: string) => void;
   onBlockExplorerClick?: (token: BridgeToken) => void;
+  onAssetPickerOpen?: () => void;
   containerProps?: React.ComponentProps<typeof Column>;
   isDestinationToken?: boolean;
 } & Pick<
@@ -235,11 +237,15 @@ export const BridgeInputGroup = ({
           isMultiselectEnabled={isMultiselectEnabled}
           isDestinationToken={isDestinationToken}
         >
-          {(onClickHandler, networkImageSrc) =>
-            isAmountReadOnly && !token ? (
+          {(onClickHandler, networkImageSrc) => {
+            const handleClick = () => {
+              onAssetPickerOpen?.();
+              onClickHandler();
+            };
+            return isAmountReadOnly && !token ? (
               <Button
                 data-testid={buttonProps.testId}
-                onClick={onClickHandler}
+                onClick={handleClick}
                 size={ButtonSize.Lg}
                 paddingLeft={6}
                 paddingRight={6}
@@ -250,14 +256,14 @@ export const BridgeInputGroup = ({
               </Button>
             ) : (
               <BridgeAssetPickerButton
-                onClick={onClickHandler}
+                onClick={handleClick}
                 networkImageSrc={networkImageSrc}
                 asset={(token as never) ?? undefined}
                 networkProps={networkProps}
                 data-testid={buttonProps.testId}
               />
-            )
-          }
+            );
+          }}
         </AssetPicker>
       </Row>
 
