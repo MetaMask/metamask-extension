@@ -296,7 +296,7 @@ describe('LedgerAdapter', () => {
       expect(adapter.isConnected()).toBe(false);
     });
 
-    it('emits DEVICE_LOCKED event when device is locked during connection', async () => {
+    it('emits DeviceLocked event when device is locked during connection', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -704,7 +704,7 @@ describe('LedgerAdapter', () => {
       }
     });
 
-    it('emits DEVICE_LOCKED event when device is locked during verification', async () => {
+    it('emits DeviceLocked event when device is locked during verification', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -1054,7 +1054,7 @@ describe('LedgerAdapter', () => {
       }
     });
 
-    it('emits DEVICE_LOCKED event for AuthenticationDeviceBlocked error during connection', async () => {
+    it('emits DeviceLocked event for AuthenticationDeviceBlocked error during connection', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -1079,7 +1079,7 @@ describe('LedgerAdapter', () => {
       );
     });
 
-    it('emits DEVICE_LOCKED event for AuthenticationDeviceBlocked error during verification', async () => {
+    it('emits DeviceLocked event for AuthenticationDeviceBlocked error during verification', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);

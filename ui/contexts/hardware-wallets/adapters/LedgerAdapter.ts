@@ -4,7 +4,7 @@ import {
   getAppNameAndVersion,
 } from '../../../store/actions';
 import { createHardwareWalletError, getDeviceEventForError } from '../errors';
-import { reconstructHardwareWalletError } from '../rpcErrorUtils';
+import { toHardwareWalletError } from '../rpcErrorUtils';
 import {
   DeviceEvent,
   HardwareWalletType,
@@ -147,10 +147,7 @@ export class LedgerAdapter implements HardwareWalletAdapter {
         this.connected = false;
         this.currentDeviceId = null;
 
-        const hwError = reconstructHardwareWalletError(
-          error,
-          HardwareWalletType.Ledger,
-        );
+        const hwError = toHardwareWalletError(error, HardwareWalletType.Ledger);
 
         const deviceEvent = getDeviceEventForError(hwError.code);
 

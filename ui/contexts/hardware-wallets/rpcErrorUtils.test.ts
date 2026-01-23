@@ -8,8 +8,8 @@ import {
 import { HardwareWalletType } from './types';
 import {
   isJsonRpcHardwareWalletError,
-  extractHardwareWalletErrorCode,
-  reconstructHardwareWalletError,
+  getHardwareWalletErrorCode,
+  toHardwareWalletError,
 } from './rpcErrorUtils';
 
 describe('rpcErrorUtils', () => {
@@ -80,7 +80,7 @@ describe('rpcErrorUtils', () => {
         userMessage: 'Device disconnected',
       });
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(ErrorCode.DeviceDisconnected);
     });
@@ -93,7 +93,7 @@ describe('rpcErrorUtils', () => {
         userMessage: 'Device disconnected',
       });
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(ErrorCode.DeviceDisconnected);
     });
@@ -104,7 +104,7 @@ describe('rpcErrorUtils', () => {
         message: 'Device disconnected',
       };
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(ErrorCode.DeviceDisconnected);
     });
@@ -115,7 +115,7 @@ describe('rpcErrorUtils', () => {
         message: 'Device disconnected',
       };
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(null);
     });
@@ -125,7 +125,7 @@ describe('rpcErrorUtils', () => {
         message: 'Some error',
       };
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(null);
     });
@@ -136,20 +136,20 @@ describe('rpcErrorUtils', () => {
         message: 'Invalid error code',
       };
 
-      const result = extractHardwareWalletErrorCode(error);
+      const result = getHardwareWalletErrorCode(error);
 
       expect(result).toBe(null);
     });
 
     it('returns null for non-object error', () => {
-      const result = extractHardwareWalletErrorCode('string error');
+      const result = getHardwareWalletErrorCode('string error');
 
       expect(result).toBe(null);
     });
 
     it('returns null for null/undefined', () => {
-      expect(extractHardwareWalletErrorCode(null)).toBe(null);
-      expect(extractHardwareWalletErrorCode(undefined)).toBe(null);
+      expect(getHardwareWalletErrorCode(null)).toBe(null);
+      expect(getHardwareWalletErrorCode(undefined)).toBe(null);
     });
   });
 
@@ -162,10 +162,7 @@ describe('rpcErrorUtils', () => {
         userMessage: 'Device disconnected',
       });
 
-      const result = reconstructHardwareWalletError(
-        originalError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(originalError, mockWalletType);
 
       expect(result).toBe(originalError);
     });
@@ -179,10 +176,7 @@ describe('rpcErrorUtils', () => {
         metadata: { deviceId: 'test-device' },
       });
 
-      const result = reconstructHardwareWalletError(
-        jsonRpcError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.DeviceDisconnected);
@@ -205,10 +199,7 @@ describe('rpcErrorUtils', () => {
       });
       jsonRpcError.stack = 'mock stack trace';
 
-      const result = reconstructHardwareWalletError(
-        jsonRpcError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
       expect(result.stack).toBe('mock stack trace');
     });
@@ -218,13 +209,9 @@ describe('rpcErrorUtils', () => {
         code: ErrorCode.DeviceDisconnected,
         severity: Severity.Err,
         category: Category.Connection,
-        userMessage: 'Device disconnected',
       });
 
-      const result = reconstructHardwareWalletError(
-        jsonRpcError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
       expect(result.message).toBe('Error');
     });
@@ -236,10 +223,7 @@ describe('rpcErrorUtils', () => {
         // severity and category intentionally omitted
       });
 
-      const result = reconstructHardwareWalletError(
-        jsonRpcError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.DeviceDisconnected);
@@ -253,10 +237,7 @@ describe('rpcErrorUtils', () => {
         someOtherField: 'value',
       });
 
-      const result = reconstructHardwareWalletError(
-        jsonRpcError,
-        mockWalletType,
-      );
+      const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);
@@ -265,7 +246,7 @@ describe('rpcErrorUtils', () => {
     });
 
     it('handles non-Error input by converting to string', () => {
-      const result = reconstructHardwareWalletError(42, mockWalletType);
+      const result = toHardwareWalletError(42, mockWalletType);
 
       expect(result).toBeInstanceOf(HardwareWalletError);
       expect(result.code).toBe(ErrorCode.Unknown);

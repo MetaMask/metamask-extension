@@ -64,14 +64,12 @@ export function isJsonRpcHardwareWalletError(
 }
 
 /**
- * Extract HardwareWalletError code from a JsonRpcError
+ * Get the HardwareWalletError code from a JsonRpcError
  *
  * @param error - The error to extract from
  * @returns The ErrorCode if found, null otherwise
  */
-export function extractHardwareWalletErrorCode(
-  error: unknown,
-): ErrorCode | null {
+export function getHardwareWalletErrorCode(error: unknown): ErrorCode | null {
   if (isJsonRpcHardwareWalletError(error)) {
     return error.data.code;
   }
@@ -104,7 +102,7 @@ export function extractHardwareWalletErrorCode(
  * @param walletType - The hardware wallet type
  * @returns A reconstructed HardwareWalletError
  */
-export function reconstructHardwareWalletError(
+export function toHardwareWalletError(
   error: unknown,
   walletType: HardwareWalletType,
 ): HardwareWalletError {
