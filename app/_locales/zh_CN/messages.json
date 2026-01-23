@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "账户"
   },
-  "accountTypeNotSupported": {
-    "message": "账户类型不受支持"
-  },
   "accounts": {
     "message": "账户"
   },

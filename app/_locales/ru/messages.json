@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "счет"
   },
-  "accountTypeNotSupported": {
-    "message": "Тип счета не поддерживается"
-  },
   "accounts": {
     "message": "Счета"
   },

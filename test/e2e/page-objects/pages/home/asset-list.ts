@@ -81,7 +81,7 @@ class AssetListPage {
   private readonly tokenFiatAmount =
     '[data-testid="multichain-token-list-item-secondary-value"]';
 
-  private readonly sendButton = '[data-testid="eth-overview-send"]';
+  private readonly sendButton = '[data-testid="coin-overview-send"]';
 
   private readonly tokenAddressInput =
     '[data-testid="import-tokens-modal-custom-address"]';

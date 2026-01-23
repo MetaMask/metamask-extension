@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "hesap"
   },
-  "accountTypeNotSupported": {
-    "message": "Hesap türü desteklenmiyor"
-  },
   "accounts": {
     "message": "Hesaplar"
   },

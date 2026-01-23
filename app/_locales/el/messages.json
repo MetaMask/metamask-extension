@@ -151,9 +151,6 @@
   "accountSmallCase": {
     "message": "λογαριασμός"
   },
-  "accountTypeNotSupported": {
-    "message": "Ο τύπος λογαριασμού δεν υποστηρίζεται"
-  },
   "accounts": {
     "message": "Λογαριασμοί"
   },

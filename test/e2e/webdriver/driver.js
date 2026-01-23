@@ -216,7 +216,7 @@ class Driver {
    * To target an element based on its attribute using a CSS selector,
    * use square brackets ([]) to specify the attribute name and its value.
    * @example <caption>Example to locate the ‘Buy & Sell’ button using its unique attribute testId and its value on the overview screen</caption>
-   *        await driver.findElement({testId: 'eth-overview-buy'});
+   *        await driver.findElement({testId: 'coin-overview-buy'});
    *
    * To locate an element by XPath locator strategy
    * @example <caption>Example to locate 'Confirm' button on the send transaction page</caption>
