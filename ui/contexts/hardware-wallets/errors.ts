@@ -158,54 +158,6 @@ export function parseErrorByType(
     }
   }
 
-  // Parse common error patterns
-  const errorPatterns = [
-    {
-      patterns: ['locked'],
-      code: ErrorCode.AuthenticationDeviceLocked,
-    },
-    {
-      patterns: ['permission.*denied'],
-      code: ErrorCode.AuthenticationSecurityCondition,
-    },
-    {
-      patterns: ['webhid', 'hid', 'usb', 'webusb'],
-      code: ErrorCode.ConnectionTransportMissing,
-    },
-    {
-      patterns: ['timeout'],
-      code: ErrorCode.ConnectionTimeout,
-    },
-    {
-      patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
-      code: ErrorCode.UserRejected,
-    },
-    {
-      patterns: ['disconnected', 'not found'],
-      code: ErrorCode.DeviceDisconnected,
-    },
-    {
-      patterns: ['connection', 'connect'],
-      code: ErrorCode.ConnectionClosed,
-    },
-  ];
-
-  for (const { patterns, code } of errorPatterns) {
-    if (
-      patterns.some((pattern) => {
-        if (pattern.includes('.*')) {
-          // Use regex for patterns with wildcards
-          return new RegExp(pattern, 'u').test(errorMessageLower);
-        }
-        return errorMessageLower.includes(pattern);
-      })
-    ) {
-      return createHardwareWalletError(code, walletType, errorMessage, {
-        cause,
-      });
-    }
-  }
-
   // Default to unknown error
   return createHardwareWalletError(
     ErrorCode.Unknown,
