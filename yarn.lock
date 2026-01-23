@@ -33873,7 +33873,7 @@ __metadata:
     sass-embedded: "npm:^1.71.0"
     sass-loader: "npm:^14.1.1"
     schema-utils: "npm:^4.2.0"
-    selenium-webdriver: "npm:^4.31.0"
+    selenium-webdriver: "npm:^4.35.0"
     semver: "npm:^7.5.4"
     serve-handler: "npm:^6.1.2"
     ses: "npm:^1.1.0"
@@ -40339,15 +40339,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"selenium-webdriver@npm:^4.31.0":
-  version: 4.31.0
-  resolution: "selenium-webdriver@npm:4.31.0"
+"selenium-webdriver@npm:^4.35.0":
+  version: 4.35.0
+  resolution: "selenium-webdriver@npm:4.35.0"
   dependencies:
     "@bazel/runfiles": "npm:^6.3.1"
     jszip: "npm:^3.10.1"
     tmp: "npm:^0.2.3"
-    ws: "npm:^8.18.0"
-  checksum: 10/90d2552fb99ba9c43789b74b3b601b54f72c0122140aa4c806261d695218af306e1147d08fd8cd862957612c9b1f987ea95a0823343eecfc9786f214e14f8a5d
+    ws: "npm:^8.18.2"
+  checksum: 10/6c3bd50835de2b027f6dc249e1fce07eb43f88dc10e429de38c3d08170c3b2f7e540e0a39dd2c93786a303017015242ba1683a0baa773f653ca030a482a2c5cc
   languageName: node
   linkType: hard
 
@@ -45612,9 +45612,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:*, ws@npm:8.18.1, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.2.3, ws@npm:^8.5.0, ws@npm:^8.8.0":
-  version: 8.18.1
-  resolution: "ws@npm:8.18.1"
+"ws@npm:*, ws@npm:^8.0.0, ws@npm:^8.11.0, ws@npm:^8.13.0, ws@npm:^8.17.1, ws@npm:^8.18.0, ws@npm:^8.18.2, ws@npm:^8.2.3, ws@npm:^8.5.0, ws@npm:^8.8.0":
+  version: 8.18.3
+  resolution: "ws@npm:8.18.3"
   peerDependencies:
     bufferutil: ^4.0.1
     utf-8-validate: ">=5.0.2"
@@ -45623,7 +45623,7 @@ __metadata:
       optional: true
     utf-8-validate:
       optional: true
-  checksum: 10/3f38e9594f2af5b6324138e86b74df7d77bbb8e310bf8188679dd80bac0d1f47e51536a1923ac3365f31f3d8b25ea0b03e4ade466aa8292a86cd5defca64b19b
+  checksum: 10/725964438d752f0ab0de582cd48d6eeada58d1511c3f613485b5598a83680bedac6187c765b0fe082e2d8cc4341fc57707c813ae780feee82d0c5efe6a4c61b6
   languageName: node
   linkType: hard
 
@@ -45639,6 +45639,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/70dfe53f23ff4368d46e4c0b1d4ca734db2c4149c6f68bc62cb16fc21f753c47b35fcc6e582f3bdfba0eaeb1c488cddab3c2255755a5c3eecb251431e42b3ff6
+  languageName: node
+  linkType: hard
+
+"ws@npm:8.18.1":
+  version: 8.18.1
+  resolution: "ws@npm:8.18.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/3f38e9594f2af5b6324138e86b74df7d77bbb8e310bf8188679dd80bac0d1f47e51536a1923ac3365f31f3d8b25ea0b03e4ade466aa8292a86cd5defca64b19b
   languageName: node
   linkType: hard
 

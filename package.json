@@ -722,7 +722,7 @@
     "sass-embedded": "^1.71.0",
     "sass-loader": "^14.1.1",
     "schema-utils": "^4.2.0",
-    "selenium-webdriver": "^4.31.0",
+    "selenium-webdriver": "^4.35.0",
     "semver": "^7.5.4",
     "serve-handler": "^6.1.2",
     "sharp": "^0.34.2",
