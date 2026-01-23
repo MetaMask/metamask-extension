@@ -106,6 +106,7 @@ describe('HardwareWalletStateManager', () => {
       expect(refs.adapterRef).toEqual({ current: null });
       expect(refs.abortControllerRef).toEqual({ current: null });
       expect(refs.connectingPromiseRef).toEqual({ current: null });
+      expect(refs.isConnectingRef).toEqual({ current: false });
       expect(refs.hasAutoConnectedRef).toEqual({ current: false });
       expect(refs.lastConnectedAccountRef).toEqual({ current: null });
       expect(refs.currentConnectionIdRef).toEqual({ current: null });
