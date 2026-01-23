@@ -9,8 +9,28 @@ import {
   getDisplaySymbol,
   getAssetIconUrl,
   safeDecodeURIComponent,
+  filterMarketsByQuery,
 } from './utils';
 import { HYPERLIQUID_ASSET_ICONS_BASE_URL } from './constants';
+import type { PerpsMarketData } from './types';
+
+const createMockMarket = (
+  overrides: Partial<PerpsMarketData> = {},
+): PerpsMarketData => ({
+  symbol: overrides.symbol ?? 'BTC',
+  name: overrides.name ?? 'Bitcoin',
+  maxLeverage: overrides.maxLeverage ?? '50x',
+  price: overrides.price ?? '$50,000',
+  change24h: overrides.change24h ?? '+$1,250.00',
+  change24hPercent: overrides.change24hPercent ?? '+2.5%',
+  volume: overrides.volume ?? '$1.2B',
+  openInterest: overrides.openInterest,
+  nextFundingTime: overrides.nextFundingTime,
+  fundingIntervalHours: overrides.fundingIntervalHours,
+  fundingRate: overrides.fundingRate,
+  marketSource: overrides.marketSource,
+  marketType: overrides.marketType,
+});
 
 describe('Perps Utils', () => {
   describe('getDisplayName', () => {
@@ -174,6 +194,70 @@ describe('Perps Utils', () => {
 
     it('handles empty string', () => {
       expect(safeDecodeURIComponent('')).toBe('');
+    });
+  });
+
+  describe('filterMarketsByQuery', () => {
+    const markets = [
+      createMockMarket({ symbol: 'BTC', name: 'Bitcoin' }),
+      createMockMarket({ symbol: 'ETH', name: 'Ethereum' }),
+      createMockMarket({ symbol: 'SOL', name: 'Solana' }),
+      createMockMarket({ symbol: 'xyz:TSLA', name: 'Tesla' }),
+    ];
+
+    it('filters by symbol match', () => {
+      const result = filterMarketsByQuery(markets, 'btc');
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('BTC');
+    });
+
+    it('filters by name match', () => {
+      const result = filterMarketsByQuery(markets, 'ethereum');
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('ETH');
+    });
+
+    it('is case insensitive', () => {
+      const result = filterMarketsByQuery(markets, 'BITCOIN');
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Bitcoin');
+    });
+
+    it('trims leading and trailing whitespace', () => {
+      const result = filterMarketsByQuery(markets, '  btc  ');
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('BTC');
+    });
+
+    it('returns all markets for empty query', () => {
+      expect(filterMarketsByQuery(markets, '')).toHaveLength(4);
+      expect(filterMarketsByQuery(markets, '   ')).toHaveLength(4);
+    });
+
+    it('returns empty array when no matches', () => {
+      const result = filterMarketsByQuery(markets, 'xyz123');
+      expect(result).toHaveLength(0);
+    });
+
+    it('handles partial matches', () => {
+      const result = filterMarketsByQuery(markets, 'bit');
+      expect(result).toHaveLength(1);
+      expect(result[0].name).toBe('Bitcoin');
+    });
+
+    it('matches HIP-3 symbols', () => {
+      const result = filterMarketsByQuery(markets, 'tsla');
+      expect(result).toHaveLength(1);
+      expect(result[0].symbol).toBe('xyz:TSLA');
+    });
+
+    it('returns empty array for null/undefined query', () => {
+      expect(filterMarketsByQuery(markets, null as unknown as string)).toEqual(
+        markets,
+      );
+      expect(
+        filterMarketsByQuery(markets, undefined as unknown as string),
+      ).toEqual(markets);
     });
   });
 });
