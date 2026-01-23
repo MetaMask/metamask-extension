@@ -33,9 +33,9 @@ type PerformanceMetrics = {
   } | null;
 };
 
-type BenchmarkOptions {
-  iterations?: number;  // default 1, but allow 3-5 for critical flows
-}
+type BenchmarkOptions = {
+  iterations?: number; // default 1, but allow 3-5 for critical flows
+};
 /**
  * PerformanceTracker - Collects TimerHelper instances and generates performance reports
  */
