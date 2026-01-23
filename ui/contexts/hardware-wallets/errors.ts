@@ -9,7 +9,6 @@ import { ConnectionState } from './connectionState';
 import {
   HardwareWalletType,
   type HardwareWalletConnectionState,
-  DeviceEvent,
 } from './types';
 
 /**
@@ -97,7 +96,7 @@ const ERROR_PROPERTIES_MAP = (() => {
   map.set(ErrorCode.UserRejected, {
     severity: Severity.Warning,
     category: Category.UserAction,
-    userMessage: 'Operation cancelled by user',
+    userMessage: 'Operation rejected by user',
   });
 
   map.set(ErrorCode.UserCancelled, {
@@ -152,60 +151,8 @@ export function parseErrorByType(
 
   // Parse hardware wallet error codes using mappings from keyring-utils
   for (const [errorCode, mapping] of Object.entries(LEDGER_ERROR_MAPPINGS)) {
-    if (errorMessageLower.includes(errorCode)) {
+    if (errorMessageLower.includes(errorCode.toLowerCase())) {
       return createHardwareWalletError(mapping.code, walletType, errorMessage, {
-        cause,
-      });
-    }
-  }
-
-  // Parse common error patterns
-  const errorPatterns = [
-    {
-      patterns: ['locked'],
-      code: ErrorCode.AuthenticationDeviceLocked,
-    },
-    {
-      patterns: ['app'],
-      code: ErrorCode.DeviceStateEthAppClosed,
-    },
-    {
-      patterns: ['permission denied', 'hid permission denied', 'webhid permission denied', 'usb permission denied'],
-      code: ErrorCode.AuthenticationSecurityCondition,
-    },
-    {
-      patterns: ['rejected', 'denied', 'cancelled', 'canceled'],
-      code: ErrorCode.UserRejected,
-    },
-    {
-      patterns: ['timeout'],
-      code: ErrorCode.ConnectionTimeout,
-    },
-    {
-      patterns: ['webhid', 'hid'],
-      code: ErrorCode.ConnectionTransportMissing,
-    },
-    {
-      patterns: ['disconnected', 'not found'],
-      code: ErrorCode.DeviceDisconnected,
-    },
-    {
-      patterns: ['connection', 'connect'],
-      code: ErrorCode.ConnectionClosed,
-    },
-  ];
-
-  for (const { patterns, code } of errorPatterns) {
-    if (
-      patterns.some((pattern) => {
-        if (pattern.includes('.*')) {
-          // Use regex for patterns with wildcards
-          return new RegExp(pattern, 'u').test(errorMessageLower);
-        }
-        return errorMessageLower.includes(pattern);
-      })
-    ) {
-      return createHardwareWalletError(code, walletType, errorMessage, {
         cause,
       });
     }
@@ -232,87 +179,22 @@ export function getConnectionStateFromError(
   switch (error.code) {
     case ErrorCode.AuthenticationDeviceLocked:
     case ErrorCode.AuthenticationDeviceBlocked:
-      return ConnectionState.error('locked', error);
+      return ConnectionState.error(error);
     case ErrorCode.DeviceStateEthAppClosed:
-      return ConnectionState.awaitingApp('not_open');
+      return ConnectionState.awaitingApp();
     case ErrorCode.ConnectionTransportMissing:
-      return ConnectionState.error('webhid_not_available', error);
+      return ConnectionState.error(error);
     case ErrorCode.AuthenticationSecurityCondition:
-      return ConnectionState.error('webhid_permission_denied', error);
+      return ConnectionState.error(error);
     case ErrorCode.ConnectionClosed:
     case ErrorCode.DeviceDisconnected:
-      return ConnectionState.error('connection_failed', error);
+      return ConnectionState.error(error);
     case ErrorCode.UserRejected:
     case ErrorCode.UserCancelled:
-      return ConnectionState.error('user_rejected', error);
+      return ConnectionState.error(error);
     case ErrorCode.ConnectionTimeout:
-      return ConnectionState.error('timeout', error);
+      return ConnectionState.error(error);
     default:
-      return ConnectionState.error('unknown', error);
+      return ConnectionState.error(error);
   }
-}
-
-/**
- * Map error codes to device events for consistent error handling across adapters
- */
-export const ERROR_CODE_TO_DEVICE_EVENT: Record<ErrorCode, DeviceEvent> = {
-  [ErrorCode.Success]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.AuthenticationFailed]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationIncorrectPin]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationPinAttemptsRemaining]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationPinCancelled]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationDeviceLocked]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationDeviceBlocked]: DeviceEvent.DeviceLocked,
-  [ErrorCode.AuthenticationSecurityCondition]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.AuthenticationWipeCodeMismatch]: DeviceEvent.DeviceLocked,
-  [ErrorCode.UserRejected]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.UserCancelled]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.UserConfirmationRequired]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.UserInputRequired]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceNotReady]: DeviceEvent.Disconnected,
-  [ErrorCode.DeviceInvalidSession]: DeviceEvent.Disconnected,
-  [ErrorCode.DeviceDisconnected]: DeviceEvent.Disconnected,
-  [ErrorCode.DeviceUsedElsewhere]: DeviceEvent.Disconnected,
-  [ErrorCode.DeviceCallInProgress]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceNotFound]: DeviceEvent.Disconnected,
-  [ErrorCode.DeviceMultipleConnected]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceMissingCapability]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceBtcOnlyFirmware]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceIncompatibleMode]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.ConnectionTransportMissing]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.ConnectionClosed]: DeviceEvent.Disconnected,
-  [ErrorCode.ConnectionTimeout]: DeviceEvent.OperationTimeout,
-  [ErrorCode.ConnectionBlocked]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.ProtocolUnexpectedMessage]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.ProtocolCommandError]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.ProtocolMessageError]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceStateBlindSignNotSupported]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceStateOnlyV4Supported]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.DeviceStateEthAppClosed]: DeviceEvent.AppNotOpen,
-  [ErrorCode.DeviceStateEthAppOutOfDate]: DeviceEvent.AppChanged,
-  [ErrorCode.PermissionBluetoothDenied]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.PermissionLocationDenied]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.PermissionNearbyDevicesDenied]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.BluetoothDisabled]: DeviceEvent.Disconnected,
-  [ErrorCode.BluetoothScanFailed]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.BluetoothConnectionFailed]: DeviceEvent.Disconnected,
-  [ErrorCode.MobileNotSupported]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.TxInsufficientFunds]: DeviceEvent.ConnectionFailed,
-  [ErrorCode.Unknown]: DeviceEvent.Disconnected,
-};
-
-/**
- * Get the appropriate device event for an error code
- *
- * @param errorCode - The error code
- * @param defaultEvent - Default event if error code is not mapped
- * @returns The corresponding device event
- */
-export function getDeviceEventForError(
-  errorCode: ErrorCode | undefined,
-  defaultEvent: DeviceEvent = DeviceEvent.ConnectionFailed,
-): DeviceEvent {
-  return errorCode
-    ? (ERROR_CODE_TO_DEVICE_EVENT[errorCode] ?? defaultEvent)
-    : defaultEvent;
 }

@@ -70,29 +70,4 @@ describe('parseErrorByType', () => {
       expect(result.code).toBe(ErrorCode.UserRejected);
     });
   });
-
-  describe('pattern precedence', () => {
-    it('prioritizes permission denied over generic denied patterns', () => {
-      // This should match "permission.*denied" before "denied"
-      const permissionError = new Error('WebHID permission denied by user');
-      const result = parseErrorByType(
-        permissionError,
-        HardwareWalletType.Ledger,
-      );
-
-      expect(result.code).toBe(ErrorCode.AuthenticationSecurityCondition);
-    });
-
-    it('matches permission denied even with complex message', () => {
-      const permissionError = new Error(
-        'Failed to connect: WebHID permission denied due to security policy',
-      );
-      const result = parseErrorByType(
-        permissionError,
-        HardwareWalletType.Ledger,
-      );
-
-      expect(result.code).toBe(ErrorCode.AuthenticationSecurityCondition);
-    });
-  });
 });
