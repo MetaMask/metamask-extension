@@ -6347,7 +6347,6 @@ export async function staticAssetsStopPollingByPollingToken(
   await removePollingTokenFromAppState(pollingToken);
 }
 
-
 /**
  * Informs the TokenRatesController that the UI requires
  * token rate polling for the given chain id.
