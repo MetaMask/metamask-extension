@@ -117,7 +117,7 @@ export class CriticalStartupErrorHandler {
     try {
       await Promise.race([startSyncUi, syncUiTimeoutPromise]);
     } catch (error) {
-      await displayCriticalError(
+      await displayCriticalErrorMessage(
         this.#container,
         CriticalErrorTranslationKey.TroubleStarting,
         // This cast is safe because `startSyncUi` can't throw, and `syncUiTimeoutPromise` only
