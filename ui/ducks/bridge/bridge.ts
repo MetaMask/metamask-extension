@@ -183,22 +183,25 @@ const bridgeSlice = createSlice({
             state.fromToken.assetId.toLowerCase()
           : true
       ) {
-        state.fromTokenBalance = action.payload ?? '0';
+        state.fromTokenBalance =
+          action.payload ?? initialState.fromTokenBalance;
       }
     });
     builder.addCase(setEVMSrcTokenBalance.rejected, (state) => {
-      state.fromTokenBalance = '0';
+      state.fromTokenBalance = initialState.fromTokenBalance;
     });
     builder.addCase(setEVMSrcNativeBalance.fulfilled, (state, action) => {
       if (
-        state.fromToken?.chainId &&
-        state.fromToken.chainId === action.meta.arg.chainId
+        state.fromToken?.chainId
+          ? state.fromToken.chainId === action.meta.arg.chainId
+          : true
       ) {
-        state.fromNativeBalance = action.payload?.toString() ?? '0';
+        state.fromNativeBalance =
+          action.payload?.toString() ?? initialState.fromNativeBalance;
       }
     });
     builder.addCase(setEVMSrcNativeBalance.rejected, (state) => {
-      state.fromNativeBalance = '0';
+      state.fromNativeBalance = initialState.fromNativeBalance;
     });
   },
 });

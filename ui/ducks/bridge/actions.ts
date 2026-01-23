@@ -4,7 +4,6 @@ import {
   BridgeUserAction,
   type RequiredEventContextFromClient,
   UnifiedSwapBridgeEventName,
-  formatChainIdToHex,
   isCrossChain,
   isNonEvmChainId,
 } from '@metamask/bridge-controller';
@@ -150,11 +149,13 @@ export const setFromToken = (token: TokenPayload) => {
     const isNonEvm = isNonEvmChainId(chainId);
 
     const currentChainId = getMultichainProviderConfig(getState()).chainId;
-    const shouldSetNetwork = ![chainId, getMaybeHexChainId(chainId)].some(
+    const maybeHexChainId = getMaybeHexChainId(chainId);
+    const currentNetworkMatchesToken = [chainId, maybeHexChainId].some(
       (c) => c && c === currentChainId,
     );
+
     // Set the src network
-    if (shouldSetNetwork) {
+    if (!currentNetworkMatchesToken) {
       // If the source chain changes, enable All Networks view so the user
       // can see their bridging activity on the new chain
       const lastSelectedChainId = getLastSelectedChainId(getState());
@@ -163,11 +164,9 @@ export const setFromToken = (token: TokenPayload) => {
       }
       if (isNonEvm) {
         dispatch(setActiveNetworkWithError(chainId));
-      } else {
-        const hexChainId = formatChainIdToHex(chainId);
+      } else if (maybeHexChainId) {
         const networkId =
-          selectDefaultNetworkClientIdsByChainId(getState())[hexChainId];
-
+          selectDefaultNetworkClientIdsByChainId(getState())[maybeHexChainId];
         if (networkId) {
           dispatch(setActiveNetworkWithError(networkId));
         }

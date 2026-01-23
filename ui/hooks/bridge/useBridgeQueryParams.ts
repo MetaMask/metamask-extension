@@ -18,7 +18,8 @@ import {
   setFromTokenInputValue,
   setToToken,
 } from '../../ducks/bridge/actions';
-import { getFromChain, getFromToken } from '../../ducks/bridge/selectors';
+import { getFromToken } from '../../ducks/bridge/selectors';
+import { getMultichainCurrentChainId } from '../../selectors/multichain';
 
 const parseAsset = (assetId: string | null) => {
   if (!assetId) {
@@ -65,10 +66,14 @@ const fetchAssetMetadata = async (
  */
 export const useBridgeQueryParams = () => {
   const dispatch = useDispatch();
-  const fromChain = useSelector(getFromChain);
   const fromToken = useSelector(getFromToken);
 
   const abortController = useRef<AbortController>(new AbortController());
+
+  /**
+   * @deprecated remove this when GNS references are removed
+   */
+  const currentChainId = useSelector(getMultichainCurrentChainId);
 
   const { search, pathname, state } = useLocation();
   const navigate = useNavigate();
@@ -217,26 +222,12 @@ export const useBridgeQueryParams = () => {
   }, [parsedAmount, parsedFromAssetId, assetMetadataByAssetId, fromToken]);
 
   // Set src token balance after url params are applied
-  // This effect runs on each load regardless of the url params
+  // This effect runs on each token change regardless of the url params
   useEffect(() => {
-    if (
-      // Wait for url params to be applied
-      !parsedFromAssetId &&
-      !searchParams.get(BridgeQueryParams.FROM) &&
-      fromToken?.chainId &&
-      // TODO remove this when GNS references are removed
-      // Wait for network to be changed if needed
-      fromToken.chainId === fromChain?.chainId
-    ) {
+    if (fromToken?.assetId) {
       dispatch(setEvmBalances(fromToken.assetId));
     }
-  }, [
-    parsedFromAssetId,
-    fromToken?.chainId,
-    fromToken?.assetId,
-    fromChain?.chainId,
-    searchParams,
-  ]);
+  }, [fromToken, fromToken?.assetId, currentChainId]);
 
   // If srcToken object is passed through navigation options, use it as the fromToken
   useEffect(() => {

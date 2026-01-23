@@ -294,85 +294,79 @@ const toBridgeTokenResponse = (
 };
 
 async function mockGetPopularTokens(mockServer: Mockttp) {
-  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => {
-    return {
-      statusCode: 200,
-      json: [
-        MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
-        MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
-        MOCK_TOKENS_ARBITRUM.map((token) =>
-          toBridgeTokenResponse(42161, token),
-        ),
-        MOCK_GET_TOKEN_ARBITRUM.map((token) =>
-          toBridgeTokenResponse(42161, token),
-        ),
-      ].flat(),
-    };
-  });
+  return await mockServer.forPost(/getTokens\/popular/u).thenCallback(() => ({
+    statusCode: 200,
+    json: [
+      MOCK_TOKENS_ETHEREUM.map((token) => toBridgeTokenResponse(1, token)),
+      MOCK_TOKENS_LINEA.map((token) => toBridgeTokenResponse(59144, token)),
+      MOCK_TOKENS_ARBITRUM.map((token) => toBridgeTokenResponse(42161, token)),
+      MOCK_GET_TOKEN_ARBITRUM.map((token) =>
+        toBridgeTokenResponse(42161, token),
+      ),
+    ].flat(),
+  }));
 }
 
 async function mockSearchTokens(mockServer: Mockttp) {
-  await mockServer
-    .forPost(/getTokens\/search/u)
-    .withJsonBodyIncluding({
-      chainIds: ['eip155:1'],
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          data: MOCK_TOKENS_ETHEREUM.map((token) =>
-            toBridgeTokenResponse(1, token),
-          ),
-          pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
+  return [
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:1'],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            data: MOCK_TOKENS_ETHEREUM.map((token) =>
+              toBridgeTokenResponse(1, token),
+            ),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
           },
-        },
-      };
-    });
-
-  await mockServer
-    .forPost(/getTokens\/search/u)
-    .withJsonBodyIncluding({
-      chainIds: ['eip155:59144'],
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          data: MOCK_TOKENS_LINEA.map((token) =>
-            toBridgeTokenResponse(59144, token),
-          ),
-          pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
+        };
+      }),
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:59144'],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            data: MOCK_TOKENS_LINEA.map((token) =>
+              toBridgeTokenResponse(59144, token),
+            ),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
           },
-        },
-      };
-    });
-
-  await mockServer
-    .forPost(/getTokens\/search/u)
-    .withJsonBodyIncluding({
-      chainIds: ['eip155:42161'],
-    })
-    .thenCallback(() => {
-      return {
-        statusCode: 200,
-        json: {
-          data: [MOCK_TOKENS_ARBITRUM, MOCK_GET_TOKEN_ARBITRUM]
-            .flat()
-            .map((token) => toBridgeTokenResponse(42161, token)),
-          pageInfo: {
-            hasNextPage: false,
-            endCursor: null,
+        };
+      }),
+    await mockServer
+      .forPost(/getTokens\/search/u)
+      .withJsonBodyIncluding({
+        chainIds: ['eip155:42161'],
+      })
+      .thenCallback(() => {
+        return {
+          statusCode: 200,
+          json: {
+            data: [MOCK_TOKENS_ARBITRUM, MOCK_GET_TOKEN_ARBITRUM]
+              .flat()
+              .map((token) => toBridgeTokenResponse(42161, token)),
+            pageInfo: {
+              hasNextPage: false,
+              endCursor: null,
+            },
           },
-        },
-      };
-    });
-
-  return mockServer;
+        };
+      }),
+  ];
 }
 
 async function mockETHtoETH(mockServer: Mockttp) {
@@ -861,7 +855,6 @@ export async function mockSwapAggregatorMetadataArbitrum(mockServer: Mockttp) {
 
 // Expected event types for Bridge metrics
 export enum EventTypes {
-  BridgeLinkClicked = 'Swap Link Clicked',
   SwapBridgeButtonClicked = 'Unified SwapBridge Button Clicked',
   SwapBridgePageViewed = 'Unified SwapBridge Page Viewed',
   SwapBridgeInputChanged = 'Unified SwapBridge Input Changed',
@@ -956,7 +949,6 @@ export const getBridgeFixtures = (
         await mockTokensLinea(mockServer),
         await mockGetTokenArbitrum(mockServer),
         await mockGetPopularTokens(mockServer),
-        await mockSearchTokens(mockServer),
         await mockETHtoETH(mockServer),
         await mockETHtoUSDC(mockServer),
         await mockDAItoETH(mockServer),
@@ -976,11 +968,12 @@ export const getBridgeFixtures = (
         await mockSwapAggregatorMetadataArbitrum(mockServer),
       ];
 
+      standardMocks.push(...(await mockSearchTokens(mockServer)));
+
       if (withMockedSegment) {
         const segmentMocks = await mockSegment(
           mockServer,
           [
-            EventTypes.BridgeLinkClicked,
             EventTypes.SwapBridgeButtonClicked,
             EventTypes.SwapBridgePageViewed,
             EventTypes.SwapBridgeInputChanged,
@@ -1051,14 +1044,14 @@ export const getQuoteNegativeCasesFixtures = (
 
   return {
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockTopAssetsLinea(mockServer),
-      await mockGetQuoteInvalid(mockServer, options),
-      await mockTokensLinea(mockServer),
-      await mockSearchTokens(mockServer),
-      await mockGetPopularTokens(mockServer),
-      await mockPriceSpotPrices(mockServer),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) =>
+      [
+        await mockTopAssetsLinea(mockServer),
+        await mockGetQuoteInvalid(mockServer, options),
+        await mockTokensLinea(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockPriceSpotPrices(mockServer),
+      ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
@@ -1099,15 +1092,15 @@ export const getBridgeNegativeCasesFixtures = (
 
   return {
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockTopAssetsLinea(mockServer),
-      await mockTokensLinea(mockServer),
-      await mockSearchTokens(mockServer),
-      await mockGetPopularTokens(mockServer),
-      await mockETHtoETH(mockServer),
-      await mockGetTxStatusInvalid(mockServer, options),
-      await mockPriceSpotPrices(mockServer),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) =>
+      [
+        await mockTopAssetsLinea(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockETHtoETH(mockServer),
+        await mockGetTxStatusInvalid(mockServer, options),
+        await mockPriceSpotPrices(mockServer),
+      ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
@@ -1147,14 +1140,14 @@ export const getInsufficientFundsFixtures = (
 
   return {
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockTokensLinea(mockServer),
-      await mockTopAssetsLinea(mockServer),
-      await mockSearchTokens(mockServer),
-      await mockGetPopularTokens(mockServer),
-      await mockETHtoWETH(mockServer),
-      await mockPriceSpotPrices(mockServer),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) =>
+      [
+        await mockTokensLinea(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockETHtoWETH(mockServer),
+        await mockPriceSpotPrices(mockServer),
+      ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
@@ -1227,32 +1220,32 @@ export const getBridgeL2Fixtures = (
 
   return {
     fixtures: fixtureBuilder.build(),
-    testSpecificMock: async (mockServer: Mockttp) => [
-      await mockPortfolioPage(mockServer),
-      await mockGetTxStatus(mockServer),
-      await mockTopAssetsLinea(mockServer),
-      await mockTopAssetsArbitrum(mockServer),
-      await mockTokensArbitrum(mockServer),
-      await mockTokensEthereum(mockServer),
-      await mockTokensLinea(mockServer),
-      await mockGetPopularTokens(mockServer),
-      await mockSearchTokens(mockServer),
-      await mockGetTokenArbitrum(mockServer),
-      await mockL2toMainnet(mockServer),
-      await mockNativeL2toL2(mockServer),
-      await mockDAIL2toL2(mockServer),
-      await mockDAIL2toMainnet(mockServer),
-      await mockGasPricesArbitrum(mockServer),
-      await mockGasPricesMainnet(mockServer),
-      await mockFeatureFlags(mockServer, featureFlags),
-      await mockAccountsBalances(mockServer),
-      await mockSwapAggregatorMetadataLinea(mockServer),
-      await mockSwapTokensLinea(mockServer),
-      await mockSwapTokensArbitrum(mockServer),
-      await mockSwapAggregatorMetadataArbitrum(mockServer),
-      await mockPriceSpotPrices(mockServer),
-      await mockPriceSpotPricesV3(mockServer),
-    ],
+    testSpecificMock: async (mockServer: Mockttp) =>
+      [
+        await mockPortfolioPage(mockServer),
+        await mockGetTxStatus(mockServer),
+        await mockTopAssetsLinea(mockServer),
+        await mockTopAssetsArbitrum(mockServer),
+        await mockTokensArbitrum(mockServer),
+        await mockTokensEthereum(mockServer),
+        await mockTokensLinea(mockServer),
+        await mockGetPopularTokens(mockServer),
+        await mockGetTokenArbitrum(mockServer),
+        await mockL2toMainnet(mockServer),
+        await mockNativeL2toL2(mockServer),
+        await mockDAIL2toL2(mockServer),
+        await mockDAIL2toMainnet(mockServer),
+        await mockGasPricesArbitrum(mockServer),
+        await mockGasPricesMainnet(mockServer),
+        await mockFeatureFlags(mockServer, featureFlags),
+        await mockAccountsBalances(mockServer),
+        await mockSwapAggregatorMetadataLinea(mockServer),
+        await mockSwapTokensLinea(mockServer),
+        await mockSwapTokensArbitrum(mockServer),
+        await mockSwapAggregatorMetadataArbitrum(mockServer),
+        await mockPriceSpotPrices(mockServer),
+        await mockPriceSpotPricesV3(mockServer),
+      ].concat(...(await mockSearchTokens(mockServer))),
     manifestFlags: {
       remoteFeatureFlags: {
         bridgeConfig: featureFlags,
