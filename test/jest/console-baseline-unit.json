@@ -3620,8 +3620,12 @@
     },
     "app/scripts/migrations/113.test.ts": {
       "error: Migration 113: Invalid PreferencesController state:": 1
+    },
+    "app/scripts/migrations/189.test.ts": {
+      "error: Error: Migration 189: Invalid NetworkController": 6,
+      "error: Error: Migration 189: Infura project": 1
     }
   },
-  "generated": "2026-01-23T14:09:50.811Z",
+  "generated": "2026-01-23T15:01:58.479Z",
   "nodeVersion": "v24.13.0"
 }
