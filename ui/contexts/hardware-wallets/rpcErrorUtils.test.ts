@@ -130,6 +130,17 @@ describe('rpcErrorUtils', () => {
       expect(result).toBe(null);
     });
 
+    it('returns null for plain object with invalid numeric code', () => {
+      const error = {
+        code: 12345, // Invalid ErrorCode value (not in VALID_ERROR_CODES)
+        message: 'Invalid error code',
+      };
+
+      const result = extractHardwareWalletErrorCode(error);
+
+      expect(result).toBe(null);
+    });
+
     it('returns null for non-object error', () => {
       const result = extractHardwareWalletErrorCode('string error');
 

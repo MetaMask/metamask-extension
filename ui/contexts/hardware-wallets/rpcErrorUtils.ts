@@ -21,6 +21,24 @@ type HardwareWalletErrorData = {
 };
 
 /**
+ * Known valid ErrorCode values from @metamask/hw-wallet-sdk
+ * This whitelist ensures we only accept valid error codes
+ */
+const VALID_ERROR_CODES = new Set<number>([
+  ErrorCode.AuthenticationSecurityCondition,
+  ErrorCode.UserRejected,
+  ErrorCode.UserCancelled,
+  ErrorCode.Unknown,
+  ErrorCode.AuthenticationDeviceLocked,
+  ErrorCode.AuthenticationDeviceBlocked,
+  ErrorCode.DeviceStateEthAppClosed,
+  ErrorCode.ConnectionTransportMissing,
+  ErrorCode.ConnectionClosed,
+  ErrorCode.DeviceDisconnected,
+  ErrorCode.ConnectionTimeout,
+]);
+
+/**
  * Type guard to check if error is a JsonRpcError with HardwareWalletError data
  *
  * @param error - The error to check
@@ -59,14 +77,15 @@ export function extractHardwareWalletErrorCode(
     return error.code;
   }
 
-  // Check if it's a plain object with a code property
+  // Check if it's a plain object with a valid ErrorCode
   if (
     error &&
     typeof error === 'object' &&
     'code' in error &&
-    typeof error.code === 'number'
+    typeof error.code === 'number' &&
+    VALID_ERROR_CODES.has(error.code)
   ) {
-    return error.code as unknown as ErrorCode;
+    return error.code as ErrorCode;
   }
 
   return null;
@@ -94,12 +113,14 @@ export function reconstructHardwareWalletError(
   // JsonRpcError with hardware wallet data
   if (isJsonRpcHardwareWalletError(error)) {
     const hwError = new HardwareWalletError(
-      error.message || error.data.userMessage || 'Hardware wallet error',
+      error.message ||
+        error.data.userMessage ||
+        'Hardware wallet error occurred',
       {
         code: error.data.code,
         severity: (error.data.severity as Severity) ?? Severity.Err,
         category: (error.data.category as Category) ?? Category.Unknown,
-        userMessage: error.data.userMessage ?? '',
+        userMessage: error.data.userMessage ?? 'Hardware wallet error occurred',
         metadata: {
           ...error.data.metadata,
           walletType,
