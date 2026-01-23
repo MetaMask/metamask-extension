@@ -14,65 +14,69 @@ export class TestSnaps {
   // Page elements
   private readonly installedSnapsHeader = '[data-testid="InstalledSnaps"]';
 
-  // Connect buttons
-  private readonly connectBip32Button = '#connectbip32';
+  // Connect button selectors
+  private readonly connectBip32ButtonSelector = '#connectbip32';
 
-  private readonly connectBip44Button = '#connectbip44';
+  private readonly connectBip44ButtonSelector = '#connectbip44';
 
-  private readonly connectClientStatusButton = '#connectclient-status';
+  private readonly connectClientStatusButtonSelector = '#connectclient-status';
 
-  private readonly connectCronJobsButton = '#connectcronjobs';
+  private readonly connectCronJobsButtonSelector = '#connectcronjobs';
 
-  private readonly connectCronjobDurationButton = '#connectcronjob-duration';
+  private readonly connectCronjobDurationButtonSelector =
+    '#connectcronjob-duration';
 
-  private readonly connectDialogsButton = '#connectdialogs';
+  private readonly connectDialogsButtonSelector = '#connectdialogs';
 
-  private readonly connectErrorsButton = '#connecterrors';
+  private readonly connectErrorsButtonSelector = '#connecterrors';
 
-  private readonly connectGetEntropyButton = '#connectGetEntropySnap';
+  private readonly connectGetEntropyButtonSelector = '#connectGetEntropySnap';
 
-  private readonly connectGetFileButton = '#connectgetfile';
+  private readonly connectGetFileButtonSelector = '#connectgetfile';
 
-  private readonly connectHomePageButton = '#connecthomepage';
+  private readonly connectHomePageButtonSelector = '#connecthomepage';
 
-  private readonly connectJsxButton = '#connectjsx';
+  private readonly connectJsxButtonSelector = '#connectjsx';
 
-  private readonly connectJsonRpcButton = '#connectjson-rpc';
+  private readonly connectJsonRpcButtonSelector = '#connectjson-rpc';
 
-  private readonly connectInteractiveButton = '#connectinteractive-ui';
+  private readonly connectInteractiveButtonSelector = '#connectinteractive-ui';
 
-  private readonly connectImagesButton = '#connectimages';
+  private readonly connectImagesButtonSelector = '#connectimages';
 
-  private readonly connectLifeCycleButton = '#connectlifecycle-hooks';
+  private readonly connectLifeCycleButtonSelector = '#connectlifecycle-hooks';
 
-  private readonly connectNameLookUpButton = '#connectname-lookup';
+  private readonly connectNameLookUpButtonSelector = '#connectname-lookup';
 
-  private readonly connectManageStateButton = '#connectmanage-state';
+  private readonly connectManageStateButtonSelector = '#connectmanage-state';
 
-  private readonly connectStateButton = '#connectstate';
+  private readonly connectStateButtonSelector = '#connectstate';
 
-  private readonly connectPreinstalledButton = '#connectpreinstalled-snap';
+  private readonly connectPreinstalledButtonSelector =
+    '#connectpreinstalled-snap';
 
-  private readonly connectProtocolButton = '#connectprotocol';
+  private readonly connectProtocolButtonSelector = '#connectprotocol';
 
-  private readonly connectTransactionInsightButton =
+  private readonly connectTransactionInsightButtonSelector =
     '#connecttransaction-insights';
 
-  private readonly connectUpdateButton = '#connectUpdate';
+  private readonly connectUpdateButtonSelector = '#connectUpdate';
 
-  private readonly connectUpdateNewButton = '#connectUpdateNew';
+  private readonly connectUpdateNewButtonSelector = '#connectUpdateNew';
 
-  private readonly connectWasmButton = '#connectwasm';
+  private readonly connectWasmButtonSelector = '#connectwasm';
 
-  private readonly connectNotificationButton = '#connectnotifications';
+  private readonly connectNotificationButtonSelector = '#connectnotifications';
 
-  private readonly connectEthereumProviderButton = '#connectethereum-provider';
+  private readonly connectEthereumProviderButtonSelector =
+    '#connectethereum-provider';
 
-  private readonly connectNetworkAccessButton = '#connectnetwork-access';
+  private readonly connectNetworkAccessButtonSelector = '#connectnetwork-access';
 
-  private readonly connectBackgroundEventsButton = '#connectbackground-events';
+  private readonly connectBackgroundEventsButtonSelector =
+    '#connectbackground-events';
 
-  private readonly connectPreferencesButton = '#connectpreferences';
+  private readonly connectPreferencesButtonSelector = '#connectpreferences';
 
   // Action buttons
   private readonly confirmationButton = '#sendConfirmationButton';
@@ -329,7 +333,7 @@ export class TestSnaps {
     try {
       await this.driver.waitForMultipleSelectors([
         this.installedSnapsHeader,
-        this.connectBip32Button,
+        this.connectBip32ButtonSelector,
       ]);
     } catch (e) {
       console.log(
@@ -347,147 +351,147 @@ export class TestSnaps {
 
   async connectBip32Button(): Promise<void> {
     console.log('Clicking Connect BIP-32 button');
-    await this.driver.clickElement(this.connectBip32Button);
+    await this.driver.clickElement(this.connectBip32ButtonSelector);
   }
 
   async connectBip44Button(): Promise<void> {
     console.log('Clicking Connect BIP-44 button');
-    await this.driver.clickElement(this.connectBip44Button);
+    await this.driver.clickElement(this.connectBip44ButtonSelector);
   }
 
   async connectClientStatusButton(): Promise<void> {
     console.log('Clicking Connect Client Status button');
-    await this.driver.clickElement(this.connectClientStatusButton);
+    await this.driver.clickElement(this.connectClientStatusButtonSelector);
   }
 
   async connectCronJobsButton(): Promise<void> {
     console.log('Clicking Connect Cron Jobs button');
-    await this.driver.clickElement(this.connectCronJobsButton);
+    await this.driver.clickElement(this.connectCronJobsButtonSelector);
   }
 
   async connectCronjobDurationButton(): Promise<void> {
     console.log('Clicking Connect Cronjob Duration button');
-    await this.driver.clickElement(this.connectCronjobDurationButton);
+    await this.driver.clickElement(this.connectCronjobDurationButtonSelector);
   }
 
   async connectDialogsButton(): Promise<void> {
     console.log('Clicking Connect Dialogs button');
-    await this.driver.clickElement(this.connectDialogsButton);
+    await this.driver.clickElement(this.connectDialogsButtonSelector);
   }
 
   async connectErrorsButton(): Promise<void> {
     console.log('Clicking Connect Errors button');
-    await this.driver.clickElement(this.connectErrorsButton);
+    await this.driver.clickElement(this.connectErrorsButtonSelector);
   }
 
   async connectGetEntropyButton(): Promise<void> {
     console.log('Clicking Connect Get Entropy button');
-    await this.driver.clickElement(this.connectGetEntropyButton);
+    await this.driver.clickElement(this.connectGetEntropyButtonSelector);
   }
 
   async connectGetFileButton(): Promise<void> {
     console.log('Clicking Connect Get File button');
-    await this.driver.clickElement(this.connectGetFileButton);
+    await this.driver.clickElement(this.connectGetFileButtonSelector);
   }
 
   async connectHomePageButton(): Promise<void> {
     console.log('Clicking Connect Home Page button');
-    await this.driver.clickElement(this.connectHomePageButton);
+    await this.driver.clickElement(this.connectHomePageButtonSelector);
   }
 
   async connectJsxButton(): Promise<void> {
     console.log('Clicking Connect JSX button');
-    await this.driver.clickElement(this.connectJsxButton);
+    await this.driver.clickElement(this.connectJsxButtonSelector);
   }
 
   async connectJsonRpcButton(): Promise<void> {
     console.log('Clicking Connect JSON-RPC button');
-    await this.driver.clickElement(this.connectJsonRpcButton);
+    await this.driver.clickElement(this.connectJsonRpcButtonSelector);
   }
 
   async connectInteractiveButton(): Promise<void> {
     console.log('Clicking Connect Interactive UI button');
-    await this.driver.clickElement(this.connectInteractiveButton);
+    await this.driver.clickElement(this.connectInteractiveButtonSelector);
   }
 
   async connectImagesButton(): Promise<void> {
     console.log('Clicking Connect Images button');
-    await this.driver.clickElement(this.connectImagesButton);
+    await this.driver.clickElement(this.connectImagesButtonSelector);
   }
 
   async connectLifeCycleButton(): Promise<void> {
     console.log('Clicking Connect LifeCycle button');
-    await this.driver.clickElement(this.connectLifeCycleButton);
+    await this.driver.clickElement(this.connectLifeCycleButtonSelector);
   }
 
   async connectNameLookUpButton(): Promise<void> {
     console.log('Clicking Connect Name Lookup button');
-    await this.driver.clickElement(this.connectNameLookUpButton);
+    await this.driver.clickElement(this.connectNameLookUpButtonSelector);
   }
 
   async connectManageStateButton(): Promise<void> {
     console.log('Clicking Connect Manage State button');
-    await this.driver.clickElement(this.connectManageStateButton);
+    await this.driver.clickElement(this.connectManageStateButtonSelector);
   }
 
   async connectStateButton(): Promise<void> {
     console.log('Clicking Connect State button');
-    await this.driver.clickElement(this.connectStateButton);
+    await this.driver.clickElement(this.connectStateButtonSelector);
   }
 
   async connectPreinstalledButton(): Promise<void> {
     console.log('Clicking Connect Preinstalled button');
-    await this.driver.clickElement(this.connectPreinstalledButton);
+    await this.driver.clickElement(this.connectPreinstalledButtonSelector);
   }
 
   async connectProtocolButton(): Promise<void> {
     console.log('Clicking Connect Protocol button');
-    await this.driver.clickElement(this.connectProtocolButton);
+    await this.driver.clickElement(this.connectProtocolButtonSelector);
   }
 
   async connectTransactionInsightButton(): Promise<void> {
     console.log('Clicking Connect Transaction Insight button');
-    await this.driver.clickElement(this.connectTransactionInsightButton);
+    await this.driver.clickElement(this.connectTransactionInsightButtonSelector);
   }
 
   async connectUpdateButton(): Promise<void> {
     console.log('Clicking Connect Update button');
-    await this.driver.clickElement(this.connectUpdateButton);
+    await this.driver.clickElement(this.connectUpdateButtonSelector);
   }
 
   async connectUpdateNewButton(): Promise<void> {
     console.log('Clicking Connect Update New button');
-    await this.driver.clickElement(this.connectUpdateNewButton);
+    await this.driver.clickElement(this.connectUpdateNewButtonSelector);
   }
 
   async connectWasmButton(): Promise<void> {
     console.log('Clicking Connect Wasm button');
-    await this.driver.clickElement(this.connectWasmButton);
+    await this.driver.clickElement(this.connectWasmButtonSelector);
   }
 
   async connectNotificationButton(): Promise<void> {
     console.log('Clicking Connect Notification button');
-    await this.driver.clickElement(this.connectNotificationButton);
+    await this.driver.clickElement(this.connectNotificationButtonSelector);
   }
 
   async connectEthereumProviderButton(): Promise<void> {
     console.log('Clicking Connect Ethereum Provider button');
-    await this.driver.clickElement(this.connectEthereumProviderButton);
+    await this.driver.clickElement(this.connectEthereumProviderButtonSelector);
   }
 
   async connectNetworkAccessButton(): Promise<void> {
     console.log('Clicking Connect Network Access button');
-    await this.driver.clickElement(this.connectNetworkAccessButton);
+    await this.driver.clickElement(this.connectNetworkAccessButtonSelector);
   }
 
   async connectBackgroundEventsButton(): Promise<void> {
     console.log('Clicking Connect Background Events button');
-    await this.driver.clickElement(this.connectBackgroundEventsButton);
+    await this.driver.clickElement(this.connectBackgroundEventsButtonSelector);
   }
 
   async connectPreferencesButton(): Promise<void> {
     console.log('Clicking Connect Preferences button');
-    await this.driver.clickElement(this.connectPreferencesButton);
+    await this.driver.clickElement(this.connectPreferencesButtonSelector);
   }
 
   // =====================
@@ -877,7 +881,7 @@ export class TestSnaps {
   async checkConnectBip32ButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect BIP-32 button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectBip32Button,
+      css: this.connectBip32ButtonSelector,
       text: expectedText,
     });
   }
@@ -885,7 +889,7 @@ export class TestSnaps {
   async checkConnectBip44ButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect BIP-44 button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectBip44Button,
+      css: this.connectBip44ButtonSelector,
       text: expectedText,
     });
   }
@@ -895,7 +899,7 @@ export class TestSnaps {
   ): Promise<void> {
     console.log(`Checking Connect Client Status button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectClientStatusButton,
+      css: this.connectClientStatusButtonSelector,
       text: expectedText,
     });
   }
@@ -903,7 +907,7 @@ export class TestSnaps {
   async checkConnectCronJobsButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Cron Jobs button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectCronJobsButton,
+      css: this.connectCronJobsButtonSelector,
       text: expectedText,
     });
   }
@@ -915,7 +919,7 @@ export class TestSnaps {
       `Checking Connect Cronjob Duration button text: ${expectedText}`,
     );
     await this.driver.waitForSelector({
-      css: this.connectCronjobDurationButton,
+      css: this.connectCronjobDurationButtonSelector,
       text: expectedText,
     });
   }
@@ -923,7 +927,7 @@ export class TestSnaps {
   async checkConnectDialogsButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Dialogs button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectDialogsButton,
+      css: this.connectDialogsButtonSelector,
       text: expectedText,
     });
   }
@@ -931,7 +935,7 @@ export class TestSnaps {
   async checkConnectErrorsButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Errors button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectErrorsButton,
+      css: this.connectErrorsButtonSelector,
       text: expectedText,
     });
   }
@@ -939,7 +943,7 @@ export class TestSnaps {
   async checkConnectGetEntropyButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Get Entropy button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectGetEntropyButton,
+      css: this.connectGetEntropyButtonSelector,
       text: expectedText,
     });
   }
@@ -947,7 +951,7 @@ export class TestSnaps {
   async checkConnectGetFileButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Get File button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectGetFileButton,
+      css: this.connectGetFileButtonSelector,
       text: expectedText,
     });
   }
@@ -955,7 +959,7 @@ export class TestSnaps {
   async checkConnectHomePageButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Home Page button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectHomePageButton,
+      css: this.connectHomePageButtonSelector,
       text: expectedText,
     });
   }
@@ -963,7 +967,7 @@ export class TestSnaps {
   async checkConnectJsxButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect JSX button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectJsxButton,
+      css: this.connectJsxButtonSelector,
       text: expectedText,
     });
   }
@@ -971,7 +975,7 @@ export class TestSnaps {
   async checkConnectJsonRpcButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect JSON-RPC button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectJsonRpcButton,
+      css: this.connectJsonRpcButtonSelector,
       text: expectedText,
     });
   }
@@ -979,7 +983,7 @@ export class TestSnaps {
   async checkConnectInteractiveButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Interactive button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectInteractiveButton,
+      css: this.connectInteractiveButtonSelector,
       text: expectedText,
     });
   }
@@ -987,7 +991,7 @@ export class TestSnaps {
   async checkConnectImagesButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Images button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectImagesButton,
+      css: this.connectImagesButtonSelector,
       text: expectedText,
     });
   }
@@ -995,7 +999,7 @@ export class TestSnaps {
   async checkConnectLifeCycleButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect LifeCycle button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectLifeCycleButton,
+      css: this.connectLifeCycleButtonSelector,
       text: expectedText,
     });
   }
@@ -1003,7 +1007,7 @@ export class TestSnaps {
   async checkConnectManageStateButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Manage State button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectManageStateButton,
+      css: this.connectManageStateButtonSelector,
       text: expectedText,
     });
   }
@@ -1011,7 +1015,7 @@ export class TestSnaps {
   async checkConnectStateButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect State button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectStateButton,
+      css: this.connectStateButtonSelector,
       text: expectedText,
     });
   }
@@ -1021,7 +1025,7 @@ export class TestSnaps {
   ): Promise<void> {
     console.log(`Checking Connect Preinstalled button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectPreinstalledButton,
+      css: this.connectPreinstalledButtonSelector,
       text: expectedText,
     });
   }
@@ -1029,7 +1033,7 @@ export class TestSnaps {
   async checkConnectUpdateButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Update button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectUpdateButton,
+      css: this.connectUpdateButtonSelector,
       text: expectedText,
     });
   }
@@ -1037,7 +1041,7 @@ export class TestSnaps {
   async checkConnectUpdateNewButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Update New button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectUpdateNewButton,
+      css: this.connectUpdateNewButtonSelector,
       text: expectedText,
     });
   }
@@ -1045,7 +1049,7 @@ export class TestSnaps {
   async checkConnectWasmButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Wasm button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectWasmButton,
+      css: this.connectWasmButtonSelector,
       text: expectedText,
     });
   }
@@ -1055,7 +1059,7 @@ export class TestSnaps {
   ): Promise<void> {
     console.log(`Checking Connect Notification button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectNotificationButton,
+      css: this.connectNotificationButtonSelector,
       text: expectedText,
     });
   }
@@ -1067,7 +1071,7 @@ export class TestSnaps {
       `Checking Connect Ethereum Provider button text: ${expectedText}`,
     );
     await this.driver.waitForSelector({
-      css: this.connectEthereumProviderButton,
+      css: this.connectEthereumProviderButtonSelector,
       text: expectedText,
     });
   }
@@ -1077,7 +1081,7 @@ export class TestSnaps {
   ): Promise<void> {
     console.log(`Checking Connect Network Access button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectNetworkAccessButton,
+      css: this.connectNetworkAccessButtonSelector,
       text: expectedText,
     });
   }
@@ -1089,7 +1093,7 @@ export class TestSnaps {
       `Checking Connect Background Events button text: ${expectedText}`,
     );
     await this.driver.waitForSelector({
-      css: this.connectBackgroundEventsButton,
+      css: this.connectBackgroundEventsButtonSelector,
       text: expectedText,
     });
   }
@@ -1097,7 +1101,7 @@ export class TestSnaps {
   async checkConnectPreferencesButtonText(expectedText: string): Promise<void> {
     console.log(`Checking Connect Preferences button text: ${expectedText}`);
     await this.driver.waitForSelector({
-      css: this.connectPreferencesButton,
+      css: this.connectPreferencesButtonSelector,
       text: expectedText,
     });
   }
