@@ -69,18 +69,39 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @param deviceId - The device ID to connect to
    */
   async connect(deviceId: string): Promise<void> {
-    // Already connected - return immediately
-    if (this.connected) {
+    // Already connected to the same device - return immediately
+    if (this.connected && this.currentDeviceId === deviceId) {
       return;
     }
 
-    // Connection in progress - return the pending promise to reuse the same promise on multiple calls.
-    if (this.isConnecting && this.pendingConnection) {
-      return this.pendingConnection;
+    // Already connected to a different device - disconnect first
+    if (this.connected && this.currentDeviceId !== deviceId) {
+      await this.disconnect();
     }
 
-    // Start new connection
+    // Connection in progress - check if it's for the same device
+    if (this.isConnecting && this.pendingConnection) {
+      if (this.currentDeviceId === deviceId) {
+        // Same device - reuse the pending promise
+        return this.pendingConnection;
+      }
+      // Connecting to a different device - wait for current connection to complete/fail,
+      // then disconnect and connect to the new device
+      try {
+        await this.pendingConnection;
+      } catch {
+        // Ignore errors from the pending connection - we'll try to connect to the new device
+      }
+      // If we got here, the previous connection completed or failed
+      // Disconnect if connected and try to connect to the new device
+      if (this.connected) {
+        await this.disconnect();
+      }
+    }
+
+    // Start new connection - track the device we're connecting to
     this.isConnecting = true;
+    this.currentDeviceId = deviceId;
     this.pendingConnection = (async () => {
       try {
         // Step 1: Check WebHID availability
@@ -162,6 +183,8 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * Clean up resources
    */
   destroy(): void {
+    // Ledger iframe will clean up the connection after each transaction.
+    // https://github.com/MetaMask/ledger-iframe-bridge/blob/1e02823f47306ae27fe941f2829ad8d142454a67/ledger-bridge.js#L143-L161
     this.connected = false;
     this.isConnecting = false;
     this.currentDeviceId = null;
@@ -176,6 +199,11 @@ export class LedgerAdapter implements HardwareWalletAdapter {
    * @returns true if device is ready
    */
   async ensureDeviceReady(deviceId: string): Promise<boolean> {
+    // If connected to a different device, reconnect to the requested device
+    if (this.isConnected() && this.currentDeviceId !== deviceId) {
+      await this.disconnect();
+    }
+
     if (!this.isConnected()) {
       await this.connect(deviceId);
     }

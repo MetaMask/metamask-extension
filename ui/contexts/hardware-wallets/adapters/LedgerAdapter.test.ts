@@ -241,7 +241,7 @@ describe('LedgerAdapter', () => {
       }
     });
 
-    it('skips connection when already connected', async () => {
+    it('skips connection when already connected to the same device', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -250,13 +250,32 @@ describe('LedgerAdapter', () => {
       await adapter.connect(deviceId);
       expect(adapter.isConnected()).toBe(true);
 
-      // Second call should return immediately without calling transport creation again
+      // Second call with same device ID should return immediately without calling transport creation again
       await adapter.connect(deviceId);
 
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
     });
 
-    it('skips connection when connection is already in progress', async () => {
+    it('disconnects and reconnects when connecting with a different device ID', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+
+      // Connect to first device
+      await adapter.connect(deviceId);
+      expect(adapter.isConnected()).toBe(true);
+
+      // Connect to different device - should disconnect first, then reconnect
+      const differentDeviceId = 'different-device-id';
+      await adapter.connect(differentDeviceId);
+
+      // Transport creation should be called twice (once for each device)
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(2);
+      expect(adapter.isConnected()).toBe(true);
+    });
+
+    it('skips connection when connection is already in progress for the same device', async () => {
       mockNavigatorHid.getDevices.mockResolvedValue([
         createMockHidDevice(0x2c97),
       ]);
@@ -273,7 +292,7 @@ describe('LedgerAdapter', () => {
       // Start first connection (will be pending)
       const firstConnect = adapter.connect(deviceId);
 
-      // Start second connection while first is still in progress
+      // Start second connection while first is still in progress (same device)
       const secondConnect = adapter.connect(deviceId);
 
       // Resolve the transport
@@ -284,6 +303,41 @@ describe('LedgerAdapter', () => {
 
       // Transport creation should only be called once
       expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(1);
+    });
+
+    it('waits for pending connection then connects to different device when requested', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+
+      // Simulate slow connection
+      let resolveTransport: () => void = () => {
+        // no-op
+      };
+      const slowTransportPromise = new Promise<void>((resolve) => {
+        resolveTransport = resolve;
+      });
+      mockAttemptLedgerTransportCreation.mockReturnValueOnce(
+        slowTransportPromise,
+      );
+      mockAttemptLedgerTransportCreation.mockResolvedValueOnce(undefined);
+
+      // Start first connection (will be pending)
+      const firstConnect = adapter.connect(deviceId);
+
+      // Start second connection with different device ID while first is in progress
+      const differentDeviceId = 'different-device-id';
+      const secondConnect = adapter.connect(differentDeviceId);
+
+      // Resolve the first transport
+      resolveTransport();
+
+      await firstConnect;
+      await secondConnect;
+
+      // Transport creation should be called twice (once for each connection attempt)
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(2);
+      expect(adapter.isConnected()).toBe(true);
     });
   });
 
@@ -433,6 +487,29 @@ describe('LedgerAdapter', () => {
       await adapter.ensureDeviceReady(deviceId);
 
       expect(mockGetAppNameAndVersion).toHaveBeenCalled();
+    });
+
+    it('disconnects and reconnects when ensureDeviceReady is called with different device ID', async () => {
+      mockNavigatorHid.getDevices.mockResolvedValue([
+        createMockHidDevice(0x2c97),
+      ]);
+      mockAttemptLedgerTransportCreation.mockResolvedValue(undefined);
+      mockGetAppNameAndVersion.mockResolvedValue({
+        appName: 'Ethereum',
+        version: '1.0.0',
+      });
+
+      // Connect to first device
+      await adapter.connect(deviceId);
+      expect(adapter.isConnected()).toBe(true);
+
+      // Call ensureDeviceReady with different device ID
+      const differentDeviceId = 'different-device-id';
+      await adapter.ensureDeviceReady(differentDeviceId);
+
+      // Transport creation should be called twice (once for initial connect, once for reconnect)
+      expect(mockAttemptLedgerTransportCreation).toHaveBeenCalledTimes(2);
+      expect(adapter.isConnected()).toBe(true);
     });
 
     it('throws error when wrong app is open on device', async () => {
