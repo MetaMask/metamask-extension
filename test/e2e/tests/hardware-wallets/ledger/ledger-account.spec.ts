@@ -72,7 +72,7 @@ describe('Ledger Hardware', function () {
     );
   });
 
-  it.only('unlocks multiple accounts at once and removes one', async function () {
+  it('unlocks multiple accounts at once and removes one', async function () {
     await withFixtures(
       {
         fixtures: new FixtureBuilder().build(),
