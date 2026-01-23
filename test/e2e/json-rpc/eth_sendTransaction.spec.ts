@@ -1,7 +1,8 @@
 import { strict as assert } from 'assert';
-import { withFixtures, WINDOW_TITLES } from '../helpers';
+import { WINDOW_TITLES } from '../constants';
+import { withFixtures } from '../helpers';
 import FixtureBuilder from '../fixtures/fixture-builder';
-import Confirmation from '../page-objects/pages/confirmations/redesign/confirmation';
+import Confirmation from '../page-objects/pages/confirmations/confirmation';
 import TestDapp from '../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../page-objects/flows/login.flow';
 import LoginPage from '../page-objects/pages/login-page';

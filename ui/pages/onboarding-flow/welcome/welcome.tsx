@@ -258,7 +258,7 @@ export default function OnboardingWelcome() {
   );
 
   const handleSocialLoginError = useCallback(
-    (error, socialConnectionType) => {
+    (error) => {
       const errorMessage =
         error instanceof Error ? error.message : 'Unknown error';
 
@@ -268,13 +268,6 @@ export default function OnboardingWelcome() {
         return;
       }
 
-      bufferedTrace?.({
-        name: TraceName.OnboardingSocialLoginError,
-        op: TraceOperation.OnboardingError,
-        tags: { provider: socialConnectionType, errorMessage },
-        parentContext: onboardingParentContext?.current,
-      });
-      bufferedEndTrace?.({ name: TraceName.OnboardingSocialLoginError });
       bufferedEndTrace?.({
         name: TraceName.OnboardingSocialLoginAttempt,
         data: { success: false },
@@ -295,7 +288,7 @@ export default function OnboardingWelcome() {
 
       setLoginError(LOGIN_ERROR.GENERIC);
     },
-    [onboardingParentContext, bufferedTrace, bufferedEndTrace],
+    [bufferedEndTrace],
   );
 
   const onSocialLoginCreateClick = useCallback(
@@ -337,7 +330,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_ACCOUNT_EXIST, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -391,7 +384,7 @@ export default function OnboardingWelcome() {
           navigate(ONBOARDING_UNLOCK_ROUTE, { replace: true });
         }
       } catch (error) {
-        handleSocialLoginError(error, socialConnectionType);
+        handleSocialLoginError(error);
       } finally {
         setIsLoggingIn(false);
       }
@@ -438,15 +431,18 @@ export default function OnboardingWelcome() {
           return;
         }
 
+        if (!isFireFox) {
+          // automatically set participate in meta metrics to true for social login users in chrome
+          dispatch(setParticipateInMetaMetrics(true));
+        }
+
         if (loginOption === LOGIN_OPTION.NEW) {
           await onSocialLoginCreateClick(loginType);
         } else if (loginOption === LOGIN_OPTION.EXISTING) {
           await onSocialLoginImportClick(loginType);
         }
 
-        if (!isFireFox) {
-          // automatically set participate in meta metrics to true for social login users in chrome
-          dispatch(setParticipateInMetaMetrics(true));
+        if (!isFireFox && process.env.EXTENSION_UX_PNA25) {
           // Set pna25Acknowledged to true for social login users if feature flag is enabled
           if (process.env.EXTENSION_UX_PNA25) {
             dispatch(setPna25Acknowledged(true, true));

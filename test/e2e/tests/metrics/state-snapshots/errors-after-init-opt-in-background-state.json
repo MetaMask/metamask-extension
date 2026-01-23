@@ -61,6 +61,7 @@
     "showDownloadMobileAppSlide": "boolean",
     "showNetworkBanner": true,
     "showPermissionsTour": true,
+    "showStorageErrorToast": false,
     "showTestnetMessageInDropdown": true,
     "slides": "object",
     "surveyLinkLastClickedOrClosed": "object",
@@ -108,6 +109,7 @@
   "BridgeStatusController": { "txHistory": "object" },
   "ClaimsController": "object",
   "ClaimsService": "undefined",
+  "ConnectivityController": { "connectivityStatus": "online" },
   "CronjobController": { "events": "object" },
   "CurrencyController": {
     "currentCurrency": "usd",

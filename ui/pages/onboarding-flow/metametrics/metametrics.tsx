@@ -156,7 +156,7 @@ export default function OnboardingMetametrics() {
     } catch (error) {
       log.error('onConfirm::error', error);
     } finally {
-      navigate(nextRouteByBrowser);
+      navigate(nextRouteByBrowser, { replace: true });
     }
   };
 

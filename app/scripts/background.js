@@ -15,6 +15,7 @@ import { finished } from 'readable-stream';
 import log from 'loglevel';
 import browser from 'webextension-polyfill';
 import { isObject, hasProperty } from '@metamask/utils';
+import { deriveStateFromMetadata } from '@metamask/base-controller';
 import { ExtensionPortStream } from 'extension-port-stream';
 import { withResolvers } from '../../shared/lib/promise-with-resolvers';
 import { FirstTimeFlowType } from '../../shared/constants/onboarding';
@@ -50,7 +51,7 @@ import { isStateCorruptionError } from '../../shared/constants/errors';
 import getFirstPreferredLangCode from '../../shared/lib/get-first-preferred-lang-code';
 import { getManifestFlags } from '../../shared/lib/manifestFlags';
 import { DISPLAY_GENERAL_STARTUP_ERROR } from '../../shared/constants/start-up-errors';
-import { HYPERLIQUID_ORIGIN } from '../../shared/constants/referrals';
+import { getPartnerByOrigin } from '../../shared/constants/defi-referrals';
 import {
   CorruptionHandler,
   hasVault,
@@ -77,7 +78,7 @@ import MetamaskController, {
 import getObjStructure from './lib/getObjStructure';
 import setupEnsIpfsResolver from './lib/ens-ipfs/setup';
 import { getPlatform, shouldEmitDappViewedEvent } from './lib/util';
-import { createOffscreen } from './offscreen';
+import { createOffscreen, addOffscreenConnectivityListener } from './offscreen';
 import { setupMultiplex } from './lib/stream-utils';
 import rawFirstTimeState from './first-time-state';
 import { onUpdate } from './on-update';
@@ -96,7 +97,7 @@ import { createEvent } from './lib/deep-links/metrics';
 import { getRequestSafeReload } from './lib/safe-reload';
 import { tryPostMessage } from './lib/start-up-errors/start-up-errors';
 import { CronjobControllerStorageManager } from './lib/CronjobControllerStorageManager';
-import { HyperliquidPermissionTriggerType } from './lib/createHyperliquidReferralMiddleware';
+import { ReferralTriggerType } from './lib/createDefiReferralMiddleware';
 
 /**
  * @typedef {import('./lib/stores/persistence-manager').Backup} Backup
@@ -132,7 +133,7 @@ global.stateHooks.getStorageKind = () => persistenceManager.storageKind;
 
 /**
  * A helper function to log the current state of the vault. Useful for debugging
- * purposes, to, in the case of database corruption, an possible way for an end
+ * purposes, to, in the case of storage errors, a possible way for an end
  * user to recover their vault. Hopefully this is never needed.
  */
 global.logEncryptedVault = () => {
@@ -671,6 +672,24 @@ function saveTimestamp() {
 async function initialize(backup) {
   const offscreenPromise = isManifestV3 ? createOffscreen() : null;
 
+  // Set up connectivity listener IMMEDIATELY for MV3 (before any awaits)
+  // This ensures we capture the initial connectivity status from the offscreen document
+  // which is sent right after isBooted. We queue the status until the controller is ready.
+  let pendingConnectivityStatus = null;
+  let connectivityReady = false;
+
+  if (isManifestV3) {
+    addOffscreenConnectivityListener((isOnline) => {
+      if (connectivityReady && controller.controllerApi.setConnectivityStatus) {
+        const status = isOnline ? 'online' : 'offline';
+        controller.controllerApi.setConnectivityStatus(status);
+      } else {
+        // Queue until controller is ready
+        pendingConnectivityStatus = isOnline;
+      }
+    });
+  }
+
   const initData = await loadStateFromPersistence(backup);
 
   const initState = initData.data;
@@ -742,8 +761,31 @@ async function initialize(backup) {
     cronjobControllerStorageManager,
   );
 
+  controller.metaMetricsController.updateTraits({
+    [MetaMetricsUserTrait.StorageKind]: persistenceManager.storageKind,
+  });
+
   // `setupController` sets up the `controller` object, so we can use it now:
   maybeDetectPhishing(controller);
+
+  // Set up connectivity detection
+  if (isManifestV3) {
+    // MV3: Listener was set up earlier, now apply any pending status and mark ready
+    connectivityReady = true;
+    if (pendingConnectivityStatus !== null) {
+      const status = pendingConnectivityStatus ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    }
+  } else {
+    // MV2: Background page has access to window events
+    const updateConnectivity = (isOnline) => {
+      const status = isOnline ? 'online' : 'offline';
+      controller.controllerApi.setConnectivityStatus(status);
+    };
+    updateConnectivity(globalThis.navigator.onLine);
+    globalThis.addEventListener('online', () => updateConnectivity(true));
+    globalThis.addEventListener('offline', () => updateConnectivity(false));
+  }
 
   if (!isManifestV3) {
     await loadPhishingWarningPage();
@@ -986,14 +1028,8 @@ export async function loadStateFromPersistence(backup) {
   if (persistenceManager.storageKind === 'data') {
     const alreadyTried =
       versionedData.meta.platformSplitStateGradualRolloutAttempted === true;
-    // const shouldUseSplitStateStorage =
-    //   !alreadyTried && (await useSplitStateStorage(versionedData.data));
-    // disabling split state rollout for now
-    const disableSplitStateMigration = true;
-    const shouldUseSplitStateStorage = disableSplitStateMigration
-      ? false
-      : !alreadyTried && (await useSplitStateStorage(versionedData.data));
-    // disabling split state rollout for now
+    const shouldUseSplitStateStorage =
+      !alreadyTried && (await useSplitStateStorage(versionedData.data));
     log.debug(
       '[Split State]: shouldUseSplitStateStorage: %s (alreadyTried: %s)',
       shouldUseSplitStateStorage,
@@ -1230,6 +1266,11 @@ export function setupController(
     cronjobControllerStorageManager,
   });
 
+  // Wire up the callback to notify the UI when set operations fail
+  persistenceManager.setOnSetFailed(() => {
+    controller.appStateController.setShowStorageErrorToast(true);
+  });
+
   /**
    * @type {Array<string>} List of controller store keys that have changed since initialization.
    */
@@ -1296,8 +1337,25 @@ export function setupController(
               // already updated this one
               return;
             }
-            const state = controller.controllerMessenger.call(
+            // Get the state for this backed-up key using messenger.
+            // We filter to only persistent properties using deriveStateFromMetadata
+            // to match what ComposableObservableStore does in stateChange events.
+            // This ensures non-persistent properties (e.g., KeyringController's
+            // isUnlocked, keyrings, encryptionKey) are not written to storage.
+            const controllerConfig = controller.store.config[key];
+            if (!controllerConfig?.metadata) {
+              throw new Error(
+                `Cannot backup ${key}: controller metadata is required but not found. ` +
+                  `All controllers in backedUpStateKeys must extend BaseController and define metadata.`,
+              );
+            }
+            const fullState = controller.controllerMessenger.call(
               `${key}:getState`,
+            );
+            const state = deriveStateFromMetadata(
+              fullState,
+              controllerConfig.metadata,
+              'persist',
             );
             persistenceManager.update(key, state);
           });
@@ -1816,21 +1874,23 @@ function onNavigateToTab() {
         }
       }
 
-      // If the connected dApp is Hyperliquid, trigger the referral flow
-      if (currentTabOrigin === HYPERLIQUID_ORIGIN) {
+      // If the connected dApp is a referral partner, trigger the referral flow
+      const partner = getPartnerByOrigin(currentTabOrigin);
+      if (partner) {
         const connectSitePermissions =
           controller.permissionController.state.subjects[currentTabOrigin];
         // when the dapp is not connected, connectSitePermissions is undefined
         const isConnectedToDapp = connectSitePermissions !== undefined;
         if (isConnectedToDapp) {
           controller
-            .handleHyperliquidReferral(
+            .handleDefiReferral(
+              partner,
               tabId,
-              HyperliquidPermissionTriggerType.OnNavigateConnectedTab,
+              ReferralTriggerType.OnNavigateConnectedTab,
             )
             .catch((error) => {
               log.error(
-                'Failed to handle Hyperliquid referral after navigation to connected tab: ',
+                `Failed to handle ${partner.name} referral after navigation to connected tab: `,
                 error,
               );
             });
