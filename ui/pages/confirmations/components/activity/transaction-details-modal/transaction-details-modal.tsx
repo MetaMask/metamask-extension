@@ -1,5 +1,8 @@
-import React from 'react';
-import { TransactionMeta } from '@metamask/transaction-controller';
+import React, { useMemo } from 'react';
+import {
+  TransactionMeta,
+  TransactionType,
+} from '@metamask/transaction-controller';
 import {
   Modal,
   ModalOverlay,
@@ -29,6 +32,17 @@ export function TransactionDetailsModal({
 }: TransactionDetailsModalProps) {
   const t = useI18nContext();
 
+  const title = useMemo(() => {
+    switch (transactionMeta.type) {
+      case TransactionType.musdConversion:
+        return t('musdConversionTitle');
+      case TransactionType.perpsDeposit:
+        return t('perpsDepositTitle');
+      default:
+        return t('transaction');
+    }
+  }, [transactionMeta.type, t]);
+
   return (
     <Modal
       onClose={onClose}
@@ -47,7 +61,7 @@ export function TransactionDetailsModal({
       >
         <ModalHeader onClose={onClose} padding={0}>
           <Text variant={TextVariant.headingMd} textAlign={TextAlign.Center}>
-            {t('perpsDepositTitle')}
+            {title}
           </Text>
         </ModalHeader>
 

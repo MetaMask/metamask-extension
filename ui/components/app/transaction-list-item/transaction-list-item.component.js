@@ -68,9 +68,8 @@ import {
   CHAIN_ID_TO_NETWORK_IMAGE_URL_MAP,
   NETWORK_TO_NAME_MAP,
 } from '../../../../shared/constants/network';
+import { PAY_TRANSACTION_TYPES } from '../../../pages/confirmations/constants/pay';
 import { mapTransactionTypeToCategory } from './helpers';
-
-const PAY_TRANSACTION_TYPES = [TransactionType.perpsDeposit];
 
 function TransactionListItemInner({
   transactionGroup,

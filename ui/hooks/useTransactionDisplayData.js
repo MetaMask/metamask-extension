@@ -389,6 +389,9 @@ export function useTransactionDisplayData(transactionGroup) {
   } else if (type === TransactionType.perpsDeposit) {
     title = t('perpsDepositActivityTitle');
     prefix = '';
+  } else if (type === TransactionType.musdConversion) {
+    title = t('musdConversionActivityTitle');
+    prefix = '';
   } else {
     dispatch(
       captureSingleException(

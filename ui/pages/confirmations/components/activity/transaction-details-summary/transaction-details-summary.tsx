@@ -101,7 +101,10 @@ function TransactionSummaryLine({
     );
   }
 
-  if (type === TransactionType.perpsDeposit) {
+  if (
+    type === TransactionType.musdConversion ||
+    type === TransactionType.perpsDeposit
+  ) {
     return (
       <ReceiveSummaryLine transactionMeta={transactionMeta} isLast={isLast} />
     );
@@ -188,9 +191,13 @@ function ReceiveSummaryLine({
   );
 
   const tokenSymbol = token?.symbol;
-  const networkName = isPerpsDeposit
-    ? HYPERLIQUID_NETWORK_NAME
-    : networkConfig?.name;
+
+  let networkName: string | undefined;
+  if (isPerpsDeposit) {
+    networkName = HYPERLIQUID_NETWORK_NAME;
+  } else {
+    networkName = networkConfig?.name;
+  }
 
   const title =
     tokenSymbol && networkName

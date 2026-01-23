@@ -3927,6 +3927,12 @@
     "message": "$1 wants to use $2 Snaps",
     "description": "$1 is the dapp and $2 is the number of snaps it wants to connect to."
   },
+  "musdConversionActivityTitle": {
+    "message": "mUSD Conversion"
+  },
+  "musdConversionTitle": {
+    "message": "mUSD Conversion"
+  },
   "mustSelectOne": {
     "message": "Must select at least 1 token."
   },
@@ -5150,10 +5156,10 @@
     "message": "Trading perpetuals involves significant risk. You may lose more than your initial investment. This is not financial advice."
   },
   "perpsDepositActivityTitle": {
-    "message": "Perps deposit"
+    "message": "Funded Perps"
   },
   "perpsDepositTitle": {
-    "message": "Perps deposit"
+    "message": "Funded perps account"
   },
   "perpsEmptyDescription": {
     "message": "Trade perpetuals with leverage. Open your first position to get started."
