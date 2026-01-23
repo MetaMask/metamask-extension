@@ -2,7 +2,7 @@
  * Benchmark runner utilities
  */
 
-import { retry } from '../../../../.github/scripts/shared/utils';
+import { retry } from '../../../../development/lib/retry';
 import {
   calculateTimerStatistics,
   checkExclusionRate,
@@ -34,18 +34,15 @@ async function runWithRetries(
   };
 
   try {
-    return await retry(
-      async () => {
-        const result = await benchmarkFn();
-        lastResult = result;
+    return await retry({ retries, delay: 1000 }, async () => {
+      const result = await benchmarkFn();
+      lastResult = result;
 
-        if (!result.success) {
-          throw new Error(result.error ?? 'Benchmark failed');
-        }
-        return result;
-      },
-      { retries, delay: 1000 },
-    );
+      if (!result.success) {
+        throw new Error(result.error ?? 'Benchmark failed');
+      }
+      return result;
+    });
   } catch {
     return lastResult;
   }
