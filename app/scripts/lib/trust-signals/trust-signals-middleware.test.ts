@@ -677,10 +677,8 @@ describe('createTrustSignalsMiddleware', () => {
       expect(next).toHaveBeenCalled();
     });
 
-    it('handles all eth_signTypedData variants', async () => {
+    it('handles eth_signTypedData_v3 and v4 variants', async () => {
       const variants = [
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
-        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V3,
         MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V4,
       ];
@@ -711,6 +709,30 @@ describe('createTrustSignalsMiddleware', () => {
           appStateController.addAddressSecurityAlertResponse,
           getChainId(networkController),
         );
+        expect(phishingController.scanUrl).toHaveBeenCalled();
+        expect(next).toHaveBeenCalled();
+      }
+    });
+
+    it('does not scan addresses for eth_signTypedData v1 variants (different param format)', async () => {
+      const variants = [
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA,
+        MESSAGE_TYPE.ETH_SIGN_TYPED_DATA_V1,
+      ];
+
+      for (const method of variants) {
+        const { middleware, phishingController } = createMiddleware();
+
+        const req = createMockRequest(
+          method,
+          createTypedDataParams(TEST_ADDRESSES.TO),
+        );
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        await middleware(req, res, next);
+
+        expect(scanAddressMockAndAddToCache).not.toHaveBeenCalled();
         expect(phishingController.scanUrl).toHaveBeenCalled();
         expect(next).toHaveBeenCalled();
       }
