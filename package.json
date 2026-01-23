@@ -115,7 +115,6 @@
     "lavamoat:debug:build": "yarn lavamoat:build --writeAutoPolicyDebug --policydebug lavamoat/build-system/policy-debug.json",
     "lavamoat:debug:webapp": "WRITE_AUTO_POLICY_DEBUG=1 yarn lavamoat:webapp:auto",
     "lavamoat:webapp:auto": "ENABLE_MV3=true node ./development/generate-lavamoat-policies.js --devMode=true",
-    "lavamoat:webapp:auto:ci": "ENABLE_MV3=true node ./development/generate-lavamoat-policies.js --parallel=false",
     "lavamoat:auto": "yarn lavamoat:build:auto && yarn lavamoat:webapp:auto && yarn webpack:tsc && yarn webpack:lavamoat:policy:build && yarn webpack:lavamoat:policy:mv2 && yarn webpack:lavamoat:policy:mv3",
     "ts-migration:dashboard:build": "tsx development/ts-migration-dashboard/scripts/build-app.ts",
     "ts-migration:dashboard:deploy": "gh-pages --dist development/ts-migration-dashboard/build/final --remote ts-migration-dashboard",
