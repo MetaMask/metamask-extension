@@ -7,7 +7,6 @@ import { ASSET_CELL_HEIGHT } from '../constants';
 import {
   getEnabledNetworksByNamespace,
   getIsMultichainAccountsState2Enabled,
-  getNewTokensImported,
   getPreferences,
   getSelectedAccount,
   getShouldHideZeroBalanceTokens,
@@ -51,7 +50,6 @@ type TokenListProps = {
 // eslint-disable-next-line @typescript-eslint/naming-convention
 function TokenList({ onTokenClick, safeChains }: TokenListProps) {
   const isEvm = useSelector(getIsEvmMultichainNetworkSelected);
-  const newTokensImported = useSelector(getNewTokensImported);
   const currentNetwork = useSelector(getSelectedMultichainNetworkConfiguration);
   const { privacyMode } = useSelector(getPreferences);
   const tokenSortConfig = useSelector(getTokenSortConfig);

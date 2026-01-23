@@ -24,14 +24,15 @@ export const VirtualizedList = <TItem,>({
   renderItem,
 }: Props<TItem>) => {
   const scrollContainerRef = useScrollContainer();
-  const scrollElement = scrollContainerRef?.current ?? null;
-  const disabled = !scrollElement || process.env.IN_TEST;
+  const disabled = process.env.IN_TEST;
 
   const virtualizer = useVirtualizer({
     count: data.length,
-    getScrollElement: () => scrollElement,
+    getScrollElement: () =>
+      disabled ? null : (scrollContainerRef?.current ?? null),
     estimateSize: () => estimatedItemSize,
     overscan,
+    initialOffset: scrollContainerRef?.current?.scrollTop,
   });
 
   if (data.length === 0) {
