@@ -205,15 +205,19 @@ describe('rpcErrorUtils', () => {
     });
 
     it('uses userMessage as fallback for message when message is empty', () => {
-      const jsonRpcError = new JsonRpcError(1234, 'Error', {
+      const jsonRpcError = new JsonRpcError(1234, 'placeholder', {
         code: ErrorCode.DeviceDisconnected,
         severity: Severity.Err,
         category: Category.Connection,
+        userMessage: 'Device disconnected',
       });
+      // Simulate an empty message by setting it after construction
+      jsonRpcError.message = '';
 
       const result = toHardwareWalletError(jsonRpcError, mockWalletType);
 
-      expect(result.message).toBe('Error');
+      expect(result.message).toBe('Device disconnected');
+      expect(result.userMessage).toBe('Device disconnected');
     });
 
     it('provides fallback values for missing severity and category', () => {
