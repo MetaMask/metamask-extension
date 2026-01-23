@@ -16,7 +16,7 @@ import { ConnectionState } from './connectionState';
 describe('useDeviceEventHandlers', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
-    isConnectingRef: { current: boolean };
+    connectingPromiseRef: { current: Promise<void> | null };
     adapterRef: { current: HardwareWalletAdapter | null };
     currentConnectionIdRef: { current: number | null };
     hasAutoConnectedRef: { current: boolean };
@@ -38,7 +38,7 @@ describe('useDeviceEventHandlers', () => {
 
     mockRefs = {
       abortControllerRef: { current: new AbortController() },
-      isConnectingRef: { current: false },
+      connectingPromiseRef: { current: null },
       adapterRef: { current: null },
       currentConnectionIdRef: { current: null },
       hasAutoConnectedRef: { current: false },

@@ -19,7 +19,7 @@ describe('useHardwareWalletConnection', () => {
   let mockRefs: {
     abortControllerRef: { current: AbortController | null };
     adapterRef: { current: HardwareWalletAdapter | null };
-    isConnectingRef: { current: boolean };
+    connectingPromiseRef: { current: Promise<void> | null };
     hasAutoConnectedRef: { current: boolean };
     lastConnectedAccountRef: { current: string | null };
     currentConnectionIdRef: { current: number | null };
@@ -46,7 +46,7 @@ describe('useHardwareWalletConnection', () => {
     mockRefs = {
       abortControllerRef: { current: null },
       adapterRef: { current: null },
-      isConnectingRef: { current: false },
+      connectingPromiseRef: { current: null },
       hasAutoConnectedRef: { current: false },
       lastConnectedAccountRef: { current: null },
       currentConnectionIdRef: { current: null },
@@ -325,7 +325,6 @@ describe('useHardwareWalletConnection', () => {
         onDeviceEvent: mockHandleDeviceEvent,
       });
       mockRefs.adapterRef.current = existingAdapter;
-      mockRefs.isConnectingRef.current = true;
 
       (
         webConnectionUtils.getHardwareWalletDeviceId as jest.Mock

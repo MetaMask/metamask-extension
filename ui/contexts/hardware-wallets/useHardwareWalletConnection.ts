@@ -42,8 +42,8 @@ export const useHardwareWalletConnection = ({
   const { setDeviceId } = setters;
 
   const resetAdapterForFreshConnection = useCallback(() => {
-    if (refs.isConnectingRef.current || refs.adapterRef.current) {
-      refs.adapterRef.current?.destroy();
+    if (refs.adapterRef.current) {
+      refs.adapterRef.current.destroy();
       refs.adapterRef.current = null;
     }
   }, [refs]);
@@ -61,7 +61,6 @@ export const useHardwareWalletConnection = ({
     // Create a new AbortController for this attempt
     const abortController = new AbortController();
     refs.abortControllerRef.current = abortController;
-    refs.isConnectingRef.current = true;
 
     return abortController.signal;
   }, [refs]);
@@ -90,7 +89,6 @@ export const useHardwareWalletConnection = ({
             );
             updateConnectionState(getConnectionStateFromError(error));
           }
-          refs.isConnectingRef.current = false;
           return null;
         }
 
@@ -108,7 +106,6 @@ export const useHardwareWalletConnection = ({
             ),
           );
         }
-        refs.isConnectingRef.current = false;
         return null;
       }
     },
@@ -229,57 +226,68 @@ export const useHardwareWalletConnection = ({
     [updateConnectionState, refs],
   );
 
-  const finalizeConnectionAttempt = useCallback(
-    (abortSignal: AbortSignal) => {
-      if (!abortSignal.aborted) {
-        refs.isConnectingRef.current = false;
+  const connect = useCallback((): Promise<void> => {
+    // If there's already a connection in progress, return the pending promise
+    // so all callers wait for the same connection to complete
+    if (refs.connectingPromiseRef.current) {
+      return refs.connectingPromiseRef.current;
+    }
+
+    const connectionPromise = (async (): Promise<void> => {
+      const effectiveType = refs.walletTypeRef.current;
+      if (!effectiveType) {
+        updateConnectionState(
+          ConnectionState.error(new Error('Hardware wallet type is unknown')),
+        );
+        return;
       }
-    },
-    [refs],
-  );
 
-  const connect = useCallback(async (): Promise<void> => {
-    const effectiveType = refs.walletTypeRef.current;
-    if (!effectiveType) {
-      updateConnectionState(
-        ConnectionState.error(new Error('Hardware wallet type is unknown')),
-      );
-      refs.isConnectingRef.current = false;
-      return;
-    }
+      resetAdapterForFreshConnection();
+      const abortSignal = beginConnectionAttempt();
 
-    resetAdapterForFreshConnection();
-    const abortSignal = beginConnectionAttempt();
-
-    const discoveredDeviceId = await resolveOrDiscoverDeviceId({
-      walletType: effectiveType,
-      abortSignal,
-    });
-    if (!discoveredDeviceId || abortSignal.aborted) {
-      return;
-    }
-
-    setConnectingStateForDevice({ abortSignal, deviceId: discoveredDeviceId });
-
-    try {
-      await connectWithAdapter({
+      const discoveredDeviceId = await resolveOrDiscoverDeviceId({
         walletType: effectiveType,
+        abortSignal,
+      });
+      if (!discoveredDeviceId || abortSignal.aborted) {
+        return;
+      }
+
+      setConnectingStateForDevice({
+        abortSignal,
         deviceId: discoveredDeviceId,
-        abortSignal,
       });
-    } catch (error) {
-      handleConnectError({
-        error,
-        abortSignal,
-        walletType: effectiveType,
-      });
-    } finally {
-      finalizeConnectionAttempt(abortSignal);
-    }
+
+      try {
+        await connectWithAdapter({
+          walletType: effectiveType,
+          deviceId: discoveredDeviceId,
+          abortSignal,
+        });
+      } catch (error) {
+        handleConnectError({
+          error,
+          abortSignal,
+          walletType: effectiveType,
+        });
+      }
+    })();
+
+    // Store the promise so concurrent callers can await it
+    refs.connectingPromiseRef.current = connectionPromise;
+
+    // Clear when the connection completes (success or failure)
+    // Only clear if still holding this promise (not a newer one from a disconnect + reconnect)
+    connectionPromise.finally(() => {
+      if (refs.connectingPromiseRef.current === connectionPromise) {
+        refs.connectingPromiseRef.current = null;
+      }
+    });
+
+    return connectionPromise;
   }, [
     beginConnectionAttempt,
     connectWithAdapter,
-    finalizeConnectionAttempt,
     handleConnectError,
     resetAdapterForFreshConnection,
     resolveOrDiscoverDeviceId,
@@ -293,10 +301,18 @@ export const useHardwareWalletConnection = ({
   }, [connect, refs]);
 
   const disconnect = useCallback(async (): Promise<void> => {
-    const abortSignal = refs.abortControllerRef.current?.signal;
-    // Capture the adapter reference at the start to prevent race conditions
-    // where connect() creates a new adapter while disconnect() is awaiting
+    // Abort any in-progress connection attempt first.
+    // This ensures that if connect() is awaiting and fails due to adapter destruction,
+    // the error handlers will see abortSignal.aborted=true and skip state updates.
+    refs.abortControllerRef.current?.abort();
+
+    // Capture references at the start to prevent race conditions
+    // where connect() creates new ones while disconnect() is awaiting
     const adapterToDisconnect = refs.adapterRef.current;
+    const promiseToCancel = refs.connectingPromiseRef.current;
+    // Capture the abort controller to detect if a new connect() started during our await.
+    // A new connect() will create a new abort controller.
+    const controllerAtStart = refs.abortControllerRef.current;
 
     try {
       await adapterToDisconnect?.disconnect();
@@ -304,13 +320,17 @@ export const useHardwareWalletConnection = ({
       // Only destroy the adapter we captured at the start, not any new adapter
       // that may have been created by a concurrent connect() call
       adapterToDisconnect?.destroy();
-      // Only null out the adapter reference if it's still the same adapter
-      // we captured (i.e., no concurrent connect() replaced it)
+      // Only null out references if they still hold the same values
+      // (i.e., no concurrent connect() replaced them)
       if (refs.adapterRef.current === adapterToDisconnect) {
         refs.adapterRef.current = null;
       }
-      refs.isConnectingRef.current = false;
-      if (!abortSignal?.aborted) {
+      if (refs.connectingPromiseRef.current === promiseToCancel) {
+        refs.connectingPromiseRef.current = null;
+      }
+      // Only update state if no new connection started during our await.
+      // A new connection would have created a new abort controller.
+      if (refs.abortControllerRef.current === controllerAtStart) {
         updateConnectionState(ConnectionState.disconnected());
         setDeviceId(null);
       }

@@ -34,7 +34,11 @@ export type HardwareWalletState = {
 export type HardwareWalletRefs = {
   adapterRef: React.MutableRefObject<HardwareWalletAdapter | null>;
   abortControllerRef: React.MutableRefObject<AbortController | null>;
-  isConnectingRef: React.MutableRefObject<boolean>;
+  /**
+   * Stores the pending connection promise. When not null, a connection is in progress
+   * and concurrent callers should await this promise instead of starting a new connection.
+   */
+  connectingPromiseRef: React.MutableRefObject<Promise<void> | null>;
   hasAutoConnectedRef: React.MutableRefObject<boolean>;
   lastConnectedAccountRef: React.MutableRefObject<string | null>;
   currentConnectionIdRef: React.MutableRefObject<number | null>;
@@ -76,7 +80,7 @@ export const useHardwareWalletStateManager = () => {
   // Ref declarations
   const adapterRef = useRef<HardwareWalletAdapter | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
-  const isConnectingRef = useRef(false);
+  const connectingPromiseRef = useRef<Promise<void> | null>(null);
   const hasAutoConnectedRef = useRef(false);
   const lastConnectedAccountRef = useRef<string | null>(null);
   const currentConnectionIdRef = useRef<number | null>(null);
@@ -110,7 +114,7 @@ export const useHardwareWalletStateManager = () => {
     () => ({
       adapterRef,
       abortControllerRef,
-      isConnectingRef,
+      connectingPromiseRef,
       hasAutoConnectedRef,
       lastConnectedAccountRef,
       currentConnectionIdRef,
@@ -151,7 +155,7 @@ export const useHardwareWalletStateManager = () => {
        * Resets connection-related refs to their initial state
        */
       resetConnectionRefs: () => {
-        isConnectingRef.current = false;
+        connectingPromiseRef.current = null;
         currentConnectionIdRef.current = null;
       },
     }),
