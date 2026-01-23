@@ -3,8 +3,8 @@ import {
   KNOWN_PUBLIC_KEY_ADDRESSES,
   KNOWN_QR_ACCOUNTS,
 } from '../../../stub/keyring-bridge';
-import AccountListPage from '../../page-objects/pages/account-list-page';
-import AddressListModal from '../../page-objects/pages/multichain/address-list-modal';
+import AccountListPage from '../pages/account-list-page';
+import AddressListModal from '../pages/multichain/address-list-modal';
 import { shortenAddress } from '../../../../ui/helpers/utils/util';
 
 export async function checkAccountAddressDisplayedInAccountList(
@@ -23,6 +23,7 @@ export async function checkAccountAddressDisplayedInAccountList(
     await accountListPage.openMultichainAccountMenu({
       accountLabel: accountName,
     });
+    await accountListPage.checkMultiChainAccountMenuIsDisplayed();
     await accountListPage.clickMultichainAccountMenuItem('Addresses');
     await addressListModal.checkNetworkAddressIsDisplayed(
       shortenAddress(addresses[index].address),
