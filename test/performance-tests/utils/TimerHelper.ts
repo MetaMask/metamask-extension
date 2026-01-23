@@ -39,7 +39,7 @@ class TimerHelper {
     }
     // If timer is running but not stopped, calculate current elapsed time
     if (timer.start !== null) {
-      const currentDuration = Date.now() - timer.start;
+      const currentDuration = performance.now() - timer.start;
       return currentDuration;
     }
     // Timer never started
