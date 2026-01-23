@@ -21,7 +21,6 @@ import {
 import {
   AssetsContractController,
   BalanceMap,
-  Collection,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
@@ -3495,18 +3494,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
     nft,
     false,
     networkClientId,
-  ]);
-}
-
-export async function getNFTContractInfo(
-  contractAddresses: string[],
-  chainId: string,
-): Promise<{
-  collections: Collection[];
-}> {
-  return await submitRequestToBackground('getNFTContractInfo', [
-    contractAddresses,
-    chainId,
   ]);
 }
 
