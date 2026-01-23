@@ -1024,6 +1024,9 @@ function setupBundlerDefaults(
             './**/node_modules/@metamask/snaps-rpc-methods',
             './**/node_modules/@metamask/snaps-sdk',
             './**/node_modules/@metamask/snaps-utils',
+            // Charting library (ESM-only)
+            './**/node_modules/lightweight-charts',
+            './**/node_modules/fancy-canvas',
           ],
           global: true,
         },

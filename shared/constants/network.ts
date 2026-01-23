@@ -1685,12 +1685,13 @@ export const FEATURED_RPCS: AddNetworkFields[] = [
     nativeCurrency: CURRENCY_SYMBOLS.ETH,
     rpcEndpoints: [
       {
-        url: `https://mainnet.megaeth.com/rpc`,
+        url: `https://megaeth-mainnet.infura.io/v3/${infuraProjectId}`,
+        failoverUrls: [],
         type: RpcEndpointType.Custom,
       },
     ],
     defaultRpcEndpointIndex: 0,
-    blockExplorerUrls: ['https://explorer.megaeth.com/'],
+    blockExplorerUrls: ['https://megaeth.blockscout.com/'],
     defaultBlockExplorerUrlIndex: 0,
   },
 ];

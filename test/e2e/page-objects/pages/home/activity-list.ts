@@ -146,6 +146,11 @@ class ActivityListPage {
     );
   }
 
+  async clickConfirmedTransaction(): Promise<void> {
+    console.log('Clicking on confirmed transaction');
+    await this.driver.clickElement(this.confirmedTransactions);
+  }
+
   /**
    * Checks that fee values are displayed in the tx details.
    */
