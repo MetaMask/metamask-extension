@@ -37,7 +37,7 @@
     },
     "AppMetadataController": {
       "currentAppVersion": "13.16.0",
-      "currentMigrationVersion": 188,
+      "currentMigrationVersion": 189,
       "previousAppVersion": "",
       "previousMigrationVersion": 0
     },
@@ -2135,7 +2135,7 @@
     "KeyringController": {}
   },
   "meta": {
-    "version": 188,
+    "version": 189,
     "storageKind": "split"
   }
 }
