@@ -160,8 +160,6 @@ function TokenList({ onTokenClick, safeChains }: TokenListProps) {
     tokenSortConfig,
     isMultichainAccountsState2Enabled,
     accountGroupIdAssets,
-    // newTokensImported included in deps, but not in hook's logic
-    newTokensImported,
     allEnabledNetworksForAllNamespaces,
     shouldHideZeroBalanceTokens,
     useExternalServices,
