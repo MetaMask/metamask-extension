@@ -580,9 +580,13 @@ describe('LedgerAdapter', () => {
       // Destroy the adapter
       adapter.destroy();
 
-      // Simulate device unplug after destroy
-      // This shouldn't emit because unsubscribe was called (in real implementation)
-      // but we can verify unsubscribe was called
+      // Simulate device unplug after destroy by calling the captured disconnect callback
+      capturedOnDisconnect?.(createMockHidDevice(0x2c97) as HIDDevice);
+
+      // Verify no disconnect event was emitted after destroy
+      expect(mockOptions.onDeviceEvent).not.toHaveBeenCalled();
+
+      // Also verify unsubscribe was called
       expect(mockUnsubscribe).toHaveBeenCalled();
     });
 
