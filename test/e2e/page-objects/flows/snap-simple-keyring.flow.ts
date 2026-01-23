@@ -71,9 +71,6 @@ export async function createSnapAccount(
   await snapAccountDialog.checkConfirmationDialogIsLoaded();
   await snapAccountDialog.clickConfirmButton();
 
-  // Fill account name and submit
-  await snapAccountDialog.fillAccountNameAndSubmit(accountName);
-
   // Confirm account created and close dialog
   await snapAccountDialog.confirmAccountCreatedAndClose();
 
@@ -104,8 +101,7 @@ export async function importSnapAccount(
   await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   await snapAccountDialog.clickConfirmButton();
 
-  // Fill account name and confirm
-  await snapAccountDialog.fillAccountNameAndSubmit(accountName);
+  // Confirm account created and close dialog
   await snapAccountDialog.confirmAccountCreatedAndClose();
 
   // Switch back to dapp
@@ -169,12 +165,3 @@ export async function cancelSnapAccountCreation(driver: Driver): Promise<void> {
   await snapAccountDialog.clickCancelButton();
 }
 
-/**
- * Cancels snap account creation on the account name screen.
- *
- * @param driver - The WebDriver instance.
- */
-export async function cancelSnapAccountNaming(driver: Driver): Promise<void> {
-  const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
-  await snapAccountDialog.cancelAccountNameDialog();
-}

@@ -16,16 +16,13 @@ class SnapAccountConfirmationDialog {
 
   private readonly confirmButton = '[data-testid="confirmation-submit-button"]';
 
+  private readonly okButton = {
+    text: 'Ok',
+    tag: 'button',
+  };
+
   private readonly createAccountTitle =
     '[data-testid="create-snap-account-content-title"]';
-
-  private readonly accountNameInput = '#account-name';
-
-  private readonly submitAccountNameButton =
-    '[data-testid="submit-add-account-with-name"]';
-
-  private readonly cancelAccountNameButton =
-    '[data-testid="cancel-add-account-with-name"]';
 
   constructor(driver: Driver) {
     this.driver = driver;
@@ -55,39 +52,19 @@ class SnapAccountConfirmationDialog {
     await this.driver.clickElementAndWaitForWindowToClose(this.cancelButton);
   }
 
-  /**
-   * Fills in the account name and submits the form.
-   *
-   * @param accountName - The name for the new snap account. Defaults to "SSK Account".
-   */
-  async fillAccountNameAndSubmit(
-    accountName: string = 'SSK Account',
-  ): Promise<void> {
-    console.log(`Filling account name: ${accountName}`);
-    await this.driver.waitForSelector(this.accountNameInput);
-    await this.driver.fill(this.accountNameInput, accountName);
-    await this.driver.clickElement(this.submitAccountNameButton);
-  }
-
-  async cancelAccountNameDialog(): Promise<void> {
-    console.log('Canceling account name dialog');
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.cancelAccountNameButton,
-    );
-  }
-
   async checkAccountCreatedMessageDisplayed(): Promise<void> {
     console.log('Checking account created message is displayed');
     await this.driver.waitForSelector(this.accountCreatedMessage);
   }
 
   /**
-   * Clicks the confirm button on the account created screen and waits for the dialog to close.
+   * Clicks the Ok button on the account created screen and waits for the dialog to close.
    */
   async confirmAccountCreatedAndClose(): Promise<void> {
     console.log('Confirming account created');
     await this.driver.waitForSelector(this.accountCreatedMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(this.confirmButton);
+    // Use text-based selector for the Ok button on the success screen
+    await this.driver.clickElementAndWaitForWindowToClose(this.okButton);
   }
 }
 
