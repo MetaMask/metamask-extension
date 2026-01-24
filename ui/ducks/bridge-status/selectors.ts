@@ -139,3 +139,30 @@ export const selectIncomingBridgeHistory = createSelector(
       });
   },
 );
+
+/**
+ * Returns a Set of dest tx hashes from known swaps/bridges.
+ * Used to filter duplicate receive transactions in the activity list.
+ *
+ * @param state - the state object
+ * @returns Set of dest chain tx hashes
+ */
+export const selectSwapReceiveTxHashes = createSelector(
+  selectBridgeHistoryForAccountGroup,
+  (bridgeHistory): Set<string> => {
+    const receiveTxHashes = new Set<string>();
+
+    Object.values(bridgeHistory).forEach((historyItem) => {
+      const destTxHash = historyItem.status?.destChain?.txHash;
+      if (destTxHash) {
+        receiveTxHashes.add(destTxHash);
+        // Add without 0x prefix for Tron
+        if (destTxHash.startsWith('0x')) {
+          receiveTxHashes.add(destTxHash.slice(2));
+        }
+      }
+    });
+
+    return receiveTxHashes;
+  },
+);
