@@ -34,13 +34,13 @@ describe('Test Snap RPC', function () {
         const snapInstall = new SnapInstall(driver);
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectBip32Button',
+          'connectBip32Button',
           {
             withWarning: true,
             withExtraScreen: true,
           },
         );
-        await testSnaps.clickConnectJsonRpcButton();
+        await testSnaps.connectJsonRpcButton();
         await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
         await snapInstall.clickConnectButton();
         await snapInstall.clickConfirmButton();

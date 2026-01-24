@@ -43,7 +43,7 @@ describe('Test Snap bip-32', function () {
         // Navigate to `test-snaps` page, click bip32, connect and approve
         await openTestSnapClickButtonAndInstall(
           driver,
-          'clickConnectBip32Button',
+          'connectBip32Button',
           {
             withWarning: true,
           },

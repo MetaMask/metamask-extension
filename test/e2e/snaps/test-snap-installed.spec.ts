@@ -105,7 +105,7 @@ describe('Test Snap installed', function () {
         });
 
         // Click to connect to errors snap and validate the install snaps result
-        await testSnaps.clickConnectErrorsButton();
+        await testSnaps.connectErrorsButton();
         await completeSnapInstallSwitchToTestSnap(driver);
         await testSnaps.checkInstalledSnapsResult(
           'npm:@metamask/dialog-example-snap, npm:@metamask/error-example-snap',
