@@ -6060,38 +6060,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/bridge-controller@npm:^64.4.1":
-  version: 64.7.0
-  resolution: "@metamask/bridge-controller@npm:64.7.0"
-  dependencies:
-    "@ethersproject/address": "npm:^5.7.0"
-    "@ethersproject/bignumber": "npm:^5.7.0"
-    "@ethersproject/constants": "npm:^5.7.0"
-    "@ethersproject/contracts": "npm:^5.7.0"
-    "@ethersproject/providers": "npm:^5.7.0"
-    "@metamask/accounts-controller": "npm:^35.0.2"
-    "@metamask/assets-controllers": "npm:^95.3.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/controller-utils": "npm:^11.18.0"
-    "@metamask/gas-fee-controller": "npm:^26.0.2"
-    "@metamask/keyring-api": "npm:^21.0.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/metamask-eth-abis": "npm:^3.1.1"
-    "@metamask/multichain-network-controller": "npm:^3.0.2"
-    "@metamask/network-controller": "npm:^29.0.0"
-    "@metamask/polling-controller": "npm:^16.0.2"
-    "@metamask/remote-feature-flag-controller": "npm:^4.0.0"
-    "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/transaction-controller": "npm:^62.9.2"
-    "@metamask/utils": "npm:^11.9.0"
-    bignumber.js: "npm:^9.1.2"
-    reselect: "npm:^5.1.1"
-    uuid: "npm:^8.3.2"
-  checksum: 10/ede8913026dcb21f0ac9147e3894cdf5ba3afc735e79535893d86d05b4283a422ddbc0685cb04129d09616fd61aef916e440f221355bb702f4f881f223854cfb
-  languageName: node
-  linkType: hard
-
-"@metamask/bridge-controller@npm:^64.8.1":
+"@metamask/bridge-controller@npm:^64.4.1, @metamask/bridge-controller@npm:^64.8.1":
   version: 64.8.1
   resolution: "@metamask/bridge-controller@npm:64.8.1"
   dependencies:
@@ -7449,37 +7418,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/multichain-account-service@npm:^5.0.0":
-  version: 5.0.0
-  resolution: "@metamask/multichain-account-service@npm:5.0.0"
-  dependencies:
-    "@ethereumjs/util": "npm:^9.1.0"
-    "@metamask/accounts-controller": "npm:^35.0.0"
-    "@metamask/base-controller": "npm:^9.0.0"
-    "@metamask/eth-snap-keyring": "npm:^18.0.0"
-    "@metamask/key-tree": "npm:^10.1.1"
-    "@metamask/keyring-api": "npm:^21.0.0"
-    "@metamask/keyring-controller": "npm:^25.0.0"
-    "@metamask/keyring-internal-api": "npm:^9.0.0"
-    "@metamask/keyring-snap-client": "npm:^8.0.0"
-    "@metamask/keyring-utils": "npm:^3.1.0"
-    "@metamask/messenger": "npm:^0.3.0"
-    "@metamask/snaps-controllers": "npm:^17.2.0"
-    "@metamask/snaps-sdk": "npm:^10.3.0"
-    "@metamask/snaps-utils": "npm:^11.7.0"
-    "@metamask/superstruct": "npm:^3.1.0"
-    "@metamask/utils": "npm:^11.9.0"
-    async-mutex: "npm:^0.5.0"
-    lodash: "npm:^4.17.21"
-  peerDependencies:
-    "@metamask/account-api": ^0.12.0
-    "@metamask/providers": ^22.0.0
-    webextension-polyfill: ^0.10.0 || ^0.11.0 || ^0.12.0
-  checksum: 10/2a65158752f5b92cfbaa00a7488382e489af8178a585a4a327fa025f885e2c08fbdbf48f141d8efbea3405e4104d5d976081c9fe7bfec2a7ae9b6a7a67d074ec
-  languageName: node
-  linkType: hard
-
-"@metamask/multichain-account-service@npm:^5.1.0":
+"@metamask/multichain-account-service@npm:^5.0.0, @metamask/multichain-account-service@npm:^5.1.0":
   version: 5.1.0
   resolution: "@metamask/multichain-account-service@npm:5.1.0"
   dependencies:
