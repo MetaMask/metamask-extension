@@ -30,6 +30,7 @@ import {
   TokenRatesController,
   TokensController,
 } from '@metamask/assets-controllers';
+import { AssetsController } from '@metamask/assets-controller';
 import { MultichainNetworkController } from '@metamask/multichain-network-controller';
 import { MultichainTransactionsController } from '@metamask/multichain-transactions-controller';
 import {
@@ -113,6 +114,7 @@ import { RewardsController } from '../controllers/rewards/rewards-controller';
  * Union of all controllers supporting or required by modular initialization.
  */
 export type Controller =
+  | AssetsController
   | AccountOrderController
   | AccountTrackerController
   | AccountsController
@@ -218,6 +220,7 @@ export type ControllerFlatState = AccountOrderController['state'] &
   AlertController['state'] &
   AccountTreeController['state'] &
   AddressBookController['state'] &
+  AssetsController['state'] &
   AnnouncementController['state'] &
   AppMetadataController['state'] &
   ApprovalController['state'] &

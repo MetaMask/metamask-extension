@@ -1027,6 +1027,9 @@ function setupBundlerDefaults(
             // Charting library (ESM-only)
             './**/node_modules/lightweight-charts',
             './**/node_modules/fancy-canvas',
+            // viem (ESM-only, used by @metamask/assets-controller)
+            './**/node_modules/viem',
+            './**/node_modules/isows',
           ],
           global: true,
         },

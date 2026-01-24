@@ -331,6 +331,7 @@ import {
   NftDetectionControllerInit,
   TokenRatesControllerInit,
 } from './controller-init/assets';
+import { AssetsControllerInit } from './controller-init/assets/assets-controller-init';
 import { TransactionControllerInit } from './controller-init/confirmations/transaction-controller-init';
 import { TransactionPayControllerInit } from './controller-init/transaction-pay-controller-init';
 import { PPOMControllerInit } from './controller-init/confirmations/ppom-controller-init';
@@ -628,6 +629,7 @@ export default class MetamaskController extends EventEmitter {
       TokensController: TokensControllerInit,
       TokenBalancesController: TokenBalancesControllerInit,
       TokenRatesController: TokenRatesControllerInit,
+      AssetsController: AssetsControllerInit,
       // Must be init before `AccountTreeController` to migrate existing pinned and hidden state to the new account tree controller.
       AccountOrderController: AccountOrderControllerInit,
       // FIXME: Must be init before `MultichainAccountService` to make sure account-tree is updated before
@@ -752,6 +754,7 @@ export default class MetamaskController extends EventEmitter {
     this.tokenDetectionController = controllersByName.TokenDetectionController;
     this.tokensController = controllersByName.TokensController;
     this.tokenRatesController = controllersByName.TokenRatesController;
+    this.assetsController = controllersByName.AssetsController;
     this.currencyRateController = controllersByName.CurrencyRateController;
     this.multichainNetworkController =
       controllersByName.MultichainNetworkController;
@@ -1216,6 +1219,7 @@ export default class MetamaskController extends EventEmitter {
     const resetOnRestartStore = {
       AccountTracker: this.accountTrackerController,
       TokenRatesController: this.tokenRatesController,
+      AssetsController: this.assetsController,
       DecryptMessageController: this.decryptMessageController,
       EncryptionPublicKeyController: this.encryptionPublicKeyController,
       SignatureController: this.signatureController,
@@ -1286,6 +1290,7 @@ export default class MetamaskController extends EventEmitter {
         MultichainAssetsRatesController: this.multichainAssetsRatesController,
         ///: END:ONLY_INCLUDE_IF
         TokenRatesController: this.tokenRatesController,
+        AssetsController: this.assetsController,
         MultichainNetworkController: this.multichainNetworkController,
         NetworkController: this.networkController,
         KeyringController: this.keyringController,
@@ -2444,6 +2449,7 @@ export default class MetamaskController extends EventEmitter {
       approvalController,
       phishingController,
       tokenRatesController,
+      assetsController,
       // Notification Controllers
       authenticationController,
       userStorageController,
@@ -3449,6 +3455,9 @@ export default class MetamaskController extends EventEmitter {
 
       tokenRatesStartPolling:
         tokenRatesController.startPolling.bind(tokenRatesController),
+      assetsStartPolling: assetsController.startPolling.bind(assetsController),
+      assetsStopPollingByPollingToken:
+        assetsController.stopPollingByPollingToken.bind(assetsController),
       tokenRatesStopPollingByPollingToken:
         tokenRatesController.stopPollingByPollingToken.bind(
           tokenRatesController,
@@ -8456,6 +8465,7 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopAllPolling();
       this.currencyRateController.stopAllPolling();
       this.tokenRatesController.stopAllPolling();
+      this.assetsController.stopAllPolling();
       this.tokenDetectionController.stopAllPolling();
       this.tokenListController.stopAllPolling();
       this.tokenBalancesController.stopAllPolling();
@@ -8485,6 +8495,7 @@ export default class MetamaskController extends EventEmitter {
       this.gasFeeController.stopPollingByPollingToken(pollingToken);
       this.currencyRateController.stopPollingByPollingToken(pollingToken);
       this.tokenRatesController.stopPollingByPollingToken(pollingToken);
+      this.assetsController.stopPollingByPollingToken(pollingToken);
       this.tokenDetectionController.stopPollingByPollingToken(pollingToken);
       this.tokenListController.stopPollingByPollingToken(pollingToken);
       this.tokenBalancesController.stopPollingByPollingToken(pollingToken);
