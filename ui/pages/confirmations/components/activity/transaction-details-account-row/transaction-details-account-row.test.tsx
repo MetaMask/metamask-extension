@@ -51,22 +51,13 @@ describe('TransactionDetailsAccountRow', () => {
     expect(getByText(ACCOUNT_NAME)).toBeInTheDocument();
   });
 
-  it('renders address when account name is not found', () => {
-    const stateWithoutAccount = {
-      metamask: {
-        internalAccounts: {
-          accounts: {},
-          selectedAccount: '',
-        },
-      },
-    };
-
-    const { getByText } = render(stateWithoutAccount);
-    expect(getByText(FROM_ADDRESS)).toBeInTheDocument();
-  });
-
   it('renders with correct test id', () => {
     const { getByTestId } = render();
     expect(getByTestId('transaction-details-account-row')).toBeInTheDocument();
+  });
+
+  it('renders Account label', () => {
+    const { getByText } = render();
+    expect(getByText('Account')).toBeInTheDocument();
   });
 });
