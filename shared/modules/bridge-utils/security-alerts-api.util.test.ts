@@ -1,5 +1,4 @@
 import nock from 'nock';
-import { CHAIN_IDS } from '@metamask/transaction-controller';
 import {
   TokenFeature,
   TokenFeatureType,
@@ -268,7 +267,7 @@ describe('Security alerts utils', () => {
       // Test with Ethereum mainnet
       await fetchTxAlerts({
         signal,
-        chainId: CHAIN_IDS.MAINNET,
+        chainId: 'eip155:1',
         trade: mockTrade,
         accountAddress: mockAccountAddress,
       });
@@ -286,7 +285,7 @@ describe('Security alerts utils', () => {
     });
 
     it('should return correct chain name for Ethereum mainnet', () => {
-      const result = convertChainIdToBlockAidChainName(CHAIN_IDS.MAINNET);
+      const result = convertChainIdToBlockAidChainName('eip155:1');
       expect(result).toBe('ethereum');
     });
 

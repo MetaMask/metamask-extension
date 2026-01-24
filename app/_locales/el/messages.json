@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Διασύνδεση προς"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Εάν προσθέσατε αυτό το token μη αυτόματα, βεβαιωθείτε ότι γνωρίζετε τους κινδύνους για τα κεφάλαιά σας πριν από τη διασύνδεση."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Δεν μπορούμε να επαληθεύσουμε αυτό το token."
-  },
   "bridgeTransactionProgress": {
     "message": "Συναλλαγή $1 από 2"
   },
@@ -8216,9 +8210,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "Τα NFT μπορεί να κινδυνεύουν"
-  },
-  "yourNetworks": {
-    "message": "Τα δίκτυά σας"
   },
   "yourPrivateSeedPhrase": {
     "message": "Η Μυστική σας Φράση Ανάκτησης"
