@@ -1,36 +1,33 @@
-import type { Hex, CaipChainId, CaipAssetType } from '@metamask/utils';
+import type { CaipChainId } from '@metamask/utils';
 import {
   type QuoteMetadata,
   type QuoteResponse,
   SortOrder,
-  type ChainId,
-  type GenericQuoteRequest,
   RequestStatus,
 } from '@metamask/bridge-controller';
 import { type KeyringAccountType } from '@metamask/keyring-api';
+import { type TokenListToken } from '@metamask/assets-controllers';
 import { type TxAlert } from '../../../shared/types/security-alerts-api';
+import type {
+  MinimalAsset,
+  BridgeAssetV2,
+} from '../../pages/bridge/utils/tokens';
 
-export type BridgeToken = {
-  address: string;
-  assetId?: CaipAssetType;
-  symbol: string;
-  image: string;
-  decimals: number;
-  chainId: number | Hex | ChainId | CaipChainId;
-  balance: string; // raw balance
+type BridgeTokenBalanceData = {
+  balance: string;
   tokenFiatAmount?: number | null;
-  occurrences?: number;
-  aggregators?: string[];
   accountType?: KeyringAccountType;
 };
+export type BridgeToken = BridgeAssetV2 &
+  BridgeTokenBalanceData &
+  Pick<TokenListToken, 'rwaData'>;
 
 /**
  * This is the minimal network configuration used by the Swap UI
  */
 export type BridgeNetwork = {
   name: string;
-  nativeCurrency: string;
-  chainId: Hex | CaipChainId;
+  chainId: CaipChainId;
 };
 
 export type BridgeState = {
@@ -48,18 +45,11 @@ export type BridgeState = {
   txAlertStatus: RequestStatus;
 };
 
-export type TokenPayload = {
-  payload: {
-    address: GenericQuoteRequest['srcTokenAddress'];
-    symbol: string;
-    decimals: number;
-    chainId: ChainId | Hex | CaipChainId;
-    balance?: string;
-    image?: string;
-    iconUrl?: string | null;
-    icon?: string | null;
-    assetId?: CaipAssetType;
-    aggregators?: string[];
-    occurrences?: number;
-  } | null;
-};
+export type TokenPayload = MinimalAsset & // Require minimal asset fields
+  // Optional bridge token fields
+  Partial<
+    Pick<
+      BridgeToken,
+      Exclude<keyof BridgeToken, keyof MinimalAsset | 'chainId'>
+    >
+  >;
