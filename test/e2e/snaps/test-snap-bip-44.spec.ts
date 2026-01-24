@@ -35,13 +35,9 @@ describe('Test Snap bip-44', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to `test-snaps` page, and install the Snap.
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectBip44Button',
-          {
-            withWarning: true,
-          },
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectBip44Button', {
+          withWarning: true,
+        });
 
         // check the installation status
         await testSnaps.checkConnectBip44ButtonText('Reconnect to BIP-44 Snap');

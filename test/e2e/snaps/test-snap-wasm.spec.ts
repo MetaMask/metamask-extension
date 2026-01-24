@@ -22,10 +22,7 @@ describe('Test Snap WASM', function () {
 
         const testSnaps = new TestSnaps(driver);
         // Navigate to test snaps page and connect to wasm snap
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectWasmButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectWasmButton');
 
         // Check installation success
         await testSnaps.checkConnectWasmButtonText(

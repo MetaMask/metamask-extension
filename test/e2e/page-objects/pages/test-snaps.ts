@@ -71,7 +71,8 @@ export class TestSnaps {
   private readonly connectEthereumProviderButtonSelector =
     '#connectethereum-provider';
 
-  private readonly connectNetworkAccessButtonSelector = '#connectnetwork-access';
+  private readonly connectNetworkAccessButtonSelector =
+    '#connectnetwork-access';
 
   private readonly connectBackgroundEventsButtonSelector =
     '#connectbackground-events';
@@ -451,7 +452,9 @@ export class TestSnaps {
 
   async connectTransactionInsightButton(): Promise<void> {
     console.log('Clicking Connect Transaction Insight button');
-    await this.driver.clickElement(this.connectTransactionInsightButtonSelector);
+    await this.driver.clickElement(
+      this.connectTransactionInsightButtonSelector,
+    );
   }
 
   async connectUpdateButton(): Promise<void> {

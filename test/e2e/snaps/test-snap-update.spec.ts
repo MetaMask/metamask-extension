@@ -37,10 +37,7 @@ describe('Test Snap update', function () {
         const snapInstall = new SnapInstall(driver);
 
         // Navigate to test snaps page, connect update, complete installation and validate
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectUpdateButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton');
         await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );

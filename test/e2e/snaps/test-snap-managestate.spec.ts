@@ -23,10 +23,7 @@ describe('Test Snap manageState', function () {
         const testSnaps = new TestSnaps(driver);
 
         // Navigate to test snaps page and connect manage state and validate installation
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectStateButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectStateButton');
         await testSnaps.checkConnectStateButtonText('Reconnect to State Snap');
 
         // Enter data and click set, then validate results

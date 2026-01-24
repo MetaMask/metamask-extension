@@ -6,7 +6,6 @@ import { withFixtures } from '../../helpers';
 import AccountListPage from '../../page-objects/pages/account-list-page';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
-import SnapAccountConfirmationDialog from '../../page-objects/pages/dialog/snap-account-confirmation-dialog';
 import {
   installSnapSimpleKeyring,
   createSnapAccount,
@@ -131,5 +130,4 @@ describe('Create Snap Account', function (this: Suite) {
       },
     );
   });
-
 });

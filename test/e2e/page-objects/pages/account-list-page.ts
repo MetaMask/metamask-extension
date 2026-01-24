@@ -254,7 +254,10 @@ class AccountListPage {
       // Wait for elements to exist, without text constraint
       // The button may show "Syncing..." initially instead of "Add account"
       await this.driver.waitForMultipleSelectors(
-        [this.addMultichainAccountButton, this.multichainAccountOptionsMenuButton],
+        [
+          this.addMultichainAccountButton,
+          this.multichainAccountOptionsMenuButton,
+        ],
         { timeout: 15000 },
       );
     } catch (e) {

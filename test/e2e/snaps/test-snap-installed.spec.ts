@@ -75,10 +75,7 @@ describe('Test Snap installed', function () {
 
         // Open a new tab and navigate to test snaps page and click dialog snap
         const testSnaps = new TestSnaps(driver);
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectDialogsButton',
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectDialogsButton');
 
         // Check installation success
         await testSnaps.checkConnectDialogsButtonText(

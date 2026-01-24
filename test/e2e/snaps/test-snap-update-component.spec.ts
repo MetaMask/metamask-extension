@@ -39,13 +39,9 @@ describe('Test Snap update via snaps component', function () {
         const snapListPage = new SnapListPage(driver);
         const snapInstall = new SnapInstall(driver);
 
-        await openTestSnapClickButtonAndInstall(
-          driver,
-          'connectUpdateButton',
-          {
-            withExtraScreen: true,
-          },
-        );
+        await openTestSnapClickButtonAndInstall(driver, 'connectUpdateButton', {
+          withExtraScreen: true,
+        });
         await testSnaps.checkConnectUpdateButtonText(
           'Reconnect to Update Snap',
         );

@@ -47,18 +47,16 @@ export async function installSnapSimpleKeyring(
  *
  * @param driver - The WebDriver instance.
  * @param options - Options for account creation.
- * @param options.accountName - The name for the new account. Defaults to "SSK Account".
  * @param options.isFirstAccount - Whether this is the first account. Defaults to true.
  * @returns The public address of the newly created account.
  */
 export async function createSnapAccount(
   driver: Driver,
   options: {
-    accountName?: string;
     isFirstAccount?: boolean;
   } = {},
 ): Promise<string> {
-  const { accountName = 'SSK Account', isFirstAccount = true } = options;
+  const { isFirstAccount = true } = options;
 
   const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
   const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
@@ -84,12 +82,10 @@ export async function createSnapAccount(
  *
  * @param driver - The WebDriver instance.
  * @param privateKey - The private key to import.
- * @param accountName - The name for the imported account. Defaults to "SSK Account".
  */
 export async function importSnapAccount(
   driver: Driver,
   privateKey: string,
-  accountName: string = 'SSK Account',
 ): Promise<void> {
   const snapSimpleKeyringPage = new SnapSimpleKeyringPage(driver);
   const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
@@ -164,4 +160,3 @@ export async function cancelSnapAccountCreation(driver: Driver): Promise<void> {
   const snapAccountDialog = new SnapAccountConfirmationDialog(driver);
   await snapAccountDialog.clickCancelButton();
 }
-
