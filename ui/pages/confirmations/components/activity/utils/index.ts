@@ -1,1 +1,1 @@
-export { hasTransactionType, formatTransactionDateTime } from './utils';
+export { formatTransactionDateTime } from './utils';

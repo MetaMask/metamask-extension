@@ -1,32 +1,3 @@
-import type {
-  TransactionMeta,
-  TransactionType,
-} from '@metamask/transaction-controller';
-
-/**
- * Checks if a transaction has a specific type or if any of its nested transactions have that type.
- *
- * @param transactionMeta - The transaction metadata to check.
- * @param types - The transaction types to check for.
- * @returns True if the transaction or any nested transaction matches one of the types.
- */
-export function hasTransactionType(
-  transactionMeta: TransactionMeta | undefined,
-  types: TransactionType[],
-): boolean {
-  const { nestedTransactions, type } = transactionMeta ?? {};
-
-  if (types.includes(type as TransactionType)) {
-    return true;
-  }
-
-  return (
-    nestedTransactions?.some((tx) =>
-      types.includes(tx.type as TransactionType),
-    ) ?? false
-  );
-}
-
 /**
  * Formats a timestamp into a date and time string.
  *
