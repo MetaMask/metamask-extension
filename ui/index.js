@@ -49,7 +49,7 @@ import { SEEDLESS_PASSWORD_OUTDATED_CHECK_INTERVAL_MS } from './constants';
 
 export { CriticalStartupErrorHandler } from './helpers/utils/critical-startup-error-handler';
 export {
-  displayCriticalError,
+  displayCriticalErrorMessage,
   CriticalErrorTranslationKey,
 } from './helpers/utils/display-critical-error';
 
@@ -382,6 +382,15 @@ function setupStateHooks(store) {
     };
   }
 
+  /**
+   * Reload the extension.
+   *
+   * This is used for the `first-install` E2E test, which uses a production-like build. This
+   * function must be present even if `process.env.IN_TEST` is false.
+   */
+  window.stateHooks.reloadExtension = () => {
+    browser.runtime.reload();
+  };
   window.stateHooks.getCleanAppState = async function () {
     return getCleanAppState(store);
   };

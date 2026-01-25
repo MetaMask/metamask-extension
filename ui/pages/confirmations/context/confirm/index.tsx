@@ -10,7 +10,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import { DEFAULT_ROUTE } from '../../../../helpers/constants/routes';
-import { setDefaultHomeActiveTabName } from '../../../../store/actions';
 import { usePrevious } from '../../../../hooks/usePrevious';
 import { getPendingHardwareSigning } from '../../../../selectors';
 import useCurrentConfirmation from '../../hooks/useCurrentConfirmation';
@@ -51,8 +50,7 @@ export const ConfirmContextProvider: React.FC<{
       !currentConfirmation &&
       !isPendingHardwareSigning
     ) {
-      dispatch(setDefaultHomeActiveTabName('activity'));
-      navigate(DEFAULT_ROUTE, { replace: true });
+      navigate(`${DEFAULT_ROUTE}?tab=activity`, { replace: true });
     }
   }, [
     previousConfirmation,

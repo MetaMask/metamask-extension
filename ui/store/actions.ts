@@ -21,7 +21,6 @@ import {
 import {
   AssetsContractController,
   BalanceMap,
-  Collection,
   Nft,
   Token,
 } from '@metamask/assets-controllers';
@@ -118,12 +117,6 @@ import {
   getSelectedNetworkClientId,
   getProviderConfig,
 } from '../../shared/modules/selectors/networks';
-import {
-  computeEstimatedGasLimit,
-  initializeSendState,
-  resetSendState,
-  SEND_STAGES,
-} from '../ducks/send';
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account';
 import {
   getUnconnectedAccountAlertEnabledness,
@@ -205,6 +198,7 @@ import {
 // eslint-disable-next-line import/no-restricted-paths
 import { OAuthLoginResult } from '../../app/scripts/services/oauth/types';
 import { isHardwareAccount } from '../../shared/lib/accounts';
+import { SUBSCRIPTIONS_POLLING_INPUT } from '../../shared/constants/subscriptions';
 import * as actionConstants from './actionConstants';
 
 import {
@@ -417,7 +411,9 @@ export function subscriptionsStartPolling(): ThunkAction<
     try {
       const pollingToken = await submitRequestToBackground(
         'subscriptionsStartPolling',
-        [],
+        // We need to provide the polling input when start polling
+        // Otherwise, stop polling won't work with `undefined` input.
+        [SUBSCRIPTIONS_POLLING_INPUT],
       );
       return pollingToken;
     } catch (error) {
@@ -2543,7 +2539,6 @@ export function cancelTx(
     })
       .then(() => forceUpdateMetamaskState(dispatch))
       .then(() => {
-        dispatch(resetSendState());
         dispatch(completedTx(txMeta.id));
         dispatch(hideLoadingIndication());
         dispatch(closeCurrentNotificationWindow());
@@ -2594,7 +2589,6 @@ export function cancelTxs(
       await Promise.all(cancellations);
 
       await forceUpdateMetamaskState(dispatch);
-      dispatch(resetSendState());
 
       txIds.forEach((id) => {
         dispatch(completedTx(id));
@@ -2778,12 +2772,6 @@ export function updateMetamaskState(
         type: actionConstants.CHAIN_CHANGED,
         payload: newProviderConfig.chainId,
       });
-      // We dispatch this action to ensure that the send state stays up to date
-      // after the chain changes. This async thunk will fail gracefully in the
-      // event that we are not yet on the send flow with a draftTransaction in
-      // progress.
-
-      dispatch(initializeSendState({ chainHasChanged: true }));
     }
 
     return newState;
@@ -3635,18 +3623,6 @@ export async function checkAndUpdateSingleNftOwnershipStatus(
   ]);
 }
 
-export async function getNFTContractInfo(
-  contractAddresses: string[],
-  chainId: string,
-): Promise<{
-  collections: Collection[];
-}> {
-  return await submitRequestToBackground('getNFTContractInfo', [
-    contractAddresses,
-    chainId,
-  ]);
-}
-
 // When we upgrade to TypeScript 4.5 this is part of the language. It will get
 // the underlying type of a Promise generic type. So Awaited<Promise<void>> is
 // void.
@@ -4281,11 +4257,6 @@ export function qrCodeDetected(
       type: actionConstants.QR_CODE_DETECTED,
       value: qrCodeData,
     });
-
-    // If on the send page, the send slice will listen for the QR_CODE_DETECTED
-    // action and update its state. Address changes need to recompute gasLimit
-    // so we fire this method so that the send page gasLimit can be recomputed
-    dispatch(computeEstimatedGasLimit());
   };
 }
 
@@ -4583,15 +4554,14 @@ export function setPreference(
   };
 }
 
-export function setDefaultHomeActiveTabName(
+export async function setDefaultHomeActiveTabName(
   value: string,
-): ThunkAction<void, MetaMaskReduxState, unknown, AnyAction> {
-  // TODO: Fix in https://github.com/MetaMask/metamask-extension/issues/31879
-  // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  return async (dispatch: MetaMaskReduxDispatch) => {
+): Promise<void> {
+  try {
     await submitRequestToBackground('setDefaultHomeActiveTabName', [value]);
-    await forceUpdateMetamaskState(dispatch);
-  };
+  } catch {
+    // noop
+  }
 }
 
 export function setShowNativeTokenAsMainBalancePreference(value: boolean) {
@@ -4867,12 +4837,6 @@ export async function forceUpdateMetamaskState(
   }
 
   return dispatch(updateMetamaskState(pendingPatches));
-}
-
-export function toggleAccountMenu() {
-  return {
-    type: actionConstants.TOGGLE_ACCOUNT_MENU,
-  };
 }
 
 export function toggleNetworkMenu(payload?: {
