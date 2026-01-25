@@ -4,9 +4,9 @@ import { Hex } from '@metamask/utils';
 import {
   ButtonIcon,
   ButtonIconSize,
+  IconName,
 } from '../../../../../components/component-library';
 import { IconColor } from '../../../../../helpers/constants/design-system';
-import { IconName } from '../../../../../components/component-library/icon';
 import { selectNetworkConfigurationByChainId } from '../../../../../selectors';
 
 const HYPERLIQUID_EXPLORER_URL = 'https://app.hyperliquid.xyz/explorer';
