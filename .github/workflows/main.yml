@@ -95,32 +95,46 @@ jobs:
     if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
       - get-requirements
-    uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Lint workflow files
+        run: |
+          bash <(curl https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
+          ./actionlint -color
+        shell: bash
 
   test-lint:
+    name: Test lint
     needs:
       - prep-deps
       - get-requirements
-    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
-    uses: ./.github/workflows/test-lint.yml
-
-  test-circular-deps:
-    name: Test circular deps
-    needs:
-      - get-requirements
-      - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
+      - run: echo 'hi'
+
       - name: Checkout and setup environment
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
+      - name: Lint
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
+        run: yarn lint
+
+      - name: Verify locales
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
+        run: yarn verify-locales --quiet
+
       - name: Check circular dependencies
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         run: yarn circular-deps:check
 
   repository-health-checks:
@@ -310,8 +324,9 @@ jobs:
     needs:
       - get-requirements
       - prep-deps
-    if: ${{ needs.get-requirements.outputs.needs-unit-and-integration == 'true' }}
     uses: ./.github/workflows/run-tests.yml
+    with:
+      needs-unit-and-integration: ${{ needs.get-requirements.outputs.needs-unit-and-integration }}
 
   bundle-size:
     needs:
@@ -661,7 +676,7 @@ jobs:
 
   all-jobs-completed-locales:
     name: All jobs completed (locales-only)
-    if: ${{ needs.get-requirements.outputs.locales-only == 'true' }}
+    if: ${{ 1 || needs.get-requirements.outputs.locales-only == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 2
     needs:

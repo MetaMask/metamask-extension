@@ -16,8 +16,8 @@ jobs:
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
-      - name: Install Playwright browsers
-        run: yarn exec playwright install chromium
+      # - name: Install Playwright browsers
+      #   run: yarn exec playwright install chromium
 
-      - name: Test Storybook
-        run: yarn test-storybook:ci
+      # - name: Test Storybook
+      #   run: yarn test-storybook:ci

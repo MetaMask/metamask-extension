@@ -2,6 +2,11 @@ name: Run tests
 
 on:
   workflow_call:
+    inputs:
+      needs-unit-and-integration:
+        description: Whether unit and integration tests are needed
+        type: string
+        required: true
     outputs:
       current-coverage:
         description: Current coverage
@@ -20,6 +25,7 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout and setup environment
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -27,12 +33,15 @@ jobs:
           use-yarn-hydrate: true
 
       - name: test:unit:coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Rename coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
 
       - uses: actions/upload-artifact@v4
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         with:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
@@ -40,6 +49,7 @@ jobs:
   test-webpack:
     name: Webpack tests
     runs-on: ubuntu-latest
+    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -63,6 +73,7 @@ jobs:
   test-integration:
     name: Integration tests
     runs-on: ubuntu-latest
+    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -85,7 +96,7 @@ jobs:
 
   report-coverage:
     name: Report coverage
-    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
+    if: ${{ github.event_name != 'merge_group' && inputs.needs-unit-and-integration == 'true' }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
