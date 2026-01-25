@@ -2129,8 +2129,6 @@ async function approveTransaction(
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
 ): Promise<UpdateAndApproveTxResult> {
-  const isSendActive = () => getState().send.stage !== SEND_STAGES.INACTIVE;
-
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
@@ -2152,9 +2150,6 @@ async function approveTransaction(
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
     throw error;
   } finally {
-    if (!isSendActive()) {
-      dispatch(resetSendState());
-    }
     dispatch(hideLoadingIndication());
   }
 }
@@ -2188,10 +2183,7 @@ async function approveHardwareTransaction(
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
 ): Promise<UpdateAndApproveTxResult> {
-  const isSendActive = () => getState().send.stage !== SEND_STAGES.INACTIVE;
-
   dispatch(setPendingHardwareSigning(true));
-
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   try {
@@ -2242,9 +2234,6 @@ async function approveHardwareTransaction(
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
     throw new Error('Unexpected hardware transaction result');
   } finally {
-    if (!isSendActive()) {
-      dispatch(resetSendState());
-    }
     dispatch(hideLoadingIndication());
     dispatch(setPendingHardwareSigning(false));
   }
