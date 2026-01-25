@@ -100,7 +100,7 @@ jobs:
           if [[ "${{ steps.filter.outputs.locales }}" == "true" && "${{ steps.filter.outputs.non_locales }}" != "true" ]]; then
             echo "locales-only=true" >> "$GITHUB_OUTPUT"
           else
-            echo "locales-only=false" >> "$GITHUB_OUTPUT"
+            echo "locales-only=true" >> "$GITHUB_OUTPUT"
           fi
 
       # skip-everything is a shortcut for up-to-date == 'true' || locales-only == 'true'
@@ -132,7 +132,7 @@ jobs:
         id: set-needs-benchmarks
         # Do not run benchmarks on a fork
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' && env.IS_FORK == 'false' }}
-        run: echo "needs-benchmarks=false" >> "$GITHUB_OUTPUT"
+        run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
