@@ -11,7 +11,6 @@ import React, {
 import { useDispatch } from 'react-redux';
 import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { showModal, hideModal } from '../../store/actions';
-import { HARDWARE_WALLET_ERROR_MODAL_NAME } from './constants';
 import {
   HardwareWalletProvider,
   useHardwareWalletConfig,
@@ -22,6 +21,7 @@ import { ConnectionStatus } from './types';
 
 const LOG_TAG = '[HardwareWalletErrorProvider]';
 
+const HARDWARE_WALLET_ERROR_MODAL_NAME = 'HARDWARE_WALLET_ERROR';
 type HardwareWalletErrorContextType = {
   /**
    * Manually show the error modal with a specific error

@@ -53,8 +53,8 @@ export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Connected }
   | { status: ConnectionStatus.Ready }
   | { status: ConnectionStatus.AwaitingConfirmation }
-  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
-  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
+  | { status: ConnectionStatus.AwaitingApp; appName?: string }
+  | { status: ConnectionStatus.ErrorState; error: Error };
 
 /**
  * Device event payload
@@ -107,29 +107,3 @@ export type HardwareWalletAdapterOptions = {
   onDeviceEvent: (payload: DeviceEventPayload) => void;
 };
 
-/**
- * Context type
- */
-export type HardwareWalletContextType = {
-  // State
-  isHardwareWalletAccount: boolean;
-  walletType: HardwareWalletType | null;
-  connectionState: HardwareWalletConnectionState;
-  deviceId: string | null;
-  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
-  isWebHidAvailable: boolean;
-  isWebUsbAvailable: boolean;
-
-  // Actions
-  connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
-  disconnect: () => Promise<void>;
-  clearError: () => void;
-  retry: () => Promise<void>;
-  checkHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<HardwareConnectionPermissionState>;
-  requestHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
-};

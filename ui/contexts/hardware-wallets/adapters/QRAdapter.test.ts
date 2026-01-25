@@ -1,5 +1,5 @@
+import { ErrorCode, HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import { DeviceEvent, type HardwareWalletAdapterOptions } from '../types';
-import { ErrorCode, HardwareWalletError } from '../errors';
 import * as actions from '../../../store/actions';
 import { QRAdapter } from './QRAdapter';
 

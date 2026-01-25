@@ -1,3 +1,4 @@
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import {
   HardwareDeviceNames,
   TREZOR_USB_VENDOR_IDS,
@@ -6,7 +7,7 @@ import {
   getHdPathForHardwareKeyring,
   getTrezorDeviceStatus,
 } from '../../../store/actions';
-import { createHardwareWalletError, ErrorCode } from '../errors';
+import { createHardwareWalletError } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,

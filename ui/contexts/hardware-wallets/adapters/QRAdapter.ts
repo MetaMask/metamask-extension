@@ -1,6 +1,7 @@
+import { ErrorCode } from '@metamask/hw-wallet-sdk';
 import { HardwareDeviceNames } from '../../../../shared/constants/hardware-wallets';
 import { getHdPathForHardwareKeyring } from '../../../store/actions';
-import { createHardwareWalletError, ErrorCode } from '../errors';
+import { createHardwareWalletError } from '../errors';
 import {
   DeviceEvent,
   HardwareWalletType,
