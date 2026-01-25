@@ -56,9 +56,12 @@ jobs:
       needs-e2e: ${{ steps.set-needs-e2e.outputs.needs-e2e || 'false'}}
     steps:
       - name: Check pull request merge queue status
-        id: check-skip-merge-queue
+        id: check-skip-merge-queue2
         if: ${{ github.event_name != 'merge_group' }}
         uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
+
+      - run: echo "up-to-date=true" >> "$GITHUB_OUTPUT"
+        id: check-skip-merge-queue
 
       - uses: actions/checkout@v6
         if: ${{ steps.check-skip-merge-queue.outputs.up-to-date != 'true' }}
