@@ -115,9 +115,8 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - run: echo 'hi'
-
       - name: Checkout and setup environment
+        # This has to be gated at the steps level, so that all-jobs-completed considers test-lint as passed and not skipped
         if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:

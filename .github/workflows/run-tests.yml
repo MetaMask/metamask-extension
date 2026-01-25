@@ -18,6 +18,7 @@ on:
 jobs:
   test-unit:
     name: Unit tests
+    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -25,7 +26,6 @@ jobs:
         shard: [1, 2, 3, 4, 5, 6]
     steps:
       - name: Checkout and setup environment
-        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -33,15 +33,12 @@ jobs:
           use-yarn-hydrate: true
 
       - name: test:unit:coverage
-        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: yarn test:unit:coverage --shard=${{ matrix.shard }}/${{ strategy.job-total }}
 
       - name: Rename coverage
-        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: mv coverage/unit/coverage-final.json coverage/unit/coverage-unit-${{matrix.shard}}.json
 
       - uses: actions/upload-artifact@v4
-        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         with:
           name: coverage-unit-${{matrix.shard}}
           path: coverage/unit/coverage-unit-${{matrix.shard}}.json
@@ -49,10 +46,11 @@ jobs:
   test-webpack:
     name: Webpack tests
     runs-on: ubuntu-latest
-    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
+        # One of the jobs in this file has to be gated at the steps level, so that all-jobs-completed considers run-tests as passed and not skipped
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -60,12 +58,15 @@ jobs:
           use-yarn-hydrate: true
 
       - name: test:unit:webpack:coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: yarn test:unit:webpack:coverage
 
       - name: Rename coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
 
       - uses: actions/upload-artifact@v4
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         with:
           name: coverage-webpack
           path: coverage/webpack/coverage-webpack.json
