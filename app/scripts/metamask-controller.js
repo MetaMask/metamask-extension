@@ -1,6 +1,7 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
@@ -8713,13 +8714,13 @@ export default class MetamaskController extends EventEmitter {
    * Approve a hardware wallet transaction with retry support.
    * Uses an approval flow to keep the popup open during the signing process.
    * If the user rejects on the hardware device, the transaction is recreated
-   * and the user stays on the confirmation page.
+   * and a HardwareWalletError is thrown with the new transaction ID in metadata.
    *
    * @param {object} opts - Options for the transaction
    * @param {string} opts.txId - The transaction ID to approve
    * @param {object} opts.txMeta - The transaction metadata
    * @param {string} opts.actionId - The action ID for tracking
-   * @returns {Promise<{success: boolean, newTxMeta?: object, error?: string}>}
+   * @throws {HardwareWalletError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
    */
   approveHardwareTransaction = async ({ txId, txMeta, actionId }) => {
     try {
@@ -8729,51 +8730,39 @@ export default class MetamaskController extends EventEmitter {
         { txMeta, actionId },
         { waitForResult: true },
       );
-
-      return { success: true };
+      // Success - transaction approved and submitted
     } catch (error) {
-      const errorMessage = error.message;
-      // Check if user rejected on the hardware device
-      if (errorMessage.includes('rejected')) {
-        // Start approval flow ONLY when recreating to keep popup open
-        let approvalFlowId = null;
-        try {
-          const { id } = this.approvalController.startFlow({
-            loadingText: 'Recreating transaction...',
-          });
-          approvalFlowId = id;
-
-          // Recreate the transaction
-          const newTxMeta = await this.#recreateTransaction(txMeta);
-
-          // End the approval flow (popup stays open due to new pending approval)
-          this.#endApprovalFlowSafely(approvalFlowId);
-
-          return {
-            success: false,
-            rejected: true,
-            newTxMeta,
-            newTxId: newTxMeta?.id,
-          };
-        } catch (recreateError) {
-          log.error('Failed to recreate transaction:', recreateError);
-          this.#endApprovalFlowSafely(approvalFlowId);
-          return {
-            success: false,
-            rejected: true,
-            error: 'Failed to recreate transaction',
-          };
-        }
+      if (!(error instanceof HardwareWalletError)) {
+        // Non-hardware wallet errors - just rethrow
+        throw error;
       }
 
-      // Other errors - return error result instead of throwing
-      // This allows the UI to handle errors gracefully without exceptions
-      log.error('Hardware wallet transaction failed:', error);
-      return {
-        success: false,
-        rejected: false,
-        error: errorMessage || 'Hardware wallet transaction failed',
-      };
+      // Hardware wallet error - attempt to recreate transaction
+      let approvalFlowId = null;
+      try {
+        const { id } = this.approvalController.startFlow({
+          loadingText: 'Recreating transaction...',
+        });
+        approvalFlowId = id;
+
+        const newTxMeta = await this.#recreateTransaction(txMeta);
+        this.#endApprovalFlowSafely(approvalFlowId);
+
+        // Add recreatedTxId to error metadata and rethrow
+        error.metadata = { ...error.metadata, recreatedTxId: newTxMeta?.id };
+        throw error;
+      } catch (recreateError) {
+        this.#endApprovalFlowSafely(approvalFlowId);
+
+        // If recreation itself threw, rethrow it (it may be a HardwareWalletError with metadata)
+        if (recreateError instanceof HardwareWalletError) {
+          throw recreateError;
+        }
+
+        // Recreation failed - log and rethrow original HW error without recreatedTxId
+        log.error('Failed to recreate transaction:', recreateError);
+        throw error;
+      }
     }
   };
 

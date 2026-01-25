@@ -128,6 +128,7 @@ import {
   LedgerTransportTypes,
   LEDGER_USB_VENDOR_ID,
 } from '../../shared/constants/hardware-wallets';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
 import {
   MetaMetricsEventFragment,
   MetaMetricsEventOptions,
@@ -2077,25 +2078,20 @@ export async function addTransaction(
 }
 
 /**
- * Result type for updateAndApproveTx.
- * When a hardware wallet transaction is rejected and recreated,
- * recreatedTxId contains the new transaction ID to navigate to.
+ * Approve and submit a transaction.
+ * For hardware wallets, if the user rejects on device, throws HardwareWalletTransactionRejectedError
+ * with the recreatedTxId so the caller can navigate to the new transaction.
+ *
+ * @param txMeta - The transaction metadata
+ * @param dontShowLoadingIndicator - Whether to skip showing loading indicator
+ * @param loadingIndicatorMessage - Message to show during loading
+ * @throws HardwareWalletTransactionRejectedError - When hardware wallet user rejects on device
  */
-export type UpdateAndApproveTxResult = {
-  txMeta: TransactionMeta | null;
-  recreatedTxId?: string;
-};
-
 export function updateAndApproveTx(
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): ThunkAction<
-  Promise<UpdateAndApproveTxResult>,
-  MetaMaskReduxState,
-  unknown,
-  AnyAction
-> {
+): ThunkAction<Promise<void>, MetaMaskReduxState, unknown, AnyAction> {
   return async (dispatch: MetaMaskReduxDispatch, getState) => {
     const fromAccount = getInternalAccountByAddress(
       getState(),
@@ -2106,7 +2102,6 @@ export function updateAndApproveTx(
       console.log('[Debug] Approving hardware transaction');
       return approveHardwareTransaction(
         dispatch,
-        getState,
         txMeta,
         loadingIndicatorMessage,
       );
@@ -2114,7 +2109,6 @@ export function updateAndApproveTx(
 
     return approveTransaction(
       dispatch,
-      getState,
       txMeta,
       dontShowLoadingIndicator,
       loadingIndicatorMessage,
@@ -2124,11 +2118,10 @@ export function updateAndApproveTx(
 
 async function approveTransaction(
   dispatch: MetaMaskReduxDispatch,
-  getState: () => MetaMaskReduxState,
   txMeta: TransactionMeta,
   dontShowLoadingIndicator: boolean,
   loadingIndicatorMessage: string,
-): Promise<UpdateAndApproveTxResult> {
+): Promise<void> {
   if (!dontShowLoadingIndicator) {
     dispatch(showLoadingIndication(loadingIndicatorMessage));
   }
@@ -2144,8 +2137,6 @@ async function approveTransaction(
     dispatch(completedTx(txMeta.id));
     dispatch(updateCustomNonce(''));
     dispatch(closeCurrentNotificationWindow());
-
-    return { txMeta };
   } catch (error) {
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
     throw error;
@@ -2155,84 +2146,49 @@ async function approveTransaction(
 }
 
 /**
- * Result type for the hardware wallet transaction approval.
- */
-type ApproveHardwareTransactionResult = {
-  success: boolean;
-  rejected?: boolean;
-  newTxMeta?: TransactionMeta;
-  newTxId?: string;
-  error?: string;
-};
-
-/**
  * Approve a hardware wallet transaction using the background API.
  * This uses an approval flow to keep the popup open during signing.
- * If the user rejects on the hardware device, the transaction is automatically
- * recreated and the user stays on the confirmation page.
+ * If the user rejects on the hardware device, throws HardwareWalletError
+ * with the recreated transaction ID in metadata.
  *
  * @param dispatch - Redux dispatch function
- * @param getState - Redux getState function
+ * @param _getState - Redux getState function
  * @param txMeta - The transaction metadata
  * @param loadingIndicatorMessage - Message to show during signing
- * @returns Object with txMeta on success, or recreatedTxId when transaction was rejected and recreated
+ * @throws HardwareWalletError - When hardware wallet error occurs
  */
 async function approveHardwareTransaction(
   dispatch: MetaMaskReduxDispatch,
-  getState: () => MetaMaskReduxState,
   txMeta: TransactionMeta,
   loadingIndicatorMessage: string,
-): Promise<UpdateAndApproveTxResult> {
+): Promise<void> {
   dispatch(setPendingHardwareSigning(true));
   dispatch(showLoadingIndication(loadingIndicatorMessage));
 
   try {
-    // Call the unified background API that handles approval flow + signing + recreation
-    const result =
-      await submitRequestToBackground<ApproveHardwareTransactionResult>(
-        'approveHardwareTransaction',
-        [
-          {
-            txId: txMeta.id,
-            txMeta,
-            actionId: generateActionId(),
-          },
-        ],
-      );
+    await submitRequestToBackground('approveHardwareTransaction', [
+      {
+        txId: txMeta.id,
+        txMeta,
+        actionId: generateActionId(),
+      },
+    ]);
 
     await forceUpdateMetamaskState(dispatch);
+    dispatch(completedTx(txMeta.id));
+    dispatch(updateCustomNonce(''));
+    dispatch(closeCurrentNotificationWindow());
+  } catch (error) {
+    await forceUpdateMetamaskState(dispatch);
 
-    if (result.success) {
-      // Transaction was successfully signed and submitted
-      dispatch(completedTx(txMeta.id));
-      dispatch(updateCustomNonce(''));
-      dispatch(closeCurrentNotificationWindow());
-      return { txMeta };
+    if (error instanceof HardwareWalletError) {
+      // HardwareWalletError from background - rethrow for hook to handle
+      throw error;
     }
 
-    if (result.rejected) {
-      // newTxMeta is the recreated transaction's TransactionMeta
-      // newTxId is also provided directly for convenience
-      const newTxId = result?.newTxId ?? result?.newTxMeta?.id;
-      // User rejected on hardware device, transaction was recreated
-      // Return the new transaction ID so the caller can navigate to it
-      // Display error if recreation failed, but don't throw (this is expected user action)
-      if (result.error) {
-        dispatch(displayWarning(result.error));
-      }
-      // Return null txMeta with recreatedTxId - caller should navigate to new confirmation
-      return { txMeta: null, recreatedTxId: newTxId };
-    }
-
-    // Handle non-rejection error case - throw so caller can handle with error handlers
-    if (result.error) {
-      dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-      throw new Error(result.error);
-    }
-
-    // Unexpected result - treat as error
+    // Non-hardware wallet error - update tx params and rethrow
     dispatch(updateTransactionParams(txMeta.id, txMeta.txParams));
-    throw new Error('Unexpected hardware transaction result');
+    throw error;
   } finally {
     dispatch(hideLoadingIndication());
     dispatch(setPendingHardwareSigning(false));

@@ -23,7 +23,7 @@ import {
   FlexDirection,
   Severity,
 } from '../../../../../helpers/constants/design-system';
-import { CONFIRM_TRANSACTION_ROUTE, DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
+import { DEFAULT_ROUTE } from '../../../../../helpers/constants/routes';
 import useAlerts from '../../../../../hooks/useAlerts';
 import { useI18nContext } from '../../../../../hooks/useI18nContext';
 import { getPendingHardwareSigning } from '../../../../../selectors';
@@ -212,7 +212,7 @@ const Footer = () => {
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext, navigateToId } = useConfirmationNavigation();
+  const { navigateNext } = useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -300,17 +300,11 @@ const Footer = () => {
       navigate(DEFAULT_ROUTE);
       resetTransactionState();
     } else if (isTransactionConfirmation) {
-      const { recreatedTxId } = await onTransactionConfirm();
-      // If a hardware wallet transaction was rejected and recreated,
-      // navigate to the new confirmation instead of the next one
-      // Don't reset transaction state since we're staying on confirmation flow
-      debugger;
-      if (recreatedTxId) {
-        navigate(`${CONFIRM_TRANSACTION_ROUTE}/${recreatedTxId}`, { replace: true });
-      } else {
-        navigateNext(currentConfirmation.id);
-        resetTransactionState();
-      }
+      // Hook handles all post-confirmation logic internally:
+      // - Navigation to next confirmation or recreated transaction
+      // - Error modal display for hardware wallet rejections
+      // - State reset after successful confirmation
+      await onTransactionConfirm();
     } else {
       await dispatch(resolvePendingApproval(currentConfirmation.id, undefined));
       navigateNext(currentConfirmation.id);
@@ -325,7 +319,6 @@ const Footer = () => {
     navigate,
     onTransactionConfirm,
     navigateNext,
-    navigateToId,
     currentConfirmation,
     dispatch,
   ]);

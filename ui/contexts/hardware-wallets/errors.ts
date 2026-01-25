@@ -250,3 +250,22 @@ export function getConnectionStateFromError(
       return ConnectionState.error('unknown', error);
   }
 }
+
+export function isRetryableHardwareWalletError(
+  error: HardwareWalletError,
+): boolean {
+  const retryableCodes = [
+    ErrorCode.ConnectionTimeout,
+    ErrorCode.ConnectionClosed,
+    ErrorCode.DeviceDisconnected,
+    ErrorCode.AuthenticationDeviceLocked,
+    ErrorCode.AuthenticationDeviceBlocked,
+    ErrorCode.AuthenticationSecurityCondition,
+    ErrorCode.DeviceBtcOnlyFirmware,
+    ErrorCode.DeviceIncompatibleMode,
+    ErrorCode.DeviceStateBlindSignNotSupported,
+    ErrorCode.DeviceStateOnlyV4Supported,
+    ErrorCode.DeviceStateEthAppClosed,
+  ];
+  return retryableCodes.includes(error.code);
+}
