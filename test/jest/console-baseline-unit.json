@@ -99,7 +99,7 @@
       "error: Error: invalid address (argument=\"address\", value=\"0x\",": 2,
       "MetaMask: Chain processing errors": 2,
       "ObjectMultiplex: Malformed chunk warnings": 1,
-      "error: { name: 'controller', data: {": 1,
+      "error: {": 1,
       "MetaMask: MetaMetrics invalid trait types": 2,
       "error: Error: invalid address (argument=\"address\", value=\"\",": 1,
       "MetaMask: Sentry initialization warnings": 1,
