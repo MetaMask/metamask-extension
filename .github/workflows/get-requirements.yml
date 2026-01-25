@@ -119,24 +119,24 @@ jobs:
       - name: Compute needs-unit-and-integration flag
         id: set-needs-unit-and-integration
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        run: echo "needs-unit-and-integration=false" >> "$GITHUB_OUTPUT"
+        run: echo "needs-unit-and-integration=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now (and equivalent to !skip-everything), but is built to have future complexity
       - name: Compute needs-releases flag
         id: set-needs-releases
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
-        run: echo "needs-releases=false" >> "$GITHUB_OUTPUT"
+        run: echo "needs-releases=true" >> "$GITHUB_OUTPUT"
 
       # This is very simple right now, but is built to have future complexity
       - name: Compute needs-benchmarks flag
         id: set-needs-benchmarks
         # Do not run benchmarks on a fork
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' && env.IS_FORK == 'false' }}
-        run: echo "needs-benchmarks=false" >> "$GITHUB_OUTPUT"
+        run: echo "needs-benchmarks=true" >> "$GITHUB_OUTPUT"
 
       - name: Compute needs-e2e flag
         id: set-needs-e2e
         if: ${{ steps.set-skip-everything.outputs.skip-everything != 'true' }}
         run: |
           # Default to running E2E tests
-          echo "needs-e2e=false" >> "$GITHUB_OUTPUT"
+          echo "needs-e2e=true" >> "$GITHUB_OUTPUT"
