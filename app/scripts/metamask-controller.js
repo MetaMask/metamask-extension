@@ -2700,7 +2700,6 @@ export default class MetamaskController extends EventEmitter {
 
       // hardware wallets
       connectHardware: this.connectHardware.bind(this),
-      connectHardwareBeforeCheck: this.connectHardwareBeforeCheck.bind(this),
       forgetDevice: this.forgetDevice.bind(this),
       checkHardwareStatus: this.checkHardwareStatus.bind(this),
       unlockHardwareWalletAccount: this.unlockHardwareWalletAccount.bind(this),
@@ -5483,14 +5482,6 @@ export default class MetamaskController extends EventEmitter {
       { name: HardwareDeviceNames.ledger },
       async (keyring) => await keyring.getAppNameAndVersion(),
     );
-  }
-
-  async connectHardwareBeforeCheck(deviceName) {
-    return this.#withKeyringForDevice({ name: deviceName }, async (keyring) => {
-      if (deviceName === HardwareDeviceNames.oneKey) {
-        await keyring?.lock?.();
-      }
-    });
   }
 
   /**

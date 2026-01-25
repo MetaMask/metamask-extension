@@ -46,6 +46,27 @@ function handleBlockErrorEvent(payload: Unsuccessful) {
   }
 }
 
+function withSdkCheck<TResult>(
+  sdkCall: (sdkInstance: CoreApi) => Promise<TResult>,
+  sendResponse: (response: unknown) => void,
+  onSuccess?: (result: TResult) => unknown,
+): void {
+  if (!sdk) {
+    sendResponse({
+      success: false,
+      payload: { error: 'OneKey SDK not initialized' },
+    });
+    return;
+  }
+
+  sdkCall(sdk).then((result) => {
+    if (!(result as { success?: boolean })?.success) {
+      handleBlockErrorEvent(result as Unsuccessful);
+    }
+    sendResponse(onSuccess ? onSuccess(result) : result);
+  });
+}
+
 export default function init() {
   chrome.runtime.onMessage.addListener(
     (
@@ -151,76 +172,60 @@ export default function init() {
           break;
 
         case OneKeyAction.getPublicKey:
-          sdk
-            ?.evmGetPublicKey('', '', {
-              ...msg.params,
-              showOnOneKey: false,
-            })
-            .then((result) => {
-              let response;
+          withSdkCheck(
+            (s) =>
+              s.evmGetPublicKey('', '', {
+                ...msg.params,
+                showOnOneKey: false,
+              }),
+            sendResponse,
+            (result) => {
               if (result?.success) {
-                response = {
+                return {
                   success: true,
                   payload: {
                     publicKey: result.payload.pub,
                     chainCode: result.payload.node.chain_code,
                   },
                 };
-              } else {
-                handleBlockErrorEvent(result);
-                response = {
-                  success: false,
-                  payload: {
-                    error: result?.payload.error ?? '',
-                    code:
-                      typeof result?.payload?.code === 'number'
-                        ? result?.payload?.code
-                        : undefined,
-                  },
-                };
               }
-
-              sendResponse(response);
-            });
+              return {
+                success: false,
+                payload: {
+                  error: result?.payload.error ?? '',
+                  code:
+                    typeof result?.payload?.code === 'number'
+                      ? result?.payload?.code
+                      : undefined,
+                },
+              };
+            },
+          );
           break;
 
         case OneKeyAction.getPassphraseState:
-          sdk?.getPassphraseState().then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
+          withSdkCheck((s) => s.getPassphraseState(), sendResponse);
           break;
 
         case OneKeyAction.signTransaction:
-          sdk?.evmSignTransaction('', '', msg.params).then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
-
+          withSdkCheck(
+            (s) => s.evmSignTransaction('', '', msg.params),
+            sendResponse,
+          );
           break;
 
         case OneKeyAction.signMessage:
-          sdk?.evmSignMessage('', '', msg.params).then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
-
+          withSdkCheck(
+            (s) => s.evmSignMessage('', '', msg.params),
+            sendResponse,
+          );
           break;
 
         case OneKeyAction.signTypedData:
-          sdk?.evmSignTypedData('', '', msg.params).then((result) => {
-            if (!result?.success) {
-              handleBlockErrorEvent(result);
-            }
-            sendResponse(result);
-          });
-
+          withSdkCheck(
+            (s) => s.evmSignTypedData('', '', msg.params),
+            sendResponse,
+          );
           break;
 
         default:

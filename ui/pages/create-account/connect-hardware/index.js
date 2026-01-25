@@ -175,7 +175,6 @@ class ConnectHardwareForm extends Component {
     if (this.state.accounts.length) {
       return;
     }
-    await this.connectHardwareBeforeCheck(device);
 
     // Default values
     const deviceCount = this.getHardwareWalletKeyrings().length;
@@ -223,10 +222,6 @@ class ConnectHardwareForm extends Component {
       this.props.hideAlert();
     }, SECOND * 5);
   }
-
-  connectHardwareBeforeCheck = async (device) => {
-    await this.props.connectHardwareBeforeCheck(device);
-  };
 
   getPage = (device, page, hdPath, loadHid) => {
     this.props
@@ -540,7 +535,6 @@ class ConnectHardwareForm extends Component {
 
 ConnectHardwareForm.propTypes = {
   connectHardware: PropTypes.func,
-  connectHardwareBeforeCheck: PropTypes.func,
   checkHardwareStatus: PropTypes.func,
   forgetDevice: PropTypes.func,
   showAlert: PropTypes.func,
@@ -580,9 +574,6 @@ const mapDispatchToProps = (dispatch) => {
       return dispatch(
         actions.connectHardware(deviceName, page, hdPath, loadHid, t),
       );
-    },
-    connectHardwareBeforeCheck: (deviceName) => {
-      return dispatch(actions.connectHardwareBeforeCheck(deviceName));
     },
     checkHardwareStatus: (deviceName, hdPath) => {
       return dispatch(actions.checkHardwareStatus(deviceName, hdPath));

@@ -6604,9 +6604,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-e40d1ad":
-  version: 0.1.0-e40d1ad
-  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-e40d1ad"
+"@metamask/eth-onekey-keyring@npm:@metamask-previews/eth-onekey-keyring@0.1.0-2d9d5c0":
+  version: 0.1.0-2d9d5c0
+  resolution: "@metamask-previews/eth-onekey-keyring@npm:0.1.0-2d9d5c0"
   dependencies:
     "@ethereumjs/tx": "npm:^5.4.0"
     "@ethereumjs/util": "npm:^9.1.0"
@@ -6618,7 +6618,7 @@ __metadata:
     "@onekeyfe/hd-transport": "npm:1.1.17-patch.1"
     "@onekeyfe/hd-web-sdk": "npm:1.1.17-patch.1"
     hdkey: "npm:^2.1.0"
-  checksum: 10/7b067597d12540fb198cacf199dcdecaab9342dde4d2671a407249adfa32ac254e97d2ca01f80ed483673c5f7122905fa7f3aae67580ef6d9e7fa5bcef8690cb
+  checksum: 10/cfa9f944364821eb844a0277dfec62d672117f73b72fc68d464258896737e1255697f1bb1e5237fc29e0074bc467c4239ba7db67a5fbf41a85f72c97f219dbf2
   languageName: node
   linkType: hard
 
@@ -33790,7 +33790,7 @@ __metadata:
     "@metamask/eth-json-rpc-middleware": "npm:^23.0.0"
     "@metamask/eth-json-rpc-provider": "npm:^6.0.0"
     "@metamask/eth-ledger-bridge-keyring": "npm:11.1.2"
-    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-e40d1ad"
+    "@metamask/eth-onekey-keyring": "npm:@metamask-previews/eth-onekey-keyring@0.1.0-2d9d5c0"
     "@metamask/eth-qr-keyring": "npm:^1.1.0"
     "@metamask/eth-sig-util": "npm:^8.2.0"
     "@metamask/eth-snap-keyring": "npm:^18.0.2"

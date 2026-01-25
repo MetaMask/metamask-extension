@@ -30,26 +30,39 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
 
   private onUIEvent?: ((event: Unsuccessful['payload']) => void) | undefined;
 
+  private messageListener?: (msg: {
+    target: string;
+    event: string;
+    payload: unknown;
+  }) => void;
+
   setUiEventCallback(callback: (event: Unsuccessful['payload']) => void): void {
     this.onUIEvent = callback;
   }
 
   init() {
-    chrome.runtime.onMessage.addListener((msg) => {
+    // Remove existing listener to prevent accumulation on repeated init/dispose cycles
+    if (this.messageListener) {
+      chrome.runtime.onMessage.removeListener(this.messageListener);
+    }
+
+    this.messageListener = (msg) => {
       if (
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.onekeyDeviceConnect
       ) {
-        this.model = msg.payload.model;
+        this.model = (msg.payload as { model: string }).model;
       } else if (
         msg.target === OffscreenCommunicationTarget.extension &&
         msg.event === OffscreenCommunicationEvents.onekeyDeviceConnectError
       ) {
         if (this.onUIEvent) {
-          this.onUIEvent(msg.payload);
+          this.onUIEvent(msg.payload as Unsuccessful['payload']);
         }
       }
-    });
+    };
+
+    chrome.runtime.onMessage.addListener(this.messageListener);
 
     return new Promise<void>((resolve) => {
       chrome.runtime.sendMessage(
@@ -70,6 +83,12 @@ export class OneKeyOffscreenBridge implements OneKeyBridge {
   dispose() {
     return new Promise<void>((resolve) => {
       this.onUIEvent = undefined;
+
+      if (this.messageListener) {
+        chrome.runtime.onMessage.removeListener(this.messageListener);
+        this.messageListener = undefined;
+      }
+
       chrome.runtime.sendMessage(
         {
           target: OffscreenCommunicationTarget.onekeyOffscreen,
