@@ -41,50 +41,38 @@ permissions:
   id-token: write # required for s3 uploads
 
 jobs:
-  check-skip-merge-queue:
-    name: Check if pull request can skip merge queue
-    runs-on: ubuntu-latest
-    outputs:
-      skip-merge-queue: ${{ steps.check-skip-merge-queue.outputs.up-to-date }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-        if: github.event_name == 'merge_group'
+  get-requirements:
+    name: Get workflow and job requirements
+    uses: ./.github/workflows/get-requirements.yml
 
-      - name: Check pull request merge queue status
-        id: check-skip-merge-queue
-        if: github.event_name == 'merge_group'
-        uses: MetaMask/github-tools/.github/actions/check-skip-merge-queue@v1
-
-  identify-builds:
-    name: Identify builds from run
-    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
-    runs-on: ubuntu-latest
+  locales-changed-only:
+    name: Locales changed only checks
     needs:
-      - check-skip-merge-queue
-    timeout-minutes: 2
-    outputs:
-      builds-from-run: ${{ steps.identify-builds.outputs.builds-from-run }}
+      - get-requirements
+    # Do not run the locales-only tests in the Merge Queue
+    if: ${{ needs.get-requirements.outputs.locales-only == 'true' && github.event_name != 'merge_group' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout and setup environment
+        uses: MetaMask/action-checkout-and-setup@v1
         with:
-          fetch-depth: 1
-          # Specifying `ref` ensures that the head commit is checked out directly.
-          ref: ${{ env.HEAD_COMMIT_HASH }}
+          is-high-risk-environment: false
+          skip-allow-scripts: true
+          use-yarn-hydrate: true
 
-      - name: 'Look for `[builds-from-run: <run>]` in the last commit message'
-        id: identify-builds
-        env:
-          RUN_ID: ${{ github.run_id }}
-        run: .github/scripts/identify-builds-from-run.sh
+      - name: Lint
+        run: yarn lint
+
+      - name: Verify locales
+        run: yarn verify-locales --quiet
 
   prep-deps:
     name: Prepare dependencies
-    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     runs-on: ubuntu-latest
     needs:
-      - check-skip-merge-queue
+      - get-requirements
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -104,206 +92,234 @@ jobs:
 
   lint-workflows:
     name: Lint workflows
-    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
-      - check-skip-merge-queue
+      - get-requirements
     uses: MetaMask/github-tools/.github/workflows/lint-workflows.yml@v1
 
   test-lint:
+    name: Test lint
     needs:
       - prep-deps
-    uses: ./.github/workflows/test-lint.yml
-
-  test-circular-deps:
-    name: Test circular deps
-    needs:
-      - prep-deps
+      - get-requirements
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
+        # This has to be gated at the steps level, so that all-jobs-completed considers test-lint as passed and not skipped
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
           skip-allow-scripts: true
           use-yarn-hydrate: true
 
+      - name: Lint
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
+        run: yarn lint
+
+      - name: Verify locales
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
+        run: yarn verify-locales --quiet
+
       - name: Check circular dependencies
+        if: ${{ needs.get-requirements.outputs.needs-lint == 'true' }}
         run: yarn circular-deps:check
 
   repository-health-checks:
     needs:
+      - get-requirements
       - prep-deps
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/repository-health-checks.yml
 
   test-storybook:
     name: Test storybook
     needs:
+      - get-requirements
       - prep-deps
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/test-storybook.yml
 
   validate-lavamoat-policies:
     needs:
+      - get-requirements
       - prep-deps
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/validate-lavamoat-policies.yml
 
   build-dist-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-dist-mv2-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-dist-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build prod' || 'yarn build dist' }}
       mozilla-lint: true
       enable-mv3: false
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-browserify
       build-command: yarn build --build-type beta dist
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-beta-mv2-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-beta-mv2-browserify
       build-command: yarn build --build-type beta dist
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-flask-mv2-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-flask-mv2-browserify
       build-command: ${{ (github.head_ref || github.ref_name) == 'stable' && 'yarn build --build-type flask prod' || 'yarn build --build-type flask dist' }}
       mozilla-lint: true
       enable-mv3: false
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-browserify
       build-command: yarn build:test
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-mv2-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-browserify
       build-command: yarn build:test:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-browserify
       build-command: yarn build:test:flask
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-flask-mv2-browserify:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-flask-mv2-browserify
       build-command: yarn build:test:flask:mv2
       mozilla-lint: false # Disabled as it is failing for some reason
       enable-mv3: false
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-webpack:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-webpack
       build-command: yarn build:test:webpack
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   build-test-mv2-webpack:
     needs:
-      - identify-builds
+      - get-requirements
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     uses: ./.github/workflows/run-build.yml
     with:
       build-name: build-test-mv2-webpack
       build-command: yarn build:test:webpack:mv2
       validate-source-maps: false # Disabled as webpack outputs are not supported by validate-source-maps
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets: inherit
 
   run-benchmarks:
     # If not a fork, run benchmarks
-    if: ${{ !(github.event.pull_request.head.repo.fork || github.event.repository.fork) }}
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/run-benchmarks.yml
     needs:
-      - identify-builds
+      - get-requirements
       - prep-deps
       - build-test-browserify
       - build-test-mv2-browserify
       - build-test-webpack
       - build-test-mv2-webpack
     with:
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   run-tests:
     name: Run tests
     needs:
+      - get-requirements
       - prep-deps
     uses: ./.github/workflows/run-tests.yml
+    with:
+      needs-unit-and-integration: ${{ needs.get-requirements.outputs.needs-unit-and-integration }}
 
   bundle-size:
     needs:
-      - identify-builds
+      - get-requirements
       - build-dist-browserify
     runs-on: ubuntu-latest
     timeout-minutes: 30
@@ -323,7 +339,7 @@ jobs:
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
       - name: Measure bundle size
         run: yarn tsx test/e2e/mv3-perf-stats/bundle-size.ts --out test-artifacts/chrome
@@ -343,75 +359,79 @@ jobs:
 
   page-load-benchmark:
     needs:
-      - identify-builds
+      - get-requirements
       - build-test-browserify
+    if: ${{ needs.get-requirements.outputs.needs-benchmarks == 'true' }}
     uses: ./.github/workflows/page-load-benchmark.yml
     secrets:
       EXTENSION_BENCHMARK_STATS_TOKEN: ${{ secrets.EXTENSION_BENCHMARK_STATS_TOKEN }}
     with:
       browser-loads: 10
       page-loads: 10
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
 
-  needs-e2e:
+  prep-e2e:
     needs:
+      - get-requirements
       - prep-deps
-    uses: ./.github/workflows/needs-e2e.yml
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
+    uses: ./.github/workflows/prep-e2e.yml
 
   e2e-chrome:
     needs:
-      - identify-builds
-      - needs-e2e
+      - get-requirements
+      - prep-e2e
       - build-test-browserify
       - build-test-webpack
       - build-dist-browserify
       - build-test-flask-browserify
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-chrome.yml
     with:
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   e2e-firefox:
     needs:
-      - identify-builds
-      - needs-e2e
+      - get-requirements
+      - prep-e2e
       - build-dist-mv2-browserify
       - build-test-mv2-browserify
       - build-test-mv2-webpack
       - build-test-flask-mv2-browserify
-    if: ${{ needs.needs-e2e.outputs.needs-e2e == 'true' }}
+    if: ${{ needs.get-requirements.outputs.needs-e2e == 'true' }}
     uses: ./.github/workflows/e2e-firefox.yml
     with:
-      builds-from-run: ${{ needs.identify-builds.outputs.builds-from-run }}
+      builds-from-run: ${{ needs.get-requirements.outputs.builds-from-run }}
     secrets:
       INFURA_PROJECT_ID: ${{ secrets.INFURA_PROJECT_ID }}
 
   build-storybook:
     name: Build storybook
-    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
-      - check-skip-merge-queue
+      - get-requirements
     uses: ./.github/workflows/build-storybook.yml
     secrets:
       STORYBOOK_TOKEN: ${{ secrets.STORYBOOK_TOKEN }}
 
   build-ts-migration-dashboard:
     name: Build ts migration dashboard
-    if: github.event_name != 'merge_group' || needs.check-skip-merge-queue.outputs.skip-merge-queue != 'true'
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.skip-everything != 'true' }}
     needs:
-      - check-skip-merge-queue
+      - get-requirements
     uses: ./.github/workflows/build-ts-migration-dashboard.yml
     secrets:
       TS_MIGRATION_DASHBOARD_TOKEN: ${{ secrets.TS_MIGRATION_DASHBOARD_TOKEN }}
 
   build-source-map-explorer:
     needs:
-      - identify-builds
+      - get-requirements
       - prep-deps
       - build-dist-browserify
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
@@ -429,7 +449,7 @@ jobs:
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
       - run: ./development/source-map-explorer.sh
         if: ${{ github.event_name != 'merge_group' }} # Skip every step in this job for the Merge Queue
@@ -445,9 +465,10 @@ jobs:
 
   build-lavamoat-viz:
     needs:
-      - identify-builds
+      - get-requirements
       - prep-deps
       - build-dist-browserify
+    if: ${{ needs.get-requirements.outputs.skip-everything != 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
@@ -507,7 +528,7 @@ jobs:
         with:
           name: build-dist-browserify
           github-token: ${{ secrets.GITHUB_TOKEN }} # This is required when downloading artifacts from a different repository or from a different workflow run.
-          run-id: ${{ needs.identify-builds.outputs.builds-from-run }} # Download from whatever run the identify-builds job said.
+          run-id: ${{ needs.get-requirements.outputs.builds-from-run }} # Download from whatever run the get-requirements job said.
 
       - run: ./.github/scripts/create-lavamoat-viz.sh
         if: ${{ steps.lavamoat-policy-changed.outputs.lavamoat-policy-changed == 'true' }}
@@ -523,9 +544,9 @@ jobs:
 
   publish-prerelease:
     name: Publish prerelease
-    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
+    if: ${{ github.event_name != 'merge_group' && needs.get-requirements.outputs.needs-releases == 'true' }} # Skip this job for the Merge Queue
     needs:
-      - identify-builds
+      - get-requirements
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-beta-browserify
@@ -546,14 +567,15 @@ jobs:
     uses: ./.github/workflows/publish-prerelease.yml
     with:
       lavamoat-policy-changed: ${{ needs.build-lavamoat-viz.outputs.lavamoat-policy-changed == 'true' }}
-      post-new-builds: ${{ needs.identify-builds.outputs.builds-from-run == github.run_id }}
+      post-new-builds: ${{ needs.get-requirements.outputs.builds-from-run == github.run_id }}
     secrets:
       PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
 
   publish-release:
     name: Publish release
-    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' }}
+    if: ${{ github.event_name == 'push' && github.ref_name == 'stable' && needs.get-requirements.outputs.needs-releases == 'true' }}
     needs:
+      - get-requirements
       - build-dist-browserify
       - build-dist-mv2-browserify
       - build-flask-browserify
@@ -606,10 +628,12 @@ jobs:
   # Explanation for all-jobs-completed and all-jobs-pass being separate:
   # https://github.com/MetaMask/metamask-module-template/pull/151
   all-jobs-completed:
-    name: All jobs completed
+    name: All jobs completed (non-locales-only)
+    if: ${{ needs.get-requirements.outputs.locales-only != 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 2
     needs:
+      - get-requirements
       - lint-workflows
       - test-lint
       - repository-health-checks
@@ -639,25 +663,51 @@ jobs:
         id: set-output
         run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
 
+  all-jobs-completed-locales:
+    name: All jobs completed (locales-only)
+    if: ${{ needs.get-requirements.outputs.locales-only == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    needs:
+      - get-requirements
+      - locales-changed-only
+    outputs:
+      PASSED: ${{ steps.set-output.outputs.PASSED }}
+    steps:
+      - name: Set PASSED output
+        id: set-output
+        run: echo "PASSED=true" >> "$GITHUB_OUTPUT"
+
   all-jobs-pass:
     name: All jobs pass
     if: ${{ !cancelled() }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 2
     needs:
-      - check-skip-merge-queue
+      - get-requirements
       - all-jobs-completed
-      - needs-e2e
+      - all-jobs-completed-locales
       - e2e-chrome
       - e2e-firefox
-      - identify-builds
-    env:
-      SKIPPED: ${{ needs.check-skip-merge-queue.outputs.skip-merge-queue == 'true' }}
     steps:
       - name: Check that all jobs have passed
         run: |
+          # Locales-only path
+          if [[ "${{ needs.get-requirements.outputs.locales-only }}" == "true" ]]; then
+            if [[ "${{ github.event_name }}" == "merge_group" ]]; then
+              echo "Locales-only in the Merge Queue, skipped everything"
+              exit 0
+            fi
+            if [[ "${{ needs.all-jobs-completed-locales.outputs.PASSED }}" != "true" ]]; then
+              echo "Locales-only checks failed"
+              exit 1
+            fi
+            echo "Locales-only checks passed"
+            exit 0
+          fi
+
           # If the merge queue was skipped, consider all jobs as passed
-          if [[ "$SKIPPED" == "true" ]]; then
+          if [[ "${{ needs.get-requirements.outputs.skip-merge-queue }}" == "true" ]]; then
             echo "Merge queue skipped, considering all jobs as passed"
             exit 0
           fi
@@ -669,7 +719,7 @@ jobs:
           fi
 
           # Check E2E jobs only if they should have run
-          if [[ "${{ needs.needs-e2e.outputs.needs-e2e }}" == "true" ]]; then
+          if [[ "${{ needs.get-requirements.outputs.needs-e2e }}" == "true" ]]; then
             if [[ "${{ needs.e2e-chrome.result }}" != "success" ]]; then
               echo "E2E Chrome tests did not succeed (result: ${{ needs.e2e-chrome.result }})"
               exit 1
@@ -680,9 +730,9 @@ jobs:
             fi
           fi
 
-          # Check if the identify-builds output is the current run ID
-          if [[ "${{ needs.identify-builds.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
-            echo "Builds were used from a different GHA run: ${{ needs.identify-builds.outputs.builds-from-run }}"
+          # Check if the builds-from-run output is the current run ID
+          if [[ "${{ needs.get-requirements.outputs.builds-from-run }}" != "${{ github.run_id }}" ]]; then
+            echo "Builds were used from a different GHA run: ${{ needs.get-requirements.outputs.builds-from-run }}"
             echo "Right now you can use this feature to test and iterate faster, but to merge a PR, you have to disable it."
             exit 1
           fi

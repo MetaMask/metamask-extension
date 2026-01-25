@@ -2,6 +2,11 @@ name: Run tests
 
 on:
   workflow_call:
+    inputs:
+      needs-unit-and-integration:
+        description: Whether unit and integration tests are needed
+        type: string
+        required: true
     outputs:
       current-coverage:
         description: Current coverage
@@ -13,6 +18,7 @@ on:
 jobs:
   test-unit:
     name: Unit tests
+    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 30
     strategy:
@@ -43,6 +49,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
+        # One of the jobs in this file has to be gated at the steps level, so that all-jobs-completed considers run-tests as passed and not skipped
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         uses: MetaMask/action-checkout-and-setup@v1
         with:
           is-high-risk-environment: false
@@ -50,12 +58,15 @@ jobs:
           use-yarn-hydrate: true
 
       - name: test:unit:webpack:coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: yarn test:unit:webpack:coverage
 
       - name: Rename coverage
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         run: mv coverage/webpack/coverage-final.json coverage/webpack/coverage-webpack.json
 
       - uses: actions/upload-artifact@v4
+        if: ${{ inputs.needs-unit-and-integration == 'true' }}
         with:
           name: coverage-webpack
           path: coverage/webpack/coverage-webpack.json
@@ -63,6 +74,7 @@ jobs:
   test-integration:
     name: Integration tests
     runs-on: ubuntu-latest
+    if: ${{ inputs.needs-unit-and-integration == 'true' }}
     timeout-minutes: 30
     steps:
       - name: Checkout and setup environment
@@ -85,7 +97,7 @@ jobs:
 
   report-coverage:
     name: Report coverage
-    if: ${{ github.event_name != 'merge_group' }} # Skip this job for the Merge Queue
+    if: ${{ github.event_name != 'merge_group' && inputs.needs-unit-and-integration == 'true' }} # Skip this job for the Merge Queue
     runs-on: ubuntu-latest
     timeout-minutes: 30
     needs:
