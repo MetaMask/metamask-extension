@@ -78,6 +78,7 @@ import { MultichainAccountsConnectPage } from '../multichain-accounts/multichain
 import { supportsChainIds } from '../../hooks/useAccountGroupsForPermissions';
 import { getCaip25AccountIdsFromAccountGroupAndScope } from '../../../shared/lib/multichain/scope-utils';
 import { MultichainEditAccountsPageWrapper } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-account-wrapper';
+import { SnapsPermissionsRequestType } from '../../components/multichain-accounts/permissions/multichain-edit-accounts-page/multichain-edit-accounts-page';
 import { useI18nContext } from '../../hooks/useI18nContext';
 import ChooseAccount from './choose-account';
 import PermissionsRedirect from './redirect';
@@ -543,6 +544,7 @@ function PermissionsConnect() {
           selectAccounts(new Set(addresses));
         }}
         onClose={() => cancelPermissionsRequest(permissionsRequestId || '')}
+        snapsPermissionsRequestType={SnapsPermissionsRequestType.Initial}
       />
     );
   }, [
