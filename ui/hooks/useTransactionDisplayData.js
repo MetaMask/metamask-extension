@@ -10,6 +10,7 @@ import {
   selectERC20TokensByChain,
 } from '../selectors';
 import {
+  getContractInteractionLabel,
   getStatusKey,
   getTransactionTypeTitle,
 } from '../helpers/utils/transactions.util';
@@ -353,9 +354,17 @@ export function useTransactionDisplayData(transactionGroup) {
     type === TransactionType.revokeDelegation
   ) {
     const transactionTypeTitle = getTransactionTypeTitle(t, type);
-    title =
-      (methodData?.name && camelCaseToCapitalize(methodData.name)) ||
-      transactionTypeTitle;
+    const methodTitle =
+      methodData?.name && camelCaseToCapitalize(methodData.name);
+    const protocolLabel = getContractInteractionLabel(recipientAddress);
+
+    if (methodTitle) {
+      title = methodTitle;
+    } else if (protocolLabel) {
+      title = `${transactionTypeTitle} (${protocolLabel})`;
+    } else {
+      title = transactionTypeTitle;
+    }
   } else if (type === TransactionType.deployContract) {
     title = getTransactionTypeTitle(t, type);
   } else if (type === TransactionType.incoming) {

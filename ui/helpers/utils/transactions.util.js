@@ -3,6 +3,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from '@metamask/transaction-controller';
+import { contractAddressMap } from '@metamask/tx-categorize/dist/txSchemas/heuristicMap';
 // TODO: Remove restricted import
 // eslint-disable-next-line import/no-restricted-paths
 import { addHexPrefix } from '../../../app/scripts/lib/util';
@@ -155,4 +156,70 @@ export function getTransactionTypeTitle(t, type, nativeCurrency = 'ETH') {
       throw new Error(`Unrecognized transaction type: ${type}`);
     }
   }
+}
+
+const PROTOCOL_LABEL_OVERRIDES = {
+  '0X': '0x',
+  '1INCH': '1inch',
+  ENS: 'ENS',
+  ERC: 'ERC',
+  METAMASK: 'MetaMask',
+  OPENSEA: 'OpenSea',
+  SUSHISWAP: 'SushiSwap',
+  UNISWAP: 'Uniswap',
+  WETH: 'WETH',
+};
+
+const formatProtocolSegment = (segment) => {
+  if (PROTOCOL_LABEL_OVERRIDES[segment]) {
+    return PROTOCOL_LABEL_OVERRIDES[segment];
+  }
+
+  if (segment.length <= 2) {
+    return segment.toUpperCase();
+  }
+
+  if (/^\d/u.test(segment)) {
+    return segment.toLowerCase();
+  }
+
+  return segment.charAt(0) + segment.slice(1).toLowerCase();
+};
+
+const formatProtocolLabelPart = (value) => {
+  return value.split('_').filter(Boolean).map(formatProtocolSegment).join(' ');
+};
+
+const splitProtocolVersion = (protocol) => {
+  const match = protocol.match(/^(.*)_V(\d+(?:\.\d+)?)$/u);
+  if (match) {
+    return { base: match[1], version: `V${match[2]}` };
+  }
+
+  return { base: protocol, version: undefined };
+};
+
+export function getContractInteractionLabel(address) {
+  if (!address) {
+    return undefined;
+  }
+
+  const entry = contractAddressMap[address.toLowerCase()];
+  if (!entry) {
+    return undefined;
+  }
+
+  const protocolValue = entry.protocol || entry.name;
+  if (!protocolValue) {
+    return undefined;
+  }
+
+  const { base, version: parsedVersion } = splitProtocolVersion(protocolValue);
+  const protocolLabel = formatProtocolLabelPart(base);
+  const traitLabel = entry.definingTrait
+    ? formatProtocolLabelPart(entry.definingTrait)
+    : undefined;
+  const versionLabel = entry.version || parsedVersion;
+
+  return [protocolLabel, traitLabel, versionLabel].filter(Boolean).join(' ');
 }
