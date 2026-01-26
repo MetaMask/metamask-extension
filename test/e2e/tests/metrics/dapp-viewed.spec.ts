@@ -4,8 +4,9 @@ import { Browser } from 'selenium-webdriver';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MetaMetricsEventName } from '../../../../shared/constants/metametrics';
-import { DEFAULT_FIXTURE_ACCOUNT } from '../../constants';
+import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { Driver } from '../../webdriver/driver';
 
@@ -112,6 +113,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 0);
@@ -145,6 +152,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation2.checkPageIsLoaded();
+        await connectAccountConfirmation2.confirmConnect();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         const dappViewedEventProperties = events[0].properties;
@@ -188,6 +201,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation3 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation3.checkPageIsLoaded();
+        await connectAccountConfirmation3.confirmConnect();
         // open dapp in a new page
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -234,6 +253,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation4 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation4.checkPageIsLoaded();
+        await connectAccountConfirmation4.confirmConnect();
         // refresh dapp
         await driver.refresh();
         await testDapp.checkPageIsLoaded();
@@ -283,6 +308,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation5 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation5.checkPageIsLoaded();
+        await connectAccountConfirmation5.confirmConnect();
         // open dapp in a new page and switch to second connected dapp
         await testDapp.openTestDappPage();
         await testDapp.checkPageIsLoaded();
@@ -330,6 +361,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation6 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation6.checkPageIsLoaded();
+        await connectAccountConfirmation6.confirmConnect();
         await testDapp.disconnectAccount(DEFAULT_FIXTURE_ACCOUNT);
 
         // reconnect again on test dapp
@@ -337,6 +374,12 @@ describe('Dapp viewed Event', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation7 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation7.checkPageIsLoaded();
+        await connectAccountConfirmation7.confirmConnect();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.equal(events.length, 2);

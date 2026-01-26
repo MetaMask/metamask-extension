@@ -92,6 +92,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Connect to dapp 2
         await testDappTwo.connectAccount({});
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation4 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation4.checkPageIsLoaded();
+        await connectAccountConfirmation4.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_URL);
 
@@ -230,6 +236,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
 
         // Connect to dapp 2
         await testDappTwo.connectAccount({});
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation3 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation3.checkPageIsLoaded();
+        await connectAccountConfirmation3.confirmConnect();
 
         await driver.switchToWindowWithUrl(DAPP_URL);
         await testDapp.checkPageIsLoaded();

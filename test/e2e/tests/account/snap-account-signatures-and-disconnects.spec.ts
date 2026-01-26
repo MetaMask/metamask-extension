@@ -7,6 +7,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import HeaderNavbar from '../../page-objects/pages/header-navbar';
 import SnapSimpleKeyringPage from '../../page-objects/pages/snap-simple-keyring-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { installSnapSimpleKeyring } from '../../page-objects/flows/snap-simple-keyring.flow';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import {
@@ -51,6 +52,12 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         const testDapp = new TestDapp(driver);
         await testDapp.openTestDappPage();
         await testDapp.connectAccount({ publicAddress: newPublicKey });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         // SignedTypedDataV3 with Test Dapp
         await signTypedDataV3WithSnapAccount(driver, newPublicKey, false, true);
@@ -60,6 +67,12 @@ describe('Snap Account Signatures and Disconnects', function (this: Suite) {
         await testDapp.connectAccount({
           publicAddress: newPublicKey,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation2.checkPageIsLoaded();
+        await connectAccountConfirmation2.confirmConnect();
 
         // SignTypedDataV4 with Test Dapp
         await signTypedDataV4WithSnapAccount(driver, newPublicKey, false, true);

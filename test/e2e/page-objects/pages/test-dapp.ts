@@ -16,26 +16,10 @@ class TestDapp {
 
   private readonly approveTokensButtonWithoutGas = '#approveTokensWithoutGas';
 
-  private readonly confirmDepositButton =
-    '[data-testid="confirm-footer-button"]';
-
-  private readonly confirmDialogButton = '[data-testid="confirm-btn"]';
-
   private readonly confirmDialogScrollButton =
     '[data-testid="signature-request-scroll-button"]';
 
-  private readonly confirmScrollToBottomButtonRedesign =
-    '.confirm-scroll-to-bottom__button';
-
-  private readonly confirmSignatureButtonRedesign =
-    '[data-testid="confirm-footer-button"]';
-
   private readonly connectAccountButton = '#connectButton';
-
-  private readonly connectMetaMaskMessage = {
-    text: 'Connect this website with MetaMask',
-    tag: 'p',
-  };
 
   private readonly connectedAccount = '#accounts';
 
@@ -43,8 +27,6 @@ class TestDapp {
     css: '#chainId',
     text: networkId,
   });
-
-  private readonly createTokenButton = { text: 'Create Token', tag: 'button' };
 
   private readonly decryptButton = '#decryptButton';
 
@@ -160,17 +142,17 @@ class TestDapp {
 
   private readonly sendCallsButton = '#eip5792SendCallsButton';
 
-  private sign721PermitResult = '#sign721PermitResult';
+  private readonly sign721PermitResult = '#sign721PermitResult';
 
-  private sign721PermitResultR = '#sign721PermitResultR';
+  private readonly sign721PermitResultR = '#sign721PermitResultR';
 
-  private sign721PermitResultS = '#sign721PermitResultS';
+  private readonly sign721PermitResultS = '#sign721PermitResultS';
 
-  private sign721PermitResultV = '#sign721PermitResultV';
+  private readonly sign721PermitResultV = '#sign721PermitResultV';
 
-  private sign721PermitVerifyButton = '#sign721PermitVerify';
+  private readonly sign721PermitVerifyButton = '#sign721PermitVerify';
 
-  private sign721PermitVerifyResult = '#sign721PermitVerifyResult';
+  private readonly sign721PermitVerifyResult = '#sign721PermitVerifyResult';
 
   private readonly signPermitButton = '#signPermit';
 
@@ -205,11 +187,6 @@ class TestDapp {
 
   private readonly signTypedDataV3Result = '#signTypedDataV3Result';
 
-  private readonly signTypedDataV3V4SignatureRequestMessage = {
-    text: 'Hello, Bob!',
-    tag: 'div',
-  };
-
   private readonly signTypedDataV3V4SignatureRequestMessageRedesign = {
     text: 'Hello, Bob!',
     tag: 'p',
@@ -232,13 +209,6 @@ class TestDapp {
   private readonly signTypedDataVerifyResult = '#signTypedDataVerifyResult';
 
   private readonly simpleSendButton = '#sendButton';
-
-  private readonly transactionRequestMessage = {
-    text: 'Transaction request',
-    tag: 'h2',
-  };
-
-  private transferTokensButton = '#transferTokens';
 
   private transferTokensWithoutGasButton = '#transferTokensWithoutGas';
 
@@ -745,17 +715,14 @@ class TestDapp {
 
   async clickAddTokenToWallet() {
     await this.driver.clickElement(this.addTokensToWalletButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickAddNetworkButton() {
     await this.driver.clickElement(this.addNetworkButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickConnectAccountButton() {
     await this.driver.clickElement(this.connectAccountButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickConnectAccountButtonAndWaitForWindowToClose() {
@@ -778,7 +745,6 @@ class TestDapp {
 
   async clickApproveTokens() {
     await this.driver.clickElement(this.approveTokensButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickDecryptButton() {
@@ -787,37 +753,30 @@ class TestDapp {
 
   async clickApproveTokensWithoutGas() {
     await this.driver.clickElement(this.approveTokensButtonWithoutGas);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155DeployButton() {
     await this.driver.clickElement(this.erc1155DeployButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155MintButton() {
     await this.driver.clickElement(this.erc1155MintButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc1155SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC1155WatchButton() {
     await this.driver.clickElement(this.erc1155WatchButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20CreateTokenButton() {
     await this.driver.clickElement(this.erc20CreateTokenButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20IncreaseAllowanceButton() {
@@ -829,57 +788,46 @@ class TestDapp {
       state: 'enabled',
     });
     await this.driver.clickElement(this.erc20TokenTransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC20WatchAssetButton() {
     await this.driver.clickElement(this.erc20WatchAssetButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721DeployButton() {
     await this.driver.clickElement(this.erc721DeployButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721MintButton() {
     await this.driver.clickElement(this.erc721MintButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721Permit() {
     await this.driver.clickElement(this.sign721PermitButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721RevokeSetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721RevokeSetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721ApproveButton() {
     await this.driver.clickElement(this.erc721ApproveButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721SetApprovalForAllButton() {
     await this.driver.clickElement(this.erc721SetApprovalForAllButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickERC721TransferFromButton() {
     await this.driver.clickElement(this.erc721TransferFromButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickGetEncryptionKeyButton() {
     await this.driver.clickElement(this.getEncryptionKeyButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickPermit() {
     await this.driver.clickElement(this.signPermitButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickEthSignButton() {
@@ -888,32 +836,26 @@ class TestDapp {
 
   async clickPersonalSign() {
     await this.driver.clickElement(this.personalSignButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickPiggyBankContract() {
     await this.driver.clickElement(this.piggyBankContract);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 
   async clickSendCalls() {
     await this.driver.clickElement(this.sendCallsButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedData() {
     await this.driver.clickElement(this.signTypedDataButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav3() {
     await this.driver.clickElement(this.signTypedDataV3Button);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSignTypedDatav4() {
     await this.driver.clickElement(this.signTypedDataV4Button);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSimpleSendButton() {
@@ -921,93 +863,61 @@ class TestDapp {
       state: 'enabled',
     });
     await this.driver.clickElement(this.simpleSendButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSiwe() {
     await this.driver.clickElement(this.signSiweButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickSwieBadDomain() {
     await this.driver.clickElement(this.signSiweBadDomainButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickTransferTokens() {
-    await this.driver.clickElement(this.transferTokensButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+    await this.driver.clickElement(this.erc20TokenTransferButton);
   }
 
   async clickTransferTokensWithoutGas() {
     await this.driver.clickElement(this.transferTokensWithoutGasButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
-  }
-
-  async confirmConnectAccountModal() {
-    console.log('Confirm connect account modal in notification window');
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.waitForSelector(this.connectMetaMaskMessage);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmDialogButton,
-    );
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
   }
 
   async clickMaliciousERC20TransferButton() {
     await this.driver.clickElement(this.maliciousERC20TransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousApprovalButton() {
     await this.driver.clickElement(this.maliciousApprovalButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousContractInteractionButton() {
     await this.driver.clickElement(this.maliciousContractInteractionButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousEthTransferButton() {
     await this.driver.clickElement(this.maliciousEthTransferButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   async clickMaliciousTradeOrderButton() {
     await this.driver.clickElement(this.maliciousTradeOrderButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
   }
 
   /**
-   * Connect account to test dapp.
+   * Click connect account button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    *
    * @param options - Options for connecting account to test dapp.
-   * @param [options.connectAccountButtonEnabled] - Indicates if the connect account button should be enabled.
-   * @param options.publicAddress - The public address to connect to test dapp.
-   * @param [options.chainId] - The chain id to connect to, defaults to 0x539.
+   * @param [options.publicAddress] - The public address to verify after connection.
+   * @param [options.chainId] - The chain id to verify, defaults to 0x539.
    */
   async connectAccount({
-    connectAccountButtonEnabled = true,
     publicAddress,
     chainId = '0x539',
   }: {
-    connectAccountButtonEnabled?: boolean;
     publicAddress?: string;
     chainId?: string;
-  }) {
+  } = {}) {
     console.log('Connect account to test dapp');
     await this.clickConnectAccountButton();
-    if (connectAccountButtonEnabled) {
-      await this.confirmConnectAccountModal();
-    } else {
-      await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-      await this.driver.waitForSelector(this.connectMetaMaskMessage);
-      const confirmConnectDialogButton = await this.driver.findElement(
-        this.confirmDialogButton,
-      );
-      assert.equal(await confirmConnectDialogButton.isEnabled(), false);
-    }
     if (publicAddress) {
       await this.checkConnectedAccounts(publicAddress);
       await this.driver.waitForSelector({
@@ -1020,7 +930,6 @@ class TestDapp {
   async createDepositTransaction() {
     console.log('Create a deposit transaction on test dapp page');
     await this.driver.clickElement(this.depositPiggyBankContractButton);
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
   }
 
   /**
@@ -1063,8 +972,7 @@ class TestDapp {
    * Scrolls to the create token button and clicks it.
    */
   async clickCreateToken() {
-    await this.driver.clickElement(this.createTokenButton);
-    await this.driver.waitForWindowWithTitleToBePresent(WINDOW_TITLES.Dialog);
+    await this.driver.clickElement(this.erc20CreateTokenButton);
   }
 
   /**
@@ -1096,39 +1004,30 @@ class TestDapp {
   }
 
   /**
-   * Sign a message with the personal sign method.
+   * Click personal sign button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async personalSign() {
     console.log('Sign message with personal sign');
     await this.clickPersonalSign();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
   }
 
   /**
-   * Sign message with the signPermit method.
+   * Click permit sign button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async signPermit() {
     console.log('Sign message with signPermit');
     await this.clickPermit();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
   }
 
   /**
-   * Sign a message with the signTypedData method.
+   * Click sign typed data button in test dapp.
+   * Note: Dialog handling should be done separately in test files.
    */
   async signTypedData() {
     console.log('Sign message with signTypedData');
     await this.clickSignTypedData();
-    await this.driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
-    await this.driver.clickElementAndWaitForWindowToClose(
-      this.confirmSignatureButtonRedesign,
-    );
   }
 
   /**

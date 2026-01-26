@@ -4,8 +4,13 @@ import { Suite } from 'mocha';
 import { getEventPayloads, withFixtures } from '../../helpers';
 import FixtureBuilder from '../../fixtures/fixture-builder';
 import { MetaMetricsRequestedThrough } from '../../../../shared/constants/metametrics';
-import { DEFAULT_FIXTURE_ACCOUNT, MOCK_META_METRICS_ID } from '../../constants';
+import {
+  DEFAULT_FIXTURE_ACCOUNT,
+  MOCK_META_METRICS_ID,
+  WINDOW_TITLES,
+} from '../../constants';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 
 /**
@@ -65,6 +70,12 @@ describe('Permissions Approved Event', function (this: Suite) {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         const events = await getEventPayloads(driver, mockedEndpoints);
         assert.deepStrictEqual(events[0].properties, {

@@ -3,6 +3,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { DEFAULT_FIXTURE_ACCOUNT, WINDOW_TITLES } from '../../constants';
 import { withFixtures } from '../../helpers';
 import HomePage from '../../page-objects/pages/home/homepage';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import ReviewPermissionsConfirmation from '../../page-objects/pages/confirmations/review-permissions-confirmation';
 import TestDapp from '../../page-objects/pages/test-dapp';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
@@ -68,6 +69,13 @@ describe('Permissions Page when Dapp Switch to an enabled and non permissioned n
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
           chainId: '0x1',
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
         const chainIdAfterConnect: string = await driver.executeScript(
           `return window.ethereum.request(${chainIdRequest})`,
         );

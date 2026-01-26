@@ -346,6 +346,12 @@ describe('Multiple Standard Dapp Connections', function () {
         await testDapp.checkPageIsLoaded();
 
         await testDapp.connectAccount({});
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         await driver.switchToWindowWithTitle(
           WINDOW_TITLES.ExtensionInFullScreenView,

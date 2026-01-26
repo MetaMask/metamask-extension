@@ -11,6 +11,7 @@ import Homepage from '../../page-objects/pages/home/homepage';
 import PermissionListPage from '../../page-objects/pages/permission/permission-list-page';
 import SettingsPage from '../../page-objects/pages/settings/settings-page';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import { loginWithoutBalanceValidation } from '../../page-objects/flows/login.flow';
 
 describe('Permissions Page', function () {
@@ -28,6 +29,12 @@ describe('Permissions Page', function () {
         await testDapp.connectAccount({
           publicAddress: DEFAULT_FIXTURE_ACCOUNT,
         });
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation.checkPageIsLoaded();
+        await connectAccountConfirmation.confirmConnect();
 
         // switch to extension window and check the site permissions
         await driver.switchToWindowWithTitle(

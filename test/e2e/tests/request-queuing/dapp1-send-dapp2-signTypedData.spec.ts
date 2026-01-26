@@ -3,6 +3,7 @@ import FixtureBuilder from '../../fixtures/fixture-builder';
 import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import TestDapp from '../../page-objects/pages/test-dapp';
+import ConnectAccountConfirmation from '../../page-objects/pages/confirmations/connect-account-confirmation';
 import TransactionConfirmation from '../../page-objects/pages/confirmations/transaction-confirmation';
 import SignTypedDataConfirmation from '../../page-objects/pages/confirmations/sign-typed-data-confirmation';
 import { Driver } from '../../webdriver/driver';
@@ -47,6 +48,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappOne.openTestDappPage({ url: DAPP_URL });
         await testDappOne.checkPageIsLoaded();
         await testDappOne.connectAccount({});
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation1 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation1.checkPageIsLoaded();
+        await connectAccountConfirmation1.confirmConnect();
 
         await driver.switchToWindowWithTitle(WINDOW_TITLES.TestDApp);
 
@@ -55,6 +62,12 @@ describe('Request Queuing Dapp 1, Switch Tx -> Dapp 2 Send Tx', function () {
         await testDappTwo.openTestDappPage({ url: DAPP_ONE_URL });
         await testDappTwo.checkPageIsLoaded();
         await testDappTwo.connectAccount({});
+        await driver.switchToWindowWithTitle(WINDOW_TITLES.Dialog);
+        const connectAccountConfirmation2 = new ConnectAccountConfirmation(
+          driver,
+        );
+        await connectAccountConfirmation2.checkPageIsLoaded();
+        await connectAccountConfirmation2.confirmConnect();
 
         // Switch Dapp Two to Localhost 8546
         await driver.switchToWindowWithUrl(DAPP_ONE_URL);
