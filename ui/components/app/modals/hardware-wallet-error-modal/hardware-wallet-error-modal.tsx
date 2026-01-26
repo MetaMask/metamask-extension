@@ -30,6 +30,7 @@ import {
 import { useI18nContext } from '../../../../hooks/useI18nContext';
 import { useModalProps } from '../../../../hooks/useModalProps';
 import {
+  isRetryableHardwareWalletError,
   useHardwareWalletActions,
   useHardwareWalletConfig,
 } from '../../../../contexts/hardware-wallets';
@@ -234,21 +235,32 @@ export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
               gap={2}
               width={BlockSize.Full}
             >
-              <Button
-                variant={ButtonVariant.Primary}
-                size={ButtonSize.Lg}
-                block
-                onClick={handleRetry}
-              >
-                {isLoading ? (
-                  <Icon
-                    name={IconName.Loading}
-                    style={{ animation: 'spin 1.2s linear infinite' }}
-                  />
-                ) : (
-                  t('hardwareWalletErrorContinueButton')
-                )}
-              </Button>
+              {isRetryableHardwareWalletError(error) ? (
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  block
+                  onClick={handleRetry}
+                >
+                  {isLoading ? (
+                    <Icon
+                      name={IconName.Loading}
+                      style={{ animation: 'spin 1.2s linear infinite' }}
+                    />
+                  ) : (
+                    t('hardwareWalletErrorContinueButton')
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  block
+                  onClick={handleClose}
+                >
+                  {t('confirm')}
+                </Button>
+              )}
             </Box>
           </ModalFooter>
         </ModalContent>

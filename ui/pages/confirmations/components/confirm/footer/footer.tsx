@@ -212,7 +212,8 @@ const Footer = () => {
   const navigate = useNavigate();
   const { onDappSwapCompleted } = useDappSwapActions();
   const { onTransactionConfirm } = useTransactionConfirm();
-  const { navigateNext } = useConfirmationNavigation();
+  const { navigateNext, count: confirmationsCount } =
+    useConfirmationNavigation();
   const { onSubmit: onAddEthereumChain } = useAddEthereumChain();
 
   const { currentConfirmation, isScrollToBottomCompleted } =
@@ -323,6 +324,13 @@ const Footer = () => {
   ]);
 
   const handleFooterCancel = useCallback(async () => {
+    console.log('[Footer handleFooterCancel] Starting cancel', {
+      confirmationsCount,
+      currentConfirmationId: currentConfirmation?.id,
+      isAddEthereumChain,
+      shouldThrottleOrigin,
+    });
+
     if (shouldThrottleOrigin) {
       setShowOriginThrottleModal(true);
       return;
@@ -330,11 +338,25 @@ const Footer = () => {
 
     await onCancel({ location: MetaMetricsEventLocation.Confirmation });
 
+    console.log('[Footer handleFooterCancel] After onCancel, navigating...');
+
     onDappSwapCompleted();
-    if (isAddEthereumChain) {
+
+    // After rejection, navigate to the next confirmation or home
+    // confirmationsCount includes the current one, so if it's 1 or less, go home
+    if (isAddEthereumChain || confirmationsCount <= 1) {
+      console.log('[Footer handleFooterCancel] Navigating to DEFAULT_ROUTE');
       navigate(DEFAULT_ROUTE);
     } else if (currentConfirmation?.id) {
+      // Navigate to the next pending confirmation
+      console.log(
+        '[Footer handleFooterCancel] Navigating to next confirmation',
+      );
       navigateNext(currentConfirmation.id);
+    } else {
+      // Fallback: if somehow no confirmation ID, go home
+      console.log('[Footer handleFooterCancel] Fallback: Navigating to home');
+      navigate(DEFAULT_ROUTE);
     }
   }, [
     navigateNext,
@@ -344,6 +366,7 @@ const Footer = () => {
     isAddEthereumChain,
     navigate,
     onDappSwapCompleted,
+    confirmationsCount,
   ]);
 
   const { isShowCoverageIndicator } = useEnableShieldCoverageChecks();

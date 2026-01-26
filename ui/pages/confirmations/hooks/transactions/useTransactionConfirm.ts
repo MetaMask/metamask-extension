@@ -8,7 +8,10 @@ import { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { CONFIRM_TRANSACTION_ROUTE } from '../../../../helpers/constants/routes';
+import {
+  CONFIRM_TRANSACTION_ROUTE,
+  DEFAULT_ROUTE,
+} from '../../../../helpers/constants/routes';
 import { getCustomNonceValue } from '../../../../selectors';
 import { useConfirmContext } from '../../context/confirm';
 import { useSelectedGasFeeToken } from '../../components/confirm/info/hooks/useGasFeeToken';
@@ -126,9 +129,8 @@ export function useTransactionConfirm() {
       await dispatch(updateAndApproveTx(newTransactionMeta, true, ''));
 
       // Transaction was successfully approved and submitted
-      onDappSwapCompleted();
-      navigateNext(transactionMeta.id);
-      resetTransactionState();
+      // navigateNext(transactionMeta.id);
+      // resetTransactionState();
     } catch (error) {
       const isHardwareWalletError = error instanceof HardwareWalletError;
 
@@ -155,7 +157,8 @@ export function useTransactionConfirm() {
       handleShieldSubscriptionApprovalTransactionAfterConfirmErr(
         newTransactionMeta,
       );
-      if (isHardwareWalletError && isRetryableHardwareWalletError(error)) {
+
+      if (isRetryableHardwareWalletError(error)) {
         const recreatedTxId = error.metadata?.recreatedTxId as
           | string
           | undefined;
@@ -173,19 +176,25 @@ export function useTransactionConfirm() {
         }
       }
 
-      console.log('[useTransactionConfirm] Not showing modal, rethrowing');
-      throw error;
+      // For non-retryable hardware wallet errors (e.g., UNKNOWN_ERROR),
+      // show the error modal and navigate to home page since the transaction
+      // cannot be retried
+      console.log(
+        '[useTransactionConfirm] Non-retryable error, showing modal and navigating home',
+      );
+      showErrorModal(error);
+      navigate(DEFAULT_ROUTE, { replace: true });
+      return;
     }
+
+    onDappSwapCompleted();
   }, [
     newTransactionMeta,
     customNonceValue,
     isGaslessSupportedSTX,
     dispatch,
     navigate,
-    navigateNext,
-    resetTransactionState,
     showErrorModal,
-    transactionMeta?.id,
     handleSmartTransaction,
     handleGasless7702,
     selectedGasFeeToken,
