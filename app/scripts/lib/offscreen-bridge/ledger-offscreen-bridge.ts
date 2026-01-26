@@ -1,14 +1,15 @@
 import {
+  GetAppNameAndVersionResponse,
   LedgerBridge,
   LedgerSignTypedDataParams,
   LedgerSignTypedDataResponse,
 } from '@metamask/eth-ledger-bridge-keyring';
-import { TransportStatusError } from '@ledgerhq/errors';
 import {
   LedgerAction,
   OffscreenCommunicationEvents,
   OffscreenCommunicationTarget,
 } from '../../../../shared/constants/offscreen-communication';
+import { TransportStatusError } from '@ledgerhq/errors';
 
 const MESSAGE_TIMEOUT = 4000;
 
@@ -84,7 +85,7 @@ export class LedgerOffscreenBridge
     );
   }
 
-  getAppNameAndVersion(): Promise<{ appName: string; version: string }> {
+  getAppNameAndVersion(): Promise<GetAppNameAndVersionResponse> {
     return this.#sendMessage(
       {
         action: LedgerAction.getAppNameAndVersion,
@@ -138,6 +139,7 @@ export class LedgerOffscreenBridge
     message: IFrameMessage<TAction>,
     { timeout }: { timeout?: number } = {},
   ): Promise<ResponsePayload> {
+    console.log('[LedgerOffscreenBridge] sending #sendMessage', message);
     return new Promise((resolve, reject) => {
       let responseTimeout: ReturnType<typeof setTimeout>;
 
@@ -154,6 +156,10 @@ export class LedgerOffscreenBridge
         },
         (response) => {
           clearTimeout(responseTimeout);
+          console.log(
+            '[LedgerOffscreenBridge] #sendMessage response:',
+            response,
+          );
           if (response?.success) {
             resolve(response.payload || response.success);
           } else {

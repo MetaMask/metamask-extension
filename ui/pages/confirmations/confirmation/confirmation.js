@@ -42,6 +42,8 @@ import {
   getUseSafeChainsListValidation,
   getSnapsMetadata,
   getHideSnapBranding,
+  getIsHardwareWalletErrorModalVisible,
+  getPendingHardwareSigning,
 } from '../../../selectors';
 import { getNetworkConfigurationsByChainId } from '../../../../shared/modules/selectors/networks';
 import Callout from '../../../components/ui/callout';
@@ -241,6 +243,10 @@ export default function ConfirmationPage({
   const unapprovedTxsCount = useSelector(getUnapprovedTxCount);
   const approvalFlows = useSelector(getApprovalFlows, isEqual);
   const totalUnapprovedCount = useSelector(getTotalUnapprovedCount);
+  const isHardwareWalletErrorModalVisible = useSelector(
+    getIsHardwareWalletErrorModalVisible,
+  );
+  const isPendingHardwareSigning = useSelector(getPendingHardwareSigning);
   const useSafeChainsListValidation = useSelector(
     getUseSafeChainsListValidation,
   );
@@ -376,16 +382,39 @@ export default function ConfirmationPage({
     // return them to the default route. Otherwise, if the number of pending
     // confirmations reduces to a number that is less than the currently
     // viewed index, reset the index.
-    if (
+    // Don't navigate away if:
+    // - Hardware wallet error modal is visible (for retry functionality)
+    // - Hardware wallet signing is in progress (error being handled)
+    const wouldNavigate =
       pendingConfirmations.length === 0 &&
       (approvalFlows.length === 0 || totalUnapprovedCount !== 0) &&
-      redirectToHomeOnZeroConfirmations
-    ) {
+      redirectToHomeOnZeroConfirmations;
+
+    const isBlocked =
+      isHardwareWalletErrorModalVisible || isPendingHardwareSigning;
+
+    // Always log when this effect runs to trace timing
+    console.log('[HW_DEBUG NAV confirmation.js] useEffect triggered:', {
+      pendingConfirmationsLength: pendingConfirmations.length,
+      approvalFlowsLength: approvalFlows.length,
+      totalUnapprovedCount,
+      redirectToHomeOnZeroConfirmations,
+      isHardwareWalletErrorModalVisible,
+      isPendingHardwareSigning,
+      wouldNavigate,
+      isBlocked,
+      willNavigate: wouldNavigate && !isBlocked,
+    });
+
+    if (wouldNavigate && !isBlocked) {
+      console.log('[HW_DEBUG NAV confirmation.js] NAVIGATING TO HOME');
       const to = shouldShowActivity
         ? `${DEFAULT_ROUTE}?tab=activity`
         : DEFAULT_ROUTE;
 
       navigate(to);
+    } else if (wouldNavigate && isBlocked) {
+      console.log('[HW_DEBUG NAV confirmation.js] BLOCKED - not navigating');
     }
   }, [
     pendingConfirmations,
@@ -394,6 +423,8 @@ export default function ConfirmationPage({
     navigate,
     redirectToHomeOnZeroConfirmations,
     shouldShowActivity,
+    isHardwareWalletErrorModalVisible,
+    isPendingHardwareSigning,
   ]);
 
   useEffect(() => {

@@ -1,0 +1,309 @@
+import React, { useState } from 'react';
+import { type HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import {
+  Text,
+  Box,
+  Button,
+  ButtonVariant,
+  ButtonSize,
+  IconName,
+  Icon,
+  IconSize,
+  Modal,
+  ModalBody,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+} from '../../../component-library';
+import {
+  AlignItems,
+  Display,
+  FlexDirection,
+  JustifyContent,
+  TextAlign,
+  TextColor,
+  TextVariant,
+  IconColor,
+  BlockSize,
+} from '../../../../helpers/constants/design-system';
+import { useI18nContext } from '../../../../hooks/useI18nContext';
+import { useModalProps } from '../../../../hooks/useModalProps';
+import {
+  HardwareWalletType,
+  isRetryableHardwareWalletError,
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../../contexts/hardware-wallets';
+// HardwareWalletType is used as a default fallback when walletType cannot be extracted
+import { buildErrorContent } from './error-content-builder';
+
+type HardwareWalletErrorModalProps = {
+  isOpen?: boolean;
+  error?: HardwareWalletError;
+  onCancel?: () => void;
+  onClose?: () => void;
+  onRetry?: () => void;
+};
+
+/**
+ * Modal component to display hardware wallet errors with recovery instructions
+ *
+ * @param props - The component props
+ */
+export const HardwareWalletErrorModal: React.FC<HardwareWalletErrorModalProps> =
+  React.memo((props) => {
+    const t = useI18nContext();
+    const { hideModal, props: modalProps } = useModalProps();
+    const [isLoading, setIsLoading] = useState(false);
+    const [recovered, setRecovered] = useState(false);
+    const { error, onCancel, onClose } = { ...modalProps, ...props };
+
+    const { deviceId, walletType: selectedAccountWalletType } =
+      useHardwareWalletConfig();
+    const { ensureDeviceReady, clearError } = useHardwareWalletActions();
+
+    // If no error, don't render anything
+    if (!error) {
+      console.log('[HardwareWalletErrorModal] No error provided, closing modal');
+      onClose?.();
+      return null;
+    }
+
+    // Get wallet type from error metadata first (for signature flows where
+    // the signing account may differ from the selected account), then fall
+    // back to the selected account's wallet type.
+    // Handle both direct metadata and RPC error format (data.metadata)
+    const errorMetadata =
+      (error as { metadata?: { walletType?: HardwareWalletType } }).metadata ??
+      (error as { data?: { metadata?: { walletType?: HardwareWalletType } } })
+        .data?.metadata;
+    const errorWalletType = errorMetadata?.walletType;
+
+    // Debug logging to trace walletType extraction
+    console.log('[HardwareWalletErrorModal] Extracting walletType:', {
+      errorType: typeof error,
+      errorName: (error as { name?: string })?.name,
+      errorCode: (error as { code?: number })?.code,
+      hasMetadata: !!(error as { metadata?: unknown })?.metadata,
+      hasDataMetadata: !!(error as { data?: { metadata?: unknown } })?.data
+        ?.metadata,
+      errorWalletType,
+      selectedAccountWalletType,
+      errorMetadataKeys: errorMetadata ? Object.keys(errorMetadata) : null,
+    });
+
+    // Use errorWalletType, then selectedAccountWalletType, then default to Ledger
+    // as a fallback since most hardware wallet users are Ledger users.
+    // This ensures the modal always shows rather than silently closing.
+    const displayWalletType =
+      errorWalletType ||
+      selectedAccountWalletType ||
+      HardwareWalletType.Ledger;
+
+    console.log('[HardwareWalletErrorModal] Using displayWalletType:', displayWalletType);
+
+    const { icon, title, recoveryInstructions } = buildErrorContent(
+      error,
+      displayWalletType,
+      t as (key: string, ...args: unknown[]) => string,
+    );
+
+    const handleRetry = async () => {
+      setIsLoading(true);
+      const result = await ensureDeviceReady(deviceId ?? '');
+      if (result) {
+        setRecovered(true);
+        clearError();
+      }
+      setIsLoading(false);
+    };
+
+    const handleClose = () => {
+      clearError();
+      hideModal();
+    };
+
+    if (recovered) {
+      return (
+        <Modal
+          isOpen={true}
+          onClose={handleClose}
+          isClosedOnOutsideClick={false}
+          isClosedOnEscapeKey
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader onClose={handleClose}>
+              <Box
+                display={Display.Flex}
+                alignItems={AlignItems.center}
+                justifyContent={JustifyContent.center}
+              >
+                <Icon
+                  name={IconName.Confirmation}
+                  color={IconColor.successDefault}
+                  size={IconSize.Xl}
+                />
+              </Box>
+            </ModalHeader>
+            <ModalBody>
+              <Box
+                display={Display.Flex}
+                flexDirection={FlexDirection.Column}
+                alignItems={AlignItems.center}
+                gap={4}
+              >
+                <Text
+                  variant={TextVariant.headingSm}
+                  textAlign={TextAlign.Center}
+                  color={TextColor.textAlternative}
+                >
+                  {t('hardwareWalletTypeConnected', [t(displayWalletType)])}
+                </Text>
+              </Box>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      );
+    }
+
+    return (
+      <Modal
+        isOpen={true}
+        onClose={handleClose}
+        isClosedOnOutsideClick={false}
+        isClosedOnEscapeKey
+      >
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader onClose={handleClose}>
+            <Box
+              display={Display.Flex}
+              alignItems={AlignItems.center}
+              justifyContent={JustifyContent.center}
+            >
+              <Icon
+                name={icon}
+                color={IconColor.errorDefault}
+                size={IconSize.Xl}
+              />
+            </Box>
+          </ModalHeader>
+
+          <ModalBody>
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Column}
+              alignItems={AlignItems.center}
+              gap={4}
+            >
+              <Text
+                variant={TextVariant.bodyMdMedium}
+                textAlign={TextAlign.Center}
+                color={TextColor.textAlternative}
+              >
+                {title}
+              </Text>
+
+              {/* Error Message */}
+              {/* <Box width={BlockSize.Full} padding={3}>
+                <Text
+                  variant={TextVariant.bodyMd}
+                  textAlign={TextAlign.Center}
+                  color={TextColor.errorDefault}
+                >
+                  {(error as any).userMessage || (error as any).message}
+                </Text>
+              </Box> */}
+
+              {/* Recovery Instructions */}
+              {recoveryInstructions.length > 0 && (
+                <Box
+                  width={BlockSize.Full}
+                  display={Display.Flex}
+                  flexDirection={FlexDirection.Column}
+                  gap={2}
+                >
+                  <Text
+                    variant={TextVariant.bodyMdMedium}
+                    color={TextColor.textDefault}
+                  >
+                    {t('hardwareWalletErrorRecoveryTitle')}
+                  </Text>
+                  {recoveryInstructions.map((instruction, index) => (
+                    <Box
+                      key={index}
+                      display={Display.Flex}
+                      flexDirection={FlexDirection.Row}
+                      gap={2}
+                      alignItems={AlignItems.flexStart}
+                    >
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {`${index + 1}.`}
+                      </Text>
+                      <Text
+                        variant={TextVariant.bodyMd}
+                        color={TextColor.textDefault}
+                      >
+                        {instruction}
+                      </Text>
+                    </Box>
+                  ))}
+                </Box>
+              )}
+            </Box>
+          </ModalBody>
+
+          <ModalFooter>
+            {/* Debug: Log retry check result */}
+            {(() => {
+              const isRetryable = isRetryableHardwareWalletError(error);
+              console.log('[HardwareWalletErrorModal] isRetryable check:', {
+                isRetryable,
+                errorCode: (error as { code?: number })?.code,
+                errorName: (error as { name?: string })?.name,
+              });
+              return null;
+            })()}
+            <Box
+              display={Display.Flex}
+              flexDirection={FlexDirection.Row}
+              gap={2}
+              width={BlockSize.Full}
+            >
+              {isRetryableHardwareWalletError(error) ? (
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  block
+                  onClick={handleRetry}
+                >
+                  {isLoading ? (
+                    <Icon
+                      name={IconName.Loading}
+                      style={{ animation: 'spin 1.2s linear infinite' }}
+                    />
+                  ) : (
+                    t('hardwareWalletErrorContinueButton')
+                  )}
+                </Button>
+              ) : (
+                <Button
+                  variant={ButtonVariant.Primary}
+                  size={ButtonSize.Lg}
+                  block
+                  onClick={handleClose}
+                >
+                  {t('confirm')}
+                </Button>
+              )}
+            </Box>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    );
+  });

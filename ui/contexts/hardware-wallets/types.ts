@@ -53,8 +53,8 @@ export type HardwareWalletConnectionState =
   | { status: ConnectionStatus.Connected }
   | { status: ConnectionStatus.Ready }
   | { status: ConnectionStatus.AwaitingConfirmation }
-  | { status: ConnectionStatus.AwaitingApp; reason: string; appName?: string }
-  | { status: ConnectionStatus.ErrorState; reason: string; error: Error };
+  | { status: ConnectionStatus.AwaitingApp; appName?: string }
+  | { status: ConnectionStatus.ErrorState; error: Error };
 
 /**
  * Device event payload
@@ -94,6 +94,22 @@ export type HardwareWalletAdapter = {
    * @throws {HardwareWalletError} if device is not ready (locked, wrong app, etc.)
    */
   ensureDeviceReady?(deviceId: string): Promise<boolean>;
+
+  /**
+   * Check the current permission state for device access.
+   * Does NOT require a user gesture.
+   *
+   * @returns The current permission state
+   */
+  checkPermission?(): Promise<HardwareConnectionPermissionState>;
+
+  /**
+   * Request permission to access the hardware device.
+   * MUST be called from within a user gesture handler (e.g., button click).
+   *
+   * @returns true if permission was granted
+   */
+  requestPermission?(): Promise<boolean>;
 };
 
 /**
@@ -105,31 +121,4 @@ export type HardwareWalletAdapterOptions = {
   onDeviceLocked: () => void;
   onAppNotOpen: () => void;
   onDeviceEvent: (payload: DeviceEventPayload) => void;
-};
-
-/**
- * Context type
- */
-export type HardwareWalletContextType = {
-  // State
-  isHardwareWalletAccount: boolean;
-  walletType: HardwareWalletType | null;
-  connectionState: HardwareWalletConnectionState;
-  deviceId: string | null;
-  hardwareConnectionPermissionState: HardwareConnectionPermissionState;
-  isWebHidAvailable: boolean;
-  isWebUsbAvailable: boolean;
-
-  // Actions
-  connect: (type: HardwareWalletType, deviceId: string) => Promise<void>;
-  disconnect: () => Promise<void>;
-  clearError: () => void;
-  retry: () => Promise<void>;
-  checkHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<HardwareConnectionPermissionState>;
-  requestHardwareWalletPermission: (
-    walletType: HardwareWalletType,
-  ) => Promise<boolean>;
-  ensureDeviceReady: () => Promise<boolean>;
 };

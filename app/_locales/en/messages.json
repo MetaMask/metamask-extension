@@ -1610,6 +1610,10 @@
   "connectAnAccountHeader": {
     "message": "Connect an account"
   },
+  "connectHardwareDevice": {
+    "message": "Connect $1",
+    "description": "$1 is the hardware wallet device name"
+  },
   "connectManually": {
     "message": "Manually connect to current site"
   },
@@ -3014,9 +3018,126 @@
   "hardwareWalletConnected": {
     "message": "Hardware wallet connected"
   },
+  "hardwareWalletConnectionRecoveryLedgerStep1": {
+    "message": "Your Ledger is unlocked",
+    "description": "Ledger is the hardware wallet device"
+  },
+  "hardwareWalletConnectionRecoveryLedgerStep2": {
+    "message": "The Ethereum app is open"
+  },
+  "hardwareWalletConnectionRecoverySteps": {
+    "message": "To continue, make sure:"
+  },
+  "hardwareWalletConnectionRecoveryTrezorStep1": {
+    "message": "Your Trezor is connected",
+    "description": "Trezor is the hardware wallet device"
+  },
+  "hardwareWalletConnectionRecoveryTrezorStep2": {
+    "message": "You have entered your PIN"
+  },
+  "hardwareWalletErrorContinueButton": {
+    "message": "Continue"
+  },
+  "hardwareWalletErrorDescriptionDeviceLocked": {
+    "message": "Unlock it and try again to continue",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorRecoveryApp1": {
+    "message": "Ensure your device is unlocked and the Ethereum app is open"
+  },
+  "hardwareWalletErrorRecoveryApp2": {
+    "message": "If the wrong app is open, close it and open the Ethereum app"
+  },
+  "hardwareWalletErrorRecoveryApp3": {
+    "message": "Try disconnecting and reconnecting your device"
+  },
+  "hardwareWalletErrorRecoveryConnection1": {
+    "message": "Ensure your hardware wallet is properly connected via USB"
+  },
+  "hardwareWalletErrorRecoveryConnection2": {
+    "message": "Try using a different USB cable or port"
+  },
+  "hardwareWalletErrorRecoveryConnection3": {
+    "message": "Restart your device and try connecting again"
+  },
+  "hardwareWalletErrorRecoveryConnectionTitle": {
+    "message": "Connection to the Ledger device closed"
+  },
+  "hardwareWalletErrorRecoveryDefault1": {
+    "message": "Disconnect and reconnect your hardware wallet"
+  },
+  "hardwareWalletErrorRecoveryDefault2": {
+    "message": "If the problem persists, please contact support"
+  },
+  "hardwareWalletErrorRecoveryOpenApp": {
+    "message": "Please open the Ethereum app on your device"
+  },
+  "hardwareWalletErrorRecoveryOpenAppTitle": {
+    "message": "Wrong app open"
+  },
+  "hardwareWalletErrorRecoveryPermission1": {
+    "message": "Click the retry button to request device access again"
+  },
+  "hardwareWalletErrorRecoveryPermission2": {
+    "message": "Select your hardware wallet from the browser's device selection dialog"
+  },
+  "hardwareWalletErrorRecoveryPermission3": {
+    "message": "If you don't see your device, make sure it's plugged in and unlocked"
+  },
+  "hardwareWalletErrorRecoveryPermissionTitle": {
+    "message": "WebHID permission issue"
+  },
+  "hardwareWalletErrorRecoveryTimeout1": {
+    "message": "The connection timed out. Please ensure your device is ready and unlocked"
+  },
+  "hardwareWalletErrorRecoveryTimeout2": {
+    "message": "Try the operation again"
+  },
+  "hardwareWalletErrorRecoveryTitle": {
+    "message": "How to fix this:"
+  },
+  "hardwareWalletErrorRecoveryUnlock1": {
+    "message": "Enter your PIN to unlock your hardware wallet device"
+  },
+  "hardwareWalletErrorRecoveryUnlock2": {
+    "message": "Ensure the device is not in standby mode"
+  },
+  "hardwareWalletErrorRecoveryUnlock3": {
+    "message": "Try again after unlocking"
+  },
+  "hardwareWalletErrorRecoveryUserCancel": {
+    "message": "You cancelled the operation. You can try again when ready"
+  },
+  "hardwareWalletErrorRecoveryWebHID1": {
+    "message": "WebHID is not available in your browser. Please use Chrome, Edge, or another WebHID-compatible browser"
+  },
+  "hardwareWalletErrorRecoveryWebHID2": {
+    "message": "Alternatively, update your browser to the latest version"
+  },
+  "hardwareWalletErrorSomethingWentWrong": {
+    "message": "Something went wrong"
+  },
+  "hardwareWalletErrorSomethingWentWrongDescription": {
+    "message": "Make sure your $1 is set up with the Secret Recovery Phrase or passphrase for this account",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitle": {
+    "message": "Hardware Wallet Error"
+  },
+  "hardwareWalletErrorTitleConnectYourDevice": {
+    "message": "Connect your $1 device",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletErrorTitleDeviceLocked": {
+    "message": "$1 locked",
+    "description": "$1 is the hardware wallet type"
+  },
   "hardwareWalletLegacyDescription": {
     "message": "(legacy)",
     "description": "Text representing the MEW path"
+  },
+  "hardwareWalletStartTransactionFlow": {
+    "message": "Start transaction flow"
   },
   "hardwareWalletSubmissionWarningStep1": {
     "message": "Be sure your $1 is plugged in and to select the Ethereum app."
@@ -3029,6 +3150,23 @@
   },
   "hardwareWalletSupportLinkConversion": {
     "message": "click here"
+  },
+  "hardwareWalletTransactionPendingDescription": {
+    "message": "Please review and confirm the transaction on your $1 device",
+    "description": "$1 is the hardware wallet type"
+  },
+  "hardwareWalletTransactionPendingTitle": {
+    "message": "Confirm on your device"
+  },
+  "hardwareWalletTransactionSuccessDescription": {
+    "message": "Your transaction has been successfully signed on your hardware wallet"
+  },
+  "hardwareWalletTransactionSuccessTitle": {
+    "message": "Transaction signed"
+  },
+  "hardwareWalletTypeConnected": {
+    "message": "$1 connected",
+    "description": "$1 is the hardware wallet type"
   },
   "hardwareWallets": {
     "message": "Connect a hardware wallet"
@@ -3460,6 +3598,10 @@
   "lastSold": {
     "message": "Last sold"
   },
+  "lattice": {
+    "message": "Lattice",
+    "description": "Hardware device name"
+  },
   "lavaDomeCopyWarning": {
     "message": "For your safety, selecting this text is not available right now."
   },
@@ -3499,6 +3641,10 @@
   },
   "leaveMetaMaskDesc": {
     "message": "You're about to visit a site outside of MetaMask. Double-check the URL before continuing."
+  },
+  "ledger": {
+    "message": "Ledger",
+    "description": "Hardware device name"
   },
   "ledgerAccountRestriction": {
     "message": "You need to make use your last account before you can add a new one."
@@ -4653,6 +4799,10 @@
   "onboardingSrpInputPlaceholder": {
     "message": "Add a space between each word and make sure no one is watching."
   },
+  "oneKey": {
+    "message": "OneKey",
+    "description": "Hardware device name"
+  },
   "onekey": {
     "message": "OneKey"
   },
@@ -5566,6 +5716,10 @@
   },
   "pushPlatformNotificationsSwapCompletedTitle": {
     "message": "Swap completed"
+  },
+  "qr": {
+    "message": "QR",
+    "description": "Hardware device name"
   },
   "queued": {
     "message": "Queued"
@@ -8480,6 +8634,10 @@
   },
   "transferRequest": {
     "message": "Transfer request"
+  },
+  "trezor": {
+    "message": "Trezor",
+    "description": "Hardware device name"
   },
   "tronBandwidth": {
     "message": "Bandwidth"

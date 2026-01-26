@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Button,
@@ -28,6 +28,10 @@ import {
 } from '../../../helpers/constants/design-system';
 import { useIsTxSubmittable } from '../../../hooks/bridge/useIsTxSubmittable';
 import { Row } from '../layout';
+import {
+  useHardwareWalletActions,
+  useHardwareWalletConfig,
+} from '../../../contexts/hardware-wallets';
 
 export const BridgeCTAButton = ({
   onFetchNewQuotes,
@@ -51,6 +55,13 @@ export const BridgeCTAButton = ({
   );
   const { submitBridgeTransaction } = useSubmitBridgeTransaction();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const mountedRef = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
+  }, []);
 
   const {
     isNoQuotesAvailable,
@@ -64,6 +75,11 @@ export const BridgeCTAButton = ({
   const wasTxDeclined = useSelector(getWasTxDeclined);
 
   const isTxSubmittable = useIsTxSubmittable();
+
+  // Optimized: Only subscribe to config (no rerenders on connection state changes)
+  const { isHardwareWalletAccount, deviceId } = useHardwareWalletConfig();
+  // Optimized: Only subscribe to actions (stable, never rerenders)
+  const { ensureDeviceReady } = useHardwareWalletActions();
 
   const label = useMemo(() => {
     if (wasTxDeclined) {
@@ -102,6 +118,9 @@ export const BridgeCTAButton = ({
     }
 
     if (isTxSubmittable || isTxAlertPresent || isTxAlertLoading) {
+      if (isHardwareWalletAccount) {
+        return 'hardwareWalletStartTransactionFlow';
+      }
       return 'swap';
     }
 
@@ -121,6 +140,7 @@ export const BridgeCTAButton = ({
     needsDestinationAddress,
     activeQuote,
     isNoQuotesAvailable,
+    isHardwareWalletAccount,
   ]);
 
   // Label for the secondary button that re-starts quote fetching
@@ -147,13 +167,28 @@ export const BridgeCTAButton = ({
         }
 
         if (activeQuote && isTxSubmittable && !isSubmitting) {
+          // Verify hardware wallet device is ready before submitting
+          if (isHardwareWalletAccount && deviceId) {
+            console.log('[BridgeCTAButton] Verifying device is ready');
+            const isDeviceReady = await ensureDeviceReady(deviceId);
+            if (!isDeviceReady) {
+              console.log(
+                '[BridgeCTAButton] Device not ready, error modal will be shown by HardwareWalletErrorMonitor',
+              );
+              return;
+            }
+            console.log('[BridgeCTAButton] Device is ready, proceeding');
+          }
+
           try {
             // We don't need to worry about setting to false if the tx submission succeeds
             // because we route immediately to Activity list page
             setIsSubmitting(true);
             await submitBridgeTransaction(activeQuote);
           } finally {
-            setIsSubmitting(false);
+            if (mountedRef.current) {
+              setIsSubmitting(false);
+            }
           }
         }
       }}

@@ -144,6 +144,7 @@ type AppState = {
      */
     hasUserInteractedWithModal?: boolean;
   };
+  pendingHardwareSigning: boolean;
 };
 
 export type AppSliceState = {
@@ -245,6 +246,7 @@ const initialState: AppState = {
   showClaimSubmitToast: null,
   showInfuraSwitchToast: false,
   showSupportDataConsentModal: false,
+  pendingHardwareSigning: false,
 };
 
 export default function reduceApp(
@@ -798,6 +800,18 @@ export default function reduceApp(
         shieldEntryModal: {
           ...action.payload,
         },
+      };
+
+    case actionConstants.SET_PENDING_HARDWARE_SIGNING:
+      console.log(
+        '[HW_DEBUG REDUCER] pendingHardwareSigning changing:',
+        appState.pendingHardwareSigning,
+        '->',
+        action.payload,
+      );
+      return {
+        ...appState,
+        pendingHardwareSigning: action.payload,
       };
 
     default:

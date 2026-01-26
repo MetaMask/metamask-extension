@@ -1,6 +1,8 @@
 import EventEmitter from 'events';
 import { finished, pipeline } from 'readable-stream';
 import browser from 'webextension-polyfill';
+import { HardwareWalletError } from '@metamask/hw-wallet-sdk';
+import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import {
   createAsyncMiddleware,
   createScaffoldMiddleware,
@@ -18,7 +20,6 @@ import { errorCodes, JsonRpcError, rpcErrors } from '@metamask/rpc-errors';
 import { Mutex } from 'await-semaphore';
 import log from 'loglevel';
 import { OneKeyKeyring, TrezorKeyring } from '@metamask/eth-trezor-keyring';
-import { LedgerKeyring } from '@metamask/eth-ledger-bridge-keyring';
 import LatticeKeyring from 'eth-lattice-keyring';
 import { rawChainData } from 'eth-chainlist';
 import { QrKeyring } from '@metamask/eth-qr-keyring';
@@ -227,6 +228,10 @@ import {
 } from '../../shared/modules/shield';
 import { getIsShieldSubscriptionActive } from '../../shared/lib/shield';
 import { createSentryError } from '../../shared/modules/error';
+import {
+  isRetryableHardwareWalletError,
+  parseErrorByType,
+} from '../../ui/contexts/hardware-wallets';
 import { createTransactionEventFragmentWithTxId } from './lib/transaction/metrics';
 ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
 import { keyringSnapPermissionsBuilder } from './lib/snap-keyring/keyring-snaps-permissions';
@@ -3419,6 +3424,8 @@ export default class MetamaskController extends EventEmitter {
       requestUserApproval:
         approvalController.addAndShowApprovalRequest.bind(approvalController),
       resolvePendingApproval: this.resolvePendingApproval,
+      // Hardware wallet transaction approval with retry support
+      approveHardwareTransaction: this.approveHardwareTransaction.bind(this),
 
       // Notifications
       resetViewedNotifications: announcementController.resetViewed.bind(
@@ -8191,7 +8198,7 @@ export default class MetamaskController extends EventEmitter {
    * Throw an artificial error in a timeout handler for testing purposes.
    *
    * @param message - The error message.
-   * @deprecated This is only meant to facilitate manual and E2E testing. We should not
+   * @deprecated This is only meant to facilit ate manual and E2E testing. We should not
    * use this for handling errors.
    */
   throwTestError(message) {
@@ -8690,13 +8697,54 @@ export default class MetamaskController extends EventEmitter {
     }
   };
 
-  resolvePendingApproval = async (id, value, options) => {
+  /**
+   * Resolve a pending approval. For hardware wallet transactions and signatures,
+   * this handles error parsing and retry logic with request recreation.
+   *
+   * @param {string} id - The approval ID
+   * @param {unknown} value - The value to resolve with (for transactions, contains txMeta)
+   * @param {object} options - Options for the approval
+   * @param {string} [options.walletType] - The hardware wallet type (if hardware wallet)
+   * @param {boolean} [options.waitForResult] - Whether to wait for the result
+   */
+  resolvePendingApproval = async (id, value, options = {}) => {
+    const { walletType } = options;
+
+    // For signatures, capture the signature request data BEFORE the approval
+    // attempt since it may be removed from state after the error
+    let signatureRequest = null;
+    if (walletType && !value?.txMeta) {
+      const { signatureRequests } = this.signatureController.state;
+      signatureRequest = signatureRequests[id];
+    }
+
     try {
       await this.approvalController.accept(id, value, options);
-    } catch (exp) {
-      if (!(exp instanceof ApprovalRequestNotFoundError)) {
-        throw exp;
+    } catch (error) {
+      // Ignore if approval was already handled
+      if (error instanceof ApprovalRequestNotFoundError) {
+        return;
       }
+
+      // For hardware wallets, use the shared error handler with retry support
+      if (walletType) {
+        if (value?.txMeta) {
+          // Transaction approval
+          await this.#handleHardwareWalletError(error, walletType, {
+            type: 'transaction',
+            txMeta: value.txMeta,
+          });
+        } else if (signatureRequest) {
+          // Signature approval
+          await this.#handleHardwareWalletError(error, walletType, {
+            type: 'signature',
+            signatureRequest,
+          });
+        }
+        // #handleHardwareWalletError always throws, so this is unreachable
+      }
+
+      throw error;
     }
   };
 
@@ -8712,6 +8760,247 @@ export default class MetamaskController extends EventEmitter {
       }
     }
   };
+
+  /**
+   * Handle hardware wallet errors with retry support.
+   * Parses the error, checks if it's retryable, and if so, attempts to recreate
+   * the request (transaction or signature). Always throws an RPC error with
+   * properly formatted data.
+   *
+   * @param {Error} error - The original error from the hardware wallet
+   * @param {string} walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @param {object} context - The context for recreation
+   * @param {string} context.type - Either 'transaction' or 'signature'
+   * @param {object} [context.txMeta] - Transaction metadata (for transactions)
+   * @param {object} [context.signatureRequest] - Signature request (for signatures)
+   * @throws {JsonRpcError} Always throws with hardware wallet error data
+   */
+  async #handleHardwareWalletError(error, walletType, context) {
+    const hwWalletError = parseErrorByType(error, walletType);
+    const isTransaction = context.type === 'transaction';
+    const isSignature = context.type === 'signature';
+
+    // If not retryable, throw a properly formatted RPC error
+    // This ensures the error properties survive serialization across the RPC boundary
+    // Even non-retryable errors (like user rejection) need proper formatting for UI detection
+    if (!isRetryableHardwareWalletError(hwWalletError)) {
+      throw rpcErrors.internal({
+        message: hwWalletError.message,
+        data: {
+          code: hwWalletError.code,
+          severity: hwWalletError.severity,
+          category: hwWalletError.category,
+          userMessage: hwWalletError.userMessage,
+          metadata: hwWalletError.metadata,
+        },
+      });
+    }
+
+    const requestType = isTransaction ? 'transaction' : 'signature request';
+
+    // Attempt to recreate the request
+    let recreatedId = null;
+    let approvalFlowId = null;
+
+    try {
+      const { id } = this.approvalController.startFlow({
+        loadingText: `Recreating ${requestType}...`,
+      });
+      approvalFlowId = id;
+
+      if (isTransaction) {
+        const newTxMeta = await this.#recreateTransaction({
+          ...context.txMeta,
+          hwTxRetry: true,
+        });
+        recreatedId = newTxMeta?.id;
+      } else if (isSignature) {
+        recreatedId = await this.#recreateSignatureRequest(
+          context.signatureRequest,
+        );
+      }
+    } catch (recreateError) {
+      // Recreation failed - throw HW error without recreatedId
+      recreatedId = null;
+    } finally {
+      this.#endApprovalFlowSafely(approvalFlowId);
+    }
+
+    // Throw a JsonRpcError with hardware wallet error data preserved
+    // This ensures the error properties survive serialization across the RPC boundary
+    throw rpcErrors.internal({
+      message: hwWalletError.message,
+      data: {
+        code: hwWalletError.code,
+        severity: hwWalletError.severity,
+        category: hwWalletError.category,
+        userMessage: hwWalletError.userMessage,
+        metadata: {
+          ...hwWalletError.metadata,
+          // Include recreatedId - use consistent naming for both types
+          // For transactions: recreatedTxId (for backwards compatibility)
+          // For signatures: recreatedSignatureId
+          ...(recreatedId &&
+            (isTransaction
+              ? { recreatedTxId: recreatedId }
+              : { recreatedSignatureId: recreatedId })),
+        },
+      },
+    });
+  }
+
+  /**
+   * Approve a hardware wallet transaction with retry support.
+   * This is a convenience wrapper around resolvePendingApproval for the
+   * transaction confirmation flow, which passes txMeta in a specific format.
+   *
+   * @param {object} opts - Options for the transaction
+   * @param {string} opts.txId - The transaction ID to approve
+   * @param {object} opts.txMeta - The transaction metadata
+   * @param {string} opts.actionId - The action ID for tracking
+   * @param {string} opts.walletType - The hardware wallet type (e.g., 'Ledger', 'Trezor')
+   * @throws {JsonRpcError} When hardware wallet error occurs (with recreatedTxId if recreation succeeded)
+   */
+  approveHardwareTransaction = async ({
+    txId,
+    txMeta,
+    actionId,
+    walletType,
+  }) => {
+    await this.resolvePendingApproval(
+      String(txId),
+      { txMeta, actionId },
+      { waitForResult: true, walletType },
+    );
+  };
+
+  /**
+   * Safely end an approval flow, ignoring errors if already ended.
+   *
+   * @param {string | null} flowId - The flow ID to end
+   */
+  #endApprovalFlowSafely(flowId) {
+    if (!flowId) {
+      return;
+    }
+    try {
+      this.approvalController.endFlow({ id: flowId });
+    } catch (error) {
+      // Flow may already be ended, ignore
+      log.debug('Error ending approval flow (may already be ended):', error);
+    }
+  }
+
+  /**
+   * Recreate a transaction that was rejected on a hardware wallet.
+   *
+   * @param {object} originalTxMeta - The original transaction metadata
+   * @returns {Promise<object>} The new transaction metadata
+   */
+  async #recreateTransaction(originalTxMeta) {
+    const { txParams, networkClientId, type } = originalTxMeta;
+
+    // Add the transaction with a retry ID to track it
+    // addTransaction returns { result, transactionMeta }
+    const { transactionMeta } = await this.txController.addTransaction(
+      { ...txParams, retryId: `${originalTxMeta.id}-retry` },
+      {
+        networkClientId,
+        type,
+        origin: ORIGIN_METAMASK,
+        actionId: `${Date.now() + Math.random()}`,
+      },
+    );
+
+    return transactionMeta;
+  }
+
+  /**
+   * Recreate a signature request that was rejected on a hardware wallet.
+   *
+   * @param {object} originalRequest - The original signature request
+   * @returns {Promise<string>} The new signature request ID
+   */
+  async #recreateSignatureRequest(originalRequest) {
+    const { type, messageParams, version } = originalRequest;
+
+    if (!messageParams) {
+      throw new Error(
+        `Cannot recreate signature request: missing messageParams. Original ID: ${originalRequest.id}`,
+      );
+    }
+
+    // Build the original request object needed by the signature controller
+    const request = {
+      ...originalRequest,
+      id: `${Date.now()}-${Math.random()}`,
+    };
+
+    // Determine if this is a typed message or personal message
+    const isTypedSign = type === 'eth_signTypedData';
+    const isPersonalSign = type === 'personal_sign';
+
+    // Fire-and-forget: Start the signature creation but DON'T await it.
+    // The newUnsigned*Message methods wait for user approval before resolving,
+    // which would cause a deadlock since we're inside the resolvePendingApproval flow.
+    // Instead, we start the new signature request and return immediately.
+    // The new approval will be added to the ApprovalController, and the UI will navigate to it.
+    if (isTypedSign) {
+      // For typed data, we need the version
+      // Don't await - this would block waiting for approval
+      this.signatureController
+        .newUnsignedTypedMessage(
+          { ...messageParams, deferSetAsSigned: true },
+          request,
+          version || 'V4',
+          originalRequest.signingOptions,
+        )
+        .catch((err) => {
+          // Log but don't throw - this runs asynchronously
+          log.error(err.message);
+        });
+    } else if (isPersonalSign) {
+      // Personal sign - don't await
+      this.signatureController
+        .newUnsignedPersonalMessage(
+          { ...messageParams, deferSetAsSigned: true },
+          request,
+        )
+        .catch((err) => {
+          // Log but don't throw - this runs asynchronously
+          log.error(err.message);
+        });
+    }
+
+    // Wait a short moment for the approval to be added to the controller
+    // This allows the state update to propagate before we return
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Find the newly created signature request by looking at pending approvals
+    const { pendingApprovals } = this.approvalController.state;
+    const signatureApprovals = Object.values(pendingApprovals).filter(
+      (approval) =>
+        approval.type === 'personal_sign' ||
+        approval.type === 'eth_signTypedData',
+    );
+
+    // Get the most recent one (should be the one we just created)
+    // Sort by requestData.id which contains our timestamp
+    const newApproval =
+      signatureApprovals.find(
+        (approval) => approval.requestData?.id === request.id,
+      ) || signatureApprovals[signatureApprovals.length - 1];
+
+    const newRequestId = newApproval?.id;
+
+    console.log('[recreateSignatureRequest] Found new approval:', {
+      newRequestId,
+      requestId: request.id,
+      foundApprovals: signatureApprovals.length,
+    });
+
+    return newRequestId;
+  }
 
   rejectAllPendingApprovals() {
     const deleteInterface = (id) =>
