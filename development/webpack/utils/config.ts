@@ -177,23 +177,6 @@ export function getVariables(
   // Resolve the MetaMask environment using proper detection logic
   const environment = resolveEnvironment({ ...args, env });
 
-  // Validate required production variables
-  if (environment === ENVIRONMENT.PRODUCTION) {
-    const requiredVars = Object.keys(activeBuild.env ?? {});
-    const undefinedVariables = requiredVars.filter(
-      (variable) =>
-        !variables.has(variable) ||
-        variables.get(variable) === null ||
-        variables.get(variable) === undefined,
-    );
-
-    if (undefinedVariables.length !== 0) {
-      throw new AssertionError({
-        message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
-      });
-    }
-  }
-
   function set(key: string, value: unknown): void;
   function set(key: Record<string, unknown>): void;
   function set(key: string | Record<string, unknown>, value?: unknown): void {
@@ -231,6 +214,23 @@ export function getVariables(
   variables.set('ENABLE_SENTRY', args.sentry.toString());
   variables.set('ENABLE_SNOW', args.snow.toString());
   variables.set('ENABLE_LAVAMOAT', args.lavamoat.toString());
+
+  // Validate required production variables
+  if (environment === ENVIRONMENT.PRODUCTION) {
+    const requiredVars = Object.keys(activeBuild.env ?? {});
+    const undefinedVariables = requiredVars.filter(
+      (variable) =>
+        !variables.has(variable) ||
+        variables.get(variable) === null ||
+        variables.get(variable) === undefined,
+    );
+
+    if (undefinedVariables.length !== 0) {
+      throw new AssertionError({
+        message: `Some variables required to build production target are not defined.\n  - ${undefinedVariables.join('\n  - ')}`,
+      });
+    }
+  }
 
   // convert the variables to a format that can be used by SWC, which expects
   // values be JSON stringified, as it JSON.parses them internally.
