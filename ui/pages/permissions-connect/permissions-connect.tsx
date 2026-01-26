@@ -42,6 +42,7 @@ import { toRelativeRoutePath } from '../routes/utils';
 import {
   isEthAddress,
   normalizeSafeAddress,
+  // eslint-disable-next-line import/no-restricted-paths
 } from '../../../app/scripts/lib/multichain/address';
 import { MILLISECOND } from '../../../shared/constants/time';
 import {
