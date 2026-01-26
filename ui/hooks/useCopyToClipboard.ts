@@ -22,7 +22,7 @@ export function useCopyToClipboard(
   const startTimeout = useTimeout(
     () => {
       if (copied === true) {
-        // Clear the clipboard if there's a positive delay and it's not a hex address
+        // Clear the clipboard if there's a positive delay
         if (clearDelay !== -1) {
           copyToClipboard(' ', COPY_OPTIONS);
         }
