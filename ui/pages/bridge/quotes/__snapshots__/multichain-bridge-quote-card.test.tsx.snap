@@ -45,7 +45,7 @@ exports[`MultichainBridgeQuoteCard should render a quote with MM fee 1`] = `
         <p
           class="mm-box mm-text mm-text--body-sm mm-box--color-text-alternative"
         >
-          1 USDC = &lt;0.000001 USDC
+          1 USDC = 0.999 USDC
         </p>
         <button
           aria-label="More quotes"
