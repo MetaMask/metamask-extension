@@ -47,6 +47,13 @@ const METAMASK_FOX_SVG = `<svg viewBox="0 0 35 33" fill="none" xmlns="http://www
 /**
  * CSS styles for the warning modal.
  * These are isolated via Shadow DOM to prevent conflicts with host page styles.
+ *
+ * Design follows MetaMask extension patterns:
+ * - Dark theme background: #24272A
+ * - Text colors: #FFFFFF (primary), #9FA6AE (secondary)
+ * - Link color: #43AEFC (blue)
+ * - Danger/action color: #F66A7B (coral pink)
+ * - Confirm button: #9A7B7B (muted mauve)
  */
 const MODAL_STYLES = `
   :host {
@@ -57,11 +64,13 @@ const MODAL_STYLES = `
     width: 100%;
     height: 100%;
     z-index: 2147483647;
-    font-family: 'Euclid Circular B', 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   }
 
   * {
     box-sizing: border-box;
+    margin: 0;
+    padding: 0;
   }
 
   .overlay {
@@ -74,7 +83,7 @@ const MODAL_STYLES = `
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: fadeIn 0.15s ease-out;
+    animation: fadeIn 0.2s ease-out;
   }
 
   @keyframes fadeIn {
@@ -85,239 +94,265 @@ const MODAL_STYLES = `
   @keyframes slideUp {
     from {
       opacity: 0;
-      transform: translateY(16px);
+      transform: translateY(20px) scale(0.98);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 
   .modal {
-    background: #FFFFFF;
+    background: #24272A;
     border-radius: 14px;
-    max-width: 400px;
-    width: calc(100% - 32px);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
-    animation: slideUp 0.2s ease-out;
-    overflow: hidden;
+    max-width: 360px;
+    width: calc(100% - 48px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    animation: slideUp 0.25s ease-out;
+    padding: 24px;
+  }
+
+  .modal.hidden {
+    display: none;
   }
 
   .header {
-    background: linear-gradient(180deg, #FFF5F5 0%, #FFFFFF 100%);
-    padding: 24px 24px 20px;
     text-align: center;
-    border-bottom: 1px solid #F2F4F6;
+    margin-bottom: 20px;
   }
 
   .fox {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto 12px;
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 20px;
   }
 
   .title {
-    color: #D73847;
-    font-size: 18px;
+    color: #FFFFFF;
+    font-size: 16px;
     font-weight: 700;
-    margin: 0 0 4px;
-    line-height: 1.3;
+    margin: 0 0 8px;
+    line-height: 1.4;
+    letter-spacing: -0.2px;
   }
 
   .subtitle {
-    color: #535A61;
+    color: #9FA6AE;
     font-size: 14px;
     margin: 0;
-    line-height: 1.4;
+    line-height: 1.5;
   }
 
   .body {
-    padding: 20px 24px;
+    margin-bottom: 24px;
   }
 
-  .alert {
-    background: #FEF5F5;
-    border: 1px solid #F8D6D6;
-    border-radius: 8px;
-    padding: 12px 14px;
+  .warning-text {
+    color: #9FA6AE;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 0 0 8px;
+  }
+
+  .learn-link {
+    color: #43AEFC;
+    font-size: 14px;
+    text-decoration: underline;
+    cursor: pointer;
+    display: inline-block;
+  }
+
+  .learn-link:hover {
+    color: #6BC1FF;
+  }
+
+  .checkbox-container {
     display: flex;
     align-items: flex-start;
-    gap: 10px;
+    gap: 12px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    padding: 4px 0;
   }
 
-  .alert-icon {
+  .checkbox {
     flex-shrink: 0;
     width: 20px;
     height: 20px;
-    color: #D73847;
+    border: 2px solid #6A737D;
+    border-radius: 4px;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s ease;
+    margin-top: 2px;
   }
 
-  .alert-text {
-    color: #24272A;
-    font-size: 13px;
+  .checkbox:hover {
+    border-color: #9FA6AE;
+  }
+
+  .checkbox.checked {
+    background: #43AEFC;
+    border-color: #43AEFC;
+  }
+
+  .checkbox svg {
+    width: 12px;
+    height: 12px;
+    color: #FFFFFF;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .checkbox.checked svg {
+    opacity: 1;
+  }
+
+  .checkbox-label {
+    color: #FFFFFF;
+    font-size: 14px;
     line-height: 1.5;
-    margin: 0;
-  }
-
-  .alert-text strong {
-    font-weight: 600;
   }
 
   .footer {
-    padding: 0 24px 24px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .footer-horizontal {
+    display: flex;
+    gap: 16px;
+  }
+
+  .footer-horizontal .btn {
+    flex: 1;
   }
 
   .btn {
     width: 100%;
-    padding: 13px 16px;
+    padding: 12px 16px;
     border-radius: 999px;
     font-size: 14px;
-    font-weight: 600;
+    font-weight: 500;
     cursor: pointer;
-    transition: all 0.12s ease;
+    transition: all 0.15s ease;
     border: none;
     outline: none;
+    text-align: center;
   }
 
   .btn:focus-visible {
-    box-shadow: 0 0 0 3px rgba(3, 125, 214, 0.3);
+    box-shadow: 0 0 0 2px #24272A, 0 0 0 4px #43AEFC;
   }
 
-  .btn-danger {
-    background: #D73847;
-    color: #FFFFFF;
-  }
-
-  .btn-danger:hover {
-    background: #C53141;
-  }
-
-  .btn-danger:active {
-    background: #B32B3B;
-  }
-
-  .btn-secondary {
+  .btn-primary {
     background: #FFFFFF;
     color: #24272A;
-    border: 1px solid #BBC0C5;
   }
 
-  .btn-secondary:hover {
+  .btn-primary:hover {
     background: #F2F4F6;
   }
 
-  .btn-secondary:active {
+  .btn-primary:active {
     background: #E5E8EB;
+    transform: scale(0.98);
   }
 
-  .protected-by {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding-top: 8px;
+  .btn-danger {
+    background: #F66A7B;
+    color: #24272A;
   }
 
-  .protected-by span {
-    color: #9FA6AE;
-    font-size: 11px;
-    font-weight: 500;
+  .btn-danger:hover {
+    background: #FF7A8A;
   }
 
-  .protected-by svg {
-    width: 14px;
-    height: 14px;
+  .btn-danger:active {
+    background: #E85A6B;
+    transform: scale(0.98);
   }
 
-  /* Dark mode support */
-  @media (prefers-color-scheme: dark) {
-    .modal {
-      background: #24272A;
-    }
+  .btn-secondary {
+    background: transparent;
+    color: #FFFFFF;
+    border: 1px solid #5B6068;
+  }
 
-    .header {
-      background: linear-gradient(180deg, #2C2F33 0%, #24272A 100%);
-      border-bottom-color: #3B4046;
-    }
+  .btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: #8A9098;
+  }
 
-    .title {
-      color: #FF6B6B;
-    }
+  .btn-secondary:active {
+    background: rgba(255, 255, 255, 0.1);
+    transform: scale(0.98);
+  }
 
-    .subtitle {
-      color: #9FA6AE;
-    }
+  .btn-confirm {
+    background: #9A7B7B;
+    color: #FFFFFF;
+  }
 
-    .alert {
-      background: rgba(215, 56, 71, 0.1);
-      border-color: rgba(215, 56, 71, 0.2);
-    }
+  .btn-confirm:hover {
+    background: #AA8B8B;
+  }
 
-    .alert-text {
-      color: #FFFFFF;
-    }
-
-    .btn-secondary {
-      background: #3B4046;
-      color: #FFFFFF;
-      border-color: #4A5058;
-    }
-
-    .btn-secondary:hover {
-      background: #4A5058;
-    }
-
-    .btn-secondary:active {
-      background: #5A6068;
-    }
-
-    .protected-by span {
-      color: #6A737D;
-    }
+  .btn-confirm:active {
+    background: #8A6B6B;
+    transform: scale(0.98);
   }
 `;
 
 /**
- * HTML template for the warning modal.
+ * HTML template for the initial warning modal.
  */
-const MODAL_HTML = `
-  <div class="overlay">
-    <div class="modal" role="alertdialog" aria-modal="true" aria-labelledby="srp-title" aria-describedby="srp-desc">
-      <div class="header">
-        <div class="fox">${METAMASK_FOX_SVG}</div>
-        <h2 class="title" id="srp-title">Seed phrase detected</h2>
-        <p class="subtitle">MetaMask blocked this paste to protect your wallet</p>
-      </div>
+const MODAL_HTML_WARNING = `
+  <div class="modal" id="warning-modal" role="alertdialog" aria-modal="true" aria-labelledby="srp-title" aria-describedby="srp-desc">
+    <div class="header">
+      <div class="fox">${METAMASK_FOX_SVG}</div>
+      <h2 class="title" id="srp-title">Seed Recovery Phrase paste blocked</h2>
+      <p class="subtitle">MetaMask blocked this paste to protect your wallet.</p>
+    </div>
 
-      <div class="body">
-        <div class="alert">
-          <svg class="alert-icon" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" clip-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" fill="currentColor"/>
-          </svg>
-          <p class="alert-text" id="srp-desc">
-            <strong>Never share your Secret Recovery Phrase.</strong> Anyone with these words can take everything from your wallet permanently.
-          </p>
-        </div>
-      </div>
+    <div class="body">
+      <p class="warning-text" id="srp-desc">Never share your Secret Recovery Phrase. Anyone with these words can take everything from your wallet permanently.</p>
+      <a class="learn-link" href="https://support.metamask.io/privacy-and-security/what-is-a-secret-recovery-phrase-and-how-to-keep-your-crypto-wallet-secure/" target="_blank" rel="noopener noreferrer">Learn why this is dangerous.</a>
+    </div>
 
-      <div class="footer">
-        <button class="btn btn-danger" id="exit-btn">
-          Leave this site
-        </button>
-        <button class="btn btn-secondary" id="ignore-btn">
-          Proceed anyway
-        </button>
-        <div class="protected-by">
-          <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 1L2 3.5V7.5C2 11.09 4.56 14.44 8 15.5C11.44 14.44 14 11.09 14 7.5V3.5L8 1Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M5.5 8L7.16667 9.5L10.5 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-          <span>Protected by MetaMask</span>
-        </div>
+    <div class="footer">
+      <button class="btn btn-primary" id="exit-btn">Leave this site</button>
+      <button class="btn btn-danger" id="continue-btn">Continue anyway</button>
+    </div>
+  </div>
+`;
+
+/**
+ * HTML template for the confirmation modal.
+ */
+const MODAL_HTML_CONFIRM = `
+  <div class="modal hidden" id="confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+    <div class="header">
+      <div class="fox">${METAMASK_FOX_SVG}</div>
+      <h2 class="title" id="confirm-title">Are you sure?</h2>
+      <p class="subtitle" id="confirm-desc">If you check the box below and confirm, we won't show this modal any more.</p>
+    </div>
+
+    <div class="checkbox-container" id="checkbox-container">
+      <div class="checkbox" id="checkbox">
+        <svg viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M11.6667 3.5L5.25 9.91667L2.33333 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
       </div>
+      <span class="checkbox-label">I understand the risks. Do not show this again</span>
+    </div>
+
+    <div class="footer footer-horizontal">
+      <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+      <button class="btn btn-confirm" id="confirm-btn">Confirm</button>
     </div>
   </div>
 `;
@@ -325,16 +360,44 @@ const MODAL_HTML = `
 /** Unique ID for the warning modal host element */
 const MODAL_HOST_ID = 'metamask-seed-phrase-warning';
 
+/** Storage key for "don't show again" preference */
+const STORAGE_KEY = 'metamask-srp-warning-dismissed';
+
+/**
+ * Checks if the user has previously dismissed the warning permanently.
+ *
+ * @returns True if user chose "don't show again"
+ */
+export function isWarningDismissed(): boolean {
+  try {
+    return localStorage.getItem(STORAGE_KEY) === 'true';
+  } catch {
+    // localStorage may not be available in some contexts
+    return false;
+  }
+}
+
+/**
+ * Saves the user's preference to not show the warning again.
+ */
+function setWarningDismissed(): void {
+  try {
+    localStorage.setItem(STORAGE_KEY, 'true');
+  } catch {
+    // localStorage may not be available in some contexts
+  }
+}
+
 /**
  * Creates the warning modal using Shadow DOM for style isolation.
  *
  * @param onExitSite - Callback when user clicks "Leave this site"
- * @param onIgnore - Callback when user clicks "I understand the risks"
+ * @param onIgnore - Callback when user clicks to proceed (with optional permanent dismissal)
  * @returns The host element containing the shadow DOM modal
  */
 export function createWarningModal(
   onExitSite: () => void,
-  onIgnore: () => void,
+  onIgnore: (dontShowAgain: boolean) => void,
 ): HTMLElement {
   // Create host element
   const host = document.createElement('div');
@@ -348,31 +411,87 @@ export function createWarningModal(
   styleElement.textContent = MODAL_STYLES;
   shadow.appendChild(styleElement);
 
-  // Add HTML content
-  const container = document.createElement('div');
-  container.innerHTML = MODAL_HTML;
-  shadow.appendChild(container);
+  // Add overlay container
+  const overlay = document.createElement('div');
+  overlay.className = 'overlay';
+  shadow.appendChild(overlay);
 
-  // Set up event handlers
+  // Add warning modal HTML
+  const warningContainer = document.createElement('div');
+  warningContainer.innerHTML = MODAL_HTML_WARNING;
+  overlay.appendChild(warningContainer.firstElementChild as HTMLElement);
+
+  // Add confirmation modal HTML
+  const confirmContainer = document.createElement('div');
+  confirmContainer.innerHTML = MODAL_HTML_CONFIRM;
+  overlay.appendChild(confirmContainer.firstElementChild as HTMLElement);
+
+  // Get modal elements
+  const warningModal = shadow.querySelector('#warning-modal') as HTMLElement;
+  const confirmModal = shadow.querySelector('#confirm-modal') as HTMLElement;
+
+  // Get button elements
   const exitBtn = shadow.querySelector('#exit-btn');
-  const ignoreBtn = shadow.querySelector('#ignore-btn');
+  const continueBtn = shadow.querySelector('#continue-btn');
+  const cancelBtn = shadow.querySelector('#cancel-btn');
+  const confirmBtn = shadow.querySelector('#confirm-btn') as HTMLButtonElement;
+  const checkboxContainer = shadow.querySelector('#checkbox-container');
+  const checkbox = shadow.querySelector('#checkbox') as HTMLElement;
 
+  // Track checkbox state
+  let isChecked = false;
+
+  // Exit site handler
   exitBtn?.addEventListener('click', () => {
     onExitSite();
     host.remove();
   });
 
-  ignoreBtn?.addEventListener('click', () => {
-    onIgnore();
+  // Continue anyway -> show confirmation modal
+  continueBtn?.addEventListener('click', () => {
+    warningModal.classList.add('hidden');
+    confirmModal.classList.remove('hidden');
+  });
+
+  // Cancel -> go back to warning modal
+  cancelBtn?.addEventListener('click', () => {
+    confirmModal.classList.add('hidden');
+    warningModal.classList.remove('hidden');
+    // Reset checkbox state
+    isChecked = false;
+    checkbox.classList.remove('checked');
+  });
+
+  // Checkbox toggle
+  checkboxContainer?.addEventListener('click', () => {
+    isChecked = !isChecked;
+    checkbox.classList.toggle('checked', isChecked);
+  });
+
+  // Confirm handler
+  confirmBtn?.addEventListener('click', () => {
+    if (isChecked) {
+      setWarningDismissed();
+    }
+    onIgnore(isChecked);
     host.remove();
   });
 
   // Close on Escape key
   const handleEscape = (event: KeyboardEvent) => {
     if (event.key === 'Escape') {
-      onIgnore();
-      host.remove();
-      document.removeEventListener('keydown', handleEscape);
+      // If on confirm modal, go back to warning modal
+      if (!confirmModal.classList.contains('hidden')) {
+        confirmModal.classList.add('hidden');
+        warningModal.classList.remove('hidden');
+        isChecked = false;
+        checkbox.classList.remove('checked');
+      } else {
+        // If on warning modal, close and ignore
+        onIgnore(false);
+        host.remove();
+        document.removeEventListener('keydown', handleEscape);
+      }
     }
   };
   document.addEventListener('keydown', handleEscape);
@@ -405,12 +524,26 @@ function exitSite(): void {
 }
 
 /**
+ * Result of the warning modal interaction.
+ */
+export type WarningModalResult = {
+  action: 'exit' | 'ignore';
+  dontShowAgain: boolean;
+};
+
+/**
  * Shows the seed phrase warning modal.
  *
- * @returns Promise that resolves to 'exit' if user leaves, 'ignore' if user bypasses
+ * @returns Promise that resolves with the user's action and preference
  */
-export function showWarningModal(): Promise<'exit' | 'ignore'> {
+export function showWarningModal(): Promise<WarningModalResult> {
   return new Promise((resolve) => {
+    // Check if user has previously dismissed the warning permanently
+    if (isWarningDismissed()) {
+      resolve({ action: 'ignore', dontShowAgain: true });
+      return;
+    }
+
     // Remove any existing modal
     const existingModal = document.getElementById(MODAL_HOST_ID);
     if (existingModal) {
@@ -421,10 +554,10 @@ export function showWarningModal(): Promise<'exit' | 'ignore'> {
       () => {
         // Exit site - navigate away from the malicious page
         exitSite();
-        resolve('exit');
+        resolve({ action: 'exit', dontShowAgain: false });
       },
-      () => {
-        resolve('ignore');
+      (dontShowAgain: boolean) => {
+        resolve({ action: 'ignore', dontShowAgain });
       },
     );
 

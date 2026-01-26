@@ -2,12 +2,26 @@ import {
   createWarningModal,
   showWarningModal,
   removeWarningModal,
+  isWarningDismissed,
 } from './seed-phrase-protection-ui';
 
 describe('Seed Phrase Protection UI', () => {
   afterEach(() => {
     // Clean up any modals
     removeWarningModal();
+    // Clear localStorage
+    localStorage.clear();
+  });
+
+  describe('isWarningDismissed', () => {
+    it('should return false when not dismissed', () => {
+      expect(isWarningDismissed()).toBe(false);
+    });
+
+    it('should return true when dismissed', () => {
+      localStorage.setItem('metamask-srp-warning-dismissed', 'true');
+      expect(isWarningDismissed()).toBe(true);
+    });
   });
 
   describe('createWarningModal', () => {
@@ -40,7 +54,7 @@ describe('Seed Phrase Protection UI', () => {
   describe('showWarningModal', () => {
     it('should add modal to document body', async () => {
       // Start showing modal (don't await - it won't resolve until button click)
-      const promise = showWarningModal();
+      showWarningModal();
 
       // Check modal was added
       const modal = document.getElementById('metamask-seed-phrase-warning');
@@ -66,6 +80,20 @@ describe('Seed Phrase Protection UI', () => {
       const modals = document.querySelectorAll('#metamask-seed-phrase-warning');
       expect(modals.length).toBe(1);
       expect(modals[0]).not.toBe(existingModal);
+    });
+
+    it('should resolve immediately with ignore when warning is dismissed', async () => {
+      // Set the dismissed flag
+      localStorage.setItem('metamask-srp-warning-dismissed', 'true');
+
+      // Show modal - should resolve immediately
+      const result = await showWarningModal();
+
+      expect(result).toEqual({ action: 'ignore', dontShowAgain: true });
+
+      // No modal should have been added
+      const modal = document.getElementById('metamask-seed-phrase-warning');
+      expect(modal).toBeNull();
     });
   });
 

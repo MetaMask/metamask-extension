@@ -11,7 +11,10 @@
 
 import browser from 'webextension-polyfill';
 import { isSeedPhrase } from '../../../shared/modules/seed-phrase-detection';
-import { showWarningModal } from './seed-phrase-protection-ui';
+import {
+  showWarningModal,
+  isWarningDismissed,
+} from './seed-phrase-protection-ui';
 
 /**
  * Event types for seed phrase protection metrics.
@@ -117,6 +120,11 @@ function handlePaste(event: ClipboardEvent): void {
     return;
   }
 
+  // If user has permanently dismissed the warning, allow all pastes
+  if (isWarningDismissed()) {
+    return;
+  }
+
   const { clipboardData } = event;
   if (!clipboardData) {
     return;
@@ -141,7 +149,7 @@ function handlePaste(event: ClipboardEvent): void {
 
     // Show the warning modal
     showWarningModal().then((result) => {
-      if (result === 'ignore') {
+      if (result.action === 'ignore') {
         // Track that user clicked "Proceed anyway"
         sendMetricToBackground(SeedPhraseProtectionEventType.ProceedAnyway);
 
