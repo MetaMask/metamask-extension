@@ -271,10 +271,10 @@ export type ControllerFlatState = AccountOrderController['state'] &
   SubscriptionController['state'] &
   SwapsController['state'] &
   TokenBalancesController['state'] &
-  StaticAssetsController['state'] &
   TokenDetectionController['state'] &
   TokenListController['state'] &
   TokensController['state'] &
+  StaticAssetsController['state'] &
   TransactionController['state'] &
   TransactionPayController['state'] &
   UserOperationController['state'] &

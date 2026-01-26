@@ -267,7 +267,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
-      SubjectMetadataController: {
+      SubjectMetadataController: {},
         subjectMetadata: {
           'https://metamask.github.io': {
             extensionId: null,
@@ -278,6 +278,7 @@ function defaultFixture(inputChainId = CHAIN_IDS.LOCALHOST) {
           },
         },
       },
+      StaticAssetsController: {
       TokensController: {
         allDetectedTokens: {},
         allIgnoredTokens: {},

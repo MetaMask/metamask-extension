@@ -678,6 +678,10 @@ export const CONTROLLER_MESSENGERS = {
     getMessenger: getSnapKeyringBuilderMessenger,
     getInitMessenger: getSnapKeyringBuilderInitMessenger,
   },
+  StaticAssetsController: {
+    getMessenger: getStaticAssetsControllerMessenger,
+    getInitMessenger: getStaticAssetsControllerInitMessenger,
+  },
   SubjectMetadataController: {
     getMessenger: getSubjectMetadataControllerMessenger,
     getInitMessenger: noop,
@@ -713,10 +717,6 @@ export const CONTROLLER_MESSENGERS = {
   TokenBalancesController: {
     getMessenger: getTokenBalancesControllerMessenger,
     getInitMessenger: getTokenBalancesControllerInitMessenger,
-  },
-  StaticAssetsController: {
-    getMessenger: getStaticAssetsControllerMessenger,
-    getInitMessenger: getStaticAssetsControllerInitMessenger,
   },
   TokenDetectionController: {
     getMessenger: getTokenDetectionControllerMessenger,
