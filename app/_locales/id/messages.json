@@ -1071,12 +1071,6 @@
   "bridgeTo": {
     "message": "Bridge ke"
   },
-  "bridgeTokenCannotVerifyDescription": {
-    "message": "Jika menambahkan token ini secara manual, pastikan Anda mengetahui risiko terhadap dana Anda sebelum menggunakan bridge."
-  },
-  "bridgeTokenCannotVerifyTitle": {
-    "message": "Kami tidak dapat memverifikasi token ini."
-  },
   "bridgeTransactionProgress": {
     "message": "Transaksi $1 dari 2"
   },
@@ -8219,9 +8213,6 @@
   },
   "yourNFTmayBeAtRisk": {
     "message": "NFT Anda mungkin berisiko"
-  },
-  "yourNetworks": {
-    "message": "Jaringan Anda"
   },
   "yourPrivateSeedPhrase": {
     "message": "Frasa Pemulihan Rahasia Anda"
