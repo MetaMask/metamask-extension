@@ -1029,6 +1029,7 @@ function setupBundlerDefaults(
             './**/node_modules/fancy-canvas',
             // Ledger WebHID transport
             './**/node_modules/@ledgerhq/hw-transport-webhid',
+            './**/node_modules/@ledgerhq/hw-transport',
             './**/node_modules/@ledgerhq/hw-app-eth',
             './**/node_modules/@ledgerhq/devices',
           ],
