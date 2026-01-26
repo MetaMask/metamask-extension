@@ -36,6 +36,7 @@ import {
   TransactionControllerTransactionRejectedEvent,
   TransactionControllerTransactionSubmittedEvent,
   TransactionControllerUnapprovedTransactionAddedEvent,
+  TransactionControllerUpdateTransactionAction,
 } from '@metamask/transaction-controller';
 import { SubscriptionControllerActions } from '@metamask/subscription-controller';
 import { RootMessenger } from '../../lib/messenger';
@@ -105,6 +106,7 @@ type InitMessengerActions =
   | SwapsControllerSetTradeTxIdAction
   | TransactionControllerEstimateGasAction
   | TransactionControllerGetStateAction
+  | TransactionControllerUpdateTransactionAction
   | SubscriptionControllerActions
   | SubscriptionServiceAction;
 
@@ -168,6 +170,7 @@ export function getTransactionControllerInitMessenger(
       'SwapsController:setTradeTxId',
       'TransactionController:estimateGas',
       'TransactionController:getState',
+      'TransactionController:updateTransaction',
       'SubscriptionController:getSubscriptionByProduct',
       'SubscriptionService:submitSubscriptionSponsorshipIntent',
     ],

@@ -165,9 +165,27 @@ export class Delegation7702PublishHook {
       throw new Error('Gas fee token not found');
     }
 
+    // Remove nonce from txParams for EIP-7702 transactions
+    // The delegation system handles nonce management externally, so we shouldn't include it in txParams
+    // Create a new object without nonce since the original may be frozen/sealed and cannot be mutated
+    let transactionMetaToUse = transactionMeta;
+    if (transactionMeta.txParams.nonce !== undefined) {
+      const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
+      transactionMetaToUse = {
+        ...transactionMeta,
+        txParams: txParamsWithoutNonce,
+      };
+
+      await this.#messenger.call(
+        'TransactionController:updateTransaction',
+        transactionMetaToUse,
+        'Remove nonce for EIP-7702 delegation transaction',
+      );
+    }
+
     const delegations = await this.#buildDelegation(
       delegationEnvironment,
-      transactionMeta,
+      transactionMetaToUse,
       gasFeeToken,
       includeTransfer,
     );
@@ -176,7 +194,7 @@ export class Delegation7702PublishHook {
       includeTransfer ? BATCH_DEFAULT_MODE : SINGLE_DEFAULT_MODE,
     ];
     const executions = this.#buildExecutions(
-      transactionMeta,
+      transactionMetaToUse,
       gasFeeToken,
       includeTransfer,
     );
@@ -195,7 +213,7 @@ export class Delegation7702PublishHook {
 
     if (!delegationAddress) {
       relayRequest.authorizationList = await this.#buildAuthorizationList(
-        transactionMeta,
+        transactionMetaToUse,
         upgradeContractAddress ?? undefined,
       );
     }
