@@ -167,15 +167,16 @@ export class Delegation7702PublishHook {
 
     // Remove nonce from txParams for EIP-7702 transactions
     // The delegation system handles nonce management externally, so we shouldn't include it in txParams
-    // Create a new object without nonce since the original may be frozen/sealed and cannot be mutated
-    let transactionMetaToUse = transactionMeta;
-    if (transactionMeta.txParams.nonce !== undefined) {
-      const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
-      transactionMetaToUse = {
-        ...transactionMeta,
-        txParams: txParamsWithoutNonce,
-      };
+    // Always create a new object without nonce (using destructuring) since the original may be frozen/sealed
+    // This ensures nonce is never present in txParams for EIP-7702 transactions, regardless of initial state
+    const { nonce, ...txParamsWithoutNonce } = transactionMeta.txParams;
+    const transactionMetaToUse: TransactionMeta = {
+      ...transactionMeta,
+      txParams: txParamsWithoutNonce,
+    };
 
+    // Update the transaction in the controller only if nonce was present (to avoid unnecessary updates)
+    if (transactionMeta.txParams.nonce !== undefined) {
       await this.#messenger.call(
         'TransactionController:updateTransaction',
         transactionMetaToUse,
