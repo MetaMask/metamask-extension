@@ -6,14 +6,6 @@ import mockState from '../../../../test/data/mock-state.json';
 import * as mocks from './mocks';
 import { PerpsTabView } from './perps-tab-view';
 
-// Mock loglevel to avoid console output during tests
-jest.mock('loglevel', () => ({
-  info: jest.fn(),
-  warn: jest.fn(),
-  error: jest.fn(),
-  debug: jest.fn(),
-}));
-
 const mockStore = configureStore({
   metamask: {
     ...mockState.metamask,

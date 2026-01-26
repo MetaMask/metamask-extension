@@ -2135,6 +2135,27 @@
         "readable-stream": true
       }
     },
+    "lightweight-charts>fancy-canvas": {
+      "globals": {
+        "ResizeObserver": true,
+        "document.body": true
+      }
+    },
+    "react-focus-lock>focus-lock": {
+      "globals": {
+        "HTMLIFrameElement": true,
+        "Node.DOCUMENT_FRAGMENT_NODE": true,
+        "Node.DOCUMENT_NODE": true,
+        "Node.DOCUMENT_POSITION_CONTAINED_BY": true,
+        "Node.DOCUMENT_POSITION_CONTAINS": true,
+        "Node.ELEMENT_NODE": true,
+        "console.error": true,
+        "console.warn": true,
+        "document": true,
+        "getComputedStyle": true,
+        "setTimeout": true
+      }
+    },
     "browserify>util>which-typed-array>for-each": {
       "packages": {
         "string.prototype.matchall>es-abstract>is-callable": true
@@ -2322,6 +2343,33 @@
       "packages": {
         "buffer": true,
         "ethereumjs-util>ethereum-cryptography>keccak>readable-stream": true
+      }
+    },
+    "lightweight-charts": {
+      "globals": {
+        "Image": true,
+        "ResizeObserver": true,
+        "URL": true,
+        "cancelAnimationFrame": true,
+        "chrome": true,
+        "clearTimeout": true,
+        "devicePixelRatio": true,
+        "document.activeElement": true,
+        "document.body": true,
+        "document.createElement": true,
+        "document.documentElement": true,
+        "document.getElementById": true,
+        "document.getSelection": true,
+        "getComputedStyle": true,
+        "location.href": true,
+        "navigator": true,
+        "performance.now": true,
+        "queueMicrotask": true,
+        "requestAnimationFrame": true,
+        "setTimeout": true
+      },
+      "packages": {
+        "lightweight-charts>fancy-canvas": true
       }
     },
     "currency-formatter>locale-currency": {
@@ -2529,6 +2577,15 @@
     "browserify>url>punycode": {
       "globals": {
         "define": true
+      }
+    },
+    "qrcode.react": {
+      "globals": {
+        "Path2D": true,
+        "devicePixelRatio": true
+      },
+      "packages": {
+        "react": true
       }
     },
     "mockttp>express>qs": {

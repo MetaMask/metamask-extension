@@ -35,7 +35,7 @@ export function useTransactionPayMetrics() {
   );
 
   const transactionId = transactionMeta?.id ?? '';
-  const { chainId, type } = transactionMeta ?? {};
+  const { chainId } = transactionMeta ?? {};
   const primaryRequiredToken = requiredTokens.find((t) => !t.skipIfBalance);
   const sendingValue = Number(primaryRequiredToken?.amountHuman ?? '0');
 
@@ -69,16 +69,11 @@ export function useTransactionPayMetrics() {
       props.mm_pay_payment_token_list_size = availableTokens.length;
     }
 
-    if (payToken && type === TransactionType.perpsDeposit) {
-      props.mm_pay_use_case = 'perps_deposit';
-      props.simulation_sending_assets_total_value = sendingValue;
-    }
-
     if (
       payToken &&
-      hasTransactionType(transactionMeta, [TransactionType.predictDeposit])
+      hasTransactionType(transactionMeta, [TransactionType.perpsDeposit])
     ) {
-      props.mm_pay_use_case = 'predict_deposit';
+      props.mm_pay_use_case = 'custom_amount';
       props.simulation_sending_assets_total_value = sendingValue;
     }
 
@@ -114,7 +109,6 @@ export function useTransactionPayMetrics() {
     strategy,
     totals,
     transactionMeta,
-    type,
   ]);
 
   useEffect(() => {
