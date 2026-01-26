@@ -66,6 +66,7 @@ import { MetaMaskReduxDispatch } from '../../../store/store';
 import { setOnboardingModalOpen } from '../../../ducks/rewards';
 import { getIntlLocale } from '../../../ducks/locale/locale';
 import { linkRewardToShieldSubscription } from '../../../store/actions';
+import { SHIELD_ERROR } from '../../../../shared/modules/shield/constants';
 import { isCardPaymentMethod, isCryptoPaymentMethod } from './types';
 import {
   ButtonRow,
@@ -342,10 +343,21 @@ const TransactionShield = () => {
     onOpenAddFundsModal: () => setIsAddFundsModalOpen(true),
   });
 
+  const updateSubscriptionCardPaymentMethodError =
+    updateSubscriptionCardPaymentMethodResult.error &&
+    (updateSubscriptionCardPaymentMethodResult.error.message
+      .toLowerCase()
+      .includes(SHIELD_ERROR.tabActionFailed.toLowerCase()) ||
+      updateSubscriptionCardPaymentMethodResult.error.message
+        .toLowerCase()
+        .includes(SHIELD_ERROR.stripePaymentCancelled.toLowerCase()))
+      ? undefined // tab action failed or stripe payment cancelled is not api error
+      : updateSubscriptionCardPaymentMethodResult.error;
+
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
-    updateSubscriptionCardPaymentMethodResult.error ||
+    updateSubscriptionCardPaymentMethodError ||
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error;
 

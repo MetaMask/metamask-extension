@@ -593,28 +593,14 @@ export const useHandleSubscription = ({
           paymentCurrency: 'USD',
           requestStatus: 'started',
         });
-        try {
-          await dispatch(
-            startSubscriptionWithCard({
-              products: [PRODUCT_TYPES.SHIELD],
-              isTrialRequested: !isTrialed,
-              recurringInterval: selectedPlan,
-              useTestClock,
-            }),
-          );
-        } catch (e) {
-          if (
-            e instanceof Error &&
-            e.message
-              .toLowerCase()
-              .includes(SHIELD_ERROR.tabActionFailed.toLowerCase())
-          ) {
-            // tab action failed is not api error, only log it here
-            console.error('[useHandleSubscription error]:', e);
-          } else {
-            throw e;
-          }
-        }
+        await dispatch(
+          startSubscriptionWithCard({
+            products: [PRODUCT_TYPES.SHIELD],
+            isTrialRequested: !isTrialed,
+            recurringInterval: selectedPlan,
+            useTestClock,
+          }),
+        );
       } else if (selectedPaymentMethod === PAYMENT_TYPES.byCrypto) {
         await executeSubscriptionCryptoApprovalTransaction();
       }

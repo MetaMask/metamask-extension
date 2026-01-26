@@ -37,6 +37,7 @@ import { isCardPaymentMethod, isCryptoPaymentMethod } from '../types';
 import AddFundsModal from '../../../../components/app/modals/add-funds-modal';
 import { TRANSACTION_SHIELD_CLAIM_ROUTES } from '../../../../helpers/constants/routes';
 import CryptoAccountDisplay from '../components/crypto-account-display';
+import { SHIELD_ERROR } from '../../../../../shared/modules/shield/constants';
 
 const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
   const t = useI18nContext();
@@ -134,13 +135,24 @@ const ManageShieldPlan = ({ isPastPlan = false }: { isPastPlan?: boolean }) => {
     updateSubscriptionCardPaymentMethodResult.pending ||
     updateSubscriptionCryptoPaymentMethodResult.pending ||
     resultTriggerSubscriptionCheckInsufficientFunds.pending;
+
+  const updateSubscriptionCardPaymentMethodError =
+    updateSubscriptionCardPaymentMethodResult.error &&
+    (updateSubscriptionCardPaymentMethodResult.error.message
+      .toLowerCase()
+      .includes(SHIELD_ERROR.tabActionFailed.toLowerCase()) ||
+      updateSubscriptionCardPaymentMethodResult.error.message
+        .toLowerCase()
+        .includes(SHIELD_ERROR.stripePaymentCancelled.toLowerCase()))
+      ? undefined // tab action failed or stripe payment cancelled is not api error
+      : updateSubscriptionCardPaymentMethodResult.error;
   const hasApiError =
     subscriptionsError ||
     subscriptionPricingError ||
     openGetSubscriptionBillingPortalResult.error ||
     unCancelSubscriptionResult.error ||
     cancelSubscriptionResult.error ||
-    updateSubscriptionCardPaymentMethodResult.error ||
+    updateSubscriptionCardPaymentMethodError ||
     updateSubscriptionCryptoPaymentMethodResult.error ||
     resultTriggerSubscriptionCheckInsufficientFunds.error;
 
