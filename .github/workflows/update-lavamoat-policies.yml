@@ -33,12 +33,9 @@ jobs:
       IS_FORK: ${{ steps.is-fork.outputs.IS_FORK }}
       COMMIT_SHA: ${{ steps.commit-sha.outputs.COMMIT_SHA }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
       - name: Determine whether this PR is from a fork
         id: is-fork
-        run: echo "IS_FORK=$(gh pr view --json isCrossRepository --jq '.isCrossRepository' "${PR_NUMBER}" )" >> "$GITHUB_OUTPUT"
+        run: echo "IS_FORK=$(gh pr view "${PR_NUMBER}" --repo "${REPO}" --json isCrossRepository --jq '.isCrossRepository')" >> "$GITHUB_OUTPUT"
 
       - name: React to the comment
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
@@ -49,6 +46,10 @@ jobs:
             -H "X-GitHub-Api-Version: 2022-11-28" \
             "/repos/${REPO}/issues/comments/${COMMENT_ID}/reactions" \
             -f content='+1'
+
+      - name: Checkout repository
+        if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
+        uses: actions/checkout@v4
 
       - name: Checkout pull request
         if: ${{ steps.is-fork.outputs.IS_FORK == 'false' }}
