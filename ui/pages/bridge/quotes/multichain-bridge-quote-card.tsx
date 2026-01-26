@@ -306,7 +306,9 @@ export const MultichainBridgeQuoteCard = ({
                 position={PopoverPosition.TopStart}
                 offset={[-16, 16]}
               >
-                {t('networkFeeExplanation')}
+                {shouldShowGasSponsored
+                  ? t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])
+                  : t('networkFeeExplanation')}
               </Tooltip>
             </Row>
             {shouldShowGasSponsored && (
@@ -317,13 +319,6 @@ export const MultichainBridgeQuoteCard = ({
                 >
                   {t('swapGasFeesSponsored')}
                 </Text>
-                <Tooltip
-                  title={t('swapGasFeesSponsored')}
-                  position={PopoverPosition.TopStart}
-                  offset={[-16, 16]}
-                >
-                  {t('swapGasFeesSponsoredExplanation', [nativeTokenSymbol])}
-                </Tooltip>
               </Row>
             )}
             {!shouldShowGasSponsored && activeQuote.quote.gasIncluded && (

@@ -11,7 +11,6 @@ import {
 import { getNativeAssetForChainId } from '@metamask/bridge-controller';
 
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-import { isEvmAccountType } from '@metamask/keyring-api';
 import { InternalAccount } from '@metamask/keyring-internal-api';
 ///: END:ONLY_INCLUDE_IF
 import { ChainId } from '../../../../shared/constants/network';
@@ -26,7 +25,6 @@ import {
 import {
   getUseExternalServices,
   getNetworkConfigurationIdByChainId,
-  isNonEvmAccount,
   getSwapsDefaultToken,
 } from '../../../selectors';
 import { getIsMultichainAccountsState2Enabled } from '../../../selectors/multichain-accounts/feature-flags';
@@ -37,9 +35,7 @@ import {
   MetaMetricsEventName,
   MetaMetricsSwapsEventSource,
 } from '../../../../shared/constants/metametrics';
-import { AssetType } from '../../../../shared/constants/transaction';
 import { MetaMetricsContext } from '../../../contexts/metametrics';
-import { startNewDraftTransaction } from '../../../ducks/send';
 import {
   BlockSize,
   Display,
@@ -51,6 +47,7 @@ import IconButton from '../../ui/icon-button';
 import useRamps from '../../../hooks/ramps/useRamps/useRamps';
 import useBridging from '../../../hooks/bridge/useBridging';
 import { ReceiveModal } from '../../multichain/receive-modal';
+import { Toast, ToastContainer } from '../../multichain/toast';
 import { setActiveNetworkWithError } from '../../../store/actions';
 import {
   getMultichainNativeCurrency,
@@ -58,13 +55,32 @@ import {
 } from '../../../selectors/multichain';
 import { useMultichainSelector } from '../../../hooks/useMultichainSelector';
 import { getCurrentChainId } from '../../../../shared/modules/selectors/networks';
+import { isEvmChainId } from '../../../../shared/lib/asset-utils';
 import { ALL_ALLOWED_BRIDGE_CHAIN_IDS } from '../../../../shared/constants/bridge';
 import { trace, TraceName } from '../../../../shared/lib/trace';
 import { navigateToSendRoute } from '../../../pages/confirmations/utils/send';
-import { useRedesignedSendFlow } from '../../../pages/confirmations/hooks/useRedesignedSendFlow';
 ///: BEGIN:ONLY_INCLUDE_IF(multichain)
 import { useHandleSendNonEvm } from './hooks/useHandleSendNonEvm';
 ///: END:ONLY_INCLUDE_IF
+
+const TabOpenedToast = ({ onClose }: { onClose: () => void }) => {
+  const t = useContext(I18nContext);
+
+  return (
+    <ToastContainer>
+      <Toast
+        startAdornment={
+          <Icon name={IconName.Export} color={IconColor.iconDefault} />
+        }
+        text={t('buyTabOpenedToastText')}
+        description={t('buyTabOpenedToastDescription')}
+        onClose={onClose}
+        autoHideTime={3000}
+        onAutoHideToast={onClose}
+      />
+    </ToastContainer>
+  );
+};
 
 type CoinButtonsProps = {
   account: InternalAccount;
@@ -77,6 +93,8 @@ type CoinButtonsProps = {
   isBuyableChain: boolean;
   classPrefix?: string;
   iconButtonClassName?: string;
+  /** When true, disables the send button for non-EVM chains (used on asset page) */
+  disableSendForNonEvm?: boolean;
 };
 
 const CoinButtons = ({
@@ -87,12 +105,14 @@ const CoinButtons = ({
   isSigningEnabled,
   isBuyableChain,
   classPrefix = 'coin',
+  disableSendForNonEvm = false,
 }: CoinButtonsProps) => {
   const t = useContext(I18nContext);
   const dispatch = useDispatch();
 
   const trackEvent = useContext(MetaMetricsContext);
   const [showReceiveModal, setShowReceiveModal] = useState(false);
+  const [showTabOpenedToast, setShowTabOpenedToast] = useState(false);
 
   const { address: selectedAddress } = account;
   const navigate = useNavigate();
@@ -101,8 +121,6 @@ const CoinButtons = ({
     string
   >;
   const currentChainId = useSelector(getCurrentChainId);
-  const displayNewIconButtons = process.env.REMOVE_GNS;
-  const { enabled: isSendRedesignEnabled } = useRedesignedSendFlow();
 
   // Multichain accounts feature flag and selected account group
   const isMultichainAccountsState2Enabled = useSelector(
@@ -139,14 +157,18 @@ const CoinButtons = ({
   const nativeToken = isEvmNetwork ? 'ETH' : multichainNativeToken;
 
   const isExternalServicesEnabled = useSelector(getUseExternalServices);
-
-  const isNonEvmAccountWithoutExternalServices =
-    !isExternalServicesEnabled && isNonEvmAccount(account);
+  const normalizedChainId = isCaipChainId(chainId) ? chainId : toHex(chainId);
+  const isEvmAsset = isEvmChainId(normalizedChainId);
 
   const buttonTooltips = {
     buyButton: [{ condition: !isBuyableChain, message: '' }],
     sendButton: [
       { condition: !isSigningEnabled, message: 'methodNotSupported' },
+      {
+        condition:
+          disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled,
+        message: 'currentlyUnavailable',
+      },
     ],
     swapButton: [
       {
@@ -265,27 +287,17 @@ const CoinButtons = ({
       { excludeMetaMetricsId: false },
     );
 
-    ///: BEGIN:ONLY_INCLUDE_IF(multichain)
-    if (!isEvmAccountType(account.type) && !isSendRedesignEnabled) {
-      await handleSendNonEvm();
-      // Early return, not to let the non-EVM flow slip into the native send flow.
-      return;
-    }
-    ///: END:ONLY_INCLUDE_IF
-
     // Native Send flow
     await setCorrectChain();
-    await dispatch(startNewDraftTransaction({ type: AssetType.native }));
     let params;
     if (trackingLocation !== 'home') {
       params = { chainId: chainId.toString() };
     }
-    navigateToSendRoute(navigate, isSendRedesignEnabled, params);
+    navigateToSendRoute(navigate, params);
   }, [
     chainId,
     account,
     setCorrectChain,
-    isSendRedesignEnabled,
     ///: BEGIN:ONLY_INCLUDE_IF(multichain)
     handleSendNonEvm,
     ///: END:ONLY_INCLUDE_IF
@@ -293,6 +305,7 @@ const CoinButtons = ({
   ]);
 
   const handleBuyAndSellOnClick = useCallback(() => {
+    setShowTabOpenedToast(true);
     openBuyCryptoInPdapp(getChainId());
     trackEvent({
       event: MetaMetricsEventName.NavBuyButtonClicked,
@@ -372,51 +385,33 @@ const CoinButtons = ({
       width={BlockSize.Full}
       gap={3}
     >
-      {
-        <IconButton
-          className={`${classPrefix}-overview__button`}
-          Icon={
-            displayNewIconButtons ? (
-              <Icon
-                name={IconName.Dollar}
-                color={IconColor.iconAlternative}
-                size={IconSize.Md}
-              />
-            ) : (
-              <Icon
-                name={IconName.PlusAndMinus}
-                color={IconColor.iconDefault}
-                size={IconSize.Sm}
-              />
-            )
-          }
-          disabled={!isBuyableChain}
-          data-testid={`${classPrefix}-overview-buy`}
-          label={t('buy')}
-          onClick={handleBuyAndSellOnClick}
-          width={BlockSize.Full}
-          tooltipRender={(contents: React.ReactElement) =>
-            generateTooltip('buyButton', contents)
-          }
-        />
-      }
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        Icon={
+          <Icon
+            name={IconName.Dollar}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
+        }
+        disabled={!isBuyableChain}
+        data-testid={`${classPrefix}-overview-buy`}
+        label={t('buy')}
+        onClick={handleBuyAndSellOnClick}
+        width={BlockSize.Full}
+        tooltipRender={(contents: React.ReactElement) =>
+          generateTooltip('buyButton', contents)
+        }
+      />
       <IconButton
         className={`${classPrefix}-overview__button`}
         disabled={!isSigningEnabled || !isExternalServicesEnabled}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.SwapVertical}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.SwapVertical}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.SwapVertical}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
         onClick={handleSwapOnClick}
         label={t('swap')}
@@ -430,21 +425,16 @@ const CoinButtons = ({
         className={`${classPrefix}-overview__button`}
         data-testid={`${classPrefix}-overview-send`}
         Icon={
-          displayNewIconButtons ? (
-            <Icon
-              name={IconName.Send}
-              color={IconColor.iconAlternative}
-              size={IconSize.Md}
-            />
-          ) : (
-            <Icon
-              name={IconName.Arrow2UpRight}
-              color={IconColor.iconDefault}
-              size={IconSize.Sm}
-            />
-          )
+          <Icon
+            name={IconName.Send}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
+          />
         }
-        disabled={!isSigningEnabled || isNonEvmAccountWithoutExternalServices}
+        disabled={
+          !isSigningEnabled ||
+          (disableSendForNonEvm && !isEvmAsset && !isExternalServicesEnabled)
+        }
         label={t('send')}
         onClick={handleSendOnClick}
         width={BlockSize.Full}
@@ -452,38 +442,29 @@ const CoinButtons = ({
           generateTooltip('sendButton', contents)
         }
       />
-      {
-        <>
-          {showReceiveModal && (
-            <ReceiveModal
-              address={selectedAddress}
-              onClose={() => setShowReceiveModal(false)}
-            />
-          )}
-          <IconButton
-            className={`${classPrefix}-overview__button`}
-            data-testid={`${classPrefix}-overview-receive`}
-            Icon={
-              displayNewIconButtons ? (
-                <Icon
-                  name={IconName.Received}
-                  color={IconColor.iconAlternative}
-                  size={IconSize.Md}
-                />
-              ) : (
-                <Icon
-                  name={IconName.ScanBarcode}
-                  color={IconColor.iconDefault}
-                  size={IconSize.Sm}
-                />
-              )
-            }
-            label={t('receive')}
-            width={BlockSize.Full}
-            onClick={handleReceiveOnClick}
+      {showReceiveModal && (
+        <ReceiveModal
+          address={selectedAddress}
+          onClose={() => setShowReceiveModal(false)}
+        />
+      )}
+      <IconButton
+        className={`${classPrefix}-overview__button`}
+        data-testid={`${classPrefix}-overview-receive`}
+        Icon={
+          <Icon
+            name={IconName.Received}
+            color={IconColor.iconAlternative}
+            size={IconSize.Md}
           />
-        </>
-      }
+        }
+        label={t('receive')}
+        width={BlockSize.Full}
+        onClick={handleReceiveOnClick}
+      />
+      {showTabOpenedToast && (
+        <TabOpenedToast onClose={() => setShowTabOpenedToast(false)} />
+      )}
     </Box>
   );
 };

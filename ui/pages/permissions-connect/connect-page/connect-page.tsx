@@ -65,7 +65,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import { getMultichainNetwork } from '../../../selectors/multichain';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
@@ -130,6 +130,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
 }) => {
   const t = useI18nContext();
   const trackEvent = useContext(MetaMetricsContext);
+  const [activeTab, setActiveTab] = useState('accounts');
 
   const existingPermissions = useSelector((state) =>
     getPermissions(state, request.metadata?.origin),
@@ -176,7 +177,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
@@ -543,7 +544,7 @@ export const ConnectPage: React.FC<ConnectPageProps> = ({
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs defaultActiveTabKey="accounts">
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
             name={t('accounts')}
             tabKey="accounts"

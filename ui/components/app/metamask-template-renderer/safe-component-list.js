@@ -6,7 +6,7 @@ import {
   FormTextField,
   Text,
 } from '../../component-library';
-import { AccountListItem } from '../../multichain';
+import { AccountListItem } from '../../multichain/account-list-item';
 import ActionableMessage from '../../ui/actionable-message/actionable-message';
 import Box from '../../ui/box';
 import Button from '../../ui/button';
@@ -61,7 +61,6 @@ import {
   SnapAccountCard,
 } from '../../../pages/remove-snap-account';
 import { SnapAccountRedirect } from '../../../pages/snap-account-redirect';
-import { CreateNamedSnapAccount } from '../../multichain/create-named-snap-account';
 import SnapAuthorshipHeader from '../snaps/snap-authorship-header';
 import { Skeleton } from '../../component-library/skeleton';
 ///: END:ONLY_INCLUDE_IF
@@ -127,7 +126,6 @@ export const safeComponentList = {
   SmartTransactionStatusPage,
   UrlIcon,
   ///: BEGIN:ONLY_INCLUDE_IF(keyring-snaps)
-  CreateNamedSnapAccount,
   CreateSnapAccount,
   RemoveSnapAccount,
   SnapAccountCard,

@@ -1,7 +1,8 @@
 import { strict as assert } from 'assert';
 import { By } from 'selenium-webdriver';
 import { TestDappSolana } from '../../page-objects/pages/test-dapp-solana';
-import { largeDelayMs, WINDOW_TITLES } from '../../helpers';
+import { WINDOW_TITLES } from '../../constants';
+import { largeDelayMs } from '../../helpers';
 import { withSolanaAccountSnap } from '../../tests/solana/common-solana';
 import {
   clickCancelButton,
@@ -114,7 +115,7 @@ describe('Solana Wallet Standard - Transfer SOL', function () {
             await testDapp.openTestDappPage();
             await testDapp.checkPageIsLoaded();
             await connectSolanaTestDapp(driver, testDapp, {
-              includeDevnet: false, // Connect to Mainnet only
+              includeDevnet: true,
             });
 
             // Send a transaction

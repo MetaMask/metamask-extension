@@ -60,7 +60,7 @@ import {
   TextColor,
   TextVariant,
 } from '../../../helpers/constants/design-system';
-import { CAIP_FORMATTED_EVM_TEST_CHAINS } from '../../../../shared/constants/network';
+import { CAIP_FORMATTED_TEST_CHAINS } from '../../../../shared/constants/network';
 import { Tab, Tabs } from '../../../components/ui/tabs';
 import {
   getAvatarFallbackLetter,
@@ -134,6 +134,7 @@ export const MultichainAccountsConnectPage: React.FC<
   const [pageMode, setPageMode] = useState<MultichainAccountsConnectPageMode>(
     MultichainAccountsConnectPageMode.Summary,
   );
+  const [activeTab, setActiveTab] = useState('accounts');
   const { isEip1193Request } = request.metadata ?? {};
   const { formatCurrencyWithMinThreshold } = useFormatters();
   const allBalances = useSelector(selectBalanceForAllWallets);
@@ -220,7 +221,7 @@ export const MultichainAccountsConnectPage: React.FC<
         ([nonTestNetworksList, testNetworksList], [chainId, network]) => {
           const caipChainId = chainId as CaipChainId;
           const isTestNetwork =
-            CAIP_FORMATTED_EVM_TEST_CHAINS.includes(caipChainId);
+            CAIP_FORMATTED_TEST_CHAINS.includes(caipChainId);
           (isTestNetwork ? testNetworksList : nonTestNetworksList).push({
             ...network,
             caipChainId,
@@ -633,7 +634,7 @@ export const MultichainAccountsConnectPage: React.FC<
         paddingRight={4}
         backgroundColor={BackgroundColor.transparent}
       >
-        <Tabs onTabClick={() => null} defaultActiveTabKey="accounts">
+        <Tabs activeTab={activeTab} onTabClick={setActiveTab}>
           <Tab
             className="multichain-connect-page__tab flex-1"
             name={t('accounts')}

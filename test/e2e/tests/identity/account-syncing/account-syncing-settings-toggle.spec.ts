@@ -4,8 +4,9 @@ import {
   USER_STORAGE_WALLETS_FEATURE_KEY,
 } from '@metamask/account-tree-controller';
 import { PAGES } from '../../../webdriver/driver';
-import { withFixtures, unlockWallet } from '../../../helpers';
+import { withFixtures } from '../../../helpers';
 import FixtureBuilder from '../../../fixtures/fixture-builder';
+import { loginWithBalanceValidation } from '../../../page-objects/flows/login.flow';
 import {
   UserStorageMockttpController,
   UserStorageMockttpControllerEvents,
@@ -15,9 +16,9 @@ import HeaderNavbar from '../../../page-objects/pages/header-navbar';
 import HomePage from '../../../page-objects/pages/home/homepage';
 import BackupAndSyncSettings from '../../../page-objects/pages/settings/backup-and-sync-settings';
 import SettingsPage from '../../../page-objects/pages/settings/settings-page';
-import { mockMultichainAccountsFeatureFlagStateTwo } from '../../multichain-accounts/common';
+import { skipOnFirefox } from '../helpers';
 import { mockIdentityServices } from '../mocks';
-import { arrangeTestUtils, skipOnFirefox } from './helpers';
+import { arrangeTestUtils } from './helpers';
 
 describe('Account syncing - Settings Toggle', function () {
   this.timeout(160000); // This test is very long, so we need an unusually high timeout
@@ -46,7 +47,6 @@ describe('Account syncing - Settings Toggle', function () {
         USER_STORAGE_WALLETS_FEATURE_KEY,
         server,
       );
-      mockMultichainAccountsFeatureFlagStateTwo(server);
       return mockIdentityServices(server, userStorageMockttpController);
     };
 
@@ -58,7 +58,7 @@ describe('Account syncing - Settings Toggle', function () {
         testSpecificMock: sharedMockSetup,
       },
       async ({ driver }) => {
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the initial account sync to complete before adding new accounts
         const homePage = new HomePage(driver);
@@ -137,7 +137,7 @@ describe('Account syncing - Settings Toggle', function () {
       },
       async ({ driver }) => {
         // Login to fresh app instance to test sync restoration
-        await unlockWallet(driver);
+        await loginWithBalanceValidation(driver);
 
         // Wait for the account sync to complete before verifying accounts
         const homePage = new HomePage(driver);

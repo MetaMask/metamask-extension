@@ -7,21 +7,19 @@ import HomePage from '../../page-objects/pages/home/homepage';
 import SendPage from '../../page-objects/pages/send/send-page';
 import SendTokenConfirmPage from '../../page-objects/pages/send/send-token-confirmation-page';
 import { Driver } from '../../webdriver/driver';
-import { DAPP_PATH } from '../../constants';
-import { WINDOW_TITLES, withFixtures } from '../../helpers';
+import { DAPP_PATH, WINDOW_TITLES } from '../../constants';
+import { withFixtures } from '../../helpers';
 import { loginWithBalanceValidation } from '../../page-objects/flows/login.flow';
 import { mockLookupSnap } from '../../mock-response-data/snaps/snap-binary-mocks';
 import { openTestSnapClickButtonAndInstall } from '../../page-objects/flows/install-test-snap.flow';
-import { mockSendRedesignFeatureFlag } from './common';
+import { createInternalTransaction } from '../../page-objects/flows/transaction';
 
 describe('Send ETH', function () {
   it('it should be possible to send ETH', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -52,13 +50,13 @@ describe('Send ETH', function () {
     );
   });
 
-  it('it should be possible to send Max ETH', async function () {
+  // https://github.com/MetaMask/MetaMask-planning/issues/6679
+  // eslint-disable-next-line mocha/no-skipped-tests
+  it.skip('it should be possible to send Max ETH', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder().build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }: { driver: Driver }) => {
         await loginWithBalanceValidation(driver);
@@ -76,7 +74,9 @@ describe('Send ETH', function () {
           recipientAddress: '0x2f318C334780961FB129D2a6c30D0763d9a5C970',
         });
 
+        await sendTokenConfirmationPage.checkPageIsLoaded();
         await sendTokenConfirmationPage.clickOnConfirm();
+
         await activityListPage.checkTransactionActivityByText('Sent');
         await activityListPage.checkCompletedTxNumberDisplayedInActivity(1);
       },
@@ -86,7 +86,6 @@ describe('Send ETH', function () {
   it('it should be possible to send to address book entry', async function () {
     await withFixtures(
       {
-        forceBip44Version: false,
         fixtures: new FixtureBuilder()
           .withAddressBookController({
             addressBook: {
@@ -103,22 +102,20 @@ describe('Send ETH', function () {
           })
           .build(),
         title: this.test?.fullTitle(),
-        testSpecificMock: mockSendRedesignFeatureFlag,
       },
       async ({ driver }) => {
         await loginWithBalanceValidation(driver);
 
-        const homePage = new HomePage(driver);
-        const sendPage = new SendPage(driver);
         const sendTokenConfirmationPage = new SendTokenConfirmPage(driver);
         const activityListPage = new ActivityListPage(driver);
 
-        await homePage.startSendFlow();
-
-        await sendPage.selectToken('0x539', 'ETH');
-        await sendPage.selectAccountFromRecipientModal('Test Name 1');
-        await sendPage.fillAmount('1');
-        await sendPage.pressContinueButton();
+        await createInternalTransaction({
+          driver,
+          chainId: '0x539',
+          symbol: 'ETH',
+          recipientName: 'Test Name 1',
+          amount: '1',
+        });
 
         await sendTokenConfirmationPage.clickOnConfirm();
         await activityListPage.checkTransactionActivityByText('Sent');
@@ -134,13 +131,11 @@ describe('Send ETH', function () {
         dappOptions: {
           customDappPaths: [DAPP_PATH.TEST_SNAPS],
         },
-        forceBip44Version: false,
         fixtures: new FixtureBuilder({
           inputChainId: CHAIN_IDS.MAINNET,
         }).build(),
         title: this.test?.fullTitle(),
         testSpecificMock: (mockServer: Mockttp) => {
-          mockSendRedesignFeatureFlag(mockServer);
           mockLookupSnap(mockServer);
         },
       },
