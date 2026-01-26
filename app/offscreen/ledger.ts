@@ -1,5 +1,4 @@
 import TransportWebHID from '@ledgerhq/hw-transport-webhid';
-import type Transport from '@ledgerhq/hw-transport';
 import LedgerEth from '@ledgerhq/hw-app-eth';
 import {
   LedgerAction,
@@ -9,8 +8,7 @@ import {
 import { LEDGER_USB_VENDOR_ID } from '../../shared/constants/hardware-wallets';
 
 // Transport and app state
-// Using base Transport type since TransportWebHID methods return Transport
-let transport: Transport | null = null;
+let transport: TransportWebHID | null = null;
 let ethApp: LedgerEth | null = null;
 // Prevents concurrent makeApp calls from creating multiple transports
 let pendingMakeApp: Promise<boolean> | null = null;
