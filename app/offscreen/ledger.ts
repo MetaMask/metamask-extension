@@ -121,16 +121,19 @@ async function makeApp(): Promise<boolean> {
 
 /**
  * Closes the transport and cleans up state.
+ * Clears state synchronously first to prevent races with reconnection.
  */
 async function closeTransport(): Promise<void> {
-  if (transport) {
+  const transportToClose = transport;
+  transport = null;
+  ethApp = null;
+
+  if (transportToClose) {
     try {
-      await transport.close();
+      await transportToClose.close();
     } catch {
       // Ignore close errors
     }
-    transport = null;
-    ethApp = null;
   }
 }
 
