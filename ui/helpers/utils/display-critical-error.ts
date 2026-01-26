@@ -67,6 +67,14 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
     const eventId = uuidv4().replace(/-/gu, '');
     const timestamp = Math.floor(Date.now() / 1000);
 
+    // Extract sentryTags from error object (if present)
+    // Any error can define error.sentryTags to add searchable tags to Sentry
+    const errorObj = error as Record<string, unknown>;
+    const sentryTags =
+      errorObj?.sentryTags && typeof errorObj.sentryTags === 'object'
+        ? (errorObj.sentryTags as Record<string, string>)
+        : {};
+
     // Create event payload according to Sentry specs
     // event_id, error_details and user_agent are required by Sentry envelope format, hence the disable is valid
     const eventPayload = {
@@ -86,6 +94,8 @@ async function sendErrorToSentry(error: ErrorLike): Promise<void> {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         user_agent: globalThis.navigator?.userAgent || 'unknown',
       },
+      // Add tags for searchable/filterable fields in Sentry UI
+      tags: sentryTags,
     };
 
     // Create envelope headers

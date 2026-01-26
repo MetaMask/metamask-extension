@@ -588,6 +588,8 @@ const handleOnConnect = async (port) => {
             message: error.message ?? 'Unknown error',
             name: error.name ?? 'UnknownError',
             stack: error.stack,
+            // Preserve sentryTags for searchable/filterable fields in Sentry UI
+            ...(error.sentryTags && { sentryTags: error.sentryTags }),
           }
         : {
             message: String(error),
@@ -1006,25 +1008,53 @@ export async function loadStateFromPersistence(backup) {
   const { state: versionedData, changedKeys } = await migrator.migrateData(
     preMigrationVersionedData,
   );
+
+  /**
+   * Creates an Error with sentryTags for migration failures.
+   * Tags help identify if user should have had a backup (v12.20.0+, migration 157+).
+   * These are captured via the critical error page's "Send error report" checkbox
+   * flow (see ui/helpers/utils/display-critical-error.ts).
+   *
+   * @param {string} message - The error message
+   * @returns {Error} Error object with sentryTags property
+   */
+  const createMigrationError = (message) => {
+    const preMigrationVersion = preMigrationVersionedData?.meta?.version;
+    const backupShouldExist =
+      typeof preMigrationVersion === 'number' && preMigrationVersion >= 157;
+
+    const error = new Error(message);
+
+    // Add sentryTags for searchable/filterable fields in Sentry UI
+    // These are extracted by sendErrorToSentry in display-critical-error.ts
+    error.sentryTags = {
+      'corruption.preMigrationVersion': String(
+        preMigrationVersion ?? 'unknown',
+      ),
+      'corruption.backupShouldExist': String(backupShouldExist),
+    };
+
+    return error;
+  };
+
   if (!versionedData) {
-    throw new Error('MetaMask - migrator returned undefined');
+    throw createMigrationError('MetaMask - migrator returned undefined');
   } else if (!isObject(versionedData.meta)) {
-    throw new Error(
+    throw createMigrationError(
       `MetaMask - migrator metadata has invalid type '${typeof versionedData.meta}'`,
     );
   } else if (typeof versionedData.meta.version !== 'number') {
-    throw new Error(
-      `MetaMask - migrator metadata version has invalid type '${typeof versionedData
-        .meta.version}'`,
+    throw createMigrationError(
+      `MetaMask - migrator metadata version has invalid type '${typeof versionedData.meta.version}'`,
     );
   } else if (
     !['data', 'split', undefined].includes(versionedData.meta.storageKind)
   ) {
-    throw new Error(
+    throw createMigrationError(
       `MetaMask - migrator metadata storageKind has invalid value '${versionedData.meta.storageKind}'`,
     );
   } else if (!isObject(versionedData.data)) {
-    throw new Error(
+    throw createMigrationError(
       `MetaMask - migrator data has invalid type '${typeof versionedData.data}'`,
     );
   }
